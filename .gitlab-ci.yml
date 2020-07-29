@@ -1,0 +1,36 @@
+.cicd-os-ref: &cicd-os-ref 0.0.0
+
+.cicd-os: &cicd-os
+  project: trustpayments-public/stjs/cicd-os
+  ref: *cicd-os-ref
+
+include:
+  - file: /cicd_template.yml
+    <<: *cicd-os
+
+variables:
+  CICD_OS_REF: *cicd-os-ref
+
+  ### Disabled Jobs:
+  # Initialize
+  # DISABLE_JOB_copy_cicd_scripts: 'true'
+  # Pre-build
+  # DISABLE_JOB_docker_images_build: 'true'
+  # DISABLE_JOB_docker_images_pull: 'true'
+  # Build
+  # service-images-build - No need to disabling. Extends to enable.
+  ### Disabled Jobs : End
+
+  ### Disabled Activities
+  # DISABLE_ACTIVITY_docker_image_build_cache: 'true'
+  ### Disabled Activities : End
+
+  ##### Others - project specific #####
+  # BUILD_IMAGES: "true"
+  # CI_DEBUG_TRACE: "true" # For CI/CD extra logs (like actually using variables)
+  # LOG_LEVEL: DEBUG # For bash and python scripts
+
+stages:
+  - initialize
+  - pre-build
+  - build
