@@ -1,8 +1,33 @@
+# How to contribute
+1. Fork existing repository
+1. Your branch MUST be prefixed with **CONTRIBUTING**
+   
+   Perfect branch format: CONTRIBUTING-<ISSUE_NUMBER>-<ISSUE_TITLE>
+   
+   If those changes don't relate to an existing Issue you can explain your changes in Merge Request Description
+
+1. Update the code in your forked repository and newly created branch, then push changes
+   
+1. Check if your pipeline succeeded (green)
+
+1. Create Merge Request to the `master` branch in original repo
+
+1. Wait for approvals or comments from the development team.
+
+1. Merge Request can be merged when:
+
+   2. MR will gather all required approvals
+   
+   2. Pipeline will succeed
+   
+   2. All comments from Code Review will be resolved
+
 ## Submission Guidelines
 
 ##### Repository:
 
-> - [GitHub](https://github.com/orgs/SecureTrading/teams/js-payments-team)
+> - [GitLab](https://gitlab.com/trustpayments-public/stjs/js-payments)
+> - [GitHub (old/deprecated)](https://gitlab.com/trustpayments-public/stjs/js-payments)
 
 ## Code Style, Naming convention
 
