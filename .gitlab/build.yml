@@ -1,0 +1,17 @@
+.build-app-html:
+  extends: .utility-images-build
+  variables:
+    DOCKER_TARGET: 'app-html'
+    DOCKERFILE_PATH: docker/app-html/Dockerfile
+
+build-app-html-test:
+  extends: .build-app-html
+  variables:
+    UTILITY_NAME: 'app-html-test'
+    BUILD_ARGS_EXTRA: --build-arg BUILD_TYPE=automated
+
+build-app-html-dev:
+  extends: .build-app-html
+  variables:
+    UTILITY_NAME: 'app-html-dev'
+    BUILD_ARGS_EXTRA: --build-arg BUILD_TYPE=dev

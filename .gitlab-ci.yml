@@ -8,12 +8,16 @@ include:
   - file: /cicd_template.yml
     <<: *cicd-os
 
+  - local: '/.gitlab/build.yml'
+
 variables:
   CICD_OS_REF: *cicd-os-ref
 
   ### Disabled Jobs:
   # Initialize
   # DISABLE_JOB_copy_cicd_scripts: 'true'
+  # Docker-init
+  # DISABLE_JOB_docker_init: 'true' # TODO INFRA-264
   # Pre-build
   # DISABLE_JOB_docker_images_build: 'true'
   # DISABLE_JOB_docker_images_pull: 'true'
@@ -32,5 +36,6 @@ variables:
 
 stages:
   - initialize
+  - docker-init # TODO INFRA-264
   - pre-build
   - build
