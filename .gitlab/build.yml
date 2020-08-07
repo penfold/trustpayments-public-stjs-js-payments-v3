@@ -18,8 +18,7 @@ build-app-html-dev:
     BUILD_ARGS_EXTRA: --build-arg BUILD_TYPE=dev
 
 ### testing repo
-
-.build-payments-tests:
+build-payments-tests:
   extends: .utility-images-build
   variables:
     DOCKERFILE_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}/Dockerfile
