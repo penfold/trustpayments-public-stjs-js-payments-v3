@@ -1,0 +1,9 @@
+card-payments-headless-component-tests:
+  extends: .headless-component-tests
+  variables:
+    FEATURE_FILE: 'card_payments_tests.feature'
+
+visa-checkout-headless-component-tests:
+  extends: .headless-component-tests
+  variables:
+    FEATURE_FILE: 'visa_checkout_tests.feature'
