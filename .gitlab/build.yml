@@ -21,13 +21,12 @@ build-app-html-dev:
 build-payments-tests:
   extends: .utility-images-build
   variables:
-    DOCKERFILE_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}/Dockerfile
-    UTILITY_NAME: 'payments-tests'
     BUILD_EXECUTION_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}
+    UTILITY_NAME: 'payments-tests'
 
 ### wiremock for testing repo
 build-wiremock:
   extends: .utility-images-build
   variables:
-    DOCKERFILE_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}/docker/wiremock/Dockerfile
+    BUILD_EXECUTION_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}
     UTILITY_NAME: 'wiremock'
