@@ -9,6 +9,7 @@ include:
     <<: *cicd-os
 
   - local: '/.gitlab/build.yml'
+  - local: '/.gitlab/fast-tests.yml'
 
 variables:
   CICD_OS_REF: *cicd-os-ref
