@@ -23,3 +23,11 @@ build-payments-tests:
   variables:
     DOCKERFILE_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}/Dockerfile
     UTILITY_NAME: 'payments-tests'
+    BUILD_EXECUTION_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}
+
+### wiremock for testing repo
+build-wiremock:
+  extends: .utility-images-build
+  variables:
+    DOCKERFILE_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}/docker/wiremock/Dockerfile
+    UTILITY_NAME: 'wiremock'
