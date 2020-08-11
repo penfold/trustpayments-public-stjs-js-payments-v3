@@ -6,7 +6,12 @@
     FEATURE_FILE: '' # To be set up
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
+      alias: webservices.securetrading.net
+      command: "--https-port 8443 --https-keystore /home/wiremock/keystore"
     - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
+      alias: library.securetrading.net
+#    - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
+#      alias: merchant.securetrading.net
   script:
     - . .cicd_scripts/tests/headless_component.sh
     - cd "${PROJECT_JS_PAYMENTS_TESTS_NAME}"
