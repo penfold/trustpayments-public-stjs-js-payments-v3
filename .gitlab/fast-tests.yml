@@ -18,6 +18,9 @@
   script:
     - . .cicd_scripts/tests/headless_component.sh
     - cd "${PROJECT_JS_PAYMENTS_TESTS_NAME}"
+    - apt-get update && apt-get install -y dig netcat-openbsd
+    - dig webservices.securetrading.net || true
+    - nc -zv webservices.securetrading.net 8443 || true
     - python3 -m venv venv
     - . venv/bin/activate
     - poetry install
