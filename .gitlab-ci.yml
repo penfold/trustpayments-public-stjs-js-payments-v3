@@ -14,6 +14,9 @@ include:
 variables:
   CICD_OS_REF: *cicd-os-ref
 
+  IMAGE_JS_PAYMENTS_APP_HTML_TEST: ${CI_REGISTRY_IMAGE}/app-html-test:${CI_COMMIT_REF_SLUG}
+  IMAGE_JS_PAYMENTS_TESTS: ${CI_REGISTRY_IMAGE}/payments-tests:${CI_COMMIT_REF_SLUG}
+
   ### Disabled Jobs:
   # Initialize
   # DISABLE_JOB_copy_cicd_scripts: 'true'
