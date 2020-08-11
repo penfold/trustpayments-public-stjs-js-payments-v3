@@ -39,9 +39,9 @@ jobs:
         - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
         - docker push "securetrading1/js-payments:$DOCKER_BRANCH"
     - stage: Behavioral test - full set of tests
-      name: 'Card payments tests - chrome'
+      name: 'Card payments common tests - chrome'
       script:
-        - ${DOCKER_TAG} tests poetry run behave -i card_payments_tests.feature
+        - ${DOCKER_TAG} tests poetry run behave -i mock_
     - name: 'Visa Checkout tests - chrome'
       script:
         - ${DOCKER_TAG} tests poetry run behave -i visa_checkout_tests.feature
