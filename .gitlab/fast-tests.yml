@@ -8,7 +8,7 @@
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
   script:
     - . .cicd_scripts/tests/headless_component.sh
-    - cd "${PROJECT_JS_PAYMENTS_TESTS_NAME}
+    - cd "${PROJECT_JS_PAYMENTS_TESTS_NAME}"
     - execute_headless_component_test "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILE}"
 
 card-payments-headless-component-tests:
