@@ -26,10 +26,10 @@
 #  variables:
 #    FEATURE_FILE: 'mock_'
 
-visa-checkout-headless-component-tests:
-  extends: .headless-component-tests
-  variables:
-    FEATURE_FILE: 'visa_checkout_tests.feature'
+#visa-checkout-headless-component-tests: # TODO uncomment
+#  extends: .headless-component-tests
+#  variables:
+#    FEATURE_FILE: 'visa_checkout_tests.feature'
 
 extra-test:
   extends: .headless-component-tests
