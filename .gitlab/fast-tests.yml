@@ -13,7 +13,7 @@
       entrypoint: ["/bin/sh", "-c", "while [ ! -f /$CI_PROJECT_DIR/hosts ]; do sleep 1; done && cat /$CI_PROJECT_DIR/hosts > /etc/hosts && /docker-entrypoint.sh"]
     - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
       alias: webservices.securetrading.net
-      command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"
+      command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
       entrypoint: ["/bin/sh", "-c", "while [ ! -f /$CI_PROJECT_DIR/hosts ]; do sleep 1; done && cat /$CI_PROJECT_DIR/hosts > /etc/hosts && /docker-entrypoint.sh"]
     - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
       alias: thirdparty.example.com
