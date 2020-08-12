@@ -44,6 +44,7 @@ extra-test:
     - nc -zv merchant.securetrading.net 443 || true
     - wget -r --no-check-certificate https://merchant.securetrading.net
     - google-chrome-stable --headless --dump-dom --disable-gpu --no-sandbox "https://merchant.securetrading.net" > chrome_output.html
+    - wget -r --no-check-certificate https://webservices.securetrading.net:8443
     - ls -lah
   artifacts:
     when: always
@@ -51,3 +52,4 @@ extra-test:
     paths:
       - merchant.securetrading.net
       - chrome_output.html
+      - webservices.securetrading.net
