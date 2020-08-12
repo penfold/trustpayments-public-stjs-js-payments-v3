@@ -24,7 +24,9 @@
     - nc -zv library.securetrading.net 443 || true
     - nc -zv merchant.securetrading.net 80 || true
     - nc -zv merchant.securetrading.net 443 || true
-    - wget -r --no-check-certificate https://merchant.securetrading.net && ls -lah && exit 1
+    - wget -r --no-check-certificate https://merchant.securetrading.net
+    - google-chrome-stable --headless --dump-dom --disable-gpu "https://merchant.securetrading.net" > chrome_output.html
+    - ls -lah && exit 1
     - . .cicd_scripts/tests/headless_component.sh
     - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
     - . venv/bin/activate
