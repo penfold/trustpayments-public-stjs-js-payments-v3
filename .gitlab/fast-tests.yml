@@ -16,9 +16,14 @@
       alias: thirdparty.example.com
       command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
   script:
-#    - apt-get update && apt-get install -y dnsutils netcat-openbsd
-#    - dig webservices.securetrading.net || true
-#    - nc -zv webservices.securetrading.net 8443 || true
+    - apt-get update && apt-get install -y dnsutils netcat-openbsd
+    - dig webservices.securetrading.net || true
+    - nc -zv webservices.securetrading.net 8443 || true
+    - nc -zv thirdparty.example.com 8443 || true
+    - nc -zv library.securetrading.net 80 || true
+    - nc -zv library.securetrading.net 443 || true
+    - nc -zv merchant.securetrading.net 80 || true
+    - nc -zv merchant.securetrading.net 443 || true
     - . .cicd_scripts/tests/headless_component.sh
     - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
     - . venv/bin/activate
