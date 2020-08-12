@@ -16,17 +16,12 @@
       alias: thirdparty.example.com
       command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
   script:
-    - apt-get update && apt-get install -y dnsutils netcat-openbsd
-    - dig webservices.securetrading.net || true
-    - nc -zv webservices.securetrading.net 8443 || true
-    - pwd && ls -lah
+#    - apt-get update && apt-get install -y dnsutils netcat-openbsd
+#    - dig webservices.securetrading.net || true
+#    - nc -zv webservices.securetrading.net 8443 || true
     - . .cicd_scripts/tests/headless_component.sh
     - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-    - pwd && ls -lah
-    - python3 -m venv venv
     - . venv/bin/activate
-    - poetry install
-    - echo $PATH
     - execute_headless_component_test "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILE}"
 
 card-payments-headless-component-tests:
