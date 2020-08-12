@@ -22,15 +22,15 @@
     - . venv/bin/activate
     - execute_headless_component_test_sequentially "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILE}"
 
-#card-payments-headless-component-tests: # TODO uncomment
-#  extends: .headless-component-tests
-#  variables:
-#    FEATURE_FILE: 'mock_'
+card-payments-headless-component-tests:
+  extends: .headless-component-tests
+  variables:
+    FEATURE_FILE: 'mock_'
 
-#visa-checkout-headless-component-tests: # TODO uncomment
-#  extends: .headless-component-tests
-#  variables:
-#    FEATURE_FILE: 'visa_checkout_tests.feature'
+visa-checkout-headless-component-tests:
+  extends: .headless-component-tests
+  variables:
+    FEATURE_FILE: 'visa_checkout_tests.feature'
 
 extra-test:
   extends: .headless-component-tests
@@ -50,27 +50,4 @@ extra-test:
 #      - merchant.securetrading.net
       - chrome_output.html
 #      - webservices.securetrading.net
-
-
-wiremock-test:
-  extends: .fast-tests
-  image: ${IMAGE_JS_PAYMENTS_WIREMOCK}
-  variables:
-    BEHAVE_LOGGING_LEVEL: INFO
-    FEATURE_FILE: '' # To be set up
-  services:
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
-      alias: library.securetrading.net
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
-      alias: merchant.securetrading.net
-    - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
-      alias: webservices.securetrading.net
-      command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
-    - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
-      alias: thirdparty.example.com
-      command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
-  script:
-    - /docker-entrypoint.sh java -cp /var/wiremock/lib/*:/var/wiremock/extensions/* com.github.tomakehurst.wiremock.standalone.WireMockServerRunner --https-port 8443 --https-keystore /home/wiremock/keystore --verbose &
-    - sleep 20
-    - wget --content-on-error --no-check-certificate -O- https://localhost:8443
 
