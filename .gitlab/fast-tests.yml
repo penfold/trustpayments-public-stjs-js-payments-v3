@@ -34,26 +34,21 @@
 extra-test:
   extends: .headless-component-tests
   script:
-    - apt-get update && apt-get install -y dnsutils netcat-openbsd wget
-    - dig webservices.securetrading.net || true
-    - nc -zv webservices.securetrading.net 8443 || true
-    - nc -zv thirdparty.example.com 8443 || true
-    - nc -zv library.securetrading.net 80 || true
-    - nc -zv library.securetrading.net 443 || true
-    - nc -zv merchant.securetrading.net 80 || true
-    - nc -zv merchant.securetrading.net 443 || true
-    - wget -r --no-check-certificate https://merchant.securetrading.net
-    - wget --content-on-error --no-check-certificate -O- https://webservices.securetrading.net:8443
-    - wget -r --no-check-certificate https://webservices.securetrading.net:8443
+    - apt-get update && apt-get install -y wget
+    - #wget -r --no-check-certificate https://merchant.securetrading.net
+    - wget --content-on-error --no-check-certificate -O- https://webservices.securetrading.net:8443 || true
+    - wget --content-on-error --no-check-certificate -O- https://library.securetrading.net || true
+    - wget --content-on-error --no-check-certificate -O- https://merchant.securetrading.net || true
+    - #wget -r --no-check-certificate https://webservices.securetrading.net:8443
     - google-chrome-stable --headless --dump-dom --disable-gpu --no-sandbox --ignore-certificate-errors "https://merchant.securetrading.net" > chrome_output.html
     - ls -lah
   artifacts:
     when: always
     expire_in: 1 week
     paths:
-      - merchant.securetrading.net
+      - #merchant.securetrading.net
       - chrome_output.html
-      - webservices.securetrading.net
+      - #webservices.securetrading.net
 
 
 wiremock-test:
