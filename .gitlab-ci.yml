@@ -27,8 +27,9 @@ variables:
   # Pre-build
   # DISABLE_JOB_docker_images_build: 'true'
   # DISABLE_JOB_docker_images_pull: 'true'
+  # DISABLE_JOB_copy_payments_tests_repo: 'true'
   # Build
-  # service-images-build - No need to disabling. Extends to enable.
+  # utility-images-build - No need to disabling. Extends to enable.
   # Fast Tests
   # DISABLE_JOB_unit_tests: 'true'
   ### Disabled Jobs : End
