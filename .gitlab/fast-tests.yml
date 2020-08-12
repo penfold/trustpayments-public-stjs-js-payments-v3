@@ -74,4 +74,5 @@ wiremock-test:
       command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
   script:
     - /docker-entrypoint.sh java -cp /var/wiremock/lib/*:/var/wiremock/extensions/* com.github.tomakehurst.wiremock.standalone.WireMockServerRunner --https-port 8443 --https-keystore /home/wiremock/keystore &
+    - sleep 20
     - wget -r --no-check-certificate https://localhost:8443
