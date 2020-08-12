@@ -35,11 +35,11 @@ extra-test:
   extends: .headless-component-tests
   script:
     - apt-get update && apt-get install -y wget
-    #- wget -r --no-check-certificate https://merchant.securetrading.net
+#    - wget -r --no-check-certificate https://merchant.securetrading.net
     - wget --content-on-error --no-check-certificate -O- https://webservices.securetrading.net:8443 || true
     - wget --content-on-error --no-check-certificate -O- https://library.securetrading.net || true
     - wget --content-on-error --no-check-certificate -O- https://merchant.securetrading.net || true
-    #- wget -r --no-check-certificate https://webservices.securetrading.net:8443
+#    - wget -r --no-check-certificate https://webservices.securetrading.net:8443
     - google-chrome-stable --headless --dump-dom --disable-gpu --no-sandbox --ignore-certificate-errors "https://merchant.securetrading.net" > chrome_output.html
     - ls -lah
   artifacts:
