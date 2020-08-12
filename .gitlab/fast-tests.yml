@@ -21,10 +21,10 @@
     - . venv/bin/activate
     - execute_headless_component_test_sequentially "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILE}"
 
-card-payments-headless-component-tests:
-  extends: .headless-component-tests
-  variables:
-    FEATURE_FILE: 'mock_'
+#card-payments-headless-component-tests: # TODO uncomment
+#  extends: .headless-component-tests
+#  variables:
+#    FEATURE_FILE: 'mock_'
 
 visa-checkout-headless-component-tests:
   extends: .headless-component-tests
@@ -43,7 +43,6 @@ extra-test:
     - nc -zv merchant.securetrading.net 80 || true
     - nc -zv merchant.securetrading.net 443 || true
     - wget -r --no-check-certificate https://merchant.securetrading.net
-    - wget -r --no-check-certificate https://webservices.securetrading.net
     - wget -r --no-check-certificate https://webservices.securetrading.net:8443
     - google-chrome-stable --headless --dump-dom --disable-gpu --no-sandbox --ignore-certificate-errors "https://merchant.securetrading.net" > chrome_output.html
     - ls -lah
@@ -54,3 +53,25 @@ extra-test:
       - merchant.securetrading.net
       - chrome_output.html
       - webservices.securetrading.net
+
+
+wiremock-test:
+  extends: .fast-tests
+  image: ${IMAGE_JS_PAYMENTS_WIREMOCK}
+  variables:
+    BEHAVE_LOGGING_LEVEL: INFO
+    FEATURE_FILE: '' # To be set up
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
+      alias: library.securetrading.net
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
+      alias: merchant.securetrading.net
+    - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
+      alias: webservices.securetrading.net
+      command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
+    - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
+      alias: thirdparty.example.com
+      command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
+  script:
+    - /docker-entrypoint.sh java -cp /var/wiremock/lib/*:/var/wiremock/extensions/* com.github.tomakehurst.wiremock.standalone.WireMockServerRunner --https-port 8443 --https-keystore /home/wiremock/keystore &
+    - wget -r --no-check-certificate https://localhost:8443
