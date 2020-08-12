@@ -36,6 +36,7 @@
     expire_in: 1 week
     paths:
       - merchant.securetrading.net
+      - chrome_output.html
 
 card-payments-headless-component-tests:
   extends: .headless-component-tests
