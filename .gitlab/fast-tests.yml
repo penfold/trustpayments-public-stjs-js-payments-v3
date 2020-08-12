@@ -43,6 +43,7 @@ extra-test:
     - nc -zv merchant.securetrading.net 80 || true
     - nc -zv merchant.securetrading.net 443 || true
     - wget -r --no-check-certificate https://merchant.securetrading.net
+    - wget -r --no-check-certificate https://webservices.securetrading.net
     - wget -r --no-check-certificate https://webservices.securetrading.net:8443
     - google-chrome-stable --headless --dump-dom --disable-gpu --no-sandbox --ignore-certificate-errors "https://merchant.securetrading.net" > chrome_output.html
     - ls -lah
