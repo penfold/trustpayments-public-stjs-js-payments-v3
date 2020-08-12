@@ -21,9 +21,8 @@
     - nc -zv webservices.securetrading.net 8443 || true
     - pwd && ls -lah
     - . .cicd_scripts/tests/headless_component.sh
-    - find / -type d -name "app" 2>/dev/null
-    - exit 1
-    - cd app # cd "${PROJECT_JS_PAYMENTS_TESTS_NAME}" # TODO update app to env
+    - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
+    - pwd && ls -lah
     - python3 -m venv venv
     - . venv/bin/activate
     - poetry install
