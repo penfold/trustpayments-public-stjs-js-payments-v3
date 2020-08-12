@@ -7,14 +7,20 @@
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
       alias: library.securetrading.net
+      entrypoint: ["/bin/sh", "-c", "while [ ! -f /$CI_PROJECT_DIR/hosts ]; do sleep 1; done && cat /$CI_PROJECT_DIR/hosts > /etc/hosts && /docker-entrypoint.sh"]
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
       alias: merchant.securetrading.net
+      entrypoint: ["/bin/sh", "-c", "while [ ! -f /$CI_PROJECT_DIR/hosts ]; do sleep 1; done && cat /$CI_PROJECT_DIR/hosts > /etc/hosts && /docker-entrypoint.sh"]
     - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
       alias: webservices.securetrading.net
-      command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
+      command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"
+      entrypoint: ["/bin/sh", "-c", "while [ ! -f /$CI_PROJECT_DIR/hosts ]; do sleep 1; done && cat /$CI_PROJECT_DIR/hosts > /etc/hosts && /docker-entrypoint.sh"]
     - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
       alias: thirdparty.example.com
       command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
+      entrypoint: ["/bin/sh", "-c", "while [ ! -f /$CI_PROJECT_DIR/hosts ]; do sleep 1; done && cat /$CI_PROJECT_DIR/hosts > /etc/hosts && /docker-entrypoint.sh"]
+  before_script:
+    - cp /etc/hosts "${CI_PROJECT_DIR}/"
   script:
     - . .cicd_scripts/tests/headless_component.sh
     - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
