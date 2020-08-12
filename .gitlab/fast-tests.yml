@@ -16,7 +16,7 @@
       alias: thirdparty.example.com
       command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
   script:
-    - apt-get update && apt-get install -y dnsutils netcat-openbsd
+    - apt-get update && apt-get install -y dnsutils netcat-openbsd wget
     - dig webservices.securetrading.net || true
     - nc -zv webservices.securetrading.net 8443 || true
     - nc -zv thirdparty.example.com 8443 || true
@@ -24,10 +24,16 @@
     - nc -zv library.securetrading.net 443 || true
     - nc -zv merchant.securetrading.net 80 || true
     - nc -zv merchant.securetrading.net 443 || true
+    - wget -r https://merchant.securetrading.net && ls -lah
     - . .cicd_scripts/tests/headless_component.sh
     - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
     - . venv/bin/activate
-    - execute_headless_component_test "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILE}"
+    - execute_headless_component_test_sequentially "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILE}"
+ artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - merchant.securetrading.net
 
 card-payments-headless-component-tests:
   extends: .headless-component-tests
