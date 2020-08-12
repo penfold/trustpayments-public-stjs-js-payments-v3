@@ -4,7 +4,7 @@
   variables:
     BEHAVE_LOGGING_LEVEL: INFO
     FEATURE_FILE: '' # To be set up
-    FF_NETWORK_PER_BUILD: 1 # https://docs.gitlab.com/runner/configuration/feature-flags.html
+    FF_NETWORK_PER_BUILD: 'true' # https://docs.gitlab.com/runner/configuration/feature-flags.html
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
       alias: library.securetrading.net
@@ -21,6 +21,7 @@
     - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
     - . venv/bin/activate
     - execute_headless_component_test_sequentially "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILE}"
+  timeout: 10h # TODO delete
 
 card-payments-headless-component-tests:
   extends: .headless-component-tests
