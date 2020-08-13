@@ -28,13 +28,13 @@ card-payments-headless-component-tests:
   extends: .headless-component-tests
   variables:
     FEATURE_FILE_NAME: 'mock_'
-  paralelism: 1
+  parallel: 1
 
 visa-checkout-headless-component-tests:
   extends: .headless-component-tests
   variables:
     FEATURE_FILE_NAME: 'visa_checkout_tests.feature'
-  paralelism: 1
+  parallel: 1
 
 extra-test:
   extends: .headless-component-tests
