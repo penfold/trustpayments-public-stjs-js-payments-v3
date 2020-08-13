@@ -52,7 +52,7 @@ visa-checkout-headless-component-tests:
 extra-test:
   extends: .headless-component-tests
   script:
-    - apt-get update && apt-get install -y wget
+    - apt-get update && apt-get install -y wget curl
 #    - wget -r --no-check-certificate https://merchant.securetrading.net
     - wget --content-on-error --no-check-certificate -O- https://webservices.securetrading.net:8443 || true
     - wget --content-on-error --no-check-certificate -O- https://library.securetrading.net || true
@@ -60,6 +60,11 @@ extra-test:
 #    - wget -r --no-check-certificate https://webservices.securetrading.net:8443
     - google-chrome-stable --headless --dump-dom --disable-gpu --no-sandbox --ignore-certificate-errors "https://merchant.securetrading.net" > chrome_output.html
     - ls -lah
+    - curl --insecure https://webservices.securetrading.net:8443/test
+    - |
+      curl --insecure -X POST \
+      --data '{ "request": { "url": "/test", "method": "GET" }, "response": { "status": 200, "body": "Here it is test!\n" }}' \
+      https://webservices.securetrading.net:8443/__admin/mappings/new
   artifacts:
     when: always
     expire_in: 1 week
