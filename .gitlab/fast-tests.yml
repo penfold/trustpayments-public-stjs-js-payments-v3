@@ -4,9 +4,7 @@
   variables:
     BEHAVE_LOGGING_LEVEL: INFO
     FF_NETWORK_PER_BUILD: 'true' # https://docs.gitlab.com/runner/configuration/feature-flags.html
-    IGNORED_FILES: "TO-FILL" # list containing feature files that should not be run in parallel, eg. content: IGNORED_FILES="file1|file2"
     FEATURE_FILES_DIR: 'features'
-    FEATURE_FILE_NAME: ''
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
       alias: library.securetrading.net
@@ -18,23 +16,37 @@
     - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
       alias: thirdparty.example.com
       command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
+
+.headless-component-tests-sequentially:
+  variables:
+    FEATURE_FILE_NAME: '' # To be fill in child job - it have to be file name
   script:
     - . .cicd_scripts/tests/headless_component.sh
     - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
     - . venv/bin/activate
-    - execute_headless_component_test_in_parallel "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILES_DIR}" "${TEST_NAME_PREFIX}"
+    - execute_headless_component_test_sequentially "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILES_DIR}" "${FEATURE_FILE_NAME}"
+
+.headless-component-tests-paralell:
+  variables:
+    IGNORED_FILES: "TO-FILL" # list containing feature files that should not be run in parallel, eg. content: IGNORED_FILES="file1|file2"
+    FEATURE_FILES_NAMES_CONTAINS: '' # To be fill in child job - it can be prefix, suffix or part of filenames
+  script:
+    - . .cicd_scripts/tests/headless_component.sh
+    - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
+    - . venv/bin/activate
+    - execute_headless_component_test_in_parallel "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILES_DIR}" "${FEATURE_FILES_NAMES_CONTAINS}"
+
 
 card-payments-headless-component-tests:
-  extends: .headless-component-tests
+  extends: .headless-component-tests-paralell
   variables:
     FEATURE_FILE_NAME: 'mock_'
-  parallel: 1
+  parallel: 2
 
 visa-checkout-headless-component-tests:
-  extends: .headless-component-tests
+  extends: .headless-component-tests-sequentially
   variables:
     FEATURE_FILE_NAME: 'visa_checkout_tests.feature'
-  parallel: 1
 
 extra-test:
   extends: .headless-component-tests
