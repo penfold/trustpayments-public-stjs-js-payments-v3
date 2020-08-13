@@ -42,6 +42,7 @@ card-payments-headless-component-tests:
   extends: .headless-component-tests-paralell
   variables:
     FEATURE_FILES_NAMES_CONTAINS: 'mock_'
+    AUTOMATION_TIMEOUT: 40
   parallel: 16
 
 visa-checkout-headless-component-tests:
