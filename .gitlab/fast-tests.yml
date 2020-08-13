@@ -18,6 +18,7 @@
       command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
 
 .headless-component-tests-sequentially:
+  extends: .headless-component-tests
   variables:
     FEATURE_FILE_NAME: '' # To be fill in child job - it have to be file name
   script:
@@ -27,6 +28,7 @@
     - execute_headless_component_test_sequentially "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILES_DIR}" "${FEATURE_FILE_NAME}"
 
 .headless-component-tests-paralell:
+  extends: .headless-component-tests
   variables:
     IGNORED_FILES: "TO-FILL" # list containing feature files that should not be run in parallel, eg. content: IGNORED_FILES="file1|file2"
     FEATURE_FILES_NAMES_CONTAINS: '' # To be fill in child job - it can be prefix, suffix or part of filenames
@@ -35,7 +37,6 @@
     - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
     - . venv/bin/activate
     - execute_headless_component_test_in_parallel "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILES_DIR}" "${FEATURE_FILES_NAMES_CONTAINS}"
-
 
 card-payments-headless-component-tests:
   extends: .headless-component-tests-paralell
