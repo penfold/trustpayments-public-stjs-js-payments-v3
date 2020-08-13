@@ -3,8 +3,10 @@
   image: ${IMAGE_JS_PAYMENTS_TESTS}
   variables:
     BEHAVE_LOGGING_LEVEL: INFO
-    FEATURE_FILE: '' # To be set up
     FF_NETWORK_PER_BUILD: 'true' # https://docs.gitlab.com/runner/configuration/feature-flags.html
+    IGNORED_FILES: "TO-FILL" # list containing feature files that should not be run in parallel, eg. content: IGNORED_FILES="file1|file2"
+    FEATURE_FILES_DIR: 'features'
+    FEATURE_FILE_NAME: ''
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
       alias: library.securetrading.net
@@ -20,18 +22,19 @@
     - . .cicd_scripts/tests/headless_component.sh
     - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
     - . venv/bin/activate
-    - execute_headless_component_test_sequentially "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILE}"
-  timeout: 10h # TODO delete
+    - execute_headless_component_test_in_parallel "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILES_DIR}" "${TEST_NAME_PREFIX}"
 
 card-payments-headless-component-tests:
   extends: .headless-component-tests
   variables:
-    FEATURE_FILE: 'mock_'
+    FEATURE_FILE_NAME: 'mock_'
+  paralelism: 1
 
 visa-checkout-headless-component-tests:
   extends: .headless-component-tests
   variables:
-    FEATURE_FILE: 'visa_checkout_tests.feature'
+    FEATURE_FILE_NAME: 'visa_checkout_tests.feature'
+  paralelism: 1
 
 extra-test:
   extends: .headless-component-tests
