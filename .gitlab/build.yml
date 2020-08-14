@@ -5,28 +5,28 @@
     DOCKER_TARGET: 'app-html'
     DOCKERFILE_PATH: docker/app-html/Dockerfile
 
-#build-app-html-test: # TODO uncomment before merge
-#  extends: .build-app-html
-#  variables:
-#    UTILITY_NAME: 'app-html-test'
-#    BUILD_ARGS_EXTRA: --build-arg BUILD_TYPE=automated
-#
-#build-app-html-dev:
-#  extends: .build-app-html
-#  variables:
-#    UTILITY_NAME: 'app-html-dev'
-#    BUILD_ARGS_EXTRA: --build-arg BUILD_TYPE=dev
-#
-#### testing repo
-#build-payments-tests:
-#  extends: .utility-images-build
-#  variables:
-#    BUILD_EXECUTION_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}
-#    UTILITY_NAME: 'payments-tests'
-#
-#### wiremock for testing repo
-#build-wiremock:
-#  extends: .utility-images-build
-#  variables:
-#    BUILD_EXECUTION_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}
-#    UTILITY_NAME: 'wiremock'
+build-app-html-test:
+  extends: .build-app-html
+  variables:
+    UTILITY_NAME: 'app-html-test'
+    BUILD_ARGS_EXTRA: --build-arg BUILD_TYPE=automated
+
+build-app-html-dev:
+  extends: .build-app-html
+  variables:
+    UTILITY_NAME: 'app-html-dev'
+    BUILD_ARGS_EXTRA: --build-arg BUILD_TYPE=dev
+
+### testing repo
+build-payments-tests:
+  extends: .utility-images-build
+  variables:
+    BUILD_EXECUTION_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}
+    UTILITY_NAME: 'payments-tests'
+
+### wiremock for testing repo
+build-wiremock:
+  extends: .utility-images-build
+  variables:
+    BUILD_EXECUTION_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}
+    UTILITY_NAME: 'wiremock'

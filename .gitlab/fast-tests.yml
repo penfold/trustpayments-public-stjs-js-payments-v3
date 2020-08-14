@@ -20,7 +20,7 @@
 .headless-component-tests-sequentially:
   extends: .headless-component-tests
   variables:
-    FEATURE_FILE_NAME: '' # To be fill in child job - it have to be file name
+    FEATURE_FILE_NAME: "TO-FILL" # To be fill in child job - it have to be file name
   script:
     - . .cicd_scripts/tests/headless_component.sh
     - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
@@ -42,7 +42,6 @@ card-payments-headless-component-tests:
   extends: .headless-component-tests-paralell
   variables:
     FEATURE_FILES_NAMES_CONTAINS: 'mock_'
-    AUTOMATION_TIMEOUT: 40
   parallel: 16
 
 visa-checkout-headless-component-tests:
@@ -54,23 +53,14 @@ extra-test:
   extends: .headless-component-tests
   script:
     - apt-get update && apt-get install -y wget curl
-#    - wget -r --no-check-certificate https://merchant.securetrading.net
-    - wget --content-on-error --no-check-certificate -O- https://webservices.securetrading.net:8443 || true
-    - wget --content-on-error --no-check-certificate -O- https://library.securetrading.net || true
-    - wget --content-on-error --no-check-certificate -O- https://merchant.securetrading.net || true
-#    - wget -r --no-check-certificate https://webservices.securetrading.net:8443
+    - wget --content-on-error --no-check-certificate -O- https://webservices.securetrading.net:8443
+    - wget --content-on-error --no-check-certificate -O- https://library.securetrading.net
+    - wget --content-on-error --no-check-certificate -O- https://merchant.securetrading.net
+    - wget --content-on-error --no-check-certificate -O- https://thirdparty.example.com
     - google-chrome-stable --headless --dump-dom --disable-gpu --no-sandbox --ignore-certificate-errors "https://merchant.securetrading.net" > chrome_output.html
-    - ls -lah
     - |
       curl --insecure -X POST \
       --data '{ "request": { "url": "/test", "method": "GET" }, "response": { "status": 200, "body": "Here it is test!\n" }}' \
       https://webservices.securetrading.net:8443/__admin/mappings/new
     - curl --insecure https://webservices.securetrading.net:8443/test
-  artifacts:
-    when: always
-    expire_in: 1 week
-    paths:
-#      - merchant.securetrading.net
-      - chrome_output.html
-#      - webservices.securetrading.net
 
