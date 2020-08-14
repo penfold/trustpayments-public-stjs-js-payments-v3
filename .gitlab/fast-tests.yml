@@ -53,14 +53,18 @@ extra-test:
   extends: .headless-component-tests
   script:
     - apt-get update && apt-get install -y wget curl
-    - wget --content-on-error --no-check-certificate -O- https://webservices.securetrading.net:8443
+### library.securetrading.net
     - wget --content-on-error --no-check-certificate -O- https://library.securetrading.net
+### merchant.securetrading.net
     - wget --content-on-error --no-check-certificate -O- https://merchant.securetrading.net
+### thirdparty.example.com
     - wget --content-on-error --no-check-certificate -O- https://thirdparty.example.com
-    - google-chrome-stable --headless --dump-dom --disable-gpu --no-sandbox --ignore-certificate-errors "https://merchant.securetrading.net" > chrome_output.html
+### webservices.securetrading.net
     - |
       curl --insecure -X POST \
       --data '{ "request": { "url": "/test", "method": "GET" }, "response": { "status": 200, "body": "Here it is test!\n" }}' \
       https://webservices.securetrading.net:8443/__admin/mappings/new
     - curl --insecure https://webservices.securetrading.net:8443/test
+### Merchant Chrome Test
+    - google-chrome-stable --headless --dump-dom --disable-gpu --no-sandbox --ignore-certificate-errors "https://merchant.securetrading.net" > chrome_output.html
 
