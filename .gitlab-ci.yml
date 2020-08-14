@@ -8,7 +8,7 @@ include:
   - file: /cicd_template.yml
     <<: *cicd-os
 
-  - local: '/.gitlab/build.yml' # TODO uncomment before merge
+#  - local: '/.gitlab/build.yml' # TODO uncomment before merge
   - local: '/.gitlab/fast-tests.yml'
 
 variables:
@@ -23,9 +23,9 @@ variables:
   # Initialize
   # DISABLE_JOB_copy_cicd_scripts: 'true'
   # Pre-build
-  #DISABLE_JOB_docker_images_build: 'true'  # TODO comment before merge
-  #DISABLE_JOB_docker_images_pull: 'true'  # TODO comment before merge
-  #DISABLE_JOB_copy_payments_tests_repo: 'true'  # TODO comment before merge
+  DISABLE_JOB_docker_images_build: 'true'  # TODO comment before merge
+  DISABLE_JOB_docker_images_pull: 'true'  # TODO comment before merge
+  DISABLE_JOB_copy_payments_tests_repo: 'true'  # TODO comment before merge
   # Build
   # utility-images-build - No need to disabling. Extends to enable.
   # Fast Tests
