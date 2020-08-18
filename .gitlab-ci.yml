@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.6
+.cicd-os-ref: &cicd-os-ref 0.0.7
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
