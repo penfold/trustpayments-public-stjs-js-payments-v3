@@ -1,3 +1,4 @@
+### app-html
 .build-app-html:
   extends: .utility-images-build
   variables:
@@ -15,3 +16,17 @@ build-app-html-dev:
   variables:
     UTILITY_NAME: 'app-html-dev'
     BUILD_ARGS_EXTRA: --build-arg BUILD_TYPE=dev
+
+### testing repo
+build-payments-tests:
+  extends: .utility-images-build
+  variables:
+    BUILD_EXECUTION_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}
+    UTILITY_NAME: 'payments-tests'
+
+#### wiremock for testing repo
+build-wiremock:
+  extends: .utility-images-build
+  variables:
+    BUILD_EXECUTION_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}
+    UTILITY_NAME: 'wiremock'
