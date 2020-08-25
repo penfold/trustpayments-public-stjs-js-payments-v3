@@ -55,6 +55,12 @@ module.exports = {
     iframe: [
       './src/shared/imports/polyfills.ts',
       './example/iframe.ts'
+    ],
+    inlineConfig: [
+      './example/inline-config.ts'
+    ],
+    counter: [
+      './example/counter.ts'
     ]
   },
   output: {
@@ -134,7 +140,15 @@ module.exports = {
     new CopyPlugin({
       patterns: [{
         from: 'src/application/core/services/icon/images/*.png',
-        to: 'images',
+        to: 'img/cards',
+        force: true,
+        flatten: true
+      }]
+    }),
+    new CopyPlugin({
+      patterns: [{
+        from: 'example/img/*.png',
+        to: 'img',
         force: true,
         flatten: true
       }]
@@ -180,7 +194,6 @@ module.exports = {
           path.join(__dirname, 'example'),
           path.join(__dirname, 'node_modules/ts-money'),
           path.join(__dirname, 'node_modules/hoek'),
-          path.join(__dirname, 'node_modules/@hapi'),
           path.join(__dirname, 'node_modules/isemail'),
           path.join(__dirname, 'node_modules/joi'),
           path.join(__dirname, 'node_modules/topo')
