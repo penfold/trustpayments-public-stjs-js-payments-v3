@@ -3,13 +3,13 @@ import { from, Observable } from 'rxjs';
 import { IThreeDInitResponse } from '../models/IThreeDInitResponse';
 import { JSINIT_COMPLETED, JSINIT_STARTED } from '../store/reducers/cardinal/ICardinalActionsMap';
 import { ThreeDInitRequest } from '../integrations/cardinal-commerce/ThreeDInitRequest';
-import { PUBLIC_EVENTS } from '../shared/EventTypes';
 import { Store } from '../store/Store';
-import { StTransport } from './StTransport.class';
 import { map, tap } from 'rxjs/operators';
-import { MessageBus } from '../shared/MessageBus';
 import { IThreeDQueryResponse } from '../models/IThreeDQueryResponse';
 import { IStRequest } from '../models/IStRequest';
+import { StTransport } from './st-transport/StTransport.class';
+import { MessageBus } from '../shared/message-bus/MessageBus';
+import { PUBLIC_EVENTS } from '../models/constants/EventTypes';
 
 @Service()
 export class GatewayClient {

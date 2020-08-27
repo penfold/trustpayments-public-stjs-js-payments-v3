@@ -1,10 +1,10 @@
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
-import { StCodec } from '../../services/StCodec.class';
-import { MessageBus } from '../../shared/MessageBus';
-import { GoogleAnalytics } from '../GoogleAnalytics';
+import { StCodec } from '../../services/st-codec/StCodec.class';
+import { MessageBus } from '../../shared/message-bus/MessageBus';
+import { GoogleAnalytics } from '../google-analytics/GoogleAnalytics';
 import { Service } from 'typedi';
-import { NotificationService } from '../../../../client/classes/notification/NotificationService';
+import { NotificationService } from '../../../../client/notification/NotificationService';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { CardinalCommerceTokensProvider } from './CardinalCommerceTokensProvider';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -13,15 +13,15 @@ import { Observable, of, throwError } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
-import { StTransport } from '../../services/StTransport.class';
+import { StTransport } from '../../services/st-transport/StTransport.class';
 import { IAuthorizePaymentResponse } from '../../models/IAuthorizePaymentResponse';
-import { Language } from '../../shared/Language';
 import { CardinalRemoteClient } from './CardinalRemoteClient';
 import { GatewayClient } from '../../services/GatewayClient';
 import { IContinueData } from '../../../../shared/integrations/cardinal-commerce/IContinueData';
 import { ThreeDQueryRequest } from './ThreeDQueryRequest';
 import { IValidationResult } from '../../../../shared/integrations/cardinal-commerce/IValidationResult';
 import { ActionCode } from '../../../../shared/integrations/cardinal-commerce/ActionCode';
+import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
 
 @Service()
 export class CardinalCommerce {
@@ -104,7 +104,7 @@ export class CardinalCommerce {
   private handleCardValidationResult(validationResult: IValidationResult): Observable<IAuthorizePaymentResponse> {
     switch (validationResult.ActionCode) {
       case ActionCode.ERROR:
-        this.notification.error(Language.translations.COMMUNICATION_ERROR_INVALID_RESPONSE);
+        this.notification.error(COMMUNICATION_ERROR_INVALID_RESPONSE);
         return throwError(validationResult);
       case ActionCode.FAILURE:
         StCodec.publishResponse(
