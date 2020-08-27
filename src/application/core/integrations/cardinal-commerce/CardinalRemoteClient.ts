@@ -3,12 +3,12 @@ import { InterFrameCommunicator } from '../../../../shared/services/message-bus/
 import { from, Observable } from 'rxjs';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IInitializationData } from '../../../../shared/integrations/cardinal-commerce/IInitializationData';
-import { PUBLIC_EVENTS } from '../../shared/EventTypes';
-import { Selectors } from '../../shared/Selectors';
 import { IContinueData } from '../../../../shared/integrations/cardinal-commerce/IContinueData';
 import { ITriggerData } from '../../../../shared/integrations/cardinal-commerce/ITriggerData';
 import { PaymentEvents } from '../../models/constants/PaymentEvents';
 import { IValidationResult } from '../../../../shared/integrations/cardinal-commerce/IValidationResult';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { MERCHANT_PARENT_FRAME } from '../../models/constants/Selectors';
 
 @Service()
 export class CardinalRemoteClient {
@@ -20,7 +20,7 @@ export class CardinalRemoteClient {
       data: { jwt }
     };
 
-    return from(this.interFrameCommunicator.query<void>(queryEvent, Selectors.MERCHANT_PARENT_FRAME));
+    return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
   continue(data: IContinueData): Observable<IValidationResult> {
@@ -29,7 +29,7 @@ export class CardinalRemoteClient {
       data
     };
 
-    return from(this.interFrameCommunicator.query<IValidationResult>(queryEvent, Selectors.MERCHANT_PARENT_FRAME));
+    return from(this.interFrameCommunicator.query<IValidationResult>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
   binProcess(pan: string): Observable<void> {
@@ -41,7 +41,7 @@ export class CardinalRemoteClient {
       }
     };
 
-    return from(this.interFrameCommunicator.query<void>(queryEvent, Selectors.MERCHANT_PARENT_FRAME));
+    return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
   updateJwt(jwt: string): Observable<void> {
@@ -53,6 +53,6 @@ export class CardinalRemoteClient {
       }
     };
 
-    return from(this.interFrameCommunicator.query<void>(queryEvent, Selectors.MERCHANT_PARENT_FRAME));
+    return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 }

@@ -1,0 +1,55 @@
+.cicd-os-ref: &cicd-os-ref 0.0.10
+
+.cicd-os: &cicd-os
+  project: trustpayments-public/stjs/cicd-os
+  ref: *cicd-os-ref
+
+include:
+  - file: /cicd_template.yml
+    <<: *cicd-os
+
+  - local: '/.gitlab/build.yml'
+  - local: '/.gitlab/fast-tests.yml'
+  - local: '/.gitlab/extended-tests.yml'
+
+variables:
+  CICD_OS_REF: *cicd-os-ref
+
+  IMAGE_JS_PAYMENTS_APP_HTML_TEST: ${CI_REGISTRY_IMAGE}/app-html-test:${CI_COMMIT_REF_SLUG}
+  IMAGE_JS_PAYMENTS_APP_HTML_DEV: ${CI_REGISTRY_IMAGE}/app-html-dev:${CI_COMMIT_REF_SLUG}
+  IMAGE_JS_PAYMENTS_TESTS: ${CI_REGISTRY_IMAGE}/payments-tests:${CI_COMMIT_REF_SLUG}
+  IMAGE_JS_PAYMENTS_TESTS_WORKDIR: /app
+  IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_COMMIT_REF_SLUG}
+
+  SMOKE_TESTS_TAG: '@smoke_test'
+  EXTENDED_TESTS_TAG: '@extended_tests_part_1,@extended_tests_part_2'
+
+  ### Disabled Jobs:
+  # Initialize
+  # DISABLE_JOB_copy_cicd_scripts: 'true'
+  # Pre-build
+  # DISABLE_JOB_docker_images_build: 'true'
+  # DISABLE_JOB_docker_images_pull: 'true'
+  # DISABLE_JOB_copy_payments_tests_repo: 'true'
+  # Build
+  # utility-images-build - No need to disabling. Extends to enable.
+  # Fast Tests
+  # DISABLE_JOB_unit_tests: 'true'
+  # DISABLE_JOB_static_analysis: 'true'
+  ### Disabled Jobs : End
+
+  ### Disabled Activities
+  # DISABLE_ACTIVITY_docker_image_build_cache: 'true'
+  ### Disabled Activities : End
+
+  ##### Others - project specific #####
+  # BUILD_IMAGES: "true"
+  # CI_DEBUG_TRACE: "true" # For CI/CD extra logs (like actually using variables)
+  # LOG_LEVEL: DEBUG # For bash and python scripts
+
+stages:
+  - initialize
+  - pre-build
+  - build
+  - fast-tests
+  - extended-tests

@@ -1,6 +1,5 @@
 import { Service } from 'typedi';
 import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
-import { PUBLIC_EVENTS } from '../../application/core/shared/EventTypes';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { IInitializationData } from '../../shared/integrations/cardinal-commerce/IInitializationData';
 import { CardinalProvider } from '../../application/core/integrations/cardinal-commerce/CardinalProvider';
@@ -14,7 +13,8 @@ import { PaymentBrand } from '../../application/core/models/constants/PaymentBra
 import { ITriggerData } from '../../shared/integrations/cardinal-commerce/ITriggerData';
 import { IValidationResult } from '../../shared/integrations/cardinal-commerce/IValidationResult';
 import { environment } from '../../environments/environment';
-import { ConfigProvider } from '../../shared/services/config/ConfigProvider';
+import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 
 @Service()
 export class CardinalClient {
