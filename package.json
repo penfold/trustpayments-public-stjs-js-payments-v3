@@ -29,7 +29,7 @@
     "export:translations": "cross-env-shell i18next-conv -l '$npm_package_config_locale' -s src/application/core/translations/$npm_package_config_locale.json -t src/translations/$npm_package_config_locale.po",
     "import:translations": "cross-env-shell i18next-conv -l '$npm_package_config_locale' -s src/translations/$npm_package_config_locale.po -t src/application/core/translations/$npm_package_config_locale.json",
     "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect",
+    "snyk-auth": "snyk auth $SNYK_API_TOKEN",
     "postshrinkwrap": "npx npm-force-resolutions && npm install --ignore-scripts",
     "prettier": "./node_modules/.bin/prettier --write ./src/**/*.{ts,js,css,json}"
   },
