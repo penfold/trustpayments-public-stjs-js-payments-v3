@@ -21,7 +21,7 @@
 
 # smoke tests executed on review branches
 
-win10-firefox-73.0-smoke-tests:
+win10-firefox-79.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-review
@@ -29,7 +29,7 @@ win10-firefox-73.0-smoke-tests:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Firefox
-    BROWSER_VERSION: '73.0'
+    BROWSER_VERSION: '79.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_review_1
 
@@ -82,7 +82,7 @@ OSXCatalina-chrome-80.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_3
 
-win8.1-firefox-73.0-smoke-tests:
+win8.1-firefox-79.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -90,11 +90,11 @@ win8.1-firefox-73.0-smoke-tests:
     OS: Windows
     OS_VERSION: '8.1'
     BROWSER: Firefox
-    BROWSER_VERSION: '73.0'
+    BROWSER_VERSION: '79.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_4
 
-OSXCatalina-firefox-73.0-smoke-tests:
+OSXCatalina-firefox-79.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -102,7 +102,7 @@ OSXCatalina-firefox-73.0-smoke-tests:
     OS: OS X
     OS_VERSION: Catalina
     BROWSER: Firefox
-    BROWSER_VERSION: '74.0'
+    BROWSER_VERSION: '79.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_1
 
@@ -222,7 +222,7 @@ GooglePixel4-10.0-smoke-tests:
 
 # other tests executed on master branch
 
-win10-Firefox-73.0-extended-tests:
+win10-Firefox-79.0-extended-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -230,7 +230,7 @@ win10-Firefox-73.0-extended-tests:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Firefox
-    BROWSER_VERSION: '73.0'
+    BROWSER_VERSION: '79.0'
     POETRY_TAGS: $EXTENDED_TESTS_TAG
   resource_group: extended_tests_release_4
 
