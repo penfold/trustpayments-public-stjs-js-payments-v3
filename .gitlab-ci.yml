@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.10
+.cicd-os-ref: &cicd-os-ref INFRA-268-BUILD_IMAGES_not_passed_to_downstream_jobs
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
