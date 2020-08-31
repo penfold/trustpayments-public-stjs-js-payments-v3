@@ -18,25 +18,6 @@
       alias: thirdparty.example.com
       command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
 
-.sequentially-tests:
-  variables:
-    FEATURE_FILE_NAME: "TO-FILL" # To be fill in child job - it have to be file name
-  script:
-    - . .cicd_scripts/execute/tests.sh
-    - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-    - . venv/bin/activate
-    - execute_tests_sequentially "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILES_DIR}" "${FEATURE_FILE_NAME}"
-
-.parallel-tests:
-  variables:
-    IGNORED_FILES: "TO-FILL" # list containing feature files that should not be run in parallel, eg. content: IGNORED_FILES="file1|file2"
-    FEATURE_FILES_NAMES_CONTAINS: '' # To be fill in child job - it can be prefix, suffix or part of filenames
-  script:
-    - . .cicd_scripts/execute/tests.sh
-    - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-    - . venv/bin/activate
-    - execute_tests_in_parallel "${BEHAVE_LOGGING_LEVEL}" "${FEATURE_FILES_DIR}" "${FEATURE_FILES_NAMES_CONTAINS}"
-
 card-payments-headless-component-tests:
   extends:
     - .fast-tests
@@ -55,29 +36,6 @@ visa-checkout-headless-component-tests:
     - .sequentially-tests
   variables:
     FEATURE_FILE_NAME: 'visa_checkout_tests.feature'
-
-.browserstack:
-  variables:
-    BS_ACCESS_KEY: $BROWSERSTACK_ACCESS_KEY
-    BS_USERNAME: $BROWSERSTACK_USERNAME
-    BUILD_NAME: ${CI_COMMIT_REF_SLUG}/${CI_PIPELINE_ID}/${CI_JOB_NAME}
-    REMOTE: "true"
-  before_script:
-    - BS_LOCAL_IDENTIFIER=gitlab_${CI_PIPELINE_ID}_${CI_JOB_NAME}_$(date +%Y-%m-%d_%H-%M-%S)
-    - export BS_LOCAL_IDENTIFIER
-    - wget --quiet https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip
-    - unzip BrowserStackLocal-linux-x64.zip
-    - ./BrowserStackLocal ${BROWSERSTACK_ACCESS_KEY} --force-local --local-identifier ${BS_LOCAL_IDENTIFIER} --daemon start
-  script:
-    - cd ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-    - . venv/bin/activate
-    - |
-      poetry run behave \
-        --logging-level="${BEHAVE_LOGGING_LEVEL}" \
-        --tags=${POETRY_TAGS} \
-        ${FEATURE_FILES_DIR}
-  retry: 2 # TODO https://securetrading.atlassian.net/browse/STJS-896
-  timeout: 24h # We're executing a lot of browserstack tests, which can wait in browserstack queue
 
 .apple-test-browserstack-component-test:
   extends:
