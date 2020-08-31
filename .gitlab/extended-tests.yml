@@ -18,6 +18,8 @@
     - .component-tests
     - .component-tests-services
     - .browserstack
+  variables:
+    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
 
 # smoke tests executed on review branches
 
