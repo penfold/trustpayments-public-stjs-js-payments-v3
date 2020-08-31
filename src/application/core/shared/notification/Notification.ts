@@ -32,7 +32,7 @@ export class Notification {
     private _frame: Frame
   ) {
     this._applyStyles();
-
+    this._translator = new Translator('en_GB');
     this._messageMap = new Map(Object.entries(NotificationsClasses));
     this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.NOTIFICATION, (event: INotificationEvent) => {
       this._displayNotification(event);

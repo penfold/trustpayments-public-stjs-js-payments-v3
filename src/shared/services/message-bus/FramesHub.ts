@@ -55,6 +55,7 @@ export class FramesHub {
 
   public notifyReadyState(): void {
     const frameName = this.identifier.getFrameName();
+
     if (frameName === MERCHANT_PARENT_FRAME) {
       return;
     }
