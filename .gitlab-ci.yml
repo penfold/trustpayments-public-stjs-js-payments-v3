@@ -30,7 +30,7 @@ variables:
   # Pre-build
   # DISABLE_JOB_docker_images_build: 'true'
   # DISABLE_JOB_docker_images_pull: 'true'
-  # DISABLE_JOB_copy_payments_tests_repo: 'true'
+  DISABLE_JOB_copy_payments_tests_repo: 'true' # TODO delete from CICD
   # Build
   # utility-images-build - No need to disabling. Extends to enable.
   # Fast Tests
