@@ -19,6 +19,7 @@
     "build:rc": "webpack --config webpack.rc.js",
     "start:automated": "webpack-dev-server --color --progress --config webpack.test.js",
     "start": "webpack-dev-server --color --progress --config webpack.dev.js",
+    "startreact": "npm run start --prefix ./example/reactjs-payments",
     "example": "ws --rewrite '/* -> /dist/$1' --https",
     "prod": "npm run build",
     "test": "jest --watchAll",

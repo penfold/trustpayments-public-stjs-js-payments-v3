@@ -46,21 +46,21 @@ module.exports = {
     ],
     example: [
       './src/shared/imports/polyfills.ts',
-      './example/index.ts'
+      './example/js-payments/index.ts'
     ],
     receipt: [
       './src/shared/imports/polyfills.ts',
-      './example/receipt.ts'
+      './example/js-payments/receipt.ts'
     ],
     iframe: [
       './src/shared/imports/polyfills.ts',
-      './example/iframe.ts'
+      './example/js-payments/iframe.ts'
     ],
     inlineConfig: [
-      './example/inline-config.ts'
+      './example/js-payments/inline-config.ts'
     ],
     counter: [
-      './example/counter.ts'
+      './example/js-payments/counter.ts'
     ]
   },
   output: {
@@ -120,17 +120,17 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: './example/index.html',
+      template: './example/js-payments/index.html',
       chunks: ['example']
     }),
     new HtmlWebpackPlugin({
       filename: 'receipt.html',
-      template: './example/receipt.html',
+      template: './example/js-payments/receipt.html',
       chunks: ['receipt']
     }),
     new HtmlWebpackPlugin({
       filename: 'iframe.html',
-      template: './example/iframe.html',
+      template: './example/js-payments/iframe.html',
       chunks: ['iframe']
     }),
     new MiniCssExtractPlugin({
@@ -147,7 +147,7 @@ module.exports = {
     }),
     new CopyPlugin({
       patterns: [{
-        from: 'example/img/*.png',
+        from: 'example/js-payments/img/*.png',
         to: 'img',
         force: true,
         flatten: true
@@ -155,7 +155,7 @@ module.exports = {
     }),
     new CopyPlugin({
       patterns: [{
-        from: 'example/json/*.json',
+        from: 'example/js-payments/json/*.json',
         to: 'json',
         force: true,
         flatten: true,
