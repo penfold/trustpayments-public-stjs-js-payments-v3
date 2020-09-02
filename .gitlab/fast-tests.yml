@@ -39,29 +39,6 @@ visa-checkout-headless-component-tests:
     FEATURE_FILE_NAME: 'visa_checkout_tests.feature'
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
 
-.apple-test-browserstack-component-test:
-  extends:
-    - .fast-tests
-    - .component-tests
-    - .component-tests-services
-    - .browserstack
-  variables:
-    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-    OS: "OS X"
-    OS_VERSION: Mojave
-    BROWSER: Safari
-    BROWSER_VERSION: '12.1'
-
-apple-test-part1-browserstack-component-test:
-  extends: .apple-test-browserstack-component-test
-  variables:
-    POETRY_TAGS: apple_test_part1
-
-apple-test-part2-browserstack-component-test:
-  extends: .apple-test-browserstack-component-test
-  variables:
-    POETRY_TAGS: apple_test_part2
-
 .e2e-tests:
   image: ${IMAGE_JS_PAYMENTS_TESTS}
   variables:

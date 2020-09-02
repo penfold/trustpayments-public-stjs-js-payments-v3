@@ -1,0 +1,12 @@
+{
+  "components": {
+    "requestTypes": [
+      "ACCOUNTCHECK",
+      "THREEDQUERY",
+      "AUTH",
+      "RISKDEC"
+    ]
+  },
+  "panIcon": true,
+  "submitOnSuccess": false
+}
