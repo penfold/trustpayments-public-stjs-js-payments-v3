@@ -25,7 +25,7 @@
 .apple-test-browserstack-component-test:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-review
+    - .rules-always
   variables:
     OS: "OS X"
     OS_VERSION: Mojave
@@ -47,7 +47,7 @@ apple-test-part2-browserstack-component-test:
 win10-firefox-79.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-review
+    - .rules-always
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -59,7 +59,7 @@ win10-firefox-79.0-smoke-tests:
 #win10-IE-11.0-smoke-tests: # TODO https://securetrading.atlassian.net/browse/STJS-939
 #  extends:
 #    - .extended-tests-browserstack
-#    - .rules-when-review
+#    - .rules-always
 #  variables:
 #    OS: Windows
 #    OS_VERSION: 10
