@@ -34,7 +34,8 @@ variables:
   # utility-images-build - No need to disabling. Extends to enable.
   # Fast Tests
   # DISABLE_JOB_unit_tests: 'true'
-  # DISABLE_JOB_static_analysis: 'true'
+  # DISABLE_JOB_ts_static_analysis: 'true'
+  # DISABLE_JOB_vuln_check: 'true'
   ### Disabled Jobs : End
 
   ### Disabled Activities
