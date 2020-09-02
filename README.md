@@ -68,6 +68,48 @@ Not specified yet
   - Edge
   - Safari
 
+
+## Testing how-to
+
+Selenium tests are stored in `tests` directory and all the below actions are to be executed in that directory.
+
+##### Application docker
+
+Some tests (e.g. mocks) will required the docker in order to execute them.
+
+Aplication docker will be pulled from gitlab's container registry
+
+The address to an appropiate image is stored in `.env` file and can be edited.
+
+##### Start up the docker containers
+
+`docker-compose up -d`
+
+The example page is available under address `https://merchant.securetrading.net/`. You should add this domain to your `hosts` file
+and point to address `127.0.0.1` (here you can find how to do it https://support.rackspace.com/how-to/modify-your-hosts-file/).
+
+The Wiremock is available under `https://webservices.securetrading.net:8443/` so to access it you should also add this address
+to the `hosts` file.
+
+##### To run the tests
+
+`docker-compose run tests poetry run behave features`
+
+##### To test a different branch
+
+If you have multiple application images with different branches you can specify which image should be used for tests, eg.:
+
+`APP_TAG=master docker-compose up -d`
+
+
+##### To run with a remote browser via browserstack:
+In directory `binary` execute
+`BrowserStackLocal.exe --key <BROWSERSTACK_ACCESS_KEY> --local-identifier local_id --force-local`
+
+Then, to run
+ `docker-compose run -e LOCAL=true -e REMOTE=true -e BROWSER=Chrome -e BROWSER_VERSION=80.0 -e OS=Windows -e OS_VERSION=10
+ -e BS_USERNAME=<BROWSERSTACK_USERNAME> -e BS_ACCESS_KEY=<BROWSERSTACK_ACCESS_KEY> tests poetry run behave features`
+
 ## License
 
 - [MIT](https://opensource.org/licenses/MIT)
