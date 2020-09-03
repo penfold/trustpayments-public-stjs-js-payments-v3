@@ -1,10 +1,12 @@
 import time
 
+from configuration import CONFIGURATION
 from locators.visa_checkout_locators import VisaCheckoutLocators
 from pages.base_page import BasePage
 from utils.enums.field_type import FieldType
 from utils.enums.visa_checkout_field import VisaCheckoutField
 from utils.helpers import gmail_service
+from utils.helpers.gmail_service import EMAIL_LOGIN
 
 
 class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
@@ -20,7 +22,7 @@ class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
 
     def fill_selected_field(self, field):
         if field == VisaCheckoutField.EMAIL_ADDRESS.value:
-            self.fill_email_address("securetestpgs@gmail.com")
+            self.fill_email_address(EMAIL_LOGIN)
         elif field == VisaCheckoutField.ONE_TIME_PASSWORD.value:
             self._executor.wait_for_element_visibility(VisaCheckoutLocators.visa_one_time_code)
             mail_ids = gmail_service.get_unseen_mail_ids_with_wait(5)
@@ -36,7 +38,7 @@ class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
             self.fill_one_time_code(code)
             self.click_continue_checkout_process()
             mail_index -= 1
-            time.sleep(1)
+            time.sleep(4)
 
     def fill_email_address(self, email):
         self._waits.wait_until_iframe_is_presented_and_switch_to_it(FieldType.VISA_CHECKOUT.value)
@@ -62,3 +64,13 @@ class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
         self.visa_card_with_ending_number = card_number
         self._executor.wait_for_element_visibility(self.visa_card_with_ending_number)
         self._action.click(self.visa_card_with_ending_number)
+
+    def fill_security_code(self):
+        self._executor.wait_for_element_visibility(VisaCheckoutLocators.visa_security_code)
+        self._action.send_keys(VisaCheckoutLocators.visa_security_code, '123')
+
+    def is_security_code_displayed(self):
+        CONFIGURATION.TIMEOUT = 3
+        if self._waits.wait_and_check_is_element_displayed(VisaCheckoutLocators.visa_security_code) is True:
+            self.fill_security_code()
+            self.click_continue_visa_payment_process()
