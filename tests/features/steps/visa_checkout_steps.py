@@ -42,3 +42,9 @@ def step_impl(context, card: Card):
 def step_impl(context):
     visa_checkout_page = context.page_factory.get_page(page_name='visa_checkout')
     visa_checkout_page.click_visa_checkout_close_button()
+
+
+@step("User confirms visa checkout security code")
+def step_impl(context):
+    visa_checkout_page = context.page_factory.get_page(page_name='visa_checkout')
+    visa_checkout_page.is_security_code_displayed()
