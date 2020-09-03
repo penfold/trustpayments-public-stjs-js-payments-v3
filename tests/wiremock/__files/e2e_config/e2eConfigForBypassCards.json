@@ -1,0 +1,12 @@
+{
+  "bypassCards": [
+    "VISA",
+    "AMEX",
+    "DISCOVER",
+    "JCB",
+    "DINERS",
+    "MAESTRO"
+  ],
+  "panIcon": true,
+  "submitOnSuccess": false
+}

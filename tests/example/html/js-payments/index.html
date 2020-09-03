@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+        name="viewport"/>
+  <meta content="ie=edge" http-equiv="X-UA-Compatible"/>
+  <title>Secure Trading Example Form</title>
+  <link href="example.css" rel="stylesheet">
+</head>
+
+<body>
+<form autocomplete="off" class="example-form" id="st-form" novalidate>
+  <h1 class="example-form__title">
+    Secure Trading<span>AMOUNT: <strong>10.00 GBP</strong></span>
+  </h1>
+  <div class="example-form__section example-form__section--horizontal">
+    <div class="example-form__group">
+      <label class="example-form__label" for="example-form-name">AMOUNT</label>
+      <input class="example-form__input"
+             data-st-name="billingamount"
+             id="example-form-amount"
+             name="myBillAmount"
+             placeholder=""
+             type="number"/>
+    </div>
+  </div>
+
+  <div class="example-form__section example-form__section--horizontal">
+    <div class="example-form__group">
+      <label class="example-form__label" for="example-form-name">NAME</label>
+      <input autocomplete="name"
+             class="example-form__input"
+             data-st-name="billingfirstname"
+             id="example-form-name"
+             name="myBillName"
+             placeholder="John Doe"
+             type="text"/>
+    </div>
+    <div class="example-form__group">
+      <label class="example-form__label" for="example-form-email">E-MAIL</label>
+      <input autocomplete="email"
+             class="example-form__input"
+             data-st-name="billingemail"
+             id="example-form-email"
+             name="myBillEmail"
+             placeholder="test@mail.com"
+             type="email"/>
+    </div>
+    <div class="example-form__group">
+      <label class="example-form__label" for="example-form-phone">PHONE</label>
+      <input autocomplete="tel"
+             class="example-form__input"
+             id="example-form-phone"
+             name="myBillTel"
+             placeholder="+00 000 000 000"
+             type="tel"/>
+      <!-- no data-st-name attribute so this field will not be submitted to ST -->
+    </div>
+  </div>
+
+  <div class="example-form__spacer"></div>
+
+  <div class="example-form__section">
+    <div class="example-form__group" id="st-notification-frame"></div>
+    <div class="example-form__group" id="st-card-number"></div>
+    <div class="example-form__group" id="st-expiration-date"></div>
+    <div class="example-form__group" id="st-security-code"></div>
+    <div class="example-form__spacer"></div>
+  </div>
+
+  <div class="example-form__section">
+    <div class="example-form__group example-form__group--submit">
+      <button class="example-form__button" id="merchant-submit-button" type="submit">Zapłać</button>
+    </div>
+  </div>
+
+  <div class="example-form__section">
+    <div class="example-form__group" id="st-control-frame"></div>
+    <div class="example-form__group" id="st-visa-checkout"></div>
+    <div class="example-form__group" id="st-apple-pay"></div>
+  </div>
+  <div class="st-animated-card-wrapper" id="st-animated-card"></div>
+</form>
+
+<script src="https://webservices.securetrading.net:8443/st.js" type="text/javascript"></script>
+<script src="example.js" type="text/javascript"></script>
+</body>
+</html>
