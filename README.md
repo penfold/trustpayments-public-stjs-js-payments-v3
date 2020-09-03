@@ -1,7 +1,5 @@
 # JS Library
 
-[![Build Status](https://travis-ci.org/SecureTrading/js-payments.svg?branch=develop)](https://travis-ci.org/SecureTrading/js-payments) <!-- Coveralls --> [![Coverage Status](https://coveralls.io/repos/github/SecureTrading/js-payments/badge.svg?branch=develop)](https://coveralls.io/github/SecureTrading/js-payments?branch=develop) <!-- Browserstack --> [![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=MmtHNitGbnZGQkU2SUtjMnhaVzU1TmQvQmY0ekdUWWNSMjQyQlBjelo2TT0tLVJaTlpOUURWcUFGZ0pMaWNkb0ozNWc9PQ==--b7ca641d77507875feedba229c56cb484a5546ad)](https://automate.browserstack.com/public-build/MmtHNitGbnZGQkU2SUtjMnhaVzU1TmQvQmY0ekdUWWNSMjQyQlBjelo2TT0tLVJaTlpOUURWcUFGZ0pMaWNkb0ozNWc9PQ==--b7ca641d77507875feedba229c56cb484a5546ad) <!-- Dependabot --> [![Dependabot badge](https://img.shields.io/badge/Dependabot-enabled-brightgreen.svg)](https://app.dependabot.com/) <!-- Snyk --> [![Known Vulnerabilities](https://snyk.io/test/github/SecureTrading/js-payments/develop/badge.svg)](https://snyk.io/test/github/SecureTrading/js-payments/develop)
-
 A JavaScript interface for allowing tokenization and authorisation of payments through SecureTrading.
 
 ## Quickstart
