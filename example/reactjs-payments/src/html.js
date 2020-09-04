@@ -9,7 +9,7 @@ export default function HTML(props) {
         <meta charSet="utf-8" />
         <meta httpEquiv="x-ua-compatible" content="ie=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <script src={environment.st_library_url} />
+        <script src={"https://localhost:8443/st.js"} />
         {props.headComponents}
       </head>
       <body {...props.bodyAttributes}>
