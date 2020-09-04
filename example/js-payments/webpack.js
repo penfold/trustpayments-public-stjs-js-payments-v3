@@ -33,24 +33,11 @@ module.exports = {
   },
 
   entry: {
-    example: [
-      './shared/ts/polyfills.ts',
-      './pages/index/index.ts'
-    ],
-    receipt: [
-      './shared/ts/polyfills.ts',
-      './pages/receipt/receipt.ts'
-    ],
-    iframe: [
-      './shared/ts/polyfills.ts',
-      './pages/iframe/iframe.ts'
-    ],
-    inlineConfig: [
-      './pages/index/inline-config.ts'
-    ],
-    counter: [
-      './pages/index/counter.ts'
-    ]
+    example: ['./shared/ts/polyfills.ts', './pages/index/index.ts'],
+    receipt: ['./shared/ts/polyfills.ts', './pages/receipt/receipt.ts'],
+    iframe: ['./shared/ts/polyfills.ts', './pages/iframe/iframe.ts'],
+    inlineConfig: ['./pages/index/inline-config.ts'],
+    counter: ['./pages/index/counter.ts']
   },
   output: {
     filename: '[name].js',
@@ -88,21 +75,25 @@ module.exports = {
       chunkFilename: '[id].css'
     }),
     new CopyPlugin({
-      patterns: [{
-        from: 'shared/img/*.png',
-        to: 'img',
-        force: true,
-        flatten: true
-      }]
+      patterns: [
+        {
+          from: 'shared/img/*.png',
+          to: 'img',
+          force: true,
+          flatten: true
+        }
+      ]
     }),
     new CopyPlugin({
-      patterns: [{
-        from: 'shared/json/*.json',
-        to: 'json',
-        force: true,
-        flatten: true,
-        noErrorOnMissing: true
-      }]
+      patterns: [
+        {
+          from: 'shared/json/*.json',
+          to: 'json',
+          force: true,
+          flatten: true,
+          noErrorOnMissing: true
+        }
+      ]
     }),
     new StyleLintPlugin({
       context: path.join(__dirname, '')
@@ -132,10 +123,7 @@ module.exports = {
       {
         test: /\.tsx?|js$/,
         use: 'babel-loader',
-        include: [
-          path.join(__dirname, 'pages'),
-          path.join(__dirname, 'shared')
-        ]
+        include: [path.join(__dirname, 'pages'), path.join(__dirname, 'shared')]
       },
       {
         test: /\.ts$/,
@@ -160,4 +148,3 @@ module.exports = {
     extensions: ['.ts', '.js']
   }
 };
-
