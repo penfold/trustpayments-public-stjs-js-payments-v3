@@ -61,12 +61,12 @@ visa-checkout-headless-component-tests:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
       alias: merchant.securetrading.net
 
-#e2e-tests: # TODO INFRA-228
-#  extends:
-#    - .fast-tests
-#    - .e2e-tests
-#    - .e2e-tests-services
-#    - .parallel-tests
-#  variables:
-#    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-#  parallel: 9
+e2e-tests:
+  extends:
+    - .fast-tests
+    - .e2e-tests
+    - .e2e-tests-services
+    - .parallel-tests
+  variables:
+    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
+  parallel: 14

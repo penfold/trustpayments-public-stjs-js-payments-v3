@@ -9,7 +9,7 @@ use_step_matcher("re")
 @step("User clicks on Visa Checkout button")
 def step_impl(context):
     visa_checkout_page = context.page_factory.get_page(page_name='visa_checkout')
-    visa_checkout_page.click_visa_checkout_button()
+    visa_checkout_page.click_visa_checkout_button(context)
 
 
 @step('User fills visa checkout email address')
