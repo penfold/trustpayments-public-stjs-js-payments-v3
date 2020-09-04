@@ -43,24 +43,6 @@ module.exports = {
       './src/bootstrap.ts',
       './src/application/dependency-injection/ServiceDefinitions.ts',
       './src/application/components/animated-card/animated-card.ts'
-    ],
-    example: [
-      './src/shared/imports/polyfills.ts',
-      './example/js-payments/index.ts'
-    ],
-    receipt: [
-      './src/shared/imports/polyfills.ts',
-      './example/js-payments/receipt.ts'
-    ],
-    iframe: [
-      './src/shared/imports/polyfills.ts',
-      './example/js-payments/iframe.ts'
-    ],
-    inlineConfig: [
-      './example/js-payments/inline-config.ts'
-    ],
-    counter: [
-      './example/js-payments/counter.ts'
     ]
   },
   output: {
@@ -118,21 +100,6 @@ module.exports = {
       },
       chunks: ['controlFrame']
     }),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: './example/js-payments/index.html',
-      chunks: ['example']
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'receipt.html',
-      template: './example/js-payments/receipt.html',
-      chunks: ['receipt']
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'iframe.html',
-      template: './example/js-payments/iframe.html',
-      chunks: ['iframe']
-    }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css'
@@ -143,23 +110,6 @@ module.exports = {
         to: 'img/cards',
         force: true,
         flatten: true
-      }]
-    }),
-    new CopyPlugin({
-      patterns: [{
-        from: 'example/js-payments/img/*.png',
-        to: 'img',
-        force: true,
-        flatten: true
-      }]
-    }),
-    new CopyPlugin({
-      patterns: [{
-        from: 'example/js-payments/json/*.json',
-        to: 'json',
-        force: true,
-        flatten: true,
-        noErrorOnMissing: true
       }]
     }),
     new StyleLintPlugin({

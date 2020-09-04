@@ -8,9 +8,9 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <link rel="icon" href="../../shared/img/favicon.webp" sizes="32x32">
-    <link rel="icon" href="../../shared/img/favicon.webp" sizes="192x192">
-    <link rel="apple-touch-icon" href="./favicon.webp">
+    <link rel="icon" href="<%= EXAMPLE_URL %>/img/favicon.webp" sizes="32x32">
+    <link rel="icon" href="<%= EXAMPLE_URL %>/img/favicon.webp" sizes="192x192">
+    <link rel="apple-touch-icon" href="<%= EXAMPLE_URL %>/img/favicon.webp">
 </head>
 
 <body>
@@ -18,7 +18,7 @@
 <main>
     <header class="st-header">
         <figure class="st-header__logo">
-            <img src="../../shared/img/st-logo.png" alt="Secure Trading logo" title="Secure Trading" role="img">
+            <img src="<%= EXAMPLE_URL %>/img/st-logo.png" alt="Secure Trading logo" title="Secure Trading" role="img">
         </figure>
         <h1 class="st-header__title">Example Form</h1>
     </header>
@@ -147,8 +147,8 @@
         <p>&copy; Secure Trading 2020</p>
     </footer>
 </main>
-<script type="text/javascript" src="<%= WEBSERVICES_URL %>/counter.js"></script>
-<script type="text/javascript" src="<%= WEBSERVICES_URL %>/inlineConfig.js"></script>
+<script type="text/javascript" src="<%= EXAMPLE_URL %>/counter.js"></script>
+<script type="text/javascript" src="<%= EXAMPLE_URL %>/inlineConfig.js"></script>
 <script type="text/javascript" src="<%= WEBSERVICES_URL %>/st.js"></script>
 <script type="text/javascript">
   var ST = SecureTrading;
@@ -166,7 +166,7 @@
       init(inlineConfig);
     } else {
       window
-        .fetch('<%= WEBSERVICES_URL %>/config.json')
+        .fetch('<%= WEBSERVICES_URL %>/json/config.json')
         .then(function(response) {
           if (response.status !== 200) {
             return Promise.reject('Configuration has not been set !');
@@ -187,7 +187,7 @@
 
 
     function getDefaultConfig() {
-      fetch('./../json/config.json')
+      fetch('<%= EXAMPLE_URL %>/json/config.json')
         .then(function(response) {
           if (response.status !== 200) {
             return Promise.reject('Default configuration has not been set !');

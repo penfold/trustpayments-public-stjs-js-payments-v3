@@ -16,7 +16,7 @@ module.exports = {
     compress: true,
     contentBase: path.join(__dirname, './dist'),
     publicPath: '',
-    port: 8443,
+    port: 8444,
     https: {
       key: fs.readFileSync('./../../docker/nginx/cert/merchant.securetrading.net/key.pem'),
       cert: fs.readFileSync('./../../docker/nginx/cert/merchant.securetrading.net/cert.pem'),
@@ -52,7 +52,8 @@ module.exports = {
     new ManifestPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
-      WEBSERVICES_URL: JSON.stringify(`https://${process.env.npm_package_config_host}:8443`)
+      WEBSERVICES_URL: JSON.stringify(`https://${process.env.npm_package_config_host}:8443`),
+      EXAMPLE_URL: JSON.stringify(`https://${process.env.npm_package_config_host}:8444`)
     }),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
@@ -78,6 +79,16 @@ module.exports = {
       patterns: [
         {
           from: 'shared/img/*.png',
+          to: 'img',
+          force: true,
+          flatten: true
+        }
+      ]
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: 'shared/img/*.webp',
           to: 'img',
           force: true,
           flatten: true
