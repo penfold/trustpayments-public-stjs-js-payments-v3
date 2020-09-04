@@ -11,7 +11,10 @@ from utils.helpers.gmail_service import EMAIL_LOGIN
 
 class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
 
-    def click_visa_checkout_button(self):
+    def click_visa_checkout_button(self, context):
+        if 'switch_to_parent_iframe' in context.scenario.tags:
+            self._action.switch_to_default_iframe()
+        self._executor.wait_for_element_to_be_clickable(VisaCheckoutLocators.visa_checkout_button)
         self._action.click(VisaCheckoutLocators.visa_checkout_button)
 
     def click_visa_checkout_close_button(self):
@@ -34,7 +37,7 @@ class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
     def fill_one_time_password_with_wait(self, mail_ids):
         mail_index = len(mail_ids)
         while mail_index and self._action.is_element_displayed(VisaCheckoutLocators.visa_one_time_code):
-            code = gmail_service.get_verification_code_from_email_subject(mail_ids[mail_index - 1])
+            code = gmail_service.get_verification_code_from_email_subject(str(int(mail_ids[mail_index - 1])))
             self.fill_one_time_code(code)
             self.click_continue_checkout_process()
             mail_index -= 1

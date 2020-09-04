@@ -1,6 +1,7 @@
 from behave import *
 
 from utils.enums.card import Card
+from utils.enums.field_type import FieldType
 
 use_step_matcher("re")
 
@@ -25,6 +26,8 @@ def step_impl(context, card: Card):
     context.pan = str(card.number)
     context.exp_date = str(card.expiration_date)
     context.cvv = str(card.cvv)
+    if 'e2e_config_for_iframe' in context.scenario.tags:
+        payment_page._action.switch_to_iframe(FieldType.PARENT_IFRAME.value)
     payment_page.fill_payment_form(card.number, card.expiration_date, card.cvv)
 
 
