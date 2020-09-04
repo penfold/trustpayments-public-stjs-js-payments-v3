@@ -1,5 +1,7 @@
 FROM python:latest as payments-tests
 
+ARG COPY_FROM
+
 # Get up to date
 RUN apt-get update
 
@@ -14,7 +16,7 @@ ENV JAVA_HOME  /usr/lib/jvm/java-11-openjdk-amd64/
 
 # Latest versions of python tools via pip
 RUN pip install poetry
-COPY . /app/
+COPY ${COPY_FROM}/ /app/
 WORKDIR /app
 RUN python3 -m venv venv \
     && . venv/bin/activate \
