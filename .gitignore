@@ -67,5 +67,5 @@ typings/
 dist/
 
 # config-provider file
-example/js-payments/json/config.json
-example/js-payments/json/jwtdata.json
+example/js-payments/shared/json/config.json
+example/js-payments/shared/json/jwtdata.json
