@@ -1,0 +1,27 @@
+version: "3.6"
+services:
+
+  app-html:
+    build:
+      args:
+        BUILD_TYPE: automated
+
+  wiremock:
+    build:
+      context: ../..
+      dockerfile: ./docker/wiremock/Dockerfile
+      target: wiremock
+      args:
+        COPY_FROM: ./tests
+    volumes:
+      - ../../tests/wiremock/__files:/home/wiremock/__files
+      - ../../tests/wiremock/mappings:/home/wiremock/mappings
+      - ../../tests/wiremock/keystore:/home/wiremock/keystore
+    command: --https-port 8443 --https-keystore /home/wiremock/keystore
+    ports:
+      - 8443:8443
+    networks:
+      securetrading:
+        aliases:
+          - webservices.securetrading.net
+          - thirdparty.example.com
