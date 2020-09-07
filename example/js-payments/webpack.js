@@ -18,9 +18,9 @@ module.exports = {
     publicPath: '',
     port: 8444,
     https: {
-      key: fs.readFileSync('./../../docker/nginx/cert/merchant.securetrading.net/key.pem'),
-      cert: fs.readFileSync('./../../docker/nginx/cert/merchant.securetrading.net/cert.pem'),
-      ca: fs.readFileSync('./../../docker/nginx/cert/minica.pem')
+      key: fs.readFileSync('./../../docker/app-html/nginx/cert/merchant.securetrading.net/key.pem'),
+      cert: fs.readFileSync('./../../docker/app-html/nginx/cert/merchant.securetrading.net/cert.pem'),
+      ca: fs.readFileSync('./../../docker/app-html/nginx/cert/minica.pem')
     },
     hot: true,
     host: '0.0.0.0',
