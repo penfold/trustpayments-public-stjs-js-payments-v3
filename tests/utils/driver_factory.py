@@ -105,6 +105,7 @@ class SeleniumDriver(Driver):
             kwargs['chrome_options'].binary_location = "/usr/bin/google-chrome"
             kwargs['chrome_options'].headless = True
             kwargs['chrome_options'].add_argument('--no-sandbox')
+            kwargs['chrome_options'].add_argument('--disable-setuid-sandbox')
             kwargs['chrome_options'].add_argument('--disable-dev-shm-usage')
             kwargs['chrome_options'].add_argument('--ignore-certificate-errors')
             kwargs['chrome_options'].add_argument('--remote-debugging-address=0.0.0.0')
