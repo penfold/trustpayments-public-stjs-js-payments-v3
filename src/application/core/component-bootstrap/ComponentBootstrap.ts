@@ -1,6 +1,6 @@
 import { FramesHub } from '../../../shared/services/message-bus/FramesHub';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
-import { Container, Service } from 'typedi';
+import { ContainerInstance, Service } from 'typedi';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { Store } from '../store/Store';
 import { environment } from '../../../environments/environment';
@@ -11,23 +11,23 @@ import { MessageSubscriberToken } from '../../../shared/dependency-injection/Inj
 
 @Service()
 export class ComponentBootstrap {
-  constructor(private frameIdentifier: FrameIdentifier) {}
+  constructor(private frameIdentifier: FrameIdentifier, private container: ContainerInstance) {}
 
   run<T>(frameName: string, componentClass: new (...args: any[]) => T): T {
     this.frameIdentifier.setFrameName(frameName);
 
-    Container.get(MessageBus);
-    Container.get(Store);
-    Container.get(BrowserLocalStorage).init();
-    Container.get(FramesHub).notifyReadyState();
+    this.container.get(MessageBus);
+    this.container.get(Store);
+    this.container.get(BrowserLocalStorage).init();
+    this.container.get(FramesHub).notifyReadyState();
 
     if (this.frameIdentifier.isControlFrame()) {
-      Container.get(MessageSubscriberRegistry).register(...Container.getMany(MessageSubscriberToken));
+      this.container.get(MessageSubscriberRegistry).register(...this.container.getMany(MessageSubscriberToken));
     }
 
-    const component = Container.get(componentClass);
+    const component = this.container.get(componentClass);
 
-    Container.get(SentryService).init(environment.SENTRY_DSN, environment.SENTRY_WHITELIST_URLS);
+    this.container.get(SentryService).init(environment.SENTRY_DSN, environment.SENTRY_WHITELIST_URLS);
 
     return component;
   }
