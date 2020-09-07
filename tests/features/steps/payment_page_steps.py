@@ -327,6 +327,8 @@ def step_impl(context):
 @step("User fills (?P<auth_type>.+) authentication modal")
 def step_impl(context, auth_type):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
+    if 'parent_iframe' in context.scenario.tags:
+        payment_page._action.switch_to_default_iframe()
     payment_page.fill_cardinal_authentication_code(auth_type)
     if 'parent_iframe' in context.scenario.tags:
         payment_page.switch_to_parent_iframe()

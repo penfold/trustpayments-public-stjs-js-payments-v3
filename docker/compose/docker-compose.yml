@@ -1,0 +1,41 @@
+version: "3.6"
+services:
+
+  app-html:
+    build:
+      context: ../..
+      dockerfile: ./docker/app-html/Dockerfile
+      target: app-html
+      args:
+        PIPELINE_WORKDIR: /pipeline
+        IMAGE_PIPELINE: ${CI_REGISTRY_IMAGE}/pipeline:master
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      securetrading:
+        aliases:
+          - library.securetrading.net
+          - merchant.securetrading.net
+
+  payments-tests:
+    build:
+      context: ../..
+      dockerfile: ./docker/payments-tests/Dockerfile
+      target: payments-tests
+      args:
+        COPY_FROM: ./tests
+    volumes:
+      - ../../tests/features:/app/features
+      - ../../tests/locators:/app/locators
+      - ../../tests/mappings:/app/mappings
+      - ../../tests/modules:/app/modules
+      - ../../tests/pages:/app/pages
+      - ../../tests/resources:/app/resources
+      - ../../tests/utils:/app/utils
+    networks:
+      - securetrading
+
+networks:
+  securetrading:
+    driver: bridge

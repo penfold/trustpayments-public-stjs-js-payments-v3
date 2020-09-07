@@ -11,6 +11,6 @@ FROM nginx:stable-alpine as app-html
 ARG PIPELINE_WORKDIR
 COPY --from=builder ${PIPELINE_WORKDIR}/dist /usr/share/nginx/html/app
 COPY --from=builder ${PIPELINE_WORKDIR}/dist /usr/share/nginx/html/example
-COPY docker/nginx/app.conf /etc/nginx/conf.d/app.conf
-COPY docker/nginx/example.conf /etc/nginx/conf.d/example.conf
-COPY docker/nginx/cert /etc/ssl/st-cert
+COPY docker/app-html/nginx/app.conf /etc/nginx/conf.d/app.conf
+COPY docker/app-html/nginx/example.conf /etc/nginx/conf.d/example.conf
+COPY docker/app-html/nginx/cert /etc/ssl/st-cert
