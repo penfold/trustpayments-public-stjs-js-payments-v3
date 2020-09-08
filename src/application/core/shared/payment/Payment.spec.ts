@@ -36,19 +36,6 @@ describe('Payment', () => {
   });
 
   // given
-  describe('bypassInitRequest()', () => {
-    const { cachetoken } = paymentFixture();
-    // when
-    beforeEach(() => {
-      // @ts-ignore
-      instance._stTransport.sendRequest = jest.fn();
-    });
-    instance.setCardinalCommerceCacheToken(cachetoken);
-    // @ts-ignore
-    expect(instance._cardinalCommerceCacheToken).toEqual(cachetoken);
-  });
-
-  // given
   describe('processPayment()', () => {
     // when
     beforeEach(() => {

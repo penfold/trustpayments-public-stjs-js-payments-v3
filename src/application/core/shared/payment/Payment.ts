@@ -12,7 +12,6 @@ import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
 import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
 
 export class Payment {
-  private _cardinalCommerceCacheToken: string;
   private _notification: NotificationService;
   private _stTransport: StTransport;
   private _validation: Validation;
@@ -29,10 +28,6 @@ export class Payment {
     };
   }
 
-  public setCardinalCommerceCacheToken(cachetoken: string) {
-    this._cardinalCommerceCacheToken = cachetoken;
-  }
-
   public async processPayment(
     requestTypes: string[],
     payment: ICard | IWallet,
@@ -44,7 +39,7 @@ export class Payment {
       StCodec.publishResponse(
         this._stTransport._threeDQueryResult.response,
         this._stTransport._threeDQueryResult.jwt,
-        additionalData.threedresponse
+        (additionalData || {}).threedresponse
       );
       this._notification.success(PAYMENT_SUCCESS);
       return Promise.resolve({

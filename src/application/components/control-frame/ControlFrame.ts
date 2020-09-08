@@ -150,13 +150,6 @@ export class ControlFrame {
         }
       });
     }
-
-    this._messageBus.subscribe(
-      MessageBus.EVENTS_PUBLIC.CARDINAL_COMMERCE_TOKENS_ACQUIRED,
-      (tokens: ICardinalCommerceTokens) => {
-        this._payment.setCardinalCommerceCacheToken(tokens.cacheToken);
-      }
-    );
   }
 
   private _formFieldChangeEvent(event: string, field: IFormFieldState): void {

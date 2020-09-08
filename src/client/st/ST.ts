@@ -39,6 +39,7 @@ import { IframeFactory } from '../iframe-factory/IframeFactory';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { Frame } from '../../application/core/shared/frame/Frame';
 import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
+import { CardinalClient } from '../integrations/CardinalClient';
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 
 @Service()
@@ -101,7 +102,8 @@ export class ST {
     private _messageBus: MessageBus,
     private _notification: Notification,
     private _iframeFactory: IframeFactory,
-    private _frameService: Frame
+    private _frameService: Frame,
+    private _cardinalClient: CardinalClient
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -245,6 +247,7 @@ export class ST {
     this.displayLiveStatus(Boolean(this._config.livestatus));
     this.watchForFrameUnload();
     this.initControlFrameModal();
+    this._cardinalClient.init();
   }
 
   private CardFrames(): void {

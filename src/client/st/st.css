@@ -14,7 +14,7 @@
   opacity: 1 !important;
 }
 
-iframe {
+iframe[id^='st-'] {
   height: 100px;
   border: 0;
 }
