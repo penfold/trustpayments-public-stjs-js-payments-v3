@@ -101,16 +101,12 @@
     "@securetrading/ts-iin-lookup": "^0.0.8",
     "@securetrading/ts-luhn-check": "^0.0.8",
     "@sentry/browser": "^5.21.3",
-    "@sheerun/mutationobserver-shim": "^0.3.3",
     "@types/jwt-decode": "^2.2.1",
     "@types/lodash": "^4.14.159",
     "@types/redux-logger": "^3.0.8",
-    "core-js": "^2.6.11",
-    "fastestsmallesttextencoderdecoder": "^1.0.22",
     "i18next": "^19.7.0",
     "joi": "^17.2.0",
     "jwt-decode": "^2.2.0",
-    "location-origin": "^1.1.4",
     "lodash": "^4.17.20",
     "minimist": "^1.2.5",
     "npm-force-resolutions": "0.0.3",
@@ -118,14 +114,10 @@
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-observable": "^1.2.0",
-    "reflect-metadata": "0.1.13",
     "rxjs": "^6.6.2",
     "stylelint": "^13.6.1",
     "ts-money": "^0.4.6",
-    "typedi": "^0.8.0",
-    "uikit": "^3.5.7-dev.2b7d5578c",
-    "url-polyfill": "^1.1.10",
-    "whatwg-fetch": "^3.4.0"
+    "typedi": "^0.8.0"
   },
   "snyk": true
 }
