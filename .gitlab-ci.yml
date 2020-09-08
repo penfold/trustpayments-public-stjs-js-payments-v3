@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.14
+.cicd-os-ref: &cicd-os-ref INFRA-343-Python_Static_analysis
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
