@@ -90,3 +90,7 @@ config = {
     "form_id_config": "configFormId.json",
     "form_id_config_visa_checkout": "configFormIdVisaCheckout.json"
 }
+
+screenshots = {
+    "scrn_successful_payment_with_bypassCard_using_mastercard": "successfulPaymentWithBypassCardUsingMastercard.png"
+}
