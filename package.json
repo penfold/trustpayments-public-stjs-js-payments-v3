@@ -152,7 +152,6 @@
     "stylelint": "^13.6.1",
     "ts-money": "^0.4.6",
     "typedi": "^0.8.0",
-    "uikit": "^3.5.7-dev.2b7d5578c",
     "url-polyfill": "^1.1.10",
     "whatwg-fetch": "^3.4.0"
   },
