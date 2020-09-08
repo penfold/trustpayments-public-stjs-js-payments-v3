@@ -33,9 +33,9 @@ module.exports = {
   },
 
   entry: {
-    example: ['./shared/ts/polyfills.ts', './pages/index/index.ts'],
-    receipt: ['./shared/ts/polyfills.ts', './pages/receipt/receipt.ts'],
-    iframe: ['./shared/ts/polyfills.ts', './pages/iframe/iframe.ts'],
+    example: ['./pages/index/index.ts'],
+    receipt: ['./pages/receipt/receipt.ts'],
+    iframe: ['./pages/iframe/iframe.ts'],
     inlineConfig: ['./pages/index/inline-config.ts'],
     counter: ['./pages/index/counter.ts']
   },

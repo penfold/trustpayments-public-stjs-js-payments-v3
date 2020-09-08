@@ -39,14 +39,6 @@
     "webpack-manifest-plugin": "^2.2.0"
   },
   "dependencies": {
-    "@securetrading/jwt-generator": "0.0.2",
-    "@sheerun/mutationobserver-shim": "^0.3.3",
-    "core-js": "^2.6.11",
-    "fastestsmallesttextencoderdecoder": "^1.0.22",
-    "location-origin": "^1.1.4",
-    "reflect-metadata": "0.1.13",
-    "uikit": "^3.5.7-dev.2b7d5578c",
-    "url-polyfill": "^1.1.10",
-    "whatwg-fetch": "^3.4.0"
+    "@securetrading/jwt-generator": "0.0.2"
   }
 }
