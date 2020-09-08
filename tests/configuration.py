@@ -18,6 +18,7 @@ def load_config():
         'URL': AttrDict({"BASE_URL": get_from_env("BASE_URL", "https://merchant.securetrading.net"),
                          "REACT_APP": get_from_env("REACT_APP", "https://localhost:3000")}),
         'REPORTS_PATH': get_path_from_env('AUTOMATION_REPORTS', 'reports'),
+        'SCREENSHOTS_PATH': get_path_from_env('AUTOMATION_SCREENSHOTS', 'screenshots'),
         'BROWSER': get_from_env('AUTOMATION_BROWSER', 'chrome'),
         'TIMEOUT': get_from_env('AUTOMATION_TIMEOUT', 20),
         'REMOTE': strtobool(get_from_env('REMOTE', 'false')),
@@ -107,6 +108,7 @@ class DriverConfig:
                          "browserstack.console": "errors",
                          "ie.ensureCleanSession": 'true',
                          "ie.forceCreateProcessApi": 'true',
+                         "resolution": "1920x1080"
                          # "browserstack.sendKeys": send_keys,
                          # "browserstack.idleTimeout": 3000
                          }
@@ -120,9 +122,11 @@ class DriverConfig:
 class TestExecutorConfig:
     """
     reports_path - path, where tests artifacts should be stored
+    screenshots_path - path, where visual regression artifacts should be stored
     timeout - max time before continuing with the next step
     """
 
     def __init__(self):
         self.timeout = int(CONFIGURATION.TIMEOUT)
         self.reports_path = CONFIGURATION.REPORTS_PATH
+        self.screenshots_path = CONFIGURATION.SCREENSHOTS_PATH

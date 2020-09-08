@@ -61,7 +61,7 @@ class Browser(Waits):
         self._browser.execute_script("window.scrollBy(100,0)")  # Scroll 100px to the right
 
     def fullscreen(self):
-        if CONFIGURATION.REMOTE_DEVICE is None:
+        if not CONFIGURATION.REMOTE_DEVICE or CONFIGURATION.REMOTE_DEVICE is None:
             self._browser.maximize_window()
 
     def scroll_into_view(self, element):

@@ -182,6 +182,16 @@ class PaymentMethodsPage(BasePage):
                 self._action.click(PaymentMethodsLocators.pay_mock_button)
         self._executor.wait_for_javascript()
 
+    def wait_for_pay_process_end(self, language: str):
+        processing_text: str = "Processing..."
+        if language != 'en_US' and language != 'en_GB':
+            with open(f'resources/languages/{language}.json', 'r') as f:
+                translation = json.load(f)
+            processing_text: str = translation['Processing...']
+
+        self._executor.wait_for_text_to_be_not_present_in_element(PaymentMethodsLocators.pay_mock_button,
+                                                                  processing_text)
+
     def get_field_validation_message(self, field_type):
         validation_message = ""
         if field_type == FieldType.CARD_NUMBER.name:
