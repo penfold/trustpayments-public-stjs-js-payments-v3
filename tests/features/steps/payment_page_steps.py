@@ -61,6 +61,7 @@ def step_impl(context, color):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.choose_payment_methods(PaymentType.CARDINAL_COMMERCE.name)
+    payment_page.wait_for_pay_process_end(context.language)
 
 
 @step("User clicks Additional button")
@@ -172,6 +173,7 @@ def step_impl(context, field):
 
 @when('User changes page language to "(?P<language>.+)"')
 def step_impl(context, language):
+    context.language = language
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     jwt = payment_page.get_translation_from_json(language, "jwt")
     payment_page.open_page(f"{CONFIGURATION.URL.BASE_URL}?jwt={jwt}")
