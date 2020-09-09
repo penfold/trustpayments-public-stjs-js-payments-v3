@@ -33,4 +33,8 @@ export class GatewayClient {
       map((response: { response: IThreeDQueryResponse }) => response.response)
     );
   }
+
+  auth(request: any) {
+    return from(this.stTransport.sendRequest(request)).pipe(map((response: { response: any }) => response.response));
+  }
 }
