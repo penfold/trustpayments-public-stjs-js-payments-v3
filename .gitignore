@@ -65,7 +65,3 @@ typings/
 
 # Generated files folder
 dist/
-
-# config-provider file
-example/js-payments/shared/json/config.json
-example/js-payments/shared/json/jwtdata.json

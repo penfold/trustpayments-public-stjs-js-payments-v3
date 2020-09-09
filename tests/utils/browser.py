@@ -9,6 +9,8 @@ class Browser(Waits):
 
     def open_page(self, page_url):
         self._browser.get(page_url)
+        if 'ie' in CONFIGURATION.BROWSER:
+            self._browser.get("javascript:document.getElementById('overridelink').click()")
         self.fullscreen()
 
     def open_page_with_jwt_config(self, page_url, jwt_json_config: JwtConfig):
@@ -59,7 +61,7 @@ class Browser(Waits):
         self._browser.execute_script("window.scrollBy(100,0)")  # Scroll 100px to the right
 
     def fullscreen(self):
-        if CONFIGURATION.REMOTE_DEVICE is None:
+        if not CONFIGURATION.REMOTE_DEVICE or CONFIGURATION.REMOTE_DEVICE is None:
             self._browser.maximize_window()
 
     def scroll_into_view(self, element):

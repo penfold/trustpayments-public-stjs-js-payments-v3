@@ -9,6 +9,7 @@ from utils.driver_factory import DriverFactory
 from utils.extensions import WebElementsExtensions
 from utils.reporter import Reporter
 from utils.test_data import TestData
+from utils.visual_regression.screenshot_manager import ScreenshotManager
 from utils.waits import Waits
 
 # configuration
@@ -46,3 +47,9 @@ TEST_DATA = NamespacedContainer('test_data')
 TEST_DATA.add_sub_container(CONFIG)
 TEST_DATA.add_sub_container(DRIVER)
 TEST_DATA.register_callable_with_deps('test', TestData, lifetime=InstanceLifetime.Singleton)
+
+VISUAL_REGRESSION = NamespacedContainer('visual_regression')
+VISUAL_REGRESSION.add_sub_container(CONFIG)
+VISUAL_REGRESSION.add_sub_container(DRIVER)
+VISUAL_REGRESSION.register_callable_with_deps('screenshot_manager', ScreenshotManager,
+                                              lifetime=InstanceLifetime.NewInstancePerCall)
