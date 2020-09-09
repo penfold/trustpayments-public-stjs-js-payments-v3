@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.14
+.cicd-os-ref: &cicd-os-ref 0.0.15
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
@@ -36,6 +36,7 @@ variables:
   # Fast Tests
   # DISABLE_JOB_unit_tests: 'true'
   # DISABLE_JOB_ts_static_analysis: 'true'
+  DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
   # DISABLE_JOB_vuln_check: 'true'
   ### Disabled Jobs : End
 

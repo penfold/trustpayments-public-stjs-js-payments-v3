@@ -88,17 +88,17 @@ win10-firefox-79.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_review_3
 
-#win10-IE-11.0-smoke-tests: # TODO https://securetrading.atlassian.net/browse/STJS-939
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: IE
-#    BROWSER_VERSION: '11.0'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_4
+win10-IE-11.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-always
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: IE
+    BROWSER_VERSION: '11.0'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_review_4
 
 win10-chrome-85.0-visual-tests:
   extends:
