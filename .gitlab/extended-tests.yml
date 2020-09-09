@@ -21,6 +21,38 @@
   variables:
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
 
+.visual-regression-tests:
+  extends:
+    - .extended-tests
+    - .component-tests
+    - .e2e-tests-services
+    - .browserstack
+  variables:
+    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
+  # both .browserstack's and .e2e-tests' before script have to be combined in one and put here
+  # since there is no way to combine 2 "befores" from 2 different jobs
+  before_script:
+    - BS_LOCAL_IDENTIFIER=gitlab_${CI_PIPELINE_ID}_${CI_JOB_NAME}_$(date +%Y-%m-%d_%H-%M-%S)
+    - export BS_LOCAL_IDENTIFIER
+    - wget --quiet https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip
+    - unzip BrowserStackLocal-linux-x64.zip
+    - ./BrowserStackLocal ${BROWSERSTACK_ACCESS_KEY} --force-local --local-identifier ${BS_LOCAL_IDENTIFIER} --daemon start
+    - test -n "${EMAIL_LOGIN:-}"
+    - test -n "${EMAIL_PASSWORD:-}"
+    - test -n "${JWT_ISS_KEY:-}"
+    - test -n "${JWT_SECRET_KEY_BASE64:-}"
+    - JWT_SECRET_KEY=$(echo ${JWT_SECRET_KEY_BASE64} | base64 -d)
+    - export JWT_SECRET_KEY
+    - test -n "${JWT_SECRET_KEY:-}"
+  after_script:
+    - mkdir -p ./tests/screenshots/actual && mkdir -p ./tests/screenshots/results
+    - mv /app/screenshots/actual/* ./tests/screenshots/actual/
+    - mv /app/screenshots/results/* ./tests/screenshots/results/
+  artifacts:
+    paths:
+      - ./tests/screenshots
+    when: on_failure
+
 # smoke tests executed on review branches
 .apple-test-browserstack-component-test:
   extends:
@@ -67,6 +99,18 @@ win10-firefox-80.0-smoke-tests:
 #    BROWSER_VERSION: '11.0'
 #    POETRY_TAGS: $SMOKE_TESTS_TAG
 #  resource_group: extended_tests_review_4
+
+win10-chrome-85.0-visual-tests:
+  extends:
+    - .visual-regression-tests
+    - .rules-always
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Chrome
+    BROWSER_VERSION: '85'
+    POETRY_TAGS: visual_regression
+  resource_group: extended_tests_review_1
 
 # smoke tests executed on master branch
 
