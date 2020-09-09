@@ -65,13 +65,14 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Bank System Error"
     And User will see that notification frame has "red" color
-    
-  @base_config @cardinal_commerce_v2.0
-  Scenario: Timeout on cmpi_lookup Transaction - Mastercard
-    When User fills payment form with defined card MASTERCARD_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION
-    And User clicks Pay button
-    Then User will see payment status information: "An error occurred"
-    And User will see that notification frame has "red" color
+
+#TODO https://securetrading.atlassian.net/browse/STJS-957
+#  @base_config @cardinal_commerce_v2.0
+#  Scenario: Timeout on cmpi_lookup Transaction - Mastercard
+#    When User fills payment form with defined card MASTERCARD_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION
+#    And User clicks Pay button
+#    Then User will see payment status information: "An error occurred"
+#    And User will see that notification frame has "red" color
 
   @base_config @cardinal_commerce_v2.0
   Scenario: Bypassed Authentication - MasterCard
