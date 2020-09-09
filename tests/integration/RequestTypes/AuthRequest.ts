@@ -1,5 +1,5 @@
-import { ICard } from '../src/application/core/models/ICard';
-import { IMerchantData } from '../src/application/core/models/IMerchantData';
+import { ICard } from '../../../src/application/core/models/ICard';
+import { IMerchantData } from '../../../src/application/core/models/IMerchantData';
 import { IAuthRequest } from './IAuthRequest';
 
 export class AuthRequest implements IAuthRequest {
