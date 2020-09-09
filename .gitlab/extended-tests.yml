@@ -45,12 +45,12 @@
     - export JWT_SECRET_KEY
     - test -n "${JWT_SECRET_KEY:-}"
   after_script:
-    - mkdir -p ./tests/screenshots/actual && mkdir -p ./tests/screenshots/results
-    - mv /app/screenshots/actual/* ./tests/screenshots/actual/
-    - mv /app/screenshots/results/* ./tests/screenshots/results/
+    - mkdir -p ./tests/selenium/screenshots/actual && mkdir -p ./tests/selenium/screenshots/results
+    - mv /app/screenshots/actual/* ./tests/selenium/screenshots/actual/
+    - mv /app/screenshots/results/* ./tests/selenium/screenshots/results/
   artifacts:
     paths:
-      - ./tests/screenshots
+      - ./tests/selenium/screenshots
     when: on_failure
 
 # smoke tests executed on review branches

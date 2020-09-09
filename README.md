@@ -67,7 +67,7 @@ Not specified yet
   - Safari
 
 
-## [Testing - README](tests/README.md)
+## [Testing - README](tests/selenium/README.md)
 
 ## License
 
