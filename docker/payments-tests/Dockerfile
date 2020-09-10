@@ -7,8 +7,7 @@ RUN apt-get update
 
 # Install Chrome
 RUN wget --quiet https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-    && apt-get install -qq ./google-chrome-stable_current_amd64.deb
-
+    && apt-get install ./google-chrome-stable_current_amd64.deb
 # Make JAVA_HOME available in docker
 RUN apt-get install -y openjdk-11-jdk-headless \
     && rm -rf /var/lib/apt/lists/*
