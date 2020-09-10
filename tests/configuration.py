@@ -104,6 +104,7 @@ class DriverConfig:
                          "project": config.PROJECT_NAME,
                          "build": config.BUILD_NAME,
                          "browserstack.debug": config.BROWSERSTACK_DEBUG,
+                         "browserstack.selenium_version": config.BROWSERSTACK_SELENIUM_VERSION,
                          "browserstack.networkLogs": network_logs,
                          "browserstack.console": "errors",
                          "ie.ensureCleanSession": 'true',
