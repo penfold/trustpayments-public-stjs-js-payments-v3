@@ -40,6 +40,7 @@ import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
 import { Styler } from '../../core/shared/styler/Styler';
+import { RequestTypesSplitter } from '../../core/services/request-types-splitter/RequestTypesSplitter';
 
 @Service()
 export class ControlFrame {
@@ -89,7 +90,8 @@ export class ControlFrame {
     private _store: Store,
     private _configService: ConfigService,
     private _messageBus: MessageBus,
-    private _frame: Frame
+    private _frame: Frame,
+    private _requestTypesSplitter: RequestTypesSplitter
   ) {
     this._communicator
       .whenReceive(MessageBus.EVENTS_PUBLIC.INIT_CONTROL_FRAME)
@@ -167,20 +169,12 @@ export class ControlFrame {
   }
 
   private _setRequestTypes(config: IConfig): void {
-    const skipThreeDQuery = this._isCardBypassed(this._getPan());
-    const filterThreeDQuery = (requestType: string) =>
-      !skipThreeDQuery || requestType !== ControlFrame.THREEDQUERY_EVENT;
-    const requestTypes = [...config.components.requestTypes].filter(filterThreeDQuery);
-    const threeDIndex = requestTypes.indexOf(ControlFrame.THREEDQUERY_EVENT);
-
-    if (threeDIndex === -1) {
-      this._preThreeDRequestTypes = [];
-      this._postThreeDRequestTypes = requestTypes;
-      return;
-    }
-
-    this._preThreeDRequestTypes = requestTypes.slice(0, threeDIndex + 1);
-    this._postThreeDRequestTypes = requestTypes.slice(threeDIndex + 1, requestTypes.length);
+    const requestTypes: [string[], string[]] = this._requestTypesSplitter.splitRequestTypes(
+      config.components.requestTypes,
+      this._getPan()
+    );
+    this._preThreeDRequestTypes = requestTypes[0];
+    this._postThreeDRequestTypes = requestTypes[1];
   }
 
   private _updateJwtEvent(): void {
