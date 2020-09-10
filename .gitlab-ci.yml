@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.15
+.cicd-os-ref: &cicd-os-ref INFRA-384-ts-modules_auto_deploy
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
