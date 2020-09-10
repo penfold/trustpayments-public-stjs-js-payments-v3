@@ -1,7 +1,7 @@
 import { AuthRequest } from './AuthRequest';
 import { Container } from 'typedi';
 import { jwtgenerator } from '@securetrading/jwt-generator';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../../src/environments/environment';
 import { ThreeDQueryRequest } from '../../../src/application/core/integrations/cardinal-commerce/ThreeDQueryRequest';
 import { IConfig } from '../../../src/shared/model/config/IConfig';
@@ -95,8 +95,11 @@ describe('Testing app for different requestTypes', () => {
             )
           );
         }),
+        tap((threeDQueryResponse: IThreeDQueryResponse) => {
+          expect(threeDQueryResponse.errorcode).toEqual('0');
+          expect(threeDQueryResponse.requesttypedescription).toEqual('THREEDQUERY');
+        }),
         switchMap((threeDQueryResponse: IThreeDQueryResponse) => {
-          console.error('THRE D QUERY: ', threeDQueryResponse);
           return gatewayClient.auth(
             new AuthRequest(
               ['ACCOUNTCHECK', 'AUTH'],
@@ -109,10 +112,13 @@ describe('Testing app for different requestTypes', () => {
               {}
             )
           );
+        }),
+        tap((threeDQueryResponse: IThreeDQueryResponse) => {
+          expect(threeDQueryResponse.errorcode).toEqual('0');
+          expect(threeDQueryResponse.requesttypedescription).toEqual('AUTH');
         })
       )
       .subscribe((authResponse: any) => {
-        console.error('AUTH RESPONSE: ', authResponse);
         done();
         expect(authResponse.requesttypedescription).toEqual('AUTH');
         return authResponse;

@@ -17,7 +17,6 @@ export class GatewayClient {
 
   jsInit(): Observable<IThreeDInitResponse> {
     this.store.dispatch({ type: JSINIT_STARTED });
-
     return from(this.stTransport.sendRequest(new ThreeDInitRequest())).pipe(
       map((result: { jwt: string; response: IThreeDInitResponse }) => result.response),
       tap((response: IThreeDInitResponse) => {

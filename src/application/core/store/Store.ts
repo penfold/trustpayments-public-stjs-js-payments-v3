@@ -1,5 +1,4 @@
 import { Service } from 'typedi';
-import { StoreAccessor } from './StoreAccessor';
 import { Observable } from 'rxjs';
 import { IState } from './IState';
 import { map, shareReplay } from 'rxjs/operators';
@@ -7,12 +6,13 @@ import { PartialObserver, Unsubscribable } from 'rxjs/src/internal/types';
 import { IMessageBusEvent } from '../models/IMessageBusEvent';
 import { ActionName, IAction } from './IAction';
 import { Store as ReduxStore } from 'redux';
+import { IStoreAccessor } from '../../../../tests/integration/RequestTypes/IStoreAccessor';
 
 @Service()
 export class Store {
   private readonly state$: Observable<IState>;
 
-  constructor(private storeAccessor: StoreAccessor) {
+  constructor(private storeAccessor: IStoreAccessor) {
     this.state$ = new Observable<IState>(observer => {
       observer.next(this.store.getState() as IState);
 

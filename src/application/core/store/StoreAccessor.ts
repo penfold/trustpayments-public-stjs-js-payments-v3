@@ -3,9 +3,10 @@ import { FrameAccessor } from '../../../shared/services/message-bus/FrameAccesso
 import { StoreFactory } from './StoreFactory';
 import { Store } from 'redux';
 import { IControlFrameWindow } from '../../../shared/interfaces/IControlFrameWindow';
+import { IStoreAccessor } from '../../../../tests/integration/RequestTypes/IStoreAccessor';
 
 @Service()
-export class StoreAccessor {
+export class StoreAccessor implements IStoreAccessor {
   constructor(private frameAccessor: FrameAccessor, private storeFactory: StoreFactory) {}
 
   getStore(): Store {

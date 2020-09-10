@@ -4,6 +4,7 @@ import { Service } from 'typedi';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IStRequest } from '../../models/IStRequest';
+import { ajax, AjaxResponse } from 'rxjs/ajax';
 
 /**
  * Establishes connection with ST, defines client.
@@ -90,7 +91,7 @@ export class StTransport {
     retryTimeout = StTransport.RETRY_TIMEOUT
   ) {
     return Utils.retryPromise(
-      () => Utils.promiseWithTimeout<Response>(() => fetch(url, options), connectTimeout),
+      () => Utils.promiseWithTimeout<AjaxResponse>(() => ajax({ url, ...options }).toPromise(), connectTimeout),
       delay,
       retries,
       retryTimeout

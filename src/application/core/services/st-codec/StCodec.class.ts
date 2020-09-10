@@ -15,6 +15,7 @@ import { version } from '../../../../../package.json';
 import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { Frame } from '../../shared/frame/Frame';
+import { AjaxResponse } from 'rxjs/ajax';
 
 export class StCodec {
   public static CONTENT_TYPE = 'application/json';
@@ -249,21 +250,21 @@ export class StCodec {
     return JSON.stringify(this.buildRequestObject(requestObject));
   }
 
-  public async decode(responseObject: Response | {}): Promise<object> {
+  public async decode(responseObject: AjaxResponse | {}): Promise<object> {
     let decoded: any;
     const promise = await new Promise((resolve, reject) => {
-      if ('json' in responseObject) {
-        responseObject.json().then(responseData => {
-          decoded = StCodec._decodeResponseJwt(responseData.jwt, reject);
-          if (decoded && decoded.payload.response[0].errorcode === '0') {
-            StCodec.jwt = decoded.payload.jwt;
-          } else {
-            StCodec.jwt = StCodec.originalJwt;
-          }
-          resolve({
-            jwt: responseData.jwt,
-            response: StCodec.verifyResponseObject(decoded.payload, responseData.jwt)
-          });
+      if ('response' in responseObject) {
+        const responseData = responseObject.response;
+
+        decoded = StCodec._decodeResponseJwt(responseData.jwt, reject);
+        if (decoded && decoded.payload.response[0].errorcode === '0') {
+          StCodec.jwt = decoded.payload.jwt;
+        } else {
+          StCodec.jwt = StCodec.originalJwt;
+        }
+        resolve({
+          jwt: responseData.jwt,
+          response: StCodec.verifyResponseObject(decoded.payload, responseData.jwt)
         });
       } else {
         StCodec.jwt = StCodec.originalJwt;
