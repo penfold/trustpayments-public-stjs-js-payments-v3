@@ -20,6 +20,13 @@
     - .browserstack
   variables:
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
+  after_script:
+    - mkdir -p ./tests/reports
+    - mv /app/reports/* ./tests/reports/
+  artifacts:
+    paths:
+      - ./tests/reports
+    when: always
 
 .visual-regression-tests:
   extends:
@@ -45,12 +52,14 @@
     - export JWT_SECRET_KEY
     - test -n "${JWT_SECRET_KEY:-}"
   after_script:
-    - mkdir -p ./tests/screenshots/actual && mkdir -p ./tests/screenshots/results
+    - mkdir -p ./tests/screenshots/actual && mkdir -p ./tests/screenshots/results && mkdir -p ./tests/reports
     - mv /app/screenshots/actual/* ./tests/screenshots/actual/
     - mv /app/screenshots/results/* ./tests/screenshots/results/
+    - mv /app/reports/* ./tests/reports/
   artifacts:
     paths:
       - ./tests/screenshots
+      - ./tests/reports
     when: on_failure
 
 # smoke tests executed on review branches
