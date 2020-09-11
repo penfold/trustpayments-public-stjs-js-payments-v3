@@ -1,14 +1,14 @@
 import { ICard } from '../../../src/application/core/models/ICard';
 import { IMerchantData } from '../../../src/application/core/models/IMerchantData';
-import { IAuthRequest } from './IAuthRequest';
+import { IStRequest } from '../../../src/application/core/models/IStRequest';
 
-export class AuthRequest implements IAuthRequest {
+export class AuthRequest implements IStRequest {
   readonly requesttypedescriptions: string[];
   readonly card: ICard;
   readonly merchantData: IMerchantData;
   readonly additionalData: any;
 
-  constructor(requestTypes: string[], card: ICard, merchantData: IMerchantData, additionalData: any) {
+  constructor(requestTypes: string[], card: ICard, merchantData?: IMerchantData, additionalData?: any) {
     this.requesttypedescriptions = requestTypes;
     Object.assign(this, card);
     Object.assign(this, merchantData);
