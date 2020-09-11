@@ -3,10 +3,12 @@ import { IMerchantData } from '../../../src/application/core/models/IMerchantDat
 import { IStRequest } from '../../../src/application/core/models/IStRequest';
 
 export class AuthRequest implements IStRequest {
-  readonly requesttypedescriptions: string[];
-  readonly card: ICard;
-  readonly merchantData: IMerchantData;
-  readonly additionalData: any;
+  requesttypedescriptions: string[];
+  card: ICard;
+  merchantData: IMerchantData;
+  additionalData: any;
+
+  [key: string]: any;
 
   constructor(requestTypes: string[], card: ICard, merchantData?: IMerchantData, additionalData?: any) {
     this.requesttypedescriptions = requestTypes;
