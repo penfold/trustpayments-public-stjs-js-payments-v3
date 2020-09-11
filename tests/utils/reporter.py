@@ -11,17 +11,16 @@ class Reporter:
         self._reports_path = config__executor.reports_path
 
     def _create_reports_dir(self):
-        if not os.path.exists(self._reports_path):
-            os.makedirs(self._reports_path)
+        os.makedirs(self._reports_path, exist_ok=True)
 
     def save_screenshot_and_page_source(self, filename):
-        sreenshot_filename = f'{filename}.png'
-        screenshot_filepath = os.path.join(self._reports_path, sreenshot_filename)
+        screenshot_filename = f'{filename}.png'
+        screenshot_filepath = os.path.join(self._reports_path, screenshot_filename)
         source_filename = f'{filename}.html'
         source_filepath = os.path.join(self._reports_path, source_filename)
 
-        self.save_screenshot(screenshot_filepath)
         self._create_reports_dir()
+        self.save_screenshot(screenshot_filepath)
         self.save_page_source(source_filepath)
 
     def save_screenshot(self, filepath):
