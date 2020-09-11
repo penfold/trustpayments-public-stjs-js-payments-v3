@@ -54,7 +54,7 @@ export class ConfigResolver {
       visaCheckout: this._setVisaCheckoutConfig(config.visaCheckout, DefaultConfig.visaCheckout)
     };
     if (!environment.production) {
-      console.error(validatedConfig);
+      // console.error(validatedConfig);
     }
     return validatedConfig;
   }
