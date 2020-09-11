@@ -6,12 +6,13 @@ import { IStoreAccessor } from './IStoreAccessor';
 @Service()
 export class SimpleStoreAccessor implements IStoreAccessor {
   private store: Store;
+
   constructor(private storeFactory: StoreFactory) {}
+
   getStore(): Store {
     if (!this.store) {
       this.store = this.storeFactory.createStore();
     }
-
     return this.store;
   }
 }

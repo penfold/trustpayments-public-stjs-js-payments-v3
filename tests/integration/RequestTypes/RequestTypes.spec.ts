@@ -28,40 +28,10 @@ describe('Testing app for different requestTypes', () => {
   );
 
   const config: IConfig = {
-    analytics: true,
-    animatedCard: false,
     components: { defaultPaymentType: 'test', paymentTypes: ['test'], requestTypes: [], startOnLoad: true },
     datacenterurl: environment.GATEWAY_URL,
     jwt: generatedJwt,
-    livestatus: 0,
-    disableNotification: false,
-    origin: 'https://someorigin.com',
-    styles: {
-      cardNumber: {
-        'background-color-input': 'AliceBlue',
-        'background-color-input-error': '#f8d7da',
-        'color-input-error': '#721c24',
-        'font-size-input': '12px',
-        'line-height-input': '12px'
-      },
-      expirationDate: {
-        'background-color-input': 'AliceBlue',
-        'background-color-input-error': '#f8d7da',
-        'color-input-error': '#721c24',
-        'font-size-input': '12px',
-        'line-height-input': '12px'
-      },
-      securityCode: {
-        'background-color-input': 'AliceBlue',
-        'background-color-input-error': '#f8d7da',
-        'color-input-error': '#721c24',
-        'font-size-input': '12px',
-        'line-height-input': '12px'
-      }
-    },
-    submitOnError: true,
-    submitOnSuccess: true,
-    buttonId: 'merchant-submit-button'
+    origin: 'https://someorigin.com'
   };
 
   let gatewayClient: GatewayClient;
@@ -119,9 +89,8 @@ describe('Testing app for different requestTypes', () => {
         })
       )
       .subscribe((authResponse: any) => {
-        done();
         expect(authResponse.requesttypedescription).toEqual('AUTH');
-        return authResponse;
+        done();
       });
   });
 });

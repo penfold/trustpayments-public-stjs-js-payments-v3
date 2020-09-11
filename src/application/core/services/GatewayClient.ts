@@ -33,7 +33,7 @@ export class GatewayClient {
     );
   }
 
-  auth(request: any) {
+  auth(request: IStRequest) {
     return from(this.stTransport.sendRequest(request)).pipe(map((response: { response: any }) => response.response));
   }
 }
