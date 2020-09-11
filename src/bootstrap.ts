@@ -11,6 +11,3 @@ if (!Container.has(WINDOW)) {
 if (!Container.has(ContainerInstance)) {
   Container.set(ContainerInstance, Container.of(undefined));
 }
-
-console.log('WINDOW', Container.get(WINDOW));
-console.log('WINDOW', Container.get(ContainerInstance));

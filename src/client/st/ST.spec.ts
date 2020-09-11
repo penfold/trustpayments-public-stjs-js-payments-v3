@@ -23,9 +23,6 @@ jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytic
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 
-console.log('PACKAGE.JSON', require('../../../package.json'));
-console.log('JEST.CONFIG', require('../../../jest.config.js'));
-
 // given
 describe('ST', () => {
   const { config, cacheConfig, instance } = stFixture();
