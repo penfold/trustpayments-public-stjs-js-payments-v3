@@ -29,6 +29,7 @@ def load_config():
         'REMOTE_OS_VERSION': get_from_env('OS_VERSION', ''),
         'REMOTE_BROWSER': get_from_env('BROWSER', ''),
         'REMOTE_BROWSER_VERSION': get_from_env('BROWSER_VERSION', ''),
+        'BROWSERSTACK_SELENIUM_VERSION': get_from_env('BROWSERSTACK_SELENIUM_VERSION', ''),
         'REMOTE_DEVICE': get_from_env('DEVICE', ''),
         'REMOTE_REAL_MOBILE': get_from_env('REAL_MOBILE', ''),
         'BROWSERSTACK_LOCAL': get_from_env('LOCAL', 'true'),
