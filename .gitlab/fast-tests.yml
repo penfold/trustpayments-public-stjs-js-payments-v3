@@ -4,6 +4,13 @@
     BEHAVE_LOGGING_LEVEL: INFO
     FF_NETWORK_PER_BUILD: 'true' # https://docs.gitlab.com/runner/configuration/feature-flags.html
     FEATURE_FILES_DIR: 'features'
+  after_script:
+    - mkdir -p ./tests/reports
+    - mv /app/reports/* ./tests/reports/
+  artifacts:
+    paths:
+      - ./tests/reports
+    when: always
 
 .component-tests-services:
   services:
@@ -27,7 +34,7 @@ card-payments-headless-component-tests:
   variables:
     FEATURE_FILES_NAMES_CONTAINS: 'mock_'
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-  parallel: 20
+  parallel: 21
 
 visa-checkout-headless-component-tests:
   extends:
@@ -45,6 +52,13 @@ visa-checkout-headless-component-tests:
     BEHAVE_LOGGING_LEVEL: INFO
     FF_NETWORK_PER_BUILD: 'true' # https://docs.gitlab.com/runner/configuration/feature-flags.html
     FEATURE_FILES_DIR: 'features/e2e_tests'
+  after_script:
+    - mkdir -p ./tests/reports
+    - mv /app/reports/* ./tests/reports/
+  artifacts:
+    paths:
+      - ./tests/reports
+    when: always
   before_script:
     - test -n "${EMAIL_LOGIN:-}"
     - test -n "${EMAIL_PASSWORD:-}"

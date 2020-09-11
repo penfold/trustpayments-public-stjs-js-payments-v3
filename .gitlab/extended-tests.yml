@@ -20,6 +20,13 @@
     - .browserstack
   variables:
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
+  after_script:
+    - mkdir -p ./tests/reports
+    - mv /app/reports/* ./tests/reports/
+  artifacts:
+    paths:
+      - ./tests/reports
+    when: always
 
 .visual-regression-tests:
   extends:
@@ -45,12 +52,14 @@
     - export JWT_SECRET_KEY
     - test -n "${JWT_SECRET_KEY:-}"
   after_script:
-    - mkdir -p ./tests/screenshots/actual && mkdir -p ./tests/screenshots/results
+    - mkdir -p ./tests/screenshots/actual && mkdir -p ./tests/screenshots/results && mkdir -p ./tests/reports
     - mv /app/screenshots/actual/* ./tests/screenshots/actual/
     - mv /app/screenshots/results/* ./tests/screenshots/results/
+    - mv /app/reports/* ./tests/reports/
   artifacts:
     paths:
       - ./tests/screenshots
+      - ./tests/reports
     when: on_failure
 
 # smoke tests executed on review branches
@@ -76,303 +85,303 @@ apple-test-part2-browserstack-component-test:
     POETRY_TAGS: apple_test_part2
   resource_group: extended_tests_review_2
 
-#win10-firefox-80.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: Firefox
-#    BROWSER_VERSION: '80.0'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_3
-#
-#win10-IE-11.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: IE
-#    BROWSER_VERSION: '11.0'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_4
-#
-#win10-chrome-85.0-visual-tests:
-#  extends:
-#    - .visual-regression-tests
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: Chrome
-#    BROWSER_VERSION: '85'
-#    POETRY_TAGS: visual_regression
-#  resource_group: extended_tests_review_1
-#
-## smoke tests executed on master branch
-#
-#iPhone8-11.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    DEVICE: iPhone 8
-#    OS_VERSION: 11
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_1
-#
-#win8.1-chrome-85.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: '8.1'
-#    BROWSER: chrome
-#    BROWSER_VERSION: '85.0'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_1
-#
-#OSXCatalina-chrome-85.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: OS X
-#    OS_VERSION: Catalina
-#    BROWSER: chrome
-#    BROWSER_VERSION: '85.0'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_1
-#
-#win8.1-firefox-80.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: '8.1'
-#    BROWSER: Firefox
-#    BROWSER_VERSION: '80.0'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_1
-#
-#OSXCatalina-firefox-80.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: OS X
-#    OS_VERSION: Catalina
-#    BROWSER: Firefox
-#    BROWSER_VERSION: '80.0'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_1
-#
-#.win7-IE-10.0-smoke-tests: # TODO https://securetrading.atlassian.net/browse/STJS-897
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 7
-#    BROWSER: IE
-#    BROWSER_VERSION: '10.0'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_1
-#
-#.win10-Edge-85.0-smoke-tests: # TODO https://securetrading.atlassian.net/browse/STJS-660
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: Edge
-#    BROWSER_VERSION: '85.0'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_1
-#
-#win10-Edge-18.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: Edge
-#    BROWSER_VERSION: '18.0'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_1
-#
-#OSXHS-Safari-11.1-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: OS X
-#    OS_VERSION: High Sierra
-#    BROWSER: Safari
-#    BROWSER_VERSION: '11.1'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_1
-#
-#iPhoneXS-12-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-when-release
-#  variables:
-#    DEVICE: iPhone XS
-#    OS_VERSION: 12
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_release_2
-#
-#iPad7th-13-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-when-release
-#  variables:
-#    DEVICE: iPad 7th
-#    OS_VERSION: 13
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_release_3
-#
-#GoogleNexus6-6.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-when-release
-#  variables:
-#    DEVICE: Google Nexus 6
-#    OS_VERSION: '6.0'
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_release_4
-#
-#SamsungGalaxyS8-7.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-when-release
-#  variables:
-#    DEVICE: Samsung Galaxy S8
-#    OS_VERSION: '7.0'
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_release_1
-#
-#SamsungGalaxyS10Plus-9.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-when-release
-#  variables:
-#    DEVICE: Samsung Galaxy S10 Plus
-#    OS_VERSION: '9.0'
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_release_2
-#
-#GooglePixel4-10.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-when-release
-#  variables:
-#    DEVICE: Google Pixel 4
-#    OS_VERSION: '10.0'
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_release_3
-#
-## other tests executed on master branch
-#
-#win10-Firefox-80.0-extended-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: Firefox
-#    BROWSER_VERSION: '80.0'
-#    POETRY_TAGS: $EXTENDED_TESTS_TAG
-#  resource_group: extended_tests_review_1
-#
-#.iPhoneXR-12-full-test-part-1: # TODO https://securetrading.atlassian.net/browse/STJS-661
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-when-release
-#  variables:
-#    DEVICE: iPhone XR
-#    OS_VERSION: 12
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: full_test_part_1
-#  resource_group: extended_tests_release_1
-#
-#.iPhoneXR-12-full-test-part-2: # TODO https://securetrading.atlassian.net/browse/STJS-661
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-when-release
-#  variables:
-#    DEVICE: iPhone XR
-#    OS_VERSION: 12
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: full_test_part_2
-#  resource_group: extended_tests_release_2
-#
-#SamsungGalaxyS9-12-extended-test-part-1:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-when-release
-#  variables:
-#    DEVICE: Samsung Galaxy S9
-#    OS_VERSION: '8.0'
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: extended_tests_part_1
-#  resource_group: extended_tests_release_3
-#
-#SamsungGalaxyS9-12-extended-test-part-2:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-when-release
-#  variables:
-#    DEVICE: Samsung Galaxy S9
-#    OS_VERSION: '8.0'
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: extended_tests_part_2
-#  resource_group: extended_tests_release_4
-#
-#win10-IE-11.0-extended-test-part-1:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: IE
-#    BROWSER_VERSION: '11.0'
-#    POETRY_TAGS: extended_tests_part_1
-#  resource_group: extended_tests_review_1
-#
-#win10-IE-11.0-extended-test-part-2:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: IE
-#    BROWSER_VERSION: '11.0'
-#    POETRY_TAGS: extended_tests_part_2
-#  resource_group: extended_tests_review_1
+win10-firefox-80.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Firefox
+    BROWSER_VERSION: '80.0'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_review_3
+
+win10-IE-11.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: IE
+    BROWSER_VERSION: '11.0'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_1
+
+win10-chrome-85.0-visual-tests:
+  extends:
+    - .visual-regression-tests
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Chrome
+    BROWSER_VERSION: '85'
+    POETRY_TAGS: visual_regression
+  resource_group: extended_tests_release_2
+
+# smoke tests executed on master branch
+
+iPhone8-11.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: iPhone 8
+    OS_VERSION: 11
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_1
+
+win8.1-chrome-85.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: '8.1'
+    BROWSER: chrome
+    BROWSER_VERSION: '85.0'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_2
+
+OSXCatalina-chrome-85.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: OS X
+    OS_VERSION: Catalina
+    BROWSER: chrome
+    BROWSER_VERSION: '85.0'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_3
+
+win8.1-firefox-80.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: '8.1'
+    BROWSER: Firefox
+    BROWSER_VERSION: '80.0'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_4
+
+OSXCatalina-firefox-80.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: OS X
+    OS_VERSION: Catalina
+    BROWSER: Firefox
+    BROWSER_VERSION: '80.0'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_1
+
+.win7-IE-10.0-smoke-tests: # TODO https://securetrading.atlassian.net/browse/STJS-897
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 7
+    BROWSER: IE
+    BROWSER_VERSION: '10.0'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_2
+
+.win10-Edge-85.0-smoke-tests: # TODO https://securetrading.atlassian.net/browse/STJS-660
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Edge
+    BROWSER_VERSION: '85.0'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_3
+
+win10-Edge-18.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Edge
+    BROWSER_VERSION: '18.0'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_4
+
+OSXHS-Safari-11.1-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: OS X
+    OS_VERSION: High Sierra
+    BROWSER: Safari
+    BROWSER_VERSION: '11.1'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_1
+
+iPhoneXS-12-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: iPhone XS
+    OS_VERSION: 12
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_2
+
+iPad7th-13-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: iPad 7th
+    OS_VERSION: 13
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_3
+
+GoogleNexus6-6.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: Google Nexus 6
+    OS_VERSION: '6.0'
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_4
+
+SamsungGalaxyS8-7.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: Samsung Galaxy S8
+    OS_VERSION: '7.0'
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_1
+
+SamsungGalaxyS10Plus-9.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: Samsung Galaxy S10 Plus
+    OS_VERSION: '9.0'
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_2
+
+GooglePixel4-10.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: Google Pixel 4
+    OS_VERSION: '10.0'
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_3
+
+# other tests executed on master branch
+
+win10-Firefox-80.0-extended-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Firefox
+    BROWSER_VERSION: '80.0'
+    POETRY_TAGS: $EXTENDED_TESTS_TAG
+  resource_group: extended_tests_release_4
+
+.iPhoneXR-12-full-test-part-1: # TODO https://securetrading.atlassian.net/browse/STJS-661
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: iPhone XR
+    OS_VERSION: 12
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: full_test_part_1
+  resource_group: extended_tests_release_1
+
+.iPhoneXR-12-full-test-part-2: # TODO https://securetrading.atlassian.net/browse/STJS-661
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: iPhone XR
+    OS_VERSION: 12
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: full_test_part_2
+  resource_group: extended_tests_release_2
+
+SamsungGalaxyS9-12-extended-test-part-1:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: Samsung Galaxy S9
+    OS_VERSION: '8.0'
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: extended_tests_part_1
+  resource_group: extended_tests_release_3
+
+SamsungGalaxyS9-12-extended-test-part-2:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: Samsung Galaxy S9
+    OS_VERSION: '8.0'
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: extended_tests_part_2
+  resource_group: extended_tests_release_4
+
+win10-IE-11.0-extended-test-part-1:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: IE
+    BROWSER_VERSION: '11.0'
+    POETRY_TAGS: extended_tests_part_1
+  resource_group: extended_tests_release_1
+
+win10-IE-11.0-extended-test-part-2:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: IE
+    BROWSER_VERSION: '11.0'
+    POETRY_TAGS: extended_tests_part_2
+  resource_group: extended_tests_release_2
 
 OSXMojave-Safari-12.1-extended-test-part-1:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Mojave
@@ -380,12 +389,12 @@ OSXMojave-Safari-12.1-extended-test-part-1:
     BROWSER_VERSION: '12.1'
     BROWSERSTACK_SELENIUM_VERSION: 3.14.0
     POETRY_TAGS: extended_tests_part_1
-  resource_group: extended_tests_review_1
+  resource_group: extended_tests_release_3
 
 OSXMojave-Safari-12.1-extended-test-part-2:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Mojave
@@ -393,4 +402,4 @@ OSXMojave-Safari-12.1-extended-test-part-2:
     BROWSER_VERSION: '12.1'
     BROWSERSTACK_SELENIUM_VERSION: 3.14.0
     POETRY_TAGS: extended_tests_part_2
-  resource_group: extended_tests_review_1
+  resource_group: extended_tests_release_4
