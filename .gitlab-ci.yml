@@ -8,7 +8,7 @@ include:
   - file: /cicd_template.yml
     <<: *cicd-os
 
-  - local: '/.gitlab/build.yml'
+#  - local: '/.gitlab/build.yml'
   - local: '/.gitlab/fast-tests.yml'
   - local: '/.gitlab/extended-tests.yml'
 
