@@ -371,9 +371,13 @@ def step_impl(context, example_page: ExamplePage):
             jwt = encode_jwt_for_json(JwtConfig[f"{row['jwtName']}"])
         payment_page.open_page(f"{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}")
         context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
+    elif "WITH_SPECIFIC_IFRAME" in example_page:
+        payment_page.open_page(f"{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}")
+        payment_page.switch_to_parent_iframe()
+        payment_page.wait_for_parent_iframe()
     else:
         payment_page.open_page(f"{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}")
-    payment_page.wait_for_iframe()
+        payment_page.wait_for_iframe()
 
 
 @step("User opens (?:example page|example page (?P<example_page>.+))")
