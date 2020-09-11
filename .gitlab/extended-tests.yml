@@ -20,6 +20,13 @@
     - .browserstack
   variables:
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
+  after_script:
+    - mkdir -p ./tests/reports
+    - mv /app/reports/* ./tests/reports/
+  artifacts:
+    paths:
+      - ./tests/reports
+    when: always
 
 .visual-regression-tests:
   extends:
@@ -45,12 +52,14 @@
     - export JWT_SECRET_KEY
     - test -n "${JWT_SECRET_KEY:-}"
   after_script:
-    - mkdir -p ./tests/screenshots/actual && mkdir -p ./tests/screenshots/results
+    - mkdir -p ./tests/screenshots/actual && mkdir -p ./tests/screenshots/results && mkdir -p ./tests/reports
     - mv /app/screenshots/actual/* ./tests/screenshots/actual/
     - mv /app/screenshots/results/* ./tests/screenshots/results/
+    - mv /app/reports/* ./tests/reports/
   artifacts:
     paths:
       - ./tests/screenshots
+      - ./tests/reports
     when: on_failure
 
 # smoke tests executed on review branches
@@ -76,41 +85,41 @@ apple-test-part2-browserstack-component-test:
     POETRY_TAGS: apple_test_part2
   resource_group: extended_tests_review_2
 
-win10-firefox-79.0-smoke-tests:
+win10-firefox-80.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Firefox
-    BROWSER_VERSION: '79.0'
+    BROWSER_VERSION: '80.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_review_3
 
-#win10-IE-11.0-smoke-tests: # TODO https://securetrading.atlassian.net/browse/STJS-939
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: IE
-#    BROWSER_VERSION: '11.0'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_review_4
+win10-IE-11.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: IE
+    BROWSER_VERSION: '11.0'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_1
 
 win10-chrome-85.0-visual-tests:
   extends:
     - .visual-regression-tests
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Chrome
     BROWSER_VERSION: '85'
     POETRY_TAGS: visual_regression
-  resource_group: extended_tests_review_1
+  resource_group: extended_tests_release_2
 
 # smoke tests executed on master branch
 
@@ -125,7 +134,7 @@ iPhone8-11.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_1
 
-win8.1-chrome-83.0-smoke-tests:
+win8.1-chrome-85.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -133,11 +142,11 @@ win8.1-chrome-83.0-smoke-tests:
     OS: Windows
     OS_VERSION: '8.1'
     BROWSER: chrome
-    BROWSER_VERSION: '83.0'
+    BROWSER_VERSION: '85.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_2
 
-OSXCatalina-chrome-80.0-smoke-tests:
+OSXCatalina-chrome-85.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -145,11 +154,11 @@ OSXCatalina-chrome-80.0-smoke-tests:
     OS: OS X
     OS_VERSION: Catalina
     BROWSER: chrome
-    BROWSER_VERSION: '80.0'
+    BROWSER_VERSION: '85.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_3
 
-win8.1-firefox-79.0-smoke-tests:
+win8.1-firefox-80.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -157,11 +166,11 @@ win8.1-firefox-79.0-smoke-tests:
     OS: Windows
     OS_VERSION: '8.1'
     BROWSER: Firefox
-    BROWSER_VERSION: '79.0'
+    BROWSER_VERSION: '80.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_4
 
-OSXCatalina-firefox-79.0-smoke-tests:
+OSXCatalina-firefox-80.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -169,7 +178,7 @@ OSXCatalina-firefox-79.0-smoke-tests:
     OS: OS X
     OS_VERSION: Catalina
     BROWSER: Firefox
-    BROWSER_VERSION: '79.0'
+    BROWSER_VERSION: '80.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_1
 
@@ -185,7 +194,7 @@ OSXCatalina-firefox-79.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_2
 
-.win10-Edge-80.0-smoke-tests: # TODO https://securetrading.atlassian.net/browse/STJS-660
+.win10-Edge-85.0-smoke-tests: # TODO https://securetrading.atlassian.net/browse/STJS-660
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -193,7 +202,7 @@ OSXCatalina-firefox-79.0-smoke-tests:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Edge
-    BROWSER_VERSION: '80.0'
+    BROWSER_VERSION: '85.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_3
 
@@ -289,7 +298,7 @@ GooglePixel4-10.0-smoke-tests:
 
 # other tests executed on master branch
 
-win10-Firefox-79.0-extended-tests:
+win10-Firefox-80.0-extended-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -297,7 +306,7 @@ win10-Firefox-79.0-extended-tests:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Firefox
-    BROWSER_VERSION: '79.0'
+    BROWSER_VERSION: '80.0'
     POETRY_TAGS: $EXTENDED_TESTS_TAG
   resource_group: extended_tests_release_4
 
