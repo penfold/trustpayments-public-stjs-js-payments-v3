@@ -1,4 +1,5 @@
 import os
+from time import sleep
 
 from PIL import Image, ImageDraw
 
@@ -17,6 +18,7 @@ class ScreenshotManager:
     def __init__(self, driver__browser, config__executor):
         self._browser = driver__browser.get_browser()
         self._screenshots_path = config__executor.screenshots_path
+        self._mobile_device = config__executor.mobile_device
         self._create_screenshot_dir()
 
     def _create_screenshot_dir(self):
@@ -32,8 +34,37 @@ class ScreenshotManager:
 
     def make_screenshot(self, filename: str, date_postfix: bool = False):
         filename = self._proper_name(filename, date_postfix)
+
+        if self._mobile_device:
+            return self.make_double_screenshot(filename)
+
         filepath: str = os.path.join(self._screenshots_path, "actual", filename)
         self._browser.save_screenshot(filepath)
+        return filename
+
+    def make_double_screenshot(self, filename):
+        self._browser.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+        sleep(2)
+        filepath_1: str = os.path.join(self._screenshots_path, "actual", filename.replace(".png", "_1.png"))
+        self._browser.save_screenshot(filepath_1)
+        self._browser.execute_script("window.scrollTo(0, -document.body.scrollHeight)")
+        sleep(2)
+        filepath_2: str = os.path.join(self._screenshots_path, "actual", filename.replace(".png", "_2.png"))
+        self._browser.save_screenshot(filepath_2)
+
+        image_bottom = Image.open(filepath_1)
+        image_top = Image.open(filepath_2)
+
+        width = image_bottom.size[0]
+        height = image_bottom.size[1]
+
+        new_image = Image.new('RGB', (2 * width, height), (250, 250, 250))
+        new_image.paste(image_top, (0, 0))
+        new_image.paste(image_bottom, (width, 0))
+
+        filepath: str = os.path.join(self._screenshots_path, "actual", filename)
+        new_image.save(filepath)
+
         return filename
 
     def compare_screenshots(self, filename_expected: str, filename_actual: str,
@@ -42,8 +73,8 @@ class ScreenshotManager:
         filepath_expected = os.path.join(self._screenshots_path, "expected", self._proper_name(filename_expected))
         filepath_actual = os.path.join(self._screenshots_path, "actual", self._proper_name(filename_actual))
 
-        screenshot_expected = Image.open(filepath_expected)
-        screenshot_actual = Image.open(filepath_actual)
+        screenshot_expected = self._crop_image_if_iphone(Image.open(filepath_expected))
+        screenshot_actual = self._crop_image_if_iphone(Image.open(filepath_actual))
 
         screen_width, screen_height = screenshot_expected.size
 
@@ -67,6 +98,13 @@ class ScreenshotManager:
             filepath_result = os.path.join(self._screenshots_path, "results", filename_actual)
             screenshot_expected.save(filepath_result)
         return screenshot_are_the_same
+
+    def _crop_image_if_iphone(self, image):
+        if "iphone" not in self._mobile_device.lower():
+            return image
+        width = image.size[0]
+        height = image.size[1]
+        return image.crop((0, 250, width, height - 250))
 
     def _process_region(self, image, x, y, width, height):
         region_total: int = 0

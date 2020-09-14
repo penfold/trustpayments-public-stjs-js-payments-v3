@@ -107,7 +107,7 @@ module.exports = {
     new CopyPlugin({
       patterns: [{
         from: 'src/application/core/services/icon/images/*.png',
-        to: 'img/cards',
+        to: 'images',
         force: true,
         flatten: true
       }]
