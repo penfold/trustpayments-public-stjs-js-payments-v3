@@ -431,7 +431,7 @@ win10-IE-11.0-extended-test-part-2:
 OSXMojave-Safari-12.1-extended-test-part-1:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Mojave
@@ -444,7 +444,7 @@ OSXMojave-Safari-12.1-extended-test-part-1:
 OSXMojave-Safari-12.1-extended-test-part-2:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Mojave
