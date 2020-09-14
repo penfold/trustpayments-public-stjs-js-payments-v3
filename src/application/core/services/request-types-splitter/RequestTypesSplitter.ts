@@ -1,6 +1,7 @@
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { iinLookup } from '@securetrading/ts-iin-lookup';
 import { Service } from 'typedi';
+import { BrandDetailsType } from '@securetrading/ts-iin-lookup/dist/types';
 
 @Service()
 export class RequestTypesSplitter {
@@ -8,8 +9,11 @@ export class RequestTypesSplitter {
 
   private _isCardBypassed(pan: string): boolean {
     const bypassCards = this._configProvider.getConfig().bypassCards as string[];
-
-    return bypassCards.includes(iinLookup.lookup(pan).type) || false;
+    const lookup: BrandDetailsType = iinLookup.lookup(pan);
+    if (lookup.type === null) {
+      return false;
+    }
+    return bypassCards.includes(lookup.type);
   }
 
   splitRequestTypes(requestTypes: string[], pan: string): [string[], string[]] {
