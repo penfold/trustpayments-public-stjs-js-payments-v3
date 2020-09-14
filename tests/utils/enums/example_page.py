@@ -9,6 +9,7 @@ class ExamplePage(Enum):
     WITH_CALLBACK = "todo"
     WITH_CHANGED_FORM_ID = "formId=testForm&"
     IN_IFRAME = "iframe.html?"
+    WITH_SPECIFIC_IFRAME = "iframe.html?iframeName=testFrame"
     SUCCESS_CALLBACK = "extraSuccessFunction=(function callback()" \
                        "{const form=document.getElementById('st-form');" \
                        "form.action='https://example.org';form.submit();})()"
