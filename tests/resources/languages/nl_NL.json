@@ -19,7 +19,9 @@
   "Method not implemented": "De methode is niet geïmplementeerd",
   "Form is not valid": "Het formulier is ongeldig",
   "Pay": "Betalen",
-  "Processing...": "Bezig met verwerken...",
+  "Processing": "Bezig met verwerken",
   "Invalid field": "Ongeldig veld",
-  "Card number is invalid": "Het kaartnummer is ongeldig"
+  "Card number is invalid": "Het kaartnummer is ongeldig",
+  "You are not logged to Apple account": "U bent niet aangemeld bij een Apple-account",
+  "A target element for the input field with id could not be found. Please check your configuration": "Een doelelement voor het invoerveld met id kon niet worden gevonden. Controleer uw configuratie"
 }
