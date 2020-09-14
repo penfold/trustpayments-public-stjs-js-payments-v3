@@ -8,7 +8,8 @@ import {
   SECURITY_CODE_INPUT,
   SECURITY_CODE_INPUT_SELECTOR,
   SECURITY_CODE_LABEL,
-  SECURITY_CODE_MESSAGE
+  SECURITY_CODE_MESSAGE,
+  SECURITY_CODE_WRAPPER
 } from '../../core/models/constants/Selectors';
 import { Validation } from '../../core/shared/validation/Validation';
 import { Service } from 'typedi';
@@ -52,7 +53,7 @@ export class SecurityCode extends Input {
     private messageBus: MessageBus,
     private frame: Frame
   ) {
-    super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL);
+    super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER);
     this._validation = new Validation();
     this._securityCodeWrapper = document.getElementById(SECURITY_CODE_INPUT_SELECTOR) as HTMLElement;
     this._securityCodeLength = SHORT_CVC;

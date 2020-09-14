@@ -6,6 +6,7 @@ export const CARD_NUMBER_INPUT: string = 'st-card-number-input';
 export const CARD_NUMBER_INPUT_SELECTOR: string = 'st-card-number';
 export const CARD_NUMBER_MESSAGE: string = 'st-card-number-message';
 export const CARD_NUMBER_LABEL: string = 'st-card-number-label';
+export const CARD_NUMBER_WRAPPER: string = 'st-card-number__wrapper';
 
 export const EXPIRATION_DATE_COMPONENT_NAME: string = 'expirationDate';
 export const EXPIRATION_DATE_IFRAME: string = 'st-expiration-date-iframe';
@@ -13,6 +14,7 @@ export const EXPIRATION_DATE_INPUT: string = 'st-expiration-date-input';
 export const EXPIRATION_DATE_INPUT_SELECTOR: string = 'st-expiration-date';
 export const EXPIRATION_DATE_MESSAGE: string = 'st-expiration-date-message';
 export const EXPIRATION_DATE_LABEL: string = 'st-expiration-date-label';
+export const EXPIRATION_DATE_WRAPPER: string = 'st-expiration-date__wrapper';
 
 export const SECURITY_CODE_COMPONENT_NAME: string = 'securityCode';
 export const SECURITY_CODE_IFRAME: string = 'st-security-code-iframe';
@@ -20,6 +22,7 @@ export const SECURITY_CODE_INPUT: string = 'st-security-code-input';
 export const SECURITY_CODE_INPUT_SELECTOR: string = 'st-security-code';
 export const SECURITY_CODE_MESSAGE: string = 'st-security-code-message';
 export const SECURITY_CODE_LABEL: string = 'st-security-code-label';
+export const SECURITY_CODE_WRAPPER: string = 'st-security-code__wrapper';
 
 export const NOTIFICATION_FRAME_ID: string = 'st-notification-frame';
 export const NOTIFICATION_FRAME_CORE_CLASS: string = 'notification-frame';
