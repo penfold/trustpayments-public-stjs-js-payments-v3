@@ -251,6 +251,11 @@ function formFieldFixture() {
   Input.prototype.getLabel = jest.fn().mockReturnValueOnce(() => {
     throw new Error(NOT_IMPLEMENTED_ERROR);
   });
-  const instance = new Input('st-form-field-input', 'st-form-field-message', 'st-form-field-label');
+  const instance = new Input(
+    'st-form-field-input',
+    'st-form-field-message',
+    'st-form-field-label',
+    'st-form-field__wrapper'
+  );
   return { instance, inputElement, messageElement, labelElement };
 }
