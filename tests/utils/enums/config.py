@@ -1,5 +1,6 @@
 config = {
     "base_config": "config.json",
+    "base_config_visual": "config_visual.json",
     "config_default": "configDefault.json",
     "config_submit_on_success_true": "configSubmitOnSuccessTrue.json",
     "config_submit_on_error_true": "configSubmitOnErrorTrue.json",
@@ -92,5 +93,8 @@ config = {
 }
 
 screenshots = {
-    "scrn_successful_payment_with_bypassCard_using_mastercard": "successfulPaymentWithBypassCardUsingMastercard.png"
+    "scrn_card_interface_after_successful_payment": "cardInterfaceAfterSuccessfulPayment.png",
+    "scrn_card_interface_before_payment": "cardInterfaceBeforePayment.png",
+    "scrn_card_interface_error_expiry_date": "cardInterfaceErrorExpiryDate.png",
+    "scrn_card_interface_error_invalid_patterns": "cardInterfaceErrorInvalidPatterns.png",
 }

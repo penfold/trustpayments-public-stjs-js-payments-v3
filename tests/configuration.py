@@ -130,3 +130,4 @@ class TestExecutorConfig:
         self.timeout = int(CONFIGURATION.TIMEOUT)
         self.reports_path = CONFIGURATION.REPORTS_PATH
         self.screenshots_path = CONFIGURATION.SCREENSHOTS_PATH
+        self.mobile_device = CONFIGURATION.REMOTE_DEVICE
