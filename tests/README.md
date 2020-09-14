@@ -58,7 +58,7 @@ In directory `binary` execute
 Then, to run
 ```bash
 docker-compose $TEST_VERSION run -e LOCAL=true -e REMOTE=true -e BROWSER=Chrome -e BROWSER_VERSION=80.0 -e OS=Windows -e OS_VERSION=10
- -e BS_USERNAME=<BROWSERSTACK_USERNAME> -e BS_ACCESS_KEY=<BROWSERSTACK_ACCESS_KEY> tests poetry run behave features
+ -e BS_USERNAME=<BROWSERSTACK_USERNAME> -e BS_ACCESS_KEY=<BROWSERSTACK_ACCESS_KEY> payments-tests poetry run behave features
 ```
 
 ## License
