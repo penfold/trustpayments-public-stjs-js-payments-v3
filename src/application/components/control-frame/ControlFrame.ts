@@ -169,12 +169,12 @@ export class ControlFrame {
   }
 
   private _setRequestTypes(config: IConfig): void {
-    const requestTypes: [string[], string[]] = this._requestTypesSplitter.splitRequestTypes(
+    const [preThreeDRequestTypes, postThreeDRequestTypes] = this._requestTypesSplitter.splitRequestTypes(
       config.components.requestTypes,
       this._getPan()
     );
-    this._preThreeDRequestTypes = requestTypes[0];
-    this._postThreeDRequestTypes = requestTypes[1];
+    this._preThreeDRequestTypes = preThreeDRequestTypes;
+    this._postThreeDRequestTypes = postThreeDRequestTypes;
   }
 
   private _updateJwtEvent(): void {

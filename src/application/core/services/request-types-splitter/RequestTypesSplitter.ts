@@ -9,7 +9,7 @@ export class RequestTypesSplitter {
   private _isCardBypassed(pan: string): boolean {
     const bypassCards = this._configProvider.getConfig().bypassCards as string[];
 
-    return bypassCards.includes(iinLookup.lookup(pan).type);
+    return bypassCards.includes(iinLookup.lookup(pan).type) || false;
   }
 
   splitRequestTypes(requestTypes: string[], pan: string): [string[], string[]] {
