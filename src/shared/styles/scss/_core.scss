@@ -82,8 +82,8 @@ input:-webkit-autofill.error-field {
     position: relative;
     width: 100%;
     box-sizing: border-box;
-    margin-right: 10px;
     min-width: 225px;
+    height: 45px;
   }
 
   &--lined-up {
@@ -95,10 +95,23 @@ input:-webkit-autofill.error-field {
 .card-number,
 .expiration-date,
 .security-code {
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
   &__label.lined-up {
     max-width: 110px;
     width: 100%;
     word-break: break-all;
     text-align: right;
+    margin: auto 10px auto auto;
   }
+}
+
+.st-card-number--lined-up,
+.st-expiration-date--lined-up,
+.st-security-code--lined-up {
+  align-items: center;
+  flex-direction: row;
 }
