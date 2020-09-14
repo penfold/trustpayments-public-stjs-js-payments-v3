@@ -170,18 +170,6 @@ OSXCatalina-chrome-85.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_3
 
-win8.1-firefox-80.0-smoke-tests:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-when-release
-  variables:
-    OS: Windows
-    OS_VERSION: '8.1'
-    BROWSER: Firefox
-    BROWSER_VERSION: '80.0'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_4
-
 OSXCatalina-firefox-80.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
