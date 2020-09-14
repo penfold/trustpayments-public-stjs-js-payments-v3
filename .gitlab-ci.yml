@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.15
+.cicd-os-ref: &cicd-os-ref 0.0.19
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
@@ -28,9 +28,10 @@ variables:
   # Initialize
   # DISABLE_JOB_copy_cicd_scripts: 'true'
   # Pre-build
+  # DISABLE_JOB_print_variables: 'true'
+  # DISABLE_JOB_export_cleanup_artifacts: 'true'
   # DISABLE_JOB_docker_images_build: 'true'
   # DISABLE_JOB_docker_images_pull: 'true'
-  # DISABLE_JOB_copy_payments_tests_repo: 'true'
   # Build
   # utility-images-build - No need to disabling. Extends to enable.
   # Fast Tests
