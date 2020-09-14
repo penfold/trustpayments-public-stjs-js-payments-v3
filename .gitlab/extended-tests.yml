@@ -60,7 +60,23 @@
     paths:
       - ./tests/screenshots
       - ./tests/reports
-    when: on_failure
+    when: always
+
+.visual-regression-component-tests:
+  extends:
+    - .extended-tests-browserstack
+  variables:
+    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
+  after_script:
+    - mkdir -p ./tests/screenshots/actual && mkdir -p ./tests/screenshots/results && mkdir -p ./tests/reports
+    - mv /app/screenshots/actual/* ./tests/screenshots/actual/
+    - mv /app/screenshots/results/* ./tests/screenshots/results/
+    - mv /app/reports/* ./tests/reports/
+  artifacts:
+    paths:
+      - ./tests/screenshots
+      - ./tests/reports
+    when: always
 
 # smoke tests executed on review branches
 .apple-test-browserstack-component-test:
@@ -120,6 +136,40 @@ win10-chrome-85.0-visual-tests:
     BROWSER_VERSION: '85'
     POETRY_TAGS: visual_regression
   resource_group: extended_tests_release_2
+
+SamsungGalaxyS10Plus-9.0-visual-tests:
+  extends:
+    - .visual-regression-tests
+    - .rules-when-release
+  variables:
+    DEVICE: Samsung Galaxy S10 Plus
+    OS_VERSION: '9.0'
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: visual_regression
+  resource_group: extended_tests_release_3
+
+iPhoneXS-12-visual-tests:
+  extends:
+    - .visual-regression-component-tests
+    - .rules-when-release
+  variables:
+    DEVICE: iPhone XS
+    OS_VERSION: 12
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: visual_regression_safari
+  resource_group: extended_tests_release_4
+
+OSXMojave-Safari-12.1-visual-tests:
+  extends:
+    - .visual-regression-component-tests
+    - .rules-when-release
+  variables:
+    OS: OS X
+    OS_VERSION: Mojave
+    BROWSER: Safari
+    BROWSER_VERSION: '12.1'
+    POETRY_TAGS: visual_regression_safari
+  resource_group: extended_tests_release_1
 
 # smoke tests executed on master branch
 
