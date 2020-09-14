@@ -14,7 +14,12 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { Styler } from '../../core/shared/styler/Styler';
 import { Frame } from '../../core/shared/frame/Frame';
 import { LABEL_CARD_NUMBER } from '../../core/models/constants/Translations';
-import { CARD_NUMBER_INPUT, CARD_NUMBER_LABEL, CARD_NUMBER_MESSAGE } from '../../core/models/constants/Selectors';
+import {
+  CARD_NUMBER_INPUT,
+  CARD_NUMBER_LABEL,
+  CARD_NUMBER_MESSAGE,
+  CARD_NUMBER_WRAPPER
+} from '../../core/models/constants/Selectors';
 
 @Service()
 export class CardNumber extends Input {
@@ -44,7 +49,7 @@ export class CardNumber extends Input {
     private frame: Frame,
     private messageBus: MessageBus
   ) {
-    super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL);
+    super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER);
     this._cardNumberField = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
     this.validation = new Validation();
     this._isCardNumberValid = true;
