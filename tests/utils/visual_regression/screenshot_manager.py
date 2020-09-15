@@ -12,7 +12,7 @@ def screenshot_manager():
 
 
 class ScreenshotManager:
-    SENSITIVITY_DEFAULT: int = 5000
+    SENSITIVITY_DEFAULT: int = 400
     COMPARISON_AREA_PX_DEFAULT: int = 20
 
     def __init__(self, driver__browser, config__executor):
@@ -68,7 +68,8 @@ class ScreenshotManager:
         return filename
 
     def compare_screenshots(self, filename_expected: str, filename_actual: str,
-                            comparison_area_px: int = COMPARISON_AREA_PX_DEFAULT):
+                            comparison_area_px: int = COMPARISON_AREA_PX_DEFAULT,
+                            sensitivity: int = SENSITIVITY_DEFAULT):
 
         filepath_expected = os.path.join(self._screenshots_path, "expected", self._proper_name(filename_expected))
         filepath_actual = os.path.join(self._screenshots_path, "actual", self._proper_name(filename_actual))
@@ -89,7 +90,9 @@ class ScreenshotManager:
                 region_staging = self._process_region(screenshot_expected, x, y, block_width, block_height)
                 region_production = self._process_region(screenshot_actual, x, y, block_width, block_height)
 
-                if region_production != region_staging and region_staging is not None and region_production is not None:
+                if region_staging is not None and region_production is not None \
+                    and (region_staging + sensitivity < region_production
+                         or region_production < region_staging - sensitivity):
                     screenshot_are_the_same = False
                     draw = ImageDraw.Draw(screenshot_expected)
                     draw.rectangle((x, y, x + block_width, y + block_height), outline="red")
@@ -108,7 +111,6 @@ class ScreenshotManager:
 
     def _process_region(self, image, x, y, width, height):
         region_total: int = 0
-        factor: int = self.SENSITIVITY_DEFAULT
 
         for coordinateY in range(y, y + height):
             for coordinateX in range(x, x + width):
@@ -118,4 +120,4 @@ class ScreenshotManager:
                 except:
                     return
 
-        return int(region_total / factor)
+        return region_total
