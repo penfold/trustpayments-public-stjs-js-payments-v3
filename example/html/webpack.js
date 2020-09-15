@@ -11,7 +11,7 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 
 module.exports = {
   mode: 'development',
-  devtool: 'inline-source-map',
+  devtool: 'eval-source-map',
   devServer: {
     compress: true,
     contentBase: path.join(__dirname, './dist'),
@@ -109,7 +109,8 @@ module.exports = {
     new StyleLintPlugin({
       context: path.join(__dirname, '')
     }),
-    new FriendlyErrorsWebpackPlugin()
+    new FriendlyErrorsWebpackPlugin(),
+    new webpack.SourceMapDevToolPlugin({})
   ],
   module: {
     rules: [

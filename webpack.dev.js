@@ -7,7 +7,7 @@ const fs = require('fs');
 
 module.exports = merge(common, {
   mode: 'development',
-  devtool: 'inline-source-map',
+  devtool: 'eval-source-map',
   devServer: {
     compress: true,
     contentBase: path.join(__dirname, './dist'),
@@ -30,6 +30,7 @@ module.exports = merge(common, {
   plugins: [
     new ManifestPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.SourceMapDevToolPlugin({}),
     new webpack.DefinePlugin({
       WEBSERVICES_URL: JSON.stringify(`https://${process.env.npm_package_config_host}:8443`)
     })
