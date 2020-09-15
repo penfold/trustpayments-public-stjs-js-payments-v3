@@ -170,8 +170,9 @@ def step_impl(context, field):
         payment_page.validate_css_style(FieldType.NOTIFICATION_FRAME.name, "background-color", '100, 149, 237')
 
 
-@when('User changes page language to "(?P<language>.+)"')
+@step('User changes page language to "(?P<language>.+)"')
 def step_impl(context, language):
+    context.language = language
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     jwt = payment_page.get_translation_from_json(language, "jwt")
     payment_page.open_page(f"{CONFIGURATION.URL.BASE_URL}?jwt={jwt}")
@@ -224,7 +225,7 @@ def step_impl(context):
 @then("User is redirected to action page")
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    time.sleep(1)
+    time.sleep(3)
     for key, value in url_after_redirection.items():
         if key in context.scenario.name:
             if "Cardinal Commerce - successful" in key and 'IE' in CONFIGURATION.REMOTE_BROWSER:
@@ -240,7 +241,7 @@ def step_impl(context):
 def step_impl(context, url: str):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     wait_for_url = False
-    if "update_jwt_test" in context.scenario.tags:
+    if "update_jwt_test" or "_invalid_jwt" in context.scenario.tags:
         wait_for_url = True
     with soft_assertions():
         payment_page.validate_base_url(url, wait_for_url)
@@ -327,6 +328,7 @@ def step_impl(context):
 @step("User fills (?P<auth_type>.+) authentication modal")
 def step_impl(context, auth_type):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
+    time.sleep(1)
     if 'parent_iframe' in context.scenario.tags:
         payment_page._action.switch_to_default_iframe()
     payment_page.fill_cardinal_authentication_code(auth_type)
@@ -369,9 +371,13 @@ def step_impl(context, example_page: ExamplePage):
             jwt = encode_jwt_for_json(JwtConfig[f"{row['jwtName']}"])
         payment_page.open_page(f"{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}")
         context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
+    elif "WITH_SPECIFIC_IFRAME" in example_page:
+        payment_page.open_page(f"{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}")
+        payment_page.switch_to_parent_iframe()
+        payment_page.wait_for_parent_iframe()
     else:
         payment_page.open_page(f"{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}")
-    payment_page.wait_for_iframe()
+        payment_page.wait_for_iframe()
 
 
 @step("User opens (?:example page|example page (?P<example_page>.+))")
@@ -395,7 +401,8 @@ def step_impl(context, example_page: ExamplePage):
 
     if example_page is not None and "IN_IFRAME" in example_page:
         payment_page.switch_to_parent_iframe()
-    payment_page.wait_for_iframe()
+    if "e2e_config_submit_on_error_invalid_jwt" not in context.scenario.tags:
+        payment_page.wait_for_iframe()
 
 
 @then('User will see that (?P<element>.+) is translated into "(?P<expected_value>.+)"')

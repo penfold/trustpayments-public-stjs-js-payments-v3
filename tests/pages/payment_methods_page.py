@@ -95,7 +95,7 @@ class PaymentMethodsPage(BasePage):
         self.select_proper_cardinal_authentication(auth)
 
     def select_proper_cardinal_authentication(self, auth):
-        self._executor.wait_for_element(PaymentMethodsLocators.secure_trade_form)
+        self._executor.wait_for_element_visibility(PaymentMethodsLocators.secure_trade_form)
         self._action.switch_to_iframe(FieldType.CONTROL_IFRAME.value)
         self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
 
@@ -181,6 +181,17 @@ class PaymentMethodsPage(BasePage):
                 self._executor.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
                 self._action.click(PaymentMethodsLocators.pay_mock_button)
         self._executor.wait_for_javascript()
+
+    def wait_for_pay_processing_end(self, language: str):
+        processing_text: str = "Processing"
+        if language != 'en_US' and language != 'en_GB':
+            with open(f'resources/languages/{language}.json', 'r') as f:
+                translation = json.load(f)
+            processing_text = translation[processing_text]
+        processing_text = f"{processing_text} ..."
+
+        self._executor.wait_for_text_to_be_not_present_in_element(PaymentMethodsLocators.pay_mock_button,
+                                                                  processing_text)
 
     def get_field_validation_message(self, field_type):
         validation_message = ""
@@ -296,7 +307,8 @@ class PaymentMethodsPage(BasePage):
         assert expected_message in input_value, assertion_message
 
     def validate_payment_status_message(self, expected_message):
-        self.scroll_to_top()
+        if CONFIGURATION.REMOTE_DEVICE != '':
+            self.scroll_to_top()
         self._executor.wait_for_element_visibility(PaymentMethodsLocators.notification_frame)
         actual_message = self.get_payment_status_message()
         assertion_message = f'Payment status is not correct, should be: "{expected_message}" but is: "{actual_message}"'

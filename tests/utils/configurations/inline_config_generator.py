@@ -11,7 +11,7 @@ def get_data_from_json(e2e_config):
 
 def covert_json_to_string(json_config):
     inline_config = "inlineConfig=" + json.dumps(json_config)
-    formatted_config = inline_config.replace(" ", "")
+    formatted_config = inline_config.replace(": ", ":").replace(", ", ",")
     return formatted_config
 
 

@@ -36,6 +36,7 @@ def before_scenario(context, scenario):
     context.executor = ioc_config.EXECUTOR.resolve('test')
     context.browser = ioc_config.CONFIG.resolve('driver').browser
     context.session_id = context.executor.get_session_id()
+    context.language = 'en_GB'
     # scenario.name = '%s_%s' % (scenario.name, context.browser.upper())
 
     if "apple_test" in scenario.tags and (context.browser not in "safari"):

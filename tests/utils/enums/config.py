@@ -1,5 +1,7 @@
 config = {
     "base_config": "config.json",
+    "base_config_visual": "config_visual.json",
+    "base_config_visual_styling": "config_visual_styling.json",
     "config_default": "configDefault.json",
     "config_submit_on_success_true": "configSubmitOnSuccessTrue.json",
     "config_submit_on_error_true": "configSubmitOnErrorTrue.json",
@@ -89,4 +91,15 @@ config = {
     "e2e_button_id_config": "e2e_config/e2eButtonIdConfig.json",
     "form_id_config": "configFormId.json",
     "form_id_config_visa_checkout": "configFormIdVisaCheckout.json"
+}
+
+screenshots = {
+    "scrn_card_interface_after_successful_payment": "cardInterfaceAfterSuccessfulPayment.png",
+    "scrn_card_interface_before_payment": "cardInterfaceBeforePayment.png",
+    "scrn_card_interface_error_expiry_date": "cardInterfaceErrorExpiryDate.png",
+    "scrn_card_interface_error_invalid_patterns": "cardInterfaceErrorInvalidPatterns.png",
+    "scrn_card_interface_after_successful_payment_styling": "cardInterfaceAfterSuccessfulPaymentWithStyling.png",
+    "scrn_card_interface_before_payment_styling": "cardInterfaceBeforePaymentWithStyling.png",
+    "scrn_card_interface_error_expiry_date_styling": "cardInterfaceErrorExpiryDateWithStyling.png",
+    "scrn_card_interface_error_invalid_patterns_styling": "cardInterfaceErrorInvalidPatternsWithStyling.png",
 }
