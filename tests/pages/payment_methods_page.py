@@ -182,12 +182,13 @@ class PaymentMethodsPage(BasePage):
                 self._action.click(PaymentMethodsLocators.pay_mock_button)
         self._executor.wait_for_javascript()
 
-    def wait_for_pay_process_end(self, language: str):
-        processing_text: str = "Processing..."
+    def wait_for_pay_processing_end(self, language: str):
+        processing_text: str = "Processing"
         if language != 'en_US' and language != 'en_GB':
             with open(f'resources/languages/{language}.json', 'r') as f:
                 translation = json.load(f)
-            processing_text: str = translation['Processing...']
+            processing_text = translation[processing_text]
+        processing_text = f"{processing_text} ..."
 
         self._executor.wait_for_text_to_be_not_present_in_element(PaymentMethodsLocators.pay_mock_button,
                                                                   processing_text)
