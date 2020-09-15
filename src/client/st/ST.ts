@@ -40,10 +40,11 @@ import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventType
 import { IframeFactory } from '../iframe-factory/IframeFactory';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { Frame } from '../../application/core/shared/frame/Frame';
-import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/Selectors';
+import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
+import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 
 @Service()
-class ST {
+export class ST {
   private static DEBOUNCE_JWT_VALUE: number = 900;
   private static JWT_NOT_SPECIFIED_MESSAGE: string = 'Jwt has not been specified';
   private static LOCALE_STORAGE: string = 'locale';
@@ -146,7 +147,6 @@ class ST {
     this.blockSubmitButton();
     // @ts-ignore
     this._commonFrames._requestTypes = this._config.components.requestTypes;
-
     this._framesHub
       .waitForFrame(CONTROL_FRAME_IFRAME)
       .pipe(
@@ -387,11 +387,5 @@ class ST {
 }
 
 export default (config: IConfig) => {
-  Container.get(FrameIdentifier).setFrameName(MERCHANT_PARENT_FRAME);
-
-  const st = Container.get(ST);
-
-  st.init(config);
-
-  return st;
+  return Container.get(ClientBootstrap).run(config);
 };
