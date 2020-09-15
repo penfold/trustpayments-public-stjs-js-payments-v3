@@ -8,11 +8,11 @@ import { ResponseMessage } from './messages/ResponseMessage';
 import { environment } from '../../../environments/environment';
 import { FrameCollection } from './interfaces/FrameCollection';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
-import { CONFIG } from '../../../application/core/dependency-injection/InjectionTokens';
 import { FrameIdentifier } from './FrameIdentifier';
 import { FrameAccessor } from './FrameAccessor';
 import { FrameNotFound } from './errors/FrameNotFound';
 import { Debug } from '../../Debug';
+import { CONFIG } from '../../dependency-injection/InjectionTokens';
 
 @Service()
 export class InterFrameCommunicator {
