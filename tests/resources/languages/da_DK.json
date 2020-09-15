@@ -19,7 +19,9 @@
   "Method not implemented": "Metode ikke implementeret",
   "Form is not valid": "Formular er ikke gyldig",
   "Pay": "Betal",
-  "Processing...": "Behandler...",
+  "Processing": "Behandler",
   "Invalid field": "Ugyldigt felt",
-  "Card number is invalid": "Kortnummer er ugyldigt"
+  "Card number is invalid": "Kortnummer er ugyldigt",
+  "You are not logged to Apple account": "Du er ikke logget på Apple-konto",
+  "A target element for the input field with id could not be found. Please check your configuration": "Et målelement for inputfeltet med id kunne ikke findes. Kontroller din konfiguration"
 }

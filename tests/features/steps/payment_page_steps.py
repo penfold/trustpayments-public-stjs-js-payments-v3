@@ -61,7 +61,6 @@ def step_impl(context, color):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.choose_payment_methods(PaymentType.CARDINAL_COMMERCE.name)
-    payment_page.wait_for_pay_process_end(context.language)
 
 
 @step("User clicks Additional button")
