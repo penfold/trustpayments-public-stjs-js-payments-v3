@@ -22,12 +22,12 @@ build-app-html-dev:
 build-payments-tests:
   extends: .utility-images-build
   variables:
-    BUILD_EXECUTION_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}
     UTILITY_NAME: 'payments-tests'
+    BUILD_ARGS_EXTRA: --build-arg COPY_FROM=./tests
 
 #### wiremock for testing repo
 build-wiremock:
   extends: .utility-images-build
   variables:
-    BUILD_EXECUTION_PATH: ${PROJECT_JS_PAYMENTS_TESTS_NAME}
     UTILITY_NAME: 'wiremock'
+    BUILD_ARGS_EXTRA: --build-arg COPY_FROM=./tests

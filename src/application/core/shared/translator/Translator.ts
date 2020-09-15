@@ -58,4 +58,8 @@ export class Translator {
     const translation: string = Object.keys(json).includes(text) ? json[text] : '';
     return translation ? translation : i18next.t(text, { content: text });
   };
+
+  changeLanguage(language: string): void {
+    i18next.changeLanguage(language);
+  }
 }

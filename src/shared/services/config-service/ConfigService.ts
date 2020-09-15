@@ -2,12 +2,12 @@ import { Container, Service } from 'typedi';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigResolver } from '../config-resolver/ConfigResolver';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
-import { CONFIG } from '../../../application/core/dependency-injection/InjectionTokens';
 import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { filter, first } from 'rxjs/operators';
+import { CONFIG } from '../../dependency-injection/InjectionTokens';
 
 @Service()
 export class ConfigService implements ConfigProvider {

@@ -5,9 +5,11 @@ All notable changes to this project will be documented in this file.
 ## 2.5.0
 
 ### Fixed
--
--
--
+- Uncaught TypeError on page load
+
+### Added
+- Config moved to Redux store
+- Expanded iframe inputs customization
 
 ## 2.4.0
 
