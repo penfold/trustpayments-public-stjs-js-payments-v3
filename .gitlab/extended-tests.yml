@@ -183,6 +183,52 @@ OSXMojave-Safari-12.1-visual-tests:
     POETRY_TAGS: visual_regression_safari
   resource_group: extended_tests_release_1
 
+win10-chrome-85.0-visual-tests-styling:
+  extends:
+    - .visual-regression-tests
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Chrome
+    BROWSER_VERSION: '85'
+    POETRY_TAGS: visual_regression_styling
+  resource_group: extended_tests_release_2
+
+SamsungGalaxyS10Plus-9.0-visual-tests-styling:
+  extends:
+    - .visual-regression-tests
+    - .rules-when-release
+  variables:
+    DEVICE: Samsung Galaxy S10 Plus
+    OS_VERSION: '9.0'
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: visual_regression_styling
+  resource_group: extended_tests_release_3
+
+iPhoneXS-12-visual-tests-styling:
+  extends:
+    - .visual-regression-component-tests
+    - .rules-when-release
+  variables:
+    DEVICE: iPhone XS
+    OS_VERSION: 12
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: visual_regression_styling
+  resource_group: extended_tests_release_4
+
+OSXMojave-Safari-12.1-visual-tests-styling:
+  extends:
+    - .visual-regression-component-tests
+    - .rules-when-release
+  variables:
+    OS: OS X
+    OS_VERSION: Mojave
+    BROWSER: Safari
+    BROWSER_VERSION: '12.1'
+    POETRY_TAGS: visual_regression_styling
+  resource_group: extended_tests_release_1
+
 # smoke tests executed on master branch
 
 iPhone8-11.0-smoke-tests:

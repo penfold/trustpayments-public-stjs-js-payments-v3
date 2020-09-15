@@ -171,7 +171,7 @@ def step_impl(context, field):
         payment_page.validate_css_style(FieldType.NOTIFICATION_FRAME.name, "background-color", '100, 149, 237')
 
 
-@when('User changes page language to "(?P<language>.+)"')
+@step('User changes page language to "(?P<language>.+)"')
 def step_impl(context, language):
     context.language = language
     payment_page = context.page_factory.get_page(page_name='payment_methods')
