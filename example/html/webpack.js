@@ -33,9 +33,9 @@ module.exports = {
   },
 
   entry: {
-    example: ['./ts/polyfills.ts', './pages/index/index.ts'],
-    receipt: ['./ts/polyfills.ts', './pages/receipt/receipt.ts'],
-    iframe: ['./ts/polyfills.ts', './pages/iframe/iframe.ts'],
+    example: ['./pages/index/index.ts'],
+    receipt: ['./pages/receipt/receipt.ts'],
+    iframe: ['./pages/iframe/iframe.ts'],
     inlineConfig: ['./pages/index/inline-config.ts'],
     counter: ['./pages/index/counter.ts']
   },
@@ -52,7 +52,7 @@ module.exports = {
     new ManifestPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
-      WEBSERVICES_URL: JSON.stringify(`https://${process.env.npm_package_config_host}:8443`),
+      BUNDLE_URL: JSON.stringify(`https://${process.env.npm_package_config_host}:8443`),
       EXAMPLE_URL: JSON.stringify(`https://${process.env.npm_package_config_host}:8444`)
     }),
     new CleanWebpackPlugin(),

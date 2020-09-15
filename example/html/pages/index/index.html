@@ -149,7 +149,7 @@
 </main>
 <script type="text/javascript" src="<%= EXAMPLE_URL %>/counter.js"></script>
 <script type="text/javascript" src="<%= EXAMPLE_URL %>/inlineConfig.js"></script>
-<script type="text/javascript" src="<%= WEBSERVICES_URL %>/st.js"></script>
+<script type="text/javascript" src="<%= BUNDLE_URL %>/st.js"></script>
 <script type="text/javascript">
   var ST = SecureTrading;
   window.addEventListener('load', function() {
@@ -166,7 +166,7 @@
       init(inlineConfig);
     } else {
       window
-        .fetch('<%= WEBSERVICES_URL %>/json/config.json')
+        .fetch('<%= BUNDLE_URL %>/json/config.json')
         .then(function(response) {
           if (response.status !== 200) {
             return Promise.reject('Configuration has not been set !');
