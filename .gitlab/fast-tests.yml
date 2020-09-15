@@ -84,3 +84,23 @@ e2e-tests:
   variables:
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
   parallel: 14
+
+zap-baseline-scan-library-securetrading-net:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
+      alias: library.securetrading.net
+  extends:
+    - .zap-baseline-scan
+  variables:
+    URL_TO_SCAN: 'https://library.securetrading.net'
+    ZAP_CONFIG_PATH: "baseline-scan.conf"
+
+zap-baseline-scan-merchant-securetrading-net:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
+      alias: merchant.securetrading.net
+  extends:
+    - .zap-baseline-scan
+  variables:
+    URL_TO_SCAN: 'https://merchant.securetrading.net'
+    ZAP_CONFIG_PATH: "baseline-scan.conf"

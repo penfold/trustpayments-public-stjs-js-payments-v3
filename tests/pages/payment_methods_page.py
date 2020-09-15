@@ -95,7 +95,7 @@ class PaymentMethodsPage(BasePage):
         self.select_proper_cardinal_authentication(auth)
 
     def select_proper_cardinal_authentication(self, auth):
-        self._executor.wait_for_element(PaymentMethodsLocators.secure_trade_form)
+        self._executor.wait_for_element_visibility(PaymentMethodsLocators.secure_trade_form)
         self._action.switch_to_iframe(FieldType.CONTROL_IFRAME.value)
         self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
 
@@ -306,7 +306,8 @@ class PaymentMethodsPage(BasePage):
         assert expected_message in input_value, assertion_message
 
     def validate_payment_status_message(self, expected_message):
-        self.scroll_to_top()
+        if CONFIGURATION.REMOTE_DEVICE != '':
+            self.scroll_to_top()
         self._executor.wait_for_element_visibility(PaymentMethodsLocators.notification_frame)
         actual_message = self.get_payment_status_message()
         assertion_message = f'Payment status is not correct, should be: "{expected_message}" but is: "{actual_message}"'
