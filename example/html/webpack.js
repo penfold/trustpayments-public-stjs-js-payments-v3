@@ -33,9 +33,9 @@ module.exports = {
   },
 
   entry: {
-    example: ['./shared/ts/polyfills.ts', './pages/index/index.ts'],
-    receipt: ['./shared/ts/polyfills.ts', './pages/receipt/receipt.ts'],
-    iframe: ['./shared/ts/polyfills.ts', './pages/iframe/iframe.ts'],
+    example: ['./ts/polyfills.ts', './pages/index/index.ts'],
+    receipt: ['./ts/polyfills.ts', './pages/receipt/receipt.ts'],
+    iframe: ['./ts/polyfills.ts', './pages/iframe/iframe.ts'],
     inlineConfig: ['./pages/index/inline-config.ts'],
     counter: ['./pages/index/counter.ts']
   },
@@ -78,7 +78,7 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {
-          from: 'shared/img/*.png',
+          from: 'img/*.png',
           to: 'img',
           force: true,
           flatten: true
@@ -88,7 +88,7 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {
-          from: 'shared/img/*.webp',
+          from: 'img/*.webp',
           to: 'img',
           force: true,
           flatten: true
@@ -98,7 +98,7 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {
-          from: 'shared/json/*.json',
+          from: 'json/*.json',
           to: 'json',
           force: true,
           flatten: true,
