@@ -5,8 +5,7 @@
   "private": true,
   "browserslist": [
     "> 0.2% and last 2 versions",
-    "not dead",
-    "IE 10"
+    "not dead"
   ],
   "config": {
     "host": "localhost",
