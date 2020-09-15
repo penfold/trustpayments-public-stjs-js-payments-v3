@@ -10,7 +10,7 @@ Feature: Card Payments
   @base_config @extended_tests_part_1
   Scenario Outline: Payment form accessibility after payment process
     Given User opens page with payment form
-    When User fills payment form with credit card number "4000000000001000", expiration date "12/22" and cvv "123"
+    When User fills payment form with credit card number "4000000000001000", expiration date "12/30" and cvv "123"
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User clicks Pay button - AUTH response is set to "<action_code>"
     Then User will see that Submit button is "<form_status>" after payment
@@ -36,14 +36,18 @@ Feature: Card Payments
     When User opens page with payment form
     Then JSINIT request was sent only 1
 
-  @base_config
+  @config_defer_init
   Scenario: Verify number of JSINIT requests together with UpdateJWT
     Given User opens prepared payment form page WITH_UPDATE_JWT
       | jwtName          |
       | BASE_UPDATED_JWT |
-    When User calls updateJWT function by filling amount field
+    When User fills payment form with defined card VISA_FRICTIONLESS
+    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User calls updateJWT function by filling amount field
-    Then JSINIT request was sent only 2
+    And User calls updateJWT function by filling amount field
+    And User clicks Pay button - AUTH response is set to "OK"
+    Then User will see payment status information: "Payment has been successfully processed"
+    And JSINIT request was sent only 1
     And JSINIT requests contains updated jwt
 
   @base_config
