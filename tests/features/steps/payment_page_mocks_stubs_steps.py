@@ -239,6 +239,7 @@ def step_impl(context, request_type):
 @then("JSINIT request was sent only (?P<number>.+)")
 def step_impl(context, number):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
+    context.executor.wait_for_javascript()
     payment_page.validate_number_of_requests_without_data(RequestType.JSINIT.name, int(number))
 
 
