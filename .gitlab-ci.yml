@@ -40,6 +40,10 @@ variables:
   # DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
   # DISABLE_JOB_vuln_check: 'true'
   DISABLE_JOB_validate_merge_request_description: 'true'
+  # Release
+  DISABLE_JOB_release: 'true'
+  # Post-Release
+  DISABLE_JOB_npm_publish: 'true'
   ### Disabled Jobs : End
 
   ### Disabled Activities
@@ -64,3 +68,5 @@ stages:
   - build
   - fast-tests
   - extended-tests
+  - release
+  - post-release
