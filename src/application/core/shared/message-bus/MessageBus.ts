@@ -1,6 +1,6 @@
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { Service } from 'typedi';
-import { Observable, Subscribable } from 'rxjs';
+import { merge, Observable, Subject, Subscribable } from 'rxjs';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
 import { map, switchMap } from 'rxjs/operators';
@@ -19,6 +19,7 @@ export class MessageBus implements Subscribable<IMessageBusEvent> {
   public static EVENTS = PRIVATE_EVENTS;
   public static EVENTS_PUBLIC = PUBLIC_EVENTS;
   public readonly pipe: Observable<any>['pipe'];
+  private readonly parentFrameStream$ = new Subject<IMessageBusEvent>();
   private readonly messageStream$: Observable<IMessageBusEvent>;
 
   constructor(
@@ -80,12 +81,21 @@ export class MessageBus implements Subscribable<IMessageBusEvent> {
       throw new Error(`Cannot publish private event "${event.type}" to parent frame.`);
     }
 
+    if (this.identifier.isParentFrame()) {
+      this.parentFrameStream$.next(event);
+      return;
+    }
+
     this.communicator.send(event, MERCHANT_PARENT_FRAME);
   }
 
   private getMessageStream(): Observable<IMessageBusEvent> {
-    if (this.identifier.isParentFrame() || this.identifier.isControlFrame()) {
+    if (this.identifier.isControlFrame()) {
       return this.communicator.incomingEvent$;
+    }
+
+    if (this.identifier.isParentFrame()) {
+      return merge(this.communicator.incomingEvent$, this.parentFrameStream$);
     }
 
     return this.framesHub.waitForFrame(CONTROL_FRAME_IFRAME).pipe(
