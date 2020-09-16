@@ -60,6 +60,18 @@ version = "1.1.6"
 
 [[package]]
 category = "main"
+description = "Faker is a Python package that generates fake data for you."
+name = "faker"
+optional = false
+python-versions = ">=3.5"
+version = "4.1.3"
+
+[package.dependencies]
+python-dateutil = ">=2.4"
+text-unidecode = "1.3"
+
+[[package]]
+category = "main"
 description = "Clean single-source support for Python 3 and 2"
 name = "future"
 optional = false
@@ -147,6 +159,17 @@ version = "2.4.0"
 
 [[package]]
 category = "main"
+description = "Extensions to the standard Python datetime module"
+name = "python-dateutil"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
+version = "2.8.1"
+
+[package.dependencies]
+six = ">=1.5"
+
+[[package]]
+category = "main"
 description = "Python HTTP for Humans."
 name = "requests"
 optional = false
@@ -184,6 +207,14 @@ version = "1.13.0"
 
 [[package]]
 category = "main"
+description = "The most basic Text::Unidecode port"
+name = "text-unidecode"
+optional = false
+python-versions = "*"
+version = "1.3"
+
+[[package]]
+category = "main"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 name = "urllib3"
 optional = false
@@ -212,7 +243,7 @@ develop = ["Sphinx (>=2.4.3,<2.5.0)", "black (>=19.10b0,<20.0.0)", "coverage (>=
 docs = ["Sphinx (>=2.4.3)", "sphinx-rtd-theme (>=0.4.3)", "watchdog (>=0.10.2)"]
 
 [metadata]
-content-hash = "adbdb47e5c077b4ec3088ce4de7e978336ccc8a560b7ffae3efc9ea9a433c779"
+content-hash = "d660596a88f9e2f34ce22837724ae3670ce1fcaeff6c77c9940064907bdfb90a"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -240,6 +271,10 @@ enum34 = [
     {file = "enum34-1.1.6-py3-none-any.whl", hash = "sha256:644837f692e5f550741432dd3f223bbb9852018674981b1664e5dc339387588a"},
     {file = "enum34-1.1.6.tar.gz", hash = "sha256:8ad8c4783bf61ded74527bffb48ed9b54166685e4230386a9ed9b1279e2df5b1"},
     {file = "enum34-1.1.6.zip", hash = "sha256:2d81cbbe0e73112bdfe6ef8576f2238f2ba27dd0d55752a776c41d38b7da2850"},
+]
+faker = [
+    {file = "Faker-4.1.3-py3-none-any.whl", hash = "sha256:80bab8d46035a7393de827210c5d39c17109d3346d131946bde622137120c496"},
+    {file = "Faker-4.1.3.tar.gz", hash = "sha256:075a95ac4c95765370919d787dcd958acfaea635005ad5af4d926cb0973800db"},
 ]
 future = [
     {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},
@@ -296,6 +331,10 @@ pyotp = [
     {file = "pyotp-2.4.0-py2.py3-none-any.whl", hash = "sha256:e96c2d725d0b613b793775bb184e90297fda5f4989e210e28acf08a09ac2cc83"},
     {file = "pyotp-2.4.0.tar.gz", hash = "sha256:01eceab573181188fe038d001e42777884a7f5367203080ef5bda0e30fe82d28"},
 ]
+python-dateutil = [
+    {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
+    {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
+]
 requests = [
     {file = "requests-2.22.0-py2.py3-none-any.whl", hash = "sha256:9cf5292fcd0f598c671cfc1e0d7d1a7f13bb8085e9a590f48c010551dc6c4b31"},
     {file = "requests-2.22.0.tar.gz", hash = "sha256:11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4"},
@@ -307,6 +346,10 @@ selenium = [
 six = [
     {file = "six-1.13.0-py2.py3-none-any.whl", hash = "sha256:1f1b7d42e254082a9db6279deae68afb421ceba6158efa6131de7b3003ee93fd"},
     {file = "six-1.13.0.tar.gz", hash = "sha256:30f610279e8b2578cab6db20741130331735c781b56053c59c4076da27f06b66"},
+]
+text-unidecode = [
+    {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
+    {file = "text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8"},
 ]
 urllib3 = [
     {file = "urllib3-1.25.6-py2.py3-none-any.whl", hash = "sha256:3de946ffbed6e6746608990594d08faac602528ac7015ac28d33cee6a45b7398"},

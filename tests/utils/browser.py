@@ -6,11 +6,12 @@ from utils.waits import Waits
 
 
 class Browser(Waits):
+    # pylint: disable=too-many-public-methods
 
     def open_page(self, page_url):
         self._browser.get(page_url)
         if 'ie' in CONFIGURATION.BROWSER:
-            self._browser.get("javascript:document.getElementById('overridelink').click()")
+            self._browser.get('javascript:document.getElementById(\'overridelink\').click()')
         self.fullscreen()
 
     def open_page_with_jwt_config(self, page_url, jwt_json_config: JwtConfig):
@@ -22,7 +23,7 @@ class Browser(Waits):
         self._driver_browser.close_browser()
 
     def stop_browser(self):
-        self._browser.execute_script("window.stop();")
+        self._browser.execute_script('window.stop();')
 
     def clear_cookies(self):
         self._browser.delete_all_cookies()
@@ -58,26 +59,26 @@ class Browser(Waits):
         return title
 
     def scroll_horizontally(self):
-        self._browser.execute_script("window.scrollBy(100,0)")  # Scroll 100px to the right
+        self._browser.execute_script('window.scrollBy(100,0)')  # Scroll 100px to the right
 
     def fullscreen(self):
         if not CONFIGURATION.REMOTE_DEVICE or CONFIGURATION.REMOTE_DEVICE is None:
             self._browser.maximize_window()
 
     def scroll_into_view(self, element):
-        self._browser.execute_script("arguments[0].scrollIntoView();", element)
+        self._browser.execute_script('arguments[0].scrollIntoView();', element)
 
     def scroll_to_bottom(self):
-        self._browser.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+        self._browser.execute_script('window.scrollTo(0, document.body.scrollHeight)')
 
     def scroll_to_top(self):
-        self._browser.execute_script("window.scrollTo(0, -document.body.scrollHeight)")
+        self._browser.execute_script('window.scrollTo(0, -document.body.scrollHeight)')
 
     def switch_to_default_content(self):
         return self._browser.current_url
 
     def clear_storage(self):
-        self._browser.execute_script("window.localStorage.clear();")
+        self._browser.execute_script('window.localStorage.clear();')
 
     def get_session_id(self):
         return self._browser.session_id

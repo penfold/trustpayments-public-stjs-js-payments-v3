@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 
 @dataclass
 class VisaCheckoutLocators:
+    # pylint: disable=too-many-instance-attributes
 
     def __init__(self):
         self._visa_card_with_ending_number = None
@@ -27,4 +28,4 @@ class VisaCheckoutLocators:
     @visa_card_with_ending_number.setter
     def visa_card_with_ending_number(self, ending_number):
         self._visa_card_with_ending_number = \
-            (By.CSS_SELECTOR, f"button[aria-label*='{ending_number}']")
+            (By.CSS_SELECTOR, f'button[aria-label*=\'{ending_number}\']')
