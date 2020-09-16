@@ -364,6 +364,10 @@ def step_impl(context, e2e_config: e2eConfig, jwt_config: JwtConfig):
 @step("User opens prepared payment form page (?P<example_page>.+)")
 def step_impl(context, example_page: ExamplePage):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
+    if ('safari' in context.browser) or ('iP' in CONFIGURATION.REMOTE_DEVICE):
+        payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
+        if 'safari' in context.browser or 'visa_test' in context.scenario.tags or 'apple_test' in context.scenario.tags:
+            payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
     if "WITH_UPDATE_JWT" in example_page:
         jwt = ''
         for row in context.table:
