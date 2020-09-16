@@ -95,7 +95,7 @@ class PaymentMethodsPage(BasePage):
         self.select_proper_cardinal_authentication(auth)
 
     def select_proper_cardinal_authentication(self, auth):
-        self._executor.wait_for_element_visibility(PaymentMethodsLocators.secure_trade_form)
+        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.secure_trade_form)
         self._action.switch_to_iframe(FieldType.CONTROL_IFRAME.value)
         self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
 
@@ -161,7 +161,7 @@ class PaymentMethodsPage(BasePage):
         if payment_type == PaymentType.VISA_CHECKOUT.name:
             self._executor.wait_for_javascript()
             self.scroll_to_bottom()
-            self._executor.wait_for_element_visibility(PaymentMethodsLocators.visa_checkout_mock_button)
+            self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.visa_checkout_mock_button)
             if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
                 self._action.click_by_javascript(PaymentMethodsLocators.visa_checkout_mock_button)
             else:
