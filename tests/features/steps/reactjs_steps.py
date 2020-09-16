@@ -1,6 +1,7 @@
-from behave import *
+# type: ignore[no-redef]
+from behave import step, use_step_matcher
 
-use_step_matcher("re")
+use_step_matcher('re')
 
 
 @step('User switch tab to \'Personal Data\' in reactjs app')

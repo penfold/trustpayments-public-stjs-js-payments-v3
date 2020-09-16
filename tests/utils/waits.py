@@ -19,6 +19,7 @@ class Waits:
         return self._wait.until(ec.presence_of_element_located(locator))
 
     def wait_and_check_is_element_displayed(self, locator):
+        # pylint: disable=bare-except
         try:
             element = self._wait.until(ec.presence_of_element_located(locator)).is_displayed()
             return element is not None
@@ -26,6 +27,8 @@ class Waits:
             return False
 
     def wait_for_element_to_be_displayed(self, locator):
+        # pylint: disable=bare-except
+
         max_try = 20
         while max_try:
             try:

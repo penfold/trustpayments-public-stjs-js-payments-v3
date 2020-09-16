@@ -1,6 +1,6 @@
 import json
 
-from utils.enums.e2e_config import e2eConfig
+from utils.enums.e2e_config import E2eConfig
 
 
 def get_data_from_json(e2e_config):
@@ -10,13 +10,13 @@ def get_data_from_json(e2e_config):
 
 
 def covert_json_to_string(json_config):
-    inline_config = "inlineConfig=" + json.dumps(json_config)
-    formatted_config = inline_config.replace(": ", ":").replace(", ", ",")
+    inline_config = 'inlineConfig=' + json.dumps(json_config)
+    formatted_config = inline_config.replace(': ', ':').replace(', ', ',')
     return formatted_config
 
 
-def create_inline_config(e2e_config: e2eConfig, jwt):
+def create_inline_config(e2e_config: E2eConfig, jwt):
     json_config = get_data_from_json(e2e_config.value)
-    json_config["jwt"] = jwt
+    json_config['jwt'] = jwt
     formatted_config = covert_json_to_string(json_config)
     return formatted_config

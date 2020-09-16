@@ -62,8 +62,8 @@ class Card(Enum):
 
     @property
     def number(self):
-        # the same number as the formatted one but with "normal" notation
-        return int(self.formatted_number.replace(" ", ""))
+        # the same number as the formatted one but with 'normal' notation
+        return int(self.formatted_number.replace(' ', ''))
 
     @property
     def value(self) -> str:
@@ -81,9 +81,9 @@ class Card(Enum):
     @property
     def future_expiration_date(self) -> str:
         date_two_years_in_future = adjust_date_day(get_current_time(), 2 * 365)
-        return convert_to_string(date_two_years_in_future, date_formats.month_year)
+        return str(convert_to_string(date_two_years_in_future, date_formats.month_year))
 
     @property
     def past_expiration_date(self) -> str:
         date_two_years_in_past = adjust_date_day(get_current_time(), -2 * 365)
-        return convert_to_string(date_two_years_in_past, date_formats.month_year)
+        return str(convert_to_string(date_two_years_in_past, date_formats.month_year))
