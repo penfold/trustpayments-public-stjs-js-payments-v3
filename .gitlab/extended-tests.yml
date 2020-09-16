@@ -214,7 +214,7 @@ iPhoneXS-12-visual-tests-styling:
     DEVICE: iPhone XS
     OS_VERSION: 12
     REAL_MOBILE: 'true'
-    POETRY_TAGS: visual_regression_styling
+    POETRY_TAGS: visual_regression_styling_safari
   resource_group: extended_tests_release_2
 
 OSXMojave-Safari-12.1-visual-tests-styling:
@@ -226,7 +226,7 @@ OSXMojave-Safari-12.1-visual-tests-styling:
     OS_VERSION: Mojave
     BROWSER: Safari
     BROWSER_VERSION: '12.1'
-    POETRY_TAGS: visual_regression_styling
+    POETRY_TAGS: visual_regression_styling_safari
   resource_group: extended_tests_release_3
 
 # smoke tests executed on master branch
