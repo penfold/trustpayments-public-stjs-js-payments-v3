@@ -111,7 +111,7 @@ OSXCatalina-Safari-13.1-smoke-tests:
     BROWSER: Safari
     BROWSER_VERSION: '13.1'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_review_3
+  resource_group: extended_tests_release_1
 
 win10-firefox-80.0-smoke-tests:
   extends:
@@ -123,7 +123,7 @@ win10-firefox-80.0-smoke-tests:
     BROWSER: Firefox
     BROWSER_VERSION: '80.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_review_4
+  resource_group: extended_tests_release_2
 
 win10-IE-11.0-smoke-tests:
   extends:
@@ -135,7 +135,7 @@ win10-IE-11.0-smoke-tests:
     BROWSER: IE
     BROWSER_VERSION: '11.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_3
 
 win10-chrome-85.0-visual-tests:
   extends:
@@ -147,7 +147,7 @@ win10-chrome-85.0-visual-tests:
     BROWSER: Chrome
     BROWSER_VERSION: '85'
     POETRY_TAGS: visual_regression
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_release_4
 
 SamsungGalaxyS10Plus-9.0-visual-tests:
   extends:
@@ -158,7 +158,7 @@ SamsungGalaxyS10Plus-9.0-visual-tests:
     OS_VERSION: '9.0'
     REAL_MOBILE: 'true'
     POETRY_TAGS: visual_regression
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_1
 
 iPhoneXS-12-visual-tests:
   extends:
@@ -169,7 +169,7 @@ iPhoneXS-12-visual-tests:
     OS_VERSION: 12
     REAL_MOBILE: 'true'
     POETRY_TAGS: visual_regression_safari
-  resource_group: extended_tests_release_4
+  resource_group: extended_tests_release_2
 
 OSXMojave-Safari-12.1-visual-tests:
   extends:
@@ -181,7 +181,7 @@ OSXMojave-Safari-12.1-visual-tests:
     BROWSER: Safari
     BROWSER_VERSION: '12.1'
     POETRY_TAGS: visual_regression_safari
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_3
 
 win10-chrome-85.0-visual-tests-styling:
   extends:
@@ -193,7 +193,7 @@ win10-chrome-85.0-visual-tests-styling:
     BROWSER: Chrome
     BROWSER_VERSION: '85'
     POETRY_TAGS: visual_regression_styling
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_release_4
 
 SamsungGalaxyS10Plus-9.0-visual-tests-styling:
   extends:
@@ -204,7 +204,7 @@ SamsungGalaxyS10Plus-9.0-visual-tests-styling:
     OS_VERSION: '9.0'
     REAL_MOBILE: 'true'
     POETRY_TAGS: visual_regression_styling
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_1
 
 iPhoneXS-12-visual-tests-styling:
   extends:
@@ -214,8 +214,8 @@ iPhoneXS-12-visual-tests-styling:
     DEVICE: iPhone XS
     OS_VERSION: 12
     REAL_MOBILE: 'true'
-    POETRY_TAGS: visual_regression_styling
-  resource_group: extended_tests_release_4
+    POETRY_TAGS: visual_regression_styling_safari
+  resource_group: extended_tests_release_2
 
 OSXMojave-Safari-12.1-visual-tests-styling:
   extends:
@@ -226,8 +226,8 @@ OSXMojave-Safari-12.1-visual-tests-styling:
     OS_VERSION: Mojave
     BROWSER: Safari
     BROWSER_VERSION: '12.1'
-    POETRY_TAGS: visual_regression_styling
-  resource_group: extended_tests_release_1
+    POETRY_TAGS: visual_regression_styling_safari
+  resource_group: extended_tests_release_3
 
 # smoke tests executed on master branch
 
@@ -240,7 +240,7 @@ iPhone8-11.0-smoke-tests:
     OS_VERSION: 11
     REAL_MOBILE: 'true'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_4
 
 win8.1-chrome-85.0-smoke-tests:
   extends:
@@ -252,7 +252,7 @@ win8.1-chrome-85.0-smoke-tests:
     BROWSER: chrome
     BROWSER_VERSION: '85.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_release_1
 
 OSXCatalina-chrome-85.0-smoke-tests:
   extends:
@@ -264,7 +264,7 @@ OSXCatalina-chrome-85.0-smoke-tests:
     BROWSER: chrome
     BROWSER_VERSION: '85.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_2
 
 OSXCatalina-firefox-80.0-smoke-tests:
   extends:
@@ -276,9 +276,9 @@ OSXCatalina-firefox-80.0-smoke-tests:
     BROWSER: Firefox
     BROWSER_VERSION: '80.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_3
 
-.win10-Edge-85.0-smoke-tests: # TODO https://securetrading.atlassian.net/browse/STJS-660
+win10-Edge-85.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -288,7 +288,7 @@ OSXCatalina-firefox-80.0-smoke-tests:
     BROWSER: Edge
     BROWSER_VERSION: '85.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_4
 
 win10-Edge-18.0-smoke-tests:
   extends:
@@ -300,7 +300,7 @@ win10-Edge-18.0-smoke-tests:
     BROWSER: Edge
     BROWSER_VERSION: '18.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_4
+  resource_group: extended_tests_release_1
 
 OSXHS-Safari-11.1-smoke-tests:
   extends:
@@ -312,7 +312,7 @@ OSXHS-Safari-11.1-smoke-tests:
     BROWSER: Safari
     BROWSER_VERSION: '11.1'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_2
 
 iPhoneXS-12-smoke-tests:
   extends:
@@ -323,7 +323,7 @@ iPhoneXS-12-smoke-tests:
     OS_VERSION: 12
     REAL_MOBILE: 'true'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_release_3
 
 iPad7th-13-smoke-tests:
   extends:
@@ -334,7 +334,7 @@ iPad7th-13-smoke-tests:
     OS_VERSION: 13
     REAL_MOBILE: 'true'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_4
 
 GoogleNexus6-6.0-smoke-tests:
   extends:
@@ -345,7 +345,7 @@ GoogleNexus6-6.0-smoke-tests:
     OS_VERSION: '6.0'
     REAL_MOBILE: 'true'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_4
+  resource_group: extended_tests_release_1
 
 SamsungGalaxyS8-7.0-smoke-tests:
   extends:
@@ -356,7 +356,7 @@ SamsungGalaxyS8-7.0-smoke-tests:
     OS_VERSION: '7.0'
     REAL_MOBILE: 'true'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_2
 
 SamsungGalaxyS10Plus-9.0-smoke-tests:
   extends:
@@ -367,7 +367,7 @@ SamsungGalaxyS10Plus-9.0-smoke-tests:
     OS_VERSION: '9.0'
     REAL_MOBILE: 'true'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_release_3
 
 GooglePixel4-10.0-smoke-tests:
   extends:
@@ -378,7 +378,7 @@ GooglePixel4-10.0-smoke-tests:
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_4
 
 # other tests executed on master branch
 
@@ -392,7 +392,7 @@ win10-Firefox-80.0-extended-tests:
     BROWSER: Firefox
     BROWSER_VERSION: '80.0'
     POETRY_TAGS: $EXTENDED_TESTS_TAG
-  resource_group: extended_tests_release_4
+  resource_group: extended_tests_release_1
 
 .iPhoneXR-12-full-test-part-1: # TODO https://securetrading.atlassian.net/browse/STJS-661
   extends:

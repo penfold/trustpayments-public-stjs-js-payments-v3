@@ -101,13 +101,13 @@ class PaymentMethodsPage(BasePage):
 
         if auth == AuthType.V1.value:
             self._action.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
-            self._executor.wait_for_element(PaymentMethodsLocators.cardinal_v1_authentication_code_field)
+            self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v1_authentication_code_field)
             self._action.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
                                    AuthData.PASSWORD.value)
             self._action.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
             self._action.switch_to_parent_iframe()
         else:
-            self._executor.wait_for_element(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+            self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
             self._action.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
                                    AuthData.PASSWORD.value)
             self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
@@ -309,7 +309,7 @@ class PaymentMethodsPage(BasePage):
     def validate_payment_status_message(self, expected_message):
         if CONFIGURATION.REMOTE_DEVICE != '':
             self.scroll_to_top()
-        self._executor.wait_for_element_visibility(PaymentMethodsLocators.notification_frame)
+        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
         actual_message = self.get_payment_status_message()
         assertion_message = f'Payment status is not correct, should be: "{expected_message}" but is: "{actual_message}"'
         add_to_shared_dict("assertion_message", assertion_message)

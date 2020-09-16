@@ -11,20 +11,20 @@ Feature: Visual regression - E2E Card Payments
   Scenario: Card interface after successful payment
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
-    Then Screenshot is taken after 5 seconds and checked
+    Then Screenshot is taken after 6 seconds and checked
 
   @visual_regression_styling @scrn_card_interface_before_payment_styling
   Scenario: Card interface before payment
-    Then Screenshot is taken after 5 seconds and checked
+    Then Screenshot is taken after 6 seconds and checked
 
   @visual_regression_styling @scrn_card_interface_error_expiry_date_styling
   Scenario: Card interface after unsuccessful payment - invalid expiration date
     When User fills payment form with defined card MASTERCARD_INVALID_EXP_DATE_CARD
     And User clicks Pay button
-    Then Screenshot is taken after 5 seconds and checked
+    Then Screenshot is taken after 6 seconds and checked
 
   @visual_regression_styling @scrn_card_interface_error_invalid_patterns_styling
   Scenario: Card interface before payment - invalid pattern data
     When User fills payment form with defined card MASTERCARD_INVALID_PATTERN_CARD
     And User clicks Pay button
-    Then Screenshot is taken after 5 seconds and checked
+    Then Screenshot is taken after 6 seconds and checked
