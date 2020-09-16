@@ -55,7 +55,7 @@ class WebElementsExtensions(Waits):
 
     def click_with_wait(self, locator):
         self.wait_for_ajax()
-        element = self.wait_for_element(locator)
+        element = self.wait_for_element_to_be_displayed(locator)
         element.click()
 
     def find_element(self, locator):
@@ -93,7 +93,7 @@ class WebElementsExtensions(Waits):
         return element.text
 
     def get_css_value_with_wait(self, locator, property):
-        self.wait_for_element(locator)
+        self.wait_for_element_to_be_displayed(locator)
         element = self.find_element(locator)
         css_value = element.value_of_css_property(property)
         return css_value
