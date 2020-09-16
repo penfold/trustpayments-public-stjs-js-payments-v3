@@ -5,6 +5,7 @@ const StyleLintPlugin = require('stylelint-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: {
@@ -115,7 +116,8 @@ module.exports = {
     new StyleLintPlugin({
       context: path.join(__dirname, 'src')
     }),
-    new FriendlyErrorsWebpackPlugin()
+    new FriendlyErrorsWebpackPlugin(),
+    new webpack.SourceMapDevToolPlugin({})
   ],
   module: {
     rules: [
@@ -130,7 +132,8 @@ module.exports = {
             }
           },
           'postcss-loader',
-          'sass-loader'
+          'sass-loader',
+          'source-map-loader'
         ]
       },
       {
@@ -139,7 +142,7 @@ module.exports = {
       },
       {
         test: /\.tsx?|js$/,
-        use: 'babel-loader',
+        use: ['babel-loader', 'source-map-loader'],
         include: [
           path.join(__dirname, 'src'),
           path.join(__dirname, 'test'),
@@ -160,6 +163,8 @@ module.exports = {
             options: {
               emitErrors: true
             }
+          }, {
+            loader: 'source-map-loader'
           }
         ],
         exclude: /node_modules/
