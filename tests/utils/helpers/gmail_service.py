@@ -12,6 +12,7 @@ SMTP_PORT = 993
 
 
 def gmail_login():
+    # pylint: disable=invalid-name
     try:
         mail = imaplib.IMAP4_SSL(SMTP_SERVER)
         mail.login(EMAIL_LOGIN, EMAIL_PASSWORD)
@@ -24,7 +25,7 @@ def gmail_login():
 
 def get_unseen_email_ids():
     mail = gmail_login()
-    type, data = mail.search(None, 'UNSEEN')
+    _, data = mail.search(None, 'UNSEEN')
     mail_ids = data[0]
     if mail_ids:
         id_list = mail_ids.split()
@@ -36,7 +37,7 @@ def get_unseen_email_ids():
 
 def get_last_five_email_ids():
     mail = gmail_login()
-    type, data = mail.search(None, 'ALL')
+    _, data = mail.search(None, 'ALL')
     mail_ids = data[0]
     if mail_ids:
         id_list = mail_ids.split()
@@ -58,6 +59,7 @@ def get_verification_code_from_email_subject(mail_id):
 
 
 def get_unseen_mail_ids_with_wait(max_seconds):
+    # pylint: disable=invalid-name
     while max_seconds:
         try:
             return get_unseen_email_ids()
@@ -69,6 +71,7 @@ def get_unseen_mail_ids_with_wait(max_seconds):
 
 
 def get_last_five_mail_ids_with_wait(max_seconds):
+    # pylint: disable=invalid-name
     while max_seconds:
         try:
             return get_last_five_email_ids()

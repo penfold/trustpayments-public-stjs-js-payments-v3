@@ -19,11 +19,25 @@ class Waits:
         return self._wait.until(ec.presence_of_element_located(locator))
 
     def wait_and_check_is_element_displayed(self, locator):
+        # pylint: disable=bare-except
         try:
             element = self._wait.until(ec.presence_of_element_located(locator)).is_displayed()
             return element is not None
         except:
             return False
+
+    def wait_for_element_to_be_displayed(self, locator):
+        # pylint: disable=bare-except
+
+        max_try = 20
+        while max_try:
+            try:
+                is_element_displayed = self._browser.find_element(*locator).is_displayed()
+                if is_element_displayed:
+                    max_try = 0
+            except:
+                time.sleep(0.2)
+                max_try -=1
 
     def wait_for_element_to_be_clickable(self, locator):
         return self._wait.until(ec.element_to_be_clickable(locator))
@@ -52,6 +66,7 @@ class Waits:
 
     def wait_until_iframe_is_presented_and_switch_to_it(self, iframe_name):
         try:
+            self.wait_for_element_to_be_displayed(iframe_name)
             return self._wait.until(ec.frame_to_be_available_and_switch_to_it(iframe_name))
         except TimeoutException:
             print(f'Iframe was not presented in {self._timeout} seconds')

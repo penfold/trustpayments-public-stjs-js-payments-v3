@@ -15,20 +15,21 @@ def load_config():
     Set config env variables
     """
     config = {
-        'URL': AttrDict({"BASE_URL": get_from_env("BASE_URL", "https://merchant.securetrading.net"),
-                         "REACT_APP": get_from_env("REACT_APP", "https://localhost:3000")}),
+        'URL': AttrDict({'BASE_URL': get_from_env('BASE_URL', 'https://merchant.securetrading.net'),
+                         'REACT_APP': get_from_env('REACT_APP', 'https://localhost:3000')}),
         'REPORTS_PATH': get_path_from_env('AUTOMATION_REPORTS', 'reports'),
         'SCREENSHOTS_PATH': get_path_from_env('AUTOMATION_SCREENSHOTS', 'screenshots'),
         'BROWSER': get_from_env('AUTOMATION_BROWSER', 'chrome'),
         'TIMEOUT': get_from_env('AUTOMATION_TIMEOUT', 20),
         'REMOTE': strtobool(get_from_env('REMOTE', 'false')),
         'COMMAND_EXECUTOR': get_from_env('AUTOMATION_COMMAND_EXECUTOR',
-                                         "https://" + str(get_from_env('BS_USERNAME')) + ":" +
-                                         str(get_from_env('BS_ACCESS_KEY')) + "@hub.browserstack.com/wd/hub"),
+                                         'https://' + str(get_from_env('BS_USERNAME')) + ':' +
+                                         str(get_from_env('BS_ACCESS_KEY')) + '@hub.browserstack.com/wd/hub'),
         'REMOTE_OS': get_from_env('OS', ''),
         'REMOTE_OS_VERSION': get_from_env('OS_VERSION', ''),
         'REMOTE_BROWSER': get_from_env('BROWSER', ''),
         'REMOTE_BROWSER_VERSION': get_from_env('BROWSER_VERSION', ''),
+        'BROWSERSTACK_SELENIUM_VERSION': get_from_env('BROWSERSTACK_SELENIUM_VERSION', ''),
         'REMOTE_DEVICE': get_from_env('DEVICE', ''),
         'REMOTE_REAL_MOBILE': get_from_env('REAL_MOBILE', ''),
         'BROWSERSTACK_LOCAL': get_from_env('LOCAL', 'true'),
@@ -43,6 +44,8 @@ def load_config():
 
 
 def print_properties(config):
+    # pylint: disable=logging-fstring-interpolation
+
     """
     Printing all configuration data before starting the tests
     """
@@ -82,35 +85,37 @@ class DriverConfig:
         else:
             self.browser = CONFIGURATION.BROWSER.lower()
             self.remote_capabilities = {}
-            self.command_executor = ""
+            self.command_executor = ''
 
     @staticmethod
     def get_remote_capabilities(config):
+        # pylint: disable=unused-variable
         network_logs = 'true'
         send_keys = 'false'
         if 'Safari' in config.REMOTE_BROWSER:
             network_logs = 'false'
         # if 'IE' in config.REMOTE_BROWSER:
         #     send_keys = 'true'
-        possible_caps = {"os": config.REMOTE_OS,
-                         "os_version": config.REMOTE_OS_VERSION,
-                         "browserName": config.REMOTE_BROWSER,
-                         "browserVersion": config.REMOTE_BROWSER_VERSION,
-                         "browserstack.local": config.BROWSERSTACK_LOCAL,
-                         "browserstack.localIdentifier": config.BROWSERSTACK_LOCAL_IDENTIFIER,
-                         "device": config.REMOTE_DEVICE,
-                         "real_mobile": config.REMOTE_REAL_MOBILE,
-                         "acceptSslCerts": config.ACCEPT_SSL_CERTS,
-                         "project": config.PROJECT_NAME,
-                         "build": config.BUILD_NAME,
-                         "browserstack.debug": config.BROWSERSTACK_DEBUG,
-                         "browserstack.networkLogs": network_logs,
-                         "browserstack.console": "errors",
-                         "ie.ensureCleanSession": 'true',
-                         "ie.forceCreateProcessApi": 'true',
-                         "resolution": "1920x1080"
-                         # "browserstack.sendKeys": send_keys,
-                         # "browserstack.idleTimeout": 3000
+        possible_caps = {'os': config.REMOTE_OS,
+                         'os_version': config.REMOTE_OS_VERSION,
+                         'browserName': config.REMOTE_BROWSER,
+                         'browserVersion': config.REMOTE_BROWSER_VERSION,
+                         'browserstack.local': config.BROWSERSTACK_LOCAL,
+                         'browserstack.localIdentifier': config.BROWSERSTACK_LOCAL_IDENTIFIER,
+                         'device': config.REMOTE_DEVICE,
+                         'real_mobile': config.REMOTE_REAL_MOBILE,
+                         'acceptSslCerts': config.ACCEPT_SSL_CERTS,
+                         'project': config.PROJECT_NAME,
+                         'build': config.BUILD_NAME,
+                         'browserstack.debug': config.BROWSERSTACK_DEBUG,
+                         'browserstack.selenium_version': config.BROWSERSTACK_SELENIUM_VERSION,
+                         'browserstack.networkLogs': network_logs,
+                         'browserstack.console': 'errors',
+                         'ie.ensureCleanSession': 'true',
+                         'ie.forceCreateProcessApi': 'true',
+                         'resolution': '1920x1080'
+                         # 'browserstack.sendKeys': send_keys,
+                         # 'browserstack.idleTimeout': 3000
                          }
         capabilities = {}
         for key, value in possible_caps.items():
@@ -130,3 +135,4 @@ class TestExecutorConfig:
         self.timeout = int(CONFIGURATION.TIMEOUT)
         self.reports_path = CONFIGURATION.REPORTS_PATH
         self.screenshots_path = CONFIGURATION.SCREENSHOTS_PATH
+        self.mobile_device = CONFIGURATION.REMOTE_DEVICE

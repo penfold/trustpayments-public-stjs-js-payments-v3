@@ -9,12 +9,14 @@ from utils.waits import Waits
 
 
 class WebElementsExtensions(Waits):
+    # pylint: disable=too-many-public-methods
 
     def send_keys(self, locator, string):
         element = self.find_element(locator)
         element.send_keys(string)
 
     def send_key_one_by_one(self, locator, string):
+        # pylint: disable=invalid-name
         for x in string:
             self.send_keys(locator, x)
 
@@ -34,7 +36,7 @@ class WebElementsExtensions(Waits):
         # self.switch_to_iframe(iframe_name)
         # element = self.find_element(locator)
         self._browser.execute_script(
-            "window.frames['st-card-number-iframe'].document.getElementById('st-card-number-input').value='123'")
+            'window.frames[\'st-card-number-iframe\'].document.getElementById(\'st-card-number-input\').value=\'123\'')
         self.switch_to_default_iframe()
 
     def switch_to_iframe_and_click(self, iframe_name, locator):
@@ -45,17 +47,13 @@ class WebElementsExtensions(Waits):
 
     def switch_to_iframe_and_get_text(self, iframe_name, locator):
         self.switch_to_iframe(iframe_name)
+        self.wait_for_element_to_be_displayed(locator)
         element = self.get_text(locator)
         self.switch_to_default_iframe()
         return element
 
     def click(self, locator):
         element = self.find_element(locator)
-        element.click()
-
-    def click_with_wait(self, locator):
-        self.wait_for_ajax()
-        element = self.wait_for_element(locator)
         element.click()
 
     def find_element(self, locator):
@@ -65,6 +63,7 @@ class WebElementsExtensions(Waits):
         return element
 
     def is_element_displayed(self, locator):
+        # pylint: disable=bare-except
         try:
             element = self._browser.find_element(*locator).is_displayed()
             return element is not None
@@ -72,6 +71,7 @@ class WebElementsExtensions(Waits):
             return False
 
     def is_iframe_displayed(self, iframe_name):
+        # pylint: disable=bare-except
         try:
             self._browser.switch_to.frame(iframe_name)
             return True
@@ -92,10 +92,10 @@ class WebElementsExtensions(Waits):
         element = self.find_element(locator)
         return element.text
 
-    def get_css_value_with_wait(self, locator, property):
-        self.wait_for_element(locator)
+    def get_css_value_with_wait(self, locator, property_name):
+        self.wait_for_element_to_be_displayed(locator)
         element = self.find_element(locator)
-        css_value = element.value_of_css_property(property)
+        css_value = element.value_of_css_property(property_name)
         return css_value
 
     def clear_input(self, locator):
@@ -129,20 +129,20 @@ class WebElementsExtensions(Waits):
         self.switch_to_default_iframe()
         return is_enabled
 
-    def switch_to_iframe_and_get_css_value(self, iframe_name, locator, property):
+    def switch_to_iframe_and_get_css_value(self, iframe_name, locator, property_name):
         self.switch_to_iframe(iframe_name)
         element = self.find_element(locator)
-        css_value = element.value_of_css_property(property)
+        css_value = element.value_of_css_property(property_name)
         self.switch_to_default_iframe()
         return css_value
 
     def scroll_directly_to_element(self, locator):
         element = self.find_element(locator)
-        self._browser.execute_script("arguments[0].scrollIntoView();", element)
+        self._browser.execute_script('arguments[0].scrollIntoView();', element)
 
     def click_by_javascript(self, locator):
         element = self.find_element(locator)
-        self._browser.execute_script("arguments[0].click();", element)
+        self._browser.execute_script('arguments[0].click();', element)
 
     def enter(self, locator):
         element = self.find_element(locator)

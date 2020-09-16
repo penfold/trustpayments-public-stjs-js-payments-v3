@@ -6,7 +6,8 @@ import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import {
   EXPIRATION_DATE_INPUT,
   EXPIRATION_DATE_LABEL,
-  EXPIRATION_DATE_MESSAGE
+  EXPIRATION_DATE_MESSAGE,
+  EXPIRATION_DATE_WRAPPER
 } from '../../core/models/constants/Selectors';
 import { Service } from 'typedi';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -34,7 +35,7 @@ export class ExpirationDate extends Input {
     private messageBus: MessageBus,
     private frame: Frame
   ) {
-    super(EXPIRATION_DATE_INPUT, EXPIRATION_DATE_MESSAGE, EXPIRATION_DATE_LABEL);
+    super(EXPIRATION_DATE_INPUT, EXPIRATION_DATE_MESSAGE, EXPIRATION_DATE_LABEL, EXPIRATION_DATE_WRAPPER);
     this._init();
     this._configProvider.getConfig$().subscribe((config: IConfig) => {
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);

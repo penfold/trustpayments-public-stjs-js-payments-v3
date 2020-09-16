@@ -35,7 +35,7 @@ Feature: Payment form styles check
   Scenario: Checking default cvv placeholder for AMEX card
     Given User opens page with payment form
     When User fills payment form with credit card number "340000000000611", expiration date "12/23"
-    Then User will see '****' placeholder in security code field
+    Then User will see "****" placeholder in security code field
 
   @base_config
   Scenario Outline: Checking <card_type> card icon displayed in input field
