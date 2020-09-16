@@ -47,6 +47,7 @@ class WebElementsExtensions(Waits):
 
     def switch_to_iframe_and_get_text(self, iframe_name, locator):
         self.switch_to_iframe(iframe_name)
+        self.wait_for_element_to_be_displayed(locator)
         element = self.get_text(locator)
         self.switch_to_default_iframe()
         return element
