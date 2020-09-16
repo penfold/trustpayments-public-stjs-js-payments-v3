@@ -52,7 +52,7 @@ describe('StTransport class', () => {
         x =>
           new Promise((resolve, reject) => {
             if ('json' in x) {
-              resolve(x.json());
+              resolve(x);
               return;
             }
             reject(new Error('codec error'));

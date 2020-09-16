@@ -17,6 +17,7 @@ import { Frame } from '../../core/shared/frame/Frame';
 import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
 import { IStyles } from '../../../shared/model/config/IStyles';
 import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
+import { RequestTypesSplitter } from '../../core/services/request-types-splitter/RequestTypesSplitter';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -239,6 +240,7 @@ function controlFrameFixture() {
   const cybertonica: Cybertonica = mock(Cybertonica);
   const cardinalCommerce: CardinalCommerce = mock(CardinalCommerce);
   const configService: ConfigService = mock(ConfigService);
+  const requestTypesSplitter: RequestTypesSplitter = mock(RequestTypesSplitter);
   const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
   const frame: Frame = mock(Frame);
   const storeMock: Store = mock(Store);
@@ -275,7 +277,8 @@ function controlFrameFixture() {
     mockInstance(storeMock),
     mockInstance(configService),
     messageBus,
-    mockInstance(frame)
+    mockInstance(frame),
+    mockInstance(requestTypesSplitter)
   );
   const messageBusEvent = {
     type: ''
