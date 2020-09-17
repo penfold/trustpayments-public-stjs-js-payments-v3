@@ -27,7 +27,7 @@ class Reporter:
         self._browser.save_screenshot(filepath)
 
     def save_instant_screenshot(self):
-        filename = time.strftime("%Y%m%d-%H%M%S.png")
+        filename = time.strftime('%Y%m%d-%H%M%S.png')
         filepath = os.path.join(self._reports_path, filename)
         self._browser.save_screenshot(filepath)
 

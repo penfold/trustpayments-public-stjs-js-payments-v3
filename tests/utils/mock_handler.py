@@ -8,18 +8,19 @@ from wiremock.server import WireMockServer
 
 
 class MockUrl(Enum):
-    BASE_URI = "https://merchant.example.com:8443"
-    WEBSERVICES_DOMAIN = "https://webservices.securetrading.net:8443"
-    THIRDPARTY_URL = "https://thirdparty.example.com:8443"
-    VISA_MOCK_URI = "/visaPaymentStatus"
-    CC_MOCK_ACS_URI = "/cardinalAuthenticateCard"
-    APPLEPAY_MOCK_URI = "/applePaymentStatus"
-    GATEWAY_MOCK_URI = "/jwt/"
-    CONFIG_MOCK_URI = "/config.json"
+    BASE_URI = 'https://merchant.example.com:8443'
+    WEBSERVICES_DOMAIN = 'https://webservices.securetrading.net:8443'
+    THIRDPARTY_URL = 'https://thirdparty.example.com:8443'
+    VISA_MOCK_URI = '/visaPaymentStatus'
+    CC_MOCK_ACS_URI = '/cardinalAuthenticateCard'
+    APPLEPAY_MOCK_URI = '/applePaymentStatus'
+    GATEWAY_MOCK_URI = '/jwt/'
+    CONFIG_MOCK_URI = '/config.json'
     PORT = 8443
 
 
 def get_mock_response_from_json(mock):
+    # pylint: disable=invalid-name)
     with open(f'wiremock/__files/{mock}', 'r') as f:
         mock_json = json.load(f)
     return mock_json
@@ -59,7 +60,7 @@ def stub_config(config_json):
         response=MappingResponse(
             status=200,
             headers={'Access-Control-Allow-Headers': 'Content-Type',
-                     'Access-Control-Allow-Methods': "GET, POST"},
+                     'Access-Control-Allow-Methods': 'GET, POST'},
             json_body=get_mock_response_from_json(config_json)
         ),
         persistent=False)
@@ -74,12 +75,12 @@ def stub_st_request_type(mock_json, request_type):
         request=MappingRequest(
             method=HttpMethods.POST,
             url=MockUrl.GATEWAY_MOCK_URI.value,
-            body_patterns=[{"matchesJsonPath": "$.request[:1][?(@.requesttypedescriptions==[" + request_type + "])]"}]
+            body_patterns=[{'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==[' + request_type + '])]'}]
         ),
         response=MappingResponse(
             status=200,
             headers={'Access-Control-Allow-Headers': 'Content-Type',
-                     'Access-Control-Allow-Methods': "GET, POST"},
+                     'Access-Control-Allow-Methods': 'GET, POST'},
             json_body=get_mock_response_from_json(mock_json)
         ),
         persistent=False)
@@ -98,14 +99,14 @@ def stub_st_request_type_acheck_tdq(mock_json, request_type):
         response=MappingResponse(
             status=200,
             headers={'Access-Control-Allow-Headers': 'Content-Type',
-                     'Access-Control-Allow-Methods': "GET, POST"},
+                     'Access-Control-Allow-Methods': 'GET, POST'},
             json_body=get_mock_response_from_json(mock_json)
         ),
         persistent=False)
     Mappings.create_mapping(mapping)
 
 
-def stub_st_request_type_server_error(mock_json, request_type):
+def stub_st_request_type_server_error(mock_json, request_type=None):
     stub_url_options_for_cors(MockUrl.GATEWAY_MOCK_URI.value)
     configure_for_local_host()
     mapping = Mapping(
@@ -113,12 +114,12 @@ def stub_st_request_type_server_error(mock_json, request_type):
         request=MappingRequest(
             method=HttpMethods.POST,
             url=MockUrl.GATEWAY_MOCK_URI.value,
-            body_patterns=[{"contains": request_type}]
+            body_patterns=[{'contains': request_type}]
         ),
         response=MappingResponse(
             status=500,
             headers={'Access-Control-Allow-Headers': 'Content-Type',
-                     'Access-Control-Allow-Methods': "GET, POST"},
+                     'Access-Control-Allow-Methods': 'GET, POST'},
             json_body=get_mock_response_from_json(mock_json)
         ),
         persistent=False)
@@ -136,7 +137,7 @@ def stub_payment_status(mock_url, mock_json):
         response=MappingResponse(
             status=200,
             headers={'Access-Control-Allow-Headers': 'Content-Type',
-                     'Access-Control-Allow-Methods': "GET, POST"},
+                     'Access-Control-Allow-Methods': 'GET, POST'},
             json_body=get_mock_response_from_json(mock_json)
         ),
         persistent=False)
@@ -153,7 +154,7 @@ def stub_url_options_for_cors(mock_url):
         response=MappingResponse(
             status=200,
             headers={'Access-Control-Allow-Headers': 'Content-Type',
-                     'Access-Control-Allow-Methods': "GET, POST"},
+                     'Access-Control-Allow-Methods': 'GET, POST'},
             body=''
         ),
         persistent=False)

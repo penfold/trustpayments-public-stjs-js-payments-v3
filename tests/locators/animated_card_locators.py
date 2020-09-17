@@ -5,6 +5,8 @@ from selenium.webdriver.common.by import By
 
 @dataclass
 class AnimatedCardLocators:
+    # pylint: disable=too-many-instance-attributes
+
     # animated card data
     animated_card: By = (By.ID, 'st-animated-card')
     credit_card_number_on_animated_card: By = (By.ID, 'st-animated-card-number')

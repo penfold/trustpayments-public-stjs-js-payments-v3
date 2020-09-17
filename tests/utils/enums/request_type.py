@@ -1,40 +1,40 @@
 from enum import Enum
 
 request_type_response = {
-    "RISKDEC, ACCOUNTCHECK, THREEDQUERY": "ccRiskdecAcheckTdq.json",
-    "ACCOUNTCHECK, THREEDQUERY": "ccAcheckTdq.json",
-    "RISKDEC, ACCOUNTCHECK": "ccRiskdecAcheck.json",
-    "AUTH, RISKDEC": "ccAuthRiskdec.json",
-    "ACCOUNTCHECK, AUTH": "ccAccountcheckAuth.json",
-    "ACCOUNTCHECK, AUTH, SUBSCRIPTION": "ccAccountcheckAuthSub.json",
-    "AUTH, SUBSCRIPTION": "ccAuthSub.json",
-    "RISKDEC, ACCOUNTCHECK, AUTH": "ccRiskdecAccountcheckAuth.json",
-    "ACCOUNTCHECK, RISKDEC, AUTH": "ccAccountcheckRiskdecAuth.json",
-    "THREEDQUERY": "ccTdq.json"
+    'RISKDEC, ACCOUNTCHECK, THREEDQUERY': 'ccRiskdecAcheckTdq.json',
+    'ACCOUNTCHECK, THREEDQUERY': 'ccAcheckTdq.json',
+    'RISKDEC, ACCOUNTCHECK': 'ccRiskdecAcheck.json',
+    'AUTH, RISKDEC': 'ccAuthRiskdec.json',
+    'ACCOUNTCHECK, AUTH': 'ccAccountcheckAuth.json',
+    'ACCOUNTCHECK, AUTH, SUBSCRIPTION': 'ccAccountcheckAuthSub.json',
+    'AUTH, SUBSCRIPTION': 'ccAuthSub.json',
+    'RISKDEC, ACCOUNTCHECK, AUTH': 'ccRiskdecAccountcheckAuth.json',
+    'ACCOUNTCHECK, RISKDEC, AUTH': 'ccAccountcheckRiskdecAuth.json',
+    'THREEDQUERY': 'ccTdq.json'
 }
 
 request_type_tokenisation_response = {
-    "RISKDEC, ACCOUNTCHECK, THREEDQUERY": "tokenisationRiskdecAcheckTdq.json",
+    'RISKDEC, ACCOUNTCHECK, THREEDQUERY': 'tokenisationRiskdecAcheckTdq.json',
 }
 
 request_type_applepay = {
-    "AUTH": "appleAuth.json",
-    "ACCOUNTCHECK": "appleAccountcheck.json",
-    "ACCOUNTCHECK, AUTH": "appleAccountcheckAuth.json",
-    "RISKDEC, AUTH": "appleRiskdecAuth.json",
-    "RISKDEC, ACCOUNTCHECK, AUTH": "appleRiskdecAccountcheckAuth.json",
-    "AUTH, SUBSCRIPTION": "appleAuthSubscription.json",
-    "ACCOUNTCHECK, SUBSCRIPTION": "appleAcheckSubscription.json"
+    'AUTH': 'appleAuth.json',
+    'ACCOUNTCHECK': 'appleAccountcheck.json',
+    'ACCOUNTCHECK, AUTH': 'appleAccountcheckAuth.json',
+    'RISKDEC, AUTH': 'appleRiskdecAuth.json',
+    'RISKDEC, ACCOUNTCHECK, AUTH': 'appleRiskdecAccountcheckAuth.json',
+    'AUTH, SUBSCRIPTION': 'appleAuthSubscription.json',
+    'ACCOUNTCHECK, SUBSCRIPTION': 'appleAcheckSubscription.json'
 }
 
 request_type_visa = {
-    "AUTH": "visaAuthSuccess.json",
-    "ACCOUNTCHECK": "visaAccountcheck.json",
-    "ACCOUNTCHECK, AUTH": "visaAccountcheckAuth.json",
-    "RISKDEC, AUTH": "visaRiskdecAuth.json",
-    "RISKDEC, ACCOUNTCHECK, AUTH": "visaRiskdecAccountcheckAuth.json",
-    "AUTH, SUBSCRIPTION": "visaAuthSubscription.json",
-    "ACCOUNTCHECK, SUBSCRIPTION": "visaAcheckSubscription.json"
+    'AUTH': 'visaAuthSuccess.json',
+    'ACCOUNTCHECK': 'visaAccountcheck.json',
+    'ACCOUNTCHECK, AUTH': 'visaAccountcheckAuth.json',
+    'RISKDEC, AUTH': 'visaRiskdecAuth.json',
+    'RISKDEC, ACCOUNTCHECK, AUTH': 'visaRiskdecAccountcheckAuth.json',
+    'AUTH, SUBSCRIPTION': 'visaAuthSubscription.json',
+    'ACCOUNTCHECK, SUBSCRIPTION': 'visaAcheckSubscription.json'
 }
 
 
