@@ -206,7 +206,8 @@ SamsungGalaxyS10Plus-9.0-visual-tests-styling:
     POETRY_TAGS: visual_regression_styling
   resource_group: extended_tests_release_1
 
-iPhoneXS-12-visual-tests-styling:
+#to turn it on again after figuring situation with STJS-973
+.iPhoneXS-12-visual-tests-styling:
   extends:
     - .visual-regression-component-tests
     - .rules-when-release
@@ -217,7 +218,8 @@ iPhoneXS-12-visual-tests-styling:
     POETRY_TAGS: visual_regression_styling_safari
   resource_group: extended_tests_release_2
 
-OSXMojave-Safari-12.1-visual-tests-styling:
+#to turn it on again after figuring situation with STJS-973
+.OSXMojave-Safari-12.1-visual-tests-styling:
   extends:
     - .visual-regression-component-tests
     - .rules-when-release

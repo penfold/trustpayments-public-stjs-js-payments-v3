@@ -260,7 +260,7 @@ class PaymentMethodsPage(BasePage):
                 is_displayed = True
         elif field_type == FieldType.NOTIFICATION_FRAME.name:
             if len(self._action.find_elements(PaymentMethodsLocators.notification_frame)) > 0:
-                if not self._action.get_text_with_wait(PaymentMethodsLocators.notification_frame):
+                if self._action.get_text_with_wait(PaymentMethodsLocators.notification_frame):
                     is_displayed = True
         else:
             is_displayed = self._action.is_iframe_displayed(FieldType[field_type].value)
@@ -309,7 +309,7 @@ class PaymentMethodsPage(BasePage):
         assert expected_message in input_value, assertion_message
 
     def validate_payment_status_message(self, expected_message):
-        if not CONFIGURATION.REMOTE_DEVICE:
+        if CONFIGURATION.REMOTE_DEVICE:
             self.scroll_to_top()
         self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
         actual_message = self.get_payment_status_message()
