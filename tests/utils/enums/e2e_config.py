@@ -4,6 +4,7 @@ from enum import Enum
 class E2eConfig(Enum):
     BASIC_CONFIG = 'e2eBasicConfig.json'
     BYPASS_MASTERCARD_CONFIG = 'e2eConfigBypassMastercard.json'
+    BYPASS_MASTERCARD_REQUEST_TYPE_CONFIG = 'e2eConfigBypassMastercardRequestType.json'
     BYPASS_MASTERCARD_WITH_STYLING_CONFIG = 'e2eConfigBypassMastercardWithStyling.json'
     CYBERTONICA_CONFIG = 'e2eConfigCybertonica.json'
     CYBERTONICA_WITH_BYPASSCARDS_CONFIG = 'e2eConfigCybertonicaWithBypass.json'
