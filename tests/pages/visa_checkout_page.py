@@ -59,7 +59,7 @@ class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
 
     def fill_one_time_code(self, one_time_code):
         self._executor.wait_for_element_to_be_displayed(VisaCheckoutLocators.visa_one_time_code)
-        while not self._action.get_element_attribute(VisaCheckoutLocators.visa_one_time_code, 'value'):
+        while self._action.get_element_attribute(VisaCheckoutLocators.visa_one_time_code, 'value'):
             self._action.delete_on_input(VisaCheckoutLocators.visa_one_time_code)
         self._action.send_keys(VisaCheckoutLocators.visa_one_time_code, one_time_code)
 
