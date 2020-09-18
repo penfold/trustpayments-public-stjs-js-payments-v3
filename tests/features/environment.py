@@ -34,6 +34,15 @@ def before_all(context):
 
 def before_scenario(context, scenario):
     """Run before each scenario"""
+    if 'apple_test' in scenario.tags and (context.browser not in 'safari'):
+        if 'iP' not in CONFIGURATION.REMOTE_DEVICE:
+            scenario.skip('SCENARIO SKIPPED as iOS system and Safari is required for ApplePay test')
+    if 'visa_test' in scenario.tags and ('IE' in CONFIGURATION.REMOTE_BROWSER):
+        scenario.skip('SCENARIO SKIPPED as IE browser doesn\'t support Visa Checkout')
+    # ToDo Temporarily disabled parent-iframe test. Problem with cress-origin restriction on ios
+    if 'parent_iframe' in scenario.tags and ('iP' in CONFIGURATION.REMOTE_DEVICE):
+        scenario.skip('Temporarily disabled test ')
+
     context.page_factory = PageFactory()
     context.executor = ioc_config.EXECUTOR.resolve('test')
     context.browser = ioc_config.CONFIG.resolve('driver').browser
@@ -41,16 +50,8 @@ def before_scenario(context, scenario):
     context.language = 'en_GB'
     # scenario.name = '%s_%s' % (scenario.name, context.browser.upper())
 
-    if 'apple_test' in scenario.tags and (context.browser not in 'safari'):
-        if 'iP' not in CONFIGURATION.REMOTE_DEVICE:
-            scenario.skip('SCENARIO SKIPPED as iOS system and Safari is required for ApplePay test')
-    if 'visa_test' in scenario.tags and ('IE' in CONFIGURATION.REMOTE_BROWSER):
-        scenario.skip('SCENARIO SKIPPED as IE browser doesn\'t support Visa Checkout')
     if 'animated_card_repo_test' in scenario.tags:
         context.is_field_in_iframe = False
-    # ToDo Temporarily disabled parent-iframe test. Problem with cress-origin restriction on ios
-    if 'parent_iframe' in scenario.tags and ('iP' in CONFIGURATION.REMOTE_DEVICE):
-        scenario.skip('Temporarily disabled test ')
     else:
         context.is_field_in_iframe = True
 
