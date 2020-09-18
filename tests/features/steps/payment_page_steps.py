@@ -373,6 +373,7 @@ def step_impl(context, example_page: ExamplePage):
         for row in context.table:
             jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
         payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}')
+        payment_page.wait_for_iframe()
         context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
     elif 'WITH_SPECIFIC_IFRAME' in example_page:
         payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}')
