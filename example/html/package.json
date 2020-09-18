@@ -4,8 +4,10 @@
     "locale": "en_GB"
   },
   "scripts": {
-    "build": "webpack --config webpack.js",
-    "start": "webpack-dev-server --color --progress --config webpack.js"
+    "build": "webpack --config webpack.dev.js",
+    "build:dev": "webpack --config webpack.e2e.js",
+    "build:automated": "webpack --config webpack.test.js",
+    "start": "webpack-dev-server --color --progress --config webpack.dev.js"
   },
   "devDependencies": {
     "@babel/core": "^7.11.4",
@@ -38,7 +40,8 @@
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
-    "webpack-manifest-plugin": "^2.2.0"
+    "webpack-manifest-plugin": "^2.2.0",
+    "webpack-merge": "^5.1.4"
   },
   "dependencies": {
     "@securetrading/jwt-generator": "0.0.2"

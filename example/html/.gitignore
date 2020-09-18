@@ -1,2 +1,4 @@
 json/config.json
 json/jwtdata.json
+node_modules
+dist

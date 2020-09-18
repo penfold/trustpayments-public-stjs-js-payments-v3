@@ -8,9 +8,9 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <link rel="icon" href="<%= EXAMPLE_URL %>/img/favicon.webp" sizes="32x32">
-    <link rel="icon" href="<%= EXAMPLE_URL %>/img/favicon.webp" sizes="192x192">
-    <link rel="apple-touch-icon" href="<%= EXAMPLE_URL %>/img/favicon.webp">
+    <link rel="icon" href="/img/favicon.webp" sizes="32x32">
+    <link rel="icon" href="/img/favicon.webp" sizes="192x192">
+    <link rel="apple-touch-icon" href="/img/favicon.webp">
 </head>
 
 <body>
@@ -18,7 +18,7 @@
 <main>
     <header class="st-header">
         <figure class="st-header__logo">
-            <img src="<%= EXAMPLE_URL %>/img/st-logo.png" alt="Secure Trading logo" title="Secure Trading" role="img">
+            <img src="/img/st-logo.png" alt="Secure Trading logo" title="Secure Trading" role="img">
         </figure>
         <h1 class="st-header__title">Example Form</h1>
     </header>
@@ -147,9 +147,9 @@
         <p>&copy; Secure Trading 2020</p>
     </footer>
 </main>
-<script type="text/javascript" src="<%= EXAMPLE_URL %>/counter.js"></script>
-<script type="text/javascript" src="<%= EXAMPLE_URL %>/inlineConfig.js"></script>
-<script type="text/javascript" src="<%= BUNDLE_URL %>/st.js"></script>
+<script type="text/javascript" src="/counter.js"></script>
+<script type="text/javascript" src="/inlineConfig.js"></script>
+<script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
 <script type="text/javascript">
   var ST = SecureTrading;
   window.addEventListener('load', function() {
@@ -162,43 +162,55 @@
     var extraSuccessFunction = params.get('extraSuccessFunction');
     var extraCancelFunction = params.get('extraCancelFunction');
 
-    if (inlineConfig) {
-      init(inlineConfig);
-    } else {
-      window
-        .fetch('<%= BUNDLE_URL %>/json/config.json')
-        .then(function(response) {
+    getConfig()
+      .then(function (config) {
+        init(config);
+      });
+
+    function getConfig() {
+      if (inlineConfig) {
+        return Promise.resolve(inlineConfig);
+      }
+
+      return window
+        .fetch('<%= CONFIG_URL %>/config.json')
+        .then(function (response) {
           if (response.status !== 200) {
-            return Promise.reject('Configuration has not been set !');
+            return Promise.reject('Failed to load configuration file!');
           }
+
           return response.json();
         })
-        .then(function(data) {
-          try {
-            getJwt(data);
-          } catch (e) {
-            console.error(e);
-          }
+        .then(function(config) {
+          return getJwt(config).then(function (jwt) {
+            return Object.assign(config, {jwt: jwt});
+          });
         })
-        .catch(function() {
-          getDefaultConfig();
+        .catch(function(error) {
+          console.error(error);
         });
     }
 
+    function getJwt(config) {
+      var presetJwt = jwt || config.jwt;
 
-    function getDefaultConfig() {
-      fetch('<%= EXAMPLE_URL %>/json/config.json')
-        .then(function(response) {
-          if (response.status !== 200) {
-            return Promise.reject('Default configuration has not been set !');
-          }
-          return response.json();
-        })
-        .then(function(data) {
-          if (data) {
-            getJwt(data);
-          }
-        });
+      if (presetJwt) {
+        return Promise.resolve(presetJwt);
+      }
+
+      return window.configJWT('./../json/jwtdata.json');
+    }
+
+    function init(config) {
+      setCallbacks(config);
+      var st = ST(config);
+      st.Components(config.components);
+      st.VisaCheckout(config.visaCheckout);
+      st.ApplePay(config.applePay);
+      st.Cybertonica().then(function(response) {
+        console.error(response);
+      });
+      updateJwtListener(st, updatedJwt);
     }
 
     function updateJwtListener(st, updatedJwt) {
@@ -225,6 +237,7 @@
         default:
           div.style.bottom = 0;
       }
+
       return div;
     }
 
@@ -269,34 +282,6 @@
         }
         window.displayCallbackCounter('cancel-callback-counter', 'cancel', '#ffc23a');
       };
-    }
-
-    function init(config) {
-      setCallbacks(config);
-      var st = ST(config);
-      st.Components(config.components);
-      st.VisaCheckout(config.visaCheckout);
-      st.ApplePay(config.applePay);
-      st.Cybertonica().then(function(response) {
-        console.error(response);
-      });
-      updateJwtListener(st, updatedJwt);
-    }
-
-    function getJwt(data) {
-      var stConfig = data;
-      if (jwt) {
-        stConfig.jwt = jwt;
-        init(stConfig);
-        return;
-      }
-
-      window.configJWT('./../json/jwtdata.json').then(function(generatedJwt) {
-        stConfig.jwt = generatedJwt;
-        init(stConfig);
-      }).catch(function() {
-        init(stConfig);
-      });
     }
   });
 </script>

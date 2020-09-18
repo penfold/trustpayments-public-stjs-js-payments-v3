@@ -1,6 +1,5 @@
-const webpack = require('webpack');
 const path = require('path');
-const fs = require('fs');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
@@ -12,26 +11,6 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 module.exports = {
   mode: 'development',
   devtool: 'eval-source-map',
-  devServer: {
-    compress: true,
-    contentBase: path.join(__dirname, './dist'),
-    publicPath: '',
-    port: 8444,
-    https: {
-      key: fs.readFileSync('./../../docker/app-html/nginx/cert/merchant.securetrading.net/key.pem'),
-      cert: fs.readFileSync('./../../docker/app-html/nginx/cert/merchant.securetrading.net/cert.pem'),
-      ca: fs.readFileSync('./../../docker/app-html/nginx/cert/minica.pem')
-    },
-    hot: true,
-    host: '0.0.0.0',
-    writeToDisk: true,
-    index: 'index.html',
-    disableHostCheck: true,
-    watchOptions: {
-      ignored: ['node_modules']
-    }
-  },
-
   entry: {
     example: ['./pages/index/index.ts'],
     receipt: ['./pages/receipt/receipt.ts'],
@@ -50,11 +29,6 @@ module.exports = {
   },
   plugins: [
     new ManifestPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.DefinePlugin({
-      BUNDLE_URL: JSON.stringify(`https://${process.env.npm_package_config_host}:8443`),
-      EXAMPLE_URL: JSON.stringify(`https://${process.env.npm_package_config_host}:8444`)
-    }),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
