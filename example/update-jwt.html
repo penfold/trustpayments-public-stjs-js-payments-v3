@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://songbirdstag.cardinalcommerce.com/edge/v1/songbird.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.0.0-beta.2/build/jwt-decode.cjs.min.js"></script>
+  <script>
+    function requestId() {
+      return 'J-' + Math.random().toString(36).substring(2, length);
+    }
+
+    window.addEventListener('load', async () => {
+      const jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDQ0MjkwNS42MjkxNzc4LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIn19.bCZuoijpkPwR2ngft-lwYYVeEqyoBPL0NCvgw4WC4Ec';
+      const updatedJwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDQ0MjkyMC43MjY3NiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMjAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiJ9fQ.jF3GbzDLOHFkhc9BK6JgMYwjI3QZ2mAPHathrZQbQkQ';
+      const gatewayUrl = 'https://webservices.securetrading.net/jwt/';
+      const pan = '5200000000001005';
+
+      const jsInitRequest = (jwt) => ({
+        acceptcustomeroutput: "1.00",
+        jwt: jwt,
+        request: [
+          {
+            requesttypedescriptions: ["JSINIT"],
+            requestid: requestId(),
+            sitereference: "test_james38641"
+          }
+        ],
+        version: "1.00",
+        versioninfo: "STJS::N/A::2.5.0::N/A",
+      });
+
+      // JSINIT
+
+      const response = await fetch(gatewayUrl, {
+        method: 'POST',
+        body: JSON.stringify(jsInitRequest(jwt)),
+      })
+        .then(response => response.json())
+        .then(response => jwtDecode(response.jwt));
+
+      console.log('JSINIT RESPONSE', response.payload.response[0]);
+
+      const cardinalJwt = response.payload.response[0].threedinit;
+      const cardinalCacheToken = response.payload.response[0].cachetoken;
+
+      // CARDINAL SETUP
+
+      Cardinal.setup('init', {jwt: cardinalJwt});
+
+      // THREEDQUERY
+
+      const threedQueryRequest = {
+        acceptcustomeroutput: "1.00",
+        jwt: updatedJwt,
+        request: [
+          {
+            termurl: "https://termurl.com",
+            cachetoken: cardinalCacheToken,
+            requesttypedescriptions: ["THREEDQUERY"],
+            pan: pan,
+            expirydate: "01/23",
+            securitycode: "123",
+            requestid: requestId(),
+            sitereference: "test_james38641",
+          }
+        ],
+        version: "1.00",
+        versioninfo: "STJS::N/A::2.5.0::N/A",
+      };
+
+      const threeDResponse = await fetch(gatewayUrl, {
+        method: 'POST',
+        body: JSON.stringify(threedQueryRequest),
+      })
+        .then(response => response.json())
+        .then(response => jwtDecode(response.jwt));
+
+      console.log('THREEDQUERY RESPONSE', threeDResponse.payload.response[0]);
+
+      const acsUrl = threeDResponse.payload.response[0].acsurl;
+      const payload = threeDResponse.payload.response[0].threedpayload;
+      const transactionId = threeDResponse.payload.response[0].acquirertransactionreference;
+
+      //
+      //
+      // if (acsUrl) {
+      //   Cardinal.continue(
+      //     'cca',
+      //     {
+      //       AcsUrl: acsUrl,
+      //       Payload: payload
+      //     },
+      //     {
+      //       Cart: [],
+      //       OrderDetails: {
+      //         TransactionId: transactionId
+      //       }
+      //     },
+      //     cardinalJwt
+      //   );
+      // }
+
+      const authRequest = {
+        acceptcustomeroutput: "1.00",
+        jwt: updatedJwt,
+        request: [
+          {
+            requesttypedescriptions: ["AUTH"],
+            pan: pan,
+            expirydate: "01/23",
+            securitycode: "123",
+            requestid: requestId(),
+            sitereference: "test_james38641"
+          },
+        ],
+        version: "1.00",
+        versioninfo: "STJS::N/A::2.5.0::N/A"
+      };
+
+      const authResponse = await fetch(gatewayUrl, {
+        method: 'POST',
+        body: JSON.stringify(authRequest),
+      })
+        .then(response => response.json())
+        .then(response => jwtDecode(response.jwt));
+
+      console.log('AUTH RESPONSE', authResponse.payload.response[0]);
+    });
+  </script>
+</head>
+<body>
+
+</body>
+</html>
