@@ -5,8 +5,7 @@
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR         (to enable  debug-on-error)
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=yes     (to enable  debug-on-error)
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=no      (to disable debug-on-error)
-#from selenium.common.exceptions import WebDriverException, SessionNotCreatedException
-from selenium.common.exceptions import SessionNotCreatedException, WebDriverException
+from selenium.common.exceptions import WebDriverException
 
 import ioc_config
 from configuration import CONFIGURATION
@@ -37,8 +36,7 @@ def before_all(context):
 def before_scenario(context, scenario):
     """Run before each scenario"""
     context.page_factory = PageFactory()
-    resolve_executor_with_try(context)
-    open_driver_with_try(context)
+    resolve_executor_and_driver_with_try(context)
     context.session_id = context.executor.get_session_id()
     context.language = 'en_GB'
     # scenario.name = '%s_%s' % (scenario.name, context.browser.upper())
@@ -57,21 +55,10 @@ def before_scenario(context, scenario):
         context.is_field_in_iframe = True
 
 
-def resolve_executor_with_try(context):
-    max_try = 3
+def resolve_executor_and_driver_with_try(context, max_try: int = 3):
     while max_try:
         try:
             context.executor = ioc_config.EXECUTOR.resolve('test')
-            break
-        except SessionNotCreatedException as exception:
-            print(str(exception) + ' - trying to open browser again')
-            max_try -= 1
-
-
-def open_driver_with_try(context):
-    max_try = 3
-    while max_try:
-        try:
             context.browser = ioc_config.CONFIG.resolve('driver').browser
             break
         except WebDriverException as exception:
