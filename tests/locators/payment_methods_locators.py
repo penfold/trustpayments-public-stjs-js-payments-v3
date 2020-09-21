@@ -47,6 +47,7 @@ class PaymentMethodsLocators:
     security_code_label: By = (By.XPATH, '//label[@for=\'st-security-code-input\']')
     pay_button_label: By = (By.XPATH, '//button[@type=\'submit\']')
 
+    popups: By = (By.CSS_SELECTOR, '.st-popup div')
     callback_success_popup: By = (By.ID, 'success-popup')
     callback_error_popup: By = (By.ID, 'error-popup')
     callback_cancel_popup: By = (By.ID, 'cancel-popup')
