@@ -318,6 +318,12 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_message in actual_message, assertion_message
 
+    def wait_for_notification_frame(self):
+        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
+
+    def wait_for_popups_to_disappear(self):
+        self._executor.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.popups)
+
     def validate_callback_with_data_type(self, expected_message):
         actual_message = self.get_text_from_status_callback()
         assertion_message = f'Payment status is not correct, should be: "{expected_message}" but is: "{actual_message}"'

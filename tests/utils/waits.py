@@ -26,10 +26,9 @@ class Waits:
         except:
             return False
 
-    def wait_for_element_to_be_displayed(self, locator):
+    def wait_for_element_to_be_displayed(self, locator, max_try: int = 20):
         # pylint: disable=bare-except
 
-        max_try = 20
         while max_try:
             try:
                 is_element_displayed = self._browser.find_element(*locator).is_displayed()
@@ -37,7 +36,19 @@ class Waits:
                     max_try = 0
             except:
                 time.sleep(0.2)
-                max_try -=1
+                max_try -= 1
+
+    def wait_for_element_to_be_not_displayed(self, locator, max_try: int = 20):
+        # pylint: disable=bare-except
+
+        while max_try:
+            try:
+                if not self._browser.find_elements(*locator):
+                    break
+            except:
+                pass
+            time.sleep(0.2)
+            max_try -= 1
 
     def wait_for_element_to_be_clickable(self, locator):
         return self._wait.until(ec.element_to_be_clickable(locator))
