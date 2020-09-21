@@ -25,6 +25,7 @@ def step_impl(context):
     if 'config_immediate_payment' not in context.scenario.tags[0] and 'parent_iframe' not in context.scenario.tags and \
         'config_cybertonica_immediate_payment' not in context.scenario.tags:
         if ('safari' in context.browser) or ('iP' in CONFIGURATION.REMOTE_DEVICE):
+            payment_page.open_page(CONFIGURATION.URL.BASE_URL)
             payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
             if 'safari' in context.browser or 'visa_test' in context.scenario.tags or 'apple_test' in context.scenario.tags:
                 payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
@@ -210,6 +211,7 @@ def step_impl(context, key, language):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'safari' in context.browser or ('iP' in CONFIGURATION.REMOTE_DEVICE):
+        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
         payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
         payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
         context.executor.wait_for_javascript()
@@ -365,6 +367,7 @@ def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
 def step_impl(context, example_page: ExamplePage):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if ('safari' in context.browser) or ('iP' in CONFIGURATION.REMOTE_DEVICE):
+        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
         payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
         if 'safari' in context.browser or 'visa_test' in context.scenario.tags or 'apple_test' in context.scenario.tags:
             payment_page.open_page(MockUrl.THIRDPARTY_URL.value)

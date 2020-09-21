@@ -463,10 +463,13 @@ class PaymentMethodsPage(BasePage):
     def validate_if_callback_popup_is_displayed(self, callback_popup):
         is_displayed = False
         if 'success' in callback_popup:
+            self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_success_popup)
             is_displayed = self._action.is_element_displayed(PaymentMethodsLocators.callback_success_popup)
         elif 'error' in callback_popup:
+            self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_error_popup)
             is_displayed = self._action.is_element_displayed(PaymentMethodsLocators.callback_error_popup)
         elif 'cancel' in callback_popup:
+            self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_cancel_popup)
             is_displayed = self._action.is_element_displayed(PaymentMethodsLocators.callback_cancel_popup)
         assertion_message = f'{callback_popup} callback popup is not displayed but should be'
         add_to_shared_dict('assertion_message', assertion_message)
