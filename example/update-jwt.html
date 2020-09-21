@@ -7,8 +7,8 @@
   <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.0.0-beta.2/build/jwt-decode.cjs.min.js"></script>
   <script>
     window.addEventListener('load', async () => {
-      const jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDY3OTI2NC4zMzk2NDkyLCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIyMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIn19.fb7y64NIK4kVOnw-4wIsSUUcKzgO84Dlfk9-pIW-S_I';
-      const updatedJwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDY3OTI5MS42NDc4MDEsInBheWxvYWQiOnsiYmFzZWFtb3VudCI6IjUwMDAiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJFVVIiLCJzaXRlcmVmZXJlbmNlIjoidGVzdF9qYW1lczM4NjQxIiwibG9jYWxlIjoiZW5fR0IifX0.UNFzO1LUGoZYhCANlTtS8_jsMnKyVXhVU3_ZK8c2v9U';
+      const jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDY4MzQ0My4zMDk4ODUzLCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIn19.tkI6HMICLqfAi6V8fLUF_yBeataALo65fBLkFRGnwXQ';
+      const updatedJwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDY4MzQ2My4zMTE3MDQ0LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIyMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiRVVSIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIn19.SzcwBOuAeqsnrvTLts8jzJ139GL4mmNKrW3SbEC8j9M';
       const gatewayUrl = 'https://webservices.securetrading.net/jwt/';
       const pan = '5200000000001005';
 
@@ -30,7 +30,9 @@
       currentCardinalJwt = updatedJsInitResponse.cardinalJwt;
       currentCardinalCacheToken = updatedJsInitResponse.cardinalCacheToken;
 
-      await callCardinalSetup(currentCardinalJwt);
+      await callCardinalStart(currentCardinalJwt);
+
+      await new Promise(resolve => setTimeout(resolve, 3000));
 
       const threeDQueryResponse = await callThreedQueryRequest(currentJwt, currentCardinalCacheToken);
 
@@ -90,6 +92,10 @@
           });
           Cardinal.setup('init', {jwt: cardinalJwt});
         });
+      }
+
+      function callCardinalStart(cardinalJwt) {
+        Cardinal.start('cca', {}, cardinalJwt);
       }
 
       async function callThreedQueryRequest(jwt, cacheToken) {
