@@ -6,144 +6,192 @@
   <script src="https://songbirdstag.cardinalcommerce.com/edge/v1/songbird.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.0.0-beta.2/build/jwt-decode.cjs.min.js"></script>
   <script>
-    function requestId() {
-      return 'J-' + Math.random().toString(36).substring(2, length);
-    }
-
     window.addEventListener('load', async () => {
-      const jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDQ0NDIwNS4xMTk0MjEsInBheWxvYWQiOnsiYmFzZWFtb3VudCI6IjIwMDAiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJHQlAiLCJzaXRlcmVmZXJlbmNlIjoidGVzdF9qYW1lczM4NjQxIiwibG9jYWxlIjoiZW5fR0IifX0.gMsMnTkejAW2ZujUrVqCSkDlD5uFoK6MEXhpgHpMdD8';
-      const updatedJwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDQ0NDIyMS42ODg4NzQyLCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIyMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiRVVSIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIn19.qIMP7L3FJ1klYJI0uAjmYCMJR9Rmr7BemKOo9EFs5Ic';
+      const jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDY3OTI2NC4zMzk2NDkyLCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIyMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIn19.fb7y64NIK4kVOnw-4wIsSUUcKzgO84Dlfk9-pIW-S_I';
+      const updatedJwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDY3OTI5MS42NDc4MDEsInBheWxvYWQiOnsiYmFzZWFtb3VudCI6IjUwMDAiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJFVVIiLCJzaXRlcmVmZXJlbmNlIjoidGVzdF9qYW1lczM4NjQxIiwibG9jYWxlIjoiZW5fR0IifX0.UNFzO1LUGoZYhCANlTtS8_jsMnKyVXhVU3_ZK8c2v9U';
       const gatewayUrl = 'https://webservices.securetrading.net/jwt/';
       const pan = '5200000000001005';
 
-      const jsInitRequest = (jwt) => ({
-        acceptcustomeroutput: "1.00",
-        jwt: jwt,
-        request: [
-          {
-            requesttypedescriptions: ["JSINIT"],
-            requestid: requestId(),
-            sitereference: "test_james38641"
-          }
-        ],
-        version: "1.00",
-        versioninfo: "STJS::N/A::2.5.0::N/A",
-      });
+      let currentJwt = jwt;
+      let currentCardinalJwt;
+      let currentCardinalCacheToken;
 
-      // JSINIT
+      // FLOW
 
-      const response = await fetch(gatewayUrl, {
-        method: 'POST',
-        body: JSON.stringify(jsInitRequest(jwt)),
-      })
-        .then(response => response.json())
-        .then(response => jwtDecode(response.jwt));
+      const jsInitResponse = await callJsInit(currentJwt);
+      currentCardinalJwt = jsInitResponse.cardinalJwt;
+      currentCardinalCacheToken = jsInitResponse.cardinalCacheToken;
 
-      console.log('JSINIT RESPONSE', response.payload.response[0]);
+      await callCardinalSetup(currentCardinalJwt);
 
-      const cardinalJwt = response.payload.response[0].threedinit;
-      const cardinalCacheToken = response.payload.response[0].cachetoken;
+      updateJwt();
 
-      // CARDINAL SETUP
+      const updatedJsInitResponse = await callJsInit(currentJwt);
+      currentCardinalJwt = updatedJsInitResponse.cardinalJwt;
+      currentCardinalCacheToken = updatedJsInitResponse.cardinalCacheToken;
 
-      Cardinal.setup('init', {jwt: cardinalJwt});
+      await callCardinalSetup(currentCardinalJwt);
 
-      // JSINIT 2
+      const threeDQueryResponse = await callThreedQueryRequest(currentJwt, currentCardinalCacheToken);
 
-      const response2 = await fetch(gatewayUrl, {
-        method: 'POST',
-        body: JSON.stringify(jsInitRequest(updatedJwt)),
-      })
-        .then(response => response.json())
-        .then(response => jwtDecode(response.jwt));
+      await callAuthRequest(currentJwt);
 
-      console.log('JSINIT RESPONSE', response2.payload.response[0]);
+      // FUNCTIONS
 
-      const cardinalJwt2 = response2.payload.response[0].threedinit;
-      const cardinalCacheToken2 = response2.payload.response[0].cachetoken;
+      function requestId() {
+        return 'J-' + Math.random().toString(36).substring(2, length);
+      }
 
-      // CARDINAL SETUP 2
+      function updateJwt() {
+        currentJwt = updatedJwt;
+        console.info('UPDATED JWT');
+        console.info(`PREVIOUS: ${jwt}`);
+        console.info(`CURRENT: ${updatedJwt}`);
+      }
 
-      Cardinal.setup('init', {jwt: cardinalJwt2});
+      async function callJsInit(jwt) {
+        console.info(`CALLING JSINIT (JWT: ${jwt})`);
 
-      // THREEDQUERY
+        const request = {
+          acceptcustomeroutput: "1.00",
+          jwt: jwt,
+          request: [
+            {
+              requesttypedescriptions: ["JSINIT"],
+              requestid: requestId(),
+              sitereference: "test_james38641"
+            }
+          ],
+          version: "1.00",
+          versioninfo: "STJS::N/A::2.5.0::N/A",
+        };
 
-      const threedQueryRequest = {
-        acceptcustomeroutput: "1.00",
-        jwt: updatedJwt,
-        request: [
-          {
-            termurl: "https://termurl.com",
-            cachetoken: cardinalCacheToken2,
-            requesttypedescriptions: ["THREEDQUERY"],
-            pan: pan,
-            expirydate: "01/23",
-            securitycode: "123",
-            requestid: requestId(),
-            sitereference: "test_james38641",
-          }
-        ],
-        version: "1.00",
-        versioninfo: "STJS::N/A::2.5.0::N/A",
-      };
+        const jsinitResponse = await fetch(gatewayUrl, {
+          method: 'POST',
+          body: JSON.stringify(request),
+        })
+          .then(response => response.json())
+          .then(response => jwtDecode(response.jwt));
 
-      const threeDResponse = await fetch(gatewayUrl, {
-        method: 'POST',
-        body: JSON.stringify(threedQueryRequest),
-      })
-        .then(response => response.json())
-        .then(response => jwtDecode(response.jwt));
+        console.log('JSINIT RESPONSE', jsinitResponse.payload.response[0]);
 
-      console.log('THREEDQUERY RESPONSE', threeDResponse.payload.response[0]);
+        return {
+          cardinalJwt: jsinitResponse.payload.response[0].threedinit,
+          cardinalCacheToken: jsinitResponse.payload.response[0].cachetoken,
+        };
+      }
 
-      const acsUrl = threeDResponse.payload.response[0].acsurl;
-      const payload = threeDResponse.payload.response[0].threedpayload;
-      const transactionId = threeDResponse.payload.response[0].acquirertransactionreference;
+      async function callCardinalSetup(cardinalJwt) {
+        console.info(`SETUP CARDINAL (JWT: ${cardinalJwt})`);
+        return new Promise(resolve => {
+          Cardinal.on('payments.setupComplete', () => {
+            console.info('SETUP COMPLETE');
+            resolve();
+          });
+          Cardinal.setup('init', {jwt: cardinalJwt});
+        });
+      }
 
-      //
-      //
-      // if (acsUrl) {
-      //   Cardinal.continue(
-      //     'cca',
-      //     {
-      //       AcsUrl: acsUrl,
-      //       Payload: payload
-      //     },
-      //     {
-      //       Cart: [],
-      //       OrderDetails: {
-      //         TransactionId: transactionId
-      //       }
-      //     },
-      //     cardinalJwt
-      //   );
-      // }
+      async function callThreedQueryRequest(jwt, cacheToken) {
+        console.info('CALLING 3DQUERY');
+        console.info(`JWT: ${jwt}`);
+        console.info(`CACHE TOKEN: ${cacheToken}`);
 
-      const authRequest = {
-        acceptcustomeroutput: "1.00",
-        jwt: updatedJwt,
-        request: [
-          {
-            requesttypedescriptions: ["AUTH"],
-            pan: pan,
-            expirydate: "01/23",
-            securitycode: "123",
-            requestid: requestId(),
-            sitereference: "test_james38641"
-          },
-        ],
-        version: "1.00",
-        versioninfo: "STJS::N/A::2.5.0::N/A"
-      };
+        const request = {
+          acceptcustomeroutput: "1.00",
+          jwt: jwt,
+          request: [
+            {
+              termurl: "https://termurl.com",
+              cachetoken: cacheToken,
+              requesttypedescriptions: ["THREEDQUERY"],
+              pan: pan,
+              expirydate: "01/23",
+              securitycode: "123",
+              requestid: requestId(),
+              sitereference: "test_james38641",
+            }
+          ],
+          version: "1.00",
+          versioninfo: "STJS::N/A::2.5.0::N/A",
+        };
 
-      const authResponse = await fetch(gatewayUrl, {
-        method: 'POST',
-        body: JSON.stringify(authRequest),
-      })
-        .then(response => response.json())
-        .then(response => jwtDecode(response.jwt));
+        const threeDResponse = await fetch(gatewayUrl, {
+          method: 'POST',
+          body: JSON.stringify(request),
+        })
+          .then(response => response.json())
+          .then(response => jwtDecode(response.jwt));
 
-      console.log('AUTH RESPONSE', authResponse.payload.response[0]);
+        console.log('THREEDQUERY RESPONSE', threeDResponse.payload.response[0]);
+
+        return {
+          acsUrl: threeDResponse.payload.response[0].acsurl,
+          payload: threeDResponse.payload.response[0].threedpayload,
+          transactionId: threeDResponse.payload.response[0].acquirertransactionreference,
+        };
+      }
+
+      function callCardinalContinue(threeDResponse, cardinalJwt) {
+        console.info(`CALLING CONTINUE: ${cardinalJwt}`);
+
+        const {acsUrl, payload, transactionId} = threeDResponse;
+
+        if (!acsUrl) {
+          return Promise.resolve(threeDResponse);
+        }
+
+        return new Promise((resolve) => {
+          Cardinal.on('payments.validated', (data, jwt) => {
+            resolve({data, jwt});
+          });
+
+          Cardinal.continue(
+            'cca',
+            {
+              AcsUrl: acsUrl,
+              Payload: payload
+            },
+            {
+              Cart: [],
+              OrderDetails: {
+                TransactionId: transactionId
+              }
+            },
+            cardinalJwt,
+          );
+        });
+      }
+
+      async function callAuthRequest(jwt) {
+        console.info(`CALLING AUTH REQUEST (JWT: ${jwt})`);
+
+        const authRequest = {
+          acceptcustomeroutput: "1.00",
+          jwt: jwt,
+          request: [
+            {
+              requesttypedescriptions: ["AUTH"],
+              pan: pan,
+              expirydate: "01/23",
+              securitycode: "123",
+              requestid: requestId(),
+              sitereference: "test_james38641"
+            },
+          ],
+          version: "1.00",
+          versioninfo: "STJS::N/A::2.5.0::N/A"
+        };
+
+        const authResponse = await fetch(gatewayUrl, {
+          method: 'POST',
+          body: JSON.stringify(authRequest),
+        })
+          .then(response => response.json())
+          .then(response => jwtDecode(response.jwt));
+
+        console.log('AUTH RESPONSE', authResponse.payload.response[0]);
+      }
     });
   </script>
 </head>
