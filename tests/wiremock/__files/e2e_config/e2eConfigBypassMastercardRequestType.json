@@ -1,0 +1,13 @@
+{
+  "bypassCards": [
+    "MASTERCARD"
+  ],
+  "components": {
+    "defaultPaymentType": "",
+    "requestTypes": [
+      "RISKDEC","ACCOUNTCHECK","THREEDQUERY","AUTH"
+    ]
+  },
+  "panIcon": true,
+  "submitOnSuccess": false
+}

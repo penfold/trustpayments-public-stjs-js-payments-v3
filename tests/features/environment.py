@@ -5,6 +5,7 @@
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR         (to enable  debug-on-error)
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=yes     (to enable  debug-on-error)
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=no      (to disable debug-on-error)
+from selenium.common.exceptions import WebDriverException
 
 import ioc_config
 from configuration import CONFIGURATION
@@ -35,8 +36,7 @@ def before_all(context):
 def before_scenario(context, scenario):
     """Run before each scenario"""
     context.page_factory = PageFactory()
-    context.executor = ioc_config.EXECUTOR.resolve('test')
-    context.browser = ioc_config.CONFIG.resolve('driver').browser
+    resolve_executor_and_driver_with_try(context)
     context.session_id = context.executor.get_session_id()
     context.language = 'en_GB'
     # scenario.name = '%s_%s' % (scenario.name, context.browser.upper())
@@ -53,6 +53,17 @@ def before_scenario(context, scenario):
         scenario.skip('Temporarily disabled test ')
     else:
         context.is_field_in_iframe = True
+
+
+def resolve_executor_and_driver_with_try(context, max_try: int = 3):
+    while max_try:
+        try:
+            context.executor = ioc_config.EXECUTOR.resolve('test')
+            context.browser = ioc_config.CONFIG.resolve('driver').browser
+            break
+        except WebDriverException as exception:
+            print(str(exception) + ' - trying to open browser again')
+            max_try -= 1
 
 
 def after_scenario(context, scenario):

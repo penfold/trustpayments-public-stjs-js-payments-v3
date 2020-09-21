@@ -440,6 +440,7 @@ SamsungGalaxyS9-12-extended-test-part-2:
     POETRY_TAGS: extended_tests_part_2
   resource_group: extended_tests_release_4
 
+
 win10-IE-11.0-extended-test-part-1:
   extends:
     - .extended-tests-browserstack
