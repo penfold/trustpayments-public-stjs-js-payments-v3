@@ -1,0 +1,619 @@
+body {
+  display: block;
+}
+.card-number {
+  position: relative;
+  width: 100%;
+}
+.card-number__label {
+  display: inline-block;
+  font-size: 1.2rem;
+  line-height: 1.6rem;
+  color: #333;
+  margin: 0 0 0.4rem;
+}
+.card-number__label--required {
+  position: relative;
+}
+.card-number__label--required:after {
+  content: '*';
+  display: inline;
+  position: absolute;
+  top: 0;
+  right: -1.2rem;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #ff4545;
+}
+.card-number__input {
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 1.5rem;
+  line-height: 1.6rem;
+  color: #333;
+  border: 0.1rem solid #6d6d6d;
+  border-radius: 0.4rem;
+  padding: 1.1rem 0.8rem;
+  margin: 0 0 0.4rem;
+}
+.card-number__input::-webkit-input-placeholder {
+  color: #b6b6b6;
+}
+.card-number__input:-ms-input-placeholder {
+  color: #b6b6b6;
+}
+.card-number__input::-ms-input-placeholder {
+  color: #b6b6b6;
+}
+.card-number__input::placeholder {
+  color: #b6b6b6;
+}
+.card-number__message {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  margin: 0.4rem 0 0;
+  color: #ff4545;
+}
+html {
+  font-size: 62.5%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+body {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.6rem;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji,
+    Segoe UI Emoji, Segoe UI Symbol;
+}
+.error-field {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #ff4545;
+  outline: 0;
+}
+.error-field:focus {
+  outline: 0;
+}
+.error-label {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  color: #ff4545;
+}
+@-webkit-keyframes autofill {
+  to {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #ff4545;
+  }
+}
+input:-webkit-autofill.error-field {
+  -webkit-animation-name: autofill;
+  -webkit-animation-fill-mode: both;
+}
+.st-button-submit__disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.st-button-submit__disabled:hover,
+.st-input--disabled {
+  background: transparent;
+}
+.st-input--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+body {
+  display: block;
+}
+.expiration-date {
+  position: relative;
+  width: 100%;
+}
+.expiration-date__label {
+  display: inline-block;
+  font-size: 1.2rem;
+  line-height: 1.6rem;
+  color: #333;
+  margin: 0 0 0.4rem;
+}
+.expiration-date__label--required {
+  position: relative;
+}
+.expiration-date__label--required:after {
+  content: '*';
+  display: inline;
+  position: absolute;
+  top: 0;
+  right: -1.2rem;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #ff4545;
+}
+.expiration-date__input {
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 1.5rem;
+  line-height: 1.6rem;
+  color: #333;
+  border: 0.1rem solid #6d6d6d;
+  border-radius: 0.4rem;
+  padding: 1.1rem 0.8rem;
+  margin: 0 0 0.4rem;
+}
+.expiration-date__input::-webkit-input-placeholder {
+  color: #b6b6b6;
+}
+.expiration-date__input:-ms-input-placeholder {
+  color: #b6b6b6;
+}
+.expiration-date__input::-ms-input-placeholder {
+  color: #b6b6b6;
+}
+.expiration-date__input::placeholder {
+  color: #b6b6b6;
+}
+.expiration-date__message {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  margin: 0.4rem 0 0;
+  color: #ff4545;
+}
+html {
+  font-size: 62.5%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+body {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.6rem;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji,
+    Segoe UI Emoji, Segoe UI Symbol;
+}
+.error-field {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #ff4545;
+  outline: 0;
+}
+.error-field:focus {
+  outline: 0;
+}
+.error-label {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  color: #ff4545;
+}
+@-webkit-keyframes autofill {
+  to {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #ff4545;
+  }
+}
+input:-webkit-autofill.error-field {
+  -webkit-animation-name: autofill;
+  -webkit-animation-fill-mode: both;
+}
+.st-button-submit__disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.st-button-submit__disabled:hover,
+.st-input--disabled {
+  background: transparent;
+}
+.st-input--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+body {
+  display: block;
+}
+html {
+  font-size: 62.5%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+body {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.6rem;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji,
+    Segoe UI Emoji, Segoe UI Symbol;
+}
+.error-field {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #ff4545;
+  outline: 0;
+}
+.error-field:focus {
+  outline: 0;
+}
+.error-label {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  color: #ff4545;
+}
+@-webkit-keyframes autofill {
+  to {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #ff4545;
+  }
+}
+input:-webkit-autofill.error-field {
+  -webkit-animation-name: autofill;
+  -webkit-animation-fill-mode: both;
+}
+.st-button-submit__disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.st-button-submit__disabled:hover,
+.st-input--disabled {
+  background: transparent;
+}
+.st-input--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.notification-frame {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  color: #fff;
+  border: 0.1rem solid;
+  border-radius: 0.4rem;
+  padding: 1.1rem 0.8rem 1.3rem;
+  position: relative;
+  opacity: 0;
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -ms-flex-align: center;
+  align-items: center;
+  transition: opacity;
+}
+.notification-frame:after {
+  content: 'x';
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0.6rem;
+  visibility: hidden;
+}
+.notification-frame--error,
+.notification-frame--info,
+.notification-frame--success,
+.notification-frame--cancel {
+  opacity: 1;
+}
+.notification-frame--info {
+  background-color: #6d6d6d;
+  border-color: #6d6d6d;
+  color: #fff;
+}
+.notification-frame--error {
+  background-color: #ff4545;
+  border-color: #ff4545;
+  color: #fff;
+}
+.notification-frame--cancel {
+  background-color: #ffc23a;
+  border-color: #ffc23a;
+  color: #fff;
+}
+.notification-frame--success {
+  background-color: #01cb4d;
+  border-color: #01cb4d;
+  color: #fff;
+}
+body {
+  display: block;
+}
+.security-code {
+  position: relative;
+  width: 100%;
+}
+.security-code__label {
+  display: inline-block;
+  font-size: 1.2rem;
+  line-height: 1.6rem;
+  color: #333;
+  margin: 0 0 0.4rem;
+}
+.security-code__label--required {
+  position: relative;
+}
+.security-code__label--required:after {
+  content: '*';
+  display: inline;
+  position: absolute;
+  top: 0;
+  right: -1.2rem;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #ff4545;
+}
+.security-code__input {
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 1.5rem;
+  line-height: 1.6rem;
+  color: #333;
+  border: 0.1rem solid #6d6d6d;
+  border-radius: 0.4rem;
+  padding: 1.1rem 0.8rem;
+  margin: 0 0 0.4rem;
+}
+.security-code__input::-webkit-input-placeholder {
+  color: #b6b6b6;
+}
+.security-code__input:-ms-input-placeholder {
+  color: #b6b6b6;
+}
+.security-code__input::-ms-input-placeholder {
+  color: #b6b6b6;
+}
+.security-code__input::placeholder {
+  color: #b6b6b6;
+}
+.security-code__message {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  margin: 0.4rem 0 0;
+  color: #ff4545;
+}
+html {
+  font-size: 62.5%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+body {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.6rem;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji,
+    Segoe UI Emoji, Segoe UI Symbol;
+}
+.error-field {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #ff4545;
+  outline: 0;
+}
+.error-field:focus {
+  outline: 0;
+}
+.error-label {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  color: #ff4545;
+}
+@-webkit-keyframes autofill {
+  to {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #ff4545;
+  }
+}
+input:-webkit-autofill.error-field {
+  -webkit-animation-name: autofill;
+  -webkit-animation-fill-mode: both;
+}
+.st-button-submit__disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.st-button-submit__disabled:hover,
+.st-input--disabled {
+  background: transparent;
+}
+.st-input--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.example-form__label {
+  display: inline-block;
+  font-size: 1.2rem;
+  line-height: 1.6rem;
+  color: #333;
+  margin: 0 0 0.4rem;
+}
+.example-form__label--required {
+  position: relative;
+}
+.example-form__label--required:after {
+  content: '*';
+  display: inline;
+  position: absolute;
+  top: 0;
+  right: -1.2rem;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #ff4545;
+}
+.example-form__input {
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 1.5rem;
+  line-height: 1.6rem;
+  color: #333;
+  border: 0.1rem solid #6d6d6d;
+  border-radius: 0.4rem;
+  padding: 1.1rem 0.8rem;
+  margin: 0 0 0.4rem;
+}
+.example-form__input::-webkit-input-placeholder {
+  color: #b6b6b6;
+}
+.example-form__input:-ms-input-placeholder {
+  color: #b6b6b6;
+}
+.example-form__input::-ms-input-placeholder {
+  color: #b6b6b6;
+}
+.example-form__input::placeholder {
+  color: #b6b6b6;
+}
+.example-form__message {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  margin: 0.4rem 0 0;
+  color: #ff4545;
+}
+.example-form__button {
+  font-size: 1.5rem;
+  line-height: 1.6rem;
+  color: #333;
+  border: 0.1rem solid #6d6d6d;
+  border-radius: 0.4rem;
+  background-color: #fff;
+  padding: 1.1rem 1.5rem;
+  cursor: pointer;
+  width: 100%;
+}
+.example-form__button:hover {
+  background-color: #f1f1f1;
+}
+html {
+  font-size: 62.5%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+body {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.6rem;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji,
+    Segoe UI Emoji, Segoe UI Symbol;
+}
+.error-field {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #ff4545;
+  outline: 0;
+}
+.error-field:focus {
+  outline: 0;
+}
+.error-label {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  color: #ff4545;
+}
+@-webkit-keyframes autofill {
+  to {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #ff4545;
+  }
+}
+input:-webkit-autofill.error-field {
+  -webkit-animation-name: autofill;
+  -webkit-animation-fill-mode: both;
+}
+.st-button-submit__disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.st-button-submit__disabled:hover,
+.st-input--disabled {
+  background: transparent;
+}
+.st-input--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.example-form__group iframe,
+.example-form iframe {
+  height: 9.1rem;
+  width: 100%;
+  border: 0;
+}
+.example-form__group iframe:active,
+.example-form__group iframe:focus,
+.example-form__group iframe:hover,
+.example-form iframe:active,
+.example-form iframe:focus,
+.example-form iframe:hover {
+  outline: none;
+}
+body {
+  padding: 0;
+}
+.example-form {
+  max-width: 80rem;
+  margin: 5rem auto;
+}
+.example-form__title {
+  font-size: 2rem;
+  font-weight: 400;
+  border-bottom: 0.1rem solid #b6b6b6;
+  padding: 0 0 1.2rem;
+  margin: 0 0 3.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.example-form__title span {
+  float: right;
+  font-size: 1.2rem;
+  color: #b6b6b6;
+  text-transform: uppercase;
+  margin: 0.2rem 0 0;
+}
+.example-form__title strong {
+  color: #333;
+}
+.example-form__section--horizontal {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+.example-form__section--horizontal .example-form__group {
+  -ms-flex: 1;
+  flex: 1;
+  margin: 0 0 0 1.6rem;
+}
+.example-form__section--horizontal .example-form__group:first-child {
+  margin-left: 0;
+}
+.example-form__group {
+  margin: 0 0 0.4rem;
+}
+.example-form__group--submit {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+.example-form__spacer {
+  height: 3.2rem;
+}
+.st-notification-frame {
+  height: 6.2rem;
+}
+.st-animated-card-iframe {
+  overflow: hidden;
+  min-height: 30rem;
+  min-width: 37rem;
+  border: none;
+}
+@media screen {
+  .st-animated-card-iframe {
+    min-width: 100%;
+  }
+}

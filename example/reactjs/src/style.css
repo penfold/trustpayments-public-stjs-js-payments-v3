@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css?family=Didact+Gothic&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+
+#___gatsby,
+#gatsby-focus-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#gatsby-image-wrapper {
+  width: 200px;
+}
+
+html,
+body {
+  margin: 0;
+  font-family: 'Montserrat', Helvetica, Arial, Lucida, sans-serif;
+  color: #333;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Didact Gothic', Helvetica, Arial, Lucida, sans-serif;
+}
+
+html {
+  font-size: 62.5%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.6rem;
+  color: #333;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+header {
+  display: flex;
+}
+
+@media screen and (max-width: 70rem) {
+  header {
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+}
+
+@-webkit-keyframes autofill {
+  to {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #ff4545;
+  }
+}
+
+input:-webkit-autofill.error-field {
+  -webkit-animation-name: autofill;
+  -webkit-animation-fill-mode: both;
+}
+
+.merchants-form {
+  margin: auto;
+}
+
+.merchants-form__header {
+  display: flex;
+  justify-content: center;
+}
+
+.merchants-form__fields {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  margin: 0 auto;
+  min-height: 600px;
+  max-width: 800px;
+  flex-direction: column;
+}
+
+.merchants-form__field {
+  display: flex;
+  flex-direction: column;
+  min-height: 11rem;
+  justify-content: center;
+}
+
+.merchants-form__field--error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #ff4545;
+}
+
+.merchants-form__input {
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 1.5rem;
+  line-height: 1.6rem;
+  color: #333;
+  border: 0.1rem solid #6d6d6d;
+  border-radius: 0.4rem;
+  padding: 1.1rem 0.8rem;
+  margin: 0.8rem 0 0.4rem 0;
+}
+
+.merchants-form__error {
+  font-size: 1.3rem;
+  line-height: 1.6rem;
+  color: #ff4545;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.navigation {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}

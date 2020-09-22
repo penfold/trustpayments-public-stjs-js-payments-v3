@@ -5,6 +5,7 @@ const StyleLintPlugin = require('stylelint-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: {
@@ -43,24 +44,6 @@ module.exports = {
       './src/bootstrap.ts',
       './src/application/dependency-injection/ServiceDefinitions.ts',
       './src/application/components/animated-card/animated-card.ts'
-    ],
-    example: [
-      './src/shared/imports/polyfills.ts',
-      './example/index.ts'
-    ],
-    receipt: [
-      './src/shared/imports/polyfills.ts',
-      './example/receipt.ts'
-    ],
-    iframe: [
-      './src/shared/imports/polyfills.ts',
-      './example/iframe.ts'
-    ],
-    inlineConfig: [
-      './example/inline-config.ts'
-    ],
-    counter: [
-      './example/counter.ts'
     ]
   },
   output: {
@@ -118,21 +101,6 @@ module.exports = {
       },
       chunks: ['controlFrame']
     }),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: './example/index.html',
-      chunks: ['example']
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'receipt.html',
-      template: './example/receipt.html',
-      chunks: ['receipt']
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'iframe.html',
-      template: './example/iframe.html',
-      chunks: ['iframe']
-    }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css'
@@ -145,27 +113,11 @@ module.exports = {
         flatten: true
       }]
     }),
-    new CopyPlugin({
-      patterns: [{
-        from: 'example/img/*.png',
-        to: 'images',
-        force: true,
-        flatten: true
-      }]
-    }),
-    new CopyPlugin({
-      patterns: [{
-        from: 'example/json/*.json',
-        to: 'json',
-        force: true,
-        flatten: true,
-        noErrorOnMissing: true
-      }]
-    }),
     new StyleLintPlugin({
       context: path.join(__dirname, 'src')
     }),
-    new FriendlyErrorsWebpackPlugin()
+    new FriendlyErrorsWebpackPlugin(),
+    new webpack.SourceMapDevToolPlugin({})
   ],
   module: {
     rules: [
@@ -180,7 +132,8 @@ module.exports = {
             }
           },
           'postcss-loader',
-          'sass-loader'
+          'sass-loader',
+          'source-map-loader'
         ]
       },
       {
@@ -189,7 +142,7 @@ module.exports = {
       },
       {
         test: /\.tsx?|js$/,
-        use: 'babel-loader',
+        use: ['babel-loader', 'source-map-loader'],
         include: [
           path.join(__dirname, 'src'),
           path.join(__dirname, 'test'),
@@ -210,6 +163,8 @@ module.exports = {
             options: {
               emitErrors: true
             }
+          }, {
+            loader: 'source-map-loader'
           }
         ],
         exclude: /node_modules/

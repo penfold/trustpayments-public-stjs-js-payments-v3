@@ -1,4 +1,4 @@
-import './styles/style.scss';
+import '../../styles/style.scss';
 import './iframe.scss';
 
 window.addEventListener('load', () => {
