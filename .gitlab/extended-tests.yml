@@ -110,7 +110,7 @@ OSXCatalina-Safari-13.1-smoke-tests:
     OS_VERSION: Catalina
     BROWSER: Safari
     BROWSER_VERSION: '13.1'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
+    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_1
 
 win10-firefox-80.0-smoke-tests:
@@ -241,7 +241,7 @@ iPhone8-11.0-smoke-tests:
     DEVICE: iPhone 8
     OS_VERSION: 11
     REAL_MOBILE: 'true'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
+    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_4
 
 win8.1-chrome-85.0-smoke-tests:
@@ -313,7 +313,7 @@ OSXHS-Safari-11.1-smoke-tests:
     OS_VERSION: High Sierra
     BROWSER: Safari
     BROWSER_VERSION: '11.1'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
+    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_2
 
 iPhoneXS-12-smoke-tests:
@@ -324,7 +324,7 @@ iPhoneXS-12-smoke-tests:
     DEVICE: iPhone XS
     OS_VERSION: 12
     REAL_MOBILE: 'true'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
+    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_3
 
 iPad7th-13-smoke-tests:
@@ -335,7 +335,7 @@ iPad7th-13-smoke-tests:
     DEVICE: iPad 7th
     OS_VERSION: 13
     REAL_MOBILE: 'true'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
+    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_4
 
 GoogleNexus6-6.0-smoke-tests:
@@ -440,7 +440,6 @@ SamsungGalaxyS9-12-extended-test-part-2:
     POETRY_TAGS: extended_tests_part_2
   resource_group: extended_tests_release_4
 
-
 win10-IE-11.0-extended-test-part-1:
   extends:
     - .extended-tests-browserstack
@@ -488,5 +487,5 @@ OSXMojave-Safari-12.1-extended-test-part-2:
     BROWSER: Safari
     BROWSER_VERSION: '12.1'
     BROWSERSTACK_SELENIUM_VERSION: 3.14.0
-    POETRY_TAGS: extended_tests_part_2
+    POETRY_TAGS: extended_tests_part_2,extended_tests_apple_pay
   resource_group: extended_tests_release_4

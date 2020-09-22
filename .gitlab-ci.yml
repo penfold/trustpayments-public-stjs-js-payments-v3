@@ -22,6 +22,7 @@ variables:
   IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_COMMIT_REF_SLUG}
 
   SMOKE_TESTS_TAG: '@smoke_test'
+  SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_test,@smoke_test_apple_pay'
   EXTENDED_TESTS_TAG: '@extended_tests_part_1,@extended_tests_part_2'
 
   ### Disabled Jobs:
