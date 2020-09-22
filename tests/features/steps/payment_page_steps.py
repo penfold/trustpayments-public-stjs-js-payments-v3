@@ -211,7 +211,8 @@ def step_impl(context, key, language):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'safari' in context.browser or ('iP' in CONFIGURATION.REMOTE_DEVICE):
-        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
+        if 'config_immediate_payment' not in context.scenario.tags[0]:
+            payment_page.open_page(CONFIGURATION.URL.BASE_URL)
         payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
         payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
         context.executor.wait_for_javascript()
