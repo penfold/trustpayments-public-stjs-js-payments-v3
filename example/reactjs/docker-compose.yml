@@ -1,0 +1,28 @@
+version: '3.6'
+services:
+  app:
+    image: securetrading1/js-payments:develop
+    ports:
+      - 8443:8443
+    volumes:
+      - ../js-payments/dist:/usr/share/nginx/html/app
+    networks:
+      securetrading:
+        aliases:
+          - webservices.securetrading.net
+
+  react:
+    image: securetrading1/reactjs-payments
+    ports:
+      - 3000:8443
+    volumes:
+      - ../js-payments/dist/st.js:/usr/share/nginx/html/reactjs-app/libraries/st.js
+      - ./static/config.json:/usr/share/nginx/html/reactjs-app/config.json
+    networks:
+      securetrading:
+        aliases:
+          - reactjs.securetrading.net
+
+networks:
+  securetrading:
+    driver: bridge
