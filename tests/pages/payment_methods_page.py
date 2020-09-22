@@ -160,29 +160,37 @@ class PaymentMethodsPage(BasePage):
 
     def choose_payment_methods(self, payment_type):
         if payment_type == PaymentType.VISA_CHECKOUT.name:
-            self._executor.wait_for_javascript()
-            self.scroll_to_bottom()
-            self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.visa_checkout_mock_button)
-            if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
-                self._action.click_by_javascript(PaymentMethodsLocators.visa_checkout_mock_button)
-            else:
-                self._action.click(PaymentMethodsLocators.visa_checkout_mock_button)
+            self.select_visa_checkout_payment()
         elif payment_type == PaymentType.APPLE_PAY.name:
-            self._executor.wait_for_javascript()
-            self.scroll_to_bottom()
-            if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
-                self._action.click_by_javascript(PaymentMethodsLocators.apple_pay_mock_button)
-            else:
-                self._action.click(PaymentMethodsLocators.apple_pay_mock_button)
+            self.select_apple_pay_payment()
         elif payment_type == PaymentType.CARDINAL_COMMERCE.name:
-            if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION or 'High Sierra' in CONFIGURATION.REMOTE_OS_VERSION or \
-                'Google Nexus 6' in CONFIGURATION.REMOTE_DEVICE:
-                self._executor.wait_for_javascript()
-                self._action.click_by_javascript(PaymentMethodsLocators.pay_mock_button)
-            else:
-                self._executor.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
-                self._action.click(PaymentMethodsLocators.pay_mock_button)
+            self.select_cardinal_commerce_payment()
+
+    def select_cardinal_commerce_payment(self):
+        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION or 'High Sierra' in CONFIGURATION.REMOTE_OS_VERSION or \
+            'Google Nexus 6' in CONFIGURATION.REMOTE_DEVICE:
+            self._executor.wait_for_javascript()
+            self._action.click_by_javascript(PaymentMethodsLocators.pay_mock_button)
+        else:
+            self._executor.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
+            self._action.click(PaymentMethodsLocators.pay_mock_button)
+
+    def select_apple_pay_payment(self):
         self._executor.wait_for_javascript()
+        self.scroll_to_bottom()
+        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
+            self._action.click_by_javascript(PaymentMethodsLocators.apple_pay_mock_button)
+        else:
+            self._action.click(PaymentMethodsLocators.apple_pay_mock_button)
+
+    def select_visa_checkout_payment(self):
+        self._executor.wait_for_javascript()
+        self.scroll_to_bottom()
+        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.visa_checkout_mock_button)
+        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
+            self._action.click_by_javascript(PaymentMethodsLocators.visa_checkout_mock_button)
+        else:
+            self._action.click(PaymentMethodsLocators.visa_checkout_mock_button)
 
     def wait_for_pay_processing_end(self, language: str):
         # pylint: disable=invalid-name
