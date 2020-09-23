@@ -1,34 +1,38 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/payment">Payment</router-link> |
-    <router-link to="/personal-data">Personal Data</router-link> |
-    <router-link to="/contact-data">Contact Data</router-link> |
-    <router-link to="/payment-details">Payment Details</router-link> |
-    <router-link to="/payment">Payment</router-link>
+  <Header/>
+  <div class="container">
+    <router-view/>
   </div>
-  <router-view/>
+  <Footer/>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+  @import 'styles/variables';
+  @import 'styles/forms';
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+  .container {
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
   }
-}
+
+  #app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3 {
+    font-weight: normal;
+  }
+
 </style>
+
+<script>
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
+
+export default {
+  components: { Header, Footer },
+};
+</script>
