@@ -1,3 +1,4 @@
+import 'url-polyfill';
 import '../../styles/style.scss';
 import './iframe.scss';
 

@@ -1,3 +1,4 @@
+import 'url-polyfill';
 import '../../styles/style.scss';
 
 import { jwtgenerator } from '@securetrading/jwt-generator';
