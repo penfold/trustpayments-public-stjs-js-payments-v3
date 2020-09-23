@@ -177,7 +177,7 @@ def step_impl(context, language):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     jwt = payment_page.get_translation_from_json(language, 'jwt')
     payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}?jwt={jwt}')
-    context.executor.wait_for_javascript()
+    payment_page.wait_for_iframe()
 
 
 @then('User will see all labels displayed on page translated into "(?P<language>.+)"')
