@@ -32,9 +32,9 @@ card-payments-headless-component-tests:
     - .component-tests-services
     - .parallel-tests
   variables:
-    FEATURE_FILES_NAMES_CONTAINS: 'mock_payment_form_translations'
+    FEATURE_FILES_NAMES_CONTAINS: 'mock_'
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-  parallel: 1
+  parallel: 21
 
 #visa-checkout-headless-component-tests:
 #  extends:
