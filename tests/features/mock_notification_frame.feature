@@ -29,12 +29,13 @@ Feature: Notification frame
 
   @base_config
   Scenario: Checking notification banner style after second payment
-    When User fills payment form with credit card number "5100000000000412", expiration date "01/22" and cvv "123"
+    When User fills payment form with credit card number "4000000000001018", expiration date "01/22" and cvv "123"
     And THREEDQUERY mock response is set to "NOT_ENROLLED_U"
     And User clicks Pay button - AUTH response is set to "UNAUTHENTICATED"
     Then User will see payment status information: "Unauthenticated"
     And User will see that notification frame has "red" color
-    When User fills payment form with credit card number "5100000000000412", expiration date "01/22" and cvv "123"
+    When User fills payment form with credit card number "4111110000000211", expiration date "01/22" and cvv "123"
     And User clicks Pay button - AUTH response is set to "OK"
+    And user waits for payment to be processed
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
