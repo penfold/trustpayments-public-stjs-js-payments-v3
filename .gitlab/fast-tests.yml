@@ -1,7 +1,7 @@
 .component-tests:
   image: ${IMAGE_JS_PAYMENTS_TESTS}
   variables:
-    BEHAVE_LOGGING_LEVEL: INFO
+    BEHAVE_LOGGING_LEVEL: DEBUG
     FF_NETWORK_PER_BUILD: 'true' # https://docs.gitlab.com/runner/configuration/feature-flags.html
     FEATURE_FILES_DIR: 'features'
   after_script:
@@ -32,19 +32,19 @@ card-payments-headless-component-tests:
     - .component-tests-services
     - .parallel-tests
   variables:
-    FEATURE_FILES_NAMES_CONTAINS: 'mock_'
+    FEATURE_FILES_NAMES_CONTAINS: 'mock_payment_form_translations'
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-  parallel: 21
+  parallel: 1
 
-visa-checkout-headless-component-tests:
-  extends:
-    - .fast-tests
-    - .component-tests
-    - .component-tests-services
-    - .sequentially-tests
-  variables:
-    FEATURE_FILE_NAME: 'visa_checkout_tests.feature'
-    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
+#visa-checkout-headless-component-tests:
+#  extends:
+#    - .fast-tests
+#    - .component-tests
+#    - .component-tests-services
+#    - .sequentially-tests
+#  variables:
+#    FEATURE_FILE_NAME: 'visa_checkout_tests.feature'
+#    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
 
 .e2e-tests:
   image: ${IMAGE_JS_PAYMENTS_TESTS}
@@ -68,39 +68,39 @@ visa-checkout-headless-component-tests:
     - export JWT_SECRET_KEY
     - test -n "${JWT_SECRET_KEY:-}"
 
-.e2e-tests-services:
-  services:
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
-      alias: library.securetrading.net
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
-      alias: merchant.securetrading.net
-
-e2e-tests:
-  extends:
-    - .fast-tests
-    - .e2e-tests
-    - .e2e-tests-services
-    - .parallel-tests
-  variables:
-    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-  parallel: 14
-
-zap-baseline-scan-library-securetrading-net:
-  services:
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
-      alias: library.securetrading.net
-  extends:
-    - .zap-baseline-scan
-  variables:
-    URL_TO_SCAN: 'https://library.securetrading.net'
-    ZAP_CONFIG_PATH: "baseline-scan.conf"
-
-zap-baseline-scan-merchant-securetrading-net:
-  services:
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
-      alias: merchant.securetrading.net
-  extends:
-    - .zap-baseline-scan
-  variables:
-    URL_TO_SCAN: 'https://merchant.securetrading.net'
-    ZAP_CONFIG_PATH: "baseline-scan.conf"
+#.e2e-tests-services:
+#  services:
+#    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
+#      alias: library.securetrading.net
+#    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
+#      alias: merchant.securetrading.net
+#
+#e2e-tests:
+#  extends:
+#    - .fast-tests
+#    - .e2e-tests
+#    - .e2e-tests-services
+#    - .parallel-tests
+#  variables:
+#    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
+#  parallel: 14
+#
+#zap-baseline-scan-library-securetrading-net:
+#  services:
+#    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
+#      alias: library.securetrading.net
+#  extends:
+#    - .zap-baseline-scan
+#  variables:
+#    URL_TO_SCAN: 'https://library.securetrading.net'
+#    ZAP_CONFIG_PATH: "baseline-scan.conf"
+#
+#zap-baseline-scan-merchant-securetrading-net:
+#  services:
+#    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
+#      alias: merchant.securetrading.net
+#  extends:
+#    - .zap-baseline-scan
+#  variables:
+#    URL_TO_SCAN: 'https://merchant.securetrading.net'
+#    ZAP_CONFIG_PATH: "baseline-scan.conf"
