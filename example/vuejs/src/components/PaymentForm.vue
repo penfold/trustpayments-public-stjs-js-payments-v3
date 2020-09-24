@@ -121,7 +121,7 @@ export default {
           cachetoken: '',
           threedinit: '',
         },
-        jwt: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDg4MzUyMi45ODM1NjE4LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIn19.Qsf3Re2xK1REJ19FC8-Acxf1ksNOQdsZZDqsut1zNkA',
+        jwt: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDkzODgyOS4wMTg4NDEsInBheWxvYWQiOnsiYmFzZWFtb3VudCI6IjEwMDAiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJHQlAiLCJzaXRlcmVmZXJlbmNlIjoidGVzdF9qYW1lczM4NjQxIiwibG9jYWxlIjoiZW5fR0IifX0.wzR6LvHt9I6WKwz8HUxnZORqXJb6qTz0hXO2JEBa_uY',
         livestatus: 0,
         origin: '',
         panIcon: true,
@@ -197,11 +197,12 @@ export default {
 
   .card-details {
     display: flex;
-    flex-grow: 2;
+    flex-grow: 1;
     flex-direction: column;
   }
 
-  .animated-card {
+  .animated-card,
+  .animated-card > #st-animated-card {
     display: flex;
     flex-grow: 1;
   }

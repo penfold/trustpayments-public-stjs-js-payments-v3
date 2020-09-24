@@ -9,33 +9,33 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
   },
   {
     path: '/payment-details',
     name: 'Payment Details',
-    component: PaymentDetails
+    component: PaymentDetails,
   },
   {
     path: '/personal-data',
     name: 'Personal Data',
-    component: PersonalData
+    component: PersonalData,
   },
   {
     path: '/contact-data',
     name: 'Contact Data',
-    component: ContactData
+    component: ContactData,
   },
   {
     path: '/payment',
     name: 'Payment',
-    component: Payment
-  }
+    component: Payment,
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
 });
 
 export default router;
