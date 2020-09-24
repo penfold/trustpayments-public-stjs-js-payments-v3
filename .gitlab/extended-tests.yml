@@ -125,18 +125,6 @@ win10-firefox-80.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_2
 
-win10-IE-11.0-smoke-tests:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-when-release
-  variables:
-    OS: Windows
-    OS_VERSION: 10
-    BROWSER: IE
-    BROWSER_VERSION: '11.0'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_3
-
 win10-chrome-85.0-visual-tests:
   extends:
     - .visual-regression-tests
