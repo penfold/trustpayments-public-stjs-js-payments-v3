@@ -35,7 +35,9 @@
     "example:html:start": "run-p start:bundle example:html:dev",
     "start": "npm run example:html:start",
     "example:react:dev": "npm run start --prefix ./example/reactjs",
-    "example:react:start": "run-p start:bundle example:react:dev"
+    "example:react:start": "run-p start:bundle example:react:dev",
+    "example:vue:dev": "npm run start --prefix ./example/vuejs",
+    "example:vue:start": "run-p start:bundle example:vue:dev"
   },
   "repository": {
     "type": "git",
