@@ -1,12 +1,12 @@
 <template>
-  <form class="st-form" id="st-form">
+  <form class="st-form" v-bind:id="pageOptions.formId">
     <div id="st-popup" class="st-popup"></div>
     <div id="st-notification-frame" class="st-form__group"></div>
     <fieldset>
       <legend>Payment details</legend>
       <div class="form-row">
-        <input type="text" placeholder="Price" class="st-input" />
-        <input type="text" placeholder="Amount" class="st-input" />
+        <input type="text" placeholder="Price" class="st-input" @change="updateJwt()"/>
+        <input type="text" placeholder="Amount" class="st-input" @change="updateJwt()"/>
       </div>
       <div class="form-row">
         <input type="text" placeholder="Name" class="st-input" />
@@ -41,154 +41,80 @@
       <div id="st-control-frame"></div>
     </fieldset>
     <div class="form-row">
-      <button type="submit" class="st-button" id="merchant-submit-button">Pay</button>
+      <button type="submit"
+              class="st-button"
+              v-if="!pageOptions.noSubmitButton"
+              v-bind:id="pageOptions.submitButtonId">Pay</button>
+    </div>
+    <div class="form-row" v-if="pageOptions.additionalButton">
+      <button type="submit"
+              class="st-button"
+              v-bind:id="pageOptions.additionalButtonId">Extra button</button>
     </div>
   </form>
 </template>
 
 <script lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, defineComponent } from 'vue';
+import loadLibrary from '@/services/load-library';
+import loadConfig from '@/services/load-config';
+import { useRoute } from 'vue-router';
+import resolvePageOptions from '@/services/page-options/resolve-page-options';
+import mergeOptions from '@/services/page-options/merge-options';
 
-declare const SecureTrading: any;
-
-export default {
+export default defineComponent({
   setup() {
-    onMounted(() => {
-      const config = {
-        analytics: true,
-        applePay: {
-          buttonStyle: 'white-outline',
-          buttonText: 'buy',
-          merchantId: 'merchant.net.securetrading.test',
-          paymentRequest: {
-            countryCode: 'US',
-            currencyCode: 'USD',
-            merchantCapabilities: [
-              'supports3DS',
-              'supportsCredit',
-              'supportsDebit',
-            ],
-            requestTypes: [
-              'RISKDEC',
-              'ACCOUNTCHECK',
-              'AUTH',
-            ],
-            supportedNetworks: [],
-            total: {
-              label: 'Secure Trading Merchant',
-              amount: '10.00',
-            },
-          },
-          placement: 'st-apple-pay',
-        },
-        animatedCard: true,
-        buttonId: 'merchant-submit-button',
-        bypassCards: [
-          'PIBA',
-        ],
-        cancelCallback: null,
-        componentIds: {
-          animatedCard: '',
-          cardNumber: '',
-          expirationDate: '',
-          notificationFrame: '',
-          securityCode: '',
-        },
-        components: {
-          defaultPaymentType: '',
-          requestTypes: [
-            'RISKDEC',
-            'ACCOUNTCHECK',
-            'THREEDQUERY',
-            'AUTH',
-          ],
-          paymentTypes: [],
-          startOnLoad: false,
-        },
-        cybertonicaApiKey: 'stfs',
-        datacenterurl: '',
-        deferInit: false,
-        disableNotification: false,
-        errorCallback: null,
-        errorReporting: false,
-        fieldsToSubmit: [
-          'pan',
-          'expirydate',
-          'securitycode',
-        ],
-        formId: 'st-form',
-        init: {
-          cachetoken: '',
-          threedinit: '',
-        },
-        jwt: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMDkzODgyOS4wMTg4NDEsInBheWxvYWQiOnsiYmFzZWFtb3VudCI6IjEwMDAiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJHQlAiLCJzaXRlcmVmZXJlbmNlIjoidGVzdF9qYW1lczM4NjQxIiwibG9jYWxlIjoiZW5fR0IifX0.wzR6LvHt9I6WKwz8HUxnZORqXJb6qTz0hXO2JEBa_uY',
-        livestatus: 0,
-        origin: '',
-        panIcon: true,
-        placeholders: {
-          pan: 'Card number',
-          expirydate: 'MM/YY',
-          securitycode: '***',
-        },
-        styles: {
-          defaultStyles: {
-            'background-color-input': 'AliceBlue',
-          },
-          cardNumber: {
-            'font-size-input': '1.5rem',
-            'line-height-input': '1.6rem',
-          },
-          expirationDate: {
-            'font-size-input': '1.5rem',
-            'line-height-input': '1.6rem',
-          },
-          securityCode: {
-            'font-size-input': '1.5rem',
-            'line-height-input': '1.6rem',
-          },
-          notificationFrame: {
-            'color-error': '#FFF333',
-          },
-          controlFrame: {
-            'color-error': '#3358FF',
-          },
-        },
-        submitCallback: null,
-        submitFields: [],
-        submitOnSuccess: false,
-        submitOnError: false,
-        submitOnCancel: false,
-        successCallback: null,
-        translations: {
-          'An error occurred': 'Wystąpił błąd',
-        },
-        visaCheckout: {
-          buttonSettings: {
-            size: '154',
-            color: 'neutral',
-          },
-          livestatus: 0,
-          merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
-          paymentRequest: {
-            subtotal: '20.00',
-          },
-          placement: 'st-visa-checkout',
-          requestTypes: [
-            'RISKDEC',
-            'ACCOUNTCHECK',
-            'AUTH',
-          ],
-          settings: {
-            displayName: 'My Test Site',
-          },
-        },
-      };
+    const { query } = useRoute();
+    const pageOptions = resolvePageOptions(query);
+    let st: any;
 
-      const st = SecureTrading(config);
-      st.Components(config.components);
+    onMounted(() => {
+      loadLibrary().then((SecureTrading) => {
+        loadConfig()
+          .then((config) => mergeOptions(config, pageOptions))
+          .then((config) => {
+            st = SecureTrading(config);
+            st.Components(config.components);
+            st.VisaCheckout(config.visaCheckout);
+            st.ApplePay(config.applePay);
+
+            // if (!this.config.successCallback) {
+            //   this.st.on('success', () => {
+            //     this.snackBar.open('Payment completed successfully', 'close', {
+            //       verticalPosition: 'top',
+            //       panelClass: 'success'
+            //     });
+            //   });
+            // }
+            //
+            // if (!this.config.errorCallback) {
+            //   this.st.on('error', () => {
+            //     this.snackBar.open('An error occurred', 'close', {
+            //     verticalPosition: 'top', panelClass: 'error' });
+            //   });
+            // }
+            //
+            // if (!this.config.submitCallback) {
+            //   this.st.on('submit', data => {
+            //     console.log(`This is what we have got after submit ${JSON.stringify(data)}`);
+            //   });
+            // }
+          });
+      });
     });
+
+    function updateJwt(): void {
+      if (pageOptions.updatedJwt) {
+        st.updateJWT(pageOptions.updatedJwt);
+      }
+    }
+
+    return {
+      pageOptions,
+      updateJwt,
+    };
   },
-};
+});
 </script>
 
 <style scoped lang="scss">
