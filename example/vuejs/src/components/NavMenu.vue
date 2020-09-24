@@ -1,11 +1,11 @@
 <template>
   <div class="nav-menu">
     <div class="container nav-container">
-      <router-link to="/">Home</router-link>
-      <router-link to="/payment-details">Payment Details</router-link>
-      <router-link to="/personal-data">Personal Data</router-link>
-      <router-link to="/contact-data">Contact Data</router-link>
-      <router-link to="/payment">Payment</router-link>
+      <router-link to="/" id="home">Home</router-link>
+      <router-link to="/payment-details" id="payment-details">Payment Details</router-link>
+      <router-link to="/personal-data" id="personal-data">Personal Data</router-link>
+      <router-link to="/contact-data" id="contact-data">Contact Data</router-link>
+      <router-link to="/payment" id="payment">Payment</router-link>
     </div>
   </div>
 </template>

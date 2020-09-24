@@ -6,6 +6,8 @@
     "start": "npm run serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build:dev": "NODE_ENV=e2e vue-cli-service build",
+    "build:automated": "NODE_ENV=test vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
