@@ -56,15 +56,17 @@
 
 <script lang="ts">
 import { onMounted, defineComponent } from 'vue';
+import { useToast } from 'vue-toastification';
+import { useRoute } from 'vue-router';
 import loadLibrary from '@/services/load-library';
 import loadConfig from '@/services/load-config';
-import { useRoute } from 'vue-router';
 import resolvePageOptions from '@/services/page-options/resolve-page-options';
 import mergeOptions from '@/services/page-options/merge-options';
 
 export default defineComponent({
   setup() {
     const { query } = useRoute();
+    const toast = useToast();
     const pageOptions = resolvePageOptions(query);
     let st: any;
 
@@ -78,27 +80,19 @@ export default defineComponent({
             st.VisaCheckout(config.visaCheckout);
             st.ApplePay(config.applePay);
 
-            // if (!this.config.successCallback) {
-            //   this.st.on('success', () => {
-            //     this.snackBar.open('Payment completed successfully', 'close', {
-            //       verticalPosition: 'top',
-            //       panelClass: 'success'
-            //     });
-            //   });
-            // }
-            //
-            // if (!this.config.errorCallback) {
-            //   this.st.on('error', () => {
-            //     this.snackBar.open('An error occurred', 'close', {
-            //     verticalPosition: 'top', panelClass: 'error' });
-            //   });
-            // }
-            //
-            // if (!this.config.submitCallback) {
-            //   this.st.on('submit', data => {
-            //     console.log(`This is what we have got after submit ${JSON.stringify(data)}`);
-            //   });
-            // }
+            if (!config.successCallback) {
+              st.on('success', () => toast.success('Payment completed successfully'));
+            }
+
+            if (!config.errorCallback) {
+              st.on('error', () => toast.error('An error occurred'));
+            }
+
+            if (!config.submitCallback) {
+              st.on('submit', (data) => {
+                console.log(`This is what we have got after submit ${JSON.stringify(data)}`);
+              });
+            }
           });
       });
     });
