@@ -2,7 +2,7 @@ import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { ApplePay } from './ApplePay';
 import { ApplePaySessionMock } from './ApplePaySessionMock';
 
-const applePay: string = '../../../images/apple-pay.png';
+const applePay: string = './img/apple-pay.png';
 
 export class ApplePayMock extends ApplePay {
   public paymentDetails: string;

@@ -101,7 +101,7 @@ def step_impl(context, request_type, action_code):
     if 'ie' in context.browser and 'config_submit_cvv_only' in context.scenario.tags:
         context.executor.wait_for_javascript()
     payment_page.choose_payment_methods(PaymentType.CARDINAL_COMMERCE.name)
-    if 'config_submit_on_success_and_error_true' not in context.scenario.tags:
+    if 'config_submit_on_success_and_error_true' not in context.scenario.tags or 'Google Nexus 6' not in CONFIGURATION.REMOTE_DEVICE:
         payment_page.scroll_to_top()
 
 
