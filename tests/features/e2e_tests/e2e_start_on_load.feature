@@ -6,6 +6,8 @@ Feature: E2E startOnLoad
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   Scenario: Successful non-frictionless payment with startOnLoad
     Given JS library is configured with START_ON_LOAD_CONFIG and JWT_WITH_NON_FRICTIONLESS_CARD
     And User opens example page WITHOUT_SUBMIT_BUTTON
