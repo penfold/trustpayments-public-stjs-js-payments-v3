@@ -9,6 +9,8 @@ Feature: Cardinal Commerce E2E tests
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @e2e_cardinal_commerce_v1
   Scenario: Successful Authentication
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD

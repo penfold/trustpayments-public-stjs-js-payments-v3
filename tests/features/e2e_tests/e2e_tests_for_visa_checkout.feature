@@ -7,6 +7,8 @@
 
 #  @reactJS
 #    @angular
+#  @vueJS
+#  @react_native
 #  Scenario Outline: Successful Authentication by Visa checkout
 #    Given JS library is configured with VISA_CHECKOUT_CONFIG and BASE_JWT
 #    And User opens example page

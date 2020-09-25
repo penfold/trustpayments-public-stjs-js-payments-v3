@@ -5,6 +5,8 @@ Feature: E2E for tokenisation
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @e2e_for_tokenisation @jwt_config_visa_frictionless_with_parenttransaction
   Scenario: Visa Frictionless tokenisation
     Given JS library is configured with TOKENISATION_CONFIG and JWT_VISA_FRICTIONLESS_PARENT_TRANSACTION
@@ -42,6 +44,8 @@ Feature: E2E for tokenisation
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @update_jwt_test
   Scenario: Updating payment references for tokenization
     Given JS library is configured with TOKENISATION_AND_SUBMIT_ON_SUCCESS_CONFIG and JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION

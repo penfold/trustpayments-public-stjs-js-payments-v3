@@ -9,6 +9,8 @@ Feature: Cardinal Commerce E2E tests
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @base_config @cardinal_commerce_v2.0
   Scenario: Successful Frictionless Authentication - MasterCard
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
@@ -82,6 +84,8 @@ Feature: Cardinal Commerce E2E tests
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @base_config @cardinal_commerce_v2.0
   Scenario: Successful Step Up Authentication - Visa
     When User fills payment form with defined card VISA_NON_FRICTIONLESS

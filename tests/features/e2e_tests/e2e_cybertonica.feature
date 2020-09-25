@@ -6,6 +6,8 @@ Feature: E2E Cybertonica
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @e2e_config_cybertonica
   Scenario: Cybertonica - successfull payment
     Given JS library is configured with CYBERTONICA_CONFIG and BASE_JWT

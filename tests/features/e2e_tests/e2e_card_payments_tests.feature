@@ -5,6 +5,8 @@ Feature: E2E Card Payments
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @e2e_config_bypass_mastercard
   Scenario: Successful payment with bypassCard using Mastercard
     Given JS library is configured with BYPASS_MASTERCARD_CONFIG and BASE_JWT
@@ -55,6 +57,8 @@ Feature: E2E Card Payments
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   Scenario: Successful payment with frictionless card
     Given JS library is configured with BASIC_CONFIG and BASE_JWT
     And User opens example page
@@ -65,6 +69,8 @@ Feature: E2E Card Payments
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   Scenario: Successful payment with non-frictionless card
     Given JS library is configured with BASIC_CONFIG and BASE_JWT
     And User opens example page
@@ -76,6 +82,8 @@ Feature: E2E Card Payments
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   Scenario: Successful payment after form validation
     Given JS library is configured with BASIC_CONFIG and BASE_JWT
     And User opens example page
