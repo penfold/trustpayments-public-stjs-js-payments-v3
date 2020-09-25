@@ -21,8 +21,8 @@ class Waits:
     def wait_and_check_is_element_displayed(self, locator):
         # pylint: disable=bare-except
         try:
-            element = self._wait.until(ec.presence_of_element_located(locator)).is_displayed()
-            return element is not None
+            self.wait_for_element_to_be_displayed(locator)
+            return self._browser.find_element(*locator).is_displayed()
         except:
             return False
 
