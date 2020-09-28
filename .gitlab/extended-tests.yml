@@ -82,7 +82,7 @@
 .apple-test-browserstack-component-test:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: "OS X"
     OS_VERSION: Mojave
@@ -514,3 +514,23 @@ OSXMojave-Safari-12.1-extended-test-part-2:
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: extended_tests_part_2,extended_tests_apple_pay
   resource_group: extended_tests_release_4
+
+iPhone11-14-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-always
+  variables:
+    DEVICE: iPhone 11
+    OS_VERSION: 14
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+
+iPadPro-14-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-always
+  variables:
+    DEVICE: iPad Pro 12.9 2020
+    OS_VERSION: 14
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
