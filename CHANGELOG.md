@@ -285,4 +285,4 @@ All notable changes to this project will be documented in this file.
 
 ## 2.0.0-beta.0
 
-Initial 2.0 version of Secure Trading JavaScript Interface for allowing payments through SecureTrading payment gateway
+Initial 2.0 version of Trust Payments JavaScript Interface for allowing payments through Trust Payments payment gateway

@@ -6,7 +6,7 @@ import { Input } from '../../core/shared/input/Input';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Utils } from '../../core/shared/utils/Utils';
 import { Validation } from '../../core/shared/validation/Validation';
-import { iinLookup } from '@securetrading/ts-iin-lookup';
+import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { Service } from 'typedi';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { IconFactory } from '../../core/services/icon/IconFactory';

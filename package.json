@@ -1,7 +1,7 @@
 {
   "name": "js-payments",
   "version": "2.5.0",
-  "description": "> A JavaScript interface for allowing tokenisation and authorisation of payments through SecureTrading.",
+  "description": "> A JavaScript interface for allowing tokenisation and authorisation of payments through Trust Payments.",
   "private": true,
   "browserslist": [
     "> 0.2% and last 2 versions",
@@ -128,11 +128,11 @@
     "@babel/polyfill": "7.11.5",
     "@babel/runtime": "7.11.2",
     "@securetrading/js-payments-card": "1.0.23",
-    "@securetrading/jwt-generator": "0.0.2",
-    "@securetrading/ts-iin-lookup": "0.0.8",
-    "@securetrading/ts-luhn-check": "0.0.8",
     "@sentry/browser": "5.24.2",
     "@sheerun/mutationobserver-shim": "0.3.3",
+    "@trustpayments/jwt-generator": "0.1.5",
+    "@trustpayments/ts-iin-lookup": "0.1.5",
+    "@trustpayments/ts-luhn-check": "0.1.5",
     "@types/jwt-decode": "2.2.1",
     "@types/lodash": "4.14.161",
     "@types/redux-logger": "3.0.8",
