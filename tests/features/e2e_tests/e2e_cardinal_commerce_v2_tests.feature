@@ -9,6 +9,8 @@ Feature: Cardinal Commerce E2E tests
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @base_config @cardinal_commerce_v2.0
   Scenario: Successful Frictionless Authentication - MasterCard
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
@@ -66,13 +68,12 @@ Feature: Cardinal Commerce E2E tests
     Then User will see payment status information: "Bank System Error"
     And User will see that notification frame has "red" color
 
-#TODO https://securetrading.atlassian.net/browse/STJS-957
-#  @base_config @cardinal_commerce_v2.0
-#  Scenario: Timeout on cmpi_lookup Transaction - Mastercard
-#    When User fills payment form with defined card MASTERCARD_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION
-#    And User clicks Pay button
-#    Then User will see payment status information: "An error occurred"
-#    And User will see that notification frame has "red" color
+  @base_config @cardinal_commerce_v2.0
+  Scenario: Authentication Not Available on Lookup - MasterCard
+    When User fills payment form with defined card MASTERCARD_AUTH_NOT_AVAILABLE_ON_LOOKUP
+    And User clicks Pay button
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
 
   @base_config @cardinal_commerce_v2.0
   Scenario: Bypassed Authentication - MasterCard
@@ -83,6 +84,8 @@ Feature: Cardinal Commerce E2E tests
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @base_config @cardinal_commerce_v2.0
   Scenario: Successful Step Up Authentication - Visa
     When User fills payment form with defined card VISA_NON_FRICTIONLESS

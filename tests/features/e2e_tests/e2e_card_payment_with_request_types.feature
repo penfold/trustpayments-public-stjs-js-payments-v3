@@ -6,6 +6,8 @@ Feature: E2E Card Payments with request types in config
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   Scenario: Successful payment with config's requestTypes param having values in valid order
     Given JS library is configured with REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and BASE_JWT
     And User opens example page
@@ -25,10 +27,20 @@ Feature: E2E Card Payments with request types in config
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   Scenario: Successful payment with config's requestTypes ACCOUNTCHECK, TDQ, AUTH, SUBSCRIPTION
     Given JS library is configured with REQUEST_TYPE_ACHECK_TDQ_AUTH_SUB_CONFIG and JWT_WITH_SUBSCRIPTION
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
+    And User clicks Pay button
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
+
+   Scenario: Successful payment with bypassCard and requestTpes: RISKDEC, ACCOUNTCHECK,THREEDQUERY, AUTH
+    Given JS library is configured with BYPASS_MASTERCARD_REQUEST_TYPE_CONFIG and BASE_JWT
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color

@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.19
+.cicd-os-ref: &cicd-os-ref 0.0.24
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
@@ -22,6 +22,7 @@ variables:
   IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_COMMIT_REF_SLUG}
 
   SMOKE_TESTS_TAG: '@smoke_test'
+  SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_test,@smoke_test_apple_pay'
   EXTENDED_TESTS_TAG: '@extended_tests_part_1,@extended_tests_part_2'
 
   ### Disabled Jobs:
@@ -37,8 +38,13 @@ variables:
   # Fast Tests
   # DISABLE_JOB_unit_tests: 'true'
   # DISABLE_JOB_ts_static_analysis: 'true'
-  DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
+  # DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
   # DISABLE_JOB_vuln_check: 'true'
+  DISABLE_JOB_validate_merge_request_description: 'true'
+  # Release
+  DISABLE_JOB_release: 'true'
+  # Post-Release
+  DISABLE_JOB_npm_publish: 'true'
   ### Disabled Jobs : End
 
   ### Disabled Activities
@@ -50,9 +56,18 @@ variables:
   # CI_DEBUG_TRACE: "true" # For CI/CD extra logs (like actually using variables)
   # LOG_LEVEL: DEBUG # For bash and python scripts
 
+py-static-analysis:
+  variables:
+    PYTHONPATH: tests
+  before_script:
+    - touch src/skipy_mypy_analysis_for_src_directory.py
+    - cd tests && . ${PROJECT_VENV_DIR}/bin/activate && poetry install && cd ..
+
 stages:
   - initialize
   - pre-build
   - build
   - fast-tests
   - extended-tests
+  - release
+  - post-release

@@ -7,6 +7,8 @@ from utils.enums.field_type import FieldType
 
 @dataclass
 class PaymentMethodsLocators:
+    # pylint: disable=too-many-instance-attributes
+
     # merchant input fields
     merchant_name: By = (By.ID, 'st-form-last-name')
     merchant_email: By = (By.ID, 'st-form-email')
@@ -14,7 +16,7 @@ class PaymentMethodsLocators:
     amount_field: By = (By.ID, 'example-form-amount')
 
     # Credit card form
-    secure_trade_form: By = (By.ID, "st-control-frame-iframe")
+    secure_trade_form: By = (By.ID, 'st-control-frame-iframe')
     card_number_input_field: By = (By.ID, 'st-card-number-input')
     expiration_date_input_field: By = (By.ID, 'st-expiration-date-input')
     security_code_input_field: By = (By.ID, 'st-security-code-input')
@@ -40,11 +42,12 @@ class PaymentMethodsLocators:
     apple_pay_mock_button: By = (By.ID, 'st-apple-pay')
 
     # labels
-    card_number_label: By = (By.XPATH, '//label[@for="st-card-number-input"]')
-    expiration_date_label: By = (By.XPATH, '//label[@for="st-expiration-date-input"]')
-    security_code_label: By = (By.XPATH, '//label[@for="st-security-code-input"]')
-    pay_button_label: By = (By.XPATH, '//button[@type="submit"]')
+    card_number_label: By = (By.XPATH, '//label[@for=\'st-card-number-input\']')
+    expiration_date_label: By = (By.XPATH, '//label[@for=\'st-expiration-date-input\']')
+    security_code_label: By = (By.XPATH, '//label[@for=\'st-security-code-input\']')
+    pay_button_label: By = (By.XPATH, '//button[@type=\'submit\']')
 
+    popups: By = (By.CSS_SELECTOR, '.st-popup div')
     callback_success_popup: By = (By.ID, 'success-popup')
     callback_error_popup: By = (By.ID, 'error-popup')
     callback_cancel_popup: By = (By.ID, 'cancel-popup')
@@ -63,4 +66,4 @@ class PaymentMethodsLocators:
     cardinal_v1_authentication_code_field: By = (By.ID, 'password')
     cardinal_v1_authentication_submit_btn: By = (By.NAME, 'UsernamePasswordEntry')
 
-    not_private_connection_text: By = (By.XPATH, "//*[contains(text(),'This Connection Is Not Private')]")
+    not_private_connection_text: By = (By.XPATH, '//*[contains(text(),\'This Connection Is Not Private\')]')

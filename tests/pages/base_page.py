@@ -34,7 +34,10 @@ class BasePage:
             self.open_page(url)
 
     def wait_for_parent_iframe(self):
-        self._waits.wait_until_iframe_is_presented_and_switch_to_it(FieldType.SECURITY_CODE.value)
+        if 'Edge' in CONFIGURATION.REMOTE_BROWSER:
+            self._waits.wait_until_iframe_is_presented_and_switch_to_it(PaymentMethodsLocators.security_code_iframe)
+        else:
+            self._waits.wait_until_iframe_is_presented_and_switch_to_it(FieldType.SECURITY_CODE.value)
         self._action.switch_to_default_iframe()
 
     def wait_for_iframe(self):

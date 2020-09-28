@@ -1,12 +1,13 @@
+# type: ignore[no-redef]
 from behave import step, use_step_matcher
 
 from utils.enums.card import Card
 from utils.enums.visa_checkout_field import VisaCheckoutField
 
-use_step_matcher("re")
+use_step_matcher('re')
 
 
-@step("User clicks on Visa Checkout button")
+@step('User clicks on Visa Checkout button')
 def step_impl(context):
     visa_checkout_page = context.page_factory.get_page(page_name='visa_checkout')
     visa_checkout_page.click_visa_checkout_button(context)
@@ -25,7 +26,7 @@ def step_impl(context):
     visa_checkout_page.fill_selected_field(VisaCheckoutField.ONE_TIME_PASSWORD.name)
 
 
-@step("User confirms displayed card with data")
+@step('User confirms displayed card with data')
 def step_impl(context):
     visa_checkout_page = context.page_factory.get_page(page_name='visa_checkout')
     visa_checkout_page.click_continue_visa_payment_process()
@@ -44,7 +45,7 @@ def step_impl(context):
     visa_checkout_page.click_visa_checkout_close_button()
 
 
-@step("User confirms visa checkout security code")
+@step('User confirms visa checkout security code')
 def step_impl(context):
     visa_checkout_page = context.page_factory.get_page(page_name='visa_checkout')
     visa_checkout_page.is_security_code_displayed()

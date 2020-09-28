@@ -5,6 +5,7 @@
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR         (to enable  debug-on-error)
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=yes     (to enable  debug-on-error)
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=no      (to disable debug-on-error)
+from selenium.common.exceptions import WebDriverException
 
 import ioc_config
 from configuration import CONFIGURATION
@@ -17,6 +18,8 @@ BEHAVE_DEBUG_ON_ERROR = False
 
 
 def setup_debug_on_error(userdata):
+    # pylint: disable=global-statement
+
     """Debug-on-Error(in case of step failures) providing, by using after_step() hook.
     The debugger starts when step definition fails"""
     global BEHAVE_DEBUG_ON_ERROR
@@ -33,24 +36,34 @@ def before_all(context):
 def before_scenario(context, scenario):
     """Run before each scenario"""
     context.page_factory = PageFactory()
-    context.executor = ioc_config.EXECUTOR.resolve('test')
-    context.browser = ioc_config.CONFIG.resolve('driver').browser
+    resolve_executor_and_driver_with_try(context)
     context.session_id = context.executor.get_session_id()
     context.language = 'en_GB'
     # scenario.name = '%s_%s' % (scenario.name, context.browser.upper())
 
-    if "apple_test" in scenario.tags and (context.browser not in "safari"):
+    if 'apple_test' in scenario.tags and (context.browser not in 'safari'):
         if 'iP' not in CONFIGURATION.REMOTE_DEVICE:
-            scenario.skip("SCENARIO SKIPPED as iOS system and Safari is required for ApplePay test")
-    if "visa_test" in scenario.tags and ('IE' in CONFIGURATION.REMOTE_BROWSER):
-        scenario.skip("SCENARIO SKIPPED as IE browser doesn't support Visa Checkout")
-    if "animated_card_repo_test" in scenario.tags:
+            scenario.skip('SCENARIO SKIPPED as iOS system and Safari is required for ApplePay test')
+    if 'visa_test' in scenario.tags and ('IE' in CONFIGURATION.REMOTE_BROWSER):
+        scenario.skip('SCENARIO SKIPPED as IE browser doesn\'t support Visa Checkout')
+    if 'animated_card_repo_test' in scenario.tags:
         context.is_field_in_iframe = False
     # ToDo Temporarily disabled parent-iframe test. Problem with cress-origin restriction on ios
-    if "parent_iframe" in scenario.tags and ('iP' in CONFIGURATION.REMOTE_DEVICE):
-        scenario.skip("Temporarily disabled test ")
+    if 'parent_iframe' in scenario.tags and ('iP' in CONFIGURATION.REMOTE_DEVICE):
+        scenario.skip('Temporarily disabled test ')
     else:
         context.is_field_in_iframe = True
+
+
+def resolve_executor_and_driver_with_try(context, max_try: int = 3):
+    while max_try:
+        try:
+            context.executor = ioc_config.EXECUTOR.resolve('test')
+            context.browser = ioc_config.CONFIG.resolve('driver').browser
+            break
+        except WebDriverException as exception:
+            print(str(exception) + ' - trying to open browser again')
+            max_try -= 1
 
 
 def after_scenario(context, scenario):
@@ -68,13 +81,12 @@ def after_scenario(context, scenario):
     context.executor.close_browser()
 
 
-def after_all(context):
-    """Run after the whole shooting match"""
-    # context.page_factory = PageFactory()
-    #
-    # executor = ioc_config.EXECUTOR.resolve('test')
-    # executor.close_browser()
-    pass
+# def after_all(context):
+#     """Run after the whole shooting match"""
+#     context.page_factory = PageFactory()
+#
+#     executor = ioc_config.EXECUTOR.resolve('test')
+#     executor.close_browser()
 
 
 def after_step(context, step):

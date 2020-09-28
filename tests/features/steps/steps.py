@@ -1,13 +1,16 @@
+# type: ignore[no-redef]
 import time
 
-from behave import *
+from assertpy import assert_that
+from behave import given, step, then, use_step_matcher, when
 
+from configuration import CONFIGURATION
 from utils.enums.card import Card
 from utils.enums.config import screenshots
 from utils.enums.field_type import FieldType
 from utils.visual_regression.screenshot_manager import screenshot_manager
 
-use_step_matcher("re")
+use_step_matcher('re')
 
 
 @given('"(?P<page_name>.+)" page is open')
@@ -42,27 +45,51 @@ def step_impl(context, card: Card):
     payment_page.fill_payment_form_with_only_cvv(card.cvv)
 
 
-@step("Make screenshot after (?P<how_many_seconds>.+) seconds")
+@step('Make screenshot after (?P<how_many_seconds>.+) seconds')
 def step_impl(context, how_many_seconds):
     time.sleep(int(how_many_seconds))
-    screenshot_manager().make_screenshot("screenshot")
+    screenshot_filename = screenshots[_screenshot_tag(context.scenario.tags)]
+    screenshot_manager().make_screenshot(screenshot_filename, date_postfix=True)
 
 
-@then("Screenshot is taken after (?P<how_many_seconds>.+) seconds and checked")
+@then('Screenshot is taken after (?P<how_many_seconds>.+) seconds and checked')
 def step_impl(context, how_many_seconds):
+    # pylint: disable=invalid-name)
     time.sleep(float(how_many_seconds))
     sm = screenshot_manager()
 
-    expected_screenshot_filename = screenshots[_screenshot_tag(context.scenario.tags)]
+    expected_screenshot_filename = _browser_device(context) + '_' + screenshots[_screenshot_tag(context.scenario.tags)]
     actual_screenshot_filename = sm.make_screenshot(expected_screenshot_filename, date_postfix=True)
     assert sm.compare_screenshots(expected_screenshot_filename, actual_screenshot_filename), \
-        f"\nScreenshots comparator detected differences between 'expected/{expected_screenshot_filename}' and " \
-        f"'actual/{actual_screenshot_filename}'\n" \
-        f"Check the result file 'results/{actual_screenshot_filename}'"
+        f'\nScreenshots comparator detected differences between "expected/{expected_screenshot_filename}" and ' \
+        f'"actual/{actual_screenshot_filename}"\n' \
+        f'Check the result file "results/{actual_screenshot_filename}"'
 
 
 def _screenshot_tag(tags):
     for tag in tags:
-        if tag.startswith("scrn_"):
+        if tag.startswith('scrn_'):
             return tag
-    raise Exception("There is no screenshot tag!")
+    raise Exception('There is no screenshot tag!')
+
+
+def _browser_device(context):
+    name = CONFIGURATION.REMOTE_DEVICE
+    if not name or name is None:
+        name = context.browser
+    name = name.upper()
+
+    assert_that(name).is_in('CHROME', 'SAFARI', 'SAMSUNG GALAXY S10 PLUS', 'IPHONE XS')
+
+    return {
+        'CHROME': name,
+        'SAFARI': name,
+        'SAMSUNG GALAXY S10 PLUS': 'SGS10',
+        'IPHONE XS': 'IPXS',
+    }[name]
+
+
+@step('user waits for payment to be processed')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.wait_for_iframe()

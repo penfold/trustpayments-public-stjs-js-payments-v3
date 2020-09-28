@@ -28,6 +28,7 @@ class Card(Enum):
     MASTERCARD_DECLINED_CARD = '5100 0000 0000 0412', '', CardType.MASTERCARD, 123
     MASTERCARD_INVALID_EXP_DATE_CARD = '5100 0000 0000 0511', 'PAST', CardType.MASTERCARD, 123
     MASTERCARD_SUCCESSFUL_AUTH_CARD = '52000 00000 0000 07', '', CardType.MASTERCARD, 123
+    MASTERCARD_INVALID_PATTERN_CARD = '5100 0000 0000 0510', '13/13', CardType.MASTERCARD, 12
     VISA_FAILED_SIGNATURE_CARD = '4000 0000 0000 0010', '', CardType.VISA, 123
     AMERICAN_EXPRESS_FAILED_AUTH_CARD = '3400 0000 0000 033', '', CardType.AMERICANEXPRESS, 1234
     DISCOVER_PASSIVE_AUTH_CARD = '6011 0000 0000 0038', '', CardType.DISCOVER, 123
@@ -61,8 +62,8 @@ class Card(Enum):
 
     @property
     def number(self):
-        # the same number as the formatted one but with "normal" notation
-        return int(self.formatted_number.replace(" ", ""))
+        # the same number as the formatted one but with 'normal' notation
+        return int(self.formatted_number.replace(' ', ''))
 
     @property
     def value(self) -> str:
@@ -80,9 +81,9 @@ class Card(Enum):
     @property
     def future_expiration_date(self) -> str:
         date_two_years_in_future = adjust_date_day(get_current_time(), 2 * 365)
-        return convert_to_string(date_two_years_in_future, date_formats.month_year)
+        return str(convert_to_string(date_two_years_in_future, date_formats.month_year))
 
     @property
     def past_expiration_date(self) -> str:
         date_two_years_in_past = adjust_date_day(get_current_time(), -2 * 365)
-        return convert_to_string(date_two_years_in_past, date_formats.month_year)
+        return str(convert_to_string(date_two_years_in_past, date_formats.month_year))

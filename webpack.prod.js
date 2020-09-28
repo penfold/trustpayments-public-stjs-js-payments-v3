@@ -5,6 +5,7 @@ const path = require('path');
 
 module.exports = merge(common, {
   mode: 'production',
+  devtool: 'eval-source-map',
   plugins: [
     new webpack.DefinePlugin({
       WEBSERVICES_URL: JSON.stringify('https://webservices.securetrading.net/js/v2')
