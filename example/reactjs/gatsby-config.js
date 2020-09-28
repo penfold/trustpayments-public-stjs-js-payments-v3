@@ -1,8 +1,8 @@
 module.exports = {
   siteMetadata: {
-    title: `Secure Trading ReactJS Example Page`,
+    title: `Trust Payments ReactJS Example Page`,
     description: `Check how our library is working with ReactJS framework, more info: https://docs.securetrading.com/document/javascript-library/`,
-    author: `@securetrading`
+    author: `@trustpayments`
   },
   plugins: [
     `gatsby-plugin-react-helmet`,

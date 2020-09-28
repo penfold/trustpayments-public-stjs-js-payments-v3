@@ -1,6 +1,6 @@
-import { iinLookup } from '@securetrading/ts-iin-lookup';
-import { BrandDetailsType } from '@securetrading/ts-iin-lookup/dist/types';
-import { luhnCheck } from '@securetrading/ts-luhn-check';
+import { iinLookup } from '@trustpayments/ts-iin-lookup';
+import { BrandDetailsType } from '@trustpayments/ts-iin-lookup/dist/types';
+import { luhnCheck } from '@trustpayments/ts-luhn-check';
 import { StCodec } from '../../services/st-codec/StCodec.class';
 import { FormState } from '../../models/constants/FormState';
 import { ICard } from '../../models/ICard';

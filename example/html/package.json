@@ -45,6 +45,6 @@
     "webpack-merge": "5.1.4"
   },
   "dependencies": {
-    "@securetrading/jwt-generator": "0.0.2"
+    "@trustpayments/jwt-generator": "0.1.5"
   }
 }
