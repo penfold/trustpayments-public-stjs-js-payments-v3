@@ -103,6 +103,31 @@ apple-test-part2-browserstack-component-test:
     POETRY_TAGS: apple_test_part2
   resource_group: extended_tests_review_2
 
+win10-chrome-85.0-visual-tests:
+  extends:
+    - .visual-regression-tests
+    - .rules-always
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Chrome
+    BROWSER_VERSION: '85'
+    POETRY_TAGS: visual_regression
+  resource_group: extended_tests_review_3
+
+win10-chrome-85.0-visual-tests-styling:
+  extends:
+    - .visual-regression-tests
+    - .rules-always
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Chrome
+    BROWSER_VERSION: '85'
+    POETRY_TAGS: visual_regression_styling
+  resource_group: extended_tests_review_4
+
+# smoke tests executed on master branch
 OSXCatalina-Safari-13.1-smoke-tests:
   extends:
     - .extended-tests-browserstack
@@ -128,18 +153,6 @@ iPhone11-14.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_2
 
-win10-chrome-85.0-visual-tests:
-  extends:
-    - .visual-regression-tests
-    - .rules-when-release
-  variables:
-    OS: Windows
-    OS_VERSION: 10
-    BROWSER: Chrome
-    BROWSER_VERSION: '85'
-    POETRY_TAGS: visual_regression
-  resource_group: extended_tests_release_4
-
 SamsungGalaxyS10Plus-9.0-visual-tests:
   extends:
     - .visual-regression-tests
@@ -150,7 +163,7 @@ SamsungGalaxyS10Plus-9.0-visual-tests:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: visual_regression
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_3
 
 iPhoneXS-12-visual-tests:
   extends:
@@ -162,7 +175,7 @@ iPhoneXS-12-visual-tests:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
     POETRY_TAGS: visual_regression_safari
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_release_4
 
 OSXMojave-Safari-12.1-visual-tests:
   extends:
@@ -176,19 +189,7 @@ OSXMojave-Safari-12.1-visual-tests:
     ROWSERSTACK_SAFARI_DRIVER: '2.48'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: visual_regression_safari
-  resource_group: extended_tests_release_3
-
-win10-chrome-85.0-visual-tests-styling:
-  extends:
-    - .visual-regression-tests
-    - .rules-when-release
-  variables:
-    OS: Windows
-    OS_VERSION: 10
-    BROWSER: Chrome
-    BROWSER_VERSION: '85'
-    POETRY_TAGS: visual_regression_styling
-  resource_group: extended_tests_release_4
+  resource_group: extended_tests_release_1
 
 SamsungGalaxyS10Plus-9.0-visual-tests-styling:
   extends:
@@ -200,37 +201,7 @@ SamsungGalaxyS10Plus-9.0-visual-tests-styling:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: visual_regression_styling
-  resource_group: extended_tests_release_1
-
-#to turn it on again after figuring situation with STJS-973
-.iPhoneXS-12-visual-tests-styling:
-  extends:
-    - .visual-regression-component-tests
-    - .rules-when-release
-  variables:
-    DEVICE: iPhone XS
-    OS_VERSION: 12
-    REAL_MOBILE: 'true'
-    BROWSERSTACK_APPIUM_VERSION: '1.14.0'
-    POETRY_TAGS: visual_regression_styling_safari
   resource_group: extended_tests_release_2
-
-#to turn it on again after figuring situation with STJS-973
-.OSXMojave-Safari-12.1-visual-tests-styling:
-  extends:
-    - .visual-regression-component-tests
-    - .rules-when-release
-  variables:
-    OS: OS X
-    OS_VERSION: Mojave
-    BROWSER: Safari
-    BROWSER_VERSION: '12.1'
-    ROWSERSTACK_SAFARI_DRIVER: '2.48'
-    BROWSERSTACK_SELENIUM_VERSION: '3.14.0'
-    POETRY_TAGS: visual_regression_styling_safari
-  resource_group: extended_tests_release_3
-
-# smoke tests executed on master branch
 
 iPhone8-11.0-smoke-tests:
   extends:
@@ -242,7 +213,7 @@ iPhone8-11.0-smoke-tests:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
-  resource_group: extended_tests_release_4
+  resource_group: extended_tests_release_3
 
 win8.1-chrome-85.0-smoke-tests:
   extends:
@@ -254,7 +225,7 @@ win8.1-chrome-85.0-smoke-tests:
     BROWSER: chrome
     BROWSER_VERSION: '85.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_4
 
 OSXCatalina-chrome-85.0-smoke-tests:
   extends:
@@ -266,7 +237,7 @@ OSXCatalina-chrome-85.0-smoke-tests:
     BROWSER: chrome
     BROWSER_VERSION: '85.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_release_1
 
 OSXCatalina-firefox-80.0-smoke-tests:
   extends:
@@ -280,7 +251,7 @@ OSXCatalina-firefox-80.0-smoke-tests:
     BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_2
 
 win10-Edge-85.0-smoke-tests:
   extends:
@@ -293,7 +264,7 @@ win10-Edge-85.0-smoke-tests:
     BROWSER_VERSION: '85.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.14.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_4
+  resource_group: extended_tests_release_3
 
 win10-Edge-18.0-smoke-tests:
   extends:
@@ -306,7 +277,7 @@ win10-Edge-18.0-smoke-tests:
     BROWSER_VERSION: '18.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_4
 
 OSXHS-Safari-11.1-smoke-tests:
   extends:
@@ -320,7 +291,7 @@ OSXHS-Safari-11.1-smoke-tests:
     ROWSERSTACK_SAFARI_DRIVER: '2.48'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_release_1
 
 iPhoneXS-12-smoke-tests:
   extends:
@@ -332,7 +303,7 @@ iPhoneXS-12-smoke-tests:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_2
 
 iPad7th-13-smoke-tests:
   extends:
@@ -344,7 +315,7 @@ iPad7th-13-smoke-tests:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.17.0'
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
-  resource_group: extended_tests_release_4
+  resource_group: extended_tests_release_3
 
 GoogleNexus6-6.0-smoke-tests:
   extends:
@@ -356,7 +327,7 @@ GoogleNexus6-6.0-smoke-tests:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_4
 
 SamsungGalaxyS8-7.0-smoke-tests:
   extends:
@@ -368,7 +339,7 @@ SamsungGalaxyS8-7.0-smoke-tests:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_release_1
 
 SamsungGalaxyS10Plus-9.0-smoke-tests:
   extends:
@@ -380,7 +351,7 @@ SamsungGalaxyS10Plus-9.0-smoke-tests:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_2
 
 GooglePixel4-10.0-smoke-tests:
   extends:
@@ -392,9 +363,7 @@ GooglePixel4-10.0-smoke-tests:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_4
-
-# other tests executed on master branch
+  resource_group: extended_tests_release_3
 
 win10-Firefox-80.0-extended-tests:
   extends:
@@ -408,7 +377,125 @@ win10-Firefox-80.0-extended-tests:
     BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: $EXTENDED_TESTS_TAG
+  resource_group: extended_tests_release_4
+
+iPhoneXS-12-applePay-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: iPhone XS
+    OS_VERSION: 12
+    REAL_MOBILE: 'true'
+    BROWSERSTACK_APPIUM_VERSION: '1.14.0'
+    POETRY_TAGS: smoke_test_apple_pay
   resource_group: extended_tests_release_1
+
+SamsungGalaxyS9-12-extended-test-part-1:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: Samsung Galaxy S9
+    OS_VERSION: '8.0'
+    REAL_MOBILE: 'true'
+    BROWSERSTACK_APPIUM_VERSION: '1.18.0'
+    POETRY_TAGS: extended_tests_part_1
+  resource_group: extended_tests_release_2
+
+SamsungGalaxyS9-12-extended-test-part-2:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: Samsung Galaxy S9
+    OS_VERSION: '8.0'
+    REAL_MOBILE: 'true'
+    BROWSERSTACK_APPIUM_VERSION: '1.18.0'
+    POETRY_TAGS: extended_tests_part_2
+  resource_group: extended_tests_release_3
+
+win10-IE-11.0-extended-test-part-1:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: IE
+    BROWSER_VERSION: '11.0'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+    POETRY_TAGS: extended_tests_part_1
+  resource_group: extended_tests_release_4
+
+win10-IE-11.0-extended-test-part-2:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: IE
+    BROWSER_VERSION: '11.0'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+    POETRY_TAGS: extended_tests_part_2
+  resource_group: extended_tests_release_1
+
+OSXMojave-Safari-12.1-extended-test-part-1:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: OS X
+    OS_VERSION: Mojave
+    BROWSER: Safari
+    BROWSER_VERSION: '12.1'
+    ROWSERSTACK_SAFARI_DRIVER: '2.48'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+    POETRY_TAGS: extended_tests_part_1
+  resource_group: extended_tests_release_2
+
+OSXMojave-Safari-12.1-extended-test-part-2:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: OS X
+    OS_VERSION: Mojave
+    BROWSER: Safari
+    BROWSER_VERSION: '12.1'
+    ROWSERSTACK_SAFARI_DRIVER: '2.48'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+    POETRY_TAGS: extended_tests_part_2,extended_tests_apple_pay
+  resource_group: extended_tests_release_3
+
+#TODO turn it on again after figuring situation with STJS-973
+.iPhoneXS-12-visual-tests-styling:
+  extends:
+    - .visual-regression-component-tests
+    - .rules-when-release
+  variables:
+    DEVICE: iPhone XS
+    OS_VERSION: 12
+    REAL_MOBILE: 'true'
+    BROWSERSTACK_APPIUM_VERSION: '1.14.0'
+    POETRY_TAGS: visual_regression_styling_safari
+  resource_group: extended_tests_release_2
+
+#TODO turn it on again after figuring situation with STJS-973
+.OSXMojave-Safari-12.1-visual-tests-styling:
+  extends:
+    - .visual-regression-component-tests
+    - .rules-when-release
+  variables:
+    OS: OS X
+    OS_VERSION: Mojave
+    BROWSER: Safari
+    BROWSER_VERSION: '12.1'
+    ROWSERSTACK_SAFARI_DRIVER: '2.48'
+    BROWSERSTACK_SELENIUM_VERSION: '3.14.0'
+    POETRY_TAGS: visual_regression_styling_safari
+  resource_group: extended_tests_release_3
 
 .iPhoneXR-12-full-test-part-1: # TODO https://securetrading.atlassian.net/browse/STJS-661
   extends:
@@ -433,93 +520,3 @@ win10-Firefox-80.0-extended-tests:
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: full_test_part_2
   resource_group: extended_tests_release_2
-
-iPhoneXS-12-applePay-tests:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-when-release
-  variables:
-    DEVICE: iPhone XS
-    OS_VERSION: 12
-    REAL_MOBILE: 'true'
-    BROWSERSTACK_APPIUM_VERSION: '1.14.0'
-    POETRY_TAGS: smoke_test_apple_pay
-  resource_group: extended_tests_release_2
-
-SamsungGalaxyS9-12-extended-test-part-1:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-when-release
-  variables:
-    DEVICE: Samsung Galaxy S9
-    OS_VERSION: '8.0'
-    REAL_MOBILE: 'true'
-    BROWSERSTACK_APPIUM_VERSION: '1.18.0'
-    POETRY_TAGS: extended_tests_part_1
-  resource_group: extended_tests_release_3
-
-SamsungGalaxyS9-12-extended-test-part-2:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-when-release
-  variables:
-    DEVICE: Samsung Galaxy S9
-    OS_VERSION: '8.0'
-    REAL_MOBILE: 'true'
-    BROWSERSTACK_APPIUM_VERSION: '1.18.0'
-    POETRY_TAGS: extended_tests_part_2
-  resource_group: extended_tests_release_4
-
-win10-IE-11.0-extended-test-part-1:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-when-release
-  variables:
-    OS: Windows
-    OS_VERSION: 10
-    BROWSER: IE
-    BROWSER_VERSION: '11.0'
-    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-    POETRY_TAGS: extended_tests_part_1
-  resource_group: extended_tests_release_1
-
-win10-IE-11.0-extended-test-part-2:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-when-release
-  variables:
-    OS: Windows
-    OS_VERSION: 10
-    BROWSER: IE
-    BROWSER_VERSION: '11.0'
-    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-    POETRY_TAGS: extended_tests_part_2
-  resource_group: extended_tests_release_2
-
-OSXMojave-Safari-12.1-extended-test-part-1:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-when-release
-  variables:
-    OS: OS X
-    OS_VERSION: Mojave
-    BROWSER: Safari
-    BROWSER_VERSION: '12.1'
-    ROWSERSTACK_SAFARI_DRIVER: '2.48'
-    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-    POETRY_TAGS: extended_tests_part_1
-  resource_group: extended_tests_release_3
-
-OSXMojave-Safari-12.1-extended-test-part-2:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-when-release
-  variables:
-    OS: OS X
-    OS_VERSION: Mojave
-    BROWSER: Safari
-    BROWSER_VERSION: '12.1'
-    ROWSERSTACK_SAFARI_DRIVER: '2.48'
-    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-    POETRY_TAGS: extended_tests_part_2,extended_tests_apple_pay
-  resource_group: extended_tests_release_4
