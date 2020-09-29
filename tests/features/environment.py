@@ -63,6 +63,11 @@ def resolve_executor_and_driver_with_try(context, max_try: int = 3):
             break
         except WebDriverException as exception:
             print(str(exception) + ' - trying to open browser again')
+            if context.executor is not None:
+                try:
+                    context.executor.close_browser()
+                except:
+                    print('error while closing browser')
             max_try -= 1
 
 

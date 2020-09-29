@@ -325,7 +325,7 @@ OSXHS-Safari-11.1-smoke-tests:
 iPhoneXS-12-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12
@@ -413,7 +413,7 @@ win10-Firefox-80.0-extended-tests:
 .iPhoneXR-12-full-test-part-1: # TODO https://securetrading.atlassian.net/browse/STJS-661
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     DEVICE: iPhone XR
     OS_VERSION: 12
