@@ -38,4 +38,4 @@ def step_impl(context, card_number, expiration_date):
 def step_impl(context, language):
     animated_card_page = context.page_factory.get_page(page_name='animated_card')
     animated_card_page.scroll_to_bottom()
-    animated_card_page.validate_animated_card_translation(language, context.is_field_in_iframe)
+    animated_card_page.validate_animated_card_translation(language)

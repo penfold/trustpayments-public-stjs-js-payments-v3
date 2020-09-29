@@ -34,7 +34,7 @@ card-payments-headless-component-tests:
   variables:
     FEATURE_FILES_NAMES_CONTAINS: 'mock_'
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-  parallel: 21
+  parallel: 22
 
 visa-checkout-headless-component-tests:
   extends:

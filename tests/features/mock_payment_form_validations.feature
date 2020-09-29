@@ -35,7 +35,7 @@ Feature: Payment form validations
       | card_number | expiration | cvv | field       |
       | None        | 12/22      | 123 | CARD_NUMBER |
 
-    @extended_tests_part_1
+    @extended_tests_part_2
     Examples:
       | card_number      | expiration | cvv | field           |
       | 4000000000001000 | None       | 123 | EXPIRATION_DATE |
@@ -57,7 +57,7 @@ Feature: Payment form validations
       | card_number      | expiration | cvv | field         |
       | 4000000000001000 | 12/22      | 12  | SECURITY_CODE |
 
-    @extended_tests_part_1
+    @extended_tests_part_2
     Examples:
       | card_number      | expiration | cvv | field           |
       | 40000000         | 12/22      | 123 | CARD_NUMBER     |
@@ -79,7 +79,7 @@ Feature: Payment form validations
     And User will see that "<field>" field is highlighted
     And THREEDQUERY request was sent only once with correct data
 
-    @extended_tests_part_1
+    @extended_tests_part_2
     Examples:
       | card_number      | expiration | cvv | field       |
       | 4000000000001000 | 12/22      | 123 | CARD_NUMBER |
@@ -89,7 +89,7 @@ Feature: Payment form validations
       | 4000000000001000 | 12/15      | 123 | EXPIRATION_DATE |
       | 4000000000001000 | 12/22      | 000 | SECURITY_CODE   |
 
-  @base_config @extended_tests_part_1 @fields_validation
+  @base_config @extended_tests_part_2 @fields_validation
   Scenario: Filling 3-number of cvv code for AMEX card
     When User fills payment form with credit card number "340000000000611", expiration date "12/22" and cvv "123"
     And User clicks Pay button
