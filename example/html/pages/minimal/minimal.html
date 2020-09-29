@@ -36,7 +36,7 @@
   var ST = SecureTrading;
 
   var st = ST({
-    jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDEzODY2MDMsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiJ9fQ.HGEXEkjgLUhkxwB6pcbqtsZ_4AeXxjJ4pfQxtrMcvEg',
+    jwt: '',
     livestatus: 0,
     deferInit: true,
     submitOnSuccess: false,
@@ -48,7 +48,7 @@
   st.Components({ requestTypes: ['THREEDQUERY', 'AUTH'] });
 
   document.getElementById('update-button').addEventListener('click', () => {
-    st.updateJWT('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDEzODcwMDQsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiJ9fQ.52gGEUQmwYh9jowZIaHO5vr0HO1EaLUO47_N7vKrGSQ');
+    st.updateJWT('');
   });
 </script>
 
