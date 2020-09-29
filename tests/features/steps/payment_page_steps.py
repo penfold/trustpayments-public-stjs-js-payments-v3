@@ -228,7 +228,6 @@ def step_impl(context):
 @then('User is redirected to action page')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    time.sleep(3)
     for key, value in url_after_redirection.items():
         if key in context.scenario.name:
             if 'Cardinal Commerce - successful' in key and 'IE' in CONFIGURATION.REMOTE_BROWSER:

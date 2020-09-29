@@ -68,16 +68,17 @@ class AnimatedCardPage(BasePage):
                 add_to_shared_dict('assertion_message', assertion_message)
                 assert 'flip-card' in animated_card_side, assertion_message
 
-    def validate_animated_card_translation(self, language, is_field_in_iframe):
+    def validate_animated_card_translation(self, language):
+        self._action.switch_to_iframe(FieldType.ANIMATED_CARD.value)
         self.validate_animated_card_element_translation(AnimatedCardLocators.card_number_label,
-                                                        language, 'Card number', is_field_in_iframe)
+                                                        language, 'Card number')
         self.validate_animated_card_element_translation(AnimatedCardLocators.expiration_date_label,
-                                                        language, 'Expiration date', is_field_in_iframe)
+                                                        language, 'Expiration date')
         self.validate_animated_card_element_translation(AnimatedCardLocators.security_code_label,
-                                                        language, 'Security code', is_field_in_iframe)
+                                                        language, 'Security code')
 
-    def validate_animated_card_element_translation(self, element, language, key, is_field_in_iframe):
-        actual_translation = self.get_animated_card_label_translation(element, is_field_in_iframe)
+    def validate_animated_card_element_translation(self, element, language, key):
+        actual_translation = self.get_animated_card_label_translation(element)
         expected_translation = self.get_translation_from_json(language, key)
         if 'safari' not in ioc_config.CONFIG.resolve('driver').browser:
             expected_translation = expected_translation.upper()
@@ -85,9 +86,7 @@ class AnimatedCardPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert actual_translation in expected_translation, assertion_message
 
-    def get_animated_card_label_translation(self, locator, is_field_in_iframe):
-        if is_field_in_iframe:
-            self._action.switch_to_iframe(FieldType.ANIMATED_CARD.value)
+    def get_animated_card_label_translation(self, locator):
         element_translation = self._action.get_text(locator)
         return element_translation
 
