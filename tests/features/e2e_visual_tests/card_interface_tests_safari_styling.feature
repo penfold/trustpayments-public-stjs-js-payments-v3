@@ -10,7 +10,7 @@ Feature: Visual regression - E2E Card Payments
 
   @base_config_visual_styling @visual_regression_styling_safari @scrn_card_interface_after_successful_payment_styling
   Scenario: Card interface after successful payment
-    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
+    When User fills payment form with defined card MASTERCARD_FIXED_EXP_DATE_CARD
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User clicks Pay button - AUTH response is set to "OK"
     And Wait for notification frame
