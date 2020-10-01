@@ -55,7 +55,7 @@ def step_impl(context, how_many_seconds):
 def step_impl(context, how_many_seconds):
     # pylint: disable=invalid-name)
     time.sleep(float(how_many_seconds))
-    sm = context.screenshot_manager()
+    sm = context.screenshot_manager
 
     expected_screenshot_filename = _browser_device(context) + '_' + screenshots[_screenshot_tag(context.scenario.tags)]
     actual_screenshot_filename = sm.make_screenshot(expected_screenshot_filename, date_postfix=True)

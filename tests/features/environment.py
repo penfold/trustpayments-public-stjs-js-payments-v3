@@ -44,7 +44,10 @@ def before_scenario(context, scenario):
     driver = DriverFactory(configuration=context.configuration)
     context.waits = Waits(driver=driver, configuration=context.configuration)
     extensions = WebElementsExtensions(driver=driver, configuration=context.configuration)
-    context.browser = context.configuration.BROWSER
+    if context.configuration.REMOTE:
+        context.browser = context.configuration.REMOTE_BROWSER
+    else:
+        context.browser = context.configuration.BROWSER
     context.executor = Browser(driver=driver, configuration=context.configuration)
     context.reporter = Reporter(driver=driver, configuration=context.configuration)
     context.screenshot_manager = ScreenshotManager(driver=driver, configuration=context.configuration)
