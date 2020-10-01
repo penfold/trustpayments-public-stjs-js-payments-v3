@@ -145,7 +145,7 @@ OSXCatalina-Safari-13.1-smoke-tests:
 iPhone11-14.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     DEVICE: iPhone 11
     OS_VERSION: 14
@@ -418,7 +418,7 @@ SamsungGalaxyS9-12-extended-test-part-2:
 win10-IE-11.0-extended-test-part-1:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: Windows
     OS_VERSION: 10
