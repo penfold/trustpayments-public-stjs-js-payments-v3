@@ -92,6 +92,7 @@ class DriverFactory:
         self._remote = configuration.REMOTE
         self._command_executor = configuration.COMMAND_EXECUTOR
         self._remote_capabilities = DriverConfig.get_remote_capabilities(configuration)
+        self._configuration = configuration
 
     def _set_browser(self) -> None:
         args = dict(browser_name=self._browser_name,
@@ -101,6 +102,8 @@ class DriverFactory:
         driver = SeleniumDriver(**args)  # type: ignore
         browser = driver.get_driver()
         type(self)._browser = browser
+        if self._configuration.REMOTE_DEVICE == '':
+            browser.fullscreen_window()
 
     def get_browser(self) -> RemoteWebDriver:
         if not self._browser:

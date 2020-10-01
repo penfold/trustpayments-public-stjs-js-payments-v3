@@ -12,12 +12,10 @@ class Browser(Waits):
         self._browser.get(page_url)
         if 'IE' in CONFIGURATION.BROWSER:
             self._browser.get('javascript:document.getElementById(\'overridelink\').click()')
-        self.fullscreen()
 
     def open_page_with_jwt_config(self, page_url, jwt_json_config: JwtConfig):
         jwt = encode_jwt_for_json(jwt_json_config)
         self._browser.get(page_url + f'?jwt={jwt}')
-        self.fullscreen()
 
     def close_browser(self):
         self._driver_browser.close_browser()
@@ -60,10 +58,6 @@ class Browser(Waits):
 
     def scroll_horizontally(self):
         self._browser.execute_script('window.scrollBy(100,0)')  # Scroll 100px to the right
-
-    def fullscreen(self):
-        if not CONFIGURATION.REMOTE_DEVICE or CONFIGURATION.REMOTE_DEVICE is None:
-            self._browser.maximize_window()
 
     def scroll_into_view(self, element):
         self._browser.execute_script('arguments[0].scrollIntoView();', element)
