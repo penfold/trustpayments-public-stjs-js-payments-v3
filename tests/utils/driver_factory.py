@@ -102,7 +102,7 @@ class DriverFactory:
         driver = SeleniumDriver(**args)  # type: ignore
         browser = driver.get_driver()
         type(self)._browser = browser
-        if self._configuration.REMOTE_DEVICE == '':
+        if not self._configuration.REMOTE_DEVICE or self._configuration.REMOTE_DEVICE is None:
             browser.fullscreen_window()
 
     def get_browser(self) -> RemoteWebDriver:
