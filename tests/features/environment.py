@@ -49,11 +49,12 @@ def before_scenario(context, scenario):
     context.reporter = Reporter(driver=driver, configuration=context.configuration)
     context.screenshot_manager = ScreenshotManager(driver=driver, configuration=context.configuration)
     context.page_factory = PageFactory(executor=context.executor, extensions=extensions,
-                                       reporter=context.reporter, configuration=context.configuration, wait=context.waits)
+                                       reporter=context.reporter, configuration=context.configuration,
+                                       wait=context.waits)
     context.test_data = TestData(configuration=context.configuration)
     context.session_id = context.executor.get_session_id()
     context.language = 'en_GB'
-    scenario.name = '%s_%s' % (scenario.name, context.browser.upper())
+    scenario.name = '%s executed on %s' % (scenario.name, context.browser.upper())
     LOGGER.info(scenario.name)
 
     if 'apple_test' in scenario.tags and (context.browser not in 'safari'):

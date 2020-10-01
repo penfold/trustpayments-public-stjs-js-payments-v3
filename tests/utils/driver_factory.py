@@ -11,7 +11,6 @@ from enum import Enum
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.webdriver import WebDriver as ChromeWebDriver
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from configuration import DriverConfig
@@ -26,6 +25,15 @@ class Drivers(Enum):
     phantom = webdriver.PhantomJS
 
 
+class DesiredCapabilities(Enum):
+    chrome = webdriver.DesiredCapabilities.CHROME
+    firefox = webdriver.DesiredCapabilities.FIREFOX
+    ie = webdriver.DesiredCapabilities.INTERNETEXPLORER
+    edge = webdriver.DesiredCapabilities.EDGE
+    phantom = webdriver.DesiredCapabilities.PHANTOMJS
+    safari = webdriver.DesiredCapabilities.SAFARI
+
+
 class Driver:
     __metaclass__ = abc.ABCMeta
 
@@ -38,6 +46,11 @@ class Driver:
     @abc.abstractmethod
     def get_driver(self):
         pass
+
+    @staticmethod
+    def _get_desired_capabilities(capability):
+        desired_capabilities = DesiredCapabilities[capability]
+        return desired_capabilities.value.copy()
 
 
 class SeleniumDriver(Driver):
@@ -56,17 +69,7 @@ class SeleniumDriver(Driver):
         return remote_driver
 
     def _create_local(self) -> RemoteWebDriver:
-        return Drivers[self._browser_name]
-
-
-class SeleniumChromeDriver(SeleniumDriver):
-    def __init__(self, remote: bool, command_executor: str, remote_capabilities: dict, headless: bool):
-        super().__init__(browser_name='chrome', remote=remote, command_executor=command_executor,
-                         remote_capabilities=remote_capabilities)
-
-    def _create_local(self) -> ChromeWebDriver:
-        driver = super()._create_local()
-
+        driver = Drivers[self._browser_name]
         options = Options()
 
         options.headless = True
@@ -81,11 +84,6 @@ class SeleniumChromeDriver(SeleniumDriver):
         return driver.value(chrome_options=options)
 
 
-SELENIUM_DRIVERS = {
-    'chrome': SeleniumChromeDriver,
-}
-
-
 class DriverFactory:
     _browser: RemoteWebDriver = None
 
@@ -94,16 +92,13 @@ class DriverFactory:
         self._remote = configuration.REMOTE
         self._command_executor = configuration.COMMAND_EXECUTOR
         self._remote_capabilities = DriverConfig.get_remote_capabilities(configuration)
-        self._headless = True
 
     def _set_browser(self) -> None:
-        args = dict(remote=self._remote,
+        args = dict(browser_name=self._browser_name,
+                    remote=self._remote,
                     command_executor=self._command_executor,
-                    remote_capabilities=self._remote_capabilities,
-                    headless=self._headless)
-        if self._browser_name not in SELENIUM_DRIVERS:
-            args['browser_name'] = self._browser_name
-        driver = SELENIUM_DRIVERS.get(self._browser_name, SeleniumDriver)(**args)  # type: ignore
+                    remote_capabilities=self._remote_capabilities)
+        driver = SeleniumDriver(**args)  # type: ignore
         browser = driver.get_driver()
         type(self)._browser = browser
 
