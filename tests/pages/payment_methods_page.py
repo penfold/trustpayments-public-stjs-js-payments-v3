@@ -51,7 +51,7 @@ class PaymentMethodsPage(BasePage):
                                                                    value)
 
     def fill_payment_form(self, card_number, expiration_date, cvv):
-        if 'ie' in self._configuration.BROWSER:
+        if 'IE' in self._configuration.BROWSER:
             self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
             self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
@@ -61,7 +61,7 @@ class PaymentMethodsPage(BasePage):
             self.fill_credit_card_field(FieldType.SECURITY_CODE.name, cvv)
 
     def fill_payment_form_without_cvv(self, card_number, expiration_date):
-        if 'ie' in self._configuration.BROWSER:
+        if 'IE' in self._configuration.BROWSER:
             self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
         else:
@@ -69,7 +69,7 @@ class PaymentMethodsPage(BasePage):
             self.fill_credit_card_field(FieldType.EXPIRATION_DATE.name, expiration_date)
 
     def fill_payment_form_with_only_cvv(self, cvv):
-        if 'ie' in self._configuration.BROWSER:
+        if 'IE' in self._configuration.BROWSER:
             self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
         else:
             self.fill_credit_card_field(FieldType.SECURITY_CODE.name, cvv)

@@ -296,7 +296,7 @@ OSXHS-Safari-11.1-smoke-tests:
 iPhoneXS-12-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12
@@ -382,7 +382,7 @@ win10-Firefox-80.0-extended-tests:
 iPhoneXS-12-applePay-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12

@@ -49,7 +49,7 @@ def step_impl(context):
 @step('THREEDQUERY mock response is set to "(?P<tdq_response>.+)"')
 def step_impl(context, tdq_response):
     stub_st_request_type(TDQresponse[tdq_response].value, RequestType.THREEDQUERY.name)
-    if 'ie' in context.browser and 'config_submit_cvv_only' in context.scenario.tags:
+    if 'IE' in context.browser and 'config_submit_cvv_only' in context.scenario.tags:
         context.waits.wait_for_javascript()
 
 
@@ -98,7 +98,7 @@ def step_impl(context, request_type, action_code):
     else:
         stub_st_request_type(request_type_response[request_type], request_type)
 
-    if 'ie' in context.browser and 'config_submit_cvv_only' in context.scenario.tags:
+    if 'IE' in context.browser and 'config_submit_cvv_only' in context.scenario.tags:
         context.waits.wait_for_javascript()
     payment_page.choose_payment_methods(PaymentType.CARDINAL_COMMERCE.name)
     if 'config_submit_on' not in context.scenario.tags[0]:

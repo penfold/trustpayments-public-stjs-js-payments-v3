@@ -10,7 +10,7 @@ class Browser(Waits):
 
     def open_page(self, page_url):
         self._browser.get(page_url)
-        if 'ie' in CONFIGURATION.BROWSER:
+        if 'IE' in CONFIGURATION.BROWSER:
             self._browser.get('javascript:document.getElementById(\'overridelink\').click()')
         self.fullscreen()
 
