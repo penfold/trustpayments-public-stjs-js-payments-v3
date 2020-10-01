@@ -5,22 +5,19 @@
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR         (to enable  debug-on-error)
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=yes     (to enable  debug-on-error)
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=no      (to disable debug-on-error)
-from selenium.common.exceptions import WebDriverException
-
 from logging import INFO
-from configuration import CONFIGURATION, DriverConfig
 
+from configuration import CONFIGURATION
+from logger import get_logger
 from page_factory import PageFactory
 from utils.browser import Browser
 from utils.driver_factory import DriverFactory
-from logger import get_logger
 from utils.extensions import WebElementsExtensions
-from utils.reporter import Reporter
-from utils.visual_regression.screenshot_manager import ScreenshotManager
-from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name
 from utils.mock_handler import MockServer
-from utils.waits import Waits
+from utils.reporter import Reporter
 from utils.test_data import TestData
+from utils.visual_regression.screenshot_manager import ScreenshotManager
+from utils.waits import Waits
 
 BEHAVE_DEBUG_ON_ERROR = False
 LOGGER = get_logger(INFO)
@@ -81,14 +78,6 @@ def after_scenario(context, scenario):
     context.executor.clear_cookies()
     context.executor.close_browser()
     MockServer.stop_mock_server()
-
-
-# def after_all(context):
-#     """Run after the whole shooting match"""
-#     context.page_factory = PageFactory()
-#
-#     executor = ioc_config.EXECUTOR.resolve('test')
-#     executor.close_browser()
 
 
 def after_step(context, step):
