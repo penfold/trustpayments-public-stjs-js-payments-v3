@@ -6,12 +6,13 @@ from utils.enums.field_type import FieldType
 
 
 class BasePage:
-    def __init__(self, executor__test, extensions__test, reporter__test, config__test, waits__test):
-        self._executor = executor__test
-        self._action = extensions__test
-        self._waits = waits__test
-        self._reporter = reporter__test
-        self._page_url = config__test.base_page
+    def __init__(self, executor, extensions, reporter, config, wait):
+        self._executor = executor
+        self._action = extensions
+        self._reporter = reporter
+        self._page_url = config.URL.BASE_URL
+        self._waits = wait
+        self._configuration = config
 
     def open_self_page(self):
         self._executor.open_page(self._page_url)

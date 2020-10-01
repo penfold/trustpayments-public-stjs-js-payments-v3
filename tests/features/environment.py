@@ -7,14 +7,23 @@
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=no      (to disable debug-on-error)
 from selenium.common.exceptions import WebDriverException
 
-import ioc_config
-from configuration import CONFIGURATION
+from logging import INFO
+from configuration import CONFIGURATION, DriverConfig
 
 from page_factory import PageFactory
+from utils.browser import Browser
+from utils.driver_factory import DriverFactory
+from logger import get_logger
+from utils.extensions import WebElementsExtensions
+from utils.reporter import Reporter
+from utils.visual_regression.screenshot_manager import ScreenshotManager
 from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name
 from utils.mock_handler import MockServer
+from utils.waits import Waits
+from utils.test_data import TestData
 
 BEHAVE_DEBUG_ON_ERROR = False
+LOGGER = get_logger(INFO)
 
 
 def setup_debug_on_error(userdata):
@@ -28,18 +37,27 @@ def setup_debug_on_error(userdata):
 
 def before_all(context):
     """Run before the whole shooting match"""
-    context.config = ioc_config.CONFIG.resolve('test')
-    context.test_data = ioc_config.TEST_DATA.resolve('test')
+    context.configuration = CONFIGURATION
     MockServer.start_mock_server()
 
 
 def before_scenario(context, scenario):
     """Run before each scenario"""
-    context.page_factory = PageFactory()
-    resolve_executor_and_driver_with_try(context)
+    LOGGER.info('BEFORE SCENARIO')
+    driver = DriverFactory(configuration=context.configuration)
+    context.waits = Waits(driver=driver, configuration=context.configuration)
+    extensions = WebElementsExtensions(driver=driver, configuration=context.configuration)
+    context.browser = context.configuration.BROWSER
+    context.executor = Browser(driver=driver, configuration=context.configuration)
+    context.reporter = Reporter(driver=driver, configuration=context.configuration)
+    context.screenshot_manager = ScreenshotManager(driver=driver, configuration=context.configuration)
+    context.page_factory = PageFactory(executor=context.executor, extensions=extensions,
+                                       reporter=context.reporter, configuration=context.configuration, wait=context.waits)
+    context.test_data = TestData(configuration=context.configuration)
     context.session_id = context.executor.get_session_id()
     context.language = 'en_GB'
-    # scenario.name = '%s_%s' % (scenario.name, context.browser.upper())
+    scenario.name = '%s_%s' % (scenario.name, context.browser.upper())
+    LOGGER.info(scenario.name)
 
     if 'apple_test' in scenario.tags and (context.browser not in 'safari'):
         if 'iP' not in CONFIGURATION.REMOTE_DEVICE:
@@ -55,30 +73,14 @@ def before_scenario(context, scenario):
         context.is_field_in_iframe = True
 
 
-def resolve_executor_and_driver_with_try(context, max_try: int = 3):
-    while max_try:
-        try:
-            context.executor = ioc_config.EXECUTOR.resolve('test')
-            context.browser = ioc_config.CONFIG.resolve('driver').browser
-            break
-        except WebDriverException as exception:
-            print(str(exception) + ' - trying to open browser again')
-            max_try -= 1
-
-
 def after_scenario(context, scenario):
     """Run after each scenario"""
-    context.page_factory = PageFactory()
-
-    browser_name = ioc_config.CONFIG.resolve('driver').browser
-    set_scenario_name(context.session_id, scenario.name)
-    scenario.name = '%s_%s' % (scenario.name, browser_name.upper())
-    if scenario.status == 'failed' and (CONFIGURATION.REMOTE == 1):
-        mark_test_as_failed(context.session_id)
+    LOGGER.info('AFTER SCENARIO')
+    browser_name = context.browser
+    scenario.name = f'{scenario.name}_{browser_name.upper()}'
     context.executor.clear_cookies()
-    # context.executor.clear_storage()
-    MockServer.stop_mock_server()
     context.executor.close_browser()
+    MockServer.stop_mock_server()
 
 
 # def after_all(context):
@@ -96,8 +98,7 @@ def after_step(context, step):
         feature_name = _clean(context.feature.name.title())
         step_name = _clean(step.name.title())
         filename = f'{feature_name}_{scenario_name}_{step_name}'
-        executor = ioc_config.REPORTER.resolve('test')
-        executor.save_screenshot_and_page_source(filename)
+        context.reporter.save_screenshot_and_page_source(filename)
 
 
 def _clean(text_to_clean):

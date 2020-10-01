@@ -1,6 +1,5 @@
 import json
 
-import ioc_config
 from configuration import CONFIGURATION
 from locators.animated_card_locators import AnimatedCardLocators
 from locators.payment_methods_locators import PaymentMethodsLocators
@@ -79,7 +78,7 @@ class AnimatedCardPage(BasePage):
     def validate_animated_card_element_translation(self, element, language, key, is_field_in_iframe):
         actual_translation = self.get_animated_card_label_translation(element, is_field_in_iframe)
         expected_translation = self.get_translation_from_json(language, key)
-        if 'safari' not in ioc_config.CONFIG.resolve('driver').browser:
+        if 'safari' not in self._configuration.resolve('driver').browser:
             expected_translation = expected_translation.upper()
         assertion_message = f'Translation is not correct: should be {expected_translation} but is {actual_translation}'
         add_to_shared_dict('assertion_message', assertion_message)

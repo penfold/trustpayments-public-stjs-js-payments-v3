@@ -1,17 +1,20 @@
 """This module is essential for executing our test against real web browser.
-It provides 3 separated classes(SeleniumDriver, Driver and self)
+It provides 3 separated classes(SeleniumDriver, Driver and DriverFactory)
 containing several functions which allow to create, manage and distribute
 WebDriver instance which is responsible for direct connection and allows
 to manipulate browser window thanks to its functions.
-It based on singleton pattern to operate on a single instance of a driver.
+It is based on singleton pattern to operate on a single instance of a driver.
 """
 import abc
 from enum import Enum
 
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.webdriver import WebDriver as ChromeWebDriver
+from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
-from utils.exceptions import ConfigurationError
+from configuration import DriverConfig
 
 
 class Drivers(Enum):
@@ -21,42 +24,6 @@ class Drivers(Enum):
     edge = webdriver.Edge
     safari = webdriver.Safari
     phantom = webdriver.PhantomJS
-
-
-class DesiredCapabilities(Enum):
-    chrome = webdriver.DesiredCapabilities.CHROME
-    firefox = webdriver.DesiredCapabilities.FIREFOX
-    ie = webdriver.DesiredCapabilities.INTERNETEXPLORER
-    edge = webdriver.DesiredCapabilities.EDGE
-    phantom = webdriver.DesiredCapabilities.PHANTOMJS
-    safari = webdriver.DesiredCapabilities.SAFARI
-
-
-class DriverFactory:
-    _browser = None
-
-    def __init__(self, config__driver):
-        self._browser_name = config__driver.browser
-        self._remote = config__driver.remote
-        self._command_executor = config__driver.command_executor
-        self._remote_capabilities = config__driver.remote_capabilities
-
-    def _set_browser(self):
-        driver = SeleniumDriver(browser_name=self._browser_name, remote=self._remote,
-                                command_executor=self._command_executor,
-                                remote_capabilities=self._remote_capabilities
-                                )
-        browser = driver.get_driver()
-        self._browser = browser
-
-    def get_browser(self):
-        if not self._browser:
-            self._set_browser()
-        return self._browser
-
-    def close_browser(self):
-        self._browser.quit()
-        self._browser = None
 
 
 class Driver:
@@ -72,42 +39,80 @@ class Driver:
     def get_driver(self):
         pass
 
-    @staticmethod
-    def _get_desired_capabilities(capability):
-        desired_capabilities = DesiredCapabilities[capability]
-        return desired_capabilities.value.copy()
-
-    def _check_command_executor_is_set(self):
-        if not self._command_executor:
-            raise ConfigurationError('Command_executor is required property!')
-
 
 class SeleniumDriver(Driver):
-    def get_driver(self):
-        if self._remote:
-            driver = self._create_remote()
-        else:
-            driver = self._create()
-        return driver
+    def get_driver(self) -> RemoteWebDriver:
+        max_try = 3
+        while max_try:
+            try:
+                return self._create_remote() if self._remote else self._create_local()
+            except WebDriverException as exception:
+                print(str(exception) + '  - trying to open browser again')
+                max_try -=1
 
-    def _create_remote(self):
-        self._check_command_executor_is_set()
-
+    def _create_remote(self) -> RemoteWebDriver:
         remote_driver = webdriver.Remote(command_executor=self._command_executor,
                                          desired_capabilities=self._remote_capabilities)
         return remote_driver
 
-    def _create(self):
-        driver = Drivers[self._browser_name]
-        kwargs = {}
-        if self._browser_name == 'chrome':
-            kwargs['chrome_options'] = Options()
-            kwargs['chrome_options'].binary_location = '/usr/bin/google-chrome'
-            kwargs['chrome_options'].headless = True
-            kwargs['chrome_options'].add_argument('--no-sandbox')
-            kwargs['chrome_options'].add_argument('--disable-setuid-sandbox')
-            kwargs['chrome_options'].add_argument('--disable-dev-shm-usage')
-            kwargs['chrome_options'].add_argument('--ignore-certificate-errors')
-            kwargs['chrome_options'].add_argument('--remote-debugging-address=0.0.0.0')
-            kwargs['chrome_options'].add_argument('--remote-debugging-port=9222')
-        return driver.value(**kwargs)
+    def _create_local(self) -> RemoteWebDriver:
+        return Drivers[self._browser_name]
+
+
+class SeleniumChromeDriver(SeleniumDriver):
+    def __init__(self, remote: bool, command_executor: str, remote_capabilities: dict, headless: bool):
+        super().__init__(browser_name='chrome', remote=remote, command_executor=command_executor,
+                         remote_capabilities=remote_capabilities)
+
+    def _create_local(self) -> ChromeWebDriver:
+        driver = super()._create_local()
+
+        options = Options()
+
+        options.headless = True
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--allow-insecure-localhost')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--ignore-certificate-errors')
+        options.add_argument('--remote-debugging-address=0.0.0.0')
+        options.add_argument('--remote-debugging-port=9222')
+
+        return driver.value(chrome_options=options)
+
+
+SELENIUM_DRIVERS = {
+    'chrome': SeleniumChromeDriver,
+}
+
+
+class DriverFactory:
+    _browser: RemoteWebDriver = None
+
+    def __init__(self, configuration):
+        self._browser_name = configuration.BROWSER
+        self._remote = configuration.REMOTE
+        self._command_executor = configuration.COMMAND_EXECUTOR
+        self._remote_capabilities = DriverConfig.get_remote_capabilities(configuration)
+        self._headless = True
+
+    def _set_browser(self) -> None:
+        args = dict(remote=self._remote,
+                    command_executor=self._command_executor,
+                    remote_capabilities=self._remote_capabilities,
+                    headless=self._headless)
+        if self._browser_name not in SELENIUM_DRIVERS:
+            args['browser_name'] = self._browser_name
+        driver = SELENIUM_DRIVERS.get(self._browser_name, SeleniumDriver)(**args)  # type: ignore
+        browser = driver.get_driver()
+        type(self)._browser = browser
+
+    def get_browser(self) -> RemoteWebDriver:
+        if not self._browser:
+            self._set_browser()
+        return self._browser
+
+    def close_browser(self) -> None:
+        if self._browser:
+            self._browser.quit()
+        type(self)._browser = None

@@ -9,10 +9,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class Waits:
 
-    def __init__(self, driver__browser, config__executor):
-        self._driver_browser = driver__browser
-        self._browser = driver__browser.get_browser()
-        self._timeout = config__executor.timeout
+    def __init__(self, driver, configuration):
+        self._driver_browser = driver
+        self._browser = driver.get_browser()
+        self._timeout = configuration.TIMEOUT
         self._wait = WebDriverWait(self._browser, self._timeout)
 
     def wait_for_element(self, locator):
