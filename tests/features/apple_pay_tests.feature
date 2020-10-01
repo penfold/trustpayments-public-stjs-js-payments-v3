@@ -110,7 +110,7 @@ Feature: ApplePay
     And "submit" callback is called only once
 
 #    ToDo - Last step is blocked by STJS-800
-  @config_update_jwt_true @smoke_test_apple_pay @apple_test @apple_test_part1
+  @config_update_jwt_true @smoke_test_apple_pay @apple_test @apple_test_part2
   Scenario: ApplePay - Successful payment with updated JWT
     When User calls updateJWT function by filling amount field
     And User chooses ApplePay as payment method - response is set to "SUCCESS"
@@ -120,7 +120,7 @@ Feature: ApplePay
 #    And WALLETVERIFY requests contains updated jwt
 
   #    ToDo - Last step is blocked by STJS-800
-  @config_defer_init @smoke_test_apple_pay @extended_tests_apple_pay @apple_test @apple_test_part1
+  @config_defer_init @smoke_test_apple_pay @extended_tests_apple_pay @apple_test @apple_test_part2
   Scenario: ApplePay - Successful payment with deferInit and updated JWT
     When User calls updateJWT function by filling amount field
     And User chooses ApplePay as payment method - response is set to "SUCCESS"
@@ -130,7 +130,7 @@ Feature: ApplePay
 #    And WALLETVERIFY requests contains updated jwt
 
   #    ToDo - Last step is blocked by STJS-800
-  @config_submit_on_success_true @smoke_test_apple_pay @apple_test @apple_test_part1
+  @config_submit_on_success_true @smoke_test_apple_pay @apple_test @apple_test_part2
   Scenario: ApplePay - update JWT and submitOnSuccess
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User calls updateJWT function by filling amount field

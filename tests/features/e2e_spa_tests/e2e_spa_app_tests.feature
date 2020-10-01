@@ -1,5 +1,7 @@
 @reactJS
 @angular
+@vueJS
+@react_native
 Feature: E2E Successfull payments on SPA app
 
   As a user

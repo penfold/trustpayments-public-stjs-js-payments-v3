@@ -18,7 +18,7 @@ import {
 } from '../../application/core/models/constants/Selectors';
 import { Translator } from '../../application/core/shared/translator/Translator';
 import { Validation } from '../../application/core/shared/validation/Validation';
-import { iinLookup } from '@securetrading/ts-iin-lookup';
+import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Observable } from 'rxjs';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';

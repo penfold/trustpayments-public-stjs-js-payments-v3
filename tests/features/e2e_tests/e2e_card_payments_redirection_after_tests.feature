@@ -5,6 +5,8 @@ Feature: E2E Card Payments - redirection
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @e2e_config_submit_on_success
   Scenario: Successful payment with submitOnSuccess enabled
     Given JS library is configured with SUBMIT_ON_SUCCESS_CONFIG and BASE_JWT
@@ -35,6 +37,8 @@ Feature: E2E Card Payments - redirection
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @e2e_config_submit_on_error
   Scenario: Unsuccessful payment with submitOnError enabled
     Given JS library is configured with SUBMIT_ON_ERROR_CONFIG and BASE_JWT
@@ -51,6 +55,8 @@ Feature: E2E Card Payments - redirection
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @e2e_config_submit_on_error_invalid_jwt
   Scenario: Unsuccessful payment with submitOnError enabled
     Given JS library is configured with SUBMIT_ON_ERROR_CONFIG and INVALID_JWT
@@ -94,6 +100,8 @@ Feature: E2E Card Payments - redirection
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @e2e_config_submit_on_success_callback_submit
   Scenario: Successful payment with submitOnSuccess enabled and submit callback set
     Given JS library is configured with SUBMIT_ON_SUCCESS_CONFIG_SUBMIT_CALLBACK and BASE_JWT
@@ -110,6 +118,8 @@ Feature: E2E Card Payments - redirection
 
   @reactJS
   @angular
+  @vueJS
+  @react_native
   @e2e_config_submit_on_error_callback
   Scenario: Unsuccessful payment with submitOnError enabled and error callback set
     Given JS library is configured with SUBMIT_ON_ERROR_CONFIG_ERROR_CALLBACK and BASE_JWT

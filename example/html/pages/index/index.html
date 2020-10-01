@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="utf-8"/>
-    <title>Secure Trading Example Form</title>
-    <meta name="description" content="Secure Trading example page with form">
+    <title>Trust Payments Example Form</title>
+    <meta name="description" content="Trust Payments example page with form">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
@@ -18,7 +18,7 @@
 <main>
     <header class="st-header">
         <figure class="st-header__logo">
-            <img src="/img/st-logo.png" alt="Secure Trading logo" title="Secure Trading" role="img">
+            <img src="/img/trustpayments.png" alt="Trust Payments logo" title="Trust Payments" role="img">
         </figure>
         <h1 class="st-header__title">Example Form</h1>
     </header>
@@ -144,7 +144,7 @@
     </form>
 
     <footer class="st-footer">
-        <p>&copy; Secure Trading 2020</p>
+        <p>&copy; Trust Payments 2020</p>
     </footer>
 </main>
 <script type="text/javascript" src="/counter.js"></script>
@@ -198,7 +198,7 @@
         return Promise.resolve(presetJwt);
       }
 
-      return window.configJWT('./../json/jwtdata.json');
+      return window.configJWT('<%= CONFIG_URL %>/jwtdata.json');
     }
 
     function init(config) {

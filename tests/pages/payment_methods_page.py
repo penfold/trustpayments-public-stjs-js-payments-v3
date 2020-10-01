@@ -435,7 +435,7 @@ class PaymentMethodsPage(BasePage):
         return translation[key]
 
     def validate_if_url_contains_info_about_payment(self, expected_url):
-        self._executor.wait_for_javascript()
+        self._executor.wait_until_url_contains(expected_url)
         actual_url = self._executor.get_page_url()
         if expected_url not in actual_url:
             time.sleep(3)
