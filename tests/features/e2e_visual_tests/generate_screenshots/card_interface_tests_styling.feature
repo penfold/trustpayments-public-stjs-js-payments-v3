@@ -11,7 +11,7 @@ Feature: Visual regression - E2E Card Payments
 
   @visual_regression_styling_generation @scrn_card_interface_after_successful_payment_styling
   Scenario: Card interface after successful payment
-    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
+    When User fills payment form with defined card MASTERCARD_FIXED_EXP_DATE_CARD
     And User clicks Pay button
     And Wait for notification frame
     And Wait for popups to disappear
