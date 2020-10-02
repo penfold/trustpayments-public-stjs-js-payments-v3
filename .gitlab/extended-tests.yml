@@ -149,6 +149,7 @@ iPhone11-14.0-smoke-tests:
   variables:
     DEVICE: iPhone 11
     OS_VERSION: 14
+    BROWSER: Safari
     REAL_MOBILE: 'true'
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_2
@@ -172,6 +173,7 @@ iPhoneXS-12-visual-tests:
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12
+    BROWSER: Safari
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
     POETRY_TAGS: visual_regression_safari
@@ -210,6 +212,7 @@ iPhone8-11.0-smoke-tests:
   variables:
     DEVICE: iPhone 8
     OS_VERSION: 11
+    BROWSER: Safari
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
@@ -300,6 +303,7 @@ iPhoneXS-12-smoke-tests:
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12
+    BROWSER: Safari
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
@@ -386,6 +390,7 @@ iPhoneXS-12-applePay-tests:
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12
+    BROWSER: Safari
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
     POETRY_TAGS: smoke_test_apple_pay
@@ -477,6 +482,7 @@ OSXMojave-Safari-12.1-extended-test-part-2:
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12
+    BROWSER: Safari
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
     POETRY_TAGS: visual_regression_styling_safari
@@ -504,6 +510,7 @@ OSXMojave-Safari-12.1-extended-test-part-2:
   variables:
     DEVICE: iPhone XR
     OS_VERSION: 12
+    BROWSER: Safari
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: full_test_part_1
@@ -516,6 +523,7 @@ OSXMojave-Safari-12.1-extended-test-part-2:
   variables:
     DEVICE: iPhone XR
     OS_VERSION: 12
+    BROWSER: Safari
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: full_test_part_2

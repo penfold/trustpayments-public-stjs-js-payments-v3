@@ -13,8 +13,6 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
-from configuration import DriverConfig
-
 
 class Drivers(Enum):
     chrome = webdriver.Chrome
@@ -84,6 +82,44 @@ class SeleniumDriver(Driver):
         return driver.value(chrome_options=options)
 
 
+def _get_remote_capabilities(configuration):
+    # pylint: disable=unused-variable
+    network_logs = 'true'
+    if 'Safari' in configuration.REMOTE_BROWSER:
+        network_logs = 'false'
+    # if 'IE' in config.REMOTE_BROWSER:
+    #     send_keys = 'true'
+    possible_caps = {'os': configuration.REMOTE_OS,
+                     'os_version': configuration.REMOTE_OS_VERSION,
+                     'browserName': configuration.REMOTE_BROWSER,
+                     'browserVersion': configuration.REMOTE_BROWSER_VERSION,
+                     'browserstack.local': configuration.BROWSERSTACK_LOCAL,
+                     'browserstack.localIdentifier': configuration.BROWSERSTACK_LOCAL_IDENTIFIER,
+                     'device': configuration.REMOTE_DEVICE,
+                     'real_mobile': configuration.REMOTE_REAL_MOBILE,
+                     'acceptSslCerts': configuration.ACCEPT_SSL_CERTS,
+                     'project': configuration.PROJECT_NAME,
+                     'build': configuration.BUILD_NAME,
+                     'browserstack.debug': configuration.BROWSERSTACK_DEBUG,
+                     'browserstack.selenium_version': configuration.BROWSERSTACK_SELENIUM_VERSION,
+                     'browserstack.appium_version': configuration.BROWSERSTACK_APPIUM_VERSION,
+                     'browserstack.chrome.driver': configuration.BROWSERSTACK_CHROME_DRIVER,
+                     'browserstack.ie.driver': configuration.BROWSERSTACK_IE_DRIVER,
+                     'browserstack.safari.driver': configuration.BROWSERSTACK_SAFARI_DRIVER,
+                     'browserstack.firefox.driver': configuration.BROWSERSTACK_FIREFOX_DRIVER,
+                     'browserstack.networkLogs': network_logs,
+                     'browserstack.console': 'errors',
+                     'ie.ensureCleanSession': 'true',
+                     'ie.forceCreateProcessApi': 'true',
+                     'resolution': '1920x1080'
+                     }
+    capabilities = {}
+    for key, value in possible_caps.items():
+        if value:
+            capabilities[key] = value
+    return capabilities
+
+
 class DriverFactory:
     _browser: RemoteWebDriver = None
 
@@ -91,10 +127,10 @@ class DriverFactory:
         self._browser_name = configuration.BROWSER
         self._remote = configuration.REMOTE
         self._command_executor = configuration.COMMAND_EXECUTOR
-        self._remote_capabilities = DriverConfig.get_remote_capabilities(configuration)
         self._configuration = configuration
 
     def _set_browser(self) -> None:
+        self._remote_capabilities = _get_remote_capabilities(self._configuration)
         args = dict(browser_name=self._browser_name,
                     remote=self._remote,
                     command_executor=self._command_executor,
@@ -103,7 +139,7 @@ class DriverFactory:
         browser = driver.get_driver()
         type(self)._browser = browser
         if not self._configuration.REMOTE_DEVICE or self._configuration.REMOTE_DEVICE is None:
-            browser.fullscreen_window()
+            self._browser.maximize_window()
 
     def get_browser(self) -> RemoteWebDriver:
         if not self._browser:
