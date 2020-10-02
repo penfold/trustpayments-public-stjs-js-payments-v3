@@ -145,7 +145,7 @@ OSXCatalina-Safari-13.1-smoke-tests:
 iPhone11-14.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: iPhone 11
     OS_VERSION: 14
@@ -369,7 +369,7 @@ GooglePixel4-10.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_3
 
-win10-Firefox-80.0-extended-tests:
+win10-Firefox-80.0-extended-tests-1:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -380,13 +380,41 @@ win10-Firefox-80.0-extended-tests:
     BROWSER_VERSION: '80.0'
     BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-    POETRY_TAGS: $EXTENDED_TESTS_TAG
+    POETRY_TAGS: extended_tests_part_1
   resource_group: extended_tests_release_4
+
+win10-Firefox-80.0-extended-tests-2:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Firefox
+    BROWSER_VERSION: '80.0'
+    BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+    POETRY_TAGS: extended_tests_part_2
+  resource_group: extended_tests_release_1  
+
+win10-Firefox-80.0-extended-tests-3:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Firefox
+    BROWSER_VERSION: '80.0'
+    BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+    POETRY_TAGS: extended_tests_part_3
+    resource_group: extended_tests_release_2  
 
 iPhoneXS-12-applePay-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12
@@ -394,7 +422,7 @@ iPhoneXS-12-applePay-tests:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
     POETRY_TAGS: smoke_test_apple_pay
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_3
 
 SamsungGalaxyS9-12-extended-test-part-1:
   extends:
@@ -406,7 +434,7 @@ SamsungGalaxyS9-12-extended-test-part-1:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: extended_tests_part_1
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_release_4
 
 SamsungGalaxyS9-12-extended-test-part-2:
   extends:
@@ -418,12 +446,24 @@ SamsungGalaxyS9-12-extended-test-part-2:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: extended_tests_part_2
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_1
 
+SamsungGalaxyS9-12-extended-test-part-2:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    DEVICE: Samsung Galaxy S9
+    OS_VERSION: '8.0'
+    REAL_MOBILE: 'true'
+    BROWSERSTACK_APPIUM_VERSION: '1.18.0'
+    POETRY_TAGS: extended_tests_part_3
+  resource_group: extended_tests_release_2
+  
 win10-IE-11.0-extended-test-part-1:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -431,7 +471,7 @@ win10-IE-11.0-extended-test-part-1:
     BROWSER_VERSION: '11.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: extended_tests_part_1
-  resource_group: extended_tests_release_4
+  resource_group: extended_tests_release_3
 
 win10-IE-11.0-extended-test-part-2:
   extends:
@@ -444,6 +484,19 @@ win10-IE-11.0-extended-test-part-2:
     BROWSER_VERSION: '11.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: extended_tests_part_2
+  resource_group: extended_tests_release_4
+
+win10-IE-11.0-extended-test-part-3:
+   extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: IE
+    BROWSER_VERSION: '11.0'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+    POETRY_TAGS: extended_tests_part_3
   resource_group: extended_tests_release_1
 
 OSXMojave-Safari-12.1-extended-test-part-1:
@@ -474,6 +527,20 @@ OSXMojave-Safari-12.1-extended-test-part-2:
     POETRY_TAGS: extended_tests_part_2,extended_tests_apple_pay
   resource_group: extended_tests_release_3
 
+  OSXMojave-Safari-12.1-extended-test-part-3:
+    extends:
+      - .extended-tests-browserstack
+      - .rules-when-release
+    variables:
+      OS: OS X
+      OS_VERSION: Mojave
+      BROWSER: Safari
+      BROWSER_VERSION: '12.1'
+      ROWSERSTACK_SAFARI_DRIVER: '2.48'
+      BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+      POETRY_TAGS: extended_tests_part_3
+    resource_group: extended_tests_release_4  
+
 #TODO turn it on again after figuring situation with STJS-973
 .iPhoneXS-12-visual-tests-styling:
   extends:
@@ -486,7 +553,7 @@ OSXMojave-Safari-12.1-extended-test-part-2:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
     POETRY_TAGS: visual_regression_styling_safari
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_release_1
 
 #TODO turn it on again after figuring situation with STJS-973
 .OSXMojave-Safari-12.1-visual-tests-styling:
@@ -501,7 +568,7 @@ OSXMojave-Safari-12.1-extended-test-part-2:
     ROWSERSTACK_SAFARI_DRIVER: '2.48'
     BROWSERSTACK_SELENIUM_VERSION: '3.14.0'
     POETRY_TAGS: visual_regression_styling_safari
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_2
 
 .iPhoneXR-12-full-test-part-1: # TODO https://securetrading.atlassian.net/browse/STJS-661
   extends:
@@ -514,7 +581,7 @@ OSXMojave-Safari-12.1-extended-test-part-2:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: full_test_part_1
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_3
 
 .iPhoneXR-12-full-test-part-2: # TODO https://securetrading.atlassian.net/browse/STJS-661
   extends:
@@ -527,4 +594,4 @@ OSXMojave-Safari-12.1-extended-test-part-2:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: full_test_part_2
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_release_4
