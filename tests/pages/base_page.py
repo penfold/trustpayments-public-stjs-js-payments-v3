@@ -42,6 +42,6 @@ class BasePage:
         self._action.switch_to_default_iframe()
 
     def wait_for_iframe(self):
-        if 'Edge' not in CONFIGURATION.REMOTE_BROWSER or 'iP' not in CONFIGURATION.REMOTE_DEVICE:
+        if 'Edge' not in CONFIGURATION.REMOTE_BROWSER and 'iP' not in CONFIGURATION.REMOTE_DEVICE:
             self._waits.wait_until_iframe_is_presented_and_switch_to_it(FieldType.SECURITY_CODE.value)
             self._waits.switch_to_default_content()

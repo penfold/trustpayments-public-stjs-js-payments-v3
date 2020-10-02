@@ -10,8 +10,6 @@ class Browser(Waits):
 
     def open_page(self, page_url):
         self._browser.get(page_url)
-        if 'IE' in CONFIGURATION.BROWSER:
-            self._browser.get('javascript:document.getElementById(\'overridelink\').click()')
 
     def open_page_with_jwt_config(self, page_url, jwt_json_config: JwtConfig):
         jwt = encode_jwt_for_json(jwt_json_config)
