@@ -395,7 +395,7 @@ win10-Firefox-80.0-extended-tests-2:
     BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: extended_tests_part_2
-  resource_group: extended_tests_release_1  
+  resource_group: extended_tests_release_1
 
 win10-Firefox-80.0-extended-tests-3:
   extends:
@@ -409,7 +409,7 @@ win10-Firefox-80.0-extended-tests-3:
     BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: extended_tests_part_3
-    resource_group: extended_tests_release_2  
+  resource_group: extended_tests_release_2
 
 iPhoneXS-12-applePay-tests:
   extends:
@@ -459,7 +459,7 @@ SamsungGalaxyS9-12-extended-test-part-3:
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
     POETRY_TAGS: extended_tests_part_3
   resource_group: extended_tests_release_2
-  
+
 win10-IE-11.0-extended-test-part-1:
   extends:
     - .extended-tests-browserstack
@@ -487,7 +487,7 @@ win10-IE-11.0-extended-test-part-2:
   resource_group: extended_tests_release_4
 
 win10-IE-11.0-extended-test-part-3:
-   extends:
+  extends:
     - .extended-tests-browserstack
     - .rules-when-release
   variables:
@@ -527,19 +527,19 @@ OSXMojave-Safari-12.1-extended-test-part-2:
     POETRY_TAGS: extended_tests_part_2,extended_tests_apple_pay
   resource_group: extended_tests_release_3
 
-  OSXMojave-Safari-12.1-extended-test-part-3:
-    extends:
-      - .extended-tests-browserstack
-      - .rules-when-release
-    variables:
-      OS: OS X
-      OS_VERSION: Mojave
-      BROWSER: Safari
-      BROWSER_VERSION: '12.1'
-      ROWSERSTACK_SAFARI_DRIVER: '2.48'
-      BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-      POETRY_TAGS: extended_tests_part_3
-    resource_group: extended_tests_release_4  
+OSXMojave-Safari-12.1-extended-test-part-3:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-when-release
+  variables:
+    OS: OS X
+    OS_VERSION: Mojave
+    BROWSER: Safari
+    BROWSER_VERSION: '12.1'
+    BROWSERSTACK_SAFARI_DRIVER: '2.48'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+    POETRY_TAGS: extended_tests_part_3
+  resource_group: extended_tests_release_4
 
 #TODO turn it on again after figuring situation with STJS-973
 .iPhoneXS-12-visual-tests-styling:
