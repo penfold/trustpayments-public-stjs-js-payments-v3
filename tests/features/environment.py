@@ -100,4 +100,3 @@ def validate_if_proper_browser_is_set_for_test(context, scenario):
         scenario.skip('Temporarily disabled test ')
     else:
         context.is_field_in_iframe = True
-

@@ -62,4 +62,3 @@ def print_properties(config):
 
 CONFIGURATION = load_config()
 print_properties(CONFIGURATION)
-
