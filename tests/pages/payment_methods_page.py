@@ -38,17 +38,11 @@ class PaymentMethodsPage(BasePage):
 
     def fill_credit_card_field_iphone_browser(self, field_type, value):
         if field_type == FieldType.CARD_NUMBER.name:
-            self._action.send_keys(FieldType.CARD_NUMBER.value,
-                                   PaymentMethodsLocators.card_number_input_field,
-                                   value)
+            self._action.send_keys(PaymentMethodsLocators.card_number_input_field, value)
         elif field_type == FieldType.EXPIRATION_DATE.name:
-            self._action.send_keys(FieldType.EXPIRATION_DATE.value,
-                                   PaymentMethodsLocators.expiration_date_input_field,
-                                   value)
+            self._action.send_keys(PaymentMethodsLocators.expiration_date_input_field, value)
         elif field_type == FieldType.SECURITY_CODE.name:
-            self._action.send_keys(FieldType.SECURITY_CODE.value,
-                                   PaymentMethodsLocators.security_code_input_field,
-                                   value)
+            self._action.send_keys(PaymentMethodsLocators.security_code_input_field, value)
 
     def fill_credit_card_field_ie_browser(self, field_type, value):
         if field_type == FieldType.CARD_NUMBER.name:
