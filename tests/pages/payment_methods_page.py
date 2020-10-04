@@ -64,9 +64,6 @@ class PaymentMethodsPage(BasePage):
         if 'IE' in self._configuration.BROWSER:
             self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
-        elif 'iP' in self._configuration.REMOTE_DEVICE:
-            self.fill_credit_card_field_iphone_browser(FieldType.CARD_NUMBER.name, card_number)
-            self.fill_credit_card_field_iphone_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
         else:
             self.fill_credit_card_field(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field(FieldType.EXPIRATION_DATE.name, expiration_date)
@@ -74,8 +71,6 @@ class PaymentMethodsPage(BasePage):
     def fill_payment_form_with_only_cvv(self, cvv):
         if 'IE' in self._configuration.BROWSER:
             self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
-        elif 'iP' in self._configuration.REMOTE_DEVICE:
-            self.fill_credit_card_field_iphone_browser(FieldType.SECURITY_CODE.name, cvv)
         else:
             self.fill_credit_card_field(FieldType.SECURITY_CODE.name, cvv)
 
