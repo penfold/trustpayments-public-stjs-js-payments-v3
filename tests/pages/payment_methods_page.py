@@ -26,26 +26,29 @@ class PaymentMethodsPage(BasePage):
         return page_title
 
     def fill_credit_card_field(self, field_type, value):
-        if 'iP' not in self._configuration.BROWSER:
-            if field_type == FieldType.CARD_NUMBER.name:
-                self._action.switch_to_iframe_and_send_keys(PaymentMethodsLocators.card_number_iframe,
-                                                            PaymentMethodsLocators.card_number_input_field, value)
-            elif field_type == FieldType.EXPIRATION_DATE.name:
-                self._action.switch_to_iframe_and_send_keys(PaymentMethodsLocators.expiration_date_iframe,
-                                                            PaymentMethodsLocators.expiration_date_input_field, value)
-            elif field_type == FieldType.SECURITY_CODE.name:
-                self._action.switch_to_iframe_and_send_keys(PaymentMethodsLocators.security_code_iframe,
-                                                            PaymentMethodsLocators.security_code_input_field, value)
-        else:
-            if field_type == FieldType.CARD_NUMBER.name:
-                self._action.send_keys(PaymentMethodsLocators.card_number_iframe,
-                                       PaymentMethodsLocators.card_number_input_field, value)
-            elif field_type == FieldType.EXPIRATION_DATE.name:
-                self._action.send_keys(PaymentMethodsLocators.expiration_date_iframe,
-                                       PaymentMethodsLocators.expiration_date_input_field, value)
-            elif field_type == FieldType.SECURITY_CODE.name:
-                self._action.send_keys(PaymentMethodsLocators.security_code_iframe,
-                                       PaymentMethodsLocators.security_code_input_field, value)
+        if field_type == FieldType.CARD_NUMBER.name:
+            self._action.switch_to_iframe_and_send_keys(PaymentMethodsLocators.card_number_iframe,
+                                                        PaymentMethodsLocators.card_number_input_field, value)
+        elif field_type == FieldType.EXPIRATION_DATE.name:
+            self._action.switch_to_iframe_and_send_keys(PaymentMethodsLocators.expiration_date_iframe,
+                                                        PaymentMethodsLocators.expiration_date_input_field, value)
+        elif field_type == FieldType.SECURITY_CODE.name:
+            self._action.switch_to_iframe_and_send_keys(PaymentMethodsLocators.security_code_iframe,
+                                                        PaymentMethodsLocators.security_code_input_field, value)
+
+    def fill_credit_card_field_iphone_browser(self, field_type, value):
+        if field_type == FieldType.CARD_NUMBER.name:
+            self._action.send_keys(FieldType.CARD_NUMBER.value,
+                                   PaymentMethodsLocators.card_number_input_field,
+                                   value)
+        elif field_type == FieldType.EXPIRATION_DATE.name:
+            self._action.send_keys(FieldType.EXPIRATION_DATE.value,
+                                   PaymentMethodsLocators.expiration_date_input_field,
+                                   value)
+        elif field_type == FieldType.SECURITY_CODE.name:
+            self._action.send_keys(FieldType.SECURITY_CODE.value,
+                                   PaymentMethodsLocators.security_code_input_field,
+                                   value)
 
     def fill_credit_card_field_ie_browser(self, field_type, value):
         if field_type == FieldType.CARD_NUMBER.name:
@@ -66,6 +69,10 @@ class PaymentMethodsPage(BasePage):
             self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
             self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
+        elif 'iP' in self._configuration.REMOTE_DEVICE:
+            self.fill_credit_card_field_iphone_browser(FieldType.CARD_NUMBER.name, card_number)
+            self.fill_credit_card_field_iphone_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
+            self.fill_credit_card_field_iphone_browser(FieldType.SECURITY_CODE.name, cvv)
         else:
             self.fill_credit_card_field(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field(FieldType.EXPIRATION_DATE.name, expiration_date)
@@ -75,6 +82,9 @@ class PaymentMethodsPage(BasePage):
         if 'IE' in self._configuration.BROWSER:
             self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
+        elif 'iP' in self._configuration.REMOTE_DEVICE:
+            self.fill_credit_card_field_iphone_browser(FieldType.CARD_NUMBER.name, card_number)
+            self.fill_credit_card_field_iphone_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
         else:
             self.fill_credit_card_field(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field(FieldType.EXPIRATION_DATE.name, expiration_date)
@@ -82,6 +92,8 @@ class PaymentMethodsPage(BasePage):
     def fill_payment_form_with_only_cvv(self, cvv):
         if 'IE' in self._configuration.BROWSER:
             self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
+        elif 'iP' in self._configuration.REMOTE_DEVICE:
+            self.fill_credit_card_field_iphone_browser(FieldType.SECURITY_CODE.name, cvv)
         else:
             self.fill_credit_card_field(FieldType.SECURITY_CODE.name, cvv)
 
