@@ -82,7 +82,7 @@
 .apple-test-browserstack-component-test:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: "OS X"
     OS_VERSION: Mojave
@@ -106,7 +106,7 @@ apple-test-part2-browserstack-component-test:
 win10-chrome-85.0-visual-tests:
   extends:
     - .visual-regression-tests
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -118,7 +118,7 @@ win10-chrome-85.0-visual-tests:
 win10-chrome-85.0-visual-tests-styling:
   extends:
     - .visual-regression-tests
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -131,7 +131,7 @@ win10-chrome-85.0-visual-tests-styling:
 OSXCatalina-Safari-13.1-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Catalina
@@ -157,7 +157,7 @@ iPhone11-14.0-smoke-tests:
 SamsungGalaxyS10Plus-9.0-visual-tests:
   extends:
     - .visual-regression-tests
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: Samsung Galaxy S10 Plus
     OS_VERSION: '9.0'
@@ -182,7 +182,7 @@ iPhoneXS-12-visual-tests:
 OSXMojave-Safari-12.1-visual-tests:
   extends:
     - .visual-regression-component-tests
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Mojave
@@ -196,7 +196,7 @@ OSXMojave-Safari-12.1-visual-tests:
 SamsungGalaxyS10Plus-9.0-visual-tests-styling:
   extends:
     - .visual-regression-tests
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: Samsung Galaxy S10 Plus
     OS_VERSION: '9.0'
@@ -214,14 +214,14 @@ iPhone8-11.0-smoke-tests:
     OS_VERSION: 11
     BROWSER: Safari
     REAL_MOBILE: 'true'
-    BROWSERSTACK_APPIUM_VERSION: '1.18.2'
+    BROWSERSTACK_APPIUM_VERSION: '1.16.0'
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_1
 
 win8.1-chrome-85.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: '8.1'
@@ -233,7 +233,7 @@ win8.1-chrome-85.0-smoke-tests:
 OSXCatalina-chrome-85.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Catalina
@@ -245,7 +245,7 @@ OSXCatalina-chrome-85.0-smoke-tests:
 OSXCatalina-firefox-80.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Catalina
@@ -259,7 +259,7 @@ OSXCatalina-firefox-80.0-smoke-tests:
 win10-Edge-85.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -272,7 +272,7 @@ win10-Edge-85.0-smoke-tests:
 win10-Edge-18.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -285,7 +285,7 @@ win10-Edge-18.0-smoke-tests:
 OSXHS-Safari-11.1-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: High Sierra
@@ -319,12 +319,12 @@ iPad7th-13-smoke-tests:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.2'
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_1
 
 GoogleNexus6-6.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: Google Nexus 6
     OS_VERSION: '6.0'
@@ -336,7 +336,7 @@ GoogleNexus6-6.0-smoke-tests:
 SamsungGalaxyS8-7.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: Samsung Galaxy S8
     OS_VERSION: '7.0'
@@ -348,7 +348,7 @@ SamsungGalaxyS8-7.0-smoke-tests:
 SamsungGalaxyS10Plus-9.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: Samsung Galaxy S10 Plus
     OS_VERSION: '9.0'
@@ -360,7 +360,7 @@ SamsungGalaxyS10Plus-9.0-smoke-tests:
 GooglePixel4-10.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: Google Pixel 4
     OS_VERSION: '10.0'
@@ -372,7 +372,7 @@ GooglePixel4-10.0-smoke-tests:
 win10-Firefox-80.0-extended-tests-1:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -386,7 +386,7 @@ win10-Firefox-80.0-extended-tests-1:
 win10-Firefox-80.0-extended-tests-2:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -400,7 +400,7 @@ win10-Firefox-80.0-extended-tests-2:
 win10-Firefox-80.0-extended-tests-3:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -422,12 +422,12 @@ iPhoneXS-12-applePay-tests:
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.2'
     POETRY_TAGS: smoke_test_apple_pay
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_release_4
 
 SamsungGalaxyS9-12-extended-test-part-1:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: Samsung Galaxy S9
     OS_VERSION: '8.0'
@@ -439,7 +439,7 @@ SamsungGalaxyS9-12-extended-test-part-1:
 SamsungGalaxyS9-12-extended-test-part-2:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: Samsung Galaxy S9
     OS_VERSION: '8.0'
@@ -451,7 +451,7 @@ SamsungGalaxyS9-12-extended-test-part-2:
 SamsungGalaxyS9-12-extended-test-part-3:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: Samsung Galaxy S9
     OS_VERSION: '8.0'
@@ -463,7 +463,7 @@ SamsungGalaxyS9-12-extended-test-part-3:
 win10-IE-11.0-extended-test-part-1:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -476,7 +476,7 @@ win10-IE-11.0-extended-test-part-1:
 win10-IE-11.0-extended-test-part-2:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -489,7 +489,7 @@ win10-IE-11.0-extended-test-part-2:
 win10-IE-11.0-extended-test-part-3:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -502,7 +502,7 @@ win10-IE-11.0-extended-test-part-3:
 OSXMojave-Safari-12.1-extended-test-part-1:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Mojave
@@ -516,7 +516,7 @@ OSXMojave-Safari-12.1-extended-test-part-1:
 OSXMojave-Safari-12.1-extended-test-part-2:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Mojave
@@ -530,7 +530,7 @@ OSXMojave-Safari-12.1-extended-test-part-2:
 OSXMojave-Safari-12.1-extended-test-part-3:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Mojave
