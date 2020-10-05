@@ -145,7 +145,7 @@ OSXCatalina-Safari-13.1-smoke-tests:
 iPhone11-14.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: iPhone 11
     OS_VERSION: 14
@@ -207,7 +207,7 @@ SamsungGalaxyS10Plus-9.0-visual-tests-styling:
 iPhone8-11.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: iPhone 8
     OS_VERSION: 11
@@ -297,7 +297,7 @@ OSXHS-Safari-11.1-smoke-tests:
 iPhoneXS-12-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12
@@ -309,7 +309,7 @@ iPhoneXS-12-smoke-tests:
 iPad7th-13-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: iPad 7th
     OS_VERSION: 13
@@ -410,7 +410,7 @@ win10-Firefox-80.0-extended-tests-3:
 iPhoneXS-12-applePay-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12

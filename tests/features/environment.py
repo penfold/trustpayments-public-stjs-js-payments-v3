@@ -13,7 +13,7 @@ from page_factory import PageFactory
 from utils.browser import Browser
 from utils.driver_factory import DriverFactory
 from utils.extensions import WebElementsExtensions
-from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name
+from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed
 from utils.mock_handler import MockServer
 from utils.reporter import Reporter
 from utils.test_data import TestData
@@ -71,6 +71,8 @@ def after_scenario(context, scenario):
     scenario.name = f'{scenario.name}_{browser_name.upper()}'
     if scenario.status == 'failed' and context.configuration.REMOTE:
         mark_test_as_failed(context.session_id)
+    elif context.configuration.REMOTE:
+        mark_test_as_passed(context.session_id)
     context.executor.clear_cookies()
     context.executor.close_browser()
     MockServer.stop_mock_server()

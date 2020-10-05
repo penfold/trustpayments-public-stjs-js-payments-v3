@@ -7,11 +7,16 @@ It is based on singleton pattern to operate on a single instance of a driver.
 """
 import abc
 from enum import Enum
+from logging import INFO
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+
+from logger import get_logger
+
+LOGGER = get_logger(INFO)
 
 
 class Drivers(Enum):
@@ -148,5 +153,6 @@ class DriverFactory:
 
     def close_browser(self) -> None:
         if self._browser:
+            LOGGER.info('CLOSING BROWSER')
             self._browser.quit()
         type(self)._browser = None
