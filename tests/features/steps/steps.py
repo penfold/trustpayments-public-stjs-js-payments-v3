@@ -8,6 +8,7 @@ from configuration import CONFIGURATION
 from utils.enums.card import Card
 from utils.enums.config import screenshots
 from utils.enums.field_type import FieldType
+from utils.helpers.request_executor import add_to_shared_dict
 
 use_step_matcher('re')
 
@@ -59,10 +60,12 @@ def step_impl(context, how_many_seconds):
 
     expected_screenshot_filename = _browser_device(context) + '_' + screenshots[_screenshot_tag(context.scenario.tags)]
     actual_screenshot_filename = sm.make_screenshot(expected_screenshot_filename, date_postfix=True)
-    assert sm.compare_screenshots(expected_screenshot_filename, actual_screenshot_filename), \
-        f'\nScreenshots comparator detected differences between "expected/{expected_screenshot_filename}" and ' \
-        f'"actual/{actual_screenshot_filename}"\n' \
-        f'Check the result file "results/{actual_screenshot_filename}"'
+    assertion_message = f'\nScreenshots comparator detected differences between ' \
+                        f'"expected/{expected_screenshot_filename}" and ' \
+                        f'"actual/{actual_screenshot_filename}"\n' \
+                        f'Check the result file "results/{actual_screenshot_filename}"'
+    add_to_shared_dict('assertion_message', assertion_message)
+    assert sm.compare_screenshots(expected_screenshot_filename, actual_screenshot_filename), assertion_message
 
 
 def _screenshot_tag(tags):
