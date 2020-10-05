@@ -3,22 +3,17 @@ from time import sleep
 
 from PIL import Image, ImageDraw
 
-import ioc_config
 from utils.date_util import convert_to_string, get_current_time, date_formats
-
-
-def screenshot_manager():
-    return ioc_config.VISUAL_REGRESSION.resolve('screenshot_manager')
 
 
 class ScreenshotManager:
     SENSITIVITY_DEFAULT: int = 400
     COMPARISON_AREA_PX_DEFAULT: int = 20
 
-    def __init__(self, driver__browser, config__executor):
-        self._browser = driver__browser.get_browser()
-        self._screenshots_path = config__executor.screenshots_path
-        self._mobile_device = config__executor.mobile_device
+    def __init__(self, driver, configuration):
+        self._browser = driver.get_browser()
+        self._screenshots_path = configuration.SCREENSHOTS_PATH
+        self._mobile_device = configuration.REMOTE_DEVICE
         self._create_screenshot_dir()
 
     def _create_screenshot_dir(self):
