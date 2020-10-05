@@ -6,9 +6,9 @@ import time
 
 class Reporter:
 
-    def __init__(self, driver__browser, config__executor):
-        self._browser = driver__browser.get_browser()
-        self._reports_path = config__executor.reports_path
+    def __init__(self, driver, configuration):
+        self._browser = driver.get_browser()
+        self._reports_path = configuration.REPORTS_PATH
 
     def _create_reports_dir(self):
         os.makedirs(self._reports_path, exist_ok=True)

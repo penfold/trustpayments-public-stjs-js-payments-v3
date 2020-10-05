@@ -49,8 +49,8 @@ def step_impl(context):
 @step('THREEDQUERY mock response is set to "(?P<tdq_response>.+)"')
 def step_impl(context, tdq_response):
     stub_st_request_type(TDQresponse[tdq_response].value, RequestType.THREEDQUERY.name)
-    if 'ie' in context.browser and 'config_submit_cvv_only' in context.scenario.tags:
-        context.executor.wait_for_javascript()
+    if 'IE' in context.browser and 'config_submit_cvv_only' in context.scenario.tags:
+        context.waits.wait_for_javascript()
 
 
 @step('(?P<request_type>.+) mock response is set to OK')
@@ -98,8 +98,8 @@ def step_impl(context, request_type, action_code):
     else:
         stub_st_request_type(request_type_response[request_type], request_type)
 
-    if 'ie' in context.browser and 'config_submit_cvv_only' in context.scenario.tags:
-        context.executor.wait_for_javascript()
+    if 'IE' in context.browser and 'config_submit_cvv_only' in context.scenario.tags:
+        context.waits.wait_for_javascript()
     payment_page.choose_payment_methods(PaymentType.CARDINAL_COMMERCE.name)
     if 'config_submit_on' not in context.scenario.tags[0]:
         payment_page.scroll_to_top()
@@ -242,7 +242,7 @@ def step_impl(context, request_type):
 @then('JSINIT request was sent only (?P<number>.+)')
 def step_impl(context, number):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    context.executor.wait_for_javascript()
+    context.waits.wait_for_javascript()
     payment_page.validate_number_of_requests_without_data(RequestType.JSINIT.name, int(number))
 
 

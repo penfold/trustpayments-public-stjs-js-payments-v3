@@ -22,10 +22,23 @@ def mark_test_as_failed(session_id):
                                                                      'reason': shared_dict['assertion_message']})
 
 
+def mark_test_as_passed(session_id):
+    requests.put('https://api.browserstack.com/automate/sessions/' + session_id + '.json',
+                 auth=HTTPBasicAuth(browserstack_username, browserstack_access_key),
+                 headers={'Content-Type': 'application/json'}, json={'status': 'passed',
+                                                                     'reason': ''})
+
+
 def set_scenario_name(session_id, scenario_name):
     requests.put('https://api.browserstack.com/automate/sessions/' + session_id + '.json',
                  auth=HTTPBasicAuth(browserstack_username, browserstack_access_key),
                  headers={'Content-Type': 'application/json'}, json={'name': scenario_name})
+
+
+def delete_session(session_id):
+    requests.delete('https://api.browserstack.com/automate/sessions/' + session_id + '.json',
+                    auth=HTTPBasicAuth(browserstack_username, browserstack_access_key),
+                    headers={'Content-Type': 'application/json'})
 
 
 def get_number_of_requests_with_data(request_type, pan, expiry_date, cvv):
