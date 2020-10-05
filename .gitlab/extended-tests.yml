@@ -95,13 +95,13 @@ apple-test-part1-browserstack-component-test:
   extends: .apple-test-browserstack-component-test
   variables:
     POETRY_TAGS: apple_test_part1
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_review_1
 
 apple-test-part2-browserstack-component-test:
   extends: .apple-test-browserstack-component-test
   variables:
     POETRY_TAGS: apple_test_part2
-  resource_group: extended_tests_release_2
+  resource_group: extended_tests_review_2
 
 win10-chrome-85.0-visual-tests:
   extends:
@@ -113,7 +113,7 @@ win10-chrome-85.0-visual-tests:
     BROWSER: Chrome
     BROWSER_VERSION: '85'
     POETRY_TAGS: visual_regression
-  resource_group: extended_tests_release_3
+  resource_group: extended_tests_review_3
 
 win10-chrome-85.0-visual-tests-styling:
   extends:
@@ -125,7 +125,7 @@ win10-chrome-85.0-visual-tests-styling:
     BROWSER: Chrome
     BROWSER_VERSION: '85'
     POETRY_TAGS: visual_regression_styling
-  resource_group: extended_tests_release_4
+  resource_group: extended_tests_review_4
 
 # smoke tests executed on master branch
 OSXCatalina-Safari-13.1-smoke-tests:
@@ -169,7 +169,7 @@ SamsungGalaxyS10Plus-9.0-visual-tests:
 iPhoneXS-12-visual-tests:
   extends:
     - .visual-regression-component-tests
-    - .rules-always
+    - .rules-when-release
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12
@@ -214,7 +214,7 @@ iPhone8-11.0-smoke-tests:
     BROWSER: Safari
     REAL_MOBILE: 'true'
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_3
 
 win8.1-chrome-85.0-smoke-tests:
   extends:
@@ -315,7 +315,7 @@ iPad7th-13-smoke-tests:
     OS_VERSION: 13
     REAL_MOBILE: 'true'
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_release_3
 
 GoogleNexus6-6.0-smoke-tests:
   extends:
@@ -417,7 +417,7 @@ iPhoneXS-12-applePay-tests:
     BROWSER: Safari
     REAL_MOBILE: 'true'
     POETRY_TAGS: smoke_test_apple_pay
-  resource_group: extended_tests_release_4
+  resource_group: extended_tests_release_3
 
 SamsungGalaxyS9-12-extended-test-part-1:
   extends:
