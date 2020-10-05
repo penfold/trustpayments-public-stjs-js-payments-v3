@@ -39,14 +39,15 @@ export class Payment {
     merchantData: IMerchantData,
     additionalData?: any
   ): Promise<object> {
+    console.error(requestTypes.length);
     if (requestTypes.length === 0) {
       // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
-      StCodec.publishResponse(
-        this._stTransport._threeDQueryResult.response,
-        this._stTransport._threeDQueryResult.jwt,
-        additionalData.threedresponse
-      );
-      this._notification.success(PAYMENT_SUCCESS);
+      // StCodec.publishResponse(
+      //   this._stTransport._threeDQueryResult.response,
+      //   this._stTransport._threeDQueryResult.jwt,
+      //   additionalData.threedresponse
+      // );
+      // this._notification.success(PAYMENT_SUCCESS);
       return Promise.resolve({
         response: {}
       });
