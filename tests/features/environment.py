@@ -66,6 +66,9 @@ def after_scenario(context, scenario):
     """Run after each scenario"""
     LOGGER.info('AFTER SCENARIO')
     browser_name = context.browser
+    context.executor.clear_cookies()
+    context.executor.close_browser()
+    MockServer.stop_mock_server()
     if context.configuration.REMOTE:
         set_scenario_name(context.session_id, scenario.name)
     scenario.name = f'{scenario.name}_{browser_name.upper()}'
@@ -73,9 +76,6 @@ def after_scenario(context, scenario):
         mark_test_as_failed(context.session_id)
     elif context.configuration.REMOTE:
         mark_test_as_passed(context.session_id)
-    context.executor.clear_cookies()
-    context.executor.close_browser()
-    MockServer.stop_mock_server()
 
 
 def after_step(context, step):
