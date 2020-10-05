@@ -9,8 +9,12 @@ import {
 import { MessageBusMock } from '../../testing/mocks/MessageBusMock';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { IframeFactory } from '../iframe-factory/IframeFactory';
-import { anyString, instance as instanceOf, mock, when } from 'ts-mockito';
+import { anyString, instance as mockInstance, instance as instanceOf, mock, when } from 'ts-mockito';
 import { Frame } from '../../application/core/shared/frame/Frame';
+import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import { of } from 'rxjs';
+import { IConfig } from '../../shared/model/config/IConfig';
+import { Formatter } from '../../application/core/shared/formatter/Formatter';
 
 jest.mock('./../../application/core/shared/notification/Notification');
 
@@ -25,12 +29,12 @@ describe('CommonFrames', () => {
       // @ts-ignore
       instance._requestTypes = [...requestTypes];
       // @ts-ignore
-      return instance._isThreedComplete({ ...dataArg });
+      return instance._isThreedQueryComplete({ ...dataArg });
     }
 
     // then
     it('should be complete', () => {
-      expect(isThreedComplete(['THREEDQUERY'], { requesttypedescription: 'THREEDQUERY' })).toEqual(true);
+      expect(isThreedComplete(['THREEDQUERY'], { requesttypedescription: 'THREEDQUERY' })).toEqual(false);
     });
 
     // then
@@ -51,7 +55,7 @@ describe('CommonFrames', () => {
           enrolled: 'Y',
           requesttypedescription: 'THREEDQUERY'
         })
-      ).toEqual(false);
+      ).toEqual(true);
     });
 
     // then
@@ -72,34 +76,33 @@ describe('CommonFrames', () => {
     // when
     const { instance } = commonFramesFixture();
 
-    function isTransactionFinishedFixture(dataArg: {}) {
-      const data = { ...dataArg };
+    function isTransactionFinishedFixture(arg: string) {
       // @ts-ignore
-      return instance._isTransactionFinished(data);
+      return instance._isTransactionCompleted(arg);
     }
 
     // then
     it('should be finished if AUTH', () => {
-      expect(isTransactionFinishedFixture({ requesttypedescription: 'AUTH' })).toEqual(true);
+      expect(isTransactionFinishedFixture('AUTH')).toEqual(true);
     });
 
     // then
     it('should be finished if CACHETOKENISE', () => {
-      expect(isTransactionFinishedFixture({ requesttypedescription: 'CACHETOKENISE' })).toEqual(true);
+      expect(isTransactionFinishedFixture('CACHETOKENISE')).toEqual(true);
     });
 
     // then
     it('should be finished if _isThreedComplete is true', () => {
       // @ts-ignore
-      instance._isThreedComplete = jest.fn().mockReturnValueOnce(true);
-      expect(isTransactionFinishedFixture({ requesttypedescription: 'THREEDQUERY' })).toEqual(true);
+      instance._isThreedQueryComplete = jest.fn().mockReturnValueOnce(true);
+      expect(isTransactionFinishedFixture('THREEDQUERY')).toEqual(true);
     });
 
     // then
     it('should not be finished if _isThreedComplete is false', () => {
       // @ts-ignore
-      instance._isThreedComplete = jest.fn().mockReturnValueOnce(false);
-      expect(isTransactionFinishedFixture({ requesttypedescription: 'THREEDQUERY' })).toEqual(false);
+      instance._isThreedQueryComplete = jest.fn().mockReturnValueOnce(false);
+      expect(isTransactionFinishedFixture('THREEDQUERY')).toEqual(false);
     });
   });
 
@@ -216,6 +219,14 @@ function commonFramesFixture() {
   let iframeFactory: IframeFactory;
   iframeFactory = mock(IframeFactory);
   const frame: Frame = mock(Frame);
+  const configProvider = mock<ConfigProvider>();
+  // @ts-ignore
+  when(configProvider.getConfig()).thenReturn({
+    jwt: '',
+    disableNotification: false,
+    bypassCards: [],
+    placeholders: { pan: 'Card number', expirydate: 'MM/YY', securitycode: '***' }
+  });
   when(iframeFactory.create(anyString(), anyString())).thenCall((name: string, id: string) => {
     const iframe: HTMLIFrameElement = document.createElement('iframe');
     iframe.setAttribute('name', name);
@@ -239,7 +250,8 @@ function commonFramesFixture() {
     ['AUTH'],
     'st-form',
     instanceOf(iframeFactory),
-    instanceOf(frame)
+    instanceOf(frame),
+    mockInstance(configProvider)
   );
 
   return { instance };

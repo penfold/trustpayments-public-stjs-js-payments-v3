@@ -15,6 +15,8 @@ import { Frame } from '../../application/core/shared/frame/Frame';
 import { StJwt } from '../../application/core/shared/stjwt/StJwt';
 import { PAYMENT_CANCELLED, PAYMENT_SUCCESS } from '../../application/core/models/constants/Translations';
 import { CONTROL_FRAME_COMPONENT_NAME, CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
+import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import { IThreedResponse } from './IThreedResponse';
 
 export class CommonFrames {
   get requestTypes(): string[] {
@@ -25,7 +27,6 @@ export class CommonFrames {
     this._requestTypes = requestTypes;
   }
 
-  private static readonly COMPLETED_REQUEST_TYPES = ['AUTH', 'CACHETOKENISE', 'ACCOUNTCHECK'];
   public elementsTargets: any;
   public elementsToRegister: HTMLElement[];
   private _controlFrame: HTMLIFrameElement;
@@ -66,7 +67,8 @@ export class CommonFrames {
     requestTypes: string[],
     formId: string,
     private _iframeFactory: IframeFactory,
-    private _frame: Frame
+    private _frame: Frame,
+    private _configProvider: ConfigProvider
   ) {
     this._gatewayUrl = gatewayUrl;
     this._messageBus = Container.get(MessageBus);
@@ -158,25 +160,41 @@ export class CommonFrames {
     this.elementsToRegister.push(this._controlFrame);
   }
 
-  private _isThreedComplete(data: any): boolean {
-    if (this.requestTypes[this.requestTypes.length - 1] === 'THREEDQUERY') {
-      const isCardEnrolledAndNotFrictionless = data.enrolled === 'Y' && data.acsurl !== undefined;
-
-      return (
-        (!isCardEnrolledAndNotFrictionless && data.requesttypedescription === 'THREEDQUERY') ||
-        data.threedresponse !== undefined
-      );
-    }
-    return false;
+  private _isCardEnrolled(enrolled: string): boolean {
+    return enrolled === 'Y';
   }
 
-  private _isTransactionFinished(data: any): boolean {
-    if (CommonFrames.COMPLETED_REQUEST_TYPES.includes(data.requesttypedescription)) {
-      return true;
-    } else if (this._isThreedComplete(data)) {
+  private _isCardFrictionless(acsurl: string): boolean {
+    return acsurl === undefined;
+  }
+
+  private _isCardBypassed(paymenttypedescription: string): boolean {
+    const bypassCards = this._configProvider.getConfig().bypassCards as string[];
+
+    return bypassCards.includes(paymenttypedescription);
+  }
+
+  private _isThreedQueryComplete(data: IThreedResponse): boolean {
+    const { acsurl, enrolled, paymenttypedescription, requesttypedescription, threedresponse } = data;
+    if (threedresponse !== undefined) {
       return true;
     }
-    return false;
+
+    if (this._isCardBypassed(paymenttypedescription)) {
+      return true;
+    }
+
+    return (
+      this._isCardEnrolled(enrolled) && !this._isCardFrictionless(acsurl) && requesttypedescription === 'THREEDQUERY'
+    );
+  }
+
+  private _hasTransactionCompletedRequestTypes(requesttypedescription: string): boolean {
+    return ['AUTH', 'CACHETOKENISE', 'ACCOUNTCHECK'].includes(requesttypedescription);
+  }
+
+  private _isTransactionCompleted(data: any): boolean {
+    return this._hasTransactionCompletedRequestTypes(data) || this._isThreedQueryComplete(data);
   }
 
   private _onInput(event: Event) {
@@ -188,41 +206,47 @@ export class CommonFrames {
   }
 
   private _onTransactionComplete(data: any): void {
-    if (this._isTransactionFinished(data) || data.errorcode !== '0') {
-      this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
+    const isTransactionFinished: boolean = this._isTransactionCompleted(data);
+
+    if (isTransactionFinished) {
+      this._messageBus.publish(
+        {
+          data,
+          type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK
+        },
+        true
+      );
     }
 
-    if (this._isTransactionFinished(data) && data.errorcode === '0') {
+    this._callSubmitForm(data);
+  }
+
+  private _callSubmitForm(data: any): void {
+    const { errorcode } = data;
+
+    if (errorcode === '0') {
       data = Object.assign(data, { errormessage: PAYMENT_SUCCESS });
-      if (this._submitOnSuccess) {
-        this._submitForm(data);
-      }
-      return;
+      return this._submitOnSuccess && this._submitForm(data);
     }
 
-    if (data.errorcode === 'cancelled') {
+    if (errorcode === 'cancelled') {
       data = Object.assign(data, { errormessage: PAYMENT_CANCELLED });
-      if (this._submitOnCancel) {
-        this._submitForm(data);
-      }
-      return;
+      return this._submitOnCancel && this._submitForm(data);
     }
 
-    if (data.errorcode !== '0') {
+    if (errorcode !== '0') {
       data = Object.assign(data, { errormessage: data.errormessage });
-      if (this._submitOnError) {
-        this._submitForm(data);
-      }
-      return;
+      return this._submitOnError && this._submitForm(data);
     }
   }
 
-  private _submitForm(data: any) {
-    if (!this._formSubmitted) {
-      this._formSubmitted = true;
-      DomMethods.addDataToForm(this._merchantForm, data, this._getSubmitFields(data));
-      this._merchantForm.submit();
+  private _submitForm(data: any): void {
+    if (this._formSubmitted) {
+      return;
     }
+    this._formSubmitted = true;
+    DomMethods.addDataToForm(this._merchantForm, data, this._getSubmitFields(data));
+    this._merchantForm.submit();
   }
 
   private _setMerchantInputListeners() {

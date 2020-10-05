@@ -1,5 +1,4 @@
 import { IStRequest } from '../../models/IStRequest';
-import { StCodec } from '../../services/st-codec/StCodec.class';
 import { StTransport } from '../../services/st-transport/StTransport.class';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
@@ -9,7 +8,6 @@ import { Validation } from '../validation/Validation';
 import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
-import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
 
 export class Payment {
   private _cardinalCommerceCacheToken: string;
@@ -41,13 +39,6 @@ export class Payment {
   ): Promise<object> {
     console.error(requestTypes.length);
     if (requestTypes.length === 0) {
-      // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
-      // StCodec.publishResponse(
-      //   this._stTransport._threeDQueryResult.response,
-      //   this._stTransport._threeDQueryResult.jwt,
-      //   additionalData.threedresponse
-      // );
-      // this._notification.success(PAYMENT_SUCCESS);
       return Promise.resolve({
         response: {}
       });

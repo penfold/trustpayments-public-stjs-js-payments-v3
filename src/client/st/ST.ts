@@ -281,7 +281,8 @@ export class ST {
       this._config.components.requestTypes,
       this._config.formId,
       this._iframeFactory,
-      this._frameService
+      this._frameService,
+      this._configProvider
     );
   }
 

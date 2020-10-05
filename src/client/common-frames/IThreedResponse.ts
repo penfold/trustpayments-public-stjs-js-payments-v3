@@ -1,0 +1,33 @@
+export interface IThreedResponse {
+  accounttypedescription?: string;
+  acsurl?: string;
+  acquirerresponsecode?: string;
+  authcode?: string;
+  baseamount?: string;
+  currencyiso3a?: string;
+  customeroutput?: string;
+  dccenabled?: string;
+  enrolled?: string;
+  errorcode?: string;
+  errormessage?: string;
+  issuer?: string;
+  issuercountryiso2a?: string;
+  jwt?: string;
+  livestatus?: string;
+  maskedpan?: string;
+  merchantcountryiso2a?: string;
+  merchantname?: string;
+  merchantnumber?: string;
+  operatorname?: string;
+  paymenttypedescription?: string;
+  requesttypedescription?: string;
+  securityresponseaddress?: string;
+  securityresponsepostcode?: string;
+  securityresponsesecuritycode?: string;
+  settleduedate?: string;
+  settlestatus?: string;
+  threedresponse?: string;
+  tid?: string;
+  transactionreference?: string;
+  transactionstartedtimestamp?: string;
+}
