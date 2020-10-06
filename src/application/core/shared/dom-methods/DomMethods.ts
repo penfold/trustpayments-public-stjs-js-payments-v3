@@ -16,8 +16,7 @@ export class DomMethods {
         const existingElement: HTMLInputElement = form.querySelector(`${DomMethods.INPUT_MARKUP}[name="${field}"]`);
 
         if (existingElement) {
-          existingElement.value = value ? value.toString() : '';
-          return;
+          form.removeChild(existingElement);
         }
 
         form.appendChild(
