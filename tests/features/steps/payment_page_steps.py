@@ -24,14 +24,81 @@ def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'config_immediate_payment' not in context.scenario.tags[0] and 'parent_iframe' not in context.scenario.tags and \
         'config_cybertonica_immediate_payment' not in context.scenario.tags:
-        if ('safari' in context.browser) or ('iP' in CONFIGURATION.REMOTE_DEVICE):
-            payment_page.open_page(CONFIGURATION.URL.BASE_URL)
-            payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
-            if 'safari' in context.browser or 'visa_test' in context.scenario.tags or 'apple_test' in context.scenario.tags:
-                payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
+        if ('Safari' in context.browser) or ('iP' in CONFIGURATION.REMOTE_DEVICE):
+            accept_untrusted_pages_on_safari_browsers(context)
         payment_page.open_page(CONFIGURATION.URL.BASE_URL)
-        payment_page.is_connection_not_private_dispayed(CONFIGURATION.URL.BASE_URL)
+        payment_page.is_connection_not_private_displayed(CONFIGURATION.URL.BASE_URL)
         payment_page.wait_for_iframe()
+
+
+@step('User opens payment page')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    if 'Safari' in context.browser or ('iP' in CONFIGURATION.REMOTE_DEVICE):
+        accept_untrusted_pages_on_safari_browsers(context)
+        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
+        payment_page.wait_for_iframe()
+    if 'parent_iframe' in context.scenario.tags:
+        payment_page.open_page(CONFIGURATION.URL.BASE_URL + '/iframe.html')
+        payment_page.switch_to_parent_iframe()
+        payment_page.wait_for_parent_iframe()
+    else:
+        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
+
+
+@step('User opens prepared payment form page (?P<example_page>.+)')
+def step_impl(context, example_page: ExamplePage):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    if ('Safari' in context.browser) or ('iP' in CONFIGURATION.REMOTE_DEVICE):
+        accept_untrusted_pages_on_safari_browsers(context)
+    if 'WITH_UPDATE_JWT' in example_page:
+        jwt = ''
+        for row in context.table:
+            jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
+        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}')
+        payment_page.wait_for_iframe()
+        context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
+    elif 'WITH_SPECIFIC_IFRAME' in example_page:
+        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}')
+        payment_page.switch_to_parent_iframe()
+        payment_page.wait_for_parent_iframe()
+    else:
+        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}')
+        payment_page.wait_for_iframe()
+
+
+@step('User opens (?:example page|example page (?P<example_page>.+))')
+def step_impl(context, example_page: ExamplePage):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    # setting url specific params accordingly to example page
+    if example_page is None:
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.inline_config}'
+    elif 'IN_IFRAME' in example_page:
+        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}{context.inline_config}'
+    elif 'WITH_UPDATE_JWT' in example_page:
+        jwt = ''
+        for row in context.table:
+            jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}{context.inline_config}'
+    else:
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}&{context.inline_config}'
+    url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
+
+    payment_page.open_page(url)
+
+    if example_page is not None and 'IN_IFRAME' in example_page:
+        payment_page.switch_to_parent_iframe()
+    if 'e2e_config_submit_on_error_invalid_jwt' not in context.scenario.tags:
+        payment_page.wait_for_iframe()
+
+
+def accept_untrusted_pages_on_safari_browsers(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    if 'config_immediate_payment' not in context.scenario.tags[0]:
+        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
+    payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
+    if 'visa_test' in context.scenario.tags or 'apple_test' in context.scenario.tags:
+        payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
 
 
 @when(
@@ -207,24 +274,6 @@ def step_impl(context, key, language):
     payment_page.validate_payment_status_translation(language, key)
 
 
-@step('User opens payment page')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if 'safari' in context.browser or ('iP' in CONFIGURATION.REMOTE_DEVICE):
-        if 'config_immediate_payment' not in context.scenario.tags[0]:
-            payment_page.open_page(CONFIGURATION.URL.BASE_URL)
-        payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
-        payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
-        context.executor.wait_for_javascript()
-        payment_page.wait_for_iframe()
-    if 'parent_iframe' in context.scenario.tags:
-        payment_page.open_page(CONFIGURATION.URL.BASE_URL + '/iframe.html')
-        payment_page.switch_to_parent_iframe()
-        payment_page.wait_for_parent_iframe()
-    else:
-        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
-
-
 @then('User is redirected to action page')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
@@ -361,55 +410,6 @@ def step_impl(context):
 def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
     jwt = encode_jwt_for_json(JwtConfig[jwt_config])
     context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
-
-
-@step('User opens prepared payment form page (?P<example_page>.+)')
-def step_impl(context, example_page: ExamplePage):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if ('safari' in context.browser) or ('iP' in CONFIGURATION.REMOTE_DEVICE):
-        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
-        payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
-        if 'safari' in context.browser or 'visa_test' in context.scenario.tags or 'apple_test' in context.scenario.tags:
-            payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
-    if 'WITH_UPDATE_JWT' in example_page:
-        jwt = ''
-        for row in context.table:
-            jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}')
-        payment_page.wait_for_iframe()
-        context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
-    elif 'WITH_SPECIFIC_IFRAME' in example_page:
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}')
-        payment_page.switch_to_parent_iframe()
-        payment_page.wait_for_parent_iframe()
-    else:
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}')
-        payment_page.wait_for_iframe()
-
-
-@step('User opens (?:example page|example page (?P<example_page>.+))')
-def step_impl(context, example_page: ExamplePage):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    # setting url specific params accordingly to example page
-    if example_page is None:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.inline_config}'
-    elif 'IN_IFRAME' in example_page:
-        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}{context.inline_config}'
-    elif 'WITH_UPDATE_JWT' in example_page:
-        jwt = ''
-        for row in context.table:
-            jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}{context.inline_config}'
-    else:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}&{context.inline_config}'
-    url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
-
-    payment_page.open_page(url)
-
-    if example_page is not None and 'IN_IFRAME' in example_page:
-        payment_page.switch_to_parent_iframe()
-    if 'e2e_config_submit_on_error_invalid_jwt' not in context.scenario.tags:
-        payment_page.wait_for_iframe()
 
 
 @then('User will see that (?P<element>.+) is translated into "(?P<expected_value>.+)"')
