@@ -12,7 +12,7 @@ class Waits:
     def __init__(self, driver, configuration):
         self._driver_browser = driver
         self._browser = driver.get_browser()
-        self._timeout = configuration.TIMEOUT
+        self._timeout = int(configuration.TIMEOUT)
         self._wait = WebDriverWait(self._browser, self._timeout)
 
     def wait_for_element(self, locator):
