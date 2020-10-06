@@ -151,6 +151,7 @@ iPhone11-14.0-smoke-tests:
     OS_VERSION: 14
     BROWSER: Safari
     REAL_MOBILE: 'true'
+    AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_2
 
@@ -175,6 +176,7 @@ iPhoneXS-12-visual-tests:
     OS_VERSION: 12
     BROWSER: Safari
     REAL_MOBILE: 'true'
+    AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: visual_regression_safari
   resource_group: extended_tests_release_4
 
@@ -213,6 +215,7 @@ iPhone8-11.0-smoke-tests:
     OS_VERSION: 11
     BROWSER: Safari
     REAL_MOBILE: 'true'
+    AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_3
 
@@ -304,6 +307,7 @@ iPhoneXS-12-smoke-tests:
     BROWSER: Safari
     REAL_MOBILE: 'true'
     POETRY_TAGS: $SMOKE_TESTS_TAG
+    AUTOMATION_TIMEOUT: 120
   resource_group: extended_tests_release_2
 
 iPad7th-13-smoke-tests:
@@ -314,6 +318,7 @@ iPad7th-13-smoke-tests:
     DEVICE: iPad 7th
     OS_VERSION: 13
     REAL_MOBILE: 'true'
+    AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_3
 
@@ -416,6 +421,7 @@ iPhoneXS-12-applePay-tests:
     OS_VERSION: 12
     BROWSER: Safari
     REAL_MOBILE: 'true'
+    AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: smoke_test_apple_pay
   resource_group: extended_tests_release_3
 
@@ -546,6 +552,7 @@ OSXMojave-Safari-12.1-extended-test-part-3:
     OS_VERSION: 12
     BROWSER: Safari
     REAL_MOBILE: 'true'
+    AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: visual_regression_styling_safari
   resource_group: extended_tests_release_1
 
@@ -573,6 +580,7 @@ OSXMojave-Safari-12.1-extended-test-part-3:
     OS_VERSION: 12
     BROWSER: Safari
     REAL_MOBILE: 'true'
+    AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: full_test_part_1
   resource_group: extended_tests_release_3
 
@@ -585,5 +593,6 @@ OSXMojave-Safari-12.1-extended-test-part-3:
     OS_VERSION: 12
     BROWSER: Safari
     REAL_MOBILE: 'true'
+    AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: full_test_part_2
   resource_group: extended_tests_release_4

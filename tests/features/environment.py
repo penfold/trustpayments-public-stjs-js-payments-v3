@@ -85,7 +85,7 @@ def after_step(context, step):
         feature_name = _clean(context.feature.name.title())
         step_name = _clean(step.name.title())
         filename = f'{feature_name}_{scenario_name}_{step_name}'
-        context.screenshot_manager.make_screenshot(filename, True)
+        context.reporter.save_screenshot_and_page_source(filename)
 
 
 def _clean(text_to_clean):
