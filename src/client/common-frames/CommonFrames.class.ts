@@ -218,35 +218,42 @@ export class CommonFrames {
       );
     }
 
-    this._callSubmitForm(data);
+    let result: 'success' | 'error' | 'cancel';
+
+    switch (true) {
+      case this._isTransactionCompleted(data) && data.errorcode === '0':
+        result = 'success';
+        data = { ...data, errormessage: PAYMENT_SUCCESS };
+        break;
+      case data.errorcode === 'cancelled':
+        result = 'cancel';
+        data = { ...data, errormessage: PAYMENT_CANCELLED };
+        break;
+      case data.errorcode !== '0':
+        result = 'error';
+        break;
+    }
+
+    this.addSubmitData(data);
+
+    if (
+      (result === 'success' && this._submitOnSuccess) ||
+      (result === 'cancel' && this._submitOnCancel) ||
+      (result === 'error' && this._submitOnError)
+    ) {
+      this._submitForm();
+    }
   }
 
-  private _callSubmitForm(data: any): void {
-    const { errorcode } = data;
-
-    if (errorcode === '0') {
-      data = Object.assign(data, { errormessage: PAYMENT_SUCCESS });
-      return this._submitOnSuccess && this._submitForm(data);
-    }
-
-    if (errorcode === 'cancelled') {
-      data = Object.assign(data, { errormessage: PAYMENT_CANCELLED });
-      return this._submitOnCancel && this._submitForm(data);
-    }
-
-    if (errorcode !== '0') {
-      data = Object.assign(data, { errormessage: data.errormessage });
-      return this._submitOnError && this._submitForm(data);
+  private _submitForm() {
+    if (!this._formSubmitted) {
+      this._formSubmitted = true;
+      this._merchantForm.submit();
     }
   }
 
-  private _submitForm(data: any): void {
-    if (this._formSubmitted) {
-      return;
-    }
-    this._formSubmitted = true;
+  private addSubmitData(data: any) {
     DomMethods.addDataToForm(this._merchantForm, data, this._getSubmitFields(data));
-    this._merchantForm.submit();
   }
 
   private _setMerchantInputListeners() {
