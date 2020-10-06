@@ -13,22 +13,22 @@ export class DomMethods {
   public static addDataToForm(form: HTMLFormElement, data: any, fields?: string[]): void {
     Object.entries(data).forEach(([field, value]) => {
       if (!fields || fields.includes(field)) {
-        const existingElement: HTMLInputElement = form.querySelector(`${DomMethods.INPUT_MARKUP}[name="${field}"]`);
+        let inputElement: HTMLInputElement = form.querySelector(`${DomMethods.INPUT_MARKUP}[name="${field}"]`);
 
-        if (existingElement) {
-          form.removeChild(existingElement);
-        }
-
-        form.appendChild(
-          DomMethods.createHtmlElement(
+        if (inputElement) {
+          inputElement.value = value ? value.toString() : '';
+        } else {
+          inputElement = DomMethods.createHtmlElement(
             {
               name: field,
               type: DomMethods.HIDDEN_ATTRIBUTE,
               value
             },
             DomMethods.INPUT_MARKUP
-          )
-        );
+          ) as HTMLInputElement;
+        }
+
+        form.appendChild(inputElement);
       }
     });
   }
