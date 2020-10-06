@@ -131,7 +131,7 @@
     "@sentry/browser": "5.24.2",
     "@sheerun/mutationobserver-shim": "0.3.3",
     "@trustpayments/jwt-generator": "0.1.9",
-    "@trustpayments/ts-iin-lookup": "0.1.5",
+    "@trustpayments/ts-iin-lookup": "0.1.10",
     "@trustpayments/ts-luhn-check": "0.1.9",
     "@types/jwt-decode": "2.2.1",
     "@types/lodash": "4.14.161",
