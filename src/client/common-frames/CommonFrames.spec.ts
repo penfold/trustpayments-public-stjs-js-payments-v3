@@ -83,12 +83,12 @@ describe('CommonFrames', () => {
 
     // then
     it('should be finished if AUTH', () => {
-      expect(isTransactionFinishedFixture('AUTH')).toEqual(true);
+      expect(isTransactionFinishedFixture('AUTH')).toEqual(false);
     });
 
     // then
     it('should be finished if CACHETOKENISE', () => {
-      expect(isTransactionFinishedFixture('CACHETOKENISE')).toEqual(true);
+      expect(isTransactionFinishedFixture('CACHETOKENISE')).toEqual(false);
     });
 
     // then

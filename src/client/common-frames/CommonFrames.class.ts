@@ -95,15 +95,15 @@ export class CommonFrames {
     this.styles = this._getStyles(styles);
   }
 
-  public init() {
+  public init(): void {
     this._initFormFields();
     this._setMerchantInputListeners();
     this._setTransactionCompleteListener();
-    this.elementsTargets = this.setElementsFields();
-    this.registerElements(this.elementsToRegister, this.elementsTargets);
+    this.elementsTargets = this._setElementsFields();
+    this._registerElements(this.elementsToRegister, this.elementsTargets);
   }
 
-  private _getStyles(styles: any) {
+  private _getStyles(styles: any): any {
     for (const key in styles) {
       if (styles[key] instanceof Object) {
         return styles;
@@ -113,7 +113,7 @@ export class CommonFrames {
     return styles;
   }
 
-  protected registerElements(fields: HTMLElement[], targets: string[]) {
+  private _registerElements(fields: HTMLElement[], targets: string[]): void {
     targets.map((item, index) => {
       const itemToChange = document.getElementById(item);
       if (fields[index]) {
@@ -122,13 +122,13 @@ export class CommonFrames {
     });
   }
 
-  protected setElementsFields() {
+  private _setElementsFields(): string[] {
     const elements = [];
     elements.push(this.formId);
     return elements;
   }
 
-  private _getSubmitFields(data: any) {
+  private _getSubmitFields(data: IThreedResponse): string[] {
     const fields = this._submitFields;
     if (data.hasOwnProperty('jwt') && fields.indexOf('jwt') === -1) {
       fields.push('jwt');
@@ -139,7 +139,7 @@ export class CommonFrames {
     return fields;
   }
 
-  private _initFormFields() {
+  private _initFormFields(): void {
     const { defaultStyles } = this.styles;
     let { controlFrame } = this.styles;
 
@@ -193,11 +193,11 @@ export class CommonFrames {
     return ['AUTH', 'CACHETOKENISE', 'ACCOUNTCHECK'].includes(requesttypedescription);
   }
 
-  private _isTransactionCompleted(data: any): boolean {
-    return this._hasTransactionCompletedRequestTypes(data) || this._isThreedQueryComplete(data);
+  private _isTransactionCompleted(data: IThreedResponse): boolean {
+    return this._hasTransactionCompletedRequestTypes(data.requesttypedescription) || this._isThreedQueryComplete(data);
   }
 
-  private _onInput(event: Event) {
+  private _onInput(): void {
     const messageBusEvent = {
       data: DomMethods.parseForm(this.formId),
       type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS
@@ -205,7 +205,7 @@ export class CommonFrames {
     this._messageBus.publish(messageBusEvent);
   }
 
-  private _onTransactionComplete(data: any): void {
+  private _onTransactionComplete(data: IThreedResponse): void {
     const isTransactionFinished: boolean = this._isTransactionCompleted(data);
 
     if (isTransactionFinished) {
@@ -234,7 +234,7 @@ export class CommonFrames {
         break;
     }
 
-    this.addSubmitData(data);
+    this._addSubmitData(data);
 
     if (
       (result === 'success' && this._submitOnSuccess) ||
@@ -245,25 +245,25 @@ export class CommonFrames {
     }
   }
 
-  private _submitForm() {
+  private _submitForm(): void {
     if (!this._formSubmitted) {
       this._formSubmitted = true;
       this._merchantForm.submit();
     }
   }
 
-  private addSubmitData(data: any) {
+  private _addSubmitData(data: IThreedResponse): void {
     DomMethods.addDataToForm(this._merchantForm, data, this._getSubmitFields(data));
   }
 
-  private _setMerchantInputListeners() {
+  private _setMerchantInputListeners(): void {
     const els = DomMethods.getAllFormElements(this._merchantForm);
     for (const el of els) {
       el.addEventListener('input', this._onInput.bind(this));
     }
   }
 
-  private _setTransactionCompleteListener() {
+  private _setTransactionCompleteListener(): void {
     this._messageBus
       .pipe(
         ofType(MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE),
