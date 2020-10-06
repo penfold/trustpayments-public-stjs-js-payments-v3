@@ -13,6 +13,13 @@ export class DomMethods {
   public static addDataToForm(form: HTMLFormElement, data: any, fields?: string[]): void {
     Object.entries(data).forEach(([field, value]) => {
       if (!fields || fields.includes(field)) {
+        const existingElement: HTMLInputElement = form.querySelector(`${DomMethods.INPUT_MARKUP}[name="${field}"]`);
+
+        if (existingElement) {
+          existingElement.value = value ? value.toString() : '';
+          return;
+        }
+
         form.appendChild(
           DomMethods.createHtmlElement(
             {
@@ -49,20 +56,6 @@ export class DomMethods {
     ...Array.from(form.querySelectorAll(DomMethods.SELECT_MARKUP)),
     ...Array.from(form.querySelectorAll(DomMethods.INPUT_MARKUP))
   ];
-
-  private static isScriptLoaded(params: IScriptParams): Element {
-    const { src, id } = params;
-    const scripts: HTMLCollection = document.getElementsByTagName(DomMethods.SCRIPT_MARKUP);
-    const scriptById: HTMLElement = document.getElementById(id);
-    if (scriptById) {
-      return scriptById;
-    }
-    for (const script of Array.from(scripts)) {
-      if (script.getAttribute(DomMethods.SRC_ATTRIBUTE) === src) {
-        return script;
-      }
-    }
-  }
 
   public static insertScript(target: string, params: IScriptParams): Promise<Element> {
     return new Promise((resolve, reject) => {
@@ -113,6 +106,20 @@ export class DomMethods {
       element.removeChild(element.lastChild);
     }
     return element;
+  }
+
+  private static isScriptLoaded(params: IScriptParams): Element {
+    const { src, id } = params;
+    const scripts: HTMLCollection = document.getElementsByTagName(DomMethods.SCRIPT_MARKUP);
+    const scriptById: HTMLElement = document.getElementById(id);
+    if (scriptById) {
+      return scriptById;
+    }
+    for (const script of Array.from(scripts)) {
+      if (script.getAttribute(DomMethods.SRC_ATTRIBUTE) === src) {
+        return script;
+      }
+    }
   }
 
   private static setMarkupAttributes(target: string, params: any): Element {

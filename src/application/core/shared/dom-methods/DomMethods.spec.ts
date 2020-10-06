@@ -53,6 +53,16 @@ describe('DomMethods', () => {
       expect(form.querySelector('[name="stDuplicate"]')).toBe(null);
       expect(form.querySelector('[name="stSelectName"]')).toBe(null);
     });
+
+    it('should update fields value if it already exists', () => {
+      const form = document.createElement('form');
+
+      DomMethods.addDataToForm(form, { foo: 'bar' }, ['foo']);
+      DomMethods.addDataToForm(form, { foo: 'baz' }, ['foo']);
+
+      expect(form.querySelectorAll('[name=foo]').length).toBe(1);
+      expect(form.querySelector('[name=foo]').getAttribute('value')).toBe('baz');
+    });
   });
 
   // given
