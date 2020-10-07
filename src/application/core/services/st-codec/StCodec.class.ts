@@ -80,11 +80,13 @@ export class StCodec {
     if (threedresponse !== undefined) {
       eventData.threedresponse = threedresponse;
     }
-    const notificationEvent: IMessageBusEvent = {
-      data: eventData,
-      type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE
-    };
-    StCodec.getMessageBus().publish(notificationEvent, true);
+    if (responseData.requesttypedescription === 'AUTH') {
+      const notificationEvent: IMessageBusEvent = {
+        data: eventData,
+        type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE
+      };
+      StCodec.getMessageBus().publish(notificationEvent, true);
+    }
   }
 
   public static updateJWTValue(newJWT: string) {
