@@ -36,19 +36,40 @@
   var ST = SecureTrading;
 
   var st = ST({
-    jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDE2NTI1MzIsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiJ9fQ.YESdZHDxwyeKNieBK9trWFheoLRxPznE_fUjVNY55iI',
+    jwt: '',
     livestatus: 0,
     deferInit: true,
     submitOnSuccess: false,
     submitCallback: callback,
     successCallback: false,
-    errorCallback: false
+    errorCallback: false,
+    styles: {
+      'cardNumber': {
+        'isLinedUp': 'true',
+        'background-color-input-error': '#FFFFFF',
+        'line-height-body': '11px',
+        'border-color-input': '#E2EAED',
+        'border-size-input': '6px 30px 6px 4px',
+        'border-radius-input': '5px',
+        'background-color-message': '#F7E1E1',
+        'color-input': '#000000',
+        'color-error': '#B10000',
+        'font-family-label': 'Arial',
+        'font-size-label': '11px',
+        'font-size-input': '12px',
+        'font-size-input-error': '12px',
+        'space-inset-input': '2px 4px 2px 4px',
+        'space-outset-input-error': '0px',
+        'space-outset-message': '0px',
+        'space-inset-message': '3px 35px 10px 35px',
+      },
+    }
   });
 
-  st.Components({ requestTypes: ['ACCOUNTCHECK', 'THREEDQUERY'] });
+  st.Components({ requestTypes: ['THREEDQUERY', 'AUTH'] });
 
   document.getElementById('update-button').addEventListener('click', () => {
-    st.updateJWT('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDE2NTI1MzIsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiJ9fQ.YESdZHDxwyeKNieBK9trWFheoLRxPznE_fUjVNY55iI');
+    st.updateJWT('');
   });
 </script>
 

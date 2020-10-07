@@ -16,17 +16,17 @@
   "styles": {
     "cardNumber": {
       "isLinedUp": "false",
-      "font-family-input": "fantasy",
+      "font-family-input": "serif",
       "outline-input": "5px dotted green"
     },
     "expirationDate": {
       "isLinedUp": "false",
-      "font-family-input": "fantasy",
+      "font-family-input": "serif",
       "box-shadow-input": "-157px -56px 96px 22px rgba(0,0,0,0.75)"
     },
     "securityCode": {
       "isLinedUp": "true",
-      "font-family-input": "fantasy",
+      "font-family-input": "serif",
       "box-shadow-input": "9px -9px 5px 0px rgba(0,0,0,0.75)"
     }
   },

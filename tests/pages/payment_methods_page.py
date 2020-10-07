@@ -299,6 +299,20 @@ class PaymentMethodsPage(BasePage):
             element_translation = self._action.get_text(locator)
         return element_translation
 
+    def change_field_focus(self, field_type):
+        if field_type == FieldType.CARD_NUMBER.name:
+            self._action.switch_to_iframe_and_click(PaymentMethodsLocators.card_number_iframe,
+                                                                             PaymentMethodsLocators.card_number_input_field)
+        elif field_type == FieldType.EXPIRATION_DATE.name:
+            self._action.switch_to_iframe_and_click(PaymentMethodsLocators.expiration_date_iframe,
+                                                    PaymentMethodsLocators.expiration_date_input_field)
+        elif field_type == FieldType.SECURITY_CODE.name:
+            self._action.switch_to_iframe_and_click(PaymentMethodsLocators.security_code_iframe,
+                                                    PaymentMethodsLocators.security_code_input_field)
+        elif field_type == FieldType.ANIMATED_CARD.name:
+            self._action.switch_to_iframe_and_click(PaymentMethodsLocators.animated_card_iframe,
+                                                    PaymentMethodsLocators.animated_card)
+
     def switch_to_parent_iframe(self):
         self._action.switch_to_iframe(PaymentMethodsLocators.parent_iframe)
 

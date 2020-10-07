@@ -90,6 +90,10 @@ class SeleniumDriver(Driver):
 def _get_remote_capabilities(configuration):
     # pylint: disable=unused-variable
     network_logs = 'true'
+    if 'Safari' in configuration.REMOTE_BROWSER:
+        network_logs = 'false'
+    # if 'IE' in config.REMOTE_BROWSER:
+    #     send_keys = 'true'
     possible_caps = {'os': configuration.REMOTE_OS,
                      'os_version': configuration.REMOTE_OS_VERSION,
                      'browserName': configuration.REMOTE_BROWSER,
