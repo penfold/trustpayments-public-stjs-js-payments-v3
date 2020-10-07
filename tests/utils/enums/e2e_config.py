@@ -38,6 +38,7 @@ class E2eConfig(Enum):
     ANIMATED_CARD_PAN_ICON_CONFIG = 'ConfigAnimatedCardAndPanIcon.json'
     PLACEHOLDERS_CONFIG = 'ConfigPlaceholders.json'
     STYLES_CONFIG = 'ConfigStyles.json'
+    VALIDATION_STYLES_CONFIG = 'e2eConfigWithValidationStyling.json'
     CUSTOM_TRANSLATION_CONFIG = 'ConfigCustomTranslation.json'
     DISABLE_NOTIFICATION_CONFIG = 'ConfigDisableNotification.json'
     CHANGED_FORM_ID_CONFIG = 'e2eFormIdConfig.json'

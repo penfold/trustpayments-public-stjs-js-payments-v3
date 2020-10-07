@@ -542,8 +542,7 @@ OSXMojave-Safari-12.1-extended-test-part-3:
     POETRY_TAGS: extended_tests_part_3
   resource_group: extended_tests_release_4
 
-#TODO turn it on again after figuring situation with STJS-973
-.iPhoneXS-12-visual-tests-styling:
+iPhoneXS-12-visual-tests-styling:
   extends:
     - .visual-regression-component-tests
     - .rules-when-release
@@ -556,8 +555,7 @@ OSXMojave-Safari-12.1-extended-test-part-3:
     POETRY_TAGS: visual_regression_styling_safari
   resource_group: extended_tests_release_1
 
-#TODO turn it on again after figuring situation with STJS-973
-.OSXMojave-Safari-12.1-visual-tests-styling:
+OSXMojave-Safari-12.1-visual-tests-styling:
   extends:
     - .visual-regression-component-tests
     - .rules-when-release
@@ -567,7 +565,6 @@ OSXMojave-Safari-12.1-extended-test-part-3:
     BROWSER: Safari
     BROWSER_VERSION: '12.1'
     ROWSERSTACK_SAFARI_DRIVER: '2.48'
-    BROWSERSTACK_SELENIUM_VERSION: '3.14.0'
     POETRY_TAGS: visual_regression_styling_safari
   resource_group: extended_tests_release_2
 

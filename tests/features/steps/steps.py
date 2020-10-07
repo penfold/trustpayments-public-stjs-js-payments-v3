@@ -47,9 +47,11 @@ def step_impl(context, card: Card):
 
 @step('Make screenshot after (?P<how_many_seconds>.+) seconds')
 def step_impl(context, how_many_seconds):
+    # pylint: disable=invalid-name)
     time.sleep(int(how_many_seconds))
     screenshot_filename = screenshots[_screenshot_tag(context.scenario.tags)]
-    context.screenshot_manager().make_screenshot(screenshot_filename, date_postfix=True)
+    sm = context.screenshot_manager
+    sm.make_screenshot(screenshot_filename, date_postfix=True)
 
 
 @then('Screenshot is taken after (?P<how_many_seconds>.+) seconds and checked')

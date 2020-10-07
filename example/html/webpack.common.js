@@ -15,6 +15,7 @@ module.exports = {
     example: ['./pages/index/index.ts'],
     receipt: ['./pages/receipt/receipt.ts'],
     iframe: ['./pages/iframe/iframe.ts'],
+    minimal: ['./pages/minimal/minimal.ts'],
     inlineConfig: ['./pages/index/inline-config.ts'],
     counter: ['./pages/index/counter.ts']
   },
@@ -44,6 +45,11 @@ module.exports = {
       filename: 'iframe.html',
       template: './pages/iframe/iframe.html',
       chunks: ['iframe']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'minimal.html',
+      template: './pages/minimal/minimal.html',
+      chunks: ['minimal']
     }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
