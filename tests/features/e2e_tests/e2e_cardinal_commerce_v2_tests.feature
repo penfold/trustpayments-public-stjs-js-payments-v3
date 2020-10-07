@@ -128,13 +128,14 @@ Feature: Cardinal Commerce E2E tests
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
 
-  @base_config @cardinal_commerce_v2.0
-  Scenario: Pre-Whitelisted - Visabase_config
-    When User fills payment form with defined card VISA_PRE_WHITELISTED_VISABASE_CONFIG
-    And User clicks Pay button
-    And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
+# ToDo - This test case is no longer supported by Cardinal - to clarify
+#  @base_config @cardinal_commerce_v2.0
+#  Scenario: Pre-Whitelisted - Visabase_config
+#    When User fills payment form with defined card VISA_PRE_WHITELISTED_VISABASE_CONFIG
+#    And User clicks Pay button
+#    And User fills V2 authentication modal
+#    Then User will see payment status information: "Payment has been successfully processed"
+#    And User will see that notification frame has "green" color
 
   @base_config @cardinal_commerce_v2.0
   Scenario: Support TransStatus I - MasterCard
