@@ -62,6 +62,7 @@
   line-height: $line-height-message; // @param
   margin: $space-outset-message; // @param
   color: $color-error; // @param
+  visibility: hidden;
 }
 
 %button {

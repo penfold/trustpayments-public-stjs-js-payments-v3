@@ -35,3 +35,9 @@ Feature: Visual regression - E2E Card Payments
     When User fills payment form with defined card MASTERCARD_INVALID_PATTERN_CARD
     And User clicks Pay button
     Then Screenshot is taken after 6 seconds and checked
+
+  @base_config_validation_styling @visual_regression_styling_safari @scrn_card_interface_with_validation_styling
+  Scenario: Card interface with validation styling
+    When User fills only security code for saved MASTERCARD_INVALID_CVV_CARD card
+    And Change field focus
+    Then Screenshot is taken after 6 seconds and checked

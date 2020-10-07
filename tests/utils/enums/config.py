@@ -2,6 +2,7 @@ config = {
     'base_config': 'config.json',
     'base_config_visual': 'config_visual.json',
     'base_config_visual_styling': 'config_visual_styling.json',
+    'base_config_validation_styling': 'config_validation_styling.json',
     'config_default': 'configDefault.json',
     'config_submit_on_success_true': 'configSubmitOnSuccessTrue.json',
     'config_submit_on_error_true': 'configSubmitOnErrorTrue.json',
@@ -101,5 +102,6 @@ screenshots = {
     'scrn_card_interface_after_successful_payment_styling': 'cardInterfaceAfterSuccessfulPaymentWithStyling.png',
     'scrn_card_interface_before_payment_styling': 'cardInterfaceBeforePaymentWithStyling.png',
     'scrn_card_interface_error_expiry_date_styling': 'cardInterfaceErrorExpiryDateWithStyling.png',
-    'scrn_card_interface_error_invalid_patterns_styling': 'cardInterfaceErrorInvalidPatternsWithStyling.png'
+    'scrn_card_interface_error_invalid_patterns_styling': 'cardInterfaceErrorInvalidPatternsWithStyling.png',
+    'scrn_card_interface_with_validation_styling': 'CardInterfaceWithValidationStyling.png'
 }
