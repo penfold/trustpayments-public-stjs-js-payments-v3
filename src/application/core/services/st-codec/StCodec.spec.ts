@@ -115,7 +115,8 @@ describe('StCodec class', () => {
       // @ts-ignore
       StCodec.publishResponse({
         errorcode: '0',
-        errormessage: 'Payment has been successfully processed'
+        errormessage: 'Payment has been successfully processed',
+        requesttypedescription: 'AUTH'
       });
       // @ts-ignore
       expect(translator.translate()).toEqual('Ok');
@@ -124,7 +125,8 @@ describe('StCodec class', () => {
         {
           data: {
             errorcode: '0',
-            errormessage: 'Payment has been successfully processed'
+            errormessage: 'Payment has been successfully processed',
+            requesttypedescription: 'AUTH'
           },
           type: 'TRANSACTION_COMPLETE'
         },
@@ -137,7 +139,8 @@ describe('StCodec class', () => {
       StCodec.publishResponse(
         {
           errorcode: '0',
-          errormessage: 'Ok'
+          errormessage: 'Ok',
+          requesttypedescription: 'AUTH'
         },
         'someJwtResponse'
       );
@@ -150,7 +153,8 @@ describe('StCodec class', () => {
       StCodec.publishResponse(
         {
           errorcode: '0',
-          errormessage: 'Ok'
+          errormessage: 'Ok',
+          requesttypedescription: 'AUTH'
         },
         'someJwtResponse',
         'someThreedresponse'
