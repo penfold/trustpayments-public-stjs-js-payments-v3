@@ -22,7 +22,7 @@ build-app-html-dev:
 build-payments-tests:
   extends: .utility-images-build
   variables:
-    DOCKER_TARGET: 'payments-tests'
+    UTILITY_NAME: 'payments-tests'
     DOCKERFILE_PATH: .cicd_scripts/docker/payments-tests/Dockerfile
     BUILD_ARGS_EXTRA: --build-arg COPY_FROM=./tests
 
