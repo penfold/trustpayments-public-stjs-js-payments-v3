@@ -9,60 +9,19 @@
   extends:
     - .image-test
     - .extended-tests
-    - .component-tests
-    - .component-tests-services
-    - .browserstack
+    - .services-test
+    - .sequentially-component-browserstack-tests
   variables:
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-  after_script:
-    - mkdir -p ./tests/reports
-    - mv /app/reports/* ./tests/reports/
-  artifacts:
-    paths:
-      - ./tests/reports
-    when: always
 
 .visual-regression-tests:
   extends:
     - .image-test
     - .extended-tests
-    - .component-tests
-    - .e2e-tests-services
-    - .browserstack
+    - .services-dev
+    - .sequentially-e2e-browserstack-tests
   variables:
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-  # both .browserstack's and .e2e-tests' before script have to be combined in one and put here
-  # since there is no way to combine 2 "befores" from 2 different jobs
-  before_script:
-    - . .cicd_scripts/execute/browserstack.sh
-    - . .cicd_scripts/execute/tests.sh
-    - validate_and_activate_e2e_variables
-  after_script:
-    - mkdir -p ./tests/screenshots/{actual,results} && mkdir -p ./tests/reports
-    - mv /app/screenshots/actual/* ./tests/screenshots/actual/
-    - mv /app/screenshots/results/* ./tests/screenshots/results/
-    - mv /app/reports/* ./tests/reports/
-  artifacts:
-    paths:
-      - ./tests/screenshots
-      - ./tests/reports
-    when: always
-
-.visual-regression-component-tests:
-  extends:
-    - .extended-tests-browserstack
-  variables:
-    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-  after_script:
-    - mkdir -p ./tests/screenshots/{actual,results} && mkdir -p ./tests/reports
-    - mv /app/screenshots/actual/* ./tests/screenshots/actual/
-    - mv /app/screenshots/results/* ./tests/screenshots/results/
-    - mv /app/reports/* ./tests/reports/
-  artifacts:
-    paths:
-      - ./tests/screenshots
-      - ./tests/reports
-    when: always
 
 # smoke tests executed on review branches
 .apple-test-browserstack-component-test:
@@ -155,7 +114,7 @@ SamsungGalaxyS10Plus-9.0-visual-tests:
 
 iPhoneXS-12-visual-tests:
   extends:
-    - .visual-regression-component-tests
+    - .extended-tests-browserstack
     - .rules-when-release
   variables:
     DEVICE: iPhone XS
@@ -168,7 +127,7 @@ iPhoneXS-12-visual-tests:
 
 OSXMojave-Safari-12.1-visual-tests:
   extends:
-    - .visual-regression-component-tests
+    - .extended-tests-browserstack
     - .rules-when-release
   variables:
     OS: OS X
@@ -530,7 +489,7 @@ OSXMojave-Safari-12.1-extended-test-part-3:
 
 iPhoneXS-12-visual-tests-styling:
   extends:
-    - .visual-regression-component-tests
+    - .extended-tests-browserstack
     - .rules-when-release
   variables:
     DEVICE: iPhone XS
@@ -543,7 +502,7 @@ iPhoneXS-12-visual-tests-styling:
 
 OSXMojave-Safari-12.1-visual-tests-styling:
   extends:
-    - .visual-regression-component-tests
+    - .extended-tests-browserstack
     - .rules-when-release
   variables:
     OS: OS X
