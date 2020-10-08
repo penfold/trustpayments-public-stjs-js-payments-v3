@@ -40,7 +40,7 @@
   # since there is no way to combine 2 "befores" from 2 different jobs
   before_script:
     - . .cicd_scripts/execute/browserstack.sh
-    - . .cicd_scripts/tests.sh
+    - . .cicd_scripts/execute/tests.sh
     - validate_and_activate_e2e_variables
   after_script:
     - mkdir -p ./tests/screenshots/actual && mkdir -p ./tests/screenshots/results && mkdir -p ./tests/reports

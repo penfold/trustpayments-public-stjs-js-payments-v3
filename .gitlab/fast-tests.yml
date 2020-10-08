@@ -53,7 +53,7 @@ visa-checkout-headless-component-tests:
     FF_NETWORK_PER_BUILD: 'true' # https://docs.gitlab.com/runner/configuration/feature-flags.html
     FEATURE_FILES_DIR: 'features/e2e_tests'
   before_script:
-    - . .cicd_scripts/tests.sh
+    - . .cicd_scripts/execute/tests.sh
     - validate_and_activate_e2e_variables
   after_script:
     - mkdir -p ./tests/reports
