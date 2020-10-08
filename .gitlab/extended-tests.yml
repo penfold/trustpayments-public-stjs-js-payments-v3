@@ -5,15 +5,9 @@
 # We will have 4 resource groups for review and 4 for release: extended_tests_release_1 - ... - extended_tests_release_4 and one reserved for review branches (extended_tests_review_1)
 # It will assure that we won't use more than 5 parallel extended Browserstack tests jobs.
 
-.extended-tests:
-  extends:
-    - .variables
-    - .tags-gitlab-org-docker
-  stage: extended-tests
-  image: ${IMAGE_JS_PAYMENTS_TESTS}
-
 .extended-tests-browserstack:
   extends:
+    - .image-test
     - .extended-tests
     - .component-tests
     - .component-tests-services
@@ -30,6 +24,7 @@
 
 .visual-regression-tests:
   extends:
+    - .image-test
     - .extended-tests
     - .component-tests
     - .e2e-tests-services
@@ -43,7 +38,7 @@
     - . .cicd_scripts/execute/tests.sh
     - validate_and_activate_e2e_variables
   after_script:
-    - mkdir -p ./tests/screenshots/actual && mkdir -p ./tests/screenshots/results && mkdir -p ./tests/reports
+    - mkdir -p ./tests/screenshots/{actual,results} && mkdir -p ./tests/reports
     - mv /app/screenshots/actual/* ./tests/screenshots/actual/
     - mv /app/screenshots/results/* ./tests/screenshots/results/
     - mv /app/reports/* ./tests/reports/
@@ -59,7 +54,7 @@
   variables:
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
   after_script:
-    - mkdir -p ./tests/screenshots/actual && mkdir -p ./tests/screenshots/results && mkdir -p ./tests/reports
+    - mkdir -p ./tests/screenshots/{actual,results} && mkdir -p ./tests/reports
     - mv /app/screenshots/actual/* ./tests/screenshots/actual/
     - mv /app/screenshots/results/* ./tests/screenshots/results/
     - mv /app/reports/* ./tests/reports/

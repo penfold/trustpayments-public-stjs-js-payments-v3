@@ -1,16 +1,5 @@
-.component-tests:
+.image-test:
   image: ${IMAGE_JS_PAYMENTS_TESTS}
-  variables:
-    BEHAVE_LOGGING_LEVEL: INFO
-    FF_NETWORK_PER_BUILD: 'true' # https://docs.gitlab.com/runner/configuration/feature-flags.html
-    FEATURE_FILES_DIR: 'features'
-  after_script:
-    - mkdir -p ./tests/reports
-    - mv /app/reports/* ./tests/reports/
-  artifacts:
-    paths:
-      - ./tests/reports
-    when: always
 
 .component-tests-services:
   services:
@@ -27,6 +16,7 @@
 
 card-payments-headless-component-tests:
   extends:
+    - .image-test
     - .fast-tests
     - .component-tests
     - .component-tests-services
@@ -38,6 +28,7 @@ card-payments-headless-component-tests:
 
 visa-checkout-headless-component-tests:
   extends:
+    - .image-test
     - .fast-tests
     - .component-tests
     - .component-tests-services
@@ -45,23 +36,6 @@ visa-checkout-headless-component-tests:
   variables:
     FEATURE_FILE_NAME: 'visa_checkout_tests.feature'
     WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
-
-.e2e-tests:
-  image: ${IMAGE_JS_PAYMENTS_TESTS}
-  variables:
-    BEHAVE_LOGGING_LEVEL: INFO
-    FF_NETWORK_PER_BUILD: 'true' # https://docs.gitlab.com/runner/configuration/feature-flags.html
-    FEATURE_FILES_DIR: 'features/e2e_tests'
-  before_script:
-    - . .cicd_scripts/execute/tests.sh
-    - validate_and_activate_e2e_variables
-  after_script:
-    - mkdir -p ./tests/reports
-    - mv /app/reports/* ./tests/reports/
-  artifacts:
-    paths:
-      - ./tests/reports
-    when: always
 
 .e2e-tests-services:
   services:
@@ -72,6 +46,7 @@ visa-checkout-headless-component-tests:
 
 e2e-tests:
   extends:
+    - .image-test
     - .fast-tests
     - .e2e-tests
     - .e2e-tests-services
