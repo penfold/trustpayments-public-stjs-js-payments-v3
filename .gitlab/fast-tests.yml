@@ -19,7 +19,7 @@ card-payments-headless-component-tests:
     - .image-test
     - .fast-tests
     - .services-test
-    - .parallel-tests
+    - .parallel-component-tests
   variables:
     FEATURE_FILES_NAMES_CONTAINS: 'mock_'
   parallel: 22
@@ -29,7 +29,7 @@ visa-checkout-headless-component-tests:
     - .image-test
     - .fast-tests
     - .services-test
-    - .sequentially-tests
+    - .sequentially-component-tests
   variables:
     FEATURE_FILE_NAME: 'visa_checkout_tests.feature'
 
