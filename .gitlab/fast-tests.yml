@@ -52,6 +52,9 @@ visa-checkout-headless-component-tests:
     BEHAVE_LOGGING_LEVEL: INFO
     FF_NETWORK_PER_BUILD: 'true' # https://docs.gitlab.com/runner/configuration/feature-flags.html
     FEATURE_FILES_DIR: 'features/e2e_tests'
+  before_script:
+    - . .cicd_scripts/tests.sh
+    - validate_and_activate_e2e_variables
   after_script:
     - mkdir -p ./tests/reports
     - mv /app/reports/* ./tests/reports/
@@ -59,14 +62,6 @@ visa-checkout-headless-component-tests:
     paths:
       - ./tests/reports
     when: always
-  before_script:
-    - test -n "${EMAIL_LOGIN:-}"
-    - test -n "${EMAIL_PASSWORD:-}"
-    - test -n "${JWT_ISS_KEY:-}"
-    - test -n "${JWT_SECRET_KEY_BASE64:-}"
-    - JWT_SECRET_KEY=$(echo ${JWT_SECRET_KEY_BASE64} | base64 -d)
-    - export JWT_SECRET_KEY
-    - test -n "${JWT_SECRET_KEY:-}"
 
 .e2e-tests-services:
   services:
