@@ -11,8 +11,6 @@
     - .extended-tests
     - .services-test
     - .sequentially-component-browserstack-tests
-  variables:
-    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
 
 .visual-regression-tests:
   extends:
@@ -20,8 +18,6 @@
     - .extended-tests
     - .services-dev
     - .sequentially-e2e-browserstack-tests
-  variables:
-    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
 
 # smoke tests executed on review branches
 .apple-test-browserstack-component-test:
