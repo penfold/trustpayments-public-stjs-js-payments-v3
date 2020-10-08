@@ -63,3 +63,18 @@ Feature: E2E for tokenisation
       | currencyiso3a | GBP                                     |
       | errorcode     | 0                                       |
       | status        | A                                       |
+
+  Scenario: Updating payment references for tokenization - fully authentication in second payment
+    Given JS library is configured with TOKENISATION_WITH_DEFER_INIT_CONFIG and JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION
+    And User opens example page WITH_UPDATE_JWT
+      | jwtName                                      |
+      | JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION |
+    When User fills only security code for saved VISA_INVALID_CVV card
+    And User clicks Pay button
+    Then User will see payment status information: "Invalid field"
+    And User calls updateJWT function by filling amount field
+    And User fills only security code for saved AMEX_NON_FRICTIONLESS card
+    And User clicks Pay button
+    And User fills V2 authentication modal
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color

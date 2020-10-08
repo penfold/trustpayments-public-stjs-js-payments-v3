@@ -6,25 +6,12 @@ import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { map, tap } from 'rxjs/operators';
 import { StTransport } from '../../services/st-transport/StTransport.class';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 
 @Service()
 export class CardinalCommerceTokensProvider {
-  constructor(
-    private configProvider: ConfigProvider,
-    private stTransport: StTransport,
-    private messageBus: MessageBus
-  ) {}
+  constructor(private stTransport: StTransport, private messageBus: MessageBus) {}
 
   getTokens(): Observable<ICardinalCommerceTokens> {
-    const config = this.configProvider.getConfig();
-
-    if (config.init.cachetoken && config.init.threedinit) {
-      const { cachetoken, threedinit } = config.init;
-
-      return of({ cacheToken: cachetoken, jwt: threedinit });
-    }
-
     return this.performThreeDInitRequest().pipe(
       tap((response: IThreeDInitResponse) =>
         this.messageBus.publish({
