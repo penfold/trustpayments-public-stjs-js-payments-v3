@@ -93,3 +93,14 @@ Feature: E2E Card Payments
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+
+  Scenario: Failed Frictionless Authentication in second payment
+    Given JS library is configured with DEFER_INIT_CONFIG and BASE_JWT
+    And User opens example page
+    When User fills payment form with defined card VISA_FAILED_FRICTIONLESS_AUTH
+    And User clicks Pay button
+    Then User will see payment status information: "Unauthenticated"
+    And Wait for notification frame to disappear
+    And User clicks Pay button
+    And User will see payment status information: "Unauthenticated"
+    And User will see that notification frame has "red" color

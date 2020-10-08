@@ -4,7 +4,7 @@ import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
 import { CardinalCommerceTokensProvider } from './CardinalCommerceTokensProvider';
 import { StTransport } from '../../services/st-transport/StTransport.class';
 import { CardinalProvider } from './CardinalProvider';
-import { deepEqual, instance, mock, when } from 'ts-mockito';
+import { deepEqual, instance, mock, spy, when } from 'ts-mockito';
 import { CardinalCommerce } from './CardinalCommerce';
 import { ICardinalCommerceTokens } from './ICardinalCommerceTokens';
 import { of } from 'rxjs';
@@ -17,11 +17,13 @@ import { environment } from '../../../../environments/environment';
 import { ICard } from '../../models/ICard';
 import { IOnCardinalValidated } from '../../models/IOnCardinalValidated';
 import SpyInstance = jest.SpyInstance;
-import { switchMap } from 'rxjs/operators';
+import { first, switchMap } from 'rxjs/operators';
+import { PaymentBrand } from '../../models/constants/PaymentBrand';
+import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 
 describe('CardinalCommerce', () => {
   const tokens: ICardinalCommerceTokens = { jwt: 'foo', cacheToken: 'bar' };
-  const config: IConfig = ({ livestatus: false } as unknown) as IConfig;
+  const config: IConfig = ({ livestatus: false, init: {} } as unknown) as IConfig;
   let messageBusMock: MessageBus;
   let notificationMock: NotificationService;
   let framesHubMock: FramesHub;
@@ -89,15 +91,18 @@ describe('CardinalCommerce', () => {
       });
     });
 
-    it('re-acquires tokens and updates cardinal jwt on merchants jwt update', done => {
-      cardinalCommerce.init(config).subscribe(cardinal => {
-        jest.spyOn(cardinal, 'trigger');
-
+    it('re-acquires tokens merchants jwt update', done => {
+      cardinalCommerce.init(config).subscribe(() => {
         when(tokenProviderMock.getTokens()).thenReturn(of({ jwt: 'foo2', cacheToken: 'bar2' }));
-        messageBusMock.publish({ type: MessageBus.EVENTS_PUBLIC.UPDATE_JWT, data: { newJwt: 'foobar' } });
 
-        expect(cardinal.trigger).toHaveBeenCalledWith(PaymentEvents.JWT_UPDATE, 'foo2');
-        done();
+        messageBusMock
+          .pipe(ofType(MessageBus.EVENTS_PUBLIC.CARDINAL_COMMERCE_TOKENS_ACQUIRED), first())
+          .subscribe(event => {
+            expect(event.data).toEqual({ jwt: 'foo2', cacheToken: 'bar2' });
+            done();
+          });
+
+        messageBusMock.publish({ type: MessageBus.EVENTS_PUBLIC.UPDATE_JWT, data: { newJwt: 'foobar' } });
       });
     });
 
@@ -186,7 +191,9 @@ describe('CardinalCommerce', () => {
       );
     });
 
-    it('returns threedresponse and cache token', done => {
+    it('runs cardinal.start and returns threedresponse and cache token', done => {
+      spyOn(cardinalMock, 'start').and.callThrough();
+
       cardinalCommerce
         .init(config)
         .pipe(switchMap(() => cardinalCommerce.performThreeDQuery(requestTypes, card, merchantData)))
@@ -195,6 +202,7 @@ describe('CardinalCommerce', () => {
             threedresponse: cardinalContinueJwt,
             cachetoken: 'bar'
           });
+          expect(cardinalMock.start).toHaveBeenCalledWith(PaymentBrand, {}, 'foo');
           done();
         });
     });
