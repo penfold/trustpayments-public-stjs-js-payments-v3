@@ -30,7 +30,15 @@
 <script type="text/javascript">
 
   function callback() {
-    console.error('This is callback function');
+    console.error('This is CALLBACK function');
+  }
+
+  function successcallback() {
+    console.error('This is SUCCESS function');
+  }
+
+  function errorcallback() {
+    console.error('This is ERROR function');
   }
 
   var ST = SecureTrading;
@@ -39,10 +47,11 @@
     jwt: '',
     livestatus: 0,
     deferInit: true,
-    submitOnSuccess: false,
+    submitOnSuccess: true,
+    submitOnError: true,
     submitCallback: callback,
-    successCallback: false,
-    errorCallback: false,
+    errorCallback: errorcallback,
+    successCallback: successcallback,
     styles: {
       'cardNumber': {
         'isLinedUp': 'true',
