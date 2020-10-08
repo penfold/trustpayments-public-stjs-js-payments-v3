@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.27
+.cicd-os-ref: &cicd-os-ref INFRA-446_Cleanup_and_refactor_os_projects
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
