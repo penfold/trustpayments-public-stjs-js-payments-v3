@@ -28,7 +28,6 @@ visa-checkout-headless-component-tests:
   extends:
     - .image-test
     - .fast-tests
-    - .component-tests
     - .services-test
     - .sequentially-tests
   variables:
@@ -45,9 +44,8 @@ e2e-tests:
   extends:
     - .image-test
     - .fast-tests
-    - .e2e-tests
     - .services-dev
-    - .parallel-tests
+    - .parallel-e2e-tests
   parallel: 14
 
 zap-baseline-scan-library-securetrading-net:
