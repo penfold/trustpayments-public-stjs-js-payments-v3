@@ -1,6 +1,6 @@
 {
   "name": "js-payments",
-  "version": "2.5.0",
+  "version": "0.0.0",
   "description": "> A JavaScript interface for allowing tokenisation and authorisation of payments through Trust Payments.",
   "private": true,
   "browserslist": [
