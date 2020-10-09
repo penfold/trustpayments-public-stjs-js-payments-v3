@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.27
+.cicd-os-ref: &cicd-os-ref INFRA-444-Release_in_js-payments
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
