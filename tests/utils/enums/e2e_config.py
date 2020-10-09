@@ -24,6 +24,7 @@ class E2eConfig(Enum):
     DEFER_INIT_CONFIG = 'e2eConfigWithDeferinitTrue.json'
     DEFER_INIT_AND_SUBMIT_ON_SUCCESS_CONFIG = 'e2eConfigWithDeferinitTrueAndSumitOnSuccess.json'
     TOKENISATION_CONFIG = 'e2eForTokenisation.json'
+    TOKENISATION_WITH_DEFER_INIT_CONFIG = 'e2eForTokenisationAndDeferInit.json'
     TOKENISATION_AND_SUBMIT_ON_SUCCESS_CONFIG = 'e2eConfigTokenisationAndSubmitOnSuccess.json'
     REQUEST_TYPES_CONFIG = 'e2eConfigRequestTypes.json'
     REQUEST_TYPES_CONFIG_INVALID_ORDER = 'e2eConfigRequestTypesInvalidOrder.json'

@@ -345,6 +345,9 @@ class PaymentMethodsPage(BasePage):
     def wait_for_popups_to_disappear(self):
         self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.popups)
 
+    def wait_for_notification_frame_to_disappear(self):
+        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.notification_frame, 60)
+
     def validate_callback_with_data_type(self, expected_message):
         actual_message = self.get_text_from_status_callback()
         assertion_message = f'Payment status is not correct, should be: "{expected_message}" but is: "{actual_message}"'

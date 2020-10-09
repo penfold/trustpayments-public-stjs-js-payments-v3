@@ -1,0 +1,7 @@
+{
+  "fieldsToSubmit": [
+    "securitycode"
+  ],
+  "submitOnSuccess": false,
+  "deferInit": true
+}
