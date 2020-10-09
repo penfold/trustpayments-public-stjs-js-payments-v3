@@ -446,6 +446,12 @@ def step_impl(context):
     payment_page.wait_for_popups_to_disappear()
 
 
+@step('Wait for notification frame to disappear')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.wait_for_notification_frame_to_disappear()
+
+
 @step('Change field focus')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')

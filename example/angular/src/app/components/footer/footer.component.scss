@@ -1,0 +1,11 @@
+@import "variables";
+
+.footer {
+  text-align: center;
+  font-size: 11px;
+  margin: 30px auto;
+
+  .copyright {
+    color: $color-primary;
+  }
+}

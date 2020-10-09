@@ -71,6 +71,10 @@ export class FramesHub {
     return window.parent;
   }
 
+  public reset() {
+    this.activeFrame$.next([]);
+  }
+
   private getInitialFrames(): Observable<string[]> {
     if (this.identifier.isParentFrame()) {
       return of([]);

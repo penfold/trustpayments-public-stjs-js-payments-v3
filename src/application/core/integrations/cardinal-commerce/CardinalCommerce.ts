@@ -31,9 +31,14 @@ export class CardinalCommerce {
     RENDER: 'ui.render',
     CLOSE: 'ui.close'
   };
+  private static readonly CARDINAL_VALIDATION_ERROR = 4000;
   private cardinalTokens: ICardinalCommerceTokens;
   private cardinal$: Observable<ICardinal>;
   private cardinalValidated$: Subject<[IOnCardinalValidated, string]>;
+  // cardinal.start always throws validation error
+  // we ignore it, but use it to track when the start request has completed
+  private cardinalValidatedWithoutValidationError$: Observable<[IOnCardinalValidated, string]>;
+
   private destroy$: Observable<void>;
 
   constructor(
@@ -46,14 +51,20 @@ export class CardinalCommerce {
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(MessageBus.EVENTS_PUBLIC.DESTROY), mapTo(void 0));
     this.cardinalValidated$ = new Subject<[IOnCardinalValidated, string]>();
+    this.cardinalValidatedWithoutValidationError$ = this.cardinalValidated$.pipe(
+      filter(data => data[0].ErrorNumber !== CardinalCommerce.CARDINAL_VALIDATION_ERROR)
+    );
 
-    this.cardinalValidated$
-      .pipe(filter(data => data[0].ActionCode === 'ERROR'))
+    this.cardinalValidatedWithoutValidationError$
+      .pipe(
+        map(data => data[0]),
+        filter(data => data.ActionCode === 'ERROR')
+      )
       .subscribe(() => this.notification.error(COMMUNICATION_ERROR_INVALID_RESPONSE));
   }
 
   init(config: IConfig): Observable<ICardinal> {
-    this.cardinal$ = this.acquireCardinalCommerceTokens().pipe(
+    this.cardinal$ = this.acquireInitialCardinalCommerceTokens(config).pipe(
       switchMap(tokens => this.setupCardinalCommerceLibrary(tokens, Boolean(config.livestatus))),
       tap(cardinal => this._initSubscriptions(cardinal)),
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed')),
@@ -76,7 +87,9 @@ export class CardinalCommerce {
       ...card
     };
 
-    return from(this.stTransport.sendRequest(threeDQueryRequestBody)).pipe(
+    return this.cardinal$.pipe(
+      switchMap(cardinal => this.startTransaction(cardinal, this.cardinalTokens.jwt)),
+      switchMap(() => from(this.stTransport.sendRequest(threeDQueryRequestBody))),
       tap((response: { response: IThreeDQueryResponse }) => (this.stTransport._threeDQueryResult = response)),
       switchMap((response: { response: IThreeDQueryResponse }) => this._authenticateCard(response.response)),
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed')),
@@ -85,6 +98,16 @@ export class CardinalCommerce {
         cachetoken: this.cardinalTokens.cacheToken
       }))
     );
+  }
+
+  private acquireInitialCardinalCommerceTokens(config: IConfig): Observable<ICardinalCommerceTokens> {
+    const { threedinit, cachetoken } = config.init;
+
+    if (threedinit && cachetoken) {
+      return of((this.cardinalTokens = { jwt: threedinit, cacheToken: cachetoken }));
+    }
+
+    return this.acquireCardinalCommerceTokens();
   }
 
   private acquireCardinalCommerceTokens(): Observable<ICardinalCommerceTokens> {
@@ -129,6 +152,20 @@ export class CardinalCommerce {
     );
   }
 
+  private startTransaction(cardinal: ICardinal, jwt: string): Observable<void> {
+    return new Observable(observer => {
+      this.cardinalValidated$
+        .pipe(
+          filter(data => data[0].ErrorNumber === CardinalCommerce.CARDINAL_VALIDATION_ERROR),
+          first(),
+          mapTo(undefined)
+        )
+        .subscribe(observer);
+
+      cardinal.start(PaymentBrand, {}, jwt);
+    });
+  }
+
   private _authenticateCard(responseObject: IThreeDQueryResponse): Observable<string | undefined> {
     const isCardEnrolledAndNotFrictionless = responseObject.enrolled === 'Y' && responseObject.acsurl !== undefined;
 
@@ -156,7 +193,7 @@ export class CardinalCommerce {
     return this.cardinal$.pipe(
       tap(cardinal => cardinalContinue(cardinal)),
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
-      switchMap(() => this.cardinalValidated$.pipe(first())),
+      switchMap(() => this.cardinalValidatedWithoutValidationError$.pipe(first())),
       switchMap(([validationResult, jwt]: [IOnCardinalValidated, string]) => {
         if (
           !CardinalCommerceValidationStatus.includes(validationResult.ActionCode) ||
@@ -182,7 +219,7 @@ export class CardinalCommerce {
         switchMap(() => this.acquireCardinalCommerceTokens()),
         takeUntil(this.destroy$)
       )
-      .subscribe(tokens => cardinal.trigger(PaymentEvents.JWT_UPDATE, tokens.jwt));
+      .subscribe();
 
     this.messageBus
       .pipe(ofType(MessageBus.EVENTS_PUBLIC.BIN_PROCESS), takeUntil(this.destroy$))
