@@ -49,6 +49,7 @@ variables:
 
   ### Disabled Activities
   # DISABLE_ACTIVITY_docker_image_build_cache: 'true'
+  # DISABLE_ACTIVITY_generate_lerna_artifacts: 'true'
   ### Disabled Activities : End
 
   ##### Others - project specific #####
