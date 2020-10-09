@@ -75,9 +75,8 @@ Feature: E2E Card Payments - redirection
     And User opens example page
     When User fills "SECURITY_CODE" field "123"
     And User clicks Pay button
-    And User fills V1 authentication modal
-    Then User will not see notification frame
-    And User will be sent to page with url "www.example.com" having params
+    And User fills V2 authentication modal
+    Then User will be sent to page with url "www.example.com" having params
       | key           | value                                   |
       | errormessage  | Payment has been successfully processed |
       | baseamount    | 1000                                    |
