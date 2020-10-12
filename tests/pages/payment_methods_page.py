@@ -1,10 +1,8 @@
 import json
-import time
 from urllib.parse import urlparse, parse_qs
 
 from assertpy import assert_that
 
-import ioc_config
 from configuration import CONFIGURATION
 from locators.payment_methods_locators import PaymentMethodsLocators
 from pages.base_page import BasePage
@@ -25,6 +23,11 @@ class PaymentMethodsPage(BasePage):
     def get_page_title(self):
         page_title = self._executor.get_page_title()
         return page_title
+
+    def wait_for_payment_form_to_load(self):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.card_number_iframe)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
 
     def fill_credit_card_field(self, field_type, value):
         if field_type == FieldType.CARD_NUMBER.name:
@@ -52,7 +55,8 @@ class PaymentMethodsPage(BasePage):
                                                                    value)
 
     def fill_payment_form(self, card_number, expiration_date, cvv):
-        if 'ie' in ioc_config.CONFIG.resolve('driver').browser:
+        self.wait_for_payment_form_to_load()
+        if 'IE' in self._configuration.BROWSER:
             self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
             self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
@@ -62,7 +66,7 @@ class PaymentMethodsPage(BasePage):
             self.fill_credit_card_field(FieldType.SECURITY_CODE.name, cvv)
 
     def fill_payment_form_without_cvv(self, card_number, expiration_date):
-        if 'ie' in ioc_config.CONFIG.resolve('driver').browser:
+        if 'IE' in self._configuration.BROWSER:
             self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
         else:
@@ -70,7 +74,7 @@ class PaymentMethodsPage(BasePage):
             self.fill_credit_card_field(FieldType.EXPIRATION_DATE.name, expiration_date)
 
     def fill_payment_form_with_only_cvv(self, cvv):
-        if 'ie' in ioc_config.CONFIG.resolve('driver').browser:
+        if 'IE' in self._configuration.BROWSER:
             self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
         else:
             self.fill_credit_card_field(FieldType.SECURITY_CODE.name, cvv)
@@ -90,6 +94,7 @@ class PaymentMethodsPage(BasePage):
 
     def fill_amount_field(self, value):
         self._action.send_keys(PaymentMethodsLocators.amount_field, value)
+        self._executor.wait_for_javascript()
 
     def fill_cardinal_authentication_code(self, auth_type):
         auth = AuthType.__members__[auth_type].name
@@ -111,7 +116,15 @@ class PaymentMethodsPage(BasePage):
             self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
             self._action.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
                                    AuthData.PASSWORD.value)
+            self.scroll_to_bottom()
             self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
+
+    def click_cardinal_cancel_btn(self):
+        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.secure_trade_form)
+        self._action.switch_to_iframe(FieldType.CONTROL_IFRAME.value)
+        self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
+        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+        self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_cancel_btn)
 
     def click_cardinal_submit_btn(self):
         self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
@@ -121,6 +134,10 @@ class PaymentMethodsPage(BasePage):
 
     def press_enter_button_on_security_code_field(self):
         self._action.switch_to_iframe_and_press_enter(FieldType.SECURITY_CODE.value,
+
+                                                      PaymentMethodsLocators.security_code_input_field)
+    def clear_security_code_field(self):
+        self._action.switch_to_iframe_and_clear_input(FieldType.SECURITY_CODE.value,
                                                       PaymentMethodsLocators.security_code_input_field)
 
     def get_payment_status_message(self):
@@ -169,14 +186,15 @@ class PaymentMethodsPage(BasePage):
     def select_cardinal_commerce_payment(self):
         if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION or 'High Sierra' in CONFIGURATION.REMOTE_OS_VERSION or \
             'Google Nexus 6' in CONFIGURATION.REMOTE_DEVICE:
-            self._executor.wait_for_javascript()
+            self._waits.wait_for_javascript()
             self._action.click_by_javascript(PaymentMethodsLocators.pay_mock_button)
         else:
-            self._executor.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
+            self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
             self._action.click(PaymentMethodsLocators.pay_mock_button)
+            self._waits.wait_for_javascript()
 
     def select_apple_pay_payment(self):
-        self._executor.wait_for_javascript()
+        self._waits.wait_for_javascript()
         self.scroll_to_bottom()
         if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
             self._action.click_by_javascript(PaymentMethodsLocators.apple_pay_mock_button)
@@ -184,9 +202,9 @@ class PaymentMethodsPage(BasePage):
             self._action.click(PaymentMethodsLocators.apple_pay_mock_button)
 
     def select_visa_checkout_payment(self):
-        self._executor.wait_for_javascript()
+        self._waits.wait_for_javascript()
         self.scroll_to_bottom()
-        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.visa_checkout_mock_button)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.visa_checkout_mock_button)
         if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
             self._action.click_by_javascript(PaymentMethodsLocators.visa_checkout_mock_button)
         else:
@@ -201,7 +219,7 @@ class PaymentMethodsPage(BasePage):
             processing_text = translation[processing_text]
         processing_text = f'{processing_text} ...'
 
-        self._executor.wait_for_text_to_be_not_present_in_element(PaymentMethodsLocators.pay_mock_button,
+        self._waits.wait_for_text_to_be_not_present_in_element(PaymentMethodsLocators.pay_mock_button,
                                                                   processing_text)
 
     def get_field_validation_message(self, field_type):
@@ -300,6 +318,20 @@ class PaymentMethodsPage(BasePage):
             element_translation = self._action.get_text(locator)
         return element_translation
 
+    def change_field_focus(self, field_type):
+        if field_type == FieldType.CARD_NUMBER.name:
+            self._action.switch_to_iframe_and_click(PaymentMethodsLocators.card_number_iframe,
+                                                                             PaymentMethodsLocators.card_number_input_field)
+        elif field_type == FieldType.EXPIRATION_DATE.name:
+            self._action.switch_to_iframe_and_click(PaymentMethodsLocators.expiration_date_iframe,
+                                                    PaymentMethodsLocators.expiration_date_input_field)
+        elif field_type == FieldType.SECURITY_CODE.name:
+            self._action.switch_to_iframe_and_click(PaymentMethodsLocators.security_code_iframe,
+                                                    PaymentMethodsLocators.security_code_input_field)
+        elif field_type == FieldType.ANIMATED_CARD.name:
+            self._action.switch_to_iframe_and_click(PaymentMethodsLocators.animated_card_iframe,
+                                                    PaymentMethodsLocators.animated_card)
+
     def switch_to_parent_iframe(self):
         self._action.switch_to_iframe(PaymentMethodsLocators.parent_iframe)
 
@@ -320,17 +352,20 @@ class PaymentMethodsPage(BasePage):
     def validate_payment_status_message(self, expected_message):
         if CONFIGURATION.REMOTE_DEVICE:
             self.scroll_to_top()
-        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
         actual_message = self.get_payment_status_message()
         assertion_message = f'Payment status is not correct, should be: "{expected_message}" but is: "{actual_message}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_message in actual_message, assertion_message
 
     def wait_for_notification_frame(self):
-        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
 
     def wait_for_popups_to_disappear(self):
-        self._executor.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.popups)
+        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.popups)
+
+    def wait_for_notification_frame_to_disappear(self):
+        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.notification_frame, 60)
 
     def validate_callback_with_data_type(self, expected_message):
         actual_message = self.get_text_from_status_callback()
@@ -436,19 +471,15 @@ class PaymentMethodsPage(BasePage):
         return translation[key]
 
     def validate_if_url_contains_info_about_payment(self, expected_url):
-        self._executor.wait_for_javascript()
+        self._executor.wait_until_url_contains(expected_url)
         actual_url = self._executor.get_page_url()
-        if expected_url not in actual_url:
-            time.sleep(3)
-            actual_url = self._executor.get_page_url()
         assertion_message = f'Url is not correct, should be: "{expected_url}" but is: "{actual_url}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_url in actual_url, assertion_message
 
-    def validate_base_url(self, url: str, wait_for_url):
-        self._executor.wait_for_javascript()
-        if wait_for_url:
-            self._executor.wait_until_url_contains(url)
+    def validate_base_url(self, url: str):
+        self._waits.wait_for_javascript()
+        self._waits.wait_until_url_starts_with(url)
         actual_url = self._executor.get_page_url()
         parsed_url = urlparse(actual_url)
         assertion_message = f'Url is not correct, should be: "{url}" but is: "{actual_url}"'
@@ -456,11 +487,14 @@ class PaymentMethodsPage(BasePage):
         assert_that(parsed_url.hostname).is_equal_to(url)
 
     def validate_if_url_contains_param(self, key, value):
-        self._executor.wait_for_javascript()
+        self._waits.wait_for_javascript()
         actual_url = self._executor.get_page_url()
         parsed_url = urlparse(actual_url)
         parsed_query_from_url = parse_qs(parsed_url.query)
-        assert_that(parsed_query_from_url[key][0]).is_equal_to(value)
+        if 'jwt' in key:
+            assert_that(parsed_query_from_url[key][0]).is_not_none()
+        else:
+            assert_that(parsed_query_from_url[key][0]).is_equal_to(value)
 
     def validate_form_status(self, field_type, form_status):
         if 'enabled' in form_status:
@@ -471,13 +505,13 @@ class PaymentMethodsPage(BasePage):
     def validate_if_callback_popup_is_displayed(self, callback_popup):
         is_displayed = False
         if 'success' in callback_popup:
-            self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_success_popup)
+            self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_success_popup)
             is_displayed = self._action.is_element_displayed(PaymentMethodsLocators.callback_success_popup)
         elif 'error' in callback_popup:
-            self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_error_popup)
+            self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_error_popup)
             is_displayed = self._action.is_element_displayed(PaymentMethodsLocators.callback_error_popup)
         elif 'cancel' in callback_popup:
-            self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_cancel_popup)
+            self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_cancel_popup)
             is_displayed = self._action.is_element_displayed(PaymentMethodsLocators.callback_cancel_popup)
         assertion_message = f'{callback_popup} callback popup is not displayed but should be'
         add_to_shared_dict('assertion_message', assertion_message)

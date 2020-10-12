@@ -1,4 +1,4 @@
-import { ICardinal } from '../../application/core/integrations/cardinal-commerce/ICardinal';
+import { ICardinal, IOrderObject } from '../../application/core/integrations/cardinal-commerce/ICardinal';
 import { PaymentEvents } from '../../application/core/models/constants/PaymentEvents';
 import { ajaxGet } from 'rxjs/internal-compatibility';
 import { environment } from '../../environments/environment';
@@ -36,5 +36,17 @@ export class CardinalMock implements ICardinal {
     if (this.callbacks[eventName]) {
       this.callbacks[eventName].apply(this, data);
     }
+  }
+
+  start(paymentBrand: string, orderObject: IOrderObject, jwt?: string) {
+    this.callbacks[PaymentEvents.VALIDATED](
+      {
+        ActionCode: 'ERROR',
+        ErrorDescription: '',
+        ErrorNumber: 4000,
+        Validated: false
+      },
+      ''
+    );
   }
 }

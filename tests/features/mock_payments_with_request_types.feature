@@ -15,6 +15,8 @@ Feature: Successfull payments with various request types configurations
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And THREEDQUERY request was sent only once with correct data
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_requestTypes_tdq_auth
   Scenario: Successful payment with request types: THREEDQUERY, AUTH
@@ -26,6 +28,8 @@ Feature: Successfull payments with various request types configurations
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_requestTypes_acheck_tdq_auth
   Scenario: Successful payment with additional request types: ACCOUNTCHECK, THREEDQUERY, AUTH
@@ -36,6 +40,8 @@ Feature: Successfull payments with various request types configurations
     Then User will see payment status information: "Payment has been successfully processed"
     And ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
     And AUTH request was sent only once with correct data
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_requestTypes_tdq_auth_riskdec
   Scenario: Successful payment with additional request types: THREEDQUERY, AUTH, RISKDEC
@@ -46,6 +52,8 @@ Feature: Successfull payments with various request types configurations
     Then User will see payment status information: "Payment has been successfully processed"
     And THREEDQUERY request was sent only once with correct data
     And AUTH, RISKDEC ware sent only once in one request
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_requestTypes_riskdec_acheck_tdq_auth
   Scenario: Successful payment with additional request types: RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH
@@ -56,6 +64,8 @@ Feature: Successfull payments with various request types configurations
     Then User will see payment status information: "Payment has been successfully processed"
     And RISKDEC, ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
     And AUTH request was sent only once with correct data
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_requestTypes_acheck_tdq_auth_riskdec
   Scenario: Successful payment with additional request types: ACCOUNTCHECK, THREEDQUERY, AUTH, RISKDEC
@@ -66,6 +76,8 @@ Feature: Successfull payments with various request types configurations
     Then User will see payment status information: "Payment has been successfully processed"
     And ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
     And AUTH, RISKDEC ware sent only once in one request
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_requestTypes_tdq_submit_on_success
   Scenario: Successful payment with request types: THREEDQUERY and submitOnSuccess
@@ -97,3 +109,5 @@ Feature: Successfull payments with various request types configurations
     Then User will see payment status information: "Invalid field"
     And THREEDQUERY ware sent only once in one request
     And ACCOUNTCHECK, RISKDEC, AUTH ware sent only once in one request
+    And "submit" callback is called only once
+    And "error" callback is called only once

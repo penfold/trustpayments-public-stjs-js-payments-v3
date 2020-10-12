@@ -1,0 +1,13 @@
+<app-page-title></app-page-title>
+
+<app-payment-form *ngIf="config$ | async as config; else loading"
+  [config]="config"
+  [pageOptions]="pageOptions">
+</app-payment-form>
+
+<ng-template #loading>
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <mat-spinner diameter="32" mode="indeterminate" color="accent"></mat-spinner>&nbsp;
+    <span>Loading the payment form, please wait...</span>
+  </div>
+</ng-template>

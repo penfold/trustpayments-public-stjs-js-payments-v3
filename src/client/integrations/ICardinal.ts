@@ -18,4 +18,5 @@ export interface ICardinal {
   setup(initializationType: string, initializationData: any);
   trigger(eventName: string, ...data: any[]);
   configure(config: any);
+  start(paymentBrand: string, orderObject: IOrderObject, jwt?: string);
 }

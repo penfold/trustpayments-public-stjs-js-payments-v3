@@ -20,7 +20,7 @@ import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { merge, Observable } from 'rxjs';
 import JwtDecode from 'jwt-decode';
 import { IDecodedJwt } from '../../core/models/IDecodedJwt';
-import { iinLookup } from '@securetrading/ts-iin-lookup';
+import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { DefaultPlaceholders } from '../../core/models/constants/config-resolver/DefaultPlaceholders';
 import { LONG_CVC, SHORT_CVC } from '../../core/models/constants/SecurityCode';
 import { IConfig } from '../../../shared/model/config/IConfig';

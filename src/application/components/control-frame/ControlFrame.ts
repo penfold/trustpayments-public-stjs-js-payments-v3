@@ -16,7 +16,7 @@ import { PAYMENT_SUCCESS, PAYMENT_ERROR } from '../../core/models/constants/Tran
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
 import { Validation } from '../../core/shared/validation/Validation';
-import { iinLookup } from '@securetrading/ts-iin-lookup';
+import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { Service } from 'typedi';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';

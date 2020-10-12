@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="utf-8"/>
-    <title>Secure Trading Example Form</title>
-    <meta name="description" content="Secure Trading example page with form">
+    <title>Trust Payments Example Form</title>
+    <meta name="description" content="Trust Payments example page with form">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
@@ -18,7 +18,7 @@
 <main>
     <header class="st-header">
         <figure class="st-header__logo">
-            <img src="/img/st-logo.png" alt="Secure Trading logo" title="Secure Trading" role="img">
+            <img src="/img/trustpayments.png" alt="Trust Payments logo" title="Trust Payments" role="img">
         </figure>
         <h1 class="st-header__title">Example Form</h1>
     </header>
@@ -144,7 +144,7 @@
     </form>
 
     <footer class="st-footer">
-        <p>&copy; Secure Trading 2020</p>
+        <p>&copy; Trust Payments 2020</p>
     </footer>
 </main>
 <script type="text/javascript" src="/counter.js"></script>
@@ -156,7 +156,7 @@
     var params = new URLSearchParams(window.location.search.substring(1));
     var inlineConfig = params.get('inlineConfig') ? JSON.parse(params.get('inlineConfig')) : '';
     var jwt = params.get('jwt') || '';
-    var updatedJwt = params.get('updatedJwt') || 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU4ODY5NTEzOS41NTgwOTc0LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwicGFuIjoiNTIwMDAwMDAwMDAwMTAwNSIsImV4cGlyeWRhdGUiOiIwMS8yMiJ9fQ.wAmn0JqsAfj7ZtsqbDadknWpPhUhJb7CPiQT8VqZ4hk';
+    var updatedJwt = params.get('updatedJwt') || '';
     var extraSubmitFunction = params.get('extraSubmitFunction');
     var extraErrorFunction = params.get('extraErrorFunction');
     var extraSuccessFunction = params.get('extraSuccessFunction');
@@ -198,7 +198,7 @@
         return Promise.resolve(presetJwt);
       }
 
-      return window.configJWT('./../json/jwtdata.json');
+      return window.configJWT('<%= CONFIG_URL %>/jwtdata.json');
     }
 
     function init(config) {

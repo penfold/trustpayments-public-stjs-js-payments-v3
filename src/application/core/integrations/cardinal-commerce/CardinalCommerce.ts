@@ -7,7 +7,7 @@ import { Service } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { CardinalCommerceTokensProvider } from './CardinalCommerceTokensProvider';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, mapTo, switchMap, tap } from 'rxjs/operators';
 import { ICardinalCommerceTokens } from './ICardinalCommerceTokens';
 import { Observable, of, throwError } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
@@ -50,7 +50,11 @@ export class CardinalCommerce {
     merchantData: IMerchantData
   ): Observable<IAuthorizePaymentResponse> {
     return this.ensureCardinalReady().pipe(
-      map(tokens => new ThreeDQueryRequest(tokens.cacheToken, requestTypes, card, merchantData)),
+      switchMap(tokens =>
+        this.cardinalClient
+          .start(tokens.jwt)
+          .pipe(mapTo(new ThreeDQueryRequest(tokens.cacheToken, requestTypes, card, merchantData)))
+      ),
       switchMap(request => this.gatewayClient.threedQuery(request)),
       switchMap(response => this._authenticateCard(response)),
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed'))

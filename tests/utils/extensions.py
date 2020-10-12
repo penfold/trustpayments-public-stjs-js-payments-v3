@@ -12,6 +12,7 @@ class WebElementsExtensions(Waits):
     # pylint: disable=too-many-public-methods
 
     def send_keys(self, locator, string):
+        self.wait_for_element_to_be_displayed(locator)
         element = self.find_element(locator)
         element.send_keys(string)
 
@@ -53,6 +54,7 @@ class WebElementsExtensions(Waits):
         return element
 
     def click(self, locator):
+        self.wait_for_element_to_be_displayed(locator)
         element = self.find_element(locator)
         element.click()
 
@@ -97,6 +99,12 @@ class WebElementsExtensions(Waits):
         element = self.find_element(locator)
         css_value = element.value_of_css_property(property_name)
         return css_value
+
+    def switch_to_iframe_and_clear_input(self, iframe_name, locator):
+        self.switch_to_iframe(iframe_name)
+        element = self.find_element(locator)
+        element.clear()
+        self.switch_to_default_iframe()
 
     def clear_input(self, locator):
         element = self.find_element(locator)

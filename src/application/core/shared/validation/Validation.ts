@@ -1,6 +1,6 @@
-import { iinLookup } from '@securetrading/ts-iin-lookup';
-import { BrandDetailsType } from '@securetrading/ts-iin-lookup/dist/types';
-import { luhnCheck } from '@securetrading/ts-luhn-check';
+import { iinLookup } from '@trustpayments/ts-iin-lookup';
+import { BrandDetailsType } from '@trustpayments/ts-iin-lookup/dist/types';
+import { luhnCheck } from '@trustpayments/ts-luhn-check';
 import { StCodec } from '../../services/st-codec/StCodec.class';
 import { FormState } from '../../models/constants/FormState';
 import { ICard } from '../../models/ICard';
@@ -135,14 +135,6 @@ export class Validation {
     return isPanValid && isExpiryDateValid && isSecurityCodeValid;
   }
 
-  private static _toggleErrorClass(inputElement: HTMLInputElement) {
-    if (inputElement.validity.valid) {
-      inputElement.classList.remove(Validation.ERROR_FIELD_CLASS);
-    } else {
-      inputElement.classList.add(Validation.ERROR_FIELD_CLASS);
-    }
-  }
-
   public cardDetails: any;
   public cardNumberValue: string;
   public expirationDateValue: string;
@@ -274,8 +266,11 @@ export class Validation {
     if (message && messageElement && messageElement.innerText !== VALIDATION_ERROR_PATTERN_MISMATCH) {
       messageElement.innerText = this._translator.translate(message);
       inputElement.classList.add(Validation.ERROR_FIELD_CLASS);
+      messageElement.style.visibility = 'visible';
       inputElement.setCustomValidity(message);
     } else {
+      inputElement.classList.remove(Validation.ERROR_FIELD_CLASS);
+      messageElement.style.visibility = 'hidden';
       inputElement.setCustomValidity(message);
     }
   }
@@ -294,8 +289,9 @@ export class Validation {
     this._messageBus.publish(validationEvent);
   }
 
-  public validate(inputElement: HTMLInputElement, messageElement: HTMLElement, customErrorMessage?: string) {
-    Validation._toggleErrorClass(inputElement);
+  public validate(inputElement: HTMLInputElement, messageElement: HTMLElement, customErrorMessage?: string): void {
+    this._toggleErrorClass(inputElement);
+    this._toggleErrorContainer(inputElement, messageElement);
     this._setMessage(inputElement, messageElement, customErrorMessage);
   }
 
@@ -373,6 +369,18 @@ export class Validation {
       messageElement,
       customErrorMessage
     );
+  }
+
+  private _toggleErrorContainer(inputElement: HTMLInputElement, messageElement: HTMLElement): void {
+    inputElement.validity.valid
+      ? (messageElement.style.visibility = 'hidden')
+      : (messageElement.style.visibility = 'visible');
+  }
+
+  private _toggleErrorClass(inputElement: HTMLInputElement): void {
+    inputElement.validity.valid
+      ? inputElement.classList.remove(Validation.ERROR_FIELD_CLASS)
+      : inputElement.classList.add(Validation.ERROR_FIELD_CLASS);
   }
 
   private _setValidationResult(

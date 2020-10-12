@@ -235,6 +235,7 @@ export class ST {
   }
 
   public init(config: IConfig): void {
+    this._framesHub.reset();
     this._storage.init();
     this._config = this._configService.update(config);
     StCodec.updateJWTValue(config.jwt);

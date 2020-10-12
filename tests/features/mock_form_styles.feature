@@ -7,7 +7,7 @@ Feature: Payment form styles check
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
 
-  @config_field_style @smoke_test @extended_tests_part_1
+  @config_field_style @smoke_test @extended_tests_part_2
   Scenario: Checking style of individual fields
     When User opens page with payment form
     Then User will see that "CARD_NUMBER" field has correct style

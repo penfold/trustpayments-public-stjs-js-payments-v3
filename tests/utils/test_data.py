@@ -31,8 +31,8 @@ TEST_DATA = load_test_data()
 class TestData:
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, config__test):
-        self._base_page = config__test.base_page
+    def __init__(self, configuration):
+        self._base_page = configuration.URL.BASE_URL
 
         ''' User section '''
         self.step_payment_cardinal_success_url = TEST_DATA.STEP_PAYMENT.CARDINAL_SUCCESS_URL

@@ -15,9 +15,11 @@ import { IValidationResult } from '../../shared/integrations/cardinal-commerce/I
 import { environment } from '../../environments/environment';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import { IOnCardinalValidated } from '../../application/core/models/IOnCardinalValidated';
 
 @Service()
 export class CardinalClient {
+  private static readonly CARDINAL_VALIDATION_ERROR = 4000;
   private cardinal$: Observable<ICardinal>;
 
   constructor(
@@ -45,6 +47,10 @@ export class CardinalClient {
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.CARDINAL_TRIGGER)
       .thenRespond((event: IMessageBusEvent<ITriggerData<any>>) => this.cardinalTrigger(event.data));
+
+    this.interFrameCommunicator
+      .whenReceive(PUBLIC_EVENTS.CARDINAL_START)
+      .thenRespond((event: IMessageBusEvent<IInitializationData>) => this.cardinalStart(event.data));
   }
 
   private cardinalSetup(data: IInitializationData): Observable<void> {
@@ -105,6 +111,23 @@ export class CardinalClient {
       first(),
       tap(cardinal => cardinal.trigger(eventName, data)),
       mapTo(void 0)
+    );
+  }
+
+  private cardinalStart(data: IInitializationData): Observable<void> {
+    return this.cardinal$.pipe(
+      switchMap(
+        (cardinal: ICardinal) =>
+          new Observable<void>(observer => {
+            cardinal.on(PaymentEvents.VALIDATED, (event: IOnCardinalValidated) => {
+              if (event.ErrorNumber === CardinalClient.CARDINAL_VALIDATION_ERROR) {
+                observer.next();
+              }
+            });
+
+            cardinal.start(PaymentBrand, {}, data.jwt);
+          })
+      )
     );
   }
 }

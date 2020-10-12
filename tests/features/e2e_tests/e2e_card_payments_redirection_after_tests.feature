@@ -68,16 +68,14 @@ Feature: E2E Card Payments - redirection
       | errorcode    | 30000         |
       | errordata    | locale        |
 
-
   @e2e_config_submit_on_success_security_code
   Scenario: Successful payment with submitOnSuccess enabled with field to submit securitycode
     Given JS library is configured with SUBMIT_ON_SUCCESS_SECURITY_CODE_CONFIG and JWT_WITH_PARENT_TRANSACTION
     And User opens example page
     When User fills "SECURITY_CODE" field "123"
     And User clicks Pay button
-    And User fills V1 authentication modal
-    Then User will not see notification frame
-    And User will be sent to page with url "www.example.com" having params
+    And User fills V2 authentication modal
+    Then User will be sent to page with url "www.example.com" having params
       | key           | value                                   |
       | errormessage  | Payment has been successfully processed |
       | baseamount    | 1000                                    |
@@ -159,3 +157,31 @@ Feature: E2E Card Payments - redirection
       | key          | value                      |
       | errormessage | Payment has been cancelled |
       | errorcode    | cancelled                  |
+
+  Scenario: Cancel Cardinal popup with enabled submitOnSuccess and request type: ACCOUNTCHECK, TDQ
+    Given JS library is configured with SUBMIT_ON_SUCCESS_ERROR_REQUEST_TYPES_CONFIG and BASE_JWT
+    And User opens example page
+    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    And User clicks Pay button
+    And User clicks Cancel button on authentication modal
+    Then User will be sent to page with url "www.example.com" having params
+      | key          | value              |
+      | errormessage | An error occurred  |
+      | enrolled     | Y                  |
+      | settlestatus | 0                  |
+      | errorcode    | 50003              |
+      | jwt          | should not be none |
+
+  Scenario: Cancel Cardinal popup with enabled submitOnError and request type: ACCOUNTCHECK, TDQ
+    Given JS library is configured with SUBMIT_ON_ERROR_REQUEST_TYPES_CONFIG and BASE_JWT
+    And User opens example page
+    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    And User clicks Pay button
+    And User clicks Cancel button on authentication modal
+    Then User will be sent to page with url "www.example.com" having params
+      | key          | value              |
+      | errormessage | An error occurred  |
+      | enrolled     | Y                  |
+      | settlestatus | 0                  |
+      | errorcode    | 50003              |
+      | jwt          | should not be none |

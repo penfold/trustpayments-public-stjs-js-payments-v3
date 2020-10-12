@@ -55,4 +55,13 @@ export class CardinalRemoteClient {
 
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
   }
+
+  start(jwt: string): Observable<void> {
+    const queryEvent: IMessageBusEvent<IInitializationData> = {
+      type: PUBLIC_EVENTS.CARDINAL_START,
+      data: { jwt }
+    };
+
+    return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
+  }
 }

@@ -110,7 +110,7 @@ Feature: ApplePay
     And "submit" callback is called only once
 
 #    ToDo - Last step is blocked by STJS-800
-  @config_update_jwt_true @smoke_test_apple_pay @apple_test @apple_test_part1
+  @config_update_jwt_true @smoke_test_apple_pay @apple_test @apple_test_part2
   Scenario: ApplePay - Successful payment with updated JWT
     When User calls updateJWT function by filling amount field
     And User chooses ApplePay as payment method - response is set to "SUCCESS"
@@ -120,17 +120,19 @@ Feature: ApplePay
 #    And WALLETVERIFY requests contains updated jwt
 
   #    ToDo - Last step is blocked by STJS-800
-  @config_defer_init @smoke_test_apple_pay @extended_tests_apple_pay @apple_test @apple_test_part1
+  @config_defer_init @smoke_test_apple_pay @extended_tests_apple_pay @apple_test @apple_test_part2
   Scenario: ApplePay - Successful payment with deferInit and updated JWT
     When User calls updateJWT function by filling amount field
     And User chooses ApplePay as payment method - response is set to "SUCCESS"
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "success" callback is called only once
+    And "submit" callback is called only once
     And APPLE_PAY or AUTH requests were sent only once with correct data
 #    And WALLETVERIFY requests contains updated jwt
 
   #    ToDo - Last step is blocked by STJS-800
-  @config_submit_on_success_true @smoke_test_apple_pay @apple_test @apple_test_part1
+  @config_submit_on_success_true @smoke_test_apple_pay @apple_test @apple_test_part2
   Scenario: ApplePay - update JWT and submitOnSuccess
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User calls updateJWT function by filling amount field
@@ -145,6 +147,8 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "success" callback is called only once
+    And "submit" callback is called only once
     And AUTH request for APPLE_PAY is sent only once with correct data
 
   @config_apple_acheck @apple_test @apple_test_part2
@@ -153,6 +157,8 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "success" callback is called only once
+    And "submit" callback is called only once
     And ACCOUNTCHECK request for APPLE_PAY is sent only once with correct data
 
   @config_apple_acheck_auth @apple_test @apple_test_part2
@@ -161,6 +167,8 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "success" callback is called only once
+    And "submit" callback is called only once
     And ACCOUNTCHECK, AUTH request for APPLE_PAY is sent only once with correct data
 
   @config_apple_riskdec_auth @apple_test @apple_test_part2
@@ -169,6 +177,8 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "success" callback is called only once
+    And "submit" callback is called only once
     And RISKDEC, AUTH request for APPLE_PAY is sent only once with correct data
 
   @config_apple_riskdec_acheck_auth @apple_test @apple_test_part2
@@ -177,6 +187,8 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "success" callback is called only once
+    And "submit" callback is called only once
     And RISKDEC, ACCOUNTCHECK, AUTH request for APPLE_PAY is sent only once with correct data
 
   @config_auth_subscription @apple_test @apple_test_part2
@@ -185,6 +197,8 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "success" callback is called only once
+    And "submit" callback is called only once
     And AUTH, SUBSCRIPTION request for APPLE_PAY is sent only once with correct data
 
   @config_acheck_subscription @apple_test @apple_test_part2
@@ -193,6 +207,8 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "success" callback is called only once
+    And "submit" callback is called only once
     And ACCOUNTCHECK, SUBSCRIPTION request for APPLE_PAY is sent only once with correct data
 
   @config_cybertonica @apple_test @apple_test_part2
