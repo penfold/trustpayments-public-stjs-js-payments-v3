@@ -72,6 +72,7 @@ Feature: E2E for tokenisation
     When User fills only security code for saved VISA_INVALID_CVV card
     And User clicks Pay button
     Then User will see payment status information: "Invalid field"
+    And User waits for payment status to disappear
     And User calls updateJWT function by filling amount field
     And User fills only security code for saved AMEX_NON_FRICTIONLESS card
     And User clicks Pay button

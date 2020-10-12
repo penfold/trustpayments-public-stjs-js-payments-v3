@@ -39,11 +39,17 @@ def before_all(context):
     MockServer.start_mock_server()
 
 
+def disable_headless_for_visa_checkout(context):
+    if 'visa_checkout' in context.scenario.tags:
+        context.configuration.HEADLESS = False
+
+
 def before_scenario(context, scenario):
     """Run before each scenario"""
     LOGGER.info('BEFORE SCENARIO')
     if context.configuration.REMOTE:
         context.configuration.BROWSER = context.configuration.REMOTE_BROWSER
+    disable_headless_for_visa_checkout(context)
     context.browser = context.configuration.BROWSER
     driver = DriverFactory(configuration=context.configuration)
     context.waits = Waits(driver=driver, configuration=context.configuration)

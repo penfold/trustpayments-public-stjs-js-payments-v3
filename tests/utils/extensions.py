@@ -12,6 +12,7 @@ class WebElementsExtensions(Waits):
     # pylint: disable=too-many-public-methods
 
     def send_keys(self, locator, string):
+        self.wait_for_element_to_be_displayed(locator)
         element = self.find_element(locator)
         element.send_keys(string)
 
@@ -53,6 +54,7 @@ class WebElementsExtensions(Waits):
         return element
 
     def click(self, locator):
+        self.wait_for_element_to_be_displayed(locator)
         element = self.find_element(locator)
         element.click()
 

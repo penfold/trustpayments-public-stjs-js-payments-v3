@@ -39,11 +39,10 @@ def step_impl(context):
     stub_config(config[config_tag])
 
 
-@when('User sets incorrect request type in config file')
+@when('User opens page with incorrect request type in config file')
 def step_impl(context):
-    # Placeholder for step definition - step is implemented in
-    # @given('JavaScript configuration is set for scenario based on scenario's @config tag')
-    pass
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.open_page(CONFIGURATION.URL.BASE_URL)
 
 
 @step('THREEDQUERY mock response is set to "(?P<tdq_response>.+)"')
