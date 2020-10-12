@@ -47,11 +47,9 @@ def step_impl(context, card: Card):
 
 @step('Make screenshot after (?P<how_many_seconds>.+) seconds')
 def step_impl(context, how_many_seconds):
-    # pylint: disable=invalid-name)
     time.sleep(int(how_many_seconds))
     screenshot_filename = screenshots[_screenshot_tag(context.scenario.tags)]
-    sm = context.screenshot_manager
-    sm.make_screenshot(screenshot_filename, date_postfix=True)
+    context.screenshot_manager().make_screenshot_for_visual_tests(screenshot_filename, date_postfix=True)
 
 
 @then('Screenshot is taken after (?P<how_many_seconds>.+) seconds and checked')
@@ -61,7 +59,7 @@ def step_impl(context, how_many_seconds):
     sm = context.screenshot_manager
 
     expected_screenshot_filename = _browser_device(context) + '_' + screenshots[_screenshot_tag(context.scenario.tags)]
-    actual_screenshot_filename = sm.make_screenshot(expected_screenshot_filename, date_postfix=True)
+    actual_screenshot_filename = sm.make_screenshot_for_visual_tests(expected_screenshot_filename, date_postfix=True)
     assertion_message = f'\nScreenshots comparator detected differences between ' \
                         f'"expected/{expected_screenshot_filename}" and ' \
                         f'"actual/{actual_screenshot_filename}"\n' \
