@@ -1,18 +1,7 @@
-.component-tests:
+.image-test:
   image: ${IMAGE_JS_PAYMENTS_TESTS}
-  variables:
-    BEHAVE_LOGGING_LEVEL: INFO
-    FF_NETWORK_PER_BUILD: 'true' # https://docs.gitlab.com/runner/configuration/feature-flags.html
-    FEATURE_FILES_DIR: 'features'
-  after_script:
-    - mkdir -p ./tests/reports
-    - mv /app/reports/* ./tests/reports/
-  artifacts:
-    paths:
-      - ./tests/reports
-    when: always
 
-.component-tests-services:
+.services-test:
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
       alias: library.securetrading.net
@@ -27,48 +16,24 @@
 
 card-payments-headless-component-tests:
   extends:
+    - .image-test
     - .fast-tests
-    - .component-tests
-    - .component-tests-services
-    - .parallel-tests
+    - .services-test
+    - .parallel-component-tests
   variables:
     FEATURE_FILES_NAMES_CONTAINS: 'mock_'
-    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
   parallel: 22
 
 visa-checkout-headless-component-tests:
   extends:
+    - .image-test
     - .fast-tests
-    - .component-tests
-    - .component-tests-services
-    - .sequentially-tests
+    - .services-test
+    - .sequentially-component-tests
   variables:
     FEATURE_FILE_NAME: 'visa_checkout_tests.feature'
-    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
 
-.e2e-tests:
-  image: ${IMAGE_JS_PAYMENTS_TESTS}
-  variables:
-    BEHAVE_LOGGING_LEVEL: INFO
-    FF_NETWORK_PER_BUILD: 'true' # https://docs.gitlab.com/runner/configuration/feature-flags.html
-    FEATURE_FILES_DIR: 'features/e2e_tests'
-  after_script:
-    - mkdir -p ./tests/reports
-    - mv /app/reports/* ./tests/reports/
-  artifacts:
-    paths:
-      - ./tests/reports
-    when: always
-  before_script:
-    - test -n "${EMAIL_LOGIN:-}"
-    - test -n "${EMAIL_PASSWORD:-}"
-    - test -n "${JWT_ISS_KEY:-}"
-    - test -n "${JWT_SECRET_KEY_BASE64:-}"
-    - JWT_SECRET_KEY=$(echo ${JWT_SECRET_KEY_BASE64} | base64 -d)
-    - export JWT_SECRET_KEY
-    - test -n "${JWT_SECRET_KEY:-}"
-
-.e2e-tests-services:
+.services-dev:
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
       alias: library.securetrading.net
@@ -77,12 +42,10 @@ visa-checkout-headless-component-tests:
 
 e2e-tests:
   extends:
+    - .image-test
     - .fast-tests
-    - .e2e-tests
-    - .e2e-tests-services
-    - .parallel-tests
-  variables:
-    WORKDIR: ${IMAGE_JS_PAYMENTS_TESTS_WORKDIR}
+    - .services-dev
+    - .parallel-e2e-tests
   parallel: 14
 
 zap-baseline-scan-library-securetrading-net:
