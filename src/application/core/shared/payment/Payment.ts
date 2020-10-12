@@ -41,11 +41,12 @@ export class Payment {
   ): Promise<object> {
     if (requestTypes.length === 0) {
       // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
-      StCodec.publishResponse(
-        this._stTransport._threeDQueryResult.response,
-        this._stTransport._threeDQueryResult.jwt,
-        additionalData.threedresponse
-      );
+      const responseData = {
+        ...this._stTransport._threeDQueryResult.response,
+        validated: true
+      };
+
+      StCodec.publishResponse(responseData, this._stTransport._threeDQueryResult.jwt, additionalData.threedresponse);
       this._notification.success(PAYMENT_SUCCESS);
       return Promise.resolve({
         response: {}

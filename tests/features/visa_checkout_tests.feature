@@ -204,6 +204,8 @@ Feature: Visa Checkout
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH request for VISA_CHECKOUT is sent only once with correct data
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_visa_acheck_auth @visa_test
   Scenario: Visa Checkout - successful payment with additional request types: ACCOUNTCHECK, AUTH
@@ -213,6 +215,8 @@ Feature: Visa Checkout
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK, AUTH request for VISA_CHECKOUT is sent only once with correct data
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_visa_acheck @visa_test
   Scenario: Visa Checkout - successful payment with additional request types: ACCOUNTCHECK
@@ -222,6 +226,8 @@ Feature: Visa Checkout
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK request for VISA_CHECKOUT is sent only once with correct data
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_visa_riskdec_auth @visa_test
   Scenario: Visa Checkout - successful payment with additional request types: RISKDEC, AUTH
@@ -231,6 +237,8 @@ Feature: Visa Checkout
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And RISKDEC, AUTH request for VISA_CHECKOUT is sent only once with correct data
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_visa_riskdec_acheck_auth @visa_test
   Scenario: Visa Checkout - successful payment with additional request types: RISKDEC, ACCOUNTCHECK, AUTH
@@ -240,6 +248,8 @@ Feature: Visa Checkout
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And RISKDEC, ACCOUNTCHECK, AUTH request for VISA_CHECKOUT is sent only once with correct data
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_visa_auth_subscription @visa_test
   Scenario: Visa Checkout - successful payment with additional request types: AUTH, SUBSCRIPTION
@@ -249,6 +259,8 @@ Feature: Visa Checkout
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH, SUBSCRIPTION request for VISA_CHECKOUT is sent only once with correct data
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_visa_acheck_subscription @visa_test
   Scenario: Visa Checkout - successful payment with additional request types: ACCOUNTCHECK, SUBSCRIPTION
@@ -258,3 +270,5 @@ Feature: Visa Checkout
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK, SUBSCRIPTION request for VISA_CHECKOUT is sent only once with correct data
+    And "submit" callback is called only once
+    And "success" callback is called only once

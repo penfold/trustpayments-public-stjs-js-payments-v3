@@ -15,6 +15,8 @@ Feature: E2E Card Payments with request types in config
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @e2e_config_requesttypes_invalid_order
   Scenario: Unsuccessful payment with config's requestTypes param having values in invalid order
@@ -36,6 +38,8 @@ Feature: E2E Card Payments with request types in config
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
    Scenario: Successful payment with bypassCard and requestTpes: RISKDEC, ACCOUNTCHECK,THREEDQUERY, AUTH
     Given JS library is configured with BYPASS_MASTERCARD_REQUEST_TYPE_CONFIG and BASE_JWT
@@ -44,3 +48,24 @@ Feature: E2E Card Payments with request types in config
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
+
+  Scenario: Successful step up payment with defer init and requestTypes ACCOUNTCHECK, TDQ
+    Given JS library is configured with REQUEST_TYPE_ACHECK_TDQ_WITH_DEFER_INIT and BASE_JWT
+    And User opens example page
+    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    And User clicks Pay button
+    And User fills V2 authentication modal
+    Then User will see payment status information: "Payment has been successfully processed"
+    And "submit" callback is called only once
+    And "success" callback is called only once
+
+  Scenario: Successful frictionless payment with defer init and requestTypes ACCOUNTCHECK, TDQ
+    Given JS library is configured with REQUEST_TYPE_ACHECK_TDQ_WITH_DEFER_INIT and BASE_JWT
+    And User opens example page
+    When User fills payment form with defined card VISA_FRICTIONLESS
+    And User clicks Pay button
+    Then User will see payment status information: "Payment has been successfully processed"
+    And "submit" callback is called only once
+    And "success" callback is called only once

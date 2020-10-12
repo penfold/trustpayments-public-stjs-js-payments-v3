@@ -61,9 +61,21 @@ describe('CommonFrames', () => {
           acsurl: 'https://example.com',
           enrolled: 'Y',
           requesttypedescription: 'THREEDQUERY',
-          threedresponse: 'somedata'
+          threedresponse: 'somedata',
+          validated: true
         })
       ).toEqual(true);
+    });
+
+    it('should not be complete if THREEDQUERY, enrolled and threedresponse is available but not validated', () => {
+      expect(
+        isThreedComplete(['THREEDQUERY'], {
+          acsurl: 'https://example.com',
+          enrolled: 'Y',
+          requesttypedescription: 'THREEDQUERY',
+          threedresponse: 'somedata'
+        })
+      ).toEqual(false);
     });
   });
 

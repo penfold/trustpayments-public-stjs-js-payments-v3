@@ -15,6 +15,7 @@ Feature: Callback functionality
     And User clicks Pay button - AUTH response is set to "<action_code>"
     Then User will see "<callback_popup>" popup
     And "<callback_popup>" callback is called only once
+    And "submit" callback is called only once
 
     @smoke_test
     Examples:
