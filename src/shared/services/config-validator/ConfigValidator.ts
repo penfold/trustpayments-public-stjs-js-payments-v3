@@ -9,10 +9,15 @@ import { ConfigError } from './ConfigError';
 export class ConfigValidator {
   private _isEmptyPanField(config: IConfig): boolean {
     const { fieldsToSubmit, jwt } = config;
-    const { pan, parenttransactionreference } = JwtDecode<IDecodedJwt>(jwt).payload;
     const panAsField = fieldsToSubmit.find(field => field === 'pan');
 
-    return !pan && !panAsField && !parenttransactionreference;
+    try {
+      const decodedJwt = JwtDecode<IDecodedJwt>(jwt);
+      const { pan, parenttransactionreference } = decodedJwt.payload;
+      return !panAsField && !pan && !parenttransactionreference;
+    } catch {
+      return false;
+    }
   }
 
   validate(config: IConfig): ConfigError | null {
