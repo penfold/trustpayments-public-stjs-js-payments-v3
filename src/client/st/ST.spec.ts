@@ -89,20 +89,22 @@ describe('ST', () => {
 
   // given
   describe('updateJWT()', () => {
+    const newJwt =
+      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwMjQzMTUwMS4yODk1MDcyLCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIn19.OAYW2M9Pm-V4WEkPSzreOnX87L69Gq6UCqb-TCkr0cg';
     const lodash = jest.requireActual('lodash');
 
     // when
     beforeEach(() => {
       StCodec.updateJWTValue = jest.fn();
-      instance.updateJWT('somenewjwtvalue');
+      instance.updateJWT(newJwt);
       lodash.debounce = jest.fn().mockImplementationOnce(() => {
-        StCodec.updateJWTValue('somenewjwtvalue');
+        StCodec.updateJWTValue(newJwt);
       });
     });
 
     // then
     it('should assign new jwt value', () => {
-      expect(instance._config.jwt).toEqual('somenewjwtvalue');
+      expect(instance._config.jwt).toEqual(newJwt);
     });
 
     // then
