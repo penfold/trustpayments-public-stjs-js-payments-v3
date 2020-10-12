@@ -456,3 +456,15 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.change_field_focus(FieldType.ANIMATED_CARD.name)
+
+
+@step('User clicks Cancel button on authentication modal')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.click_cardinal_cancel_btn()
+
+
+@step('User clears security code field')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.clear_security_code_field()

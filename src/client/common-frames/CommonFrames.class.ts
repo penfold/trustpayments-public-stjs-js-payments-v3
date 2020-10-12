@@ -6,7 +6,7 @@ import { Validation } from '../../application/core/shared/validation/Validation'
 import { Container } from 'typedi';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { IComponentsIds } from '../../shared/model/config/IComponentsIds';
-import { filter, first, delay, map, takeUntil } from 'rxjs/operators';
+import { delay, filter, first, map, takeUntil } from 'rxjs/operators';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Observable } from 'rxjs';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
@@ -159,15 +159,27 @@ export class CommonFrames {
   }
 
   private _isThreedComplete(data: any): boolean {
-    if (this.requestTypes[this.requestTypes.length - 1] === 'THREEDQUERY') {
-      const isCardEnrolledAndNotFrictionless = data.enrolled === 'Y' && data.acsurl !== undefined;
-
-      return (
-        (!isCardEnrolledAndNotFrictionless && data.requesttypedescription === 'THREEDQUERY') ||
-        data.threedresponse !== undefined
-      );
+    if (this.requestTypes[this.requestTypes.length - 1] !== 'THREEDQUERY') {
+      return false;
     }
-    return false;
+
+    if (data.requesttypedescription !== 'THREEDQUERY') {
+      return false;
+    }
+
+    if (data.validated) {
+      return true;
+    }
+
+    if (data.acsurl !== undefined) {
+      return false;
+    }
+
+    if (data.threedresponse !== undefined) {
+      return true;
+    }
+
+    return data.enrolled !== 'Y';
   }
 
   private _isTransactionFinished(data: any): boolean {
@@ -192,37 +204,42 @@ export class CommonFrames {
       this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
     }
 
-    if (this._isTransactionFinished(data) && data.errorcode === '0') {
-      data = Object.assign(data, { errormessage: PAYMENT_SUCCESS });
-      if (this._submitOnSuccess) {
-        this._submitForm(data);
-      }
-      return;
+    let result: 'success' | 'error' | 'cancel';
+
+    switch (true) {
+      case this._isTransactionFinished(data) && data.errorcode === '0':
+        result = 'success';
+        data = { ...data, errormessage: PAYMENT_SUCCESS };
+        break;
+      case data.errorcode === 'cancelled':
+        result = 'cancel';
+        data = { ...data, errormessage: PAYMENT_CANCELLED };
+        break;
+      case data.errorcode !== '0':
+        result = 'error';
+        break;
     }
 
-    if (data.errorcode === 'cancelled') {
-      data = Object.assign(data, { errormessage: PAYMENT_CANCELLED });
-      if (this._submitOnCancel) {
-        this._submitForm(data);
-      }
-      return;
-    }
+    this.addSubmitData(data);
 
-    if (data.errorcode !== '0') {
-      data = Object.assign(data, { errormessage: data.errormessage });
-      if (this._submitOnError) {
-        this._submitForm(data);
-      }
-      return;
+    if (
+      (result === 'success' && this._submitOnSuccess) ||
+      (result === 'cancel' && this._submitOnCancel) ||
+      (result === 'error' && this._submitOnError)
+    ) {
+      this._submitForm();
     }
   }
 
-  private _submitForm(data: any) {
+  private _submitForm() {
     if (!this._formSubmitted) {
       this._formSubmitted = true;
-      DomMethods.addDataToForm(this._merchantForm, data, this._getSubmitFields(data));
       this._merchantForm.submit();
     }
+  }
+
+  private addSubmitData(data: any) {
+    DomMethods.addDataToForm(this._merchantForm, data, this._getSubmitFields(data));
   }
 
   private _setMerchantInputListeners() {

@@ -33,6 +33,8 @@ Feature: Bypass Cards config
     And User will see that notification frame has "green" color
     And THREEDQUERY request was not sent
     And AUTH request was sent only once
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_bypass_cards_auth
   Scenario: Successful payment with bypassCard and custom request types: AUTH
@@ -42,6 +44,8 @@ Feature: Bypass Cards config
     And User will see that notification frame has "green" color
     And THREEDQUERY request was not sent
     And AUTH ware sent only once in one request
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_bypass_cards_tdq_auth
   Scenario: Successful payment with bypassCard and custom request types: THREEDQUERY, AUTH
@@ -51,6 +55,8 @@ Feature: Bypass Cards config
     And User will see that notification frame has "green" color
     And THREEDQUERY request was not sent
     And AUTH ware sent only once in one request
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_bypass_cards_acheck_tdq_auth_subscription
   Scenario: Successful payment with bypassCard and custom request types: ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION
@@ -60,6 +66,8 @@ Feature: Bypass Cards config
     And User will see that notification frame has "green" color
     And THREEDQUERY request was not sent
     And ACCOUNTCHECK, AUTH, SUBSCRIPTION ware sent only once in one request
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_bypass_cards_acheck_tdq_auth
   Scenario: Successful payment with bypassCard and custom request types: ACCOUNTCHECK, THREEDQUERY, AUTH
@@ -69,6 +77,8 @@ Feature: Bypass Cards config
     And User will see that notification frame has "green" color
     And THREEDQUERY request was not sent
     And ACCOUNTCHECK, AUTH ware sent only once in one request
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_bypass_cards_riskdec_acheck_tdq_auth
   Scenario: Successful payment with bypassCard and custom request types: RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH
@@ -78,6 +88,8 @@ Feature: Bypass Cards config
     And User will see that notification frame has "green" color
     And THREEDQUERY request was not sent
     And RISKDEC, ACCOUNTCHECK, AUTH ware sent only once in one request
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_bypass_cards_tdq_auth_riskdec
   Scenario: Successful payment with bypassCard and custom request types: THREEDQUERY, AUTH, RISKDEC
@@ -87,6 +99,8 @@ Feature: Bypass Cards config
     And User will see that notification frame has "green" color
     And THREEDQUERY request was not sent
     And AUTH, RISKDEC ware sent only once in one request
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @config_bypass_cards_tdq_acheck_riskdec_auth
   Scenario: Invalid payment with bypassCard and custom request types: THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH

@@ -74,6 +74,7 @@ Feature: E2E for tokenisation
     Then User will see payment status information: "Invalid field"
     And User waits for payment status to disappear
     And User calls updateJWT function by filling amount field
+    And User clears security code field
     And User fills only security code for saved AMEX_NON_FRICTIONLESS card
     And User clicks Pay button
     And User fills V2 authentication modal

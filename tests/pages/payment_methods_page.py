@@ -119,6 +119,13 @@ class PaymentMethodsPage(BasePage):
             self.scroll_to_bottom()
             self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
 
+    def click_cardinal_cancel_btn(self):
+        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.secure_trade_form)
+        self._action.switch_to_iframe(FieldType.CONTROL_IFRAME.value)
+        self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
+        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+        self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_cancel_btn)
+
     def click_cardinal_submit_btn(self):
         self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
 
@@ -127,6 +134,10 @@ class PaymentMethodsPage(BasePage):
 
     def press_enter_button_on_security_code_field(self):
         self._action.switch_to_iframe_and_press_enter(FieldType.SECURITY_CODE.value,
+
+                                                      PaymentMethodsLocators.security_code_input_field)
+    def clear_security_code_field(self):
+        self._action.switch_to_iframe_and_clear_input(FieldType.SECURITY_CODE.value,
                                                       PaymentMethodsLocators.security_code_input_field)
 
     def get_payment_status_message(self):
@@ -480,7 +491,10 @@ class PaymentMethodsPage(BasePage):
         actual_url = self._executor.get_page_url()
         parsed_url = urlparse(actual_url)
         parsed_query_from_url = parse_qs(parsed_url.query)
-        assert_that(parsed_query_from_url[key][0]).is_equal_to(value)
+        if 'jwt' in key:
+            assert_that(parsed_query_from_url[key][0]).is_not_none()
+        else:
+            assert_that(parsed_query_from_url[key][0]).is_equal_to(value)
 
     def validate_form_status(self, field_type, form_status):
         if 'enabled' in form_status:

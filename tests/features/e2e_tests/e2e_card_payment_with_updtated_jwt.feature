@@ -29,6 +29,8 @@ Feature: E2E Card Payments with updated jwt
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   #just to make sure data are taken from updated jwt
   @reactJS
