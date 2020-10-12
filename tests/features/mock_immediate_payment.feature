@@ -6,7 +6,6 @@ Feature: Immediate payment
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens page with payment form
 
   @config_immediate_payment_tdq
   Scenario: Immediate payment - Successful payment with request types: THREEDQUERY

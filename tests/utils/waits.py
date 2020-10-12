@@ -3,16 +3,17 @@
 import time
 
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 
 class Waits:
 
-    def __init__(self, driver__browser, config__executor):
-        self._driver_browser = driver__browser
-        self._browser = driver__browser.get_browser()
-        self._timeout = config__executor.timeout
+    def __init__(self, driver, configuration):
+        self._driver_browser = driver
+        self._browser = driver.get_browser()
+        self._timeout = int(configuration.TIMEOUT)
         self._wait = WebDriverWait(self._browser, self._timeout)
 
     def wait_for_element(self, locator):
@@ -26,7 +27,7 @@ class Waits:
         except:
             return False
 
-    def wait_for_element_to_be_displayed(self, locator, max_try: int = 20):
+    def wait_for_element_to_be_displayed(self, locator, max_try: int = 360):
         # pylint: disable=bare-except
 
         while max_try:
@@ -34,9 +35,30 @@ class Waits:
                 is_element_displayed = self._browser.find_element(*locator).is_displayed()
                 if is_element_displayed:
                     max_try = 0
+                    return
+                else:
+                    time.sleep(0.2)
+                    max_try -= 1
             except:
                 time.sleep(0.2)
                 max_try -= 1
+        raise Exception('Element not found within timeout')
+
+    def wait_for_element_with_id_to_be_displayed(self, locator, max_try: int = 360):
+        # pylint: disable=bare-except
+
+        while max_try:
+            try:
+                is_element_displayed = self._browser.find_element(By.ID, locator).is_displayed()
+                if is_element_displayed:
+                    max_try = 0
+                    return
+                else:
+                    max_try -= 1
+            except:
+                time.sleep(0.2)
+                max_try -= 1
+        raise Exception('Element not found within timeout')
 
     def wait_for_element_to_be_not_displayed(self, locator, max_try: int = 20):
         # pylint: disable=bare-except
@@ -62,13 +84,6 @@ class Waits:
     def wait_for_text_to_be_not_present_in_element(self, locator, text):
         return self._wait.until_not(ec.text_to_be_present_in_element(locator, text))
 
-    def wait_for_ajax(self):
-        # self._wait.until(lambda driver: self._browser.execute_script
-        #                  ('return jQuery.active') == 0)
-        # self._wait.until(lambda driver: self._browser.execute_script
-        #                  ('return document.readyState') == 'complete')
-        pass
-
     def wait_until_alert_is_presented(self):
         try:
             return self._wait.until(ec.alert_is_present())
@@ -76,11 +91,16 @@ class Waits:
             print(f'Alert was not presented in {self._timeout} seconds')
 
     def wait_until_iframe_is_presented_and_switch_to_it(self, iframe_name):
-        try:
-            self.wait_for_element_to_be_displayed(iframe_name)
-            return self._wait.until(ec.frame_to_be_available_and_switch_to_it(iframe_name))
-        except TimeoutException:
-            print(f'Iframe was not presented in {self._timeout} seconds')
+        # pylint: disable=bare-except
+        max_try = 10
+        while max_try:
+            try:
+                return self._wait.until(ec.frame_to_be_available_and_switch_to_it(iframe_name))
+            except:
+                print(f'Couldnt switch to iframe, will try {max_try} times more')
+            time.sleep(0.2)
+            max_try -= 1
+        raise Exception('Iframe was unavailable within timeout')
 
     def switch_to_default_content(self):
         self._browser.switch_to.default_content()
@@ -92,8 +112,20 @@ class Waits:
         time.sleep(1)
         self._wait.until(lambda driver: self._browser.execute_script('return document.readyState') == 'complete')
 
-    def wait_until_url_contains(self, page_url):
-        try:
-            return self._wait.until(ec.url_to_be(page_url))
-        except TimeoutException:
-            print('Timed out waiting for page url')
+    def wait_until_url_contains(self, page_url, max_try: int = 200):
+        while max_try:
+            if page_url in self._browser.current_url:
+                return
+            time.sleep(0.2)
+            max_try -= 1
+        raise Exception('Url didnt contain expected phrase within timeout')
+
+    def wait_until_url_starts_with(self, page_url, max_try: int = 200):
+        if 'https://' not in page_url:
+            page_url = f'https://{page_url}'
+        while max_try:
+            if self._browser.current_url.startswith(page_url):
+                return
+            time.sleep(0.2)
+            max_try -= 1
+        raise Exception('Url didnt start with expected phrase within timeout')

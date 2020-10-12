@@ -141,12 +141,12 @@ describe('Validation', () => {
   });
   // given
   describe('_toggleErrorClass()', () => {
-    const { instance, inputElement } = validationFixture();
+    const { instance, inputElement, messageElement } = validationFixture();
     // then
     it('should remove error class if field is valid', () => {
       inputElement.setCustomValidity('');
       // @ts-ignore
-      Validation._toggleErrorClass(inputElement);
+      instance._toggleErrorClass(inputElement, messageElement, Validation.ERROR_FIELD_CLASS, 'hidden');
       expect(inputElement.classList.contains(Validation.ERROR_FIELD_CLASS)).toEqual(false);
     });
 
@@ -154,7 +154,7 @@ describe('Validation', () => {
     it('should add error class if field is invalid', () => {
       inputElement.setCustomValidity('some error');
       // @ts-ignore
-      Validation._toggleErrorClass(inputElement);
+      instance._toggleErrorClass(inputElement, messageElement, Validation.ERROR_FIELD_CLASS, 'visible');
       expect(inputElement.classList.contains(Validation.ERROR_FIELD_CLASS)).toEqual(true);
     });
   });

@@ -15,6 +15,7 @@ export interface ICardinal {
   on(eventName: string, callback: (...eventData: any[]) => void);
   off(event: string);
   continue(paymentBrand: string, continueObject: IContinueObject, orderObject?: IOrderObject, jwt?: string);
+  start(paymentBrand: string, orderObject: IOrderObject, jwt?: string);
   setup(initializationType: string, initializationData: any);
   trigger(eventName: string, ...data: any[]);
   configure(config: any);

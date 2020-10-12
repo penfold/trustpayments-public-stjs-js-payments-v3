@@ -1,0 +1,77 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Trust Payments Minimal Example Form</title>
+    <meta name="description" content="Trust Payments example page with form">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="icon" href="/img/favicon.webp" sizes="32x32">
+    <link rel="icon" href="/img/favicon.webp" sizes="192x192">
+    <link rel="apple-touch-icon" href="/img/favicon.webp">
+</head>
+
+<body>
+<main class="tp-minimal-form-example">
+    <form id="st-form" class="tp-minimal-form">
+        <h1>Trust Payments Minimal Example Form</h1>
+        <div id="st-notification-frame"></div>
+        <div id="st-card-number"></div>
+        <div id="st-expiration-date"></div>
+        <div id="st-security-code"></div>
+        <div id="st-control-frame"></div>
+        <button type="button" id="update-button" class="tp-minimal-form__button">Update JWT</button>
+        <button type="submit" id="merchant-submit-button" class="tp-minimal-form__button">Pay</button>
+    </form>
+</main>
+<script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
+<script type="text/javascript">
+
+  function callback() {
+    console.error('This is callback function');
+  }
+
+  var ST = SecureTrading;
+
+  var st = ST({
+    jwt: '',
+    livestatus: 0,
+    deferInit: true,
+    submitOnSuccess: false,
+    submitCallback: callback,
+    successCallback: false,
+    errorCallback: false,
+    styles: {
+      'cardNumber': {
+        'isLinedUp': 'true',
+        'background-color-input-error': '#FFFFFF',
+        'line-height-body': '11px',
+        'border-color-input': '#E2EAED',
+        'border-size-input': '6px 30px 6px 4px',
+        'border-radius-input': '5px',
+        'background-color-message': '#F7E1E1',
+        'color-input': '#000000',
+        'color-error': '#B10000',
+        'font-family-label': 'Arial',
+        'font-size-label': '11px',
+        'font-size-input': '12px',
+        'font-size-input-error': '12px',
+        'space-inset-input': '2px 4px 2px 4px',
+        'space-outset-input-error': '0px',
+        'space-outset-message': '0px',
+        'space-inset-message': '3px 35px 10px 35px',
+      },
+    }
+  });
+
+  st.Components({ requestTypes: ['THREEDQUERY', 'AUTH'] });
+
+  document.getElementById('update-button').addEventListener('click', () => {
+    st.updateJWT('');
+  });
+</script>
+
+</body>
+</html>

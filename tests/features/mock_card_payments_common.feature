@@ -27,8 +27,7 @@ Feature: Card Payments
 
   @config_incorrect_request_type @extended_tests_part_2
   Scenario: Checking request types validation
-    Given User opens page with payment form
-    When User sets incorrect request type in config file
+    When User opens page with incorrect request type in config file
     Then User will see that application is not fully loaded
 
   @base_config
