@@ -2,6 +2,7 @@ export interface IDecodedJwt {
   iat?: number;
   iss?: string;
   payload: {
+    parenttransactionreference?: string;
     accounttypedescription: string;
     baseamount: string;
     currencyiso3a: string;

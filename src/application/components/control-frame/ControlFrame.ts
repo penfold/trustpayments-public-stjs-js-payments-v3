@@ -174,7 +174,8 @@ export class ControlFrame {
   }
 
   private _setRequestTypes(config: IConfig): void {
-    const skipThreeDQuery = this._isCardBypassed(this._getPan());
+    const pan = this._getPan();
+    const skipThreeDQuery = pan ? this._isCardBypassed(pan) : null;
     const filterThreeDQuery = (requestType: string) =>
       !skipThreeDQuery || requestType !== ControlFrame.THREEDQUERY_EVENT;
     const requestTypes = [...config.components.requestTypes].filter(filterThreeDQuery);
