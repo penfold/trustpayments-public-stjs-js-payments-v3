@@ -40,11 +40,12 @@ class DesiredCapabilities(Enum):
 class Driver:
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, browser_name, remote, command_executor, remote_capabilities):
+    def __init__(self, browser_name, remote, command_executor, remote_capabilities, headless):
         self._browser_name = browser_name
         self._remote = remote
         self._remote_capabilities = remote_capabilities
         self._command_executor = command_executor
+        self._headless = headless
 
     @abc.abstractmethod
     def get_driver(self):
@@ -75,7 +76,7 @@ class SeleniumDriver(Driver):
         driver = Drivers[self._browser_name]
         options = Options()
 
-        options.headless = True
+        options.headless = self._headless
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--allow-insecure-localhost')
@@ -89,11 +90,11 @@ class SeleniumDriver(Driver):
 
 def _get_remote_capabilities(configuration):
     # pylint: disable=unused-variable
-    network_logs = 'true'
+    network_logs='true'
+    # disabling network logs on Safari as they are not accessible for this browser and cause browser instability
     if 'Safari' in configuration.REMOTE_BROWSER:
         network_logs = 'false'
-    # if 'IE' in config.REMOTE_BROWSER:
-    #     send_keys = 'true'
+
     possible_caps = {'os': configuration.REMOTE_OS,
                      'os_version': configuration.REMOTE_OS_VERSION,
                      'browserName': configuration.REMOTE_BROWSER,
@@ -113,6 +114,7 @@ def _get_remote_capabilities(configuration):
                      'browserstack.safari.driver': configuration.BROWSERSTACK_SAFARI_DRIVER,
                      'browserstack.firefox.driver': configuration.BROWSERSTACK_FIREFOX_DRIVER,
                      'browserstack.networkLogs': network_logs,
+                     'browserstack.acceptInsecureCerts': 'true',
                      'browserstack.console': 'errors',
                      'ie.ensureCleanSession': 'true',
                      'ie.forceCreateProcessApi': 'true',
@@ -139,7 +141,8 @@ class DriverFactory:
         args = dict(browser_name=self._browser_name,
                     remote=self._remote,
                     command_executor=self._command_executor,
-                    remote_capabilities=self._remote_capabilities)
+                    remote_capabilities=self._remote_capabilities,
+                    headless=self._configuration.HEADLESS)
         driver = SeleniumDriver(**args)  # type: ignore
         browser = driver.get_driver()
         type(self)._browser = browser

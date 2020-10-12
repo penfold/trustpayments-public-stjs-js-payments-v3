@@ -27,7 +27,6 @@ def step_impl(context):
         if ('Safari' in context.browser) or ('iP' in CONFIGURATION.REMOTE_DEVICE):
             accept_untrusted_pages_on_safari_browsers(context)
         payment_page.open_page(CONFIGURATION.URL.BASE_URL)
-        payment_page.is_connection_not_private_displayed(CONFIGURATION.URL.BASE_URL)
         payment_page.wait_for_iframe()
 
 
@@ -36,8 +35,6 @@ def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'Safari' in context.browser or ('iP' in CONFIGURATION.REMOTE_DEVICE):
         accept_untrusted_pages_on_safari_browsers(context)
-        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
-        payment_page.wait_for_iframe()
     if 'parent_iframe' in context.scenario.tags:
         payment_page.open_page(CONFIGURATION.URL.BASE_URL + '/iframe.html')
         payment_page.switch_to_parent_iframe()
@@ -62,6 +59,8 @@ def step_impl(context, example_page: ExamplePage):
         payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}')
         payment_page.switch_to_parent_iframe()
         payment_page.wait_for_parent_iframe()
+    elif 'WITH_CHANGED_FORM_ID' in example_page:
+        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}')
     else:
         payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}')
         payment_page.wait_for_iframe()
@@ -94,11 +93,8 @@ def step_impl(context, example_page: ExamplePage):
 
 def accept_untrusted_pages_on_safari_browsers(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if 'config_immediate_payment' not in context.scenario.tags[0]:
-        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
     payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
-    if 'visa_test' in context.scenario.tags or 'apple_test' in context.scenario.tags:
-        payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
+    payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
 
 
 @when(
@@ -118,6 +114,13 @@ def step_impl(context, payment_status_message):
         payment_page.switch_to_parent_iframe()
     payment_page.validate_payment_status_message(payment_status_message)
 
+
+@step('User waits for payment status to disappear')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    if 'switch_to_parent_iframe' in context.scenario.tags:
+        payment_page.switch_to_parent_iframe()
+    payment_page.wait_for_notification_frame_to_disappear()
 
 @step('User will see that notification frame has "(?P<color>.+)" color')
 def step_impl(context, color):
@@ -291,11 +294,8 @@ def step_impl(context):
 @step('User will be sent to page with url "(?P<url>.+)" having params')
 def step_impl(context, url: str):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    wait_for_url = False
-    if 'update_jwt_test' or '_invalid_jwt' in context.scenario.tags:
-        wait_for_url = True
     with soft_assertions():
-        payment_page.validate_base_url(url, wait_for_url)
+        payment_page.validate_base_url(url)
         for param in context.table:
             payment_page.validate_if_url_contains_param(param['key'], param['value'])
 
@@ -403,7 +403,7 @@ def step_impl(context):
 @then('User remains on checkout page')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_base_url(CONFIGURATION.URL.BASE_URL[8:], False)
+    payment_page.validate_base_url(CONFIGURATION.URL.BASE_URL[8:])
 
 
 @given('JS library is configured with (?P<e2e_config>.+) and (?P<jwt_config>.+)')

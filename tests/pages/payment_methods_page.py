@@ -1,5 +1,4 @@
 import json
-import time
 from urllib.parse import urlparse, parse_qs
 
 from assertpy import assert_that
@@ -24,6 +23,11 @@ class PaymentMethodsPage(BasePage):
     def get_page_title(self):
         page_title = self._executor.get_page_title()
         return page_title
+
+    def wait_for_payment_form_to_load(self):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.card_number_iframe)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
 
     def fill_credit_card_field(self, field_type, value):
         if field_type == FieldType.CARD_NUMBER.name:
@@ -51,6 +55,7 @@ class PaymentMethodsPage(BasePage):
                                                                    value)
 
     def fill_payment_form(self, card_number, expiration_date, cvv):
+        self.wait_for_payment_form_to_load()
         if 'IE' in self._configuration.BROWSER:
             self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
@@ -89,6 +94,7 @@ class PaymentMethodsPage(BasePage):
 
     def fill_amount_field(self, value):
         self._action.send_keys(PaymentMethodsLocators.amount_field, value)
+        self._executor.wait_for_javascript()
 
     def fill_cardinal_authentication_code(self, auth_type):
         auth = AuthType.__members__[auth_type].name
@@ -110,6 +116,7 @@ class PaymentMethodsPage(BasePage):
             self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
             self._action.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
                                    AuthData.PASSWORD.value)
+            self.scroll_to_bottom()
             self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
 
     def click_cardinal_submit_btn(self):
@@ -173,6 +180,7 @@ class PaymentMethodsPage(BasePage):
         else:
             self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
             self._action.click(PaymentMethodsLocators.pay_mock_button)
+            self._waits.wait_for_javascript()
 
     def select_apple_pay_payment(self):
         self._waits.wait_for_javascript()
@@ -454,17 +462,13 @@ class PaymentMethodsPage(BasePage):
     def validate_if_url_contains_info_about_payment(self, expected_url):
         self._executor.wait_until_url_contains(expected_url)
         actual_url = self._executor.get_page_url()
-        if expected_url not in actual_url:
-            time.sleep(3)
-            actual_url = self._executor.get_page_url()
         assertion_message = f'Url is not correct, should be: "{expected_url}" but is: "{actual_url}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_url in actual_url, assertion_message
 
-    def validate_base_url(self, url: str, wait_for_url):
+    def validate_base_url(self, url: str):
         self._waits.wait_for_javascript()
-        if wait_for_url:
-            self._waits.wait_until_url_contains(url)
+        self._waits.wait_until_url_starts_with(url)
         actual_url = self._executor.get_page_url()
         parsed_url = urlparse(actual_url)
         assertion_message = f'Url is not correct, should be: "{url}" but is: "{actual_url}"'
