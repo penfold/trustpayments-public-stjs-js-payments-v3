@@ -22,6 +22,7 @@ import { ThreeDQueryRequest } from './ThreeDQueryRequest';
 import { IValidationResult } from '../../../../shared/integrations/cardinal-commerce/IValidationResult';
 import { ActionCode } from '../../../../shared/integrations/cardinal-commerce/ActionCode';
 import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 
 @Service()
 export class CardinalCommerce {
@@ -37,6 +38,14 @@ export class CardinalCommerce {
   ) {}
 
   init(config: IConfig): Observable<ICardinalCommerceTokens | undefined> {
+    this.messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.UPDATE_JWT),
+        switchMap(_ => this.tokenProvider.getTokens()),
+        tap(console.log)
+      )
+      .subscribe(tokens => (this.cardinalTokens = tokens));
+
     if (config.deferInit) {
       return of(this.cardinalTokens);
     }
