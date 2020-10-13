@@ -78,9 +78,11 @@ export class CardinalClient {
         (cardinal: ICardinal) =>
           new Observable<IValidationResult>(subscriber => {
             cardinal.on(PaymentEvents.VALIDATED, (result: IValidationResult, responseJwt: string) => {
-              subscriber.next({ ...result, jwt: responseJwt });
-              subscriber.complete();
-              cardinal.off(PaymentEvents.VALIDATED);
+              if (result.ErrorNumber !== CardinalClient.CARDINAL_VALIDATION_ERROR) {
+                subscriber.next({ ...result, jwt: responseJwt });
+                subscriber.complete();
+                cardinal.off(PaymentEvents.VALIDATED);
+              }
             });
 
             const { acsUrl, payload, transactionId, jwt } = data;
