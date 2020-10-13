@@ -65,3 +65,6 @@ typings/
 
 # Generated files folder
 dist/
+
+# cicd-os reusable scripts
+.cicd_scripts
