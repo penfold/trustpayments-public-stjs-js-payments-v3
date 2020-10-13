@@ -80,8 +80,7 @@ export class CardinalCommerce {
       return of(this.cardinalTokens);
     }
 
-    return this.tokenProvider.getTokens().pipe(
-      tap(tokens => (this.cardinalTokens = tokens)),
+    return this.getCardinalTokens().pipe(
       switchMap(tokens => this.cardinalClient.setup(tokens.jwt)),
       map(() => this.cardinalTokens),
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed')),
@@ -95,7 +94,7 @@ export class CardinalCommerce {
   }
 
   private createContinueData(threeDQueryResponse: IThreeDQueryResponse): Observable<IContinueData> {
-    return this.tokenProvider.getTokens().pipe(
+    return this.getCardinalTokens().pipe(
       map(tokens => ({
         transactionId: threeDQueryResponse.acquirertransactionreference,
         jwt: tokens.jwt,
@@ -124,5 +123,13 @@ export class CardinalCommerce {
           threedresponse: validationResult.jwt
         });
     }
+  }
+
+  private getCardinalTokens(): Observable<ICardinalCommerceTokens> {
+    if (this.cardinalTokens) {
+      return of(this.cardinalTokens);
+    }
+
+    return this.tokenProvider.getTokens().pipe(tap(tokens => (this.cardinalTokens = tokens)));
   }
 }
