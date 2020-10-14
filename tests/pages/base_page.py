@@ -19,6 +19,8 @@ class BasePage:
 
     def open_page(self, url):
         self._executor.open_page(url)
+        if len(self._action.find_elements(PaymentMethodsLocators.not_private_connection_text)) > 0:
+            self._executor.open_page(url)
 
     def stop_page(self):
         self._executor.stop_browser()
