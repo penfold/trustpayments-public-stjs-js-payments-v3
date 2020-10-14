@@ -101,8 +101,6 @@ class PaymentMethodsPage(BasePage):
         self.select_proper_cardinal_authentication(auth)
 
     def select_proper_cardinal_authentication(self, auth):
-        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.secure_trade_form)
-        self._action.switch_to_iframe(FieldType.CONTROL_IFRAME.value)
         self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
 
         if auth == AuthType.V1.value:
