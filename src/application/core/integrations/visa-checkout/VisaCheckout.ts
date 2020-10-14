@@ -180,6 +180,7 @@ export class VisaCheckout {
   }
 
   protected onError() {
+    return;
     this.paymentStatus = VisaCheckout.VISA_PAYMENT_STATUS.ERROR;
     this._getResponseMessage(this.paymentStatus);
     this._notification.error(this.responseMessage);
