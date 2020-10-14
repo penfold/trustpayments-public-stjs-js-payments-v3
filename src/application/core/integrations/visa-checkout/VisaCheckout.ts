@@ -128,7 +128,7 @@ export class VisaCheckout {
   }
 
   public customizeVisaButton(properties: any) {
-    const { color, size } = properties;
+    const { color, size } = properties || {};
     const url = new URL(this.visaCheckoutButtonProps.src);
     if (color) {
       url.searchParams.append('color', color);
