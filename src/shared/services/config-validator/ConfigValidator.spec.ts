@@ -20,14 +20,14 @@ describe('ConfigValidator', () => {
   });
 
   it('returns validation error if validation fails', () => {
-    const error: ValidationError = ({ foo: 'bar' } as unknown) as ValidationError;
+    const error: ValidationError = ({ message: 'error occured' } as unknown) as ValidationError;
 
     (ConfigSchema.validate as jest.Mock).mockReturnValue({
       error,
       value: config
     });
 
-    expect(validator.validate(config)).toBe(error);
+    expect(validator.validate(config)).toEqual(new ConfigError('error occured'));
   });
 
   it('returns null when validation suceeds', () => {
