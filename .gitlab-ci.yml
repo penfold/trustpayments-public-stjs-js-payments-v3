@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.28
+.cicd-os-ref: &cicd-os-ref 0.0.31
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
@@ -18,7 +18,6 @@ variables:
   IMAGE_JS_PAYMENTS_APP_HTML_TEST: ${CI_REGISTRY_IMAGE}/app-html-test:${CI_COMMIT_REF_SLUG}
   IMAGE_JS_PAYMENTS_APP_HTML_DEV: ${CI_REGISTRY_IMAGE}/app-html-dev:${CI_COMMIT_REF_SLUG}
   IMAGE_JS_PAYMENTS_TESTS: ${CI_REGISTRY_IMAGE}/payments-tests:${CI_COMMIT_REF_SLUG}
-  IMAGE_JS_PAYMENTS_TESTS_WORKDIR: /app
   IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_COMMIT_REF_SLUG}
 
   SMOKE_TESTS_TAG: '@smoke_test'
