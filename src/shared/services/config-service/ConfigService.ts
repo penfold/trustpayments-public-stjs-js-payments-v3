@@ -8,6 +8,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { filter, first } from 'rxjs/operators';
 import { CONFIG } from '../../dependency-injection/InjectionTokens';
+import { NotificationType } from '../../../application/core/models/constants/NotificationType';
 
 @Service()
 export class ConfigService implements ConfigProvider {
@@ -20,6 +21,17 @@ export class ConfigService implements ConfigProvider {
     const validationError = this.validator.validate(fullConfig);
 
     if (validationError) {
+      this.messageBus.publish(
+        {
+          data: {
+            content: 'Configuration Error',
+            type: NotificationType.Error
+          },
+          type: MessageBus.EVENTS_PUBLIC.NOTIFICATION
+        },
+        true
+      );
+
       throw validationError;
     }
 

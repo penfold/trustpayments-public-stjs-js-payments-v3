@@ -17,6 +17,7 @@ import { NotificationsClasses } from '../../models/constants/notifications/Notif
 import { NotificationsMessageTypes } from '../../models/constants/notifications/NotificationsMessageTypes';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { Frame } from '../frame/Frame';
+import { DefaultConfig } from '../../models/constants/config-resolver/DefaultConfig';
 
 @Service()
 export class Notification {
@@ -183,9 +184,8 @@ export class Notification {
 
   private _displayNotification(data: INotificationEvent): void {
     const { content, type } = data;
-    const notificationFrameElement = document.getElementById(
-      this._configProvider.getConfig().componentIds.notificationFrame
-    );
+    const { componentIds } = this._configProvider.getConfig() || DefaultConfig;
+    const notificationFrameElement = document.getElementById(componentIds.notificationFrame);
 
     if (!notificationFrameElement) {
       return;
