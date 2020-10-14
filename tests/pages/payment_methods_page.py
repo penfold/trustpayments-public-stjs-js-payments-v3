@@ -191,7 +191,6 @@ class PaymentMethodsPage(BasePage):
         else:
             self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
             self._action.click(PaymentMethodsLocators.pay_mock_button)
-            self._waits.wait_for_javascript()
 
     def select_apple_pay_payment(self):
         self._waits.wait_for_javascript()
@@ -539,8 +538,8 @@ class PaymentMethodsPage(BasePage):
 
     def validate_placeholder(self, field_type, expected_placeholder):
         actual_placeholder = self.get_element_attribute(field_type, 'placeholder')
-        assertion_message = f'Placeholder for {FieldType[field_type].name} field is not correct, should be {expected_placeholder}' \
-                            f'but is {actual_placeholder}'
+        assertion_message = f'Placeholder for {FieldType[field_type].name} field is not correct, ' \
+                            f'should be "{expected_placeholder}" but is "{actual_placeholder}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_placeholder in actual_placeholder, assertion_message
 
