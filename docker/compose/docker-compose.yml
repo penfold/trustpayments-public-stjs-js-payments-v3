@@ -21,7 +21,7 @@ services:
   payments-tests:
     build:
       context: ../..
-      dockerfile: ./docker/payments-tests/Dockerfile
+      dockerfile: .cicd_scripts/docker/payments-tests/Dockerfile
       target: payments-tests
       args:
         COPY_FROM: ./tests
