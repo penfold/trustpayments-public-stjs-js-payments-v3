@@ -118,8 +118,6 @@ class PaymentMethodsPage(BasePage):
             self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
 
     def click_cardinal_cancel_btn(self):
-        self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.secure_trade_form)
-        self._action.switch_to_iframe(FieldType.CONTROL_IFRAME.value)
         self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
         self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
         self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_cancel_btn)
