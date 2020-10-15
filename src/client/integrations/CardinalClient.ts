@@ -125,7 +125,6 @@ export class CardinalClient {
               if (event.ErrorNumber === CardinalClient.CARDINAL_VALIDATION_ERROR) {
                 observer.next();
                 observer.complete();
-                cardinal.off(PaymentEvents.VALIDATED);
               }
             });
 
