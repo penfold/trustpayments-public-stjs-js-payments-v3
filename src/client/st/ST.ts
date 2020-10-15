@@ -40,6 +40,8 @@ import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent
 import { Frame } from '../../application/core/shared/frame/Frame';
 import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
+import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
+import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 
 @Service()
 export class ST {
@@ -101,7 +103,8 @@ export class ST {
     private _messageBus: MessageBus,
     private _notification: Notification,
     private _iframeFactory: IframeFactory,
-    private _frameService: Frame
+    private _frameService: Frame,
+    private _browserDetector: BrowserDetector
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -246,6 +249,10 @@ export class ST {
     this.displayLiveStatus(Boolean(this._config.livestatus));
     this.watchForFrameUnload();
     this.initControlFrameModal();
+  }
+
+  public getBrowserInfo(): IBrowserInfo {
+    return this._browserDetector.getBrowserInfo();
   }
 
   private CardFrames(): void {

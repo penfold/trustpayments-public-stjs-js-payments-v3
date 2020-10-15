@@ -148,6 +148,10 @@ class PaymentMethodsPage(BasePage):
         text = self._action.get_text_with_wait(PaymentMethodsLocators.callback_data_popup)
         return text
 
+    def get_text_from_browser_info(self):
+        text = self._action.get_text_with_wait(PaymentMethodsLocators.browser_info_callback)
+        return text
+
     def get_color_of_notification_frame(self):
         frame_color = self._action.get_element_attribute(PaymentMethodsLocators.notification_frame,
                                                          'data-notification-color')
@@ -624,3 +628,16 @@ class PaymentMethodsPage(BasePage):
                             f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_number_of_requests == actual_number_of_requests, assertion_message
+
+    def validate_data_in_browser_info_callback(self, object_data, key, value, is_supported):
+        browser_info_text = self.get_text_from_browser_info()
+        browser_info_json = json.loads(browser_info_text)
+        assertion_message = f'Browser data is not correct, should be: {value} but is: ' \
+                            f'{browser_info_json.get(object_data).get(key)}'
+        add_to_shared_dict('assertion_message', assertion_message)
+        assert key in browser_info_json.get(object_data) and value in browser_info_json.get(object_data).get(key), \
+            assertion_message
+        assertion_message = f'Browser should be mark as supported: {is_supported} but it is not'
+        add_to_shared_dict('assertion_message', assertion_message)
+        assert 'isSupported' in browser_info_json and is_supported in \
+               str(browser_info_json.get(object_data).get('isSupported')), assertion_message

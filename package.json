@@ -4,8 +4,16 @@
   "description": "> A JavaScript interface for allowing tokenisation and authorisation of payments through Trust Payments.",
   "private": true,
   "browserslist": [
-    "> 0.2% and last 2 versions",
-    "not dead"
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Edge versions",
+    "last 2 Safari versions",
+    "last 1 Opera version",
+    "ie 11",
+    "edge 18",
+    "iOS 10-14",
+    "safari 12-14",
+    "Android 7-10"
   ],
   "config": {
     "host": "localhost",
@@ -135,9 +143,12 @@
     "@trustpayments/jwt-generator": "0.1.9",
     "@trustpayments/ts-iin-lookup": "0.1.10",
     "@trustpayments/ts-luhn-check": "0.1.9",
+    "@types/browserslist": "4.8.0",
     "@types/jwt-decode": "2.2.1",
     "@types/lodash": "4.14.161",
     "@types/redux-logger": "3.0.8",
+    "bowser": "2.11.0",
+    "browserslist": "4.14.5",
     "core-js": "2.6.11",
     "fastestsmallesttextencoderdecoder": "1.0.22",
     "i18next": "19.8.1",
