@@ -24,7 +24,7 @@ def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'config_immediate_payment' not in context.scenario.tags[0] and 'parent_iframe' not in context.scenario.tags and \
         'config_cybertonica_immediate_payment' not in context.scenario.tags:
-        if ('Safari' in context.browser) or ('iP' in CONFIGURATION.REMOTE_DEVICE):
+        if 'Safari' in context.browser:
             accept_untrusted_pages_on_safari_browsers(context)
         payment_page.open_page(CONFIGURATION.URL.BASE_URL)
         payment_page.wait_for_iframe()
@@ -33,7 +33,7 @@ def step_impl(context):
 @step('User opens payment page')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if 'Safari' in context.browser or ('iP' in CONFIGURATION.REMOTE_DEVICE):
+    if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
     if 'parent_iframe' in context.scenario.tags:
         payment_page.open_page(CONFIGURATION.URL.BASE_URL + '/iframe.html')
@@ -46,7 +46,7 @@ def step_impl(context):
 @step('User opens prepared payment form page (?P<example_page>.+)')
 def step_impl(context, example_page: ExamplePage):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if ('Safari' in context.browser) or ('iP' in CONFIGURATION.REMOTE_DEVICE):
+    if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
     if 'WITH_UPDATE_JWT' in example_page:
         jwt = ''
@@ -121,6 +121,7 @@ def step_impl(context):
     if 'switch_to_parent_iframe' in context.scenario.tags:
         payment_page.switch_to_parent_iframe()
     payment_page.wait_for_notification_frame_to_disappear()
+
 
 @step('User will see that notification frame has "(?P<color>.+)" color')
 def step_impl(context, color):
@@ -334,10 +335,7 @@ def step_impl(context):
 @then('User will see (?P<placeholders>.+) placeholders in input fields: (?P<card>.+), (?P<date>.+), (?P<cvv>.+)')
 def step_impl(context, placeholders, card, date, cvv):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if placeholders == 'specific':
-        payment_page.validate_placeholders(card, date, cvv)
-    if placeholders == 'default':
-        payment_page.validate_placeholders(card, date, cvv)
+    payment_page.validate_placeholders(card, date, cvv)
 
 
 @then('User will see "(?P<placeholder>.+)" placeholder in security code field')
