@@ -255,7 +255,7 @@ describe('Visa Checkout', () => {
       const { fakeV } = VisaCheckoutFixture();
       fakeV.on = jest.fn((eventType, callback) => {
         if (eventType === 'payment.error') {
-          callback({ myPayment: 'some value' });
+          callback({ myPayment: 'some value' }, { code: 123 });
         }
       });
       // @ts-ignore
