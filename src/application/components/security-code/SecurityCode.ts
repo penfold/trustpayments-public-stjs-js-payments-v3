@@ -14,7 +14,7 @@ import {
 import { Validation } from '../../core/shared/validation/Validation';
 import { Service } from 'typedi';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { merge, Observable } from 'rxjs';
@@ -44,7 +44,6 @@ export class SecurityCode extends Input {
   private _securityCodeLength: number;
   private _securityCodeWrapper: HTMLElement;
   private _validation: Validation;
-  private _config: IConfig;
 
   constructor(
     private _configProvider: ConfigProvider,
@@ -118,11 +117,9 @@ export class SecurityCode extends Input {
       map(jwt => JwtDecode<IDecodedJwt>(jwt).payload.pan)
     );
 
-    const maskedPanFromJsInit$: Observable<string> = this._configProvider.getConfig$().pipe(
-      filter((config: IConfig) => config.deferInit === false),
-      tap((config: IConfig) => (this._config = config)),
-      switchMap(() => this._localStorage.select(store => store['app.maskedpan']))
-    );
+    const maskedPanFromJsInit$: Observable<string> = this._configProvider
+      .getConfig$()
+      .pipe(switchMap(() => this._localStorage.select(store => store['app.maskedpan'])));
 
     return merge(cardNumberInput$, cardNumberFromJwt$, maskedPanFromJsInit$).pipe(
       filter(Boolean),

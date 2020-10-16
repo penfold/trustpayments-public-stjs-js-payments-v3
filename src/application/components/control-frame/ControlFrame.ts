@@ -24,9 +24,8 @@ import { NotificationService } from '../../../client/notification/NotificationSe
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
-import { ICardinalCommerceTokens } from '../../core/integrations/cardinal-commerce/ICardinalCommerceTokens';
 import { defer, EMPTY, from, iif, Observable, of } from 'rxjs';
-import { catchError, filter, map, mapTo, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { IAuthorizePaymentResponse } from '../../core/models/IAuthorizePaymentResponse';
 import { StJwt } from '../../core/shared/stjwt/StJwt';
 import { Translator } from '../../core/shared/translator/Translator';
@@ -138,18 +137,7 @@ export class ControlFrame {
     this._resetJwtEvent();
     this._updateJwtEvent();
     this._initCybertonica(config);
-
-    if (!config.deferInit) {
-      this._initCardinalCommerce(config);
-    } else if (config.components.startOnLoad) {
-      this._messageBus.publish({
-        type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
-        data: {
-          dataInJwt: true,
-          requestTypes: config.components.requestTypes
-        }
-      });
-    }
+    this._initCardinalCommerce(config);
   }
 
   private _formFieldChangeEvent(event: string, field: IFormFieldState): void {
@@ -210,23 +198,14 @@ export class ControlFrame {
           }
 
           return this._configProvider.getConfig$().pipe(
-            switchMap(config =>
-              iif(
-                () => config.deferInit,
-                defer(() => this._cardinalCommerce.init(config).pipe(mapTo(data))),
-                of(data)
-              ).pipe(mapTo(config))
-            ),
             tap(config => this._setRequestTypes(config)),
-            switchMap(() =>
-              iif(
-                () => Boolean(this._preThreeDRequestTypes.length),
-                defer(() => this._callThreeDQueryRequest()).pipe(
-                  catchError(errorData => this._onPaymentFailure(errorData))
-                ),
-                of(data)
-              )
-            )
+            switchMap(() => {
+              if (this._preThreeDRequestTypes.length) {
+                return this._callThreeDQueryRequest().pipe(catchError(errorData => this._onPaymentFailure(errorData)));
+              }
+
+              return of(data);
+            })
           );
         })
       )
@@ -414,7 +393,7 @@ export class ControlFrame {
   }
 
   private _initCardinalCommerce(config: IConfig): void {
-    this._cardinalCommerce.init(config).subscribe(() => {
+    this._cardinalCommerce.init().subscribe(() => {
       this._isPaymentReady = true;
 
       if (config.components.startOnLoad) {

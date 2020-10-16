@@ -254,7 +254,7 @@ function controlFrameFixture() {
     thenRespond: () => undefined
   });
   when(configProvider.getConfig$()).thenReturn(of({} as IConfig));
-  when(cardinalCommerce.init(anything())).thenReturn(EMPTY);
+  when(cardinalCommerce.init()).thenReturn(EMPTY);
   when(frame.parseUrl()).thenReturn({
     locale: 'en_GB',
     jwt:

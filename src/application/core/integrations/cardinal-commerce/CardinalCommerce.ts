@@ -5,7 +5,6 @@ import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { GoogleAnalytics } from '../google-analytics/GoogleAnalytics';
 import { Service } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
-import { IConfig } from '../../../../shared/model/config/IConfig';
 import { CardinalCommerceTokensProvider } from './CardinalCommerceTokensProvider';
 import { map, mapTo, switchMap, tap } from 'rxjs/operators';
 import { ICardinalCommerceTokens } from './ICardinalCommerceTokens';
@@ -37,18 +36,13 @@ export class CardinalCommerce {
     private gatewayClient: GatewayClient
   ) {}
 
-  init(config: IConfig): Observable<ICardinalCommerceTokens | undefined> {
+  init(): Observable<ICardinalCommerceTokens | undefined> {
     this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.UPDATE_JWT),
-        switchMap(_ => this.tokenProvider.getTokens()),
-        tap(console.log)
+        switchMap(_ => this.tokenProvider.getTokens())
       )
       .subscribe(tokens => (this.cardinalTokens = tokens));
-
-    if (config.deferInit) {
-      return of(this.cardinalTokens);
-    }
 
     return this.ensureCardinalReady();
   }
