@@ -41,6 +41,8 @@ import { Frame } from '../../application/core/shared/frame/Frame';
 import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
 import { CardinalClient } from '../integrations/CardinalClient';
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
+import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
+import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 
 @Service()
 export class ST {
@@ -103,6 +105,7 @@ export class ST {
     private _notification: Notification,
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
+    private _browserDetector: BrowserDetector,
     private _cardinalClient: CardinalClient
   ) {
     this._googleAnalytics = new GoogleAnalytics();
@@ -249,6 +252,10 @@ export class ST {
     this.watchForFrameUnload();
     this.initControlFrameModal();
     this._cardinalClient.init();
+  }
+
+  public getBrowserInfo(): IBrowserInfo {
+    return this._browserDetector.getBrowserInfo();
   }
 
   private CardFrames(): void {

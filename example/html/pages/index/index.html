@@ -30,6 +30,8 @@
 
         <div id="st-notification-frame" class="st-form__group"></div>
 
+        <div id="st-browser-info" class="st-form__group"></div>
+
         <fieldset class="st-form__fieldset">
             <legend>Payment details:</legend>
             <div class="st-form__section st-form__section--horizontal">
@@ -161,9 +163,10 @@
     var extraErrorFunction = params.get('extraErrorFunction');
     var extraSuccessFunction = params.get('extraSuccessFunction');
     var extraCancelFunction = params.get('extraCancelFunction');
+    var browserInfo = params.get('browserInfo');
 
     getConfig()
-      .then(function (config) {
+      .then(function(config) {
         init(config);
       });
 
@@ -174,7 +177,7 @@
 
       return window
         .fetch('<%= CONFIG_URL %>/config.json')
-        .then(function (response) {
+        .then(function(response) {
           if (response.status !== 200) {
             return Promise.reject('Failed to load configuration file!');
           }
@@ -182,8 +185,8 @@
           return response.json();
         })
         .then(function(config) {
-          return getJwt(config).then(function (jwt) {
-            return Object.assign(config, {jwt: jwt});
+          return getJwt(config).then(function(jwt) {
+            return Object.assign(config, { jwt: jwt });
           });
         })
         .catch(function(error) {
@@ -210,6 +213,9 @@
       st.Cybertonica().then(function(response) {
         console.error(response);
       });
+      if (browserInfo === "true") {
+        document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
+      }
       updateJwtListener(st, updatedJwt);
     }
 
