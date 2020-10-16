@@ -5,9 +5,7 @@ from assertpy import assert_that
 from behave import given, step, then, use_step_matcher
 
 from configuration import CONFIGURATION
-from utils.enums.card import Card
 from utils.enums.config import screenshots
-from utils.enums.field_type import FieldType
 from utils.helpers.request_executor import add_to_shared_dict
 
 use_step_matcher('re')
@@ -24,25 +22,6 @@ def step_impl(context, page_name):
     expected_url = context.test_data.landing_page
     assert expected_url == current_url, \
         f'Invalid page address!\nGiven: {current_url},\nExpected: {expected_url}'
-
-
-@step('User fills payment form with defined card (?P<card>.+)')
-def step_impl(context, card: Card):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    card = Card.__members__[card]
-    context.pan = str(card.number)
-    context.exp_date = str(card.expiration_date)
-    context.cvv = str(card.cvv)
-    if 'e2e_config_for_iframe' in context.scenario.tags:
-        payment_page._action.switch_to_iframe(FieldType.PARENT_IFRAME.value)
-    payment_page.fill_payment_form(card.number, card.expiration_date, card.cvv)
-
-
-@step('User fills only security code for saved (?P<card>.+) card')
-def step_impl(context, card: Card):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    card = Card.__members__[card]
-    payment_page.fill_payment_form_with_only_cvv(card.cvv)
 
 
 @step('Make screenshot after (?P<how_many_seconds>.+) seconds')
@@ -89,9 +68,3 @@ def _browser_device(context):
         'SAMSUNG GALAXY S10 PLUS': 'SGS10',
         'IPHONE XS': 'IPXS',
     }[name]
-
-
-@step('user waits for payment to be processed')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.wait_for_iframe()
