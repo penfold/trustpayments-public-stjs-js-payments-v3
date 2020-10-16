@@ -459,7 +459,7 @@ def step_impl(context, is_supported):
             payment_page.validate_data_in_browser_info_callback('browser', 'name', browser_name, is_supported)
             payment_page.validate_data_in_browser_info_callback('browser', 'version', browser_version, is_supported)
         payment_page.validate_data_in_browser_info_callback('os', 'versionName', context.configuration.REMOTE_OS_VERSION,
-                                                            is_supported)
+                                                            'True')
     elif context.configuration.REMOTE_DEVICE:
         payment_page.validate_data_in_browser_info_callback('os', 'name', os_name, is_supported)
         payment_page.validate_data_in_browser_info_callback('os', 'version', mobile_os_version, is_supported)
