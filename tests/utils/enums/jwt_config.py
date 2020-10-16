@@ -17,3 +17,4 @@ class JwtConfig(Enum):
     JWT_WITHOUT_LOCALE = 'jwt_config_without_locale.json'
     JWT_WITHOUT_LOCALE_AND_UPDATED_AMOUNT_AND_CURRENCY = 'jwt_config_without_locale_and_updated_amount_and_currency.json'
     INVALID_JWT = 'invalid_jwt_config_wrong_locale_data.json'
+    JWT_WITHOUT_PARENT_TRANSACTION = 'base_jwt_config.json'

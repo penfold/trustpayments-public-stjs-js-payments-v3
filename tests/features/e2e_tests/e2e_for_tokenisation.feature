@@ -79,3 +79,13 @@ Feature: E2E for tokenisation
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+
+  @reactJS
+  @angular
+  @e2e_for_tokenisation
+  Scenario: Error handling for case with tokenisation and jwt without parenttransaction
+    Given JS library is configured with TOKENISATION_CONFIG and JWT_WITHOUT_PARENT_TRANSACTION
+    When User opens improperly configured example page
+    Then User will see notification frame with message: "Configuration Error"
+    And User will see that notification frame has "red" color
+    And User will see that 'Credit card details' section is empty

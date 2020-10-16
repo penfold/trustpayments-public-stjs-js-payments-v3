@@ -7,12 +7,13 @@ from configuration import CONFIGURATION
 from utils.configurations.inline_config_generator import create_inline_config
 from utils.configurations.jwt_generator import encode_jwt_for_json
 from utils.dict.url_after_redirection import url_after_redirection
+from utils.enums.card import Card
 from utils.enums.e2e_config import E2eConfig
 from utils.enums.example_page import ExamplePage
-from utils.enums.field_type import FieldType
 from utils.enums.jwt_config import JwtConfig
 from utils.enums.payment_type import PaymentType
 from utils.enums.request_type import RequestType
+from utils.enums.field_type import FieldType
 from utils.enums.responses.invalid_field_response import InvalidFieldResponse
 from utils.mock_handler import stub_st_request_type, MockUrl
 
@@ -91,10 +92,51 @@ def step_impl(context, example_page: ExamplePage):
         payment_page.wait_for_iframe()
 
 
+@step('User opens improperly configured example page')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    url = f'{CONFIGURATION.URL.BASE_URL}/?{context.inline_config}'
+    payment_page.open_page(url)
+
+
 def accept_untrusted_pages_on_safari_browsers(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
     payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
+
+
+@then('User will see that \'Credit card details\' section is empty')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_if_field_is_not_displayed(FieldType.SECURITY_CODE.name)
+    payment_page.validate_if_field_is_not_displayed(FieldType.CARD_NUMBER.name)
+    payment_page.validate_if_field_is_not_displayed(FieldType.EXPIRATION_DATE.name)
+
+
+@then('User will see that application is not fully loaded')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_if_field_is_not_displayed(FieldType.CARD_NUMBER.name)
+    payment_page.validate_if_field_is_not_displayed(FieldType.EXPIRATION_DATE.name)
+
+
+@step('User fills payment form with defined card (?P<card>.+)')
+def step_impl(context, card: Card):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    card = Card.__members__[card]
+    context.pan = str(card.number)
+    context.exp_date = str(card.expiration_date)
+    context.cvv = str(card.cvv)
+    if 'e2e_config_for_iframe' in context.scenario.tags:
+        payment_page._action.switch_to_iframe(FieldType.PARENT_IFRAME.value)
+    payment_page.fill_payment_form(card.number, card.expiration_date, card.cvv)
+
+
+@step('User fills only security code for saved (?P<card>.+) card')
+def step_impl(context, card: Card):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    card = Card.__members__[card]
+    payment_page.fill_payment_form_with_only_cvv(card.cvv)
 
 
 @when(
@@ -105,6 +147,32 @@ def step_impl(context, card_number, exp_date, cvv):
     context.cvv = cvv
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.fill_payment_form(card_number, exp_date, cvv)
+
+# Notifications
+
+
+@step('Wait for notification frame')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.wait_for_notification_frame()
+
+
+@step('Wait for popups to disappear')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.wait_for_popups_to_disappear()
+
+
+@step('Wait for notification frame to disappear')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.wait_for_notification_frame_to_disappear()
+
+
+@then('User will see notification frame with message: "(?P<expected_message>.+)"')
+def step_impl(context, expected_message):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_payment_status_message(expected_message)
 
 
 @step('User will see payment status information: "(?P<payment_status_message>.+)"')
@@ -121,6 +189,7 @@ def step_impl(context):
     if 'switch_to_parent_iframe' in context.scenario.tags:
         payment_page.switch_to_parent_iframe()
     payment_page.wait_for_notification_frame_to_disappear()
+
 
 @step('User will see that notification frame has "(?P<color>.+)" color')
 def step_impl(context, color):
@@ -144,6 +213,12 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.accept_alert()
+
+
+@step('user waits for payment to be processed')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.wait_for_iframe()
 
 
 @then('User will see validation message "(?P<expected_message>.+)" under all fields')
@@ -190,12 +265,6 @@ def step_impl(context, field):
     stub_st_request_type(InvalidFieldResponse[field].value, RequestType.THREEDQUERY.name)
 
 
-@then('User will see notification frame with message: "(?P<expected_message>.+)"')
-def step_impl(context, expected_message):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_payment_status_message(expected_message)
-
-
 @when('User chooses (?P<payment_method>.+) as payment method')
 def step_impl(context, payment_method):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
@@ -239,6 +308,9 @@ def step_impl(context, field):
         payment_page.validate_css_style(FieldType.SECURITY_CODE.name, 'background-color', '255, 243, 51')
     if field == FieldType.NOTIFICATION_FRAME.name:
         payment_page.validate_css_style(FieldType.NOTIFICATION_FRAME.name, 'background-color', '100, 149, 237')
+
+
+# Translations
 
 
 @step('User changes page language to "(?P<language>.+)"')
@@ -322,13 +394,6 @@ def step_impl(context, field_type):
 def step_impl(context, callback_popup):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.validate_if_callback_popup_is_displayed(callback_popup)
-
-
-@then('User will see that application is not fully loaded')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_if_field_is_not_displayed(FieldType.CARD_NUMBER.name)
-    payment_page.validate_if_field_is_not_displayed(FieldType.EXPIRATION_DATE.name)
 
 
 @then('User will see (?P<placeholders>.+) placeholders in input fields: (?P<card>.+), (?P<date>.+), (?P<cvv>.+)')
@@ -432,24 +497,6 @@ def step_impl(context, callback_popup):
 def step_impl(context, field_type, rgb_color):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.validate_css_style(FieldType[field_type].name, 'background-color', rgb_color)
-
-
-@step('Wait for notification frame')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.wait_for_notification_frame()
-
-
-@step('Wait for popups to disappear')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.wait_for_popups_to_disappear()
-
-
-@step('Wait for notification frame to disappear')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.wait_for_notification_frame_to_disappear()
 
 
 @step('Change field focus')
