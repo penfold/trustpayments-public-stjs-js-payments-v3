@@ -89,15 +89,10 @@ describe('ST', () => {
 
   // given
   describe('updateJWT()', () => {
-    const lodash = jest.requireActual('lodash');
-
     // when
     beforeEach(() => {
       StCodec.updateJWTValue = jest.fn();
       instance.updateJWT('somenewjwtvalue');
-      lodash.debounce = jest.fn().mockImplementationOnce(() => {
-        StCodec.updateJWTValue('somenewjwtvalue');
-      });
     });
 
     // then

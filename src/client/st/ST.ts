@@ -1,6 +1,5 @@
 import './st.css';
 import JwtDecode from 'jwt-decode';
-import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames.class';
 import { CommonFrames } from '../common-frames/CommonFrames.class';
@@ -45,7 +44,6 @@ import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInf
 
 @Service()
 export class ST {
-  private static DEBOUNCE_JWT_VALUE: number = 900;
   private static JWT_NOT_SPECIFIED_MESSAGE: string = 'Jwt has not been specified';
   private static LOCALE_STORAGE: string = 'locale';
   private static MERCHANT_TRANSLATIONS_STORAGE: string = 'merchantTranslations';
@@ -213,10 +211,7 @@ export class ST {
     if (jwt) {
       this._config = { ...this._config, jwt };
       this._configService.update(this._config);
-      (() => {
-        const a = StCodec.updateJWTValue(jwt);
-        debounce(() => a, ST.DEBOUNCE_JWT_VALUE);
-      })();
+      StCodec.updateJWTValue(jwt);
     } else {
       throw Error(this._translation.translate(ST.JWT_NOT_SPECIFIED_MESSAGE));
     }

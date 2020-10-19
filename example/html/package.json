@@ -45,6 +45,8 @@
     "webpack-merge": "5.2.0"
   },
   "dependencies": {
-    "@trustpayments/jwt-generator": "0.1.11"
+    "@trustpayments/jwt-generator": "0.1.11",
+    "@types/lodash.debounce": "^4.0.6",
+    "lodash.debounce": "^4.0.8"
   }
 }
