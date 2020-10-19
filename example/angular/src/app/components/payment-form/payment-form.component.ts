@@ -1,6 +1,8 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { IPageOptions } from '../../services/page-options.interface';
+import { Subject } from 'rxjs';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
 declare const SecureTrading: any;
 
@@ -9,21 +11,22 @@ declare const SecureTrading: any;
   templateUrl: './payment-form.component.html',
   styleUrls: ['./payment-form.component.scss']
 })
-export class PaymentFormComponent implements AfterViewInit {
+export class PaymentFormComponent implements AfterViewInit, OnDestroy {
   @Input() config: any;
   @Input() pageOptions: IPageOptions;
-  private st: any;
+  private updateJwt$: Subject<string> = new Subject();
+  private destroy$: Subject<void> = new Subject();
 
   constructor(private snackBar: MatSnackBar) {}
 
   ngAfterViewInit(): void {
-    this.st = SecureTrading(this.config);
-    this.st.Components(this.config.components);
-    this.st.VisaCheckout(this.config.visaCheckout);
-    this.st.ApplePay(this.config.applePay);
+    const st: any = SecureTrading(this.config);
+    st.Components(this.config.components);
+    st.VisaCheckout(this.config.visaCheckout);
+    st.ApplePay(this.config.applePay);
 
     if (!this.config.successCallback) {
-      this.st.on('success', () => {
+      st.on('success', () => {
         this.snackBar.open('Payment completed successfully', 'close', {
           verticalPosition: 'top',
           panelClass: 'success'
@@ -32,21 +35,27 @@ export class PaymentFormComponent implements AfterViewInit {
     }
 
     if (!this.config.errorCallback) {
-      this.st.on('error', () => {
+      st.on('error', () => {
         this.snackBar.open('An error occurred', 'close', { verticalPosition: 'top', panelClass: 'error' });
       });
     }
 
     if (!this.config.submitCallback) {
-      this.st.on('submit', data => {
+      st.on('submit', data => {
         console.log(`This is what we have got after submit ${JSON.stringify(data)}`);
       });
     }
+
+    this.updateJwt$
+      .pipe(filter(Boolean), debounceTime(900), takeUntil(this.destroy$))
+      .subscribe(jwt => st.updateJWT(jwt));
   }
 
   updateJwt(): void {
-    if (this.pageOptions.updatedJwt) {
-      this.st.updateJWT(this.pageOptions.updatedJwt);
-    }
+    this.updateJwt$.next(this.pageOptions.updatedJwt);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
   }
 }

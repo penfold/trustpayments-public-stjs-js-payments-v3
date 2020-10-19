@@ -3,6 +3,7 @@ import Layout from '../components/layout/layout';
 import environment from '../environment/environment';
 import '../../static/libraries/st.css';
 import { Heading } from '../components/heading/heading';
+import debounce from 'lodash.debounce';
 
 const newJwt =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU5MDE1NDgwNy4wNzQ5ODg2LCJwYXlsb2FkIjp7Im1haW5hbW91bnQiOiIyMC4wMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiJ9fQ.eXAxDB5yOaM-63k6tf0634ojvQo7zDuuXeAKmP3DtGw';
@@ -17,7 +18,9 @@ class Index extends Component {
   }
 
   initUpdateJwtListener() {
-    document.getElementById('example-form-amount').addEventListener('input', () => this.instance.updateJWT(newJwt));
+    document
+      .getElementById('example-form-amount')
+      .addEventListener('input', debounce(() => this.instance.updateJWT(newJwt), 900));
   }
 
   loadST(config) {

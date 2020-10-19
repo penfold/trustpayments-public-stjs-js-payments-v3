@@ -20,7 +20,7 @@
                name="myBillPrice"
                id="st-form-price"
                data-st-name="billingprice"
-               (change)="updateJwt()"
+               (input)="updateJwt()"
         />
       </mat-form-field>
       <mat-form-field appearance="outline" color="accent" fxFlex>
@@ -32,7 +32,7 @@
                placeholder="myBillAmount"
                data-st-name="billingamount"
                autocomplete="amount"
-               (change)="updateJwt()"
+               (input)="updateJwt()"
         />
       </mat-form-field>
     </div>
