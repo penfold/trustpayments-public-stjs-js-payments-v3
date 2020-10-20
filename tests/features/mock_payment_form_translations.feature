@@ -37,7 +37,6 @@ Feature: Payment form translations
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User clicks Pay button - AUTH response is set to "OK"
     Then User will see "Payment has been successfully processed" payment status translated into "<language>"
-    And AUTH and THREEDQUERY requests were sent only once with correct data
     @extended_tests_part_3
     Examples:
       | language |
