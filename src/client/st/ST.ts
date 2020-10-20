@@ -30,7 +30,7 @@ import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalS
 import { Notification } from '../../application/core/shared/notification/Notification';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Subject, Subscription } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { delay, map, takeUntil } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
@@ -124,6 +124,7 @@ export class ST {
       .pipe(
         ofType(events[eventName]),
         map(event => event.data),
+        delay(0),
         takeUntil(this._destroy$)
       )
       .subscribe(callback);
