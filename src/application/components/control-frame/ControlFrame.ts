@@ -298,9 +298,7 @@ export class ControlFrame {
         this._validation.blockForm(FormState.COMPLETE);
       })
       .catch((error: any) => {
-        this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
-        this._notification.error(PAYMENT_ERROR);
-        this._validation.blockForm(FormState.AVAILABLE);
+        this._onPaymentFailure(data);
       })
       .finally(() => {
         ControlFrame._resetJwt();
