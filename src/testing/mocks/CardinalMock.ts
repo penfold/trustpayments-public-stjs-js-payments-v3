@@ -1,4 +1,4 @@
-import { ICardinal, IOrderObject } from '../../application/core/integrations/cardinal-commerce/ICardinal';
+import { ICardinal, IOrderObject } from '../../client/integrations/cardinal-commerce/ICardinal';
 import { PaymentEvents } from '../../application/core/models/constants/PaymentEvents';
 import { ajaxGet } from 'rxjs/internal-compatibility';
 import { environment } from '../../environments/environment';

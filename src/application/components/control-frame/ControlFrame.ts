@@ -23,14 +23,12 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
-import { defer, EMPTY, from, iif, Observable, of } from 'rxjs';
+import { EMPTY, from, Observable, of } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { IAuthorizePaymentResponse } from '../../core/models/IAuthorizePaymentResponse';
 import { StJwt } from '../../core/shared/stjwt/StJwt';
 import { Translator } from '../../core/shared/translator/Translator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
-import { IOnCardinalValidated } from '../../core/models/IOnCardinalValidated';
 import { IThreeDInitResponse } from '../../core/models/IThreeDInitResponse';
 import { Store } from '../../core/store/Store';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -39,6 +37,8 @@ import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
 import { Styler } from '../../core/shared/styler/Styler';
+import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
+import { IThreeDSTokens } from '../../core/services/three-d-verification/data/IThreeDSTokens';
 
 @Service()
 export class ControlFrame {
@@ -84,7 +84,7 @@ export class ControlFrame {
     private _configProvider: ConfigProvider,
     private _notification: NotificationService,
     private _cybertonica: Cybertonica,
-    private _cardinalCommerce: CardinalCommerce,
+    private _threeDProcess: ThreeDProcess,
     private _store: Store,
     private _configService: ConfigService,
     private _messageBus: MessageBus,
@@ -137,7 +137,7 @@ export class ControlFrame {
     this._resetJwtEvent();
     this._updateJwtEvent();
     this._initCybertonica(config);
-    this._initCardinalCommerce(config);
+    this._initThreeDProcess(config);
   }
 
   private _formFieldChangeEvent(event: string, field: IFormFieldState): void {
@@ -226,7 +226,7 @@ export class ControlFrame {
     return validity;
   }
 
-  private _onPaymentFailure(errorData: ISubmitData | IOnCardinalValidated): Observable<never> {
+  private _onPaymentFailure(errorData: ISubmitData): Observable<never> {
     const { ErrorNumber, ErrorDescription } = errorData;
     const translator = new Translator(this._localStorage.getItem('locale'));
     const translatedErrorMessage = translator.translate(PAYMENT_ERROR);
@@ -308,7 +308,7 @@ export class ControlFrame {
     return of({ ...this._merchantFormData }).pipe(
       switchMap(applyCybertonicaTid),
       switchMap(merchantFormData =>
-        this._cardinalCommerce.performThreeDQuery(this._preThreeDRequestTypes, this._card, merchantFormData)
+        this._threeDProcess.performThreeDQuery(this._preThreeDRequestTypes, this._card, merchantFormData)
       )
     );
   }
@@ -392,8 +392,17 @@ export class ControlFrame {
     }
   }
 
-  private _initCardinalCommerce(config: IConfig): void {
-    this._cardinalCommerce.init().subscribe(() => {
+  private _initThreeDProcess(config: IConfig): void {
+    let initialTokens: IThreeDSTokens;
+
+    if (config.init) {
+      initialTokens = {
+        jwt: config.init.threedinit,
+        cacheToken: config.init.cachetoken
+      };
+    }
+
+    this._threeDProcess.init(initialTokens).subscribe(() => {
       this._isPaymentReady = true;
 
       if (config.components.startOnLoad) {

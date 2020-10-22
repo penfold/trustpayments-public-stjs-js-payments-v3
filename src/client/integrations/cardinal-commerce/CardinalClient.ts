@@ -1,21 +1,22 @@
 import { Service } from 'typedi';
-import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
-import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
-import { IInitializationData } from '../../shared/integrations/cardinal-commerce/IInitializationData';
-import { CardinalProvider } from '../../application/core/integrations/cardinal-commerce/CardinalProvider';
+import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { IInitializationData } from '../../../shared/integrations/cardinal-commerce/IInitializationData';
+import { CardinalProvider } from './CardinalProvider';
 import { first, mapTo, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { ICardinal } from './ICardinal';
 import { defer, Observable } from 'rxjs';
-import { PaymentEvents } from '../../application/core/models/constants/PaymentEvents';
-import { IContinueData } from '../../shared/integrations/cardinal-commerce/IContinueData';
-import { IConfig } from '../../shared/model/config/IConfig';
-import { PaymentBrand } from '../../application/core/models/constants/PaymentBrand';
-import { ITriggerData } from '../../shared/integrations/cardinal-commerce/ITriggerData';
-import { IValidationResult } from '../../shared/integrations/cardinal-commerce/IValidationResult';
-import { environment } from '../../environments/environment';
-import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
-import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
-import { IOnCardinalValidated } from '../../application/core/models/IOnCardinalValidated';
+import { PaymentEvents } from '../../../application/core/models/constants/PaymentEvents';
+import { IConfig } from '../../../shared/model/config/IConfig';
+import { PaymentBrand } from '../../../application/core/models/constants/PaymentBrand';
+import { ITriggerData } from '../../../shared/integrations/cardinal-commerce/ITriggerData';
+import { IValidationResult } from '../../../shared/integrations/cardinal-commerce/IValidationResult';
+import { environment } from '../../../environments/environment';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
+import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { IOnCardinalValidated } from '../../../application/core/models/IOnCardinalValidated';
+import { IVerificationData } from '../../../application/core/services/three-d-verification/data/IVerificationData';
+import { IVerificationResult } from '../../../application/core/services/three-d-verification/data/IVerificationResult';
 
 @Service()
 export class CardinalClient {
@@ -42,7 +43,7 @@ export class CardinalClient {
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.CARDINAL_CONTINUE)
-      .thenRespond((event: IMessageBusEvent<IContinueData>) => this.cardinalContinue(event.data));
+      .thenRespond((event: IMessageBusEvent<IVerificationData>) => this.cardinalContinue(event.data));
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.CARDINAL_TRIGGER)
@@ -72,14 +73,20 @@ export class CardinalClient {
     );
   }
 
-  private cardinalContinue(data: IContinueData): Observable<IValidationResult> {
+  private cardinalContinue(data: IVerificationData): Observable<IVerificationResult> {
     return this.cardinal$.pipe(
       switchMap(
         (cardinal: ICardinal) =>
-          new Observable<IValidationResult>(subscriber => {
+          new Observable<IVerificationResult>(subscriber => {
             cardinal.on(PaymentEvents.VALIDATED, (result: IValidationResult, responseJwt: string) => {
               if (result.ErrorNumber !== CardinalClient.CARDINAL_VALIDATION_ERROR) {
-                subscriber.next({ ...result, jwt: responseJwt });
+                subscriber.next({
+                  validated: result.Validated,
+                  actionCode: result.ActionCode,
+                  errorNumber: result.ErrorNumber,
+                  errorDescription: result.ErrorDescription,
+                  jwt: responseJwt
+                });
                 subscriber.complete();
                 cardinal.off(PaymentEvents.VALIDATED);
               }

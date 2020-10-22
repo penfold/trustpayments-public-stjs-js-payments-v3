@@ -1,4 +1,4 @@
-import { ActionCode } from './ActionCode';
+import { ActionCode } from '../../../application/core/services/three-d-verification/data/ActionCode';
 
 export interface IValidationResult {
   Validated: boolean;
