@@ -14,6 +14,7 @@ class Waits:
         self._driver_browser = driver
         self._browser = driver.get_browser()
         self._timeout = int(configuration.TIMEOUT)
+        self._device_type = configuration.REMOTE_DEVICE
         self._wait = WebDriverWait(self._browser, self._timeout)
 
     def wait_for_element(self, locator):
@@ -93,12 +94,13 @@ class Waits:
     def wait_until_iframe_is_presented_and_switch_to_it(self, iframe_name):
         # pylint: disable=bare-except
         max_try = 10
+        if 'iP' in self._device_type:
+            max_try = 180
         while max_try:
             try:
                 return self._wait.until(ec.frame_to_be_available_and_switch_to_it(iframe_name))
             except:
-                print(f'Couldnt switch to iframe, will try {max_try} times more')
-            time.sleep(0.2)
+                time.sleep(1)
             max_try -= 1
         raise Exception('Iframe was unavailable within timeout')
 
