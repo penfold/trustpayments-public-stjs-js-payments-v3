@@ -86,7 +86,12 @@ Feature: Successfull payments with various request types configurations
     When User fills payment form with defined card VISA_CARD
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User clicks Pay button
-    Then User is redirected to action page
+    And User will be sent to page with url "www.example.com" having params
+      | key          | value                                   |
+      | errormessage | Payment has been successfully processed |
+      | enrolled     | N                                       |
+      | jwt          | should not be none                      |
+      | myBillTel    | 44422224444                             |
     And THREEDQUERY request was sent only once with correct data
 
   @config_requestTypes_acheck_tdq_auth_subscription
