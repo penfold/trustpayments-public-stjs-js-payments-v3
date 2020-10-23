@@ -28,7 +28,7 @@ class Waits:
         except:
             return False
 
-    def wait_for_element_to_be_displayed(self, locator, max_try: int = 360):
+    def wait_for_element_to_be_displayed(self, locator, max_try: int = 180):
         # pylint: disable=bare-except
 
         while max_try:
@@ -38,14 +38,14 @@ class Waits:
                     max_try = 0
                     return
                 else:
-                    time.sleep(0.2)
+                    time.sleep(0.5)
                     max_try -= 1
             except:
-                time.sleep(0.2)
+                time.sleep(0.5)
                 max_try -= 1
         raise Exception('Element not found within timeout')
 
-    def wait_for_element_with_id_to_be_displayed(self, locator, max_try: int = 360):
+    def wait_for_element_with_id_to_be_displayed(self, locator, max_try: int = 200):
         # pylint: disable=bare-except
 
         while max_try:
@@ -57,7 +57,7 @@ class Waits:
                 else:
                     max_try -= 1
             except:
-                time.sleep(0.2)
+                time.sleep(0.5)
                 max_try -= 1
         raise Exception('Element not found within timeout')
 
@@ -70,7 +70,7 @@ class Waits:
                     break
             except:
                 pass
-            time.sleep(0.2)
+            time.sleep(0.5)
             max_try -= 1
 
     def wait_for_element_to_be_clickable(self, locator):
@@ -115,19 +115,27 @@ class Waits:
         self._wait.until(lambda driver: self._browser.execute_script('return document.readyState') == 'complete')
 
     def wait_until_url_contains(self, page_url, max_try: int = 200):
+        # pylint: disable=bare-except
         while max_try:
-            if page_url in self._browser.current_url:
-                return
-            time.sleep(0.2)
+            try:
+                if page_url in self._browser.current_url:
+                    return
+            except:
+                pass
+            time.sleep(0.5)
             max_try -= 1
         raise Exception('Url didnt contain expected phrase within timeout')
 
     def wait_until_url_starts_with(self, page_url, max_try: int = 200):
+        # pylint: disable=bare-except
         if 'https://' not in page_url:
             page_url = f'https://{page_url}'
         while max_try:
-            if self._browser.current_url.startswith(page_url):
-                return
-            time.sleep(0.2)
+            try:
+                if self._browser.current_url.startswith(page_url):
+                    return
+            except:
+                pass
+            time.sleep(0.5)
             max_try -= 1
         raise Exception('Url didnt start with expected phrase within timeout')
