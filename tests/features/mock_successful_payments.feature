@@ -47,7 +47,6 @@ Feature: Successfull payments with various configurations
     When User fills payment form with credit card number "4111110000000211", expiration date "12/30" and cvv "123"
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
-    And JSINIT request was not sent
     And User clicks Pay button - AUTH response is set to "OK"
     Then User will see payment status information: "Payment has been successfully processed"
     Then JSINIT request was sent only 1
