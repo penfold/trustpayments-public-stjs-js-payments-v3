@@ -12,6 +12,7 @@ class MockUrl(Enum):
     WEBSERVICES_DOMAIN = 'https://webservices.securetrading.net:8443'
     WEBSERVICES_STJS_URI = 'https://webservices.securetrading.net:8443/st.js'
     THIRDPARTY_URL = 'https://thirdparty.example.com:8443'
+    LIBRARY_URL = 'https://library.securetrading.net:8443'
     VISA_MOCK_URI = '/visaPaymentStatus'
     CC_MOCK_ACS_URI = '/cardinalAuthenticateCard'
     APPLEPAY_MOCK_URI = '/applePaymentStatus'
