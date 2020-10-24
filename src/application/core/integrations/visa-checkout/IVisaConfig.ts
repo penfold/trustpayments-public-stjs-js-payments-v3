@@ -1,3 +1,3 @@
 export interface IVisaConfig {
-  [key: string]: string;
+  [key: string]: any;
 }
