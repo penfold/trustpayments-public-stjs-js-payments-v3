@@ -41,7 +41,7 @@ Feature: E2E Card Payments with request types in config
     And "submit" callback is called only once
     And "success" callback is called only once
 
-   Scenario: Successful payment with bypassCard and requestTpes: RISKDEC, ACCOUNTCHECK,THREEDQUERY, AUTH
+  Scenario: Successful payment with bypassCard and requestTpes: RISKDEC, ACCOUNTCHECK,THREEDQUERY, AUTH
     Given JS library is configured with BYPASS_MASTERCARD_REQUEST_TYPE_CONFIG and BASE_JWT
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
@@ -69,3 +69,40 @@ Feature: E2E Card Payments with request types in config
     Then User will see payment status information: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
+
+
+  Scenario Outline: Successful payment with single requestTypes <REQUEST_TYPE_TC>
+    Given JS library is configured with <E2E_CONFIG> and BASE_JWT
+    And User opens example page
+    When User fills payment form with defined card <CARD>
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key           | value                                   |
+      | errormessage  | Payment has been successfully processed |
+      | baseamount    | 1000                                    |
+      | currencyiso3a | GBP                                     |
+      | errorcode     | 0                                       |
+
+    Examples:
+      | E2E_CONFIG                 | REQUEST_TYPE_TC | CARD              |
+      | REQUEST_TYPE_ACHECK_CONFIG | ACCOUNTCHECK    | VISA_FRICTIONLESS |
+      | REQUEST_TYPE_AUTH_CONFIG   | AUTH            | VISA_FRICTIONLESS |
+
+
+  Scenario Outline: Successful payment with single requestTypes <REQUEST_TYPE_TC>
+    Given JS library is configured with <E2E_CONFIG> and BASE_JWT
+    And User opens example page
+    When User fills payment form with defined card <CARD>
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key          | value                                   |
+      | errormessage | Payment has been successfully processed |
+      | errorcode    | 0                                       |
+
+    Examples:
+      | E2E_CONFIG               | REQUEST_TYPE_TC | CARD              |
+      | REQUEST_TYPE_RISK_CONFIG | RISKDEC         | VISA_FRICTIONLESS |
+      | REQUEST_TYPE_TDQ_CONFIG  | THREEDQUERY     | MASTERCARD_CARD   |
+
+
+
