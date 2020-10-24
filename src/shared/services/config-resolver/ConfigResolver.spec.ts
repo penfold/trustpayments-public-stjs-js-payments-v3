@@ -295,7 +295,7 @@ function ConfigResolverFixture() {
     livestatus: 0,
     origin: 'http://localhost',
     placeholders: {
-      pan: '***** ***** ***** *****',
+      pan: '**** **** **** ****',
       expirydate: 'MM/YY',
       securitycode: '***'
     },
