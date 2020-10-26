@@ -46,8 +46,8 @@ export class Styler {
     const label = document.getElementById(labelId);
     wrapper.className = '';
     label.className = '';
-    wrapper.classList.add(...wrapperClassList);
-    label.classList.add(...labelClassList);
+    wrapperClassList.forEach(className => wrapper.classList.add(className));
+    labelClassList.forEach(className => label.classList.add(className));
   }
 
   private _filter(styles: IStyles[]): IStyle {
