@@ -58,7 +58,7 @@
   },
   "homepage": "https://gitlab.com/trustpayments-public/stjs/js-payments/-/blob/master/README.md",
   "resolutions": {
-    "ajv": "6.12.5",
+    "ajv": "6.12.6",
     "dot-prop": "6.0.0",
     "minimist": "1.2.5"
   },
