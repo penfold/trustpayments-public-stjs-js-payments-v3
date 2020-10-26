@@ -84,7 +84,7 @@ OSXCatalina-Safari-13.1-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_1
 
-iPhone11-14.0-smoke-tests:
+.iPhone11-14.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -149,7 +149,7 @@ SamsungGalaxyS10Plus-9.0-visual-tests-styling:
     POETRY_TAGS: visual_regression_styling
   resource_group: extended_tests_release_2
 
-iPhone8-11.0-smoke-tests:
+.iPhone8-11.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -243,7 +243,7 @@ OSXHS-Safari-11.1-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_1
 
-iPhoneXS-12-smoke-tests:
+.iPhoneXS-12-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -256,7 +256,7 @@ iPhoneXS-12-smoke-tests:
     AUTOMATION_TIMEOUT: 120
   resource_group: extended_tests_release_2
 
-iPhone11-13-smoke-tests:
+.iPhone11-13-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -268,7 +268,7 @@ iPhone11-13-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_3
 
-iPhone7-10.0-smoke-tests:
+.iPhone7-10.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -359,7 +359,7 @@ win10-Firefox-80.0-extended-tests-3:
     POETRY_TAGS: extended_tests_part_3
   resource_group: extended_tests_release_2
 
-iPhoneXS-12-applePay-tests:
+.iPhoneXS-12-applePay-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
