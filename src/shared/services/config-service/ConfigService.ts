@@ -119,7 +119,8 @@ export class ConfigService implements ConfigProvider {
 
   private cannotOverride(): void {
     throw new Error(
-      'Cannot override the configuration specified in the JWT. The config object should contain the JWT only.'
+      'Cannot override the configuration specified in the JWT. ' +
+        'The config object should contain only the JWT and callbacks (optionally).'
     );
   }
 }
