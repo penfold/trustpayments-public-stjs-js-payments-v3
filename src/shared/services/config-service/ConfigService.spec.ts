@@ -22,7 +22,8 @@ describe('ConfigService', () => {
   const JWT = 'jwt';
   const JWT_WITH_CONFIG = 'jwt-with-config';
   const CANNOT_OVERRIDE =
-    'Cannot override the configuration specified in the JWT. ' + 'The config object should contain the JWT only.';
+    'Cannot override the configuration specified in the JWT. ' +
+    'The config object should contain only the JWT and callbacks (optionally).';
 
   const config: IConfig = ({ foo: 'bar', jwt: JWT } as unknown) as IConfig;
   const configFromJwt: IConfig = ({ foo: 'bar', jwt: JWT_WITH_CONFIG } as unknown) as IConfig;
