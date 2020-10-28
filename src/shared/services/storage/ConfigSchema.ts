@@ -61,7 +61,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
     .keys({
       defaultPaymentType: Joi.string().allow(''),
       requestTypes: Joi.array().items(
-        Joi.string().valid('ACCOUNTCHECK', 'AUTH', 'JSINIT', 'RISKDEC', 'SUBSCRIPTION', 'THREEDQUERY')
+        Joi.string().valid('ACCOUNTCHECK', 'AUTH', 'JSINIT', 'RISKDEC', 'SUBSCRIPTION', 'THREEDQUERY', 'CACHETOKENISE')
       ),
       paymentTypes: Joi.array().items(Joi.string().allow('')),
       startOnLoad: Joi.boolean().allow('')
