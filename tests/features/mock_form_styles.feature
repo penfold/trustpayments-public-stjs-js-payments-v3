@@ -29,7 +29,7 @@ Feature: Payment form styles check
   @base_config
   Scenario: Checking default placeholders in input fields
     When User opens page with payment form
-    Then User will see default placeholders in input fields: ***** ***** ***** *****, MM/YY, ***
+    Then User will see default placeholders in input fields: **** **** **** ****, MM/YY, ***
 
   @base_config @extended_tests_part_2
   Scenario: Checking default cvv placeholder for AMEX card
