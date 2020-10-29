@@ -25,10 +25,10 @@ Feature: Cardinal commerce
       | 4000000000001109 | DECLINE     | Decline                                 | red   |
     Examples:
       | card_number      | action_code     | payment_status_message | color |
-      #|4000000000001109 | INVALID_FIELD   | Invalid field        | red   |
+      | 4000000000001109 | INVALID_FIELD   | Invalid field          | red   |
       | 4000000000001109 | SOCKET_ERROR    | Socket receive error   | red   |
       | 4000000000001109 | UNAUTHENTICATED | Unauthenticated        | red   |
-      #|4000000000001109 | UNKNOWN_ERROR   | Unknown error        | red   |
+      | 4000000000001109 | UNKNOWN_ERROR   | Unknown error          | red   |
 
   @base_config @cardinal_commerce
   Scenario Outline: Cardinal Commerce (frictionless cards) - checking payment status for <action_code> response code
