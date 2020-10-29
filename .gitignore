@@ -68,3 +68,6 @@ dist/
 
 # cicd-os reusable scripts
 .cicd_scripts
+
+# stryker temp files
+.stryker-tmp
