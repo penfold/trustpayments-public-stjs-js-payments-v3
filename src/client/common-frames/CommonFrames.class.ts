@@ -185,9 +185,18 @@ export class CommonFrames {
   private _isTransactionFinished(data: any): boolean {
     if (CommonFrames.COMPLETED_REQUEST_TYPES.includes(data.requesttypedescription)) {
       return true;
-    } else if (this._isThreedComplete(data)) {
+    }
+
+    if (this._isThreedComplete(data)) {
       return true;
     }
+
+    const lastRequestType = [...this.requestTypes].pop();
+
+    if (data.requesttypedescription === lastRequestType && lastRequestType !== 'THREEDQUERY') {
+      return true;
+    }
+
     return false;
   }
 

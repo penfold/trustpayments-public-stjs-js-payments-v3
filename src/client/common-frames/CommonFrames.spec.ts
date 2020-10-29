@@ -82,7 +82,11 @@ describe('CommonFrames', () => {
   // given
   describe('_isTransactionFinished()', () => {
     // when
-    const { instance } = commonFramesFixture();
+    let instance: CommonFrames;
+
+    beforeEach(() => {
+      instance = commonFramesFixture().instance;
+    });
 
     function isTransactionFinishedFixture(dataArg: {}) {
       const data = { ...dataArg };
@@ -105,6 +109,20 @@ describe('CommonFrames', () => {
       // @ts-ignore
       instance._isThreedComplete = jest.fn().mockReturnValueOnce(true);
       expect(isTransactionFinishedFixture({ requesttypedescription: 'THREEDQUERY' })).toEqual(true);
+    });
+
+    it('should be finished if current response has the last request type', () => {
+      // @ts-ignore
+      instance._requestTypes = ['AAA', 'BBB', 'RISKDEC'];
+      expect(isTransactionFinishedFixture({ requesttypedescription: 'RISKDEC' })).toEqual(true);
+    });
+
+    it('should not be finished if current response has the last request type, but it is THREEDQUERY', () => {
+      // @ts-ignore
+      instance._requestTypes = ['AAA', 'BBB', 'THREEDQUERY'];
+      // @ts-ignore
+      instance._isThreedComplete = jest.fn().mockReturnValueOnce(false);
+      expect(isTransactionFinishedFixture({ requesttypedescription: 'THREEDQUERY' })).toEqual(false);
     });
 
     // then

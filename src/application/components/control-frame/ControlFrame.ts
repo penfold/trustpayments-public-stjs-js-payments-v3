@@ -18,7 +18,7 @@ import { Payment } from '../../core/shared/payment/Payment';
 import { Validation } from '../../core/shared/validation/Validation';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
-import { Service } from 'typedi';
+import { Container, Service } from 'typedi';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
@@ -39,6 +39,7 @@ import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
 import { Styler } from '../../core/shared/styler/Styler';
+import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 
 @Service()
 export class ControlFrame {
@@ -94,8 +95,11 @@ export class ControlFrame {
       .whenReceive(MessageBus.EVENTS_PUBLIC.INIT_CONTROL_FRAME)
       .thenRespond((event: IMessageBusEvent<string>) => {
         const config: IConfig = JSON.parse(event.data);
-        this._store.dispatch({ type: UPDATE_CONFIG, payload: config });
-        this._configService.update(config);
+        this._messageBus.publish({
+          type: PUBLIC_EVENTS.CONFIG_CHANGED,
+          data: config
+        });
+
         this.init(config);
 
         return of(config);
@@ -120,6 +124,7 @@ export class ControlFrame {
     this._messageBus.pipe(ofType(PUBLIC_EVENTS.CONFIG_CHANGED)).subscribe((event: IMessageBusEvent<IConfig>) => {
       if (event.data) {
         this._store.dispatch({ type: UPDATE_CONFIG, payload: event.data });
+        Container.set(CONFIG, event.data);
         return;
       }
     });

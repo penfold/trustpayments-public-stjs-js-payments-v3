@@ -1,0 +1,8 @@
+{
+  "components": {
+    "requestTypes": [
+      "AUTH"
+    ]
+  },
+  "submitOnSuccess": true
+}
