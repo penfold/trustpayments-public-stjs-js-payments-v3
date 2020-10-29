@@ -28,7 +28,7 @@ Feature: Visual regression - E2E Card Payments
     And User clicks Pay button
     And Wait for notification frame
     And Wait for popups to disappear
-    Then Screenshot is taken after 0 seconds and checked
+    Then Screenshot is taken after 3 seconds and checked
 
   @base_config_visual_styling @visual_regression_styling_safari @scrn_card_interface_error_invalid_patterns_styling
   Scenario: Card interface before payment - invalid pattern data

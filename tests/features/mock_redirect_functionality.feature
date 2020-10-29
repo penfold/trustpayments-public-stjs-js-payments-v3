@@ -19,7 +19,7 @@ Feature: Redirect functionality
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
   @config_requestTypes_tdq_submit_on_error
-  Scenario: Error payment with request types: THREEDQUERY and submitOnError
+  Scenario: Cardinal Commerce - invalid payment with request types: THREEDQUERY and submitOnError
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User fills payment form with credit card number "4111110000000211", expiration date "12/30" and cvv "123"
     And THREEDQUERY mock response is set to "INVALID_ACQUIRER"

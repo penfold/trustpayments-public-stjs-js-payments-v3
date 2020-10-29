@@ -43,10 +43,9 @@ Feature: Card Payments
     When User fills payment form with defined card VISA_FRICTIONLESS
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User calls updateJWT function by filling amount field
-    And User calls updateJWT function by filling amount field
     And User clicks Pay button - AUTH response is set to "OK"
     Then User will see payment status information: "Payment has been successfully processed"
-    And JSINIT request was sent only 1
+    And JSINIT request was sent only 2
     And JSINIT requests contains updated jwt
 
   @base_config

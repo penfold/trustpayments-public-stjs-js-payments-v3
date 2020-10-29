@@ -95,6 +95,8 @@ def step_impl(context, example_page: ExamplePage):
 def accept_untrusted_pages_on_safari_browsers(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
+    payment_page.open_page(MockUrl.WEBSERVICES_STJS_URI.value)
+    payment_page.open_page(MockUrl.LIBRARY_URL.value)
     payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
 
 
