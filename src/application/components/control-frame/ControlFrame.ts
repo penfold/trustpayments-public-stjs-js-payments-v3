@@ -395,10 +395,12 @@ export class ControlFrame {
   private _initThreeDProcess(config: IConfig): void {
     let initialTokens: IThreeDSTokens;
 
-    if (config.init) {
+    const { threedinit, cachetoken } = config.init || {};
+
+    if (threedinit && cachetoken) {
       initialTokens = {
-        jwt: config.init.threedinit,
-        cacheToken: config.init.cachetoken
+        jwt: threedinit,
+        cacheToken: cachetoken
       };
     }
 
