@@ -6,8 +6,6 @@ import { filter, first, map, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ICardinalProvider } from './ICardinalProvider';
 
-declare const Cardinal: ICardinal;
-
 @Service()
 export class CardinalProvider implements ICardinalProvider {
   private static readonly SCRIPT_ID = 'cardinalCommerce';

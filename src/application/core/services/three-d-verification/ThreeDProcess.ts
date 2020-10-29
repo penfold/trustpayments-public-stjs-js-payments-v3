@@ -2,7 +2,7 @@ import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Service } from 'typedi';
-import { mapTo, switchMap, tap } from 'rxjs/operators';
+import { mapTo, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { merge, Observable, of } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ICard } from '../../models/ICard';
@@ -37,7 +37,7 @@ export class ThreeDProcess {
       switchMap(_ => this.tokenProvider.getTokens())
     );
 
-    this.threeDSTokens$ = merge(initialTokens, updatedTokens);
+    this.threeDSTokens$ = merge(initialTokens, updatedTokens).pipe(shareReplay(1));
 
     return this.initVerificationService();
   }

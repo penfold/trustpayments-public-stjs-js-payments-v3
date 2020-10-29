@@ -9,11 +9,17 @@ export class CardinalMock implements ICardinal {
     [PaymentEvents.VALIDATED]: (...args: any[]): any => void 0
   };
 
+  constructor(private manualCallbackTrigger: boolean = false) {}
+
   configure(config: any) {
     // @ts-ignore
   }
 
   continue(paymentBrand: string, continueObject: any, orderObject?: any, cardinalJwt?: string) {
+    if (this.manualCallbackTrigger) {
+      return;
+    }
+
     ajaxGet(environment.CARDINAL_COMMERCE.MOCK.AUTHENTICATE_CARD_URL).subscribe(response => {
       const { data, jwt } = response.response;
       this.callbacks[PaymentEvents.VALIDATED](data, jwt);
@@ -29,6 +35,10 @@ export class CardinalMock implements ICardinal {
   }
 
   setup(initializationType: 'init' | 'complete' | 'confirm', initializationData: any) {
+    if (this.manualCallbackTrigger) {
+      return;
+    }
+
     setTimeout(() => this.callbacks[PaymentEvents.SETUP_COMPLETE](), 100);
   }
 
@@ -39,6 +49,10 @@ export class CardinalMock implements ICardinal {
   }
 
   start(paymentBrand: string, orderObject: IOrderObject, jwt?: string) {
+    if (this.manualCallbackTrigger) {
+      return;
+    }
+
     this.callbacks[PaymentEvents.VALIDATED](
       {
         ActionCode: 'ERROR',
