@@ -1,3 +1,6 @@
+import { IConfig } from '../../../shared/model/config/IConfig';
+
 export interface IStJwtPayload {
-  [key: string]: string;
+  config?: IConfig | undefined;
+  [key: string]: any;
 }

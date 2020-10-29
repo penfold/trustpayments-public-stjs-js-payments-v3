@@ -68,6 +68,20 @@ Feature: E2E Card Payments - redirection
       | errorcode    | 30000         |
       | errordata    | locale        |
 
+  @reactJS
+  @angular
+  @vueJS
+  @react_native
+  Scenario: Unsuccessful payment with submitOnError enabled and try bypass the only request type set
+    Given JS library is configured with SUBMIT_ON_ERROR_CONFIG_BYPASS_ONLY_REQUEST_TYPES and BASE_JWT
+    And User opens example page
+    And User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
+    When User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key          | value             |
+      | errormessage | An error occurred |
+      | errorcode    | 50003             |
+
   @e2e_config_submit_on_success_security_code
   Scenario: Successful payment with submitOnSuccess enabled with field to submit securitycode
     Given JS library is configured with SUBMIT_ON_SUCCESS_SECURITY_CODE_CONFIG and JWT_WITH_PARENT_TRANSACTION
@@ -146,17 +160,18 @@ Feature: E2E Card Payments - redirection
       | currencyiso3a | GBP     |
       | errorcode     | 70000   |
 
-  @e2e_config_submit_on_cancel_callback
-  Scenario: Unsuccessful payment with submitOnCancel enabled and cancel callback set
-    Given JS library is configured with SUBMIT_ON_CANCEL_CONFIG_CANCEL_CALLBACK and BASE_JWT
-    When User opens example page CANCEL_CALLBACK
-    And User clicks on Visa Checkout button
-    And User closes the visa checkout popup
-    Then User will not see notification frame
-    And User will be sent to page with url "example.org" having params
-      | key          | value                      |
-      | errormessage | Payment has been cancelled |
-      | errorcode    | cancelled                  |
+# Disabling test with VisaCheckout popup until VisaCheckout test account will be ready
+#  @e2e_config_submit_on_cancel_callback
+#  Scenario: Unsuccessful payment with submitOnCancel enabled and cancel callback set
+#    Given JS library is configured with SUBMIT_ON_CANCEL_CONFIG_CANCEL_CALLBACK and BASE_JWT
+#    When User opens example page CANCEL_CALLBACK
+#    And User clicks on Visa Checkout button
+#    And User closes the visa checkout popup
+#    Then User will not see notification frame
+#    And User will be sent to page with url "example.org" having params
+#      | key          | value                      |
+#      | errormessage | Payment has been cancelled |
+#      | errorcode    | cancelled                  |
 
   Scenario: Cancel Cardinal popup with enabled submitOnSuccess and request type: ACCOUNTCHECK, TDQ
     Given JS library is configured with SUBMIT_ON_SUCCESS_ERROR_REQUEST_TYPES_CONFIG and BASE_JWT

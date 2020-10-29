@@ -14,6 +14,7 @@ class Waits:
         self._driver_browser = driver
         self._browser = driver.get_browser()
         self._timeout = int(configuration.TIMEOUT)
+        self._device_type = configuration.REMOTE_DEVICE
         self._wait = WebDriverWait(self._browser, self._timeout)
 
     def wait_for_element(self, locator):
@@ -27,7 +28,7 @@ class Waits:
         except:
             return False
 
-    def wait_for_element_to_be_displayed(self, locator, max_try: int = 360):
+    def wait_for_element_to_be_displayed(self, locator, max_try: int = 180):
         # pylint: disable=bare-except
 
         while max_try:
@@ -37,14 +38,14 @@ class Waits:
                     max_try = 0
                     return
                 else:
-                    time.sleep(0.2)
+                    time.sleep(0.5)
                     max_try -= 1
             except:
-                time.sleep(0.2)
+                time.sleep(0.5)
                 max_try -= 1
         raise Exception('Element not found within timeout')
 
-    def wait_for_element_with_id_to_be_displayed(self, locator, max_try: int = 360):
+    def wait_for_element_with_id_to_be_displayed(self, locator, max_try: int = 200):
         # pylint: disable=bare-except
 
         while max_try:
@@ -56,7 +57,7 @@ class Waits:
                 else:
                     max_try -= 1
             except:
-                time.sleep(0.2)
+                time.sleep(0.5)
                 max_try -= 1
         raise Exception('Element not found within timeout')
 
@@ -69,7 +70,7 @@ class Waits:
                     break
             except:
                 pass
-            time.sleep(0.2)
+            time.sleep(0.5)
             max_try -= 1
 
     def wait_for_element_to_be_clickable(self, locator):
@@ -93,12 +94,13 @@ class Waits:
     def wait_until_iframe_is_presented_and_switch_to_it(self, iframe_name):
         # pylint: disable=bare-except
         max_try = 10
+        if 'iP' in self._device_type:
+            max_try = 180
         while max_try:
             try:
                 return self._wait.until(ec.frame_to_be_available_and_switch_to_it(iframe_name))
             except:
-                print(f'Couldnt switch to iframe, will try {max_try} times more')
-            time.sleep(0.2)
+                time.sleep(1)
             max_try -= 1
         raise Exception('Iframe was unavailable within timeout')
 
@@ -113,19 +115,27 @@ class Waits:
         self._wait.until(lambda driver: self._browser.execute_script('return document.readyState') == 'complete')
 
     def wait_until_url_contains(self, page_url, max_try: int = 200):
+        # pylint: disable=bare-except
         while max_try:
-            if page_url in self._browser.current_url:
-                return
-            time.sleep(0.2)
+            try:
+                if page_url in self._browser.current_url:
+                    return
+            except:
+                pass
+            time.sleep(0.5)
             max_try -= 1
         raise Exception('Url didnt contain expected phrase within timeout')
 
     def wait_until_url_starts_with(self, page_url, max_try: int = 200):
+        # pylint: disable=bare-except
         if 'https://' not in page_url:
             page_url = f'https://{page_url}'
         while max_try:
-            if self._browser.current_url.startswith(page_url):
-                return
-            time.sleep(0.2)
+            try:
+                if self._browser.current_url.startswith(page_url):
+                    return
+            except:
+                pass
+            time.sleep(0.5)
             max_try -= 1
         raise Exception('Url didnt start with expected phrase within timeout')

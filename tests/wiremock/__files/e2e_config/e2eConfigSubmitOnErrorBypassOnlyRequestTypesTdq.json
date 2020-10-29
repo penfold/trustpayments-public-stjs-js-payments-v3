@@ -1,0 +1,12 @@
+{
+  "bypassCards": [
+    "MASTERCARD"
+  ],
+  "components": {
+    "requestTypes": [
+      "THREEDQUERY"
+    ]
+  },
+  "submitOnSuccess": false,
+  "submitOnError": true
+}

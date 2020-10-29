@@ -30,7 +30,7 @@ import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalS
 import { Notification } from '../../application/core/shared/notification/Notification';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Subject, Subscription } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { delay, map, takeUntil } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
@@ -124,6 +124,7 @@ export class ST {
       .pipe(
         ofType(events[eventName]),
         map(event => event.data),
+        delay(0),
         takeUntil(this._destroy$)
       )
       .subscribe(callback);
@@ -136,14 +137,11 @@ export class ST {
     }
   }
 
-  public Components(config: IComponentsConfig): void {
-    this._config = this._configService.update({
-      ...this._config,
-      components: {
-        ...this._config.components,
-        ...(config || {})
-      }
-    });
+  public Components(config: IComponentsConfig | undefined): void {
+    if (config) {
+      this._config = this._configService.updateFragment('components', config);
+    }
+
     this.blockSubmitButton();
     // @ts-ignore
     this._commonFrames._requestTypes = this._config.components.requestTypes;
@@ -166,30 +164,22 @@ export class ST {
       });
   }
 
-  public ApplePay(config: IApplePay): ApplePay {
+  public ApplePay(config: IApplePay | undefined): ApplePay {
     const { applepay } = this.Environment();
 
-    this._config = this._configService.update({
-      ...this._config,
-      applePay: {
-        ...this._config.applePay,
-        ...(config || {})
-      }
-    });
+    if (config) {
+      this._config = this._configService.updateFragment('applePay', config);
+    }
 
     return new applepay(this._configProvider, this._communicator);
   }
 
-  public VisaCheckout(config: IVisaConfig): VisaCheckout {
+  public VisaCheckout(config: IVisaConfig | undefined): VisaCheckout {
     const { visa } = this.Environment();
 
-    this._config = this._configService.update({
-      ...this._config,
-      visaCheckout: {
-        ...this._config.visaCheckout,
-        ...(config || {})
-      }
-    });
+    if (config) {
+      this._config = this._configService.updateFragment('visaCheckout', config);
+    }
 
     return new visa(this._configProvider, this._communicator);
   }
@@ -211,8 +201,7 @@ export class ST {
 
   public updateJWT(jwt: string): void {
     if (jwt) {
-      this._config = { ...this._config, jwt };
-      this._configService.update(this._config);
+      this._config = this._configService.updateJwt(jwt);
       (() => {
         const a = StCodec.updateJWTValue(jwt);
         debounce(() => a, ST.DEBOUNCE_JWT_VALUE);
@@ -238,7 +227,7 @@ export class ST {
   public init(config: IConfig): void {
     this._framesHub.reset();
     this._storage.init();
-    this._config = this._configService.update(config);
+    this._config = this._configService.setup(config);
     StCodec.updateJWTValue(config.jwt);
     this.initCallbacks(config);
     this.Storage();
