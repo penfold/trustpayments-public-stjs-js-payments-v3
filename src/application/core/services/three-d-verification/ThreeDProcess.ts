@@ -2,7 +2,7 @@ import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Service } from 'typedi';
-import { mapTo, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { first, mapTo, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { merge, Observable, of } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ICard } from '../../models/ICard';
@@ -39,7 +39,10 @@ export class ThreeDProcess {
 
     this.threeDSTokens$ = merge(initialTokens, updatedTokens).pipe(shareReplay(1));
 
-    return this.initVerificationService();
+    return this.threeDSTokens$.pipe(
+      first(),
+      switchMap(threeDStokens => this.initVerificationService(threeDStokens))
+    );
   }
 
   performThreeDQuery(
@@ -48,20 +51,20 @@ export class ThreeDProcess {
     merchantData: IMerchantData
   ): Observable<IAuthorizePaymentResponse> {
     return this.threeDSTokens$.pipe(
+      first(),
       switchMap(tokens =>
-        this.verificationService
-          .start(tokens.jwt)
-          .pipe(mapTo(new ThreeDQueryRequest(tokens.cacheToken, requestTypes, card, merchantData)))
-      ),
-      switchMap(request => this.gatewayClient.threedQuery(request)),
-      switchMap(response => this.authenticateCard(response)),
-      tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed'))
+        this.verificationService.start(tokens.jwt).pipe(
+          mapTo(new ThreeDQueryRequest(tokens.cacheToken, requestTypes, card, merchantData)),
+          switchMap(request => this.gatewayClient.threedQuery(request)),
+          switchMap(response => this.authenticateCard(response, tokens)),
+          tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed'))
+        )
+      )
     );
   }
 
-  private initVerificationService(): Observable<void> {
-    return this.threeDSTokens$.pipe(
-      switchMap(tokens => this.verificationService.init(tokens.jwt)),
+  private initVerificationService(tokens: IThreeDSTokens): Observable<void> {
+    return this.verificationService.init(tokens.jwt).pipe(
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed')),
       tap(() => this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.UNLOCK_BUTTON }, true)),
       tap(() => {
@@ -72,30 +75,29 @@ export class ThreeDProcess {
     );
   }
 
-  private authenticateCard(response: IThreeDQueryResponse): Observable<IAuthorizePaymentResponse> {
-    return this.threeDSTokens$.pipe(
-      switchMap(tokens => {
-        const isCardEnrolledAndNotFrictionless = response.enrolled === 'Y' && response.acsurl !== undefined;
+  private authenticateCard(
+    response: IThreeDQueryResponse,
+    tokens: IThreeDSTokens
+  ): Observable<IAuthorizePaymentResponse> {
+    const isCardEnrolledAndNotFrictionless = response.enrolled === 'Y' && response.acsurl !== undefined;
 
-        if (isCardEnrolledAndNotFrictionless) {
-          const verificationData: IVerificationData = {
-            transactionId: response.acquirertransactionreference,
-            jwt: tokens.jwt,
-            acsUrl: response.acsurl,
-            payload: response.threedpayload
-          };
+    if (isCardEnrolledAndNotFrictionless) {
+      const verificationData: IVerificationData = {
+        transactionId: response.acquirertransactionreference,
+        jwt: tokens.jwt,
+        acsUrl: response.acsurl,
+        payload: response.threedpayload
+      };
 
-          return this.verificationService.verify(verificationData).pipe(
-            tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
-            switchMap(validationResult => this.verificationResultHandler.handle(validationResult, tokens))
-          );
-        }
+      return this.verificationService.verify(verificationData).pipe(
+        tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
+        switchMap(validationResult => this.verificationResultHandler.handle(validationResult, tokens))
+      );
+    }
 
-        return of<IAuthorizePaymentResponse>({
-          threedresponse: '',
-          cachetoken: tokens.cacheToken
-        });
-      })
-    );
+    return of<IAuthorizePaymentResponse>({
+      threedresponse: '',
+      cachetoken: tokens.cacheToken
+    });
   }
 }
