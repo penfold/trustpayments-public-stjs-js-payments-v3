@@ -126,7 +126,9 @@ Feature: ApplePay
     And User chooses ApplePay as payment method - response is set to "SUCCESS"
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And User will see "success" popup
     And "success" callback is called only once
+    And User will see "submit" popup
     And "submit" callback is called only once
     And APPLE_PAY or AUTH requests were sent only once with correct data
 #    And WALLETVERIFY requests contains updated jwt
@@ -147,7 +149,9 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And User will see "success" popup
     And "success" callback is called only once
+    And User will see "submit" popup
     And "submit" callback is called only once
     And AUTH request for APPLE_PAY is sent only once with correct data
 
@@ -157,7 +161,9 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And User will see "success" popup
     And "success" callback is called only once
+    And User will see "submit" popup
     And "submit" callback is called only once
     And ACCOUNTCHECK request for APPLE_PAY is sent only once with correct data
 
@@ -167,7 +173,9 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And User will see "success" popup
     And "success" callback is called only once
+    And User will see "submit" popup
     And "submit" callback is called only once
     And ACCOUNTCHECK, AUTH request for APPLE_PAY is sent only once with correct data
 
@@ -177,7 +185,9 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And User will see "success" popup
     And "success" callback is called only once
+    And User will see "submit" popup
     And "submit" callback is called only once
     And RISKDEC, AUTH request for APPLE_PAY is sent only once with correct data
 
@@ -187,7 +197,9 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And User will see "success" popup
     And "success" callback is called only once
+    And User will see "submit" popup
     And "submit" callback is called only once
     And RISKDEC, ACCOUNTCHECK, AUTH request for APPLE_PAY is sent only once with correct data
 
@@ -197,7 +209,9 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And User will see "success" popup
     And "success" callback is called only once
+    And User will see "submit" popup
     And "submit" callback is called only once
     And AUTH, SUBSCRIPTION request for APPLE_PAY is sent only once with correct data
 
@@ -207,7 +221,9 @@ Feature: ApplePay
     And User chooses APPLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And User will see "success" popup
     And "success" callback is called only once
+    And User will see "submit" popup
     And "submit" callback is called only once
     And ACCOUNTCHECK, SUBSCRIPTION request for APPLE_PAY is sent only once with correct data
 

@@ -388,17 +388,11 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert 'error' in attribute_value, assertion_message
 
-    def validate_if_field_is_disabled(self, field_type):
+    def validate_field_accessibility(self, field_type, should_be_enabled):
         is_enabled = self.is_field_enabled(field_type)
-        assertion_message = f'{FieldType[field_type].name} field is not disabled but should be'
+        assertion_message = f'{FieldType[field_type].name} field was not in proper accessibility state'
         add_to_shared_dict('assertion_message', assertion_message)
-        assert is_enabled is False, assertion_message
-
-    def validate_if_field_is_enabled(self, field_type):
-        is_enabled = self.is_field_enabled(field_type)
-        assertion_message = f'{FieldType[field_type].name} field is not enabled but should be'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert is_enabled is True, assertion_message
+        assert is_enabled is should_be_enabled, assertion_message
 
     def validate_if_field_is_not_displayed(self, field_type):
         is_displayed = self.is_field_displayed(field_type)
@@ -501,21 +495,20 @@ class PaymentMethodsPage(BasePage):
 
     def validate_form_status(self, field_type, form_status):
         if 'enabled' in form_status:
-            self.validate_if_field_is_enabled(field_type)
+            self.validate_field_accessibility(field_type, should_be_enabled=True)
         else:
-            self.validate_if_field_is_disabled(field_type)
+            self.validate_field_accessibility(field_type, should_be_enabled=False)
 
     def validate_if_callback_popup_is_displayed(self, callback_popup):
         is_displayed = False
         if 'success' in callback_popup:
-            self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_success_popup)
-            is_displayed = self._action.is_element_displayed(PaymentMethodsLocators.callback_success_popup)
+            is_displayed = self._waits.wait_and_check_is_element_displayed(PaymentMethodsLocators.callback_success_popup)
         elif 'error' in callback_popup:
-            self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_error_popup)
-            is_displayed = self._action.is_element_displayed(PaymentMethodsLocators.callback_error_popup)
+            is_displayed = self._waits.wait_and_check_is_element_displayed(PaymentMethodsLocators.callback_error_popup)
         elif 'cancel' in callback_popup:
-            self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.callback_cancel_popup)
-            is_displayed = self._action.is_element_displayed(PaymentMethodsLocators.callback_cancel_popup)
+            is_displayed = self._waits.wait_and_check_is_element_displayed(PaymentMethodsLocators.callback_cancel_popup)
+        elif 'submit' in callback_popup:
+            is_displayed = self._waits.wait_and_check_is_element_displayed(PaymentMethodsLocators.callback_data_popup)
         assertion_message = f'{callback_popup} callback popup is not displayed but should be'
         add_to_shared_dict('assertion_message', assertion_message)
         assert is_displayed is True, assertion_message
@@ -523,13 +516,13 @@ class PaymentMethodsPage(BasePage):
     def validate_number_in_callback_counter_popup(self, callback_popup):
         counter = ''
         if 'success' in callback_popup:
-            counter = self._action.get_text_with_wait(PaymentMethodsLocators.callback_success_counter)
+            counter = self._action.get_text(PaymentMethodsLocators.callback_success_counter)
         elif 'error' in callback_popup:
-            counter = self._action.get_text_with_wait(PaymentMethodsLocators.callback_error_counter)
+            counter = self._action.get_text(PaymentMethodsLocators.callback_error_counter)
         elif 'cancel' in callback_popup:
-            counter = self._action.get_text_with_wait(PaymentMethodsLocators.callback_cancel_counter)
+            counter = self._action.get_text(PaymentMethodsLocators.callback_cancel_counter)
         elif 'submit' in callback_popup:
-            counter = self._action.get_text_with_wait(PaymentMethodsLocators.callback_submit_counter)
+            counter = self._action.get_text(PaymentMethodsLocators.callback_submit_counter)
         counter = counter[-1]
         assertion_message = f'Number of {callback_popup} callback is not correct but should be 1 but is {counter}'
         add_to_shared_dict('assertion_message', assertion_message)

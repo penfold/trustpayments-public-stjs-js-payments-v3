@@ -1,8 +1,8 @@
 # type: ignore[no-redef]
-import time
 
 from assertpy import soft_assertions
 from behave import use_step_matcher, step, when, then, given
+
 from configuration import CONFIGURATION
 from utils.configurations.inline_config_generator import create_inline_config
 from utils.configurations.jwt_generator import encode_jwt_for_json
@@ -209,7 +209,6 @@ def step_impl(context, payment_method):
 @then('User will see that Submit button is "(?P<form_status>.+)" after payment')
 def step_impl(context, form_status):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    time.sleep(1)
     payment_page.validate_form_status(FieldType.SUBMIT_BUTTON.name, form_status)
 
 
@@ -319,7 +318,7 @@ def step_impl(context):
 @then('User will see that "(?P<field_type>.+)" field is disabled')
 def step_impl(context, field_type):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_if_field_is_disabled(field_type)
+    payment_page.validate_field_accessibility(field_type, should_be_enabled=False)
 
 
 @step('User will see "(?P<callback_popup>.+)" popup')
