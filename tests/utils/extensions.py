@@ -1,5 +1,6 @@
 """ This class consist all necessary web elements extensions methods
 """
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
@@ -86,8 +87,10 @@ class WebElementsExtensions(Waits):
         return elements
 
     def get_text(self, locator):
-        element = self.find_element(locator)
-        return element.text
+        try:
+            return self.find_element(locator).text
+        except StaleElementReferenceException:
+            return self.find_element(locator).text
 
     def get_text_with_wait(self, locator):
         self.wait_for_element(locator)
@@ -119,9 +122,7 @@ class WebElementsExtensions(Waits):
         return element.get_attribute(attribute_name)
 
     def is_element_enabled(self, locator):
-        element = self.find_element(locator)
-        is_enabled = element.is_enabled()
-        return is_enabled
+        return self.find_element(locator).is_enabled()
 
     def switch_to_iframe_and_get_element_attribute(self, iframe_name, locator, attribute_name):
         self.switch_to_iframe(iframe_name)
@@ -132,8 +133,7 @@ class WebElementsExtensions(Waits):
 
     def switch_to_iframe_and_check_is_element_enabled(self, iframe_name, locator):
         self.switch_to_iframe(iframe_name)
-        element = self.find_element(locator)
-        is_enabled = element.is_enabled()
+        is_enabled = self.is_element_enabled(locator)
         self.switch_to_default_iframe()
         return is_enabled
 

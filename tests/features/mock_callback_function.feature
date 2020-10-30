@@ -14,6 +14,7 @@ Feature: Callback functionality
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User clicks Pay button - AUTH response is set to "<action_code>"
     Then User will see "<callback_popup>" popup
+    And "<callback_popup>" callback is called only once
 
     @smoke_test
     Examples:
@@ -22,18 +23,6 @@ Feature: Callback functionality
 
     Examples:
       | action_code | callback_popup |
-      | DECLINE     | error          |
-
-  @base_config
-  Scenario Outline: Checking number of <action_code> callback functionality
-    When User opens page with payment form
-    And User fills payment form with credit card number "4111110000000211", expiration date "12/30" and cvv "123"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-    And User clicks Pay button - AUTH response is set to "<action_code>"
-    And "<callback_popup>" callback is called only once
-    Examples:
-      | action_code | callback_popup |
-      | OK          | success        |
       | DECLINE     | error          |
 
   @base_config
