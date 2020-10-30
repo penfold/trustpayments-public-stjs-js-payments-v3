@@ -82,7 +82,6 @@ input:-webkit-autofill.error-field {
     position: relative;
     width: 100%;
     box-sizing: border-box;
-    min-width: 225px;
     height: 45px;
   }
 
@@ -98,7 +97,6 @@ input:-webkit-autofill.error-field {
       width: calc(100vw - 105px);
       padding: 0;
       min-width: auto;
-      max-width: 300px;
     }
   }
 }

@@ -96,7 +96,12 @@ Feature: Successfull payments with various configurations
     When User fills "SECURITY_CODE" field "123"
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User clicks Pay button - AUTH response is set to "OK"
-    Then User is redirected to action page
+    Then User will be sent to page with url "www.example.com" having params
+      | key           | value                                   |
+      | errormessage  | Payment has been successfully processed |
+      | baseamount    | 1000                                    |
+      | currencyiso3a | EUR                                     |
+      | errorcode     | 0                                       |
     And AUTH and THREEDQUERY requests were sent only once
 
   @config_skip_jsinit @cardinal_commerce
