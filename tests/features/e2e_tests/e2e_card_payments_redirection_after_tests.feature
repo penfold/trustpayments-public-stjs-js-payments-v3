@@ -147,17 +147,17 @@ Feature: E2E Card Payments - redirection
       | errorcode     | 70000   |
 
 # Disabling test with VisaCheckout popup until VisaCheckout test account will be ready
-#  @e2e_config_submit_on_cancel_callback
-#  Scenario: Unsuccessful payment with submitOnCancel enabled and cancel callback set
-#    Given JS library is configured with SUBMIT_ON_CANCEL_CONFIG_CANCEL_CALLBACK and BASE_JWT
-#    When User opens example page CANCEL_CALLBACK
-#    And User clicks on Visa Checkout button
-#    And User closes the visa checkout popup
-#    Then User will not see notification frame
-#    And User will be sent to page with url "example.org" having params
-#      | key          | value                      |
-#      | errormessage | Payment has been cancelled |
-#      | errorcode    | cancelled                  |
+  @e2e_config_submit_on_cancel_callback
+  Scenario: Unsuccessful payment with submitOnCancel enabled and cancel callback set
+    Given JS library is configured with SUBMIT_ON_CANCEL_CONFIG_CANCEL_CALLBACK and BASE_JWT
+    When User opens example page CANCEL_CALLBACK
+    And User clicks on Visa Checkout button
+    And User closes the visa checkout popup
+    Then User will not see notification frame
+    And User will be sent to page with url "example.org" having params
+      | key          | value                      |
+      | errormessage | Payment has been cancelled |
+      | errorcode    | cancelled                  |
 
   Scenario: Cancel Cardinal popup with enabled submitOnSuccess and request type: ACCOUNTCHECK, TDQ
     Given JS library is configured with SUBMIT_ON_SUCCESS_ERROR_REQUEST_TYPES_CONFIG and BASE_JWT
