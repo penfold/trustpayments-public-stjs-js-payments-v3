@@ -115,7 +115,7 @@ Feature: E2E Card Payments with request types in config
       | cachetoken | should not be none |
       | jwt        | should not be none |
 
-  Scenario: Error payment with single requestTypes: CACHETOKENISE
+  Scenario: Payment by invalid card and single requestTypes: CACHETOKENISE
     Given JS library is configured with REQUEST_TYPE_CACHETOKENISE_SUBMIT_ON_ERROR and BASE_JWT
     And User opens example page
     When User fills payment form with defined card VISA_DECLINED_CARD
@@ -131,6 +131,3 @@ Feature: E2E Card Payments with request types in config
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
     Then User will see payment status information: "Invalid field"
-
-
-
