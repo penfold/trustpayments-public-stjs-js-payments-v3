@@ -27,3 +27,11 @@ Feature: E2E startOnLoad
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+
+  Scenario: Successful payment with startOnLoad and single requestTypes: CACHETOKENISE
+    Given JS library is configured with START_ON_LOAD_REQUEST_TYPES_CACHETOKENISE_CONFIG and JWT_WITH_FRICTIONLESS_CARD
+    And User opens example page WITHOUT_SUBMIT_BUTTON
+    Then User will be sent to page with url "www.example.com" having params
+      | key        | value              |
+      | cachetoken | should not be none |
+      | jwt        | should not be none |

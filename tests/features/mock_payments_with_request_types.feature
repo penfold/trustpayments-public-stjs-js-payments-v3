@@ -100,6 +100,14 @@ Feature: Successfull payments with various request types configurations
     And ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
     And AUTH, SUBSCRIPTION ware sent only once in one request
 
+  @config_requestTypes_cachetokenise
+  Scenario: Successful payment with single requestTypes: CACHETOKENISE
+    Given User opens page with payment form
+    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    And User clicks Pay button - CACHETOKENISE response is set to "OK"
+    Then User will see payment status information: "Payment has been successfully processed"
+    And CACHETOKENISE ware sent only once in one request
+
   @config_requestTypes_tdq_acheck_riskdec_auth
   Scenario: Invalid payment with additional request types: THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH
     Given User opens page with payment form

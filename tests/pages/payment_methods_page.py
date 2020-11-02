@@ -488,7 +488,7 @@ class PaymentMethodsPage(BasePage):
         actual_url = self._executor.get_page_url()
         parsed_url = urlparse(actual_url)
         parsed_query_from_url = parse_qs(parsed_url.query)
-        if 'jwt' in key:
+        if 'jwt' in key or 'cachetoken' in key:
             assert_that(parsed_query_from_url[key][0]).is_not_none()
         else:
             assert_that(parsed_query_from_url[key][0]).is_equal_to(value)

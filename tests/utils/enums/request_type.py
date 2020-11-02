@@ -10,7 +10,8 @@ request_type_response = {
     'AUTH, SUBSCRIPTION': 'ccAuthSub.json',
     'RISKDEC, ACCOUNTCHECK, AUTH': 'ccRiskdecAccountcheckAuth.json',
     'ACCOUNTCHECK, RISKDEC, AUTH': 'ccAccountcheckRiskdecAuth.json',
-    'THREEDQUERY': 'ccTdq.json'
+    'THREEDQUERY': 'ccTdq.json',
+    'CACHETOKENISE': 'cachetokenise.json'
 }
 
 request_type_tokenisation_response = {

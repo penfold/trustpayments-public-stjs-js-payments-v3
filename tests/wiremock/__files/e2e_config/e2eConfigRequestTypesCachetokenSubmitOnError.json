@@ -1,0 +1,9 @@
+{
+  "components": {
+    "requestTypes": [
+      "CACHETOKENISE"
+    ]
+  },
+  "submitOnError": true,
+  "submitFields": ["cachetoken"]
+}

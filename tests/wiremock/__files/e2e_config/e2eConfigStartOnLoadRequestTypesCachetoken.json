@@ -1,0 +1,9 @@
+{
+  "components": {
+    "startOnLoad": true,
+    "requestTypes": [
+      "CACHETOKENISE"
+    ]
+  },
+  "submitFields": ["cachetoken"]
+}

@@ -105,4 +105,32 @@ Feature: E2E Card Payments with request types in config
       | REQUEST_TYPE_TDQ_CONFIG  | THREEDQUERY     | MASTERCARD_CARD   |
 
 
+  Scenario: Successful payment with single requestTypes: CACHETOKENISE
+    Given JS library is configured with REQUEST_TYPE_CACHETOKENISE and BASE_JWT
+    And User opens example page
+    When User fills payment form with defined card VISA_FRICTIONLESS
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key        | value              |
+      | cachetoken | should not be none |
+      | jwt        | should not be none |
+
+  Scenario: Error payment with single requestTypes: CACHETOKENISE
+    Given JS library is configured with REQUEST_TYPE_CACHETOKENISE_SUBMIT_ON_ERROR and BASE_JWT
+    And User opens example page
+    When User fills payment form with defined card VISA_DECLINED_CARD
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key        | value              |
+      | cachetoken | should not be none |
+      | jwt        | should not be none |
+
+  Scenario: Error payment with invalid combination of requestTypes: CACHETOKENISE, TDQ, AUTH
+    Given JS library is configured with INVALID_REQUEST_TYPE_CACHETOKENISE_TDQ_AUTH and BASE_JWT
+    And User opens example page
+    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    And User clicks Pay button
+    Then User will see payment status information: "Invalid field"
+
+
 
