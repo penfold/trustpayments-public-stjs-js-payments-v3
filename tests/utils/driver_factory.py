@@ -80,7 +80,7 @@ class SeleniumDriver(Driver):
 
 def _get_remote_capabilities(configuration):
     # pylint: disable=unused-variable
-    network_logs='true'
+    network_logs = 'true'
     # disabling network logs on Safari as they are not accessible for this browser and cause browser instability
     if 'Safari' in configuration.REMOTE_BROWSER:
         network_logs = 'false'

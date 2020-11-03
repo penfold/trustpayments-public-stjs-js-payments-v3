@@ -5,7 +5,7 @@ Feature: Visual regression - E2E Card Payments
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens page with payment form
+    And User opens minimal example page with payment form
 
   @base_config_visual @visual_regression_safari @scrn_card_interface_after_successful_payment
   Scenario: Card interface after successful payment

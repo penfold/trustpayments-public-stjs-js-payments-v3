@@ -5,7 +5,7 @@ Feature: Visual regression - E2E Card Payments
 
   Background:
     Given JS library is configured with BYPASS_MASTERCARD_CONFIG and BASE_JWT
-    And User opens example page
+    And User opens minimal example page
 
   @visual_regression @scrn_card_interface_after_successful_payment
   Scenario: Card interface after successful payment
@@ -17,7 +17,7 @@ Feature: Visual regression - E2E Card Payments
 
   @visual_regression @scrn_card_interface_before_payment
   Scenario: Card interface before payment
-    Then Screenshot is taken after 6 seconds and checked
+    Then Screenshot is taken after 10 seconds and checked
 
   @visual_regression @scrn_card_interface_error_expiry_date
   Scenario: Card interface after unsuccessful payment - invalid expiration date
