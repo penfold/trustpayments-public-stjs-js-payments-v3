@@ -19,7 +19,7 @@ class WebElementsExtensions(Waits):
 
     def send_key_one_by_one(self, locator, string):
         # pylint: disable=invalid-name
-        for x in string:
+        for x in str(string):
             self.send_keys(locator, x)
 
     def switch_to_iframe_and_send_keys(self, iframe_name, locator, string):
