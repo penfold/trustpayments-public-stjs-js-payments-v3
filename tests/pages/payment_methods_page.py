@@ -26,14 +26,8 @@ class PaymentMethodsPage(BasePage):
 
     def wait_for_payment_form_to_load(self):
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.card_number_iframe)
-        self._action.switch_to_iframe_and_wait_for_element_to_be_displayed(PaymentMethodsLocators.card_number_iframe,
-                                                                           PaymentMethodsLocators.card_number_input_field)
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe)
-        self._action.switch_to_iframe_and_wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe,
-                                                                           PaymentMethodsLocators.expiration_date_input_field)
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
-        self._action.switch_to_iframe_and_wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe,
-                                                                           PaymentMethodsLocators.security_code_input_field)
 
     def fill_credit_card_field(self, field_type, value):
         if field_type == FieldType.CARD_NUMBER.name:
