@@ -125,7 +125,7 @@ iPhoneXS-12-visual-tests:
 OSXMojave-Safari-12.1-visual-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Mojave
@@ -508,7 +508,7 @@ iPhoneXS-12-visual-tests-styling:
 OSXMojave-Safari-12.1-visual-tests-styling:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Mojave
