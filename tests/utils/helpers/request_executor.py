@@ -10,39 +10,43 @@ browserstack_access_key = get_from_env('BS_ACCESS_KEY')
 
 shared_dict = {}
 
+BROWSERSTACK_API_URL = 'https://api.browserstack.com/automate/sessions/'
+WEBSERVICES_URL = 'https://webservices.securetrading.net:8443/'
+WEBSERVICES_ADMIN_REQUESTS_COUNT_URL = WEBSERVICES_URL + '__admin/requests/count'
+THIRDPARTY_URL = 'https://thirdparty.example.com:8443/'
 
 def add_to_shared_dict(key, value):
     shared_dict[key] = value
 
 
 def mark_test_as_failed(session_id):
-    requests.put('https://api.browserstack.com/automate/sessions/' + session_id + '.json',
+    requests.put(BROWSERSTACK_API_URL + session_id + '.json',
                  auth=HTTPBasicAuth(browserstack_username, browserstack_access_key),
                  headers={'Content-Type': 'application/json'}, json={'status': 'failed',
                                                                      'reason': shared_dict['assertion_message']})
 
 
 def mark_test_as_passed(session_id):
-    requests.put('https://api.browserstack.com/automate/sessions/' + session_id + '.json',
+    requests.put(BROWSERSTACK_API_URL + session_id + '.json',
                  auth=HTTPBasicAuth(browserstack_username, browserstack_access_key),
                  headers={'Content-Type': 'application/json'}, json={'status': 'passed',
                                                                      'reason': ''})
 
 
 def set_scenario_name(session_id, scenario_name):
-    requests.put('https://api.browserstack.com/automate/sessions/' + session_id + '.json',
+    requests.put(BROWSERSTACK_API_URL + session_id + '.json',
                  auth=HTTPBasicAuth(browserstack_username, browserstack_access_key),
                  headers={'Content-Type': 'application/json'}, json={'name': scenario_name})
 
 
 def delete_session(session_id):
-    requests.delete('https://api.browserstack.com/automate/sessions/' + session_id + '.json',
+    requests.delete(BROWSERSTACK_API_URL + session_id + '.json',
                     auth=HTTPBasicAuth(browserstack_username, browserstack_access_key),
                     headers={'Content-Type': 'application/json'})
 
 
 def get_number_of_requests_with_data(request_type, pan, expiry_date, cvv):
-    count = requests.post('https://webservices.securetrading.net:8443/__admin/requests/count',
+    count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
                               {
                                   'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==["' + request_type + '"])]'},
@@ -56,7 +60,7 @@ def get_number_of_requests_with_data(request_type, pan, expiry_date, cvv):
 
 def get_number_of_requests_with_data_and_fraudcontroltransactionid_flag(request_type, pan, expiry_date, cvv):
     # pylint: disable=line-too-long
-    count = requests.post('https://webservices.securetrading.net:8443/__admin/requests/count',
+    count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
                               {
                                   'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==["' + request_type + '"])]'},
@@ -72,7 +76,7 @@ def get_number_of_requests_with_data_and_fraudcontroltransactionid_flag(request_
 
 def get_number_of_requests_with_fraudcontroltransactionid_flag(request_type):
     # pylint: disable=line-too-long
-    count = requests.post('https://webservices.securetrading.net:8443/__admin/requests/count',
+    count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
                               {
                                   'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==["' + request_type + '"])]'},
@@ -84,7 +88,7 @@ def get_number_of_requests_with_fraudcontroltransactionid_flag(request_type):
 
 
 def get_number_of_requests_with_updated_jwt(request_type, url, update_jwt):
-    count = requests.post('https://webservices.securetrading.net:8443/__admin/requests/count',
+    count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': url, 'bodyPatterns': [
                               {
                                   'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==["' + request_type + '"])]'},
@@ -95,7 +99,7 @@ def get_number_of_requests_with_updated_jwt(request_type, url, update_jwt):
 
 
 def get_number_of_requests_with_updated_jwt_for_visa(walletsource, update_jwt):
-    count = requests.post('https://webservices.securetrading.net:8443/__admin/requests/count',
+    count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
                               {'matchesJsonPath': '$.request[:1][?(@.walletsource=="' + walletsource + '")]'},
                               {'matchesJsonPath': '$.[?(@.jwt=="' + update_jwt + '")]'}
@@ -105,7 +109,7 @@ def get_number_of_requests_with_updated_jwt_for_visa(walletsource, update_jwt):
 
 
 def get_number_of_requests_without_data(request_type):
-    count = requests.post('https://webservices.securetrading.net:8443/__admin/requests/count',
+    count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
                               {
                                   'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==["' + request_type + '"])]'}
@@ -115,14 +119,14 @@ def get_number_of_requests_without_data(request_type):
 
 
 def get_number_of_wallet_verify_requests(url):
-    count = requests.post('https://thirdparty.example.com:8443/__admin/requests/count',
+    count = requests.post(THIRDPARTY_URL + '__admin/requests/count',
                           json={'url': url}, verify=False)
     data = json.loads(count.content)
     return data['count']
 
 
 def get_number_of_thirdparty_requests(request_type, walletsource):
-    count = requests.post('https://webservices.securetrading.net:8443/__admin/requests/count',
+    count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
                               {
                                   'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==[' + request_type + '])]'},
@@ -133,7 +137,7 @@ def get_number_of_thirdparty_requests(request_type, walletsource):
 
 
 def get_number_of_tokenisation_requests(request_type, cvv):
-    count = requests.post('https://webservices.securetrading.net:8443/__admin/requests/count',
+    count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
                               {
                                   'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==[' + request_type + '])]'},
@@ -144,7 +148,7 @@ def get_number_of_tokenisation_requests(request_type, cvv):
 
 
 def get_number_of_requests(request_type, pan, expiry_date, cvv):
-    count = requests.post('https://webservices.securetrading.net:8443/__admin/requests/count',
+    count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
                               {
                                   'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==[' + request_type + '])]'},
@@ -157,5 +161,5 @@ def get_number_of_requests(request_type, pan, expiry_date, cvv):
 
 
 def remove_item_from_request_journal():
-    requests.delete('https://webservices.securetrading.net:8443/__admin/requests', verify=False)
-    requests.delete('https://thirdparty.example.com:8443/__admin/requests', verify=False)
+    requests.delete(WEBSERVICES_URL + '__admin/requests', verify=False)
+    requests.delete(THIRDPARTY_URL + '__admin/requests', verify=False)

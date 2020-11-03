@@ -13,6 +13,7 @@ Feature: Card Payments
     When User fills payment form with credit card number "4000000000001000", expiration date "12/30" and cvv "123"
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User clicks Pay button - AUTH response is set to "<action_code>"
+    And user waits for payment to be processed
     Then User will see that Submit button is "<form_status>" after payment
     And User will see that ALL input fields are "<form_status>"
 

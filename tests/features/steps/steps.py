@@ -49,7 +49,7 @@ def step_impl(context, card: Card):
 def step_impl(context, how_many_seconds):
     time.sleep(int(how_many_seconds))
     screenshot_filename = screenshots[_screenshot_tag(context.scenario.tags)]
-    context.screenshot_manager().make_screenshot_for_visual_tests(screenshot_filename, date_postfix=True)
+    context.screenshot_manager.make_screenshot_for_visual_tests(screenshot_filename, date_postfix=True)
 
 
 @then('Screenshot is taken after (?P<how_many_seconds>.+) seconds and checked')
@@ -81,9 +81,10 @@ def _browser_device(context):
         name = context.browser
     name = name.upper()
 
-    assert_that(name).is_in('CHROME', 'SAFARI', 'SAMSUNG GALAXY S10 PLUS', 'IPHONE XS')
+    assert_that(name).is_in('IE', 'CHROME', 'SAFARI', 'SAMSUNG GALAXY S10 PLUS', 'IPHONE XS')
 
     return {
+        'IE': name,
         'CHROME': name,
         'SAFARI': name,
         'SAMSUNG GALAXY S10 PLUS': 'SGS10',
@@ -94,4 +95,4 @@ def _browser_device(context):
 @step('user waits for payment to be processed')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.wait_for_iframe()
+    payment_page.wait_for_pay_processing_end('en_US')

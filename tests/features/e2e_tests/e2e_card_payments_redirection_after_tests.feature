@@ -146,7 +146,6 @@ Feature: E2E Card Payments - redirection
       | currencyiso3a | GBP     |
       | errorcode     | 70000   |
 
-# Disabling test with VisaCheckout popup until VisaCheckout test account will be ready
 #  @e2e_config_submit_on_cancel_callback
 #  Scenario: Unsuccessful payment with submitOnCancel enabled and cancel callback set
 #    Given JS library is configured with SUBMIT_ON_CANCEL_CONFIG_CANCEL_CALLBACK and BASE_JWT

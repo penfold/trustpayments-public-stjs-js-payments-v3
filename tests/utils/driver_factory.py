@@ -11,6 +11,7 @@ from logging import INFO
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
@@ -28,15 +29,6 @@ class Drivers(Enum):
     phantom = webdriver.PhantomJS
 
 
-class DesiredCapabilities(Enum):
-    chrome = webdriver.DesiredCapabilities.CHROME
-    firefox = webdriver.DesiredCapabilities.FIREFOX
-    ie = webdriver.DesiredCapabilities.INTERNETEXPLORER
-    edge = webdriver.DesiredCapabilities.EDGE
-    phantom = webdriver.DesiredCapabilities.PHANTOMJS
-    safari = webdriver.DesiredCapabilities.SAFARI
-
-
 class Driver:
     __metaclass__ = abc.ABCMeta
 
@@ -46,15 +38,11 @@ class Driver:
         self._remote_capabilities = remote_capabilities
         self._command_executor = command_executor
         self._headless = headless
+        self._remote_capabilities['goog:loggingPrefs'] = {'browser': 'SEVERE'}
 
     @abc.abstractmethod
     def get_driver(self):
         pass
-
-    @staticmethod
-    def _get_desired_capabilities(capability):
-        desired_capabilities = DesiredCapabilities[capability]
-        return desired_capabilities.value.copy()
 
 
 class SeleniumDriver(Driver):
@@ -75,6 +63,8 @@ class SeleniumDriver(Driver):
     def _create_local(self) -> RemoteWebDriver:
         driver = Drivers[self._browser_name]
         options = Options()
+        desired_capabilities = DesiredCapabilities.CHROME
+        desired_capabilities['goog:loggingPrefs'] = {'browser': 'SEVERE'}
 
         options.headless = self._headless
         options.add_argument('--no-sandbox')
@@ -85,12 +75,12 @@ class SeleniumDriver(Driver):
         options.add_argument('--remote-debugging-address=0.0.0.0')
         options.add_argument('--remote-debugging-port=9222')
 
-        return driver.value(chrome_options=options)
+        return driver.value(chrome_options=options, desired_capabilities=desired_capabilities)
 
 
 def _get_remote_capabilities(configuration):
     # pylint: disable=unused-variable
-    network_logs='true'
+    network_logs = 'true'
     # disabling network logs on Safari as they are not accessible for this browser and cause browser instability
     if 'Safari' in configuration.REMOTE_BROWSER:
         network_logs = 'false'
@@ -116,6 +106,7 @@ def _get_remote_capabilities(configuration):
                      'browserstack.networkLogs': network_logs,
                      'browserstack.acceptInsecureCerts': 'true',
                      'browserstack.console': 'errors',
+                     'browserstack.autoWait': 0,
                      'ie.ensureCleanSession': 'true',
                      'ie.forceCreateProcessApi': 'true',
                      'resolution': '1920x1080'

@@ -1,8 +1,8 @@
 # type: ignore[no-redef]
-import time
 
 from assertpy import soft_assertions
 from behave import use_step_matcher, step, when, then, given
+
 from configuration import CONFIGURATION
 from utils.configurations.inline_config_generator import create_inline_config
 from utils.configurations.jwt_generator import encode_jwt_for_json
@@ -28,6 +28,17 @@ def step_impl(context):
         if 'Safari' in context.browser:
             accept_untrusted_pages_on_safari_browsers(context)
         payment_page.open_page(CONFIGURATION.URL.BASE_URL)
+        payment_page.wait_for_iframe()
+
+
+@step('User opens minimal example page with payment form')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    if 'config_immediate_payment' not in context.scenario.tags[0] and 'parent_iframe' not in context.scenario.tags and \
+        'config_cybertonica_immediate_payment' not in context.scenario.tags:
+        if 'Safari' in context.browser:
+            accept_untrusted_pages_on_safari_browsers(context)
+        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?')
         payment_page.wait_for_iframe()
 
 
@@ -90,6 +101,13 @@ def step_impl(context, example_page: ExamplePage):
         payment_page.switch_to_parent_iframe()
     if 'e2e_config_submit_on_error_invalid_jwt' not in context.scenario.tags:
         payment_page.wait_for_iframe()
+
+
+@step('User opens minimal example page')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    url = f'{CONFIGURATION.URL.BASE_URL}/minimal.html?{context.inline_config}'
+    payment_page.open_page(url)
 
 
 def accept_untrusted_pages_on_safari_browsers(context):
@@ -209,7 +227,6 @@ def step_impl(context, payment_method):
 @then('User will see that Submit button is "(?P<form_status>.+)" after payment')
 def step_impl(context, form_status):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    time.sleep(1)
     payment_page.validate_form_status(FieldType.SUBMIT_BUTTON.name, form_status)
 
 
@@ -251,6 +268,15 @@ def step_impl(context, language):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     jwt = payment_page.get_translation_from_json(language, 'jwt')
     payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}?jwt={jwt}')
+    payment_page.wait_for_iframe()
+
+
+@step('User changes minimal example page language to "(?P<language>.+)"')
+def step_impl(context, language):
+    context.language = language
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    jwt = payment_page.get_translation_from_json(language, 'jwt')
+    payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?jwt={jwt}')
     payment_page.wait_for_iframe()
 
 
@@ -319,7 +345,7 @@ def step_impl(context):
 @then('User will see that "(?P<field_type>.+)" field is disabled')
 def step_impl(context, field_type):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_if_field_is_disabled(field_type)
+    payment_page.validate_field_accessibility(field_type, should_be_enabled=False)
 
 
 @step('User will see "(?P<callback_popup>.+)" popup')
