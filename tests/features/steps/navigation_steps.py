@@ -4,7 +4,7 @@ from behave import use_step_matcher, step, then
 
 from configuration import CONFIGURATION
 from utils.configurations.jwt_generator import encode_jwt_for_json
-from utils.dict import url_after_redirection
+from utils.dict.url_after_redirection import url_after_redirection
 from utils.enums.example_page import ExamplePage
 from utils.enums.jwt_config import JwtConfig
 from utils.mock_handler import MockUrl
