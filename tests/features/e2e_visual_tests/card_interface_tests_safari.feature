@@ -6,6 +6,7 @@ Feature: Visual regression - E2E Card Payments
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
     And User opens minimal example page with payment form
+    And User waits for whole form to be displayed
 
   @base_config_visual @visual_regression_safari @scrn_card_interface_after_successful_payment
   Scenario: Card interface after successful payment
@@ -18,7 +19,7 @@ Feature: Visual regression - E2E Card Payments
 
   @base_config_visual @visual_regression_safari @scrn_card_interface_before_payment
   Scenario: Card interface before payment
-    Then Screenshot is taken after 6 seconds and checked
+    Then Screenshot is taken after 2 seconds and checked
 
   @base_config_visual @visual_regression_safari @scrn_card_interface_error_expiry_date
   Scenario: Card interface after unsuccessful payment - invalid expiration date

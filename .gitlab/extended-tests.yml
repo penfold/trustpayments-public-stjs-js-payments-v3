@@ -100,7 +100,7 @@ OSXCatalina-Safari-13.1-smoke-tests:
 SamsungGalaxyS10Plus-9.0-visual-tests:
   extends:
     - .visual-regression-tests
-    - .rules-when-release
+    - .rules-always
   variables:
     DEVICE: Samsung Galaxy S10 Plus
     OS_VERSION: '9.0'
@@ -112,7 +112,7 @@ SamsungGalaxyS10Plus-9.0-visual-tests:
 iPhoneXS-12-visual-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12
@@ -125,7 +125,7 @@ iPhoneXS-12-visual-tests:
 OSXMojave-Safari-12.1-visual-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: OS X
     OS_VERSION: Mojave
@@ -140,7 +140,7 @@ OSXMojave-Safari-12.1-visual-tests:
 SamsungGalaxyS10Plus-9.0-visual-tests-styling:
   extends:
     - .visual-regression-tests
-    - .rules-when-release
+    - .rules-always
   variables:
     DEVICE: Samsung Galaxy S10 Plus
     OS_VERSION: '9.0'
@@ -205,7 +205,7 @@ OSXCatalina-Firefox-80.0-smoke-tests:
 win10-Edge-85.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -495,7 +495,7 @@ OSXMojave-Safari-12.1-extended-test-part-3:
 iPhoneXS-12-visual-tests-styling:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     DEVICE: iPhone XS
     OS_VERSION: 12
@@ -508,7 +508,7 @@ iPhoneXS-12-visual-tests-styling:
 OSXMojave-Safari-12.1-visual-tests-styling:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: OS X
     OS_VERSION: Mojave
@@ -573,7 +573,7 @@ win10-chrome-81.0-browser-not-supported:
 win10-IE-11.0-visual-tests:
   extends:
     - .visual-regression-tests
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -586,7 +586,7 @@ win10-IE-11.0-visual-tests:
 win10-IE-11.0-visual-tests-styling:
   extends:
     - .visual-regression-tests
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: Windows
     OS_VERSION: 10
