@@ -18,6 +18,7 @@ Feature: Visual regression - E2E Card Payments
 
   @base_config_visual @visual_regression_safari @scrn_card_interface_before_payment
   Scenario: Card interface before payment
+    And User waits for whole form to be displayed
     Then Screenshot is taken after 10 seconds and checked
 
   @base_config_visual @visual_regression_safari @scrn_card_interface_error_expiry_date

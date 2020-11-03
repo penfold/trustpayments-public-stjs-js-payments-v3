@@ -18,6 +18,7 @@ Feature: Visual regression - E2E Card Payments
   Scenario: Card interface before payment
     Given JS library is configured with BYPASS_MASTERCARD_WITH_STYLING_CONFIG and BASE_JWT_DE
     And User opens minimal example page
+    And User waits for whole form to be displayed
     Then Screenshot is taken after 10 seconds and checked
 
   @visual_regression_styling @scrn_card_interface_error_expiry_date_styling
