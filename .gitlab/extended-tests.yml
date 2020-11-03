@@ -205,7 +205,7 @@ OSXCatalina-Firefox-80.0-smoke-tests:
 win10-Edge-85.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: Windows
     OS_VERSION: 10

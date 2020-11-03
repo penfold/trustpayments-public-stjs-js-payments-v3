@@ -137,6 +137,11 @@ class WebElementsExtensions(Waits):
         self.switch_to_default_iframe()
         return is_enabled
 
+    def switch_to_iframe_and_wait_for_element_to_be_displayed(self, iframe_name, locator):
+        self.switch_to_iframe(iframe_name)
+        self.wait_for_element_to_be_displayed(locator)
+        self.switch_to_default_iframe()
+
     def switch_to_iframe_and_get_css_value(self, iframe_name, locator, property_name):
         self.switch_to_iframe(iframe_name)
         element = self.find_element(locator)
