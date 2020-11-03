@@ -144,6 +144,12 @@ def step_impl(context):
     payment_page.wait_for_notification_frame_to_disappear()
 
 
+@step('User waits for whole form to be displayed')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.wait_for_payment_form_to_load()
+
+
 @step('User will see that notification frame has "(?P<color>.+)" color')
 def step_impl(context, color):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
