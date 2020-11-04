@@ -25,7 +25,6 @@ export class ConfigResolver {
       animatedCard: this._getValueOrDefault(config.animatedCard, DefaultConfig.animatedCard),
       applePay: this._setApplePayConfig(config.applePay, DefaultConfig.applePay),
       buttonId: this._getValueOrDefault(config.buttonId, DefaultConfig.buttonId),
-      bypassCards: this._getValueOrDefault(config.bypassCards, DefaultConfig.bypassCards),
       cancelCallback: this._getValueOrDefault(config.cancelCallback, DefaultConfig.cancelCallback),
       componentIds: this._setComponentIds(config.componentIds),
       components: this._setComponentsProperties(config.components),
@@ -98,9 +97,7 @@ export class ConfigResolver {
       return defaultConfig;
     }
     return {
-      ...config,
-      // @ts-ignore
-      requestTypes: this._getValueOrDefault(config.requestTypes, DefaultApmsRequestTypes)
+      ...config
     };
   }
 
@@ -108,13 +105,6 @@ export class ConfigResolver {
     if (!config || !Object.keys(config).length) {
       return defaultConfig;
     }
-
-    // @ts-ignore
-    config.paymentRequest.requestTypes = this._getValueOrDefault(
-      // @ts-ignore
-      config.paymentRequest.requestTypes,
-      DefaultApmsRequestTypes
-    );
     return {
       ...config
     };
@@ -140,7 +130,6 @@ export class ConfigResolver {
     return {
       defaultPaymentType: this._getValueOrDefault(config.defaultPaymentType, DefaultComponents.defaultPaymentType),
       paymentTypes: this._getValueOrDefault(config.paymentTypes, DefaultComponents.paymentTypes),
-      requestTypes: this._getValueOrDefault(config.requestTypes, DefaultComponentsRequestTypes),
       startOnLoad: this._getValueOrDefault(config.startOnLoad, DefaultComponents.startOnLoad)
     };
   }

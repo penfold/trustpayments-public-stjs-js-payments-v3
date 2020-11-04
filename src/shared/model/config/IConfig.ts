@@ -12,7 +12,6 @@ export interface IConfig {
   animatedCard?: boolean;
   applePay?: IApplePay | {};
   buttonId?: string;
-  bypassCards?: BypassCards[];
   cancelCallback?: any;
   components?: IComponentsConfig;
   componentIds?: IComponentsIds;
