@@ -1,0 +1,12 @@
+{
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTYwNDQ3MzkyMC44NzY2MDg4LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QiLCJjYWNoZXRva2VuIjoiZXlKa1lYUmhZMlZ1ZEdWeWRYSnNJam9nYm5Wc2JDd2dJbU5oWTJobGRHOXJaVzRpT2lBaU5UWXRZakUxWkdZNU1tRXdNekptWTJFMVlqTTRORGswTkRBd1pUUTJOak5oWWpFMlpUZzBNekJtTldGaVpHSTNNakExTnpBMFlqZGxOV0ZrT0dZNU1qVmlNeUo5In19.WiMU3p5lbwkwakc5PyJbVYZ_K_4pNcI4CtKDXL4zVhE",
+  "submitOnSuccess": false,
+  "components": {
+    "requestTypes": [
+      "ACCOUNTCHECK",
+      "THREEDQUERY",
+      "AUTH"
+    ],
+    "startOnLoad": true
+  }
+}

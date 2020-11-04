@@ -92,7 +92,14 @@ config = {
     'e2e_config_for_iframe_start_on_load_true': 'e2e_config/e2eConfigForIframeStartOnLoadTrue.json',
     'e2e_button_id_config': 'e2e_config/e2eButtonIdConfig.json',
     'form_id_config': 'configFormId.json',
-    'form_id_config_visa_checkout': 'configFormIdVisaCheckout.json'
+    'form_id_config_visa_checkout': 'configFormIdVisaCheckout.json',
+    'config_cachetoken_tdq_auth': 'configCachetokenTdqAuth.json',
+    'config_cachetoken_tdq': 'configCachetokenTdq.json',
+    'config_cachetoken_auth': 'configCachetokenAuth.json',
+    'config_cachetoken_acheck': 'configCachetokenAcheck.json',
+    'config_cachetoken_acheck_tdq_auth': 'configCachetokenAcheckTdqAuth.json',
+    'config_cachetoken_riskdec_acheck_tdq_auth': 'configCachetokenRiskdecAcheckTdqAuth.json',
+    'config_cachetoken_tdq_auth_riskdec': 'configCachetokenTdqAuthRiskdec.json'
 }
 
 screenshots = {

@@ -115,7 +115,7 @@ Feature: E2E Card Payments with request types in config
       | cachetoken | should not be none |
       | jwt        | should not be none |
 
-  Scenario: Payment by invalid card and single requestTypes: CACHETOKENISE
+  Scenario: Payment by invalid card with submitOnError and single requestTypes: CACHETOKENISE
     Given JS library is configured with REQUEST_TYPE_CACHETOKENISE_SUBMIT_ON_ERROR and BASE_JWT
     And User opens example page
     When User fills payment form with defined card VISA_DECLINED_CARD
