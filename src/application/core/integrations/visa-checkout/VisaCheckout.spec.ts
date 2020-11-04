@@ -1,3 +1,4 @@
+import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { VisaCheckout } from './VisaCheckout';
 import { anyString, mock, when, instance as mockInstance } from 'ts-mockito';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
@@ -6,6 +7,7 @@ import { EMPTY, of } from 'rxjs';
 import { Container } from 'typedi';
 import { StoreBasedStorage } from '../../../../shared/services/storage/StoreBasedStorage';
 import { SimpleStorage } from '../../../../shared/services/storage/SimpleStorage';
+import Spy = jasmine.Spy;
 
 jest.mock('./../google-analytics/GoogleAnalytics');
 jest.mock('./../../shared/notification/Notification');
@@ -188,6 +190,23 @@ describe('Visa Checkout', () => {
     // then
     it('should prepared structure be equal to real document object ', () => {
       expect(instance.attachVisaButton()).toEqual(body);
+    });
+  });
+
+  // given
+  describe('_initVisaFlow()', () => {
+    // then
+    it('should inject script with proper attributes ', () => {
+      const insertScriptSpy: Spy = spyOn(DomMethods, 'insertScript').and.callFake(() => new Promise(() => {}));
+
+      instance._initVisaFlow();
+
+      expect(insertScriptSpy).toHaveBeenCalledWith('body', {
+        src: instance._sdkAddress,
+        id: 'visaCheckout',
+        nonce: '9ad627e4425a4668'
+      });
+      expect(insertScriptSpy).toHaveBeenCalledTimes(1);
     });
   });
 
