@@ -198,7 +198,7 @@ describe('Visa Checkout', () => {
     it('should inject script with proper attributes ', () => {
       const insertScriptSpy: jest.SpyInstance = jest
         .spyOn(DomMethods, 'insertScript')
-        .and.callFake(() => new Promise(() => {}));
+        .mockImplementation(() => new Promise(() => {}));
 
       instance._initVisaFlow();
 
