@@ -23,7 +23,7 @@
 .apple-test-browserstack-component-test:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: "OS X"
     OS_VERSION: Mojave
@@ -47,26 +47,26 @@ apple-test-part2-browserstack-component-test:
 win10-Chrome-85.0-visual-tests:
   extends:
     - .visual-regression-tests
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Chrome
     BROWSER_VERSION: '85'
     POETRY_TAGS: visual_regression
-  resource_group: extended_tests_review_3
+  resource_group: extended_tests_review_1
 
 win10-Chrome-85.0-visual-tests-styling:
   extends:
     - .visual-regression-tests
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Chrome
     BROWSER_VERSION: '85'
     POETRY_TAGS: visual_regression_styling
-  resource_group: extended_tests_review_4
+  resource_group: extended_tests_review_2
 
 # smoke tests executed on master branch
 OSXCatalina-Safari-13.1-smoke-tests:
@@ -84,7 +84,7 @@ OSXCatalina-Safari-13.1-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_1
 
-.iPhone11-14.0-smoke-tests:
+iPhone11-14.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-when-release
@@ -296,7 +296,7 @@ SamsungGalaxyS8-7.0-smoke-tests:
 SamsungGalaxyS10Plus-9.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     DEVICE: Samsung Galaxy S10 Plus
     OS_VERSION: '9.0'

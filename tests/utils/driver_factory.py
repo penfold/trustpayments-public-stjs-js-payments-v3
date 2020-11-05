@@ -118,17 +118,43 @@ def _get_remote_capabilities(configuration):
     return capabilities
 
 
+def _get_remote_capabilities_for_kobiton():
+
+    desired_caps = {
+        'sessionName': 'Automation test session',
+        'sessionDescription': '',
+        'deviceOrientation': 'portrait',
+        'captureScreenshots': False,
+        'browserName': 'chrome',
+        'deviceGroup': 'KOBITON',
+        'deviceName': 'Galaxy S7',
+        'platformName': 'Android',
+        'platformVersion': '8.0.0'
+    }
+    capabilities = {}
+    for key, value in desired_caps.items():
+        if value:
+            capabilities[key] = value
+    return capabilities
+
+
 class DriverFactory:
     _browser: RemoteWebDriver = None
 
     def __init__(self, configuration):
         self._browser_name = configuration.BROWSER
         self._remote = configuration.REMOTE
-        self._command_executor = configuration.COMMAND_EXECUTOR
+        if self._configuration.REMOTE_DEVICE:
+            self._command_executor = configuration.COMMAND_EXECUTOR_KOBITON
+        else:
+            self._command_executor = configuration.COMMAND_EXECUTOR
         self._configuration = configuration
 
     def _set_browser(self) -> None:
-        self._remote_capabilities = _get_remote_capabilities(self._configuration)
+        if self._configuration.REMOTE_DEVICE:
+            self._remote_capabilities = _get_remote_capabilities_for_kobiton()
+        else:
+            self._remote_capabilities = _get_remote_capabilities(self._configuration)
         args = dict(browser_name=self._browser_name,
                     remote=self._remote,
                     command_executor=self._command_executor,

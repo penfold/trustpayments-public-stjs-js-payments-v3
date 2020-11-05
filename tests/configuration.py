@@ -26,6 +26,9 @@ def load_config():
         'COMMAND_EXECUTOR': get_from_env('AUTOMATION_COMMAND_EXECUTOR',
                                          'https://' + str(get_from_env('BS_USERNAME')) + ':' +
                                          str(get_from_env('BS_ACCESS_KEY')) + '@hub.browserstack.com/wd/hub'),
+        'COMMAND_EXECUTOR_KOBITON': get_from_env('AUTOMATION_COMMAND_EXECUTOR',
+                                         'https://' + str(get_from_env('KOBITON_USERNAME')) + ':' +
+                                         str(get_from_env('KOBITON_ACCESS_KEY')) + '@api.kobiton.com/wd/hub'),
         'REMOTE_OS': get_from_env('OS', ''),
         'REMOTE_OS_VERSION': get_from_env('OS_VERSION', ''),
         'REMOTE_BROWSER': get_from_env('BROWSER', ''),
