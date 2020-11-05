@@ -145,7 +145,7 @@ export class ST {
 
     this.blockSubmitButton();
     // @ts-ignore
-    this._commonFrames._requestTypes = JwtDecode<IDecodedJwt>(this._config.jwt).payload;
+    this._commonFrames._requestTypes = JwtDecode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
     this._framesHub
       .waitForFrame(CONTROL_FRAME_IFRAME)
       .pipe(
@@ -265,7 +265,7 @@ export class ST {
   }
 
   private CommonFrames(): void {
-    const requestTypes: string[] = JwtDecode<IDecodedJwt>(this._config.jwt).payload.requestTypes;
+    const requestTypes: string[] = JwtDecode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
     this._commonFrames = new CommonFrames(
       this._config.jwt,
       this._config.origin,

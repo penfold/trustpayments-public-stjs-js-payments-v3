@@ -217,7 +217,7 @@ export class ApplePay {
     this._placement = placement;
     this.payment = new Payment();
     this._paymentRequest = paymentRequest;
-    this._requestTypes = JwtDecode<IDecodedJwt>(jwt).payload.requestTypes;
+    this._requestTypes = JwtDecode<IDecodedJwt>(jwt).payload.requesttypedescriptions;
     this._validateMerchantRequestData.walletmerchantid = merchantId;
     this._stJwtInstance = new StJwt(jwt);
     this._stTransportInstance = Container.get(StTransport);

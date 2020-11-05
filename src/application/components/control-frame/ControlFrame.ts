@@ -385,11 +385,11 @@ export class ControlFrame {
   }
 
   private _getBypassCardsFromJwt(): string[] {
-    return JwtDecode<IDecodedJwt>(this._getJwt()).payload.bypassCards;
+    return JwtDecode<IDecodedJwt>(this._getJwt()).payload.threedbypasscards;
   }
 
   private _getRequestTypesFromJwt(): string[] {
-    return JwtDecode<IDecodedJwt>(this._getJwt()).payload.requestTypes;
+    return JwtDecode<IDecodedJwt>(this._getJwt()).payload.requesttypedescriptions;
   }
 
   private _getPan(): string {

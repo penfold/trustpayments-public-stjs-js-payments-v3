@@ -228,7 +228,7 @@ export class VisaCheckout {
     this.payment = new Payment();
     this._livestatus = livestatus;
     this._placement = placement;
-    this.requestTypes = JwtDecode<IDecodedJwt>(jwt).payload.requestTypes;
+    this.requestTypes = JwtDecode<IDecodedJwt>(jwt).payload.requesttypedescriptions;
     this.setInitConfiguration(paymentRequest, settings, this._stJwt, merchantId);
     this._buttonSettings = this._setConfiguration({ locale: this._stJwt.locale }, settings);
     this.customizeVisaButton(buttonSettings);
