@@ -7,7 +7,6 @@ import { EMPTY, of } from 'rxjs';
 import { Container } from 'typedi';
 import { StoreBasedStorage } from '../../../../shared/services/storage/StoreBasedStorage';
 import { SimpleStorage } from '../../../../shared/services/storage/SimpleStorage';
-import Spy = jasmine.Spy;
 
 jest.mock('./../google-analytics/GoogleAnalytics');
 jest.mock('./../../shared/notification/Notification');
@@ -197,7 +196,9 @@ describe('Visa Checkout', () => {
   describe('_initVisaFlow()', () => {
     // then
     it('should inject script with proper attributes ', () => {
-      const insertScriptSpy: Spy = spyOn(DomMethods, 'insertScript').and.callFake(() => new Promise(() => {}));
+      const insertScriptSpy: jest.SpyInstance = jest
+        .spyOn(DomMethods, 'insertScript')
+        .and.callFake(() => new Promise(() => {}));
 
       instance._initVisaFlow();
 
