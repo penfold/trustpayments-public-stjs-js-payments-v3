@@ -1,30 +1,30 @@
 #TODO It should be uncommented when https://securetrading.atlassian.net/browse/STJS-942 will be done
-Feature: Visa checkout E2E tests
-
-  As a user
-  I want to use visa checkout
-  To use defined card
-
-  @reactJS
-  @vueJS
-  @angular
-  @react_native
-  Scenario Outline: Successful Authentication by Visa checkout
-    Given JS library is configured with VISA_CHECKOUT_CONFIG and BASE_JWT
-    And User opens example page
-    And User clicks on Visa Checkout button
-    And User fills visa checkout email address
-    And User fills visa checkout one time password
-    When User selects <visa_card_type> card on visa checkout popup
-    And User confirms displayed card with data
-    And User confirms visa checkout security code
-    Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-
-    Examples:
-      | visa_card_type        |
-      | VISA_FRICTIONLESS     |
-      | VISA_NON_FRICTIONLESS |
+#Feature: Visa checkout E2E tests
+#
+#  As a user
+#  I want to use visa checkout
+#  To use defined card
+#
+#  @reactJS
+#  @vueJS
+#  @angular
+#  @react_native
+#  Scenario Outline: Successful Authentication by Visa checkout
+#    Given JS library is configured with VISA_CHECKOUT_CONFIG and BASE_JWT
+#    And User opens example page
+#    And User clicks on Visa Checkout button
+#    And User fills visa checkout email address
+#    And User fills visa checkout one time password
+#    When User selects <visa_card_type> card on visa checkout popup
+#    And User confirms displayed card with data
+#    And User confirms visa checkout security code
+#    Then User will see payment status information: "Payment has been successfully processed"
+#    And User will see that notification frame has "green" color
+#
+#    Examples:
+#      | visa_card_type        |
+#      | VISA_FRICTIONLESS     |
+#      | VISA_NON_FRICTIONLESS |
 #
 #  Scenario: Declined Authentication by Visa checkout using declined visa card
 #    Given JS library is configured with VISA_CHECKOUT_CONFIG and BASE_JWT
