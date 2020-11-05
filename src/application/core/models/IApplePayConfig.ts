@@ -1,7 +1,8 @@
-export interface IApplePay {
+export interface IApplePayConfig {
   buttonStyle: string;
   buttonText: string;
   merchantId: string;
+  requestTypes: string[];
   paymentRequest: {
     countryCode: string;
     currencyCode: string;

@@ -5,7 +5,6 @@ export interface IVisaCheckout {
   livestatus: 0 | 1;
   encryptionKey?: string;
   placement: string;
-  requestTypes: string[];
   buttonSettings?: {
     size: number;
     height?: number;

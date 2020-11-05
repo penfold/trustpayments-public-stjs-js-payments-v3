@@ -1,16 +1,15 @@
-import { BypassCards } from '../../../application/core/models/constants/BypassCards';
 import { IBypassInit } from './IBypassInit';
 import { IComponentsConfig } from './IComponentsConfig';
 import { IComponentsIds } from './IComponentsIds';
 import { IStyles } from './IStyles';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { IVisaCheckout } from '../../../application/core/models/constants/IVisaCheckout';
-import { IApplePay } from '../../../application/core/models/IApplePay';
+import { IApplePayConfig } from '../../../application/core/models/IApplePayConfig';
 
 export interface IConfig {
   analytics?: boolean;
   animatedCard?: boolean;
-  applePay?: IApplePay | {};
+  applePay?: IApplePayConfig | {};
   buttonId?: string;
   cancelCallback?: any;
   components?: IComponentsConfig;

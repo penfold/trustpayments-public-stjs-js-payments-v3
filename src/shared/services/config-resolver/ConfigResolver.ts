@@ -5,12 +5,10 @@ import { IComponentsIds } from '../../model/config/IComponentsIds';
 import { IComponentsConfig } from '../../model/config/IComponentsConfig';
 import { ConfigSchema } from '../storage/ConfigSchema';
 import { DefaultSubmitFields } from '../../../application/core/models/constants/config-resolver/DefaultSubmitFields';
-import { DefaultComponentsRequestTypes } from '../../../application/core/models/constants/config-resolver/DefaultComponentsRequestTypes';
 import { DefaultComponentsIds } from '../../../application/core/models/constants/config-resolver/DefaultComponentsIds';
-import { DefaultApmsRequestTypes } from '../../../application/core/models/constants/config-resolver/DefaultApmsRequestTypes';
 import { DefaultConfig } from '../../../application/core/models/constants/config-resolver/DefaultConfig';
 import { DefaultComponents } from '../../../application/core/models/constants/config-resolver/DefaultComponents';
-import { IApplePay } from '../../../application/core/models/IApplePay';
+import { IApplePayConfig } from '../../../application/core/models/IApplePayConfig';
 import { IVisaCheckout } from '../../../application/core/models/constants/IVisaCheckout';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
@@ -59,7 +57,7 @@ export class ConfigResolver {
   }
 
   private _validate(
-    config: IConfig | IComponentsConfig | IComponentsIds | IApplePay | IVisaCheckout,
+    config: IConfig | IComponentsConfig | IComponentsIds | IApplePayConfig | IVisaCheckout,
     schema: Joi.ObjectSchema
   ): void {
     const { error } = schema.validate(config);
@@ -101,7 +99,7 @@ export class ConfigResolver {
     };
   }
 
-  private _setApplePayConfig(config: IApplePay | {}, defaultConfig: {}): IApplePay | {} {
+  private _setApplePayConfig(config: IApplePayConfig | {}, defaultConfig: {}): IApplePayConfig | {} {
     if (!config || !Object.keys(config).length) {
       return defaultConfig;
     }

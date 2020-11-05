@@ -151,7 +151,7 @@ export class ControlFrame {
         type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
         data: {
           dataInJwt: true,
-          requestTypes: config.components.requestTypes
+          requestTypes: this._getRequestTypesFromJwt()
         }
       });
     }
@@ -182,7 +182,7 @@ export class ControlFrame {
     const skipThreeDQuery = this._isCardBypassed(this._getPan());
     const filterThreeDQuery = (requestType: string) =>
       !skipThreeDQuery || requestType !== ControlFrame.THREEDQUERY_EVENT;
-    const requestTypes = [...config.components.requestTypes].filter(filterThreeDQuery);
+    const requestTypes = [...this._getRequestTypesFromJwt()].filter(filterThreeDQuery);
     const threeDIndex = requestTypes.indexOf(ControlFrame.THREEDQUERY_EVENT);
 
     if (threeDIndex === -1) {
@@ -284,9 +284,7 @@ export class ControlFrame {
   }
 
   private _isCardBypassed(pan: string): boolean {
-    const bypassCards = this._configProvider.getConfig().bypassCards as string[];
-
-    return bypassCards.includes(iinLookup.lookup(pan).type);
+    return this._getBypassCardsFromJwt().includes(iinLookup.lookup(pan).type);
   }
 
   private _processPayment(data: IResponseData): void {
@@ -377,9 +375,21 @@ export class ControlFrame {
     }
   }
 
+  private _getJwt(): string {
+    return this._frame.parseUrl(ControlFrame.ALLOWED_PARAMS).jwt;
+  }
+
   private _getPanFromJwt(): string {
-    const { jwt } = this._frame.parseUrl(ControlFrame.ALLOWED_PARAMS);
+    const jwt: string = this._getJwt();
     return JwtDecode<IDecodedJwt>(jwt).payload.pan ? JwtDecode<IDecodedJwt>(jwt).payload.pan : '';
+  }
+
+  private _getBypassCardsFromJwt(): string[] {
+    return JwtDecode<IDecodedJwt>(this._getJwt()).payload.bypassCards;
+  }
+
+  private _getRequestTypesFromJwt(): string[] {
+    return JwtDecode<IDecodedJwt>(this._getJwt()).payload.requestTypes;
   }
 
   private _getPan(): string {
@@ -440,7 +450,7 @@ export class ControlFrame {
             type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
             data: {
               dataInJwt: true,
-              requestTypes: config.components.requestTypes
+              requestTypes: this._getRequestTypesFromJwt()
             }
           },
           true

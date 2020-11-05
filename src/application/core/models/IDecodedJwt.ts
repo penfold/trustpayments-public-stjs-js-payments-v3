@@ -4,12 +4,14 @@ export interface IDecodedJwt {
   payload: {
     accounttypedescription: string;
     baseamount: string;
+    bypassCards: string[];
     currencyiso3a: string;
+    expirydate: string;
     locale: string;
     mainamount: string;
     pan: string;
-    expirydate: string;
     securitycode: string;
     sitereference: string;
+    requestTypes: string[];
   };
 }
