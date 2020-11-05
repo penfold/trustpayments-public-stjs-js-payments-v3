@@ -61,6 +61,7 @@ def print_properties(config):
     logger = _get_logger()
     config_to_print = config.copy()
     config_to_print.pop('COMMAND_EXECUTOR')
+    config_to_print.pop('COMMAND_EXECUTOR_KOBITON')
     logger.info(f'CONFIGURATION: \n{pprint.pformat(config_to_print, indent=4)}')
 
 

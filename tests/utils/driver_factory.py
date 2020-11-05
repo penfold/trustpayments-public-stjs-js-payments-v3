@@ -144,11 +144,11 @@ class DriverFactory:
     def __init__(self, configuration):
         self._browser_name = configuration.BROWSER
         self._remote = configuration.REMOTE
+        self._configuration = configuration
         if self._configuration.REMOTE_DEVICE:
             self._command_executor = configuration.COMMAND_EXECUTOR_KOBITON
         else:
             self._command_executor = configuration.COMMAND_EXECUTOR
-        self._configuration = configuration
 
     def _set_browser(self) -> None:
         if self._configuration.REMOTE_DEVICE:
