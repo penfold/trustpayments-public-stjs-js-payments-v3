@@ -24,7 +24,7 @@ class Waits:
         # pylint: disable=bare-except
         try:
             self.wait_for_element_to_be_displayed(locator)
-            return self._browser.find_element(*locator).is_displayed()
+            return True
         except:
             return False
 
