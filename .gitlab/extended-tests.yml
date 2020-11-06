@@ -54,7 +54,7 @@ win10-Chrome-85.0-visual-tests:
     BROWSER: Chrome
     BROWSER_VERSION: '85'
     POETRY_TAGS: visual_regression
-  resource_group: extended_tests_review_3
+  resource_group: extended_tests_review_1
 
 win10-Chrome-85.0-visual-tests-styling:
   extends:
@@ -66,7 +66,7 @@ win10-Chrome-85.0-visual-tests-styling:
     BROWSER: Chrome
     BROWSER_VERSION: '85'
     POETRY_TAGS: visual_regression_styling
-  resource_group: extended_tests_review_4
+  resource_group: extended_tests_review_2
 
 # smoke tests executed on master branch
 OSXCatalina-Safari-13.1-smoke-tests:
