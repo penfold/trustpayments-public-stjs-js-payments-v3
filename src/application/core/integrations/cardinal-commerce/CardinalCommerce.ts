@@ -22,8 +22,8 @@ import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
 import { StTransport } from '../../services/st-transport/StTransport.class';
 import { CardinalProvider } from './CardinalProvider';
-import { IAuthorizePaymentResponse } from '../../models/IAuthorizePaymentResponse';
 import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
+import { RequestType } from '../../../../shared/types/RequestType';
 
 @Service()
 export class CardinalCommerce {
@@ -75,28 +75,35 @@ export class CardinalCommerce {
   }
 
   performThreeDQuery(
-    requestTypes: string[],
+    requestTypes: RequestType[],
     card: ICard,
     merchantData: IMerchantData
-  ): Observable<IAuthorizePaymentResponse> {
+  ): Observable<IThreeDQueryResponse> {
     const threeDQueryRequestBody = {
-      cachetoken: this.cardinalTokens.cacheToken,
       requesttypedescriptions: requestTypes,
+      cachetoken: this.cardinalTokens.cacheToken,
       termurl: 'https://termurl.com', // TODO this shouldn't be needed but currently the backend needs this
       ...merchantData,
       ...card
     };
 
     return this.cardinal$.pipe(
-      switchMap(cardinal => this.startTransaction(cardinal, this.cardinalTokens.jwt)),
+      switchMap(cardinal => {
+        if (requestTypes.includes('THREEDQUERY')) {
+          this.startTransaction(cardinal, this.cardinalTokens.jwt);
+        }
+
+        return of(null);
+      }),
       switchMap(() => from(this.stTransport.sendRequest(threeDQueryRequestBody))),
-      tap((response: { response: IThreeDQueryResponse }) => (this.stTransport._threeDQueryResult = response)),
-      switchMap((response: { response: IThreeDQueryResponse }) => this._authenticateCard(response.response)),
-      tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed')),
-      map(jwt => ({
-        threedresponse: jwt,
-        cachetoken: this.cardinalTokens.cacheToken
-      }))
+      map((response: { response: IThreeDQueryResponse }) => response.response),
+      switchMap((response: IThreeDQueryResponse) => {
+        if (this.isThreeDAuthorisationRequired(response)) {
+          return this._authenticateCard(response);
+        }
+
+        return of(response);
+      })
     );
   }
 
@@ -166,13 +173,7 @@ export class CardinalCommerce {
     });
   }
 
-  private _authenticateCard(responseObject: IThreeDQueryResponse): Observable<string | undefined> {
-    const isCardEnrolledAndNotFrictionless = responseObject.enrolled === 'Y' && responseObject.acsurl !== undefined;
-
-    if (!isCardEnrolledAndNotFrictionless) {
-      return of(undefined);
-    }
-
+  private _authenticateCard(responseObject: IThreeDQueryResponse): Observable<IThreeDQueryResponse> {
     const cardinalContinue = (cardinal: ICardinal) => {
       cardinal.continue(
         PaymentBrand,
@@ -207,8 +208,13 @@ export class CardinalCommerce {
           return throwError(validationResult);
         }
 
-        return of(jwt);
-      })
+        return of({
+          ...responseObject,
+          threedresponse: jwt,
+          cachetoken: this.cardinalTokens.cacheToken
+        });
+      }),
+      tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed'))
     );
   }
 
@@ -231,5 +237,9 @@ export class CardinalCommerce {
       cardinal.off(CardinalCommerce.UI_EVENTS.RENDER);
       cardinal.off(CardinalCommerce.UI_EVENTS.CLOSE);
     });
+  }
+
+  private isThreeDAuthorisationRequired(threeDResponse: IThreeDQueryResponse): boolean {
+    return threeDResponse.enrolled === 'Y' && threeDResponse.acsurl !== undefined;
   }
 }

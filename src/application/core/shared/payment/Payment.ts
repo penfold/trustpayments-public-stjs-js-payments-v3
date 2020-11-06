@@ -42,7 +42,7 @@ export class Payment {
     if (requestTypes.length === 0) {
       // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
       const responseData = {
-        ...this._stTransport._threeDQueryResult.response,
+        ...additionalData,
         validated: true
       };
 
