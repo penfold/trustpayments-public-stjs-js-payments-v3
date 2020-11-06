@@ -44,7 +44,7 @@ apple-test-part2-browserstack-component-test:
     POETRY_TAGS: apple_test_part2
   resource_group: extended_tests_review_2
 
-win10-Chrome-85.0-visual-tests:
+win10-Chrome-latest-visual-tests:
   extends:
     - .visual-regression-tests
     - .rules-always
@@ -52,11 +52,11 @@ win10-Chrome-85.0-visual-tests:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Chrome
-    BROWSER_VERSION: '85'
+    BROWSER_VERSION: 'latest'
     POETRY_TAGS: visual_regression
   resource_group: extended_tests_review_1
 
-win10-Chrome-85.0-visual-tests-styling:
+win10-Chrome-latest-visual-tests-styling:
   extends:
     - .visual-regression-tests
     - .rules-always
@@ -64,7 +64,7 @@ win10-Chrome-85.0-visual-tests-styling:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Chrome
-    BROWSER_VERSION: '85'
+    BROWSER_VERSION: 'latest'
     POETRY_TAGS: visual_regression_styling
   resource_group: extended_tests_review_2
 
