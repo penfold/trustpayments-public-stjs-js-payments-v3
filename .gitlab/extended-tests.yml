@@ -162,55 +162,55 @@ SamsungGalaxyS10Plus-9.0-visual-tests-styling:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_3
 
-win8.1-Chrome-85.0-smoke-tests:
+win8.1-Chrome-latest-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: Windows
     OS_VERSION: '8.1'
     BROWSER: Chrome
-    BROWSER_VERSION: '85.0'
+    BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_2
 
-OSXCatalina-Chrome-85.0-smoke-tests:
+OSXCatalina-Chrome-latest-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: OS X
     OS_VERSION: Catalina
     BROWSER: Chrome
-    BROWSER_VERSION: '85.0'
+    BROWSER_VERSION: 'latest'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_3
 
-OSXCatalina-Firefox-80.0-smoke-tests:
+OSXCatalina-Firefox-latest-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: OS X
     OS_VERSION: Catalina
     BROWSER: Firefox
-    BROWSER_VERSION: '80.0'
+    BROWSER_VERSION: 'latest'
     BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_4
 
-win10-Edge-85.0-smoke-tests:
+win10-Edge-latest-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Edge
-    BROWSER_VERSION: '85.0'
+    BROWSER_VERSION: 'latest'
     BROWSERSTACK_SELENIUM_VERSION: '3.14.0'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_1
@@ -317,43 +317,43 @@ GooglePixel4-10.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_2
 
-win10-Firefox-80.0-extended-tests-1:
+win10-Firefox-latest-extended-tests-1:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Firefox
-    BROWSER_VERSION: '80.0'
+    BROWSER_VERSION: 'latest'
     BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: extended_tests_part_1
   resource_group: extended_tests_release_3
 
-win10-Firefox-80.0-extended-tests-2:
+win10-Firefox-latest-extended-tests-2:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Firefox
-    BROWSER_VERSION: '80.0'
+    BROWSER_VERSION: 'latest'
     BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: extended_tests_part_2
   resource_group: extended_tests_release_4
 
-win10-Firefox-80.0-extended-tests-3:
+win10-Firefox-latest-extended-tests-3:
   extends:
     - .extended-tests-browserstack
-    - .rules-when-release
+    - .rules-always
   variables:
     OS: Windows
     OS_VERSION: 10
     BROWSER: Firefox
-    BROWSER_VERSION: '80.0'
+    BROWSER_VERSION: 'latest'
     BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: extended_tests_part_3
