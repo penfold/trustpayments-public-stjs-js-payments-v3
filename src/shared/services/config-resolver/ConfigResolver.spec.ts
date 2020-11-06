@@ -120,7 +120,7 @@ function ConfigResolverFixture() {
     },
     visaCheckout: {
       buttonSettings: {
-        size: '154',
+        size: 154,
         color: 'neutral'
       },
       livestatus: 0,
@@ -129,7 +129,7 @@ function ConfigResolverFixture() {
         subtotal: '20.00'
       },
       placement: 'st-visa-checkout',
-      requestTypes: [],
+      requestTypes: ['AUTH'],
       settings: {
         displayName: 'My Test Site'
       }
@@ -240,7 +240,7 @@ function ConfigResolverFixture() {
     },
     visaCheckout: {
       buttonSettings: {
-        size: '154',
+        size: 154,
         color: 'neutral'
       },
       livestatus: 0,
@@ -261,7 +261,6 @@ function ConfigResolverFixture() {
   const minimalDefaultConfigResolve: IConfig = {
     analytics: false,
     animatedCard: false,
-    applePay: {},
     buttonId: '',
     // @ts-ignore
     bypassCards: [],
@@ -319,8 +318,7 @@ function ConfigResolverFixture() {
     submitOnError: false,
     submitCallback: null,
     successCallback: null,
-    translations: {},
-    visaCheckout: {}
+    translations: {}
   };
   return {
     config,

@@ -1,14 +1,15 @@
 import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { VisaCheckout } from './VisaCheckout';
+import { VisaButtonProps } from '../models/constants/visa-checkout/VisaButtonProps';
 
 export class VisaCheckoutMock extends VisaCheckout {
-  protected initPaymentConfiguration() {
+  protected _instantiateVisa() {
     // Do nothing on mock because we don't want to use V.
   }
 
   protected paymentStatusHandler() {
-    DomMethods.addListener(this.visaCheckoutButtonProps.id, 'click', () => {
+    DomMethods.addListener(VisaButtonProps.id, 'click', () => {
       this._handleMockedData();
     });
   }
@@ -23,11 +24,14 @@ export class VisaCheckoutMock extends VisaCheckout {
 
   private _proceedFlowWithMockedData(payment: any, status: string) {
     if (status === 'SUCCESS') {
-      this.onSuccess(payment);
+      // @ts-ignore
+      this._onSuccess(payment);
     } else if (status === 'ERROR') {
-      this.onError();
+      // @ts-ignore
+      this._onError();
     } else if (status === 'WARNING') {
-      this.onCancel();
+      // @ts-ignore
+      this._onCancel();
     }
   }
 }

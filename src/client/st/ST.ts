@@ -33,6 +33,8 @@ import { Subject, Subscription } from 'rxjs';
 import { delay, map, takeUntil } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { from } from 'rxjs';
+import { NotificationService } from './classes/notification/NotificationService';
+import { FrameIdentifier } from '../../shared/services/message-bus/FrameIdentifier';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { IframeFactory } from '../iframe-factory/IframeFactory';
@@ -103,6 +105,7 @@ export class ST {
     private _storage: BrowserLocalStorage,
     private _messageBus: MessageBus,
     private _notification: Notification,
+    private _notificationService: NotificationService,
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
     private _browserDetector: BrowserDetector
@@ -182,7 +185,7 @@ export class ST {
       this._config = this._configService.updateFragment('visaCheckout', config);
     }
 
-    return new visa(this._configProvider, this._communicator);
+    return new visa(this._configProvider, this._communicator, this._messageBus, this._notificationService);
   }
 
   public Cybertonica(): Promise<string> {

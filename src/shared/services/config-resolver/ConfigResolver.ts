@@ -90,9 +90,9 @@ export class ConfigResolver {
     }
   }
 
-  private _setVisaCheckoutConfig(config: IVisaCheckout | {}, defaultConfig: {}): IVisaCheckout | {} {
+  private _setVisaCheckoutConfig(config: IVisaCheckout): IVisaCheckout {
     if (!config || !Object.keys(config).length) {
-      return defaultConfig;
+      return;
     }
     return {
       ...config

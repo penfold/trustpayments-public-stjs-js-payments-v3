@@ -11,7 +11,7 @@ import { MERCHANT_FORM_SELECTOR } from '../Selectors';
 export const DefaultConfig: IConfig = {
   analytics: false,
   animatedCard: false,
-  applePay: {},
+  // applePay: {},
   buttonId: '',
   cancelCallback: null,
   componentIds: DefaultComponentsIds,
@@ -36,6 +36,6 @@ export const DefaultConfig: IConfig = {
   submitOnError: false,
   submitOnSuccess: true,
   successCallback: null,
-  translations: {},
-  visaCheckout: {}
+  translations: {}
+  // visaCheckout: {}
 };
