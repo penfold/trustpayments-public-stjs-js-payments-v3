@@ -1,6 +1,7 @@
 import { IResponseData } from './IResponseData';
 
 export interface IThreeDQueryResponse extends IResponseData {
+  jwt: string;
   acquirertransactionreference: string;
   acsurl: string;
   enrolled: string;

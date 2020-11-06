@@ -35,7 +35,6 @@ export class StTransport {
   private _throttlingRequests = new Map<string, Promise<object>>();
   private _config: IConfig;
   private _codec: StCodec;
-  public _threeDQueryResult: any;
 
   constructor(private configProvider: ConfigProvider) {}
 

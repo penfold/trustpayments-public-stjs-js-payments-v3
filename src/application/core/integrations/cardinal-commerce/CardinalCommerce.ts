@@ -96,7 +96,7 @@ export class CardinalCommerce {
         return of(null);
       }),
       switchMap(() => from(this.stTransport.sendRequest(threeDQueryRequestBody))),
-      map((response: { response: IThreeDQueryResponse }) => response.response),
+      map((response: { response: IThreeDQueryResponse; jwt: string }) => ({ ...response.response, jwt: response.jwt })),
       switchMap((response: IThreeDQueryResponse) => {
         if (this.isThreeDAuthorisationRequired(response)) {
           return this._authenticateCard(response);
@@ -200,11 +200,7 @@ export class CardinalCommerce {
           !CardinalCommerceValidationStatus.includes(validationResult.ActionCode) ||
           validationResult.ActionCode === 'FAILURE'
         ) {
-          StCodec.publishResponse(
-            this.stTransport._threeDQueryResult.response,
-            this.stTransport._threeDQueryResult.jwt,
-            jwt
-          );
+          StCodec.publishResponse(responseObject, responseObject.jwt, responseObject.threedresponse);
           return throwError(validationResult);
         }
 

@@ -37,7 +37,8 @@ export class Payment {
     requestTypes: string[],
     payment: ICard | IWallet,
     merchantData: IMerchantData,
-    additionalData?: any
+    additionalData?: any,
+    responseJwt?: string
   ): Promise<object> {
     if (requestTypes.length === 0) {
       // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
@@ -46,7 +47,7 @@ export class Payment {
         validated: true
       };
 
-      StCodec.publishResponse(responseData, this._stTransport._threeDQueryResult.jwt, additionalData.threedresponse);
+      StCodec.publishResponse(responseData, responseJwt, additionalData.threedresponse);
       this._notification.success(PAYMENT_SUCCESS);
       return Promise.resolve({
         response: {}
