@@ -217,6 +217,11 @@ export class ControlFrame {
           }
 
           return this._configProvider.getConfig$().pipe(
+            tap(config => {
+              const requestTypes: RequestType[] = config.components.requestTypes as RequestType[];
+              const index = requestTypes.indexOf('THREEDQUERY');
+              this._remainingRequestTypes = index > -1 ? requestTypes.slice(0, index + 1) : requestTypes;
+            }),
             switchMap(config =>
               iif(
                 () => config.deferInit,
@@ -279,9 +284,9 @@ export class ControlFrame {
 
   private _processPayment(data: IResponseData): void {
     // this._setRequestTypes(StCodec.jwt);
-    this._remainingRequestTypes = this._remainingRequestTypes.slice(
-      this._remainingRequestTypes.indexOf('THREEDQUERY') + 1
-    );
+    const requestTypes = this._configProvider.getConfig().components.requestTypes as RequestType[];
+    const index = requestTypes.indexOf('THREEDQUERY');
+    this._remainingRequestTypes = index > -1 ? requestTypes.slice(index + 1) : [];
 
     const additionalData: IAuthorizePaymentResponse = {
       cachetoken: data.cachetoken,
