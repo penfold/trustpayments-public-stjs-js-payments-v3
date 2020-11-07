@@ -548,7 +548,7 @@ describe('ApplePay', () => {
       expect(getType(instance._session.onpaymentauthorized)).toBe('function');
     });
 
-    it('should call onpaymentauthorized and set paymentDetails and process successful AUTH', async () => {
+    it('should call onpaymentauthorized and set paymentDetail', async () => {
       const { instance } = ApplePayFixture();
 
       instance.payment.processPayment = jest.fn().mockResolvedValueOnce({ response: { errorcode: '0' } });
@@ -573,7 +573,7 @@ describe('ApplePay', () => {
 
       expect(instance.payment.processPayment).toHaveBeenCalledTimes(1);
       expect(instance.payment.processPayment).toHaveBeenCalledWith(
-        ['AUTH'],
+        undefined,
         { walletsource: 'APPLEPAY', wallettoken: '{"TOKEN":"TOKEN DATA"}' },
         { billingfirstname: 'BOB' }
       );
@@ -650,7 +650,7 @@ describe('ApplePay', () => {
 
       expect(instance.payment.processPayment).toHaveBeenCalledTimes(1);
       expect(instance.payment.processPayment).toHaveBeenCalledWith(
-        ['AUTH'],
+        undefined,
         { walletsource: 'APPLEPAY', wallettoken: '{"TOKEN":"TOKEN DATA"}' },
         { billingfirstname: 'BOB' }
       );
@@ -1077,7 +1077,6 @@ function ApplePayFixture() {
       countryCode: 'US',
       currencyCode: 'USD',
       merchantCapabilities: ['supports3DS', 'supportsCredit', 'supportsDebit'],
-      requestTypes: ['AUTH'],
       supportedNetworks: ['amex', 'visa']
     },
     merchantId: 'merchant.net.securetrading',

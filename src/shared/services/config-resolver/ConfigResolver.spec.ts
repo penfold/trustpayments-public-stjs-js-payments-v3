@@ -42,7 +42,6 @@ function ConfigResolverFixture() {
         countryCode: 'US',
         currencyCode: 'USD',
         merchantCapabilities: ['supports3DS', 'supportsCredit', 'supportsDebit'],
-        requestTypes: ['AUTH'],
         supportedNetworks: [],
         total: {
           label: 'Secure Trading Merchant',
@@ -52,8 +51,6 @@ function ConfigResolverFixture() {
       placement: 'st-apple-pay'
     },
     buttonId: 'merchant-submit-button',
-    // @ts-ignore
-    bypassCards: ['PIBA'],
     componentIds: {
       animatedCard: '',
       cardNumber: '',
@@ -63,7 +60,6 @@ function ConfigResolverFixture() {
     },
     components: {
       defaultPaymentType: '',
-      requestTypes: [],
       paymentTypes: [],
       startOnLoad: false
     },
@@ -129,7 +125,6 @@ function ConfigResolverFixture() {
         subtotal: '20.00'
       },
       placement: 'st-visa-checkout',
-      requestTypes: [],
       settings: {
         displayName: 'My Test Site'
       }
@@ -146,7 +141,6 @@ function ConfigResolverFixture() {
         countryCode: 'US',
         currencyCode: 'USD',
         merchantCapabilities: ['supports3DS', 'supportsCredit', 'supportsDebit'],
-        requestTypes: ['AUTH'],
         supportedNetworks: [],
         total: {
           label: 'Secure Trading Merchant',
@@ -156,8 +150,6 @@ function ConfigResolverFixture() {
       placement: 'st-apple-pay'
     },
     buttonId: 'merchant-submit-button',
-    // @ts-ignore
-    bypassCards: ['PIBA'],
     cancelCallback: null,
     componentIds: {
       animatedCard: 'st-animated-card',
@@ -168,7 +160,6 @@ function ConfigResolverFixture() {
     },
     components: {
       defaultPaymentType: '',
-      requestTypes: ['THREEDQUERY', 'AUTH'],
       paymentTypes: [''],
       startOnLoad: false
     },
@@ -249,7 +240,6 @@ function ConfigResolverFixture() {
         subtotal: '20.00'
       },
       placement: 'st-visa-checkout',
-      requestTypes: ['AUTH'],
       settings: {
         displayName: 'My Test Site'
       }
@@ -263,8 +253,6 @@ function ConfigResolverFixture() {
     animatedCard: false,
     applePay: {},
     buttonId: '',
-    // @ts-ignore
-    bypassCards: [],
     cancelCallback: null,
     componentIds: {
       animatedCard: 'st-animated-card',
@@ -275,7 +263,6 @@ function ConfigResolverFixture() {
     },
     components: {
       defaultPaymentType: '',
-      requestTypes: ['THREEDQUERY', 'AUTH'],
       paymentTypes: [''],
       startOnLoad: false
     },
