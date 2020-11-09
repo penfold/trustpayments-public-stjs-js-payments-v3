@@ -68,7 +68,7 @@ export class VisaCheckout extends Apm {
   private _loadSdk(target: string): void {
     DomMethods.insertScript(target, { src: this._sdkUrl, id: 'visaCheckout' })
       .then(() => {
-        this._visaCheckoutButtonService.mount(target);
+        this._visaCheckoutButtonService.mount(target, this._visaConfig.visaCheckout.buttonSettings, this._buttonUrl);
         this._setHandlers();
       })
       .catch((e: any) => {

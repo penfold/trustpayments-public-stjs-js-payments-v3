@@ -44,6 +44,8 @@ import { BrowserDetector } from '../../shared/services/browser-detector/BrowserD
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 import { IVisaCheckout } from '../../application/core/models/visa-checkout/IVisaCheckout';
+import { VisaCheckoutButtonService } from '../../application/core/integrations/visa-checkout/VisaCheckoutButtonService';
+import { VisaCheckoutUpdateService } from '../../application/core/integrations/visa-checkout/VisaCheckoutUpdateService';
 
 @Service()
 export class ST {
@@ -107,7 +109,9 @@ export class ST {
     private _notificationService: NotificationService,
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
-    private _browserDetector: BrowserDetector
+    private _browserDetector: BrowserDetector,
+    private _visaCheckoutButtonService: VisaCheckoutButtonService,
+    private _visaCheckoutUpdateService: VisaCheckoutUpdateService
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -184,7 +188,14 @@ export class ST {
       this._config = this._configService.updateFragment('visaCheckout', config);
     }
 
-    return new visa(this._configProvider, this._communicator, this._messageBus, this._notificationService);
+    return new visa(
+      this._configProvider,
+      this._communicator,
+      this._messageBus,
+      this._notificationService,
+      this._visaCheckoutButtonService,
+      this._visaCheckoutButtonService
+    );
   }
 
   public Cybertonica(): Promise<string> {
