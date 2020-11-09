@@ -1,46 +1,11 @@
 import Joi from 'joi';
+import { ComponentsSchema } from './ComponentsSchema';
+import { ApplePaySchema } from './ApplePaySchema';
 
 export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   analytics: Joi.boolean(),
   animatedCard: Joi.boolean(),
-  applePay: {
-    buttonStyle: Joi.string().valid('black', 'white', 'white-outline'),
-    buttonText: Joi.string().valid('plain', 'buy', 'book', 'donate', 'check-out', 'subscribe'),
-    merchantId: Joi.string(),
-    paymentRequest: {
-      countryCode: Joi.string(),
-      currencyCode: Joi.string(),
-      merchantCapabilities: Joi.array().items(
-        Joi.string().valid('supports3DS', 'supportsCredit', 'supportsDebit', 'supportsEMV')
-      ),
-      supportedNetworks: Joi.array().items(
-        Joi.string().valid(
-          'amex',
-          'chinaUnionPay',
-          'discover',
-          'interac',
-          'jcb',
-          'masterCard',
-          'privateLabel',
-          'visa',
-          'cartesBancaires',
-          'eftpos',
-          'electron',
-          'maestro',
-          'vPay',
-          'elo',
-          'mada'
-        )
-      ),
-      total: {
-        amount: Joi.string(),
-        label: Joi.string()
-      },
-      requiredBillingContactFields: Joi.array().items(Joi.string()),
-      requiredShippingContactFields: Joi.array().items(Joi.string())
-    },
-    placement: Joi.string()
-  },
+  applePay: ApplePaySchema,
   buttonId: Joi.string().allow(''),
   cancelCallback: Joi.any(),
   componentIds: Joi.object()
@@ -53,13 +18,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
     })
     .allow({})
     .default({}),
-  components: Joi.object()
-    .keys({
-      defaultPaymentType: Joi.string().allow(''),
-      paymentTypes: Joi.array().items(Joi.string().allow('')),
-      startOnLoad: Joi.boolean().allow('')
-    })
-    .default({}),
+  components: ComponentsSchema,
   cybertonicaApiKey: Joi.string().allow(''),
   datacenterurl: Joi.string().allow(''),
   deferInit: Joi.boolean(),

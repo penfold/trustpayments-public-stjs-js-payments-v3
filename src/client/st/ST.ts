@@ -11,7 +11,6 @@ import { ApplePayMock } from '../../application/core/integrations/apple-pay/Appl
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
 import { VisaCheckoutMock } from '../../application/core/integrations/visa-checkout/VisaCheckoutMock';
-import { IApplePayConfig } from '../../application/core/models/IApplePayConfig';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
@@ -38,8 +37,9 @@ import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventType
 import { IframeFactory } from '../iframe-factory/IframeFactory';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { Frame } from '../../application/core/shared/frame/Frame';
-import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
+import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/Selectors';
+import { IApplePay } from '../application/core/models/apple-pay/IApplePay';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
@@ -172,7 +172,15 @@ export class ST {
       this._config = this._configService.updateFragment('applePay', config);
     }
 
-    return new applepay(this._configProvider, this._communicator);
+    const applePay: ApplePay = new applepay(
+      this._communicator,
+      this._configProvider,
+      this._storage,
+      this._messageBus,
+      this._notification
+    );
+    applePay.init();
+    return applePay;
   }
 
   public VisaCheckout(config: IVisaConfig | undefined): VisaCheckout {

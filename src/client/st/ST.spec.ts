@@ -38,22 +38,6 @@ describe('ST', () => {
   });
 
   // given
-  describe('ST.AppapplePayConfiglePay()', () => {
-    const { applePayConfig } = stFixture();
-
-    // then
-    it('should return ApplePayMock object when environment.testEnvironment equals true', () => {
-      environment.testEnvironment = true;
-      expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePayMock);
-    });
-    // then
-    it('should return ApplePay object when environment.testEnvironment equals false', () => {
-      environment.testEnvironment = false;
-      expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePay);
-    });
-  });
-
-  // given
   describe('ST.VisaCheckout()', () => {
     const { visaCheckoutConfig } = stFixture();
     // then
