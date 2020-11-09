@@ -1,7 +1,7 @@
 import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { VisaCheckout } from './VisaCheckout';
-import { VisaButtonProps } from '../models/constants/visa-checkout/VisaButtonProps';
+import { VisaButtonProps } from '../../models/constants/visa-checkout/VisaButtonProps';
 
 export class VisaCheckoutMock extends VisaCheckout {
   protected _instantiateVisa() {

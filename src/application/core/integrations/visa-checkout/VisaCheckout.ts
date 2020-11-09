@@ -18,6 +18,7 @@ import { IVisaInit } from '../../models/visa-checkout/IVisaInit';
 import { Apm } from '../Apm';
 import { IUpdateJwt } from '../../models/IUpdateJwt';
 import { Service } from 'typedi';
+import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
 
 declare const V: any;
 
@@ -30,16 +31,15 @@ export class VisaCheckout extends Apm {
   private _stJwt: StJwt;
   private _visaConfig: IConfig;
   private _visaInit: IVisaInit;
-  private _urls = {
-    buttonUrl: '',
-    sdkUrl: ''
-  };
+  private _buttonUrl: string;
+  private _sdkUrl: string;
 
   constructor(
     private _configProvider: ConfigProvider,
     private _communicator: InterFrameCommunicator,
     private _messageBus: MessageBus,
-    private _notification: NotificationService
+    private _notification: NotificationService,
+    private _visaCheckoutButtonService: VisaCheckoutButtonService
   ) {
     super();
     this.init();
@@ -52,7 +52,7 @@ export class VisaCheckout extends Apm {
     this._config$.subscribe((config: IConfig) => {
       this._updatePaymentAndStJwt(config);
       this._setInitObject(config);
-      this._customizeButton();
+      this._visaCheckoutButtonService.customize(this._visaConfig.visaCheckout.buttonSettings, this._buttonUrl);
       this._loadSdk(this._visaConfig.visaCheckout.placement);
     });
   }
@@ -61,14 +61,14 @@ export class VisaCheckout extends Apm {
     this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (response: IUpdateJwt) => {
       this._updatePaymentAndStJwt(this._visaConfig, response.newJwt);
       this._updateInitObject();
-      this._customizeButton();
+      this._visaCheckoutButtonService.customize(this._visaConfig.visaCheckout.buttonSettings, this._buttonUrl);
     });
   }
 
   private _loadSdk(target: string): void {
-    DomMethods.insertScript(target, { src: this._urls.sdkUrl, id: 'visaCheckout' })
+    DomMethods.insertScript(target, { src: this._sdkUrl, id: 'visaCheckout' })
       .then(() => {
-        this._injectButton(target);
+        this._visaCheckoutButtonService.mount(target);
         this._setHandlers();
       })
       .catch((e: any) => {
@@ -93,12 +93,12 @@ export class VisaCheckout extends Apm {
 
   private _setInitObject(config: IConfig): void {
     this._visaConfig = config;
-    this._urls = {
-      buttonUrl: this._visaConfig.livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_BUTTON_URL : VisaButtonProps.src,
-      sdkUrl: this._visaConfig.livestatus
-        ? environment.VISA_CHECKOUT_URLS.LIVE_SDK
-        : environment.VISA_CHECKOUT_URLS.TEST_SDK
-    };
+    this._buttonUrl = this._visaConfig.livestatus
+      ? environment.VISA_CHECKOUT_URLS.LIVE_BUTTON_URL
+      : VisaButtonProps.src;
+    this._sdkUrl = this._visaConfig.livestatus
+      ? environment.VISA_CHECKOUT_URLS.LIVE_SDK
+      : environment.VISA_CHECKOUT_URLS.TEST_SDK;
     this._visaInit = {
       apikey: this._visaConfig.visaCheckout.merchantId,
       encryptionKey: this._visaConfig.visaCheckout.encryptionKey,
@@ -114,23 +114,6 @@ export class VisaCheckout extends Apm {
       }
     };
   }
-
-  private _customizeButton(): void {
-    const { buttonSettings } = this._visaConfig.visaCheckout;
-    const url = new URL(VisaButtonProps.src);
-    this._urls.buttonUrl = url.href;
-    Object.keys(buttonSettings).forEach((item: any) => {
-      // @ts-ignore
-      if (buttonSettings[item]) {
-        // @ts-ignore
-        url.searchParams.append(`${item}`, buttonSettings[item]);
-      }
-    });
-  }
-
-  private _createButton = (): HTMLElement => DomMethods.createHtmlElement.apply(this, [VisaButtonProps, 'img']);
-
-  private _injectButton = (target: string): Element => DomMethods.appendChildIntoDOM(target, this._createButton());
 
   private _onSuccess(payment: object): void {
     this._payment

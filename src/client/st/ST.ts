@@ -15,7 +15,6 @@ import { IApplePayConfig } from '../../application/core/models/IApplePayConfig';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
-import { IVisaConfig } from '../../application/core/integrations/visa-checkout/IVisaConfig';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { Translator } from '../../application/core/shared/translator/Translator';
 import { environment } from '../../environments/environment';
@@ -33,8 +32,7 @@ import { Subject, Subscription } from 'rxjs';
 import { delay, map, takeUntil } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { NotificationService } from './classes/notification/NotificationService';
-import { FrameIdentifier } from '../../shared/services/message-bus/FrameIdentifier';
+import { NotificationService } from '../notification/NotificationService';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { IframeFactory } from '../iframe-factory/IframeFactory';
@@ -45,6 +43,7 @@ import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
+import { IVisaCheckout } from '../../application/core/models/visa-checkout/IVisaCheckout';
 
 @Service()
 export class ST {
@@ -178,7 +177,7 @@ export class ST {
     return new applepay(this._configProvider, this._communicator);
   }
 
-  public VisaCheckout(config: IVisaConfig | undefined): VisaCheckout {
+  public VisaCheckout(config: IVisaCheckout | undefined): VisaCheckout {
     const { visa } = this.Environment();
 
     if (config) {
