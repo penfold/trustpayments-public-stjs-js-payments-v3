@@ -165,7 +165,7 @@ SamsungGalaxyS10Plus-9.0-visual-tests-styling:
 win8.1-Chrome-latest-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: '8.1'
@@ -177,7 +177,7 @@ win8.1-Chrome-latest-smoke-tests:
 OSXCatalina-Chrome-latest-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Catalina
@@ -190,7 +190,7 @@ OSXCatalina-Chrome-latest-smoke-tests:
 OSXCatalina-Firefox-latest-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: OS X
     OS_VERSION: Catalina
@@ -205,7 +205,7 @@ OSXCatalina-Firefox-latest-smoke-tests:
 win10-Edge-latest-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -348,7 +348,7 @@ win10-Firefox-latest-extended-tests-2:
 win10-Firefox-latest-extended-tests-3:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
