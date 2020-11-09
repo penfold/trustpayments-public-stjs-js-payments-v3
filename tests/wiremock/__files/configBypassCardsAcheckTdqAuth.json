@@ -1,15 +1,6 @@
 {
   "analytics": true,
   "animatedCard": false,
-  "bypassCards": [
-    "VISA",
-    "AMEX",
-    "MASTERCARD",
-    "DISCOVER",
-    "JCB",
-    "DINERS",
-    "PIBA"
-  ],
   "deferInit": false,
   "fieldsToSubmit": [
     "pan",
@@ -17,7 +8,7 @@
     "securitycode"
   ],
   "buttonId": "merchant-submit-button",
-  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IifX0._VTiUjM-op-4KUoVGtqA92HwgwTNi_XckqP8pdcyKFc",
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJBQ0NPVU5UQ0hFQ0siLCJUSFJFRURRVUVSWSIsIkFVVEgiXSwidGhyZWVkYnlwYXNzY2FyZHMiOlsiVklTQSIsIkFNRVgiLCJNQVNURVJDQVJEIiwiRElTQ09WRVIiLCJKQ0IiLCJESU5FUlMiLCJQSUJBIl19fQ._eCYEqpJmDqaFh_J81MVIo6LTrtik_Pn8iJOjvb1H30",
   "panIcon": true,
   "styles": {
     "defaultStyles": {
@@ -34,13 +25,6 @@
   "submitCallback": "",
   "translations": {
     "An error occurred": "Wystąpił błąd"
-  },
-  "components": {
-    "requestTypes": [
-      "ACCOUNTCHECK",
-      "THREEDQUERY",
-      "AUTH"
-    ]
   },
   "applePay": {
     "buttonStyle": "white-outline",

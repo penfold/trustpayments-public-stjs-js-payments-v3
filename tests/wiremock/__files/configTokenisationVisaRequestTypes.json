@@ -1,9 +1,6 @@
 {
   "analytics": true,
   "animatedCard": false,
-  "bypassCards": [
-    "PIBA"
-  ],
   "deferInit": false,
   "fieldsToSubmit": [
     "securitycode"
@@ -24,9 +21,6 @@
   },
   "submitOnSuccess": false,
   "submitCallback": "",
-  "translations": {
-    "An error occurred": "Wystąpił błąd"
-  },
   "components": {
     "requestTypes": [
       "RISKDEC",
