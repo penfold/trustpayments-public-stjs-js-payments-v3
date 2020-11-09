@@ -4,10 +4,6 @@ import { VisaCheckout } from './VisaCheckout';
 import { VisaButtonProps } from '../../models/constants/visa-checkout/VisaButtonProps';
 
 export class VisaCheckoutMock extends VisaCheckout {
-  protected _instantiateVisa() {
-    // Do nothing on mock because we don't want to use V.
-  }
-
   protected paymentStatusHandler() {
     DomMethods.addListener(VisaButtonProps.id, 'click', () => {
       this._handleMockedData();
@@ -24,14 +20,11 @@ export class VisaCheckoutMock extends VisaCheckout {
 
   private _proceedFlowWithMockedData(payment: any, status: string) {
     if (status === 'SUCCESS') {
-      // @ts-ignore
-      this._onSuccess(payment);
+      this.onSuccess(payment);
     } else if (status === 'ERROR') {
-      // @ts-ignore
-      this._onError();
+      this.onError();
     } else if (status === 'WARNING') {
-      // @ts-ignore
-      this._onCancel();
+      this.onCancel();
     }
   }
 }

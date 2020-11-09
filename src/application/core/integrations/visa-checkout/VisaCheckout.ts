@@ -85,19 +85,19 @@ export class VisaCheckout {
     V.init(this._visaInitConfig);
 
     V.on(success, (payment: object) => {
-      this._onSuccess(payment);
+      this.onSuccess(payment);
     });
 
     V.on(error, () => {
-      this._onError();
+      this.onError();
     });
 
     V.on(cancel, () => {
-      this._onCancel();
+      this.onCancel();
     });
   }
 
-  private _onSuccess(payment: object): void {
+  protected onSuccess(payment: object): void {
     const paymentInstance: Payment = new Payment();
     const { requesttypedescriptions } = JwtDecode<IDecodedJwt>(this._jwt).payload;
     const walletdata: IWallet = {
@@ -119,13 +119,13 @@ export class VisaCheckout {
       });
   }
 
-  private _onError(): void {
+  protected onError(): void {
     this._notification.error(PAYMENT_ERROR);
     this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
     GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
   }
 
-  private _onCancel(): void {
+  protected onCancel(): void {
     this._notification.cancel(PAYMENT_CANCELLED);
     this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK }, true);
     this._messageBus.publish(
