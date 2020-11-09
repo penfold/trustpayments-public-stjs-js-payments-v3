@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { environment } from '../../../../environments/environment';
-import { VisaButtonProps } from '../../models/constants/visa-checkout/VisaButtonProps';
+import { VisaButtonProps } from './VisaButtonProps';
 import { IStJwt } from './IStJwt';
 import { IVisaCheckout } from './IVisaCheckout';
 import { IVisaInitConfig } from './IVisaInitConfig';

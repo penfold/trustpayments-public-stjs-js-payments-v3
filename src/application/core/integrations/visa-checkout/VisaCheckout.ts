@@ -8,7 +8,7 @@ import { IWallet } from '../../models/IWallet';
 import { IVisaButtonSettings } from './IVisaButtonSettings';
 import { IVisaInitConfig } from './IVisaInitConfig';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
-import { VisaResponseTypes } from '../../models/constants/visa-checkout/VisaResponseTypes';
+import { VisaResponseTypes } from './VisaResponseTypes';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { GoogleAnalytics } from '../google-analytics/GoogleAnalytics';
