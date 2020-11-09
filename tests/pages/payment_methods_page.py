@@ -622,15 +622,16 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_number_of_requests == actual_number_of_requests, assertion_message
 
-    def validate_data_in_browser_info_callback(self, object_data, key, value, is_supported):
+    def _validate_browser_support_info(self, data_object, is_supported):
         browser_info_text = self.get_text_from_browser_info()
         browser_info_json = json.loads(browser_info_text)
-        assertion_message = f'Browser data is not correct, should be: {value} but is: ' \
-                            f'{browser_info_json.get(object_data).get(key)}'
+        assertion_message = f'{data_object} should be mark as supported: {is_supported} but it is not'
         add_to_shared_dict('assertion_message', assertion_message)
-        assert key in browser_info_json.get(object_data) and value in browser_info_json.get(object_data).get(key), \
-            assertion_message
-        assertion_message = f'Browser should be mark as supported: {is_supported} but it is not'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert 'isSupported' in browser_info_json.get(object_data) and is_supported in \
-               str(browser_info_json.get(object_data).get('isSupported')), assertion_message
+        assert 'isSupported' in browser_info_json.get(data_object) and is_supported in \
+               str(browser_info_json.get(data_object).get('isSupported')), assertion_message
+
+    def validate_if_browser_is_supported_in_info_callback(self, is_supported):
+        self._validate_browser_support_info('browser', is_supported)
+
+    def validate_if_os_is_supported_in_info_callback(self, is_supported):
+        self._validate_browser_support_info('os', is_supported)

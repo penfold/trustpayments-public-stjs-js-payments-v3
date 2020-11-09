@@ -45,6 +45,7 @@ Feature: Callback functionality
   Scenario Outline: Checking callback function about browser data
     When User opens prepared payment form page WITH_BROWSER_INFO
     Then User will see that browser is marked as supported: "<is_supported>"
+    And User will see that operating system is marked as supported: "<is_supported>"
     @smoke_test @extended_tests_part_3
     Examples:
       | is_supported |

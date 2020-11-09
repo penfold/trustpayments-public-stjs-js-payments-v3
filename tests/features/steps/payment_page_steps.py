@@ -332,23 +332,15 @@ def step_impl(context):
 @then('User will see that browser is marked as supported: "(?P<is_supported>.+)"')
 def step_impl(context, is_supported):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    browser_name = set_proper_browser_name()
-    os_name = set_proper_os_name()
-    browser_version = context.configuration.REMOTE_BROWSER_VERSION.split('.')[0]
-    mobile_os_version = context.configuration.REMOTE_OS_VERSION.split('.')[0]
+    #ToDo - clarify if High Sierra should be removed from the pipeline (Safari 11 - not supported)
+    if 'High Sierra' not in context.configuration.REMOTE_OS_VERSION:
+        payment_page.validate_if_browser_is_supported_in_info_callback(is_supported)
 
-    if context.configuration.REMOTE and context.configuration.REMOTE_BROWSER_VERSION:
-        #ToDo - clarify if High Sierra should be removed from the pipeline (Safari 11 - not supported)
-        if 'High Sierra' not in context.configuration.REMOTE_OS_VERSION:
-            payment_page.validate_data_in_browser_info_callback('browser', 'name', browser_name, is_supported)
-            payment_page.validate_data_in_browser_info_callback('browser', 'version', browser_version, is_supported)
-        payment_page.validate_data_in_browser_info_callback('os', 'versionName', context.configuration.REMOTE_OS_VERSION,
-                                                            'True')
-    elif context.configuration.REMOTE_DEVICE:
-        payment_page.validate_data_in_browser_info_callback('os', 'name', os_name, is_supported)
-        payment_page.validate_data_in_browser_info_callback('os', 'version', mobile_os_version, is_supported)
-    else:
-        payment_page.validate_data_in_browser_info_callback('browser', 'name', 'Chrome', is_supported)
+
+@then('User will see that operating system is marked as supported: "(?P<is_supported>.+)"')
+def step_impl(context, is_supported):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_if_os_is_supported_in_info_callback(is_supported)
 
 
 @step('Wait for notification frame to disappear')
