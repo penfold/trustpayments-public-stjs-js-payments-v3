@@ -94,18 +94,14 @@ export class ConfigResolver {
     if (!config || !Object.keys(config).length) {
       return;
     }
-    return {
-      ...config
-    };
+    return config;
   }
 
   private _setApplePayConfig(config: IApplePayConfig | {}, defaultConfig: {}): IApplePayConfig | {} {
     if (!config || !Object.keys(config).length) {
       return defaultConfig;
     }
-    return {
-      ...config
-    };
+    return config;
   }
 
   private _setComponentIds(config: IComponentsIds): IComponentsIds {
