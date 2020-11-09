@@ -1,36 +1,30 @@
-import { IConfig } from '../../../../shared/model/config/IConfig';
+import { Service } from 'typedi';
 import { environment } from '../../../../environments/environment';
 import { VisaButtonProps } from '../../models/constants/visa-checkout/VisaButtonProps';
-import { Service } from 'typedi';
-import { IVisaCheckout } from '../../models/visa-checkout/IVisaCheckout';
-import { IStJwtObj } from '../../models/IStJwtObj';
+import { IStJwt } from './IStJwt';
+import { IVisaCheckout } from './IVisaCheckout';
+import { IVisaInitConfig } from './IVisaInitConfig';
+import { StJwt } from '../../shared/stjwt/StJwt';
 
 @Service()
 export class VisaCheckoutUpdateService {
-  updatePaymentAndStJwt(config: IConfig, newJwt?: string): { updatedConfig: IConfig; jwt: string } {
-    const updatedConfig: IConfig = config;
-    updatedConfig.formId = config.formId;
-    return {
-      updatedConfig,
-      jwt: newJwt ? newJwt : config.jwt
-    };
-  }
-
-  updateInitObject(stJwt: IStJwtObj, config: IVisaCheckout): IConfig {
-    const { currencyiso3a, mainamount, locale } = stJwt;
-    config.paymentRequest.currencyCode = currencyiso3a;
-    config.paymentRequest.subtotal = mainamount;
-    config.paymentRequest.total = mainamount;
-    config.settings.locale = locale;
+  updateVisaInit(stJwt: IStJwt, config: IVisaInitConfig): IVisaInitConfig {
+    config.paymentRequest.currencyCode = stJwt.currencyiso3a;
+    config.paymentRequest.subtotal = stJwt.mainamount;
+    config.paymentRequest.total = stJwt.mainamount;
+    config.settings.locale = stJwt.locale;
     return config;
   }
 
-  setInitObject(config: IConfig, stJwt: IStJwtObj): { buttonUrl: string; sdkUrl: string; visaConfig: IVisaCheckout } {
-    const { livestatus, visaCheckout } = config;
+  updateConfigObject(
+    visaCheckout: IVisaCheckout,
+    stJwt: StJwt,
+    livestatus: 0 | 1
+  ): { buttonUrl: string; sdkUrl: string; visaInit: IVisaInitConfig } {
     return {
       buttonUrl: livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_BUTTON_URL : VisaButtonProps.src,
       sdkUrl: livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_SDK : environment.VISA_CHECKOUT_URLS.TEST_SDK,
-      visaConfig: {
+      visaInit: {
         apikey: visaCheckout.merchantId,
         encryptionKey: visaCheckout.encryptionKey,
         paymentRequest: {

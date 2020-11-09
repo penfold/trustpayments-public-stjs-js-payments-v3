@@ -1,7 +1,7 @@
 import { IVisaSettings } from './IVisaSettings';
 import { IVisaPaymentRequest } from './IVisaPaymentRequest';
 
-export interface IVisaInit {
+export interface IVisaInitConfig {
   apikey: string;
   encryptionKey?: string;
   settings?: IVisaSettings;

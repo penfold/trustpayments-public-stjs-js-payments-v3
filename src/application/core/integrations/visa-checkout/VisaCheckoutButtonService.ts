@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { VisaButtonProps } from '../../models/constants/visa-checkout/VisaButtonProps';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
-import { IVisaButtonSettings } from '../../models/visa-checkout/IVisaButtonSettings';
+import { IVisaButtonSettings } from './IVisaButtonSettings';
 import { IVisaButtonProps } from './IVisaButtonProps';
 
 @Service()

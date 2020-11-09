@@ -43,7 +43,7 @@ import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
-import { IVisaCheckout } from '../../application/core/models/visa-checkout/IVisaCheckout';
+import { IVisaCheckout } from '../../application/core/integrations/visa-checkout/IVisaCheckout';
 import { VisaCheckoutButtonService } from '../../application/core/integrations/visa-checkout/VisaCheckoutButtonService';
 import { VisaCheckoutUpdateService } from '../../application/core/integrations/visa-checkout/VisaCheckoutUpdateService';
 

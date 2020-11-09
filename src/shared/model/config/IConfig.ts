@@ -3,7 +3,7 @@ import { IComponentsConfig } from './IComponentsConfig';
 import { IComponentsIds } from './IComponentsIds';
 import { IStyles } from './IStyles';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
-import { IVisaCheckout } from '../../../application/core/models/visa-checkout/IVisaCheckout';
+import { IVisaCheckout } from '../../../application/core/integrations/visa-checkout/IVisaCheckout';
 import { IApplePayConfig } from '../../../application/core/models/IApplePayConfig';
 
 export interface IConfig {
