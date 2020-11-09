@@ -320,7 +320,7 @@ GooglePixel4-10.0-smoke-tests:
 win10-Firefox-latest-extended-tests-1:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -334,7 +334,7 @@ win10-Firefox-latest-extended-tests-1:
 win10-Firefox-latest-extended-tests-2:
   extends:
     - .extended-tests-browserstack
-    - .rules-always
+    - .rules-when-release
   variables:
     OS: Windows
     OS_VERSION: 10
