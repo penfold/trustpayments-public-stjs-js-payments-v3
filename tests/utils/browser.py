@@ -65,6 +65,9 @@ class Browser(Waits):
     def scroll_to_top(self):
         self._browser.execute_script('window.scrollTo(0, -document.body.scrollHeight)')
 
+    def execute_script(self, script):
+        self._driver_browser.execute_script(script)
+
     def switch_to_default_content(self):
         return self._browser.current_url
 
