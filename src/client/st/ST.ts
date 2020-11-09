@@ -194,7 +194,7 @@ export class ST {
       this._messageBus,
       this._notificationService,
       this._visaCheckoutButtonService,
-      this._visaCheckoutButtonService
+      this._visaCheckoutUpdateService
     );
   }
 
