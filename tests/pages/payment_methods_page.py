@@ -625,10 +625,11 @@ class PaymentMethodsPage(BasePage):
     def _validate_browser_support_info(self, data_object, is_supported):
         browser_info_text = self.get_text_from_browser_info()
         browser_info_json = json.loads(browser_info_text)
-        assertion_message = f'{data_object} should be mark as supported: {is_supported} but it is not'
+        actual_is_supported_info = str(browser_info_json.get(data_object).get('isSupported'))
+        assertion_message = f'{data_object} should be mark as supported: {is_supported} but is: ' \
+                            f'{actual_is_supported_info}'
         add_to_shared_dict('assertion_message', assertion_message)
-        assert 'isSupported' in browser_info_json.get(data_object) and is_supported in \
-               str(browser_info_json.get(data_object).get('isSupported')), assertion_message
+        assert is_supported in actual_is_supported_info, assertion_message
 
     def validate_if_browser_is_supported_in_info_callback(self, is_supported):
         self._validate_browser_support_info('browser', is_supported)

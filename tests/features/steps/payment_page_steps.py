@@ -10,7 +10,6 @@ from utils.enums.jwt_config import JwtConfig
 from utils.enums.payment_type import PaymentType
 from utils.enums.request_type import RequestType
 from utils.enums.responses.invalid_field_response import InvalidFieldResponse
-from utils.helpers.browser_info_util import set_proper_os_name, set_proper_browser_name
 from utils.mock_handler import stub_st_request_type
 
 use_step_matcher('re')
