@@ -2,28 +2,23 @@ import { ConfigResolver } from './ConfigResolver';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigSchema } from '../storage/ConfigSchema';
 
-// given
 describe('ConfigResolver', () => {
   const configResolverInstance: ConfigResolver = new ConfigResolver();
 
-  // when
   beforeEach(() => {
     ConfigSchema.validate = jest.fn().mockReturnValueOnce({ error: null });
   });
 
-  // then
   it('should set default config-provider when some of properties are not set ', () => {
     let { config, configResolved } = ConfigResolverFixture();
     expect(configResolverInstance.resolve(config)).toEqual(configResolved);
   });
 
-  // then
   it('should set default config-provider when all of the properties are not set, except of those which are obligatory', () => {
     let { minimalDefaultConfigResolve, minimalConfig } = ConfigResolverFixture();
     expect(configResolverInstance.resolve(minimalConfig)).toEqual(minimalDefaultConfigResolve);
   });
 
-  // then
   it('should set config-provider with given values if they are correct', () => {
     let { minimalDefaultConfigResolve } = ConfigResolverFixture();
     expect(configResolverInstance.resolve(minimalDefaultConfigResolve)).toEqual(minimalDefaultConfigResolve);
@@ -251,6 +246,7 @@ function ConfigResolverFixture() {
   const minimalDefaultConfigResolve: IConfig = {
     analytics: false,
     animatedCard: false,
+    applePay: {},
     buttonId: '',
     cancelCallback: null,
     componentIds: {
@@ -305,7 +301,8 @@ function ConfigResolverFixture() {
     submitOnError: false,
     submitCallback: null,
     successCallback: null,
-    translations: {}
+    translations: {},
+    visaCheckout: undefined
   };
   return {
     config,
