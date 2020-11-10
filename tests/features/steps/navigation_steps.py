@@ -17,8 +17,6 @@ def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'config_immediate_payment' not in context.scenario.tags[0] and 'parent_iframe' not in context.scenario.tags and \
         'config_cybertonica_immediate_payment' not in context.scenario.tags:
-        if 'Safari' in context.browser:
-            accept_untrusted_pages_on_safari_browsers(context)
         payment_page.open_page(CONFIGURATION.URL.BASE_URL)
         payment_page.wait_for_iframe()
 
@@ -28,8 +26,6 @@ def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'config_immediate_payment' not in context.scenario.tags[0] and 'parent_iframe' not in context.scenario.tags and \
         'config_cybertonica_immediate_payment' not in context.scenario.tags:
-        if 'Safari' in context.browser:
-            accept_untrusted_pages_on_safari_browsers(context)
         payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?')
         payment_page.wait_for_iframe()
 
@@ -37,8 +33,6 @@ def step_impl(context):
 @step('User opens payment page')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if 'Safari' in context.browser:
-        accept_untrusted_pages_on_safari_browsers(context)
     if 'parent_iframe' in context.scenario.tags:
         payment_page.open_page(CONFIGURATION.URL.BASE_URL + '/iframe.html')
         payment_page.switch_to_parent_iframe()
@@ -50,8 +44,6 @@ def step_impl(context):
 @step('User opens prepared payment form page (?P<example_page>.+)')
 def step_impl(context, example_page: ExamplePage):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if 'Safari' in context.browser:
-        accept_untrusted_pages_on_safari_browsers(context)
     if 'WITH_UPDATE_JWT' in example_page:
         jwt = ''
         for row in context.table:
