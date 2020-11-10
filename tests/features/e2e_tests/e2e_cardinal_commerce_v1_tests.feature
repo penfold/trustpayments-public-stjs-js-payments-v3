@@ -4,7 +4,9 @@ Feature: Cardinal Commerce E2E tests
   In order to check Cardinal Commerce integration
 
   Background:
-    Given JS library is configured with BASIC_CONFIG and BASE_JWT
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
 
   @reactJS
