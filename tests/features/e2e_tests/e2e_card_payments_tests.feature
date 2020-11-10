@@ -9,7 +9,10 @@ Feature: E2E Card Payments
   @react_native
   @e2e_config_bypass_mastercard
   Scenario: Successful payment with bypassCard using Mastercard
-    Given JS library is configured with BYPASS_MASTERCARD_CONFIG and BASE_JWT
+    Given JS library configured by inline params BYPASS_MASTERCARD_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                                 |
+      | requesttypedescriptions | THREEDQUERY RISKDEC ACCOUNTCHECK AUTH |
+      | threedbypasscards       | MASTERCARD                            |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
@@ -18,7 +21,10 @@ Feature: E2E Card Payments
 
   @e2e_config_for_bypass_cards
   Scenario: Successful payment bypass cards without 3d secure
-    Given JS library is configured with BYPASS_CARDS_CONFIG and BASE_JWT
+    Given JS library configured by inline params BYPASS_CARDS_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                                 |
+      | requesttypedescriptions | THREEDQUERY AUTH                      |
+      | threedbypasscards       | VISA AMEX DISCOVER JCB DINERS MAESTRO |
     And User opens example page
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
@@ -27,7 +33,10 @@ Feature: E2E Card Payments
 
   @e2e_config_for_bypass_cards
   Scenario: Successful payment bypass cards with 3d secure
-    Given JS library is configured with BYPASS_CARDS_CONFIG and BASE_JWT
+    Given JS library configured by inline params BYPASS_CARDS_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                                 |
+      | requesttypedescriptions | THREEDQUERY AUTH                      |
+      | threedbypasscards       | VISA AMEX DISCOVER JCB DINERS MAESTRO |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
@@ -37,7 +46,10 @@ Feature: E2E Card Payments
 
   @e2e_config_bypass_mastercard
   Scenario: Unsuccessful payment with bypassCard using Mastercard - invalid expiration date
-    Given JS library is configured with BYPASS_MASTERCARD_CONFIG and BASE_JWT
+    Given JS library configured by inline params BYPASS_MASTERCARD_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                                 |
+      | requesttypedescriptions | THREEDQUERY RISKDEC ACCOUNTCHECK AUTH |
+      | threedbypasscards       | MASTERCARD                            |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_INVALID_EXP_DATE_CARD
     And User clicks Pay button
@@ -48,7 +60,10 @@ Feature: E2E Card Payments
 
   @e2e_config_bypass_maestro
   Scenario: Unsuccessful payment with bypassCard using Maestro - lack of secure code
-    Given JS library is configured with BYPASS_CARDS_CONFIG and BASE_JWT
+    Given JS library configured by inline params BYPASS_CARDS_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                                 |
+      | requesttypedescriptions | THREEDQUERY AUTH                      |
+      | threedbypasscards       | VISA AMEX DISCOVER JCB DINERS MAESTRO |
     And User opens example page
     When User fills payment form with defined card MAESTRO_CARD
     And User clicks Pay button
@@ -60,7 +75,9 @@ Feature: E2E Card Payments
   @vueJS
   @react_native
   Scenario: Successful payment with frictionless card
-    Given JS library is configured with BASIC_CONFIG and BASE_JWT
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card VISA_FRICTIONLESS
     And User clicks Pay button
@@ -72,7 +89,9 @@ Feature: E2E Card Payments
   @vueJS
   @react_native
   Scenario: Successful payment with non-frictionless card
-    Given JS library is configured with BASIC_CONFIG and BASE_JWT
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
@@ -85,7 +104,9 @@ Feature: E2E Card Payments
   @vueJS
   @react_native
   Scenario: Successful payment after form validation
-    Given JS library is configured with BASIC_CONFIG and BASE_JWT
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User clicks Pay button
     And User fills payment form with defined card VISA_NON_FRICTIONLESS
@@ -95,7 +116,9 @@ Feature: E2E Card Payments
     And User will see that notification frame has "green" color
 
   Scenario: Failed Frictionless Authentication in second payment
-    Given JS library is configured with DEFER_INIT_CONFIG and BASE_JWT
+    Given JS library configured by inline params DEFER_INIT_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card VISA_FAILED_FRICTIONLESS_AUTH
     And User clicks Pay button
