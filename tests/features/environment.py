@@ -51,12 +51,12 @@ def before_scenario(context, scenario):
         context.configuration.BROWSER = context.configuration.REMOTE_BROWSER
     disable_headless_for_visa_checkout(context)
     context.browser = context.configuration.BROWSER
-    context.driver = DriverFactory(configuration=context.configuration)
-    context.waits = Waits(driver=context.driver, configuration=context.configuration)
-    extensions = WebElementsExtensions(driver=context.driver, configuration=context.configuration)
-    context.executor = Browser(driver=context.driver, configuration=context.configuration)
-    context.reporter = Reporter(driver=context.driver, configuration=context.configuration)
-    context.screenshot_manager = ScreenshotManager(driver=context.driver, configuration=context.configuration)
+    context.driver_factory = DriverFactory(configuration=context.configuration)
+    context.waits = Waits(driver_factory=context.driver_factory, configuration=context.configuration)
+    extensions = WebElementsExtensions(driver_factory=context.driver_factory, configuration=context.configuration)
+    context.executor = Browser(driver_factory=context.driver_factory, configuration=context.configuration)
+    context.reporter = Reporter(driver_factory=context.driver_factory, configuration=context.configuration)
+    context.screenshot_manager = ScreenshotManager(driver_factory=context.driver_factory, configuration=context.configuration)
     context.page_factory = PageFactory(executor=context.executor, extensions=extensions,
                                        reporter=context.reporter, configuration=context.configuration,
                                        wait=context.waits)
@@ -73,7 +73,7 @@ def after_scenario(context, scenario):
     LOGGER.info('AFTER SCENARIO')
     if scenario.status == 'failed':
         LOGGER.info('Printing console logs:')
-        for entry in context.driver.get_browser().get_log('browser'):
+        for entry in context.driver_factory.get_driver().get_log('browser'):
             LOGGER.info(entry)
     browser_name = context.browser
     context.executor.clear_cookies()
@@ -86,7 +86,6 @@ def after_scenario(context, scenario):
         mark_test_as_failed(context.session_id)
     elif context.configuration.REMOTE:
         mark_test_as_passed(context.session_id)
-
 
 
 def after_step(context, step):
