@@ -21,6 +21,7 @@ class BasePage:
         self._executor.open_page(url)
         if len(self._action.find_elements(PaymentMethodsLocators.not_private_connection_text)) > 0:
             self._executor.execute_script('browserstack_executor: {"action": "acceptSsl"}')
+            self._executor.open_page(url)
 
     def stop_page(self):
         self._executor.stop_browser()
