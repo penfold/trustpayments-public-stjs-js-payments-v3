@@ -1,9 +1,6 @@
 {
   "analytics": true,
   "animatedCard": false,
-  "bypassCards": [
-    "PIBA"
-  ],
   "deferInit": false,
   "fieldsToSubmit": [
     "pan",
@@ -25,18 +22,6 @@
     }
   },
   "submitOnSuccess": false,
-  "submitCallback": "",
-  "translations": {
-    "An error occurred": "Wystąpił błąd"
-  },
-  "components": {
-    "requestTypes": [
-      "RISKDEC",
-      "ACCOUNTCHECK",
-      "THREEDQUERY",
-      "AUTH"
-    ]
-  },
   "applePay": {
     "buttonStyle": "white-outline",
     "buttonText": "donate",

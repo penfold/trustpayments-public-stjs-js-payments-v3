@@ -1,17 +1,8 @@
 {
   "analytics": true,
   "animatedCard": false,
-  "bypassCards": [
-    "PIBA"
-  ],
   "deferInit": false,
-  "fieldsToSubmit": [
-    "pan",
-    "expirydate",
-    "securitycode"
-  ],
-  "buttonId": "merchant-submit-button",
-  "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU5ODI2OTM5MywicGF5bG9hZCI6eyJzdWJzY3JpcHRpb251bml0IjoiTU9OVEgiLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic3Vic2NyaXB0aW9uYmVnaW5kYXRlIjoiMjAyOC0wMS0wMSIsImJhc2VhbW91bnQiOiIxMDAwIiwic3Vic2NyaXB0aW9udHlwZSI6IlJFQ1VSUklORyIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X3Rlc3QiLCJzdWJzY3JpcHRpb25udW1iZXIiOiIxIiwiZXhwaXJ5ZGF0ZSI6IjAxLzI2Iiwic3Vic2NyaXB0aW9uZnJlcXVlbmN5IjoiMSIsInNlY3VyaXR5Y29kZSI6IjEyMyIsInN1YnNjcmlwdGlvbmZpbmFsbnVtYmVyIjoiMTIiLCJjcmVkZW50aWFsc29uZmlsZSI6IjEiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsInBhbiI6IjQwMDAwMDAwMDAwMDEwMjYifX0.ChdqGl9Dx2zEVABMIlBYSWzzeXiYlfIFSEohFSAbm-M",
+  "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU5ODI2OTM5MywicGF5bG9hZCI6eyJzdWJzY3JpcHRpb251bml0IjoiTU9OVEgiLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic3Vic2NyaXB0aW9uYmVnaW5kYXRlIjoiMjAyOC0wMS0wMSIsImJhc2VhbW91bnQiOiIxMDAwIiwic3Vic2NyaXB0aW9udHlwZSI6IlJFQ1VSUklORyIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X3Rlc3QiLCJzdWJzY3JpcHRpb25udW1iZXIiOiIxIiwiZXhwaXJ5ZGF0ZSI6IjAxLzI2Iiwic3Vic2NyaXB0aW9uZnJlcXVlbmN5IjoiMSIsInNlY3VyaXR5Y29kZSI6IjEyMyIsInN1YnNjcmlwdGlvbmZpbmFsbnVtYmVyIjoiMTIiLCJjcmVkZW50aWFsc29uZmlsZSI6IjEiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsInBhbiI6IjQwMDAwMDAwMDAwMDEwMjYiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJBQ0NPVU5UQ0hFQ0siLCJUSFJFRURRVUVSWSIsIkFVVEgiLCJTVUJTQ1JJUFRJT04iXX19.ZFwhEDHYeUFhaA0dR0MC4vls-NWMMPP2k_NhIjYPlag",
   "panIcon": true,
   "styles": {
     "defaultStyles": {
@@ -25,17 +16,7 @@
     }
   },
   "submitOnSuccess": false,
-  "submitCallback": "",
-  "translations": {
-    "An error occurred": "Wystąpił błąd"
-  },
   "components": {
-    "requestTypes": [
-      "ACCOUNTCHECK",
-      "THREEDQUERY",
-      "AUTH",
-      "SUBSCRIPTION"
-    ],
     "startOnLoad": true
   },
   "applePay": {

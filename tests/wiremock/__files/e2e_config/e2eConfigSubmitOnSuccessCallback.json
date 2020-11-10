@@ -1,9 +1,5 @@
 {
-  "bypassCards": [
-  ],
   "components": {
-    "requestTypes": [
-    ],
     "paymentTypes": [],
     "startOnLoad": false
   },

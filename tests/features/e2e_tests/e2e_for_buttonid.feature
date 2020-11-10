@@ -5,7 +5,9 @@ Feature: E2E for buttonID
 
   @e2e_button_id_config
   Scenario: Successful Authentication
-    Given JS library is configured with BUTTON_ID_CONFIG and BASE_JWT
+    Given JS library configured by inline params BUTTON_ID_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                         |
+      | requesttypedescriptions | THREEDQUERY AUTH              |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button

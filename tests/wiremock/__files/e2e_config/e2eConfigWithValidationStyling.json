@@ -1,7 +1,5 @@
 {
   "components": {
-    "requestTypes": [
-    ],
     "startOnLoad": false
   },
   "animatedCard": true,
