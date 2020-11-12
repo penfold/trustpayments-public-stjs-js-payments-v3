@@ -80,7 +80,6 @@ export class CardinalCommerce {
     merchantData: IMerchantData
   ): Observable<IThreeDQueryResponse> {
     const threeDQueryRequestBody = {
-      requesttypedescriptions: requestTypes,
       cachetoken: this.cardinalTokens.cacheToken,
       termurl: 'https://termurl.com', // TODO this shouldn't be needed but currently the backend needs this
       ...merchantData,

@@ -145,7 +145,7 @@ export class ControlFrame {
     this._resetJwtEvent();
     this._updateJwtEvent();
     this._initCybertonica(config);
-    this._setRequestTypes(config);
+    this._setRequestTypes(config.jwt);
 
     if (!config.deferInit) {
       this._initCardinalCommerce(config);
@@ -181,13 +181,9 @@ export class ControlFrame {
     });
   }
 
-  // private _setRequestTypes(jwt: string): void {
-  //   const {payload} = this._jwtDecoder.decode(jwt);
-  //   this._remainingRequestTypes = payload.requesttypedescriptions;
-  // }
-
-  private _setRequestTypes(config: IConfig): void {
-    this._remainingRequestTypes = config.components.requestTypes as RequestType[];
+  private _setRequestTypes(jwt: string): void {
+    const { payload } = this._jwtDecoder.decode(jwt);
+    this._remainingRequestTypes = payload.requesttypedescriptions;
   }
 
   private _updateJwtEvent(): void {
@@ -217,11 +213,7 @@ export class ControlFrame {
           }
 
           return this._configProvider.getConfig$().pipe(
-            tap(config => {
-              const requestTypes: RequestType[] = config.components.requestTypes as RequestType[];
-              const index = requestTypes.indexOf('THREEDQUERY');
-              this._remainingRequestTypes = index > -1 ? requestTypes.slice(0, index + 1) : requestTypes;
-            }),
+            tap(config => this._setRequestTypes(config.jwt)),
             switchMap(config =>
               iif(
                 () => config.deferInit,
@@ -283,10 +275,7 @@ export class ControlFrame {
   }
 
   private _processPayment(data: IResponseData): void {
-    // this._setRequestTypes(StCodec.jwt);
-    const requestTypes = this._configProvider.getConfig().components.requestTypes as RequestType[];
-    const index = requestTypes.indexOf('THREEDQUERY');
-    this._remainingRequestTypes = index > -1 ? requestTypes.slice(index + 1) : [];
+    this._setRequestTypes(StCodec.jwt);
 
     const additionalData: IAuthorizePaymentResponse = {
       cachetoken: data.cachetoken,

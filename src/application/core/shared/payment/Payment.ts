@@ -55,7 +55,6 @@ export class Payment {
     }
 
     const processPaymentRequestBody = {
-      requesttypedescriptions: requestTypes,
       ...additionalData,
       ...merchantData,
       ...payment
