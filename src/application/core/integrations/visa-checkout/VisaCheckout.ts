@@ -41,7 +41,6 @@ export class VisaCheckout {
     private _visaCheckoutUpdateService: VisaCheckoutUpdateService
   ) {
     this._config$ = this._configProvider.getConfig$();
-    this._communicator.whenReceive(MessageBus.EVENTS_PUBLIC.CONFIG_CHECK).thenRespond(() => this._config$);
     this._updateConfigListener();
     this._updateJwtListener();
   }

@@ -1,14 +1,13 @@
 import { Service } from 'typedi';
 import { environment } from '../../../../environments/environment';
 import { VisaButtonProps } from './VisaButtonProps';
-import { IStJwt } from './IStJwt';
 import { IVisaCheckout } from './IVisaCheckout';
 import { IVisaInitConfig } from './IVisaInitConfig';
 import { StJwt } from '../../shared/stjwt/StJwt';
 
 @Service()
 export class VisaCheckoutUpdateService {
-  updateVisaInit(stJwt: IStJwt, config: IVisaInitConfig): IVisaInitConfig {
+  updateVisaInit(stJwt: StJwt, config: IVisaInitConfig): IVisaInitConfig {
     config.paymentRequest.currencyCode = stJwt.currencyiso3a;
     config.paymentRequest.subtotal = stJwt.mainamount;
     config.paymentRequest.total = stJwt.mainamount;
