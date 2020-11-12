@@ -291,10 +291,8 @@ SamsungGalaxyS8-7.0-smoke-tests:
     OS_VERSION: '7.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
-    BROWSER: Chrome
-    BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_review_1
+  resource_group: extended_tests_release_4
 
 SamsungGalaxyS10Plus-9.0-smoke-tests:
   extends:
@@ -305,7 +303,6 @@ SamsungGalaxyS10Plus-9.0-smoke-tests:
     OS_VERSION: '9.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
-    BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_1
 
@@ -318,7 +315,6 @@ GooglePixel4-10.0-smoke-tests:
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
-    BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_2
 
@@ -386,7 +382,6 @@ SamsungGalaxyS9-8.0-extended-test-part-1:
     OS_VERSION: '8.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.2'
-    BROWSER_VERSION: 'latest'
     POETRY_TAGS: extended_tests_part_1
   resource_group: extended_tests_release_2
 
@@ -399,7 +394,6 @@ SamsungGalaxyS9-8.0-extended-test-part-2:
     OS_VERSION: '8.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.2'
-    BROWSER_VERSION: 'latest'
     POETRY_TAGS: extended_tests_part_2
   resource_group: extended_tests_release_3
 
@@ -412,7 +406,6 @@ SamsungGalaxyS9-8.0-extended-test-part-3:
     OS_VERSION: '8.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.2'
-    BROWSER_VERSION: 'latest'
     POETRY_TAGS: extended_tests_part_3
   resource_group: extended_tests_release_4
 
@@ -536,17 +529,16 @@ SamsungGalaxyS20-10.0-smoke-tests:
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
-    BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_1
 
 win10-chrome-81.0-browser-not-supported:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-always
   variables:
     OS: Windows
-    OS_VERSION: '10'
+    OS_VERSION: '7'
     BROWSER: Chrome
     BROWSER_VERSION: '81.0'
     POETRY_TAGS: browser_info_not_supported

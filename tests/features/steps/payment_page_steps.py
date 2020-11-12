@@ -332,7 +332,8 @@ def step_impl(context):
 def step_impl(context, is_supported):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     #ToDo - clarify if High Sierra should be removed from the pipeline (Safari 11 - not supported)
-    if 'High Sierra' not in context.configuration.REMOTE_OS_VERSION:
+    # skipping assertion on mobile devices, as browserstack doesn't allow to set up latest version of browser
+    if 'High Sierra' not in context.configuration.REMOTE_OS_VERSION or not context.configuration.REMOTE_DEVICE:
         payment_page.validate_if_browser_is_supported_in_info_callback(is_supported)
 
 
