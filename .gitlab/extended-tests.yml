@@ -535,7 +535,7 @@ SamsungGalaxyS20-10.0-smoke-tests:
 win10-chrome-81.0-browser-not-supported:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-always
+    - .rules-extended-tests-always
   variables:
     OS: Windows
     OS_VERSION: '7'
@@ -595,4 +595,4 @@ win10-IE-11.0-visual-tests-styling:
     BROWSER_VERSION: '11.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: visual_regression_styling
-  resource_group: extended_tests_rlease_4
+  resource_group: extended_tests_release_4
