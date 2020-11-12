@@ -9,7 +9,9 @@ Feature: E2E Successfull payments on SPA app
   In order to check full payment functionality
 
   Scenario: SPA app - successfully processed payments with tabs change
-    Given JS library is configured with BASIC_CONFIG and BASE_JWT
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     And User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
@@ -21,7 +23,9 @@ Feature: E2E Successfull payments on SPA app
     Then User will see payment status information: "Payment has been successfully processed"
 
   Scenario: SPA app - successfully processed payments with tabs change and and deferinit config
-    Given JS library is configured with DEFER_INIT_CONFIG and BASE_JWT
+    Given JS library configured by inline params DEFER_INIT_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     And User fills payment form with defined card VISA_CARD
     And User clicks Pay button
@@ -33,7 +37,9 @@ Feature: E2E Successfull payments on SPA app
     Then User will see payment status information: "Payment has been successfully processed"
 
   Scenario: SPA app - successfully processed payments with tabs change and update JWT
-    Given JS library is configured with BASIC_CONFIG and BASE_JWT
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     And User calls updateJWT function by filling amount field
     And User fills payment form with defined card VISA_CARD
@@ -46,7 +52,9 @@ Feature: E2E Successfull payments on SPA app
     Then User will see payment status information: "Payment has been successfully processed"
 
   Scenario: SPA app - decline payment and then successful payment
-    Given JS library is configured with BASIC_CONFIG and BASE_JWT
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     And User fills payment form with defined card MASTERCARD_DECLINED_CARD
     And User clicks Pay button
@@ -58,7 +66,9 @@ Feature: E2E Successfull payments on SPA app
     Then User will see payment status information: "Payment has been successfully processed"
 
   Scenario: SPA app - successfully processed payment after change tabs
-    Given JS library is configured with BASIC_CONFIG and BASE_JWT
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User switch tab to 'Personal Data' in reactjs app
     And User switch tab to 'Payment' in reactjs app

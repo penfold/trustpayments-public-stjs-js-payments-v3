@@ -5,7 +5,9 @@ Feature: E2E for form id
   In order to check full payment functionality
 
   Background:
-    Given JS library is configured with CHANGED_FORM_ID_CONFIG and BASE_JWT
+    Given JS library configured by inline params CHANGED_FORM_ID_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page WITH_CHANGED_FORM_ID
 
   Scenario: Successful non-frictionless payment with form id

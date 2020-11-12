@@ -21,3 +21,28 @@ def encode_jwt_for_json(jwt_config: JwtConfig):
     jwt_token = jwt.encode({'iat': int(time.time()), 'iss': ISS_KEY, 'payload': data['payload']}, SECRET_KEY,
                            algorithm='HS256')
     return str(jwt_token, 'utf-8')
+
+
+def merge_json_conf_with_additional_attr(old_config_jwt_dict, jwt_payload_dict):
+    payload_without_null = delete_empty_from_json(jwt_payload_dict)
+    return {**old_config_jwt_dict, **payload_without_null}
+
+
+def encode_jwt(jwt_payload):
+    jwt_token = jwt.encode({'iat': int(time.time()), 'iss': ISS_KEY, 'payload': jwt_payload}, SECRET_KEY,
+                           algorithm='HS256')
+    return str(jwt_token, 'utf-8')
+
+
+def delete_empty_from_json(dictionary):
+    """
+    Delete keys with the value ``None`` in a dictionary, recursively.
+
+    This alters the input so you may wish to ``copy`` the dict first.
+    """
+    for key, value in list(dictionary.items()):
+        if not value:
+            del dictionary[key]
+        elif isinstance(value, dict):
+            delete_empty_from_json(value)
+    return dictionary

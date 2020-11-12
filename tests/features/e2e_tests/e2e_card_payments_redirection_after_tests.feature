@@ -9,7 +9,9 @@ Feature: E2E Card Payments - redirection
   @react_native
   @e2e_config_submit_on_success
   Scenario: Successful payment with submitOnSuccess enabled
-    Given JS library is configured with SUBMIT_ON_SUCCESS_CONFIG and BASE_JWT
+    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
@@ -23,7 +25,10 @@ Feature: E2E Card Payments - redirection
 
   @e2e_config_request_types
   Scenario: Successful payment with requestTypes set and default submitOnSuccess
-    Given JS library is configured with REQUEST_TYPES_CONFIG and BASE_JWT
+    Given JS library configured by inline params REQUEST_TYPES_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                                 |
+      | requesttypedescriptions | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
+      | threedbypasscards       | MASTERCARD                            |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
@@ -41,7 +46,10 @@ Feature: E2E Card Payments - redirection
   @react_native
   @e2e_config_submit_on_error
   Scenario: Unsuccessful payment with submitOnError enabled
-    Given JS library is configured with SUBMIT_ON_ERROR_CONFIG and BASE_JWT
+    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+      | threedbypasscards       | MASTERCARD       |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_DECLINED_CARD
     And User clicks Pay button
@@ -59,7 +67,10 @@ Feature: E2E Card Payments - redirection
   @react_native
   @e2e_config_submit_on_error_invalid_jwt
   Scenario: Unsuccessful payment with submitOnError enabled
-    Given JS library is configured with SUBMIT_ON_ERROR_CONFIG and INVALID_JWT
+    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt INVALID_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+      | threedbypasscards       | MASTERCARD       |
     And User opens example page
     Then User will not see notification frame
     And User will be sent to page with url "www.example.com" having params
@@ -70,7 +81,10 @@ Feature: E2E Card Payments - redirection
 
   @e2e_config_submit_on_success_security_code
   Scenario: Successful payment with submitOnSuccess enabled with field to submit securitycode
-    Given JS library is configured with SUBMIT_ON_SUCCESS_SECURITY_CODE_CONFIG and JWT_WITH_PARENT_TRANSACTION
+    Given JS library configured by inline params SUBMIT_ON_SUCCESS_SECURITY_CODE_CONFIG and jwt JWT_WITH_PARENT_TRANSACTION with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+      | threedbypasscards       | MASTERCARD       |
     And User opens example page
     When User fills "SECURITY_CODE" field "123"
     And User clicks Pay button
@@ -84,7 +98,9 @@ Feature: E2E Card Payments - redirection
 
   @e2e_config_submit_on_success_callback
   Scenario: Successful payment with submitOnSuccess enabled and success callback set
-    Given JS library is configured with SUBMIT_ON_SUCCESS_CONFIG_SUCCESS_CALLBACK and BASE_JWT
+    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG_SUCCESS_CALLBACK and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page SUCCESS_CALLBACK
     When User fills payment form with defined card VISA_FRICTIONLESS
     And User clicks Pay button
@@ -102,7 +118,9 @@ Feature: E2E Card Payments - redirection
   @react_native
   @e2e_config_submit_on_success_callback_submit
   Scenario: Successful payment with submitOnSuccess enabled and submit callback set
-    Given JS library is configured with SUBMIT_ON_SUCCESS_CONFIG_SUBMIT_CALLBACK and BASE_JWT
+    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG_SUBMIT_CALLBACK and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page SUBMIT_CALLBACK
     When User fills payment form with defined card VISA_FRICTIONLESS
     And User clicks Pay button
@@ -120,7 +138,10 @@ Feature: E2E Card Payments - redirection
   @react_native
   @e2e_config_submit_on_error_callback
   Scenario: Unsuccessful payment with submitOnError enabled and error callback set
-    Given JS library is configured with SUBMIT_ON_ERROR_CONFIG_ERROR_CALLBACK and BASE_JWT
+    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG_ERROR_CALLBACK and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+      | threedbypasscards       | MASTERCARD       |
     When User opens example page ERROR_CALLBACK
     When User fills payment form with defined card VISA_DECLINED_CARD
     And User clicks Pay button
@@ -134,7 +155,9 @@ Feature: E2E Card Payments - redirection
 
   @e2e_config_submit_on_error_callback
   Scenario: Unsuccessful payment with submitOnError enabled and submit callback set
-    Given JS library is configured with SUBMIT_ON_ERROR_CONFIG_SUBMIT_CALLBACK and BASE_JWT
+    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG_SUBMIT_CALLBACK and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page SUBMIT_CALLBACK
     When User fills payment form with defined card VISA_DECLINED_CARD
     And User clicks Pay button
@@ -159,7 +182,9 @@ Feature: E2E Card Payments - redirection
 #      | errorcode    | cancelled                  |
 
   Scenario: Cancel Cardinal popup with enabled submitOnSuccess and request type: ACCOUNTCHECK, TDQ
-    Given JS library is configured with SUBMIT_ON_SUCCESS_ERROR_REQUEST_TYPES_CONFIG and BASE_JWT
+    Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_REQUEST_TYPES_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                    |
+      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
     And User opens example page
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
@@ -173,7 +198,9 @@ Feature: E2E Card Payments - redirection
       | jwt          | should not be none |
 
   Scenario: Cancel Cardinal popup with enabled submitOnError and request type: ACCOUNTCHECK, TDQ
-    Given JS library is configured with SUBMIT_ON_ERROR_REQUEST_TYPES_CONFIG and BASE_JWT
+    Given JS library configured by inline params SUBMIT_ON_ERROR_REQUEST_TYPES_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                    |
+      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
     And User opens example page
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
