@@ -133,7 +133,7 @@ function stFixture() {
   const config = {
     analytics: true,
     animatedCard: true,
-    components: { defaultPaymentType: 'test', paymentTypes: ['test'], requestTypes: ['AUTH'] },
+    components: { defaultPaymentType: 'test', paymentTypes: ['test'] },
     init: {
       threedinit: 'test',
       cachetoken: 'test'

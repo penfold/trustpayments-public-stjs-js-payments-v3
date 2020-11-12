@@ -43,7 +43,6 @@ describe('Visa Checkout', () => {
             subtotal: '20.00'
           },
           placement: 'st-visa-checkout',
-          requestTypes: ['AUTH'],
           settings: {
             displayName: 'My Test Site'
           }
@@ -422,25 +421,6 @@ describe('Visa Checkout', () => {
       {}
     );
   });
-
-  // then
-  it('should process AUTH call getResponseMessage and setNotification for error with tokenise false', () => {
-    instance.payment.processPayment = jest
-      .fn()
-      .mockRejectedValueOnce({ response: { myData: 'respData' }, jwt: 'ajwtvalue' });
-    instance._getResponseMessage = jest.fn();
-    instance._notification.error = jest.fn();
-    instance.responseMessage = 'MYRESPONSE';
-    instance._walletSource = 'VISACHECKOUT';
-    instance.paymentDetails = 'TOKEN';
-    instance.onSuccess({ token: 'TOKEN' });
-    expect(instance.payment.processPayment).toHaveBeenCalledTimes(1);
-    expect(instance.payment.processPayment).toHaveBeenCalledWith(
-      ['AUTH'],
-      { walletsource: 'VISACHECKOUT', wallettoken: '{"token":"TOKEN"}' },
-      {}
-    );
-  });
 });
 
 function VisaCheckoutFixture() {
@@ -458,8 +438,7 @@ function VisaCheckoutFixture() {
     merchantId: '2ig278`13b123872121h31h20e',
     buttonSettings: { size: '154', color: 'neutral' },
     settings: { displayName: 'My Test Site' },
-    paymentRequest: { subtotal: '20.00' },
-    requestTypes: ['AUTH']
+    paymentRequest: { subtotal: '20.00' }
   };
   const productionAssets = {
     sdk: 'https://secure.checkout.visa.com/checkout-widget/resources/js/integration/v1/sdk.js',
