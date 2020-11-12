@@ -9,7 +9,7 @@ import { DefaultComponentsIds } from '../../../application/core/models/constants
 import { DefaultConfig } from '../../../application/core/models/constants/config-resolver/DefaultConfig';
 import { DefaultComponents } from '../../../application/core/models/constants/config-resolver/DefaultComponents';
 import { IApplePayConfig } from '../../../application/core/models/IApplePayConfig';
-import { IVisaCheckout } from '../../../application/core/integrations/visa-checkout/IVisaCheckout';
+import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
 import { environment } from '../../../environments/environment';
@@ -57,7 +57,7 @@ export class ConfigResolver {
   }
 
   private _validate(
-    config: IConfig | IComponentsConfig | IComponentsIds | IApplePayConfig | IVisaCheckout,
+    config: IConfig | IComponentsConfig | IComponentsIds | IApplePayConfig | IVisaCheckoutConfig,
     schema: Joi.ObjectSchema
   ): void {
     const { error } = schema.validate(config);
@@ -90,7 +90,7 @@ export class ConfigResolver {
     }
   }
 
-  private _setVisaCheckoutConfig(config: IVisaCheckout): IVisaCheckout {
+  private _setVisaCheckoutConfig(config: IVisaCheckoutConfig): IVisaCheckoutConfig {
     if (!config || !Object.keys(config).length) {
       return;
     }

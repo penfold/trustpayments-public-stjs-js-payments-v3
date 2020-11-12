@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { environment } from '../../../../environments/environment';
 import { VisaButtonProps } from './VisaButtonProps';
-import { IVisaCheckout } from './IVisaCheckout';
+import { IVisaCheckoutConfig } from './IVisaCheckoutConfig';
 import { IVisaInitConfig } from './IVisaInitConfig';
 import { StJwt } from '../../shared/stjwt/StJwt';
 
@@ -17,7 +17,7 @@ export class VisaCheckoutUpdateService {
   }
 
   updateConfigObject(
-    visaCheckout: IVisaCheckout,
+    visaCheckout: IVisaCheckoutConfig,
     stJwt: StJwt,
     livestatus: 0 | 1
   ): { buttonUrl: string; sdkUrl: string; visaInit: IVisaInitConfig } {

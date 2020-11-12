@@ -10,7 +10,7 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { take, toArray } from 'rxjs/operators';
 import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
 import { IStJwtObj } from '../../../application/core/models/IStJwtObj';
-import { IVisaCheckout } from '../../../application/core/integrations/visa-checkout/IVisaCheckout';
+import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 
 describe('ConfigService', () => {
   let resolverMock: ConfigResolver;
@@ -177,7 +177,7 @@ describe('ConfigService', () => {
 
   describe('updateFragment', () => {
     it('updates a given key in configuration', () => {
-      const visaConfig: IVisaCheckout = {
+      const visaConfig: IVisaCheckoutConfig = {
         merchantId: 'foobar',
         livestatus: 1,
         placement: 'st-visa'

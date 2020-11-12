@@ -43,9 +43,10 @@ import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
-import { IVisaCheckout } from '../../application/core/integrations/visa-checkout/IVisaCheckout';
+import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { VisaCheckoutButtonService } from '../../application/core/integrations/visa-checkout/VisaCheckoutButtonService';
 import { VisaCheckoutUpdateService } from '../../application/core/integrations/visa-checkout/VisaCheckoutUpdateService';
+import { VisaCheckoutFactory } from '../../application/core/integrations/visa-checkout/VisaCheckoutFactory';
 
 @Service()
 export class ST {
@@ -181,14 +182,14 @@ export class ST {
     return new applepay(this._configProvider, this._communicator);
   }
 
-  public VisaCheckout(config: IVisaCheckout | undefined): VisaCheckout {
+  public VisaCheckout(config: IVisaCheckoutConfig | undefined): void {
     const { visa } = this.Environment();
 
     if (config) {
       this._config = this._configService.updateFragment('visaCheckout', config);
     }
-
-    return new visa(
+    // tslint:disable-next-line:no-unused-expression
+    new visa(
       this._configProvider,
       this._communicator,
       this._messageBus,

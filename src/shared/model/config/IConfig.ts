@@ -3,7 +3,7 @@ import { IComponentsConfig } from './IComponentsConfig';
 import { IComponentsIds } from './IComponentsIds';
 import { IStyles } from './IStyles';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
-import { IVisaCheckout } from '../../../application/core/integrations/visa-checkout/IVisaCheckout';
+import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IApplePayConfig } from '../../../application/core/models/IApplePayConfig';
 
 export interface IConfig {
@@ -36,5 +36,5 @@ export interface IConfig {
   submitOnSuccess?: boolean;
   successCallback?: any;
   translations?: {};
-  visaCheckout?: IVisaCheckout;
+  visaCheckout?: IVisaCheckoutConfig;
 }
