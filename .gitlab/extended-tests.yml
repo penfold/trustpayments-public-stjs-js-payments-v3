@@ -285,7 +285,7 @@ OSXHS-Safari-11.1-smoke-tests:
 SamsungGalaxyS8-7.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-always
+    - .rules-extended-tests-release
   variables:
     DEVICE: Samsung Galaxy S8
     OS_VERSION: '7.0'
@@ -535,7 +535,7 @@ SamsungGalaxyS20-10.0-smoke-tests:
 win10-chrome-81.0-browser-not-supported:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-always
+    - .rules-extended-tests-release
   variables:
     OS: Windows
     OS_VERSION: '7'
