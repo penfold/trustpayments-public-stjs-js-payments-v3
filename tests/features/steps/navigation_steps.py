@@ -1,4 +1,5 @@
 # type: ignore[no-redef]
+
 from assertpy import soft_assertions
 from behave import use_step_matcher, step, then
 
@@ -100,6 +101,7 @@ def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     url = f'{CONFIGURATION.URL.BASE_URL}/minimal.html?{context.inline_config}'
     payment_page.open_page(url)
+    payment_page.wait_for_iframe()
 
 
 @then('User remains on checkout page')
