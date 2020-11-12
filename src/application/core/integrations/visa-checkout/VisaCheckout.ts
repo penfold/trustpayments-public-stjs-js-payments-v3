@@ -20,6 +20,7 @@ import { StJwt } from '../../shared/stjwt/StJwt';
 import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
 import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
 import { IMerchantData } from '../../models/IMerchantData';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 
 declare const V: any;
 
@@ -38,7 +39,8 @@ export class VisaCheckout {
     private _messageBus: MessageBus,
     private _notification: NotificationService,
     private _visaCheckoutButtonService: VisaCheckoutButtonService,
-    private _visaCheckoutUpdateService: VisaCheckoutUpdateService
+    private _visaCheckoutUpdateService: VisaCheckoutUpdateService,
+    private _jwtDecoder: JwtDecoder
   ) {
     this._config$ = this._configProvider.getConfig$();
     this._updateConfigListener();
@@ -99,7 +101,7 @@ export class VisaCheckout {
 
   protected onSuccess(payment: object): void {
     const paymentInstance: Payment = new Payment();
-    const { requesttypedescriptions } = JwtDecode<IDecodedJwt>(this._jwt).payload;
+    const { requesttypedescriptions } = this._jwtDecoder.decode(this._jwt).payload;
     const walletdata: IWallet = {
       walletsource: 'VISACHECKOUT',
       wallettoken: JSON.stringify(payment)
