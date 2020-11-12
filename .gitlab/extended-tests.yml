@@ -293,7 +293,7 @@ SamsungGalaxyS8-7.0-smoke-tests:
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
     BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_4
+  resource_group: extended_tests_review_1
 
 SamsungGalaxyS10Plus-9.0-smoke-tests:
   extends:
