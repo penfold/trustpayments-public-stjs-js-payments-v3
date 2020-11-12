@@ -39,13 +39,35 @@ export class ExpirationDate extends Input {
     this._init();
     this._configProvider.getConfig$().subscribe((config: IConfig) => {
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
-      if (styler.isLinedUp(config.styles.expirationDate)) {
-        styler.lineUp(
-          'st-expiration-date',
-          'st-expiration-date-label',
-          ['st-expiration-date', 'st-expiration-date--lined-up'],
-          ['expiration-date__label', 'expiration-date__label--required', 'lined-up']
-        );
+
+      if (styler.hasSpecificStyle('isLinedUp', config.styles.expirationDate)) {
+        styler.addStyles([
+          {
+            elementId: 'st-expiration-date',
+            classList: ['st-expiration-date--lined-up']
+          },
+          {
+            elementId: 'st-expiration-date-label',
+            classList: ['expiration-date__label--required', 'lined-up']
+          }
+        ]);
+      }
+
+      if (styler.hasSpecificStyle('outline-input', config.styles.expirationDate)) {
+        const outlineValue = config.styles.expirationDate['outline-input'];
+        const outlineSize = Number(outlineValue.replace(/\D/g, ''));
+
+        styler.addStyles([
+          {
+            elementId: 'st-expiration-date-wrapper',
+            inlineStyles: [
+              {
+                property: 'padding',
+                value: `${outlineSize ? outlineSize : 3}px`
+              }
+            ]
+          }
+        ]);
       }
     });
   }

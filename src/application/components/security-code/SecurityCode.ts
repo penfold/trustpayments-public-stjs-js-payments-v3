@@ -60,13 +60,34 @@ export class SecurityCode extends Input {
     this.placeholder = this._getPlaceholder(this._securityCodeLength);
     this._configProvider.getConfig$().subscribe((config: IConfig) => {
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
-      if (styler.isLinedUp(config.styles.securityCode)) {
-        styler.lineUp(
-          'st-security-code',
-          'st-security-code-label',
-          ['st-security-code', 'st-security-code--lined-up'],
-          ['security-code__label', 'security-code__label--required', 'lined-up']
-        );
+      if (styler.hasSpecificStyle('isLinedUp', config.styles.securityCode)) {
+        styler.addStyles([
+          {
+            elementId: 'st-security-code',
+            classList: ['st-security-code--lined-up']
+          },
+          {
+            elementId: 'st-security-code-label',
+            classList: ['security-code__label--required', 'lined-up']
+          }
+        ]);
+      }
+
+      if (styler.hasSpecificStyle('outline-input', config.styles.securityCode)) {
+        const outlineValue = config.styles.securityCode['outline-input'];
+        const outlineSize = Number(outlineValue.replace(/\D/g, ''));
+
+        styler.addStyles([
+          {
+            elementId: 'st-security-code-wrapper',
+            inlineStyles: [
+              {
+                property: 'padding',
+                value: `${outlineSize ? outlineSize : 3}px`
+              }
+            ]
+          }
+        ]);
       }
     });
     this._securityCodeUpdate$()
