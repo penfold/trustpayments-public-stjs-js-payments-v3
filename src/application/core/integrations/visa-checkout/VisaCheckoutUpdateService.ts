@@ -8,11 +8,12 @@ import { StJwt } from '../../shared/stjwt/StJwt';
 @Service()
 export class VisaCheckoutUpdateService {
   updateVisaInit(stJwt: StJwt, config: IVisaInitConfig): IVisaInitConfig {
-    config.paymentRequest.currencyCode = stJwt.currencyiso3a;
-    config.paymentRequest.subtotal = stJwt.mainamount;
-    config.paymentRequest.total = stJwt.mainamount;
-    config.settings.locale = stJwt.locale;
-    return config;
+    const modifiedConfig: IVisaInitConfig = config;
+    modifiedConfig.paymentRequest.currencyCode = stJwt.currencyiso3a;
+    modifiedConfig.paymentRequest.subtotal = stJwt.mainamount;
+    modifiedConfig.paymentRequest.total = stJwt.mainamount;
+    modifiedConfig.settings.locale = stJwt.locale;
+    return modifiedConfig;
   }
 
   updateConfigObject(
