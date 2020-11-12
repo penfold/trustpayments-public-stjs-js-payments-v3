@@ -146,6 +146,7 @@ SamsungGalaxyS10Plus-9.0-visual-tests-styling:
     OS_VERSION: '9.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
+    BROWSER_VERSION: 'latest'
     POETRY_TAGS: visual_regression_styling
   resource_group: extended_tests_release_1
 
@@ -284,12 +285,13 @@ OSXHS-Safari-11.1-smoke-tests:
 SamsungGalaxyS8-7.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-tests-always
   variables:
     DEVICE: Samsung Galaxy S8
     OS_VERSION: '7.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
+    BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_4
 
@@ -302,6 +304,7 @@ SamsungGalaxyS10Plus-9.0-smoke-tests:
     OS_VERSION: '9.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
+    BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_1
 
@@ -314,6 +317,7 @@ GooglePixel4-10.0-smoke-tests:
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
+    BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_2
 
@@ -381,6 +385,7 @@ SamsungGalaxyS9-8.0-extended-test-part-1:
     OS_VERSION: '8.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.2'
+    BROWSER_VERSION: 'latest'
     POETRY_TAGS: extended_tests_part_1
   resource_group: extended_tests_release_2
 
@@ -393,6 +398,7 @@ SamsungGalaxyS9-8.0-extended-test-part-2:
     OS_VERSION: '8.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.2'
+    BROWSER_VERSION: 'latest'
     POETRY_TAGS: extended_tests_part_2
   resource_group: extended_tests_release_3
 
@@ -405,6 +411,7 @@ SamsungGalaxyS9-8.0-extended-test-part-3:
     OS_VERSION: '8.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.2'
+    BROWSER_VERSION: 'latest'
     POETRY_TAGS: extended_tests_part_3
   resource_group: extended_tests_release_4
 
@@ -528,6 +535,7 @@ SamsungGalaxyS20-10.0-smoke-tests:
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
+    BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_1
 
