@@ -1,5 +1,5 @@
-export const VisaResponseTypes = {
-  cancel: 'payment.cancel',
-  error: 'payment.error',
-  success: 'payment.success'
-};
+export enum VisaResponseTypes {
+  cancel = 'payment.cancel',
+  error = 'payment.error',
+  success = 'payment.success'
+}

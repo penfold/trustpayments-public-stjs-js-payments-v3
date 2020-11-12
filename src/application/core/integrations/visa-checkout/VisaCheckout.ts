@@ -19,6 +19,7 @@ import { Payment } from '../../shared/payment/Payment';
 import { StJwt } from '../../shared/stjwt/StJwt';
 import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
 import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
+import { IMerchantData } from '../../models/IMerchantData';
 
 declare const V: any;
 
@@ -104,7 +105,8 @@ export class VisaCheckout {
       walletsource: 'VISACHECKOUT',
       wallettoken: JSON.stringify(payment)
     };
-    const merchantData: {} = DomMethods.parseForm(this._formId);
+
+    const merchantData: IMerchantData = DomMethods.parseForm(this._formId) ? DomMethods.parseForm(this._formId) : {};
 
     paymentInstance
       .processPayment(requesttypedescriptions, walletdata, merchantData)
