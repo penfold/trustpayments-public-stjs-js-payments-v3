@@ -291,6 +291,7 @@ SamsungGalaxyS8-7.0-smoke-tests:
     OS_VERSION: '7.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
+    BROWSER: Chrome
     BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_review_1
