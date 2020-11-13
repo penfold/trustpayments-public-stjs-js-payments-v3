@@ -13,9 +13,9 @@ export class VisaCheckoutButtonService {
   customize(settings: IVisaButtonSettings, src: string): IVisaButtonProps {
     const url = new URL(src);
     const props: IVisaButtonProps = VisaButtonProps;
-    Object.keys(settings).forEach((item: string) => {
+    Object.keys(settings).forEach((item: keyof IVisaButtonSettings) => {
       if (settings[item]) {
-        url.searchParams.append(`${item}`, String(settings[item]));
+        url.searchParams.append(item, String(settings[item]));
       }
     });
     props.src = url.href;
