@@ -53,4 +53,4 @@ Feature: Callback functionality
     @browser_info_not_supported
     Examples:
       | is_browser_supported | is_os_supported |
-      | False                | True            |
+      | False                | False           |
