@@ -35,7 +35,6 @@ export class StTransport {
   private _throttlingRequests = new Map<string, Promise<object>>();
   private _config: IConfig;
   private _codec: StCodec;
-  public _threeDQueryResult: any;
 
   constructor(private configProvider: ConfigProvider) {}
 
@@ -46,7 +45,6 @@ export class StTransport {
    */
   public async sendRequest(requestObject: IStRequest): Promise<object> {
     const requestBody = this.getCodec().encode(requestObject);
-
     if (!this._throttlingRequests.has(requestBody)) {
       this._throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody));
       setTimeout(() => this._throttlingRequests.delete(requestBody), StTransport.THROTTLE_TIME);

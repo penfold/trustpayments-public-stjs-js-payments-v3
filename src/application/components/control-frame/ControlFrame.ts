@@ -27,7 +27,6 @@ import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/Card
 import { ICardinalCommerceTokens } from '../../core/integrations/cardinal-commerce/ICardinalCommerceTokens';
 import { defer, EMPTY, from, iif, Observable, of } from 'rxjs';
 import { catchError, filter, map, mapTo, switchMap, tap } from 'rxjs/operators';
-import { IAuthorizePaymentResponse } from '../../core/models/IAuthorizePaymentResponse';
 import { StJwt } from '../../core/shared/stjwt/StJwt';
 import { Translator } from '../../core/shared/translator/Translator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
@@ -41,12 +40,15 @@ import { ConfigService } from '../../../shared/services/config-service/ConfigSer
 import { Frame } from '../../core/shared/frame/Frame';
 import { Styler } from '../../core/shared/styler/Styler';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { RequestType } from '../../../shared/types/RequestType';
+import { IThreeDQueryResponse } from '../../core/models/IThreeDQueryResponse';
+import { IAuthorizePaymentResponse } from '../../core/models/IAuthorizePaymentResponse';
 
 @Service()
 export class ControlFrame {
   private static ALLOWED_PARAMS: string[] = ['jwt', 'gatewayUrl'];
   private static NON_CVV_CARDS: string[] = ['PIBA'];
-  private static THREEDQUERY_EVENT: string = 'THREEDQUERY';
 
   private static _setFormFieldValidity(field: IFormFieldState, data: IFormFieldState): void {
     field.validity = data.validity;
@@ -75,8 +77,7 @@ export class ControlFrame {
   private _formFieldsValidity: IFormFieldsValidity = FormFieldsValidity;
   private _merchantFormData: IMerchantData;
   private _payment: Payment;
-  private _postThreeDRequestTypes: string[];
-  private _preThreeDRequestTypes: string[];
+  private _remainingRequestTypes: RequestType[];
   private _validation: Validation;
   private _slicedPan: string;
 
@@ -90,7 +91,8 @@ export class ControlFrame {
     private _store: Store,
     private _configService: ConfigService,
     private _messageBus: MessageBus,
-    private _frame: Frame
+    private _frame: Frame,
+    private _jwtDecoder: JwtDecoder
   ) {
     this._communicator
       .whenReceive(MessageBus.EVENTS_PUBLIC.INIT_CONTROL_FRAME)
@@ -143,6 +145,7 @@ export class ControlFrame {
     this._resetJwtEvent();
     this._updateJwtEvent();
     this._initCybertonica(config);
+    this._setRequestTypes(config.jwt);
 
     if (!config.deferInit) {
       this._initCardinalCommerce(config);
@@ -151,7 +154,7 @@ export class ControlFrame {
         type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
         data: {
           dataInJwt: true,
-          requestTypes: this._getRequestTypesFromJwt()
+          requestTypes: this._remainingRequestTypes
         }
       });
     }
@@ -178,21 +181,9 @@ export class ControlFrame {
     });
   }
 
-  private _setRequestTypes(config: IConfig): void {
-    const skipThreeDQuery = this._isCardBypassed(this._getPan());
-    const filterThreeDQuery = (requestType: string) =>
-      !skipThreeDQuery || requestType !== ControlFrame.THREEDQUERY_EVENT;
-    const requestTypes = [...this._getRequestTypesFromJwt()].filter(filterThreeDQuery);
-    const threeDIndex = requestTypes.indexOf(ControlFrame.THREEDQUERY_EVENT);
-
-    if (threeDIndex === -1) {
-      this._preThreeDRequestTypes = [];
-      this._postThreeDRequestTypes = requestTypes;
-      return;
-    }
-
-    this._preThreeDRequestTypes = requestTypes.slice(0, threeDIndex + 1);
-    this._postThreeDRequestTypes = requestTypes.slice(threeDIndex + 1, requestTypes.length);
+  private _setRequestTypes(jwt: string): void {
+    const { payload } = this._jwtDecoder.decode(jwt);
+    this._remainingRequestTypes = payload.requesttypedescriptions;
   }
 
   private _updateJwtEvent(): void {
@@ -222,6 +213,7 @@ export class ControlFrame {
           }
 
           return this._configProvider.getConfig$().pipe(
+            tap(config => this._setRequestTypes(config.jwt)),
             switchMap(config =>
               iif(
                 () => config.deferInit,
@@ -229,20 +221,13 @@ export class ControlFrame {
                 of(data)
               ).pipe(mapTo(config))
             ),
-            tap(config => this._setRequestTypes(config)),
             switchMap(() =>
-              iif(
-                () => Boolean(this._preThreeDRequestTypes.length),
-                defer(() => this._callThreeDQueryRequest()).pipe(
-                  catchError(errorData => this._onPaymentFailure(errorData))
-                ),
-                of(data)
-              )
+              this._callThreeDQueryRequest().pipe(catchError(errorData => this._onPaymentFailure(errorData)))
             )
           );
         })
       )
-      .subscribe(authorizationData => this._processPayment(authorizationData as any));
+      .subscribe(threeDQueryResponse => this._processPayment(threeDQueryResponse));
   }
 
   private _isDataValid(data: ISubmitData): boolean {
@@ -283,13 +268,16 @@ export class ControlFrame {
     return EMPTY;
   }
 
-  private _isCardBypassed(pan: string): boolean {
-    return this._getBypassCardsFromJwt().includes(iinLookup.lookup(pan).type);
-  }
-
   private _processPayment(data: IResponseData): void {
+    this._setRequestTypes(StCodec.jwt);
+
+    const additionalData: IAuthorizePaymentResponse = {
+      cachetoken: data.cachetoken,
+      threedresponse: data.threedresponse
+    };
+
     this._payment
-      .processPayment(this._postThreeDRequestTypes, this._card, this._merchantFormData, data)
+      .processPayment(this._remainingRequestTypes, this._card, this._merchantFormData, additionalData, data)
       .then(() => {
         this._messageBus.publish(
           {
@@ -321,7 +309,7 @@ export class ControlFrame {
     return ControlFrame.NON_CVV_CARDS.includes(cardType);
   }
 
-  private _callThreeDQueryRequest(): Observable<IAuthorizePaymentResponse> {
+  private _callThreeDQueryRequest(): Observable<IThreeDQueryResponse> {
     const applyCybertonicaTid = (merchantFormData: IMerchantData) =>
       from(this._cybertonica.getTransactionId()).pipe(
         map(cybertonicaTid => {
@@ -339,7 +327,7 @@ export class ControlFrame {
     return of({ ...this._merchantFormData }).pipe(
       switchMap(applyCybertonicaTid),
       switchMap(merchantFormData =>
-        this._cardinalCommerce.performThreeDQuery(this._preThreeDRequestTypes, this._card, merchantFormData)
+        this._cardinalCommerce.performThreeDQuery(this._remainingRequestTypes, this._card, merchantFormData)
       )
     );
   }
@@ -382,18 +370,6 @@ export class ControlFrame {
   private _getPanFromJwt(): string {
     const jwt: string = this._getJwt();
     return JwtDecode<IDecodedJwt>(jwt).payload.pan ? JwtDecode<IDecodedJwt>(jwt).payload.pan : '';
-  }
-
-  private _getBypassCardsFromJwt(): string[] {
-    return JwtDecode<IDecodedJwt>(this._getJwt()).payload.threedbypasscards;
-  }
-
-  private _getRequestTypesFromJwt(): string[] {
-    return JwtDecode<IDecodedJwt>(this._getJwt()).payload.requesttypedescriptions;
-  }
-
-  private _getPan(): string {
-    return this._card.pan || this._getPanFromJwt() || this._slicedPan;
   }
 
   private _setCardExpiryDate(value: string): void {
@@ -450,7 +426,7 @@ export class ControlFrame {
             type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
             data: {
               dataInJwt: true,
-              requestTypes: this._getRequestTypesFromJwt()
+              requestTypes: this._remainingRequestTypes
             }
           },
           true

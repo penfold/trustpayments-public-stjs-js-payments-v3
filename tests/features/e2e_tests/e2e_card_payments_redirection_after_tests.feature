@@ -171,7 +171,9 @@ Feature: E2E Card Payments - redirection
 
 #  @e2e_config_submit_on_cancel_callback
 #  Scenario: Unsuccessful payment with submitOnCancel enabled and cancel callback set
-#    Given JS library is configured with SUBMIT_ON_CANCEL_CONFIG_CANCEL_CALLBACK and BASE_JWT
+#  Given JS library configured by inline params SUBMIT_ON_CANCEL_CONFIG_CANCEL_CALLBACK and jwt BASE_JWT with additional attributes
+#      | key                     | value                    |
+#      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
 #    When User opens example page CANCEL_CALLBACK
 #    And User clicks on Visa Checkout button
 #    And User closes the visa checkout popup

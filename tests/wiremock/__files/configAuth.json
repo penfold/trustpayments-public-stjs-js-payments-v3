@@ -7,7 +7,7 @@
     "expirydate",
     "securitycode"
   ],
-  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJSSVNLREVDIiwiQUNDT1VOVENIRUNLIiwiVEhSRUVEUVVFUlkiLCJBVVRIIl19fQ.31fzYDrmbKVTnskxbXR9QJ8lC_8YMEZXdUonR4mJdQs",
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwNTAzOTMwNy43ODQxNjI4LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsInJlcXVlc3R0eXBlZGVzY3JpcHRpb25zIjpbIkFVVEgiXX19.0QDVF8AmooT4FfIzxTyCtTLYU-JXAE_3VnmtQaWLiOs",
   "panIcon": true,
   "styles": {
     "defaultStyles": {
@@ -34,9 +34,6 @@
         "supportsDebit"
       ],
       "supportedNetworks": [],
-      "requestTypes": [
-        "AUTH"
-      ],
       "total": {
         "label": "Secure Trading Merchant",
         "amount": "10.00"

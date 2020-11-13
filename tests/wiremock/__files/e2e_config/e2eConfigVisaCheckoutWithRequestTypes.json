@@ -14,10 +14,6 @@
     "placement": "st-visa-checkout",
     "settings": {
       "displayName": "My Test Site"
-    },
-    "requestTypes": [
-      "ACCOUNTCHECK",
-      "AUTH"
-    ]
+    }
   }
 }

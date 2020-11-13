@@ -20,17 +20,6 @@ export class StCodec {
   public static CONTENT_TYPE = 'application/json';
   public static VERSION = '1.00';
   public static VERSION_INFO = `STJS::N/A::${version}::N/A`;
-  public static SUPPORTED_REQUEST_TYPES = [
-    'WALLETVERIFY',
-    'JSINIT',
-    'THREEDQUERY',
-    'CACHETOKENISE',
-    'AUTH',
-    'ERROR',
-    'RISKDEC',
-    'SUBSCRIPTION',
-    'ACCOUNTCHECK'
-  ];
   public static MINIMUM_REQUEST_FIELDS = 1;
   public static jwt: string;
   public static originalJwt: string;
@@ -238,10 +227,7 @@ export class StCodec {
   }
 
   public encode(requestObject: IStRequest) {
-    if (
-      Object.keys(requestObject).length < StCodec.MINIMUM_REQUEST_FIELDS ||
-      !requestObject.requesttypedescriptions.every(val => StCodec.SUPPORTED_REQUEST_TYPES.includes(val))
-    ) {
+    if (!Object.keys(requestObject).length) {
       StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
       StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_REQUEST);
       throw new Error(COMMUNICATION_ERROR_INVALID_REQUEST);
