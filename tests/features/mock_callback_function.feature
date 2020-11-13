@@ -44,13 +44,13 @@ Feature: Callback functionality
   @base_config @ignore_on_headless
   Scenario Outline: Checking callback function about browser data
     When User opens prepared payment form page WITH_BROWSER_INFO
-    Then User will see that browser is marked as supported: "<is_supported>"
-    And User will see that operating system is marked as supported: "<is_supported>"
+    Then User will see that browser is marked as supported: "<is_browser_supported>"
+    And User will see that operating system is marked as supported: "<is_os_supported>"
     @smoke_test @extended_tests_part_3
     Examples:
-      | is_supported |
-      | True         |
+      | is_browser_supported | is_os_supported |
+      | True                 | True            |
     @browser_info_not_supported
     Examples:
-      | is_supported |
-      | False        |
+      | is_browser_supported | is_os_supported |
+      | False                | False           |
