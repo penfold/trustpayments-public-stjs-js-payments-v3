@@ -146,7 +146,6 @@ SamsungGalaxyS10Plus-9.0-visual-tests-styling:
     OS_VERSION: '9.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
-    BROWSER_VERSION: 'latest'
     POETRY_TAGS: visual_regression_styling
   resource_group: extended_tests_release_1
 
