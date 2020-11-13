@@ -111,8 +111,7 @@ export class ST {
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
     private _browserDetector: BrowserDetector,
-    private _visaCheckoutButtonService: VisaCheckoutButtonService,
-    private _visaCheckoutUpdateService: VisaCheckoutUpdateService
+    private _visaCheckoutFactory: VisaCheckoutFactory
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -188,15 +187,8 @@ export class ST {
     if (config) {
       this._config = this._configService.updateFragment('visaCheckout', config);
     }
-    // tslint:disable-next-line:no-unused-expression
-    new visa(
-      this._configProvider,
-      this._communicator,
-      this._messageBus,
-      this._notificationService,
-      this._visaCheckoutButtonService,
-      this._visaCheckoutUpdateService
-    );
+
+    this._visaCheckoutFactory.create(visa);
   }
 
   public Cybertonica(): Promise<string> {

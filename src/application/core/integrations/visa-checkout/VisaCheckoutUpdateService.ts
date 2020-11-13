@@ -3,11 +3,11 @@ import { environment } from '../../../../environments/environment';
 import { VisaButtonProps } from './VisaButtonProps';
 import { IVisaCheckoutConfig } from './IVisaCheckoutConfig';
 import { IVisaInitConfig } from './IVisaInitConfig';
-import { StJwt } from '../../shared/stjwt/StJwt';
+import { IStJwtPayload } from '../../models/IStJwtPayload';
 
 @Service()
 export class VisaCheckoutUpdateService {
-  updateVisaInit(stJwt: StJwt, config: IVisaInitConfig): IVisaInitConfig {
+  updateVisaInit(stJwt: IStJwtPayload, config: IVisaInitConfig): IVisaInitConfig {
     const modifiedConfig: IVisaInitConfig = { ...config };
     modifiedConfig.paymentRequest.currencyCode = stJwt.currencyiso3a;
     modifiedConfig.paymentRequest.subtotal = stJwt.mainamount;
@@ -18,7 +18,7 @@ export class VisaCheckoutUpdateService {
 
   updateConfigObject(
     visaCheckout: IVisaCheckoutConfig,
-    stJwt: StJwt,
+    stJwt: IStJwtPayload,
     livestatus: 0 | 1
   ): { buttonUrl: string; sdkUrl: string; visaInit: IVisaInitConfig } {
     return {

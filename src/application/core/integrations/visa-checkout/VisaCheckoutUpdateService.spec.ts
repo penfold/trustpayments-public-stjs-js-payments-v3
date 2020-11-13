@@ -1,9 +1,10 @@
 import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
 import { IVisaInitConfig } from './IVisaInitConfig';
+import { IStJwtPayload } from '../../models/IStJwtPayload';
 
 describe('VisaCheckoutUpdateService', () => {
   let instance: VisaCheckoutUpdateService = new VisaCheckoutUpdateService();
-  const stJwt = {
+  const stJwt: IStJwtPayload = {
     currencyiso3a: 'PLN',
     locale: 'pl_PL',
     mainamount: '100'
