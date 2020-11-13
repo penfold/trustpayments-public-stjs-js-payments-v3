@@ -10,6 +10,7 @@ import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
 import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
+import { IResponseData } from '../../models/IResponseData';
 
 export class Payment {
   private _cardinalCommerceCacheToken: string;
@@ -38,34 +39,38 @@ export class Payment {
     payment: ICard | IWallet,
     merchantData: IMerchantData,
     additionalData?: any,
-    responseJwt?: string
+    lastResponseData?: IResponseData
   ): Promise<object> {
-    if (requestTypes.length === 0) {
+    // there are still request types to process
+    if (requestTypes.length > 0) {
+      const processPaymentRequestBody = {
+        ...additionalData,
+        ...merchantData,
+        ...payment
+      };
+      const cybertonicaTid = await this._cybertonica.getTransactionId();
+
+      if (cybertonicaTid) {
+        (processPaymentRequestBody as any).fraudcontroltransactionid = cybertonicaTid;
+      }
+
+      return this._stTransport.sendRequest(processPaymentRequestBody);
+    }
+
+    if (lastResponseData && lastResponseData.requesttypedescription === 'THREEDQUERY') {
       // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
       const responseData = {
         ...additionalData,
         validated: true
       };
 
-      StCodec.publishResponse(responseData, responseJwt, additionalData.threedresponse);
+      StCodec.publishResponse(responseData, lastResponseData.jwt, additionalData.threedresponse);
       this._notification.success(PAYMENT_SUCCESS);
-      return Promise.resolve({
-        response: {}
-      });
     }
 
-    const processPaymentRequestBody = {
-      ...additionalData,
-      ...merchantData,
-      ...payment
-    };
-    const cybertonicaTid = await this._cybertonica.getTransactionId();
-
-    if (cybertonicaTid) {
-      (processPaymentRequestBody as any).fraudcontroltransactionid = cybertonicaTid;
-    }
-
-    return this._stTransport.sendRequest(processPaymentRequestBody);
+    return Promise.resolve({
+      response: {}
+    });
   }
 
   public walletVerify(walletVerify: IWalletVerify) {

@@ -283,7 +283,7 @@ export class ControlFrame {
     };
 
     this._payment
-      .processPayment(this._remainingRequestTypes, this._card, this._merchantFormData, additionalData, data.jwt)
+      .processPayment(this._remainingRequestTypes, this._card, this._merchantFormData, additionalData, data)
       .then(() => {
         this._messageBus.publish(
           {
@@ -295,7 +295,6 @@ export class ControlFrame {
         this._validation.blockForm(FormState.COMPLETE);
       })
       .catch((error: any) => {
-        console.error(error);
         this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this._notification.error(PAYMENT_ERROR);
         this._validation.blockForm(FormState.AVAILABLE);
