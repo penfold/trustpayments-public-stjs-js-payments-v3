@@ -531,15 +531,14 @@ SamsungGalaxyS20-10.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_1
 
-win10-chrome-81.0-browser-not-supported:
+SamsungGalaxyS6-5.0-browser-not-supported:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
   variables:
-    OS: Windows
-    OS_VERSION: '10'
-    BROWSER: Chrome
-    BROWSER_VERSION: '81.0'
+    DEVICE: Samsung Galaxy S6
+    OS_VERSION: '5.0'
+    REAL_MOBILE: 'true'
     POETRY_TAGS: browser_info_not_supported
   resource_group: extended_tests_release_2
 
@@ -594,4 +593,4 @@ win10-IE-11.0-visual-tests-styling:
     BROWSER_VERSION: '11.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: visual_regression_styling
-  resource_group: extended_tests_rlease_4
+  resource_group: extended_tests_release_4
