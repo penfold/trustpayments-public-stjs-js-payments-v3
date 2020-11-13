@@ -534,7 +534,7 @@ SamsungGalaxyS20-10.0-smoke-tests:
 SamsungGalaxyS6-5.0-browser-not-supported:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-always
+    - .rules-extended-tests-release
   variables:
     DEVICE: Samsung Galaxy S6
     OS_VERSION: '5.0'
