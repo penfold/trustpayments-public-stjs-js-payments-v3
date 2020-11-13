@@ -1,10 +1,6 @@
 {
   "analytics": true,
   "animatedCard": false,
-  "bypassCards": [
-    "PIBA",
-    "JCB"
-  ],
   "deferInit": false,
   "fieldsToSubmit": [
     "pan",
@@ -12,7 +8,7 @@
     "securitycode"
   ],
   "buttonId": "merchant-submit-button",
-  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IifX0._VTiUjM-op-4KUoVGtqA92HwgwTNi_XckqP8pdcyKFc",
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwNTAxNjgwNS43NjA5NjQ2LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsInJlcXVlc3R0eXBlZGVzY3JpcHRpb25zIjpbIlRIUkVFRFFVRVJZIiwiQVVUSCJdLCJ0aHJlZWRieXBhc3NjYXJkcyI6WyJQSUJBIiwiSkNCIl19fQ.fVLZ0RqwlWnF4KqozMBpj21UyJsvcZgjQvRagiVJs48",
   "panIcon": true,
   "styles": {
     "defaultStyles": {

@@ -11,7 +11,7 @@ import { ApplePayMock } from '../../application/core/integrations/apple-pay/Appl
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
 import { VisaCheckoutMock } from '../../application/core/integrations/visa-checkout/VisaCheckoutMock';
-import { IApplePay } from '../../application/core/models/IApplePay';
+import { IApplePayConfig } from '../../application/core/models/IApplePayConfig';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
@@ -42,6 +42,7 @@ import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Se
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
+import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 
 @Service()
 export class ST {
@@ -144,7 +145,7 @@ export class ST {
 
     this.blockSubmitButton();
     // @ts-ignore
-    this._commonFrames._requestTypes = this._config.components.requestTypes;
+    this._commonFrames._requestTypes = JwtDecode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
     this._framesHub
       .waitForFrame(CONTROL_FRAME_IFRAME)
       .pipe(
@@ -164,7 +165,7 @@ export class ST {
       });
   }
 
-  public ApplePay(config: IApplePay | undefined): ApplePay {
+  public ApplePay(config: IApplePayConfig | undefined): ApplePay {
     const { applepay } = this.Environment();
 
     if (config) {
@@ -264,6 +265,7 @@ export class ST {
   }
 
   private CommonFrames(): void {
+    const requestTypes: string[] = JwtDecode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
     this._commonFrames = new CommonFrames(
       this._config.jwt,
       this._config.origin,
@@ -275,7 +277,7 @@ export class ST {
       this._config.submitFields,
       this._config.datacenterurl,
       this._config.animatedCard,
-      this._config.components.requestTypes,
+      requestTypes,
       this._config.formId,
       this._iframeFactory,
       this._frameService

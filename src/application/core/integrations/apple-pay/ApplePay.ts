@@ -12,7 +12,7 @@ import { ConfigProvider } from '../../../../shared/services/config-provider/Conf
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { Observable } from 'rxjs';
 import { IConfig } from '../../../../shared/model/config/IConfig';
-import { IApplePay } from '../../models/IApplePay';
+import { IApplePayConfig } from '../../models/IApplePayConfig';
 import {
   APPLE_PAY_AMOUNT_AND_CURRENCY,
   APPLE_PAY_NOT_LOGGED,
@@ -21,6 +21,8 @@ import {
   PAYMENT_ERROR,
   PAYMENT_SUCCESS
 } from '../../models/constants/Translations';
+import JwtDecode from 'jwt-decode';
+import { IDecodedJwt } from '../../models/IDecodedJwt';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -133,7 +135,7 @@ export class ApplePay {
   private _completion: { errors: []; status: string };
   private _localStorage: BrowserLocalStorage;
   private readonly _config$: Observable<IConfig>;
-  private _applePayConfig: IApplePay;
+  private _applePayConfig: IApplePayConfig;
   private _datacenterurl: string;
   private _formId: string;
   private _paymentCancelled: boolean = false;
@@ -215,7 +217,7 @@ export class ApplePay {
     this._placement = placement;
     this.payment = new Payment();
     this._paymentRequest = paymentRequest;
-    this._requestTypes = paymentRequest.requestTypes;
+    this._requestTypes = JwtDecode<IDecodedJwt>(jwt).payload.requesttypedescriptions;
     this._validateMerchantRequestData.walletmerchantid = merchantId;
     this._stJwtInstance = new StJwt(jwt);
     this._stTransportInstance = Container.get(StTransport);

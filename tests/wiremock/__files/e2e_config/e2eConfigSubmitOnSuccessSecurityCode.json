@@ -1,11 +1,6 @@
 {
-  "bypassCards": [
-    "MASTERCARD"
-  ],
   "components": {
-    "defaultPaymentType": "",
-    "requestTypes": [
-    ]
+    "defaultPaymentType": ""
   },
   "panIcon": true,
   "submitOnSuccess": true,

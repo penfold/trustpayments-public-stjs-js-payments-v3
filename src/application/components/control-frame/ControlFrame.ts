@@ -268,12 +268,6 @@ export class ControlFrame {
     return EMPTY;
   }
 
-  private _isCardBypassed(pan: string): boolean {
-    const bypassCards = this._configProvider.getConfig().bypassCards as string[];
-
-    return bypassCards.includes(iinLookup.lookup(pan).type);
-  }
-
   private _processPayment(data: IResponseData): void {
     this._setRequestTypes(StCodec.jwt);
 
@@ -369,13 +363,13 @@ export class ControlFrame {
     }
   }
 
-  private _getPanFromJwt(): string {
-    const { jwt } = this._frame.parseUrl(ControlFrame.ALLOWED_PARAMS);
-    return JwtDecode<IDecodedJwt>(jwt).payload.pan ? JwtDecode<IDecodedJwt>(jwt).payload.pan : '';
+  private _getJwt(): string {
+    return this._frame.parseUrl(ControlFrame.ALLOWED_PARAMS).jwt;
   }
 
-  private _getPan(): string {
-    return this._card.pan || this._getPanFromJwt() || this._slicedPan;
+  private _getPanFromJwt(): string {
+    const jwt: string = this._getJwt();
+    return JwtDecode<IDecodedJwt>(jwt).payload.pan ? JwtDecode<IDecodedJwt>(jwt).payload.pan : '';
   }
 
   private _setCardExpiryDate(value: string): void {

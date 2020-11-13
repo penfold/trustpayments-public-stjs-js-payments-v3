@@ -193,11 +193,7 @@ export class CommonFrames {
 
     const lastRequestType = [...this.requestTypes].pop();
 
-    if (data.requesttypedescription === lastRequestType && lastRequestType !== 'THREEDQUERY') {
-      return true;
-    }
-
-    return false;
+    return data.requesttypedescription === lastRequestType && lastRequestType !== 'THREEDQUERY';
   }
 
   private _onInput(event: Event) {

@@ -1,11 +1,4 @@
 {
   "submitOnSuccess": false,
-  "cybertonicaApiKey": "stfs",
-  "bypassCards": [
-    "VISA",
-    "AMEX",
-    "DISCOVER",
-    "JCB",
-    "DINERS"
-  ]
+  "cybertonicaApiKey": "stfs"
 }

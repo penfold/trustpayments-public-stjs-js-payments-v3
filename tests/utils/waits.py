@@ -10,12 +10,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class Waits:
 
-    def __init__(self, driver, configuration):
-        self._driver_browser = driver
-        self._browser = driver.get_browser()
+    def __init__(self, driver_factory, configuration):
+        self._driver_factory = driver_factory
+        self._driver = driver_factory.get_driver()
         self._timeout = int(configuration.TIMEOUT)
         self._device_type = configuration.REMOTE_DEVICE
-        self._wait = WebDriverWait(self._browser, self._timeout)
+        self._wait = WebDriverWait(self._driver, self._timeout)
 
     def wait_for_element(self, locator):
         return self._wait.until(ec.presence_of_element_located(locator))
@@ -24,7 +24,7 @@ class Waits:
         # pylint: disable=bare-except
         try:
             self.wait_for_element_to_be_displayed(locator)
-            return self._browser.find_element(*locator).is_displayed()
+            return True
         except:
             return False
 
@@ -33,7 +33,7 @@ class Waits:
 
         while max_try:
             try:
-                is_element_displayed = self._browser.find_element(*locator).is_displayed()
+                is_element_displayed = self._driver.find_element(*locator).is_displayed()
                 if is_element_displayed:
                     max_try = 0
                     return
@@ -50,7 +50,7 @@ class Waits:
 
         while max_try:
             try:
-                is_element_displayed = self._browser.find_element(By.ID, locator).is_displayed()
+                is_element_displayed = self._driver.find_element(By.ID, locator).is_displayed()
                 if is_element_displayed:
                     max_try = 0
                     return
@@ -66,7 +66,7 @@ class Waits:
 
         while max_try:
             try:
-                if not self._browser.find_elements(*locator):
+                if not self._driver.find_elements(*locator):
                     break
             except:
                 pass
@@ -105,20 +105,20 @@ class Waits:
         raise Exception('Iframe was unavailable within timeout')
 
     def switch_to_default_content(self):
-        self._browser.switch_to.default_content()
+        self._driver.switch_to.default_content()
 
     def switch_to_parent_frame(self):
-        self._browser.switch_to.parent_frame()
+        self._driver.switch_to.parent_frame()
 
     def wait_for_javascript(self):
         time.sleep(1)
-        self._wait.until(lambda driver: self._browser.execute_script('return document.readyState') == 'complete')
+        self._wait.until(lambda driver: self._driver.execute_script('return document.readyState') == 'complete')
 
     def wait_until_url_contains(self, page_url, max_try: int = 200):
         # pylint: disable=bare-except
         while max_try:
             try:
-                if page_url in self._browser.current_url:
+                if page_url in self._driver.current_url:
                     return
             except:
                 pass
@@ -132,7 +132,7 @@ class Waits:
             page_url = f'https://{page_url}'
         while max_try:
             try:
-                if self._browser.current_url.startswith(page_url):
+                if self._driver.current_url.startswith(page_url):
                     return
             except:
                 pass
