@@ -69,4 +69,5 @@ class PaymentMethodsLocators:
     cardinal_v1_authentication_submit_btn: By = (By.NAME, 'UsernamePasswordEntry')
 
     not_private_connection_text: By = (By.XPATH, '//*[contains(text(),\'This Connection Is Not Private\')]')
+    safari_cannot_open_page_text: By = (By.XPATH, '//*[contains(text(),\'Safari cannot open the page\')]')
     animated_card: By = (By.ID, 'st-animated-card')
