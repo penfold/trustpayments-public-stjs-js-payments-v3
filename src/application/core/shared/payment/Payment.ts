@@ -38,15 +38,15 @@ export class Payment {
     requestTypes: string[],
     payment: ICard | IWallet,
     merchantData: IMerchantData,
-    additionalData?: any,
-    lastResponseData?: IResponseData
+    responseData?: any
   ): Promise<object> {
     // there are still request types to process
     if (requestTypes.length > 0) {
       const processPaymentRequestBody = {
-        ...additionalData,
         ...merchantData,
-        ...payment
+        ...payment,
+        cachetoken: responseData.cachetoken,
+        threedresponse: responseData.threedresponse
       };
       const cybertonicaTid = await this._cybertonica.getTransactionId();
 
@@ -57,14 +57,9 @@ export class Payment {
       return this._stTransport.sendRequest(processPaymentRequestBody);
     }
 
-    if (lastResponseData && lastResponseData.requesttypedescription === 'THREEDQUERY') {
+    if (responseData && responseData.requesttypedescription === 'THREEDQUERY' && responseData.threedresponse) {
       // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
-      const responseData = {
-        ...additionalData,
-        validated: true
-      };
-
-      StCodec.publishResponse(responseData, lastResponseData.jwt, additionalData.threedresponse);
+      StCodec.publishResponse(responseData, responseData.jwt, responseData.threedresponse);
       this._notification.success(PAYMENT_SUCCESS);
     }
 

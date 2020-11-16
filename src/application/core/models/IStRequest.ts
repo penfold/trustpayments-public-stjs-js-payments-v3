@@ -1,4 +1,5 @@
 export interface IStRequest {
+  [key: string]: any;
   requesttypedescription?: string;
   requesttypedescriptions?: string[];
   expirydate?: string;
