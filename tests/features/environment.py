@@ -115,7 +115,7 @@ def validate_if_proper_browser_is_set_for_test(context, scenario):
         # ToDo Temporarily disabled parent-iframe test. Problem with cress-origin restriction on ios
     if 'parent_iframe' in scenario.tags and ('iP' in CONFIGURATION.REMOTE_DEVICE):
         scenario.skip('Temporarily disabled test ')
-    if not context.configuration.REMOTE and 'browser_info_not_supported' in scenario.tags:
+    if 'ignore_on_headless' in scenario.tags and not context.configuration.REMOTE:
         scenario.skip('Scenario skipped for headless chrome')
     else:
         context.is_field_in_iframe = True

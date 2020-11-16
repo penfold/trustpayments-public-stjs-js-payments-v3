@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.36
+.cicd-os-ref: &cicd-os-ref 0.0.38
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
@@ -39,6 +39,8 @@ variables:
   # DISABLE_JOB_ts_static_analysis: 'true'
   # DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
   # DISABLE_JOB_vuln_check: 'true'
+  # Extended Tests
+  # DISABLE_JOB_extended_tests: 'true'
   # Validate merge request description
   # DISABLE_JOB_validate_merge_request_description: 'true'
   # Release
