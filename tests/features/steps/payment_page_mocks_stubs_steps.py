@@ -46,7 +46,6 @@ def step_impl(context, request_type):
         stub_st_request_type_acheck_tdq(request_type_response[request_type], request_type)
     else:
         stub_st_request_type(request_type_response[request_type], request_type)
-    stub_st_request_type(request_type_response[request_type], request_type)
 
 
 @step('(?P<request_type>.+) ApplePay mock response is set to SUCCESS')

@@ -10,7 +10,11 @@ request_type_response = {
     'AUTH, SUBSCRIPTION': 'ccAuthSub.json',
     'RISKDEC, ACCOUNTCHECK, AUTH': 'ccRiskdecAccountcheckAuth.json',
     'ACCOUNTCHECK, RISKDEC, AUTH': 'ccAccountcheckRiskdecAuth.json',
-    'THREEDQUERY': 'ccTdq.json'
+    'THREEDQUERY': 'ccTdq.json',
+    'ACCOUNTCHECK, THREEDQUERY, AUTH': 'ccAcheckTdqAuth.json',
+    'THREEDQUERY, AUTH, RISKDEC': 'ccTdqAuthRiskdec.json',
+    'RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH': 'ccRiskdecAcheckTdqAuth.json',
+    'THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH': 'ccTdqAcheckRiskdecAuth.json',
 }
 
 request_type_tokenisation_response = {

@@ -8,7 +8,7 @@ Feature: Successfull payments with various request types configurations
     Given JavaScript configuration is set for scenario based on scenario's @config tag
 
   @config_requestTypes_tdq
-  Scenario: Successful payment with request types: THREEDQUERY
+  Scenario: Successful frictionless payment with request types: THREEDQUERY
     Given User opens page with payment form
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
@@ -19,7 +19,7 @@ Feature: Successfull payments with various request types configurations
     And "success" callback is called only once
 
   @config_requestTypes_tdq_auth
-  Scenario: Successful payment with request types: THREEDQUERY, AUTH
+  Scenario: Successful step-up payment with request types: THREEDQUERY, AUTH
     Given User opens page with payment form
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
@@ -35,11 +35,10 @@ Feature: Successfull payments with various request types configurations
   Scenario: Successful payment with additional request types: ACCOUNTCHECK, THREEDQUERY, AUTH
     Given User opens page with payment form
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
-    And ACCOUNTCHECK, THREEDQUERY mock response is set to OK
-    And User clicks Pay button - AUTH response is set to "OK"
+    And ACCOUNTCHECK, THREEDQUERY, AUTH mock response is set to OK
+    And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
-    And AUTH request was sent only once with correct data
+    And ACCOUNTCHECK, THREEDQUERY, AUTH ware sent only once in one request
     And "submit" callback is called only once
     And "success" callback is called only once
 
@@ -47,11 +46,10 @@ Feature: Successfull payments with various request types configurations
   Scenario: Successful payment with additional request types: THREEDQUERY, AUTH, RISKDEC
     Given User opens page with payment form
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-    And User clicks Pay button - AUTH, RISKDEC response is set to "OK"
+    And THREEDQUERY, AUTH, RISKDEC mock response is set to OK
+    And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And THREEDQUERY request was sent only once with correct data
-    And AUTH, RISKDEC ware sent only once in one request
+    And THREEDQUERY, AUTH, RISKDEC ware sent only once in one request
     And "submit" callback is called only once
     And "success" callback is called only once
 
@@ -59,34 +57,42 @@ Feature: Successfull payments with various request types configurations
   Scenario: Successful payment with additional request types: RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH
     Given User opens page with payment form
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
-    And RISKDEC, ACCOUNTCHECK, THREEDQUERY mock response is set to OK
-    And User clicks Pay button - AUTH response is set to "OK"
+    And RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH mock response is set to OK
+    And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And RISKDEC, ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
-    And AUTH request was sent only once with correct data
+    And RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH ware sent only once in one request
     And "submit" callback is called only once
     And "success" callback is called only once
 
-  @config_requestTypes_acheck_tdq_auth_riskdec
-  Scenario: Successful payment with additional request types: ACCOUNTCHECK, THREEDQUERY, AUTH, RISKDEC
-    Given User opens page with payment form
-    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
-    And ACCOUNTCHECK, THREEDQUERY mock response is set to OK
-    And User clicks Pay button - AUTH, RISKDEC response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
-    And ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
-    And AUTH, RISKDEC ware sent only once in one request
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    #Todo - Currently this combination is not supported by gateway
+#  @config_requestTypes_acheck_tdq_auth_riskdec
+#  Scenario: Successful payment with additional request types: ACCOUNTCHECK, THREEDQUERY, AUTH, RISKDEC
+#    Given User opens page with payment form
+#    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+#    And ACCOUNTCHECK, THREEDQUERY mock response is set to OK
+#    And User clicks Pay button - AUTH, RISKDEC response is set to "OK"
+#    Then User will see payment status information: "Payment has been successfully processed"
+#    And ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
+#    And AUTH, RISKDEC ware sent only once in one request
+#    And "submit" callback is called only once
+#    And "success" callback is called only once
 
   @config_requestTypes_tdq_submit_on_success
   Scenario: Successful payment with request types: THREEDQUERY and submitOnSuccess
     Given User opens page with payment form
     And User fills merchant data with name "John Test", email "test@example", phone "44422224444"
-    When User fills payment form with defined card VISA_CARD
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User clicks Pay button
-    Then User is redirected to action page
+    Then User will be sent to page with url "www.example.com" having params
+      | key           | value                                   |
+      | errormessage  | Payment has been successfully processed |
+      | baseamount    | 1000                                    |
+      | currencyiso3a | GBP                                     |
+      | errorcode     | 0                                       |
+      | name          | John test                               |
+      | email         | test@example                            |
+      | phone         | 44422224444                             |
     And THREEDQUERY request was sent only once with correct data
 
   @config_requestTypes_acheck_tdq_auth_subscription
@@ -103,11 +109,9 @@ Feature: Successfull payments with various request types configurations
   @config_requestTypes_tdq_acheck_riskdec_auth
   Scenario: Invalid payment with additional request types: THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH
     Given User opens page with payment form
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
-    And User clicks Pay button - ACCOUNTCHECK, RISKDEC, AUTH response is set to "OK"
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+    And User clicks Pay button - THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH response is set to "Invalid"
     Then User will see payment status information: "Invalid field"
-    And THREEDQUERY ware sent only once in one request
-    And ACCOUNTCHECK, RISKDEC, AUTH ware sent only once in one request
+    And THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH ware sent only once in one request
     And "submit" callback is called only once
     And "error" callback is called only once
