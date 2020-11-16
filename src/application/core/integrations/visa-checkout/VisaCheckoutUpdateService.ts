@@ -4,15 +4,25 @@ import { VisaButtonProps } from './VisaButtonProps';
 import { IVisaCheckoutConfig } from './IVisaCheckoutConfig';
 import { IVisaInitConfig } from './IVisaInitConfig';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
+import { IVisaSettings } from './IVisaSettings';
+import { IVisaPaymentRequest } from './IVisaPaymentRequest';
 
 @Service()
 export class VisaCheckoutUpdateService {
   updateVisaInit(stJwt: IStJwtPayload, config: IVisaInitConfig): IVisaInitConfig {
-    const modifiedConfig: IVisaInitConfig = { ...config };
-    modifiedConfig.paymentRequest.currencyCode = stJwt.currencyiso3a;
-    modifiedConfig.paymentRequest.subtotal = stJwt.mainamount;
-    modifiedConfig.paymentRequest.total = stJwt.mainamount;
-    modifiedConfig.settings.locale = stJwt.locale;
+    const modifiedConfig: IVisaInitConfig = {
+      ...config,
+      paymentRequest: {
+        ...config.paymentRequest,
+        currencyCode: stJwt.currencyiso3a,
+        subtotal: stJwt.mainamount,
+        total: stJwt.mainamount
+      },
+      settings: {
+        ...config.settings,
+        locale: stJwt.locale
+      }
+    };
     return modifiedConfig;
   }
 

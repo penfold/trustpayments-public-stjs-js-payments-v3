@@ -1,5 +1,4 @@
 import { RequestType } from '../../../shared/types/RequestType';
-import { BypassCards } from './constants/BypassCards';
 
 export interface IStJwtPayload {
   requesttypedescriptions?: RequestType[];
@@ -8,7 +7,7 @@ export interface IStJwtPayload {
   accounttypedescription?: string;
   currencyiso3a?: string;
   sitereference?: string;
-  threedbypasscards?: BypassCards[];
+  threedbypasscards?: string[];
   parenttransactionreference?: string;
   locale?: string;
   pan?: string;
