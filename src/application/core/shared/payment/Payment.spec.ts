@@ -64,7 +64,6 @@ describe('Payment', () => {
       // @ts-ignore
       expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
         ...card,
-        requesttypedescriptions: ['AUTH'],
         merchant: 'data',
         fraudcontroltransactionid: cybertonicaTid
       });
@@ -76,7 +75,6 @@ describe('Payment', () => {
       // @ts-ignore
       expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
         ...card,
-        requesttypedescriptions: ['CACHETOKENISE'],
         fraudcontroltransactionid: cybertonicaTid
       });
     });
@@ -95,7 +93,6 @@ describe('Payment', () => {
       // @ts-ignore
       expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
         ...card,
-        requesttypedescriptions: ['AUTH'],
         merchant: 'data',
         additional: 'some data',
         fraudcontroltransactionid: cybertonicaTid
@@ -111,7 +108,6 @@ describe('Payment', () => {
       expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
         walletsource: 'APPLEPAY',
         wallettoken: 'encryptedpaymentdata',
-        requesttypedescriptions: ['AUTH'],
         merchant: 'data',
         fraudcontroltransactionid: cybertonicaTid
       });
@@ -135,7 +131,6 @@ describe('Payment', () => {
       expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
         walletsource: 'APPLEPAY',
         wallettoken: 'encryptedpaymentdata',
-        requesttypedescriptions: ['AUTH'],
         merchant: 'data',
         extra: 'some value',
         fraudcontroltransactionid: cybertonicaTid
@@ -160,7 +155,6 @@ describe('Payment', () => {
       expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
         walletsource: 'APPLEPAY',
         wallettoken: 'encryptedpaymentdata',
-        requesttypedescriptions: ['CACHETOKENISE'],
         merchant: 'data',
         extra: 'some value',
         fraudcontroltransactionid: cybertonicaTid

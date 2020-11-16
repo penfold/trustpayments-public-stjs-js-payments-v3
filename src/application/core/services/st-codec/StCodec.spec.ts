@@ -391,26 +391,6 @@ describe('StCodec class', () => {
       expect(str.encode(request)).toEqual(expected);
       expect(str.buildRequestObject).toHaveBeenCalledWith(request);
     });
-
-    //then
-    it('should refuse to build a request with an invalid rtd', () => {
-      expect(() =>
-        str.encode({
-          pan: '4111111111111111',
-          requesttypedescriptions: ['LARGEHADRONCOLLIDER']
-        })
-      ).toThrow(Error(COMMUNICATION_ERROR_INVALID_REQUEST));
-    });
-
-    // then
-    it('should refuse to build a request with if any of the rtd are invalid', () => {
-      expect(() =>
-        str.encode({
-          pan: '4111111111111111',
-          requesttypedescriptions: ['AUTH', 'LARGEHADRONCOLLIDER']
-        })
-      ).toThrow(Error(COMMUNICATION_ERROR_INVALID_REQUEST));
-    });
   });
 
   // given

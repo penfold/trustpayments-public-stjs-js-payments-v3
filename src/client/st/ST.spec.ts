@@ -44,46 +44,12 @@ describe('ST', () => {
     // then
     it('should return ApplePayMock object when environment.testEnvironment equals true', () => {
       environment.testEnvironment = true;
-      expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePayMock);
+      expect(instance.ApplePay(applePayConfig)).toBeInstanceOf(ApplePayMock);
     });
     // then
     it('should return ApplePay object when environment.testEnvironment equals false', () => {
       environment.testEnvironment = false;
-      expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePay);
-    });
-  });
-
-  // given
-  describe('ST.VisaCheckout()', () => {
-    const { visaCheckoutConfig } = stFixture();
-    // then
-    it('should return VisaCheckoutMock object when environment.testEnvironment equals true', () => {
-      environment.testEnvironment = true;
-      expect(instance.VisaCheckout(visaCheckoutConfig, config.jwt)).toBeInstanceOf(VisaCheckoutMock);
-    });
-    // then
-    it('should return VisaCheckout object when environment.testEnvironment equals false', () => {
-      environment.testEnvironment = false;
-      expect(instance.VisaCheckout(visaCheckoutConfig, config.jwt)).toBeInstanceOf(VisaCheckout);
-    });
-  });
-
-  // given
-  describe('ST.CardinalCommerce()', () => {
-    // when
-    const {
-      config: { jwt }
-    } = stFixture();
-    // then
-    it('should return CardinalCommerceMock when environment.testEnvironment equals true', () => {
-      environment.testEnvironment = true;
-      // expect(instance.CardinalCommerce(false, jwt, ['AUTH', 'JSINIT'])).toBeInstanceOf(CardinalCommerceMock);
-    });
-
-    // then
-    it('should return CardinalCommerce when environment.testEnvironment equals false', () => {
-      environment.testEnvironment = false;
-      // expect(instance.CardinalCommerce(false, jwt, ['AUTH', 'JSINIT'])).toBeInstanceOf(CardinalCommerce);
+      expect(instance.ApplePay(applePayConfig)).toBeInstanceOf(ApplePay);
     });
   });
 
