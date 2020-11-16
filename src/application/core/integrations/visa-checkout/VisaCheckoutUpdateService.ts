@@ -10,7 +10,7 @@ import { IVisaPaymentRequest } from './IVisaPaymentRequest';
 @Service()
 export class VisaCheckoutUpdateService {
   updateVisaInit(stJwt: IStJwtPayload, config: IVisaInitConfig): IVisaInitConfig {
-    const modifiedConfig: IVisaInitConfig = {
+    return {
       ...config,
       paymentRequest: {
         ...config.paymentRequest,
@@ -23,7 +23,6 @@ export class VisaCheckoutUpdateService {
         locale: stJwt.locale
       }
     };
-    return modifiedConfig;
   }
 
   updateConfigObject(
