@@ -10,7 +10,7 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 
 module.exports = {
   mode: 'development',
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   entry: {
     example: ['./pages/index/index.ts'],
     receipt: ['./pages/receipt/receipt.ts'],
