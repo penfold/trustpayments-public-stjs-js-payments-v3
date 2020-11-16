@@ -8,6 +8,7 @@ import { NotificationService } from '../../../../client/notification/Notificatio
 import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
 import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
 import { environment } from '../../../../environments/environment';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 
 describe('Visa Checkout', () => {
   const jwt = '';
@@ -19,6 +20,7 @@ describe('Visa Checkout', () => {
   let notificationService: NotificationService;
   let visaCheckoutButtonService: VisaCheckoutButtonService;
   let visaCheckoutUpdateService: VisaCheckoutUpdateService;
+  let jwtDecodeMock: JwtDecoder;
 
   beforeEach(() => {
     configProvider = mock<ConfigProvider>();
@@ -27,6 +29,7 @@ describe('Visa Checkout', () => {
     notificationService = mock(NotificationService);
     visaCheckoutButtonService = mock(VisaCheckoutButtonService);
     visaCheckoutUpdateService = mock(VisaCheckoutUpdateService);
+    jwtDecodeMock = mock(JwtDecoder);
 
     when(communicator.whenReceive(anyString())).thenReturn({
       thenRespond: () => EMPTY
@@ -46,7 +49,7 @@ describe('Visa Checkout', () => {
           livestatus: 0,
           merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
           paymentRequest: {
-            subtotal: '20.00'
+            subtotal: 20.0
           },
           placement: 'st-visa-checkout',
           settings: {
@@ -61,7 +64,8 @@ describe('Visa Checkout', () => {
       mockInstance(messageBus),
       mockInstance(notificationService),
       mockInstance(visaCheckoutButtonService),
-      mockInstance(visaCheckoutUpdateService)
+      mockInstance(visaCheckoutUpdateService),
+      mockInstance(jwtDecodeMock)
     );
     body = document.body;
     VisaCheckoutFixture();

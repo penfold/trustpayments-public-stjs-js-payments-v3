@@ -5,7 +5,7 @@ import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { mock, instance as mockInstance, when, anyString, anything } from 'ts-mockito';
+import { mock, instance as mockInstance, when, anyString, anything, instance } from 'ts-mockito';
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
@@ -17,6 +17,7 @@ import { Frame } from '../../core/shared/frame/Frame';
 import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
 import { IStyles } from '../../../shared/model/config/IStyles';
 import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -242,6 +243,7 @@ function controlFrameFixture() {
   const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
   const frame: Frame = mock(Frame);
   const storeMock: Store = mock(Store);
+  const jwtDecodeMock: JwtDecoder = mock(JwtDecoder);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -275,7 +277,8 @@ function controlFrameFixture() {
     mockInstance(storeMock),
     mockInstance(configService),
     messageBus,
-    mockInstance(frame)
+    mockInstance(frame),
+    mockInstance(jwtDecodeMock)
   );
   const messageBusEvent = {
     type: ''
