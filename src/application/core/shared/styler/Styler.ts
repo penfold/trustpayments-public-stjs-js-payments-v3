@@ -41,7 +41,7 @@ export class Styler {
     DomMethods.insertStyle(this._getStyleString(styles));
   }
 
-  public hasSpecificStyle(selectedStyle: string, styles: IStyle): boolean {
+  public hasSpecificStyle(selectedStyle: string, styles: IStyle = {}): boolean {
     return Boolean(
       Object.entries(styles).find(([key, value]) => {
         return key === selectedStyle && value !== 'false';
