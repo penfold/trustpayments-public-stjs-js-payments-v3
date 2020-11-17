@@ -11,7 +11,7 @@ Feature: Successfull payments with various request types configurations
   Scenario: Successful frictionless payment with request types: THREEDQUERY
     Given User opens page with payment form
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
+    And THREEDQUERY mock response is set to "ENROLLED_Y_WITHOUT_ACS_URL"
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And THREEDQUERY request was sent only once with correct data
@@ -90,9 +90,9 @@ Feature: Successfull payments with various request types configurations
       | baseamount    | 1000                                    |
       | currencyiso3a | GBP                                     |
       | errorcode     | 0                                       |
-      | name          | John test                               |
-      | email         | test@example                            |
-      | phone         | 44422224444                             |
+      | myBillName    | John test                               |
+      | myBillEmail   | test@example                            |
+      | myBillTel     | 44422224444                             |
     And THREEDQUERY request was sent only once with correct data
 
   @config_requestTypes_acheck_tdq_auth_subscription

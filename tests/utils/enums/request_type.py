@@ -15,6 +15,7 @@ request_type_response = {
     'THREEDQUERY, AUTH, RISKDEC': 'ccTdqAuthRiskdec.json',
     'RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH': 'ccRiskdecAcheckTdqAuth.json',
     'THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH': 'ccTdqAcheckRiskdecAuth.json',
+    'THREEDQUERY, AUTH': 'ccTdqAuth.json',
 }
 
 request_type_tokenisation_response = {
