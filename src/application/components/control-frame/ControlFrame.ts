@@ -227,7 +227,11 @@ export class ControlFrame {
           );
         })
       )
-      .subscribe(threeDQueryResponse => this._processPayment(threeDQueryResponse));
+      .subscribe(threeDQueryResponse => {
+        if (Number(threeDQueryResponse.errorcode) === 0) {
+          this._processPayment(threeDQueryResponse);
+        }
+      });
   }
 
   private _isDataValid(data: ISubmitData): boolean {
@@ -268,16 +272,11 @@ export class ControlFrame {
     return EMPTY;
   }
 
-  private _processPayment(data: IResponseData): void {
+  private _processPayment(responseData: IResponseData): void {
     this._setRequestTypes(StCodec.jwt);
 
-    const additionalData: IAuthorizePaymentResponse = {
-      cachetoken: data.cachetoken,
-      threedresponse: data.threedresponse
-    };
-
     this._payment
-      .processPayment(this._remainingRequestTypes, this._card, this._merchantFormData, additionalData, data)
+      .processPayment(this._remainingRequestTypes, this._card, this._merchantFormData, responseData)
       .then(() => {
         this._messageBus.publish(
           {
