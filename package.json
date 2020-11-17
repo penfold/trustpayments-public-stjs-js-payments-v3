@@ -142,7 +142,7 @@
     "@sheerun/mutationobserver-shim": "0.3.3",
     "@trustpayments/jwt-generator": "0.1.11",
     "@trustpayments/ts-iin-lookup": "0.1.10",
-    "@trustpayments/ts-luhn-check": "0.1.9",
+    "@trustpayments/ts-luhn-check": "0.1.16",
     "@types/browserslist": "4.8.0",
     "@types/jwt-decode": "2.2.1",
     "@types/lodash": "4.14.161",
