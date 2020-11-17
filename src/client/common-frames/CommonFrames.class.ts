@@ -215,8 +215,6 @@ export class CommonFrames {
         break;
     }
 
-    console.log('XXX', data, result);
-
     this.addSubmitData(data);
 
     if (

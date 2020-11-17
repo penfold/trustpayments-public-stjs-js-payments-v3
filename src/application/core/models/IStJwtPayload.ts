@@ -7,7 +7,7 @@ export interface IStJwtPayload {
   accounttypedescription?: string;
   currencyiso3a?: string;
   sitereference?: string;
-  threedbypasscards?: string[];
+  threedbypasspaymenttypes?: string[];
   parenttransactionreference?: string;
   locale?: string;
   pan?: string;

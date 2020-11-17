@@ -1,5 +1,4 @@
 export interface IStRequest {
-  [key: string]: any;
   requesttypedescription?: string;
   requesttypedescriptions?: string[];
   expirydate?: string;
@@ -7,4 +6,6 @@ export interface IStRequest {
   securitycode?: string;
   termurl?: string;
   fraudcontroltransactionid?: string;
+  cachetoken?: string;
+  threedresponse?: string;
 }
