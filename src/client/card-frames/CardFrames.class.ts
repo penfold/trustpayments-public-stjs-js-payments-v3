@@ -29,6 +29,7 @@ import { Frame } from '../../application/core/shared/frame/Frame';
 import { StJwt } from '../../application/core/shared/stjwt/StJwt';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
 import { PAY, PROCESSING } from '../../application/core/models/constants/Translations';
+import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 
 export class CardFrames {
   private static CARD_NUMBER_FIELD_NAME: string = 'pan';
@@ -337,7 +338,7 @@ export class CardFrames {
     formId: string
   ): void {
     this._validation = new Validation();
-    const locale: string = this._frame.parseUrl().locale || JwtDecode<IStJwtObj>(jwt).payload.locale;
+    const locale: string = this._frame.parseUrl().locale || JwtDecode<IStJwtObj<IStJwtPayload>>(jwt).payload.locale;
     this._translator = new Translator(locale);
     this._buttonId = buttonId;
     this.formId = formId;
