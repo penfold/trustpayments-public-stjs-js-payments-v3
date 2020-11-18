@@ -7,6 +7,7 @@ import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
 import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 
 jest.mock('./../../shared/notification/Notification');
 
@@ -19,6 +20,7 @@ describe('Visa Checkout Mock class', () => {
   const notification: NotificationService = mock(NotificationService);
   const buttonService: VisaCheckoutButtonService = mock(VisaCheckoutButtonService);
   const updateService: VisaCheckoutUpdateService = mock(VisaCheckoutUpdateService);
+  const jwtDecoder: JwtDecoder = mock(JwtDecoder);
   const jwt = 'some test jwt';
 
   beforeEach(() => {
@@ -32,7 +34,8 @@ describe('Visa Checkout Mock class', () => {
       mockInstance(messageBus),
       mockInstance(notification),
       mockInstance(buttonService),
-      mockInstance(updateService)
+      mockInstance(updateService),
+      mockInstance(jwtDecoder)
     );
     body = document.body;
   });

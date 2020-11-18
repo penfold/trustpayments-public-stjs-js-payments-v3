@@ -20,6 +20,7 @@ import { Payment } from '../../shared/payment/Payment';
 import { StJwt } from '../../shared/stjwt/StJwt';
 import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
 import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
+import { IStJwtObj } from '../../models/IStJwtObj';
 
 declare const V: any;
 
@@ -50,7 +51,7 @@ export class VisaCheckout {
     this._config$.subscribe(({ jwt, formId, livestatus, visaCheckout }: IConfig) => {
       this._jwt = jwt;
       this._formId = formId;
-      const { payload }: IStJwtPayload = new StJwt(jwt);
+      const { payload }: IStJwtObj = new StJwt(jwt);
       const updatedConfig = this._visaCheckoutUpdateService.updateConfigObject(visaCheckout, payload, livestatus);
       this._buttonSettings = visaCheckout.buttonSettings;
       this._buttonUrl = updatedConfig.buttonUrl;
@@ -63,7 +64,7 @@ export class VisaCheckout {
   private _updateJwtListener(): void {
     this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, ({ newJwt }: IUpdateJwt) => {
       this._jwt = newJwt ? newJwt : this._jwt;
-      const { payload }: IStJwtPayload = new StJwt(this._jwt);
+      const { payload }: IStJwtObj = new StJwt(this._jwt);
       this._visaInitConfig = this._visaCheckoutUpdateService.updateVisaInit(payload, this._visaInitConfig);
       this._visaCheckoutButtonService.customize(this._buttonSettings, this._buttonUrl);
     });
