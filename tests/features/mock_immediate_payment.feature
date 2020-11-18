@@ -28,7 +28,8 @@ Feature: Immediate payment
 
   @config_immediate_payment_tdq_auth
   Scenario: Immediate payment - Successful payment with request types: THREEDQUERY, AUTH
-    When ACS mock response is set to "OK"
+    When THREEDQUERY mock response is set to "ENROLLED_Y"
+    And ACS mock response is set to "OK"
     And AUTH response is set to "OK"
     And User opens payment page
     Then User will see payment status information: "Payment has been successfully processed"

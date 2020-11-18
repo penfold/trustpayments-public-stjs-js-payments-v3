@@ -10,7 +10,6 @@ Feature: Successfull payments with start on load configuration
   @config_start_on_load_requestTypes_tdq
   Scenario: Successful payment with startOnLoad and request types THREEDQUERY
     When THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-    And AUTH response is set to "OK"
     And User opens prepared payment form page WITHOUT_SUBMIT_BUTTON
     Then User will see payment status information: "Payment has been successfully processed"
     And THREEDQUERY ware sent only once in one request

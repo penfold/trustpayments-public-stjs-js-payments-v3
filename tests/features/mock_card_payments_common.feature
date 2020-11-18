@@ -51,7 +51,7 @@ Feature: Card Payments
     And JSINIT request was sent only 1
     And JSINIT requests contains updated jwt
 
-  @base_config
+  @config_bypass_cards
   Scenario: Security code re-enabled if server error on PIBA
     Given User opens page with payment form
     When User fills payment form with credit card number "3089500000000000021", expiration date "12/23"
