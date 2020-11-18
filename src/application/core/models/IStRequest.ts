@@ -8,4 +8,6 @@ export interface IStRequest {
   fraudcontroltransactionid?: string;
   cachetoken?: string;
   threedresponse?: string;
+  walletsource?: string;
+  wallettoken?: string;
 }

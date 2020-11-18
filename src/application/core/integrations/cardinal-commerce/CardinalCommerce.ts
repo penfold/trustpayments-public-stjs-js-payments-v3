@@ -89,7 +89,7 @@ export class CardinalCommerce {
     return this.cardinal$.pipe(
       switchMap(cardinal => {
         if (requestTypes.includes('THREEDQUERY')) {
-          this.startTransaction(cardinal, this.cardinalTokens.jwt);
+          return this.startTransaction(cardinal, this.cardinalTokens.jwt);
         }
 
         return of(null);
