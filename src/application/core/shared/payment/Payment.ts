@@ -10,6 +10,7 @@ import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
 import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
+import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { IResponseData } from '../../models/IResponseData';
 
 export class Payment {
@@ -38,20 +39,24 @@ export class Payment {
     requestTypes: string[],
     payment: ICard | IWallet,
     merchantData: IMerchantData,
-    responseData?: any
+    responseData?: IResponseData
   ): Promise<object> {
     // there are still request types to process
     if (requestTypes.length > 0) {
-      const processPaymentRequestBody = {
+      const processPaymentRequestBody: IStRequest = {
         ...merchantData,
-        ...payment,
-        cachetoken: responseData.cachetoken,
-        threedresponse: responseData.threedresponse
+        ...payment
       };
+
+      if (responseData) {
+        processPaymentRequestBody.cachetoken = responseData.cachetoken;
+        processPaymentRequestBody.threedresponse = responseData.threedresponse;
+      }
+
       const cybertonicaTid = await this._cybertonica.getTransactionId();
 
       if (cybertonicaTid) {
-        (processPaymentRequestBody as any).fraudcontroltransactionid = cybertonicaTid;
+        processPaymentRequestBody.fraudcontroltransactionid = cybertonicaTid;
       }
 
       return this._stTransport.sendRequest(processPaymentRequestBody);
@@ -64,7 +69,7 @@ export class Payment {
     }
 
     return Promise.resolve({
-      response: {}
+      response: responseData || {}
     });
   }
 

@@ -30,8 +30,8 @@ class JwtPayloadBuilder:
         self._jwt_payload.requesttypedescriptions = list(val.split(' '))
         return self
 
-    def with_threedbypasscards(self, val):
-        self._jwt_payload.threedbypasscards = list(val.split(' '))
+    def with_threedbypasspaymenttypes(self, val):
+        self._jwt_payload.threedbypasspaymenttypes = list(val.split(' '))
         return self
 
     def build(self):
@@ -53,8 +53,8 @@ class JwtPayloadBuilder:
                 self.with_locale(value)
             elif key == 'requesttypedescriptions':
                 self.with_requesttypedescriptions(value)
-            elif key == 'threedbypasscards':
-                self.with_threedbypasscards(value)
+            elif key == 'threedbypasspaymenttypes':
+                self.with_threedbypasspaymenttypes(value)
             else:
                 raise Exception(f'Property {key} not exists in object JwtPayload {JwtPayload().__dict__}')
         return self
