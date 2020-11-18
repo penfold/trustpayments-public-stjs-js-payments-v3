@@ -47,6 +47,7 @@ import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-ch
 import { VisaCheckoutButtonService } from '../../application/core/integrations/visa-checkout/VisaCheckoutButtonService';
 import { VisaCheckoutUpdateService } from '../../application/core/integrations/visa-checkout/VisaCheckoutUpdateService';
 import { VisaCheckoutFactory } from '../../application/core/integrations/visa-checkout/VisaCheckoutFactory';
+import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 
 @Service()
 export class ST {
@@ -299,7 +300,7 @@ export class ST {
 
   private Storage(): void {
     this._storage.setItem(ST.MERCHANT_TRANSLATIONS_STORAGE, JSON.stringify(this._config.translations));
-    this._storage.setItem(ST.LOCALE_STORAGE, JwtDecode<IStJwtObj>(this._config.jwt).payload.locale);
+    this._storage.setItem(ST.LOCALE_STORAGE, JwtDecode<IStJwtObj<IStJwtPayload>>(this._config.jwt).payload.locale);
   }
 
   private displayLiveStatus(liveStatus: boolean): void {

@@ -165,7 +165,11 @@ export class CommonFrames {
 
     const lastRequestType = this._requestTypes[this._requestTypes.length - 1];
 
-    if (lastRequestType !== 'THREEDQUERY' && data.requesttypedescription === lastRequestType) {
+    if (data.requesttypedescription !== lastRequestType) {
+      return false;
+    }
+
+    if (data.requesttypedescription !== 'THREEDQUERY') {
       return true;
     }
 
@@ -177,11 +181,11 @@ export class CommonFrames {
       return true;
     }
 
-    if (data.acsurl === undefined) {
+    if (data.enrolled !== 'Y') {
       return true;
     }
 
-    return data.enrolled !== 'Y';
+    return data.acsurl === undefined;
   }
 
   private _onInput(event: Event) {

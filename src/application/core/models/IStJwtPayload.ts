@@ -2,8 +2,8 @@ import { RequestType } from '../../../shared/types/RequestType';
 
 export interface IStJwtPayload {
   requesttypedescriptions?: RequestType[];
-  baseamount?: number;
-  mainamount?: number;
+  baseamount?: string;
+  mainamount?: string;
   accounttypedescription?: string;
   currencyiso3a?: string;
   sitereference?: string;

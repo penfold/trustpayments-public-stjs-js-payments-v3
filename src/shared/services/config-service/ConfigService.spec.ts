@@ -44,7 +44,11 @@ describe('ConfigService', () => {
     when(resolverMock.resolve(config)).thenReturn(fullConfig);
     when(validatorMock.validate(config)).thenReturn(null);
     when(jwtDecoderMock.decode<IStJwtObj>(JWT)).thenReturn({ payload: {} });
-    when(jwtDecoderMock.decode<IStJwtObj>(JWT_WITH_CONFIG)).thenReturn({ payload: { config: configFromJwt } });
+    when(jwtDecoderMock.decode<IStJwtObj>(JWT_WITH_CONFIG)).thenReturn({
+      payload: {
+        config: configFromJwt
+      }
+    } as IStJwtObj);
   });
 
   describe('setup', () => {
@@ -57,13 +61,7 @@ describe('ConfigService', () => {
       verify(resolverMock.resolve(config)).once();
     });
 
-    it('resolves the config passed in the jwt payload', () => {
-      configService.setup({ jwt: JWT_WITH_CONFIG });
-
-      verify(resolverMock.resolve(deepEqual(configFromJwt))).once();
-    });
-
-    fit('keeps the jwt and callbacks from config object when using jwt config', () => {
+    it('keeps the jwt and callbacks from config object when using jwt config', () => {
       const submitCallback = () => {};
       const errorCallback = () => {};
 

@@ -5,7 +5,7 @@ import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { mock, instance as mockInstance, when, anyString, anything, instance } from 'ts-mockito';
+import { mock, instance as mockInstance, when, anyString, anything } from 'ts-mockito';
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
@@ -233,6 +233,8 @@ describe('ControlFrame', () => {
 });
 
 function controlFrameFixture() {
+  const JWT =
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw';
   const localStorage: BrowserLocalStorage = mock(BrowserLocalStorage);
   const communicator: InterFrameCommunicator = mock(InterFrameCommunicator);
   const configProvider: ConfigProvider = mock<ConfigProvider>();
@@ -243,7 +245,7 @@ function controlFrameFixture() {
   const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
   const frame: Frame = mock(Frame);
   const storeMock: Store = mock(Store);
-  const jwtDecodeMock: JwtDecoder = mock(JwtDecoder);
+  const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -255,17 +257,26 @@ function controlFrameFixture() {
   when(communicator.whenReceive(anyString())).thenReturn({
     thenRespond: () => undefined
   });
-  when(configProvider.getConfig$()).thenReturn(of({} as IConfig));
+  when(configProvider.getConfig$()).thenReturn(of({ jwt: JWT } as IConfig));
   when(cardinalCommerce.init(anything())).thenReturn(EMPTY);
   when(frame.parseUrl()).thenReturn({
     locale: 'en_GB',
-    jwt:
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw',
-
+    jwt: JWT,
     styles: controlFrame
   });
   when(frame.getAllowedParams()).thenReturn(['locale', 'origin', 'styles']);
   when(frame.getAllowedStyles()).thenReturn(frameAllowedStyles);
+  when(jwtDecoderMock.decode(JWT)).thenReturn({
+    payload: {
+      baseamount: '1000',
+      accounttypedescription: 'ECOM',
+      currencyiso3a: 'GBP',
+      sitereference: 'test_james38641',
+      locale: 'en_GB',
+      pan: '3089500000000000021',
+      expirydate: '01/22'
+    }
+  });
 
   const instance = new ControlFrame(
     mockInstance(localStorage),
@@ -278,7 +289,7 @@ function controlFrameFixture() {
     mockInstance(configService),
     messageBus,
     mockInstance(frame),
-    mockInstance(jwtDecodeMock)
+    mockInstance(jwtDecoderMock)
   );
   const messageBusEvent = {
     type: ''
@@ -288,8 +299,10 @@ function controlFrameFixture() {
     value: 'test value'
   };
 
+  StCodec.jwt = JWT;
+
   // @ts-ignore
-  instance.init({} as IConfig);
+  instance.init({ jwt: JWT } as IConfig);
 
   return { data, instance, messageBusEvent };
 }

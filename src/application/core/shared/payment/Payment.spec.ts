@@ -2,27 +2,44 @@ import { Payment } from './Payment';
 import { StTransport } from '../../services/st-transport/StTransport.class';
 import { Container } from 'typedi';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
-import { mock, instance as mockInstance, when } from 'ts-mockito';
+import { mock, instance as mockInstance, when, verify, spy } from 'ts-mockito';
 import { ICard } from '../../models/ICard';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
 import { StoreBasedStorage } from '../../../../shared/services/storage/StoreBasedStorage';
 import { SimpleStorage } from '../../../../shared/services/storage/SimpleStorage';
+import { IWallet } from '../../models/IWallet';
+import { IWalletVerify } from '../../models/IWalletVerify';
+import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
+import { StCodec } from '../../services/st-codec/StCodec.class';
+import { NotificationService } from '../../../../client/notification/NotificationService';
+import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 
 jest.mock('./../notification/Notification');
 
-const cybertonicaTid = 'b268ab7f-25d7-430a-9be2-82b0f00c4039';
-
 Container.set({ id: StoreBasedStorage, type: SimpleStorage });
 
-// given
 describe('Payment', () => {
-  let { card, wallet, walletverify, instance } = paymentFixture();
-  // given
+  let card: ICard;
+  let wallet: IWallet;
+  let walletVerify: IWalletVerify;
+  let notificationService: NotificationService;
+  let cybertonica: Cybertonica;
+  let instance: Payment;
+
+  beforeEach(() => {
+    const fixture = paymentFixture();
+    card = fixture.card;
+    wallet = fixture.wallet;
+    walletVerify = fixture.walletverify;
+    notificationService = fixture.notificationService;
+    cybertonica = fixture.cybertonicaMock;
+    instance = fixture.instance;
+  });
+
   describe('constructor()', () => {
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._stTransport.sendRequest = jest.fn();
@@ -36,19 +53,6 @@ describe('Payment', () => {
   });
 
   // given
-  describe('bypassInitRequest()', () => {
-    const { cachetoken } = paymentFixture();
-    // when
-    beforeEach(() => {
-      // @ts-ignore
-      instance._stTransport.sendRequest = jest.fn();
-    });
-    instance.setCardinalCommerceCacheToken(cachetoken);
-    // @ts-ignore
-    expect(instance._cardinalCommerceCacheToken).toEqual(cachetoken);
-  });
-
-  // given
   describe('processPayment()', () => {
     // when
     beforeEach(() => {
@@ -57,45 +61,47 @@ describe('Payment', () => {
     });
 
     // then
-    it('should send AUTH request with card', async () => {
+    it('should send remaining request types with card and merchant data', async () => {
       await instance.processPayment(['AUTH'], card, {
         merchant: 'data'
       });
       // @ts-ignore
       expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
         ...card,
+        merchant: 'data'
+      });
+    });
+
+    // then
+    it('should send remaining request types with cybertonica tid', async () => {
+      const cybertonicaTid = 'b268ab7f-25d7-430a-9be2-82b0f00c4039';
+
+      when(cybertonica.getTransactionId()).thenResolve(cybertonicaTid);
+
+      await instance.processPayment(['AUTH'], card, {
+        merchant: 'data'
+      });
+
+      // @ts-ignore
+      expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
+        ...card,
         merchant: 'data',
         fraudcontroltransactionid: cybertonicaTid
       });
     });
 
     // then
-    it('should send CACHETOKENISE request', async () => {
-      await instance.processPayment(['CACHETOKENISE'], card, {});
-      // @ts-ignore
-      expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
-        ...card,
-        fraudcontroltransactionid: cybertonicaTid
-      });
-    });
-
-    // then
-    it('should send AUTH request with card and additional data', async () => {
-      await instance.processPayment(
-        ['AUTH'],
-        card,
-        { pan: 'overridden', merchant: 'data' },
-        {
-          securitycode: 'overridden',
-          additional: 'some data'
-        }
-      );
+    it('should send remaining request types with 3D response', async () => {
+      await instance.processPayment(['AUTH', 'RISKDEC'], card, { pan: 'overridden', merchant: 'data' }, {
+        cachetoken: 'foobar',
+        threedresponse: 'xyzzzz'
+      } as IThreeDQueryResponse);
       // @ts-ignore
       expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
         ...card,
         merchant: 'data',
-        additional: 'some data',
-        fraudcontroltransactionid: cybertonicaTid
+        cachetoken: 'foobar',
+        threedresponse: 'xyzzzz'
       });
     });
 
@@ -108,75 +114,81 @@ describe('Payment', () => {
       expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
         walletsource: 'APPLEPAY',
         wallettoken: 'encryptedpaymentdata',
-        merchant: 'data',
-        fraudcontroltransactionid: cybertonicaTid
+        merchant: 'data'
       });
     });
 
-    // then
     it('should send AUTH request with wallet and additional data', async () => {
-      await instance.processPayment(
-        ['AUTH'],
-        wallet,
-        {
-          wallettoken: 'overridden',
-          merchant: 'data'
-        },
-        {
-          walletsource: 'OVERRIDDEN',
-          extra: 'some value'
-        }
-      );
+      await instance.processPayment(['AUTH'], wallet, {
+        wallettoken: 'overridden',
+        merchant: 'data'
+      });
       // @ts-ignore
       expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
         walletsource: 'APPLEPAY',
         wallettoken: 'encryptedpaymentdata',
-        merchant: 'data',
-        extra: 'some value',
-        fraudcontroltransactionid: cybertonicaTid
+        merchant: 'data'
       });
     });
 
-    // then
     it('should send CACHETOKENISE request with wallet and additional data', async () => {
-      await instance.processPayment(
-        ['CACHETOKENISE'],
-        wallet,
-        {
-          wallettoken: 'overridden',
-          merchant: 'data'
-        },
-        {
-          walletsource: 'OVERRIDDEN',
-          extra: 'some value'
-        }
-      );
+      await instance.processPayment(['CACHETOKENISE'], wallet, {
+        wallettoken: 'overridden',
+        merchant: 'data'
+      });
       // @ts-ignore
       expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
         walletsource: 'APPLEPAY',
         wallettoken: 'encryptedpaymentdata',
-        merchant: 'data',
-        extra: 'some value',
-        fraudcontroltransactionid: cybertonicaTid
+        merchant: 'data'
       });
     });
 
     // then
-    it('should return response', async () => {
-      // @ts-ignore
-      instance._stTransport._threeDQueryResult = { response: { errormessage: 'Ok' }, jwt: 'jwt' };
-      // @ts-ignore
-      instance._stTransport.sendRequest = jest.fn().mockReturnValueOnce(
-        Promise.resolve({
-          response: {}
-        })
-      );
-      // @ts-ignore;
-      await instance.processPayment([], {} as ICard, {}, {}).then(result => {
-        expect(result).toStrictEqual({
-          response: {}
-        });
-      });
+    it('should publish the response when TDQ is the last request type and there is threedresponse', async () => {
+      const response: IThreeDQueryResponse = ({
+        requesttypedescription: 'THREEDQUERY',
+        threedresponse: 'foobar',
+        jwt: 'jwt'
+      } as unknown) as IThreeDQueryResponse;
+
+      const stCodecSpy = spy(StCodec);
+
+      const result = await instance.processPayment([], {} as ICard, {}, response);
+
+      expect((result as any).response).toBe(response);
+      verify(stCodecSpy.publishResponse(response, 'jwt', 'foobar')).once();
+      verify(notificationService.success(PAYMENT_SUCCESS)).once();
+    });
+
+    it('should not publish response if last request type is not TDQ', async () => {
+      const response: IThreeDQueryResponse = ({
+        requesttypedescription: 'RISKDEC',
+        jwt: 'jwt'
+      } as unknown) as IThreeDQueryResponse;
+
+      const stCodecSpy = spy(StCodec);
+
+      const result = await instance.processPayment([], {} as ICard, {}, response);
+
+      expect((result as any).response).toBe(response);
+      verify(stCodecSpy.publishResponse(response, 'jwt', 'foobar')).never();
+      verify(notificationService.success(PAYMENT_SUCCESS)).never();
+    });
+
+    it('should not publish response if last request type is TDQ but there is no threedresponse', async () => {
+      const response: IThreeDQueryResponse = ({
+        requesttypedescription: 'THREEDQUERY',
+        jwt: 'jwt'
+      } as unknown) as IThreeDQueryResponse;
+
+      const stCodecSpy = spy(StCodec);
+
+      const result = await instance.processPayment([], {} as ICard, {}, response);
+
+      expect((result as any).response).toBe(response);
+      verify(stCodecSpy.publishResponse(response, 'jwt', 'foobar')).never();
+      verify(notificationService.success(PAYMENT_SUCCESS)).never();
     });
   });
 
@@ -184,7 +196,7 @@ describe('Payment', () => {
   describe('walletVerify()', () => {
     // then
     it('should send WALLETVERIFY request with walletverify', () => {
-      instance.walletVerify(walletverify);
+      instance.walletVerify(walletVerify);
       // @ts-ignore
       expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
         requesttypedescriptions: ['WALLETVERIFY'],
@@ -203,8 +215,10 @@ function paymentFixture() {
   let instance: Payment;
   const cachetoken = 'somecachetoken';
   const cybertonicaMock = mock(Cybertonica);
-  when(cybertonicaMock.getTransactionId()).thenResolve(cybertonicaTid);
+  const notificationService = mock(NotificationService);
+  when(cybertonicaMock.getTransactionId()).thenResolve(undefined);
   Container.set(Cybertonica, mockInstance(cybertonicaMock));
+  Container.set(NotificationService, mockInstance(notificationService));
   instance = new Payment();
   const card = {
     expirydate: '10/22',
@@ -221,5 +235,5 @@ function paymentFixture() {
     walletvalidationurl: 'https://example.com',
     walletrequestdomain: 'https://example2.com'
   };
-  return { card, wallet, walletverify, instance, jwt, cachetoken };
+  return { card, wallet, walletverify, instance, jwt, cachetoken, notificationService, cybertonicaMock };
 }

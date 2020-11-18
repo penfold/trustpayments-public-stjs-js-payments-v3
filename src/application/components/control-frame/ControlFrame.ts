@@ -1,10 +1,8 @@
-import JwtDecode from 'jwt-decode';
 import { StCodec } from '../../core/services/st-codec/StCodec.class';
 import { FormFieldsDetails } from '../../core/models/constants/FormFieldsDetails';
 import { FormFieldsValidity } from '../../core/models/constants/FormFieldsValidity';
 import { FormState } from '../../core/models/constants/FormState';
 import { ICard } from '../../core/models/ICard';
-import { IDecodedJwt } from '../../core/models/IDecodedJwt';
 import { IFormFieldsDetails } from '../../core/models/IFormFieldsDetails';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { IFormFieldsValidity } from '../../core/models/IFormFieldsValidity';
@@ -25,7 +23,7 @@ import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
 import { ICardinalCommerceTokens } from '../../core/integrations/cardinal-commerce/ICardinalCommerceTokens';
-import { defer, EMPTY, from, iif, Observable, of } from 'rxjs';
+import { defer, EMPTY, from, iif, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, map, mapTo, switchMap, tap } from 'rxjs/operators';
 import { StJwt } from '../../core/shared/stjwt/StJwt';
 import { Translator } from '../../core/shared/translator/Translator';
@@ -43,7 +41,6 @@ import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
 import { IThreeDQueryResponse } from '../../core/models/IThreeDQueryResponse';
-import { IAuthorizePaymentResponse } from '../../core/models/IAuthorizePaymentResponse';
 
 @Service()
 export class ControlFrame {
@@ -269,7 +266,7 @@ export class ControlFrame {
     this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM, data: FormState.AVAILABLE }, true);
     this._notification.error(translatedErrorMessage);
 
-    return EMPTY;
+    return throwError(errorData);
   }
 
   private _processPayment(responseData: IResponseData): void {
@@ -368,7 +365,9 @@ export class ControlFrame {
 
   private _getPanFromJwt(): string {
     const jwt: string = this._getJwt();
-    return JwtDecode<IDecodedJwt>(jwt).payload.pan ? JwtDecode<IDecodedJwt>(jwt).payload.pan : '';
+    const decoded = this._jwtDecoder.decode(jwt);
+
+    return decoded.payload.pan || '';
   }
 
   private _setCardExpiryDate(value: string): void {
