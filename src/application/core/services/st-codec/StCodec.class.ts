@@ -15,6 +15,7 @@ import { version } from '../../../../../package.json';
 import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { Frame } from '../../shared/frame/Frame';
+import { IStJwtObj } from '../../models/IStJwtObj';
 
 export class StCodec {
   public static CONTENT_TYPE = 'application/json';
@@ -236,12 +237,13 @@ export class StCodec {
   }
 
   public async decode(responseObject: Response | {}): Promise<object> {
-    let decoded: any;
-    const promise = await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       if ('json' in responseObject) {
         responseObject.json().then(responseData => {
-          decoded = StCodec._decodeResponseJwt(responseData.jwt, reject);
-          if (decoded && decoded.payload.response[0].errorcode === '0') {
+          const decoded: IStJwtObj = StCodec._decodeResponseJwt(responseData.jwt, reject);
+          const lastResponse = decoded && decoded.payload.response[decoded.payload.response.length - 1];
+
+          if (lastResponse.errorcode === '0') {
             StCodec.jwt = decoded.payload.jwt;
           } else {
             StCodec.jwt = StCodec.originalJwt;
@@ -256,7 +258,5 @@ export class StCodec {
         reject(StCodec._handleInvalidResponse());
       }
     });
-    // @ts-ignore
-    return promise;
   }
 }

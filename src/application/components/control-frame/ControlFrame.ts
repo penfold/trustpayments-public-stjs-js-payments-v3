@@ -23,7 +23,7 @@ import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
 import { ICardinalCommerceTokens } from '../../core/integrations/cardinal-commerce/ICardinalCommerceTokens';
-import { defer, EMPTY, from, iif, Observable, of } from 'rxjs';
+import { defer, EMPTY, from, iif, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, map, mapTo, switchMap, tap } from 'rxjs/operators';
 import { StJwt } from '../../core/shared/stjwt/StJwt';
 import { Translator } from '../../core/shared/translator/Translator';
@@ -266,7 +266,7 @@ export class ControlFrame {
     this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM, data: FormState.AVAILABLE }, true);
     this._notification.error(translatedErrorMessage);
 
-    return EMPTY;
+    return throwError(errorData);
   }
 
   private _processPayment(responseData: IResponseData): void {
