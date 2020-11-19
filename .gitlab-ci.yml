@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.39
+.cicd-os-ref: &cicd-os-ref INFRA-642-release_generate_version_fix
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
