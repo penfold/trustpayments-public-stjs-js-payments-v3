@@ -15,15 +15,16 @@ Feature: Immediate payment
     Then User will see payment status information: "Payment has been successfully processed"
     And THREEDQUERY request was sent only once with correct data
 
-  @config_immediate_payment_acheck_tdq_auth_riskdec
-  Scenario: Immediate payment - Successful payment with additional request types: ACCOUNTCHECK, THREEDQUERY, AUTH, RISKDEC
-    When ACCOUNTCHECK, THREEDQUERY mock response is set to OK
-    And ACS mock response is set to "OK"
-    And AUTH, RISKDEC mock response is set to OK
-    And User opens payment page
-    Then User will see payment status information: "Payment has been successfully processed"
-    And ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
-    #ToDo - check this step
+    #Todo - Currently this combination is not supported by gateway
+#  @config_immediate_payment_acheck_tdq_auth_riskdec
+#  Scenario: Immediate payment - Successful payment with additional request types: ACCOUNTCHECK, THREEDQUERY, AUTH, RISKDEC
+#    When ACCOUNTCHECK, THREEDQUERY mock response is set to OK
+#    And ACS mock response is set to "OK"
+#    And AUTH, RISKDEC mock response is set to OK
+#    And User opens payment page
+#    Then User will see payment status information: "Payment has been successfully processed"
+#    And ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
+#    #ToDo - check this step
     #And AUTH, RISKDEC ware sent only once in one request
 
   @config_immediate_payment_tdq_auth
