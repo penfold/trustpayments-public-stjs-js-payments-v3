@@ -24,11 +24,12 @@ Feature: E2E Card Payments - redirection
       | errorcode     | 0                                       |
 
   @e2e_config_request_types
+  @bypass_property
   Scenario: Successful payment with requestTypes set and default submitOnSuccess
     Given JS library configured by inline params REQUEST_TYPES_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value                                 |
-      | requesttypedescriptions | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
-      | threedbypasscards       | MASTERCARD                            |
+      | key                      | value                                 |
+      | requesttypedescriptions  | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
+      | threedbypasspaymenttypes | MASTERCARD                            |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
@@ -45,11 +46,12 @@ Feature: E2E Card Payments - redirection
   @vueJS
   @react_native
   @e2e_config_submit_on_error
+  @bypass_property
   Scenario: Unsuccessful payment with submitOnError enabled
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
-      | threedbypasscards       | MASTERCARD       |
+      | key                      | value            |
+      | requesttypedescriptions  | THREEDQUERY AUTH |
+      | threedbypasspaymenttypes | MASTERCARD       |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_DECLINED_CARD
     And User clicks Pay button
@@ -66,11 +68,12 @@ Feature: E2E Card Payments - redirection
   @vueJS
   @react_native
   @e2e_config_submit_on_error_invalid_jwt
+  @bypass_property
   Scenario: Unsuccessful payment with submitOnError enabled
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt INVALID_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
-      | threedbypasscards       | MASTERCARD       |
+      | key                      | value            |
+      | requesttypedescriptions  | THREEDQUERY AUTH |
+      | threedbypasspaymenttypes | MASTERCARD       |
     And User opens example page
     Then User will not see notification frame
     And User will be sent to page with url "www.example.com" having params
@@ -80,11 +83,12 @@ Feature: E2E Card Payments - redirection
       | errordata    | locale        |
 
   @e2e_config_submit_on_success_security_code
+  @bypass_property
   Scenario: Successful payment with submitOnSuccess enabled with field to submit securitycode
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_SECURITY_CODE_CONFIG and jwt JWT_WITH_PARENT_TRANSACTION with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
-      | threedbypasscards       | MASTERCARD       |
+      | key                      | value            |
+      | requesttypedescriptions  | THREEDQUERY AUTH |
+      | threedbypasspaymenttypes | MASTERCARD       |
     And User opens example page
     When User fills "SECURITY_CODE" field "123"
     And User clicks Pay button
@@ -137,11 +141,12 @@ Feature: E2E Card Payments - redirection
   @vueJS
   @react_native
   @e2e_config_submit_on_error_callback
+  @bypass_property
   Scenario: Unsuccessful payment with submitOnError enabled and error callback set
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG_ERROR_CALLBACK and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
-      | threedbypasscards       | MASTERCARD       |
+      | key                      | value            |
+      | requesttypedescriptions  | THREEDQUERY AUTH |
+      | threedbypasspaymenttypes | MASTERCARD       |
     When User opens example page ERROR_CALLBACK
     When User fills payment form with defined card VISA_DECLINED_CARD
     And User clicks Pay button

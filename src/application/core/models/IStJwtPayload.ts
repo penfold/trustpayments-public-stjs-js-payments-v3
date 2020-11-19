@@ -1,17 +1,23 @@
 import { RequestType } from '../../../shared/types/RequestType';
-import { BypassCards } from './constants/BypassCards';
 
 export interface IStJwtPayload {
   requesttypedescriptions?: RequestType[];
-  baseamount?: number;
-  mainamount?: number;
+  baseamount?: string;
+  mainamount?: string;
   accounttypedescription?: string;
   currencyiso3a?: string;
   sitereference?: string;
-  threedbypasscards?: BypassCards[];
+  threedbypasspaymenttypes?: string[];
   parenttransactionreference?: string;
   locale?: string;
   pan?: string;
   expirydate?: string;
   securitycode?: string;
+  subscriptiontype?: string;
+  subscriptionunit?: string;
+  subscriptionfrequency?: string;
+  subscriptionnumber?: string;
+  subscriptionfinalnumber?: string;
+  subscriptionbegindate?: string;
+  credentialsonfile?: string;
 }

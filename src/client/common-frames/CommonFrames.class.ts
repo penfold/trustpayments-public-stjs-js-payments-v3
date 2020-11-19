@@ -158,42 +158,34 @@ export class CommonFrames {
     this.elementsToRegister.push(this._controlFrame);
   }
 
-  private _isThreedComplete(data: any): boolean {
-    if (this.requestTypes[this.requestTypes.length - 1] !== 'THREEDQUERY') {
+  private _isTransactionFinished(data: any): boolean {
+    if (Number(data.errorcode) !== 0) {
+      return true;
+    }
+
+    const lastRequestType = this._requestTypes[this._requestTypes.length - 1];
+
+    if (data.requesttypedescription !== lastRequestType) {
       return false;
     }
 
     if (data.requesttypedescription !== 'THREEDQUERY') {
-      return false;
-    }
-
-    if (data.validated) {
       return true;
     }
 
-    if (data.acsurl !== undefined) {
-      return false;
-    }
+    return this._isThreedComplete(data);
+  }
 
+  private _isThreedComplete(data: any): boolean {
     if (data.threedresponse !== undefined) {
       return true;
     }
 
-    return data.enrolled !== 'Y';
-  }
-
-  private _isTransactionFinished(data: any): boolean {
-    if (CommonFrames.COMPLETED_REQUEST_TYPES.includes(data.requesttypedescription)) {
+    if (data.enrolled !== 'Y') {
       return true;
     }
 
-    if (this._isThreedComplete(data)) {
-      return true;
-    }
-
-    const lastRequestType = [...this.requestTypes].pop();
-
-    return data.requesttypedescription === lastRequestType && lastRequestType !== 'THREEDQUERY';
+    return data.acsurl === undefined;
   }
 
   private _onInput(event: Event) {
@@ -205,22 +197,24 @@ export class CommonFrames {
   }
 
   private _onTransactionComplete(data: any): void {
-    if (this._isTransactionFinished(data) || data.errorcode !== '0') {
-      this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
+    if (!this._isTransactionFinished(data)) {
+      return;
     }
+
+    this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
 
     let result: 'success' | 'error' | 'cancel';
 
-    switch (true) {
-      case this._isTransactionFinished(data) && data.errorcode === '0':
+    switch (data.errorcode) {
+      case '0':
         result = 'success';
         data = { ...data, errormessage: PAYMENT_SUCCESS };
         break;
-      case data.errorcode === 'cancelled':
+      case 'cancelled':
         result = 'cancel';
         data = { ...data, errormessage: PAYMENT_CANCELLED };
         break;
-      case data.errorcode !== '0':
+      default:
         result = 'error';
         break;
     }

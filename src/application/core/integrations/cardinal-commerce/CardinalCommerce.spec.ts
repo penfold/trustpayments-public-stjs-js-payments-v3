@@ -20,6 +20,7 @@ import SpyInstance = jest.SpyInstance;
 import { first, switchMap } from 'rxjs/operators';
 import { PaymentBrand } from '../../models/constants/PaymentBrand';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
+import { RequestType } from '../../../../shared/types/RequestType';
 
 describe('CardinalCommerce', () => {
   const tokens: ICardinalCommerceTokens = { jwt: 'foo', cacheToken: 'bar' };
@@ -147,12 +148,11 @@ describe('CardinalCommerce', () => {
   });
 
   describe('performThreeDQuery', () => {
-    const requestTypes = ['THREEDQUERY', 'AUTH'];
+    const requestTypes: RequestType[] = ['THREEDQUERY', 'AUTH'];
     const card: ICard = { pan: '4100000000000000', securitycode: '123', expirydate: '01/23' };
     const merchantData = { abc: 'abc' };
     const threeDQueryRequest = {
       cachetoken: 'bar',
-      requesttypedescriptions: requestTypes,
       termurl: 'https://termurl.com',
       ...merchantData,
       ...card
@@ -172,6 +172,7 @@ describe('CardinalCommerce', () => {
 
       when(stTransportMock.sendRequest(deepEqual(threeDQueryRequest))).thenReturn(
         Promise.resolve({
+          jwt: 'jwt',
           response: threeDQueryResponse
         })
       );
@@ -199,8 +200,10 @@ describe('CardinalCommerce', () => {
         .pipe(switchMap(() => cardinalCommerce.performThreeDQuery(requestTypes, card, merchantData)))
         .subscribe(result => {
           expect(result).toEqual({
+            ...threeDQueryResponse,
             threedresponse: cardinalContinueJwt,
-            cachetoken: 'bar'
+            cachetoken: 'bar',
+            jwt: 'jwt'
           });
           expect(cardinalMock.start).toHaveBeenCalledWith(PaymentBrand, {}, 'foo');
           done();

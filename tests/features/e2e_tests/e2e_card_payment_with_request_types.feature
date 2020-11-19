@@ -49,12 +49,12 @@ Feature: E2E Card Payments with request types in config
     And "submit" callback is called only once
     And "success" callback is called only once
 
-
+  @bypass_property
   Scenario: Successful payment with bypassCard and requestTpes: RISKDEC, ACCOUNTCHECK,THREEDQUERY, AUTH
     Given JS library configured by inline params BYPASS_MASTERCARD_REQUEST_TYPE_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value                                 |
-      | requesttypedescriptions | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
-      | threedbypasscards       | MASTERCARD                            |
+      | key                      | value                                 |
+      | requesttypedescriptions  | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
+      | threedbypasspaymenttypes | MASTERCARD                            |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
