@@ -1,23 +1,13 @@
 {
   "analytics": true,
   "animatedCard": false,
-  "bypassCards": [
-    "VISA",
-    "AMEX",
-    "MASTERCARD",
-    "DISCOVER",
-    "JCB",
-    "DINERS",
-    "PIBA"
-  ],
   "deferInit": false,
   "fieldsToSubmit": [
     "pan",
     "expirydate",
     "securitycode"
   ],
-  "buttonId": "merchant-submit-button",
-  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IifX0._VTiUjM-op-4KUoVGtqA92HwgwTNi_XckqP8pdcyKFc",
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJBVVRIIl0sInRocmVlZGJ5cGFzc2NhcmRzIjpbIlZJU0EiLCJBTUVYIiwiTUFTVEVSQ0FSRCIsIkRJU0NPVkVSIiwiSkNCIiwiRElORVJTIiwiUElCQSJdfX0.KfbsnZsKvBMKWadeZR2xgf40dHU6N8HuF_MJF7WjHbc",
   "panIcon": true,
   "styles": {
     "defaultStyles": {
@@ -31,12 +21,6 @@
     }
   },
   "submitOnSuccess": false,
-  "submitCallback": "",
-  "components": {
-    "requestTypes": [
-      "AUTH"
-    ]
-  },
   "applePay": {
     "buttonStyle": "white-outline",
     "buttonText": "donate",

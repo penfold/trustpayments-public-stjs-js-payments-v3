@@ -6,7 +6,10 @@ Feature: Visual regression - E2E Card Payments
   #feature just for screenshot creation purposes (e.g. when you need to create them again)
 
   Background:
-    Given JS library is configured with BYPASS_MASTERCARD_CONFIG and BASE_JWT
+    Given JS library configured by inline params BYPASS_MASTERCARD_CONFIG and jwt BASE_JWT with additional attributes
+      | key                      | value                                 |
+      | requesttypedescriptions  | THREEDQUERY RISKDEC ACCOUNTCHECK AUTH |
+      | threedbypasspaymenttypes | MASTERCARD                            |
     And User opens minimal example page
 
   @visual_regression_generation @scrn_card_interface_after_successful_payment

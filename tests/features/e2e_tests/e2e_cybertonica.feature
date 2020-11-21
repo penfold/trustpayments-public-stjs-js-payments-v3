@@ -10,7 +10,9 @@ Feature: E2E Cybertonica
   @react_native
   @e2e_config_cybertonica
   Scenario: Cybertonica - successfull payment
-    Given JS library is configured with CYBERTONICA_CONFIG and BASE_JWT
+    Given JS library configured by inline params CYBERTONICA_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
@@ -18,8 +20,12 @@ Feature: E2E Cybertonica
     Then User will see payment status information: "Payment has been successfully processed"
 
   @e2e_config_cybertonica_bypass_cards
+  @bypass_property
   Scenario: Cybertonica - successfull payment with bypass_pass
-    Given JS library is configured with CYBERTONICA_WITH_BYPASSCARDS_CONFIG and BASE_JWT
+    Given JS library configured by inline params CYBERTONICA_WITH_BYPASSCARDS_CONFIG and jwt BASE_JWT with additional attributes
+      | key                      | value                         |
+      | requesttypedescriptions  | THREEDQUERY AUTH              |
+      | threedbypasspaymenttypes | VISA AMEX DISCOVER JCB DINERS |
     And User opens example page
     When User fills payment form with defined card VISA_CARD
     And User clicks Pay button
@@ -28,7 +34,9 @@ Feature: E2E Cybertonica
 
   @e2e_config_cybertonica
   Scenario: Cybertonica - successfull payment with startOnLoad
-    Given JS library is configured with CYBERTONICA_START_ON_LOAD_CONFIG and JWT_WITH_NON_FRICTIONLESS_CARD
+    Given JS library configured by inline params CYBERTONICA_START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page WITHOUT_SUBMIT_BUTTON
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"

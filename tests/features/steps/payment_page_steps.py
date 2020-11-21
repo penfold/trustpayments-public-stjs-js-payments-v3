@@ -1,12 +1,8 @@
 # type: ignore[no-redef]
+import time
 
-from behave import use_step_matcher, step, when, then, given
-
-from utils.configurations.inline_config_generator import create_inline_config
-from utils.configurations.jwt_generator import encode_jwt_for_json
-from utils.enums.e2e_config import E2eConfig
+from behave import use_step_matcher, step, when, then
 from utils.enums.field_type import FieldType
-from utils.enums.jwt_config import JwtConfig
 from utils.enums.payment_type import PaymentType
 from utils.enums.request_type import RequestType
 from utils.enums.responses.invalid_field_response import InvalidFieldResponse
@@ -288,12 +284,6 @@ def step_impl(context):
     payment_page.validate_callback_with_data_type('Error code: OK')
 
 
-@given('JS library is configured with (?P<e2e_config>.+) and (?P<jwt_config>.+)')
-def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
-    jwt = encode_jwt_for_json(JwtConfig[jwt_config])
-    context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
-
-
 @then('User will see that (?P<element>.+) is translated into "(?P<expected_value>.+)"')
 def step_impl(context, element, expected_value):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
@@ -306,6 +296,7 @@ def step_impl(context, element, expected_value):
 
 @step('"(?P<callback_popup>.+)" callback is called only once')
 def step_impl(context, callback_popup):
+    time.sleep(1)
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.validate_number_in_callback_counter_popup(callback_popup)
 

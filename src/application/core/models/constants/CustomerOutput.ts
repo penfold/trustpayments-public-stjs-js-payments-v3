@@ -1,0 +1,5 @@
+export enum CustomerOutput {
+  RESULT = 'RESULT',
+  THREEDREDIRECT = 'THREEDREDIRECT',
+  TRYAGAIN = 'TRYAGAIN'
+}
