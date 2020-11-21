@@ -1,12 +1,6 @@
 {
   "components": {
-    "startOnLoad": true,
-    "requestTypes": [
-      "ACCOUNTCHECK",
-      "THREEDQUERY",
-      "AUTH",
-      "SUBSCRIPTION"
-    ]
+    "startOnLoad": true
   },
   "submitOnSuccess": false
 }

@@ -32,19 +32,19 @@
     ROWSERSTACK_SAFARI_DRIVER: '2.48'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
 
-apple-test-part1-browserstack-component-test:
+.apple-test-part1-browserstack-component-test:
   extends: .apple-test-browserstack-component-test
   variables:
     POETRY_TAGS: apple_test_part1
   resource_group: extended_tests_review_1
 
-apple-test-part2-browserstack-component-test:
+.apple-test-part2-browserstack-component-test:
   extends: .apple-test-browserstack-component-test
   variables:
     POETRY_TAGS: apple_test_part2
   resource_group: extended_tests_review_2
 
-win10-Chrome-latest-visual-tests:
+.win10-Chrome-latest-visual-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
@@ -56,7 +56,7 @@ win10-Chrome-latest-visual-tests:
     POETRY_TAGS: visual_regression
   resource_group: extended_tests_review_1
 
-win10-Chrome-latest-visual-tests-styling:
+.win10-Chrome-latest-visual-tests-styling:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always

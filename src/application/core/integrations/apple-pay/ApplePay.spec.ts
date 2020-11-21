@@ -19,7 +19,6 @@ import { Container } from 'typedi';
 import { SimpleStorage } from '../../../../shared/services/storage/SimpleStorage';
 import { APPLE_PAY_NOT_LOGGED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
 
-jest.mock('./../../shared/message-bus/MessageBus');
 jest.mock('./../google-analytics/GoogleAnalytics');
 jest.mock('./../../../../client/notification/NotificationService');
 
@@ -548,7 +547,7 @@ describe('ApplePay', () => {
       expect(getType(instance._session.onpaymentauthorized)).toBe('function');
     });
 
-    it('should call onpaymentauthorized and set paymentDetails and process successful AUTH', async () => {
+    it('should call onpaymentauthorized and set paymentDetail', async () => {
       const { instance } = ApplePayFixture();
 
       instance.payment.processPayment = jest.fn().mockResolvedValueOnce({ response: { errorcode: '0' } });
@@ -573,9 +572,9 @@ describe('ApplePay', () => {
 
       expect(instance.payment.processPayment).toHaveBeenCalledTimes(1);
       expect(instance.payment.processPayment).toHaveBeenCalledWith(
-        ['AUTH'],
+        undefined,
         { walletsource: 'APPLEPAY', wallettoken: '{"TOKEN":"TOKEN DATA"}' },
-        { billingfirstname: 'BOB' }
+        { billingfirstname: 'BOB', termurl: 'https://termurl.com' }
       );
       // @ts-ignore
       expect(instance._displayNotification).toHaveBeenCalledTimes(1);
@@ -614,7 +613,7 @@ describe('ApplePay', () => {
       expect(instance.payment.processPayment).toHaveBeenCalledWith(
         ['CACHETOKENISE'],
         { walletsource: 'APPLEPAY', wallettoken: '{"TOKEN":"TOKEN DATA"}' },
-        { billingfirstname: 'BOB' }
+        { billingfirstname: 'BOB', termurl: 'https://termurl.com' }
       );
       // @ts-ignore
       expect(instance._displayNotification).toHaveBeenCalledTimes(1);
@@ -650,9 +649,9 @@ describe('ApplePay', () => {
 
       expect(instance.payment.processPayment).toHaveBeenCalledTimes(1);
       expect(instance.payment.processPayment).toHaveBeenCalledWith(
-        ['AUTH'],
+        undefined,
         { walletsource: 'APPLEPAY', wallettoken: '{"TOKEN":"TOKEN DATA"}' },
-        { billingfirstname: 'BOB' }
+        { billingfirstname: 'BOB', termurl: 'https://termurl.com' }
       );
       // @ts-ignore
       expect(instance._notification.error).toHaveBeenCalledTimes(1);
@@ -1077,7 +1076,6 @@ function ApplePayFixture() {
       countryCode: 'US',
       currencyCode: 'USD',
       merchantCapabilities: ['supports3DS', 'supportsCredit', 'supportsDebit'],
-      requestTypes: ['AUTH'],
       supportedNetworks: ['amex', 'visa']
     },
     merchantId: 'merchant.net.securetrading',

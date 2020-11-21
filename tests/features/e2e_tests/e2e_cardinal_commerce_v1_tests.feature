@@ -4,7 +4,9 @@ Feature: Cardinal Commerce E2E tests
   In order to check Cardinal Commerce integration
 
   Background:
-    Given JS library is configured with BASIC_CONFIG and BASE_JWT
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
 
   @reactJS
@@ -73,15 +75,15 @@ Feature: Cardinal Commerce E2E tests
   Scenario: Merchant Not Active
     When User fills payment form with defined card VISA_MERCHANT_NOT_ACTIVE_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Bank System Error"
-    And User will see that notification frame has "red" color
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
 
   @e2e_cardinal_commerce_v1
   Scenario: Cmpi lookup error
     When User fills payment form with defined card VISA_CMPI_LOOKUP_ERROR_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Bank System Error"
-    And User will see that notification frame has "red" color
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
 
   @e2e_cardinal_commerce_v1
   Scenario: Cmpi authenticate error

@@ -1,6 +1,23 @@
-import { IConfig } from '../../../shared/model/config/IConfig';
+import { RequestType } from '../../../shared/types/RequestType';
 
 export interface IStJwtPayload {
-  config?: IConfig | undefined;
-  [key: string]: any;
+  requesttypedescriptions?: RequestType[];
+  baseamount?: string;
+  mainamount?: string;
+  accounttypedescription?: string;
+  currencyiso3a?: string;
+  sitereference?: string;
+  threedbypasspaymenttypes?: string[];
+  parenttransactionreference?: string;
+  locale?: string;
+  pan?: string;
+  expirydate?: string;
+  securitycode?: string;
+  subscriptiontype?: string;
+  subscriptionunit?: string;
+  subscriptionfrequency?: string;
+  subscriptionnumber?: string;
+  subscriptionfinalnumber?: string;
+  subscriptionbegindate?: string;
+  credentialsonfile?: string;
 }

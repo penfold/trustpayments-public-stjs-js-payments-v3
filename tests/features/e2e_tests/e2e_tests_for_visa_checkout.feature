@@ -10,7 +10,9 @@
 #  @angular
 #  @react_native
 #  Scenario Outline: Successful Authentication by Visa checkout
-#    Given JS library is configured with VISA_CHECKOUT_CONFIG and BASE_JWT
+#    Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value             |
+#      | requesttypedescriptions | ACCOUNTCHECK AUTH |
 #    And User opens example page
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
@@ -27,7 +29,9 @@
 #      | VISA_NON_FRICTIONLESS |
 #
 #  Scenario: Declined Authentication by Visa checkout using declined visa card
-#    Given JS library is configured with VISA_CHECKOUT_CONFIG and BASE_JWT
+#    Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value             |
+#      | requesttypedescriptions | ACCOUNTCHECK AUTH |
 #    And User opens example page
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
@@ -39,7 +43,9 @@
 #    And User will see that notification frame has "red" color
 #
 #  Scenario: Successful Authentication by Visa checkout with submit on success config
-#    Given JS library is configured with VISA_CHECKOUT_WITH_SUBMIT_ON_SUCCESS_CONFIG and BASE_JWT
+#    Given JS library configured by inline params VISA_CHECKOUT_WITH_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value             |
+#      | requesttypedescriptions | ACCOUNTCHECK AUTH |
 #    And User opens example page
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
@@ -55,7 +61,9 @@
 #      | errorcode     | 0                                       |
 #
 #  Scenario: Declined Authentication by Visa checkout with error callback config
-#    Given JS library is configured with VISA_CHECKOUT_CONFIG and BASE_JWT
+#    Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value             |
+#      | requesttypedescriptions | ACCOUNTCHECK AUTH |
 #    And User opens example page
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
@@ -67,7 +75,9 @@
 #    And User will see "error" popup
 #
 #  Scenario: Successful Authentication by Visa checkout with cybertonica config
-#    Given JS library is configured with VISA_CHECKOUT_WITH_CYBERTONICA_CONFIG and BASE_JWT
+#    Given JS library configured by inline params VISA_CHECKOUT_WITH_CYBERTONICA_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value             |
+#      | requesttypedescriptions | ACCOUNTCHECK AUTH |
 #    And User opens example page
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
@@ -94,7 +104,9 @@
 #    And User will see that notification frame has "green" color
 #
 #  Scenario: Successful Authentication by Visa checkout with request types config
-#    Given JS library is configured with VISA_CHECKOUT_WITH_REQUEST_TYPES_CONFIG and BASE_JWT
+#    Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value             |
+#      | requesttypedescriptions | ACCOUNTCHECK AUTH |
 #    And User opens example page
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
@@ -107,7 +119,9 @@
 #
 #  @switch_to_parent_iframe
 #  Scenario: Successful Authentication by Visa checkout with iFrame
-#    Given JS library is configured with VISA_CHECKOUT_CONFIG and BASE_JWT
+#    Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value             |
+#      | requesttypedescriptions | ACCOUNTCHECK AUTH |
 #    And User opens example page IN_IFRAME
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
