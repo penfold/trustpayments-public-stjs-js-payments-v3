@@ -9,6 +9,7 @@ from utils.enums.request_type import RequestType, request_type_response, request
 from utils.enums.responses.acs_response import ACSresponse
 from utils.enums.responses.apple_pay_response import ApplePayResponse
 from utils.enums.responses.auth_response import AUTHresponse
+from utils.enums.responses.jsinit_response import jsinit_response
 from utils.enums.responses.tdq_response import TDQresponse
 from utils.enums.responses.visa_response import VisaResponse
 from utils.helpers.request_executor import remove_item_from_request_journal
@@ -21,22 +22,8 @@ use_step_matcher('re')
 @given('JavaScript configuration is set for scenario based on scenario\'s @config tag')
 def step_impl(context):
     remove_item_from_request_journal()
-    if 'config_skip_jsinit' not in context.scenario.tags:
-        if 'config_tokenisation_visa' in context.scenario.tags[0] or 'config_tokenisation_bypass_cards_visa' in \
-            context.scenario.tags[0] or 'config_tokenisation_visa_request_types' in context.scenario.tags[0]:
-            stub_st_request_type('jsinitTokenisationVisa.json', RequestType.JSINIT.name)
-        elif 'config_tokenisation_amex' in context.scenario.tags[0]:
-            stub_st_request_type('jsinitTokenisationAmex.json', RequestType.JSINIT.name)
-        elif 'subscription' in context.scenario.tags[0]:
-            stub_st_request_type('jsinitSubscription.json', RequestType.JSINIT.name)
-        elif 'start_on_load_sub' in context.scenario.tags[0]:
-            stub_st_request_type('jsinitStartOnLoadSubscription.json', RequestType.JSINIT.name)
-        elif 'start_on_load' in context.scenario.tags[0]:
-            stub_st_request_type('jsinitStartOnLoad.json', RequestType.JSINIT.name)
-        else:
-            stub_st_request_type('jsinit.json', RequestType.JSINIT.name)
-    config_tag = context.scenario.tags[0]
-    stub_config(config[config_tag])
+    stub_jsinit_request(context)
+    stub_config(config[context.scenario.tags[0]])
 
 
 @when('User opens page with incorrect request type in config file')
@@ -290,3 +277,12 @@ def step_impl(context, request_type):
 def step_impl(context, request_type, thirdparty):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.validate_number_of_thirdparty_requests(request_type, PaymentType[thirdparty].value, 1)
+
+
+def stub_jsinit_request(context):
+    if 'config_skip_jsinit' not in context.scenario.tags:
+        for key in jsinit_response:
+            if key in context.scenario.tags[0]:
+                stub_st_request_type(jsinit_response[key], RequestType.JSINIT.name)
+                break
+        stub_st_request_type('jsinit.json', RequestType.JSINIT.name)

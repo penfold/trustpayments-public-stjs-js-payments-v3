@@ -1,4 +1,4 @@
-import JwtDecode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { Currencies, Money } from 'ts-money';
 import { IStJwtObj } from '../../models/IStJwtObj';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
@@ -8,7 +8,7 @@ export class StJwt {
   private _decodedJwt: IStJwtObj;
 
   constructor(jwt: string) {
-    this._decodedJwt = JwtDecode<IStJwtObj>(jwt);
+    this._decodedJwt = jwt_decode<IStJwtObj>(jwt);
     this.payload = this._decodedJwt.payload;
   }
 

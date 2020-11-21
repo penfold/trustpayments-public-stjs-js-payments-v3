@@ -114,7 +114,7 @@ class Waits:
         time.sleep(1)
         self._wait.until(lambda driver: self._driver.execute_script('return document.readyState') == 'complete')
 
-    def wait_until_url_contains(self, page_url, max_try: int = 200):
+    def wait_until_url_contains(self, page_url, max_try: int = 60):
         # pylint: disable=bare-except
         while max_try:
             try:
@@ -126,8 +126,9 @@ class Waits:
             max_try -= 1
         raise Exception('Url didnt contain expected phrase within timeout')
 
-    def wait_until_url_starts_with(self, page_url, max_try: int = 200):
+    def wait_until_url_starts_with(self, page_url, max_try: int = 60):
         # pylint: disable=bare-except
+        actual_url = self._driver.current_url
         if 'https://' not in page_url:
             page_url = f'https://{page_url}'
         while max_try:
@@ -135,7 +136,7 @@ class Waits:
                 if self._driver.current_url.startswith(page_url):
                     return
             except:
-                pass
+                actual_url = self._driver.current_url
             time.sleep(0.5)
             max_try -= 1
-        raise Exception('Url didnt start with expected phrase within timeout')
+        raise Exception(f'Url didnt start with expected phrase within timeout, current url: "{actual_url}"')

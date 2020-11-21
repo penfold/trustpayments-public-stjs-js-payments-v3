@@ -4,7 +4,9 @@ Feature: Cardinal Commerce E2E tests
   In order to check Cardinal Commerce integration
 
   Background:
-    Given JS library is configured with BASIC_CONFIG and BASE_JWT
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
 
   @reactJS
@@ -65,8 +67,8 @@ Feature: Cardinal Commerce E2E tests
   Scenario: Error on Lookup - Visa
     When User fills payment form with defined card VISA_ERROR_ON_LOOKUP
     And User clicks Pay button
-    Then User will see payment status information: "Bank System Error"
-    And User will see that notification frame has "red" color
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
 
   @base_config @cardinal_commerce_v2.0
   Scenario: Authentication Not Available on Lookup - MasterCard
