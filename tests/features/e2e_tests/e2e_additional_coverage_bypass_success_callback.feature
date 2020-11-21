@@ -101,7 +101,6 @@ Feature: request type with success callback and bypass card - full test coverage
     And User opens example page
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
-    And User fills V2 authentication modal
     Then User will see "submit" popup
     And "submit" callback is called only once
     And "success" callback is called only once
