@@ -159,7 +159,7 @@ describe('ControlFrame', () => {
     // then
     it('should call notification success when promise is resolved', async () => {
       // @ts-ignore
-      instance._payment.processPayment = jest.fn().mockResolvedValueOnce(new Promise(resolve => resolve()));
+      instance._payment.processPayment = jest.fn().mockResolvedValueOnce(new Promise(resolve => resolve(undefined)));
       // @ts-ignore
       instance._processPayment(data);
     });

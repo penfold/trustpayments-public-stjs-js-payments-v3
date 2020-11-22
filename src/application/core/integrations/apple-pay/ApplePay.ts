@@ -412,7 +412,7 @@ export class ApplePay {
       if (walletsession) {
         try {
           this._session.completeMerchantValidation(JSON.parse(walletsession));
-          resolve();
+          resolve(undefined);
         } catch (error) {
           console.warn(error);
           reject(requestid);
