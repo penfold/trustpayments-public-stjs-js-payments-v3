@@ -117,7 +117,7 @@
     "postcss-scss": "3.0.4",
     "prettier": "2.2.0",
     "sass-loader": "10.1.0",
-    "snyk": "1.429.0",
+    "snyk": "1.430.0",
     "source-map-loader": "1.1.2",
     "style-loader": "2.0.0",
     "stylelint-webpack-plugin": "2.1.1",
