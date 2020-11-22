@@ -344,9 +344,7 @@ export class ApplePay {
         first()
       )
       .subscribe(event => {
-        console.error(event);
         if (Number(event.data.errorcode) !== 0) {
-          console.error(event);
           this._session.completePayment({ status: this.getPaymentFailureStatus(), errors: [] });
         }
       });
@@ -373,9 +371,7 @@ export class ApplePay {
           this._localStorage.setItem('completePayment', 'true');
         })
         .catch(() => {
-          this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
           this._notification.error(PAYMENT_ERROR);
-          this._session.completePayment({ status: this.getPaymentFailureStatus(), errors: [] });
           this._applePayButtonClickHandler();
           this._localStorage.setItem('completePayment', 'true');
         });
