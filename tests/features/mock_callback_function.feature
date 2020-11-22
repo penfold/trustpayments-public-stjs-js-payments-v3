@@ -11,8 +11,8 @@ Feature: Callback functionality
   Scenario Outline: Checking <action_code> callback functionality
     When User opens page with payment form
     And User fills payment form with credit card number "4111110000000211", expiration date "12/30" and cvv "123"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-    And User clicks Pay button - AUTH response is set to "<action_code>"
+    And Frictionless THREEDQUERY, AUTH response is set to <action_code>
+    And User clicks Pay button
     Then User will see "<callback_popup>" popup
     And "<callback_popup>" callback is called only once
 

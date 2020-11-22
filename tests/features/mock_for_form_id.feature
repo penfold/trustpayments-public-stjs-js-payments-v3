@@ -9,8 +9,7 @@ Feature: Mock for formId negative scenarios
 
   @form_id_config
   Scenario: Form id - decline payment
-    Given AUTH response is set to "DECLINE"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_U"
+    And Frictionless THREEDQUERY, AUTH response is set to DECLINE
     When User opens prepared payment form page WITH_SPECIFIC_FORM_ID
     And User fills payment form with defined card VISA_CARD
     And User clicks Pay button

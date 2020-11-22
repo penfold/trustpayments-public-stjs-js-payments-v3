@@ -33,11 +33,11 @@ Feature: Cardinal commerce
   @base_config @cardinal_commerce
   Scenario Outline: Cardinal Commerce (frictionless cards) - checking payment status for <action_code> response code
     When User fills payment form with credit card number "<card_number>", expiration date "01/22" and cvv "123"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-    And User clicks Pay button - AUTH response is set to "<action_code>"
+    And Frictionless THREEDQUERY, AUTH response is set to <action_code>
+    And User clicks Pay button
     Then User will see payment status information: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
-    And AUTH and THREEDQUERY requests were sent only once with correct data
+    And Frictionless AUTH and THREEDQUERY requests were sent only once with correct data
 
     @extended_tests_part_1
     Examples:
@@ -51,17 +51,17 @@ Feature: Cardinal commerce
   @base_config @cardinal_commerce
   Scenario Outline: Cardinal Commerce (card not-enrolled U) - checking payment status for <action_code> response code
     When User fills payment form with credit card number "<card_number>", expiration date "01/22" and cvv "123"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_U"
-    And User clicks Pay button - AUTH response is set to "<action_code>"
+    And Frictionless THREEDQUERY, AUTH response is set to <action_code>
+    And User clicks Pay button
     Then User will see payment status information: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
-    And AUTH and THREEDQUERY requests were sent only once with correct data
+    And Frictionless AUTH and THREEDQUERY requests were sent only once with correct data
 
     Examples:
-      | card_number      | action_code     | payment_status_message                  | color |
-      | 4111110000000401 | OK              | Payment has been successfully processed | green |
-      | 5100000000000412 | UNAUTHENTICATED | Unauthenticated                         | red   |
-      #|5100000000000412	 | DECLINE         | Decline                | red   |
+      | card_number      | action_code   | payment_status_message                  | color |
+      | 4111110000000401 | TDQ_U_OK      | Payment has been successfully processed | green |
+      | 5100000000000412 | TDQ_U_DECLINE | Decline                                 | red   |
+      #|5100000000000412	 | UNAUTHENTICATED         | Unauthenticated                | red   |
 
   @base_config @extended_tests_part_1
   Scenario: Cardinal Commerce - check THREEDQUERY response for code: "INVALID_ACQUIRER"
