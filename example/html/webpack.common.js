@@ -87,7 +87,11 @@ module.exports = {
       ]
     }),
     new StyleLintPlugin({
-      context: path.join(__dirname, '')
+      context: path.join(__dirname, ''),
+      files: [
+        'pages/**/*.scss',
+        'styles/**/*.scss',
+      ]
     }),
     new FriendlyErrorsWebpackPlugin(),
     new webpack.SourceMapDevToolPlugin({})
