@@ -48,28 +48,26 @@ def delete_session(session_id):
 def get_number_of_requests_with_data(request_type, pan, expiry_date, cvv):
     count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
-                              {
-                                  'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==["' + request_type + '"])]'},
                               {'matchesJsonPath': '$.request[:1][?(@.pan=="' + pan + '")]'},
                               {'matchesJsonPath': '$.request[:1][?(@.expirydate=="' + expiry_date + '")]'},
                               {'matchesJsonPath': '$.request[:1][?(@.securitycode=="' + cvv + '")]'}
-                          ]}, verify=False)
+                          ],
+                                'headers': {'st-request-types': {'equalTo': request_type}}},
+     verify=False)
     data = json.loads(count.content)
     return data['count']
-
 
 def get_number_of_requests_with_data_and_fraudcontroltransactionid_flag(request_type, pan, expiry_date, cvv):
     # pylint: disable=line-too-long
     count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
-                              {
-                                  'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==["' + request_type + '"])]'},
                               {'matchesJsonPath': '$.request[:1][?(@.pan=="' + pan + '")]'},
                               {'matchesJsonPath': '$.request[:1][?(@.expirydate=="' + expiry_date + '")]'},
                               {'matchesJsonPath': '$.request[:1][?(@.securitycode=="' + cvv + '")]'},
                               {
                                   'matchesJsonPath': '$.request[:1][?(@.fraudcontroltransactionid=="63d1d099-d635-41b6-bb82-96017f7da6bb")]'}
-                          ]}, verify=False)
+                          ],
+                                'headers': {'st-request-types': {'equalTo': request_type}}}, verify=False)
     data = json.loads(count.content)
     return data['count']
 
@@ -78,11 +76,9 @@ def get_number_of_requests_with_fraudcontroltransactionid_flag(request_type):
     # pylint: disable=line-too-long
     count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
-                              {
-                                  'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==["' + request_type + '"])]'},
-                              {
-                                  'matchesJsonPath': '$.request[:1][?(@.fraudcontroltransactionid=="63d1d099-d635-41b6-bb82-96017f7da6bb")]'}
-                          ]}, verify=False)
+                              {'matchesJsonPath': '$.request[:1][?(@.fraudcontroltransactionid=="63d1d099-d635-41b6-bb82-96017f7da6bb")]'}
+                          ],
+                        'headers': {'st-request-types': {'equalTo': request_type}}}, verify=False)
     data = json.loads(count.content)
     return data['count']
 
@@ -90,10 +86,9 @@ def get_number_of_requests_with_fraudcontroltransactionid_flag(request_type):
 def get_number_of_requests_with_updated_jwt(request_type, url, update_jwt):
     count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': url, 'bodyPatterns': [
-                              {
-                                  'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==["' + request_type + '"])]'},
                               {'matchesJsonPath': '$.[?(@.jwt=="' + update_jwt + '")]'}
-                          ]}, verify=False)
+                          ],
+                                'headers': {'st-request-types': {'equalTo': request_type}}}, verify=False)
     data = json.loads(count.content)
     return data['count']
 
@@ -110,10 +105,8 @@ def get_number_of_requests_with_updated_jwt_for_visa(walletsource, update_jwt):
 
 def get_number_of_requests_without_data(request_type):
     count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
-                          json={'url': '/jwt/', 'bodyPatterns': [
-                              {
-                                  'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==["' + request_type + '"])]'}
-                          ]}, verify=False)
+                          json={'url': '/jwt/',
+                            'headers': {'st-request-types': {'equalTo': request_type}}}, verify=False)
     data = json.loads(count.content)
     return data['count']
 
@@ -139,10 +132,9 @@ def get_number_of_thirdparty_requests(request_type, walletsource):
 def get_number_of_tokenisation_requests(request_type, cvv):
     count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
-                              {
-                                  'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==[' + request_type + '])]'},
                               {'matchesJsonPath': '$.request[:1][?(@.securitycode=="' + cvv + '")]'}
-                          ]}, verify=False)
+                          ],
+                                'headers': {'st-request-types': {'equalTo': request_type}}}, verify=False)
     data = json.loads(count.content)
     return data['count']
 
@@ -150,12 +142,11 @@ def get_number_of_tokenisation_requests(request_type, cvv):
 def get_number_of_requests(request_type, pan, expiry_date, cvv):
     count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
-                              {
-                                  'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==[' + request_type + '])]'},
                               {'matchesJsonPath': '$.request[:1][?(@.pan=="' + pan + '")]'},
                               {'matchesJsonPath': '$.request[:1][?(@.expirydate=="' + expiry_date + '")]'},
                               {'matchesJsonPath': '$.request[:1][?(@.securitycode=="' + cvv + '")]'}
-                          ]}, verify=False)
+                          ],
+                                'headers': {'st-request-types': {'equalTo': request_type}}}, verify=False)
     data = json.loads(count.content)
     return data['count']
 
