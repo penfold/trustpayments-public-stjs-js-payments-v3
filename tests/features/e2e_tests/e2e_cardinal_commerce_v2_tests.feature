@@ -19,8 +19,11 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
+
 
   @base_config @cardinal_commerce_v2.0
   Scenario: Failed Frictionless Authentication - Visa
@@ -28,6 +31,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Unauthenticated"
     And User will see that notification frame has "red" color
+    And "submit" callback is called only once
+    And "error" callback is called only once
     And User will see that Submit button is "enabled" after payment
     And User will see that ALL input fields are "enabled"
 
@@ -37,6 +42,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
@@ -46,6 +53,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
@@ -55,6 +64,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Unauthenticated"
     And User will see that notification frame has "red" color
+    And "submit" callback is called only once
+    And "error" callback is called only once
 
   @base_config @cardinal_commerce_v2.0
   Scenario: Authentication Not Available on Lookup - MasterCard
@@ -62,6 +73,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @base_config @cardinal_commerce_v2.0
   Scenario: Error on Lookup - Visa
@@ -69,6 +82,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @base_config @cardinal_commerce_v2.0
   Scenario: Authentication Not Available on Lookup - MasterCard
@@ -76,6 +91,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @base_config @cardinal_commerce_v2.0
   Scenario: Bypassed Authentication - MasterCard
@@ -83,6 +100,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @reactJS
   @angular
@@ -95,6 +114,8 @@ Feature: Cardinal Commerce E2E tests
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @base_config @cardinal_commerce_v2.0
   Scenario: Failed Step Up Authentication - MasterCard
@@ -103,6 +124,8 @@ Feature: Cardinal Commerce E2E tests
     And User fills V2 authentication modal
     Then User will see payment status information: "An error occurred"
     And User will see that notification frame has "red" color
+    And "submit" callback is called only once
+    And "error" callback is called only once
 
   @base_config @cardinal_commerce_v2.0
   Scenario: Step Up Authentication is Unavailable - Visa
@@ -111,6 +134,8 @@ Feature: Cardinal Commerce E2E tests
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @base_config @cardinal_commerce_v2.0
   Scenario: Error on Authentication - MasterCard
@@ -119,6 +144,8 @@ Feature: Cardinal Commerce E2E tests
     And User fills V2 authentication modal
     Then User will see payment status information: "An error occurred"
     And User will see that notification frame has "red" color
+    And "submit" callback is called only once
+    And "error" callback is called only once
     And User will see that Submit button is "enabled" after payment
     And User will see that ALL input fields are "enabled"
 
@@ -129,6 +156,8 @@ Feature: Cardinal Commerce E2E tests
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
 # ToDo - This test case is no longer supported by Cardinal - to clarify
 #  @base_config @cardinal_commerce_v2.0
@@ -142,6 +171,22 @@ Feature: Cardinal Commerce E2E tests
   @base_config @cardinal_commerce_v2.0
   Scenario: Support TransStatus I - MasterCard
     When User fills payment form with defined card MASTERCARD_SUPPORT_TRANS_STATUS_I
+    And User clicks Pay button
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
+
+  @base_config @e2e_cardinal_commerce_v2.0
+  Scenario: retry payment after failed transaction
+    When User fills payment form with defined card MASTERCARD_ERROR_ON_AUTH
+    And User clicks Pay button
+    And User fills V2 authentication modal
+    Then User will see payment status information: "An error occurred"
+    And User will see that notification frame has "red" color
+    And User waits for payment status to disappear
+    And User clears form
+    When User fills payment form with defined card MASTERCARD_BYPASSED_AUTH
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color

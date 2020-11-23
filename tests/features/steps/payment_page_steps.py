@@ -355,3 +355,10 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.clear_security_code_field()
+
+@step('User clears form')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.clear_security_code_field()
+    payment_page.clear_card_number_field()
+    payment_page.clear_expiry_date_field()

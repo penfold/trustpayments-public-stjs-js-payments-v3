@@ -136,9 +136,18 @@ class PaymentMethodsPage(BasePage):
         self._action.switch_to_iframe_and_press_enter(FieldType.SECURITY_CODE.value,
 
                                                       PaymentMethodsLocators.security_code_input_field)
+
     def clear_security_code_field(self):
         self._action.switch_to_iframe_and_clear_input(FieldType.SECURITY_CODE.value,
                                                       PaymentMethodsLocators.security_code_input_field)
+
+    def clear_card_number_field(self):
+        self._action.switch_to_iframe_and_clear_input(FieldType.CARD_NUMBER.value,
+                                                      PaymentMethodsLocators.card_number_input_field)
+
+    def clear_expiry_date_field(self):
+        self._action.switch_to_iframe_and_clear_input(FieldType.EXPIRATION_DATE.value,
+                                                      PaymentMethodsLocators.expiration_date_input_field)
 
     def get_payment_status_message(self):
         status_message = self._action.get_text_with_wait(PaymentMethodsLocators.notification_frame)
