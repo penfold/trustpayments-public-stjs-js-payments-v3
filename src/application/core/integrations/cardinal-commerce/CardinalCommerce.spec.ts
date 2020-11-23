@@ -4,7 +4,7 @@ import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
 import { CardinalCommerceTokensProvider } from './CardinalCommerceTokensProvider';
 import { StTransport } from '../../services/st-transport/StTransport.class';
 import { CardinalProvider } from './CardinalProvider';
-import { deepEqual, instance, mock, spy, when } from 'ts-mockito';
+import { deepEqual, instance, mock, when } from 'ts-mockito';
 import { CardinalCommerce } from './CardinalCommerce';
 import { ICardinalCommerceTokens } from './ICardinalCommerceTokens';
 import { of } from 'rxjs';
@@ -291,7 +291,59 @@ describe('CardinalCommerce', () => {
         .pipe(switchMap(() => cardinalCommerce.performThreeDQuery(requestTypes, card, merchantData)))
         .subscribe({
           error: result => {
-            expect(result).toEqual(validationResult);
+            expect(result).toEqual({
+              acquirerresponsecode: '0',
+              acquirerresponsemessage: '',
+              acquirertransactionreference: '12345',
+              acsurl: 'https://foo.bar.com',
+              cachetoken: 'bar',
+              enrolled: 'Y',
+              errorcode: '50003',
+              errormessage: 'An error occurred',
+              jwt: 'jwt',
+              threedpayload: 'aaabbb',
+              threedresponse: 'fgewtwg2rfrgwef32rf23rfwsdf',
+              transactionreference: 'cccddd'
+            });
+            done();
+          }
+        });
+    });
+
+    it('publishes response including threedpayload on failed verification', done => {
+      const validationResult: IOnCardinalValidated = {
+        ActionCode: 'FAILURE',
+        ErrorDescription: 'desc',
+        ErrorNumber: 1234,
+        Validated: false
+      };
+
+      cardinalContinueSpy.mockReset();
+      cardinalContinueSpy.mockImplementationOnce((...args: any[]) => {
+        setTimeout(() => {
+          cardinalMock.trigger(PaymentEvents.VALIDATED, validationResult, cardinalContinueJwt);
+        });
+      });
+
+      cardinalCommerce
+        .init(config)
+        .pipe(switchMap(() => cardinalCommerce.performThreeDQuery(requestTypes, card, merchantData)))
+        .subscribe({
+          error: result => {
+            expect(result).toEqual({
+              acquirertransactionreference: '12345',
+              acsurl: 'https://foo.bar.com',
+              enrolled: 'Y',
+              threedpayload: 'aaabbb',
+              transactionreference: 'cccddd',
+              jwt: 'jwt',
+              acquirerresponsecode: '1234',
+              acquirerresponsemessage: 'desc',
+              errorcode: '50003',
+              errormessage: 'An error occurred',
+              threedresponse: cardinalContinueJwt,
+              cachetoken: 'bar'
+            });
             done();
           }
         });
