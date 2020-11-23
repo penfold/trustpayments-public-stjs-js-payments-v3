@@ -145,7 +145,7 @@
     "@trustpayments/ts-iin-lookup": "0.1.16",
     "@trustpayments/ts-luhn-check": "0.1.16",
     "@types/browserslist": "4.8.0",
-    "@types/jwt-decode": "^3.1.0",
+    "@types/jwt-decode": "3.1.0",
     "@types/lodash": "4.14.165",
     "@types/redux-logger": "3.0.8",
     "bowser": "2.11.0",
