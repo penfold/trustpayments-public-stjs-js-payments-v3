@@ -200,6 +200,7 @@ export class CardinalCommerce {
           validationResult.ActionCode === 'FAILURE'
         ) {
           StCodec.publishResponse(responseObject, responseObject.jwt, responseObject.threedresponse);
+          this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
           return throwError(validationResult);
         }
 

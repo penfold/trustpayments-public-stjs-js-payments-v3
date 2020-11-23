@@ -219,7 +219,10 @@ export class ControlFrame {
               ).pipe(mapTo(config))
             ),
             switchMap(() =>
-              this._callThreeDQueryRequest().pipe(catchError(errorData => this._onPaymentFailure(errorData)))
+              this._callThreeDQueryRequest().pipe(
+                catchError(errorData => this._onPaymentFailure(errorData)),
+                catchError(() => EMPTY)
+              )
             )
           );
         })
