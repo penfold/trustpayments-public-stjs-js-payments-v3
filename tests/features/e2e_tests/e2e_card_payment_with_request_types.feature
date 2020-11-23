@@ -120,7 +120,6 @@ Feature: E2E Card Payments with request types in config
       | errormessage | Payment has been successfully processed |
       | errorcode    | 0                                       |
 
-
    @bypass_property
   Scenario Outline: unsuccessful payment with THREEDQUERY as only request type and bypass set to used card
     Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt BASE_JWT with additional attributes
