@@ -3,7 +3,6 @@ Feature: Visual regression - E2E Card Payments
   I want to use card payments method
   In order to check full payment functionality
 
-
   @visual_regression_styling @scrn_card_interface_after_successful_payment_styling
   Scenario: Card interface after successful payment
     Given JS library configured by inline params BYPASS_MASTERCARD_WITH_STYLING_CONFIG and jwt BASE_JWT_DE with additional attributes
@@ -43,9 +42,9 @@ Feature: Visual regression - E2E Card Payments
   @visual_regression_styling @scrn_card_interface_error_invalid_patterns_styling
   Scenario: Card interface before payment - invalid pattern data
     Given JS library configured by inline params BYPASS_MASTERCARD_WITH_STYLING_CONFIG and jwt BASE_JWT_DE with additional attributes
-      | key                      | value                                 |
-      | requesttypedescriptions  | THREEDQUERY RISKDEC ACCOUNTCHECK AUTH |
-      | threedbypasspaymenttypes | MASTERCARD                            |
+      | key                      | value            |
+      | requesttypedescriptions  | THREEDQUERY AUTH |
+      | threedbypasspaymenttypes | MASTERCARD       |
     And User opens minimal example page
     When User fills payment form with defined card MASTERCARD_INVALID_PATTERN_CARD
     And User clicks Pay button

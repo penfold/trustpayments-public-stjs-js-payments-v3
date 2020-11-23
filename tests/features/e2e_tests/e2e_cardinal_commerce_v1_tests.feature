@@ -20,6 +20,8 @@ Feature: Cardinal Commerce E2E tests
     And User fills V1 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
@@ -30,6 +32,8 @@ Feature: Cardinal Commerce E2E tests
     And User fills V1 authentication modal
     Then User will see payment status information: "Unauthenticated"
     And User will see that notification frame has "red" color
+    And "submit" callback is called only once
+    And "error" callback is called only once
     And User will see that Submit button is "enabled" after payment
     And User will see that ALL input fields are "enabled"
 
@@ -40,6 +44,8 @@ Feature: Cardinal Commerce E2E tests
     And User fills V1 authentication modal
     Then User will see payment status information: "An error occurred"
     And User will see that notification frame has "red" color
+    And "submit" callback is called only once
+    And "error" callback is called only once
     And User will see that Submit button is "enabled" after payment
     And User will see that ALL input fields are "enabled"
 
@@ -49,6 +55,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @e2e_cardinal_commerce_v1
   Scenario: Timeout
@@ -56,6 +64,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "An error occurred"
     And User will see that notification frame has "red" color
+    And "submit" callback is called only once
+    And "error" callback is called only once
 
   @e2e_cardinal_commerce_v1
   Scenario: Not Enrolled
@@ -63,6 +73,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @e2e_cardinal_commerce_v1
   Scenario: Unavailable
@@ -70,6 +82,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @e2e_cardinal_commerce_v1
   Scenario: Merchant Not Active
@@ -77,6 +91,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @e2e_cardinal_commerce_v1
   Scenario: Cmpi lookup error
@@ -84,6 +100,8 @@ Feature: Cardinal Commerce E2E tests
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @e2e_cardinal_commerce_v1
   Scenario: Cmpi authenticate error
@@ -92,6 +110,8 @@ Feature: Cardinal Commerce E2E tests
     And User fills V1 authentication modal
     Then User will see payment status information: "An error occurred"
     And User will see that notification frame has "red" color
+    And "submit" callback is called only once
+    And "error" callback is called only once
 
   @e2e_cardinal_commerce_v1
   Scenario: Authentication Unavailable
@@ -100,9 +120,27 @@ Feature: Cardinal Commerce E2E tests
     And User fills V1 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
 
   @e2e_cardinal_commerce_v1
   Scenario: Bypassed Authentication
+    When User fills payment form with defined card DISCOVER_BYPASSED_AUTH_CARD
+    And User clicks Pay button
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
+
+  @e2e_cardinal_commerce_v1
+  Scenario: retry payment after failed transaction
+    When User fills payment form with defined card MASTERCARD_CMPI_AUTH_ERROR_CARD
+    And User clicks Pay button
+    And User fills V1 authentication modal
+    Then User will see payment status information: "An error occurred"
+    And User will see that notification frame has "red" color
+    And User waits for payment status to disappear
+    And User clears form
     When User fills payment form with defined card DISCOVER_BYPASSED_AUTH_CARD
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
