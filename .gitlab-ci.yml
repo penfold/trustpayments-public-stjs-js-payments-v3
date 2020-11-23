@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.43
+.cicd-os-ref: &cicd-os-ref 0.0.44
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
@@ -45,6 +45,7 @@ variables:
   # DISABLE_JOB_validate_merge_request_description: 'true'
   # Release
   # DISABLE_JOB_release: 'true'
+  # DISABLE_JOB_release_generate_version: "true"
   # Post-Release
   DISABLE_JOB_npm_publish: 'true'
   ### Disabled Jobs : End
