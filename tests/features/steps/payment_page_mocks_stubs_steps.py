@@ -164,7 +164,7 @@ def step_impl(context):
     if 'config_immediate_payment' in context.scenario.tags[0] or (
         'config_defer_init_and_start_on_load_true' in context.scenario.tags) or \
         ('config_tokenisation_visa' in context.scenario.tags and 'IE' in CONFIGURATION.REMOTE_BROWSER):
-        payment_page.validate_number_of_requests_without_data(RequestType.THREEDQUERY.name, 1)
+        payment_page.validate_number_of_requests_without_data('THREEDQUERY, AUTH', 1)
         payment_page.validate_number_of_requests_without_data(RequestType.AUTH.name, 1)
     else:
         # ToDo
