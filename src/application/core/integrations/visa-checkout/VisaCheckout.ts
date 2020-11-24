@@ -1,7 +1,6 @@
 import { environment } from '../../../../environments/environment';
 import { IVisaConfig } from './IVisaConfig';
 import { IVisaSettings } from './IVisaSettings';
-import { IWalletConfig } from '../../../../shared/model/config/IWalletConfig';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Payment } from '../../shared/payment/Payment';
@@ -14,6 +13,9 @@ import { IConfig } from '../../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
+import JwtDecode from 'jwt-decode';
+import { IDecodedJwt } from '../../models/IDecodedJwt';
+import { RequestType } from '../../../../shared/types/RequestType';
 
 declare const V: any;
 
@@ -62,7 +64,7 @@ export class VisaCheckout {
     SUCCESS: 'payment.success'
   };
 
-  protected requestTypes: string[];
+  protected requestTypes: RequestType[];
   protected visaCheckoutButtonProps: any = {
     alt: 'Visa Checkout',
     class: 'v-button',
@@ -85,7 +87,7 @@ export class VisaCheckout {
   private _datacenterurl: string;
   private _placement: string = 'body';
   private readonly _config$: Observable<IConfig>;
-  private _visaCheckoutConfig: IWalletConfig;
+  private _visaCheckoutConfig: IVisaConfig;
   private _formId: string;
 
   private _initConfiguration = {
@@ -162,7 +164,10 @@ export class VisaCheckout {
           walletsource: this._walletSource,
           wallettoken: this.paymentDetails
         },
-        DomMethods.parseForm(this._formId)
+        {
+          ...DomMethods.parseForm(this._formId),
+          termurl: 'https://termurl.com'
+        }
       )
       .then(() => {
         this.paymentStatus = VisaCheckout.VISA_PAYMENT_STATUS.SUCCESS;
@@ -224,20 +229,12 @@ export class VisaCheckout {
   }
 
   private _configurePaymentProcess(jwt: string) {
-    const {
-      merchantId,
-      livestatus,
-      placement,
-      settings,
-      paymentRequest,
-      buttonSettings,
-      requestTypes
-    } = this._visaCheckoutConfig;
+    const { merchantId, livestatus, placement, settings, paymentRequest, buttonSettings } = this._visaCheckoutConfig;
     this._stJwt = new StJwt(jwt);
     this.payment = new Payment();
     this._livestatus = livestatus;
     this._placement = placement;
-    this.requestTypes = requestTypes;
+    this.requestTypes = JwtDecode<IDecodedJwt>(jwt).payload.requesttypedescriptions;
     this.setInitConfiguration(paymentRequest, settings, this._stJwt, merchantId);
     this._buttonSettings = this._setConfiguration({ locale: this._stJwt.locale }, settings);
     this.customizeVisaButton(buttonSettings);
@@ -248,7 +245,11 @@ export class VisaCheckout {
     settings || config ? { ...config, ...settings } : {};
 
   private _initVisaFlow() {
-    DomMethods.insertScript('body', { src: this._sdkAddress, id: 'visaCheckout' }).then(() => {
+    DomMethods.insertScript('body', {
+      src: this._sdkAddress,
+      id: 'visaCheckout',
+      nonce: '9ad627e4425a4668' // backend definition
+    }).then(() => {
       this.attachVisaButton();
       this.initPaymentConfiguration();
       this.paymentStatusHandler();

@@ -119,7 +119,7 @@ def _get_remote_capabilities(configuration):
 
 
 class DriverFactory:
-    _browser: RemoteWebDriver = None
+    _driver: RemoteWebDriver = None
 
     def __init__(self, configuration):
         self._browser_name = configuration.BROWSER
@@ -127,7 +127,7 @@ class DriverFactory:
         self._command_executor = configuration.COMMAND_EXECUTOR
         self._configuration = configuration
 
-    def _set_browser(self) -> None:
+    def _set_driver(self) -> None:
         self._remote_capabilities = _get_remote_capabilities(self._configuration)
         args = dict(browser_name=self._browser_name,
                     remote=self._remote,
@@ -135,18 +135,17 @@ class DriverFactory:
                     remote_capabilities=self._remote_capabilities,
                     headless=self._configuration.HEADLESS)
         driver = SeleniumDriver(**args)  # type: ignore
-        browser = driver.get_driver()
-        type(self)._browser = browser
+        type(self)._driver = driver.get_driver()
         if not self._configuration.REMOTE_DEVICE or self._configuration.REMOTE_DEVICE is None:
-            self._browser.maximize_window()
+            self._driver.maximize_window()
 
-    def get_browser(self) -> RemoteWebDriver:
-        if not self._browser:
-            self._set_browser()
-        return self._browser
+    def get_driver(self) -> RemoteWebDriver:
+        if not self._driver:
+            self._set_driver()
+        return self._driver
 
     def close_browser(self) -> None:
-        if self._browser:
+        if self._driver:
             LOGGER.info('CLOSING BROWSER')
-            self._browser.quit()
-        type(self)._browser = None
+            self._driver.quit()
+        type(self)._driver = None

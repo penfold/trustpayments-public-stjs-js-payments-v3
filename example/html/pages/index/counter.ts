@@ -39,5 +39,5 @@ window.displayCallbackCounter = (id: string, text: string, tp: string) => {
   popup.appendChild(div);
   setTimeout(() => {
     popup.removeChild(div);
-  }, 5000);
+  }, 8000);
 };

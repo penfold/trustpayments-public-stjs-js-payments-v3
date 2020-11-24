@@ -1,5 +1,5 @@
 import './st.css';
-import JwtDecode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames.class';
@@ -11,7 +11,7 @@ import { ApplePayMock } from '../../application/core/integrations/apple-pay/Appl
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
 import { VisaCheckoutMock } from '../../application/core/integrations/visa-checkout/VisaCheckoutMock';
-import { IApplePay } from '../../application/core/models/IApplePay';
+import { IApplePayConfig } from '../../application/core/models/IApplePayConfig';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
@@ -43,6 +43,8 @@ import { CardinalClient } from '../integrations/cardinal-commerce/CardinalClient
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
+import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
+import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 
 @Service()
 export class ST {
@@ -146,7 +148,7 @@ export class ST {
 
     this.blockSubmitButton();
     // @ts-ignore
-    this._commonFrames._requestTypes = this._config.components.requestTypes;
+    this._commonFrames._requestTypes = jwt_decode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
     this._framesHub
       .waitForFrame(CONTROL_FRAME_IFRAME)
       .pipe(
@@ -166,7 +168,7 @@ export class ST {
       });
   }
 
-  public ApplePay(config: IApplePay | undefined): ApplePay {
+  public ApplePay(config: IApplePayConfig | undefined): ApplePay {
     const { applepay } = this.Environment();
 
     if (config) {
@@ -267,6 +269,7 @@ export class ST {
   }
 
   private CommonFrames(): void {
+    const requestTypes: string[] = jwt_decode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
     this._commonFrames = new CommonFrames(
       this._config.jwt,
       this._config.origin,
@@ -278,7 +281,7 @@ export class ST {
       this._config.submitFields,
       this._config.datacenterurl,
       this._config.animatedCard,
-      this._config.components.requestTypes,
+      requestTypes,
       this._config.formId,
       this._iframeFactory,
       this._frameService
@@ -294,7 +297,7 @@ export class ST {
 
   private Storage(): void {
     this._storage.setItem(ST.MERCHANT_TRANSLATIONS_STORAGE, JSON.stringify(this._config.translations));
-    this._storage.setItem(ST.LOCALE_STORAGE, JwtDecode<IStJwtObj>(this._config.jwt).payload.locale);
+    this._storage.setItem(ST.LOCALE_STORAGE, jwt_decode<IStJwtObj<IStJwtPayload>>(this._config.jwt).payload.locale);
   }
 
   private displayLiveStatus(liveStatus: boolean): void {

@@ -1,13 +1,5 @@
 {
-  "bypassCards": [
-  ],
   "components": {
-    "requestTypes": [
-      "RISKDEC",
-      "ACCOUNTCHECK",
-      "AUTH",
-      "THREEDQUERY"
-    ],
     "paymentTypes": [],
     "startOnLoad": false
   },

@@ -1,10 +1,4 @@
 {
-  "components": {
-    "requestTypes": [
-      "ACCOUNTCHECK",
-      "THREEDQUERY"
-    ]
-  },
   "panIcon": true,
   "submitOnSuccess": false,
   "submitOnError": true
