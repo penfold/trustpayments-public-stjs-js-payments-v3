@@ -5,4 +5,5 @@ export interface IScriptParams {
   defer?: 'defer';
   type?: string;
   id?: string;
+  nonce?: string;
 }
