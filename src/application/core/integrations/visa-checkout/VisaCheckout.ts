@@ -243,7 +243,11 @@ export class VisaCheckout {
     settings || config ? { ...config, ...settings } : {};
 
   private _initVisaFlow() {
-    DomMethods.insertScript('body', { src: this._sdkAddress, id: 'visaCheckout' }).then(() => {
+    DomMethods.insertScript('body', {
+      src: this._sdkAddress,
+      id: 'visaCheckout',
+      nonce: '9ad627e4425a4668' // backend definition
+    }).then(() => {
       this.attachVisaButton();
       this.initPaymentConfiguration();
       this.paymentStatusHandler();

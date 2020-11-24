@@ -1,3 +1,4 @@
+import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { VisaCheckout } from './VisaCheckout';
 import { anyString, mock, when, instance as mockInstance } from 'ts-mockito';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
@@ -187,6 +188,25 @@ describe('Visa Checkout', () => {
     // then
     it('should prepared structure be equal to real document object ', () => {
       expect(instance.attachVisaButton()).toEqual(body);
+    });
+  });
+
+  // given
+  describe('_initVisaFlow()', () => {
+    // then
+    it('should inject script with proper attributes ', () => {
+      const insertScriptSpy: jest.SpyInstance = jest
+        .spyOn(DomMethods, 'insertScript')
+        .mockImplementation(() => new Promise(() => {}));
+
+      instance._initVisaFlow();
+
+      expect(insertScriptSpy).toHaveBeenCalledWith('body', {
+        src: instance._sdkAddress,
+        id: 'visaCheckout',
+        nonce: '9ad627e4425a4668'
+      });
+      expect(insertScriptSpy).toHaveBeenCalledTimes(1);
     });
   });
 
