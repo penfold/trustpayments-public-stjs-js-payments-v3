@@ -146,7 +146,6 @@ describe('CommonFrames', () => {
   });
 
   describe('_getSubmitFields()', () => {
-    // when
     const { instance } = commonFramesFixture();
 
     function getSubmitFieldsFixture(dataArg: {}, submitFields: string[]) {
@@ -157,11 +156,10 @@ describe('CommonFrames', () => {
       return instance._getSubmitFields(data);
     }
 
-    // then
     it('should return submit fields', () => {
       expect(getSubmitFieldsFixture({ something: 'a value' }, ['a', 'b', 'c'])).toEqual(['a', 'b', 'c']);
     });
-    // then
+
     it('should return submit fields plus jwt', () => {
       expect(
         getSubmitFieldsFixture(
@@ -173,7 +171,7 @@ describe('CommonFrames', () => {
         )
       ).toEqual(['a', 'b', 'c', 'jwt']);
     });
-    // then
+
     it('should return submit fields plus jwt and threedresponse', () => {
       expect(
         getSubmitFieldsFixture(
@@ -187,7 +185,7 @@ describe('CommonFrames', () => {
       ).toEqual(['a', 'b', 'c', 'jwt', 'threedresponse']);
     });
   });
-  // given
+
   describe('_onInput()', () => {
     const { instance } = commonFramesFixture();
     const event = new Event('input');
@@ -196,7 +194,6 @@ describe('CommonFrames', () => {
       type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS
     };
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._messageBus.publish = jest.fn();
@@ -204,14 +201,12 @@ describe('CommonFrames', () => {
       instance._onInput(event);
     });
 
-    // then
     it('should publish has been called', () => {
       // @ts-ignore
       expect(instance._messageBus.publish).toHaveBeenCalledWith(messageBusEvent);
     });
   });
 
-  // given
   describe('_setTransactionCompleteListener()', () => {
     const { instance } = commonFramesFixture();
     const data = {
@@ -220,7 +215,6 @@ describe('CommonFrames', () => {
     };
     const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._messageBus = messageBus;
@@ -228,7 +222,6 @@ describe('CommonFrames', () => {
       instance._onTransactionComplete = jest.fn();
     });
 
-    // then
     it('should call _merchantForm() method', () => {
       // @ts-ignore
       instance._setTransactionCompleteListener();

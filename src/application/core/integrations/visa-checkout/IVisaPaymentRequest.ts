@@ -1,13 +1,13 @@
 export interface IVisaPaymentRequest {
   merchantRequestId?: string;
   currencyCode?: string;
-  subtotal?: number;
+  subtotal?: string;
   shippingHandling?: number;
   tax?: number;
   discount?: number;
   giftWrap?: number;
   misc?: number;
-  total?: number;
+  total?: string;
   orderId?: string;
   description?: string;
   promoCode?: string;

@@ -49,7 +49,7 @@ describe('Visa Checkout', () => {
           livestatus: 0,
           merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
           paymentRequest: {
-            subtotal: 20.0
+            subtotal: '20.0'
           },
           placement: 'st-visa-checkout',
           settings: {

@@ -8,7 +8,6 @@ import { Translator } from '../../shared/translator/Translator';
 jest.mock('./../../shared/message-bus/MessageBus');
 jest.mock('./../../shared/notification/Notification');
 
-// given
 describe('StCodec class', () => {
   const { instance, jwt } = stCodecFixture();
   const ridRegex = 'J-[\\da-z]{8}';
@@ -22,7 +21,6 @@ describe('StCodec class', () => {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NjExMTUyMDksInBheWxvYWQiOnsicmVxdWVzdHJlZmVyZW5jZSI6IlczMy0wcm0wZ2N5eCIsInJlc3BvbnNlIjpbeyJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImFjcXVpcmVycmVzcG9uc2Vjb2RlIjoiMDAiLCJhdXRoY29kZSI6IlRFU1Q1NiIsImJhc2VhbW91bnQiOiIxMDAiLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwiZGNjZW5hYmxlZCI6IjAiLCJlcnJvcmNvZGUiOiIwIiwiZXJyb3JtZXNzYWdlIjoiT2siLCJpc3N1ZXIiOiJTZWN1cmVUcmFkaW5nIFRlc3QgSXNzdWVyMSIsImlzc3VlcmNvdW50cnlpc28yYSI6IlVTIiwibGl2ZXN0YXR1cyI6IjAiLCJtYXNrZWRwYW4iOiI0MTExMTEjIyMjIyMwMjExIiwibWVyY2hhbnRjb3VudHJ5aXNvMmEiOiJHQiIsIm1lcmNoYW50bmFtZSI6IndlYnNlcnZpY2UgVU5JQ09ERSBtZXJjaGFudG5hbWUiLCJtZXJjaGFudG51bWJlciI6IjAwMDAwMDAwIiwib3BlcmF0b3JuYW1lIjoid2Vic2VydmljZXNAc2VjdXJldHJhZGluZy5jb20iLCJvcmRlcnJlZmVyZW5jZSI6IkFVVEhfVklTQV9QT1NULVBBU1MtSlNPTi1KU09OIiwicGF5bWVudHR5cGVkZXNjcmlwdGlvbiI6IlZJU0EiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9uIjoiQVVUSCIsInNlY3VyaXR5cmVzcG9uc2VhZGRyZXNzIjoiMiIsInNlY3VyaXR5cmVzcG9uc2Vwb3N0Y29kZSI6IjIiLCJzZWN1cml0eXJlc3BvbnNlc2VjdXJpdHljb2RlIjoiMiIsInNldHRsZWR1ZWRhdGUiOiIyMDE5LTAyLTIxIiwic2V0dGxlc3RhdHVzIjoiMCIsInNwbGl0ZmluYWxudW1iZXIiOiIxIiwidGlkIjoiMjc4ODI3ODgiLCJ0cmFuc2FjdGlvbnJlZmVyZW5jZSI6IjMzLTktODAxNjgiLCJ0cmFuc2FjdGlvbnN0YXJ0ZWR0aW1lc3RhbXAiOiIyMDE5LTAyLTIxIDEwOjA2OjM1In1dLCJzZWNyYW5kIjoiWktBVk1za1dRIiwidmVyc2lvbiI6IjEuMDAifX0.lLHIs5UsXht0IyFCGEF_x7AM4u_lOWX47J5cCuakqtc'
   };
 
-  // given
   describe('StCodec.verifyResponseObject', () => {
     // @ts-ignore
     const originalIsInvalid = StCodec._isInvalidResponse;
@@ -33,7 +31,6 @@ describe('StCodec class', () => {
     // @ts-ignore
     const originalHandleValid = StCodec._handleValidGatewayResponse;
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       StCodec._isInvalidResponse = jest.fn();
@@ -56,7 +53,6 @@ describe('StCodec class', () => {
       StCodec._handleValidGatewayResponse = originalHandleValid;
     });
 
-    // then
     it('handles a valid response', () => {
       // @ts-ignore
       StCodec._isInvalidResponse.mockReturnValueOnce(false);
@@ -73,7 +69,6 @@ describe('StCodec class', () => {
       expect(StCodec._handleValidGatewayResponse).toHaveBeenCalledTimes(1);
     });
 
-    // then
     it('handles an invalid response', () => {
       // @ts-ignore
       StCodec._isInvalidResponse.mockReturnValueOnce(true);
@@ -89,11 +84,9 @@ describe('StCodec class', () => {
     });
   });
 
-  // given
   describe('StCodec.publishResponse', () => {
     let translator: Translator;
 
-    //when
     beforeEach(() => {
       // @ts-ignore
       translator = new Translator('en_GB');
@@ -102,7 +95,6 @@ describe('StCodec class', () => {
       StCodec.getMessageBus().publish = jest.fn();
     });
 
-    // then
     it('should translate and publish result', () => {
       // @ts-ignore
       StCodec.publishResponse({
@@ -124,7 +116,6 @@ describe('StCodec class', () => {
       );
     });
 
-    // then
     it('should assing jwtResponse to eventData.jwt when it is defined', () => {
       StCodec.publishResponse(
         {
@@ -137,7 +128,6 @@ describe('StCodec class', () => {
       expect(StCodec.getMessageBus().publish).toHaveBeenCalledTimes(1);
     });
 
-    // then
     it('should assing threedresponse  to eventData.threedresponse  when it is defined', () => {
       StCodec.publishResponse(
         {
@@ -152,9 +142,7 @@ describe('StCodec class', () => {
     });
   });
 
-  // given
   describe('StCodec._createCommunicationError', () => {
-    // then
     it('return valid error response', () => {
       // @ts-ignore
       expect(StCodec._createCommunicationError()).toMatchObject({
@@ -164,9 +152,7 @@ describe('StCodec class', () => {
     });
   });
 
-  // given
   describe('StCodec._handleInvalidResponse', () => {
-    // then
     it('should call publishResponse and error notification and return the error object', () => {
       let spy1 = jest.spyOn(StCodec, 'publishResponse');
       // @ts-ignore
@@ -180,9 +166,7 @@ describe('StCodec class', () => {
     });
   });
 
-  // given
   describe('StCodec._determineResponse', () => {
-    // then
     each([
       [{ response: [{ requesttypedescription: 'AUTH' }] }, { requesttypedescription: 'AUTH' }],
       [
@@ -224,13 +208,11 @@ describe('StCodec class', () => {
     });
   });
 
-  // given
   describe('StCodec._handleValidGatewayResponse', () => {
     const originalPublishResponse = StCodec.publishResponse;
     const originalGetErrorData = StCodec.getErrorData;
     let spy: any;
 
-    // when
     beforeEach(() => {
       StCodec.publishResponse = jest.fn();
       StCodec.getErrorData = jest.fn((data: any) => originalGetErrorData(data));
@@ -243,7 +225,6 @@ describe('StCodec class', () => {
       StCodec.getErrorData = originalGetErrorData;
     });
 
-    // then
     it('should handle successful response', () => {
       const content = { errorcode: '0', errormessage: 'Ok', requesttypedescription: 'AUTH' };
       const jwt = 'jwtString';
@@ -255,9 +236,7 @@ describe('StCodec class', () => {
     });
   });
 
-  // given
   describe('StCodec._decodeResponseJwt', () => {
-    // then
     it('should return decoded JWT payload', () => {
       const jwt =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJwYXlsb2FkIjp7InNvbWV0aGluZyI6InRoYXRzIGRlY29kZWQifX0.OCxORAco0sqzWR1nd4-MUajfrAHGgGSf4d_AAjmrNlU';
@@ -273,7 +252,6 @@ describe('StCodec class', () => {
       expect(mock).toHaveBeenCalledTimes(0);
     });
 
-    // then
     it('should call reject on failure', () => {
       const jwt = 'INVALID';
       const mock = jest.fn();
@@ -284,19 +262,15 @@ describe('StCodec class', () => {
     });
   });
 
-  // given
   describe('StCodec._createRequestId', () => {
-    // when
     beforeEach(() => {
       str = new StCodec(jwt);
     });
 
-    // then
     it('generates a request id', () => {
       expect(StCodec._createRequestId()).toEqual(requestid);
     });
 
-    // then
     it('generates reasonably unique ids', () => {
       const attempts = 99999;
       const results = new Set();
@@ -307,9 +281,7 @@ describe('StCodec class', () => {
     });
   });
 
-  // given
   describe('StCodec.buildRequestObject', () => {
-    // when
     beforeEach(() => {
       str = new StCodec(jwt);
       StCodec.VERSION_INFO = 'STJS::N/A::2.0.0::N/A';
@@ -317,7 +289,6 @@ describe('StCodec class', () => {
       StCodec.publishResponse = jest.fn();
     });
 
-    // then
     each([
       [
         { pan: '4111111111111111', expirydate: '12/12', securitycode: '321' },
@@ -341,9 +312,7 @@ describe('StCodec class', () => {
     });
   });
 
-  // given
   describe('StCodec.encode', () => {
-    // when
     beforeEach(() => {
       str = new StCodec(jwt);
       StCodec.VERSION_INFO = 'STJS::N/A::2.0.0::N/A';
@@ -351,7 +320,6 @@ describe('StCodec class', () => {
       StCodec.publishResponse = jest.fn();
     });
 
-    // then
     each([
       [
         { pan: '4111111111111111', requesttypedescriptions: ['AUTH'] },
@@ -385,16 +353,13 @@ describe('StCodec class', () => {
     });
   });
 
-  // given
   describe('StCodec._isInvalidResponse', () => {
-    // when
     beforeEach(() => {
       str = new StCodec(jwt);
       // @ts-ignore
       StCodec.publishResponse = jest.fn();
     });
 
-    // then
     each([
       [{}, true],
       [{ response: [{}] }, true],
@@ -408,16 +373,13 @@ describe('StCodec class', () => {
     });
   });
 
-  // given
   describe('StCodec.decode', () => {
-    // when
     beforeEach(() => {
       str = new StCodec(jwt);
       // @ts-ignore
       StCodec._handleInvalidResponse = jest.fn().mockReturnValueOnce(Error(COMMUNICATION_ERROR_INVALID_RESPONSE));
     });
 
-    // then
     it('should decode a valid response', async () => {
       instance.verifyResponseObject = jest.fn().mockReturnValueOnce({ verified: 'data' });
       await expect(
@@ -431,7 +393,6 @@ describe('StCodec class', () => {
       expect(instance.verifyResponseObject).toHaveBeenCalledWith(expectedResult, fullResponse.jwt);
     });
 
-    // then
     it('should error an invalid response', async () => {
       await expect(str.decode({})).rejects.toThrow(Error(COMMUNICATION_ERROR_INVALID_RESPONSE));
       // @ts-ignore
@@ -439,7 +400,6 @@ describe('StCodec class', () => {
     });
   });
 
-  // given
   describe('StCodec.updateJWTValue', () => {
     const messageBusEvent = {
       data: {
@@ -448,20 +408,17 @@ describe('StCodec class', () => {
       type: MessageBus.EVENTS_PUBLIC.UPDATE_JWT
     };
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       StCodec.getMessageBus().publish = jest.fn();
       StCodec.updateJWTValue('somenewjwt');
     });
 
-    // then
     it('should call publish method with UPDATE_JWT event', () => {
       // @ts-ignore
       expect(StCodec.getMessageBus().publish).toHaveBeenCalledWith(messageBusEvent, true);
     });
 
-    // then
     it('should call publish method with UPDATE_JWT event', () => {
       // @ts-ignore
       expect(StCodec.getMessageBus().publish).toHaveBeenCalledWith(messageBusEvent, true);

@@ -7,7 +7,7 @@ describe('VisaCheckoutUpdateService', () => {
   const stJwt: IStJwtPayload = {
     currencyiso3a: 'PLN',
     locale: 'pl_PL',
-    mainamount: 100
+    mainamount: '100'
   };
   const config: IVisaInitConfig = {
     apikey: 'some key',
@@ -16,8 +16,8 @@ describe('VisaCheckoutUpdateService', () => {
     },
     paymentRequest: {
       currencyCode: 'GPB',
-      total: 11,
-      subtotal: 2
+      total: '11',
+      subtotal: '2'
     }
   };
 
@@ -28,8 +28,8 @@ describe('VisaCheckoutUpdateService', () => {
     },
     paymentRequest: {
       currencyCode: 'PLN',
-      total: 100,
-      subtotal: 100
+      total: '100',
+      subtotal: '100'
     }
   };
 

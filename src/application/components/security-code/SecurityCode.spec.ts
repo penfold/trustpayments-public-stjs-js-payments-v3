@@ -16,50 +16,41 @@ import { Frame } from '../../core/shared/frame/Frame';
 jest.mock('./../../core/shared/notification/Notification');
 jest.mock('./../../core/shared/message-bus/MessageBus');
 
-// given
 describe('SecurityCode', () => {
   const { securityCodeInstance } = securityCodeFixture();
 
-  // given
   describe('init', () => {
-    // then
     it('should create instance of classes SecurityCode and input representing form field', () => {
       expect(securityCodeInstance).toBeInstanceOf(SecurityCode);
       expect(securityCodeInstance).toBeInstanceOf(Input);
     });
   });
 
-  // given
   describe('ifFieldExists', () => {
     let ifFieldExists: HTMLInputElement;
-    // when
+
     beforeEach(() => {
       ifFieldExists = SecurityCode.ifFieldExists();
     });
 
-    // then
     it('should security code field exist', () => {
       expect(ifFieldExists).toBeTruthy();
     });
 
-    // then
     it('should security code field be an instance of HTMLDivElement', () => {
       expect(SecurityCode.ifFieldExists()).toBeInstanceOf(HTMLInputElement);
     });
   });
 
-  // given
   describe('getLabel', () => {
-    // then
     it('should have a label', () => {
       expect(securityCodeInstance.getLabel()).toBe('Security code');
     });
   });
 
-  // given
   describe('setDisableListener', () => {
     const { securityCodeInstance } = securityCodeFixture();
-    // then
+
     it('should set attribute disabled and add class to classList', () => {
       // @ts-ignore
       securityCodeInstance.messageBus.subscribe = jest.fn().mockImplementation((event, callback) => {
@@ -69,7 +60,6 @@ describe('SecurityCode', () => {
       securityCodeInstance._setDisableListener();
     });
 
-    // then
     it('should remove attribute disabled and remove class from classList', () => {
       // @ts-ignore
       securityCodeInstance.messageBus.subscribe = jest.fn().mockImplementation((event, callback) => {
@@ -86,7 +76,6 @@ describe('SecurityCode', () => {
     });
   });
 
-  // given
   describe('onBlur', () => {
     const { securityCodeInstance } = securityCodeFixture();
     // @ts-ignore
@@ -97,21 +86,17 @@ describe('SecurityCode', () => {
       securityCodeInstance.onBlur();
     });
 
-    // then
     it('should sendState method has been called', () => {
       expect(spySendState).toHaveBeenCalled();
     });
   });
 
-  // given
   describe('onFocus()', () => {
-    // when
     const { securityCodeInstance } = securityCodeFixture();
     const event: Event = new Event('focus');
     // @ts-ignore
     securityCodeInstance._inputElement.focus = jest.fn();
 
-    // then
     it('should call super function', () => {
       // @ts-ignore
       securityCodeInstance.onFocus(event);
@@ -120,7 +105,6 @@ describe('SecurityCode', () => {
     });
   });
 
-  // given
   describe('onInput', () => {
     const { securityCodeInstance } = securityCodeFixture();
     // @ts-ignore
@@ -134,25 +118,20 @@ describe('SecurityCode', () => {
       securityCodeInstance.onInput(event);
     });
 
-    // then
     it('should call sendState', () => {
       // @ts-ignore
       expect(securityCodeInstance._sendState).toHaveBeenCalled();
     });
 
-    // then
     it('should trim too long value', () => {
       // @ts-ignore
       expect(securityCodeInstance._inputElement.value).toEqual('');
     });
   });
 
-  // given
   describe('onPaste()', () => {
-    // when
     const { securityCodeInstance } = securityCodeFixture();
 
-    // when
     beforeEach(() => {
       const event = {
         clipboardData: {
@@ -167,19 +146,16 @@ describe('SecurityCode', () => {
       securityCodeInstance.onPaste(event);
     });
 
-    // then
     it('should call _sendState method', () => {
       // @ts-ignore
       expect(securityCodeInstance._sendState).toHaveBeenCalled();
     });
   });
 
-  // given
   describe('onKeyPress()', () => {
     const { securityCodeInstance } = securityCodeFixture();
     const event = new KeyboardEvent('keypress');
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       SecurityCode.prototype.onKeyPress = jest.fn();
@@ -187,14 +163,12 @@ describe('SecurityCode', () => {
       securityCodeInstance.onKeyPress(event);
     });
 
-    // then
     it('should call onKeyPress', () => {
       // @ts-ignore
       expect(SecurityCode.prototype.onKeyPress).toHaveBeenCalledWith(event);
     });
   });
 
-  // given
   describe('_sendState', () => {
     const { securityCodeInstance, messageBus } = securityCodeFixture();
     // @ts-ignore
@@ -208,23 +182,20 @@ describe('SecurityCode', () => {
     });
   });
 
-  // given
   describe('_subscribeSecurityCodeChange', () => {
     const { securityCodeInstance, messageBus, configProvider } = securityCodeFixture();
     when(configProvider.getConfig()).thenReturn({ placeholders: { securitycode: '***' } } as IConfig);
     it('should return standard security code pattern', () => {
-      // then
       messageBus.publish({ type: MessageBus.EVENTS.CHANGE_SECURITY_CODE_LENGTH, data: 3 });
       // @ts-ignore
       expect(securityCodeInstance.placeholder).toEqual('***');
     });
   });
 
-  // given
   describe('_setSecurityCodePattern', () => {
     const pattern = 'some243pa%^tern';
     const { securityCodeInstance } = securityCodeFixture();
-    // then
+
     it('should set pattern attribute on input field', () => {
       // @ts-ignore
       securityCodeInstance._setSecurityCodePattern(pattern);
