@@ -124,9 +124,8 @@ def get_number_of_wallet_verify_requests(url):
 def get_number_of_thirdparty_requests(request_type, walletsource):
     count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
-                              {
-                                  'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==[' + request_type + '])]'},
-                              {'matchesJsonPath': '$.request[:1][?(@.walletsource=="' + walletsource + '")]'}]},
+                              {'matchesJsonPath': '$.request[:1][?(@.walletsource=="' + walletsource + '")]'}],
+                                'headers': {'st-request-types': {'equalTo': request_type}}},
                           verify=False)
     data = json.loads(count.content)
     return data['count']
