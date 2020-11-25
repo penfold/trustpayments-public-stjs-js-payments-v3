@@ -24,7 +24,6 @@ export class GatewayClient {
 
   threedQuery(request: IStRequest): Observable<IThreeDQueryResponse> {
     return from(this.stTransport.sendRequest(request)).pipe(
-      tap((response: { response: IThreeDQueryResponse }) => (this.stTransport._threeDQueryResult = response)),
       map((response: { response: IThreeDQueryResponse }) => response.response)
     );
   }

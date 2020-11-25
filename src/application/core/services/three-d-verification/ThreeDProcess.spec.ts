@@ -16,7 +16,6 @@ import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { IVerificationData } from './data/IVerificationData';
 import { IVerificationResult } from './data/IVerificationResult';
 import { ActionCode } from './data/ActionCode';
-import { IAuthorizePaymentResponse } from '../../models/IAuthorizePaymentResponse';
 import { IThreeDSTokens } from './data/IThreeDSTokens';
 
 describe('ThreeDProcess', () => {
@@ -134,7 +133,7 @@ describe('ThreeDProcess', () => {
     });
 
     it('calls threedquery request on the gateway', done => {
-      const request = new ThreeDQueryRequest('cardinal-cache-token', requestTypes, card, merchantData);
+      const request = new ThreeDQueryRequest('cardinal-cache-token', card, merchantData);
 
       threeDProcess.performThreeDQuery(requestTypes, card, merchantData).subscribe(() => {
         verify(gatewayClientMock.threedQuery(deepEqual(request))).once();
@@ -163,7 +162,7 @@ describe('ThreeDProcess', () => {
       threeDProcess.performThreeDQuery(requestTypes, card, merchantData).subscribe(result => {
         verify(verificationServiceMock.verify(anything())).never();
         expect(result.cachetoken).toBe('cardinal-cache-token');
-        expect(result.threedresponse).toBe('');
+        expect(result.threedresponse).toBeUndefined();
         done();
       });
     });
@@ -180,7 +179,7 @@ describe('ThreeDProcess', () => {
       threeDProcess.performThreeDQuery(requestTypes, card, merchantData).subscribe(result => {
         verify(verificationServiceMock.verify(anything())).never();
         expect(result.cachetoken).toBe('cardinal-cache-token');
-        expect(result.threedresponse).toBe('');
+        expect(result.threedresponse).toBeUndefined();
         done();
       });
     });
@@ -189,6 +188,10 @@ describe('ThreeDProcess', () => {
       const googleAnalyticsSpy = spy(GoogleAnalytics);
 
       const threedqueryResponse: IThreeDQueryResponse = {
+        errorcode: '0',
+        errormessage: 'success',
+        jwt: 'jwt',
+        requesttypescription: 'THREEDQUERY',
         enrolled: 'Y',
         acsurl: 'https://acs.url',
         acquirertransactionreference: 'foobar-123',
@@ -211,7 +214,8 @@ describe('ThreeDProcess', () => {
         jwt: 'validation-result-jwt'
       };
 
-      const finalResult: IAuthorizePaymentResponse = {
+      const finalResult: IThreeDQueryResponse = {
+        ...threedqueryResponse,
         cachetoken: 'cardinal-cache-token',
         threedresponse: 'validation-result-jwt'
       };
@@ -227,11 +231,17 @@ describe('ThreeDProcess', () => {
       when(gatewayClientMock.threedQuery(anything())).thenReturn(of(threedqueryResponse));
       when(verificationServiceMock.start(anything())).thenReturn(of(undefined));
       when(verificationServiceMock.verify(deepEqual(verificationData))).thenReturn(of(verificationResult));
-      when(verificationResultHandlerMock.handle(anything(), anything())).thenReturn(of(finalResult));
+      when(verificationResultHandlerMock.handle(anything(), anything(), anything())).thenReturn(of(finalResult));
 
       threeDProcess.performThreeDQuery(requestTypes, card, merchantData).subscribe(result => {
         verify(verificationServiceMock.verify(deepEqual(verificationData))).once();
-        verify(verificationResultHandlerMock.handle(deepEqual(verificationResult), deepEqual(cardinalTokens))).once();
+        verify(
+          verificationResultHandlerMock.handle(
+            deepEqual(threedqueryResponse),
+            deepEqual(verificationResult),
+            deepEqual(cardinalTokens)
+          )
+        ).once();
         verify(googleAnalyticsSpy.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')).once();
         expect(result.threedresponse).toBe('validation-result-jwt');
         expect(result.cachetoken).toBe('cardinal-cache-token');

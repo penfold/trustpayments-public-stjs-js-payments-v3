@@ -1,36 +1,39 @@
 import { Service } from 'typedi';
 import { IVerificationResult } from './data/IVerificationResult';
 import { Observable, of, throwError } from 'rxjs';
-import { IAuthorizePaymentResponse } from '../../models/IAuthorizePaymentResponse';
-import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
-import { StCodec } from '../st-codec/StCodec.class';
-import { NotificationService } from '../../../../client/notification/NotificationService';
-import { StTransport } from '../st-transport/StTransport.class';
+import { PAYMENT_ERROR } from '../../models/constants/Translations';
 import { IThreeDSTokens } from './data/IThreeDSTokens';
 import { ActionCode } from './data/ActionCode';
+import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 
 @Service()
 export class VerificationResultHandler {
-  constructor(private notification: NotificationService, private transport: StTransport) {}
-
-  handle(result: IVerificationResult, tokens: IThreeDSTokens): Observable<IAuthorizePaymentResponse> {
+  handle(
+    response: IThreeDQueryResponse,
+    result: IVerificationResult,
+    tokens: IThreeDSTokens
+  ): Observable<IThreeDQueryResponse> {
     switch (result.actionCode) {
       case ActionCode.SUCCESS:
       case ActionCode.NOACTION:
         return of({
-          cachetoken: tokens.cacheToken,
-          threedresponse: result.jwt
+          ...response,
+          threedresponse: result.jwt,
+          cachetoken: tokens.cacheToken
         });
       case ActionCode.ERROR:
-        this.notification.error(COMMUNICATION_ERROR_INVALID_RESPONSE);
-        return throwError(result);
       case ActionCode.FAILURE:
-        StCodec.publishResponse(
-          this.transport._threeDQueryResult.response,
-          this.transport._threeDQueryResult.jwt,
-          result.jwt
-        );
-        return throwError(result);
+        const errorResponse: IThreeDQueryResponse = {
+          ...response,
+          acquirerresponsecode: String(result.errorNumber),
+          acquirerresponsemessage: result.errorDescription,
+          errorcode: '50003',
+          errormessage: PAYMENT_ERROR,
+          threedresponse: result.jwt,
+          cachetoken: tokens.cacheToken
+        };
+
+        return throwError(errorResponse);
     }
   }
 }

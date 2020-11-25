@@ -3,11 +3,10 @@ import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Service } from 'typedi';
 import { first, mapTo, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { merge, Observable, of } from 'rxjs';
+import { iif, merge, Observable, of } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
-import { IAuthorizePaymentResponse } from '../../models/IAuthorizePaymentResponse';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IThreeDVerificationService } from './IThreeDVerificationService';
 import { IThreeDSTokens } from './data/IThreeDSTokens';
@@ -49,17 +48,27 @@ export class ThreeDProcess {
     requestTypes: string[],
     card: ICard,
     merchantData: IMerchantData
-  ): Observable<IAuthorizePaymentResponse> {
+  ): Observable<IThreeDQueryResponse> {
     return this.threeDSTokens$.pipe(
       first(),
-      switchMap(tokens =>
-        this.verificationService.start(tokens.jwt).pipe(
-          mapTo(new ThreeDQueryRequest(tokens.cacheToken, requestTypes, card, merchantData)),
+      switchMap(tokens => {
+        const includesThreedquery = () => requestTypes.includes('THREEDQUERY');
+
+        return iif(includesThreedquery, this.verificationService.start(tokens.jwt), of(null)).pipe(
+          mapTo(new ThreeDQueryRequest(tokens.cacheToken, card, merchantData)),
           switchMap(request => this.gatewayClient.threedQuery(request)),
-          switchMap(response => this.authenticateCard(response, tokens)),
+          switchMap(response => {
+            if (this.isThreeDAuthorisationRequired(response)) {
+              return this.authenticateCard(response, tokens);
+            }
+            return of({
+              ...response,
+              cachetoken: tokens.cacheToken
+            });
+          }),
           tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed'))
-        )
-      )
+        );
+      })
     );
   }
 
@@ -75,29 +84,21 @@ export class ThreeDProcess {
     );
   }
 
-  private authenticateCard(
-    response: IThreeDQueryResponse,
-    tokens: IThreeDSTokens
-  ): Observable<IAuthorizePaymentResponse> {
-    const isCardEnrolledAndNotFrictionless = response.enrolled === 'Y' && response.acsurl !== undefined;
+  private authenticateCard(response: IThreeDQueryResponse, tokens: IThreeDSTokens): Observable<IThreeDQueryResponse> {
+    const verificationData: IVerificationData = {
+      transactionId: response.acquirertransactionreference,
+      jwt: tokens.jwt,
+      acsUrl: response.acsurl,
+      payload: response.threedpayload
+    };
 
-    if (isCardEnrolledAndNotFrictionless) {
-      const verificationData: IVerificationData = {
-        transactionId: response.acquirertransactionreference,
-        jwt: tokens.jwt,
-        acsUrl: response.acsurl,
-        payload: response.threedpayload
-      };
+    return this.verificationService.verify(verificationData).pipe(
+      tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
+      switchMap(validationResult => this.verificationResultHandler.handle(response, validationResult, tokens))
+    );
+  }
 
-      return this.verificationService.verify(verificationData).pipe(
-        tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
-        switchMap(validationResult => this.verificationResultHandler.handle(validationResult, tokens))
-      );
-    }
-
-    return of<IAuthorizePaymentResponse>({
-      threedresponse: '',
-      cachetoken: tokens.cacheToken
-    });
+  private isThreeDAuthorisationRequired(threeDResponse: IThreeDQueryResponse): boolean {
+    return threeDResponse.enrolled === 'Y' && threeDResponse.acsurl !== undefined;
   }
 }
