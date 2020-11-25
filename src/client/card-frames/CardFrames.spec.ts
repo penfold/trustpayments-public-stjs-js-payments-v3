@@ -19,7 +19,6 @@ import {
 jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/validation/Validation');
 
-// given
 describe('CardFrames', () => {
   document.body.innerHTML =
     '<form id="st-form" class="example-form" autocomplete="off" novalidate> <h1 class="example-form__title"> Secure Trading<span>AMOUNT: <strong>10.00 GBP</strong></span> </h1> <div class="example-form__section example-form__section--horizontal"> <div class="example-form__group"> <label for="example-form-name" class="example-form__label">AMOUNT</label> <input id="example-form-amount" class="example-form__input" type="number" placeholder="" name="myBillAmount" data-st-name="billingamount" /> </div> </div> <div class="example-form__section example-form__section--horizontal"> <div class="example-form__group"> <label for="example-form-name" class="example-form__label">NAME</label> <input id="example-form-name" class="example-form__input" type="text" placeholder="John Doe" autocomplete="name" name="myBillName" data-st-name="billingfirstname" /> </div> <div class="example-form__group"> <label for="example-form-email" class="example-form__label">E-MAIL</label> <input id="example-form-email" class="example-form__input" type="email" placeholder="test@mail.com" autocomplete="email" name="myBillEmail" data-st-name="billingemail" /> </div> <div class="example-form__group"> <label for="example-form-phone" class="example-form__label">PHONE</label> <input id="example-form-phone" class="example-form__input" type="tel" placeholder="+00 000 000 000" autocomplete="tel" name="myBillTel" /> <!-- no data-st-name attribute so this field will not be submitted to ST --> </div> </div> <div class="example-form__spacer"></div> <div class="example-form__section"> <div id="st-notification-frame" class="example-form__group"></div> <div id="st-card-number" class="example-form__group"></div> <div id="st-expiration-date" class="example-form__group"></div> <div id="st-security-code" class="example-form__group"></div> <div class="example-form__spacer"></div> </div> <div class="example-form__section"> <div class="example-form__group example-form__group--submit"> <button type="submit" class="example-form__button">Back</button> <button type="submit" class="example-form__button" id="merchant-submit-button">Submit</button> </div> </div> <div class="example-form__section"> <div id="st-control-frame" class="example-form__group"></div> <div id="st-visa-checkout" class="example-form__group"></div> <div id="st-apple-pay" class="example-form__group"></div> </div> <div id="st-animated-card" class="st-animated-card-wrapper"></div> </form>';
@@ -76,7 +75,6 @@ describe('CardFrames', () => {
     instance.init();
   });
 
-  // given
   describe('_disableFormField', () => {
     const data = true;
     const type = MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER;
@@ -84,7 +82,7 @@ describe('CardFrames', () => {
       data,
       type
     };
-    // when
+
     beforeEach(() => {
       // @ts-ignore
       instance._broadcastSecurityCodeProperties = jest.fn();
@@ -94,17 +92,15 @@ describe('CardFrames', () => {
       instance._disableFormField(data, type, CARD_NUMBER_IFRAME);
     });
 
-    // then
     it('should call publish method', () => {
       // @ts-ignore
       expect(instance._messageBus.publish).toHaveBeenCalledWith(messageBusEvent);
     });
   });
 
-  // given
   describe('_disableSubmitButton', () => {
     const element = document.createElement('button');
-    // when
+
     beforeEach(() => {
       // @ts-ignore
       instance._getSubmitButton = jest.fn().mockReturnValueOnce(element);
@@ -114,14 +110,12 @@ describe('CardFrames', () => {
       instance._disableSubmitButton(true);
     });
 
-    // then
     it('should call _setSubmitButtonProperties', () => {
       // @ts-ignore
       expect(instance._setSubmitButtonProperties).toHaveBeenCalled();
     });
   });
 
-  // given
   describe('_onInput', () => {
     const messageBusEvent = {
       data: {
@@ -131,7 +125,7 @@ describe('CardFrames', () => {
       },
       type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS
     };
-    // when
+
     beforeEach(() => {
       DomMethods.parseForm = jest.fn().mockReturnValueOnce({
         billingamount: '',
@@ -142,7 +136,6 @@ describe('CardFrames', () => {
       instance._messageBus.publish = jest.fn();
     });
 
-    // then
     it('should call publish method', () => {
       // @ts-ignore
       instance._onInput();
@@ -151,29 +144,23 @@ describe('CardFrames', () => {
     });
   });
 
-  // given
   describe('_setMerchantInputListeners', () => {
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._setMerchantInputListeners();
     });
 
-    // then
     it('should add event listener to each input', () => {
       expect(DomMethods.getAllFormElements).toBeCalled();
     });
   });
 
-  // given
   describe('_submitFormListener', () => {
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._publishSubmitEvent = jest.fn();
     });
 
-    // then
     it('should call preventDefault and publishSubmitEvent method', () => {
       // @ts-ignore
       instance._submitButton.addEventListener = jest.fn().mockImplementationOnce((event, callback) => {
@@ -186,9 +173,7 @@ describe('CardFrames', () => {
     });
   });
 
-  // given
   describe('_subscribeBlockSubmit', () => {
-    // then
     it('should subscribe listener been called', () => {
       // @ts-ignore
       instance._messageBus.subscribe = jest.fn();
@@ -198,7 +183,6 @@ describe('CardFrames', () => {
       expect(instance._messageBus.subscribe).toHaveBeenCalled();
     });
 
-    // then
     it('should call disableSubmitButton method when BLOCK_FORM event has been called', () => {
       // @ts-ignore
       instance._disableSubmitButton = jest.fn();
@@ -215,7 +199,6 @@ describe('CardFrames', () => {
     });
   });
 
-  // given
   describe('_publishSubmitEvent', () => {
     const submitFormEvent = {
       data: {
@@ -224,7 +207,7 @@ describe('CardFrames', () => {
       },
       type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM
     };
-    // when
+
     beforeEach(() => {
       // @ts-ignore
       instance._messageBus.subscribe = jest.fn().mockReturnValueOnce({
@@ -238,14 +221,12 @@ describe('CardFrames', () => {
       instance._publishSubmitEvent();
     });
 
-    // then
     it('should call publish method', () => {
       // @ts-ignore
       expect(instance._messageBus.publish).toHaveBeenCalledWith(submitFormEvent, true);
     });
   });
 
-  // given
   describe('_validateFieldsAfterSubmit', () => {
     function validateFieldsAfterSubmitFixture(
       stateCardNumber: boolean,
@@ -259,13 +240,11 @@ describe('CardFrames', () => {
       };
     }
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._publishValidatedFieldState = jest.fn();
     });
 
-    // then
     it(`should call _publishValidatedFieldState for cardNumber if it's state is false`, () => {
       // @ts-ignore
       instance._messageBus.subscribe = jest.fn().mockImplementationOnce((event, callback) => {
@@ -281,7 +260,6 @@ describe('CardFrames', () => {
       );
     });
 
-    // then
     it(`should call _publishValidatedFieldState for expirationDate if it's state is false`, () => {
       // @ts-ignore
       instance._messageBus.subscribe = jest.fn().mockImplementationOnce((event, callback) => {
@@ -298,7 +276,6 @@ describe('CardFrames', () => {
       );
     });
 
-    // then
     it(`should call _publishValidatedFieldState for securityCode if it's state is false`, () => {
       // @ts-ignore
       instance._messageBus.subscribe = jest.fn().mockImplementationOnce((event, callback) => {
@@ -316,11 +293,10 @@ describe('CardFrames', () => {
     });
   });
 
-  // given
   describe('_publishValidatedFieldState', () => {
     const field = { message: 'fuuuuuu', state: true };
     const eventType = MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD;
-    // when
+
     beforeEach(() => {
       // @ts-ignore
       instance._messageBus.publish = jest.fn();
@@ -328,7 +304,6 @@ describe('CardFrames', () => {
       instance._publishValidatedFieldState(field, eventType);
     });
 
-    // then
     it('should set messageBusEvent properties', () => {
       // @ts-ignore
       expect(instance._messageBusEvent.type).toEqual(MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD);
@@ -336,7 +311,6 @@ describe('CardFrames', () => {
       expect(instance._messageBusEvent.data.message).toEqual(field.message);
     });
 
-    // then
     it('should set messageBusEvent properties', () => {
       // @ts-ignore
       expect(instance._messageBus.publish).toHaveBeenCalledWith({
@@ -346,11 +320,10 @@ describe('CardFrames', () => {
     });
   });
 
-  // given
   describe('_setSubmitButtonProperties', () => {
     const button = document.createElement('button');
     button.setAttribute('type', 'submit');
-    // then
+
     it('should mark button as disabled when form state is blocked', () => {
       // @ts-ignore
       instance._setSubmitButtonProperties(button, FormState.BLOCKED);
@@ -360,7 +333,6 @@ describe('CardFrames', () => {
       expect(button.disabled).toEqual(true);
     });
 
-    // then
     it('should mark button as disabled when form state is complete but text should be pay', () => {
       // @ts-ignore
       instance._setSubmitButtonProperties(button, FormState.COMPLETE);
@@ -370,7 +342,6 @@ describe('CardFrames', () => {
       expect(button.disabled).toEqual(true);
     });
 
-    // then
     it('should remove disabled attributes from button when form state is available', () => {
       // @ts-ignore
       instance._setSubmitButtonProperties(button, FormState.AVAILABLE);
@@ -381,9 +352,7 @@ describe('CardFrames', () => {
     });
   });
 
-  // given
   describe('_setSubmitButton', () => {
-    // then
     it('should return button referred to id specified by merchant', () => {
       // @ts-ignore
       expect(instance._createSubmitButton()).toEqual(document.getElementById('merchant-submit-button'));
@@ -400,7 +369,6 @@ describe('CardFrames', () => {
       expect(instance._createSubmitButton().getAttribute('type')).toEqual('submit');
     });
 
-    // then
     it('should return first given submit input when buttonID is not specified', () => {
       // @ts-ignore
       instance._buttonId = undefined;

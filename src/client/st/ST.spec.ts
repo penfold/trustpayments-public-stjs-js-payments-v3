@@ -23,13 +23,12 @@ jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytic
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 
-// given
 describe('ST', () => {
   const { config, cacheConfig, instance } = stFixture();
-  // given
+
   describe('constructor()', () => {
     let stObject: any;
-    // when
+
     beforeEach(() => {
       instance.Init = jest.fn();
       // @ts-ignore
@@ -37,27 +36,23 @@ describe('ST', () => {
     });
   });
 
-  // given
   describe('ST.AppapplePayConfiglePay()', () => {
     const { applePayConfig } = stFixture();
 
-    // then
     it('should return ApplePayMock object when environment.testEnvironment equals true', () => {
       environment.testEnvironment = true;
       expect(instance.ApplePay(applePayConfig)).toBeInstanceOf(ApplePayMock);
     });
-    // then
+
     it('should return ApplePay object when environment.testEnvironment equals false', () => {
       environment.testEnvironment = false;
       expect(instance.ApplePay(applePayConfig)).toBeInstanceOf(ApplePay);
     });
   });
 
-  // given
   describe('updateJWT()', () => {
     const lodash = jest.requireActual('lodash');
 
-    // when
     beforeEach(() => {
       StCodec.updateJWTValue = jest.fn();
       instance.updateJWT('somenewjwtvalue');
@@ -66,17 +61,14 @@ describe('ST', () => {
       });
     });
 
-    // then
     it('should assign new jwt value', () => {
       expect(instance._config.jwt).toEqual('somenewjwtvalue');
     });
 
-    // then
     it('should call updateJWTValue', () => {
       expect(StCodec.updateJWTValue).toHaveBeenCalled();
     });
 
-    // then
     it('should throw an error if newJwt is not specified', () => {
       expect(() => {
         instance.updateJWT(null);

@@ -2,13 +2,10 @@ import { mock } from 'ts-mockito';
 import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
 import { Cybertonica } from './Cybertonica';
 
-// given
 describe('Cybertonica', () => {
   const { instance } = cybertonicaFixture();
 
-  // given
   describe('_onInit', () => {
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._insertCybertonicaLibrary = jest.fn();
@@ -16,7 +13,6 @@ describe('Cybertonica', () => {
       instance._insertCybertonicaLibrary = jest.fn().mockResolvedValueOnce('TID VALUE');
     });
 
-    // then
     it('should call _insertCybertonicaLibrary', async () => {
       // @ts-ignore
       instance.init();
@@ -25,9 +21,7 @@ describe('Cybertonica', () => {
     });
   });
 
-  // given
   describe('getBasename', () => {
-    // then
     it('should calculate base name', async () => {
       // @ts-ignore
       const data = await Cybertonica.getBasename();
