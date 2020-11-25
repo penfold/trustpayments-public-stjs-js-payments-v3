@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.39
+.cicd-os-ref: &cicd-os-ref 0.0.44
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
@@ -23,6 +23,7 @@ variables:
   SMOKE_TESTS_TAG: '@smoke_test'
   SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_test,@smoke_test_apple_pay'
   EXTENDED_TESTS_TAG: '@extended_tests_part_1,@extended_tests_part_2'
+  ARTIFACT_RELEASE_DESCRIPTION_TYPE: "EXTENDED"
 
   ### Disabled Jobs:
   # Initialize
@@ -45,6 +46,7 @@ variables:
   # DISABLE_JOB_validate_merge_request_description: 'true'
   # Release
   # DISABLE_JOB_release: 'true'
+  # DISABLE_JOB_release_generate_version: "true"
   # Post-Release
   DISABLE_JOB_npm_publish: 'true'
   ### Disabled Jobs : End

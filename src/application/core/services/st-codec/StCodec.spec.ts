@@ -332,7 +332,7 @@ describe('StCodec class', () => {
       ]
     ]).it('should build the request for a valid object', (requestObject, expected) => {
       expect(str.buildRequestObject(requestObject)).toEqual({
-        acceptcustomeroutput: '1.00',
+        acceptcustomeroutput: '2.00',
         jwt,
         request: [{ requestid, ...expected }],
         version: StCodec.VERSION,
@@ -357,7 +357,7 @@ describe('StCodec class', () => {
         { pan: '4111111111111111', requesttypedescriptions: ['AUTH'] },
         expect.stringMatching(
           new RegExp(
-            '^{"acceptcustomeroutput":"1.00","jwt":"' +
+            '^{"acceptcustomeroutput":"2.00","jwt":"' +
               jwt +
               '","request":\\[{"pan":"4111111111111111","requesttypedescriptions":\\["AUTH"\\],"requestid":"' +
               ridRegex +
@@ -369,7 +369,7 @@ describe('StCodec class', () => {
         { pan: '4111111111111111', requesttypedescriptions: ['AUTH', 'SUBSCRIPTION'] },
         expect.stringMatching(
           new RegExp(
-            '^{"acceptcustomeroutput":"1.00","jwt":"' +
+            '^{"acceptcustomeroutput":"2.00","jwt":"' +
               jwt +
               '","request":\\[{"pan":"4111111111111111",' +
               '"requesttypedescriptions":\\["AUTH","SUBSCRIPTION"\\],"requestid":"' +

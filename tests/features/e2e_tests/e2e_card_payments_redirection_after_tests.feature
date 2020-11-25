@@ -8,10 +8,10 @@ Feature: E2E Card Payments - redirection
   @vueJS
   @react_native
   @e2e_config_submit_on_success
-  Scenario: Successful payment with submitOnSuccess enabled
+  Scenario Outline: Successful frictionless payment with submitOnSuccess enabled
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
+      | key                     | value           |
+      | requesttypedescriptions | <request_types> |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
@@ -19,9 +19,42 @@ Feature: E2E Card Payments - redirection
     And User will be sent to page with url "www.example.com" having params
       | key           | value                                   |
       | errormessage  | Payment has been successfully processed |
-      | baseamount    | 1000                                    |
-      | currencyiso3a | GBP                                     |
+      | baseamount    | <baseamount>                            |
+      | currencyiso3a | <currencyiso3a>                         |
       | errorcode     | 0                                       |
+      | threedresponse| <threedresponse>                        |
+
+   Examples:
+    | request_types            | threedresponse | baseamount     | currencyiso3a |
+    | THREEDQUERY AUTH         | should be none | 1000           | GBP           |
+    | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none|
+
+  @reactJS
+  @angular
+  @vueJS
+  @react_native
+  @e2e_config_submit_on_success
+  Scenario Outline: Successful payment with submitOnSuccess enabled for non-frictionless card
+    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value           |
+      | requesttypedescriptions | <request_types> |
+    And User opens example page
+    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    And User clicks Pay button
+    And User fills V2 authentication modal
+    Then User will not see notification frame
+    And User will be sent to page with url "www.example.com" having params
+      | key           | value                                   |
+      | errormessage  | Payment has been successfully processed |
+      | baseamount    | <baseamount>                            |
+      | currencyiso3a | <currencyiso3a>                         |
+      | errorcode     | 0                                       |
+      | threedresponse| <threedresponse>                        |
+
+  Examples:
+    | request_types            | threedresponse     | baseamount     | currencyiso3a |
+    | THREEDQUERY AUTH         | should be none     | 1000           | GBP           |
+    | ACCOUNTCHECK THREEDQUERY | should not be none | should be none | should be none|
 
   @e2e_config_request_types
   @bypass_property
@@ -40,6 +73,7 @@ Feature: E2E Card Payments - redirection
       | baseamount    | 1000                                    |
       | currencyiso3a | GBP                                     |
       | errorcode     | 0                                       |
+
 
   @reactJS
   @angular
@@ -168,11 +202,12 @@ Feature: E2E Card Payments - redirection
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "example.org" having params
-      | key           | value   |
-      | errormessage  | Decline |
-      | baseamount    | 1000    |
-      | currencyiso3a | GBP     |
-      | errorcode     | 70000   |
+      | key           | value          |
+      | errormessage  | Decline        |
+      | baseamount    | 1000           |
+      | currencyiso3a | GBP            |
+      | errorcode     | 70000          |
+      | threedresponse| should be none |
 
 #  @e2e_config_submit_on_cancel_callback
 #  Scenario: Unsuccessful payment with submitOnCancel enabled and cancel callback set
@@ -197,25 +232,32 @@ Feature: E2E Card Payments - redirection
     And User clicks Pay button
     And User clicks Cancel button on authentication modal
     Then User will be sent to page with url "www.example.com" having params
-      | key          | value              |
-      | errormessage | An error occurred  |
-      | enrolled     | Y                  |
-      | settlestatus | 0                  |
-      | errorcode    | 50003              |
-      | jwt          | should not be none |
+      | key           | value              |
+      | errormessage  | An error occurred  |
+      | enrolled      | Y                  |
+      | settlestatus  | 0                  |
+      | errorcode     | 50003              |
+      | threedresponse| should not be none |
+      | jwt           | should not be none |
 
-  Scenario: Cancel Cardinal popup with enabled submitOnError and request type: ACCOUNTCHECK, TDQ
+  Scenario Outline: Cancel Cardinal popup with enabled submitOnError and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_ERROR_REQUEST_TYPES_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value                    |
-      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
+      | key                     | value           |
+      | requesttypedescriptions | <request_types> |
     And User opens example page
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
     And User clicks Cancel button on authentication modal
     Then User will be sent to page with url "www.example.com" having params
-      | key          | value              |
-      | errormessage | An error occurred  |
-      | enrolled     | Y                  |
-      | settlestatus | 0                  |
-      | errorcode    | 50003              |
-      | jwt          | should not be none |
+      | key           | value              |
+      | errormessage  | An error occurred  |
+      | enrolled      | Y                  |
+      | settlestatus  | 0                  |
+      | errorcode     | 50003              |
+      | threedresponse| <threedresponse>   |
+      | jwt           | should not be none |
+
+  Examples:
+    | request_types            | threedresponse     |
+    | THREEDQUERY AUTH         | should be none     |
+    | ACCOUNTCHECK THREEDQUERY | should not be none |

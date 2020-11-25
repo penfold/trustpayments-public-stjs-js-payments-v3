@@ -1,5 +1,5 @@
 import './st.css';
-import JwtDecode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames.class';
@@ -152,7 +152,7 @@ export class ST {
 
     this.blockSubmitButton();
     // @ts-ignore
-    this._commonFrames._requestTypes = JwtDecode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
+    this._commonFrames._requestTypes = jwt_decode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
     this._framesHub
       .waitForFrame(CONTROL_FRAME_IFRAME)
       .pipe(
@@ -272,7 +272,7 @@ export class ST {
   }
 
   private CommonFrames(): void {
-    const requestTypes: string[] = JwtDecode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
+    const requestTypes: string[] = jwt_decode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
     this._commonFrames = new CommonFrames(
       this._config.jwt,
       this._config.origin,
@@ -300,7 +300,7 @@ export class ST {
 
   private Storage(): void {
     this._storage.setItem(ST.MERCHANT_TRANSLATIONS_STORAGE, JSON.stringify(this._config.translations));
-    this._storage.setItem(ST.LOCALE_STORAGE, JwtDecode<IStJwtObj<IStJwtPayload>>(this._config.jwt).payload.locale);
+    this._storage.setItem(ST.LOCALE_STORAGE, jwt_decode<IStJwtObj<IStJwtPayload>>(this._config.jwt).payload.locale);
   }
 
   private displayLiveStatus(liveStatus: boolean): void {

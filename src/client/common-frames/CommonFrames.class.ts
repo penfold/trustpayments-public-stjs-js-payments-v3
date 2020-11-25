@@ -15,6 +15,7 @@ import { Frame } from '../../application/core/shared/frame/Frame';
 import { StJwt } from '../../application/core/shared/stjwt/StJwt';
 import { PAYMENT_CANCELLED, PAYMENT_SUCCESS } from '../../application/core/models/constants/Translations';
 import { CONTROL_FRAME_COMPONENT_NAME, CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
+import { CustomerOutput } from '../../application/core/models/constants/CustomerOutput';
 
 export class CommonFrames {
   get requestTypes(): string[] {
@@ -25,7 +26,6 @@ export class CommonFrames {
     this._requestTypes = requestTypes;
   }
 
-  private static readonly COMPLETED_REQUEST_TYPES = ['AUTH', 'CACHETOKENISE', 'ACCOUNTCHECK'];
   public elementsTargets: any;
   public elementsToRegister: HTMLElement[];
   private _controlFrame: HTMLIFrameElement;
@@ -163,29 +163,15 @@ export class CommonFrames {
       return true;
     }
 
-    const lastRequestType = this._requestTypes[this._requestTypes.length - 1];
-
-    if (data.requesttypedescription !== lastRequestType) {
+    if (data.requesttypedescription === 'WALLETVERIFY' || data.requesttypedescription === 'JSINIT') {
       return false;
     }
 
-    if (data.requesttypedescription !== 'THREEDQUERY') {
-      return true;
+    if (data.customeroutput === CustomerOutput.THREEDREDIRECT) {
+      return Boolean(data.threedresponse || !data.acsurl || data.enrolled !== 'Y');
     }
 
-    return this._isThreedComplete(data);
-  }
-
-  private _isThreedComplete(data: any): boolean {
-    if (data.threedresponse !== undefined) {
-      return true;
-    }
-
-    if (data.enrolled !== 'Y') {
-      return true;
-    }
-
-    return data.acsurl === undefined;
+    return true;
   }
 
   private _onInput(event: Event) {
@@ -197,6 +183,8 @@ export class CommonFrames {
   }
 
   private _onTransactionComplete(data: any): void {
+    this.addSubmitData(data);
+
     if (!this._isTransactionFinished(data)) {
       return;
     }
@@ -218,8 +206,6 @@ export class CommonFrames {
         result = 'error';
         break;
     }
-
-    this.addSubmitData(data);
 
     if (
       (result === 'success' && this._submitOnSuccess) ||

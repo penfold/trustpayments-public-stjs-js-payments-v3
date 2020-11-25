@@ -1,9 +1,9 @@
 # type: ignore[no-redef]
+import time
 
 from behave import use_step_matcher, step, when, then
 from utils.enums.field_type import FieldType
 from utils.enums.payment_type import PaymentType
-from utils.enums.request_type import RequestType
 from utils.enums.responses.invalid_field_response import InvalidFieldResponse
 from utils.mock_handler import stub_st_request_type
 
@@ -106,7 +106,7 @@ def step_impl(context, field):
 
 @step('InvalidField response set for "(?P<field>.+)"')
 def step_impl(context, field):
-    stub_st_request_type(InvalidFieldResponse[field].value, RequestType.THREEDQUERY.name)
+    stub_st_request_type(InvalidFieldResponse[field].value, 'THREEDQUERY, AUTH')
 
 
 @then('User will see notification frame with message: "(?P<expected_message>.+)"')
@@ -189,6 +189,9 @@ def step_impl(context, key, language):
 @when('User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)"')
 def step_impl(context, card_number, exp_date):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
+    context.pan = str(card_number)
+    context.exp_date = str(exp_date)
+    context.cvv = str('')
     payment_page.fill_payment_form_without_cvv(card_number, exp_date)
 
 
@@ -272,7 +275,7 @@ def step_impl(context, auth_type):
 @step('User will see the same provided data in inputs fields')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_value_of_input_field(FieldType.CARD_NUMBER.name, '5200 0000 0000 1005')
+    payment_page.validate_value_of_input_field(FieldType.CARD_NUMBER.name, '4000 0000 0000 1091')
     payment_page.validate_value_of_input_field(FieldType.EXPIRATION_DATE.name, context.exp_date)
     payment_page.validate_value_of_input_field(FieldType.SECURITY_CODE.name, context.cvv)
 
@@ -295,6 +298,7 @@ def step_impl(context, element, expected_value):
 
 @step('"(?P<callback_popup>.+)" callback is called only once')
 def step_impl(context, callback_popup):
+    time.sleep(1)
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.validate_number_in_callback_counter_popup(callback_popup)
 
@@ -354,3 +358,10 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.clear_security_code_field()
+
+@step('User clears form')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.clear_security_code_field()
+    payment_page.clear_card_number_field()
+    payment_page.clear_expiry_date_field()

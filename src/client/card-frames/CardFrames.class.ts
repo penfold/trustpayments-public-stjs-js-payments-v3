@@ -1,4 +1,4 @@
-import JwtDecode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { FormState } from '../../application/core/models/constants/FormState';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { IStyles } from '../../shared/model/config/IStyles';
@@ -222,7 +222,7 @@ export class CardFrames {
   }
 
   private _getCardType(jwt: string): string {
-    const cardDetails = JwtDecode(jwt) as any;
+    const cardDetails = jwt_decode(jwt) as any;
     if (cardDetails.payload.pan) {
       return iinLookup.lookup(cardDetails.payload.pan).type;
     }
@@ -338,7 +338,7 @@ export class CardFrames {
     formId: string
   ): void {
     this._validation = new Validation();
-    const locale: string = this._frame.parseUrl().locale || JwtDecode<IStJwtObj<IStJwtPayload>>(jwt).payload.locale;
+    const locale: string = this._frame.parseUrl().locale || jwt_decode<IStJwtObj<IStJwtPayload>>(jwt).payload.locale;
     this._translator = new Translator(locale);
     this._buttonId = buttonId;
     this.formId = formId;

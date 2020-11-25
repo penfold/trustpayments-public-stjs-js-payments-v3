@@ -34,6 +34,20 @@ Feature: E2E for tokenisation
     And User will see that Submit button is "disabled" after payment
     And User will see that SECURITY_CODE input fields are "disabled"
 
+  @e2e_for_tokenisation @jwt_config_visa_non_frictionless_with_parenttransaction
+  Scenario: Visa Non-Frictionless tokenisation with bypass
+    Given JS library configured by inline params TOKENISATION_CONFIG and jwt JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
+      | key                     | value                   |
+      | requesttypedescriptions | THREEDQUERY AUTH RISKDEC|
+      | threedbypasspaymenttypes| VISA MASTERCARD         |
+    And User opens example page
+    When User fills only security code for saved VISA_NON_FRICTIONLESS card
+    And User clicks Pay button
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
+    And User will see that Submit button is "disabled" after payment
+    And User will see that SECURITY_CODE input fields are "disabled"
+
   @e2e_for_tokenisation @jwt_config_amex_non_frictionless_with_parenttransaction
   Scenario: Amex Non-Frictionless tokenisation
     Given JS library configured by inline params TOKENISATION_CONFIG and jwt JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
@@ -57,9 +71,9 @@ Feature: E2E for tokenisation
     Given JS library configured by inline params TOKENISATION_AND_SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens example page WITH_UPDATE_JWT
-      | jwtName                                  |
-      | JWT_VISA_FRICTIONLESS_PARENT_TRANSACTION |
+    And User opens page WITH_UPDATE_JWT and jwt JWT_VISA_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     When User calls updateJWT function by filling amount field
     And User fills only security code for saved VISA_FRICTIONLESS card
     And User clicks Pay button
@@ -72,13 +86,14 @@ Feature: E2E for tokenisation
       | errorcode     | 0                                       |
       | status        | A                                       |
 
+
   Scenario: Updating payment references for tokenization - fully authentication in second payment
     Given JS library configured by inline params TOKENISATION_WITH_DEFER_INIT_CONFIG and jwt JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens example page WITH_UPDATE_JWT
-      | jwtName                                      |
-      | JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION |
+    And User opens page WITH_UPDATE_JWT and jwt JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     When User fills only security code for saved VISA_INVALID_CVV card
     And User clicks Pay button
     Then User will see payment status information: "Invalid field"

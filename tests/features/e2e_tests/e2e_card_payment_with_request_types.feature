@@ -10,8 +10,8 @@ Feature: E2E Card Payments with request types in config
   @react_native
   Scenario: Successful payment with config's requestTypes param having values in valid order
     Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value                                 |
-      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY AUTH RISKDEC |
+      | key                     | value                          |
+      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY AUTH  |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
@@ -19,7 +19,6 @@ Feature: E2E Card Payments with request types in config
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
-
 
   @e2e_config_requesttypes_invalid_order
   Scenario: Unsuccessful payment with config's requestTypes param having values in invalid order
@@ -31,7 +30,6 @@ Feature: E2E Card Payments with request types in config
     And User clicks Pay button
     Then User will see payment status information: "Invalid field"
     And User will see that notification frame has "red" color
-
 
   @reactJS
   @angular
@@ -108,12 +106,43 @@ Feature: E2E Card Payments with request types in config
       | SUBMIT_ON_SUCCESS_ONLY_CONFIG | AUTH            | VISA_FRICTIONLESS |
 
 
-  Scenario Outline: Successful payment with single requestTypes <REQUEST_TYPE_TC>
-    Given JS library configured by inline params <E2E_CONFIG> and jwt BASE_JWT with additional attributes
+  Scenario: Successful payment with single requestTypes RISKDEC
+    Given JS library configured by inline params SUBMIT_ON_SUCCESS_ONLY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value              |
-      | requesttypedescriptions | <REQUEST_TYPE_TC>> |
+      | requesttypedescriptions | RISKDEC |
     And User opens example page
-    When User fills payment form with defined card <CARD>
+    When User fills payment form with defined card VISA_FRICTIONLESS
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key          | value                                   |
+      | errormessage | Payment has been successfully processed |
+      | errorcode    | 0                                       |
+
+   @bypass_property
+  Scenario Outline: unsuccessful payment with THREEDQUERY as only request type and bypass set to used card
+    Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt BASE_JWT with additional attributes
+      | key                      | value               |
+      | requesttypedescriptions  | THREEDQUERY         |
+      | threedbypasspaymenttypes | VISA MASTERCARD     |
+    And User opens example page
+    When User fills payment form with defined card <card_type>
+    And User clicks Pay button
+    Then User will see payment status information: "Bypass"
+
+      Examples:
+      |card_type            |
+      |MASTERCARD_CARD      |
+      |VISA_NON_FRICTIONLESS|
+
+    @bypass_property
+  Scenario Outline: successful payment with  request types <request_types>, bypass and submit on success and failed Subscription request - frictionless
+    Given JS library configured by inline params SUBMIT_ON_SUCCESS_ONLY_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
+      | key                     | value           |
+      | requesttypedescriptions | <request_types> |
+      | threedbypasspaymenttypes| VISA MASTERCARD |
+      | currencyiso3a           | JPY             |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key          | value                                   |
@@ -121,6 +150,6 @@ Feature: E2E Card Payments with request types in config
       | errorcode    | 0                                       |
 
     Examples:
-      | E2E_CONFIG                    | REQUEST_TYPE_TC | CARD              |
-      | SUBMIT_ON_SUCCESS_ONLY_CONFIG | RISKDEC         | VISA_FRICTIONLESS |
-      | SUBMIT_ON_SUCCESS_ONLY_CONFIG | THREEDQUERY     | MASTERCARD_CARD   |
+      | request_types                    |
+      | THREEDQUERY AUTH SUBSCRIPTION    |
+      | ACCOUNTCHECK AUTH SUBSCRIPTION   |

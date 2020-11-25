@@ -6,6 +6,7 @@ import { ConfigProvider } from '../../../../shared/services/config-provider/Conf
 import { mock, instance as mockInstance, when } from 'ts-mockito';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { StCodec } from '../st-codec/StCodec.class';
+import { environment } from '../../../../environments/environment';
 
 const customGlobal: GlobalWithFetchMock = (global as unknown) as GlobalWithFetchMock;
 customGlobal.fetch = require('jest-fetch-mock');
@@ -18,7 +19,7 @@ describe('StTransport class', () => {
   const config = {
     datacenterurl: 'https://example.com',
     jwt:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsaXZlMl9hdXRvand0IiwiaWF0IjoxNTU3NDIzNDgyLjk0MzE1MywicGF5bG9hZCI6eyJjdXN0b21lcnRvd24iOiJCYW5nb3IiLCJiaWxsaW5ncG9zdGNvZGUiOiJURTEyIDNTVCIsImN1cnJlbmN5aXNvM2EiOiJHQlAiLCJjdXN0b21lcnByZW1pc2UiOiIxMiIsImJpbGxpbmdsYXN0bmFtZSI6Ik5hbWUiLCJsb2NhbGUiOiJlbl9HQiIsImJhc2VhbW91bnQiOiIxMDAwIiwiYmlsbGluZ2VtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImJpbGxpbmdwcmVtaXNlIjoiMTIiLCJzaXRlcmVmZXJlbmNlIjoidGVzdDEiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImJpbGxpbmdzdHJlZXQiOiJUZXN0IHN0cmVldCIsImN1c3RvbWVyc3RyZWV0IjoiVGVzdCBzdHJlZXQiLCJjdXN0b21lcnBvc3Rjb2RlIjoiVEUxMiAzU1QiLCJjdXN0b21lcmxhc3RuYW1lIjoiTmFtZSIsImJpbGxpbmd0ZWxlcGhvbmUiOiIwMTIzNCAxMTEyMjIiLCJiaWxsaW5nZmlyc3RuYW1lIjoiVGVzdCIsImJpbGxpbmd0b3duIjoiQmFuZ29yIiwiYmlsbGluZ3RlbGVwaG9uZXR5cGUiOiJNIn19.08q3gem0kW0eODs5iGQieKbpqu7pVcvQF2xaJIgtrnc'
+      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqd3RfdXNlciIsImlhdCI6MTYwNTcwNjc0NS42MjE4Mzc5LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfanNsaWJyYXJ5NzY0MjUiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJBQ0NPVU5UQ0hFQ0siLCJUSFJFRURRVUVSWSIsIkFVVEgiXX19.jYmZX4eU_BHVklpjpnjD5usB6hTHnCC9jFfrlSEfbWA'
   } as IConfig;
   const fetchRetryObject = {
     url: 'https://example.com',
@@ -61,6 +62,39 @@ describe('StTransport class', () => {
     } as StCodec;
   });
 
+  afterEach(() => {
+    environment.testEnvironment = false;
+  });
+
+  describe('Header options', () => {
+    it('should return ST-Request-Types header when test env is set on true', () => {
+      environment.testEnvironment = true;
+      const requestBody = `{"jwt":"${config.jwt}"}`;
+      // @ts-ignore
+      const options = instance._getDefaultFetchOptions(requestBody);
+      expect(options.headers).toHaveProperty('ST-Request-Types', 'ACCOUNTCHECK, THREEDQUERY, AUTH');
+    });
+
+    it('should not return ST-Request-Types header when test env is set on false', () => {
+      const requestBody = `{"jwt":"${config.jwt}"}`;
+      // @ts-ignore
+      const options = instance._getDefaultFetchOptions(requestBody);
+      expect(options.headers).not.toHaveProperty('ST-Request-Types');
+    });
+
+    each(['JSINIT', 'WALLETVERIFY']).it(
+      `should return ST-Request-Type header when test env is set on true and requesttypedescriptions contains specific value`,
+      req => {
+        environment.testEnvironment = true;
+        const requestBody = `{"jwt":"${config.jwt}"}`;
+        const requestObject = { requesttypedescriptions: [req] };
+        // @ts-ignore
+        const options = instance._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
+        expect(options.headers).toHaveProperty('ST-Request-Types', req);
+      }
+    );
+  });
+
   // given
   describe('Method sendRequest', () => {
     // when
@@ -73,7 +107,8 @@ describe('StTransport class', () => {
 
     // then
     it('should build the fetch options', async () => {
-      const requestObject = { requesttypedescription: 'AUTH' };
+      const requestBody = `{"jwt":"${config.jwt}"}`;
+      const requestObject = { requesttypedescriptions: ['AUTH'] };
 
       mockFT.mockReturnValue(
         resolvingPromise({
@@ -89,7 +124,7 @@ describe('StTransport class', () => {
       // @ts-ignore
       expect(instance._fetchRetry).toHaveBeenCalledWith(config.datacenterurl, {
         // @ts-ignore
-        ...StTransport.DEFAULT_FETCH_OPTIONS,
+        ...instance._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions),
         body: JSON.stringify(requestObject)
       });
     });

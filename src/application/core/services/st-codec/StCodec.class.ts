@@ -1,4 +1,4 @@
-import JwtDecode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { FormState } from '../../models/constants/FormState';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IResponseData } from '../../models/IResponseData';
@@ -45,7 +45,7 @@ export class StCodec {
     };
   }
 
-  public static verifyResponseObject(responseData: any, jwtResponse: string): object {
+  public static verifyResponseObject(responseData: any, jwtResponse: string): IResponseData {
     if (StCodec._isInvalidResponse(responseData)) {
       throw StCodec._handleInvalidResponse();
     }
@@ -113,10 +113,6 @@ export class StCodec {
     return StCodec._notification || (StCodec._notification = Container.get(NotificationService));
   }
 
-  private static getFrameService(): Frame {
-    return StCodec._frame || (StCodec._frame = Container.get(Frame));
-  }
-
   private static _createCommunicationError() {
     return {
       errorcode: '50003',
@@ -156,6 +152,16 @@ export class StCodec {
     return responseContent;
   }
 
+  private static _propagateStatus(
+    errormessageTranslated: string,
+    responseContent: IResponseData,
+    jwtResponse: string
+  ): void {
+    StCodec.getNotification().error(errormessageTranslated);
+    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+    StCodec.publishResponse(responseContent, jwtResponse);
+  }
+
   private static _handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
     const translator = new Translator(StCodec._locale);
     const validation = new Validation();
@@ -174,27 +180,23 @@ export class StCodec {
     }
 
     if (responseContent.walletsource && responseContent.walletsource === 'APPLEPAY') {
-      StCodec.getNotification().error(errormessageTranslated);
-      StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
-      StCodec.publishResponse(responseContent, jwtResponse);
-      return;
+      StCodec._propagateStatus(errormessageTranslated, responseContent, jwtResponse);
+      return new Error(errormessage);
     }
 
-    if (errorcode === StCodec.STATUS_CODES.invalidfield) {
+    if (responseContent.errordata) {
       validation.getErrorData(StCodec.getErrorData(responseContent));
     }
 
     validation.blockForm(FormState.AVAILABLE);
-    StCodec.getNotification().error(errormessageTranslated);
-    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
-    StCodec.publishResponse(responseContent, jwtResponse);
+    StCodec._propagateStatus(errormessageTranslated, responseContent, jwtResponse);
     throw new Error(errormessage);
   }
 
   private static _decodeResponseJwt(jwt: string, reject: (error: Error) => void) {
     let decoded: any;
     try {
-      decoded = JwtDecode(jwt) as any;
+      decoded = jwt_decode(jwt) as any;
     } catch (e) {
       reject(StCodec._handleInvalidResponse());
     }
@@ -213,7 +215,7 @@ export class StCodec {
 
   public buildRequestObject(requestData: object): object {
     return {
-      acceptcustomeroutput: '1.00',
+      acceptcustomeroutput: '2.00',
       jwt: StCodec.jwt,
       request: [
         {
@@ -241,16 +243,17 @@ export class StCodec {
       if ('json' in responseObject) {
         responseObject.json().then(responseData => {
           const decoded: IStJwtObj = StCodec._decodeResponseJwt(responseData.jwt, reject);
-          const lastResponse = decoded && decoded.payload.response[decoded.payload.response.length - 1];
+          const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
 
-          if (lastResponse.errorcode === '0') {
+          if (Number(verifiedResponse.errorcode) === 0) {
             StCodec.jwt = decoded.payload.jwt;
           } else {
             StCodec.jwt = StCodec.originalJwt;
           }
+
           resolve({
             jwt: responseData.jwt,
-            response: StCodec.verifyResponseObject(decoded.payload, responseData.jwt)
+            response: verifiedResponse
           });
         });
       } else {

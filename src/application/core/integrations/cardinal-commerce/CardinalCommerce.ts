@@ -5,7 +5,6 @@ import { PaymentEvents } from '../../models/constants/PaymentEvents';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IOnCardinalValidated } from '../../models/IOnCardinalValidated';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
-import { StCodec } from '../../services/st-codec/StCodec.class';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { GoogleAnalytics } from '../google-analytics/GoogleAnalytics';
 import { Service } from 'typedi';
@@ -22,7 +21,7 @@ import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
 import { StTransport } from '../../services/st-transport/StTransport.class';
 import { CardinalProvider } from './CardinalProvider';
-import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
+import { COMMUNICATION_ERROR_INVALID_RESPONSE, PAYMENT_ERROR } from '../../models/constants/Translations';
 import { RequestType } from '../../../../shared/types/RequestType';
 
 @Service()
@@ -199,8 +198,19 @@ export class CardinalCommerce {
           !CardinalCommerceValidationStatus.includes(validationResult.ActionCode) ||
           validationResult.ActionCode === 'FAILURE'
         ) {
-          StCodec.publishResponse(responseObject, responseObject.jwt, responseObject.threedresponse);
-          return throwError(validationResult);
+          const updatedResponseObject = {
+            ...responseObject,
+            acquirerresponsecode: String(validationResult.ErrorNumber),
+            acquirerresponsemessage: validationResult.ErrorDescription,
+            errorcode: '50003',
+            errormessage: PAYMENT_ERROR,
+            threedresponse: jwt,
+            cachetoken: this.cardinalTokens.cacheToken
+          };
+
+          this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+
+          return throwError(updatedResponseObject);
         }
 
         return of({

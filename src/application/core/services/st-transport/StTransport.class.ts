@@ -1,9 +1,21 @@
+import JwtDecode from 'jwt-decode';
 import { Utils } from '../../shared/utils/Utils';
 import { StCodec } from '../st-codec/StCodec.class';
 import { Service } from 'typedi';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IStRequest } from '../../models/IStRequest';
+import { environment } from '../../../../environments/environment';
+import { IDecodedJwt } from '../../models/IDecodedJwt';
+
+interface IFetchOptions {
+  headers: {
+    Accept: string;
+    'Content-Type': string;
+    'ST-Request-Types'?: string;
+  };
+  method: string;
+}
 
 /**
  * Establishes connection with ST, defines client.
@@ -19,14 +31,6 @@ import { IStRequest } from '../../models/IStRequest';
  */
 @Service()
 export class StTransport {
-  private static DEFAULT_FETCH_OPTIONS = {
-    headers: {
-      Accept: StCodec.CONTENT_TYPE,
-      'Content-Type': StCodec.CONTENT_TYPE
-    },
-    method: 'post'
-  };
-
   public static readonly THROTTLE_TIME = 250;
   private static DELAY = 1000;
   private static RETRY_LIMIT = 5;
@@ -45,20 +49,50 @@ export class StTransport {
    */
   public async sendRequest(requestObject: IStRequest): Promise<object> {
     const requestBody = this.getCodec().encode(requestObject);
+    const fetchOptions = this._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
+
     if (!this._throttlingRequests.has(requestBody)) {
-      this._throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody));
+      this._throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody, fetchOptions));
       setTimeout(() => this._throttlingRequests.delete(requestBody), StTransport.THROTTLE_TIME);
     }
 
     return this._throttlingRequests.get(requestBody);
   }
 
-  private sendRequestInternal(requestBody: string): Promise<object> {
+  private _getDefaultFetchOptions(requestBody: string, requesttypedescriptions: string[]): IFetchOptions {
+    const { jwt } = JSON.parse(requestBody);
+    const options: IFetchOptions = {
+      headers: {
+        Accept: StCodec.CONTENT_TYPE,
+        'Content-Type': StCodec.CONTENT_TYPE
+      },
+      method: 'post'
+    };
+    const hasRequestTypesToSkip =
+      requesttypedescriptions &&
+      requesttypedescriptions.some((req: string) => req === 'JSINIT' || req === 'WALLETVERIFY');
+
+    if (environment.testEnvironment) {
+      const decodedJwt = JwtDecode<IDecodedJwt>(jwt);
+      const requestTypes = hasRequestTypesToSkip
+        ? requesttypedescriptions.join(', ')
+        : decodedJwt.payload.requesttypedescriptions.join(', ');
+
+      options.headers = {
+        ...options.headers,
+        'ST-Request-Types': requestTypes
+      };
+    }
+
+    return options;
+  }
+
+  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions): Promise<object> {
     const codec = this.getCodec();
     const gatewayUrl = this.getConfig().datacenterurl;
 
     return this._fetchRetry(gatewayUrl, {
-      ...StTransport.DEFAULT_FETCH_OPTIONS,
+      ...fetchOptions,
       body: requestBody
     })
       .then(codec.decode)

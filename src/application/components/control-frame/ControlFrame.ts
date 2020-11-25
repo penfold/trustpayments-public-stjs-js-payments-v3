@@ -28,7 +28,6 @@ import { catchError, filter, map, mapTo, switchMap, tap } from 'rxjs/operators';
 import { StJwt } from '../../core/shared/stjwt/StJwt';
 import { Translator } from '../../core/shared/translator/Translator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
-import { IOnCardinalValidated } from '../../core/models/IOnCardinalValidated';
 import { IThreeDInitResponse } from '../../core/models/IThreeDInitResponse';
 import { Store } from '../../core/store/Store';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -219,16 +218,15 @@ export class ControlFrame {
               ).pipe(mapTo(config))
             ),
             switchMap(() =>
-              this._callThreeDQueryRequest().pipe(catchError(errorData => this._onPaymentFailure(errorData)))
+              this._callThreeDQueryRequest().pipe(
+                catchError(errorData => this._onPaymentFailure(errorData)),
+                catchError(() => EMPTY)
+              )
             )
           );
         })
       )
-      .subscribe(threeDQueryResponse => {
-        if (Number(threeDQueryResponse.errorcode) === 0) {
-          this._processPayment(threeDQueryResponse);
-        }
-      });
+      .subscribe(threeDQueryResponse => this._processPayment(threeDQueryResponse));
   }
 
   private _isDataValid(data: ISubmitData): boolean {
@@ -245,24 +243,16 @@ export class ControlFrame {
     return validity;
   }
 
-  private _onPaymentFailure(errorData: ISubmitData | IOnCardinalValidated): Observable<never> {
-    const { ErrorNumber, ErrorDescription } = errorData;
+  private _onPaymentFailure(errorData: IResponseData): Observable<never> {
     const translator = new Translator(this._localStorage.getItem('locale'));
     const translatedErrorMessage = translator.translate(PAYMENT_ERROR);
 
     this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.RESET_JWT });
-    this._messageBus.publish(
-      {
-        type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE,
-        data: {
-          acquirerresponsecode: ErrorNumber ? ErrorNumber.toString() : ErrorNumber,
-          acquirerresponsemessage: ErrorDescription,
-          errorcode: '50003',
-          errormessage: translatedErrorMessage
-        }
-      },
-      true
-    );
+
+    errorData.errormessage = translatedErrorMessage;
+
+    StCodec.publishResponse(errorData, errorData.jwt, errorData.threedresponse);
+
     this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM, data: FormState.AVAILABLE }, true);
     this._notification.error(translatedErrorMessage);
 

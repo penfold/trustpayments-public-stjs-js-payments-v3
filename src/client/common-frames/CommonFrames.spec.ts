@@ -11,61 +11,11 @@ import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventType
 import { IframeFactory } from '../iframe-factory/IframeFactory';
 import { anyString, instance as instanceOf, mock, when } from 'ts-mockito';
 import { Frame } from '../../application/core/shared/frame/Frame';
+import { CustomerOutput } from '../../application/core/models/constants/CustomerOutput';
 
 jest.mock('./../../application/core/shared/notification/Notification');
 
 describe('CommonFrames', () => {
-  describe('_isThreedComplete()', () => {
-    let instance: CommonFrames;
-
-    beforeEach(() => {
-      instance = commonFramesFixture().instance;
-    });
-
-    it('should not be complete if enrolled and non-frictionless', () => {
-      expect(
-        // @ts-ignore
-        instance._isThreedComplete({
-          acsurl: 'https://example.com',
-          enrolled: 'Y',
-          requesttypedescription: 'THREEDQUERY'
-        })
-      ).toEqual(false);
-    });
-
-    it('should be complete if threedresponse is available', () => {
-      expect(
-        // @ts-ignore
-        instance._isThreedComplete({
-          acsurl: 'https://example.com',
-          enrolled: 'Y',
-          requesttypedescription: 'THREEDQUERY',
-          threedresponse: 'somedata'
-        })
-      ).toEqual(true);
-    });
-
-    it('should be complete if enrolled and frictionless', () => {
-      expect(
-        // @ts-ignore
-        instance._isThreedComplete({
-          enrolled: 'Y',
-          requesttypedescription: 'THREEDQUERY'
-        })
-      ).toEqual(true);
-    });
-
-    it('should be complete if not enrolled', () => {
-      expect(
-        // @ts-ignore
-        instance._isThreedComplete({
-          enrolled: 'N',
-          requesttypedescription: 'THREEDQUERY'
-        })
-      ).toEqual(true);
-    });
-  });
-
   describe('_isTransactionFinished()', () => {
     let instance: CommonFrames;
 
@@ -74,25 +24,23 @@ describe('CommonFrames', () => {
     });
 
     it('should be finished if errorcode is not 0', () => {
-      instance.requestTypes = ['THREEDQUERY', 'AUTH'];
-
       expect(
         // @ts-ignore
         instance._isTransactionFinished({
           errorcode: '30000',
-          requesttypedescription: 'AUTH'
+          requesttypedescription: 'AUTH',
+          customeroutput: CustomerOutput.TRYAGAIN
         })
       ).toEqual(true);
     });
 
-    it('should be finished if current response has the last request type', () => {
-      instance.requestTypes = ['AAA', 'BBB'];
-
+    it('should be finished if current response has certain customeroutput values', () => {
       expect(
         // @ts-ignore
         instance._isTransactionFinished({
           errorcode: '0',
-          requesttypedescription: 'BBB'
+          requesttypedescription: 'BBB',
+          customeroutput: CustomerOutput.RESULT
         })
       ).toEqual(true);
 
@@ -100,41 +48,100 @@ describe('CommonFrames', () => {
         // @ts-ignore
         instance._isTransactionFinished({
           errorcode: '0',
-          requesttypedescription: 'AAA'
+          requesttypedescription: 'BBB',
+          customeroutput: CustomerOutput.TRYAGAIN
+        })
+      ).toEqual(true);
+    });
+
+    it('should be finished if current response has threedresponse available', () => {
+      expect(
+        // @ts-ignore
+        instance._isTransactionFinished({
+          errorcode: '0',
+          requesttypedescription: 'THREEDQUERY',
+          customeroutput: CustomerOutput.THREEDREDIRECT,
+          enrolled: 'Y',
+          threedresponse: 'foobar'
+        })
+      ).toEqual(true);
+    });
+
+    it('should be finished if current response has enrolled other than Y', () => {
+      expect(
+        // @ts-ignore
+        instance._isTransactionFinished({
+          errorcode: '0',
+          requesttypedescription: 'THREEDQUERY',
+          customeroutput: CustomerOutput.THREEDREDIRECT,
+          enrolled: 'N'
+        })
+      ).toEqual(true);
+
+      expect(
+        // @ts-ignore
+        instance._isTransactionFinished({
+          errorcode: '0',
+          requesttypedescription: 'THREEDQUERY',
+          customeroutput: CustomerOutput.THREEDREDIRECT,
+          enrolled: 'U'
+        })
+      ).toEqual(true);
+    });
+
+    it('should be finished if current response is frictionless payment (no acsurl)', () => {
+      expect(
+        // @ts-ignore
+        instance._isTransactionFinished({
+          errorcode: '0',
+          requesttypedescription: 'THREEDQUERY',
+          customeroutput: CustomerOutput.THREEDREDIRECT,
+          enrolled: 'Y'
+        })
+      ).toEqual(true);
+    });
+
+    it('should not be finished if current response has acsurl', () => {
+      expect(
+        // @ts-ignore
+        instance._isTransactionFinished({
+          errorcode: '0',
+          requesttypedescription: 'THREEDQUERY',
+          customeroutput: CustomerOutput.THREEDREDIRECT,
+          enrolled: 'Y',
+          acsurl: 'https://acs.com'
         })
       ).toEqual(false);
     });
 
-    describe('current response is the last request type and is THREEDQUERY', () => {
-      beforeEach(() => {
-        instance.requestTypes = ['AAA', 'BBB', 'THREEDQUERY'];
-      });
-
-      it('should be finished if _isThreedComplete() is true', () => {
+    it('should not be finished if current response type is WALLETVERIFY or JSINIT', () => {
+      expect(
         // @ts-ignore
-        instance._isThreedComplete = jest.fn().mockReturnValueOnce(true);
+        instance._isTransactionFinished({
+          errorcode: '0',
+          requesttypedescription: 'WALLETVERIFY',
+          customeroutput: 'RESULT'
+        })
+      ).toEqual(false);
 
-        expect(
-          // @ts-ignore
-          instance._isTransactionFinished({
-            errorcode: '0',
-            requesttypedescription: 'THREEDQUERY'
-          })
-        ).toEqual(true);
-      });
-
-      it('should not be finished if _isThreedComplete() is false', () => {
+      expect(
         // @ts-ignore
-        instance._isThreedComplete = jest.fn().mockReturnValueOnce(false);
+        instance._isTransactionFinished({
+          errorcode: '0',
+          requesttypedescription: 'JSINIT',
+          customeroutput: 'RESULT'
+        })
+      ).toEqual(false);
+    });
 
-        expect(
-          // @ts-ignore
-          instance._isTransactionFinished({
-            errorcode: '0',
-            requesttypedescription: 'THREEDQUERY'
-          })
-        ).toEqual(false);
-      });
+    it('should be finished if current response has no customeroutput', () => {
+      expect(
+        // @ts-ignore
+        instance._isTransactionFinished({
+          errorcode: '0',
+          requesttypedescription: 'RISKDEC'
+        })
+      ).toEqual(true);
     });
   });
 

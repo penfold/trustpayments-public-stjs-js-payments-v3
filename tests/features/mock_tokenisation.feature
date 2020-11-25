@@ -9,53 +9,61 @@ Feature: Tokenisation
     And User opens page with payment form
 
   @config_tokenisation_visa @extended_tests_part_2
+  @submit_cvv_only
   Scenario: Tokenisation - successful payment by VISA card
     When User fills "SECURITY_CODE" field "123"
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
     Then User will see payment status information: "Payment has been successfully processed"
-    And AUTH and THREEDQUERY requests were sent only once
+    And THREEDQUERY, AUTH ware sent only once in one request
 
   @config_tokenisation_amex
+  @submit_cvv_only
   Scenario: Tokenisation - successful payment by AMEX card
     When User fills "SECURITY_CODE" field "1234"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-    And User clicks Pay button - AUTH response is set to "OK"
+    And Frictionless THREEDQUERY, AUTH response is set to OK
+    And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And AUTH and THREEDQUERY requests were sent only once
 
   @config_tokenisation_visa_defer_init
+  @submit_cvv_only
   Scenario: Tokenisation with deferInit - successful payment by VISA card
     When User fills "SECURITY_CODE" field "123"
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
     Then User will see payment status information: "Payment has been successfully processed"
-    And AUTH and THREEDQUERY requests were sent only once
+    And THREEDQUERY, AUTH ware sent only once in one request
 
   @config_tokenisation_amex_defer_init
+  @submit_cvv_only
   Scenario: Tokenisation with deferInit - successful payment by AMEX card
     When User fills "SECURITY_CODE" field "1234"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
+    And THREEDQUERY mock response is set to "ENROLLED_Y"
+    And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
     Then User will see payment status information: "Payment has been successfully processed"
     And AUTH request was sent only once
 
   @config_tokenisation_bypass_cards_visa
+  @submit_cvv_only
   Scenario: Tokenisation and bypassCard - successful payment by VISA card
     When User fills "SECURITY_CODE" field "123"
     And THREEDQUERY mock response is set to "ENROLLED_Y"
+    And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
     Then User will see payment status information: "Payment has been successfully processed"
-    And THREEDQUERY request was not sent
-    And AUTH request was sent only once
+    And THREEDQUERY, AUTH ware sent only once in one request
 
   @config_tokenisation_visa_request_types
+  @submit_cvv_only
   Scenario: Tokenisation - successful payment by VISA with request types: RISKDEC, ACCOUNTCHECK, TDQ, AUTH
     When User fills "SECURITY_CODE" field "123"
     And RISKDEC, ACCOUNTCHECK, THREEDQUERY mock response is set to OK
+    And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
     Then User will see payment status information: "Payment has been successfully processed"
-    And RISKDEC, ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
+    #ToDo
+#    And RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH ware sent only once in one request
     And AUTH request was sent only once

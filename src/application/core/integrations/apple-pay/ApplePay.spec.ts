@@ -19,7 +19,6 @@ import { Container } from 'typedi';
 import { SimpleStorage } from '../../../../shared/services/storage/SimpleStorage';
 import { APPLE_PAY_NOT_LOGGED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
 
-jest.mock('./../../shared/message-bus/MessageBus');
 jest.mock('./../google-analytics/GoogleAnalytics');
 jest.mock('./../../../../client/notification/NotificationService');
 
@@ -575,7 +574,7 @@ describe('ApplePay', () => {
       expect(instance.payment.processPayment).toHaveBeenCalledWith(
         undefined,
         { walletsource: 'APPLEPAY', wallettoken: '{"TOKEN":"TOKEN DATA"}' },
-        { billingfirstname: 'BOB' }
+        { billingfirstname: 'BOB', termurl: 'https://termurl.com' }
       );
       // @ts-ignore
       expect(instance._displayNotification).toHaveBeenCalledTimes(1);
@@ -614,7 +613,7 @@ describe('ApplePay', () => {
       expect(instance.payment.processPayment).toHaveBeenCalledWith(
         ['CACHETOKENISE'],
         { walletsource: 'APPLEPAY', wallettoken: '{"TOKEN":"TOKEN DATA"}' },
-        { billingfirstname: 'BOB' }
+        { billingfirstname: 'BOB', termurl: 'https://termurl.com' }
       );
       // @ts-ignore
       expect(instance._displayNotification).toHaveBeenCalledTimes(1);
@@ -652,7 +651,7 @@ describe('ApplePay', () => {
       expect(instance.payment.processPayment).toHaveBeenCalledWith(
         undefined,
         { walletsource: 'APPLEPAY', wallettoken: '{"TOKEN":"TOKEN DATA"}' },
-        { billingfirstname: 'BOB' }
+        { billingfirstname: 'BOB', termurl: 'https://termurl.com' }
       );
       // @ts-ignore
       expect(instance._notification.error).toHaveBeenCalledTimes(1);

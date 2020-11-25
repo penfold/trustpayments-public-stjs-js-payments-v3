@@ -5,9 +5,9 @@ Feature: Visual regression - E2E Card Payments
 
   Background:
     Given JS library configured by inline params BYPASS_MASTERCARD_CONFIG and jwt BASE_JWT with additional attributes
-      | key                      | value                                 |
-      | requesttypedescriptions  | THREEDQUERY RISKDEC ACCOUNTCHECK AUTH |
-      | threedbypasspaymenttypes | MASTERCARD                            |
+      | key                      | value            |
+      | requesttypedescriptions  | THREEDQUERY AUTH |
+      | threedbypasspaymenttypes | MASTERCARD       |
     And User opens minimal example page
 
   @visual_regression @scrn_card_interface_after_successful_payment
@@ -20,7 +20,7 @@ Feature: Visual regression - E2E Card Payments
 
   @visual_regression @scrn_card_interface_before_payment
   Scenario: Card interface before payment
-    And User waits for whole form to be displayed
+    Given User waits for whole form to be displayed
     Then Screenshot is taken after 10 seconds and checked
 
   @visual_regression @scrn_card_interface_error_expiry_date
