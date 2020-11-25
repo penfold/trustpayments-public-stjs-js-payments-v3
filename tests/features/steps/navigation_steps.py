@@ -1,15 +1,24 @@
 # type: ignore[no-redef]
+
 from assertpy import soft_assertions
 from behave import use_step_matcher, step, then
 
 from configuration import CONFIGURATION
-from utils.configurations.jwt_generator import encode_jwt_for_json
+from models.jwt_payload_builder import JwtPayloadBuilder
+from utils.configurations.jwt_generator import encode_jwt_for_json, get_data_from_json, encode_jwt, \
+    merge_json_conf_with_additional_attr
 from utils.dict.url_after_redirection import url_after_redirection
 from utils.enums.example_page import ExamplePage
 from utils.enums.jwt_config import JwtConfig
 from utils.mock_handler import MockUrl
 
 use_step_matcher('re')
+
+
+@step('User opens page with incorrect request type in config file')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.open_page(CONFIGURATION.URL.BASE_URL)
 
 
 @step('User opens page with payment form')
@@ -95,11 +104,30 @@ def step_impl(context, example_page: ExamplePage):
         payment_page.wait_for_iframe()
 
 
+@step('User opens page (?P<example_page>.+) and jwt (?P<jwt_config>.+) with additional attributes')
+def step_impl(context, example_page: ExamplePage, jwt_config: JwtConfig):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    # setting url specific params accordingly to example page
+    if '' in example_page:
+        jwt_config_from_json_dict = get_data_from_json(JwtConfig[jwt_config].value)['payload']
+        # build payload base on additional attributes and parse to dictionary
+        jwt_payload_dict = JwtPayloadBuilder().map_payload_fields(context.table).build().__dict__
+        # merge both dictionaries (old is overridden by additional attr)
+        jwt = encode_jwt(merge_json_conf_with_additional_attr(jwt_config_from_json_dict, jwt_payload_dict))
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}{context.inline_config}'
+    else:
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}&{context.inline_config}'
+    url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
+
+    payment_page.open_page(url)
+
+
 @step('User opens minimal example page')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     url = f'{CONFIGURATION.URL.BASE_URL}/minimal.html?{context.inline_config}'
     payment_page.open_page(url)
+    payment_page.wait_for_iframe()
 
 
 @then('User remains on checkout page')

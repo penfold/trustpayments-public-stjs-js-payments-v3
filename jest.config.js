@@ -37,7 +37,14 @@ module.exports = {
   // ],
 
   // An object that configures minimum threshold enforcement for coverage results
-  // coverageThreshold: null,
+  coverageThreshold: {
+    'global': {
+      'branches': 58,
+      'functions': 74,
+      'lines': 80,
+      'statements': 80
+    }
+  },
 
   // A path to a custom dependency extractor
   // dependencyExtractor: null,
@@ -110,7 +117,7 @@ module.exports = {
 
   // A list of paths to directories that Jest should use to search for files in
   roots: [
-    '<rootDir>/src',
+    '<rootDir>/src'
   ],
 
   // Allows you to use a custom runner instead of Jest's default test runner

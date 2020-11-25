@@ -15,6 +15,7 @@ import { Frame } from '../../application/core/shared/frame/Frame';
 import { StJwt } from '../../application/core/shared/stjwt/StJwt';
 import { PAYMENT_CANCELLED, PAYMENT_SUCCESS } from '../../application/core/models/constants/Translations';
 import { CONTROL_FRAME_COMPONENT_NAME, CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
+import { CustomerOutput } from '../../application/core/models/constants/CustomerOutput';
 
 export class CommonFrames {
   get requestTypes(): string[] {
@@ -25,7 +26,6 @@ export class CommonFrames {
     this._requestTypes = requestTypes;
   }
 
-  private static readonly COMPLETED_REQUEST_TYPES = ['AUTH', 'CACHETOKENISE', 'ACCOUNTCHECK'];
   public elementsTargets: any;
   public elementsToRegister: HTMLElement[];
   private _controlFrame: HTMLIFrameElement;
@@ -158,42 +158,20 @@ export class CommonFrames {
     this.elementsToRegister.push(this._controlFrame);
   }
 
-  private _isThreedComplete(data: any): boolean {
-    if (this.requestTypes[this.requestTypes.length - 1] !== 'THREEDQUERY') {
-      return false;
-    }
-
-    if (data.requesttypedescription !== 'THREEDQUERY') {
-      return false;
-    }
-
-    if (data.validated) {
-      return true;
-    }
-
-    if (data.acsurl !== undefined) {
-      return false;
-    }
-
-    if (data.threedresponse !== undefined) {
-      return true;
-    }
-
-    return data.enrolled !== 'Y';
-  }
-
   private _isTransactionFinished(data: any): boolean {
-    if (CommonFrames.COMPLETED_REQUEST_TYPES.includes(data.requesttypedescription)) {
+    if (Number(data.errorcode) !== 0) {
       return true;
     }
 
-    if (this._isThreedComplete(data)) {
-      return true;
+    if (data.requesttypedescription === 'WALLETVERIFY' || data.requesttypedescription === 'JSINIT') {
+      return false;
     }
 
-    const lastRequestType = [...this.requestTypes].pop();
+    if (data.customeroutput === CustomerOutput.THREEDREDIRECT) {
+      return Boolean(data.threedresponse || !data.acsurl || data.enrolled !== 'Y');
+    }
 
-    return data.requesttypedescription === lastRequestType && lastRequestType !== 'THREEDQUERY';
+    return true;
   }
 
   private _onInput(event: Event) {
@@ -205,27 +183,29 @@ export class CommonFrames {
   }
 
   private _onTransactionComplete(data: any): void {
-    if (this._isTransactionFinished(data) || data.errorcode !== '0') {
-      this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
+    this.addSubmitData(data);
+
+    if (!this._isTransactionFinished(data)) {
+      return;
     }
+
+    this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
 
     let result: 'success' | 'error' | 'cancel';
 
-    switch (true) {
-      case this._isTransactionFinished(data) && data.errorcode === '0':
+    switch (data.errorcode) {
+      case '0':
         result = 'success';
         data = { ...data, errormessage: PAYMENT_SUCCESS };
         break;
-      case data.errorcode === 'cancelled':
+      case 'cancelled':
         result = 'cancel';
         data = { ...data, errormessage: PAYMENT_CANCELLED };
         break;
-      case data.errorcode !== '0':
+      default:
         result = 'error';
         break;
     }
-
-    this.addSubmitData(data);
 
     if (
       (result === 'success' && this._submitOnSuccess) ||

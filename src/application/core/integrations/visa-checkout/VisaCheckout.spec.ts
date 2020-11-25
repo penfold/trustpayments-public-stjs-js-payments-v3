@@ -1,3 +1,4 @@
+import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { VisaCheckout } from './VisaCheckout';
 import { anyString, mock, when, instance as mockInstance } from 'ts-mockito';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
@@ -191,6 +192,25 @@ describe('Visa Checkout', () => {
   });
 
   // given
+  describe('_initVisaFlow()', () => {
+    // then
+    it('should inject script with proper attributes ', () => {
+      const insertScriptSpy: jest.SpyInstance = jest
+        .spyOn(DomMethods, 'insertScript')
+        .mockImplementation(() => new Promise(() => {}));
+
+      instance._initVisaFlow();
+
+      expect(insertScriptSpy).toHaveBeenCalledWith('body', {
+        src: instance._sdkAddress,
+        id: 'visaCheckout',
+        nonce: '9ad627e4425a4668'
+      });
+      expect(insertScriptSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // given
   describe('_setLiveStatus()', () => {
     // then
     it('should set sandbox assets when application is not live', () => {
@@ -337,7 +357,7 @@ describe('Visa Checkout', () => {
   describe('onSuccess()', () => {
     // then
     it('should set paymentDetails and paymentStatus and call _processPayment', () => {
-      instance.payment.processPayment = jest.fn().mockReturnValue(new Promise(resolve => resolve()));
+      instance.payment.processPayment = jest.fn().mockReturnValue(new Promise(resolve => resolve(undefined)));
       const payment = { status: 'SUCCESS', another: 'value' };
       instance.onSuccess(payment);
       expect(instance.paymentDetails).toBe('{"status":"SUCCESS","another":"value"}');
@@ -418,7 +438,7 @@ describe('Visa Checkout', () => {
     expect(instance.payment.processPayment).toHaveBeenCalledWith(
       ['CACHETOKENISE'],
       { walletsource: 'VISACHECKOUT', wallettoken: '{"token":"TOKEN"}' },
-      {}
+      { termurl: 'https://termurl.com' }
     );
   });
 });

@@ -31,25 +31,51 @@ Feature: ApplePay
     Examples:
       | language |
       | es_ES    |
-#      | no_NO    |
 
   @config_submit_on_success_true @smoke_test_apple_pay @extended_tests_apple_pay @apple_test @apple_test_part1
   Scenario: ApplePay - successful payment with enabled 'submit on success' process
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User chooses ApplePay as payment method - response is set to "SUCCESS"
-    Then User is redirected to action page
+    Then User will be sent to page with url "www.example.com" having params
+      | key           | value                                   |
+      | errormessage  | Payment has been successfully processed |
+      | baseamount    | 1000                                    |
+      | currencyiso3a | GBP                                     |
+      | errorcode     | 0                                       |
+      | myBillName    | John Test                               |
+      | myBillEmail   | test@example                            |
+      | myBillTel     | 44422224444                             |
+      | eci           | 07                                      |
+      | jwt           | should not be none                      |
 
   @config_default @apple_test @apple_test_part1
   Scenario: ApplePay - successful payment - checking that 'submitOnSuccess' is enabled by default
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User chooses ApplePay as payment method - response is set to "SUCCESS"
-    Then User is redirected to action page
+    Then User will be sent to page with url "www.example.com" having params
+      | key           | value                                   |
+      | errormessage  | Payment has been successfully processed |
+      | baseamount    | 1000                                    |
+      | currencyiso3a | GBP                                     |
+      | errorcode     | 0                                       |
+      | myBillName    | John Test                               |
+      | myBillEmail   | test@example                            |
+      | myBillTel     | 44422224444                             |
+      | eci           | 07                                      |
+      | jwt           | should not be none                      |
     And APPLE_PAY or AUTH requests were sent only once with correct data
 
   @config_submit_on_error_true @apple_test @apple_test_part1
   Scenario: ApplePay - error payment with enabled 'submit on error' process
     When User chooses ApplePay as payment method - response is set to "DECLINE"
-    Then User is redirected to action page
+    Then User will be sent to page with url "www.example.com" having params
+      | key           | value              |
+      | errormessage  | Decline            |
+      | baseamount    | 70000              |
+      | currencyiso3a | GBP                |
+      | errorcode     | 70000              |
+      | eci           | 07                 |
+      | jwt           | should not be none |
     And APPLE_PAY or AUTH requests were sent only once with correct data
 
   @config_submit_on_success_error_cancel_false @apple_test @apple_test_part1
@@ -71,7 +97,9 @@ Feature: ApplePay
   @config_submit_on_cancel_true @apple_test @apple_test_part1
   Scenario: ApplePay - canceled payment with enabled 'submit on cancel' process
     When User chooses ApplePay as payment method - response is set to "CANCEL"
-    Then User is redirected to action page
+    And User will be sent to page with url "www.example.com" having params
+      | key       | value     |
+      | errorcode | cancelled |
 
   @config_default @apple_test @apple_test_part1
   Scenario: ApplePay - canceled payment - checking that 'submitOnCancel' is disabled by default
@@ -139,7 +167,17 @@ Feature: ApplePay
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User calls updateJWT function by filling amount field
     When User chooses ApplePay as payment method - response is set to "SUCCESS"
-    Then User is redirected to action page
+    Then User will be sent to page with url "www.example.com" having params
+      | key           | value                                   |
+      | errormessage  | Payment has been successfully processed |
+      | baseamount    | 1000                                    |
+      | currencyiso3a | GBP                                     |
+      | errorcode     | 0                                       |
+      | myBillName    | John Test                               |
+      | myBillEmail   | test@example                            |
+      | myBillTel     | 44422224444                             |
+      | eci           | 07                                      |
+      | jwt           | should not be none                      |
     And APPLE_PAY or AUTH requests were sent only once with correct data
 #    And WALLETVERIFY requests contains updated jwt
 
@@ -231,13 +269,13 @@ Feature: ApplePay
   Scenario: ApplePay - Cybertonica - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
     When User chooses ApplePay as payment method - response is set to "SUCCESS"
     Then User will see payment status information: "Payment has been successfully processed"
-    And AUTH request was sent only once with 'fraudcontroltransactionid' flag
+    And THREEDQUERY, AUTH request was sent only once with 'fraudcontroltransactionid' flag
 
   @base_config @cybertonica @apple_test @apple_test_part2
   Scenario: ApplePay - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
     When User chooses ApplePay as payment method - response is set to "SUCCESS"
     Then User will see payment status information: "Payment has been successfully processed"
-    And AUTH request was sent only once without 'fraudcontroltransactionid' flag
+    And THREEDQUERY, AUTH request was sent only once without 'fraudcontroltransactionid' flag
 
   @config_disable_notifications_true @apple_test @apple_test_part2
   Scenario: ApplePay - notification frame is not displayed after successful payment

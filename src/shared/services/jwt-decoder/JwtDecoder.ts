@@ -1,4 +1,4 @@
-import JwtDecode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { IStJwtObj } from '../../../application/core/models/IStJwtObj';
 import { Service } from 'typedi';
 
@@ -10,7 +10,7 @@ export class JwtDecoder {
     }
 
     try {
-      return JwtDecode<T>(jwt);
+      return jwt_decode<T>(jwt);
     } catch (e) {
       throw new Error(`Invalid JWT, cannot parse: ${jwt}.`);
     }

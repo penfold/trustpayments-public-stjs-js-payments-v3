@@ -255,7 +255,6 @@ export class ApplePay {
           this._displayNotification(errorcode, errormessage);
         })
         .catch(() => {
-          this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
           this._notification.error(PAYMENT_ERROR);
           this._applePaySession.completePayment({ status: ApplePaySession.STATUS_FAILURE, errors: [] });
           this._applePayButtonClickHandler(this._applePayVersion);
@@ -295,7 +294,7 @@ export class ApplePay {
       if (walletsession) {
         try {
           this._session.completeMerchantValidation(JSON.parse(walletsession));
-          resolve();
+          resolve(undefined);
         } catch (error) {
           console.warn(error);
           this._onValidateMerchantResponseFailure(requestid);

@@ -14,6 +14,7 @@ class E2eConfig(Enum):
     START_ON_LOAD_REQUEST_TYPES_CONFIG = 'e2eConfigStartOnLoadRequestTypes.json'
     START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG = 'e2eConfigStartOnLoadRequestTypesSub.json'
     SUBMIT_ON_ERROR_CONFIG = 'e2eConfigSubmitOnError.json'
+    SUBMIT_ON_ERROR_ONLY_CONFIG = 'e2eConfigSubmitOnErrorOnly.json'
     SUBMIT_ON_ERROR_CONFIG_ERROR_CALLBACK = 'e2eConfigSubmitOnErrorCallback.json'
     SUBMIT_ON_ERROR_CONFIG_SUBMIT_CALLBACK = 'e2eConfigSubmitOnErrorCallbackSubmit.json'
     SUBMIT_ON_CANCEL_CONFIG_CANCEL_CALLBACK = 'e2eConfigSubmitOnCancelCallback.json'

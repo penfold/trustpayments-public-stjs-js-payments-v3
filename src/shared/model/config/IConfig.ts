@@ -5,7 +5,6 @@ import { IStyles } from './IStyles';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { IVisaCheckout } from '../../../application/core/models/constants/IVisaCheckout';
 import { IApplePayConfig } from '../../../application/core/models/IApplePayConfig';
-import { IApplePay } from '../../../application/core/models/apple-pay/IApplePay';
 
 export interface IConfig {
   analytics?: boolean;

@@ -7,7 +7,7 @@ const fs = require('fs');
 
 module.exports = merge(common, {
   mode: 'development',
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   devServer: {
     compress: true,
     contentBase: path.join(__dirname, './dist'),

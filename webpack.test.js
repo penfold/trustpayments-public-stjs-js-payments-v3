@@ -6,7 +6,7 @@ const path = require('path');
 
 module.exports = merge(common, {
   mode: 'production',
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   devServer: {
     contentBase: './dist',
     port: 8443,

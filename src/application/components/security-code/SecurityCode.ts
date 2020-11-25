@@ -18,7 +18,7 @@ import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { merge, Observable } from 'rxjs';
-import JwtDecode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { IDecodedJwt } from '../../core/models/IDecodedJwt';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { DefaultPlaceholders } from '../../core/models/constants/config-resolver/DefaultPlaceholders';
@@ -136,7 +136,7 @@ export class SecurityCode extends Input {
       map((event: IMessageBusEvent<IFormFieldState>) => event.data.value)
     );
     const cardNumberFromJwt$: Observable<string> = merge(jwtFromConfig$, jwtFromUpdate$).pipe(
-      map(jwt => JwtDecode<IDecodedJwt>(jwt).payload.pan)
+      map(jwt => jwt_decode<IDecodedJwt>(jwt).payload.pan)
     );
 
     const maskedPanFromJsInit$: Observable<string> = this._configProvider.getConfig$().pipe(
