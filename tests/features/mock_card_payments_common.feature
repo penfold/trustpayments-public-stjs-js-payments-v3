@@ -35,7 +35,7 @@ Feature: Card Payments
   @base_config
   Scenario: Verify number on JSINIT requests
     When User opens page with payment form
-    Then JSINIT request was sent only 1
+    Then JSINIT request was sent only once
 
   @config_defer_init
   Scenario: Verify number of JSINIT requests together with UpdateJWT
@@ -48,7 +48,7 @@ Feature: Card Payments
     And User calls updateJWT function by filling amount field
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And JSINIT request was sent only 1
+    And JSINIT request was sent only once
     And JSINIT requests contains updated jwt
 
   @config_bypass_cards

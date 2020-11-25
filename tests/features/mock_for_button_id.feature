@@ -23,4 +23,5 @@ Feature: Mock for button id
     And ACS mock response is set to "OK"
     And AUTH response is set to "OK"
     And User clicks Additional button
-    Then AUTH and THREEDQUERY requests were not sent
+    Then THREEDQUERY, AUTH request was not sent
+
