@@ -1,4 +1,4 @@
-import JwtDecode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { Utils } from '../../shared/utils/Utils';
 import { StCodec } from '../st-codec/StCodec.class';
 import { Service } from 'typedi';

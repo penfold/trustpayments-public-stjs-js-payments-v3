@@ -13,6 +13,7 @@ import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { IResponseData } from '../../models/IResponseData';
 import { CustomerOutput } from '../../models/constants/CustomerOutput';
 import { RequestType } from '../../../../shared/types/RequestType';
+import { IApplePayRequestTypes } from '../../models/apple-pay/IApplePayRequestTypes';
 
 export class Payment {
   private _cardinalCommerceCacheToken: string;

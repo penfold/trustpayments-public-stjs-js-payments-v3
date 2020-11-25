@@ -38,12 +38,12 @@ import { IframeFactory } from '../iframe-factory/IframeFactory';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { Frame } from '../../application/core/shared/frame/Frame';
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
-import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/Selectors';
-import { IApplePay } from '../application/core/models/apple-pay/IApplePay';
+import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
+import { IApplePay } from '../../application/core/models/apple-pay/IApplePay';
 
 @Service()
 export class ST {
@@ -166,7 +166,7 @@ export class ST {
       });
   }
 
-  public ApplePay(config: IApplePayConfig | undefined): ApplePay {
+  public ApplePay(config: IApplePay | undefined): ApplePay {
     const { applepay } = this.Environment();
 
     if (config) {

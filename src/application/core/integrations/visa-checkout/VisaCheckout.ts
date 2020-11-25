@@ -13,7 +13,7 @@ import { IConfig } from '../../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
-import JwtDecode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { RequestType } from '../../../../shared/types/RequestType';
 
