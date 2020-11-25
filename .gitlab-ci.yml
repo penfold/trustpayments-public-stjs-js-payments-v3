@@ -23,6 +23,7 @@ variables:
   SMOKE_TESTS_TAG: '@smoke_test'
   SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_test,@smoke_test_apple_pay'
   EXTENDED_TESTS_TAG: '@extended_tests_part_1,@extended_tests_part_2'
+  ARTIFACT_RELEASE_DESCRIPTION_TYPE: "EXTENDED"
 
   ### Disabled Jobs:
   # Initialize

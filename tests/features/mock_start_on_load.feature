@@ -9,11 +9,10 @@
 #
 #  @config_start_on_load_requestTypes_tdq
 #  Scenario: Successful payment with startOnLoad and request types THREEDQUERY
-#    When THREEDQUERY mock response is set to "ENROLLED_Y"
-#    And ACS mock response is set to "OK"
+#    When THREEDQUERY mock response is set to "NOT_ENROLLED_N"
 #    And User opens prepared payment form page WITHOUT_SUBMIT_BUTTON
 #    Then User will see payment status information: "Payment has been successfully processed"
-#    And Single THREEDQUERY request was sent only once with correct data
+#    And THREEDQUERY ware sent only once in one request
 #
 #  @config_start_on_load_sub_acheck_tdq_aut
 #  Scenario: Successful payment with startOnLoad and request types ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION
@@ -32,4 +31,4 @@
 #    And User opens prepared payment form page WITHOUT_SUBMIT_BUTTON
 #    Then User will see payment status information: "Payment has been successfully processed"
 #    And THREEDQUERY ware sent only once in one request
-#    And AUTH request was sent only once with correct data
+#    And AUTH request was sent only once
