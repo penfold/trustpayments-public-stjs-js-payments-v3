@@ -95,8 +95,9 @@ def get_number_of_requests_with_fraudcontroltransactionid_flag(request_type):
 
 
 def get_number_of_requests_with_updated_jwt(request_type, url, update_jwt):
+    print('UPDATE JWT: ' + update_jwt)
     count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
-                          json={'url': url, 'bodyPatterns': [
+                          json={'url': '/jwt/', 'bodyPatterns': [
                               {'matchesJsonPath': '$.[?(@.jwt=="' + update_jwt + '")]'}
                           ],
                                 'headers': {'st-request-types': {'equalTo': request_type}}}, verify=False)
