@@ -15,6 +15,12 @@ from utils.mock_handler import MockUrl
 use_step_matcher('re')
 
 
+@step('User opens page with incorrect request type in config file')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.open_page(CONFIGURATION.URL.BASE_URL)
+
+
 @step('User opens page with payment form')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')

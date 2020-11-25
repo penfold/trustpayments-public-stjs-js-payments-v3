@@ -18,4 +18,13 @@ jsinit_response = {
     'config_immediate_payment_tdq_auth': 'jsinitStartOnLoadTdqAuth.json',
     'config_immediate_payment_acheck_tdq_auth': 'jsinitStartOnLoadAcheckTdqAuth.json',
     'config_immediate_payment_riskdec_acheck_tdq_auth': 'jsinitStartOnLoadRiskdecAcheckTdqAuth.json',
+    'config_bypass_cards_tdq': 'jsinitBypassTdq.json',
+    'config_bypass_cards_tdq_auth_riskdec': 'jsinitBypassTdqAuthRiskdec.json',
+    'config_bypass_cards_acheck_tdq_auth': 'jsinitBypassAcheckTdqAuth.json',
+    'config_bypass_cards_riskdec_acheck_tdq_auth': 'jsinitBypassRiskdecAcheckTdqAuth.json',
+    'config_bypass_cards_acheck_tdq_auth_sub': 'jsinitBypassAcheckTdqAuthSub.json',
+    'config_bypass_cards_tdq_acheck_riskdec_auth': 'jsinitBypassTdqAcheckRiskdecAuth.json'
+
+
+
 }
