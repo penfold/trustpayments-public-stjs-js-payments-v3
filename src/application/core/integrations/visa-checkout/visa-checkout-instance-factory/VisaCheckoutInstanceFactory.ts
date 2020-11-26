@@ -1,6 +1,6 @@
-import { VisaCheckout } from './VisaCheckout';
+import { VisaCheckout } from '../VisaCheckout';
 
-export class VisaCheckoutFactory {
+export class VisaCheckoutInstanceFactory {
   create<T extends VisaCheckout>(visaClass: new () => T): T {
     return new visaClass();
   }

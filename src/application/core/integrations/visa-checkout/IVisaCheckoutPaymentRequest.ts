@@ -1,4 +1,4 @@
-export interface IVisaPaymentRequest {
+export interface IVisaCheckoutPaymentRequest {
   merchantRequestId?: string;
   currencyCode?: string;
   subtotal?: string;

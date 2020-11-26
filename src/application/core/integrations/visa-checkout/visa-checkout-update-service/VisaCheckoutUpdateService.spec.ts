@@ -1,6 +1,6 @@
 import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
-import { IVisaInitConfig } from './IVisaInitConfig';
-import { IStJwtPayload } from '../../models/IStJwtPayload';
+import { IVisaCheckoutInitConfig } from '../IVisaCheckoutInitConfig';
+import { IStJwtPayload } from '../../../models/IStJwtPayload';
 
 describe('VisaCheckoutUpdateService', () => {
   let instance: VisaCheckoutUpdateService = new VisaCheckoutUpdateService();
@@ -9,7 +9,7 @@ describe('VisaCheckoutUpdateService', () => {
     locale: 'pl_PL',
     mainamount: '100'
   };
-  const config: IVisaInitConfig = {
+  const config: IVisaCheckoutInitConfig = {
     apikey: 'some key',
     settings: {
       locale: 'en_GB'
@@ -21,7 +21,7 @@ describe('VisaCheckoutUpdateService', () => {
     }
   };
 
-  const updatedConfig: IVisaInitConfig = {
+  const updatedConfig: IVisaCheckoutInitConfig = {
     apikey: 'some key',
     settings: {
       locale: 'pl_PL'

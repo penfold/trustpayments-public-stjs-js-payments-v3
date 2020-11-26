@@ -5,8 +5,8 @@ import { anyString, mock, when, instance as mockInstance } from 'ts-mockito';
 import { EMPTY, of } from 'rxjs';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { NotificationService } from '../../../../client/notification/NotificationService';
-import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
-import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
+import { VisaCheckoutButtonService } from './visa-checkout-button-service/VisaCheckoutButtonService';
+import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { environment } from '../../../../environments/environment';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 

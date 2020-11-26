@@ -10,7 +10,7 @@ import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay
 import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
-import { VisaCheckoutMock } from '../../application/core/integrations/visa-checkout/VisaCheckoutMock';
+import { VisaCheckoutMockClass } from '../../application/core/integrations/visa-checkout/visa-checkout-mock-class/VisaCheckoutMockClass';
 import { IApplePayConfig } from '../../application/core/models/IApplePayConfig';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
@@ -44,9 +44,7 @@ import { BrowserDetector } from '../../shared/services/browser-detector/BrowserD
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
-import { VisaCheckoutButtonService } from '../../application/core/integrations/visa-checkout/VisaCheckoutButtonService';
-import { VisaCheckoutUpdateService } from '../../application/core/integrations/visa-checkout/VisaCheckoutUpdateService';
-import { VisaCheckoutFactory } from '../../application/core/integrations/visa-checkout/VisaCheckoutFactory';
+import { VisaCheckoutInstanceFactory } from '../../application/core/integrations/visa-checkout/visa-checkout-instance-factory/VisaCheckoutInstanceFactory';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 
 @Service()
@@ -112,7 +110,7 @@ export class ST {
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
     private _browserDetector: BrowserDetector,
-    private _visaCheckoutFactory: VisaCheckoutFactory
+    private _visaCheckoutFactory: VisaCheckoutInstanceFactory
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -294,7 +292,7 @@ export class ST {
   private Environment(): { applepay: any; visa: any } {
     return {
       applepay: environment.testEnvironment ? ApplePayMock : ApplePay,
-      visa: environment.testEnvironment ? VisaCheckoutMock : VisaCheckout
+      visa: environment.testEnvironment ? VisaCheckoutMockClass : VisaCheckout
     };
   }
 

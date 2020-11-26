@@ -1,11 +1,11 @@
-import { environment } from '../../../../environments/environment';
-import { DomMethods } from '../../shared/dom-methods/DomMethods';
-import { VisaCheckout } from './VisaCheckout';
-import { VisaButtonProps } from './VisaButtonProps';
+import { environment } from '../../../../../environments/environment';
+import { DomMethods } from '../../../shared/dom-methods/DomMethods';
+import { VisaCheckout } from '../VisaCheckout';
+import { VisaCheckoutButtonProps } from '../visa-checkout-button-service/VisaCheckoutButtonProps';
 
-export class VisaCheckoutMock extends VisaCheckout {
+export class VisaCheckoutMockClass extends VisaCheckout {
   protected paymentStatusHandler() {
-    DomMethods.addListener(VisaButtonProps.id, 'click', () => {
+    DomMethods.addListener(VisaCheckoutButtonProps.id, 'click', () => {
       this._handleMockedData();
     });
   }

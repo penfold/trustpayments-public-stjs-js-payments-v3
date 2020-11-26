@@ -1,15 +1,15 @@
 import { of } from 'rxjs';
 import { anyString, instance as mockInstance, mock, when } from 'ts-mockito';
-import { VisaCheckoutMock } from './VisaCheckoutMock';
-import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { MessageBus } from '../../shared/message-bus/MessageBus';
-import { NotificationService } from '../../../../client/notification/NotificationService';
-import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
-import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
-import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { VisaCheckoutMockClass } from './VisaCheckoutMockClass';
+import { VisaCheckoutButtonService } from '../visa-checkout-button-service/VisaCheckoutButtonService';
+import { VisaCheckoutUpdateService } from '../visa-checkout-update-service/VisaCheckoutUpdateService';
+import { InterFrameCommunicator } from '../../../../../shared/services/message-bus/InterFrameCommunicator';
+import { ConfigProvider } from '../../../../../shared/services/config-provider/ConfigProvider';
+import { MessageBus } from '../../../shared/message-bus/MessageBus';
+import { NotificationService } from '../../../../../client/notification/NotificationService';
+import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 
-jest.mock('./../../shared/notification/Notification');
+jest.mock('./../../../shared/notification/Notification');
 
 describe('Visa Checkout Mock class', () => {
   let body: object;
@@ -28,7 +28,7 @@ describe('Visa Checkout Mock class', () => {
       thenRespond: () => undefined
     });
     when(configProvider.getConfig$()).thenReturn(of({ jwt, disableNotification: false }));
-    instance = new VisaCheckoutMock(
+    instance = new VisaCheckoutMockClass(
       mockInstance(configProvider),
       mockInstance(communicator),
       mockInstance(messageBus),

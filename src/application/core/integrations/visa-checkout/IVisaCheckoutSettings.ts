@@ -1,6 +1,6 @@
 import { IVisaCardBrands } from './IVisaCardBrands';
 
-export interface IVisaSettings {
+export interface IVisaCheckoutSettings {
   locale?: string;
   countryCode?: string;
   displayName?: string;

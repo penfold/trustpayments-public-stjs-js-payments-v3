@@ -1,6 +1,6 @@
-import { environment } from '../../../../environments/environment';
+import { environment } from '../../../../../environments/environment';
 
-export const VisaButtonProps = {
+export const VisaCheckoutButtonProps = {
   alt: 'Visa Checkout',
   class: 'v-button',
   id: 'v-button',
