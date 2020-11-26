@@ -41,7 +41,7 @@ export const VisaCheckoutSchema: Joi.ObjectSchema = Joi.object().keys({
       collectShipping: Joi.string().allow('true', 'false')
     }),
     payment: Joi.object().keys({
-      cardBrands: Joi.array(),
+      cardBrands: Joi.array().allow('VISA', 'MASTERCARD', 'AMEX', 'DISCOVER', 'ELECTRON', 'ELO'),
       acceptCanadianVisaDebit: Joi.string().allow('true', 'false'),
       billingCountries: Joi.array()
     }),
