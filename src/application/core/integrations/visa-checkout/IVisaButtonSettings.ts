@@ -4,7 +4,7 @@ export interface IVisaButtonSettings {
   width?: number;
   locale?: string;
   color?: 'neutral' | 'standard';
-  cardBrands?: 'VISA' | 'MASTERCARD' | 'AMEX' | 'DISCOVER' | 'ELECTRON' | 'ELO';
+  cardBrands?: string;
   acceptCanadianVisaDebit?: 'true' | 'false';
   cobrand?: 'true' | 'false';
 }
