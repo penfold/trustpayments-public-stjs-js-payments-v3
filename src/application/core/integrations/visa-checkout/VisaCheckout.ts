@@ -3,13 +3,12 @@ import { Service } from 'typedi';
 import { Observable } from 'rxjs';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IMerchantData } from '../../models/IMerchantData';
-import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { IUpdateJwt } from '../../models/IUpdateJwt';
 import { IWallet } from '../../models/IWallet';
-import { IVisaButtonSettings } from './IVisaButtonSettings';
-import { IVisaInitConfig } from './IVisaInitConfig';
+import { IVisaCheckoutButtonSettings } from './visa-checkout-button-service/IVisaCheckoutButtonSettings';
+import { IVisaCheckoutInitConfig } from './IVisaCheckoutInitConfig';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
-import { VisaResponseTypes } from './VisaResponseTypes';
+import { VisaCheckoutResponseTypes } from './VisaCheckoutResponseTypes';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { GoogleAnalytics } from '../google-analytics/GoogleAnalytics';
@@ -18,8 +17,8 @@ import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { Payment } from '../../shared/payment/Payment';
 import { StJwt } from '../../shared/stjwt/StJwt';
-import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
-import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
+import { VisaCheckoutButtonService } from './visa-checkout-button-service/VisaCheckoutButtonService';
+import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { IStJwtObj } from '../../models/IStJwtObj';
 
 declare const V: any;
@@ -27,10 +26,10 @@ declare const V: any;
 @Service()
 export class VisaCheckout {
   private _buttonUrl: string;
-  private _buttonSettings: IVisaButtonSettings;
+  private _buttonSettings: IVisaCheckoutButtonSettings;
   private _formId: string;
   private _jwt: string;
-  private _visaInitConfig: IVisaInitConfig;
+  private _visaInitConfig: IVisaCheckoutInitConfig;
   private readonly _config$: Observable<IConfig>;
 
   constructor(
@@ -82,7 +81,7 @@ export class VisaCheckout {
   }
 
   private _setHandlers(): void {
-    const { cancel, error, success } = VisaResponseTypes;
+    const { cancel, error, success } = VisaCheckoutResponseTypes;
 
     V.init(this._visaInitConfig);
 

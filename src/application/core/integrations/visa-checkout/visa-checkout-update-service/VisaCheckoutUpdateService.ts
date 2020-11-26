@@ -1,15 +1,13 @@
 import { Service } from 'typedi';
-import { environment } from '../../../../environments/environment';
-import { VisaButtonProps } from './VisaButtonProps';
-import { IVisaCheckoutConfig } from './IVisaCheckoutConfig';
-import { IVisaInitConfig } from './IVisaInitConfig';
-import { IStJwtPayload } from '../../models/IStJwtPayload';
-import { IVisaSettings } from './IVisaSettings';
-import { IVisaPaymentRequest } from './IVisaPaymentRequest';
+import { environment } from '../../../../../environments/environment';
+import { VisaCheckoutButtonProps } from '../visa-checkout-button-service/VisaCheckoutButtonProps';
+import { IVisaCheckoutConfig } from '../IVisaCheckoutConfig';
+import { IVisaCheckoutInitConfig } from '../IVisaCheckoutInitConfig';
+import { IStJwtPayload } from '../../../models/IStJwtPayload';
 
 @Service()
 export class VisaCheckoutUpdateService {
-  updateVisaInit(stJwt: IStJwtPayload, config: IVisaInitConfig): IVisaInitConfig {
+  updateVisaInit(stJwt: IStJwtPayload, config: IVisaCheckoutInitConfig): IVisaCheckoutInitConfig {
     return {
       ...config,
       paymentRequest: {
@@ -29,9 +27,9 @@ export class VisaCheckoutUpdateService {
     visaCheckout: IVisaCheckoutConfig,
     stJwt: IStJwtPayload,
     livestatus: 0 | 1
-  ): { buttonUrl: string; sdkUrl: string; visaInit: IVisaInitConfig } {
+  ): { buttonUrl: string; sdkUrl: string; visaInit: IVisaCheckoutInitConfig } {
     return {
-      buttonUrl: livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_BUTTON_URL : VisaButtonProps.src,
+      buttonUrl: livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_BUTTON_URL : VisaCheckoutButtonProps.src,
       sdkUrl: livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_SDK : environment.VISA_CHECKOUT_URLS.TEST_SDK,
       visaInit: {
         apikey: visaCheckout.merchantId,

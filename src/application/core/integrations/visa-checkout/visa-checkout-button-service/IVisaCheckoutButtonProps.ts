@@ -1,4 +1,4 @@
-export interface IVisaButtonProps {
+export interface IVisaCheckoutButtonProps {
   alt: string;
   class: string;
   id: string;

@@ -1,11 +1,11 @@
 import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
-import { environment } from '../../../../environments/environment';
-import { IVisaButtonSettings } from './IVisaButtonSettings';
-import { IVisaButtonProps } from './IVisaButtonProps';
+import { environment } from '../../../../../environments/environment';
+import { IVisaCheckoutButtonSettings } from './IVisaCheckoutButtonSettings';
+import { IVisaCheckoutButtonProps } from './IVisaCheckoutButtonProps';
 
 describe('VisaCheckoutButtonService', () => {
   let instance: VisaCheckoutButtonService;
-  const customizedProperties: IVisaButtonSettings = {
+  const customizedProperties: IVisaCheckoutButtonSettings = {
     size: 154,
     height: 34,
     width: 100,
@@ -16,12 +16,12 @@ describe('VisaCheckoutButtonService', () => {
     cobrand: 'true'
   };
 
-  const customizedPropertiesWithEmptyProp: IVisaButtonSettings = {
+  const customizedPropertiesWithEmptyProp: IVisaCheckoutButtonSettings = {
     ...customizedProperties,
     locale: ''
   };
 
-  const customizedButton: IVisaButtonProps = {
+  const customizedButton: IVisaCheckoutButtonProps = {
     alt: 'Visa Checkout',
     class: 'v-button',
     id: 'v-button',
@@ -30,7 +30,7 @@ describe('VisaCheckoutButtonService', () => {
       'http://example.com/?size=154&height=34&width=100&locale=de_DE&color=neutral&cardBrands=MASTERCARD%2C+VISA&acceptCanadianVisaDebit=true&cobrand=true'
   };
 
-  const customizedButtonWithEmptyProp: IVisaButtonProps = {
+  const customizedButtonWithEmptyProp: IVisaCheckoutButtonProps = {
     ...customizedButton,
     src:
       'http://example.com/?size=154&height=34&width=100&color=neutral&cardBrands=MASTERCARD%2C+VISA&acceptCanadianVisaDebit=true&cobrand=true'
