@@ -222,6 +222,7 @@ export class ControlFrame {
     const translatedErrorMessage = translator.translate(PAYMENT_ERROR);
 
     this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.RESET_JWT });
+    this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
 
     errorData.errormessage = translatedErrorMessage;
 
