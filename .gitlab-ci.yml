@@ -49,6 +49,15 @@ variables:
   # DISABLE_JOB_release_generate_version: "true"
   # Post-Release
   DISABLE_JOB_npm_publish: 'true'
+  # CDN
+  DISABLE_JOB_trigger_update_versions_review: 'true'
+  DISABLE_JOB_trigger_update_versions_release: 'true'
+  DISABLE_JOB_generate_version_files_review: 'true'
+  DISABLE_JOB_generate_version_files_release: 'true'
+  DISABLE_JOB_trigger_trigger_publish_to_cdn_deprecated_review: 'true'
+  DISABLE_JOB_trigger_publish_to_cdn_unpublished_review: 'true'
+  DISABLE_JOB_trigger_publish_to_cdn_deprecated_release: 'true'
+  DISABLE_JOB_trigger_publish_to_cdn_unpublished_release: 'true'
   ### Disabled Jobs : End
 
   ### Disabled Activities
@@ -75,5 +84,11 @@ stages:
   - fast-tests
   - extended-tests
   - validate-merge-request-description
+# Stages needed for pipeline generate-version-files
+  - generate-version-files
+  - trigger-publish-to-cdn
+# trigger-update-versions must be before release and before destroy-infra
+  - trigger-update-versions
+# Release package
   - release
   - post-release
