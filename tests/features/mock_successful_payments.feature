@@ -49,7 +49,7 @@ Feature: Successfull payments with various configurations
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
     Then User will see payment status information: "Payment has been successfully processed"
-    Then JSINIT request was sent only 1
+    Then JSINIT request was sent only once
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
   @config_defer_init
@@ -68,6 +68,7 @@ Feature: Successfull payments with various configurations
     And JSINIT requests contains updated jwt
 
   @config_submit_cvv_only @extended_tests_part_2
+  @submit_cvv_only
   Scenario: Successful payment when cvv field is selected to submit
     Given User opens page with payment form
     When User fills "SECURITY_CODE" field "123"
@@ -79,6 +80,7 @@ Feature: Successfull payments with various configurations
     And THREEDQUERY, AUTH ware sent only once in one request
 
   @config_submit_cvv_for_amex
+  @submit_cvv_only
   Scenario: Successful payment by AMEX when cvv field is selected to submit
     Given User opens page with payment form
     When User fills "SECURITY_CODE" field "1234"
@@ -90,6 +92,7 @@ Feature: Successfull payments with various configurations
     And THREEDQUERY, AUTH ware sent only once in one request
 
   @config_cvvToSubmit_and_submitOnSuccess
+  @submit_cvv_only
   Scenario: Successful payment with fieldToSubmit and submitOnSuccess
     Given User opens page with payment form
     When User fills "SECURITY_CODE" field "123"
@@ -102,7 +105,7 @@ Feature: Successfull payments with various configurations
       | baseamount    | 1000                                    |
       | currencyiso3a | GBP                                     |
       | errorcode     | 0                                       |
-    And AUTH and THREEDQUERY requests were sent only once
+    And THREEDQUERY, AUTH ware sent only once in one request
 
   @config_skip_jsinit @cardinal_commerce
   Scenario: Successful payment with skipped JSINIT process

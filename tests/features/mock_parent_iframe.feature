@@ -46,4 +46,4 @@ Feature: Payment form embeded into iframe
     And User clicks Pay button
     Then User will see validation message "Field is required" under all fields
     And User will see that all fields are highlighted
-    And AUTH and THREEDQUERY requests were not sent
+    And THREEDQUERY, AUTH request was not sent

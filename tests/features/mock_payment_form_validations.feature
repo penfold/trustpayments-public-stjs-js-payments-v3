@@ -13,14 +13,14 @@ Feature: Payment form validations
     When User clicks Pay button
     Then User will see validation message "Field is required" under all fields
     And User will see that all fields are highlighted
-    And AUTH and THREEDQUERY requests were not sent
+    And THREEDQUERY, AUTH request was not sent
 
   @config_submit_cvv_only
   Scenario: Checking validation if only Security code field is enabled
     When User clicks Pay button
     Then User will see "Field is required" message under field: "SECURITY_CODE"
     And User will see that "SECURITY_CODE" field is highlighted
-    And AUTH and THREEDQUERY requests were not sent
+    And THREEDQUERY, AUTH request was not sent
 
   @base_config @fields_validation
   Scenario Outline: Filling payment form with empty fields -> cardNumber "<card_number>" expiration: "<expiration>", cvv: "<cvV>"
@@ -28,7 +28,7 @@ Feature: Payment form validations
     And User clicks Pay button
     Then User will see "Field is required" message under field: "<field>"
     And User will see that "<field>" field is highlighted
-    And AUTH and THREEDQUERY requests were not sent
+    And THREEDQUERY, AUTH request was not sent
 
     @smoke_test
     Examples:
@@ -50,7 +50,7 @@ Feature: Payment form validations
     And User clicks Pay button
     And User will see "Value mismatch pattern" message under field: "<field>"
     And User will see that "<field>" field is highlighted
-    And AUTH and THREEDQUERY requests were not sent
+    And THREEDQUERY, AUTH request was not sent
 
     @smoke_test
     Examples:
@@ -93,5 +93,5 @@ Feature: Payment form validations
   Scenario: Filling 3-number of cvv code for AMEX card
     When User fills payment form with credit card number "340000000000611", expiration date "12/22" and cvv "123"
     And User clicks Pay button
-    And User will see "Value mismatch pattern" message under field: "SECURITY_CODE"
-    And AUTH and THREEDQUERY requests were not sent
+    Then User will see "Value mismatch pattern" message under field: "SECURITY_CODE"
+    And THREEDQUERY, AUTH request was not sent
