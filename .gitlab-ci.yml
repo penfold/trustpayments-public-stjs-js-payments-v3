@@ -44,11 +44,6 @@ variables:
   # DISABLE_JOB_extended_tests: 'true'
   # Validate merge request description
   # DISABLE_JOB_validate_merge_request_description: 'true'
-  # Release
-  # DISABLE_JOB_release: 'true'
-  # DISABLE_JOB_release_generate_version: "true"
-  # Post-Release
-  DISABLE_JOB_npm_publish: 'true'
   # CDN
   DISABLE_JOB_trigger_update_versions_review: 'true'
   DISABLE_JOB_trigger_update_versions_release: 'true'
@@ -58,6 +53,11 @@ variables:
   DISABLE_JOB_trigger_publish_to_cdn_unpublished_review: 'true'
   DISABLE_JOB_trigger_publish_to_cdn_deprecated_release: 'true'
   DISABLE_JOB_trigger_publish_to_cdn_unpublished_release: 'true'
+  # Release
+  # DISABLE_JOB_release: 'true'
+  # DISABLE_JOB_release_generate_version: "true"
+  # Post-Release
+  DISABLE_JOB_npm_publish: 'true'
   ### Disabled Jobs : End
 
   ### Disabled Activities
