@@ -60,7 +60,8 @@
   "resolutions": {
     "ajv": "6.12.5",
     "dot-prop": "6.0.0",
-    "minimist": "1.2.5"
+    "minimist": "1.2.5",
+    "trim": "1.0.0"
   },
   "husky": {
     "hooks": {
