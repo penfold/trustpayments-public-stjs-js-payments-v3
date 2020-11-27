@@ -1,7 +1,11 @@
+import { VisaCheckoutClient } from '../../../../client/integrations/visa-checkout/VisaCheckoutClient';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { Service } from 'typedi';
 import { Observable } from 'rxjs';
 import { IConfig } from '../../../../shared/model/config/IConfig';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { CONTROL_FRAME_IFRAME } from '../../models/constants/Selectors';
 import { IMerchantData } from '../../models/IMerchantData';
 import { IUpdateJwt } from '../../models/IUpdateJwt';
 import { IWallet } from '../../models/IWallet';
@@ -9,7 +13,6 @@ import { IVisaCheckoutButtonSettings } from './visa-checkout-button-service/IVis
 import { IVisaCheckoutInitConfig } from './IVisaCheckoutInitConfig';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { VisaCheckoutResponseTypes } from './VisaCheckoutResponseTypes';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { GoogleAnalytics } from '../google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
@@ -39,11 +42,14 @@ export class VisaCheckout {
     private _notification: NotificationService,
     private _visaCheckoutButtonService: VisaCheckoutButtonService,
     private _visaCheckoutUpdateService: VisaCheckoutUpdateService,
-    private _jwtDecoder: JwtDecoder
+    private _jwtDecoder: JwtDecoder,
+    private _visaCheckoutClient: VisaCheckoutClient
   ) {
+    console.log(this._configProvider);
     this._config$ = this._configProvider.getConfig$();
     this._updateConfigListener();
     this._updateJwtListener();
+    this._visaCheckoutClient.init();
   }
 
   private _updateConfigListener(): void {
@@ -87,6 +93,7 @@ export class VisaCheckout {
 
     V.on(success, (payment: object) => {
       this.onSuccess(payment);
+      this._communicator.query({ type: PUBLIC_EVENTS.VISA_CHECKOUT_SUCCESS }, CONTROL_FRAME_IFRAME);
     });
 
     V.on(error, () => {
@@ -101,12 +108,15 @@ export class VisaCheckout {
   protected onSuccess(payment: object): void {
     const paymentInstance: Payment = new Payment();
     const { requesttypedescriptions } = this._jwtDecoder.decode(this._jwt).payload;
+    console.log('requesttypedescriptions', requesttypedescriptions);
     const walletdata: IWallet = {
       walletsource: 'VISACHECKOUT',
       wallettoken: JSON.stringify(payment)
     };
+    console.log('walletdata', walletdata);
 
     const merchantData: IMerchantData = DomMethods.parseForm(this._formId) ? DomMethods.parseForm(this._formId) : {};
+    console.log('merchantData', merchantData);
 
     paymentInstance
       .processPayment(requesttypedescriptions, walletdata, merchantData)

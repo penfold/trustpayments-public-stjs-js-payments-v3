@@ -4,6 +4,7 @@ import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames.class';
 import { CommonFrames } from '../common-frames/CommonFrames.class';
+import { VisaCheckoutClient } from '../integrations/visa-checkout/VisaCheckoutClient';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
 import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
 import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
@@ -110,7 +111,8 @@ export class ST {
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
     private _browserDetector: BrowserDetector,
-    private _visaCheckoutFactory: VisaCheckoutInstanceFactory
+    private _visaCheckoutFactory: VisaCheckoutInstanceFactory,
+    private _visaCheckoutClient: VisaCheckoutClient
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
