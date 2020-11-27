@@ -27,7 +27,7 @@ Feature: Redirect functionality
   Scenario: Cardinal Commerce - invalid payment with request types: THREEDQUERY and submitOnError
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User fills payment form with credit card number "4111110000000211", expiration date "12/30" and cvv "123"
-    And THREEDQUERY mock response is set to "INVALID_ACQUIRER"
+    And Single THREEDQUERY mock response is set to "INVALID_ACQUIRER"
     And User clicks Pay button
     Then User is redirected to action page
     And THREEDQUERY request was sent only once with correct data
