@@ -91,10 +91,10 @@ Feature: E2E for tokenisation
     Given JS library configured by inline params TOKENISATION_WITH_DEFER_INIT_CONFIG and jwt JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
+      | baseamount              | 70000            |
     And User opens page WITH_UPDATE_JWT and jwt JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-      | baseamount              | 70000            |
     When User fills only security code for saved VISA_NON_FRICTIONLESS card
     And User clicks Pay button
     And User fills V2 authentication modal
