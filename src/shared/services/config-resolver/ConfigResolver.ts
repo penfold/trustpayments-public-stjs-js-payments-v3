@@ -5,12 +5,10 @@ import { IComponentsIds } from '../../model/config/IComponentsIds';
 import { IComponentsConfig } from '../../model/config/IComponentsConfig';
 import { ConfigSchema } from '../storage/ConfigSchema';
 import { DefaultSubmitFields } from '../../../application/core/models/constants/config-resolver/DefaultSubmitFields';
-import { DefaultComponentsRequestTypes } from '../../../application/core/models/constants/config-resolver/DefaultComponentsRequestTypes';
 import { DefaultComponentsIds } from '../../../application/core/models/constants/config-resolver/DefaultComponentsIds';
-import { DefaultApmsRequestTypes } from '../../../application/core/models/constants/config-resolver/DefaultApmsRequestTypes';
 import { DefaultConfig } from '../../../application/core/models/constants/config-resolver/DefaultConfig';
 import { DefaultComponents } from '../../../application/core/models/constants/config-resolver/DefaultComponents';
-import { IApplePay } from '../../../application/core/models/IApplePay';
+import { IApplePayConfig } from '../../../application/core/models/IApplePayConfig';
 import { IVisaCheckout } from '../../../application/core/models/constants/IVisaCheckout';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
@@ -25,7 +23,6 @@ export class ConfigResolver {
       animatedCard: this._getValueOrDefault(config.animatedCard, DefaultConfig.animatedCard),
       applePay: this._setApplePayConfig(config.applePay, DefaultConfig.applePay),
       buttonId: this._getValueOrDefault(config.buttonId, DefaultConfig.buttonId),
-      bypassCards: this._getValueOrDefault(config.bypassCards, DefaultConfig.bypassCards),
       cancelCallback: this._getValueOrDefault(config.cancelCallback, DefaultConfig.cancelCallback),
       componentIds: this._setComponentIds(config.componentIds),
       components: this._setComponentsProperties(config.components),
@@ -60,7 +57,7 @@ export class ConfigResolver {
   }
 
   private _validate(
-    config: IConfig | IComponentsConfig | IComponentsIds | IApplePay | IVisaCheckout,
+    config: IConfig | IComponentsConfig | IComponentsIds | IApplePayConfig | IVisaCheckout,
     schema: Joi.ObjectSchema
   ): void {
     const { error } = schema.validate(config);
@@ -97,27 +94,14 @@ export class ConfigResolver {
     if (!config || !Object.keys(config).length) {
       return defaultConfig;
     }
-    return {
-      ...config,
-      // @ts-ignore
-      requestTypes: this._getValueOrDefault(config.requestTypes, DefaultApmsRequestTypes)
-    };
+    return config;
   }
 
-  private _setApplePayConfig(config: IApplePay | {}, defaultConfig: {}): IApplePay | {} {
+  private _setApplePayConfig(config: IApplePayConfig | {}, defaultConfig: {}): IApplePayConfig | {} {
     if (!config || !Object.keys(config).length) {
       return defaultConfig;
     }
-
-    // @ts-ignore
-    config.paymentRequest.requestTypes = this._getValueOrDefault(
-      // @ts-ignore
-      config.paymentRequest.requestTypes,
-      DefaultApmsRequestTypes
-    );
-    return {
-      ...config
-    };
+    return config;
   }
 
   private _setComponentIds(config: IComponentsIds): IComponentsIds {
@@ -140,7 +124,6 @@ export class ConfigResolver {
     return {
       defaultPaymentType: this._getValueOrDefault(config.defaultPaymentType, DefaultComponents.defaultPaymentType),
       paymentTypes: this._getValueOrDefault(config.paymentTypes, DefaultComponents.paymentTypes),
-      requestTypes: this._getValueOrDefault(config.requestTypes, DefaultComponentsRequestTypes),
       startOnLoad: this._getValueOrDefault(config.startOnLoad, DefaultComponents.startOnLoad)
     };
   }

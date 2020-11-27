@@ -13,7 +13,6 @@ export const DefaultConfig: IConfig = {
   animatedCard: false,
   applePay: {},
   buttonId: '',
-  bypassCards: [],
   cancelCallback: null,
   componentIds: DefaultComponentsIds,
   components: DefaultComponents,

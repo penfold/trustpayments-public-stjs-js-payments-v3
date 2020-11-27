@@ -10,8 +10,8 @@ class ScreenshotManager:
     SENSITIVITY_DEFAULT: int = 400
     COMPARISON_AREA_PX_DEFAULT: int = 20
 
-    def __init__(self, driver, configuration):
-        self._browser = driver.get_browser()
+    def __init__(self, driver_factory, configuration):
+        self._driver = driver_factory.get_driver()
         self._screenshots_path = configuration.SCREENSHOTS_PATH
         self._mobile_device = configuration.REMOTE_DEVICE
         self._create_screenshot_dir_for_visual_tests()
@@ -38,17 +38,17 @@ class ScreenshotManager:
         if self._mobile_device:
             self.make_double_screenshot(filepath)
         else:
-            self._browser.save_screenshot(filepath)
+            self._driver.save_screenshot(filepath)
 
     def make_double_screenshot(self, filepath):
-        self._browser.execute_script('window.scrollTo(0, document.body.scrollHeight)')
+        self._driver.execute_script('window.scrollTo(0, document.body.scrollHeight)')
         sleep(2)
         filepath_1: str = filepath.replace('.png', '_1.png')
-        self._browser.save_screenshot(filepath_1)
-        self._browser.execute_script('window.scrollTo(0, -document.body.scrollHeight)')
+        self._driver.save_screenshot(filepath_1)
+        self._driver.execute_script('window.scrollTo(0, -document.body.scrollHeight)')
         sleep(2)
         filepath_2: str = filepath.replace('.png', '_2.png')
-        self._browser.save_screenshot(filepath_2)
+        self._driver.save_screenshot(filepath_2)
 
         image_bottom = Image.open(filepath_1)
         image_top = Image.open(filepath_2)

@@ -51,12 +51,12 @@ def before_scenario(context, scenario):
         context.configuration.BROWSER = context.configuration.REMOTE_BROWSER
     disable_headless_for_visa_checkout(context)
     context.browser = context.configuration.BROWSER
-    driver = DriverFactory(configuration=context.configuration)
-    context.waits = Waits(driver=driver, configuration=context.configuration)
-    extensions = WebElementsExtensions(driver=driver, configuration=context.configuration)
-    context.executor = Browser(driver=driver, configuration=context.configuration)
-    context.reporter = Reporter(driver=driver, configuration=context.configuration)
-    context.screenshot_manager = ScreenshotManager(driver=driver, configuration=context.configuration)
+    context.driver_factory = DriverFactory(configuration=context.configuration)
+    context.waits = Waits(driver_factory=context.driver_factory, configuration=context.configuration)
+    extensions = WebElementsExtensions(driver_factory=context.driver_factory, configuration=context.configuration)
+    context.executor = Browser(driver_factory=context.driver_factory, configuration=context.configuration)
+    context.reporter = Reporter(driver_factory=context.driver_factory, configuration=context.configuration)
+    context.screenshot_manager = ScreenshotManager(driver_factory=context.driver_factory, configuration=context.configuration)
     context.page_factory = PageFactory(executor=context.executor, extensions=extensions,
                                        reporter=context.reporter, configuration=context.configuration,
                                        wait=context.waits)
@@ -71,6 +71,10 @@ def before_scenario(context, scenario):
 def after_scenario(context, scenario):
     """Run after each scenario"""
     LOGGER.info('AFTER SCENARIO')
+    if scenario.status == 'failed':
+        LOGGER.info('Printing console logs:')
+        for entry in context.driver_factory.get_driver().get_log('browser'):
+            LOGGER.info(entry)
     browser_name = context.browser
     context.executor.clear_cookies()
     context.executor.close_browser()
@@ -111,7 +115,7 @@ def validate_if_proper_browser_is_set_for_test(context, scenario):
         # ToDo Temporarily disabled parent-iframe test. Problem with cress-origin restriction on ios
     if 'parent_iframe' in scenario.tags and ('iP' in CONFIGURATION.REMOTE_DEVICE):
         scenario.skip('Temporarily disabled test ')
-    if not context.configuration.REMOTE and 'browser_info_not_supported' in scenario.tags:
+    if 'ignore_on_headless' in scenario.tags and not context.configuration.REMOTE:
         scenario.skip('Scenario skipped for headless chrome')
     else:
         context.is_field_in_iframe = True

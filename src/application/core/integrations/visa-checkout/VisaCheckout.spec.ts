@@ -1,3 +1,4 @@
+import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { VisaCheckout } from './VisaCheckout';
 import { anyString, mock, when, instance as mockInstance } from 'ts-mockito';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
@@ -43,7 +44,6 @@ describe('Visa Checkout', () => {
             subtotal: '20.00'
           },
           placement: 'st-visa-checkout',
-          requestTypes: ['AUTH'],
           settings: {
             displayName: 'My Test Site'
           }
@@ -188,6 +188,25 @@ describe('Visa Checkout', () => {
     // then
     it('should prepared structure be equal to real document object ', () => {
       expect(instance.attachVisaButton()).toEqual(body);
+    });
+  });
+
+  // given
+  describe('_initVisaFlow()', () => {
+    // then
+    it('should inject script with proper attributes ', () => {
+      const insertScriptSpy: jest.SpyInstance = jest
+        .spyOn(DomMethods, 'insertScript')
+        .mockImplementation(() => new Promise(() => {}));
+
+      instance._initVisaFlow();
+
+      expect(insertScriptSpy).toHaveBeenCalledWith('body', {
+        src: instance._sdkAddress,
+        id: 'visaCheckout',
+        nonce: '9ad627e4425a4668'
+      });
+      expect(insertScriptSpy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -338,7 +357,7 @@ describe('Visa Checkout', () => {
   describe('onSuccess()', () => {
     // then
     it('should set paymentDetails and paymentStatus and call _processPayment', () => {
-      instance.payment.processPayment = jest.fn().mockReturnValue(new Promise(resolve => resolve()));
+      instance.payment.processPayment = jest.fn().mockReturnValue(new Promise(resolve => resolve(undefined)));
       const payment = { status: 'SUCCESS', another: 'value' };
       instance.onSuccess(payment);
       expect(instance.paymentDetails).toBe('{"status":"SUCCESS","another":"value"}');
@@ -419,26 +438,7 @@ describe('Visa Checkout', () => {
     expect(instance.payment.processPayment).toHaveBeenCalledWith(
       ['CACHETOKENISE'],
       { walletsource: 'VISACHECKOUT', wallettoken: '{"token":"TOKEN"}' },
-      {}
-    );
-  });
-
-  // then
-  it('should process AUTH call getResponseMessage and setNotification for error with tokenise false', () => {
-    instance.payment.processPayment = jest
-      .fn()
-      .mockRejectedValueOnce({ response: { myData: 'respData' }, jwt: 'ajwtvalue' });
-    instance._getResponseMessage = jest.fn();
-    instance._notification.error = jest.fn();
-    instance.responseMessage = 'MYRESPONSE';
-    instance._walletSource = 'VISACHECKOUT';
-    instance.paymentDetails = 'TOKEN';
-    instance.onSuccess({ token: 'TOKEN' });
-    expect(instance.payment.processPayment).toHaveBeenCalledTimes(1);
-    expect(instance.payment.processPayment).toHaveBeenCalledWith(
-      ['AUTH'],
-      { walletsource: 'VISACHECKOUT', wallettoken: '{"token":"TOKEN"}' },
-      {}
+      { termurl: 'https://termurl.com' }
     );
   });
 });
@@ -458,8 +458,7 @@ function VisaCheckoutFixture() {
     merchantId: '2ig278`13b123872121h31h20e',
     buttonSettings: { size: '154', color: 'neutral' },
     settings: { displayName: 'My Test Site' },
-    paymentRequest: { subtotal: '20.00' },
-    requestTypes: ['AUTH']
+    paymentRequest: { subtotal: '20.00' }
   };
   const productionAssets = {
     sdk: 'https://secure.checkout.visa.com/checkout-widget/resources/js/integration/v1/sdk.js',

@@ -7,10 +7,10 @@ from utils.visual_regression.screenshot_manager import ScreenshotManager
 
 class Reporter:
 
-    def __init__(self, driver, configuration):
-        self._browser = driver.get_browser()
+    def __init__(self, driver_factory, configuration):
+        self._driver = driver_factory.get_driver()
         self._reports_path = configuration.REPORTS_PATH
-        self._screenshot_manager = ScreenshotManager(driver, configuration)
+        self._screenshot_manager = ScreenshotManager(driver_factory, configuration)
 
     def _create_reports_dir(self):
         os.makedirs(self._reports_path, exist_ok=True)
@@ -26,6 +26,6 @@ class Reporter:
         self.save_page_source(source_filepath)
 
     def save_page_source(self, filepath):
-        source = self._browser.page_source
+        source = self._driver.page_source
         with open(filepath, 'a', encoding='utf-8') as path:
             path.write(source)

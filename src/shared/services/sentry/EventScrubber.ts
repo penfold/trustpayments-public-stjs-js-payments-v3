@@ -4,8 +4,8 @@ import { Event } from '@sentry/types';
 @Service()
 export class EventScrubber {
   scrub(event: Event): Event {
-    if (event.extra && event.extra.config) {
-      event.extra.config = { ...event.extra.config, jwt: '*****' };
+    if (event.extra && typeof event.extra.config === 'object') {
+      event.extra.config = { ...(event.extra.config as object), jwt: '*****' };
     }
 
     if (event.request && event.request.url) {

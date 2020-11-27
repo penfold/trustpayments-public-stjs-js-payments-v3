@@ -1,5 +1,3 @@
-import { IStJwtPayload } from './IStJwtPayload';
-
-export interface IStJwtObj {
-  payload: IStJwtPayload;
+export interface IStJwtObj<T = any> {
+  payload: T;
 }

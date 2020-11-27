@@ -6,6 +6,16 @@ import { DomMethods } from '../dom-methods/DomMethods';
 import { Container, Service } from 'typedi';
 import { Frame } from '../frame/Frame';
 import { IStyles } from '../../../../shared/model/config/IStyles';
+import { forEach } from 'lodash';
+
+interface StylesAttributes {
+  elementId: string;
+  classList?: string[];
+  inlineStyles?: {
+    property: string;
+    value: string;
+  }[];
+}
 
 @Service()
 export class Styler {
@@ -31,23 +41,29 @@ export class Styler {
     DomMethods.insertStyle(this._getStyleString(styles));
   }
 
-  public isLinedUp(styles: IStyle): boolean {
-    // tslint:disable-next-line:forin
-    for (const style in styles) {
-      if (style === 'isLinedUp' && styles[style] === 'true') {
-        return true;
-      }
-    }
-    return false;
+  public hasSpecificStyle(selectedStyle: string, styles: IStyle = {}): boolean {
+    return Boolean(
+      Object.entries(styles).find(([key, value]) => {
+        return key === selectedStyle && value !== 'false';
+      })
+    );
   }
 
-  public lineUp(wrapperId: string, labelId: string, wrapperClassList: string[], labelClassList: string[]): void {
-    const wrapper = document.getElementById(wrapperId);
-    const label = document.getElementById(labelId);
-    wrapper.className = '';
-    label.className = '';
-    wrapperClassList.forEach(className => wrapper.classList.add(className));
-    labelClassList.forEach(className => label.classList.add(className));
+  public addStyles(styles: StylesAttributes[]): void {
+    styles.forEach(style => this.addStylesToElement(style));
+  }
+
+  private addStylesToElement(props: StylesAttributes) {
+    const { elementId, classList, inlineStyles } = props;
+    const element = document.getElementById(elementId);
+
+    if (classList) {
+      classList.forEach(className => element.classList.add(className));
+    }
+
+    if (inlineStyles && inlineStyles.length > 0) {
+      inlineStyles.forEach(({ property, value }) => element.style.setProperty(property, value));
+    }
   }
 
   private _filter(styles: IStyles[]): IStyle {

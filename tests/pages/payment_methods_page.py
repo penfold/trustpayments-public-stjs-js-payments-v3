@@ -14,7 +14,7 @@ from utils.helpers.request_executor import add_to_shared_dict, get_number_of_req
     get_number_of_wallet_verify_requests, get_number_of_thirdparty_requests, get_number_of_requests_without_data, \
     get_number_of_requests_with_fraudcontroltransactionid_flag, \
     get_number_of_requests_with_data_and_fraudcontroltransactionid_flag, get_number_of_requests_with_updated_jwt, \
-    get_number_of_requests, get_number_of_requests_with_updated_jwt_for_visa, get_number_of_tokenisation_requests
+    get_number_of_requests_with_updated_jwt_for_visa, get_number_of_tokenisation_requests
 
 
 class PaymentMethodsPage(BasePage):
@@ -136,9 +136,18 @@ class PaymentMethodsPage(BasePage):
         self._action.switch_to_iframe_and_press_enter(FieldType.SECURITY_CODE.value,
 
                                                       PaymentMethodsLocators.security_code_input_field)
+
     def clear_security_code_field(self):
         self._action.switch_to_iframe_and_clear_input(FieldType.SECURITY_CODE.value,
                                                       PaymentMethodsLocators.security_code_input_field)
+
+    def clear_card_number_field(self):
+        self._action.switch_to_iframe_and_clear_input(FieldType.CARD_NUMBER.value,
+                                                      PaymentMethodsLocators.card_number_input_field)
+
+    def clear_expiry_date_field(self):
+        self._action.switch_to_iframe_and_clear_input(FieldType.EXPIRATION_DATE.value,
+                                                      PaymentMethodsLocators.expiration_date_input_field)
 
     def get_payment_status_message(self):
         status_message = self._action.get_text_with_wait(PaymentMethodsLocators.notification_frame)
@@ -488,8 +497,10 @@ class PaymentMethodsPage(BasePage):
         actual_url = self._executor.get_page_url()
         parsed_url = urlparse(actual_url)
         parsed_query_from_url = parse_qs(parsed_url.query)
-        if 'jwt' in key:
+        if 'should not be none' in value:
             assert_that(parsed_query_from_url[key][0]).is_not_none()
+        elif 'should be none' in value:
+            assert_that(key not in parsed_query_from_url.keys())
         else:
             assert_that(parsed_query_from_url[key][0]).is_equal_to(value)
 
@@ -549,14 +560,14 @@ class PaymentMethodsPage(BasePage):
 
     def validate_number_of_requests_with_data(self, request_type, pan, expiry_date, cvv, expected_number_of_requests):
         actual_number_of_requests = get_number_of_requests_with_data(request_type, pan, expiry_date, cvv)
-        assertion_message = f'Number of {request_type} requests or request data are not correct, ' \
+        assertion_message = f'Number of {request_type} request(s) is not correct, ' \
                             f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_number_of_requests == actual_number_of_requests, assertion_message
 
     def validate_number_of_requests_without_data(self, request_type, expected_number_of_requests):
         actual_number_of_requests = get_number_of_requests_without_data(request_type)
-        assertion_message = f'Number of {request_type} requests is not correct, ' \
+        assertion_message = f'Number of {request_type} request(s) is not correct, ' \
                             f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_number_of_requests == actual_number_of_requests, assertion_message
@@ -582,12 +593,6 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_number_of_requests == actual_number_of_requests, assertion_message
 
-    def validate_number_of_requests(self, request_type, pan, expiry_date, cvv, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests(request_type, pan, expiry_date, cvv)
-        assertion_message = f'Number of request with "{request_type}" is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
 
     def validate_number_of_requests_with_data_and_fraudcontroltransactionid_flag(self, request_type, pan, expiry_date,
                                                                                  cvv, expected_number_of_requests):
@@ -622,15 +627,17 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_number_of_requests == actual_number_of_requests, assertion_message
 
-    def validate_data_in_browser_info_callback(self, object_data, key, value, is_supported):
+    def _validate_browser_support_info(self, data_object, is_supported):
         browser_info_text = self.get_text_from_browser_info()
         browser_info_json = json.loads(browser_info_text)
-        assertion_message = f'Browser data is not correct, should be: {value} but is: ' \
-                            f'{browser_info_json.get(object_data).get(key)}'
+        actual_is_supported_info = str(browser_info_json.get(data_object).get('isSupported'))
+        assertion_message = f'{data_object} should be mark as supported: {is_supported} but is: ' \
+                            f'{actual_is_supported_info}'
         add_to_shared_dict('assertion_message', assertion_message)
-        assert key in browser_info_json.get(object_data) and value in browser_info_json.get(object_data).get(key), \
-            assertion_message
-        assertion_message = f'Browser should be mark as supported: {is_supported} but it is not'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert 'isSupported' in browser_info_json.get(object_data) and is_supported in \
-               str(browser_info_json.get(object_data).get('isSupported')), assertion_message
+        assert is_supported in actual_is_supported_info, assertion_message
+
+    def validate_if_browser_is_supported_in_info_callback(self, is_supported):
+        self._validate_browser_support_info('browser', is_supported)
+
+    def validate_if_os_is_supported_in_info_callback(self, is_supported):
+        self._validate_browser_support_info('os', is_supported)

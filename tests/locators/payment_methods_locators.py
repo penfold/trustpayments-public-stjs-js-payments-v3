@@ -27,7 +27,7 @@ class PaymentMethodsLocators:
     security_code_field_validation_message: By = (By.ID, 'st-security-code-message')
 
     # Notification frame
-    notification_frame: By = (By.CSS_SELECTOR, '.st-form__group.notification-frame')
+    notification_frame: By = (By.CSS_SELECTOR, '#st-notification-frame.notification-frame')
 
     # Iframe
     card_number_iframe: By = (By.ID, FieldType.CARD_NUMBER.value)

@@ -14,11 +14,7 @@
       "displayName": "My Test Site"
     }
   },
-  "bypassCards": [
-  ],
   "components": {
-    "requestTypes": [
-    ],
     "paymentTypes": [],
     "startOnLoad": false
   },

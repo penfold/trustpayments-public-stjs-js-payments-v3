@@ -1,107 +1,16 @@
 # type: ignore[no-redef]
+import time
 
-from assertpy import soft_assertions
-from behave import use_step_matcher, step, when, then, given
-
-from configuration import CONFIGURATION
-from utils.configurations.inline_config_generator import create_inline_config
-from utils.configurations.jwt_generator import encode_jwt_for_json
-from utils.dict.url_after_redirection import url_after_redirection
-from utils.enums.e2e_config import E2eConfig
-from utils.enums.example_page import ExamplePage
+from behave import use_step_matcher, step, when, then
 from utils.enums.field_type import FieldType
-from utils.enums.jwt_config import JwtConfig
 from utils.enums.payment_type import PaymentType
-from utils.enums.request_type import RequestType
 from utils.enums.responses.invalid_field_response import InvalidFieldResponse
-from utils.helpers.browser_info_util import set_proper_os_name, set_proper_browser_name
-from utils.mock_handler import stub_st_request_type, MockUrl
+from utils.mock_handler import stub_st_request_type
 
 use_step_matcher('re')
 
 
-@step('User opens page with payment form')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if 'config_immediate_payment' not in context.scenario.tags[0] and 'parent_iframe' not in context.scenario.tags and \
-        'config_cybertonica_immediate_payment' not in context.scenario.tags:
-        if 'Safari' in context.browser:
-            accept_untrusted_pages_on_safari_browsers(context)
-        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
-        payment_page.wait_for_iframe()
-
-
-@step('User opens payment page')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if 'Safari' in context.browser:
-        accept_untrusted_pages_on_safari_browsers(context)
-    if 'parent_iframe' in context.scenario.tags:
-        payment_page.open_page(CONFIGURATION.URL.BASE_URL + '/iframe.html')
-        payment_page.switch_to_parent_iframe()
-        payment_page.wait_for_parent_iframe()
-    else:
-        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
-
-
-@step('User opens prepared payment form page (?P<example_page>.+)')
-def step_impl(context, example_page: ExamplePage):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if 'Safari' in context.browser:
-        accept_untrusted_pages_on_safari_browsers(context)
-    if 'WITH_UPDATE_JWT' in example_page:
-        jwt = ''
-        for row in context.table:
-            jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}')
-        payment_page.wait_for_iframe()
-        context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
-    elif 'WITH_SPECIFIC_IFRAME' in example_page:
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}')
-        payment_page.switch_to_parent_iframe()
-        payment_page.wait_for_parent_iframe()
-    elif 'WITH_CHANGED_FORM_ID' in example_page:
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}')
-    else:
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}')
-        payment_page.wait_for_iframe()
-
-
-@step('User opens (?:example page|example page (?P<example_page>.+))')
-def step_impl(context, example_page: ExamplePage):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    # setting url specific params accordingly to example page
-    if example_page is None:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.inline_config}'
-    elif 'IN_IFRAME' in example_page:
-        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}{context.inline_config}'
-    elif 'WITH_UPDATE_JWT' in example_page:
-        jwt = ''
-        for row in context.table:
-            jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}{context.inline_config}'
-    else:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}&{context.inline_config}'
-    url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
-
-    payment_page.open_page(url)
-
-    if example_page is not None and 'IN_IFRAME' in example_page:
-        payment_page.switch_to_parent_iframe()
-    if 'e2e_config_submit_on_error_invalid_jwt' not in context.scenario.tags:
-        payment_page.wait_for_iframe()
-
-
-def accept_untrusted_pages_on_safari_browsers(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
-    payment_page.open_page(MockUrl.WEBSERVICES_STJS_URI.value)
-    payment_page.open_page(MockUrl.LIBRARY_URL.value)
-    payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
-
-
-@when(
-    'User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)" and cvv "(?P<cvv>.+)"')
+@when('User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)" and cvv "(?P<cvv>.+)"')
 def step_impl(context, card_number, exp_date, cvv):
     context.pan = card_number
     context.exp_date = exp_date
@@ -124,6 +33,12 @@ def step_impl(context):
     if 'switch_to_parent_iframe' in context.scenario.tags:
         payment_page.switch_to_parent_iframe()
     payment_page.wait_for_notification_frame_to_disappear()
+
+
+@step('User waits for whole form to be displayed')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.wait_for_payment_form_to_load()
 
 
 @step('User will see that notification frame has "(?P<color>.+)" color')
@@ -191,7 +106,7 @@ def step_impl(context, field):
 
 @step('InvalidField response set for "(?P<field>.+)"')
 def step_impl(context, field):
-    stub_st_request_type(InvalidFieldResponse[field].value, RequestType.THREEDQUERY.name)
+    stub_st_request_type(InvalidFieldResponse[field].value, 'THREEDQUERY, AUTH')
 
 
 @then('User will see notification frame with message: "(?P<expected_message>.+)"')
@@ -244,15 +159,6 @@ def step_impl(context, field):
         payment_page.validate_css_style(FieldType.NOTIFICATION_FRAME.name, 'background-color', '100, 149, 237')
 
 
-@step('User changes page language to "(?P<language>.+)"')
-def step_impl(context, language):
-    context.language = language
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    jwt = payment_page.get_translation_from_json(language, 'jwt')
-    payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}?jwt={jwt}')
-    payment_page.wait_for_iframe()
-
-
 @then('User will see all labels displayed on page translated into "(?P<language>.+)"')
 def step_impl(context, language):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
@@ -280,32 +186,12 @@ def step_impl(context, key, language):
     payment_page.validate_payment_status_translation(language, key)
 
 
-@then('User is redirected to action page')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    for key, value in url_after_redirection.items():
-        if key in context.scenario.name:
-            if 'Cardinal Commerce - successful' in key and 'IE' in CONFIGURATION.REMOTE_BROWSER:
-                payment_page.validate_if_url_contains_info_about_payment(url_after_redirection['IE - success'])
-            elif 'Cardinal Commerce - error' in key and 'IE' in CONFIGURATION.REMOTE_BROWSER:
-                payment_page.validate_if_url_contains_info_about_payment(url_after_redirection['IE - error'])
-            else:
-                payment_page.validate_if_url_contains_info_about_payment(value)
-                break
-
-
-@step('User will be sent to page with url "(?P<url>.+)" having params')
-def step_impl(context, url: str):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    with soft_assertions():
-        payment_page.validate_base_url(url)
-        for param in context.table:
-            payment_page.validate_if_url_contains_param(param['key'], param['value'])
-
-
 @when('User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)"')
 def step_impl(context, card_number, exp_date):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
+    context.pan = str(card_number)
+    context.exp_date = str(exp_date)
+    context.cvv = str('')
     payment_page.fill_payment_form_without_cvv(card_number, exp_date)
 
 
@@ -389,7 +275,7 @@ def step_impl(context, auth_type):
 @step('User will see the same provided data in inputs fields')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_value_of_input_field(FieldType.CARD_NUMBER.name, '5200 0000 0000 1005')
+    payment_page.validate_value_of_input_field(FieldType.CARD_NUMBER.name, '4000 0000 0000 1091')
     payment_page.validate_value_of_input_field(FieldType.EXPIRATION_DATE.name, context.exp_date)
     payment_page.validate_value_of_input_field(FieldType.SECURITY_CODE.name, context.cvv)
 
@@ -398,18 +284,6 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.validate_callback_with_data_type('Error code: OK')
-
-
-@then('User remains on checkout page')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_base_url(CONFIGURATION.URL.BASE_URL[8:])
-
-
-@given('JS library is configured with (?P<e2e_config>.+) and (?P<jwt_config>.+)')
-def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
-    jwt = encode_jwt_for_json(JwtConfig[jwt_config])
-    context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
 
 
 @then('User will see that (?P<element>.+) is translated into "(?P<expected_value>.+)"')
@@ -424,6 +298,7 @@ def step_impl(context, element, expected_value):
 
 @step('"(?P<callback_popup>.+)" callback is called only once')
 def step_impl(context, callback_popup):
+    time.sleep(1)
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.validate_number_in_callback_counter_popup(callback_popup)
 
@@ -446,26 +321,19 @@ def step_impl(context):
     payment_page.wait_for_popups_to_disappear()
 
 
-@then('User will see that brwoser is marked as supported: "(?P<is_supported>.+)"')
+@then('User will see that browser is marked as supported: "(?P<is_supported>.+)"')
 def step_impl(context, is_supported):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    browser_name = set_proper_browser_name()
-    os_name = set_proper_os_name()
-    browser_version = context.configuration.REMOTE_BROWSER_VERSION.split('.')[0]
-    mobile_os_version = context.configuration.REMOTE_OS_VERSION.split('.')[0]
+    #ToDo - clarify if High Sierra should be removed from the pipeline (Safari 11 - not supported)
+    # skipping assertion on mobile devices, as browserstack doesn't allow to set up latest version of browser
+    if 'High Sierra' not in context.configuration.REMOTE_OS_VERSION and not context.configuration.REMOTE_DEVICE:
+        payment_page.validate_if_browser_is_supported_in_info_callback(is_supported)
 
-    if context.configuration.REMOTE and context.configuration.REMOTE_BROWSER_VERSION:
-        #ToDo - clarify if High Sierra should be removed from the pipeline (Safari 11 - not supported)
-        if 'High Sierra' not in context.configuration.REMOTE_OS_VERSION:
-            payment_page.validate_data_in_browser_info_callback('browser', 'name', browser_name, is_supported)
-            payment_page.validate_data_in_browser_info_callback('browser', 'version', browser_version, is_supported)
-        payment_page.validate_data_in_browser_info_callback('os', 'versionName', context.configuration.REMOTE_OS_VERSION,
-                                                            'True')
-    elif context.configuration.REMOTE_DEVICE:
-        payment_page.validate_data_in_browser_info_callback('os', 'name', os_name, is_supported)
-        payment_page.validate_data_in_browser_info_callback('os', 'version', mobile_os_version, is_supported)
-    else:
-        payment_page.validate_data_in_browser_info_callback('browser', 'name', 'Chrome', is_supported)
+
+@then('User will see that operating system is marked as supported: "(?P<is_supported>.+)"')
+def step_impl(context, is_supported):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_if_os_is_supported_in_info_callback(is_supported)
 
 
 @step('Wait for notification frame to disappear')
@@ -490,3 +358,10 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.clear_security_code_field()
+
+@step('User clears form')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.clear_security_code_field()
+    payment_page.clear_card_number_field()
+    payment_page.clear_expiry_date_field()
