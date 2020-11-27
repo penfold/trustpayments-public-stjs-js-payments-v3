@@ -13,6 +13,7 @@ from utils.enums.responses.auth_response import AUTHresponse
 from utils.enums.responses.jsinit_response import jsinit_response
 from utils.enums.responses.tdq_response import TDQresponse
 from utils.enums.responses.visa_response import VisaResponse
+from utils.enums.responses.walletverify_response import walletverify_response
 from utils.helpers.request_executor import remove_item_from_request_journal
 from utils.mock_handler import stub_config, stub_st_request_type, MockUrl, stub_payment_status, \
     stub_st_request_type_server_error, stub_jsinit
@@ -49,7 +50,7 @@ def step_impl(context, request_type):
 
 @step('(?P<request_type>.+) ApplePay mock response is set to SUCCESS')
 def step_impl(context, request_type):
-    stub_st_request_type(ApplePayResponse.SUCCESS.value, RequestType.WALLETVERIFY.name)
+    stub_st_request_type(walletverify_response[request_type], RequestType.WALLETVERIFY.name)
     stub_payment_status(MockUrl.APPLEPAY_MOCK_URI.value, ApplePayResponse.SUCCESS.value)
     stub_st_request_type(request_type_applepay[request_type], request_type)
 
@@ -106,16 +107,16 @@ def step_impl(context, action_code):
 def step_impl(context, action_code):
     context.action_code = action_code
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    stub_st_request_type(ApplePayResponse.SUCCESS.value, RequestType.WALLETVERIFY.name)
+    stub_st_request_type(walletverify_response['THREEDQUERY, AUTH'], RequestType.WALLETVERIFY.name)
     if action_code == 'SUCCESS':
         stub_payment_status(MockUrl.APPLEPAY_MOCK_URI.value, ApplePayResponse[action_code].value)
-        stub_st_request_type(ApplePayResponse.APPLE_AUTH_SUCCESS.value, RequestType.AUTH.name)
+        stub_st_request_type(ApplePayResponse.APPLE_AUTH_SUCCESS.value, 'THREEDQUERY, AUTH')
     elif action_code == 'ERROR':
         stub_payment_status(MockUrl.APPLEPAY_MOCK_URI.value, ApplePayResponse.SUCCESS.value)
-        stub_st_request_type_server_error(RequestType.AUTH.name)
+        stub_st_request_type_server_error('THREEDQUERY, AUTH')
     elif action_code == 'DECLINE':
         stub_payment_status(MockUrl.APPLEPAY_MOCK_URI.value, ApplePayResponse.SUCCESS.value)
-        stub_st_request_type(ApplePayResponse.ERROR.value, RequestType.AUTH.name)
+        stub_st_request_type(ApplePayResponse.ERROR.value, 'THREEDQUERY, AUTH')
     elif action_code == 'CANCEL':
         stub_payment_status(MockUrl.APPLEPAY_MOCK_URI.value, ApplePayResponse[action_code].value)
     payment_page.choose_payment_methods(PaymentType.APPLE_PAY.name)
@@ -242,9 +243,9 @@ def step_impl(context, thirdparty):
         payment_page.validate_number_of_wallet_verify_requests(MockUrl.APPLEPAY_MOCK_URI.value, 1)
 
     if 'SUCCESS' in context.action_code or 'DECLINE' in context.action_code or 'ERROR' in context.action_code:
-        payment_page.validate_number_of_thirdparty_requests(RequestType.AUTH.name, PaymentType[thirdparty].value, 1)
+        payment_page.validate_number_of_thirdparty_requests('THREEDQUERY, AUTH', PaymentType[thirdparty].value, 1)
     else:
-        payment_page.validate_number_of_thirdparty_requests(RequestType.AUTH.name, PaymentType[thirdparty].value, 0)
+        payment_page.validate_number_of_thirdparty_requests('THREEDQUERY, AUTH', PaymentType[thirdparty].value, 0)
 
 
 @step('(?P<request_type>.+) request was sent only once (?P<scenario>.+) \'fraudcontroltransactionid\' flag')
