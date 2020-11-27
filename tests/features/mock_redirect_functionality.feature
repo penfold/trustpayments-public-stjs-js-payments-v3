@@ -25,12 +25,19 @@ Feature: Redirect functionality
 
   @config_requestTypes_tdq_submit_on_error
   Scenario: Cardinal Commerce - invalid payment with request types: THREEDQUERY and submitOnError
-    When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
+    When Single THREEDQUERY mock response is set to "INVALID_ACQUIRER"
+    And User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User fills payment form with credit card number "4111110000000211", expiration date "12/30" and cvv "123"
-    And Single THREEDQUERY mock response is set to "INVALID_ACQUIRER"
     And User clicks Pay button
-    Then User is redirected to action page
-    And THREEDQUERY request was sent only once with correct data
+    Then User will be sent to page with url "www.example.com" having params
+      | key           | value                           |
+      | errormessage  | Invalid acquirer for 3-D Secure |
+      | errorcode     | 60031                           |
+      | jwt           | should not be none              |
+      | myBillName    | John Test                       |
+      | myBillEmail   | test@example                    |
+      | myBillTel     | 44422224444                     |
+    And Single THREEDQUERY request was sent only once with correct data
 
   @config_submit_on_error_true @smoke_test @extended_tests_part_1
   Scenario: Cardinal Commerce - error payment with enabled 'submit on error' process
