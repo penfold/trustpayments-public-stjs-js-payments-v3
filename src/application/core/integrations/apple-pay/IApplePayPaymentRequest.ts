@@ -1,6 +1,6 @@
 import { IApplePayLineItem } from './IApplePayLineItem';
-import { IApplePayRequestTypes } from './IApplePayRequestTypes';
 import { IApplePaySupportedNetworks } from './IApplePaySupportedNetworks';
+import { RequestType } from '../../../../shared/types/RequestType';
 
 export interface IApplePayPaymentRequest {
   applicationData?: string;
@@ -14,7 +14,7 @@ export interface IApplePayPaymentRequest {
   supportedCountries?: any;
   supportedNetworks: IApplePaySupportedNetworks[];
   lineItems?: IApplePayLineItem[];
-  requestTypes: IApplePayRequestTypes[];
+  requestTypes: RequestType[];
   requiredBillingContactFields?: string[];
   requiredShippingContactFields?: string[];
   total: IApplePayLineItem;

@@ -1,8 +1,8 @@
+import jwt_decode from 'jwt-decode';
 import { StTransport } from '../../services/st-transport/StTransport.class';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Payment } from '../../shared/payment/Payment';
-import { StJwt } from '../../shared/stjwt/StJwt';
 import { Translator } from '../../shared/translator/Translator';
 import { GoogleAnalytics } from '../google-analytics/GoogleAnalytics';
 import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
@@ -25,11 +25,11 @@ import { IApplePayPaymentMethod } from './IApplePayPaymentMethod';
 import { IApplePayPaymentContact } from './IApplePayPaymentContact';
 import { IApplePayShippingMethod } from './IApplePayShippingMethod';
 import { IApplePayPayment } from './IApplePayPayment';
-import jwt_decode from 'jwt-decode';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
 import { ApplePayNetworksService } from './apple-pay-networks-service/ApplePayNetworksService';
 import { IApplePayPaymentAuthorizationResult } from './IApplePayPaymentAuthorizationResult ';
+import { ApplePayConfigService } from './apple-pay-config-service/ApplePayConfigService';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -62,10 +62,15 @@ export class ApplePay {
     private _notification: NotificationService,
     private _stTransport: StTransport,
     private _applePayButtonService: ApplePayButtonService,
-    private _applePayNetworkService: ApplePayNetworksService
+    private _applePayNetworkService: ApplePayNetworksService,
+    private _applePayConfigService: ApplePayConfigService
   ) {
     if (!Boolean(ApplePaySession)) {
       throw new Error('Works only on Safari');
+    }
+
+    if (!ApplePaySession.canMakePayments()) {
+      throw new Error('Your device does not support making payments with Apple Pay');
     }
 
     this._config$ = this._configProvider.getConfig$();
@@ -73,84 +78,49 @@ export class ApplePay {
 
   public init(): void {
     this._config$.subscribe((config: IConfig) => {
-      const { applePay, jwt, formId } = config;
-      const { buttonStyle, buttonText, merchantId, paymentRequest, placement } = applePay;
-      const { currencyiso3a, locale, mainamount } = new StJwt(jwt);
+      const { applePay, formId, jwt } = this._applePayConfigService.getConfigData(config);
+      const { currencyiso3a, locale, mainamount } = this._applePayConfigService.getStJwtData(jwt);
+      this._paymentRequest = applePay.paymentRequest;
       this._applePayVersion = this._latestSupportedApplePayVersion();
-      const requestTypes = jwt_decode<IDecodedJwt>(jwt).payload.requesttypedescriptions;
-      this._canMakePayments();
-      this._setConfig(
-        this._applePayVersion,
-        currencyiso3a,
-        locale,
-        merchantId,
-        mainamount,
-        paymentRequest,
-        requestTypes,
-        formId
+      this._validateMerchantRequest = this._applePayConfigService.updateWalletMerchantId(
+        this._validateMerchantRequest,
+        applePay.merchantId
       );
-      this._applePayButtonService.insertButton(placement, buttonText, buttonStyle, locale);
-      this._hasActiveCards(merchantId);
+      this._paymentRequest.supportedNetworks = this._applePayNetworkService.setSupportedNetworks(
+        this._applePayVersion,
+        this._paymentRequest.supportedNetworks
+      );
+      this._paymentRequest = this._applePayConfigService.updateAmount(this._paymentRequest, mainamount);
+      this._paymentRequest = this._applePayConfigService.updateCurrencyCode(this._paymentRequest, currencyiso3a);
+      this._paymentRequest = this._applePayConfigService.updateRequestTypes(
+        this._paymentRequest,
+        jwt_decode<IDecodedJwt>(jwt).payload.requesttypedescriptions
+      );
+
+      this._translator = new Translator(locale);
+      this._payment = new Payment();
+      this._formId = formId;
+      this._applePayButtonService.insertButton(applePay.placement, applePay.buttonText, applePay.buttonStyle, locale);
+      this._hasActiveCards(applePay.merchantId);
     });
     this._subscribeUpdateJwt();
   }
 
-  private _setConfig(
-    applePayVersion: number,
-    currencyiso3a: string,
-    locale: string,
-    merchantId: string,
-    mainamount: string,
-    paymentRequest: IApplePayPaymentRequest,
-    requestTypes: string[],
-    formId: string
-  ): void {
-    this._translator = new Translator(locale);
-    this._payment = new Payment();
-    this._formId = formId;
-    this._setMerchantId(merchantId);
-    this._setPaymentRequest(paymentRequest, requestTypes);
-    this._paymentRequest.supportedNetworks = this._applePayNetworkService.setSupportedNetworks(
-      applePayVersion,
-      this._paymentRequest.supportedNetworks
-    );
-    this._setCurrencyCode(currencyiso3a);
-    this._setAmount(mainamount);
-  }
-
   private _subscribeUpdateJwt(): void {
     this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: { newJwt: string }) => {
-      const { currencyiso3a, locale, mainamount } = new StJwt(data.newJwt);
+      const { currencyiso3a, locale, mainamount } = this._applePayConfigService.getStJwtData(data.newJwt);
       this._translator = new Translator(locale);
-      this._setCurrencyCode(currencyiso3a);
-      this._setAmount(mainamount);
+      this._paymentRequest = this._applePayConfigService.updateCurrencyCode(this._paymentRequest, currencyiso3a);
+      this._paymentRequest = this._applePayConfigService.updateAmount(this._paymentRequest, mainamount);
     });
-  }
-
-  private _setCurrencyCode(currencyCode: string): void {
-    this._paymentRequest.currencyCode = currencyCode;
-  }
-
-  private _setAmount(amount: string): void {
-    this._paymentRequest.total.amount = amount;
-  }
-
-  private _setMerchantId(merchantId: string): void {
-    this._validateMerchantRequest.walletmerchantid = merchantId;
-  }
-
-  private _setPaymentRequest(paymentRequest: any, requestTypes: any): void {
-    this._paymentRequest = { ...paymentRequest, ...requestTypes };
-  }
-
-  private _setValidationUrl(url: string): void {
-    this._validateMerchantRequest.walletvalidationurl = url;
   }
 
   private _onValidateMerchant() {
     this._applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
-      this._setValidationUrl(event.validationURL);
-
+      this._validateMerchantRequest = this._applePayConfigService.updateWalletValidationUrl(
+        this._validateMerchantRequest,
+        event.validationURL
+      );
       return this._payment
         .walletVerify(this._validateMerchantRequest)
         .then(({ response }: any) => {
@@ -311,12 +281,6 @@ export class ApplePay {
       this._applePaySession.begin();
     } catch (error) {
       console.warn(error);
-    }
-  }
-
-  private _canMakePayments(): void {
-    if (!ApplePaySession.canMakePayments()) {
-      throw new Error('Your device does not support making payments with Apple Pay');
     }
   }
 
