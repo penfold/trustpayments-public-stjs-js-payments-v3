@@ -1,11 +1,11 @@
-import { IPaymentRequest } from './IPaymentRequest';
+import { IApplePayPaymentRequest } from './IApplePayPaymentRequest';
 import { IApplePayRequestTypes } from './IApplePayRequestTypes';
 
 export interface IApplePay {
   buttonStyle: string;
   buttonText: string;
   merchantId: string;
-  paymentRequest: IPaymentRequest;
+  paymentRequest: IApplePayPaymentRequest;
   placement: string;
   requestTypes: IApplePayRequestTypes[];
 }

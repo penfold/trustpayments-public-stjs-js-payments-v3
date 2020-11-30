@@ -2,7 +2,7 @@ import { IApplePayLineItem } from './IApplePayLineItem';
 import { IApplePayRequestTypes } from './IApplePayRequestTypes';
 import { IApplePaySupportedNetworks } from './IApplePaySupportedNetworks';
 
-export interface IPaymentRequest {
+export interface IApplePayPaymentRequest {
   applicationData?: string;
   billingContact?: any;
   countryCode: string;

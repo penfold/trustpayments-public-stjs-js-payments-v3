@@ -12,38 +12,31 @@ import { InterFrameCommunicator } from '../../../../shared/services/message-bus/
 import { Observable } from 'rxjs';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import {
-  APPLE_PAY_AMOUNT_AND_CURRENCY,
   APPLE_PAY_NOT_LOGGED,
   MERCHANT_VALIDATION_FAILURE,
   PAYMENT_CANCELLED,
   PAYMENT_ERROR,
   PAYMENT_SUCCESS
 } from '../../models/constants/Translations';
-import { APPLE_PAY_BUTTON_ID } from '../../models/constants/apple-pay/ButtonProperties';
-import {
-  STAGE_ONE_NETWORKS,
-  STAGE_TWO_NETWORKS,
-  STAGE_THREE_NETWORKS
-} from '../../models/constants/apple-pay/SupportedNetworks';
-import { IValidateMerchantRequest } from '../../models/apple-pay/IValidateMerchantRequest';
-import { IPaymentRequest } from '../../models/apple-pay/IPaymentRequest';
-import { IApplePayPaymentAuthorizationResult } from '../../models/apple-pay/IApplePayPaymentAuthorizationResult ';
-import { IApplePayValidateMerchantEvent } from '../../models/apple-pay/IApplePayValidateMerchantEvent';
-import { IApplePayPaymentMethod } from '../../models/apple-pay/IApplePayPaymentMethod';
-import { IApplePayPaymentContact } from '../../models/apple-pay/IApplePayPaymentContact';
-import { IApplePayShippingMethod } from '../../models/apple-pay/IApplePayShippingMethod';
-import { IApplePayPayment } from '../../models/apple-pay/IApplePayPayment';
-import { IApplePayRequestTypes } from '../../models/apple-pay/IApplePayRequestTypes';
-import { IApplePaySupportedNetworks } from '../../models/apple-pay/IApplePaySupportedNetworks';
+import { IApplePayValidateMerchantRequest } from './IApplePayValidateMerchantRequest';
+import { IApplePayPaymentRequest } from './IApplePayPaymentRequest';
+import { IApplePayValidateMerchantEvent } from './IApplePayValidateMerchantEvent';
+import { IApplePayPaymentMethod } from './IApplePayPaymentMethod';
+import { IApplePayPaymentContact } from './IApplePayPaymentContact';
+import { IApplePayShippingMethod } from './IApplePayShippingMethod';
+import { IApplePayPayment } from './IApplePayPayment';
 import jwt_decode from 'jwt-decode';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
+import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
+import { ApplePayNetworksService } from './apple-pay-networks-service/ApplePayNetworksService';
+import { IApplePayPaymentAuthorizationResult } from './IApplePayPaymentAuthorizationResult ';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
 
 export class ApplePay {
   private _applePaySession: any;
-  private _validateMerchantRequest: IValidateMerchantRequest = {
+  private _validateMerchantRequest: IApplePayValidateMerchantRequest = {
     walletmerchantid: '',
     walletrequestdomain: window.location.hostname,
     walletsource: 'APPLEPAY',
@@ -52,7 +45,7 @@ export class ApplePay {
   private _applePayVersion: number;
   private _payment: Payment;
   private _translator: Translator;
-  private _paymentRequest: IPaymentRequest;
+  private _paymentRequest: IApplePayPaymentRequest;
   private _formId: string;
   private readonly _completion: IApplePayPaymentAuthorizationResult = {
     errors: [],
@@ -67,7 +60,9 @@ export class ApplePay {
     private _localStorage: BrowserLocalStorage,
     private _messageBus: MessageBus,
     private _notification: NotificationService,
-    private _stTransport: StTransport
+    private _stTransport: StTransport,
+    private _applePayButtonService: ApplePayButtonService,
+    private _applePayNetworkService: ApplePayNetworksService
   ) {
     if (!Boolean(ApplePaySession)) {
       throw new Error('Works only on Safari');
@@ -94,7 +89,7 @@ export class ApplePay {
         requestTypes,
         formId
       );
-      this._insertButton(placement, buttonText, buttonStyle, locale);
+      this._applePayButtonService.insertButton(placement, buttonText, buttonStyle, locale);
       this._hasActiveCards(merchantId);
     });
     this._subscribeUpdateJwt();
@@ -106,7 +101,7 @@ export class ApplePay {
     locale: string,
     merchantId: string,
     mainamount: string,
-    paymentRequest: IPaymentRequest,
+    paymentRequest: IApplePayPaymentRequest,
     requestTypes: string[],
     formId: string
   ): void {
@@ -115,7 +110,10 @@ export class ApplePay {
     this._formId = formId;
     this._setMerchantId(merchantId);
     this._setPaymentRequest(paymentRequest, requestTypes);
-    this._setSupportedNetworks(this._getSupportedNetworks(applePayVersion));
+    this._paymentRequest.supportedNetworks = this._applePayNetworkService.setSupportedNetworks(
+      applePayVersion,
+      this._paymentRequest.supportedNetworks
+    );
     this._setCurrencyCode(currencyiso3a);
     this._setAmount(mainamount);
   }
@@ -126,46 +124,6 @@ export class ApplePay {
       this._translator = new Translator(locale);
       this._setCurrencyCode(currencyiso3a);
       this._setAmount(mainamount);
-    });
-  }
-
-  private _createButton(buttonText: string, buttonStyle: string, locale: string): HTMLElement {
-    return DomMethods.createHtmlElement.apply(this, [
-      {
-        style: `-webkit-appearance: -apple-pay-button;
-                -apple-pay-button-type: ${buttonText};
-                -apple-pay-button-style: ${buttonStyle};pointer-events: auto;cursor: pointer;display: flex;role: button;`,
-        lang: locale
-      },
-      'a'
-    ]);
-  }
-
-  private _insertButton(placement: string, buttonText: string, buttonStyle: string, locale: string): Element {
-    return DomMethods.appendChildIntoDOM(placement, this._createButton(buttonText, buttonStyle, locale));
-  }
-
-  private _getSupportedNetworks(version: number): IApplePaySupportedNetworks[] {
-    const stageOneVersions: number[] = [1, 2, 3];
-    const stageTwoVersions: number[] = [4];
-    const stageThreeVersions: number[] = [5, 6];
-
-    if (stageOneVersions.includes(version)) {
-      return STAGE_ONE_NETWORKS;
-    }
-
-    if (stageTwoVersions.includes(version)) {
-      return STAGE_TWO_NETWORKS;
-    }
-
-    if (stageThreeVersions.includes(version)) {
-      return STAGE_THREE_NETWORKS;
-    }
-  }
-
-  private _setSupportedNetworks(networks: IApplePaySupportedNetworks[]): void {
-    this._paymentRequest.supportedNetworks = networks.filter((item: IApplePaySupportedNetworks) => {
-      return this._paymentRequest.supportedNetworks.includes(item);
     });
   }
 
@@ -189,18 +147,6 @@ export class ApplePay {
     this._validateMerchantRequest.walletvalidationurl = url;
   }
 
-  private _applePayButtonClickHandler() {
-    const button = document.getElementById(APPLE_PAY_BUTTON_ID);
-    const handler = () => {
-      this._proceedPayment();
-      button.removeEventListener('click', handler);
-    };
-
-    if (button) {
-      button.addEventListener('click', handler);
-    }
-  }
-
   private _onValidateMerchant() {
     this._applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
       this._setValidationUrl(event.validationURL);
@@ -217,7 +163,7 @@ export class ApplePay {
           }
           const { errorcode, errormessage } = error;
           this._onValidateMerchantResponseFailure(error);
-          this._applePayButtonClickHandler();
+          this._applePayButtonService.applePayButtonClickHandler(this._proceedPayment);
           this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
           this._notification.error(`${errorcode}: ${errormessage}`);
           GoogleAnalytics.sendGaData(
@@ -256,7 +202,7 @@ export class ApplePay {
         .catch(() => {
           this._notification.error(PAYMENT_ERROR);
           this._applePaySession.completePayment({ status: ApplePaySession.STATUS_FAILURE, errors: [] });
-          this._applePayButtonClickHandler();
+          this._applePayButtonService.applePayButtonClickHandler(this._proceedPayment);
           this._localStorage.setItem('completePayment', 'true');
         });
     };
@@ -279,7 +225,7 @@ export class ApplePay {
         { type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE, data: { errorcode: event } },
         true
       );
-      this._applePayButtonClickHandler();
+      this._applePayButtonService.applePayButtonClickHandler(this._proceedPayment);
       GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment status', 'Apple Pay payment cancelled');
     };
   }
@@ -379,7 +325,7 @@ export class ApplePay {
       .then((canMakePayments: boolean) => {
         if (canMakePayments) {
           GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay can make payments');
-          this._applePayButtonClickHandler();
+          this._applePayButtonService.applePayButtonClickHandler(this._proceedPayment);
         } else {
           GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay cannot make payments');
           throw new Error('User has not an active card provisioned into Wallet');
@@ -419,7 +365,7 @@ export class ApplePay {
     if (errordata.lastIndexOf('customer', 0) === 0) {
       error.code = 'shippingContactInvalid';
     }
-    this._applePayButtonClickHandler();
+    this._applePayButtonService.applePayButtonClickHandler(this._proceedPayment);
     this._completion.errors.push(error.code);
     return this._completion;
   }

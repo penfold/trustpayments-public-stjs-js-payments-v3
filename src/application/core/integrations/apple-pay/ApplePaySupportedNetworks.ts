@@ -1,4 +1,4 @@
-import { IApplePaySupportedNetworks } from '../../apple-pay/IApplePaySupportedNetworks';
+import { IApplePaySupportedNetworks } from './IApplePaySupportedNetworks';
 
 const STAGE_ONE_NETWORKS: IApplePaySupportedNetworks[] = [
   'amex',

@@ -43,7 +43,7 @@ import { BrowserDetector } from '../../shared/services/browser-detector/BrowserD
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
-import { IApplePay } from '../../application/core/models/apple-pay/IApplePay';
+import { IApplePay } from '../../application/core/integrations/apple-pay/IApplePay';
 
 @Service()
 export class ST {
