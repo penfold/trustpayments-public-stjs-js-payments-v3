@@ -163,7 +163,7 @@ export class ApplePay {
           }
           const { errorcode, errormessage } = error;
           this._onValidateMerchantResponseFailure(error);
-          this._applePayButtonService.applePayButtonClickHandler(this._proceedPayment);
+          this._applePayButtonService.handleEvent(this._proceedPayment, 'click');
           this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
           this._notification.error(`${errorcode}: ${errormessage}`);
           GoogleAnalytics.sendGaData(
@@ -202,7 +202,7 @@ export class ApplePay {
         .catch(() => {
           this._notification.error(PAYMENT_ERROR);
           this._applePaySession.completePayment({ status: ApplePaySession.STATUS_FAILURE, errors: [] });
-          this._applePayButtonService.applePayButtonClickHandler(this._proceedPayment);
+          this._applePayButtonService.handleEvent(this._proceedPayment, 'click');
           this._localStorage.setItem('completePayment', 'true');
         });
     };
@@ -225,7 +225,7 @@ export class ApplePay {
         { type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE, data: { errorcode: event } },
         true
       );
-      this._applePayButtonService.applePayButtonClickHandler(this._proceedPayment);
+      this._applePayButtonService.handleEvent(this._proceedPayment, 'click');
       GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment status', 'Apple Pay payment cancelled');
     };
   }
@@ -325,7 +325,7 @@ export class ApplePay {
       .then((canMakePayments: boolean) => {
         if (canMakePayments) {
           GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay can make payments');
-          this._applePayButtonService.applePayButtonClickHandler(this._proceedPayment);
+          this._applePayButtonService.handleEvent(this._proceedPayment, 'click');
         } else {
           GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay cannot make payments');
           throw new Error('User has not an active card provisioned into Wallet');
@@ -365,7 +365,7 @@ export class ApplePay {
     if (errordata.lastIndexOf('customer', 0) === 0) {
       error.code = 'shippingContactInvalid';
     }
-    this._applePayButtonService.applePayButtonClickHandler(this._proceedPayment);
+    this._applePayButtonService.handleEvent(this._proceedPayment, 'click');
     this._completion.errors.push(error.code);
     return this._completion;
   }

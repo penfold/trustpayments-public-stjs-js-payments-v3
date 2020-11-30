@@ -1,31 +1,31 @@
-import { DomMethods } from '../../../shared/dom-methods/DomMethods';
 import { Service } from 'typedi';
+import { DomMethods } from '../../../shared/dom-methods/DomMethods';
 import { APPLE_PAY_BUTTON_ID } from '../ApplePayButtonProperties';
 
 @Service()
 export class ApplePayButtonService {
-  insertButton(placement: string, buttonText: string, buttonStyle: string, locale: string): Element {
-    return DomMethods.appendChildIntoDOM(placement, this._createButton(buttonText, buttonStyle, locale));
+  insertButton(targetId: string, label: string, style: string, locale: string): Element {
+    return DomMethods.appendChildIntoDOM(targetId, this._createButton(label, style, locale));
   }
 
-  applePayButtonClickHandler(callback: () => void) {
+  handleEvent(callback: () => void, event: string): void {
     const button = document.getElementById(APPLE_PAY_BUTTON_ID);
     const handler = () => {
       callback();
-      button.removeEventListener('click', handler);
+      button.removeEventListener(event, handler);
     };
 
     if (button) {
-      button.addEventListener('click', handler);
+      button.addEventListener(event, handler);
     }
   }
 
-  private _createButton(buttonText: string, buttonStyle: string, locale: string): HTMLElement {
+  private _createButton(label: string, style: string, locale: string): HTMLElement {
     return DomMethods.createHtmlElement.apply(this, [
       {
         style: `-webkit-appearance: -apple-pay-button;
-                -apple-pay-button-type: ${buttonText};
-                -apple-pay-button-style: ${buttonStyle};pointer-events: auto;cursor: pointer;display: flex;role: button;`,
+                -apple-pay-button-type: ${label};
+                -apple-pay-button-style: ${style};pointer-events: auto;cursor: pointer;display: flex;role: button;`,
         lang: locale
       },
       'a'

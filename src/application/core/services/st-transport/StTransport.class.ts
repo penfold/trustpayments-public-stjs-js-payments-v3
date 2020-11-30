@@ -73,7 +73,7 @@ export class StTransport {
       requesttypedescriptions.some((req: string) => req === 'JSINIT' || req === 'WALLETVERIFY');
 
     if (environment.testEnvironment) {
-      const decodedJwt = JwtDecode<IDecodedJwt>(jwt);
+      const decodedJwt = jwt_decode<IDecodedJwt>(jwt);
       const requestTypes = hasRequestTypesToSkip
         ? requesttypedescriptions.join(', ')
         : decodedJwt.payload.requesttypedescriptions.join(', ');
