@@ -4,10 +4,10 @@ Feature: E2E Card Payments - redirection
   So that my payment is handled appropriately
 
   @reactJS
-  @angular
-  @vueJS
-  @react_native
-  @e2e_config_submit_on_success
+    @angular
+    @vueJS
+    @react_native
+    @e2e_config_submit_on_success
   Scenario Outline: Successful frictionless payment with submitOnSuccess enabled
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -17,23 +17,27 @@ Feature: E2E Card Payments - redirection
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "www.example.com" having params
-      | key           | value                                   |
-      | errormessage  | Payment has been successfully processed |
-      | baseamount    | <baseamount>                            |
-      | currencyiso3a | <currencyiso3a>                         |
-      | errorcode     | 0                                       |
-      | threedresponse| <threedresponse>                        |
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | <baseamount>                            |
+      | currencyiso3a        | <currencyiso3a>                         |
+      | errorcode            | 0                                       |
+      | threedresponse       | <threedresponse>                        |
+      | enrolled             | U                                       |
+      | settlestatus         | 0                                       |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
 
-   Examples:
-    | request_types            | threedresponse | baseamount     | currencyiso3a |
-    | THREEDQUERY AUTH         | should be none | 1000           | GBP           |
-    | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none|
+    Examples:
+      | request_types            | threedresponse | baseamount     | currencyiso3a  |
+      | THREEDQUERY AUTH         | should be none | 1000           | GBP            |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
 
   @reactJS
-  @angular
-  @vueJS
-  @react_native
-  @e2e_config_submit_on_success
+    @angular
+    @vueJS
+    @react_native
+    @e2e_config_submit_on_success
   Scenario Outline: Successful payment with submitOnSuccess enabled for non-frictionless card
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -44,17 +48,21 @@ Feature: E2E Card Payments - redirection
     And User fills V2 authentication modal
     Then User will not see notification frame
     And User will be sent to page with url "www.example.com" having params
-      | key           | value                                   |
-      | errormessage  | Payment has been successfully processed |
-      | baseamount    | <baseamount>                            |
-      | currencyiso3a | <currencyiso3a>                         |
-      | errorcode     | 0                                       |
-      | threedresponse| <threedresponse>                        |
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | <baseamount>                            |
+      | currencyiso3a        | <currencyiso3a>                         |
+      | errorcode            | 0                                       |
+      | threedresponse       | <threedresponse>                        |
+      | enrolled             | Y                                       |
+      | settlestatus         | 0                                       |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
 
-  Examples:
-    | request_types            | threedresponse     | baseamount     | currencyiso3a |
-    | THREEDQUERY AUTH         | should be none     | 1000           | GBP           |
-    | ACCOUNTCHECK THREEDQUERY | should not be none | should be none | should be none|
+    Examples:
+      | request_types            | threedresponse     | baseamount     | currencyiso3a  |
+      | THREEDQUERY AUTH         | should be none     | 1000           | GBP            |
+      | ACCOUNTCHECK THREEDQUERY | should not be none | should be none | should be none |
 
   @e2e_config_request_types
   @bypass_property
@@ -68,11 +76,14 @@ Feature: E2E Card Payments - redirection
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "www.example.com" having params
-      | key           | value                                   |
-      | errormessage  | Payment has been successfully processed |
-      | baseamount    | 1000                                    |
-      | currencyiso3a | GBP                                     |
-      | errorcode     | 0                                       |
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | 1000                                    |
+      | currencyiso3a        | GBP                                     |
+      | errorcode            | 0                                       |
+      | settlestatus         | 0                                       |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
 
 
   @reactJS
@@ -91,11 +102,14 @@ Feature: E2E Card Payments - redirection
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "www.example.com" having params
-      | key           | value   |
-      | errormessage  | Decline |
-      | baseamount    | 1000    |
-      | currencyiso3a | GBP     |
-      | errorcode     | 70000   |
+      | key                  | value              |
+      | errormessage         | Decline            |
+      | baseamount           | 1000               |
+      | currencyiso3a        | GBP                |
+      | errorcode            | 70000              |
+      | settlestatus         | 3                  |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
 
   @reactJS
   @angular
@@ -128,11 +142,16 @@ Feature: E2E Card Payments - redirection
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will be sent to page with url "www.example.com" having params
-      | key           | value                                   |
-      | errormessage  | Payment has been successfully processed |
-      | baseamount    | 1000                                    |
-      | currencyiso3a | GBP                                     |
-      | errorcode     | 0                                       |
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | 1000                                    |
+      | currencyiso3a        | GBP                                     |
+      | errorcode            | 0                                       |
+      | status               | Y                                       |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
+      | enrolled             | Y                                       |
+      | eci                  | 05                                      |
 
   @e2e_config_submit_on_success_callback
   Scenario: Successful payment with submitOnSuccess enabled and success callback set
@@ -144,11 +163,17 @@ Feature: E2E Card Payments - redirection
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "example.org" having params
-      | key           | value                                   |
-      | errormessage  | Payment has been successfully processed |
-      | baseamount    | 1000                                    |
-      | currencyiso3a | GBP                                     |
-      | errorcode     | 0                                       |
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | 1000                                    |
+      | currencyiso3a        | GBP                                     |
+      | errorcode            | 0                                       |
+      | status               | A                                       |
+      | eci                  | 06                                      |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
+      | enrolled             | Y                                       |
+      | settlestatus         | 0                                       |
 
   @reactJS
   @angular
@@ -164,11 +189,17 @@ Feature: E2E Card Payments - redirection
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "example.org" having params
-      | key           | value                                   |
-      | errormessage  | Payment has been successfully processed |
-      | baseamount    | 1000                                    |
-      | currencyiso3a | GBP                                     |
-      | errorcode     | 0                                       |
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | 1000                                    |
+      | currencyiso3a        | GBP                                     |
+      | errorcode            | 0                                       |
+      | status               | A                                       |
+      | eci                  | 06                                      |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
+      | enrolled             | Y                                       |
+      | settlestatus         | 0                                       |
 
   @reactJS
   @angular
@@ -186,11 +217,16 @@ Feature: E2E Card Payments - redirection
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "example.org" having params
-      | key           | value   |
-      | errormessage  | Decline |
-      | baseamount    | 1000    |
-      | currencyiso3a | GBP     |
-      | errorcode     | 70000   |
+      | key                  | value              |
+      | errormessage         | Decline            |
+      | baseamount           | 1000               |
+      | currencyiso3a        | GBP                |
+      | errorcode            | 70000              |
+      | currencyiso3a        | GBP                |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | eci                  | 07                 |
+      | settlestatus         | 3                  |
 
   @e2e_config_submit_on_error_callback
   Scenario: Unsuccessful payment with submitOnError enabled and submit callback set
@@ -202,12 +238,16 @@ Feature: E2E Card Payments - redirection
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "example.org" having params
-      | key           | value          |
-      | errormessage  | Decline        |
-      | baseamount    | 1000           |
-      | currencyiso3a | GBP            |
-      | errorcode     | 70000          |
-      | threedresponse| should be none |
+      | key                  | value              |
+      | errormessage         | Decline            |
+      | baseamount           | 1000               |
+      | currencyiso3a        | GBP                |
+      | errorcode            | 70000              |
+      | threedresponse       | should be none     |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | eci                  | 07                 |
+      | settlestatus         | 3                  |
 
 #  @e2e_config_submit_on_cancel_callback
 #  Scenario: Unsuccessful payment with submitOnCancel enabled and cancel callback set
@@ -232,13 +272,13 @@ Feature: E2E Card Payments - redirection
     And User clicks Pay button
     And User clicks Cancel button on authentication modal
     Then User will be sent to page with url "www.example.com" having params
-      | key           | value              |
-      | errormessage  | An error occurred  |
-      | enrolled      | Y                  |
-      | settlestatus  | 0                  |
-      | errorcode     | 50003              |
-      | threedresponse| should not be none |
-      | jwt           | should not be none |
+      | key            | value              |
+      | errormessage   | An error occurred  |
+      | enrolled       | Y                  |
+      | settlestatus   | 0                  |
+      | errorcode      | 50003              |
+      | threedresponse | should not be none |
+      | jwt            | should not be none |
 
   Scenario Outline: Cancel Cardinal popup with enabled submitOnError and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_ERROR_REQUEST_TYPES_CONFIG and jwt BASE_JWT with additional attributes
@@ -249,15 +289,15 @@ Feature: E2E Card Payments - redirection
     And User clicks Pay button
     And User clicks Cancel button on authentication modal
     Then User will be sent to page with url "www.example.com" having params
-      | key           | value              |
-      | errormessage  | An error occurred  |
-      | enrolled      | Y                  |
-      | settlestatus  | 0                  |
-      | errorcode     | 50003              |
-      | threedresponse| <threedresponse>   |
-      | jwt           | should not be none |
+      | key            | value              |
+      | errormessage   | An error occurred  |
+      | enrolled       | Y                  |
+      | settlestatus   | 0                  |
+      | errorcode      | 50003              |
+      | threedresponse | <threedresponse>   |
+      | jwt            | should not be none |
 
-  Examples:
-    | request_types            | threedresponse     |
-    | THREEDQUERY AUTH         | should be none     |
-    | ACCOUNTCHECK THREEDQUERY | should not be none |
+    Examples:
+      | request_types            | threedresponse     |
+      | THREEDQUERY AUTH         | should be none     |
+      | ACCOUNTCHECK THREEDQUERY | should not be none |

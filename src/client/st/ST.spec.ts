@@ -41,11 +41,6 @@ describe('ST', () => {
   describe('ST.VisaCheckout()', () => {
     const { visaCheckoutConfig } = stFixture();
     // then
-    it('should return VisaCheckoutMock object when environment.testEnvironment equals true', () => {
-      environment.testEnvironment = true;
-      expect(instance.VisaCheckout(visaCheckoutConfig, config.jwt)).toBeInstanceOf(VisaCheckoutMock);
-    });
-    // then
     it('should return VisaCheckout object when environment.testEnvironment equals false', () => {
       environment.testEnvironment = false;
       expect(instance.VisaCheckout(visaCheckoutConfig, config.jwt)).toBeInstanceOf(VisaCheckout);

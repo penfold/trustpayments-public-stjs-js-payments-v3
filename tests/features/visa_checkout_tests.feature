@@ -6,10 +6,10 @@
 #  Background:
 #    Given JavaScript configuration is set for scenario based on scenario's @config tag
 #
-#  @base_config @extended_tests_part_2 @wallet_test @visa_test
+#  @config_visa_base @extended_tests_part_2 @wallet_test @visa_test
 #  Scenario Outline: Visa Checkout - checking payment status for <action_code> response code
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "<action_code>"
+#    When User chooses Visa Checkout as payment method - visa response is set to "<action_code>"
 #    Then User will see payment status information: "<payment_status_message>"
 #    And User will see that notification frame has "<color>" color
 #    And VISA_CHECKOUT or AUTH requests were sent only once with correct data
@@ -26,36 +26,61 @@
 #  Scenario: Visa Checkout - successful payment with enabled 'submitOnSuccess' process
 #    Given User opens page with payment form
 #    When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
-#    And User chooses Visa Checkout as payment method - response is set to "SUCCESS"
-#    Then User is redirected to action page
+#    And User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
+#    Then User will be sent to page with url "www.example.com" having params
+#      | key                  | value                                   |
+#      | errormessage         | Payment has been successfully processed |
+#      | errorcode            | 0                                       |
+#      | myBillName           | John Test                               |
+#      | myBillEmail          | test@example                            |
+#      | myBillTel            | 44422224444                             |
+#      | transactionreference | should not be none                      |
+#      | jwt                  | should not be none                      |
+#      | settlestatus         | 0                                       |
+#      | baseamount           | 1000                                    |
+#      | currencyiso3a        | GBP                                     |
 #
 #  @config_default @visa_test
 #  Scenario: Visa Checkout - successful payment - checking that 'submitOnSuccess' is enabled by default
 #    Given User opens page with payment form
 #    When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
-#    And User chooses Visa Checkout as payment method - response is set to "SUCCESS"
-#    Then User is redirected to action page
+#    And User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
+#    Then User will be sent to page with url "www.example.com" having params
+#      | key                  | value                                   |
+#      | errormessage         | Payment has been successfully processed |
+#      | errorcode            | 0                                       |
+#      | myBillName           | John Test                               |
+#      | myBillEmail          | test@example                            |
+#      | myBillTel            | 44422224444                             |
+#      | transactionreference | should not be none                      |
+#      | jwt                  | should not be none                      |
+#      | settlestatus         | 0                                       |
+#      | baseamount           | 1000                                    |
+#      | currencyiso3a        | GBP                                     |
 #    And VISA_CHECKOUT or AUTH requests were sent only once with correct data
 #
 #  @config_submit_on_error_true @visa_test
 #  Scenario: Visa Checkout - error payment with enabled 'submitOnError' process
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "ERROR"
-#    Then User is redirected to action page
+#    When User chooses Visa Checkout as payment method - visa response is set to "ERROR"
+#    Then User will be sent to page with url "www.example.com" having params
+#      | key          | value         |
+#      | errormessage | Invalid field |
+#      | errorcode    | 50003         |
 #
 #  @config_submit_on_success_error_cancel_false @visa_test
 #  Scenario: Visa Checkout - error payment with disabled 'submitOnError' process
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "ERROR"
+#    When User chooses Visa Checkout as payment method - visa response is set to "ERROR"
 #    Then User remains on checkout page
 #    And User will see payment status information: "An error occurred"
 #    And User will see that notification frame has "red" color
 #    And VISA_CHECKOUT or AUTH requests were sent only once with correct data
 #
-#  @config_default @visa_test
+#  @config_visa_base @visa_test
 #  Scenario: Visa Checkout - error payment - checking that 'submitOnError' is disabled by default
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "ERROR"
+#    When User chooses Visa Checkout as payment method - visa response is set to "ERROR"
 #    Then User remains on checkout page
 #    And User will see payment status information: "An error occurred"
 #    And User will see that notification frame has "red" color
@@ -64,29 +89,32 @@
 #  @config_submit_on_cancel_true @visa_test
 #  Scenario: Visa Checkout - canceled payment with enabled 'submitOnCancel' process
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "CANCEL"
-#    Then User is redirected to action page
+#    When User chooses Visa Checkout as payment method - visa response is set to "CANCEL"
+#    Then User will be sent to page with url "www.example.com" having params
+#      | key          | value                      |
+#      | errormessage | Payment has been cancelled |
+#      | errorcode    | cancelled                  |
 #
 #  @config_submit_on_success_error_cancel_false @visa_test
 #  Scenario: Visa Checkout - canceled payment with disabled 'submitOnCancel' process
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "CANCEL"
+#    When User chooses Visa Checkout as payment method - visa response is set to "CANCEL"
 #    Then User remains on checkout page
 #    And User will see payment status information: "Payment has been cancelled"
 #    And User will see that notification frame has "yellow" color
 #
-#  @config_default @visa_test
+#  @config_visa_base @visa_test
 #  Scenario: Visa Checkout - canceled payment - checking that 'submitOnCancel' is disabled by default
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "CANCEL"
+#    When User chooses Visa Checkout as payment method - visa response is set to "CANCEL"
 #    Then User remains on checkout page
 #    And User will see payment status information: "Payment has been cancelled"
 #    And User will see that notification frame has "yellow" color
 #
-#  @base_config @wallet_test @visa_test
+#  @config_visa_base @wallet_test @visa_test
 #  Scenario Outline: Visa Checkout - checking <callback> callback functionality
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "<action_code>"
+#    When User chooses Visa Checkout as payment method - visa response is set to "<action_code>"
 #    Then User will see "<callback>" popup
 #    And "<callback>" callback is called only once
 #
@@ -100,10 +128,10 @@
 #      | ERROR       | error    |
 #      | CANCEL      | cancel   |
 #
-#  @base_config @visa_test
+#  @config_visa_base @visa_test
 #  Scenario: Checking data type passing to callback function
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "SUCCESS"
+#    When User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
 #    Then User will see correct error code displayed in popup
 #    And "submit" callback is called only once
 #
@@ -113,7 +141,7 @@
 #      | jwtName          |
 #      | BASE_UPDATED_JWT |
 #    When User calls updateJWT function by filling amount field
-#    And User chooses Visa Checkout as payment method - response is set to "SUCCESS"
+#    And User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
 #    Then User will see payment status information: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #    And VISA_CHECKOUT or AUTH requests were sent only once with correct data
@@ -125,7 +153,7 @@
 #      | jwtName          |
 #      | BASE_UPDATED_JWT |
 #    When User calls updateJWT function by filling amount field
-#    And User chooses Visa Checkout as payment method - response is set to "SUCCESS"
+#    And User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
 #    Then User will see payment status information: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #    And VISA_CHECKOUT or AUTH requests were sent only once with correct data
@@ -138,30 +166,41 @@
 #      | BASE_UPDATED_JWT |
 #    When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
 #    And User calls updateJWT function by filling amount field
-#    And User chooses Visa Checkout as payment method - response is set to "SUCCESS"
-#    Then User is redirected to action page
+#    And User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
+#    Then User will be sent to page with url "www.example.com" having params
+#      | key                  | value                                   |
+#      | errormessage         | Payment has been successfully processed |
+#      | errorcode            | 0                                       |
+#      | myBillName           | John Test                               |
+#      | myBillEmail          | test@example                            |
+#      | myBillTel            | 44422224444                             |
+#      | transactionreference | should not be none                      |
+#      | jwt                  | should not be none                      |
+#      | settlestatus         | 0                                       |
+#      | baseamount           | 1000                                    |
+#      | currencyiso3a        | GBP                                     |
 #    And VISA_CHECKOUT or AUTH requests were sent only once with correct data
 #    And VISA_CHECKOUT requests contains updated jwt
 #
 #  @config_cybertonica @visa_test
 #  Scenario: Visa Checkout - Cybertonica - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "SUCCESS"
+#    When User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
 #    Then User will see payment status information: "Payment has been successfully processed"
-#    And AUTH request was sent only once with 'fraudcontroltransactionid' flag
+#    And THREEDQUERY, AUTH request was sent only once with 'fraudcontroltransactionid' flag
 #
-#  @base_config @cybertonica @visa_test
+#  @config_visa_base @cybertonica @visa_test
 #  Scenario: Visa Checkout - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "SUCCESS"
+#    When User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
 #    Then User will see payment status information: "Payment has been successfully processed"
 #    And AUTH request was sent only once without 'fraudcontroltransactionid' flag
 #
-#  @base_config @parent_iframe @full_test @visa_test
+#  @config_visa_base @parent_iframe @full_test @visa_test
 #  Scenario: Visa Checkout - successful payment when app is embedded in another iframe
 #    Given User opens page with payment form
 #    When User opens payment page
-#    And User chooses Visa Checkout as payment method - response is set to "SUCCESS"
+#    And User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
 #    Then User will see payment status information: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #    And VISA_CHECKOUT or AUTH requests were sent only once with correct data
@@ -170,7 +209,7 @@
 #  Scenario Outline: Visa Checkout - check translation overwriting mechanism
 #    Given User opens page with payment form
 #    When User changes page language to "<language>"
-#    And User chooses Visa Checkout as payment method - response is set to "ERROR"
+#    And User chooses Visa Checkout as payment method - visa response is set to "ERROR"
 #    Then User will see notification frame with message: "Wystąpił błąd"
 #    And User will see that notification frame has "red" color
 #    Examples:
@@ -180,19 +219,19 @@
 #  @config_disable_notifications_true @visa_test
 #  Scenario: Visa Checkout - notification frame is not displayed after successful payment
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "SUCCESS"
+#    When User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
 #    Then User will not see notification frame
 #
 #  @config_disable_notifications_true @visa_test
 #  Scenario: Visa Checkout - notification frame is not displayed after declined payment
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "ERROR"
+#    When User chooses Visa Checkout as payment method - visa response is set to "ERROR"
 #    Then User will not see notification frame
 #
 #  @config_disable_notifications_false @visa_test
 #  Scenario: Visa Checkout - notification frame is displayed after payment if disableNotification is false
 #    Given User opens page with payment form
-#    When User chooses Visa Checkout as payment method - response is set to "SUCCESS"
+#    When User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
 #    Then User will see payment status information: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #

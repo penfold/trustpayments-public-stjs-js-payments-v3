@@ -7,7 +7,6 @@ from configuration import CONFIGURATION
 from models.jwt_payload_builder import JwtPayloadBuilder
 from utils.configurations.jwt_generator import encode_jwt_for_json, get_data_from_json, encode_jwt, \
     merge_json_conf_with_additional_attr
-from utils.dict.url_after_redirection import url_after_redirection
 from utils.enums.example_page import ExamplePage
 from utils.enums.jwt_config import JwtConfig
 from utils.mock_handler import MockUrl
@@ -134,20 +133,6 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.validate_base_url(CONFIGURATION.URL.BASE_URL[8:])
-
-
-@then('User is redirected to action page')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    for key, value in url_after_redirection.items():
-        if key in context.scenario.name:
-            if 'Cardinal Commerce - successful' in key and 'IE' in CONFIGURATION.REMOTE_BROWSER:
-                payment_page.validate_if_url_contains_info_about_payment(url_after_redirection['IE - success'])
-            elif 'Cardinal Commerce - error' in key and 'IE' in CONFIGURATION.REMOTE_BROWSER:
-                payment_page.validate_if_url_contains_info_about_payment(url_after_redirection['IE - error'])
-            else:
-                payment_page.validate_if_url_contains_info_about_payment(value)
-                break
 
 
 @step('User will be sent to page with url "(?P<url>.+)" having params')
