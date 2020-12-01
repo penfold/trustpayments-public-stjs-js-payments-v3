@@ -8,7 +8,7 @@ import { DefaultSubmitFields } from '../../../application/core/models/constants/
 import { DefaultComponentsIds } from '../../../application/core/models/constants/config-resolver/DefaultComponentsIds';
 import { DefaultConfig } from '../../../application/core/models/constants/config-resolver/DefaultConfig';
 import { DefaultComponents } from '../../../application/core/models/constants/config-resolver/DefaultComponents';
-import { IApplePayConfig } from '../../../application/core/models/IApplePayConfig';
+import { IApplePay } from '../../../application/core/integrations/apple-pay/IApplePay';
 import { IVisaCheckout } from '../../../application/core/models/constants/IVisaCheckout';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
@@ -57,7 +57,7 @@ export class ConfigResolver {
   }
 
   private _validate(
-    config: IConfig | IComponentsConfig | IComponentsIds | IApplePayConfig | IVisaCheckout,
+    config: IConfig | IComponentsConfig | IComponentsIds | IApplePay | IVisaCheckout,
     schema: Joi.ObjectSchema
   ): void {
     const { error } = schema.validate(config);
@@ -97,7 +97,7 @@ export class ConfigResolver {
     return config;
   }
 
-  private _setApplePayConfig(config: IApplePayConfig | {}, defaultConfig: {}): IApplePayConfig | {} {
+  private _setApplePayConfig(config: IApplePay | {}, defaultConfig: {}): IApplePay | {} {
     if (!config || !Object.keys(config).length) {
       return defaultConfig;
     }
