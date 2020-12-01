@@ -77,6 +77,9 @@ export class ApplePay {
 
   public init(): void {
     this._config$.subscribe((config: IConfig) => {
+      if (!config.applePay) {
+        throw new Error('There is no config for Apple Pay.');
+      }
       const { applePay, formId, jwt } = this._applePayConfigService.getConfigData(config);
       const { currencyiso3a, locale, mainamount } = this._applePayConfigService.getStJwtData(jwt);
       this._paymentRequest = applePay.paymentRequest;

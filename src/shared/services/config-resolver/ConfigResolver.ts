@@ -21,7 +21,7 @@ export class ConfigResolver {
     const validatedConfig: IConfig = {
       analytics: this._getValueOrDefault(config.analytics, DefaultConfig.analytics),
       animatedCard: this._getValueOrDefault(config.animatedCard, DefaultConfig.animatedCard),
-      applePay: this._setApplePayConfig(config.applePay, DefaultConfig.applePay),
+      applePay: this._setApplePayConfig(config.applePay),
       buttonId: this._getValueOrDefault(config.buttonId, DefaultConfig.buttonId),
       cancelCallback: this._getValueOrDefault(config.cancelCallback, DefaultConfig.cancelCallback),
       componentIds: this._setComponentIds(config.componentIds),
@@ -97,9 +97,9 @@ export class ConfigResolver {
     return config;
   }
 
-  private _setApplePayConfig(config: IApplePay | {}, defaultConfig: {}): IApplePay | {} {
+  private _setApplePayConfig(config: IApplePay): IApplePay {
     if (!config || !Object.keys(config).length) {
-      return defaultConfig;
+      return;
     }
     return config;
   }
