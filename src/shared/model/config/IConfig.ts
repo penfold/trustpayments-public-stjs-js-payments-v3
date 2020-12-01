@@ -9,7 +9,7 @@ import { IApplePay } from '../../../application/core/integrations/apple-pay/IApp
 export interface IConfig {
   analytics?: boolean;
   animatedCard?: boolean;
-  applePay?: IApplePay | {};
+  applePay?: IApplePay;
   buttonId?: string;
   cancelCallback?: any;
   components?: IComponentsConfig;
