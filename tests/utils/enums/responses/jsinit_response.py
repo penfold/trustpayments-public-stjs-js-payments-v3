@@ -8,6 +8,7 @@ jsinit_response = {
     'start_on_load': 'jsinitStartOnLoad.json',
     'immediate_payment': 'jsinitStartOnLoad.json',
     'config_requestTypes_tdq': 'jsinitTDQ.json',
+    'config_requestTypes_tdq_submit_on_error': 'jsinitTDQ.json',
     'config_requestTypes_acheck_tdq_auth': 'jsinitAcheckTdqAuth.json',
     'config_requestTypes_tdq_auth_riskdec': 'jsinitTdqAuthRiskdec.json',
     'config_requestTypes_riskdec_acheck_tdq_auth': 'jsinitRiskdecAcheckTdqAuth.json',

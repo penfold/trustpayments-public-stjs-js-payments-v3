@@ -23,7 +23,7 @@ module.exports = merge(common, {
     new ManifestPlugin(),
     new webpack.DefinePlugin({
       WEBSERVICES_URL: JSON.stringify('https://webservices.securetrading.net:8443')
-    })
+    }),
   ],
   resolve: {
     alias: {
