@@ -1,10 +1,7 @@
 import { BehaviorSubject, from, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, first, switchMap, tap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
-import { IVisaCheckoutStatusDataCancel } from '../../../application/core/integrations/visa-checkout/visa-checkout-status-data/IVisaCheckoutStatusDataCancel';
-import { IVisaCheckoutStatusDataError } from '../../../application/core/integrations/visa-checkout/visa-checkout-status-data/IVisaCheckoutStatusDataError';
-import { IVisaCheckoutStatusDataPrePayment } from '../../../application/core/integrations/visa-checkout/visa-checkout-status-data/IVisaCheckoutStatusDataPrePayment';
 import { IVisaCheckoutStatusDataSuccess } from '../../../application/core/integrations/visa-checkout/visa-checkout-status-data/IVisaCheckoutStatusDataSuccess';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
@@ -60,13 +57,13 @@ export class VisaCheckoutClient {
                 return this.onSuccess$(config, status.data as IVisaCheckoutStatusDataSuccess);
 
               case VisaCheckoutClientStatus.CANCEL:
-                return this.onCancel$(status.data as IVisaCheckoutStatusDataCancel);
+                return this.onCancel$();
 
               case VisaCheckoutClientStatus.ERROR:
-                return this.onError$(status.data as IVisaCheckoutStatusDataError);
+                return this.onError$();
 
               case VisaCheckoutClientStatus.PRE_PAYMENT:
-                return this.onPrePayment$(status.data as IVisaCheckoutStatusDataPrePayment);
+                return this.onPrePayment$();
 
               default:
                 return throwError('Unknown Visa Checkout status');
@@ -92,7 +89,6 @@ export class VisaCheckoutClient {
   }
 
   private onSuccess$(config: IConfig, successData: IVisaCheckoutStatusDataSuccess): Observable<any> {
-    console.log('ZZZZZZZZZZZZZ', 1);
     const payment: Payment = new Payment();
     const requestTypeDescriptions = this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions;
     const walletData: IWallet = {
@@ -102,14 +98,13 @@ export class VisaCheckoutClient {
     const merchantData: IMerchantData = DomMethods.parseForm(config.formId) ? DomMethods.parseForm(config.formId) : {};
 
     return from(payment.processPayment(requestTypeDescriptions, walletData, merchantData)).pipe(
+      first(),
       tap(() => {
-        console.log('ZZZZZZZZZZZZZ', 2);
         this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
         this.notificationService.success(PAYMENT_SUCCESS);
         GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment success');
       }),
       catchError(() => {
-        console.log('ZZZZZZZZZZZZZ', 3);
         this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this.notificationService.error(PAYMENT_ERROR);
 
@@ -118,7 +113,7 @@ export class VisaCheckoutClient {
     );
   }
 
-  private onCancel$(cancelData: IVisaCheckoutStatusDataCancel): Observable<VisaCheckoutClientStatus.CANCEL> {
+  private onCancel$(): Observable<VisaCheckoutClientStatus.CANCEL> {
     this.notificationService.cancel(PAYMENT_CANCELLED);
     this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK }, true);
     this.messageBus.publish(
@@ -136,7 +131,7 @@ export class VisaCheckoutClient {
     return of(VisaCheckoutClientStatus.CANCEL);
   }
 
-  private onError$(errorData: IVisaCheckoutStatusDataError): Observable<VisaCheckoutClientStatus.ERROR> {
+  private onError$(): Observable<VisaCheckoutClientStatus.ERROR> {
     this.notificationService.error(PAYMENT_ERROR);
     this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
     GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
@@ -144,9 +139,7 @@ export class VisaCheckoutClient {
     return of(VisaCheckoutClientStatus.ERROR);
   }
 
-  private onPrePayment$(
-    prePaymentData: IVisaCheckoutStatusDataPrePayment
-  ): Observable<VisaCheckoutClientStatus.PRE_PAYMENT> {
+  private onPrePayment$(): Observable<VisaCheckoutClientStatus.PRE_PAYMENT> {
     return of(VisaCheckoutClientStatus.PRE_PAYMENT);
   }
 }

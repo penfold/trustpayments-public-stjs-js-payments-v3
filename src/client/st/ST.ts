@@ -7,7 +7,6 @@ import { CommonFrames } from '../common-frames/CommonFrames.class';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
 import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
 import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
-import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
 import { IApplePayConfig } from '../../application/core/models/IApplePayConfig';
@@ -16,7 +15,6 @@ import { IConfig } from '../../shared/model/config/IConfig';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { Translator } from '../../application/core/shared/translator/Translator';
-import { environment } from '../../environments/environment';
 import { Service, Container } from 'typedi';
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
 import { ISubmitEvent } from '../../application/core/models/ISubmitEvent';
@@ -176,12 +174,11 @@ export class ST {
     return new ApplePay(this._configProvider, this._communicator);
   }
 
-  public VisaCheckout(config: IVisaCheckoutConfig | undefined): void {
-    if (config) {
-      this._config = this._configService.updateFragment('visaCheckout', config);
+  public VisaCheckout(visaCheckoutConfig: IVisaCheckoutConfig | undefined): void {
+    if (visaCheckoutConfig) {
+      this._config = this._configService.updateFragment('visaCheckout', visaCheckoutConfig);
+      this._visaCheckout.init();
     }
-
-    this._visaCheckout.init();
   }
 
   public Cybertonica(): Promise<string> {
