@@ -24,7 +24,6 @@ export class ConfigService implements ConfigProvider {
 
   setup(configObj: IConfig): IConfig {
     const { config, configFromJwt } = this.getConfigurationFromConfigOrJwt(configObj);
-
     this.configFromJwt = configFromJwt;
 
     return this.updateConfig(config);
@@ -91,8 +90,21 @@ export class ConfigService implements ConfigProvider {
   }
 
   private getConfigurationFromConfigOrJwt(config: IConfig): { config: IConfig; configFromJwt: boolean } {
-    const { payload } = this.jwtDecoder.decode(config.jwt);
+    if (!config) {
+      return {
+        configFromJwt: false,
+        config: { jwt: '' }
+      };
+    }
 
+    if (!config.jwt) {
+      return {
+        configFromJwt: false,
+        config: { ...config }
+      };
+    }
+
+    const { payload } = this.jwtDecoder.decode(config.jwt);
     if (!payload.config) {
       return {
         configFromJwt: false,
