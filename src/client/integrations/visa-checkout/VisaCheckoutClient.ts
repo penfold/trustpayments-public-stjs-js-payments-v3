@@ -14,7 +14,6 @@ import { IMerchantData } from '../../../application/core/models/IMerchantData';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { IWallet } from '../../../application/core/models/IWallet';
-import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
 import { Payment } from '../../../application/core/shared/payment/Payment';
 import { IConfig } from '../../../shared/model/config/IConfig';
@@ -54,7 +53,7 @@ export class VisaCheckoutClient {
           switchMap((status: IVisaCheckoutClientStatus) => {
             switch (status.status) {
               case VisaCheckoutClientStatus.SUCCESS:
-                return this.onSuccess$(config, status.data as IVisaCheckoutStatusDataSuccess);
+                return this.onSuccess$(config, status.data as IVisaCheckoutStatusDataSuccess, status.merchantData);
 
               case VisaCheckoutClientStatus.CANCEL:
                 return this.onCancel$();
@@ -88,23 +87,34 @@ export class VisaCheckoutClient {
       });
   }
 
-  private onSuccess$(config: IConfig, successData: IVisaCheckoutStatusDataSuccess): Observable<any> {
+  private onSuccess$(
+    config: IConfig,
+    successData: IVisaCheckoutStatusDataSuccess,
+    merchantData: IMerchantData
+  ): Observable<any> {
     const payment: Payment = new Payment();
     const requestTypeDescriptions = this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions;
     const walletData: IWallet = {
       walletsource: 'VISACHECKOUT',
       wallettoken: JSON.stringify(successData)
     };
-    const merchantData: IMerchantData = DomMethods.parseForm(config.formId) ? DomMethods.parseForm(config.formId) : {};
+
+    console.log('WWWWWWWWWWWWWW');
+    console.log(config);
+    console.log(requestTypeDescriptions);
+    console.log(walletData);
+    console.log(merchantData);
 
     return from(payment.processPayment(requestTypeDescriptions, walletData, merchantData)).pipe(
       first(),
       tap(() => {
+        console.log('YOOOOOOOOOOOOOOOOO SUCCESS');
         this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
         this.notificationService.success(PAYMENT_SUCCESS);
         GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment success');
       }),
       catchError(() => {
+        console.log('YOOOOOOOOOOOOOOOOO ERROR');
         this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this.notificationService.error(PAYMENT_ERROR);
 

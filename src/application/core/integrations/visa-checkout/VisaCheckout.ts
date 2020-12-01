@@ -6,6 +6,7 @@ import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-c
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { IMerchantData } from '../../models/IMerchantData';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
@@ -46,7 +47,7 @@ export class VisaCheckout {
           switchMap((visaCheckoutUpdatedConfig: IVisaCheckoutUpdateConfig) => {
             return new Observable<IVisaCheckoutClientStatus>((observer: Subscriber<IVisaCheckoutClientStatus>) => {
               V.init(visaCheckoutUpdatedConfig.visaInitConfig);
-              this.onSuccess(observer);
+              this.onSuccess(observer, event.data);
               this.onCancel(observer);
               this.onError(observer);
               this.onPrePayment(observer);
@@ -56,11 +57,14 @@ export class VisaCheckout {
       });
   }
 
-  private onSuccess(observer: Subscriber<IVisaCheckoutClientStatus>): void {
+  private onSuccess(observer: Subscriber<IVisaCheckoutClientStatus>, config: IConfig): void {
+    const merchantData: IMerchantData = DomMethods.parseForm(config.formId) ? DomMethods.parseForm(config.formId) : {};
+
     V.on(VisaCheckoutResponseType.success, (successData: IVisaCheckoutStatusDataSuccess) => {
       observer.next({
         status: VisaCheckoutClientStatus.SUCCESS,
-        data: successData
+        data: successData,
+        merchantData
       });
     });
   }
