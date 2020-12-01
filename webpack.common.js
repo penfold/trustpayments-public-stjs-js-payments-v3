@@ -117,7 +117,6 @@ module.exports = {
       context: path.join(__dirname, 'src')
     }),
     new FriendlyErrorsWebpackPlugin(),
-    new webpack.SourceMapDevToolPlugin({})
   ],
   module: {
     rules: [
