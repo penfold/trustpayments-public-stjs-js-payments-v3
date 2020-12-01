@@ -1,3 +1,4 @@
+import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
 import { StCodec } from '../../core/services/st-codec/StCodec.class';
 import { FormFieldsDetails } from '../../core/models/constants/FormFieldsDetails';
 import { FormFieldsValidity } from '../../core/models/constants/FormFieldsValidity';
@@ -88,7 +89,8 @@ export class ControlFrame {
     private _configService: ConfigService,
     private _messageBus: MessageBus,
     private _frame: Frame,
-    private _jwtDecoder: JwtDecoder
+    private _jwtDecoder: JwtDecoder,
+    private _visaCheckoutClient: VisaCheckoutClient
   ) {
     this._communicator
       .whenReceive(MessageBus.EVENTS_PUBLIC.INIT_CONTROL_FRAME)
@@ -130,7 +132,6 @@ export class ControlFrame {
   }
 
   protected init(config: IConfig): void {
-    const styler: Styler = new Styler(this._frame.getAllowedStyles(), this._frame.parseUrl().styles);
     this._setInstances();
     this._setFormFieldsValidities();
     this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_CARD_NUMBER, this._formFields.cardNumber);
@@ -161,6 +162,8 @@ export class ControlFrame {
         this._payment.setCardinalCommerceCacheToken(tokens.cacheToken);
       }
     );
+
+    this._initVisaCheckout();
   }
 
   private _formFieldChangeEvent(event: string, field: IFormFieldState): void {
@@ -274,7 +277,7 @@ export class ControlFrame {
         this._notification.success(PAYMENT_SUCCESS);
         this._validation.blockForm(FormState.COMPLETE);
       })
-      .catch((error: any) => {
+      .catch(() => {
         this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this._notification.error(PAYMENT_ERROR);
         this._validation.blockForm(FormState.AVAILABLE);
@@ -421,5 +424,9 @@ export class ControlFrame {
         );
       }
     });
+  }
+
+  private _initVisaCheckout(): void {
+    this._visaCheckoutClient.init$().subscribe();
   }
 }

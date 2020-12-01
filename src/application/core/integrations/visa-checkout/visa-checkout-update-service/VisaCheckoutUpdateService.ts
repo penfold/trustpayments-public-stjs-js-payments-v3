@@ -4,6 +4,7 @@ import { VisaCheckoutButtonProps } from '../visa-checkout-button-service/VisaChe
 import { IVisaCheckoutConfig } from '../IVisaCheckoutConfig';
 import { IVisaCheckoutInitConfig } from '../IVisaCheckoutInitConfig';
 import { IStJwtPayload } from '../../../models/IStJwtPayload';
+import { IVisaCheckoutUpdateConfig } from './IVisaCheckoutUpdateConfig';
 
 @Service()
 export class VisaCheckoutUpdateService {
@@ -27,11 +28,11 @@ export class VisaCheckoutUpdateService {
     visaCheckout: IVisaCheckoutConfig,
     stJwt: IStJwtPayload,
     livestatus: 0 | 1
-  ): { buttonUrl: string; sdkUrl: string; visaInit: IVisaCheckoutInitConfig } {
+  ): IVisaCheckoutUpdateConfig {
     return {
       buttonUrl: livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_BUTTON_URL : VisaCheckoutButtonProps.src,
       sdkUrl: livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_SDK : environment.VISA_CHECKOUT_URLS.TEST_SDK,
-      visaInit: {
+      visaInitConfig: {
         apikey: visaCheckout.merchantId,
         encryptionKey: visaCheckout.encryptionKey,
         paymentRequest: {
