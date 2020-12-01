@@ -24,14 +24,14 @@ card-payments-headless-component-tests:
     FEATURE_FILES_NAMES_CONTAINS: 'mock_'
   parallel: 22
 
-.visa-checkout-headless-component-tests:
+visa-checkout-headless-component-tests:
   extends:
     - .image-test
     - .fast-tests
     - .services-test
     - .sequentially-component-tests
   variables:
-    FEATURE_FILE_NAME: 'visa_checkout_tests.feature'
+    FEATURE_FILE_NAME: 'visa_checkout.feature'
 
 .services-dev:
   services:
