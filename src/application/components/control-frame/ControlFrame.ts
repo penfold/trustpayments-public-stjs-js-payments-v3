@@ -36,7 +36,6 @@ import { UPDATE_CONFIG } from '../../core/store/reducers/config/ConfigActions';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
-import { Styler } from '../../core/shared/styler/Styler';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
@@ -428,5 +427,6 @@ export class ControlFrame {
 
   private _initVisaCheckout(): void {
     this._visaCheckoutClient.init$().subscribe();
+    this._visaCheckoutClient.watchConfigAndJwtUpdates();
   }
 }

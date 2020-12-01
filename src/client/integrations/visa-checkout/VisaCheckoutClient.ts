@@ -1,5 +1,5 @@
-import { from, Observable, of, throwError } from 'rxjs';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, of, throwError } from 'rxjs';
+import { catchError, filter, switchMap, tap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { IVisaCheckoutStatusDataCancel } from '../../../application/core/integrations/visa-checkout/visa-checkout-status-data/IVisaCheckoutStatusDataCancel';
@@ -14,6 +14,8 @@ import {
   PAYMENT_SUCCESS
 } from '../../../application/core/models/constants/Translations';
 import { IMerchantData } from '../../../application/core/models/IMerchantData';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { IWallet } from '../../../application/core/models/IWallet';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
@@ -22,13 +24,14 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { NotificationService } from '../../notification/NotificationService';
 import { IVisaCheckoutClientStatus } from './IVisaCheckoutClientStatus';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 
 @Service()
 export class VisaCheckoutClient {
-  private readonly config$: Observable<IConfig>;
+  private config$: BehaviorSubject<IConfig> = new BehaviorSubject<IConfig>(null);
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
@@ -36,12 +39,11 @@ export class VisaCheckoutClient {
     private configProvider: ConfigProvider,
     private jwtDecoder: JwtDecoder,
     private notificationService: NotificationService
-  ) {
-    this.config$ = this.configProvider.getConfig$();
-  }
+  ) {}
 
   init$(): Observable<VisaCheckoutClientStatus> {
     return this.config$.pipe(
+      filter((config: IConfig) => config !== null),
       switchMap((config: IConfig) => {
         return from(
           this.interFrameCommunicator.query(
@@ -75,7 +77,22 @@ export class VisaCheckoutClient {
     );
   }
 
+  public watchConfigAndJwtUpdates(): void {
+    this.configProvider.getConfig$().subscribe(v => {
+      this.config$.next(v);
+    });
+    this.messageBus
+      .pipe(ofType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT))
+      .subscribe((event: IMessageBusEvent<IUpdateJwt>) => {
+        this.config$.next({
+          ...this.config$.value,
+          jwt: event.data.newJwt
+        });
+      });
+  }
+
   private onSuccess$(config: IConfig, successData: IVisaCheckoutStatusDataSuccess): Observable<any> {
+    console.log('ZZZZZZZZZZZZZ', 1);
     const payment: Payment = new Payment();
     const requestTypeDescriptions = this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions;
     const walletData: IWallet = {
@@ -86,11 +103,13 @@ export class VisaCheckoutClient {
 
     return from(payment.processPayment(requestTypeDescriptions, walletData, merchantData)).pipe(
       tap(() => {
+        console.log('ZZZZZZZZZZZZZ', 2);
         this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
         this.notificationService.success(PAYMENT_SUCCESS);
         GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment success');
       }),
       catchError(() => {
+        console.log('ZZZZZZZZZZZZZ', 3);
         this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this.notificationService.error(PAYMENT_ERROR);
 
