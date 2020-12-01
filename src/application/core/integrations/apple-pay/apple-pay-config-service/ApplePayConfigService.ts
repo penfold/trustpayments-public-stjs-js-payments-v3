@@ -5,9 +5,14 @@ import { IApplePayValidateMerchantRequest } from '../IApplePayValidateMerchantRe
 import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { IApplePay } from '../IApplePay';
 import { RequestType } from '../../../../../shared/types/RequestType';
+import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
+import jwt_decode from 'jwt-decode';
+import { IDecodedJwt } from '../../../models/IDecodedJwt';
 
 @Service()
 export class ApplePayConfigService {
+  constructor(private _applePayNetworkService: ApplePayNetworksService) {}
+
   updateCurrencyCode(paymentRequest: IApplePayPaymentRequest, currencyCode: string): IApplePayPaymentRequest {
     return {
       ...paymentRequest,
@@ -67,5 +72,22 @@ export class ApplePayConfigService {
       formId: config.formId,
       jwt: config.jwt
     };
+  }
+
+  updatePaymentRequest(
+    applePay: IApplePay,
+    jwt: string,
+    currencyiso3a: string,
+    mainamount: string,
+    applePayVersion: number
+  ): IApplePayPaymentRequest {
+    let paymentRequest: IApplePayPaymentRequest = applePay.paymentRequest;
+    paymentRequest.supportedNetworks = this._applePayNetworkService.setSupportedNetworks(
+      applePayVersion,
+      paymentRequest.supportedNetworks
+    );
+    paymentRequest = this.updateAmount(paymentRequest, mainamount);
+    paymentRequest = this.updateCurrencyCode(paymentRequest, currencyiso3a);
+    return this.updateRequestTypes(paymentRequest, jwt_decode<IDecodedJwt>(jwt).payload.requesttypedescriptions);
   }
 }

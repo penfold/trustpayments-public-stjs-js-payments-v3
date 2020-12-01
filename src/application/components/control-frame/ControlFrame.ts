@@ -40,6 +40,7 @@ import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
 import { IThreeDQueryResponse } from '../../core/models/IThreeDQueryResponse';
+import { ApplePayClient } from '../../../client/integrations/apple-pay/ApplePayClient';
 
 @Service()
 export class ControlFrame {
@@ -88,7 +89,8 @@ export class ControlFrame {
     private _configService: ConfigService,
     private _messageBus: MessageBus,
     private _frame: Frame,
-    private _jwtDecoder: JwtDecoder
+    private _jwtDecoder: JwtDecoder,
+    private _applePayClient: ApplePayClient
   ) {
     this._communicator
       .whenReceive(MessageBus.EVENTS_PUBLIC.INIT_CONTROL_FRAME)
@@ -161,6 +163,7 @@ export class ControlFrame {
         this._payment.setCardinalCommerceCacheToken(tokens.cacheToken);
       }
     );
+    this._initApplePay();
   }
 
   private _formFieldChangeEvent(event: string, field: IFormFieldState): void {
@@ -417,5 +420,9 @@ export class ControlFrame {
         );
       }
     });
+  }
+
+  private _initApplePay(): void {
+    this._applePayClient.init$().subscribe();
   }
 }
