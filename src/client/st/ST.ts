@@ -7,17 +7,14 @@ import { CommonFrames } from '../common-frames/CommonFrames.class';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
 import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
 import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
-import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
-import { VisaCheckoutMock } from '../../application/core/integrations/visa-checkout/VisaCheckoutMock';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
 import { IVisaConfig } from '../../application/core/integrations/visa-checkout/IVisaConfig';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { Translator } from '../../application/core/shared/translator/Translator';
-import { environment } from '../../environments/environment';
 import { Service, Container } from 'typedi';
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
 import { ISubmitEvent } from '../../application/core/models/ISubmitEvent';
@@ -44,6 +41,9 @@ import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInf
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { IApplePay } from '../../application/core/integrations/apple-pay/IApplePay';
+import { ApplePayNetworksService } from '../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
+import { ApplePayButtonService } from '../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
+import { NotificationService } from '../notification/NotificationService';
 
 @Service()
 export class ST {
@@ -104,9 +104,12 @@ export class ST {
     private _storage: BrowserLocalStorage,
     private _messageBus: MessageBus,
     private _notification: Notification,
+    private _notificationService: NotificationService,
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
-    private _browserDetector: BrowserDetector
+    private _browserDetector: BrowserDetector,
+    private _applePayNetworkService: ApplePayNetworksService,
+    private _applePayButtonService: ApplePayButtonService
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -167,31 +170,29 @@ export class ST {
   }
 
   public ApplePay(config: IApplePay | undefined): ApplePay {
-    const { applepay } = this.Environment();
-
     if (config) {
       this._config = this._configService.updateFragment('applePay', config);
     }
 
-    const applePay: ApplePay = new applepay(
+    const applePay: ApplePay = new ApplePay(
       this._communicator,
       this._configProvider,
       this._storage,
       this._messageBus,
-      this._notification
+      this._notificationService,
+      this._applePayButtonService,
+      this._applePayNetworkService
     );
     applePay.init();
     return applePay;
   }
 
   public VisaCheckout(config: IVisaConfig | undefined): VisaCheckout {
-    const { visa } = this.Environment();
-
     if (config) {
       this._config = this._configService.updateFragment('visaCheckout', config);
     }
 
-    return new visa(this._configProvider, this._communicator);
+    return new VisaCheckout(this._configProvider, this._communicator);
   }
 
   public Cybertonica(): Promise<string> {
@@ -291,13 +292,6 @@ export class ST {
       this._iframeFactory,
       this._frameService
     );
-  }
-
-  private Environment(): { applepay: any; visa: any } {
-    return {
-      applepay: environment.testEnvironment ? ApplePayMock : ApplePay,
-      visa: environment.testEnvironment ? VisaCheckoutMock : VisaCheckout
-    };
   }
 
   private Storage(): void {

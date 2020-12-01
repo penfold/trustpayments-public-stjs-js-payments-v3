@@ -60,7 +60,6 @@ export class ApplePay {
     private _localStorage: BrowserLocalStorage,
     private _messageBus: MessageBus,
     private _notification: NotificationService,
-    private _stTransport: StTransport,
     private _applePayButtonService: ApplePayButtonService,
     private _applePayNetworkService: ApplePayNetworksService
   ) {
