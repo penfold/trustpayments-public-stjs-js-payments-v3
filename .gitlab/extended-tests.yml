@@ -44,7 +44,7 @@
     POETRY_TAGS: apple_test_part2
   resource_group: extended_tests_review_2
 
-.win10-Chrome-latest-visual-tests:
+win10-Chrome-latest-visual-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
@@ -56,7 +56,7 @@
     POETRY_TAGS: visual_regression
   resource_group: extended_tests_review_1
 
-.win10-Chrome-latest-visual-tests-styling:
+win10-Chrome-latest-visual-tests-styling:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
