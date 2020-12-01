@@ -44,6 +44,7 @@ import { IApplePay } from '../../application/core/integrations/apple-pay/IAppleP
 import { ApplePayNetworksService } from '../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePayButtonService } from '../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { NotificationService } from '../notification/NotificationService';
+import { ApplePayConfigService } from '../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
 
 @Service()
 export class ST {
@@ -109,7 +110,8 @@ export class ST {
     private _frameService: Frame,
     private _browserDetector: BrowserDetector,
     private _applePayNetworkService: ApplePayNetworksService,
-    private _applePayButtonService: ApplePayButtonService
+    private _applePayButtonService: ApplePayButtonService,
+    private _applePayConfigService: ApplePayConfigService
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -181,7 +183,8 @@ export class ST {
       this._messageBus,
       this._notificationService,
       this._applePayButtonService,
-      this._applePayNetworkService
+      this._applePayNetworkService,
+      this._applePayConfigService
     );
     applePay.init();
     return applePay;
