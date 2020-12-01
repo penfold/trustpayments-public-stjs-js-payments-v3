@@ -23,7 +23,7 @@ export interface IConfig {
   fieldsToSubmit?: string[];
   formId?: string;
   init?: IBypassInit;
-  jwt: string;
+  jwt?: string;
   livestatus?: 0 | 1;
   origin?: string;
   panIcon?: boolean;
