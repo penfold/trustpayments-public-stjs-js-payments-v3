@@ -62,6 +62,7 @@ config = {
     'config_apple_acheck_auth': 'configAppleAcheckAuth.json',
     'config_apple_riskdec_auth': 'configAppleRiskdecAuth.json',
     'config_apple_riskdec_acheck_auth': 'configAppleRiskdecAcheckAuth.json',
+    'config_visa_base': 'config_visa_base.json',
     'config_visa_auth': 'configVisaAuth.json',
     'config_visa_acheck_auth': 'configVisaAcheckAuth.json',
     'config_visa_acheck': 'configVisaAcheck.json',
