@@ -392,10 +392,6 @@ export class ControlFrame {
 
     if (cybertonicaApiKey) {
       this._cybertonica.init(cybertonicaApiKey);
-
-      this._communicator
-        .whenReceive(MessageBus.EVENTS_PUBLIC.GET_CYBERTONICA_TID)
-        .thenRespond(() => from(this._cybertonica.getTransactionId()));
     }
   }
 
