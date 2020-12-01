@@ -14,7 +14,7 @@ export interface IApplePayPaymentRequest {
   supportedCountries?: any;
   supportedNetworks: IApplePaySupportedNetworks[];
   lineItems?: IApplePayLineItem[];
-  requestTypes: IApplePayRequestTypes[];
+  requestTypes?: IApplePayRequestTypes[];
   requiredBillingContactFields?: string[];
   requiredShippingContactFields?: string[];
   total: IApplePayLineItem;
