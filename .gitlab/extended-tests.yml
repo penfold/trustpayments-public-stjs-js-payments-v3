@@ -97,7 +97,7 @@ OSXCatalina-Safari-13.1-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_2
 
-SamsungGalaxyS10Plus-9.0-visual-tests:
+.SamsungGalaxyS10Plus-9.0-visual-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-release
@@ -137,7 +137,7 @@ OSXMojave-Safari-12.1-visual-tests:
     POETRY_TAGS: visual_regression_safari
   resource_group: extended_tests_release_4
 
-SamsungGalaxyS10Plus-9.0-visual-tests-styling:
+.SamsungGalaxyS10Plus-9.0-visual-tests-styling:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-release
