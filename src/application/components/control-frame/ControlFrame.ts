@@ -424,5 +424,6 @@ export class ControlFrame {
 
   private _initApplePay(): void {
     this._applePayClient.init$().subscribe();
+    this._applePayClient.watchConfigAndJwtUpdates();
   }
 }
