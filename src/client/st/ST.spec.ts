@@ -1,8 +1,6 @@
 import 'reflect-metadata';
 import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
 import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
-import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
-import { environment } from '../../environments/environment';
 import ST from './ST';
 import { Container } from 'typedi';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
@@ -16,13 +14,12 @@ jest.mock('./../../client/card-frames/CardFrames.class');
 jest.mock('./../../application/core/integrations/visa-checkout/VisaCheckout');
 jest.mock('./../../application/core/integrations/visa-checkout/visa-checkout-mock-class/VisaCheckoutMockClass');
 jest.mock('./../../application/core/integrations/apple-pay/ApplePay');
-jest.mock('./../../application/core/integrations/apple-pay/ApplePayMock');
 jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytics');
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 
 describe('ST', () => {
-  const { config, cacheConfig, instance } = stFixture();
+  const { cacheConfig, instance } = stFixture();
 
   describe('constructor()', () => {
     let stObject: any;
@@ -37,13 +34,7 @@ describe('ST', () => {
   describe('ST.AppapplePayConfiglePay()', () => {
     const { applePayConfig } = stFixture();
 
-    it('should return ApplePayMock object when environment.testEnvironment equals true', () => {
-      environment.testEnvironment = true;
-      expect(instance.ApplePay(applePayConfig)).toBeInstanceOf(ApplePayMock);
-    });
-
-    it('should return ApplePay object when environment.testEnvironment equals false', () => {
-      environment.testEnvironment = false;
+    it('should return ApplePay object', () => {
       expect(instance.ApplePay(applePayConfig)).toBeInstanceOf(ApplePay);
     });
   });

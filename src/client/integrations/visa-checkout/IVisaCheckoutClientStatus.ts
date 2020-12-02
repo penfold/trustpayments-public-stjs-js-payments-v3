@@ -5,5 +5,5 @@ import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 export interface IVisaCheckoutClientStatus {
   status: VisaCheckoutClientStatus;
   data: IVisaCheckoutStatusData;
-  merchantData?: IMerchantData; // for success callback only
+  merchantData?: IMerchantData; // For success callback only
 }

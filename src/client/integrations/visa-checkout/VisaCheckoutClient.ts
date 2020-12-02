@@ -1,5 +1,5 @@
-import { BehaviorSubject, from, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, first, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { catchError, filter, switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { IVisaCheckoutStatusDataSuccess } from '../../../application/core/integrations/visa-checkout/visa-checkout-status-data/IVisaCheckoutStatusDataSuccess';
@@ -22,11 +22,12 @@ import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { NotificationService } from '../../notification/NotificationService';
+import { IVisaCheckoutClient } from './IVisaCheckoutClient';
 import { IVisaCheckoutClientStatus } from './IVisaCheckoutClientStatus';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 
 @Service()
-export class VisaCheckoutClient {
+export class VisaCheckoutClient implements IVisaCheckoutClient {
   private config$: BehaviorSubject<IConfig> = new BehaviorSubject<IConfig>(null);
 
   constructor(
@@ -34,7 +35,8 @@ export class VisaCheckoutClient {
     private messageBus: MessageBus,
     private configProvider: ConfigProvider,
     private jwtDecoder: JwtDecoder,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private payment: Payment
   ) {}
 
   init$(): Observable<VisaCheckoutClientStatus> {
@@ -65,7 +67,7 @@ export class VisaCheckoutClient {
                 return this.onPrePayment$();
 
               default:
-                return throwError('Unknown Visa Checkout status');
+                return of('Unknown Visa Checkout status' as VisaCheckoutClientStatus);
             }
           })
         );
@@ -74,61 +76,56 @@ export class VisaCheckoutClient {
   }
 
   public watchConfigAndJwtUpdates(): void {
-    this.configProvider.getConfig$().subscribe(v => {
-      this.config$.next(v);
+    this.configProvider.getConfig$().subscribe((config: IConfig) => {
+      this.config$.next(config);
     });
-    this.messageBus
-      .pipe(ofType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT))
-      .subscribe((event: IMessageBusEvent<IUpdateJwt>) => {
-        this.config$.next({
-          ...this.config$.value,
-          jwt: event.data.newJwt
-        });
+    this.messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT)).subscribe((event: IMessageBusEvent<IUpdateJwt>) => {
+      this.config$.next({
+        ...this.config$.value,
+        jwt: event.data.newJwt
       });
+    });
   }
 
   private onSuccess$(
     config: IConfig,
     successData: IVisaCheckoutStatusDataSuccess,
     merchantData: IMerchantData
-  ): Observable<any> {
-    const payment: Payment = new Payment();
+  ): Observable<VisaCheckoutClientStatus> {
     const requestTypeDescriptions = this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions;
     const walletData: IWallet = {
       walletsource: 'VISACHECKOUT',
       wallettoken: JSON.stringify(successData)
     };
 
-    console.log('WWWWWWWWWWWWWW');
-    console.log(config);
-    console.log(requestTypeDescriptions);
-    console.log(walletData);
-    console.log(merchantData);
-
-    return from(payment.processPayment(requestTypeDescriptions, walletData, merchantData)).pipe(
-      first(),
-      tap(() => {
-        console.log('YOOOOOOOOOOOOOOOOO SUCCESS');
-        this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
+    return from(this.payment.processPayment(requestTypeDescriptions, walletData, merchantData)).pipe(
+      switchMap(() => {
         this.notificationService.success(PAYMENT_SUCCESS);
+        this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
         GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment success');
+
+        return of(VisaCheckoutClientStatus.SUCCESS);
       }),
       catchError(() => {
-        console.log('YOOOOOOOOOOOOOOOOO ERROR');
-        this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this.notificationService.error(PAYMENT_ERROR);
+        this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
 
-        return of(PAYMENT_ERROR);
+        return of(VisaCheckoutClientStatus.SUCCESS_FAILED);
       })
     );
   }
 
   private onCancel$(): Observable<VisaCheckoutClientStatus.CANCEL> {
     this.notificationService.cancel(PAYMENT_CANCELLED);
-    this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK }, true);
     this.messageBus.publish(
       {
-        type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE,
+        type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK
+      },
+      true
+    );
+    this.messageBus.publish(
+      {
+        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {
           errorcode: 'cancelled',
           errormessage: PAYMENT_CANCELLED
@@ -143,7 +140,12 @@ export class VisaCheckoutClient {
 
   private onError$(): Observable<VisaCheckoutClientStatus.ERROR> {
     this.notificationService.error(PAYMENT_ERROR);
-    this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+    this.messageBus.publish(
+      {
+        type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK
+      },
+      true
+    );
     GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
 
     return of(VisaCheckoutClientStatus.ERROR);

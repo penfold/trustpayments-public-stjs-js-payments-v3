@@ -4,14 +4,14 @@ import { Service } from 'typedi';
 import { IVisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/IVisaCheckoutClientStatus';
 import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { IConfig } from '../../../../shared/model/config/IConfig';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IMerchantData } from '../../models/IMerchantData';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
+import { IScriptParams } from '../../models/IScriptParams';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
-import { MessageBus } from '../../shared/message-bus/MessageBus';
-import { StJwt } from '../../shared/stjwt/StJwt';
 import { IVisaCheckoutInitConfig } from './IVisaCheckoutInitConfig';
 import { VisaCheckoutButtonService } from './visa-checkout-button-service/VisaCheckoutButtonService';
 import { IVisaCheckoutStatusData } from './visa-checkout-status-data/IVisaCheckoutStatusData';
@@ -22,6 +22,7 @@ import { IVisaCheckoutStatusDataSuccess } from './visa-checkout-status-data/IVis
 import { IVisaCheckoutUpdateConfig } from './visa-checkout-update-service/IVisaCheckoutUpdateConfig';
 import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
+import { VisaCheckoutScriptInjector } from './VisaCheckoutScriptInjector';
 
 declare const V: {
   init: (visaInitConfig: IVisaCheckoutInitConfig) => {};
@@ -34,9 +35,10 @@ export class VisaCheckout {
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
-    private messageBus: MessageBus,
     private visaCheckoutButtonService: VisaCheckoutButtonService,
-    private visaCheckoutUpdateService: VisaCheckoutUpdateService
+    private visaCheckoutUpdateService: VisaCheckoutUpdateService,
+    private jwtDecoder: JwtDecoder,
+    private visaCheckoutScriptInjector: VisaCheckoutScriptInjector
   ) {}
 
   init(): void {
@@ -102,33 +104,35 @@ export class VisaCheckout {
     if (this.isSdkLoaded) {
       return of(visaCheckoutUpdatedConfig);
     } else {
-      return from(
-        DomMethods.insertScript(config.visaCheckout.placement, {
+      console.log('BEFORE INJECTING');
+      return this.visaCheckoutScriptInjector
+        .injectScript(config.visaCheckout.placement, {
           src: visaCheckoutUpdatedConfig.sdkUrl,
           id: 'visaCheckout'
         })
-      ).pipe(
-        tap(() => {
-          this.visaCheckoutButtonService.customize(
-            config.visaCheckout.buttonSettings,
-            visaCheckoutUpdatedConfig.buttonUrl
-          );
-          this.visaCheckoutButtonService.mount(
-            config.visaCheckout.placement,
-            config.visaCheckout.buttonSettings,
-            visaCheckoutUpdatedConfig.buttonUrl
-          );
-          this.isSdkLoaded = true;
-        }),
-        switchMap(() => {
-          return of(visaCheckoutUpdatedConfig);
-        })
-      );
+        .pipe(
+          tap(() => {
+            console.log('AFTER INJECTING');
+            this.visaCheckoutButtonService.customize(
+              config.visaCheckout.buttonSettings,
+              visaCheckoutUpdatedConfig.buttonUrl
+            );
+            this.visaCheckoutButtonService.mount(
+              config.visaCheckout.placement,
+              config.visaCheckout.buttonSettings,
+              visaCheckoutUpdatedConfig.buttonUrl
+            );
+            this.isSdkLoaded = true;
+          }),
+          switchMap(() => {
+            return of(visaCheckoutUpdatedConfig);
+          })
+        );
     }
   }
 
   private getUpdatedConfig(config: IConfig): IVisaCheckoutUpdateConfig {
-    const jwtPayload: IStJwtPayload = new StJwt(config.jwt).payload;
+    const jwtPayload: IStJwtPayload = this.jwtDecoder.decode(config.jwt).payload;
 
     return this.visaCheckoutUpdateService.updateConfigObject(config.visaCheckout, jwtPayload, config.livestatus);
   }

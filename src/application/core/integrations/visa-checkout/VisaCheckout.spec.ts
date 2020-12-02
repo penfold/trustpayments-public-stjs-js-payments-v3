@@ -1,101 +1,121 @@
+import { of, Subject } from 'rxjs';
+import { first } from 'rxjs/operators';
+import { IConfig } from '../../../../shared/model/config/IConfig';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { IMessageBusEvent } from '../../models/IMessageBusEvent';
+import { IStJwtPayload } from '../../models/IStJwtPayload';
+import { DomMethods } from '../../shared/dom-methods/DomMethods';
+import { IVisaCheckoutUpdateConfig } from './visa-checkout-update-service/IVisaCheckoutUpdateConfig';
 import { VisaCheckout } from './VisaCheckout';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { anyString, mock, when, instance as mockInstance } from 'ts-mockito';
-import { EMPTY, of } from 'rxjs';
-import { MessageBus } from '../../shared/message-bus/MessageBus';
-import { NotificationService } from '../../../../client/notification/NotificationService';
+import { anyString, mock, when, instance as mockInstance, anything, capture } from 'ts-mockito';
 import { VisaCheckoutButtonService } from './visa-checkout-button-service/VisaCheckoutButtonService';
 import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
-import { environment } from '../../../../environments/environment';
-import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { VisaCheckoutScriptInjector } from './VisaCheckoutScriptInjector';
 
 describe('Visa Checkout', () => {
-  const jwt = '';
   let instance: VisaCheckout;
-  let body: HTMLElement;
-  let configProvider: ConfigProvider;
-  let communicator: InterFrameCommunicator;
-  let messageBus: MessageBus;
-  let notificationService: NotificationService;
-  let visaCheckoutButtonService: VisaCheckoutButtonService;
-  let visaCheckoutUpdateService: VisaCheckoutUpdateService;
-  let jwtDecodeMock: JwtDecoder;
+  let interFrameCommunicatorMock: InterFrameCommunicator;
+  let visaCheckoutButtonServiceMock: VisaCheckoutButtonService;
+  let visaCheckoutUpdateServiceMock: VisaCheckoutUpdateService;
+  let jwtDecoderMock: JwtDecoder;
+  let visaCheckoutScriptInjector: VisaCheckoutScriptInjector;
+
+  const configMock: IConfig = {
+    jwt: '',
+    formId: 'st-form',
+    disableNotification: false,
+    livestatus: 0,
+    datacenterurl: 'https://example.com',
+    visaCheckout: {
+      buttonSettings: {
+        size: 154,
+        color: 'neutral'
+      },
+      livestatus: 0,
+      merchantId: '',
+      paymentRequest: {
+        subtotal: '20.0'
+      },
+      placement: 'st-visa-checkout',
+      settings: {
+        displayName: 'My Test Site'
+      }
+    }
+  };
+  const messages = new Subject<IMessageBusEvent>();
 
   beforeEach(() => {
-    configProvider = mock<ConfigProvider>();
-    communicator = mock(InterFrameCommunicator);
-    messageBus = mock(MessageBus);
-    notificationService = mock(NotificationService);
-    visaCheckoutButtonService = mock(VisaCheckoutButtonService);
-    visaCheckoutUpdateService = mock(VisaCheckoutUpdateService);
-    jwtDecodeMock = mock(JwtDecoder);
+    interFrameCommunicatorMock = mock(InterFrameCommunicator);
+    visaCheckoutButtonServiceMock = mock(VisaCheckoutButtonService);
+    visaCheckoutUpdateServiceMock = mock(VisaCheckoutUpdateService);
+    jwtDecoderMock = mock(JwtDecoder);
+    visaCheckoutScriptInjector = mock(VisaCheckoutScriptInjector);
 
-    when(communicator.whenReceive(anyString())).thenReturn({
-      thenRespond: () => EMPTY
+    when(interFrameCommunicatorMock.whenReceive(anyString())).thenCall((eventType: string) => {
+      return {
+        thenRespond: (responder: any) => {
+          messages.pipe(ofType(eventType), first()).subscribe(event => responder(event));
+        }
+      };
     });
 
-    when(configProvider.getConfig$()).thenReturn(
-      of({
-        jwt,
-        formId: 'st-form',
-        disableNotification: false,
-        datacenterurl: 'https://example.com',
-        visaCheckout: {
-          buttonSettings: {
-            size: 154,
-            color: 'neutral'
-          },
-          livestatus: 0,
-          merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
+    instance = new VisaCheckout(
+      mockInstance(interFrameCommunicatorMock),
+      mockInstance(visaCheckoutButtonServiceMock),
+      mockInstance(visaCheckoutUpdateServiceMock),
+      mockInstance(jwtDecoderMock),
+      mockInstance(visaCheckoutScriptInjector)
+    );
+  });
+
+  describe('init()', () => {
+    it('invoke loadSdk$() method to inject script and mount the button', done => {
+      const visaCheckoutUpdateConfig: IVisaCheckoutUpdateConfig = {
+        buttonUrl: 'https://button-mock-url.com',
+        sdkUrl: 'https://sdk-mock-url.com',
+        visaInitConfig: {
+          apikey: '',
+          encryptionKey: '',
           paymentRequest: {
-            subtotal: '20.0'
-          },
-          placement: 'st-visa-checkout',
-          settings: {
-            displayName: 'My Test Site'
+            currencyCode: '',
+            subtotal: '',
+            total: ''
           }
         }
-      })
-    );
-    instance = new VisaCheckout(
-      mockInstance(configProvider),
-      mockInstance(communicator),
-      mockInstance(messageBus),
-      mockInstance(notificationService),
-      mockInstance(visaCheckoutButtonService),
-      mockInstance(visaCheckoutUpdateService),
-      mockInstance(jwtDecodeMock)
-    );
-    body = document.body;
-    VisaCheckoutFixture();
-  });
+      };
+      const jwtPayload: IStJwtPayload = {};
 
-  it('should make successful payment', () => {
-    const doc = document.getElementById('v-button');
-    expect(doc.getAttribute('id')).toEqual('v-button');
+      when(visaCheckoutUpdateServiceMock.updateConfigObject(anything(), anything(), anything())).thenReturn(
+        visaCheckoutUpdateConfig
+      );
+      when(jwtDecoderMock.decode(anything())).thenReturn({
+        payload: jwtPayload
+      });
+      when(visaCheckoutScriptInjector.injectScript(anything(), anything())).thenReturn(
+        of(document.createElement('script'))
+      );
+
+      instance.init();
+      messages.next({
+        type: PUBLIC_EVENTS.VISA_CHECKOUT_START,
+        data: configMock
+      });
+
+      expect(capture(visaCheckoutUpdateServiceMock.updateConfigObject).first()).toEqual([
+        configMock.visaCheckout,
+        jwtPayload,
+        configMock.livestatus
+      ]);
+      // expect(capture(visaCheckoutButtonServiceMock.customize).first()).toEqual([
+      //   configMock.visaCheckout.buttonSettings,
+      //   configMock.visaCheckout.buttonSettings,
+      //   visaCheckoutUpdateConfig.buttonUrl
+      // ]);
+
+      done();
+    });
   });
 });
-
-function VisaCheckoutFixture() {
-  const html = '<form id="st-form"><button id="v-button" /></form>';
-  document.body.innerHTML = html;
-
-  const visaButttonProps = {
-    alt: 'Visa Checkout',
-    class: 'v-button',
-    role: 'button',
-    src: environment.VISA_CHECKOUT_URLS.TEST_BUTTON_URL
-  };
-  const config = {
-    name: 'VISA',
-    merchantId: '2ig278`13b123872121h31h20e',
-    buttonSettings: { size: 154, color: 'neutral' },
-    settings: { displayName: 'My Test Site' },
-    paymentRequest: { subtotal: '20.00' }
-  };
-  return {
-    visaButttonProps,
-    config
-  };
-}
