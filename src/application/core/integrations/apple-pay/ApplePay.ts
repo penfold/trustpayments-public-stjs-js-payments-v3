@@ -1,4 +1,3 @@
-import jwt_decode from 'jwt-decode';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Payment } from '../../shared/payment/Payment';
@@ -8,10 +7,9 @@ import { BrowserLocalStorage } from '../../../../shared/services/storage/Browser
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { from, Observable } from 'rxjs';
+import { Observable, of, Subscriber } from 'rxjs';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import {
-  APPLE_PAY_NOT_LOGGED,
   MERCHANT_VALIDATION_FAILURE,
   PAYMENT_CANCELLED,
   PAYMENT_ERROR,
@@ -24,7 +22,6 @@ import { IApplePayPaymentMethod } from './IApplePayPaymentMethod';
 import { IApplePayPaymentContact } from './IApplePayPaymentContact';
 import { IApplePayShippingMethod } from './IApplePayShippingMethod';
 import { IApplePayPayment } from './IApplePayPayment';
-import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
 import { ApplePayNetworksService } from './apple-pay-networks-service/ApplePayNetworksService';
 import { IApplePayPaymentAuthorizationResult } from './IApplePayPaymentAuthorizationResult ';
@@ -34,6 +31,7 @@ import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IApplePay } from './IApplePay';
 import { switchMap, tap } from 'rxjs/operators';
 import { APPLE_PAY_BUTTON_ID } from './ApplePayButtonProperties';
+import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -55,7 +53,6 @@ export class ApplePay {
     errors: [],
     status: ''
   };
-  private readonly _config$: Observable<IConfig>;
   private _paymentCancelled: boolean = false;
 
   constructor(
@@ -69,7 +66,7 @@ export class ApplePay {
     private _applePayConfigService: ApplePayConfigService
   ) {}
 
-  private _loadConfig(config: IConfig): IConfig {
+  private _loadConfig$(config: IConfig): Observable<IConfig> {
     const { applePay, formId, jwt } = this._applePayConfigService.getConfigData(config);
     const { currencyiso3a, mainamount, locale } = this._applePayConfigService.getStJwtData(jwt);
     this._applePayVersion = this._latestSupportedApplePayVersion();
@@ -87,7 +84,7 @@ export class ApplePay {
     this._translator = new Translator(locale);
     this._payment = new Payment();
     this._formId = formId;
-    return config;
+    return of(config);
   }
 
   private _latestSupportedApplePayVersion(): number {
@@ -97,61 +94,52 @@ export class ApplePay {
     });
   }
 
-  private _hasActiveCards(config: IApplePay): void {
-    ApplePaySession.canMakePaymentsWithActiveCard(config.merchantId)
-      .then((canMakePayments: boolean) => {
-        console.error('can make payments:', canMakePayments);
-        if (canMakePayments) {
-          GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay can make payments');
-          this._applePayButtonService.insertButton(
-            APPLE_PAY_BUTTON_ID,
-            config.buttonText,
-            config.buttonStyle,
-            config.paymentRequest.countryCode
-          );
-          this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
-        } else {
-          GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay cannot make payments');
-          throw new Error('User has not an active card provisioned into Wallet');
-        }
-      })
-      .catch(() => {
-        console.error('can make payments dupa');
-        this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
-        this._notification.error(APPLE_PAY_NOT_LOGGED);
-      });
+  private _canMakePaymentsWithActiveCard(config: IApplePay): boolean {
+    return ApplePaySession.canMakePaymentsWithActiveCard(config.merchantId).then(
+      (canMakePayments: boolean) => canMakePayments
+    );
+    // if (canMakePayments) {
+    // GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay can make payments');
+    // this._applePayButtonService.insertButton(
+    //   APPLE_PAY_BUTTON_ID,
+    //   config.buttonText,
+    //   config.buttonStyle,
+    //   config.paymentRequest.countryCode
+    // );
+    // this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
+    // } else {
+    // GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay cannot make payments');
+    // throw new Error('User has not an active card provisioned into Wallet');
+    // }
+    // })
+    // .catch(() => {
+    //   console.error('can make payments dupa');
+    //   this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+    //   this._notification.error(APPLE_PAY_NOT_LOGGED);
+    // });
   }
 
   private _proceedPayment(): void {
-    console.error('proceed payemtns');
-    console.error(this._paymentCancelled);
     this._paymentCancelled = false;
-    // must be here (gesture handl.)
-    console.error(this._paymentRequest);
-    console.error(this._applePayVersion);
     this._applePaySession = new ApplePaySession(this._applePayVersion, this._paymentRequest);
-    this._onValidateMerchant();
-    this._onPaymentMethodSelected();
-    this._onShippingMethodSelected();
-    this._onShippingContactSelected();
-    this._onPaymentAuthorized();
-    this._onCancel();
-    try {
-      this._applePaySession.begin();
-    } catch (error) {
-      console.warn(error);
-    }
   }
 
-  private _onValidateMerchant() {
+  private _onValidateMerchant(observer: Subscriber<IApplePayClientStatus>) {
     this._applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
       this._validateMerchantRequest = this._applePayConfigService.updateWalletValidationUrl(
         this._validateMerchantRequest,
         event.validationURL
       );
+
+      observer.next({
+        status: 'VALIDATE_MERCHANT',
+        data: { validateMerchantRequest: this._validateMerchantRequest }
+      });
+
       return this._payment
         .walletVerify(this._validateMerchantRequest)
         .then(({ response }: any) => {
+          console.error('walletverify:', response);
           GoogleAnalytics.sendGaData('event', 'Apple Pay', 'merchant validation', 'Apple Pay merchant validated');
           return this._onValidateMerchantResponseSuccess(response);
         })
@@ -174,8 +162,12 @@ export class ApplePay {
     };
   }
 
-  private _onPaymentAuthorized() {
+  private _onPaymentAuthorized(observer: Subscriber<IApplePayClientStatus>): Promise<any> {
     this._applePaySession.onpaymentauthorized = (event: IApplePayPayment) => {
+      // observer.next({
+      //   status: 'SUCCESS',
+      //   data: {}
+      // });
       return this._payment
         .processPayment(
           this._paymentRequest.requestTypes,
@@ -206,18 +198,14 @@ export class ApplePay {
     };
   }
 
-  private _onCancel(): void {
+  private _onCancel(observer: Subscriber<IApplePayClientStatus>): void {
     this._applePaySession.oncancel = (event: any) => {
-      this._paymentCancelled = true;
-      console.error(this._notification);
-      this._notification.cancel(PAYMENT_CANCELLED);
-      this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK }, true);
-      this._messageBus.publish(
-        { type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE, data: { errorcode: event } },
-        true
-      );
       this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
-      GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment status', 'Apple Pay payment cancelled');
+      observer.next({
+        status: 'CANCEL',
+        data: { event }
+      });
+      this._paymentCancelled = true;
     };
   }
 
@@ -330,6 +318,14 @@ export class ApplePay {
     this._notification.error(errormessage);
   }
 
+  private _beginMerchantValidation() {
+    try {
+      this._applePaySession.begin();
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
   public init(): void {
     this._communicator.whenReceive(PUBLIC_EVENTS.APPLE_PAY_START).thenRespond((event: IMessageBusEvent<IConfig>) => {
       console.error(event, 'APPLE PAY CONFIG');
@@ -341,9 +337,30 @@ export class ApplePay {
       if (!ApplePaySession.canMakePayments()) {
         console.error('Your device does not support making payments with Apple Pay');
       }
-      const config: IConfig = this._loadConfig(event.data);
-      console.error(config);
-      this._hasActiveCards(config.applePay);
+
+      return this._loadConfig$(event.data).pipe(
+        switchMap((config: IConfig) => {
+          return new Observable<IApplePayClientStatus>((observer: Subscriber<IApplePayClientStatus>) => {
+            if (this._canMakePaymentsWithActiveCard(config.applePay)) {
+              GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay can make payments');
+              this._applePayButtonService.insertButton(
+                APPLE_PAY_BUTTON_ID,
+                config.applePay.buttonText,
+                config.applePay.buttonStyle,
+                config.applePay.paymentRequest.countryCode
+              );
+              this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
+              this._onValidateMerchant(observer);
+              this._onPaymentMethodSelected();
+              this._onShippingMethodSelected();
+              this._onShippingContactSelected();
+              this._onPaymentAuthorized(observer);
+              this._onCancel(observer);
+              this._beginMerchantValidation();
+            }
+          });
+        })
+      );
     });
   }
 }
