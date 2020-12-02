@@ -11,6 +11,7 @@ export class ApplePayButtonService {
   handleEvent(callback: () => void, event: string): void {
     console.error('handler:', event);
     const button = document.getElementById(APPLE_PAY_BUTTON_ID);
+    console.error('handler:', button);
     const handler = () => {
       callback();
       button.removeEventListener(event, handler);
