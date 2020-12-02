@@ -63,36 +63,31 @@ export class ApplePay {
     private _applePayButtonService: ApplePayButtonService,
     private _applePayNetworkService: ApplePayNetworksService
   ) {
-    if (!Boolean(ApplePaySession)) {
-      throw new Error('Works only on Safari');
-    }
-
     this._config$ = this._configProvider.getConfig$();
   }
 
   public init(): void {
     this._config$.subscribe((config: IConfig) => {
-      if (!config.applePay) {
-        throw new Error('There is no config for Apple Pay.');
+      if (config.applePay) {
+        const { applePay, jwt, formId } = config;
+        const { buttonStyle, buttonText, merchantId, paymentRequest, placement } = applePay;
+        const { currencyiso3a, locale, mainamount } = new StJwt(jwt);
+        this._applePayVersion = this._latestSupportedApplePayVersion();
+        const requestTypes = jwt_decode<IDecodedJwt>(jwt).payload.requesttypedescriptions;
+        this._canMakePayments();
+        this._setConfig(
+          this._applePayVersion,
+          currencyiso3a,
+          locale,
+          merchantId,
+          mainamount,
+          paymentRequest,
+          requestTypes,
+          formId
+        );
+        this._applePayButtonService.insertButton(placement, buttonText, buttonStyle, locale);
+        this._hasActiveCards(merchantId);
       }
-      const { applePay, jwt, formId } = config;
-      const { buttonStyle, buttonText, merchantId, paymentRequest, placement } = applePay;
-      const { currencyiso3a, locale, mainamount } = new StJwt(jwt);
-      this._applePayVersion = this._latestSupportedApplePayVersion();
-      const requestTypes = jwt_decode<IDecodedJwt>(jwt).payload.requesttypedescriptions;
-      this._canMakePayments();
-      this._setConfig(
-        this._applePayVersion,
-        currencyiso3a,
-        locale,
-        merchantId,
-        mainamount,
-        paymentRequest,
-        requestTypes,
-        formId
-      );
-      this._applePayButtonService.insertButton(placement, buttonText, buttonStyle, locale);
-      this._hasActiveCards(merchantId);
     });
     this._subscribeUpdateJwt();
   }
