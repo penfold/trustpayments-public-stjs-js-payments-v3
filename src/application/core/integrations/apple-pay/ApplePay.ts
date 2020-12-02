@@ -98,7 +98,6 @@ export class ApplePay {
   }
 
   private _hasActiveCards(config: IApplePay): void {
-    console.error('MERCHANT ID:', config.merchantId);
     ApplePaySession.canMakePaymentsWithActiveCard(config.merchantId)
       .then((canMakePayments: boolean) => {
         console.error('can make payments:', canMakePayments);
@@ -125,6 +124,7 @@ export class ApplePay {
 
   private _proceedPayment(): void {
     console.error('proceed payemtns');
+    console.error(this._paymentCancelled);
     this._paymentCancelled = false;
     // must be here (gesture handl.)
     console.error(this._paymentRequest);
@@ -200,7 +200,7 @@ export class ApplePay {
         .catch(() => {
           this._notification.error(PAYMENT_ERROR);
           this._applePaySession.completePayment({ status: ApplePaySession.STATUS_FAILURE, errors: [] });
-          this._applePayButtonService.handleEvent(this._proceedPayment, 'click');
+          this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
           this._localStorage.setItem('completePayment', 'true');
         });
     };
@@ -216,7 +216,7 @@ export class ApplePay {
         { type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE, data: { errorcode: event } },
         true
       );
-      this._applePayButtonService.handleEvent(this._proceedPayment, 'click');
+      this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
       GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment status', 'Apple Pay payment cancelled');
     };
   }
@@ -316,7 +316,7 @@ export class ApplePay {
     if (errordata.lastIndexOf('customer', 0) === 0) {
       error.code = 'shippingContactInvalid';
     }
-    this._applePayButtonService.handleEvent(this._proceedPayment, 'click');
+    this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
     this._completion.errors.push(error.code);
     return this._completion;
   }
