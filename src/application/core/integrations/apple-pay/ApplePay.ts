@@ -91,8 +91,10 @@ export class ApplePay {
   }
 
   private _hasActiveCards(merchantId: string): void {
+    console.error('MERCHANT ID:', merchantId);
     ApplePaySession.canMakePaymentsWithActiveCard(merchantId)
       .then((canMakePayments: boolean) => {
+        console.error('can make payments:', canMakePayments);
         if (canMakePayments) {
           GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay can make payments');
           this._applePayButtonService.handleEvent(this._proceedPayment, 'click');
@@ -102,12 +104,14 @@ export class ApplePay {
         }
       })
       .catch(() => {
+        console.error('can make payments dupa');
         this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this._notification.error(APPLE_PAY_NOT_LOGGED);
       });
   }
 
   private _proceedPayment(): void {
+    console.error('proceed payemtns');
     this._paymentCancelled = false;
     // must be here (gesture handl.)
     this._applePaySession = new ApplePaySession(this._applePayVersion, this._paymentRequest);
