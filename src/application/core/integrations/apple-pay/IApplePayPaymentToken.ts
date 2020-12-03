@@ -1,5 +1,7 @@
+import { IApplePayPaymentMethod } from './IApplePayPaymentMethod';
+
 export interface IApplePayPaymentToken {
-  paymentMethod: any;
+  paymentMethod: IApplePayPaymentMethod;
   transactionIdentifier: string;
-  paymentData: any;
+  paymentData: object;
 }

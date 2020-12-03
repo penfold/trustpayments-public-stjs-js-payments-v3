@@ -16,7 +16,6 @@ import { IApplePayValidateMerchantEvent } from './IApplePayValidateMerchantEvent
 import { IApplePayPaymentMethod } from './IApplePayPaymentMethod';
 import { IApplePayPaymentContact } from './IApplePayPaymentContact';
 import { IApplePayShippingMethod } from './IApplePayShippingMethod';
-import { IApplePayPayment } from './IApplePayPayment';
 import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
 import { ApplePayNetworksService } from './apple-pay-networks-service/ApplePayNetworksService';
 import { IApplePayPaymentAuthorizationResult } from './IApplePayPaymentAuthorizationResult ';
@@ -28,6 +27,8 @@ import { APPLE_PAY_BUTTON_ID } from './ApplePayButtonProperties';
 import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
 import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/ApplePayClientStatus';
 import { IApplePayCancelEvent } from '../../../../client/integrations/apple-pay/IApplePayCancelEvent';
+import { IApplePayPaymentAuthorizedEvent } from './IApplePayPaymentAuthorizedEvent';
+import { IApplePayWalletVerifyResponse } from './IApplePayWalletVerifyResponse';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -103,10 +104,10 @@ export class ApplePay {
 
       return this._payment
         .walletVerify(this._validateMerchantRequest)
-        .then(({ response }: any) => {
-          console.error('walletverify:', response);
+        .then((response: IApplePayWalletVerifyResponse) => {
+          console.error('walletverify:', response.response);
           GoogleAnalytics.sendGaData('event', 'Apple Pay', 'merchant validation', 'Apple Pay merchant validated');
-          const { requestid, walletsession } = response;
+          const { requestid, walletsession } = response.response;
           if (this._paymentCancelled) {
             return Promise.reject(requestid);
           }
@@ -155,8 +156,8 @@ export class ApplePay {
     };
   }
 
-  private onPaymentAuthorized(observer: Subscriber<IApplePayClientStatus>): Promise<any> {
-    this._applePaySession.onpaymentauthorized = (event: IApplePayPayment) => {
+  private onPaymentAuthorized(observer: Subscriber<IApplePayClientStatus>): void {
+    this._applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
       console.error('onpaymentauthorized', event);
       return this._payment
         .processPayment(
@@ -255,7 +256,6 @@ export class ApplePay {
   private onPaymentMethodSelected(): void {
     this._applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethod) => {
       console.error('onpaymentmethodselected', event);
-      const { paymentMethod } = event;
       this._applePaySession.completePaymentMethodSelection({
         newTotal: {
           amount: this._paymentRequest.total.amount,

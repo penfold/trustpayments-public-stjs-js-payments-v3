@@ -13,7 +13,6 @@ import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { IResponseData } from '../../models/IResponseData';
 import { CustomerOutput } from '../../models/constants/CustomerOutput';
 import { RequestType } from '../../../../shared/types/RequestType';
-import { IApplePayRequestTypes } from '../../integrations/apple-pay/IApplePayRequestTypes';
 
 export class Payment {
   private _cardinalCommerceCacheToken: string;
@@ -38,7 +37,7 @@ export class Payment {
   }
 
   public async processPayment(
-    requestTypes: RequestType[] | IApplePayRequestTypes[],
+    requestTypes: RequestType[],
     payment: ICard | IWallet,
     merchantData: IMerchantData,
     responseData?: IResponseData
