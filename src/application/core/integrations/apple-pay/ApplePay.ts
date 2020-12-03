@@ -159,6 +159,13 @@ export class ApplePay {
   private onPaymentAuthorized(observer: Subscriber<IApplePayClientStatus>): void {
     this._applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
       console.error('onpaymentauthorized', event);
+      console.error('requestTypes', this._paymentRequest.requestTypes);
+      console.error('walletsource', this._validateMerchantRequest.walletsource);
+      console.error('wallettoken', event.payment.token);
+      console.error('wallettoken', JSON.stringify(event.payment.token));
+      console.error('this._formId', this._formId);
+      console.error('billingContact', event.payment.billingContact);
+      console.error('shippingContact', event.payment.shippingContact);
       return this._payment
         .processPayment(
           this._paymentRequest.requestTypes,
