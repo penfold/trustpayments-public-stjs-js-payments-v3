@@ -27,6 +27,7 @@ import { IApplePay } from './IApplePay';
 import { APPLE_PAY_BUTTON_ID } from './ApplePayButtonProperties';
 import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
 import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/ApplePayClientStatus';
+import { IApplePayCancelEvent } from '../../../../client/integrations/apple-pay/IApplePayCancelEvent';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -81,7 +82,7 @@ export class ApplePay {
   //   this._notification.error(APPLE_PAY_NOT_LOGGED);
   // });
 
-  private _proceedPayment(observer: any): void {
+  private proceedPayment(observer: any): void {
     this._paymentCancelled = false;
     this._applePaySession = new ApplePaySession(this._applePayVersion, this._paymentRequest);
     this.onValidateMerchant(observer);
@@ -294,7 +295,7 @@ export class ApplePay {
   private gestureHandler(observer?: any): void {
     const button = document.getElementById(APPLE_PAY_BUTTON_ID);
     const handler = () => {
-      this._proceedPayment(observer);
+      this.proceedPayment(observer);
       button.removeEventListener('click', handler);
     };
     if (button) {
@@ -317,12 +318,12 @@ export class ApplePay {
   }
 
   private onCancel(observer: Subscriber<IApplePayClientStatus>): void {
-    this._applePaySession.oncancel = (event: any) => {
+    this._applePaySession.oncancel = (event: IApplePayCancelEvent) => {
       console.error('CANCEL EVENT:', event);
       this.gestureHandler(observer);
       observer.next({
         status: ApplePayClientStatus.CANCEL,
-        data: {}
+        data: { errorcode: event.type, errormessage: 'Payment has been cancelled' }
       });
       this._paymentCancelled = true;
     };
