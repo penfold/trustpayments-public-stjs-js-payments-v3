@@ -48,6 +48,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
           )
         ).pipe(
           switchMap((status: IVisaCheckoutClientStatus) => {
+            console.error(2222222222222);
             switch (status.status) {
               case VisaCheckoutClientStatus.SUCCESS:
                 return this.onSuccess$(config, status.data as IVisaCheckoutStatusDataSuccess, status.merchantData);

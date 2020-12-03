@@ -3,6 +3,7 @@ import jwt_decode from 'jwt-decode';
 import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
+import { VisaCheckoutMock } from '../../application/core/integrations/visa-checkout/VisaCheckoutMock';
 import { environment } from '../../environments/environment';
 import { CardFrames } from '../card-frames/CardFrames.class';
 import { CommonFrames } from '../common-frames/CommonFrames.class';
