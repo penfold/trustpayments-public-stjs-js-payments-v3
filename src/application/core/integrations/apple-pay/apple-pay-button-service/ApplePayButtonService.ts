@@ -3,8 +3,14 @@ import { DomMethods } from '../../../shared/dom-methods/DomMethods';
 
 @Service()
 export class ApplePayButtonService {
+  isButtonInserted(targetId: string): boolean {
+    return document.getElementById(targetId).hasChildNodes();
+  }
+
   insertButton(targetId: string, label: string, style: string, locale: string): Element {
-    return DomMethods.appendChildIntoDOM(targetId, this._createButton(label, style, locale));
+    return !this.isButtonInserted(targetId)
+      ? DomMethods.appendChildIntoDOM(targetId, this._createButton(label, style, locale))
+      : null;
   }
 
   private _createButton(label: string, style: string, locale: string): HTMLElement {
