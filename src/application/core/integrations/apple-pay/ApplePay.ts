@@ -208,8 +208,9 @@ export class ApplePay {
         })
         .catch(e => {
           console.error('process payment error', event);
+          console.error('process payment error', e);
           this._notification.error(PAYMENT_ERROR);
-          this._applePaySession.completePayment({ status: ApplePaySession.STATUS_FAILURE, errors: [] });
+          this._applePaySession.completePayment(this._completion);
           this.gestureHandler(observer);
           this._localStorage.setItem('completePayment', 'true');
         });
