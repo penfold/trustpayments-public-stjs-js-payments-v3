@@ -240,6 +240,7 @@ export class StCodec {
 
   public async decode(responseObject: Response | {}): Promise<object> {
     return new Promise((resolve, reject) => {
+      console.log({ responseObject });
       if ('json' in responseObject) {
         responseObject.json().then(responseData => {
           const decoded: IStJwtObj = StCodec._decodeResponseJwt(responseData.jwt, reject);

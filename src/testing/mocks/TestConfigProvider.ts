@@ -7,7 +7,7 @@ import { DefaultConfig } from '../../application/core/models/constants/config-re
 @Service()
 export class TestConfigProvider implements ConfigProvider {
   private static readonly SAMPLE_JWT =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1OTQwNDk5MzIsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMjAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiJ9fQ.PW9Fb358_OukUIhD_ubU-_h4IwyHScf6RWqbomgGTnc';
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwNzAxMTgwMy43ODUyNjY5LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsInJlcXVlc3R0eXBlZGVzY3JpcHRpb25zIjpbIlRIUkVFRFFVRVJZIl0sInRocmVlZGJ5cGFzc2NhcmRzIjpbIlBJQkEiXX19.641dyecUWIe5sHCBZpYEFoVK-nSbviobPDAMpB_IyFM';
   private config$: BehaviorSubject<IConfig> = new BehaviorSubject({
     ...DefaultConfig,
     jwt: TestConfigProvider.SAMPLE_JWT

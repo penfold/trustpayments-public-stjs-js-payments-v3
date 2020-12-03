@@ -7,6 +7,7 @@ import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IStRequest } from '../../models/IStRequest';
 import { environment } from '../../../../environments/environment';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
+import { ajax, AjaxResponse } from 'rxjs/ajax';
 
 interface IFetchOptions {
   headers: {
@@ -91,12 +92,20 @@ export class StTransport {
     const codec = this.getCodec();
     const gatewayUrl = this.getConfig().datacenterurl;
 
+    console.log({ requestBody });
+    console.log({ fetchOptions });
+    console.log({ gatewayUrl });
+
     return this._fetchRetry(gatewayUrl, {
       ...fetchOptions,
       body: requestBody
     })
+      .then(respone => {
+        console.log({ respone });
+        return respone;
+      })
       .then(codec.decode)
-      .catch(() => {
+      .catch(response => {
         return codec.decode({});
       });
   }
@@ -122,7 +131,7 @@ export class StTransport {
     retryTimeout = StTransport.RETRY_TIMEOUT
   ) {
     return Utils.retryPromise(
-      () => Utils.promiseWithTimeout<Response>(() => fetch(url, options), connectTimeout),
+      () => Utils.promiseWithTimeout<AjaxResponse>(() => ajax({ url, ...options }).toPromise(), connectTimeout),
       delay,
       retries,
       retryTimeout
