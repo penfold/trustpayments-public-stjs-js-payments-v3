@@ -6,8 +6,8 @@ import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { IApplePay } from '../IApplePay';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
-import jwt_decode from 'jwt-decode';
 import { IDecodedJwt } from '../../../models/IDecodedJwt';
+import JwtDecode from 'jwt-decode';
 
 @Service()
 export class ApplePayConfigService {
@@ -88,6 +88,6 @@ export class ApplePayConfigService {
     );
     paymentRequest = this.updateAmount(paymentRequest, mainamount);
     paymentRequest = this.updateCurrencyCode(paymentRequest, currencyiso3a);
-    return this.updateRequestTypes(paymentRequest, jwt_decode<IDecodedJwt>(jwt).payload.requesttypedescriptions);
+    return this.updateRequestTypes(paymentRequest, JwtDecode<IDecodedJwt>(jwt).payload.requesttypedescriptions);
   }
 }

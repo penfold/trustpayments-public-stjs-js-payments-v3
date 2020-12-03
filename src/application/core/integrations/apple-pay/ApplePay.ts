@@ -31,6 +31,8 @@ import { IApplePayPaymentAuthorizedEvent } from './IApplePayPaymentAuthorizedEve
 import { IApplePayWalletVerifyResponse } from './IApplePayWalletVerifyResponse';
 import { IApplePayBillingContact } from './IApplePayBillingContact';
 import { IApplePayShippingContact } from './IApplePayShippingContact';
+import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
+import { filter, first } from 'rxjs/operators';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -159,8 +161,19 @@ export class ApplePay {
   }
 
   private onPaymentAuthorized(observer: Subscriber<IApplePayClientStatus>): void {
+    this._messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
+        filter(event => event.data.requesttypedescription !== 'WALLETVERIFY'),
+        first()
+      )
+      .subscribe(event => {
+        if (Number(event.data.errorcode) !== 0) {
+          this._applePaySession.completePayment({ status: ApplePaySession.STATUS_FAILURE, errors: [] });
+        }
+      });
     this._applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
-      const wallettoken: string = JSON.stringify(event.payment.token);
+      const wallettoken: string = JSON.stringify(event.payment);
       const parsedForm: {} = DomMethods.parseForm(this._formId);
       const paymentData: { walletsource: string; wallettoken: string } = {
         walletsource: this._validateMerchantRequest.walletsource,
@@ -174,7 +187,15 @@ export class ApplePay {
         shippingContact: event.payment.shippingContact
       };
       return this._payment
-        .processPayment(this._paymentRequest.requestTypes, paymentData, parsedForm, billingAndShippingData)
+        .processPayment(
+          this._paymentRequest.requestTypes,
+          paymentData,
+          {
+            ...DomMethods.parseForm(this._formId),
+            termurl: 'https://termurl.com'
+          },
+          billingAndShippingData
+        )
         .then((response: any) => {
           console.error('processPayment', response);
           const { errorcode, errormessage } = response.response;
