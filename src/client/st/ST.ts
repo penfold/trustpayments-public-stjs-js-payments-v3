@@ -44,6 +44,7 @@ import { BrowserDetector } from '../../shared/services/browser-detector/BrowserD
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
+import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
 
 @Service()
 export class ST {
@@ -63,6 +64,7 @@ export class ST {
   private _translation: Translator;
   private _destroy$: Subject<void> = new Subject();
   private _registeredCallbacks: { [eventName: string]: Subscription } = {};
+  private _cybertonicaTid: Promise<string>;
 
   set submitCallback(callback: (event: ISubmitEvent) => void) {
     if (callback) {
@@ -106,7 +108,8 @@ export class ST {
     private _notification: Notification,
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
-    private _browserDetector: BrowserDetector
+    private _browserDetector: BrowserDetector,
+    private _cybertonica: Cybertonica
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -187,18 +190,12 @@ export class ST {
   }
 
   public Cybertonica(): Promise<string> {
-    return new Promise(resolve =>
-      this._framesHub
-        .waitForFrame(CONTROL_FRAME_IFRAME)
-        .pipe(
-          switchMap((controlFrame: string) =>
-            from(this._communicator.query({ type: MessageBus.EVENTS_PUBLIC.GET_CYBERTONICA_TID }, controlFrame))
-          )
-        )
-        .subscribe((tid: string) => {
-          resolve(tid);
-        })
-    );
+    if (!this._cybertonicaTid) {
+      this._cybertonica.init(this._config.cybertonicaApiKey);
+      this._cybertonicaTid = this._cybertonica.getTransactionId();
+    }
+
+    return this._cybertonicaTid;
   }
 
   public updateJWT(jwt: string): void {
@@ -230,16 +227,18 @@ export class ST {
     this._framesHub.reset();
     this._storage.init();
     this._config = this._configService.setup(config);
-    StCodec.updateJWTValue(config.jwt);
-    this.initCallbacks(config);
-    this.Storage();
-    this._translation = new Translator(this._storage.getItem(ST.LOCALE_STORAGE));
-    this._googleAnalytics.init();
-    this.CommonFrames();
-    this._commonFrames.init();
-    this.displayLiveStatus(Boolean(this._config.livestatus));
-    this.watchForFrameUnload();
-    this.initControlFrameModal();
+    if (this._config.jwt) {
+      StCodec.updateJWTValue(config.jwt);
+      this.initCallbacks(config);
+      this.Storage();
+      this._translation = new Translator(this._storage.getItem(ST.LOCALE_STORAGE));
+      this._googleAnalytics.init();
+      this.CommonFrames();
+      this._commonFrames.init();
+      this.displayLiveStatus(Boolean(this._config.livestatus));
+      this.watchForFrameUnload();
+      this.initControlFrameModal();
+    }
   }
 
   public getBrowserInfo(): IBrowserInfo {

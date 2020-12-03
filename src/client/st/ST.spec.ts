@@ -23,13 +23,12 @@ jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytic
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 
-// given
 describe('ST', () => {
   const { config, cacheConfig, instance } = stFixture();
-  // given
+
   describe('constructor()', () => {
     let stObject: any;
-    // when
+
     beforeEach(() => {
       instance.Init = jest.fn();
       // @ts-ignore
@@ -37,61 +36,37 @@ describe('ST', () => {
     });
   });
 
-  // given
   describe('ST.AppapplePayConfiglePay()', () => {
     const { applePayConfig } = stFixture();
 
-    // then
     it('should return ApplePayMock object when environment.testEnvironment equals true', () => {
       environment.testEnvironment = true;
       expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePayMock);
     });
-    // then
+
     it('should return ApplePay object when environment.testEnvironment equals false', () => {
       environment.testEnvironment = false;
       expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePay);
     });
   });
 
-  // given
   describe('ST.VisaCheckout()', () => {
     const { visaCheckoutConfig } = stFixture();
-    // then
+
     it('should return VisaCheckoutMock object when environment.testEnvironment equals true', () => {
       environment.testEnvironment = true;
       expect(instance.VisaCheckout(visaCheckoutConfig, config.jwt)).toBeInstanceOf(VisaCheckoutMock);
     });
-    // then
+
     it('should return VisaCheckout object when environment.testEnvironment equals false', () => {
       environment.testEnvironment = false;
       expect(instance.VisaCheckout(visaCheckoutConfig, config.jwt)).toBeInstanceOf(VisaCheckout);
     });
   });
 
-  // given
-  describe('ST.CardinalCommerce()', () => {
-    // when
-    const {
-      config: { jwt }
-    } = stFixture();
-    // then
-    it('should return CardinalCommerceMock when environment.testEnvironment equals true', () => {
-      environment.testEnvironment = true;
-      // expect(instance.CardinalCommerce(false, jwt, ['AUTH', 'JSINIT'])).toBeInstanceOf(CardinalCommerceMock);
-    });
-
-    // then
-    it('should return CardinalCommerce when environment.testEnvironment equals false', () => {
-      environment.testEnvironment = false;
-      // expect(instance.CardinalCommerce(false, jwt, ['AUTH', 'JSINIT'])).toBeInstanceOf(CardinalCommerce);
-    });
-  });
-
-  // given
   describe('updateJWT()', () => {
     const lodash = jest.requireActual('lodash');
 
-    // when
     beforeEach(() => {
       StCodec.updateJWTValue = jest.fn();
       instance.updateJWT('somenewjwtvalue');
@@ -100,21 +75,29 @@ describe('ST', () => {
       });
     });
 
-    // then
     it('should assign new jwt value', () => {
       expect(instance._config.jwt).toEqual('somenewjwtvalue');
     });
 
-    // then
     it('should call updateJWTValue', () => {
       expect(StCodec.updateJWTValue).toHaveBeenCalled();
     });
 
-    // then
     it('should throw an error if newJwt is not specified', () => {
       expect(() => {
         instance.updateJWT(null);
       }).toThrow();
+    });
+  });
+
+  describe('cbrt', () => {
+    const key: string = 'some random key';
+    beforeEach(() => {
+      instance._cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(key);
+    });
+
+    it('should return transaction id when standalone cybertonica function has been called', async () => {
+      expect(await instance.Cybertonica()).toEqual(key);
     });
   });
 });
@@ -158,6 +141,7 @@ function stFixture() {
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU2MDk0NjM4Ny4yNDIzMzQ0LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwicGFuIjoiNDExMTExMTExMTExMTExMSIsImV4cGlyeWRhdGUiOiIwMS8yMCIsInNlY3VyaXR5Y29kZSI6IjEyMyJ9fQ.UssdRcocpaeAqd-jDXpxWeWiKIX-W7zlpy0UWrDE5vg', // Can't use property shorthand because it isn't supported by IE
     livestatus: 0,
     disableNotification: false,
+    cybertonicaApiKey: 'stfs',
     origin: 'https://someorigin.com',
     styles: {
       cardNumber: {
