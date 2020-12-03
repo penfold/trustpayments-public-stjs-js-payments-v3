@@ -29,6 +29,7 @@ import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 
 const ApplePaySession = (window as any).ApplePaySession;
+const ApplePayError = (window as any).ApplePayError;
 
 export class ApplePay {
   private applePaySession: any;
@@ -166,8 +167,11 @@ export class ApplePay {
     errorcode: string,
     errormessage: string
   ): IApplePayPaymentAuthorizationResult {
-    console.error('onError: ', errorcode, errormessage);
-    this.completion.errors.push(errorcode);
+    console.error('handlePaymentProcessResponse: ', errorcode, errormessage);
+    const error = new ApplePayError('unknown');
+    error.message = this.translator.translate(errormessage);
+    this.completion.errors.push(error);
+    console.error('handlePaymentProcessResponse: ', this.completion);
 
     if (errorcode === '0') {
       this.completion.status = ApplePaySession.STATUS_SUCCESS;
