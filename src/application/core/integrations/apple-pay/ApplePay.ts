@@ -178,7 +178,7 @@ export class ApplePay {
     console.error('handlePaymentProcessResponse: ', errorcode, errormessage);
     const error = new ApplePayError('unknown');
     error.message = this.translator.translate(errormessage);
-    this.completion.errors.push(error);
+    this.completion.errors = error;
     this.completion.status = ApplePaySession.STATUS_FAILURE;
     console.error('handlePaymentProcessResponse: ', this.completion);
 
