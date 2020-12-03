@@ -7,7 +7,7 @@ export class ApplePaySessionMock {
   public static onpaymentauthorized: any;
   public static oncancel: any;
 
-  public static completePayment = () => true;
+  public static completePayment = (completion: { errors: string[]; status: string }) => true;
 
   public static completeMerchantValidation = () => true;
 

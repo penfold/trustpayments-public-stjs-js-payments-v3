@@ -1,7 +1,7 @@
 import { BehaviorSubject, from, Observable, of, throwError } from 'rxjs';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { filter, switchMap, tap } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
@@ -11,7 +11,12 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IApplePayClientStatus } from './IApplePayClientStatus';
-import { PAYMENT_CANCELLED } from '../../../application/core/models/constants/Translations';
+import {
+  APPLE_PAY_NOT_LOGGED,
+  MERCHANT_VALIDATION_FAILURE,
+  PAYMENT_CANCELLED,
+  PAYMENT_ERROR
+} from '../../../application/core/models/constants/Translations';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { NotificationService } from '../../notification/NotificationService';
 import { ApplePayClientStatus } from './ApplePayClientStatus';
@@ -54,10 +59,14 @@ export class ApplePayClient {
             switch (status.status) {
               case ApplePayClientStatus.SUCCESS:
                 return this.onSuccess$(status);
+              case ApplePayClientStatus.ERROR:
+                return this.onError$(status);
               case ApplePayClientStatus.CANCEL:
                 return this.onCancel$(status);
+              case ApplePayClientStatus.VALIDATE_MERCHANT_ERROR:
+                return this.onValidateMerchant$(status);
               case ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD:
-                return this.canMakePaymentWithActiveCard$();
+                return this.canMakePaymentWithActiveCard$(status);
               default:
                 return throwError('Unknown Apple Pay status');
             }
@@ -84,19 +93,23 @@ export class ApplePayClient {
   }
 
   private onSuccess$(status: IApplePayClientStatus): Observable<ApplePayClientStatus.SUCCESS> {
-    console.error('SUCCESS DUPA:', status);
+    console.error('onSuccess$:', status);
     this.localStorage.setItem('completePayment', 'true');
     this.applePayNotificationService.notification(status.data.errorcode, status.data.errormessage);
+    GoogleAnalytics.sendGaData('event', 'Apple Pay', 'merchant validation', 'Apple Pay merchant validated');
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
     return of(ApplePayClientStatus.SUCCESS);
   }
 
-  private onError$(): void {
-    return;
+  private onError$(status: IApplePayClientStatus): Observable<ApplePayClientStatus.ERROR> {
+    console.error('onError$:', status);
+    this.notificationService.error(PAYMENT_ERROR);
+    this.localStorage.setItem('completePayment', 'false');
+    return of(ApplePayClientStatus.ERROR);
   }
 
   private onCancel$(status: IApplePayClientStatus): Observable<ApplePayClientStatus.CANCEL> {
-    console.error('CANCEL DUPA:', status);
+    console.error('onCancel$:', status);
     this.notificationService.cancel(PAYMENT_CANCELLED);
     this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK }, true);
     this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE, data: {} }, true);
@@ -104,17 +117,24 @@ export class ApplePayClient {
     return of(ApplePayClientStatus.CANCEL);
   }
 
-  private onValidateMerchant$(): void {
-    return;
+  private onValidateMerchant$(status: IApplePayClientStatus): Observable<ApplePayClientStatus.VALIDATE_MERCHANT_ERROR> {
+    console.error('onValidateMerchant$:', status);
+    this.notificationService.error(MERCHANT_VALIDATION_FAILURE);
+    this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+    this.notificationService.error(`${status.data.errorcode}: ${status.data.errormessage}`);
+    GoogleAnalytics.sendGaData('event', 'Apple Pay', 'merchant validation', 'Apple Pay merchant validation failure');
+    return of(ApplePayClientStatus.VALIDATE_MERCHANT_ERROR);
   }
 
-  private onPaymentMethodSelected$() {
-    return;
-  }
-
-  private canMakePaymentWithActiveCard$(): Observable<ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD> {
+  private canMakePaymentWithActiveCard$(
+    status: IApplePayClientStatus
+  ): Observable<ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD> {
     console.error('ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD');
-    GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay can make payments');
+    status.data.errormessage
+      ? GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay can make payments')
+      : GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay cannot make payments');
+    this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+    this.notificationService.error(APPLE_PAY_NOT_LOGGED);
     return of(ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD);
   }
 }
