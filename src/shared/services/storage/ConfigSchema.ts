@@ -36,6 +36,8 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
         amount: Joi.string(),
         label: Joi.string()
       },
+      billingContact: Joi.object(),
+      shippingContact: Joi.object(),
       requiredBillingContactFields: Joi.array().items(Joi.string()),
       requiredShippingContactFields: Joi.array().items(Joi.string())
     },

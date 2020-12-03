@@ -91,7 +91,9 @@ export class ApplePayClient {
     return of(ApplePayClientStatus.SUCCESS);
   }
 
-  private onError$(): void {}
+  private onError$(): void {
+    return;
+  }
 
   private onCancel$(status: IApplePayClientStatus): Observable<ApplePayClientStatus.CANCEL> {
     console.error('CANCEL DUPA:', status);
@@ -106,7 +108,9 @@ export class ApplePayClient {
     return;
   }
 
-  private onPaymentMethodSelected$() {}
+  private onPaymentMethodSelected$() {
+    return;
+  }
 
   private canMakePaymentWithActiveCard$(): Observable<ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD> {
     console.error('ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD');
