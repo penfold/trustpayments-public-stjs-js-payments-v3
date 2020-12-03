@@ -29,6 +29,8 @@ import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/
 import { IApplePayCancelEvent } from '../../../../client/integrations/apple-pay/IApplePayCancelEvent';
 import { IApplePayPaymentAuthorizedEvent } from './IApplePayPaymentAuthorizedEvent';
 import { IApplePayWalletVerifyResponse } from './IApplePayWalletVerifyResponse';
+import { IApplePayBillingContact } from './IApplePayBillingContact';
+import { IApplePayShippingContact } from './IApplePayShippingContact';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -159,28 +161,20 @@ export class ApplePay {
   private onPaymentAuthorized(observer: Subscriber<IApplePayClientStatus>): void {
     this._applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
       const wallettoken: string = JSON.stringify(event.payment.token);
-      console.error('onpaymentauthorized', event);
-      console.error('requestTypes', this._paymentRequest.requestTypes);
-      console.error('walletsource', this._validateMerchantRequest.walletsource);
-      console.error('wallettoken', event.payment.token);
-      console.error('this._formId', this._formId);
-      console.error('billingContact', event.payment.billingContact);
-      console.error('shippingContact', event.payment.shippingContact);
-      const paymentData: any = {
+      const parsedForm: {} = DomMethods.parseForm(this._formId);
+      const paymentData: { walletsource: string; wallettoken: string } = {
         walletsource: this._validateMerchantRequest.walletsource,
         wallettoken
       };
-      const billingShippingData: any = {
+      const billingAndShippingData: {
+        billingContact: IApplePayBillingContact;
+        shippingContact: IApplePayShippingContact;
+      } = {
         billingContact: event.payment.billingContact,
         shippingContact: event.payment.shippingContact
       };
       return this._payment
-        .processPayment(
-          this._paymentRequest.requestTypes,
-          paymentData,
-          DomMethods.parseForm(this._formId),
-          billingShippingData
-        )
+        .processPayment(this._paymentRequest.requestTypes, paymentData, parsedForm, billingAndShippingData)
         .then((response: any) => {
           console.error('processPayment', response);
           const { errorcode, errormessage } = response.response;
