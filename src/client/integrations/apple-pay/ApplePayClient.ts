@@ -18,6 +18,8 @@ import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePayNetworksService } from '../../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
+import { ApplePayNotificationService } from './apple-pay-notification-service/ApplePayNotificationService';
+import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 
 @Service()
 export class ApplePayClient {
@@ -28,9 +30,11 @@ export class ApplePayClient {
     private interFrameCommunicator: InterFrameCommunicator,
     private messageBus: MessageBus,
     private notificationService: NotificationService,
+    private localStorage: BrowserLocalStorage,
     private applePayButtonService: ApplePayButtonService,
     private applePayNetworkService: ApplePayNetworksService,
-    private applePayConfigService: ApplePayConfigService
+    private applePayConfigService: ApplePayConfigService,
+    private applePayNotificationService: ApplePayNotificationService
   ) {}
 
   init$(): any {
@@ -48,6 +52,8 @@ export class ApplePayClient {
         ).pipe(
           switchMap((status: IApplePayClientStatus) => {
             switch (status.status) {
+              case ApplePayClientStatus.SUCCESS:
+                return this.onSuccess$(status);
               case ApplePayClientStatus.CANCEL:
                 return this.onCancel$(status);
               case ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD:
@@ -77,11 +83,15 @@ export class ApplePayClient {
       });
   }
 
-  private _onSuccess$(): void {
-    return;
+  private onSuccess$(status: IApplePayClientStatus): Observable<ApplePayClientStatus.SUCCESS> {
+    console.error('SUCCESS DUPA:', status);
+    this.localStorage.setItem('completePayment', 'true');
+    this.applePayNotificationService.notification(status.data.errorcode, status.data.errormessage);
+    GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
+    return of(ApplePayClientStatus.SUCCESS);
   }
 
-  private _onError$(): void {}
+  private onError$(): void {}
 
   private onCancel$(status: IApplePayClientStatus): Observable<ApplePayClientStatus.CANCEL> {
     console.error('CANCEL DUPA:', status);
@@ -92,7 +102,7 @@ export class ApplePayClient {
     return of(ApplePayClientStatus.CANCEL);
   }
 
-  private _onValidateMerchant$(): void {
+  private onValidateMerchant$(): void {
     return;
   }
 

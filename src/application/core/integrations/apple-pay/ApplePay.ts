@@ -176,12 +176,9 @@ export class ApplePay {
           this.onError(errorcode, errormessage, response.response.data);
           this._applePaySession.completePayment(this._completion);
           observer.next({
-            status: ApplePayClientStatus.CANCEL,
-            data: {}
+            status: ApplePayClientStatus.SUCCESS,
+            data: { errorcode, errormessage }
           });
-          GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
-          this._localStorage.setItem('completePayment', 'true');
-          this.displayNotification(errorcode, errormessage);
         })
         .catch(e => {
           console.error('process payment error', event);
