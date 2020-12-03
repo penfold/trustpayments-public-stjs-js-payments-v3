@@ -54,8 +54,13 @@ Feature: E2E Card Payments with updated jwt
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "www.example.com" having params
-      | key           | value                                   |
-      | errormessage  | Payment has been successfully processed |
-      | baseamount    | 2000                                    |
-      | currencyiso3a | EUR                                     |
-      | errorcode     | 0                                       |
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | 2000                                    |
+      | currencyiso3a        | EUR                                     |
+      | errorcode            | 0                                       |
+      | transactionreference | should not be none                      |
+      | eci                  | 00                                      |
+      | enrolled             | U                                       |
+      | settlestatus         | 0                                       |
+      | jwt                  | should not be none                      |

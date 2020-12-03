@@ -85,14 +85,16 @@ Feature: Successfull payments with various request types configurations
     And Single THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
-      | key           | value                                   |
-      | errormessage  | Payment has been successfully processed |
-      | errorcode     | 0                                       |
-      | enrolled      | N                                       |
-      | jwt           | should not be none                      |
-      | myBillName    | John Test                               |
-      | myBillEmail   | test@example                            |
-      | myBillTel     | 44422224444                             |
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | errorcode            | 0                                       |
+      | myBillName           | John Test                               |
+      | myBillEmail          | test@example                            |
+      | myBillTel            | 44422224444                             |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
+      | enrolled             | N                                       |
+      | settlestatus         | 0                                       |
     And Single THREEDQUERY request was sent only once with correct data
 
   @config_requestTypes_acheck_tdq_auth_subscription

@@ -79,12 +79,16 @@ Feature: E2E for tokenisation
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "www.example.com" having params
-      | key           | value                                   |
-      | errormessage  | Payment has been successfully processed |
-      | baseamount    | 2000                                    |
-      | currencyiso3a | GBP                                     |
-      | errorcode     | 0                                       |
-      | status        | A                                       |
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | 2000                                    |
+      | currencyiso3a        | GBP                                     |
+      | errorcode            | 0                                       |
+      | status               | A                                       |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
+      | enrolled             | Y                                       |
+      | eci                  | 06                                      |
 
 
   Scenario: Updating payment references for tokenization - fully authentication in second payment

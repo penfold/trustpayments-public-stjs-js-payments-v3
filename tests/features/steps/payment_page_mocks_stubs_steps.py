@@ -90,16 +90,16 @@ def step_impl(context, request_type, action_code):
         payment_page.scroll_to_top()
 
 
-@when('User chooses Visa Checkout as payment method - response is set to "(?P<action_code>.+)"')
+@when('User chooses Visa Checkout as payment method - visa response is set to "(?P<action_code>.+)"')
 def step_impl(context, action_code):
     context.action_code = action_code
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if action_code == 'ERROR':
         stub_payment_status(MockUrl.VISA_MOCK_URI.value, VisaResponse.SUCCESS.value)
-        stub_st_request_type(VisaResponse.ERROR.value, RequestType.AUTH.name)
+        stub_st_request_type(VisaResponse.ERROR.value, 'THREEDQUERY, AUTH')
     else:
-        stub_st_request_type(VisaResponse.VISA_AUTH_SUCCESS.value, RequestType.AUTH.name)
         stub_payment_status(MockUrl.VISA_MOCK_URI.value, VisaResponse[action_code].value)
+        stub_st_request_type(VisaResponse.VISA_AUTH_SUCCESS.value, 'THREEDQUERY, AUTH')
     payment_page.choose_payment_methods(PaymentType.VISA_CHECKOUT.name)
 
 
