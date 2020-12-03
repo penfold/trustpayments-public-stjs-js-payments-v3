@@ -1,7 +1,9 @@
 import './st.css';
 import jwt_decode from 'jwt-decode';
+import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
+import { environment } from '../../environments/environment';
 import { CardFrames } from '../card-frames/CardFrames.class';
 import { CommonFrames } from '../common-frames/CommonFrames.class';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
@@ -171,7 +173,11 @@ export class ST {
       this._config = this._configService.updateFragment('applePay', config);
     }
 
-    return new ApplePay(this._configProvider, this._communicator);
+    if (environment.testEnvironment) {
+      return new ApplePayMock(this._configProvider, this._communicator);
+    } else {
+      return new ApplePay(this._configProvider, this._communicator);
+    }
   }
 
   public VisaCheckout(visaCheckoutConfig: IVisaCheckoutConfig | undefined): void {

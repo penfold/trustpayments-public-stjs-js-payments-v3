@@ -17,14 +17,17 @@ import { RequestType } from '../../../../shared/types/RequestType';
 @Service()
 export class Payment {
   private _cardinalCommerceCacheToken: string;
+  private _notification: NotificationService;
+  private _stTransport: StTransport;
+  private _validation: Validation;
+  private _cybertonica: Cybertonica;
   private readonly _walletVerifyRequest: IStRequest;
 
-  constructor(
-    private _notification: NotificationService,
-    private _stTransport: StTransport,
-    private _validation: Validation,
-    private _cybertonica: Cybertonica
-  ) {
+  constructor() {
+    this._notification = Container.get(NotificationService);
+    this._cybertonica = Container.get(Cybertonica);
+    this._stTransport = Container.get(StTransport);
+    this._validation = new Validation();
     this._walletVerifyRequest = {
       requesttypedescriptions: ['WALLETVERIFY']
     };
