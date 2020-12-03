@@ -106,7 +106,7 @@ export class ApplePay {
     //   config.buttonStyle,
     //   config.paymentRequest.countryCode
     // );
-    // this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
+    // this.gestureHandler()
     // } else {
     // GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay cannot make payments');
     // throw new Error('User has not an active card provisioned into Wallet');
@@ -119,9 +119,19 @@ export class ApplePay {
     // });
   }
 
-  private _proceedPayment(): void {
+  private _proceedPayment(observer: any): void {
     this._paymentCancelled = false;
+    console.error(this._paymentCancelled);
+    console.error(this._applePaySession);
     this._applePaySession = new ApplePaySession(this._applePayVersion, this._paymentRequest);
+    console.error(this._applePaySession);
+    this._onValidateMerchant(observer);
+    this._onPaymentMethodSelected();
+    this._onShippingMethodSelected();
+    this._onShippingContactSelected();
+    this._onPaymentAuthorized(observer);
+    this._onCancel(observer);
+    this._beginMerchantValidation();
   }
 
   private _onValidateMerchant(observer: Subscriber<IApplePayClientStatus>) {
@@ -131,11 +141,6 @@ export class ApplePay {
         event.validationURL
       );
 
-      observer.next({
-        status: 'VALIDATE_MERCHANT',
-        data: { validateMerchantRequest: this._validateMerchantRequest }
-      });
-
       return this._payment
         .walletVerify(this._validateMerchantRequest)
         .then(({ response }: any) => {
@@ -144,12 +149,13 @@ export class ApplePay {
           return this._onValidateMerchantResponseSuccess(response);
         })
         .catch(error => {
+          console.error('on validate merchat ', event);
           if (this._paymentCancelled) {
             return;
           }
           const { errorcode, errormessage } = error;
           this._onValidateMerchantResponseFailure(error);
-          this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
+          this.gestureHandler(observer);
           this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
           this._notification.error(`${errorcode}: ${errormessage}`);
           GoogleAnalytics.sendGaData(
@@ -162,12 +168,24 @@ export class ApplePay {
     };
   }
 
+  private gestureHandler(observer?: any): void {
+    const button = document.getElementById(APPLE_PAY_BUTTON_ID);
+    const handler = () => {
+      this._proceedPayment(observer);
+      button.removeEventListener('click', handler);
+    };
+    if (button) {
+      button.addEventListener('click', handler);
+    }
+  }
+
   private _onPaymentAuthorized(observer: Subscriber<IApplePayClientStatus>): Promise<any> {
     this._applePaySession.onpaymentauthorized = (event: IApplePayPayment) => {
       // observer.next({
       //   status: 'SUCCESS',
       //   data: {}
       // });
+      console.error('onpaymentauthorized', event);
       return this._payment
         .processPayment(
           this._paymentRequest.requestTypes,
@@ -182,6 +200,7 @@ export class ApplePay {
           }
         )
         .then((response: any) => {
+          console.error('processPayment', response);
           const { errorcode, errormessage } = response.response;
           this._onError(errorcode, errormessage, response.response.data);
           this._applePaySession.completePayment(this._completion);
@@ -189,22 +208,26 @@ export class ApplePay {
           this._localStorage.setItem('completePayment', 'true');
           this._displayNotification(errorcode, errormessage);
         })
-        .catch(() => {
+        .catch(e => {
+          console.error('process payment error', event);
           this._notification.error(PAYMENT_ERROR);
           this._applePaySession.completePayment({ status: ApplePaySession.STATUS_FAILURE, errors: [] });
-          this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
+          this.gestureHandler(observer);
           this._localStorage.setItem('completePayment', 'true');
         });
     };
   }
 
   private _onCancel(observer: Subscriber<IApplePayClientStatus>): void {
+    console.error('CANCEL 2');
     this._applePaySession.oncancel = (event: any) => {
-      this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
+      console.error('CANCEL 1');
+      this.gestureHandler(observer);
       observer.next({
         status: 'CANCEL',
-        data: { event }
+        data: {}
       });
+      console.error('CANCEL 3');
       this._paymentCancelled = true;
     };
   }
@@ -241,6 +264,7 @@ export class ApplePay {
 
   private _onPaymentMethodSelected(): void {
     this._applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethod) => {
+      console.error('onpaymentmethodselected', event);
       const { paymentMethod } = event;
       this._applePaySession.completePaymentMethodSelection({
         newTotal: {
@@ -254,6 +278,7 @@ export class ApplePay {
 
   private _onShippingMethodSelected(): void {
     this._applePaySession.onshippingmethodselected = (event: IApplePayShippingMethod) => {
+      console.error('onshippingmethodselected', event);
       this._applePaySession.completeShippingMethodSelection({
         newTotal: {
           amount: this._paymentRequest.total.amount,
@@ -266,6 +291,7 @@ export class ApplePay {
 
   private _onShippingContactSelected(): void {
     this._applePaySession.onshippingcontactselected = (event: IApplePayPaymentContact) => {
+      console.error('onshippingcontactselected', event);
       this._applePaySession.completeShippingContactSelection({
         newTotal: {
           amount: this._paymentRequest.total.amount,
@@ -304,7 +330,7 @@ export class ApplePay {
     if (errordata.lastIndexOf('customer', 0) === 0) {
       error.code = 'shippingContactInvalid';
     }
-    this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
+    this.gestureHandler();
     this._completion.errors.push(error.code);
     return this._completion;
   }
@@ -349,14 +375,7 @@ export class ApplePay {
                 config.applePay.buttonStyle,
                 config.applePay.paymentRequest.countryCode
               );
-              this._applePayButtonService.handleEvent(this._proceedPayment.bind(this), 'click');
-              this._onValidateMerchant(observer);
-              this._onPaymentMethodSelected();
-              this._onShippingMethodSelected();
-              this._onShippingContactSelected();
-              this._onPaymentAuthorized(observer);
-              this._onCancel(observer);
-              this._beginMerchantValidation();
+              this.gestureHandler(observer);
             }
           });
         })

@@ -71,14 +71,13 @@ export class ApplePayClient {
     return;
   }
 
-  private _onError$(): void {
-    return;
-  }
+  private _onError$(): void {}
 
   private _onCancel$(): Observable<ApplePayClientStatus.CANCEL> {
+    console.error('CANCEL DUPA');
     this._notificationService.cancel(PAYMENT_CANCELLED);
     this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK }, true);
-    this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE, data: { errorcode: event } }, true);
+    this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE, data: {} }, true);
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment status', 'Apple Pay payment cancelled');
     return of(ApplePayClientStatus.CANCEL);
   }
