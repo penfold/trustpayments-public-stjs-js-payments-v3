@@ -144,11 +144,13 @@ export class ApplePay {
             response: { errorcode, errormessage }
           } = response;
           this.handlePaymentProcessResponse(observer, errorcode, errormessage);
+          console.error('completion', this.completion);
           this.applePaySession.completePayment(this.completion);
           this.gestureHandler(observer);
         })
         .catch(e => {
           console.error('processPayment -> catch', e, event);
+          console.error('completion', this.completion);
           this.applePaySession.completePayment(this.completion);
           this.gestureHandler(observer);
           observer.next({

@@ -181,12 +181,8 @@ export class ST {
 
     const applePay: ApplePay = new ApplePay(
       this._communicator,
-      this._configProvider,
-      this._storage,
       this._messageBus,
-      this._notificationService,
       this._applePayButtonService,
-      this._applePayNetworkService,
       this._applePayConfigService
     );
     applePay.init();
