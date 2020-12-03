@@ -67,3 +67,4 @@ zap-baseline-scan-merchant-securetrading-net:
   variables:
     URL_TO_SCAN: 'https://merchant.securetrading.net'
     ZAP_CONFIG_PATH: "baseline-scan.conf"
+
