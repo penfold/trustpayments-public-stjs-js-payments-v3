@@ -1,30 +1,30 @@
+import { Service } from 'typedi';
 import { BehaviorSubject, from, Observable, of, throwError } from 'rxjs';
-import { IConfig } from '../../../shared/model/config/IConfig';
-import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { filter, switchMap } from 'rxjs/operators';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
+import { ApplePayNetworksService } from '../../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
+import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
+import { ApplePayNotificationService } from './apple-pay-notification-service/ApplePayNotificationService';
+import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
+import { NotificationService } from '../../notification/NotificationService';
+import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
-import { Service } from 'typedi';
-import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
-import { ofType } from '../../../shared/services/message-bus/operators/ofType';
-import { IApplePayClientStatus } from './IApplePayClientStatus';
 import {
   APPLE_PAY_NOT_LOGGED,
   MERCHANT_VALIDATION_FAILURE,
   PAYMENT_CANCELLED,
   PAYMENT_ERROR
 } from '../../../application/core/models/constants/Translations';
-import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
-import { NotificationService } from '../../notification/NotificationService';
-import { ApplePayClientStatus } from './ApplePayClientStatus';
-import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
-import { ApplePayNetworksService } from '../../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
-import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
-import { ApplePayNotificationService } from './apple-pay-notification-service/ApplePayNotificationService';
-import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
+import { IConfig } from '../../../shared/model/config/IConfig';
+import { IApplePayClientStatus } from './IApplePayClientStatus';
 
 @Service()
 export class ApplePayClient {
