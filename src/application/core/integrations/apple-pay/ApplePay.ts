@@ -167,12 +167,6 @@ export class ApplePay {
     errorcode: string,
     errormessage: string
   ): IApplePayPaymentAuthorizationResult {
-    console.error('handlePaymentProcessResponse: ', errorcode, errormessage);
-    const error = new ApplePayError('unknown');
-    error.message = this.translator.translate(errormessage);
-    this.completion.errors.push(error);
-    console.error('handlePaymentProcessResponse: ', this.completion);
-
     if (errorcode === '0') {
       this.completion.status = ApplePaySession.STATUS_SUCCESS;
       observer.next({
@@ -181,8 +175,12 @@ export class ApplePay {
       });
       return this.completion;
     }
-
+    console.error('handlePaymentProcessResponse: ', errorcode, errormessage);
+    const error = new ApplePayError('unknown');
+    error.message = this.translator.translate(errormessage);
+    this.completion.errors.push(error);
     this.completion.status = ApplePaySession.STATUS_FAILURE;
+    console.error('handlePaymentProcessResponse: ', this.completion);
 
     observer.next({
       status: ApplePayClientStatus.ERROR,
