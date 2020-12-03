@@ -48,11 +48,12 @@ export class VisaCheckout {
         return this.loadSdk$(event.data).pipe(
           switchMap((visaCheckoutUpdatedConfig: IVisaCheckoutUpdateConfig) => {
             return new Observable<IVisaCheckoutClientStatus>((observer: Subscriber<IVisaCheckoutClientStatus>) => {
-              V.init(visaCheckoutUpdatedConfig.visaInitConfig);
+              console.log('SIEMA');
               this.onSuccess(observer, event.data);
               this.onCancel(observer);
               this.onError(observer);
               this.onPrePayment(observer);
+              V.init(visaCheckoutUpdatedConfig.visaInitConfig);
             });
           })
         );
@@ -104,7 +105,6 @@ export class VisaCheckout {
     if (this.isSdkLoaded) {
       return of(visaCheckoutUpdatedConfig);
     } else {
-      console.log('BEFORE INJECTING');
       return this.visaCheckoutScriptInjector
         .injectScript(config.visaCheckout.placement, {
           src: visaCheckoutUpdatedConfig.sdkUrl,
@@ -112,7 +112,6 @@ export class VisaCheckout {
         })
         .pipe(
           tap(() => {
-            console.log('AFTER INJECTING');
             this.visaCheckoutButtonService.customize(
               config.visaCheckout.buttonSettings,
               visaCheckoutUpdatedConfig.buttonUrl

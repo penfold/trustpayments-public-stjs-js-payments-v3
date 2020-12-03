@@ -1,4 +1,4 @@
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { catchError, filter, switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
@@ -11,8 +11,6 @@ import {
   PAYMENT_SUCCESS
 } from '../../../application/core/models/constants/Translations';
 import { IMerchantData } from '../../../application/core/models/IMerchantData';
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { IWallet } from '../../../application/core/models/IWallet';
 import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
 import { Payment } from '../../../application/core/shared/payment/Payment';
@@ -20,7 +18,6 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
-import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { NotificationService } from '../../notification/NotificationService';
 import { IVisaCheckoutClient } from './IVisaCheckoutClient';
 import { IVisaCheckoutClientStatus } from './IVisaCheckoutClientStatus';
@@ -28,8 +25,6 @@ import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 
 @Service()
 export class VisaCheckoutClient implements IVisaCheckoutClient {
-  private config$: BehaviorSubject<IConfig> = new BehaviorSubject<IConfig>(null);
-
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
     private messageBus: MessageBus,
@@ -40,7 +35,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
   ) {}
 
   init$(): Observable<VisaCheckoutClientStatus> {
-    return this.config$.pipe(
+    return this.configProvider.getConfig$().pipe(
       filter((config: IConfig) => config !== null),
       switchMap((config: IConfig) => {
         return from(
@@ -73,18 +68,6 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
         );
       })
     );
-  }
-
-  public watchConfigAndJwtUpdates(): void {
-    this.configProvider.getConfig$().subscribe((config: IConfig) => {
-      this.config$.next(config);
-    });
-    this.messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT)).subscribe((event: IMessageBusEvent<IUpdateJwt>) => {
-      this.config$.next({
-        ...this.config$.value,
-        jwt: event.data.newJwt
-      });
-    });
   }
 
   private onSuccess$(

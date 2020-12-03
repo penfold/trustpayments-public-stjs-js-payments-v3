@@ -18,11 +18,11 @@ export class VisaCheckoutMockClass {
   }
 
   private init(): void {
-    this.visaCheckout.init();
+    // this.visaCheckout.init();
     this.paymentStatusHandler();
   }
 
-  protected paymentStatusHandler() {
+  private paymentStatusHandler(): void {
     DomMethods.addListener(VisaCheckoutButtonProps.id, 'click', () => {
       this._handleMockedData();
     });

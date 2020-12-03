@@ -427,6 +427,5 @@ export class ControlFrame {
 
   private _initVisaCheckout(): void {
     this._visaCheckoutClient.init$().subscribe();
-    this._visaCheckoutClient.watchConfigAndJwtUpdates();
   }
 }

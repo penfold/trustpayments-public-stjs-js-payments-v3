@@ -3,5 +3,4 @@ import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 
 export interface IVisaCheckoutClient {
   init$(): Observable<VisaCheckoutClientStatus>;
-  watchConfigAndJwtUpdates(): void;
 }
