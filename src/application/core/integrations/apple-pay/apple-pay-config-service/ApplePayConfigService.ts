@@ -5,9 +5,13 @@ import { IApplePayValidateMerchantRequest } from '../IApplePayValidateMerchantRe
 import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { IApplePay } from '../IApplePay';
 import { RequestType } from '../../../../../shared/types/RequestType';
+import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
+import { IStJwtPayload } from '../../../models/IStJwtPayload';
 
 @Service()
 export class ApplePayConfigService {
+  constructor(private jwtDecoder: JwtDecoder) {}
+
   updateCurrencyCode(paymentRequest: IApplePayPaymentRequest, currencyCode: string): IApplePayPaymentRequest {
     return {
       ...paymentRequest,
@@ -53,11 +57,12 @@ export class ApplePayConfigService {
   }
 
   getStJwtData(jwt: string): { currencyiso3a: string; locale: string; mainamount: string } {
-    const { currencyiso3a, locale, mainamount } = new StJwt(jwt);
+    const payload: IStJwtPayload = this.jwtDecoder.decode(jwt).payload;
+
     return {
-      currencyiso3a,
-      locale,
-      mainamount
+      currencyiso3a: payload.currencyiso3a,
+      locale: payload.locale,
+      mainamount: payload.mainamount
     };
   }
 

@@ -3,6 +3,9 @@ import { RequestType } from '../../../../../shared/types/RequestType';
 import { IApplePayValidateMerchantRequest } from '../IApplePayValidateMerchantRequest';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { ApplePayConfigService } from './ApplePayConfigService';
+import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
+import { instance, mock, when } from 'ts-mockito';
+import { IStJwtPayload } from '../../../models/IStJwtPayload';
 
 describe('ApplePayConfigService', () => {
   let paymentRequest: IApplePayPaymentRequest;
@@ -15,7 +18,17 @@ describe('ApplePayConfigService', () => {
   let walletMerchantId: string;
   let walletValidationUrl: string;
   let config: IConfig;
-  let applePayConfigService: ApplePayConfigService = new ApplePayConfigService();
+  let payload = {
+    payload: {
+      currencyiso3a: 'test iso',
+      locale: 'en_GB',
+      mainamount: 'test amount'
+    }
+  };
+  const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
+  const jwt: string =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDcwOTA2NTEsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6InRlc3QgaXNvIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwibWFpbmFtb3VudCI6InRlc3QgYW1vdW50In19.Ni3igXSMvOIvrnAAaMh_BfiEfw6Mht1isTUDW9o7l_Q';
+  let applePayConfigService: ApplePayConfigService = new ApplePayConfigService(instance(jwtDecoderMock));
 
   describe('update paymentRequest object', () => {
     beforeAll(() => {
@@ -105,16 +118,12 @@ describe('ApplePayConfigService', () => {
   });
 
   describe('get properties from StJwt object', () => {
+    beforeAll(() => {
+      when(jwtDecoderMock.decode(jwt)).thenReturn(payload);
+    });
+
     it('should return currencyiso3a, locale and mainamount parameter ', () => {
-      expect(
-        applePayConfigService.getStJwtData(
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDcwOTA2NTEsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6InRlc3QgaXNvIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwibWFpbmFtb3VudCI6InRlc3QgYW1vdW50In19.Ni3igXSMvOIvrnAAaMh_BfiEfw6Mht1isTUDW9o7l_Q'
-        )
-      ).toEqual({
-        currencyiso3a: 'test iso',
-        locale: 'en_GB',
-        mainamount: 'test amount'
-      });
+      expect(applePayConfigService.getStJwtData(jwt)).toEqual(payload.payload);
     });
   });
 
