@@ -9,9 +9,6 @@ import { environment } from '../environments/environment';
 import { CardinalProvider } from '../application/core/integrations/cardinal-commerce/CardinalProvider';
 import { MockCardinalProvider } from './mocks/MockCardinalProvider';
 
-// Container.set({ id: VisaCheckout, type: VisaCheckoutMock });
-// Container.set({ id: VisaCheckoutSdkProvider, type: VisaCheckoutSdkProviderMock });
-
 if (environment.testEnvironment) {
   Container.set({ id: Cybertonica, type: CybertonicaMock });
   Container.set({ id: CardinalProvider, type: MockCardinalProvider });

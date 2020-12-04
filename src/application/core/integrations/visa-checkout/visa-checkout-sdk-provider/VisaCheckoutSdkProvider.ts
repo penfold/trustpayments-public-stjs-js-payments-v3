@@ -8,19 +8,19 @@ import { DomMethods } from '../../../shared/dom-methods/DomMethods';
 import { VisaCheckoutButtonService } from '../visa-checkout-button-service/VisaCheckoutButtonService';
 import { IVisaCheckoutUpdateConfig } from '../visa-checkout-update-service/IVisaCheckoutUpdateConfig';
 import { VisaCheckoutUpdateService } from '../visa-checkout-update-service/VisaCheckoutUpdateService';
-import { IVisaCheckoutSdk } from './IVisaCheckoutSdk';
+import { IVisaCheckoutSdk, IVisaCheckoutSdkLib } from './IVisaCheckoutSdk';
 import { IVisaCheckoutSdkProvider } from './IVisaCheckoutSdkProvider';
 
-declare const V: any;
+declare const V: IVisaCheckoutSdkLib;
 
 @Service()
 export class VisaCheckoutSdkProvider implements IVisaCheckoutSdkProvider {
   private isSdkLoaded: boolean = false;
 
   constructor(
-    private visaCheckoutUpdateService: VisaCheckoutUpdateService,
-    private jwtDecoder: JwtDecoder,
-    private visaCheckoutButtonService: VisaCheckoutButtonService
+    protected visaCheckoutUpdateService: VisaCheckoutUpdateService,
+    protected jwtDecoder: JwtDecoder,
+    protected visaCheckoutButtonService: VisaCheckoutButtonService
   ) {}
 
   getSdk$(config: IConfig): Observable<IVisaCheckoutSdk> {
@@ -28,7 +28,7 @@ export class VisaCheckoutSdkProvider implements IVisaCheckoutSdkProvider {
 
     if (this.isSdkLoaded) {
       return of({
-        lib: null,
+        lib: V,
         updateConfig: visaCheckoutUpdatedConfig
       });
     } else {
@@ -39,10 +39,6 @@ export class VisaCheckoutSdkProvider implements IVisaCheckoutSdkProvider {
         })
       ).pipe(
         tap(() => {
-          this.visaCheckoutButtonService.customize(
-            config.visaCheckout.buttonSettings,
-            visaCheckoutUpdatedConfig.buttonUrl
-          );
           this.visaCheckoutButtonService.mount(
             config.visaCheckout.placement,
             config.visaCheckout.buttonSettings,

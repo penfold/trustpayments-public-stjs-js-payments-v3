@@ -42,11 +42,11 @@ export class VisaCheckoutMockClass {
     if (status === 'SUCCESS') {
       this.interFrameCommunicator.incomingEvent$
         .pipe(
-          ofType(PUBLIC_EVENTS.VISA_CHECKOUT_START),
+          ofType(PUBLIC_EVENTS.VISA_CHECKOUT_STATUS),
           take(1),
           map(() => {
             return {
-              type: PUBLIC_EVENTS.VISA_CHECKOUT_START,
+              type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
               data: data as IVisaCheckoutStatusDataSuccess
             };
           })

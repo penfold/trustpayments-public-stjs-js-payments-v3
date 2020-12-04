@@ -1,5 +1,5 @@
 import { from, Observable, of } from 'rxjs';
-import { catchError, filter, switchMap } from 'rxjs/operators';
+import { catchError, filter, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { IVisaCheckoutStatusDataSuccess } from '../../../application/core/integrations/visa-checkout/visa-checkout-status-data/IVisaCheckoutStatusDataSuccess';
@@ -11,6 +11,7 @@ import {
   PAYMENT_SUCCESS
 } from '../../../application/core/models/constants/Translations';
 import { IMerchantData } from '../../../application/core/models/IMerchantData';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IWallet } from '../../../application/core/models/IWallet';
 import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
 import { Payment } from '../../../application/core/shared/payment/Payment';
@@ -18,6 +19,7 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { NotificationService } from '../../notification/NotificationService';
 import { IVisaCheckoutClient } from './IVisaCheckoutClient';
 import { IVisaCheckoutClientStatus } from './IVisaCheckoutClientStatus';
@@ -37,21 +39,25 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
   init$(): Observable<VisaCheckoutClientStatus> {
     return this.configProvider.getConfig$().pipe(
       filter((config: IConfig) => config !== null),
+      tap((config: IConfig) => {
+        this.messageBus.publish<IConfig>(
+          {
+            type: PUBLIC_EVENTS.VISA_CHECKOUT_CONFIG,
+            data: config
+          },
+          true
+        );
+      }),
       switchMap((config: IConfig) => {
-        return from(
-          this.interFrameCommunicator.query(
-            {
-              type: PUBLIC_EVENTS.VISA_CHECKOUT_START,
-              data: config as IConfig
-            },
-            MERCHANT_PARENT_FRAME
-          )
-        ).pipe(
-          switchMap((status: IVisaCheckoutClientStatus) => {
-            console.error(2222222222222);
-            switch (status.status) {
+        return this.messageBus.pipe(ofType(PUBLIC_EVENTS.VISA_CHECKOUT_STATUS)).pipe(
+          switchMap((event: IMessageBusEvent<IVisaCheckoutClientStatus>) => {
+            switch (event.data.status) {
               case VisaCheckoutClientStatus.SUCCESS:
-                return this.onSuccess$(config, status.data as IVisaCheckoutStatusDataSuccess, status.merchantData);
+                return this.onSuccess$(
+                  config,
+                  event.data.data as IVisaCheckoutStatusDataSuccess,
+                  event.data.merchantData
+                );
 
               case VisaCheckoutClientStatus.CANCEL:
                 return this.onCancel$();

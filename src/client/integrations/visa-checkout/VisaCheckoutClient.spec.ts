@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { anything, capture, instance as mockInstance, mock, spy, when } from 'ts-mockito';
+import { anything, deepEqual, instance as mockInstance, mock, verify, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import {
   PAYMENT_CANCELLED,
@@ -13,7 +13,6 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { NotificationService } from '../../notification/NotificationService';
-import { IVisaCheckoutClientStatus } from './IVisaCheckoutClientStatus';
 import { VisaCheckoutClient } from './VisaCheckoutClient';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 
@@ -66,133 +65,118 @@ describe('VisaCheckoutClient', () => {
     );
 
     when(configProviderMock.getConfig$()).thenReturn(of(configMock));
-    when(messageBusMock.pipe(anything())).thenReturn(
-      of({
-        data: {
-          newJwt: ''
-        }
-      })
-    );
     when(jwtDecoderMock.decode(anything())).thenReturn({
       payload: {
         requesttypedescriptions: ['AUTH']
       }
     });
-    visaCheckoutClient.watchConfigAndJwtUpdates();
   });
 
   describe('init$()', () => {
     it(`should check ${VisaCheckoutClientStatus.SUCCESS} callback`, done => {
-      when(interFrameCommunicatorMock.query(anything(), anything())).thenReturn(
-        new Promise(resolve => {
-          resolve({
+      when(messageBusMock.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+          data: {
             status: VisaCheckoutClientStatus.SUCCESS,
             data: {},
             merchantData: {}
-          } as IVisaCheckoutClientStatus);
+          }
         })
       );
       when(paymentMock.processPayment(anything(), anything(), anything())).thenReturn(Promise.resolve({}));
 
       visaCheckoutClient.init$().subscribe(status => {
         expect(status).toBe(VisaCheckoutClientStatus.SUCCESS);
-        expect(capture(notificationServiceMock.success).first()).toEqual([PAYMENT_SUCCESS]);
-        expect(capture(messageBusMock.publish).first()).toEqual([
-          { type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK },
-          true
-        ]);
+        verify(notificationServiceMock.success(PAYMENT_SUCCESS)).once();
+        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }), true)).once();
 
         done();
       });
     });
 
     it(`should check ${VisaCheckoutClientStatus.SUCCESS} callback with error form payment`, done => {
-      when(interFrameCommunicatorMock.query(anything(), anything())).thenReturn(
-        new Promise(resolve => {
-          resolve({
+      when(messageBusMock.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+          data: {
             status: VisaCheckoutClientStatus.SUCCESS,
             data: {},
             merchantData: {}
-          } as IVisaCheckoutClientStatus);
+          }
         })
       );
       when(paymentMock.processPayment(anything(), anything(), anything())).thenReturn(Promise.reject());
 
       visaCheckoutClient.init$().subscribe(status => {
         expect(status).toBe(VisaCheckoutClientStatus.SUCCESS_FAILED);
-        expect(capture(notificationServiceMock.error).first()).toEqual([PAYMENT_ERROR]);
-        expect(capture(messageBusMock.publish).first()).toEqual([
-          { type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK },
-          true
-        ]);
+        verify(notificationServiceMock.error(PAYMENT_ERROR)).once();
+        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }), true)).once();
 
         done();
       });
     });
 
     it(`should check ${VisaCheckoutClientStatus.ERROR} callback`, done => {
-      when(interFrameCommunicatorMock.query(anything(), anything())).thenReturn(
-        new Promise(resolve => {
-          resolve({
+      when(messageBusMock.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+          data: {
             status: VisaCheckoutClientStatus.ERROR,
             data: {}
-          } as IVisaCheckoutClientStatus);
+          }
         })
       );
 
       visaCheckoutClient.init$().subscribe(status => {
         expect(status).toBe(VisaCheckoutClientStatus.ERROR);
-        expect(capture(notificationServiceMock.error).first()).toEqual([PAYMENT_ERROR]);
-        expect(capture(messageBusMock.publish).first()).toEqual([
-          { type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK },
-          true
-        ]);
+        verify(notificationServiceMock.error(PAYMENT_ERROR)).once();
+        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }), true)).once();
 
         done();
       });
     });
 
     it(`should check ${VisaCheckoutClientStatus.CANCEL} callback`, done => {
-      when(interFrameCommunicatorMock.query(anything(), anything())).thenReturn(
-        new Promise(resolve => {
-          resolve({
+      when(messageBusMock.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+          data: {
             status: VisaCheckoutClientStatus.CANCEL,
             data: {}
-          } as IVisaCheckoutClientStatus);
+          }
         })
       );
 
       visaCheckoutClient.init$().subscribe(status => {
         expect(status).toBe(VisaCheckoutClientStatus.CANCEL);
-        expect(capture(notificationServiceMock.cancel).first()).toEqual([PAYMENT_CANCELLED]);
-        expect(capture(messageBusMock.publish).first()).toEqual([
-          {
-            type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK
-          },
-          true
-        ]);
-        expect(capture(messageBusMock.publish).second()).toEqual([
-          {
-            type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-            data: {
-              errorcode: 'cancelled',
-              errormessage: PAYMENT_CANCELLED
-            }
-          },
-          true
-        ]);
+        verify(notificationServiceMock.cancel(PAYMENT_CANCELLED)).once();
+        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }), true)).once();
+        verify(
+          messageBusMock.publish(
+            deepEqual({
+              type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+              data: {
+                errorcode: 'cancelled',
+                errormessage: PAYMENT_CANCELLED
+              }
+            }),
+            true
+          )
+        ).once();
 
         done();
       });
     });
 
     it(`should check ${VisaCheckoutClientStatus.PRE_PAYMENT} callback`, done => {
-      when(interFrameCommunicatorMock.query(anything(), anything())).thenReturn(
-        new Promise(resolve => {
-          resolve({
+      when(messageBusMock.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+          data: {
             status: VisaCheckoutClientStatus.PRE_PAYMENT,
             data: {}
-          } as IVisaCheckoutClientStatus);
+          }
         })
       );
 
@@ -204,12 +188,13 @@ describe('VisaCheckoutClient', () => {
     });
 
     it(`should throw an error when unknown status provided`, done => {
-      when(interFrameCommunicatorMock.query(anything(), anything())).thenReturn(
-        new Promise(resolve => {
-          resolve({
+      when(messageBusMock.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+          data: {
             status: 'UNKNOWN' as VisaCheckoutClientStatus,
             data: {}
-          } as IVisaCheckoutClientStatus);
+          }
         })
       );
 

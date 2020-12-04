@@ -1,20 +1,21 @@
-import { Subject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { of, Subject } from 'rxjs';
+import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { IConfig } from '../../../../shared/model/config/IConfig';
-import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
-import { IStJwtPayload } from '../../models/IStJwtPayload';
+import { MessageBus } from '../../shared/message-bus/MessageBus';
+import { IVisaCheckoutSdkLib } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
 import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
+import { IVisaCheckoutStatusData } from './visa-checkout-status-data/IVisaCheckoutStatusData';
 import { IVisaCheckoutUpdateConfig } from './visa-checkout-update-service/IVisaCheckoutUpdateConfig';
 import { VisaCheckout } from './VisaCheckout';
-import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { anyString, mock, when, instance as mockInstance, verify } from 'ts-mockito';
+import { mock, when, instance as mockInstance, verify, anything, deepEqual } from 'ts-mockito';
+import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
 
 describe('Visa Checkout', () => {
   let instance: VisaCheckout;
-  let interFrameCommunicatorMock: InterFrameCommunicator;
-  let visaCheckoutSdkProvider: VisaCheckoutSdkProvider;
+  let visaCheckoutSdkProviderMock: VisaCheckoutSdkProvider;
+  let messageBusMock: MessageBus;
 
   const visaCheckoutUpdateConfigMock: IVisaCheckoutUpdateConfig = {
     buttonUrl: 'https://button-mock-url.com',
@@ -29,7 +30,6 @@ describe('Visa Checkout', () => {
       }
     }
   };
-  const jwtPayloadMock: IStJwtPayload = {};
   const configMock: IConfig = {
     jwt: '',
     formId: 'st-form',
@@ -52,38 +52,83 @@ describe('Visa Checkout', () => {
       }
     }
   };
-  const messages = new Subject<IMessageBusEvent>();
+  const visaCheckoutLibMock: IVisaCheckoutSdkLib = {
+    init: () => {},
+    on: (resType: VisaCheckoutResponseType, cb: (statusData: IVisaCheckoutStatusData) => void) => {
+      switch (resType) {
+        case VisaCheckoutResponseType.success:
+          cb({ successData: 'OK' });
+          break;
+
+        case VisaCheckoutResponseType.cancel:
+          cb({ cancelData: 'OK' });
+          break;
+
+        case VisaCheckoutResponseType.error:
+          cb({ errorData: 'OK' });
+          break;
+
+        case VisaCheckoutResponseType.prePayment:
+          cb({ prePaymentData: 'OK' });
+          break;
+      }
+    }
+  };
 
   beforeEach(() => {
-    interFrameCommunicatorMock = mock(InterFrameCommunicator);
-    visaCheckoutSdkProvider = mock(VisaCheckoutSdkProvider);
+    visaCheckoutSdkProviderMock = mock(VisaCheckoutSdkProvider);
+    messageBusMock = mock(MessageBus);
 
-    when(interFrameCommunicatorMock.whenReceive(anyString())).thenCall((eventType: string) => {
-      return {
-        thenRespond: (responder: any) => {
-          messages
-            .pipe(
-              ofType(eventType),
-              switchMap(event => responder(event))
-            )
-            .subscribe();
-        }
-      };
-    });
+    when(messageBusMock.pipe(anything())).thenReturn(of(configMock));
+    when(visaCheckoutSdkProviderMock.getSdk$(anything())).thenReturn(
+      of({
+        lib: visaCheckoutLibMock,
+        updateConfig: visaCheckoutUpdateConfigMock
+      })
+    );
 
-    instance = new VisaCheckout(mockInstance(interFrameCommunicatorMock), mockInstance(visaCheckoutSdkProvider));
+    instance = new VisaCheckout(mockInstance(visaCheckoutSdkProviderMock), mockInstance(messageBusMock));
 
     instance.init();
   });
 
   describe('init()', () => {
-    it('invoke loadSdk$() method to inject script and mount the button', () => {
-      messages.next({
-        type: PUBLIC_EVENTS.VISA_CHECKOUT_START,
-        data: configMock
-      });
+    it('should set VisaCheckout event response listeners and invoke Message Bus with proper data', () => {
+      verify(
+        messageBusMock.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+            data: {
+              status: VisaCheckoutClientStatus.CANCEL,
+              data: { cancelData: 'OK' }
+            }
+          })
+        )
+      ).once();
 
-      verify(visaCheckoutSdkProvider.getSdk$(configMock)).once();
+      verify(
+        messageBusMock.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+            data: {
+              status: VisaCheckoutClientStatus.ERROR,
+              data: { errorData: 'OK' }
+            }
+          })
+        )
+      ).once();
+
+      verify(
+        messageBusMock.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+            data: {
+              status: VisaCheckoutClientStatus.PRE_PAYMENT,
+              data: { prePaymentData: 'OK' }
+            }
+          })
+        )
+      ).once();
     });
   });
 });

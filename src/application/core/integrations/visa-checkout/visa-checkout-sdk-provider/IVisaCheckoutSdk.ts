@@ -10,6 +10,5 @@ export interface IVisaCheckoutSdk {
 
 export interface IVisaCheckoutSdkLib {
   init: (visaInitConfig: IVisaCheckoutInitConfig) => void;
-  // on: (callbackType: VisaCheckoutResponseType, callback: (statusData: IVisaCheckoutStatusData) => void) => void;
-  on: any;
+  on: (callbackType: VisaCheckoutResponseType, callback: (statusData: IVisaCheckoutStatusData) => void) => void;
 }

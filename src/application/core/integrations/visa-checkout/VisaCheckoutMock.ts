@@ -1,45 +1,63 @@
-import { Observable, Subscriber } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
-import { IVisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/IVisaCheckoutClientStatus';
-import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { environment } from '../../../../environments/environment';
 import { IConfig } from '../../../../shared/model/config/IConfig';
-import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
+import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
+import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { VisaCheckoutButtonProps } from './visa-checkout-button-service/VisaCheckoutButtonProps';
-import { IVisaCheckoutSdk } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
 import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
 import { IVisaCheckoutStatusData } from './visa-checkout-status-data/IVisaCheckoutStatusData';
-import { IVisaCheckoutStatusDataCancel } from './visa-checkout-status-data/IVisaCheckoutStatusDataCancel';
-import { IVisaCheckoutStatusDataError } from './visa-checkout-status-data/IVisaCheckoutStatusDataError';
+import { IVisaCheckoutStatusDataSuccess } from './visa-checkout-status-data/IVisaCheckoutStatusDataSuccess';
 import { VisaCheckout } from './VisaCheckout';
-import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
 
 @Service()
 export class VisaCheckoutMock extends VisaCheckout {
-  constructor(
-    protected interFrameCommunicator: InterFrameCommunicator,
-    protected visaCheckoutSdkProvider: VisaCheckoutSdkProvider
-  ) {
-    super(interFrameCommunicator, visaCheckoutSdkProvider);
+  constructor(protected visaCheckoutSdkProvider: VisaCheckoutSdkProvider, protected messageBus: MessageBus) {
+    super(visaCheckoutSdkProvider, messageBus);
   }
 
   init(): void {
-    this.interFrameCommunicator
-      .whenReceive(PUBLIC_EVENTS.VISA_CHECKOUT_START)
-      .thenRespond((event: IMessageBusEvent<IConfig>) => {
-        return this.visaCheckoutSdkProvider.getSdk$(event.data).pipe(
-          switchMap(() => {
-            return new Observable<IVisaCheckoutClientStatus>((observer: Subscriber<IVisaCheckoutClientStatus>) => {
-              DomMethods.addListener(VisaCheckoutButtonProps.id, 'click', () => {
-                this.onCancel(observer);
-              });
+    this.messageBus
+      .pipe(ofType(PUBLIC_EVENTS.VISA_CHECKOUT_CONFIG))
+      .pipe(
+        switchMap((event: IMessageBusEvent<IConfig>) => {
+          return this.visaCheckoutSdkProvider.getSdk$(event.data).pipe(
+            map(() => {
+              return event.data;
+            })
+          );
+        })
+      )
+      .subscribe((config: IConfig) => {
+        DomMethods.addListener(VisaCheckoutButtonProps.id, 'click', () => {
+          fetch(environment.VISA_CHECKOUT_URLS.MOCK_DATA_URL)
+            .then((response: Body) => response.json() as IVisaCheckoutStatusData)
+            .then(({ payment, status }: any) => {
+              this.proceedWithMockData(payment, status, config);
             });
-          })
-        );
+        });
       });
+  }
+
+  private proceedWithMockData(payment: IVisaCheckoutStatusDataSuccess, status: string, config: IConfig): void {
+    switch (status) {
+      case 'SUCCESS':
+        this.onSuccess(config, payment);
+        break;
+
+      case 'CANCEL':
+        this.onCancel();
+        break;
+
+      case 'ERROR':
+        this.onError();
+        break;
+
+      default:
+        console.error(`Unknown status from ${environment.VISA_CHECKOUT_URLS.MOCK_DATA_URL} endpoint`);
+    }
   }
 }

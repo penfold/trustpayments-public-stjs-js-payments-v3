@@ -12,7 +12,6 @@ jest.mock('./../../application/core/shared/dom-methods/DomMethods');
 jest.mock('./../../client/common-frames/CommonFrames.class');
 jest.mock('./../../client/card-frames/CardFrames.class');
 jest.mock('./../../application/core/integrations/visa-checkout/VisaCheckout');
-jest.mock('./../../application/core/integrations/visa-checkout/visa-checkout-mock-class/VisaCheckoutMockClass');
 jest.mock('./../../application/core/integrations/apple-pay/ApplePay');
 jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytics');
 
