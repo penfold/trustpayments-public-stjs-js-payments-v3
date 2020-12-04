@@ -14,10 +14,11 @@ import { EMPTY, of } from 'rxjs';
 import { Store } from '../../core/store/Store';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
-import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
 import { IStyles } from '../../../shared/model/config/IStyles';
 import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -27,7 +28,7 @@ describe('ControlFrame', () => {
 
   beforeEach(() => {
     // @ts-ignore
-    instance._messageBus.subscribe = jest.fn().mockImplementationOnce((event, callback) => {
+    instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
       callback(data);
     });
   });
@@ -121,7 +122,7 @@ describe('ControlFrame', () => {
     // then
     it('should call _initResetJwtEvent when RESET_JWT event has been called', () => {
       // @ts-ignore
-      instance._messageBus.subscribe = jest
+      instance._messageBus.subscribeType = jest
         .fn()
         .mockImplementationOnce((even, callback) => {
           callback();
@@ -242,7 +243,7 @@ function controlFrameFixture() {
   const cybertonica: Cybertonica = mock(Cybertonica);
   const cardinalCommerce: CardinalCommerce = mock(CardinalCommerce);
   const configService: ConfigService = mock(ConfigService);
-  const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
+  const messageBus: IMessageBus = new SimpleMessageBus();
   const frame: Frame = mock(Frame);
   const storeMock: Store = mock(Store);
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);

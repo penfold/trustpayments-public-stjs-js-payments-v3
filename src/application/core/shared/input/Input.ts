@@ -5,11 +5,12 @@ import { Utils } from '../utils/Utils';
 import { Validation } from '../validation/Validation';
 import { onInputWraper } from '../on-input-wrapper/onInputWrapper';
 import { Frame } from '../frame/Frame';
-import { MessageBus } from '../message-bus/MessageBus';
 import { Container } from 'typedi';
 import { NOT_IMPLEMENTED_ERROR } from '../../models/constants/Translations';
 import { CARD_NUMBER_INPUT, CARD_NUMBER_WRAPPER } from '../../models/constants/Selectors';
 import { AllowedStylesService } from './AllowedStylesService';
+import { IMessageBus } from '../message-bus/IMessageBus';
+import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
 
 export class Input {
   protected static PLACEHOLDER_ATTRIBUTE: string = 'placeholder';
@@ -25,11 +26,11 @@ export class Input {
   protected placeholder: string;
   private _translator: Translator;
   private _frame: Frame;
-  private _messageBus: MessageBus;
+  private _messageBus: IMessageBus;
   private _allowedStyles: AllowedStylesService;
 
   constructor(inputSelector: string, messageSelector: string, labelSelector: string, wrapperSelector: string) {
-    this._messageBus = Container.get(MessageBus);
+    this._messageBus = Container.get(MessageBusToken);
     this._allowedStyles = Container.get(AllowedStylesService);
     this._frame = Container.get(Frame);
     this._cardNumberInput = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
@@ -148,7 +149,7 @@ export class Input {
   }
 
   protected setEventListener(event: string, validate: boolean = true) {
-    this._messageBus.subscribe(event, () => {
+    this._messageBus.subscribeType(event, () => {
       if (validate) {
         this._validateInput();
       }

@@ -3,6 +3,7 @@ import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
 import { Formatter } from '../../core/shared/formatter/Formatter';
 import { Input } from '../../core/shared/input/Input';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import {
   EXPIRATION_DATE_INPUT,
   EXPIRATION_DATE_LABEL,
@@ -32,7 +33,7 @@ export class ExpirationDate extends Input {
   constructor(
     private _configProvider: ConfigProvider,
     private _formatter: Formatter,
-    private messageBus: MessageBus,
+    private messageBus: IMessageBus,
     private frame: Frame
   ) {
     super(EXPIRATION_DATE_INPUT, EXPIRATION_DATE_MESSAGE, EXPIRATION_DATE_LABEL, EXPIRATION_DATE_WRAPPER);
@@ -77,7 +78,7 @@ export class ExpirationDate extends Input {
   }
 
   public setDisableListener() {
-    this.messageBus.subscribe(MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, (state: FormState) => {
+    this.messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, (state: FormState) => {
       state !== FormState.AVAILABLE ? this._disableInputField() : this._enableInputField();
     });
   }

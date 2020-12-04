@@ -7,7 +7,7 @@ import { QueryMessage } from './messages/QueryMessage';
 import { ResponseMessage } from './messages/ResponseMessage';
 import { environment } from '../../../environments/environment';
 import { FrameCollection } from './interfaces/FrameCollection';
-import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
+import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { FrameIdentifier } from './FrameIdentifier';
 import { FrameAccessor } from './FrameAccessor';
 import { FrameNotFound } from './errors/FrameNotFound';
@@ -103,6 +103,14 @@ export class InterFrameCommunicator {
   public close(): void {
     this.close$.next();
     this.close$.complete();
+  }
+
+  public sendToParentFrame(event: IMessageBusEvent): void {
+    this.send(event, MERCHANT_PARENT_FRAME);
+  }
+
+  public sendToControlFrame(event: IMessageBusEvent): void {
+    this.send(event, CONTROL_FRAME_IFRAME);
   }
 
   private resolveTargetFrame(target: Window | string): Window {

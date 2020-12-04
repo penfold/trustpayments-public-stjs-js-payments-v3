@@ -11,7 +11,6 @@ import { of } from 'rxjs';
 import { ICardinal, IContinueObject, IOrderObject } from './ICardinal';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { CardinalMock } from '../../../../testing/mocks/CardinalMock';
-import { MessageBusMock } from '../../../../testing/mocks/MessageBusMock';
 import { PaymentEvents } from '../../models/constants/PaymentEvents';
 import { environment } from '../../../../environments/environment';
 import { ICard } from '../../models/ICard';
@@ -21,11 +20,13 @@ import { first, switchMap } from 'rxjs/operators';
 import { PaymentBrand } from '../../models/constants/PaymentBrand';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { RequestType } from '../../../../shared/types/RequestType';
+import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 
 describe('CardinalCommerce', () => {
   const tokens: ICardinalCommerceTokens = { jwt: 'foo', cacheToken: 'bar' };
   const config: IConfig = ({ livestatus: false, init: {} } as unknown) as IConfig;
-  let messageBusMock: MessageBus;
+  let messageBusMock: IMessageBus;
   let notificationMock: NotificationService;
   let framesHubMock: FramesHub;
   let tokenProviderMock: CardinalCommerceTokensProvider;
@@ -36,7 +37,7 @@ describe('CardinalCommerce', () => {
 
   beforeEach(() => {
     cardinalMock = new CardinalMock();
-    messageBusMock = (new MessageBusMock() as unknown) as MessageBus;
+    messageBusMock = new SimpleMessageBus();
     notificationMock = mock(NotificationService);
     framesHubMock = mock(FramesHub);
     tokenProviderMock = mock(CardinalCommerceTokensProvider);

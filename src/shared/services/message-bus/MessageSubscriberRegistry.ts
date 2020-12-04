@@ -1,10 +1,10 @@
 import { IMessageSubscriber } from './interfaces/IMessageSubscriber';
 import { Service } from 'typedi';
-import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 
 @Service()
 export class MessageSubscriberRegistry {
-  constructor(private messageBus: MessageBus) {}
+  constructor(private messageBus: IMessageBus) {}
 
   register(...messageSubscribers: IMessageSubscriber[]): void {
     messageSubscribers.forEach(subscriber => subscriber.register(this.messageBus));
