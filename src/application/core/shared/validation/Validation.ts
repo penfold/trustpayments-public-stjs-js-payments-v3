@@ -20,6 +20,8 @@ import { CARD_NUMBER_INPUT } from '../../models/constants/Selectors';
 import { Translator } from '../translator/Translator';
 import { Utils } from '../utils/Utils';
 import { Container, Service } from 'typedi';
+import { IMessageBus } from '../message-bus/IMessageBus';
+import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
 
 @Service()
 export class Validation {
@@ -148,17 +150,17 @@ export class Validation {
   private _selectionRangeEnd: number;
   private _selectionRangeStart: number;
   private _translator: Translator;
-  private _messageBus: MessageBus;
+  private _messageBus: IMessageBus;
   private _frame: Frame;
 
   constructor() {
-    this._messageBus = Container.get(MessageBus);
+    this._messageBus = Container.get(MessageBusToken);
     this._frame = Container.get(Frame);
     this.init();
   }
 
   public backendValidation(inputElement: HTMLInputElement, messageElement: HTMLElement, event: string) {
-    this._messageBus.subscribe(event, (data: IMessageBusValidateField) => {
+    this._messageBus.subscribeType(event, (data: IMessageBusValidateField) => {
       this.setError(inputElement, messageElement, data);
     });
   }

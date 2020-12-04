@@ -6,7 +6,7 @@ import { Validation } from '../../application/core/shared/validation/Validation'
 import { Container } from 'typedi';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { IComponentsIds } from '../../shared/model/config/IComponentsIds';
-import { delay, filter, first, map, takeUntil } from 'rxjs/operators';
+import { delay, filter, first, map, takeUntil, tap } from 'rxjs/operators';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Observable } from 'rxjs';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
@@ -16,6 +16,8 @@ import { StJwt } from '../../application/core/shared/stjwt/StJwt';
 import { PAYMENT_CANCELLED, PAYMENT_SUCCESS } from '../../application/core/models/constants/Translations';
 import { CONTROL_FRAME_COMPONENT_NAME, CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
 import { CustomerOutput } from '../../application/core/models/constants/CustomerOutput';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { MessageBusToken } from '../../shared/dependency-injection/InjectionTokens';
 
 export class CommonFrames {
   get requestTypes(): string[] {
@@ -29,7 +31,7 @@ export class CommonFrames {
   public elementsTargets: any;
   public elementsToRegister: HTMLElement[];
   private _controlFrame: HTMLIFrameElement;
-  private _messageBus: MessageBus;
+  private _messageBus: IMessageBus;
   private _requestTypes: string[];
   private readonly _gatewayUrl: string;
   private readonly _merchantForm: HTMLFormElement;
@@ -48,7 +50,7 @@ export class CommonFrames {
   protected componentIds: any;
   protected submitCallback: any;
   protected fieldsToSubmit: string[];
-  protected messageBus: MessageBus;
+  protected messageBus: IMessageBus;
   protected formId: string;
   private _stJwt: StJwt;
 
@@ -69,7 +71,7 @@ export class CommonFrames {
     private _frame: Frame
   ) {
     this._gatewayUrl = gatewayUrl;
-    this._messageBus = Container.get(MessageBus);
+    this._messageBus = Container.get(MessageBusToken);
     this.formId = formId;
     this._merchantForm = document.getElementById(formId) as HTMLFormElement;
     this._validation = new Validation();

@@ -23,6 +23,7 @@ import { StTransport } from '../../services/st-transport/StTransport.class';
 import { CardinalProvider } from './CardinalProvider';
 import { COMMUNICATION_ERROR_INVALID_RESPONSE, PAYMENT_ERROR } from '../../models/constants/Translations';
 import { RequestType } from '../../../../shared/types/RequestType';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 
 @Service()
 export class CardinalCommerce {
@@ -41,7 +42,7 @@ export class CardinalCommerce {
   private destroy$: Observable<void>;
 
   constructor(
-    private messageBus: MessageBus,
+    private messageBus: IMessageBus,
     private notification: NotificationService,
     private framesHub: FramesHub,
     private tokenProvider: CardinalCommerceTokensProvider,

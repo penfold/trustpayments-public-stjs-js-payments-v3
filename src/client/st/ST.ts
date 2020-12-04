@@ -45,6 +45,7 @@ import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInf
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 
 @Service()
 export class ST {
@@ -104,7 +105,7 @@ export class ST {
     private _communicator: InterFrameCommunicator,
     private _framesHub: FramesHub,
     private _storage: BrowserLocalStorage,
-    private _messageBus: MessageBus,
+    private _messageBus: IMessageBus,
     private _notification: Notification,
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,

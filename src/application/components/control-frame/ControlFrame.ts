@@ -40,6 +40,7 @@ import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
 import { IThreeDQueryResponse } from '../../core/models/IThreeDQueryResponse';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 
 @Service()
 export class ControlFrame {
@@ -86,7 +87,7 @@ export class ControlFrame {
     private _cardinalCommerce: CardinalCommerce,
     private _store: Store,
     private _configService: ConfigService,
-    private _messageBus: MessageBus,
+    private _messageBus: IMessageBus,
     private _frame: Frame,
     private _jwtDecoder: JwtDecoder
   ) {
@@ -155,7 +156,7 @@ export class ControlFrame {
       });
     }
 
-    this._messageBus.subscribe(
+    this._messageBus.subscribeType(
       MessageBus.EVENTS_PUBLIC.CARDINAL_COMMERCE_TOKENS_ACQUIRED,
       (tokens: ICardinalCommerceTokens) => {
         this._payment.setCardinalCommerceCacheToken(tokens.cacheToken);
@@ -164,7 +165,7 @@ export class ControlFrame {
   }
 
   private _formFieldChangeEvent(event: string, field: IFormFieldState): void {
-    this._messageBus.subscribe(event, (data: IFormFieldState) => {
+    this._messageBus.subscribeType(event, (data: IFormFieldState) => {
       this._formFieldChange(event, data.value);
       ControlFrame._setFormFieldValidity(field, data);
       ControlFrame._setFormFieldValue(field, data);
@@ -172,7 +173,7 @@ export class ControlFrame {
   }
 
   private _resetJwtEvent(): void {
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.RESET_JWT, () => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.RESET_JWT, () => {
       ControlFrame._resetJwt();
     });
   }
@@ -183,13 +184,13 @@ export class ControlFrame {
   }
 
   private _updateJwtEvent(): void {
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: any) => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: any) => {
       ControlFrame._updateJwt(data.newJwt);
     });
   }
 
   private _updateMerchantFieldsEvent(): void {
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
       this._updateMerchantFields(data);
     });
   }
