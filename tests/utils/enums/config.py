@@ -21,7 +21,7 @@ config = {
     'config_immediate_payment_and_defer_init': 'configImmediatePaymentAndDeferInit.json',
     'config_start_on_load_requestTypes_tdq_auth': 'configStartOnLoadTdqAuth.json',
     'config_start_on_load_requestTypes_tdq': 'configStartOnLoadTdq.json',
-    'config_start_on_load_sub_acheck_tdq_aut': 'configStartOnLoadAcheckTdqAuthSub.json',
+    'config_start_on_load_acheck_tdq_auth_sub': 'configStartOnLoadAcheckTdqAuthSub.json',
     'config_skip_jsinit': 'configSkipJSinit.json',
     'config_defer_init': 'configDeferInitTrue.json',
     'config_submit_cvv_only': 'configSubmitCvvOnly.json',
