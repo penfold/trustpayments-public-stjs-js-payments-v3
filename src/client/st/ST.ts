@@ -1,5 +1,5 @@
 import './st.css';
-import jwt_decode from 'jwt-decode';
+import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames.class';
@@ -114,7 +114,8 @@ export class ST {
     private _cybertonica: Cybertonica,
     private _applePayNetworkService: ApplePayNetworksService,
     private _applePayButtonService: ApplePayButtonService,
-    private _applePayConfigService: ApplePayConfigService
+    private _applePayConfigService: ApplePayConfigService,
+    private jwtDecoder: JwtDecoder
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -183,7 +184,9 @@ export class ST {
       this._communicator,
       this._messageBus,
       this._applePayButtonService,
-      this._applePayConfigService
+      this._applePayNetworkService,
+      this._applePayConfigService,
+      this.jwtDecoder
     );
     applePay.init();
     return applePay;
@@ -273,7 +276,7 @@ export class ST {
   }
 
   private CommonFrames(): void {
-    const requestTypes: string[] = jwt_decode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
+    const requestTypes: string[] = this.jwtDecoder.decode(this._config.jwt).payload.requesttypedescriptions;
     this._commonFrames = new CommonFrames(
       this._config.jwt,
       this._config.origin,
@@ -294,7 +297,7 @@ export class ST {
 
   private Storage(): void {
     this._storage.setItem(ST.MERCHANT_TRANSLATIONS_STORAGE, JSON.stringify(this._config.translations));
-    this._storage.setItem(ST.LOCALE_STORAGE, jwt_decode<IStJwtObj<IStJwtPayload>>(this._config.jwt).payload.locale);
+    this._storage.setItem(ST.LOCALE_STORAGE, this.jwtDecoder.decode(this._config.jwt).payload.locale);
   }
 
   private displayLiveStatus(liveStatus: boolean): void {
