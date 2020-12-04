@@ -1,6 +1,8 @@
 import 'reflect-metadata';
+import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
 import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
+import { environment } from '../../environments/environment';
 import ST from './ST';
 import { Container } from 'typedi';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
@@ -18,7 +20,7 @@ jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytic
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 
 describe('ST', () => {
-  const { cacheConfig, instance } = stFixture();
+  const { config, cacheConfig, instance } = stFixture();
 
   describe('constructor()', () => {
     let stObject: any;
@@ -33,8 +35,14 @@ describe('ST', () => {
   describe('ST.AppapplePayConfiglePay()', () => {
     const { applePayConfig } = stFixture();
 
-    it('should return ApplePay object', () => {
-      expect(instance.ApplePay(applePayConfig)).toBeInstanceOf(ApplePay);
+    it('should return ApplePayMock object when environment.testEnvironment equals true', () => {
+      environment.testEnvironment = true;
+      expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePayMock);
+    });
+
+    it('should return ApplePay object when environment.testEnvironment equals false', () => {
+      environment.testEnvironment = false;
+      expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePay);
     });
   });
 
@@ -61,6 +69,17 @@ describe('ST', () => {
       expect(() => {
         instance.updateJWT(null);
       }).toThrow();
+    });
+  });
+
+  describe('cbrt', () => {
+    const key: string = 'some random key';
+    beforeEach(() => {
+      instance._cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(key);
+    });
+
+    it('should return transaction id when standalone cybertonica function has been called', async () => {
+      expect(await instance.Cybertonica()).toEqual(key);
     });
   });
 });
@@ -104,6 +123,7 @@ function stFixture() {
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU2MDk0NjM4Ny4yNDIzMzQ0LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwicGFuIjoiNDExMTExMTExMTExMTExMSIsImV4cGlyeWRhdGUiOiIwMS8yMCIsInNlY3VyaXR5Y29kZSI6IjEyMyJ9fQ.UssdRcocpaeAqd-jDXpxWeWiKIX-W7zlpy0UWrDE5vg', // Can't use property shorthand because it isn't supported by IE
     livestatus: 0,
     disableNotification: false,
+    cybertonicaApiKey: 'stfs',
     origin: 'https://someorigin.com',
     styles: {
       cardNumber: {

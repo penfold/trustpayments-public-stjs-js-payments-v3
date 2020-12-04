@@ -75,7 +75,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
       threedinit: Joi.string().allow('')
     })
     .allow(null),
-  jwt: Joi.string().required(),
+  jwt: Joi.string().allow(''),
   livestatus: Joi.number().valid(0, 1),
   origin: Joi.string().allow(''),
   panIcon: Joi.boolean(),
