@@ -1,5 +1,4 @@
-import jwt_decode from 'jwt-decode';
-import { StTransport } from '../../services/st-transport/StTransport.class';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Payment } from '../../shared/payment/Payment';
@@ -62,7 +61,8 @@ export class ApplePay {
     private _notification: NotificationService,
     private _applePayButtonService: ApplePayButtonService,
     private _applePayNetworkService: ApplePayNetworksService,
-    private _applePayConfigService: ApplePayConfigService
+    private _applePayConfigService: ApplePayConfigService,
+    private jwtDecoder: JwtDecoder
   ) {
     if (!Boolean(ApplePaySession)) {
       throw new Error('Works only on Safari');
@@ -96,7 +96,7 @@ export class ApplePay {
       this._paymentRequest = this._applePayConfigService.updateCurrencyCode(this._paymentRequest, currencyiso3a);
       this._paymentRequest = this._applePayConfigService.updateRequestTypes(
         this._paymentRequest,
-        jwt_decode<IDecodedJwt>(jwt).payload.requesttypedescriptions
+        this.jwtDecoder.decode(jwt).payload.requesttypedescriptions
       );
 
       this._translator = new Translator(locale);
