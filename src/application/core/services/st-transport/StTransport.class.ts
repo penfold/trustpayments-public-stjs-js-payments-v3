@@ -92,20 +92,12 @@ export class StTransport {
     const codec = this.getCodec();
     const gatewayUrl = this.getConfig().datacenterurl;
 
-    console.log({ requestBody });
-    console.log({ fetchOptions });
-    console.log({ gatewayUrl });
-
     return this._fetchRetry(gatewayUrl, {
       ...fetchOptions,
       body: requestBody
     })
-      .then(respone => {
-        console.log({ respone });
-        return respone;
-      })
       .then(codec.decode)
-      .catch(response => {
+      .catch(() => {
         return codec.decode({});
       });
   }
