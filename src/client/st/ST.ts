@@ -45,6 +45,7 @@ import { IApplePay } from '../../application/core/integrations/apple-pay/IAppleP
 import { ApplePayNetworksService } from '../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePayButtonService } from '../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { NotificationService } from '../notification/NotificationService';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 
 @Service()
 export class ST {
@@ -104,7 +105,7 @@ export class ST {
     private _communicator: InterFrameCommunicator,
     private _framesHub: FramesHub,
     private _storage: BrowserLocalStorage,
-    private _messageBus: MessageBus,
+    private _messageBus: IMessageBus,
     private _notification: Notification,
     private _notificationService: NotificationService,
     private _iframeFactory: IframeFactory,

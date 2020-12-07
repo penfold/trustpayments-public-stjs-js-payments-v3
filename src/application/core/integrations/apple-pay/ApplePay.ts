@@ -1,4 +1,3 @@
-import { StTransport } from '../../services/st-transport/StTransport.class';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Payment } from '../../shared/payment/Payment';
@@ -30,6 +29,9 @@ import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
 import { ApplePayNetworksService } from './apple-pay-networks-service/ApplePayNetworksService';
 import { IApplePayPaymentAuthorizationResult } from './IApplePayPaymentAuthorizationResult ';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { Container } from 'typedi';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -53,16 +55,17 @@ export class ApplePay {
   };
   private readonly _config$: Observable<IConfig>;
   private _paymentCancelled: boolean = false;
+  private _messageBus: IMessageBus;
 
   constructor(
     private _communicator: InterFrameCommunicator,
     private _configProvider: ConfigProvider,
     private _localStorage: BrowserLocalStorage,
-    private _messageBus: MessageBus,
     private _notification: NotificationService,
     private _applePayButtonService: ApplePayButtonService,
     private _applePayNetworkService: ApplePayNetworksService
   ) {
+    this._messageBus = Container.get(MessageBusToken);
     this._config$ = this._configProvider.getConfig$();
   }
 
@@ -116,7 +119,7 @@ export class ApplePay {
   }
 
   private _subscribeUpdateJwt(): void {
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: { newJwt: string }) => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: { newJwt: string }) => {
       const { currencyiso3a, locale, mainamount } = new StJwt(data.newJwt);
       this._translator = new Translator(locale);
       this._setCurrencyCode(currencyiso3a);

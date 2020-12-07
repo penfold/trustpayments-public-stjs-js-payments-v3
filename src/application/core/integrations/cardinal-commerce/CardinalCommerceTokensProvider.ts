@@ -6,10 +6,11 @@ import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { map, tap } from 'rxjs/operators';
 import { StTransport } from '../../services/st-transport/StTransport.class';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 
 @Service()
 export class CardinalCommerceTokensProvider {
-  constructor(private stTransport: StTransport, private messageBus: MessageBus) {}
+  constructor(private stTransport: StTransport, private messageBus: IMessageBus) {}
 
   getTokens(): Observable<ICardinalCommerceTokens> {
     return this.performThreeDInitRequest().pipe(
