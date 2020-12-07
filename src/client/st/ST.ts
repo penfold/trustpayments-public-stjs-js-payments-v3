@@ -182,7 +182,6 @@ export class ST {
       this._communicator,
       this._configProvider,
       this._storage,
-      this._messageBus,
       this._notificationService,
       this._applePayButtonService,
       this._applePayNetworkService
