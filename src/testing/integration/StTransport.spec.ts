@@ -1,7 +1,3 @@
-import { Observable } from 'rxjs';
-import { GlobalWithFetchMock } from 'jest-fetch-mock';
-import { mock, instance as mockInstance, when } from 'ts-mockito';
-import { IConfig } from '../../shared/model/config/IConfig';
 import { StTransport } from './../../application/core/services/st-transport/StTransport.class';
 import { ConfigProvider } from './../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from './../mocks/TestConfigProvider';
@@ -9,22 +5,9 @@ import { GatewayClient } from './../../application/core/services/GatewayClient';
 import { MessageBusMock } from '../mocks/MessageBusMock';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import Container from 'typedi';
-// import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
-
-const customGlobal: GlobalWithFetchMock = (global as unknown) as GlobalWithFetchMock;
-customGlobal.fetch = require('jest-fetch-mock');
-customGlobal.fetchMock = customGlobal.fetch;
-
-jest.mock('./../../application/core/shared/notification/Notification');
-
-Container.set({ id: MessageBus, type: MessageBusMock });
 
 describe('StTransport class', () => {
-  const config: IConfig = {
-    datacenterurl: 'https://webservices.securetrading.net/jwt/',
-    jwt:
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwNzEwMDYyNy40NTUzNDQsInBheWxvYWQiOnsiYmFzZWFtb3VudCI6IjEwMDAiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJHQlAiLCJzaXRlcmVmZXJlbmNlIjoidGVzdF9qYW1lczM4NjQxIiwicmVxdWVzdHR5cGVkZXNjcmlwdGlvbnMiOlsiVEhSRUVEUVVFUlkiXSwidGhyZWVkYnlwYXNzY2FyZHMiOlsiUElCQSJdfX0.8k-fCtqP1ad-i-Tt5lT0Rbe-yYMtHSyUlFbZs6zTO5M'
-  };
+  const datacenterurl: string = 'https://webservices.securetrading.net/jwt/';
 
   const requestObject = {
     baseamount: '1000',
@@ -32,97 +15,130 @@ describe('StTransport class', () => {
     currencyiso3a: 'GBP',
     sitereference: 'test_james38641',
     termurl: 'https://termurl.com',
-    // fraudcontroltransactionid: '11fd2e75-3b90-44c1-6611-16de265b975f',
     pan: '4111111111111111',
     expirydate: '12/23',
     securitycode: '123'
   };
 
-  describe('Header options', () => {
-    beforeEach(() => {
-      const testConfigProvider = new TestConfigProvider();
+  describe('GatewayClient', () => {
+    describe('for selected request types should return a response where:', () => {
+      let gatewayClient: GatewayClient;
+      let testConfigProvider: TestConfigProvider;
 
-      Container.set(MessageBus, new MessageBusMock());
-      Container.set(ConfigProvider, testConfigProvider);
+      beforeEach(() => {
+        testConfigProvider = new TestConfigProvider();
+        const stTransport = new StTransport(testConfigProvider);
+        const messageBus = (new MessageBusMock() as unknown) as MessageBus;
+        gatewayClient = new GatewayClient(stTransport, messageBus);
+      });
 
-      testConfigProvider.setConfig(config);
-    });
+      test('AUTH passed, SUBSCRIPTION failed', done => {
+        const jwt =
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwNzMxOTc1My43MTY5MiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJBVVRIIiwiU1VCU0NSSVBUSU9OIl0sInRocmVlZGJ5cGFzc3BheW1lbnR0eXBlcyI6WyJWSVNBIl19fQ.pdIHxc6P4h7QWh_uzUfpxLU10TpqtY7eEm-Cgda32cA';
 
-    test('AUTH SUBSCRIPTION', done => {
-      const requesttypedescriptions = ['SUBSCRIPTION', 'AUTH'];
-      const gatewayClient = Container.get(GatewayClient);
+        testConfigProvider.setConfig({ datacenterurl, jwt });
+        Container.set(ConfigProvider, testConfigProvider);
 
-      gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
-        if (Number(errorcode) === 0) {
-          console.log({ cachetoken });
-          gatewayClient.threedQuery({ ...requestObject, cachetoken: cachetoken }).subscribe({
-            next: value => console.log({ value }),
-            complete: () => done()
-          });
-        } else {
-          console.log('jest blad', errorcode);
-        }
+        gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
+          if (Number(errorcode) === 0) {
+            gatewayClient.threedQuery({ ...requestObject, cachetoken }).subscribe({
+              next: ({ customeroutput, errordata, errorcode }) => {
+                expect(customeroutput).toBe('TRYAGAIN');
+                expect(errordata).toContain('subscriptionnumber');
+                expect(errorcode).toBe('30000');
+              },
+              complete: () => done()
+            });
+          }
+        });
+      });
+
+      test('AUTH passed, ACCOUNTCHECK failed', done => {
+        const jwt =
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwNzMxOTgwMy42NTIwNjI0LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsInJlcXVlc3R0eXBlZGVzY3JpcHRpb25zIjpbIkFVVEgiLCJBQ0NPVU5UQ0hFQ0siXX19.txa1c9xyT3wXGmyvS3gCv686D8LSq_yLZw5lHFFY-os';
+
+        testConfigProvider.setConfig({ datacenterurl, jwt });
+        Container.set(ConfigProvider, testConfigProvider);
+
+        gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
+          if (Number(errorcode) === 0) {
+            gatewayClient.threedQuery({ ...requestObject, cachetoken }).subscribe({
+              next: ({ customeroutput, errordata, errorcode }) => {
+                expect(customeroutput).toBeUndefined();
+                expect(errordata).toContain('requesttypedescriptions');
+                expect(errorcode).toBe('30000');
+              },
+              complete: () => done()
+            });
+          }
+        });
+      });
+
+      test('RISKDEC / ACCOUNTCHECK / THREEDQUERY / AUTH passed', done => {
+        const jwt =
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwNzMyMDg4Mi4yMzYyOTY0LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsInJlcXVlc3R0eXBlZGVzY3JpcHRpb25zIjpbIlJJU0tERUMiLCJBQ0NPVU5UQ0hFQ0siLCJUSFJFRURRVUVSWSIsIkFVVEgiXX19.7U305bzgKJvnJOfyirJi8ZGFk3kO6HGiAndMIHWZAP0';
+
+        testConfigProvider.setConfig({ datacenterurl, jwt });
+        Container.set(ConfigProvider, testConfigProvider);
+
+        gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
+          if (Number(errorcode) === 0) {
+            gatewayClient.threedQuery({ ...requestObject, cachetoken }).subscribe({
+              next: response => {
+                expect(response.requesttypedescription).toBe('THREEDQUERY');
+                expect(response.paymenttypedescription).toBe('VISA');
+                expect(response.customeroutput).toBe('THREEDREDIRECT');
+                expect(response.errormessage).toBe('Payment has been successfully processed');
+              },
+              complete: () => done()
+            });
+          }
+        });
+      });
+
+      test('RISKDEC / ACCOUNTCHECK / AUTH passed, THREEDQUERY bypassed', done => {
+        const jwt =
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwNzMyMDAwNS42MTg1ODc3LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsInJlcXVlc3R0eXBlZGVzY3JpcHRpb25zIjpbIlJJU0tERUMiLCJBQ0NPVU5UQ0hFQ0siLCJUSFJFRURRVUVSWSIsIkFVVEgiLCJTVUJTQ1JJUFRJT04iXSwidGhyZWVkYnlwYXNzcGF5bWVudHR5cGVzIjpbIlZJU0EiXX19.XR5sjmYnUwImRUTVY5BE49lJr01nXlkgBX_HgZDzSfc';
+
+        testConfigProvider.setConfig({ datacenterurl, jwt });
+        Container.set(ConfigProvider, testConfigProvider);
+
+        gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
+          if (Number(errorcode) === 0) {
+            gatewayClient.threedQuery({ ...requestObject, cachetoken }).subscribe({
+              next: response => {
+                expect(response.requesttypedescription).toBe('ACCOUNTCHECK');
+                expect(response.paymenttypedescription).toBe('VISA');
+                expect(response.customeroutput).toBe('RESULT');
+                expect(response.errormessage).toBe('Payment has been successfully processed');
+              },
+              complete: () => done()
+            });
+          }
+        });
+      });
+
+      test('THREEDQUERY failed (bypass card)', done => {
+        const jwt =
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYwNzMyMDI4Ni42MDg2OTAzLCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsInJlcXVlc3R0eXBlZGVzY3JpcHRpb25zIjpbIlRIUkVFRFFVRVJZIl0sInRocmVlZGJ5cGFzc3BheW1lbnR0eXBlcyI6WyJWSVNBIl19fQ.ns3JUnc5CCIQtZIH2qWLyyAyyNuaemOnTBJ4gWXOZcM';
+
+        testConfigProvider.setConfig({ datacenterurl, jwt });
+        Container.set(ConfigProvider, testConfigProvider);
+
+        gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
+          if (Number(errorcode) === 0) {
+            gatewayClient.threedQuery({ ...requestObject, cachetoken }).subscribe({
+              next: response => {
+                expect(response.requesttypedescription).toBe('ERROR');
+                expect(response.customeroutput).toBe('TRYAGAIN');
+                expect(response.errorcode).toBe('22000');
+                expect(response.errormessage).toBe('Bypass');
+              },
+              complete: () => done()
+            });
+          }
+        });
       });
     });
-
-    // test('ACCOUNTCHECK AUTH', done => {
-    //   const requesttypedescriptions = ["ACCOUNTCHECK", "AUTH"];
-    //   const gatewayClient = Container.get(GatewayClient);
-
-    //   gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
-    //     if (Number(errorcode) === 0) {
-    //       console.log({cachetoken})
-    //       gatewayClient.threedQuery({...requestObject, cachetoken: cachetoken}).subscribe({
-    //         next: (value) => console.log({value}),
-    //         complete: () => done()
-    //       })
-    //     }
-    //   });
-    // });
-
-    // test('RISKDEC_ACCOUNTCHECK_THREEDQUERY_AUTH', done => {
-    //   const requesttypedescriptions = ["SUBSCRIPTION", "AUTH"];
-    //   const gatewayClient = Container.get(GatewayClient);
-
-    //   gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
-    //     if (Number(errorcode) === 0) {
-    //       console.log({cachetoken})
-    //       gatewayClient.threedQuery({...requestObject, cachetoken: cachetoken}).subscribe({
-    //         next: (value) => console.log({value}),
-    //         complete: () => done()
-    //       })
-    //     }
-    //   });
-    // });
-
-    // test('RISKDEC_ACCOUNTCHECK_THREEDQUERY_AUTH_SUBSCRIPTION', done => {
-    //   const requesttypedescriptions = ["SUBSCRIPTION", "AUTH"];
-    //   const gatewayClient = Container.get(GatewayClient);
-
-    //   gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
-    //     if (Number(errorcode) === 0) {
-    //       console.log({cachetoken})
-    //       gatewayClient.threedQuery({...requestObject, cachetoken: cachetoken}).subscribe({
-    //         next: (value) => console.log({value}),
-    //         complete: () => done()
-    //       })
-    //     }
-    //   });
-    // });
-
-    // test('threequery and bypass', done => {
-    //   const requesttypedescriptions = ["SUBSCRIPTION", "AUTH"];
-    //   const gatewayClient = Container.get(GatewayClient);
-
-    //   gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
-    //     if (Number(errorcode) === 0) {
-    //       console.log({cachetoken})
-    //       gatewayClient.threedQuery({...requestObject, cachetoken: cachetoken}).subscribe({
-    //         next: (value) => console.log({value}),
-    //         complete: () => done()
-    //       })
-    //     }
-    //   });
-    // });
   });
 });

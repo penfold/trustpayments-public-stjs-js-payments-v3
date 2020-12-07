@@ -166,9 +166,7 @@ export class StCodec {
   private static _handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
     const translator = new Translator(StCodec._locale);
     const validation = new Validation();
-
     const { errorcode, errormessage, requesttypedescription } = responseContent;
-
     const errormessageTranslated = translator.translate(errormessage);
 
     if (!StCodec.REQUESTS_WITH_ERROR_MESSAGES.includes(requesttypedescription)) {
@@ -182,7 +180,7 @@ export class StCodec {
 
     if (responseContent.walletsource && responseContent.walletsource === 'APPLEPAY') {
       StCodec._propagateStatus(errormessageTranslated, responseContent, jwtResponse);
-      return new Error(errormessage);
+      console.error(errormessage);
     }
 
     if (responseContent.errordata) {
@@ -191,7 +189,7 @@ export class StCodec {
 
     validation.blockForm(FormState.AVAILABLE);
     StCodec._propagateStatus(errormessageTranslated, responseContent, jwtResponse);
-    throw new Error(errormessage);
+    console.error(errormessage);
   }
 
   private static _decodeResponseJwt(jwt: string, reject: (error: Error) => void) {
@@ -246,6 +244,7 @@ export class StCodec {
         const responseData = responseObject.response;
 
         decoded = StCodec._decodeResponseJwt(responseData.jwt, reject);
+
         if (decoded && decoded.payload.response[0].errorcode === '0') {
           StCodec.jwt = decoded.payload.jwt;
         } else {

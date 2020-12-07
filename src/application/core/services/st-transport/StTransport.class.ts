@@ -8,6 +8,7 @@ import { IStRequest } from '../../models/IStRequest';
 import { environment } from '../../../../environments/environment';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { ajax, AjaxResponse } from 'rxjs/ajax';
+import { IResponseData } from '../../models/IResponseData';
 
 interface IFetchOptions {
   headers: {
@@ -97,8 +98,9 @@ export class StTransport {
       body: requestBody
     })
       .then(codec.decode)
-      .catch(() => {
-        return codec.decode({});
+      .catch((error: IResponseData) => {
+        // console.error(error.errormessage);
+        return { lol: 3 };
       });
   }
 
