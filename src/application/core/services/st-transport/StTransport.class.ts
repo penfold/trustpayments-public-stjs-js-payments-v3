@@ -98,9 +98,8 @@ export class StTransport {
       body: requestBody
     })
       .then(codec.decode)
-      .catch((error: IResponseData) => {
-        // console.error(error.errormessage);
-        return { lol: 3 };
+      .catch(() => {
+        return codec.decode({});
       });
   }
 
