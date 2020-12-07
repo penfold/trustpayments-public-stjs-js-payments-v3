@@ -11,7 +11,6 @@ import { GoogleAnalytics } from '../../application/core/integrations/google-anal
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
-import { IStJwtObj } from '../../application/core/models/IStJwtObj';
 import { IVisaConfig } from '../../application/core/integrations/visa-checkout/IVisaConfig';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { Translator } from '../../application/core/shared/translator/Translator';
@@ -39,10 +38,8 @@ import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Se
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
-import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
 import { IApplePay } from '../../application/core/integrations/apple-pay/IApplePay';
-import { ApplePayNetworksService } from '../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePayButtonService } from '../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { NotificationService } from '../notification/NotificationService';
 import { ApplePayConfigService } from '../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
@@ -112,7 +109,6 @@ export class ST {
     private _frameService: Frame,
     private _browserDetector: BrowserDetector,
     private _cybertonica: Cybertonica,
-    private _applePayNetworkService: ApplePayNetworksService,
     private _applePayButtonService: ApplePayButtonService,
     private _applePayConfigService: ApplePayConfigService,
     private jwtDecoder: JwtDecoder
@@ -184,9 +180,7 @@ export class ST {
       this._communicator,
       this._messageBus,
       this._applePayButtonService,
-      this._applePayNetworkService,
-      this._applePayConfigService,
-      this.jwtDecoder
+      this._applePayConfigService
     );
     applePay.init();
     return applePay;
