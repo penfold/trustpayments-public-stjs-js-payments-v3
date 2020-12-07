@@ -48,12 +48,12 @@ export class VisaCheckoutMock extends VisaCheckout {
         this.onSuccess(config, payment);
         break;
 
-      case 'CANCEL':
-        this.onCancel();
-        break;
-
       case 'ERROR':
         this.onError();
+        break;
+
+      case 'WARNING':
+        this.onCancel();
         break;
 
       default:

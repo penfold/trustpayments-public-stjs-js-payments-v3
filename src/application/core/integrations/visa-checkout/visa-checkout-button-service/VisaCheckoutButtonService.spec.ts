@@ -1,7 +1,6 @@
 import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
 import { environment } from '../../../../../environments/environment';
 import { IVisaCheckoutButtonSettings } from './IVisaCheckoutButtonSettings';
-import { IVisaCheckoutButtonProps } from './IVisaCheckoutButtonProps';
 
 describe('VisaCheckoutButtonService', () => {
   let instance: VisaCheckoutButtonService;
@@ -15,28 +14,6 @@ describe('VisaCheckoutButtonService', () => {
     acceptCanadianVisaDebit: 'true',
     cobrand: 'true'
   };
-
-  const customizedPropertiesWithEmptyProp: IVisaCheckoutButtonSettings = {
-    ...customizedProperties,
-    locale: ''
-  };
-
-  const customizedButton: IVisaCheckoutButtonProps = {
-    alt: 'Visa Checkout',
-    class: 'v-button',
-    id: 'v-button',
-    role: 'button',
-    src:
-      'http://example.com/?size=154&height=34&width=100&locale=de_DE&color=neutral&cardBrands=MASTERCARD%2C+VISA&acceptCanadianVisaDebit=true&cobrand=true'
-  };
-
-  const customizedButtonWithEmptyProp: IVisaCheckoutButtonProps = {
-    ...customizedButton,
-    src:
-      'http://example.com/?size=154&height=34&width=100&color=neutral&cardBrands=MASTERCARD%2C+VISA&acceptCanadianVisaDebit=true&cobrand=true'
-  };
-
-  const customUrl: string = 'http://example.com/';
   const visaId: string = 'v-button';
   const divId: string = 'visa-checkout-test-container';
 
@@ -78,13 +55,5 @@ describe('VisaCheckoutButtonService', () => {
     expect(image.getAttribute('id')).toEqual(visaId);
     expect(mountedElement.childNodes.length).toEqual(1);
     expect(mountedElement.tagName).toEqual('BODY');
-  });
-
-  it('should customize button with given values and return all defined properties', () => {
-    expect(instance.customize(customizedProperties, customUrl)).toEqual(customizedButton);
-  });
-
-  it('should customize button with given values, omit empty properties and return all defined properties', () => {
-    expect(instance.customize(customizedPropertiesWithEmptyProp, customUrl)).toEqual(customizedButtonWithEmptyProp);
   });
 });
