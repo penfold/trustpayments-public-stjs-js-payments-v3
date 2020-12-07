@@ -16,6 +16,8 @@ import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/
 import JwtDecode from 'jwt-decode';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { RequestType } from '../../../../shared/types/RequestType';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
 
 declare const V: any;
 
@@ -74,7 +76,7 @@ export class VisaCheckout {
   };
 
   private _buttonSettings: any;
-  private _messageBus: MessageBus;
+  private _messageBus: IMessageBus;
   private _payment: Payment;
   private _paymentDetails: string;
   private _paymentStatus: string;
@@ -101,7 +103,7 @@ export class VisaCheckout {
   };
 
   constructor(private _configProvider: ConfigProvider, private _communicator: InterFrameCommunicator) {
-    this._messageBus = Container.get(MessageBus);
+    this._messageBus = Container.get(MessageBusToken);
     this._notification = Container.get(NotificationService);
     this._config$ = this._configProvider.getConfig$();
 
@@ -117,7 +119,7 @@ export class VisaCheckout {
       this._configurePaymentProcess(jwt);
       this._initVisaFlow();
     });
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: { newJwt: string }) => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: { newJwt: string }) => {
       const { newJwt } = data;
       this._configurePaymentProcess(newJwt);
     });

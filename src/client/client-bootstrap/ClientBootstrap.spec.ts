@@ -12,7 +12,7 @@ import { IConfig } from '../../shared/model/config/IConfig';
 import { ST } from '../st/ST';
 import { MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/Selectors';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
-import { MessageSubscriberToken } from '../../shared/dependency-injection/InjectionTokens';
+import { MessageBusToken, MessageSubscriberToken } from '../../shared/dependency-injection/InjectionTokens';
 
 describe('ClientBootstrap', () => {
   let frameIdentifierMock: FrameIdentifier;
@@ -51,7 +51,7 @@ describe('ClientBootstrap', () => {
     it('initializes core services', () => {
       clientBootstrap.run(config);
 
-      verify(containerMock.get(MessageBus)).once();
+      verify(containerMock.get(MessageBusToken)).once();
       verify(containerMock.get(Store)).once();
       verify(containerMock.get(BrowserLocalStorage)).once();
 
