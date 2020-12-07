@@ -24,11 +24,13 @@ import { IApplePayPaymentMethod } from './IApplePayPaymentMethod';
 import { IApplePayPaymentContact } from './IApplePayPaymentContact';
 import { IApplePayShippingMethod } from './IApplePayShippingMethod';
 import { IApplePayPayment } from './IApplePayPayment';
-import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
 import { ApplePayNetworksService } from './apple-pay-networks-service/ApplePayNetworksService';
 import { IApplePayPaymentAuthorizationResult } from './IApplePayPaymentAuthorizationResult ';
 import { ApplePayConfigService } from './apple-pay-config-service/ApplePayConfigService';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { Container } from 'typedi';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -52,12 +54,12 @@ export class ApplePay {
   };
   private readonly _config$: Observable<IConfig>;
   private _paymentCancelled: boolean = false;
+  private _messageBus: IMessageBus;
 
   constructor(
     private _communicator: InterFrameCommunicator,
     private _configProvider: ConfigProvider,
     private _localStorage: BrowserLocalStorage,
-    private _messageBus: MessageBus,
     private _notification: NotificationService,
     private _applePayButtonService: ApplePayButtonService,
     private _applePayNetworkService: ApplePayNetworksService,
@@ -72,6 +74,7 @@ export class ApplePay {
       throw new Error('Your device does not support making payments with Apple Pay');
     }
 
+    this._messageBus = Container.get(MessageBusToken);
     this._config$ = this._configProvider.getConfig$();
   }
 
@@ -109,8 +112,8 @@ export class ApplePay {
   }
 
   private _subscribeUpdateJwt(): void {
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: { newJwt: string }) => {
-      const { currencyiso3a, locale, mainamount } = this._applePayConfigService.getStJwtData(data.newJwt);
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: { newJwt: string }) => {
+      const { currencyiso3a, locale, mainamount } = this.jwtDecoder.decode(data.newJwt).payload;
       this._translator = new Translator(locale);
       this._paymentRequest = this._applePayConfigService.updateCurrencyCode(this._paymentRequest, currencyiso3a);
       this._paymentRequest = this._applePayConfigService.updateAmount(this._paymentRequest, mainamount);

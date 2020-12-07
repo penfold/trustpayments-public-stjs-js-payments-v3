@@ -12,8 +12,7 @@ import { IMessageSubscriber } from '../../../shared/services/message-bus/interfa
 import { MessageSubscriberRegistry } from '../../../shared/services/message-bus/MessageSubscriberRegistry';
 import { ControlFrame } from '../../components/control-frame/ControlFrame';
 import { CARD_NUMBER_IFRAME, CONTROL_FRAME_IFRAME } from '../models/constants/Selectors';
-import { MessageBus } from '../shared/message-bus/MessageBus';
-import { MessageSubscriberToken } from '../../../shared/dependency-injection/InjectionTokens';
+import { MessageBusToken, MessageSubscriberToken } from '../../../shared/dependency-injection/InjectionTokens';
 
 describe('ComponentBootstrap', () => {
   let frameIdentifierMock: FrameIdentifier;
@@ -50,7 +49,7 @@ describe('ComponentBootstrap', () => {
     it('initializes core services', () => {
       componentBootstrap.run(CARD_NUMBER_IFRAME, CardNumber);
 
-      verify(containerMock.get(MessageBus)).once();
+      verify(containerMock.get(MessageBusToken)).once();
       verify(containerMock.get(Store)).once();
       verify(containerMock.get(BrowserLocalStorage)).once();
       verify(containerMock.get(FramesHub)).once();
