@@ -186,8 +186,9 @@ export class ST {
   public VisaCheckout(visaCheckoutConfig: IVisaCheckoutConfig | undefined): void {
     if (visaCheckoutConfig) {
       this._config = this._configService.updateFragment('visaCheckout', visaCheckoutConfig);
-      this._visaCheckout.init();
     }
+
+    this._visaCheckout.init();
   }
 
   public Cybertonica(): Promise<string> {

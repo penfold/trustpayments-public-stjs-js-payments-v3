@@ -14,6 +14,7 @@ import { ISubmitData } from '../../core/models/ISubmitData';
 import { PAYMENT_SUCCESS, PAYMENT_ERROR } from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
+import { Styler } from '../../core/shared/styler/Styler';
 import { Validation } from '../../core/shared/validation/Validation';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
@@ -131,6 +132,7 @@ export class ControlFrame {
   }
 
   protected init(config: IConfig): void {
+    const styler: Styler = new Styler(this._frame.getAllowedStyles(), this._frame.parseUrl().styles);
     this._setInstances();
     this._setFormFieldsValidities();
     this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_CARD_NUMBER, this._formFields.cardNumber);

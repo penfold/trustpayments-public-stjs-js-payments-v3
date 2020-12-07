@@ -1,10 +1,9 @@
 import { from, Observable, of } from 'rxjs';
-import { catchError, filter, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, switchMap, tap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { IVisaCheckoutStatusDataSuccess } from '../../../application/core/integrations/visa-checkout/visa-checkout-status-data/IVisaCheckoutStatusDataSuccess';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import {
   PAYMENT_CANCELLED,
   PAYMENT_ERROR,
