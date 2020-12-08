@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.49
+.cicd-os-ref: &cicd-os-ref 0.0.53
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
@@ -44,15 +44,6 @@ variables:
   # DISABLE_JOB_extended_tests: 'true'
   # Validate merge request description
   # DISABLE_JOB_validate_merge_request_description: 'true'
-  # CDN
-  DISABLE_JOB_trigger_update_versions_review: 'true'
-  DISABLE_JOB_trigger_update_versions_release: 'true'
-  DISABLE_JOB_generate_version_files_review: 'true'
-  DISABLE_JOB_generate_version_files_release: 'true'
-  DISABLE_JOB_trigger_trigger_publish_to_cdn_deprecated_review: 'true'
-  DISABLE_JOB_trigger_publish_to_cdn_unpublished_review: 'true'
-  DISABLE_JOB_trigger_publish_to_cdn_deprecated_release: 'true'
-  DISABLE_JOB_trigger_publish_to_cdn_unpublished_release: 'true'
   # Release
   # DISABLE_JOB_release: 'true'
   # DISABLE_JOB_release_generate_version: "true"
@@ -84,11 +75,6 @@ stages:
   - fast-tests
   - extended-tests
   - validate-merge-request-description
-# Stages needed for pipeline generate-version-files
-  - generate-version-files
-  - trigger-publish-to-cdn
-# trigger-update-versions must be before release and before destroy-infra
-  - trigger-update-versions
 # Release package
   - release
   - post-release

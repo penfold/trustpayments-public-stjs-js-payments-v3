@@ -7,7 +7,6 @@ import { anyString, anything, instance as instanceOf, mock, when } from 'ts-mock
 import { of } from 'rxjs';
 import { IframeFactory } from '../iframe-factory/IframeFactory';
 import { Frame } from '../../application/core/shared/frame/Frame';
-import { MessageBusMock } from '../../testing/mocks/MessageBusMock';
 import { PAY, PROCESSING } from '../../application/core/models/constants/Translations';
 import {
   CARD_NUMBER_IFRAME,
@@ -15,6 +14,8 @@ import {
   EXPIRATION_DATE_INPUT_SELECTOR,
   SECURITY_CODE_INPUT_SELECTOR
 } from '../../application/core/models/constants/Selectors';
+import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 
 jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/validation/Validation');
@@ -26,7 +27,7 @@ describe('CardFrames', () => {
   let iframeFactory: IframeFactory;
   let frame: Frame;
   let instance: CardFrames;
-  const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
+  const messageBus: IMessageBus = new SimpleMessageBus();
 
   beforeEach(() => {
     iframeFactory = mock(IframeFactory);
@@ -187,7 +188,7 @@ describe('CardFrames', () => {
       // @ts-ignore
       instance._disableSubmitButton = jest.fn();
       // @ts-ignore
-      instance._messageBus.subscribe = jest.fn().mockImplementationOnce((event, callback) => {
+      instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
         callback(true);
       });
       // @ts-ignore
@@ -247,7 +248,7 @@ describe('CardFrames', () => {
 
     it(`should call _publishValidatedFieldState for cardNumber if it's state is false`, () => {
       // @ts-ignore
-      instance._messageBus.subscribe = jest.fn().mockImplementationOnce((event, callback) => {
+      instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
         callback(validateFieldsAfterSubmitFixture(false, true, true));
       });
       // @ts-ignore
@@ -262,7 +263,7 @@ describe('CardFrames', () => {
 
     it(`should call _publishValidatedFieldState for expirationDate if it's state is false`, () => {
       // @ts-ignore
-      instance._messageBus.subscribe = jest.fn().mockImplementationOnce((event, callback) => {
+      instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
         callback(validateFieldsAfterSubmitFixture(true, false, true));
       });
 
@@ -278,7 +279,7 @@ describe('CardFrames', () => {
 
     it(`should call _publishValidatedFieldState for securityCode if it's state is false`, () => {
       // @ts-ignore
-      instance._messageBus.subscribe = jest.fn().mockImplementationOnce((event, callback) => {
+      instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
         callback(validateFieldsAfterSubmitFixture(true, true, false));
       });
 

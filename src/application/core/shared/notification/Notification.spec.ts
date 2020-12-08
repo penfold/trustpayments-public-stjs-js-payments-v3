@@ -4,14 +4,15 @@ import { BrowserLocalStorage } from '../../../../shared/services/storage/Browser
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { Notification } from './Notification';
 import { NotificationType } from '../../models/constants/NotificationType';
-import { MessageBusMock } from '../../../../testing/mocks/MessageBusMock';
 import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
 import { CONTROL_FRAME_IFRAME } from '../../models/constants/Selectors';
 import { of } from 'rxjs';
 import { Frame } from '../frame/Frame';
+import { SimpleMessageBus } from '../message-bus/SimpleMessageBus';
+import { IMessageBus } from '../message-bus/IMessageBus';
 
 describe('Notification', () => {
-  let messageBus: MessageBus;
+  let messageBus: IMessageBus;
   let browserLocalStorage: BrowserLocalStorage;
   let configProvider: ConfigProvider;
   let framesHub: FramesHub;
@@ -19,7 +20,7 @@ describe('Notification', () => {
   let frame: Frame;
 
   beforeEach(() => {
-    messageBus = (new MessageBusMock() as unknown) as MessageBus;
+    messageBus = new SimpleMessageBus();
     browserLocalStorage = mock(BrowserLocalStorage);
     configProvider = mock<ConfigProvider>();
     framesHub = mock(FramesHub);

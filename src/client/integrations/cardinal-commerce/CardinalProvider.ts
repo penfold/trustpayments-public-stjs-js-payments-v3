@@ -1,12 +1,10 @@
 import { from, interval, Observable } from 'rxjs';
 import { ICardinal } from './ICardinal';
 import { Service } from 'typedi';
-import { DomMethods } from '../../shared/dom-methods/DomMethods';
-import { delay, filter, first, map, switchMap } from 'rxjs/operators';
-import { environment } from '../../../../environments/environment';
+import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
+import { filter, first, map, switchMap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 import { ICardinalProvider } from './ICardinalProvider';
-
-declare const Cardinal: ICardinal;
 
 @Service()
 export class CardinalProvider implements ICardinalProvider {

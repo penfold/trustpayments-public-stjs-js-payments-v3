@@ -2,8 +2,7 @@ import { applyMiddleware, combineReducers, createStore, Reducer, Store } from 'r
 import { configReducer } from './reducers/config/ConfigReducer';
 import { Service } from 'typedi';
 import logger from 'redux-logger';
-import { combineEpics, createEpicMiddleware, Epic } from 'redux-observable';
-import { dummyEpic } from './epics/dummyEpic';
+import { combineEpics, createEpicMiddleware, Epic, EpicMiddleware } from 'redux-observable';
 import { catchError } from 'rxjs/operators';
 import { IAction } from './IAction';
 import { environment } from '../../../environments/environment';
@@ -34,7 +33,7 @@ export class StoreFactory {
   }
 
   private getRootEpic(): Epic<IAction> {
-    const epics = [dummyEpic];
+    const epics: Epic[] = [];
 
     return (action$, store$, dependencies) => {
       return combineEpics(...epics)(action$, store$, dependencies).pipe(

@@ -2,13 +2,13 @@ import { Container, Service } from 'typedi';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigResolver } from '../config-resolver/ConfigResolver';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
-import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { filter, first } from 'rxjs/operators';
 import { CONFIG } from '../../dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 
 @Service()
 export class ConfigService implements ConfigProvider {
@@ -18,7 +18,7 @@ export class ConfigService implements ConfigProvider {
   constructor(
     private resolver: ConfigResolver,
     private validator: ConfigValidator,
-    private messageBus: MessageBus,
+    private messageBus: IMessageBus,
     private jwtDecoder: JwtDecoder
   ) {}
 
