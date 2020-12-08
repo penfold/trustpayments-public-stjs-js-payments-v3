@@ -6,7 +6,6 @@ import { DomMethods } from '../dom-methods/DomMethods';
 import { Container, Service } from 'typedi';
 import { Frame } from '../frame/Frame';
 import { IStyles } from '../../../../shared/model/config/IStyles';
-import { forEach } from 'lodash';
 
 interface StylesAttributes {
   elementId: string;

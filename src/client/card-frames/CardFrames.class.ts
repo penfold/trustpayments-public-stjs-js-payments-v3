@@ -194,13 +194,13 @@ export class CardFrames {
     this._disableSubmitButton(FormState.LOADING);
 
     this._config$.subscribe(response => {
-      const { deferInit, components } = response;
+      const { components } = response;
 
       if (this._submitButton) {
         this._submitButton.textContent = this._payMessage;
       }
 
-      if (deferInit || components.startOnLoad) {
+      if (components.startOnLoad) {
         this._disableSubmitButton(FormState.AVAILABLE);
       }
     });

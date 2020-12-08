@@ -1,7 +1,9 @@
 import './st.css';
 import jwt_decode from 'jwt-decode';
+import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
+import { environment } from '../../environments/environment';
 import { CardFrames } from '../card-frames/CardFrames.class';
 import { CommonFrames } from '../common-frames/CommonFrames.class';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
@@ -12,7 +14,6 @@ import { VisaCheckout } from '../../application/core/integrations/visa-checkout/
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
-import { IVisaConfig } from '../../application/core/integrations/visa-checkout/IVisaConfig';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { Translator } from '../../application/core/shared/translator/Translator';
 import { Service, Container } from 'typedi';
@@ -23,7 +24,6 @@ import { IErrorEvent } from '../../application/core/models/IErrorEvent';
 import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
-import { Notification } from '../../application/core/shared/notification/Notification';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Subject, Subscription } from 'rxjs';
 import { delay, map, takeUntil } from 'rxjs/operators';
@@ -34,18 +34,21 @@ import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventType
 import { IframeFactory } from '../iframe-factory/IframeFactory';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { Frame } from '../../application/core/shared/frame/Frame';
-import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
+import { CardinalClient } from '../integrations/cardinal-commerce/CardinalClient';
+import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
+import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
-import { IApplePay } from '../../application/core/integrations/apple-pay/IApplePay';
 import { ApplePayNetworksService } from '../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePayButtonService } from '../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { NotificationService } from '../notification/NotificationService';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { Notification } from '../../application/core/shared/notification/Notification';
+import { IApplePayConfig } from '../../application/core/integrations/apple-pay/IApplePayConfig';
 
 @Service()
 export class ST {
@@ -111,7 +114,9 @@ export class ST {
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
     private _browserDetector: BrowserDetector,
+    private _visaCheckout: VisaCheckout,
     private _cybertonica: Cybertonica,
+    private _cardinalClient: CardinalClient,
     private _applePayNetworkService: ApplePayNetworksService,
     private _applePayButtonService: ApplePayButtonService
   ) {
@@ -173,29 +178,38 @@ export class ST {
       });
   }
 
-  public ApplePay(config: IApplePay): ApplePay {
+  public ApplePay(config: IApplePayConfig): ApplePay {
     if (config) {
       this._config = this._configService.updateFragment('applePay', config);
     }
 
-    const applePay: ApplePay = new ApplePay(
-      this._communicator,
-      this._configProvider,
-      this._storage,
-      this._notificationService,
-      this._applePayButtonService,
-      this._applePayNetworkService
-    );
-    applePay.init();
-    return applePay;
+    if (environment.testEnvironment) {
+      return new ApplePayMock(
+        this._communicator,
+        this._configProvider,
+        this._storage,
+        this._notificationService,
+        this._applePayButtonService,
+        this._applePayNetworkService
+      );
+    } else {
+      return new ApplePay(
+        this._communicator,
+        this._configProvider,
+        this._storage,
+        this._notificationService,
+        this._applePayButtonService,
+        this._applePayNetworkService
+      );
+    }
   }
 
-  public VisaCheckout(config: IVisaConfig | undefined): VisaCheckout {
-    if (config) {
-      this._config = this._configService.updateFragment('visaCheckout', config);
+  public VisaCheckout(visaCheckoutConfig: IVisaCheckoutConfig | undefined): void {
+    if (visaCheckoutConfig) {
+      this._config = this._configService.updateFragment('visaCheckout', visaCheckoutConfig);
     }
 
-    return new VisaCheckout(this._configProvider, this._communicator);
+    this._visaCheckout.init();
   }
 
   public Cybertonica(): Promise<string> {
@@ -247,6 +261,7 @@ export class ST {
       this.displayLiveStatus(Boolean(this._config.livestatus));
       this.watchForFrameUnload();
       this.initControlFrameModal();
+      this._cardinalClient.init();
     }
   }
 
