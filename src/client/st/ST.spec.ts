@@ -1,9 +1,7 @@
 import 'reflect-metadata';
+import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
 import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
-import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
-import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
-import { VisaCheckoutMock } from '../../application/core/integrations/visa-checkout/VisaCheckoutMock';
 import { environment } from '../../environments/environment';
 import ST from './ST';
 import { Container } from 'typedi';
@@ -11,14 +9,11 @@ import { ConfigProvider } from '../../shared/services/config-provider/ConfigProv
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 
 window.alert = jest.fn();
-jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
 jest.mock('./../../client/common-frames/CommonFrames.class');
 jest.mock('./../../client/card-frames/CardFrames.class');
 jest.mock('./../../application/core/integrations/visa-checkout/VisaCheckout');
-jest.mock('./../../application/core/integrations/visa-checkout/VisaCheckoutMock');
 jest.mock('./../../application/core/integrations/apple-pay/ApplePay');
-jest.mock('./../../application/core/integrations/apple-pay/ApplePayMock');
 jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytics');
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
@@ -36,13 +31,17 @@ describe('ST', () => {
     });
   });
 
-  // given
-  describe('ST.VisaCheckout()', () => {
-    const { visaCheckoutConfig } = stFixture();
-    // then
-    it('should return VisaCheckout object when environment.testEnvironment equals false', () => {
+  describe('ST.AppapplePayConfiglePay()', () => {
+    const { applePayConfig } = stFixture();
+
+    it('should return ApplePayMock object when environment.testEnvironment equals true', () => {
+      environment.testEnvironment = true;
+      expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePayMock);
+    });
+
+    it('should return ApplePay object when environment.testEnvironment equals false', () => {
       environment.testEnvironment = false;
-      expect(instance.VisaCheckout(visaCheckoutConfig, config.jwt)).toBeInstanceOf(VisaCheckout);
+      expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePay);
     });
   });
 

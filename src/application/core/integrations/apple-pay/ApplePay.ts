@@ -67,11 +67,11 @@ export class ApplePay {
     private jwtDecoder: JwtDecoder
   ) {
     if (!Boolean(ApplePaySession)) {
-      throw new Error('Works only on Safari');
+      console.error('Works only on Safari');
     }
 
     if (!ApplePaySession.canMakePayments()) {
-      throw new Error('Your device does not support making payments with Apple Pay');
+      console.error('Your device does not support making payments with Apple Pay');
     }
 
     this._messageBus = Container.get(MessageBusToken);

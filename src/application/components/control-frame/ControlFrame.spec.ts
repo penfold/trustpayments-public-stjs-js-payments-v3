@@ -1,3 +1,5 @@
+import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
+import { VisaCheckoutClientStatus } from '../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { ControlFrame } from './ControlFrame';
 import { StCodec } from '../../core/services/st-codec/StCodec.class';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
@@ -8,21 +10,20 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { mock, instance as mockInstance, when, anyString, anything } from 'ts-mockito';
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
-import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { EMPTY, of } from 'rxjs';
-import { Store } from '../../core/store/Store';
-import { ConfigService } from '../../../shared/services/config-service/ConfigService';
-import { Frame } from '../../core/shared/frame/Frame';
 import { IStyles } from '../../../shared/model/config/IStyles';
-import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
+import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
+import { EMPTY, of } from 'rxjs';
+import { Store } from '../../core/store/Store';
+import { Frame } from '../../core/shared/frame/Frame';
 
 jest.mock('./../../core/shared/payment/Payment');
 
-// given
 describe('ControlFrame', () => {
   const { data, instance, messageBusEvent } = controlFrameFixture();
 
@@ -33,7 +34,6 @@ describe('ControlFrame', () => {
     });
   });
 
-  // given
   describe('ControlFrame._onFormFieldStateChange()', () => {
     const field: IFormFieldState = {
       validity: false,
@@ -44,7 +44,6 @@ describe('ControlFrame', () => {
       value: '411111111'
     };
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       ControlFrame._setFormFieldValidity(field, data);
@@ -52,16 +51,13 @@ describe('ControlFrame', () => {
       ControlFrame._setFormFieldValue(field, data);
     });
 
-    // then
     it('should set field properties: validity and value', () => {
       expect(field.validity).toEqual(true);
       expect(field.value).toEqual('411111111');
     });
   });
 
-  // given
   describe('_initChangeCardNumberEvent()', () => {
-    // then
     it('should call _onCardNumberStateChange when CHANGE_CARD_NUMBER event has been called', () => {
       // @ts-ignore
       ControlFrame._setFormFieldValue = jest.fn();
@@ -73,9 +69,7 @@ describe('ControlFrame', () => {
     });
   });
 
-  // given
   describe('_onExpirationDateStateChange()', () => {
-    // then
     it('should call _onExpirationDateStateChange when CHANGE_EXPIRATION_DATE event has been called', () => {
       // @ts-ignore
       ControlFrame._setFormFieldValue = jest.fn();
@@ -87,9 +81,7 @@ describe('ControlFrame', () => {
     });
   });
 
-  // given
   describe('_onSecurityCodeStateChange()', () => {
-    // then
     it('should call _onSecurityCodeStateChange when CHANGE_SECURITY_CODE event has been called', () => {
       // @ts-ignore
       ControlFrame._setFormFieldValue = jest.fn();
@@ -101,9 +93,7 @@ describe('ControlFrame', () => {
     });
   });
 
-  // given
   describe('_initUpdateMerchantFieldsEvent()', () => {
-    // then
     it('should call _storeMerchantData when UPDATE_MERCHANT_FIELDS event has been called', () => {
       // @ts-ignore
       instance._updateMerchantFields = jest.fn();
@@ -115,14 +105,12 @@ describe('ControlFrame', () => {
     });
   });
 
-  // given
   describe('_initResetJwtEvent()', () => {
     const obj = { data: { newJwt: 'some jwt' } };
 
-    // then
     it('should call _initResetJwtEvent when RESET_JWT event has been called', () => {
       // @ts-ignore
-      instance._messageBus.subscribeType = jest
+      instance._messageBus.subscribe = jest
         .fn()
         .mockImplementationOnce((even, callback) => {
           callback();
@@ -141,14 +129,14 @@ describe('ControlFrame', () => {
   });
 
   // TODO: get know how handle this promise
-  // given
+
   describe('_processPayment', () => {
     const { instance } = controlFrameFixture();
     const data = {
       errorcode: '40005',
       errormessage: 'some error message'
     };
-    // when
+
     beforeEach(() => {
       // @ts-ignore
       instance._notification.success = jest.fn();
@@ -157,7 +145,7 @@ describe('ControlFrame', () => {
       // @ts-ignore
       instance._validation.blockForm = jest.fn();
     });
-    // then
+
     it('should call notification success when promise is resolved', async () => {
       // @ts-ignore
       instance._payment.processPayment = jest.fn().mockResolvedValueOnce(new Promise(resolve => resolve(undefined)));
@@ -165,7 +153,6 @@ describe('ControlFrame', () => {
       instance._processPayment(data);
     });
 
-    // then
     it('should call notification error when promise is rejected', async () => {
       // @ts-ignore
       instance._payment.processPayment = jest.fn().mockRejectedValueOnce(new Promise(rejected => rejected()));
@@ -174,12 +161,10 @@ describe('ControlFrame', () => {
     });
   });
 
-  // given
   describe('_storeMerchantData', () => {
     const { instance } = controlFrameFixture();
     const data = 'some data';
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._updateMerchantFields(data);
@@ -187,16 +172,13 @@ describe('ControlFrame', () => {
       instance._messageBus.publish = jest.fn();
     });
 
-    // then
     it('should set _merchantFormData', () => {
       // @ts-ignore
       expect(instance._merchantFormData).toEqual(data);
     });
   });
 
-  // given
   describe('_onUpdateJWT', () => {
-    // when
     beforeEach(() => {
       StCodec.jwt = '1234';
       StCodec.originalJwt = '56789';
@@ -204,14 +186,12 @@ describe('ControlFrame', () => {
       ControlFrame._updateJwt('997');
     });
 
-    // then
     it('should update jwt and originalJwt', () => {
       expect(StCodec.jwt).toEqual('997');
       expect(StCodec.originalJwt).toEqual('997');
     });
   });
 
-  // given
   describe('_getPan()', () => {
     // @ts-ignore
     instance.params = {
@@ -225,7 +205,6 @@ describe('ControlFrame', () => {
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw'
     });
 
-    // then
     it('should return pan from jwt', () => {
       // @ts-ignore
       expect(instance._getPanFromJwt(['jwt', 'gatewayUrl'])).toEqual('3089500000000000021');
@@ -241,12 +220,13 @@ function controlFrameFixture() {
   const configProvider: ConfigProvider = mock<ConfigProvider>();
   const notification: NotificationService = mock(NotificationService);
   const cybertonica: Cybertonica = mock(Cybertonica);
-  const cardinalCommerce: CardinalCommerce = mock(CardinalCommerce);
+  const threeDProcess: ThreeDProcess = mock(ThreeDProcess);
   const configService: ConfigService = mock(ConfigService);
   const messageBus: IMessageBus = new SimpleMessageBus();
   const frame: Frame = mock(Frame);
   const storeMock: Store = mock(Store);
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
+  const visaCheckoutClientMock: VisaCheckoutClient = mock(VisaCheckoutClient);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -259,7 +239,7 @@ function controlFrameFixture() {
     thenRespond: () => undefined
   });
   when(configProvider.getConfig$()).thenReturn(of({ jwt: JWT } as IConfig));
-  when(cardinalCommerce.init(anything())).thenReturn(EMPTY);
+  when(threeDProcess.init(anything())).thenReturn(EMPTY);
   when(frame.parseUrl()).thenReturn({
     locale: 'en_GB',
     jwt: JWT,
@@ -278,6 +258,7 @@ function controlFrameFixture() {
       expirydate: '01/22'
     }
   });
+  when(visaCheckoutClientMock.init$()).thenReturn(of(VisaCheckoutClientStatus.SUCCESS));
 
   const instance = new ControlFrame(
     mockInstance(localStorage),
@@ -285,12 +266,13 @@ function controlFrameFixture() {
     mockInstance(configProvider),
     mockInstance(notification),
     mockInstance(cybertonica),
-    mockInstance(cardinalCommerce),
+    mockInstance(threeDProcess),
     mockInstance(storeMock),
     mockInstance(configService),
     messageBus,
     mockInstance(frame),
-    mockInstance(jwtDecoderMock)
+    mockInstance(jwtDecoderMock),
+    mockInstance(visaCheckoutClientMock)
   );
   const messageBusEvent = {
     type: ''

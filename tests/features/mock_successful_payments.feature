@@ -47,7 +47,6 @@ Feature: Successfull payments with various configurations
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
-    And JSINIT request was not sent
     And User clicks Pay button - AUTH response is set to "OK"
     Then User will see payment status information: "Payment has been successfully processed"
     Then JSINIT request was sent only once
