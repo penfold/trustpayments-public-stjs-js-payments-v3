@@ -220,8 +220,10 @@ export class VisaCheckout {
     V.on(VisaCheckout.VISA_PAYMENT_RESPONSE_TYPES.SUCCESS, (payment: object) => {
       this.onSuccess(payment);
     });
-    V.on(VisaCheckout.VISA_PAYMENT_RESPONSE_TYPES.ERROR, () => {
-      this.onError();
+    V.on(VisaCheckout.VISA_PAYMENT_RESPONSE_TYPES.ERROR, (payment: object, error: any) => {
+      if (error.code !== 401) {
+        this.onError();
+      }
     });
     V.on(VisaCheckout.VISA_PAYMENT_RESPONSE_TYPES.CANCEL, () => {
       this.onCancel();

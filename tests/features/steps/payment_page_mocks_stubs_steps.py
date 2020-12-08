@@ -209,6 +209,12 @@ def step_impl(context, request_type):
     validate_number_of_requests_without_data(context, request_type, 0)
 
 
+@then('(?P<request_type>.+) request was sent (?P<multiple>.+) time')
+def step_impl(context, request_type, multiple):
+    context.waits.wait_for_javascript()
+    validate_number_of_requests_without_data(context, RequestType[request_type].name, int(multiple))
+
+
 @step('AUTH and THREEDQUERY requests were sent only once with correct data')
 def step_impl(context):
     validate_number_of_requests_with_pan_expirydate_cvv(context, 'THREEDQUERY, AUTH', 1)
