@@ -30,6 +30,7 @@ import { StJwt } from '../../application/core/shared/stjwt/StJwt';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
 import { PAY, PROCESSING } from '../../application/core/models/constants/Translations';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 
 export class CardFrames {
   private static CARD_NUMBER_FIELD_NAME: string = 'pan';
@@ -74,7 +75,7 @@ export class CardFrames {
   protected componentIds: any;
   protected submitCallback: any;
   protected fieldsToSubmit: string[];
-  protected messageBus: MessageBus;
+  protected messageBus: IMessageBus;
   protected formId: string;
   private _stJwt: StJwt;
 
@@ -92,7 +93,7 @@ export class CardFrames {
     private _configProvider: ConfigProvider,
     private _iframeFactory: IframeFactory,
     private _frame: Frame,
-    private _messageBus: MessageBus
+    private _messageBus: IMessageBus
   ) {
     this.fieldsToSubmit = fieldsToSubmit || ['pan', 'expirydate', 'securitycode'];
     this.elementsToRegister = [];
@@ -106,7 +107,7 @@ export class CardFrames {
     this._config$ = this._configProvider.getConfig$();
     this._setInitValues(buttonId, defaultPaymentType, paymentTypes, animatedCard, jwt, formId);
     this.configureFormFieldsAmount(jwt);
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UNLOCK_BUTTON, () => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UNLOCK_BUTTON, () => {
       this._disableSubmitButton(FormState.AVAILABLE);
     });
     this.styles = this._getStyles(styles);
@@ -193,13 +194,13 @@ export class CardFrames {
     this._disableSubmitButton(FormState.LOADING);
 
     this._config$.subscribe(response => {
-      const { deferInit, components } = response;
+      const { components } = response;
 
       if (this._submitButton) {
         this._submitButton.textContent = this._payMessage;
       }
 
-      if (deferInit || components.startOnLoad) {
+      if (components.startOnLoad) {
         this._disableSubmitButton(FormState.AVAILABLE);
       }
     });
@@ -378,7 +379,7 @@ export class CardFrames {
         this._publishSubmitEvent();
       });
     }
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.CALL_SUBMIT_EVENT, () => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.CALL_SUBMIT_EVENT, () => {
       this._publishSubmitEvent();
     });
   }
@@ -388,7 +389,7 @@ export class CardFrames {
       .pipe(ofType(MessageBus.EVENTS_PUBLIC.SUBMIT_FORM))
       .subscribe(() => this._disableSubmitButton(FormState.BLOCKED));
 
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.BLOCK_FORM, (state: FormState) => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.BLOCK_FORM, (state: FormState) => {
       this._disableSubmitButton(state);
       this._disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER, CARD_NUMBER_IFRAME);
       this._disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, EXPIRATION_DATE_IFRAME);
@@ -397,7 +398,7 @@ export class CardFrames {
   }
 
   private _validateFieldsAfterSubmit(): void {
-    this._messageBus.subscribe(MessageBus.EVENTS.VALIDATE_FORM, (data: IValidationMessageBus) => {
+    this._messageBus.subscribeType(MessageBus.EVENTS.VALIDATE_FORM, (data: IValidationMessageBus) => {
       const { cardNumber, expirationDate, securityCode } = data;
       if (!cardNumber.state) {
         this._publishValidatedFieldState(cardNumber, MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD);

@@ -16,6 +16,8 @@ import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { Frame } from '../../shared/frame/Frame';
 import { IStJwtObj } from '../../models/IStJwtObj';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
 
 export class StCodec {
   public static CONTENT_TYPE = 'application/json';
@@ -90,7 +92,7 @@ export class StCodec {
   }
 
   private static _notification: NotificationService;
-  private static _messageBus: MessageBus;
+  private static _messageBus: IMessageBus;
   private static _frame: Frame;
   private static _locale: string;
   private static REQUESTS_WITH_ERROR_MESSAGES = [
@@ -105,8 +107,8 @@ export class StCodec {
   ];
   private static STATUS_CODES = { invalidfield: '30000', ok: '0', declined: '70000' };
 
-  private static getMessageBus(): MessageBus {
-    return StCodec._messageBus || (StCodec._messageBus = Container.get(MessageBus));
+  private static getMessageBus(): IMessageBus {
+    return StCodec._messageBus || (StCodec._messageBus = Container.get(MessageBusToken));
   }
 
   private static getNotification(): NotificationService {

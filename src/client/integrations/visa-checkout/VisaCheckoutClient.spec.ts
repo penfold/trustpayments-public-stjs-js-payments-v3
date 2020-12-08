@@ -6,7 +6,7 @@ import {
   PAYMENT_ERROR,
   PAYMENT_SUCCESS
 } from '../../../application/core/models/constants/Translations';
-import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { Payment } from '../../../application/core/shared/payment/Payment';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -19,7 +19,7 @@ import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 describe('VisaCheckoutClient', () => {
   let visaCheckoutClient: VisaCheckoutClient;
   let interFrameCommunicatorMock: InterFrameCommunicator;
-  let messageBusMock: MessageBus;
+  let messageBusMock: IMessageBus;
   let configProviderMock: ConfigProvider;
   let jwtDecoderMock: JwtDecoder;
   let notificationServiceMock: NotificationService;
@@ -49,7 +49,7 @@ describe('VisaCheckoutClient', () => {
 
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
-    messageBusMock = mock(MessageBus);
+    messageBusMock = mock<IMessageBus>();
     configProviderMock = mock<ConfigProvider>();
     jwtDecoderMock = mock(JwtDecoder);
     notificationServiceMock = mock(NotificationService);

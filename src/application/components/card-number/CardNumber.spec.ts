@@ -4,7 +4,6 @@ import { CARD_NUMBER_INPUT, CARD_NUMBER_LABEL, CARD_NUMBER_MESSAGE } from '../..
 import { Input } from '../../core/shared/input/Input';
 import { Utils } from '../../core/shared/utils/Utils';
 import { Validation } from '../../core/shared/validation/Validation';
-import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { instance, mock, when } from 'ts-mockito';
 import { IconFactory } from '../../core/services/icon/IconFactory';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -12,7 +11,8 @@ import { Frame } from '../../core/shared/frame/Frame';
 import { Formatter } from '../../core/shared/formatter/Formatter';
 import { of } from 'rxjs';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 
 jest.mock('./../../core/shared/validation/Validation');
 
@@ -133,7 +133,7 @@ describe('CardNumber', () => {
   describe('_setDisableListener()', () => {
     function subscribeMock(state: FormState) {
       // @ts-ignore
-      cardNumberInstance.messageBus.subscribe = jest.fn().mockImplementation((event, callback) => {
+      cardNumberInstance.messageBus.subscribeType = jest.fn().mockImplementation((event, callback) => {
         callback(state);
       });
       // @ts-ignore
@@ -315,7 +315,7 @@ function cardNumberFixture() {
   let formatter: Formatter;
   iconFactory = mock(IconFactory);
   configProvider = mock<ConfigProvider>();
-  const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
+  const messageBus: IMessageBus = new SimpleMessageBus();
   when(configProvider.getConfig$()).thenReturn(of({} as IConfig));
   frame = mock(Frame);
   formatter = mock(Formatter);

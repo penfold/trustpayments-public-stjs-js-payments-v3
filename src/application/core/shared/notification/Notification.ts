@@ -17,6 +17,7 @@ import { NotificationsClasses } from '../../models/constants/notifications/Notif
 import { NotificationsMessageTypes } from '../../models/constants/notifications/NotificationsMessageTypes';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { Frame } from '../frame/Frame';
+import { IMessageBus } from '../message-bus/IMessageBus';
 
 @Service()
 export class Notification {
@@ -25,7 +26,7 @@ export class Notification {
   private _timeoutId: number;
 
   constructor(
-    private _messageBus: MessageBus,
+    private _messageBus: IMessageBus,
     private _browserLocalStorage: BrowserLocalStorage,
     private _configProvider: ConfigProvider,
     private _framesHub: FramesHub,
@@ -34,7 +35,7 @@ export class Notification {
     this._applyStyles();
     this._translator = new Translator('en_GB');
     this._messageMap = new Map(Object.entries(NotificationsClasses));
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.NOTIFICATION, (event: INotificationEvent) => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.NOTIFICATION, (event: INotificationEvent) => {
       this._displayNotification(event);
     });
 

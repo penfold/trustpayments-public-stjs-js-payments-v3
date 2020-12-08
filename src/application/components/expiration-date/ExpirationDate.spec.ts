@@ -3,8 +3,6 @@ import { FormState } from '../../core/models/constants/FormState';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { mock, instance, when } from 'ts-mockito';
 import { Formatter } from '../../core/shared/formatter/Formatter';
-import { MessageBus } from '../../core/shared/message-bus/MessageBus';
-import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
 import { Frame } from '../../core/shared/frame/Frame';
 import { of } from 'rxjs';
 import { IConfig } from '../../../shared/model/config/IConfig';
@@ -14,9 +12,10 @@ import {
   EXPIRATION_DATE_LABEL,
   EXPIRATION_DATE_MESSAGE
 } from '../../core/models/constants/Selectors';
+import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 
 jest.mock('./../../core/shared/notification/Notification');
-jest.mock('./../../core/shared/message-bus/MessageBus');
 
 describe('ExpirationDate', () => {
   describe('ExpirationDate.ifFieldExists()', () => {
@@ -43,7 +42,7 @@ describe('ExpirationDate', () => {
 
     it('should have attribute disabled set', () => {
       // @ts-ignore
-      expirationDateInstance.messageBus.subscribe = jest.fn().mockImplementation((event, callback) => {
+      expirationDateInstance.messageBus.subscribeType = jest.fn().mockImplementation((event, callback) => {
         callback(FormState.BLOCKED);
       });
       expirationDateInstance.setDisableListener();
@@ -53,7 +52,7 @@ describe('ExpirationDate', () => {
 
     it('should have no attribute disabled and class disabled', () => {
       // @ts-ignore
-      expirationDateInstance.messageBus.subscribe = jest.fn().mockImplementation((event, callback) => {
+      expirationDateInstance.messageBus.subscribeType = jest.fn().mockImplementation((event, callback) => {
         callback(FormState.AVAILABLE);
       });
       expirationDateInstance.setDisableListener();
@@ -212,7 +211,7 @@ function expirationDateFixture() {
   let formatter: Formatter;
   let frame: Frame;
   frame = mock(Frame);
-  const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
+  const messageBus: IMessageBus = new SimpleMessageBus();
   formatter = mock(Formatter);
   // @ts-ignore
   when(configProvider.getConfig()).thenReturn({

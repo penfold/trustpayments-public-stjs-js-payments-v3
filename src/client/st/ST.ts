@@ -25,19 +25,18 @@ import { IErrorEvent } from '../../application/core/models/IErrorEvent';
 import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
-import { Notification } from '../../application/core/shared/notification/Notification';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Subject, Subscription } from 'rxjs';
 import { delay, map, takeUntil } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { NotificationService } from '../notification/NotificationService';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { IframeFactory } from '../iframe-factory/IframeFactory';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { Frame } from '../../application/core/shared/frame/Frame';
 import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
+import { CardinalClient } from '../integrations/cardinal-commerce/CardinalClient';
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
@@ -45,6 +44,8 @@ import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { Notification } from '../../application/core/shared/notification/Notification';
 
 @Service()
 export class ST {
@@ -104,14 +105,14 @@ export class ST {
     private _communicator: InterFrameCommunicator,
     private _framesHub: FramesHub,
     private _storage: BrowserLocalStorage,
-    private _messageBus: MessageBus,
+    private _messageBus: IMessageBus,
     private _notification: Notification,
-    private _notificationService: NotificationService,
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
     private _browserDetector: BrowserDetector,
-    private _visaCheckout: VisaCheckout,
-    private _cybertonica: Cybertonica
+    private _cybertonica: Cybertonica,
+    private _cardinalClient: CardinalClient,
+    private _visaCheckout: VisaCheckout
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -240,6 +241,7 @@ export class ST {
       this.displayLiveStatus(Boolean(this._config.livestatus));
       this.watchForFrameUnload();
       this.initControlFrameModal();
+      this._cardinalClient.init();
     }
   }
 

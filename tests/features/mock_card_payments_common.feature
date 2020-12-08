@@ -45,10 +45,9 @@ Feature: Card Payments
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And THREEDQUERY, AUTH mock response is set to OK
     And User calls updateJWT function by filling amount field
-    And User calls updateJWT function by filling amount field
-    And User clicks Pay button
+    And User clicks Pay button - AUTH response is set to "OK"
     Then User will see payment status information: "Payment has been successfully processed"
-    And JSINIT request was sent only once
+    And JSINIT request was sent 2 time
     And JSINIT requests contains updated jwt
 
   @config_bypass_cards

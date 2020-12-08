@@ -16,7 +16,6 @@ import { RequestType } from '../../../../shared/types/RequestType';
 
 @Service()
 export class Payment {
-  private _cardinalCommerceCacheToken: string;
   private _notification: NotificationService;
   private _stTransport: StTransport;
   private _validation: Validation;
@@ -31,10 +30,6 @@ export class Payment {
     this._walletVerifyRequest = {
       requesttypedescriptions: ['WALLETVERIFY']
     };
-  }
-
-  public setCardinalCommerceCacheToken(cachetoken: string) {
-    this._cardinalCommerceCacheToken = cachetoken;
   }
 
   public async processPayment(

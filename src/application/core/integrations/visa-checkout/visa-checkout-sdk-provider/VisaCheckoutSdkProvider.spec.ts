@@ -1,15 +1,13 @@
+import { of } from 'rxjs';
 import { anything, deepEqual, instance as mockInstance, mock, verify, when } from 'ts-mockito';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IStJwtPayload } from '../../../models/IStJwtPayload';
-import { DomMethods } from '../../../shared/dom-methods/DomMethods';
 import { VisaCheckoutButtonService } from '../visa-checkout-button-service/VisaCheckoutButtonService';
 import { IVisaCheckoutUpdateConfig } from '../visa-checkout-update-service/IVisaCheckoutUpdateConfig';
 import { VisaCheckoutUpdateService } from '../visa-checkout-update-service/VisaCheckoutUpdateService';
 import { IVisaCheckoutSdk } from './IVisaCheckoutSdk';
 import { VisaCheckoutSdkProvider } from './VisaCheckoutSdkProvider';
-
-jest.mock('../../../shared/dom-methods/DomMethods');
 
 describe('VisaCheckoutSdkProvider', () => {
   let visaCheckoutSdkProvider: VisaCheckoutSdkProvider;
@@ -73,10 +71,11 @@ describe('VisaCheckoutSdkProvider', () => {
     when(visaCheckoutUpdateServiceMock.updateConfigObject(anything(), anything(), anything())).thenReturn(
       visaCheckoutUpdateConfigMock
     );
+    visaCheckoutSdkProvider.insertScript$ = () => of(document.createElement('script'));
   });
 
   describe('getSdk$()', () => {
-    xit(`should `, done => {
+    it('should return proper sdk object and invoke proper services methods', done => {
       visaCheckoutSdkProvider.getSdk$(configMock).subscribe((sdk: IVisaCheckoutSdk) => {
         verify(
           visaCheckoutUpdateServiceMock.updateConfigObject(
@@ -85,6 +84,19 @@ describe('VisaCheckoutSdkProvider', () => {
             configMock.livestatus
           )
         ).once();
+        verify(
+          visaCheckoutButtonServiceMock.mount(
+            configMock.visaCheckout.placement,
+            deepEqual(configMock.visaCheckout.buttonSettings),
+            visaCheckoutUpdateConfigMock.buttonUrl
+          )
+        ).once();
+        expect(sdk).toEqual({
+          lib: undefined,
+          updateConfig: visaCheckoutUpdateConfigMock
+        });
+
+        done();
       });
     });
   });

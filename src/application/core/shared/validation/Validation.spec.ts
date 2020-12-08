@@ -9,6 +9,7 @@ import {
 import { MessageBus } from '../message-bus/MessageBus';
 import { Validation } from './Validation';
 import { Frame } from '../frame/Frame';
+import { IMessageBus } from '../message-bus/IMessageBus';
 
 jest.mock('./../message-bus/MessageBus');
 jest.mock('./../notification/Notification');
@@ -243,7 +244,7 @@ describe('Validation', () => {
 
 function validationFixture() {
   let frame: Frame;
-  let messageBus: MessageBus;
+  let messageBus: IMessageBus;
   const instance: Validation = new Validation();
   const inputElement = document.createElement('input');
   const inputElementMerchant = document.createElement('input');
