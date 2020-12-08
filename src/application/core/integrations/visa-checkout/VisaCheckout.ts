@@ -8,7 +8,7 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IMerchantData } from '../../models/IMerchantData';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
-import { MessageBus } from '../../shared/message-bus/MessageBus';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IVisaCheckoutSdk } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
 import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
 import { IVisaCheckoutStatusDataCancel } from './visa-checkout-status-data/IVisaCheckoutStatusDataCancel';
@@ -19,7 +19,7 @@ import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
 
 @Service()
 export class VisaCheckout {
-  constructor(protected visaCheckoutSdkProvider: VisaCheckoutSdkProvider, protected messageBus: MessageBus) {}
+  constructor(protected visaCheckoutSdkProvider: VisaCheckoutSdkProvider, protected messageBus: IMessageBus) {}
 
   init(): void {
     this.messageBus

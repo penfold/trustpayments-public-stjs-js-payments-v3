@@ -2,7 +2,7 @@ import { of } from 'rxjs';
 import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { MessageBus } from '../../shared/message-bus/MessageBus';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IVisaCheckoutSdkLib } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
 import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
 import { IVisaCheckoutStatusData } from './visa-checkout-status-data/IVisaCheckoutStatusData';
@@ -14,7 +14,7 @@ import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
 describe('VisaCheckout', () => {
   let instance: VisaCheckout;
   let visaCheckoutSdkProviderMock: VisaCheckoutSdkProvider;
-  let messageBusMock: MessageBus;
+  let messageBusMock: IMessageBus;
 
   const visaCheckoutUpdateConfigMock: IVisaCheckoutUpdateConfig = {
     buttonUrl: 'https://button-mock-url.com',
@@ -76,7 +76,7 @@ describe('VisaCheckout', () => {
 
   beforeEach(() => {
     visaCheckoutSdkProviderMock = mock(VisaCheckoutSdkProvider);
-    messageBusMock = mock(MessageBus);
+    messageBusMock = mock<IMessageBus>();
 
     when(messageBusMock.pipe(anything())).thenReturn(of(configMock));
     when(visaCheckoutSdkProviderMock.getSdk$(anything())).thenReturn(
