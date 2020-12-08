@@ -11,11 +11,13 @@ import { IVisaCheckoutUpdateConfig } from './visa-checkout-update-service/IVisaC
 import { VisaCheckout } from './VisaCheckout';
 import { mock, when, instance as mockInstance, verify, anything, deepEqual } from 'ts-mockito';
 import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
 
 describe('Visa Checkout', () => {
   let instance: VisaCheckout;
   let visaCheckoutSdkProviderMock: VisaCheckoutSdkProvider;
-  let messageBusMock: MessageBus;
+  let messageBusMock: IMessageBus;
 
   const visaCheckoutUpdateConfigMock: IVisaCheckoutUpdateConfig = {
     buttonUrl: 'https://button-mock-url.com',
@@ -77,7 +79,7 @@ describe('Visa Checkout', () => {
 
   beforeEach(() => {
     visaCheckoutSdkProviderMock = mock(VisaCheckoutSdkProvider);
-    messageBusMock = mock(MessageBus);
+    messageBusMock = new SimpleMessageBus();
 
     when(messageBusMock.pipe(anything())).thenReturn(of(configMock));
     when(visaCheckoutSdkProviderMock.getSdk$(anything())).thenReturn(

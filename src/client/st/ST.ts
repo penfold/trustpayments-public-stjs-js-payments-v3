@@ -47,6 +47,7 @@ import { ApplePayNetworksService } from '../../application/core/integrations/app
 import { ApplePayButtonService } from '../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { NotificationService } from '../notification/NotificationService';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { IApplePayConfig } from '../../application/core/integrations/apple-pay/IApplePayConfig';
 
 @Service()
 export class ST {

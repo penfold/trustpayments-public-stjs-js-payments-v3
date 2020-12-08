@@ -10,7 +10,6 @@ import { ConfigService } from '../../../shared/services/config-service/ConfigSer
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
-import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
 import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
@@ -19,9 +18,9 @@ import { Frame } from '../../core/shared/frame/Frame';
 import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
-import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Store } from '../../core/store/Store';
 import { ControlFrame } from './ControlFrame';
+import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 
 jest.mock('./../../core/shared/payment/Payment');
 

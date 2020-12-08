@@ -8,7 +8,6 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { take, toArray } from 'rxjs/operators';
 import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
 import { IStJwtObj } from '../../../application/core/models/IStJwtObj';
-import { IVisaConfig } from '../../../application/core/integrations/visa-checkout/IVisaConfig';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';

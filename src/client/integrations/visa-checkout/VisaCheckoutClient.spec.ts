@@ -15,11 +15,13 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { NotificationService } from '../../notification/NotificationService';
 import { VisaCheckoutClient } from './VisaCheckoutClient';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 
 describe('VisaCheckoutClient', () => {
   let visaCheckoutClient: VisaCheckoutClient;
   let interFrameCommunicatorMock: InterFrameCommunicator;
-  let messageBusMock: MessageBus;
+  let messageBusMock: IMessageBus;
   let configProviderMock: ConfigProvider;
   let jwtDecoderMock: JwtDecoder;
   let notificationServiceMock: NotificationService;
@@ -49,7 +51,7 @@ describe('VisaCheckoutClient', () => {
 
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
-    messageBusMock = mock(MessageBus);
+    messageBusMock = new SimpleMessageBus();
     configProviderMock = mock<ConfigProvider>();
     jwtDecoderMock = mock(JwtDecoder);
     notificationServiceMock = mock(NotificationService);

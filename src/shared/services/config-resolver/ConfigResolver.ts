@@ -12,6 +12,7 @@ import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
 import { environment } from '../../../environments/environment';
+import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 
 @Service()
 export class ConfigResolver {
