@@ -15,6 +15,7 @@ import { NotificationService } from '../../notification/NotificationService';
 import { VisaCheckoutClient } from './VisaCheckoutClient';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 
 describe('VisaCheckoutClient', () => {
   let visaCheckoutClient: VisaCheckoutClient;
@@ -49,7 +50,7 @@ describe('VisaCheckoutClient', () => {
 
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
-    messageBusMock = mock(IMessageBus);
+    messageBusMock = new SimpleMessageBus();
     configProviderMock = mock<ConfigProvider>();
     jwtDecoderMock = mock(JwtDecoder);
     notificationServiceMock = mock(NotificationService);
@@ -57,7 +58,7 @@ describe('VisaCheckoutClient', () => {
 
     visaCheckoutClient = new VisaCheckoutClient(
       mockInstance(interFrameCommunicatorMock),
-      mockInstance(messageBusMock),
+      messageBusMock,
       mockInstance(configProviderMock),
       mockInstance(jwtDecoderMock),
       mockInstance(notificationServiceMock),

@@ -100,7 +100,7 @@ describe('ThreeDProcess', () => {
       securitycode: '123'
     };
     const requestTypes = ['ACCOUNTCHECK', 'THREEDQUERY'];
-    const merchantData: IMerchantData = { foo: 'bar' };
+    const merchantData: IMerchantData = { foo: 'bar', termurl: 'https://test.com' };
 
     beforeEach(() => {
       threeDProcess.init().subscribe();

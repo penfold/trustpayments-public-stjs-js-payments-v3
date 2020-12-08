@@ -35,7 +35,6 @@ import { UPDATE_CONFIG } from '../../core/store/reducers/config/ConfigActions';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
-import { Styler } from '../../core/shared/styler/Styler';
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { IThreeDSTokens } from '../../core/services/three-d-verification/data/IThreeDSTokens';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';

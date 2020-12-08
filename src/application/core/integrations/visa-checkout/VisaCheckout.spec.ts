@@ -79,7 +79,7 @@ describe('Visa Checkout', () => {
 
   beforeEach(() => {
     visaCheckoutSdkProviderMock = mock(VisaCheckoutSdkProvider);
-    messageBusMock = mock(IMessageBus);
+    messageBusMock = new SimpleMessageBus();
 
     when(messageBusMock.pipe(anything())).thenReturn(of(configMock));
     when(visaCheckoutSdkProviderMock.getSdk$(anything())).thenReturn(
@@ -89,7 +89,7 @@ describe('Visa Checkout', () => {
       })
     );
 
-    instance = new VisaCheckout(mockInstance(visaCheckoutSdkProviderMock), mockInstance(messageBusMock));
+    instance = new VisaCheckout(mockInstance(visaCheckoutSdkProviderMock), messageBusMock);
 
     instance.init();
   });

@@ -4,7 +4,6 @@ import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/V
 import { VisaCheckoutClientStatus } from '../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
-import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IStyles } from '../../../shared/model/config/IStyles';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
