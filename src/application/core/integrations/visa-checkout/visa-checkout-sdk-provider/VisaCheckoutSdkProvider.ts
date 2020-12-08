@@ -50,6 +50,8 @@ export class VisaCheckoutSdkProvider implements IVisaCheckoutSdkProvider {
     }
   }
 
+  // Needs to be public in order to mock it in unit test.
+  // Should be replaced when DomMethods.insertScript is not static
   insertScript$(config: IConfig, visaCheckoutUpdatedConfig: IVisaCheckoutUpdateConfig): Observable<Element> {
     return from(
       DomMethods.insertScript(config.visaCheckout.placement, {
