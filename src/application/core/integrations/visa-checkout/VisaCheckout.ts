@@ -56,7 +56,10 @@ export class VisaCheckout {
   }
 
   protected onSuccess(config: IConfig, successData: IVisaCheckoutStatusDataSuccess): void {
-    const merchantData: IMerchantData = DomMethods.parseForm(config.formId) ? DomMethods.parseForm(config.formId) : {};
+    const merchantData: IMerchantData = {
+      ...DomMethods.parseForm(config.formId),
+      termurl: 'https://termurl.com'
+    };
 
     this.messageBus.publish<IVisaCheckoutClientStatus>({
       type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
