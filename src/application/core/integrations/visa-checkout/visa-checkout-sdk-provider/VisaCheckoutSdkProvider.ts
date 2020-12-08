@@ -32,12 +32,7 @@ export class VisaCheckoutSdkProvider implements IVisaCheckoutSdkProvider {
         updateConfig: visaCheckoutUpdatedConfig
       });
     } else {
-      return from(
-        DomMethods.insertScript(config.visaCheckout.placement, {
-          src: visaCheckoutUpdatedConfig.sdkUrl,
-          id: 'visaCheckout'
-        })
-      ).pipe(
+      return this.insertScript$(config, visaCheckoutUpdatedConfig).pipe(
         tap(() => {
           this.visaCheckoutButtonService.mount(
             config.visaCheckout.placement,
@@ -53,6 +48,15 @@ export class VisaCheckoutSdkProvider implements IVisaCheckoutSdkProvider {
         })
       );
     }
+  }
+
+  insertScript$(config: IConfig, visaCheckoutUpdatedConfig: IVisaCheckoutUpdateConfig): Observable<Element> {
+    return from(
+      DomMethods.insertScript(config.visaCheckout.placement, {
+        src: visaCheckoutUpdatedConfig.sdkUrl,
+        id: 'visaCheckout'
+      })
+    );
   }
 
   getUpdatedConfig(config: IConfig): IVisaCheckoutUpdateConfig {

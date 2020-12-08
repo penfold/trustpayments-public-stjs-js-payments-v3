@@ -35,7 +35,7 @@ export class VisaCheckoutMock extends VisaCheckout {
         DomMethods.addListener(VisaCheckoutButtonProps.id, 'click', () => {
           fetch(environment.VISA_CHECKOUT_URLS.MOCK_DATA_URL)
             .then((response: Body) => response.json() as IVisaCheckoutStatusData)
-            .then(({ payment, status }: any) => {
+            .then(({ payment, status }: { payment: IVisaCheckoutStatusDataSuccess; status: string }) => {
               this.proceedWithMockData(payment, status, config);
             });
         });
