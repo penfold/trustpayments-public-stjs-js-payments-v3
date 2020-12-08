@@ -3,6 +3,8 @@ import { anyString, anything, instance as mockInstance, mock, when } from 'ts-mo
 import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
 import { VisaCheckoutClientStatus } from '../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { NotificationService } from '../../../client/notification/NotificationService';
+import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
+import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IStyles } from '../../../shared/model/config/IStyles';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -10,14 +12,13 @@ import { ConfigService } from '../../../shared/services/config-service/ConfigSer
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
-import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
-import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { StCodec } from '../../core/services/st-codec/StCodec.class';
 import { Frame } from '../../core/shared/frame/Frame';
 import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { Store } from '../../core/store/Store';
 import { ControlFrame } from './ControlFrame';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
@@ -220,7 +221,7 @@ function controlFrameFixture() {
   const configProvider: ConfigProvider = mock<ConfigProvider>();
   const notification: NotificationService = mock(NotificationService);
   const cybertonica: Cybertonica = mock(Cybertonica);
-  const cardinalCommerce: CardinalCommerce = mock(CardinalCommerce);
+  const threeDProcess: ThreeDProcess = mock(ThreeDProcess);
   const configService: ConfigService = mock(ConfigService);
   const messageBus: IMessageBus = new SimpleMessageBus();
   const frame: Frame = mock(Frame);
@@ -239,7 +240,7 @@ function controlFrameFixture() {
     thenRespond: () => undefined
   });
   when(configProvider.getConfig$()).thenReturn(of({ jwt: JWT } as IConfig));
-  when(cardinalCommerce.init(anything())).thenReturn(EMPTY);
+  when(threeDProcess.init(anything())).thenReturn(EMPTY);
   when(frame.parseUrl()).thenReturn({
     locale: 'en_GB',
     jwt: JWT,
@@ -266,7 +267,7 @@ function controlFrameFixture() {
     mockInstance(configProvider),
     mockInstance(notification),
     mockInstance(cybertonica),
-    mockInstance(cardinalCommerce),
+    mockInstance(threeDProcess),
     mockInstance(storeMock),
     mockInstance(configService),
     messageBus,

@@ -6,7 +6,7 @@ import { VisaCheckout } from '../application/core/integrations/visa-checkout/Vis
 import { VisaCheckoutMock } from '../application/core/integrations/visa-checkout/VisaCheckoutMock';
 import { CybertonicaMock } from './mocks/CybertonicaMock';
 import { environment } from '../environments/environment';
-import { CardinalProvider } from '../application/core/integrations/cardinal-commerce/CardinalProvider';
+import { CardinalProvider } from '../client/integrations/cardinal-commerce/CardinalProvider';
 import { MockCardinalProvider } from './mocks/MockCardinalProvider';
 import { ApplePay } from '../application/core/integrations/apple-pay/ApplePay';
 import { ApplePayMock } from '../application/core/integrations/apple-pay/ApplePayMock';
