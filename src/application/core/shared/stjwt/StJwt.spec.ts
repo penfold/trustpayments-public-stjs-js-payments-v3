@@ -1,9 +1,7 @@
 import each from 'jest-each';
 import { StJwt } from './StJwt';
 
-// given
 describe('StJwt', () => {
-  // when
   const gbpJwt =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0ZXN0X2p3dF9pc3N1ZXIiLCJwYXlsb2FkIjp7InNpdGVyZWZlcmVuY2UiOiJleGFtcGxlMTIzNDUiLCJiYXNlYW1vdW50IjoiMTAwMCIsImN1cnJlbmN5aXNvM2EiOiJHQlAifSwiaWF0IjoxNTE2MjM5MDIyfQ.jPuLMHxK3fznVddzkRoYC94hgheBXI1Y7zHAr7qNCig';
   const jpyJwt =
@@ -15,7 +13,6 @@ describe('StJwt', () => {
   const localeJwt =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0ZXN0X2p3dF9pc3N1ZXIiLCJwYXlsb2FkIjp7InNpdGVyZWZlcmVuY2UiOiJleGFtcGxlMTIzNDUiLCJiYXNlYW1vdW50IjoiMTAwMCIsImN1cnJlbmN5aXNvM2EiOiJHQlAiLCJsb2NhbGUiOiJlc19FUyJ9LCJpYXQiOjE1MTYyMzkwMjJ9.UlcfhQi8ooypaXaQcHMa7m1XTr29Q8ku3u60aBfSkHw';
 
-  // then
   each([
     [gbpJwt, 'example12345', 'GBP', '10.00', 'en_GB'],
     [jpyJwt, 'example67890', 'JPY', '1100', 'en_GB'],

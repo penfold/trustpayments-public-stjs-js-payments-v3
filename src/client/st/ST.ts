@@ -1,7 +1,9 @@
 import './st.css';
 import jwt_decode from 'jwt-decode';
+import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
+import { environment } from '../../environments/environment';
 import { CardFrames } from '../card-frames/CardFrames.class';
 import { CommonFrames } from '../common-frames/CommonFrames.class';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
@@ -12,7 +14,6 @@ import { VisaCheckout } from '../../application/core/integrations/visa-checkout/
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
-import { IVisaConfig } from '../../application/core/integrations/visa-checkout/IVisaConfig';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { Translator } from '../../application/core/shared/translator/Translator';
 import { Service, Container } from 'typedi';
@@ -39,9 +40,10 @@ import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Se
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
+import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
-import { IApplePay } from '../../application/core/integrations/apple-pay/IApplePay';
+import { IApplePayConfig } from '../../application/core/integrations/apple-pay/IApplePayConfig';
 import { ApplePayNetworksService } from '../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePayButtonService } from '../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { NotificationService } from '../notification/NotificationService';
@@ -111,6 +113,7 @@ export class ST {
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
     private _browserDetector: BrowserDetector,
+    private _visaCheckout: VisaCheckout,
     private _cybertonica: Cybertonica,
     private _applePayNetworkService: ApplePayNetworksService,
     private _applePayButtonService: ApplePayButtonService
@@ -173,29 +176,38 @@ export class ST {
       });
   }
 
-  public ApplePay(config: IApplePay): ApplePay {
+  public ApplePay(config: IApplePayConfig): ApplePay {
     if (config) {
       this._config = this._configService.updateFragment('applePay', config);
     }
 
-    const applePay: ApplePay = new ApplePay(
-      this._communicator,
-      this._configProvider,
-      this._storage,
-      this._notificationService,
-      this._applePayButtonService,
-      this._applePayNetworkService
-    );
-    applePay.init();
-    return applePay;
+    if (environment.testEnvironment) {
+      return new ApplePayMock(
+        this._communicator,
+        this._configProvider,
+        this._storage,
+        this._notificationService,
+        this._applePayButtonService,
+        this._applePayNetworkService
+      );
+    } else {
+      return new ApplePay(
+        this._communicator,
+        this._configProvider,
+        this._storage,
+        this._notificationService,
+        this._applePayButtonService,
+        this._applePayNetworkService
+      );
+    }
   }
 
-  public VisaCheckout(config: IVisaConfig | undefined): VisaCheckout {
-    if (config) {
-      this._config = this._configService.updateFragment('visaCheckout', config);
+  public VisaCheckout(visaCheckoutConfig: IVisaCheckoutConfig | undefined): void {
+    if (visaCheckoutConfig) {
+      this._config = this._configService.updateFragment('visaCheckout', visaCheckoutConfig);
     }
 
-    return new VisaCheckout(this._configProvider, this._communicator);
+    this._visaCheckout.init();
   }
 
   public Cybertonica(): Promise<string> {

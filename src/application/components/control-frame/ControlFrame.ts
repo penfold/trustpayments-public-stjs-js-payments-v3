@@ -1,3 +1,4 @@
+import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
 import { StCodec } from '../../core/services/st-codec/StCodec.class';
 import { FormFieldsDetails } from '../../core/models/constants/FormFieldsDetails';
 import { FormFieldsValidity } from '../../core/models/constants/FormFieldsValidity';
@@ -13,6 +14,7 @@ import { ISubmitData } from '../../core/models/ISubmitData';
 import { PAYMENT_SUCCESS, PAYMENT_ERROR } from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
+import { Styler } from '../../core/shared/styler/Styler';
 import { Validation } from '../../core/shared/validation/Validation';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
@@ -35,7 +37,6 @@ import { UPDATE_CONFIG } from '../../core/store/reducers/config/ConfigActions';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
-import { Styler } from '../../core/shared/styler/Styler';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
@@ -89,7 +90,8 @@ export class ControlFrame {
     private _configService: ConfigService,
     private _messageBus: IMessageBus,
     private _frame: Frame,
-    private _jwtDecoder: JwtDecoder
+    private _jwtDecoder: JwtDecoder,
+    private _visaCheckoutClient: VisaCheckoutClient
   ) {
     this._communicator
       .whenReceive(MessageBus.EVENTS_PUBLIC.INIT_CONTROL_FRAME)
@@ -162,6 +164,8 @@ export class ControlFrame {
         this._payment.setCardinalCommerceCacheToken(tokens.cacheToken);
       }
     );
+
+    this._initVisaCheckout();
   }
 
   private _formFieldChangeEvent(event: string, field: IFormFieldState): void {
@@ -275,7 +279,7 @@ export class ControlFrame {
         this._notification.success(PAYMENT_SUCCESS);
         this._validation.blockForm(FormState.COMPLETE);
       })
-      .catch((error: any) => {
+      .catch(() => {
         this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this._notification.error(PAYMENT_ERROR);
         this._validation.blockForm(FormState.AVAILABLE);
@@ -418,5 +422,9 @@ export class ControlFrame {
         );
       }
     });
+  }
+
+  private _initVisaCheckout(): void {
+    this._visaCheckoutClient.init$().subscribe();
   }
 }

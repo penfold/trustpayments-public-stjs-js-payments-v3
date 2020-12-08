@@ -8,8 +8,7 @@ import { DefaultSubmitFields } from '../../../application/core/models/constants/
 import { DefaultComponentsIds } from '../../../application/core/models/constants/config-resolver/DefaultComponentsIds';
 import { DefaultConfig } from '../../../application/core/models/constants/config-resolver/DefaultConfig';
 import { DefaultComponents } from '../../../application/core/models/constants/config-resolver/DefaultComponents';
-import { IApplePay } from '../../../application/core/integrations/apple-pay/IApplePay';
-import { IVisaCheckout } from '../../../application/core/models/constants/IVisaCheckout';
+import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
 import { environment } from '../../../environments/environment';
@@ -48,7 +47,7 @@ export class ConfigResolver {
       submitOnSuccess: this._getValueOrDefault(config.submitOnSuccess, DefaultConfig.submitOnSuccess),
       successCallback: this._getValueOrDefault(config.successCallback, DefaultConfig.successCallback),
       translations: this._getValueOrDefault(config.translations, DefaultConfig.translations),
-      visaCheckout: this._setVisaCheckoutConfig(config.visaCheckout, DefaultConfig.visaCheckout)
+      visaCheckout: this._setVisaCheckoutConfig(config.visaCheckout)
     };
     if (!environment.production) {
       console.error(validatedConfig);
@@ -57,7 +56,7 @@ export class ConfigResolver {
   }
 
   private _validate(
-    config: IConfig | IComponentsConfig | IComponentsIds | IApplePay | IVisaCheckout,
+    config: IConfig | IComponentsConfig | IComponentsIds | IApplePayConfig | IVisaCheckoutConfig,
     schema: Joi.ObjectSchema
   ): void {
     const { error } = schema.validate(config);
@@ -90,14 +89,14 @@ export class ConfigResolver {
     }
   }
 
-  private _setVisaCheckoutConfig(config: IVisaCheckout | {}, defaultConfig: {}): IVisaCheckout | {} {
+  private _setVisaCheckoutConfig(config: IVisaCheckoutConfig): IVisaCheckoutConfig {
     if (!config || !Object.keys(config).length) {
-      return defaultConfig;
+      return;
     }
     return config;
   }
 
-  private _setApplePayConfig(config: IApplePay): IApplePay {
+  private _setApplePayConfig(config: IApplePayConfig): IApplePayConfig {
     if (!config || !Object.keys(config).length) {
       return;
     }

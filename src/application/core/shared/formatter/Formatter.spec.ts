@@ -6,7 +6,6 @@ import { IMessageBus } from '../message-bus/IMessageBus';
 
 jest.mock('./../notification/Notification');
 
-// given
 describe('Formatter', () => {
   describe('date', () => {
     const { instance } = formatterFixture();

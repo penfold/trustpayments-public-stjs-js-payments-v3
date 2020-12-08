@@ -1,4 +1,6 @@
-export interface IVisaSettings {
+import { IVisaCardBrands } from './IVisaCardBrands';
+
+export interface IVisaCheckoutSettings {
   locale?: string;
   countryCode?: string;
   displayName?: string;
@@ -10,7 +12,7 @@ export interface IVisaSettings {
     collectShipping?: 'true' | 'false';
   };
   payment?: {
-    cardBrands?: string[];
+    cardBrands?: IVisaCardBrands[];
     acceptCanadianVisaDebit?: 'true' | 'false';
     billingCountries?: string[];
   };

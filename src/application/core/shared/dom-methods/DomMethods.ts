@@ -62,7 +62,10 @@ export class DomMethods {
       if (loaded) {
         resolve(loaded);
       } else {
-        const targetElement: Element = document.getElementsByTagName(target)[0];
+        let targetElement: Element = document.getElementsByTagName(target)[0];
+        if (!targetElement) {
+          targetElement = document.getElementById(target);
+        }
         const script: Element = DomMethods.setMarkupAttributes(DomMethods.SCRIPT_MARKUP, params);
         targetElement.appendChild(script);
         script.addEventListener('load', () => {

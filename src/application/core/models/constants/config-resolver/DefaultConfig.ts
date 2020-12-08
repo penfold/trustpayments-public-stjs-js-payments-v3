@@ -36,6 +36,5 @@ export const DefaultConfig: IConfig = {
   submitOnError: false,
   submitOnSuccess: true,
   successCallback: null,
-  translations: {},
-  visaCheckout: {}
+  translations: {}
 };

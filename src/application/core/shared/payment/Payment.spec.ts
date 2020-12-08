@@ -46,22 +46,18 @@ describe('Payment', () => {
       instance._stTransport.sendRequest = jest.fn();
     });
 
-    // then
     it('should set attributes to payment instance', () => {
       // @ts-ignore
       expect(instance._stTransport).toBeInstanceOf(StTransport);
     });
   });
 
-  // given
   describe('processPayment()', () => {
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._stTransport.sendRequest = jest.fn();
     });
 
-    // then
     it('should send remaining request types with card and merchant data', async () => {
       await instance.processPayment(['AUTH'], card, {
         merchant: 'data'
@@ -73,7 +69,6 @@ describe('Payment', () => {
       });
     });
 
-    // then
     it('should send remaining request types with cybertonica tid', async () => {
       const cybertonicaTid = 'b268ab7f-25d7-430a-9be2-82b0f00c4039';
 
@@ -91,7 +86,6 @@ describe('Payment', () => {
       });
     });
 
-    // then
     it('should send remaining request types with 3D response', async () => {
       await instance.processPayment(['AUTH', 'RISKDEC'], card, { pan: 'overridden', merchant: 'data' }, ({
         requesttypescription: 'THREEDQUERY',
@@ -154,7 +148,6 @@ describe('Payment', () => {
         });
     });
 
-    // then
     it('should send AUTH request with wallet', async () => {
       await instance.processPayment(['AUTH'], wallet, {
         merchant: 'data'
@@ -193,7 +186,6 @@ describe('Payment', () => {
       });
     });
 
-    // then
     it('should publish the response when TDQ is the last request type and there is threedresponse', async () => {
       const response: IThreeDQueryResponse = ({
         requesttypedescription: 'THREEDQUERY',
@@ -241,9 +233,7 @@ describe('Payment', () => {
     });
   });
 
-  // given
   describe('walletVerify()', () => {
-    // then
     it('should send WALLETVERIFY request with walletverify', () => {
       instance.walletVerify(walletVerify);
       // @ts-ignore

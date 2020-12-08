@@ -1,44 +1,34 @@
 import { ApplePaySessionMock } from './ApplePaySessionMock';
 
-// given
 describe('Class ApplePaySessionMock', () => {
-  // given
   describe('ApplePayMock.completePayment', () => {
-    // when
     let session: any;
     beforeEach(() => {
       session = applePaySessionMockFixture().session;
     });
 
-    // then
     it('should always return true', () => {
       expect(session.completePayment()).toBe(true);
     });
   });
 
-  // given
   describe('ApplePayMock.completeMerchantValidation', () => {
-    // when
     let session: any;
     beforeEach(() => {
       session = applePaySessionMockFixture().session;
     });
 
-    // then
     it('should always return true', () => {
       expect(session.completeMerchantValidation()).toBe(true);
     });
   });
 
-  // given
   describe('ApplePayMock.completePaymentMethodSelection', () => {
-    // when
     let session: any;
     beforeEach(() => {
       session = applePaySessionMockFixture().session;
     });
 
-    // given
     describe('ApplePayMock.begin()', () => {
       let handleResp: any;
       beforeEach(() => {
@@ -46,7 +36,7 @@ describe('Class ApplePaySessionMock', () => {
         handleResp = session._handleResponse;
         session._handleResponse = jest.fn();
       });
-      // then
+
       it('should call _handleResponse on successful fetch', async () => {
         const mockResponse = { json: jest.fn().mockReturnValue({ payment: 'somedata', status: 'SUCCESS' }) };
         // @ts-ignore
@@ -61,15 +51,12 @@ describe('Class ApplePaySessionMock', () => {
       });
     });
 
-    // then
     it('should always return true', () => {
       expect(session.completePaymentMethodSelection()).toBe(true);
     });
   });
 
-  // given
   describe('ApplePayMock._handleResponse', () => {
-    // when
     let session: any;
     beforeEach(() => {
       session = applePaySessionMockFixture().session;
@@ -77,7 +64,6 @@ describe('Class ApplePaySessionMock', () => {
       session.oncancel = jest.fn();
     });
 
-    // then
     it('should call onsuccess', () => {
       session._handleResponse({
         status: 'SUCCESS'
@@ -89,7 +75,6 @@ describe('Class ApplePaySessionMock', () => {
       });
     });
 
-    // then
     it('should call oncancel', () => {
       session._handleResponse({
         status: 'ERROR'

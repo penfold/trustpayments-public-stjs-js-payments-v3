@@ -11,6 +11,7 @@ import { IStJwtObj } from '../../../application/core/models/IStJwtObj';
 import { IVisaConfig } from '../../../application/core/integrations/visa-checkout/IVisaConfig';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
+import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 
 describe('ConfigService', () => {
   let resolverMock: ConfigResolver;
@@ -175,11 +176,10 @@ describe('ConfigService', () => {
 
   describe('updateFragment', () => {
     it('updates a given key in configuration', () => {
-      const visaConfig: IVisaConfig = {
+      const visaConfig: IVisaCheckoutConfig = {
         merchantId: 'foobar',
         livestatus: 1,
-        placement: 'st-visa',
-        requestTypes: []
+        placement: 'st-visa'
       };
 
       configService.setup(config);

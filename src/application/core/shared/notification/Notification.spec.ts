@@ -19,7 +19,6 @@ describe('Notification', () => {
   let notification: Notification;
   let frame: Frame;
 
-  // when
   beforeEach(() => {
     messageBus = new SimpleMessageBus();
     browserLocalStorage = mock(BrowserLocalStorage);
@@ -59,7 +58,6 @@ describe('Notification', () => {
     );
   });
 
-  // then
   it(`should display notification if ${MessageBus.EVENTS_PUBLIC.NOTIFICATION} has been called`, () => {
     // @ts-ignore
     messageBus.publish(
