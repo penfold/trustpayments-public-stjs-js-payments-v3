@@ -31,7 +31,6 @@ import { Subject, Subscription } from 'rxjs';
 import { delay, map, takeUntil } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { NotificationService } from '../notification/NotificationService';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { IframeFactory } from '../iframe-factory/IframeFactory';
@@ -107,7 +106,7 @@ export class ST {
     private _framesHub: FramesHub,
     private _storage: BrowserLocalStorage,
     private _messageBus: IMessageBus,
-    private _notificationService: NotificationService,
+    private _notification: Notification,
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
     private _browserDetector: BrowserDetector,
