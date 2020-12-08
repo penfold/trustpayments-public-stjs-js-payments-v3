@@ -9,7 +9,6 @@ import { ConfigProvider } from '../../shared/services/config-provider/ConfigProv
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 
 window.alert = jest.fn();
-jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
 jest.mock('./../../client/common-frames/CommonFrames.class');
 jest.mock('./../../client/card-frames/CardFrames.class');

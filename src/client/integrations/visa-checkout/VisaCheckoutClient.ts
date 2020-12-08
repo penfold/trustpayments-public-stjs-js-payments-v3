@@ -12,6 +12,7 @@ import {
 import { IMerchantData } from '../../../application/core/models/IMerchantData';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IWallet } from '../../../application/core/models/IWallet';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { Payment } from '../../../application/core/shared/payment/Payment';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -22,7 +23,6 @@ import { NotificationService } from '../../notification/NotificationService';
 import { IVisaCheckoutClient } from './IVisaCheckoutClient';
 import { IVisaCheckoutClientStatus } from './IVisaCheckoutClientStatus';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
-import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 
 @Service()
 export class VisaCheckoutClient implements IVisaCheckoutClient {

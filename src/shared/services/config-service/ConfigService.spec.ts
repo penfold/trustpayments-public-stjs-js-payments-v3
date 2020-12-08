@@ -1,3 +1,4 @@
+import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { ConfigResolver } from '../config-resolver/ConfigResolver';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
@@ -10,7 +11,6 @@ import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
 import { IStJwtObj } from '../../../application/core/models/IStJwtObj';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
-import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 
 describe('ConfigService', () => {
   let resolverMock: ConfigResolver;

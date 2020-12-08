@@ -6,6 +6,7 @@ import {
   PAYMENT_ERROR,
   PAYMENT_SUCCESS
 } from '../../../application/core/models/constants/Translations';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { Payment } from '../../../application/core/shared/payment/Payment';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -14,8 +15,6 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { NotificationService } from '../../notification/NotificationService';
 import { VisaCheckoutClient } from './VisaCheckoutClient';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
-import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 
 describe('VisaCheckoutClient', () => {
   let visaCheckoutClient: VisaCheckoutClient;

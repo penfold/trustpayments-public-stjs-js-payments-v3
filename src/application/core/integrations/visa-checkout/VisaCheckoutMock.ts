@@ -6,7 +6,7 @@ import { ofType } from '../../../../shared/services/message-bus/operators/ofType
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
-import { MessageBus } from '../../shared/message-bus/MessageBus';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { VisaCheckoutButtonProps } from './visa-checkout-button-service/VisaCheckoutButtonProps';
 import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
 import { IVisaCheckoutStatusData } from './visa-checkout-status-data/IVisaCheckoutStatusData';
@@ -15,7 +15,7 @@ import { VisaCheckout } from './VisaCheckout';
 
 @Service()
 export class VisaCheckoutMock extends VisaCheckout {
-  constructor(protected visaCheckoutSdkProvider: VisaCheckoutSdkProvider, protected messageBus: MessageBus) {
+  constructor(protected visaCheckoutSdkProvider: VisaCheckoutSdkProvider, protected messageBus: IMessageBus) {
     super(visaCheckoutSdkProvider, messageBus);
   }
 

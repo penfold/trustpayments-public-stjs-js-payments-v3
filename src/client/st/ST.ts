@@ -24,7 +24,6 @@ import { IErrorEvent } from '../../application/core/models/IErrorEvent';
 import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
-import { Notification } from '../../application/core/shared/notification/Notification';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Subject, Subscription } from 'rxjs';
 import { delay, map, takeUntil } from 'rxjs/operators';
@@ -48,6 +47,7 @@ import { ApplePayNetworksService } from '../../application/core/integrations/app
 import { ApplePayButtonService } from '../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { NotificationService } from '../notification/NotificationService';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { Notification } from '../../application/core/shared/notification/Notification';
 import { IApplePayConfig } from '../../application/core/integrations/apple-pay/IApplePayConfig';
 
 @Service()

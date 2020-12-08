@@ -14,7 +14,6 @@ import { ISubmitData } from '../../core/models/ISubmitData';
 import { PAYMENT_SUCCESS, PAYMENT_ERROR } from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
-import { Styler } from '../../core/shared/styler/Styler';
 import { Validation } from '../../core/shared/validation/Validation';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
@@ -35,6 +34,7 @@ import { UPDATE_CONFIG } from '../../core/store/reducers/config/ConfigActions';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
+import { Styler } from '../../core/shared/styler/Styler';
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { IThreeDSTokens } from '../../core/services/three-d-verification/data/IThreeDSTokens';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
@@ -145,6 +145,7 @@ export class ControlFrame {
     this._updateJwtEvent();
     this._initCybertonica(config);
     this._initThreeDProcess(config);
+    this._initVisaCheckout();
   }
 
   private _formFieldChangeEvent(event: string, field: IFormFieldState): void {
@@ -252,7 +253,7 @@ export class ControlFrame {
         this._notification.success(PAYMENT_SUCCESS);
         this._validation.blockForm(FormState.COMPLETE);
       })
-      .catch(() => {
+      .catch((error: any) => {
         this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this._notification.error(PAYMENT_ERROR);
         this._validation.blockForm(FormState.AVAILABLE);
