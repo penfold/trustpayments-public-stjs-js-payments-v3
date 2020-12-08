@@ -39,7 +39,7 @@ module.exports = {
   // An object that configures minimum threshold enforcement for coverage results
   coverageThreshold: {
     'global': {
-      'branches': 55,
+      'branches': 54,
       'functions': 68,
       'lines': 77,
       'statements': 77
@@ -124,7 +124,11 @@ module.exports = {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: ['<rootDir>/__mocks__/libMock.js', '<rootDir>/src/bootstrap.ts'],
+  setupFiles: [
+    '<rootDir>/__mocks__/libMock.js',
+    '<rootDir>/src/bootstrap.ts',
+    '<rootDir>/src/testing/ServiceDefinitions.ts',
+  ],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],

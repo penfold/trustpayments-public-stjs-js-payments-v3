@@ -1,22 +1,22 @@
+import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { ConfigResolver } from '../config-resolver/ConfigResolver';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { ConfigService } from './ConfigService';
 import { IConfig } from '../../model/config/IConfig';
 import { ValidationError } from 'joi';
-import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
-import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { take, toArray } from 'rxjs/operators';
 import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
 import { IStJwtObj } from '../../../application/core/models/IStJwtObj';
-import { IVisaConfig } from '../../../application/core/integrations/visa-checkout/IVisaConfig';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 
 describe('ConfigService', () => {
   let resolverMock: ConfigResolver;
   let validatorMock: ConfigValidator;
   let configService: ConfigService;
-  let messageBus: MessageBus;
+  let messageBus: IMessageBus;
   let jwtDecoderMock: JwtDecoder;
 
   const JWT = 'jwt';
@@ -33,7 +33,7 @@ describe('ConfigService', () => {
     resolverMock = mock(ConfigResolver);
     validatorMock = mock(ConfigValidator);
     jwtDecoderMock = mock(JwtDecoder);
-    messageBus = (new MessageBusMock() as unknown) as MessageBus;
+    messageBus = new SimpleMessageBus();
     configService = new ConfigService(
       instance(resolverMock),
       instance(validatorMock),
@@ -175,11 +175,10 @@ describe('ConfigService', () => {
 
   describe('updateFragment', () => {
     it('updates a given key in configuration', () => {
-      const visaConfig: IVisaConfig = {
+      const visaConfig: IVisaCheckoutConfig = {
         merchantId: 'foobar',
         livestatus: 1,
-        placement: 'st-visa',
-        requestTypes: []
+        placement: 'st-visa'
       };
 
       configService.setup(config);

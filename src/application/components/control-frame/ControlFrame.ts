@@ -1,3 +1,4 @@
+import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
 import { StCodec } from '../../core/services/st-codec/StCodec.class';
 import { FormFieldsDetails } from '../../core/models/constants/FormFieldsDetails';
 import { FormFieldsValidity } from '../../core/models/constants/FormFieldsValidity';
@@ -21,10 +22,8 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
-import { ICardinalCommerceTokens } from '../../core/integrations/cardinal-commerce/ICardinalCommerceTokens';
-import { defer, EMPTY, from, iif, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, map, mapTo, switchMap, tap } from 'rxjs/operators';
+import { EMPTY, from, Observable, of, throwError } from 'rxjs';
+import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { StJwt } from '../../core/shared/stjwt/StJwt';
 import { Translator } from '../../core/shared/translator/Translator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
@@ -36,10 +35,13 @@ import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
 import { Styler } from '../../core/shared/styler/Styler';
+import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
+import { IThreeDSTokens } from '../../core/services/three-d-verification/data/IThreeDSTokens';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
 import { IThreeDQueryResponse } from '../../core/models/IThreeDQueryResponse';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { ApplePayClient } from '../../../client/integrations/apple-pay/ApplePayClient';
 
 @Service()
@@ -84,13 +86,14 @@ export class ControlFrame {
     private _configProvider: ConfigProvider,
     private _notification: NotificationService,
     private _cybertonica: Cybertonica,
-    private _cardinalCommerce: CardinalCommerce,
+    private _threeDProcess: ThreeDProcess,
     private _store: Store,
     private _configService: ConfigService,
-    private _messageBus: MessageBus,
+    private _messageBus: IMessageBus,
     private _frame: Frame,
     private _jwtDecoder: JwtDecoder,
-    private _applePayClient: ApplePayClient
+    private _applePayClient: ApplePayClient,
+    private _visaCheckoutClient: VisaCheckoutClient
   ) {
     this._communicator
       .whenReceive(MessageBus.EVENTS_PUBLIC.INIT_CONTROL_FRAME)
@@ -143,31 +146,13 @@ export class ControlFrame {
     this._resetJwtEvent();
     this._updateJwtEvent();
     this._initCybertonica(config);
-    this._setRequestTypes(config.jwt);
-
-    if (!config.deferInit) {
-      this._initCardinalCommerce(config);
-    } else if (config.components.startOnLoad) {
-      this._messageBus.publish({
-        type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
-        data: {
-          dataInJwt: true,
-          requestTypes: this._remainingRequestTypes
-        }
-      });
-    }
-
-    this._messageBus.subscribe(
-      MessageBus.EVENTS_PUBLIC.CARDINAL_COMMERCE_TOKENS_ACQUIRED,
-      (tokens: ICardinalCommerceTokens) => {
-        this._payment.setCardinalCommerceCacheToken(tokens.cacheToken);
-      }
-    );
+    this._initThreeDProcess(config);
+    this._initVisaCheckout();
     this._initApplePay();
   }
 
   private _formFieldChangeEvent(event: string, field: IFormFieldState): void {
-    this._messageBus.subscribe(event, (data: IFormFieldState) => {
+    this._messageBus.subscribeType(event, (data: IFormFieldState) => {
       this._formFieldChange(event, data.value);
       ControlFrame._setFormFieldValidity(field, data);
       ControlFrame._setFormFieldValue(field, data);
@@ -175,7 +160,7 @@ export class ControlFrame {
   }
 
   private _resetJwtEvent(): void {
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.RESET_JWT, () => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.RESET_JWT, () => {
       ControlFrame._resetJwt();
     });
   }
@@ -186,13 +171,13 @@ export class ControlFrame {
   }
 
   private _updateJwtEvent(): void {
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: any) => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: any) => {
       ControlFrame._updateJwt(data.newJwt);
     });
   }
 
   private _updateMerchantFieldsEvent(): void {
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
       this._updateMerchantFields(data);
     });
   }
@@ -213,13 +198,6 @@ export class ControlFrame {
 
           return this._configProvider.getConfig$().pipe(
             tap(config => this._setRequestTypes(config.jwt)),
-            switchMap(config =>
-              iif(
-                () => config.deferInit,
-                defer(() => this._cardinalCommerce.init(config).pipe(mapTo(data))),
-                of(data)
-              ).pipe(mapTo(config))
-            ),
             switchMap(() =>
               this._callThreeDQueryRequest().pipe(
                 catchError(errorData => this._onPaymentFailure(errorData)),
@@ -251,6 +229,7 @@ export class ControlFrame {
     const translatedErrorMessage = translator.translate(PAYMENT_ERROR);
 
     this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.RESET_JWT });
+    this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
 
     errorData.errormessage = translatedErrorMessage;
 
@@ -316,7 +295,7 @@ export class ControlFrame {
     return of({ ...this._merchantFormData }).pipe(
       switchMap(applyCybertonicaTid),
       switchMap(merchantFormData =>
-        this._cardinalCommerce.performThreeDQuery(this._remainingRequestTypes, this._card, merchantFormData)
+        this._threeDProcess.performThreeDQuery(this._remainingRequestTypes, this._card, merchantFormData)
       )
     );
   }
@@ -398,8 +377,19 @@ export class ControlFrame {
     }
   }
 
-  private _initCardinalCommerce(config: IConfig): void {
-    this._cardinalCommerce.init(config).subscribe(() => {
+  private _initThreeDProcess(config: IConfig): void {
+    let initialTokens: IThreeDSTokens;
+
+    const { threedinit, cachetoken } = config.init || {};
+
+    if (threedinit && cachetoken) {
+      initialTokens = {
+        jwt: threedinit,
+        cacheToken: cachetoken
+      };
+    }
+
+    this._threeDProcess.init(initialTokens).subscribe(() => {
       this._isPaymentReady = true;
 
       if (config.components.startOnLoad) {
@@ -420,6 +410,10 @@ export class ControlFrame {
         );
       }
     });
+  }
+
+  private _initVisaCheckout(): void {
+    this._visaCheckoutClient.init$().subscribe();
   }
 
   private _initApplePay(): void {

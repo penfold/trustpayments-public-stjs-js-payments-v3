@@ -1,3 +1,5 @@
+import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
+import { VisaCheckoutClientStatus } from '../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { ControlFrame } from './ControlFrame';
 import { StCodec } from '../../core/services/st-codec/StCodec.class';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
@@ -8,33 +10,33 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { mock, instance as mockInstance, when, anyString, anything } from 'ts-mockito';
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
-import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
 import { IConfig } from '../../../shared/model/config/IConfig';
+import { IStyles } from '../../../shared/model/config/IStyles';
+import { ConfigService } from '../../../shared/services/config-service/ConfigService';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
+import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { EMPTY, of } from 'rxjs';
 import { Store } from '../../core/store/Store';
-import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
 import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
-import { IStyles } from '../../../shared/model/config/IStyles';
-import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
-import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { ApplePayClient } from '../../../client/integrations/apple-pay/ApplePayClient';
 import { ApplePayClientStatus } from '../../../client/integrations/apple-pay/ApplePayClientStatus';
 
 jest.mock('./../../core/shared/payment/Payment');
 
-// given
 describe('ControlFrame', () => {
   const { data, instance, messageBusEvent } = controlFrameFixture();
 
   beforeEach(() => {
     // @ts-ignore
-    instance._messageBus.subscribe = jest.fn().mockImplementationOnce((event, callback) => {
+    instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
       callback(data);
     });
   });
 
-  // given
   describe('ControlFrame._onFormFieldStateChange()', () => {
     const field: IFormFieldState = {
       validity: false,
@@ -221,12 +223,13 @@ function controlFrameFixture() {
   const configProvider: ConfigProvider = mock<ConfigProvider>();
   const notification: NotificationService = mock(NotificationService);
   const cybertonica: Cybertonica = mock(Cybertonica);
-  const cardinalCommerce: CardinalCommerce = mock(CardinalCommerce);
+  const threeDProcess: ThreeDProcess = mock(ThreeDProcess);
   const configService: ConfigService = mock(ConfigService);
-  const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
+  const messageBus: IMessageBus = new SimpleMessageBus();
   const frame: Frame = mock(Frame);
   const storeMock: Store = mock(Store);
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
+  const visaCheckoutClientMock: VisaCheckoutClient = mock(VisaCheckoutClient);
   const applePayClient: ApplePayClient = mock(ApplePayClient);
   const controlFrame: IStyles[] = [
     {
@@ -240,7 +243,7 @@ function controlFrameFixture() {
     thenRespond: () => undefined
   });
   when(configProvider.getConfig$()).thenReturn(of({ jwt: JWT } as IConfig));
-  when(cardinalCommerce.init(anything())).thenReturn(EMPTY);
+  when(threeDProcess.init(anything())).thenReturn(EMPTY);
   when(frame.parseUrl()).thenReturn({
     locale: 'en_GB',
     jwt: JWT,
@@ -259,6 +262,7 @@ function controlFrameFixture() {
       expirydate: '01/22'
     }
   });
+  when(visaCheckoutClientMock.init$()).thenReturn(of(VisaCheckoutClientStatus.SUCCESS));
   when(applePayClient.init$()).thenReturn(of(ApplePayClientStatus.SUCCESS));
 
   const instance = new ControlFrame(
@@ -267,12 +271,13 @@ function controlFrameFixture() {
     mockInstance(configProvider),
     mockInstance(notification),
     mockInstance(cybertonica),
-    mockInstance(cardinalCommerce),
+    mockInstance(threeDProcess),
     mockInstance(storeMock),
     mockInstance(configService),
     messageBus,
     mockInstance(frame),
     mockInstance(jwtDecoderMock),
+    mockInstance(visaCheckoutClientMock),
     mockInstance(applePayClient)
   );
   const messageBusEvent = {

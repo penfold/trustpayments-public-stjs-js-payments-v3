@@ -4,7 +4,6 @@ import { CARD_NUMBER_INPUT, CARD_NUMBER_LABEL, CARD_NUMBER_MESSAGE } from '../..
 import { Input } from '../../core/shared/input/Input';
 import { Utils } from '../../core/shared/utils/Utils';
 import { Validation } from '../../core/shared/validation/Validation';
-import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { instance, mock, when } from 'ts-mockito';
 import { IconFactory } from '../../core/services/icon/IconFactory';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -12,87 +11,74 @@ import { Frame } from '../../core/shared/frame/Frame';
 import { Formatter } from '../../core/shared/formatter/Formatter';
 import { of } from 'rxjs';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 
 jest.mock('./../../core/shared/validation/Validation');
 
-// given
 describe('CardNumber', () => {
   const { inputElement, messageElement, cardNumberInstance, labelElement } = cardNumberFixture();
-  // when
+
   beforeAll(() => {
     document.body.appendChild(inputElement);
     document.body.appendChild(labelElement);
     document.body.appendChild(messageElement);
   });
 
-  // then
   it('should create cardNumberInstance of class CardNumber', () => {
     expect(cardNumberInstance).toBeInstanceOf(CardNumber);
   });
 
-  // then
   it('should create cardNumberInstance of class CardNumber', () => {
     expect(cardNumberInstance).toBeInstanceOf(Input);
   });
 
-  // then
   it('should have a label', () => {
     // @ts-ignore
     expect(cardNumberInstance.getLabel()).toBe('Card number');
   });
 
-  // given
   describe('CardNumber._getCardNumberForBinProcess()', () => {
-    // then
     it('should return input iframe-factory', () => {
       // @ts-ignore
       expect(CardNumber._getCardNumberForBinProcess('4111111111111111')).toEqual('411111');
     });
   });
 
-  // given
   describe('CardNumber.ifFieldExists', () => {
-    // then
     it('should return input iframe-factory', () => {
       expect(CardNumber.ifFieldExists()).toBeTruthy();
     });
 
-    // then
     it('should return input iframe-factory', () => {
       expect(CardNumber.ifFieldExists()).toBeInstanceOf(HTMLInputElement);
     });
   });
-  // given
+
   describe('CardNumber.getBinLookupDetails', () => {
     const { unrecognizedCardNumber, cardNumberCorrect, receivedObject } = cardNumberFixture();
 
-    // then
     it('should return undefined if card is not recognized', () => {
       // @ts-ignore
       expect(cardNumberInstance._getBinLookupDetails(unrecognizedCardNumber)).toEqual(undefined);
     });
 
-    // then
     it('should return binLookup object if card is recognized', () => {
       // @ts-ignore
       expect(cardNumberInstance._getBinLookupDetails(cardNumberCorrect)).toStrictEqual(receivedObject);
     });
   });
 
-  // given
   describe('getMaxLengthOfCardNumber()', () => {
     const { cardNumberCorrect, unrecognizedCardNumber } = cardNumberFixture();
     const maxLengthOfCardNumber = 19;
     const numberOfWhitespaces = 0;
 
-    // then
     it('should return max length of card number', () => {
       // @ts-ignore
       expect(cardNumberInstance._getMaxLengthOfCardNumber(cardNumberCorrect)).toEqual(maxLengthOfCardNumber);
     });
 
-    // then
     it(`should return numberOfWhitespaces equals: ${numberOfWhitespaces} when cardFormat is not defined`, () => {
       // @ts-ignore
       expect(cardNumberInstance._getMaxLengthOfCardNumber(unrecognizedCardNumber)).toEqual(
@@ -102,90 +88,76 @@ describe('CardNumber', () => {
     });
   });
 
-  // given
   describe('getCardFormat()', () => {
     const { unrecognizedCardNumber, cardNumberCorrect, receivedObject } = cardNumberFixture();
 
-    // then
     it('should return undefined if card format is not recognized', () => {
       // @ts-ignore
       expect(cardNumberInstance._getCardFormat(unrecognizedCardNumber)).toEqual(undefined);
     });
 
-    // then
     it('should return card format regexp if card format is recognized', () => {
       // @ts-ignore
       expect(cardNumberInstance._getCardFormat(cardNumberCorrect)).toEqual(receivedObject.format);
     });
   });
 
-  // given
   describe('getPossibleCardLength()', () => {
     const { unrecognizedCardNumber, cardNumberCorrect, receivedObject } = cardNumberFixture();
 
-    // then
     it('should return undefined if card format is not recognized', () => {
       // @ts-ignore
       expect(cardNumberInstance._getPossibleCardLength(unrecognizedCardNumber)).toEqual(undefined);
     });
 
-    // then
     it('should return possible card length if card format is recognized', () => {
       // @ts-ignore
       expect(cardNumberInstance._getPossibleCardLength(cardNumberCorrect)).toEqual(receivedObject.length);
     });
   });
 
-  // given
   describe('getSecurityCodeLength()', () => {
     const { unrecognizedCardNumber, cardNumberCorrect, receivedObject } = cardNumberFixture();
 
-    // then
     it('should return undefined if card format is not recognized', () => {
       // @ts-ignore
       expect(cardNumberInstance._getSecurityCodeLength(unrecognizedCardNumber)).toEqual(undefined);
     });
 
-    // then
     it('should return possible cvc lengths if card format is recognized', () => {
       // @ts-ignore
       expect(cardNumberInstance._getSecurityCodeLength(cardNumberCorrect)).toEqual(receivedObject.cvcLength[0]);
     });
   });
 
-  // given
   describe('_setDisableListener()', () => {
     function subscribeMock(state: FormState) {
       // @ts-ignore
-      cardNumberInstance.messageBus.subscribe = jest.fn().mockImplementation((event, callback) => {
+      cardNumberInstance.messageBus.subscribeType = jest.fn().mockImplementation((event, callback) => {
         callback(state);
       });
       // @ts-ignore
       cardNumberInstance._setDisableListener();
     }
 
-    // then
     it('should set attribute disabled', () => {
       subscribeMock(FormState.BLOCKED);
       // @ts-ignore
       expect(cardNumberInstance._inputElement.hasAttribute('disabled')).toEqual(true);
     });
 
-    // then
     it('should add class st-input--disabled', () => {
       subscribeMock(FormState.BLOCKED);
       // @ts-ignore
       expect(cardNumberInstance._inputElement.classList.contains('st-input--disabled')).toEqual(true);
     });
 
-    // then
     it('should remove attribute disabled', () => {
       subscribeMock(FormState.AVAILABLE);
       // @ts-ignore
       expect(cardNumberInstance._inputElement.hasAttribute('disabled')).toEqual(false);
     });
 
-    // then
     it('should remove class st-input--disabled', () => {
       subscribeMock(FormState.AVAILABLE);
       // @ts-ignore
@@ -193,9 +165,7 @@ describe('CardNumber', () => {
     });
   });
 
-  // given
   describe('onBlur', () => {
-    // when
     beforeEach(() => {
       cardNumberInstance.validation.luhnCheck = jest.fn();
       // @ts-ignore
@@ -204,7 +174,6 @@ describe('CardNumber', () => {
       cardNumberInstance.onBlur();
     });
 
-    // then
     it('should call Luhn check method with fieldInstance, inputElement and messageElement', () => {
       // @ts-ignore
       expect(cardNumberInstance.validation.luhnCheck).toHaveBeenCalledWith(
@@ -217,18 +186,15 @@ describe('CardNumber', () => {
       );
     });
 
-    // then
     it('should call sendState method', () => {
       // @ts-ignore
       expect(cardNumberInstance._sendState).toHaveBeenCalled();
     });
   });
 
-  // given
   describe('onFocus', () => {
     const event: Event = new Event('focus');
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       cardNumberInstance._disableSecurityCodeField = jest.fn();
@@ -239,24 +205,21 @@ describe('CardNumber', () => {
       // @ts-ignore
       cardNumberInstance.onFocus(event);
     });
-    // then
+
     it('should call iframe-factory focus', () => {
       // @ts-ignore
       expect(cardNumberInstance._inputElement.focus).toBeCalled();
     });
 
-    // then
     it('should call _disableSecurityCodeField with input value', () => {
       // @ts-ignore
       expect(cardNumberInstance._disableSecurityCodeField).toHaveBeenCalledWith('4111');
     });
   });
 
-  // given
   describe('onInput', () => {
     const event: Event = new Event('input');
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       cardNumberInstance._setInputValue = jest.fn();
@@ -266,25 +229,21 @@ describe('CardNumber', () => {
       cardNumberInstance.onInput(event);
     });
 
-    // then
     it('should call _setInputValue method', () => {
       // @ts-ignore
       expect(cardNumberInstance._setInputValue).toHaveBeenCalled();
     });
 
-    // then
     it('should call _sendState method', () => {
       // @ts-ignore
       expect(cardNumberInstance._sendState).toHaveBeenCalled();
     });
   });
 
-  // given
   describe('onKeydown()', () => {
     // @ts-ignore
     const event: KeyboardEvent = new KeyboardEvent('keydown', { keyCode: 13 });
 
-    // then
     it('should call validation.luhnCheck and sendState if key is equal to Enter keycode', () => {
       // @ts-ignore
       cardNumberInstance._sendState = jest.fn();
@@ -304,9 +263,7 @@ describe('CardNumber', () => {
     });
   });
 
-  // given
   describe('onPaste()', () => {
-    // when
     beforeEach(() => {
       const event = {
         clipboardData: {
@@ -323,7 +280,6 @@ describe('CardNumber', () => {
       cardNumberInstance.onPaste(event);
     });
 
-    // then
     it('should call setInputValue and _sendState methods', () => {
       // @ts-ignore
       expect(cardNumberInstance._setInputValue).toHaveBeenCalled();
@@ -332,16 +288,15 @@ describe('CardNumber', () => {
     });
   });
 
-  // given
   describe('_getMaxLengthOfCardNumber()', () => {
     const panLengthWithoutSpaces: number = 15;
     const numberOfWhitespaces: number = 3;
-    // when
+
     beforeEach(() => {
       // @ts-ignore
       cardNumberInstance._inputElement.value = '4111111111';
     });
-    // then
+
     it('should return max length of card number including whitespaces', () => {
       Utils.getLastElementOfArray = jest.fn().mockReturnValueOnce(panLengthWithoutSpaces);
       // @ts-ignore
@@ -360,7 +315,7 @@ function cardNumberFixture() {
   let formatter: Formatter;
   iconFactory = mock(IconFactory);
   configProvider = mock<ConfigProvider>();
-  const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
+  const messageBus: IMessageBus = new SimpleMessageBus();
   when(configProvider.getConfig$()).thenReturn(of({} as IConfig));
   frame = mock(Frame);
   formatter = mock(Formatter);

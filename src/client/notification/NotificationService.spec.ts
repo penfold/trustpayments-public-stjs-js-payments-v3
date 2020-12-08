@@ -4,22 +4,20 @@ import { NotificationType } from '../../application/core/models/constants/Notifi
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../shared/model/config/IConfig';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 
-// given
 describe('NotificationService', () => {
-  let messageBus: MessageBus;
+  let messageBus: IMessageBus;
   let configProvider: ConfigProvider;
   let notificationService: NotificationService;
 
   beforeEach(() => {
-    // given
-    messageBus = mock(MessageBus);
+    messageBus = mock<IMessageBus>();
     configProvider = mock<ConfigProvider>();
     notificationService = new NotificationService(instance(messageBus), instance(configProvider));
   });
-  // given
+
   describe('error function has been called', () => {
-    // when
     beforeEach(() => {
       // @ts-ignore
       when(configProvider.getConfig()).thenReturn(({
@@ -29,7 +27,6 @@ describe('NotificationService', () => {
       } as unknown) as IConfig);
     });
 
-    // then
     it('should call _setNotification with error message and error type of notification', () => {
       notificationService.error('Test value');
       verify(
@@ -44,9 +41,7 @@ describe('NotificationService', () => {
     });
   });
 
-  // given
   describe('success function has been called', () => {
-    // when
     beforeEach(() => {
       // @ts-ignore
       when(configProvider.getConfig()).thenReturn(({
@@ -56,7 +51,6 @@ describe('NotificationService', () => {
       } as unknown) as IConfig);
     });
 
-    // then
     it('should call _setNotification with success message and success type of notification', () => {
       notificationService.success('Test value');
       verify(
@@ -71,9 +65,7 @@ describe('NotificationService', () => {
     });
   });
 
-  // given
   describe('cancel function has been called', () => {
-    // when
     beforeEach(() => {
       // @ts-ignore
       when(configProvider.getConfig()).thenReturn(({
@@ -83,7 +75,6 @@ describe('NotificationService', () => {
       } as unknown) as IConfig);
     });
 
-    // then
     it('should call _setNotification with cancel message and cancel type of notification', () => {
       notificationService.cancel('Test value');
       verify(
@@ -98,9 +89,7 @@ describe('NotificationService', () => {
     });
   });
 
-  // given
   describe('info function has been called', () => {
-    // when
     beforeEach(() => {
       // @ts-ignore
       when(configProvider.getConfig()).thenReturn(({
@@ -110,7 +99,6 @@ describe('NotificationService', () => {
       } as unknown) as IConfig);
     });
 
-    // then
     it('should call _setNotification with info message and info type of notification', () => {
       notificationService.info('Test value');
       verify(

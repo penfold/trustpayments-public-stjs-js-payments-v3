@@ -27,6 +27,7 @@ import { IApplePayValidateMerchantRequest } from './IApplePayValidateMerchantReq
 import { IApplePayWalletVerifyResponse } from './IApplePayWalletVerifyResponse';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -52,7 +53,7 @@ export class ApplePay {
 
   constructor(
     private communicator: InterFrameCommunicator,
-    private messageBus: MessageBus,
+    private messageBus: IMessageBus,
     private applePayButtonService: ApplePayButtonService,
     private applePayConfigService: ApplePayConfigService
   ) {}

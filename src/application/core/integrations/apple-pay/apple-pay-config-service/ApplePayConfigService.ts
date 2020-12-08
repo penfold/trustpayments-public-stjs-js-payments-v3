@@ -1,12 +1,11 @@
 import { Service } from 'typedi';
-import { StJwt } from '../../../shared/stjwt/StJwt';
 import { IApplePayPaymentRequest } from '../IApplePayPaymentRequest';
 import { IApplePayValidateMerchantRequest } from '../IApplePayValidateMerchantRequest';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
-import { IApplePay } from '../IApplePay';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IStJwtPayload } from '../../../models/IStJwtPayload';
+import { IApplePayConfig } from '../IApplePayConfig';
 import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
 import { IDecodedJwt } from '../../../models/IDecodedJwt';
 import JwtDecode from 'jwt-decode';
@@ -69,7 +68,7 @@ export class ApplePayConfigService {
     };
   }
 
-  getConfigData(config: IConfig): { applePay: IApplePay; formId: string; jwt: string } {
+  getConfigData(config: IConfig): { applePay: IApplePayConfig; formId: string; jwt: string } {
     return {
       applePay: config.applePay,
       formId: config.formId,
