@@ -79,7 +79,7 @@ describe('Visa Checkout', () => {
 
   beforeEach(() => {
     visaCheckoutSdkProviderMock = mock(VisaCheckoutSdkProvider);
-    messageBusMock = new SimpleMessageBus();
+    messageBusMock = mock(IMessageBus);
 
     when(messageBusMock.pipe(anything())).thenReturn(of(configMock));
     when(visaCheckoutSdkProviderMock.getSdk$(anything())).thenReturn(

@@ -6,7 +6,6 @@ import {
   PAYMENT_ERROR,
   PAYMENT_SUCCESS
 } from '../../../application/core/models/constants/Translations';
-import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
 import { Payment } from '../../../application/core/shared/payment/Payment';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -16,7 +15,6 @@ import { NotificationService } from '../../notification/NotificationService';
 import { VisaCheckoutClient } from './VisaCheckoutClient';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 
 describe('VisaCheckoutClient', () => {
   let visaCheckoutClient: VisaCheckoutClient;
@@ -51,7 +49,7 @@ describe('VisaCheckoutClient', () => {
 
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
-    messageBusMock = new SimpleMessageBus();
+    messageBusMock = mock(IMessageBus);
     configProviderMock = mock<ConfigProvider>();
     jwtDecoderMock = mock(JwtDecoder);
     notificationServiceMock = mock(NotificationService);
