@@ -6,8 +6,8 @@ import jwt
 
 from utils.enums.jwt_config import JwtConfig
 
-SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'you_will_never_guess'
-ISS_KEY = os.environ.get('JWT_ISS_KEY') or 'you_will_never_guess'
+SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'ja<n}yP]3$1E$iUYtn_*i7))24I,=^'
+ISS_KEY = os.environ.get('JWT_ISS_KEY') or 'am0310.autoapi'
 
 
 def get_data_from_json(jwt_config):
@@ -16,11 +16,23 @@ def get_data_from_json(jwt_config):
     return jwt_json
 
 
+def get_data_from_jsinit_file(jsinit_filename):
+    with open(f'wiremock/__files/{jsinit_filename}', 'r') as file:
+        loaded_json = json.load(file)
+    return loaded_json
+
+
 def encode_jwt_for_json(jwt_config: JwtConfig):
     data = get_data_from_json(jwt_config.value)
     jwt_token = jwt.encode({'iat': int(time.time()), 'iss': ISS_KEY, 'payload': data['payload']}, SECRET_KEY,
                            algorithm='HS256')
     return str(jwt_token, 'utf-8')
+
+
+def decode_jwt_from_jsinit(jsinit_filename):
+    jwt_value = get_data_from_jsinit_file(jsinit_filename)
+    jwt_json = jwt.decode(jwt_value['jwt'], SECRET_KEY, verify=False, algorithm='HS256')
+    return jwt_json['payload']['jwt']
 
 
 def merge_json_conf_with_additional_attr(old_config_jwt_dict, jwt_payload_dict):

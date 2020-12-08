@@ -284,10 +284,10 @@ def step_impl(context, request_type):
                                                      context.test_data.update_jwt, 1)
     elif 'VISA_CHECKOUT' in request_type:
         payment_page.validate_updated_jwt_in_request_for_visa(PaymentType.VISA_CHECKOUT.value,
-                                                              context.test_data.update_jwt, 1)
+                                                              context.test_data.update_jwt_from_jsinit, 1)
     else:
         payment_page.validate_updated_jwt_in_request(request_type, MockUrl.GATEWAY_MOCK_URI.value,
-                                                     context.test_data.update_jwt, 1)
+                                                     context.test_data.update_jwt_from_jsinit, 1)
 
 
 def stub_jsinit_request(context):
@@ -300,3 +300,7 @@ def stub_jsinit_request(context):
                 break
         if default_jsinit:
             stub_jsinit('jsinit.json', RequestType.JSINIT.name)
+
+
+def stub_jsinit_update_jwt_request(value):
+    stub_jsinit(jsinit_response[value], RequestType.JSINIT.name)
