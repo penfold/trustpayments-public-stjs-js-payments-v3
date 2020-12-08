@@ -2,7 +2,6 @@ import { of } from 'rxjs';
 import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { IVisaCheckoutSdkLib } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
 import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
 import { IVisaCheckoutStatusData } from './visa-checkout-status-data/IVisaCheckoutStatusData';
@@ -78,7 +77,7 @@ describe('VisaCheckout', () => {
 
   beforeEach(() => {
     visaCheckoutSdkProviderMock = mock(VisaCheckoutSdkProvider);
-    messageBusMock = new SimpleMessageBus();
+    messageBusMock = mock<IMessageBus>();
 
     when(messageBusMock.pipe(anything())).thenReturn(of(configMock));
     when(visaCheckoutSdkProviderMock.getSdk$(anything())).thenReturn(
@@ -88,7 +87,7 @@ describe('VisaCheckout', () => {
       })
     );
 
-    instance = new VisaCheckout(mockInstance(visaCheckoutSdkProviderMock), messageBusMock);
+    instance = new VisaCheckout(mockInstance(visaCheckoutSdkProviderMock), mockInstance(messageBusMock));
 
     instance.init();
   });

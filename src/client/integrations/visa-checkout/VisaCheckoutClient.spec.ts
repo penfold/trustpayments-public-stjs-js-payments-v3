@@ -50,7 +50,7 @@ describe('VisaCheckoutClient', () => {
 
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
-    messageBusMock = new SimpleMessageBus();
+    messageBusMock = mock<IMessageBus>();
     configProviderMock = mock<ConfigProvider>();
     jwtDecoderMock = mock(JwtDecoder);
     notificationServiceMock = mock(NotificationService);
@@ -58,7 +58,7 @@ describe('VisaCheckoutClient', () => {
 
     visaCheckoutClient = new VisaCheckoutClient(
       mockInstance(interFrameCommunicatorMock),
-      messageBusMock,
+      mockInstance(messageBusMock),
       mockInstance(configProviderMock),
       mockInstance(jwtDecoderMock),
       mockInstance(notificationServiceMock),
