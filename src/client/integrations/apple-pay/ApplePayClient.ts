@@ -78,12 +78,14 @@ export class ApplePayClient {
     this.applePayNotificationService.notification(status.data.errorcode, status.data.errormessage);
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'merchant validation', 'Apple Pay merchant validated');
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
+
     return of(ApplePayClientStatus.SUCCESS);
   }
 
   private onError$(status: IApplePayClientStatus): Observable<ApplePayClientStatus.ERROR> {
     this.applePayNotificationService.notification(status.data.errorcode, status.data.errormessage);
     this.localStorage.setItem('completePayment', 'false');
+
     return of(ApplePayClientStatus.ERROR);
   }
 
@@ -92,6 +94,7 @@ export class ApplePayClient {
     this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK }, true);
     this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE, data: {} }, true);
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment status', 'Apple Pay payment cancelled');
+
     return of(ApplePayClientStatus.CANCEL);
   }
 
@@ -99,6 +102,7 @@ export class ApplePayClient {
     this.applePayNotificationService.notification(status.data.errorcode, status.data.errormessage);
     this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'merchant validation', 'Apple Pay merchant validation failure');
+
     return of(ApplePayClientStatus.VALIDATE_MERCHANT_ERROR);
   }
 
@@ -110,6 +114,7 @@ export class ApplePayClient {
       : GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay cannot make payments');
     this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
     this.applePayNotificationService.notification(status.data.errorcode, status.data.errormessage);
+
     return of(ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD);
   }
 }

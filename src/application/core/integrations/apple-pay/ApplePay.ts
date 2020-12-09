@@ -168,6 +168,7 @@ export class ApplePay {
         status: ApplePayClientStatus.SUCCESS,
         data: { errorcode, errormessage }
       });
+
       return this.completion;
     }
     const error = new ApplePayError('unknown');
@@ -179,6 +180,7 @@ export class ApplePay {
       status: ApplePayClientStatus.ERROR,
       data: { errorcode, errormessage }
     });
+
     return this.completion;
   }
 
@@ -205,6 +207,7 @@ export class ApplePay {
 
   private setPaymentRequest(applePay: IApplePayConfig, jwt: string) {
     const { currencyiso3a, mainamount } = this.applePayConfigService.getStJwtData(jwt);
+
     return this.applePayConfigService.updatePaymentRequest(
       applePay,
       jwt,
@@ -301,6 +304,7 @@ export class ApplePay {
     if (!canMakePaymentsWithActiveCard) {
       console.error('User has not an active card provisioned into Wallet');
     }
+
     return canMakePaymentsWithActiveCard;
   }
 
