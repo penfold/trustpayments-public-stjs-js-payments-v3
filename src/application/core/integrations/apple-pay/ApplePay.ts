@@ -104,7 +104,7 @@ export class ApplePay {
               observer.next({
                 status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
                 data: {
-                  errorcode: ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR4,
+                  errorcode: ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR,
                   errormessage: MERCHANT_VALIDATION_FAILURE
                 }
               });
