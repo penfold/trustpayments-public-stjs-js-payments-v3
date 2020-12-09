@@ -27,6 +27,7 @@ import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IApplePayConfig } from './IApplePayConfig';
+import { ApplePayErrorCodes } from './ApplePayErrorCodes';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -79,7 +80,6 @@ export class ApplePay {
       return this.payment
         .walletVerify(this.validateMerchantRequest)
         .then((response: IApplePayWalletVerifyResponse) => {
-          console.error('walletVerify -> then:', response.response);
           const { requestid, walletsession } = response.response;
 
           if (this.paymentCancelled) {
@@ -105,7 +105,6 @@ export class ApplePay {
           });
         })
         .catch(error => {
-          console.error('walletVerify -> catch:', event);
           if (this.paymentCancelled) {
             return;
           }
@@ -140,18 +139,14 @@ export class ApplePay {
           }
         )
         .then((response: IApplePayProcessPaymentResponse) => {
-          console.error('processPayment -> then', response);
           const {
             response: { errorcode, errormessage }
           } = response;
           this.handlePaymentProcessResponse(observer, errorcode, errormessage);
-          console.error('completion', this.completion);
           this.applePaySession.completePayment(this.completion);
           this.gestureHandler(observer);
         })
         .catch(e => {
-          console.error('processPayment -> catch', e, event);
-          console.error('completion', this.completion);
           this.applePaySession.completePayment(this.completion);
           this.gestureHandler(observer);
           observer.next({
@@ -167,7 +162,7 @@ export class ApplePay {
     errorcode: string,
     errormessage: string
   ): IApplePayPaymentAuthorizationResult {
-    if (errorcode === '0') {
+    if (Number(errorcode) === ApplePayErrorCodes.SUCCESS) {
       this.completion.status = ApplePaySession.STATUS_SUCCESS;
       observer.next({
         status: ApplePayClientStatus.SUCCESS,
@@ -175,12 +170,10 @@ export class ApplePay {
       });
       return this.completion;
     }
-    console.error('handlePaymentProcessResponse: ', errorcode, errormessage);
     const error = new ApplePayError('unknown');
     error.message = this.translator.translate(errormessage);
     this.completion.errors = error;
     this.completion.status = ApplePaySession.STATUS_FAILURE;
-    console.error('handlePaymentProcessResponse: ', this.completion);
 
     observer.next({
       status: ApplePayClientStatus.ERROR,
@@ -200,7 +193,7 @@ export class ApplePay {
         if (Number(event.data.errorcode) !== 0) {
           this.applePaySession.completePayment({
             status: ApplePaySession.STATUS_FAILURE,
-            errors: [event.data.errorcode]
+            errors: new ApplePayError(event.data.errormessage)
           });
         }
       });
@@ -236,7 +229,6 @@ export class ApplePay {
 
   private onPaymentMethodSelected(): void {
     this.applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethod) => {
-      console.error('onpaymentmethodselected', event);
       this.applePaySession.completePaymentMethodSelection({
         newTotal: {
           amount: this.paymentRequest.total.amount,
@@ -249,7 +241,6 @@ export class ApplePay {
 
   private onShippingMethodSelected(): void {
     this.applePaySession.onshippingmethodselected = (event: IApplePayShippingMethod) => {
-      console.error('onshippingmethodselected', event);
       this.applePaySession.completeShippingMethodSelection({
         newTotal: {
           amount: this.paymentRequest.total.amount,
@@ -262,7 +253,6 @@ export class ApplePay {
 
   private onShippingContactSelected(): void {
     this.applePaySession.onshippingcontactselected = (event: IApplePayPaymentContact) => {
-      console.error('onshippingcontactselected', event);
       this.applePaySession.completeShippingContactSelection({
         newTotal: {
           amount: this.paymentRequest.total.amount,
@@ -316,7 +306,6 @@ export class ApplePay {
 
   private onCancel(observer: Subscriber<IApplePayClientStatus>): void {
     this.applePaySession.oncancel = (event: IApplePayCancelEvent) => {
-      console.error('onCancel:', event);
       this.gestureHandler(observer);
       observer.next({
         status: ApplePayClientStatus.CANCEL,
@@ -328,8 +317,6 @@ export class ApplePay {
 
   init(): void {
     this.communicator.whenReceive(PUBLIC_EVENTS.APPLE_PAY_START).thenRespond((event: IMessageBusEvent<IConfig>) => {
-      console.error(event, 'APPLE PAY CONFIG');
-
       if (!Boolean(ApplePaySession)) {
         console.error('Works only on Safari');
       }

@@ -1,4 +1,5 @@
 import { environment } from '../../../../environments/environment';
+import { IApplePayError } from './IApplePayError';
 
 export class ApplePaySessionMock {
   public static STATUS_SUCCESS: any;
@@ -7,7 +8,7 @@ export class ApplePaySessionMock {
   public static onpaymentauthorized: any;
   public static oncancel: any;
 
-  public static completePayment = (completion: { errors: string[]; status: string }) => true;
+  public static completePayment = (completion: { status: string; errors?: IApplePayError }) => true;
 
   public static completeMerchantValidation = () => true;
 
