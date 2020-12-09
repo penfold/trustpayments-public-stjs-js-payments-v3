@@ -8,7 +8,7 @@ import { instance, mock, when } from 'ts-mockito';
 import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
 
 describe('ApplePayConfigService', () => {
-  let paymentRequest: IApplePayPaymentRequest = {
+  const paymentRequest: IApplePayPaymentRequest = {
     countryCode: 'de_DE',
     currencyCode: 'EUR',
     merchantCapabilities: ['supports3DS'],
@@ -28,7 +28,7 @@ describe('ApplePayConfigService', () => {
   let walletMerchantId: string;
   let walletValidationUrl: string;
   let config: IConfig;
-  let payload = {
+  const payload = {
     payload: {
       currencyiso3a: 'test iso',
       locale: 'en_GB',
