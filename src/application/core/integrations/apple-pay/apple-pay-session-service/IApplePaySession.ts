@@ -1,11 +1,11 @@
-import { IApplePayPaymentRequest } from './IApplePayPaymentRequest';
-import { IApplePayPaymentAuthorizedEvent } from './IApplePayPaymentAuthorizedEvent';
-import { IApplePayPaymentMethodSelectedEvent } from './IApplePayPaymentMethodSelectedEvent';
-import { IApplePayShippingContactSelectedEvent } from './IApplePayShippingContactSelectedEvent';
-import { IApplePayShippingMethodSelectedEvent } from './IApplePayShippingMethodSelectedEvent';
-import { IApplePayValidateMerchantEvent } from './IApplePayValidateMerchantEvent';
-import { IApplePayLineItem } from './IApplePayLineItem';
-import { IApplePayShippingMethod } from './IApplePayShippingMethod';
+import { IApplePayPaymentRequest } from '../IApplePayPaymentRequest';
+import { IApplePayPaymentAuthorizedEvent } from '../IApplePayPaymentAuthorizedEvent';
+import { IApplePayPaymentMethodSelectedEvent } from '../IApplePayPaymentMethodSelectedEvent';
+import { IApplePayShippingContactSelectedEvent } from '../IApplePayShippingContactSelectedEvent';
+import { IApplePayShippingMethodSelectedEvent } from '../IApplePayShippingMethodSelectedEvent';
+import { IApplePayValidateMerchantEvent } from '../IApplePayValidateMerchantEvent';
+import { IApplePayLineItem } from '../IApplePayLineItem';
+import { IApplePayShippingMethod } from '../IApplePayShippingMethod';
 
 export declare class IApplePaySession extends EventTarget {
   constructor(version: number, paymentRequest: IApplePayPaymentRequest);

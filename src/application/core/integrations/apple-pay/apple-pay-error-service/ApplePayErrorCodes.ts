@@ -1,0 +1,7 @@
+export enum ApplePayErrorCodes {
+  SUCCESS = 0,
+  ERROR = 1,
+  CANCEL = 2,
+  CAN_MAKE_PAYMENT_WITH_ACTIVE_CARD = 3,
+  VALIDATE_MERCHANT_ERROR4
+}

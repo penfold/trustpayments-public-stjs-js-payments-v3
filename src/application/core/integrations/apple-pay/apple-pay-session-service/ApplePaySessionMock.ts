@@ -1,7 +1,8 @@
-import { environment } from '../../../../environments/environment';
-import { IApplePayError } from './IApplePayError';
+import { environment } from '../../../../../environments/environment';
+import { IApplePayError } from '../apple-pay-error-service/IApplePayError';
+import { IApplePaySession } from './IApplePaySession';
 
-export class ApplePaySessionMock {
+export class ApplePaySessionMock extends IApplePaySession {
   public static STATUS_SUCCESS: any;
   public static STATUS_FAILURE: any = 'FAILURE';
   public static onvalidatemerchant: any;

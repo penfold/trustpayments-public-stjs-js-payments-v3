@@ -1,4 +1,9 @@
+import { ApplePayErrorCodes } from '../../../application/core/integrations/apple-pay/apple-pay-error-service/ApplePayErrorCodes';
+
 export interface IApplePayClientStatus {
   status: string;
-  data: any;
+  data: {
+    errorcode: ApplePayErrorCodes;
+    errormessage: string;
+  };
 }
