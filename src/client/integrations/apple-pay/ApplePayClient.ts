@@ -77,22 +77,6 @@ export class ApplePayClient {
     );
   }
 
-  watchConfigAndJwtUpdates(): void {
-    this.configProvider.getConfig$().subscribe(v => {
-      const { applePay, formId, jwt } = this.applePayConfigService.getConfigData(v);
-      const { currencyiso3a, mainamount, locale } = this.applePayConfigService.getStJwtData(jwt);
-      this.config$.next(v);
-    });
-    this.messageBus
-      .pipe(ofType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT))
-      .subscribe((event: IMessageBusEvent<IUpdateJwt>) => {
-        this.config$.next({
-          ...this.config$.value,
-          jwt: event.data.newJwt
-        });
-      });
-  }
-
   private onSuccess$(status: IApplePayClientStatus): Observable<ApplePayClientStatus.SUCCESS> {
     console.error('onSuccess$:', status);
     this.localStorage.setItem('completePayment', 'true');
