@@ -25,6 +25,7 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IApplePayClientStatus } from './IApplePayClientStatus';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 
 @Service()
 export class ApplePayClient {
@@ -33,7 +34,7 @@ export class ApplePayClient {
   constructor(
     private configProvider: ConfigProvider,
     private interFrameCommunicator: InterFrameCommunicator,
-    private messageBus: MessageBus,
+    private messageBus: IMessageBus,
     private notificationService: NotificationService,
     private localStorage: BrowserLocalStorage,
     private applePayButtonService: ApplePayButtonService,

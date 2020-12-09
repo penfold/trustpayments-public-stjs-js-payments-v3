@@ -1,9 +1,10 @@
 import { MessageBus } from '../../../../application/core/shared/message-bus/MessageBus';
 import { PAYMENT_SUCCESS } from '../../../../application/core/models/constants/Translations';
 import { NotificationService } from '../../../notification/NotificationService';
+import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
 
 export class ApplePayNotificationService {
-  constructor(private messageBus: MessageBus, private notificationService: NotificationService) {}
+  constructor(private messageBus: IMessageBus, private notificationService: NotificationService) {}
 
   notification(errorcode: string, errormessage: string): void {
     switch (errorcode) {

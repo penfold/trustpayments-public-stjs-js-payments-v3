@@ -92,8 +92,8 @@ export class ControlFrame {
     private _messageBus: IMessageBus,
     private _frame: Frame,
     private _jwtDecoder: JwtDecoder,
-    private _applePayClient: ApplePayClient,
-    private _visaCheckoutClient: VisaCheckoutClient
+    private _visaCheckoutClient: VisaCheckoutClient,
+    private _applePayClient: ApplePayClient
   ) {
     this._communicator
       .whenReceive(MessageBus.EVENTS_PUBLIC.INIT_CONTROL_FRAME)

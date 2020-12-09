@@ -21,7 +21,6 @@ import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDPr
 import { EMPTY, of } from 'rxjs';
 import { Store } from '../../core/store/Store';
 import { Frame } from '../../core/shared/frame/Frame';
-import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
 import { ApplePayClient } from '../../../client/integrations/apple-pay/ApplePayClient';
 import { ApplePayClientStatus } from '../../../client/integrations/apple-pay/ApplePayClientStatus';
 

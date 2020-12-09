@@ -77,7 +77,7 @@ export class ApplePayConfigService {
   }
 
   updatePaymentRequest(
-    applePay: IApplePay,
+    applePay: IApplePayConfig,
     jwt: string,
     currencyiso3a: string,
     mainamount: string,

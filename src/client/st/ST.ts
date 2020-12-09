@@ -39,7 +39,6 @@ import { BrowserDetector } from '../../shared/services/browser-detector/BrowserD
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
-import { IApplePay } from '../../application/core/integrations/apple-pay/IApplePay';
 import { ApplePayNetworksService } from '../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePayButtonService } from '../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { NotificationService } from '../notification/NotificationService';
@@ -48,6 +47,7 @@ import { Notification } from '../../application/core/shared/notification/Notific
 import { IApplePayConfig } from '../../application/core/integrations/apple-pay/IApplePayConfig';
 import { ApplePayConfigService } from '../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
 import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
+import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 
 @Service()
 export class ST {
@@ -187,24 +187,16 @@ export class ST {
     if (environment.testEnvironment) {
       return new ApplePayMock(
         this._communicator,
-        this._configProvider,
-        this._storage,
-        this._notificationService,
+        this._messageBus,
         this._applePayButtonService,
-        this._applePayNetworkService,
-        this._applePayConfigService,
-        this.jwtDecoder
+        this._applePayConfigService
       );
     } else {
       return new ApplePay(
         this._communicator,
-        this._configProvider,
-        this._storage,
-        this._notificationService,
+        this._messageBus,
         this._applePayButtonService,
-        this._applePayNetworkService,
-        this._applePayConfigService,
-        this.jwtDecoder
+        this._applePayConfigService
       );
     }
   }

@@ -5,14 +5,12 @@ import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButton
 import { ApplePayConfigService } from './apple-pay-config-service/ApplePayConfigService';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Payment } from '../../shared/payment/Payment';
 import { Translator } from '../../shared/translator/Translator';
 import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/ApplePayClientStatus';
 import { APPLE_PAY_BUTTON_ID } from './ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { MERCHANT_VALIDATION_FAILURE, PAYMENT_ERROR } from '../../models/constants/Translations';
-import { IApplePay } from './IApplePay';
 import { IApplePayCancelEvent } from '../../../../client/integrations/apple-pay/IApplePayCancelEvent';
 import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
 import { IApplePayPaymentAuthorizationResult } from './IApplePayPaymentAuthorizationResult ';
@@ -28,6 +26,7 @@ import { IApplePayWalletVerifyResponse } from './IApplePayWalletVerifyResponse';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { IApplePayConfig } from './IApplePayConfig';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -207,11 +206,11 @@ export class ApplePay {
       });
   }
 
-  private setValidateMerchantRequest(applePay: IApplePay): IApplePayValidateMerchantRequest {
+  private setValidateMerchantRequest(applePay: IApplePayConfig): IApplePayValidateMerchantRequest {
     return this.applePayConfigService.updateWalletMerchantId(this.validateMerchantRequest, applePay.merchantId);
   }
 
-  private setPaymentRequest(applePay: IApplePay, jwt: string) {
+  private setPaymentRequest(applePay: IApplePayConfig, jwt: string) {
     const { currencyiso3a, mainamount } = this.applePayConfigService.getStJwtData(jwt);
     return this.applePayConfigService.updatePaymentRequest(
       applePay,

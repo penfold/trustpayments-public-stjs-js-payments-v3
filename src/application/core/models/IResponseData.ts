@@ -11,4 +11,6 @@ export interface IResponseData {
   billingContact?: IApplePayBillingContact;
   shippingContact?: IApplePayShippingContact;
   jwt?: string;
+  walletsource?: 'APPLEPAY' | 'VISACHECKOUT';
+  errordata: object;
 }
