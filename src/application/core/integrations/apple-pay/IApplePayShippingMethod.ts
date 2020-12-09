@@ -1,3 +1,6 @@
 export interface IApplePayShippingMethod {
-  shippingMethod: string;
+  label: string;
+  amount: string;
+  detail?: string;
+  identifier?: string;
 }

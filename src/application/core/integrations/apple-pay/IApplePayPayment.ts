@@ -3,9 +3,7 @@ import { IApplePayBillingContact } from './IApplePayBillingContact';
 import { IApplePayShippingContact } from './IApplePayShippingContact';
 
 export interface IApplePayPayment {
-  payment: {
-    billingContact?: IApplePayBillingContact;
-    shippingContact?: IApplePayShippingContact;
-    token: IApplePayPaymentToken;
-  };
+  token: IApplePayPaymentToken;
+  billingContact?: IApplePayBillingContact;
+  shippingContact?: IApplePayShippingContact;
 }

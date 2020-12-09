@@ -1,3 +1,4 @@
+import { Service } from 'typedi';
 import { Observable, Subscriber } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
@@ -11,27 +12,30 @@ import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/
 import { APPLE_PAY_BUTTON_ID } from './ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { MERCHANT_VALIDATION_FAILURE, PAYMENT_ERROR } from '../../models/constants/Translations';
-import { IApplePayCancelEvent } from '../../../../client/integrations/apple-pay/IApplePayCancelEvent';
 import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
 import { IApplePayPaymentAuthorizationResult } from './IApplePayPaymentAuthorizationResult ';
 import { IApplePayPaymentAuthorizedEvent } from './IApplePayPaymentAuthorizedEvent';
-import { IApplePayPaymentContact } from './IApplePayPaymentContact';
-import { IApplePayPaymentMethod } from './IApplePayPaymentMethod';
+import { IApplePayPaymentMethodSelectedEvent } from './IApplePayPaymentMethodSelectedEvent';
+import { IApplePayWalletVerifyResponse } from './IApplePayWalletVerifyResponse';
 import { IApplePayPaymentRequest } from './IApplePayPaymentRequest';
 import { IApplePayProcessPaymentResponse } from './IApplePayProcessPaymentResponse';
-import { IApplePayShippingMethod } from './IApplePayShippingMethod';
+import { IApplePayShippingMethodSelectedEvent } from './IApplePayShippingMethodSelectedEvent';
+import { IApplePayShippingContactSelectedEvent } from './IApplePayShippingContactSelectedEvent';
 import { IApplePayValidateMerchantEvent } from './IApplePayValidateMerchantEvent';
 import { IApplePayValidateMerchantRequest } from './IApplePayValidateMerchantRequest';
-import { IApplePayWalletVerifyResponse } from './IApplePayWalletVerifyResponse';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IApplePayConfig } from './IApplePayConfig';
 import { ApplePayErrorCodes } from './ApplePayErrorCodes';
+// import { IApplePayError } from './IApplePayError';
+// import { IApplePaySession } from './IApplePaySession';
 
+// const ApplePaySession: IApplePaySession  = (window as any).ApplePaySession;
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
 
+@Service()
 export class ApplePay {
   private applePaySession: any;
   private validateMerchantRequest: IApplePayValidateMerchantRequest = {
@@ -231,7 +235,7 @@ export class ApplePay {
   }
 
   private onPaymentMethodSelected(): void {
-    this.applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethod) => {
+    this.applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethodSelectedEvent) => {
       this.applePaySession.completePaymentMethodSelection({
         newTotal: {
           amount: this.paymentRequest.total.amount,
@@ -243,7 +247,7 @@ export class ApplePay {
   }
 
   private onShippingMethodSelected(): void {
-    this.applePaySession.onshippingmethodselected = (event: IApplePayShippingMethod) => {
+    this.applePaySession.onshippingmethodselected = (event: IApplePayShippingMethodSelectedEvent) => {
       this.applePaySession.completeShippingMethodSelection({
         newTotal: {
           amount: this.paymentRequest.total.amount,
@@ -255,7 +259,7 @@ export class ApplePay {
   }
 
   private onShippingContactSelected(): void {
-    this.applePaySession.onshippingcontactselected = (event: IApplePayPaymentContact) => {
+    this.applePaySession.onshippingcontactselected = (event: IApplePayShippingContactSelectedEvent) => {
       this.applePaySession.completeShippingContactSelection({
         newTotal: {
           amount: this.paymentRequest.total.amount,
@@ -309,11 +313,11 @@ export class ApplePay {
   }
 
   private onCancel(observer: Subscriber<IApplePayClientStatus>): void {
-    this.applePaySession.oncancel = (event: IApplePayCancelEvent) => {
+    this.applePaySession.oncancel = (event: Event) => {
       this.gestureHandler(observer);
       observer.next({
         status: ApplePayClientStatus.CANCEL,
-        data: { errorcode: event.type, errormessage: 'Payment has been cancelled' }
+        data: { errorcode: ApplePayErrorCodes.CANCEL, errormessage: 'Payment has been cancelled' }
       });
       this.paymentCancelled = true;
     };
