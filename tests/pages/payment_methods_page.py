@@ -616,9 +616,9 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_number_of_requests == actual_number_of_requests, assertion_message
 
-    def validate_updated_jwt_in_request_for_visa(self, paymentType, update_jwt, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_with_updated_jwt_for_visa(paymentType, update_jwt)
-        assertion_message = f'Number of {paymentType} with updated jwt is not correct, ' \
+    def validate_updated_jwt_in_request_for_visa(self, payment_type, update_jwt, expected_number_of_requests):
+        actual_number_of_requests = get_number_of_requests_with_updated_jwt_for_visa(payment_type, update_jwt)
+        assertion_message = f'Number of {payment_type} with updated jwt is not correct, ' \
                             f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_number_of_requests == actual_number_of_requests, assertion_message
