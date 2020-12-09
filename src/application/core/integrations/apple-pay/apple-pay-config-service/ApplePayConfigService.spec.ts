@@ -5,10 +5,20 @@ import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { ApplePayConfigService } from './ApplePayConfigService';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 import { instance, mock, when } from 'ts-mockito';
-import { IStJwtPayload } from '../../../models/IStJwtPayload';
+import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
 
 describe('ApplePayConfigService', () => {
-  let paymentRequest: IApplePayPaymentRequest;
+  let paymentRequest: IApplePayPaymentRequest = {
+    countryCode: 'de_DE',
+    currencyCode: 'EUR',
+    merchantCapabilities: ['supports3DS'],
+    supportedNetworks: ['visa', 'discover'],
+    requestTypes: ['AUTH'],
+    total: {
+      amount: '10.00',
+      label: 'test'
+    }
+  };
   let paymentRequestUpdated: IApplePayPaymentRequest;
   let currencyCode: string;
   let amount: string;
@@ -26,23 +36,16 @@ describe('ApplePayConfigService', () => {
     }
   };
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
+  const applePayNetworkService: ApplePayNetworksService = mock(ApplePayNetworksService);
   const jwt: string =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDcwOTA2NTEsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6InRlc3QgaXNvIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwibWFpbmFtb3VudCI6InRlc3QgYW1vdW50In19.Ni3igXSMvOIvrnAAaMh_BfiEfw6Mht1isTUDW9o7l_Q';
-  let applePayConfigService: ApplePayConfigService = new ApplePayConfigService(instance(jwtDecoderMock));
+  let applePayConfigService: ApplePayConfigService = new ApplePayConfigService(
+    instance(jwtDecoderMock),
+    instance(applePayNetworkService)
+  );
 
   describe('update paymentRequest object', () => {
     beforeAll(() => {
-      paymentRequest = {
-        countryCode: 'de_DE',
-        currencyCode: 'EUR',
-        merchantCapabilities: ['supports3DS'],
-        supportedNetworks: ['visa', 'discover'],
-        requestTypes: ['AUTH'],
-        total: {
-          amount: '10.00',
-          label: 'test'
-        }
-      };
       currencyCode = 'PLN';
       amount = '22.00';
       requestTypes = ['ACCOUNTCHECK', 'AUTH'];
