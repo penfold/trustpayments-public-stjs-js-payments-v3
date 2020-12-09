@@ -293,7 +293,7 @@ def step_impl(context, request_type):
                                                               context.test_data.update_jwt_from_jsinit, 1)
     else:
         payment_page.validate_updated_jwt_in_request(request_type, MockUrl.GATEWAY_MOCK_URI.value,
-                                                     context.test_data.update_jwt_from_jsinit, 1)
+                                                     context.test_data.update_jwt, 1)
 
 
 def stub_jsinit_request(context):
