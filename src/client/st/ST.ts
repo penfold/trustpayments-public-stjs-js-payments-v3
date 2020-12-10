@@ -23,8 +23,8 @@ import { InterFrameCommunicator } from '../../shared/services/message-bus/InterF
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
-import { Subject, Subscription } from 'rxjs';
-import { delay, map, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { delay, map, shareReplay, takeUntil, tap } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
@@ -68,6 +68,7 @@ export class ST {
   private _destroy$: Subject<void> = new Subject();
   private _registeredCallbacks: { [eventName: string]: Subscription } = {};
   private _cybertonicaTid: Promise<string>;
+  private _controlFrameLoader$: Observable<IConfig>;
 
   set submitCallback(callback: (event: ISubmitEvent) => void) {
     if (callback) {
@@ -160,23 +161,17 @@ export class ST {
     this.blockSubmitButton();
     // @ts-ignore
     this._commonFrames._requestTypes = jwt_decode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
-    this._framesHub
-      .waitForFrame(CONTROL_FRAME_IFRAME)
-      .pipe(
-        switchMap(controlFrame => {
-          const queryEvent: IMessageBusEvent<string> = {
-            type: PUBLIC_EVENTS.INIT_CONTROL_FRAME,
-            data: JSON.stringify(this._config)
-          };
-
-          return from(this._communicator.query(queryEvent, controlFrame));
-        })
-      )
-      .subscribe(() => {
-        this.CardFrames();
-        this._cardFrames.init();
-        this._merchantFields.init();
-      });
+    this.initControlFrame$().subscribe(() => {
+      this._messageBus.publish<string>(
+        {
+          type: PUBLIC_EVENTS.CARD_PAYMENTS_INIT,
+          data: JSON.stringify(this._config)
+        },
+        false
+      );
+      this.CardFrames();
+      this._cardFrames.init();
+    });
   }
 
   public ApplePay(config: IApplePayConfig): ApplePay {
@@ -214,7 +209,16 @@ export class ST {
       this._config = this._configService.updateFragment('visaCheckout', visaCheckoutConfig);
     }
 
-    this._visaCheckout.init();
+    this.initControlFrame$().subscribe(() => {
+      this._visaCheckout.init();
+      this._messageBus.publish<undefined>(
+        {
+          type: PUBLIC_EVENTS.VISA_CHECKOUT_INIT,
+          data: undefined
+        },
+        false
+      );
+    });
   }
 
   public Cybertonica(): Promise<string> {
@@ -272,6 +276,29 @@ export class ST {
 
   public getBrowserInfo(): IBrowserInfo {
     return this._browserDetector.getBrowserInfo();
+  }
+
+  private initControlFrame$(): Observable<IConfig> {
+    if (this._controlFrameLoader$) {
+      return this._controlFrameLoader$;
+    } else {
+      this._controlFrameLoader$ = this._framesHub.waitForFrame(CONTROL_FRAME_IFRAME).pipe(
+        switchMap((controlFrame: string) => {
+          const queryEvent: IMessageBusEvent<string> = {
+            type: PUBLIC_EVENTS.INIT_CONTROL_FRAME,
+            data: JSON.stringify(this._config)
+          };
+
+          return from(this._communicator.query(queryEvent, controlFrame));
+        }),
+        tap(() => {
+          this._merchantFields.init();
+        }),
+        shareReplay(1)
+      );
+
+      return this._controlFrameLoader$;
+    }
   }
 
   private CardFrames(): void {
