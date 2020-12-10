@@ -180,7 +180,7 @@ export class StCodec {
 
     if (responseContent.walletsource && responseContent.walletsource === 'APPLEPAY') {
       StCodec._propagateStatus(errormessageTranslated, responseContent, jwtResponse);
-      console.error(errormessage);
+      return new Error(errormessage);
     }
 
     if (responseContent.errordata) {
@@ -189,7 +189,7 @@ export class StCodec {
 
     validation.blockForm(FormState.AVAILABLE);
     StCodec._propagateStatus(errormessageTranslated, responseContent, jwtResponse);
-    console.error(errormessage);
+    throw new Error(errormessage);
   }
 
   private static _decodeResponseJwt(jwt: string, reject: (error: Error) => void) {

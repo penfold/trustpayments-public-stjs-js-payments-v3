@@ -97,8 +97,12 @@ export class StTransport {
       ...fetchOptions,
       body: requestBody
     })
+      .then(response => {
+        console.log({ response });
+        return response;
+      })
       .then(codec.decode)
-      .catch(() => {
+      .catch(response => {
         return codec.decode({});
       });
   }
