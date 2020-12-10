@@ -4,11 +4,13 @@ from assertpy import soft_assertions
 from behave import use_step_matcher, step, then
 
 from configuration import CONFIGURATION
+from features.steps.payment_page_mocks_stubs_steps import stub_jsinit_update_jwt_request
 from models.jwt_payload_builder import JwtPayloadBuilder
 from utils.configurations.jwt_generator import encode_jwt_for_json, get_data_from_json, encode_jwt, \
-    merge_json_conf_with_additional_attr
+    merge_json_conf_with_additional_attr, decode_jwt_from_jsinit
 from utils.enums.example_page import ExamplePage
 from utils.enums.jwt_config import JwtConfig
+from utils.enums.responses.jsinit_response import jsinit_response
 from utils.mock_handler import MockUrl
 
 use_step_matcher('re')
@@ -62,11 +64,15 @@ def step_impl(context, example_page: ExamplePage):
         accept_untrusted_pages_on_safari_browsers(context)
     if 'WITH_UPDATE_JWT' in example_page:
         jwt = ''
+        updated_jwt_from_jsinit = ''
         for row in context.table:
             jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
+            stub_jsinit_update_jwt_request(f'{row["jwtName"]}')
+            updated_jwt_from_jsinit = decode_jwt_from_jsinit(jsinit_response[f'{row["jwtName"]}'])
         payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}')
         payment_page.wait_for_iframe()
         context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
+        context.test_data.update_jwt_from_jsinit = updated_jwt_from_jsinit
     elif 'WITH_SPECIFIC_IFRAME' in example_page:
         payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}')
         payment_page.switch_to_parent_iframe()

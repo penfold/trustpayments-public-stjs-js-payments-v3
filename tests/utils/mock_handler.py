@@ -88,6 +88,7 @@ def stub_st_request_type(mock_json, request_type):
         persistent=False)
     Mappings.create_mapping(mapping)
 
+
 def stub_jsinit(mock_json, request_type):
     stub_url_options_for_cors(MockUrl.GATEWAY_MOCK_URI.value)
     configure_for_local_host()
