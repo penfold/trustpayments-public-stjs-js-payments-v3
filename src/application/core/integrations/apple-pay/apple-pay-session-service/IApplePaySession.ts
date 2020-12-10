@@ -1,4 +1,3 @@
-import { IApplePayPaymentRequest } from '../IApplePayPaymentRequest';
 import { IApplePayPaymentAuthorizedEvent } from '../IApplePayPaymentAuthorizedEvent';
 import { IApplePayPaymentMethodSelectedEvent } from '../IApplePayPaymentMethodSelectedEvent';
 import { IApplePayShippingContactSelectedEvent } from '../IApplePayShippingContactSelectedEvent';
@@ -7,9 +6,7 @@ import { IApplePayValidateMerchantEvent } from '../IApplePayValidateMerchantEven
 import { IApplePayLineItem } from '../IApplePayLineItem';
 import { IApplePayShippingMethod } from '../IApplePayShippingMethod';
 
-export declare class IApplePaySession extends EventTarget {
-  constructor(version: number, paymentRequest: IApplePayPaymentRequest);
-
+export interface IApplePaySession extends EventTarget {
   oncancel: (event: Event) => void;
 
   onpaymentauthorized: (event: IApplePayPaymentAuthorizedEvent) => void;

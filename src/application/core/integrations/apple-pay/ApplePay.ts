@@ -28,12 +28,11 @@ import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IApplePayConfig } from './IApplePayConfig';
 import { ApplePayErrorCodes } from './apple-pay-error-service/ApplePayErrorCodes';
-// import { IApplePayError } from './IApplePayError';
-// import { IApplePaySession } from './IApplePaySession';
+import { IApplePayError } from './apple-pay-error-service/IApplePayError';
+import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
 
-// const ApplePaySession: IApplePaySession  = (window as any).ApplePaySession;
-const ApplePaySession = (window as any).ApplePaySession;
-const ApplePayError = (window as any).ApplePayError;
+const ApplePaySession: IApplePaySession = (window as any).ApplePaySession;
+const ApplePayError: IApplePayError = (window as any).ApplePayError;
 
 @Service()
 export class ApplePay {
@@ -297,10 +296,14 @@ export class ApplePay {
     }
   }
 
-  private canMakePaymentsWithActiveCard(observer: Subscriber<IApplePayClientStatus>, merchantId: string): boolean {
-    const canMakePaymentsWithActiveCard: boolean = ApplePaySession.canMakePaymentsWithActiveCard(merchantId).then(
+  private async canMakePaymentsWithActiveCard(
+    observer: Subscriber<IApplePayClientStatus>,
+    merchantId: string
+  ): boolean {
+    const canMakePaymentsWithActiveCard: boolean = await ApplePaySession.canMakePaymentsWithActiveCard(merchantId).then(
       (canMakePayments: boolean) => canMakePayments
     );
+
     observer.next({
       status: ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD,
       data: {
