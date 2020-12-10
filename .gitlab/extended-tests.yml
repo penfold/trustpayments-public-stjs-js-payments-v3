@@ -56,6 +56,18 @@ win10-Chrome-latest-visual-tests:
     POETRY_TAGS: visual_regression
   resource_group: extended_tests_review_1
 
+win10-Chrome-latest-visa-checkout:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Chrome
+    BROWSER_VERSION: 'latest'
+    POETRY_TAGS: VC_e2e
+  resource_group: extended_tests_release_2
+
 win10-Chrome-latest-visual-tests-styling:
   extends:
     - .visual-regression-tests

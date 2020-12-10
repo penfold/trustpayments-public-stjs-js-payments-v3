@@ -16,7 +16,6 @@ from utils.enums.jwt_config import JwtConfig
 from utils.helpers.request_executor import add_to_shared_dict
 from models.jwt_payload_builder import JwtPayloadBuilder
 
-
 use_step_matcher('re')
 
 
@@ -29,6 +28,19 @@ def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
 @given(
     'JS library configured by inline params (?P<e2e_config>.+) and jwt (?P<jwt_config>.+) with additional attributes')
 def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
+    # parse old jwt config (payload part) to dictionary object
+    jwt_config_from_json_dict = get_data_from_json(JwtConfig[jwt_config].value)['payload']
+    # build payload base on additional attributes and parse to dictionary
+    jwt_payload_dict = JwtPayloadBuilder().map_payload_fields(context.table).build().__dict__
+    # merge both dictionaries (old is overridden by additional attr)
+    jwt = encode_jwt(merge_json_conf_with_additional_attr(jwt_config_from_json_dict, jwt_payload_dict))
+    context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
+
+
+@given(
+    'JS library configured by inline params (?P<e2e_config>.+) and jwt (?P<jwt_config>.+) with additional attributes for VisaCheckout')
+def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
+    time.sleep(20)
     # parse old jwt config (payload part) to dictionary object
     jwt_config_from_json_dict = get_data_from_json(JwtConfig[jwt_config].value)['payload']
     # build payload base on additional attributes and parse to dictionary
