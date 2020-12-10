@@ -23,7 +23,7 @@ import { NotificationService } from '../../../client/notification/NotificationSe
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { StJwt } from '../../core/shared/stjwt/StJwt';
 import { Translator } from '../../core/shared/translator/Translator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
@@ -93,23 +93,63 @@ export class ControlFrame {
     private _jwtDecoder: JwtDecoder,
     private _visaCheckoutClient: VisaCheckoutClient
   ) {
-    this._communicator
-      .whenReceive(MessageBus.EVENTS_PUBLIC.INIT_CONTROL_FRAME)
-      .thenRespond((event: IMessageBusEvent<string>) => {
-        const config: IConfig = JSON.parse(event.data);
-        this._messageBus.publish({
-          type: PUBLIC_EVENTS.CONFIG_CHANGED,
-          data: config
-        });
+    this.init();
+    this._initVisaCheckout();
+    this._initCardPayments();
+    this._initJsInit();
+    this._initConfigChange();
+  }
 
-        this.init(config);
+  protected init(): void {
+    this._communicator.whenReceive(PUBLIC_EVENTS.INIT_CONTROL_FRAME).thenRespond((event: IMessageBusEvent<string>) => {
+      const config: IConfig = JSON.parse(event.data);
 
-        return of(config);
+      this._messageBus.publish({
+        type: PUBLIC_EVENTS.CONFIG_CHANGED,
+        data: config
       });
 
+      const styler: Styler = new Styler(this._frame.getAllowedStyles(), this._frame.parseUrl().styles);
+      this._resetJwtEvent();
+      this._updateJwtEvent();
+      this._initCybertonica(config);
+      this._updateMerchantFieldsEvent();
+
+      return of(config);
+    });
+  }
+
+  public _initCardPayments(): void {
+    this._messageBus
+      .pipe(ofType(PUBLIC_EVENTS.CARD_PAYMENTS_INIT))
+      .pipe(first())
+      .subscribe((event: IMessageBusEvent<string>) => {
+        this._setInstances();
+        this._setFormFieldsValidities();
+        this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_CARD_NUMBER, this._formFields.cardNumber);
+        this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_EXPIRATION_DATE, this._formFields.expirationDate);
+        this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_SECURITY_CODE, this._formFields.securityCode);
+        this._submitFormEvent();
+        this._initThreeDProcess(JSON.parse(event.data));
+      });
+  }
+
+  private _initVisaCheckout(): void {
+    this._messageBus
+      .pipe(ofType(PUBLIC_EVENTS.VISA_CHECKOUT_INIT))
+      .pipe(
+        first(),
+        switchMap(() => {
+          return this._visaCheckoutClient.init$();
+        })
+      )
+      .subscribe();
+  }
+
+  private _initJsInit(): void {
     this._messageBus
       .pipe(
-        ofType(MessageBus.EVENTS_PUBLIC.JSINIT_RESPONSE),
+        ofType(PUBLIC_EVENTS.JSINIT_RESPONSE),
         filter((event: IMessageBusEvent<IThreeDInitResponse>) => Boolean(event.data.maskedpan)),
         map((event: IMessageBusEvent<IThreeDInitResponse>) => event.data.maskedpan)
       )
@@ -118,11 +158,13 @@ export class ControlFrame {
         this._localStorage.setItem('app.maskedpan', this._slicedPan);
 
         this._messageBus.publish({
-          type: MessageBus.EVENTS_PUBLIC.BIN_PROCESS,
+          type: PUBLIC_EVENTS.BIN_PROCESS,
           data: this._slicedPan
         });
       });
+  }
 
+  private _initConfigChange(): void {
     this._messageBus.pipe(ofType(PUBLIC_EVENTS.CONFIG_CHANGED)).subscribe((event: IMessageBusEvent<IConfig>) => {
       if (event.data) {
         this._store.dispatch({ type: UPDATE_CONFIG, payload: event.data });
@@ -130,22 +172,6 @@ export class ControlFrame {
         return;
       }
     });
-  }
-
-  protected init(config: IConfig): void {
-    const styler: Styler = new Styler(this._frame.getAllowedStyles(), this._frame.parseUrl().styles);
-    this._setInstances();
-    this._setFormFieldsValidities();
-    this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_CARD_NUMBER, this._formFields.cardNumber);
-    this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_EXPIRATION_DATE, this._formFields.expirationDate);
-    this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_SECURITY_CODE, this._formFields.securityCode);
-    this._submitFormEvent();
-    this._updateMerchantFieldsEvent();
-    this._resetJwtEvent();
-    this._updateJwtEvent();
-    this._initCybertonica(config);
-    this._initThreeDProcess(config);
-    this._initVisaCheckout();
   }
 
   private _formFieldChangeEvent(event: string, field: IFormFieldState): void {
@@ -157,7 +183,7 @@ export class ControlFrame {
   }
 
   private _resetJwtEvent(): void {
-    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.RESET_JWT, () => {
+    this._messageBus.subscribeType(PUBLIC_EVENTS.RESET_JWT, () => {
       ControlFrame._resetJwt();
     });
   }
@@ -168,13 +194,13 @@ export class ControlFrame {
   }
 
   private _updateJwtEvent(): void {
-    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: any) => {
+    this._messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_JWT, (data: any) => {
       ControlFrame._updateJwt(data.newJwt);
     });
   }
 
   private _updateMerchantFieldsEvent(): void {
-    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
+    this._messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
       this._updateMerchantFields(data);
     });
   }
@@ -182,13 +208,13 @@ export class ControlFrame {
   private _submitFormEvent(): void {
     this._messageBus
       .pipe(
-        ofType(MessageBus.EVENTS_PUBLIC.SUBMIT_FORM),
+        ofType(PUBLIC_EVENTS.SUBMIT_FORM),
         map((event: IMessageBusEvent<ISubmitData>) => event.data || {}),
         switchMap((data: ISubmitData) => {
           this._isPaymentReady = true;
           if (!this._isDataValid(data)) {
-            this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
-            this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+            this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+            this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
             this._validateFormFields();
             return EMPTY;
           }
@@ -225,14 +251,14 @@ export class ControlFrame {
     const translator = new Translator(this._localStorage.getItem('locale'));
     const translatedErrorMessage = translator.translate(PAYMENT_ERROR);
 
-    this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.RESET_JWT });
-    this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+    this._messageBus.publish({ type: PUBLIC_EVENTS.RESET_JWT });
+    this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
 
     errorData.errormessage = translatedErrorMessage;
 
     StCodec.publishResponse(errorData, errorData.jwt, errorData.threedresponse);
 
-    this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+    this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
     this._notification.error(translatedErrorMessage);
 
     return throwError(errorData);
@@ -246,7 +272,7 @@ export class ControlFrame {
       .then(() => {
         this._messageBus.publish(
           {
-            type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUCCESS_CALLBACK
+            type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK
           },
           true
         );
@@ -254,7 +280,7 @@ export class ControlFrame {
         this._validation.blockForm(FormState.COMPLETE);
       })
       .catch((error: any) => {
-        this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+        this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this._notification.error(PAYMENT_ERROR);
         this._validation.blockForm(FormState.AVAILABLE);
       })
@@ -391,13 +417,13 @@ export class ControlFrame {
 
       if (config.components.startOnLoad) {
         this._messageBus.publish({
-          type: MessageBus.EVENTS_PUBLIC.BIN_PROCESS,
+          type: PUBLIC_EVENTS.BIN_PROCESS,
           data: new StJwt(config.jwt).payload.pan as string
         });
 
         this._messageBus.publish(
           {
-            type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
+            type: PUBLIC_EVENTS.SUBMIT_FORM,
             data: {
               dataInJwt: true,
               requestTypes: this._remainingRequestTypes
@@ -407,9 +433,5 @@ export class ControlFrame {
         );
       }
     });
-  }
-
-  private _initVisaCheckout(): void {
-    this._visaCheckoutClient.init$().subscribe();
   }
 }

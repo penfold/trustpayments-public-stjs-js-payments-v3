@@ -143,19 +143,25 @@ describe('ControlFrame', () => {
       // @ts-ignore
       instance._notification.error = jest.fn();
       // @ts-ignore
-      instance._validation.blockForm = jest.fn();
+      instance._validation = {
+        blockForm: jest.fn()
+      };
     });
 
     it('should call notification success when promise is resolved', async () => {
       // @ts-ignore
-      instance._payment.processPayment = jest.fn().mockResolvedValueOnce(new Promise(resolve => resolve(undefined)));
+      instance._payment = {
+        processPayment: jest.fn().mockResolvedValueOnce(Promise.resolve(undefined))
+      };
       // @ts-ignore
       instance._processPayment(data);
     });
 
     it('should call notification error when promise is rejected', async () => {
       // @ts-ignore
-      instance._payment.processPayment = jest.fn().mockRejectedValueOnce(new Promise(rejected => rejected()));
+      instance._payment = {
+        processPayment: jest.fn().mockRejectedValueOnce(Promise.reject())
+      };
       // @ts-ignore
       instance._processPayment(data);
     });
@@ -239,7 +245,7 @@ function controlFrameFixture() {
     thenRespond: () => undefined
   });
   when(configProvider.getConfig$()).thenReturn(of({ jwt: JWT } as IConfig));
-  when(threeDProcess.init(anything())).thenReturn(EMPTY);
+  when(threeDProcess.init()).thenReturn(EMPTY);
   when(frame.parseUrl()).thenReturn({
     locale: 'en_GB',
     jwt: JWT,
@@ -247,7 +253,7 @@ function controlFrameFixture() {
   });
   when(frame.getAllowedParams()).thenReturn(['locale', 'origin', 'styles']);
   when(frame.getAllowedStyles()).thenReturn(frameAllowedStyles);
-  when(jwtDecoderMock.decode(JWT)).thenReturn({
+  when(jwtDecoderMock.decode(anything())).thenReturn({
     payload: {
       baseamount: '1000',
       accounttypedescription: 'ECOM',
@@ -283,9 +289,6 @@ function controlFrameFixture() {
   };
 
   StCodec.jwt = JWT;
-
-  // @ts-ignore
-  instance.init({ jwt: JWT } as IConfig);
 
   return { data, instance, messageBusEvent };
 }
