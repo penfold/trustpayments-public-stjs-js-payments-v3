@@ -1,4 +1,5 @@
 # type: ignore[no-redef]
+import time
 
 from assertpy import soft_assertions
 from behave import use_step_matcher, step, then
@@ -14,6 +15,11 @@ from utils.enums.responses.jsinit_response import jsinit_response
 from utils.mock_handler import MockUrl
 
 use_step_matcher('re')
+
+
+@step('User wait')
+def step_impl(context):
+    time.sleep(360)
 
 
 @step('User opens page with incorrect request type in config file')
