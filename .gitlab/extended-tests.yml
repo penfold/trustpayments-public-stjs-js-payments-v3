@@ -58,7 +58,7 @@ win10-Chrome-latest-visual-tests:
 
 win10-Chrome-latest-visa-checkout:
   extends:
-    - .extended-tests-browserstack
+    - .visual-regression-tests
     - .rules-extended-tests-always
   variables:
     OS: Windows
