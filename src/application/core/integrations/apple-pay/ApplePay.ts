@@ -66,14 +66,6 @@ export class ApplePay {
     private _applePayConfigService: ApplePayConfigService,
     private jwtDecoder: JwtDecoder
   ) {
-    if (!Boolean(ApplePaySession)) {
-      console.error('Works only on Safari');
-    }
-
-    if (!ApplePaySession.canMakePayments()) {
-      console.error('Your device does not support making payments with Apple Pay');
-    }
-
     this._messageBus = Container.get(MessageBusToken);
     this._config$ = this._configProvider.getConfig$();
   }
