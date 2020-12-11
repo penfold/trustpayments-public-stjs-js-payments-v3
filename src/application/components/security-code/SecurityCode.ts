@@ -19,7 +19,6 @@ import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { merge, Observable } from 'rxjs';
-import jwt_decode from 'jwt-decode';
 import { IDecodedJwt } from '../../core/models/IDecodedJwt';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { DefaultPlaceholders } from '../../core/models/constants/config-resolver/DefaultPlaceholders';
@@ -28,6 +27,7 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { Styler } from '../../core/shared/styler/Styler';
 import { Frame } from '../../core/shared/frame/Frame';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 
 @Service()
 export class SecurityCode extends Input {
@@ -51,7 +51,8 @@ export class SecurityCode extends Input {
     private _localStorage: BrowserLocalStorage,
     private _formatter: Formatter,
     private messageBus: IMessageBus,
-    private frame: Frame
+    private frame: Frame,
+    private jwtDecoder: JwtDecoder
   ) {
     super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER);
     this._validation = new Validation();
@@ -136,7 +137,7 @@ export class SecurityCode extends Input {
       map((event: IMessageBusEvent<IFormFieldState>) => event.data.value)
     );
     const cardNumberFromJwt$: Observable<string> = merge(jwtFromConfig$, jwtFromUpdate$).pipe(
-      map(jwt => jwt_decode<IDecodedJwt>(jwt).payload.pan)
+      map(jwt => this.jwtDecoder.decode(jwt).payload.pan)
     );
 
     const maskedPanFromJsInit$: Observable<string> = this._configProvider
