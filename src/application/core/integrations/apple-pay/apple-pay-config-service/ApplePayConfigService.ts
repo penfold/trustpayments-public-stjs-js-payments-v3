@@ -9,6 +9,7 @@ import { IApplePayConfig } from '../IApplePayConfig';
 import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
 import { IDecodedJwt } from '../../../models/IDecodedJwt';
 import JwtDecode from 'jwt-decode';
+import { Locale } from '../../../shared/translator/Locale';
 
 @Service()
 export class ApplePayConfigService {
@@ -58,7 +59,7 @@ export class ApplePayConfigService {
     };
   }
 
-  getStJwtData(jwt: string): { currencyiso3a: string; locale: string; mainamount: string } {
+  getStJwtData(jwt: string): { currencyiso3a: string; locale: Locale; mainamount: string } {
     const payload: IStJwtPayload = this.jwtDecoder.decode(jwt).payload;
 
     return {

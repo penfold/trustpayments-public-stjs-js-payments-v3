@@ -7,7 +7,6 @@ import { ApplePayConfigService } from './apple-pay-config-service/ApplePayConfig
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { Payment } from '../../shared/payment/Payment';
-import { Translator } from '../../shared/translator/Translator';
 import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/ApplePayClientStatus';
 import { APPLE_PAY_BUTTON_ID } from './apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
@@ -28,9 +27,10 @@ import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IApplePayConfig } from './IApplePayConfig';
 import { ApplePayErrorCodes } from './apple-pay-error-service/ApplePayErrorCodes';
+import { ApplePayErrorService } from './apple-pay-error-service/ApplePayErrorService';
+import { Locale } from '../../shared/translator/Locale';
 
 const ApplePaySession = (window as any).ApplePaySession;
-const ApplePayError = (window as any).ApplePayError;
 
 @Service()
 export class ApplePay {
@@ -49,13 +49,14 @@ export class ApplePay {
     status: undefined
   };
   private paymentCancelled: boolean = false;
-  private locale: string;
+  private locale: Locale;
 
   constructor(
     private communicator: InterFrameCommunicator,
     private messageBus: IMessageBus,
     private applePayButtonService: ApplePayButtonService,
-    private applePayConfigService: ApplePayConfigService
+    private applePayConfigService: ApplePayConfigService,
+    private applePayErrorService: ApplePayErrorService
   ) {}
 
   private proceedPayment(observer: Subscriber<IApplePayClientStatus>): void {
@@ -177,10 +178,7 @@ export class ApplePay {
 
       return this.completion;
     }
-    const error = new ApplePayError('unknown');
-    const translator = new Translator(this.locale);
-    error.message = translator.translate(errormessage);
-    this.completion.errors = error;
+    this.completion.errors = this.applePayErrorService.create('unknown', this.locale);
     this.completion.status = ApplePaySession.STATUS_FAILURE;
 
     observer.next({
@@ -202,7 +200,7 @@ export class ApplePay {
         if (Number(event.data.errorcode) !== 0) {
           this.applePaySession.completePayment({
             status: ApplePaySession.STATUS_FAILURE,
-            errors: new ApplePayError(event.data.errormessage)
+            errors: this.applePayErrorService.create(event.data.errormessage, this.locale)
           });
         }
       });

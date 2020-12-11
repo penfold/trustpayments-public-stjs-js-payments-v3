@@ -1,5 +1,7 @@
+import { ApplePayErrorCode } from './ApplePayErrorCode';
+
 export interface IApplePayError {
-  code: 'shippingContactInvalid' | 'billingContactInvalid' | 'addressUnserviceable' | 'unknown';
+  code: ApplePayErrorCode;
   contactField?: string;
   message?: string;
 }
