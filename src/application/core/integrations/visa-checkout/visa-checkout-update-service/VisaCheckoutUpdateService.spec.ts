@@ -6,7 +6,7 @@ describe('VisaCheckoutUpdateService', () => {
   let instance: VisaCheckoutUpdateService = new VisaCheckoutUpdateService();
   const stJwt: IStJwtPayload = {
     currencyiso3a: 'PLN',
-    locale: 'pl_PL',
+    locale: 'de_DE',
     mainamount: '100'
   };
   const config: IVisaCheckoutInitConfig = {
@@ -24,7 +24,7 @@ describe('VisaCheckoutUpdateService', () => {
   const updatedConfig: IVisaCheckoutInitConfig = {
     apikey: 'some key',
     settings: {
-      locale: 'pl_PL'
+      locale: 'de_DE'
     },
     paymentRequest: {
       currencyCode: 'PLN',
