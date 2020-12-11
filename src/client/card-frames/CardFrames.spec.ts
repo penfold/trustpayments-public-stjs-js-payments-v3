@@ -16,6 +16,7 @@ import {
 } from '../../application/core/models/constants/Selectors';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 
 jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/validation/Validation');
@@ -28,6 +29,7 @@ describe('CardFrames', () => {
   let frame: Frame;
   let instance: CardFrames;
   const messageBus: IMessageBus = new SimpleMessageBus();
+  const jwtDecoder: JwtDecoder = mock(JwtDecoder);
 
   beforeEach(() => {
     iframeFactory = mock(IframeFactory);
@@ -52,6 +54,17 @@ describe('CardFrames', () => {
       }
     );
     when(frame.parseUrl()).thenReturn({ params: { locale: 'en_GB' } });
+    when(jwtDecoder.decode(anything())).thenReturn({
+      payload: {
+        baseamount: '1000',
+        accounttypedescription: 'ECOM',
+        currencyiso3a: 'GBP',
+        sitereference: 'test_james38641',
+        locale: 'en_GB',
+        pan: '3089500000000000021',
+        expirydate: '01/22'
+      }
+    });
 
     instance = new CardFrames(
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NTM2NzE1OC44NDk1NDUyLCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwicGFuIjoiMzA4OTUwMDAwMDAwMDAwMDAyMSIsImV4cGlyeWRhdGUiOiIwMS8yMiJ9fQ.ey0e7_JVcwXinHZR-MFBWARiVy6F3GU5JrcuCgicGhU',
@@ -71,7 +84,8 @@ describe('CardFrames', () => {
       instanceOf(configProvider),
       instanceOf(iframeFactory),
       instanceOf(frame),
-      messageBus
+      messageBus,
+      instanceOf(jwtDecoder)
     );
     instance.init();
   });
