@@ -194,6 +194,8 @@ describe('ThreeDProcess', () => {
         requesttypescription: 'THREEDQUERY',
         enrolled: 'Y',
         acsurl: 'https://acs.url',
+        acquirerresponsecode: '0',
+        acquirerresponsemessage: 'Test message',
         acquirertransactionreference: 'foobar-123',
         threedpayload: 'abc3dpayload',
         transactionreference: ''
