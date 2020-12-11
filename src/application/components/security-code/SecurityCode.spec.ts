@@ -13,6 +13,7 @@ import { Formatter } from '../../core/shared/formatter/Formatter';
 import { Frame } from '../../core/shared/frame/Frame';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 
 jest.mock('./../../core/shared/notification/Notification');
 
@@ -235,6 +236,8 @@ function securityCodeFixture() {
   formatter = mock(Formatter);
   let frame: Frame;
   frame = mock(Frame);
+  let jwtDecoder: JwtDecoder;
+  jwtDecoder = mock(JwtDecoder);
   const localStorage: BrowserLocalStorage = mock(BrowserLocalStorage);
   when(localStorage.select(anyFunction())).thenReturn(of('34****4565'));
   when(configProvider.getConfig$()).thenReturn(of(config));
@@ -245,7 +248,8 @@ function securityCodeFixture() {
     instance(localStorage),
     instance(formatter),
     messageBus,
-    instance(frame)
+    instance(frame),
+    instance(jwtDecoder)
   );
   // @ts-ignore
 
