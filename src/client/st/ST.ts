@@ -37,7 +37,6 @@ import { CardinalClient } from '../integrations/cardinal-commerce/CardinalClient
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
-import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
 import { ApplePayNetworksService } from '../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePayButtonService } from '../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
@@ -160,7 +159,7 @@ export class ST {
 
     this.blockSubmitButton();
     // @ts-ignore
-    this._commonFrames._requestTypes = jwt_decode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
+    this._commonFrames._requestTypes = this.jwtDecoder.decode(this._config.jwt).payload.requesttypedescriptions;
     this.initControlFrame$().subscribe(() => {
       this._messageBus.publish<string>(
         {
@@ -308,7 +307,8 @@ export class ST {
       this._configProvider,
       this._iframeFactory,
       this._frameService,
-      this._messageBus
+      this._messageBus,
+      this.jwtDecoder
     );
   }
 
