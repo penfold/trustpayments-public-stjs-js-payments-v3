@@ -3,7 +3,9 @@ import { PAYMENT_SUCCESS } from '../../../../application/core/models/constants/T
 import { NotificationService } from '../../../notification/NotificationService';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
 import { ApplePayErrorCodes } from '../../../../application/core/integrations/apple-pay/apple-pay-error-service/ApplePayErrorCodes';
+import { Service } from 'typedi';
 
+@Service()
 export class ApplePayNotificationService {
   constructor(private messageBus: IMessageBus, private notificationService: NotificationService) {}
 

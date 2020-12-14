@@ -5,6 +5,7 @@ import { IApplePayShippingMethodSelectedEvent } from '../IApplePayShippingMethod
 import { IApplePayValidateMerchantEvent } from '../IApplePayValidateMerchantEvent';
 import { IApplePayLineItem } from '../IApplePayLineItem';
 import { IApplePayShippingMethod } from '../IApplePayShippingMethod';
+import { IApplePayPaymentAuthorizationResult } from '../IApplePayPaymentAuthorizationResult ';
 
 export interface IApplePaySession extends EventTarget {
   oncancel: (event: Event) => void;
@@ -33,7 +34,7 @@ export interface IApplePaySession extends EventTarget {
 
   completeMerchantValidation(merchantSession: any): void;
 
-  completePayment(status: number): void;
+  completePayment(status: IApplePayPaymentAuthorizationResult): void;
 
   completePaymentMethodSelection(newTotal: IApplePayLineItem, newLineItems: IApplePayLineItem[]): void;
 

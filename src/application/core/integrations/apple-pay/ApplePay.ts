@@ -22,12 +22,13 @@ import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySess
 import { IApplePayConfigObject } from './apple-pay-config-service/IApplePayConfigObject';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 import { Observable, of } from 'rxjs';
+import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
 @Service()
 export class ApplePay {
-  private applePaySession: any;
+  private applePaySession: IApplePaySession;
   private readonly completion: IApplePayPaymentAuthorizationResult = {
     errors: undefined,
     status: undefined
