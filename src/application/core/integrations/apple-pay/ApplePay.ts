@@ -243,7 +243,7 @@ export class ApplePay {
   }
 
   init(): void {
-    this.communicator.whenReceive(PUBLIC_EVENTS.APPLE_PAY_START).thenRespond((event: IMessageBusEvent<IConfig>) => {
+    this.communicator.whenReceive(PUBLIC_EVENTS.APPLE_PAY_INIT).thenRespond((event: IMessageBusEvent<IConfig>) => {
       if (!Boolean(ApplePaySession)) {
         console.error('Works only on Safari');
       }

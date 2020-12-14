@@ -41,7 +41,7 @@ export class ApplePayClient {
         return from(
           this.interFrameCommunicator.query(
             {
-              type: PUBLIC_EVENTS.APPLE_PAY_START,
+              type: PUBLIC_EVENTS.APPLE_PAY_INIT,
               data: config as IConfig
             },
             MERCHANT_PARENT_FRAME
