@@ -19,7 +19,7 @@ use_step_matcher('re')
 
 @step('User wait')
 def step_impl(context):
-    time.sleep(360)
+    time.sleep(60)
 
 
 @step('User opens page with incorrect request type in config file')
