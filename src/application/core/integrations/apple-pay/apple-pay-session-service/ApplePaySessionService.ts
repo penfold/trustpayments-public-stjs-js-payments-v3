@@ -33,6 +33,18 @@ export class ApplePaySessionService {
     });
   }
 
+  canMakePaymentsWithActiveCard(merchantId: string): boolean {
+    const canMakePaymentsWithActiveCard: boolean = ApplePaySession.canMakePaymentsWithActiveCard(merchantId).then(
+      (canMakePayments: boolean) => canMakePayments
+    );
+
+    if (!canMakePaymentsWithActiveCard) {
+      console.error('User has not an active card provisioned into Wallet');
+    }
+
+    return canMakePaymentsWithActiveCard;
+  }
+
   private onPaymentMethodSelected(): void {
     this.applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethodSelectedEvent) => {
       this.applePaySession.completePaymentMethodSelection({
@@ -75,18 +87,5 @@ export class ApplePaySessionService {
     } catch (error) {
       console.warn(error);
     }
-  }
-
-  canMakePaymentsWithActiveCard(merchantId: string): boolean {
-    const canMakePaymentsWithActiveCard: boolean = ApplePaySession.canMakePaymentsWithActiveCard(merchantId).then(
-      (canMakePayments: boolean) => canMakePayments
-    );
-
-    // publish with message bus
-    if (!canMakePaymentsWithActiveCard) {
-      console.error('User has not an active card provisioned into Wallet');
-    }
-
-    return canMakePaymentsWithActiveCard;
   }
 }

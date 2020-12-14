@@ -43,21 +43,22 @@ export class ApplePayClient implements IApplePayClient {
       switchMap((config: IConfig) => {
         return this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).pipe(
           switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => {
+            console.error(event);
             switch (event.data.status) {
               case ApplePayClientStatus.SUCCESS:
-                return this.onSuccess$(event.data.status, config);
+                return this.onSuccess$(event.data, config);
 
               case ApplePayClientStatus.ERROR:
-                return this.onError$(event.data.status);
+                return this.onError$(event.data);
 
               case ApplePayClientStatus.CANCEL:
-                return this.onCancel$(event.data.status);
+                return this.onCancel$(event.data);
 
               case ApplePayClientStatus.VALIDATE_MERCHANT_ERROR:
-                return this.onValidateMerchant$(event.data.status);
+                return this.onValidateMerchant$(event.data);
 
               case ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD:
-                return this.canMakePaymentWithActiveCard$(event.data.status);
+                return this.canMakePaymentWithActiveCard$(event.data);
 
               default:
                 return throwError('Unknown Apple Pay status');

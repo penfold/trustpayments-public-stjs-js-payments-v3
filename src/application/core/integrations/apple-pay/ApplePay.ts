@@ -87,14 +87,17 @@ export class ApplePay {
     this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
 
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
+      console.error('onvalidatemerchant', event);
       this.onValidateMerchant(event);
     };
 
     this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
+      console.error('onpaymentauthorized', event);
       this.onPaymentAuthorized(event);
     };
 
     this.applePaySession.oncancel = (event: Event) => {
+      console.error('cancel', event);
       this.gestureHandler();
       this.paymentCancelled = true;
       this.onCancel();
@@ -127,34 +130,30 @@ export class ApplePay {
             this.applePaySession.completeMerchantValidation(JSON.parse(walletsession));
             resolve(requestid);
           } catch {
-            this.applePaySessionService.endMerchantValidation();
-            // observer.next({
-            //   status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
-            //   data: {
-            //     errorcode: ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR,
-            //     errormessage: MERCHANT_VALIDATION_FAILURE
-            //   }
-            // });
-            // publish with message bus
+            this.onValidateMerchantError();
             reject(requestid);
           }
         });
       })
       .catch(error => {
+        console.error('CATCH:', error);
+        this.onValidateMerchantError();
         if (this.paymentCancelled) {
           return;
         }
-        const { errorcode, errormessage } = error;
-        this.applePaySessionService.endMerchantValidation();
         this.gestureHandler();
-        this.messageBus.publish<IApplePayClientStatus>({
-          type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
-          data: {
-            status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
-            data: { errorcode: ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR, errormessage: VALIDATION_ERROR }
-          }
-        });
       });
+  }
+
+  private onValidateMerchantError() {
+    this.applePaySessionService.endMerchantValidation();
+    this.messageBus.publish<IApplePayClientStatus>({
+      type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+      data: {
+        status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
+        data: { errorcode: ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR, errormessage: VALIDATION_ERROR }
+      }
+    });
   }
 
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): Promise<any> {
@@ -177,10 +176,8 @@ export class ApplePay {
         }
       )
       .then((response: IApplePayProcessPaymentResponse) => {
-        const {
-          response: { errorcode, errormessage }
-        } = response;
-        this.handlePaymentProcessResponse(errorcode, errormessage);
+        console.error('THEN:', response);
+        this.handlePaymentProcessResponse(response.response.errorcode, response.response.errormessage);
         this.gestureHandler();
       })
       .catch(e => {

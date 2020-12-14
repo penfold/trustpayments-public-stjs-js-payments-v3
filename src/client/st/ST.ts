@@ -45,7 +45,6 @@ import { IMessageBus } from '../../application/core/shared/message-bus/IMessageB
 import { Notification } from '../../application/core/shared/notification/Notification';
 import { IApplePayConfig } from '../../application/core/integrations/apple-pay/IApplePayConfig';
 import { ApplePayConfigService } from '../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
-import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { ApplePayErrorService } from '../../application/core/integrations/apple-pay/apple-pay-error-service/ApplePayErrorService';
 import { ApplePaySessionFactory } from '../../application/core/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
