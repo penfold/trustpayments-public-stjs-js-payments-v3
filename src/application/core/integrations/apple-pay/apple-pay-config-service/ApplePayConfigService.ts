@@ -10,6 +10,7 @@ import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayN
 import { IDecodedJwt } from '../../../models/IDecodedJwt';
 import JwtDecode from 'jwt-decode';
 import { Locale } from '../../../shared/translator/Locale';
+import { Money } from 'ts-money';
 
 @Service()
 export class ApplePayConfigService {
@@ -61,11 +62,16 @@ export class ApplePayConfigService {
 
   getStJwtData(jwt: string): { currencyiso3a: string; locale: Locale; mainamount: string } {
     const payload: IStJwtPayload = this.jwtDecoder.decode(jwt).payload;
+    const mainamount = Money.fromInteger({
+      amount: parseInt(payload.baseamount, 10),
+      currency: payload.currencyiso3a
+    }).toString();
+    console.error(mainamount);
 
     return {
       currencyiso3a: payload.currencyiso3a,
       locale: payload.locale,
-      mainamount: payload.mainamount
+      mainamount
     };
   }
 
