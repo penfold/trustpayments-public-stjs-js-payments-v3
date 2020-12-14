@@ -97,6 +97,7 @@ export class ControlFrame {
   ) {
     this.init();
     this._initVisaCheckout();
+    this._initApplePay();
     this._initCardPayments();
     this._initJsInit();
     this._initConfigChange();
@@ -143,6 +144,18 @@ export class ControlFrame {
         first(),
         switchMap(() => {
           return this._visaCheckoutClient.init$();
+        })
+      )
+      .subscribe();
+  }
+
+  private _initApplePay(): void {
+    this._messageBus
+      .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_INIT))
+      .pipe(
+        first(),
+        switchMap(() => {
+          return this._applePayClient.init$();
         })
       )
       .subscribe();

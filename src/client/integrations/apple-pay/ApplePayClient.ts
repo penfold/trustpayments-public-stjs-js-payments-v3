@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { BehaviorSubject, from, Observable, of, throwError } from 'rxjs';
-import { filter, switchMap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { filter, switchMap, tap } from 'rxjs/operators';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePayNetworksService } from '../../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
@@ -13,15 +13,14 @@ import { MessageBus } from '../../../application/core/shared/message-bus/Message
 import { NotificationService } from '../../notification/NotificationService';
 import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IApplePayClientStatus } from './IApplePayClientStatus';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 
 @Service()
 export class ApplePayClient {
-  private config$: BehaviorSubject<IConfig> = new BehaviorSubject<IConfig>(null);
-
   constructor(
     private configProvider: ConfigProvider,
     private interFrameCommunicator: InterFrameCommunicator,
@@ -35,34 +34,35 @@ export class ApplePayClient {
   ) {}
 
   init$(): Observable<ApplePayClientStatus> {
-    return this.config$.pipe(
+    return this.configProvider.getConfig$().pipe(
       filter((config: IConfig) => config !== null),
+      tap((config: IConfig) => {
+        this.messageBus.publish<IConfig>(
+          {
+            type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+            data: config
+          },
+          true
+        );
+      }),
       switchMap((config: IConfig) => {
-        return from(
-          this.interFrameCommunicator.query(
-            {
-              type: PUBLIC_EVENTS.APPLE_PAY_START,
-              data: config as IConfig
-            },
-            MERCHANT_PARENT_FRAME
-          )
-        ).pipe(
-          switchMap((status: IApplePayClientStatus) => {
-            switch (status.status) {
+        return this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).pipe(
+          switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => {
+            switch (event.data.status) {
               case ApplePayClientStatus.SUCCESS:
-                return this.onSuccess$(status);
+                return this.onSuccess$(event.data.status, config);
 
               case ApplePayClientStatus.ERROR:
-                return this.onError$(status);
+                return this.onError$(event.data.status);
 
               case ApplePayClientStatus.CANCEL:
-                return this.onCancel$(status);
+                return this.onCancel$(event.data.status);
 
               case ApplePayClientStatus.VALIDATE_MERCHANT_ERROR:
-                return this.onValidateMerchant$(status);
+                return this.onValidateMerchant$(event.data.status);
 
               case ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD:
-                return this.canMakePaymentWithActiveCard$(status);
+                return this.canMakePaymentWithActiveCard$(event.data.status);
 
               default:
                 return throwError('Unknown Apple Pay status');
@@ -73,12 +73,12 @@ export class ApplePayClient {
     );
   }
 
-  private onSuccess$(status: IApplePayClientStatus): Observable<ApplePayClientStatus.SUCCESS> {
+  private onSuccess$(status: IApplePayClientStatus, config: IConfig): Observable<ApplePayClientStatus.SUCCESS> {
     this.localStorage.setItem('completePayment', 'true');
     this.applePayNotificationService.notification(status.data.errorcode, status.data.errormessage);
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'merchant validation', 'Apple Pay merchant validated');
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
-
+    console.error(config);
     return of(ApplePayClientStatus.SUCCESS);
   }
 

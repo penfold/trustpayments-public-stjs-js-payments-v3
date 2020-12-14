@@ -48,6 +48,8 @@ import { ApplePayConfigService } from '../../application/core/integrations/apple
 import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { ApplePayErrorService } from '../../application/core/integrations/apple-pay/apple-pay-error-service/ApplePayErrorService';
+import { ApplePaySessionFactory } from '../../application/core/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
+import { ApplePaySessionService } from '../../application/core/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 
 @Service()
 export class ST {
@@ -121,7 +123,10 @@ export class ST {
     private _applePayButtonService: ApplePayButtonService,
     private _applePayConfigService: ApplePayConfigService,
     private applePayErrorService: ApplePayErrorService,
-    private jwtDecoder: JwtDecoder
+    private applePaySessionFactory: ApplePaySessionFactory,
+    private applePaySessionService: ApplePaySessionService,
+    private jwtDecoder: JwtDecoder,
+    private applePay: ApplePay
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -175,28 +180,21 @@ export class ST {
     });
   }
 
-  public ApplePay(config: IApplePayConfig): ApplePay {
+  public ApplePay(config: IApplePayConfig): void {
     if (config) {
       this._config = this._configService.updateFragment('applePay', config);
     }
 
-    if (environment.testEnvironment) {
-      return new ApplePayMock(
-        this._communicator,
-        this._messageBus,
-        this._applePayButtonService,
-        this._applePayConfigService,
-        this.applePayErrorService
+    this.initControlFrame$().subscribe(() => {
+      this.applePay.init();
+      this._messageBus.publish<undefined>(
+        {
+          type: PUBLIC_EVENTS.APPLE_PAY_INIT,
+          data: undefined
+        },
+        false
       );
-    } else {
-      return new ApplePay(
-        this._communicator,
-        this._messageBus,
-        this._applePayButtonService,
-        this._applePayConfigService,
-        this.applePayErrorService
-      );
-    }
+    });
   }
 
   public VisaCheckout(visaCheckoutConfig: IVisaCheckoutConfig | undefined): void {
