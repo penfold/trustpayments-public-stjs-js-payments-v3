@@ -3,17 +3,14 @@ import { filter, first, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from './apple-pay-config-service/ApplePayConfigService';
-import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { Payment } from '../../shared/payment/Payment';
 import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/ApplePayClientStatus';
 import { APPLE_PAY_BUTTON_ID } from './apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { PAYMENT_ERROR, VALIDATION_ERROR } from '../../models/constants/Translations';
+import { VALIDATION_ERROR } from '../../models/constants/Translations';
 import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
 import { IApplePayPaymentAuthorizationResult } from './IApplePayPaymentAuthorizationResult ';
 import { IApplePayPaymentAuthorizedEvent } from './IApplePayPaymentAuthorizedEvent';
-import { IApplePayProcessPaymentResponse } from './IApplePayProcessPaymentResponse';
 import { IApplePayValidateMerchantEvent } from './IApplePayValidateMerchantEvent';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
@@ -166,32 +163,6 @@ export class ApplePay {
           return of(ApplePayErrorCodes.SUCCESS);
         })
       );
-    // return payment
-    //   .processPayment(
-    //     this.config.paymentRequest.requestTypes,
-    //     {
-    //       walletsource: this.config.validateMerchantRequest.walletsource,
-    //       wallettoken: JSON.stringify(event.payment)
-    //     },
-    //     {
-    //       ...DomMethods.parseForm(this.config.formId),
-    //       termurl: 'https://termurl.com'
-    //     },
-    //     {
-    //       billingContact: event.payment.billingContact,
-    //       shippingContact: event.payment.shippingContact
-    //     }
-    //   )
-    //   .then((response: IApplePayProcessPaymentResponse) => {
-    //     console.error('THEN:', response);
-    //     this.handlePaymentProcessResponse(response.response.errorcode, response.response.errormessage);
-    //     this.gestureHandler();
-    //   })
-    //   .catch(e => {
-    //     console.error('CATCH:', e);
-    //     this.handlePaymentProcessResponse('1', PAYMENT_ERROR);
-    //     this.gestureHandler();
-    //   });
   }
 
   private onCancel() {
