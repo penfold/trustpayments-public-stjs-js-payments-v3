@@ -91,7 +91,7 @@ export class ApplePay {
     };
 
     this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
-      this.onPaymentAuthorized();
+      this.onPaymentAuthorized(event);
     };
 
     this.applePaySession.oncancel = (event: Event) => {
@@ -157,46 +157,37 @@ export class ApplePay {
       });
   }
 
-  private onPaymentAuthorized(): void {
+  private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): Promise<any> {
     const payment = new Payment();
     this.completeFailedTransaction();
-    this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
-      return payment
-        .processPayment(
-          this.config.paymentRequest.requestTypes,
-          {
-            walletsource: this.config.validateMerchantRequest.walletsource,
-            wallettoken: JSON.stringify(event.payment)
-          },
-          {
-            ...DomMethods.parseForm(this.config.formId),
-            termurl: 'https://termurl.com'
-          },
-          {
-            billingContact: event.payment.billingContact,
-            shippingContact: event.payment.shippingContact
-          }
-        )
-        .then((response: IApplePayProcessPaymentResponse) => {
-          const {
-            response: { errorcode, errormessage }
-          } = response;
-          this.handlePaymentProcessResponse(errorcode, errormessage);
-          this.applePaySession.completePayment(this.completion);
-          this.gestureHandler();
-        })
-        .catch(e => {
-          this.applePaySession.completePayment(this.completion);
-          this.gestureHandler();
-          this.messageBus.publish<IApplePayClientStatus>({
-            type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
-            data: {
-              status: ApplePayClientStatus.ERROR,
-              data: { errorcode: ApplePayErrorCodes.ERROR, errormessage: PAYMENT_ERROR }
-            }
-          });
-        });
-    };
+    return payment
+      .processPayment(
+        this.config.paymentRequest.requestTypes,
+        {
+          walletsource: this.config.validateMerchantRequest.walletsource,
+          wallettoken: JSON.stringify(event.payment)
+        },
+        {
+          ...DomMethods.parseForm(this.config.formId),
+          termurl: 'https://termurl.com'
+        },
+        {
+          billingContact: event.payment.billingContact,
+          shippingContact: event.payment.shippingContact
+        }
+      )
+      .then((response: IApplePayProcessPaymentResponse) => {
+        const {
+          response: { errorcode, errormessage }
+        } = response;
+        this.handlePaymentProcessResponse(errorcode, errormessage);
+        this.gestureHandler();
+      })
+      .catch(e => {
+        console.error('CATCH:', e);
+        this.handlePaymentProcessResponse('1', PAYMENT_ERROR);
+        this.gestureHandler();
+      });
   }
 
   private onCancel() {
@@ -213,25 +204,36 @@ export class ApplePay {
   }
 
   private handlePaymentProcessResponse(errorcode: string, errormessage: string): IApplePayPaymentAuthorizationResult {
+    console.error('errorcode:', errorcode, 'errormessage:', errormessage);
     if (Number(errorcode) === ApplePayErrorCodes.SUCCESS) {
       this.completion.status = ApplePaySession.STATUS_SUCCESS;
-      // observer.next({
-      //   status: ApplePayClientStatus.SUCCESS,
-      //   data: { errorcode: ApplePayErrorCodes.SUCCESS, errormessage }
-      // });
-
-      // publish
+      this.messageBus.publish<IApplePayClientStatus>({
+        type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+        data: {
+          status: ApplePayClientStatus.SUCCESS,
+          data: {
+            errorcode: ApplePayErrorCodes.SUCCESS,
+            errormessage
+          }
+        }
+      });
+      this.applePaySession.completePayment(this.completion);
       return this.completion;
     }
     this.completion.errors = this.applePayErrorService.create('unknown', this.config.locale);
     this.completion.status = ApplePaySession.STATUS_FAILURE;
 
-    // observer.next({
-    //   status: ApplePayClientStatus.ERROR,
-    //   data: { errorcode: ApplePayErrorCodes.ERROR, errormessage }
-    // });
-    // publish
-
+    this.messageBus.publish<IApplePayClientStatus>({
+      type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+      data: {
+        status: ApplePayClientStatus.ERROR,
+        data: {
+          errorcode: ApplePayErrorCodes.ERROR,
+          errormessage
+        }
+      }
+    });
+    this.applePaySession.completePayment(this.completion);
     return this.completion;
   }
 
