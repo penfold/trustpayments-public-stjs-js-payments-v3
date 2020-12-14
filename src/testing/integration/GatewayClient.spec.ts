@@ -13,6 +13,8 @@ import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent
 import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
 import { StoreBasedStorage } from '../../shared/services/storage/StoreBasedStorage';
 import { SimpleStorage } from '../../shared/services/storage/SimpleStorage';
+import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
+import each from 'jest-each';
 
 describe('GatewayClient', () => {
   const datacenterurl: string = 'https://webservices.securetrading.net/jwt/';
@@ -36,6 +38,7 @@ describe('GatewayClient', () => {
   };
 
   describe('for selected request types should return a response where:', () => {
+    const jwtDecoder = new JwtDecoder();
     let gatewayClient: GatewayClient;
     let testConfigProvider: TestConfigProvider;
     let messageBus: MessageBus;
@@ -74,17 +77,16 @@ describe('GatewayClient', () => {
       messageBus
         .pipe(ofType('TRANSACTION_COMPLETE'), first())
         .subscribe((response: IMessageBusEvent<IResponseData>) => {
-          console.log(response);
-          const { customeroutput, errordata, errorcode } = response.data;
-          expect(customeroutput).toBe('TRYAGAIN');
-          expect(errordata).toContain('subscriptionnumber');
-          expect(errorcode).toBe('30000');
-          console.log('koniec');
+          const { customeroutput, errorcode, jwt } = response.data;
+          const { payload } = jwtDecoder.decode(jwt);
+          expect(customeroutput).toBe('RESULT');
+          expect(errorcode).toBe('0');
+          expect(payload.response[1].errordata).toContain('subscriptionfrequency');
         });
 
       gatewayClient
         .jsInit()
-        .pipe(first(), tap(console.log))
+        .pipe(first())
         .subscribe(({ cachetoken, errorcode }) => {
           if (Number(errorcode) === 0) {
             gatewayClient.threedQuery({ ...requestObject, cachetoken } as any);
@@ -94,108 +96,144 @@ describe('GatewayClient', () => {
       setTimeout(done, 5000);
     });
 
-    it('AUTH passed, ACCOUNTCHECK failed', done => {
-      console.log('DRUGI TEST');
-      done();
-      // console.log(Container.get(WINDOW));
-      //
-      // const testPayload = {
-      //   requesttypedescriptions: ['AUTH', 'ACCOUNTCHECK']
-      // };
-      // const jwt = jwtgenerator({ ...jwtDefaultPayload, ...testPayload } as any, jwtSecretKey, jwtIss);
-      //
-      // testConfigProvider.setConfig({ datacenterurl, jwt });
-      // gatewayClient = Container.get(GatewayClient);
+    it.skip('AUTH passed, ACCOUNTCHECK failed', done => {
+      const testPayload = {
+        requesttypedescriptions: ['AUTH', 'ACCOUNTCHECK']
+      };
+      const jwt = jwtgenerator({ ...jwtDefaultPayload, ...testPayload } as any, jwtSecretKey, jwtIss);
 
-      // messageBus.subscribe((response: { type: string; data: IResponseData }) => {
-      //   if (response.type === 'TRANSACTION_COMPLETE') {
-      //     const { customeroutput, errordata, errorcode } = response.data;
-      //     expect(customeroutput).toBeUndefined();
-      //     expect(errordata).toContain('requesttypedescriptions');
-      //     expect(errorcode).toBe('30000');
-      //     done();
-      //   }
-      // });
+      testConfigProvider.setConfig({ datacenterurl, jwt });
+      gatewayClient = Container.get(GatewayClient);
 
-      // gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
-      //   if (Number(errorcode) === 0) {
-      //     gatewayClient.threedQuery({ ...requestObject, cachetoken } as any);
-      //   }
-      // });
+      messageBus
+        .pipe(ofType('TRANSACTION_COMPLETE'), first())
+        .subscribe((response: IMessageBusEvent<IResponseData>) => {
+          const { customeroutput, errordata, errorcode } = response.data;
+        });
+
+      gatewayClient
+        .jsInit()
+        .pipe(first())
+        .subscribe(({ cachetoken, errorcode }) => {
+          if (Number(errorcode) === 0) {
+            gatewayClient.threedQuery({ ...requestObject, cachetoken } as any);
+          }
+        });
+
+      setTimeout(done, 5000);
     });
 
-    //   it('RISKDEC / ACCOUNTCHECK / THREEDQUERY / AUTH passed', done => {
-    //     const testPayload = {
-    //       requesttypedescriptions: ['RISKDEC', 'ACCOUNTCHECK', 'THREEDQUERY', 'AUTH']
-    //     };
-    //     const jwt = jwtgenerator({ ...jwtDefaultPayload, ...testPayload } as any, jwtSecretKey, jwtIss);
+    it('RISKDEC / ACCOUNTCHECK / THREEDQUERY / AUTH passed', done => {
+      const testPayload = {
+        requesttypedescriptions: ['RISKDEC', 'ACCOUNTCHECK', 'THREEDQUERY', 'AUTH']
+      };
+      const jwt = jwtgenerator({ ...jwtDefaultPayload, ...testPayload } as any, jwtSecretKey, jwtIss);
 
-    //     testConfigProvider.setConfig({ datacenterurl, jwt });
-    //     Container.set(ConfigProvider, testConfigProvider);
+      testConfigProvider.setConfig({ datacenterurl, jwt });
+      gatewayClient = Container.get(GatewayClient);
 
-    //     gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
-    //       if (Number(errorcode) === 0) {
-    //         gatewayClient.threedQuery({ ...requestObject, cachetoken }).subscribe({
-    //           next: response => {
-    //             expect(response.requesttypedescription).toBe('THREEDQUERY');
-    //             expect(response.paymenttypedescription).toBe('VISA');
-    //             expect(response.customeroutput).toBe('THREEDREDIRECT');
-    //             expect(response.errormessage).toBe('Payment has been successfully processed');
-    //           },
-    //           complete: () => done()
-    //         });
-    //       }
-    //     });
-    //   });
+      messageBus.pipe(ofType('TRANSACTION_COMPLETE'), first()).subscribe(response => {
+        const { payload } = jwtDecoder.decode(response.data.jwt);
+        let requestTypesCounter = 0;
+        payload.response.forEach((response: any) => {
+          const { requesttypedescription } = response;
+          const condition =
+            requesttypedescription === 'RISKDEC' ||
+            requesttypedescription === 'ACCOUNTCHECK' ||
+            requesttypedescription === 'THREEDQUERY';
 
-    //   it('RISKDEC / ACCOUNTCHECK / AUTH passed, THREEDQUERY bypassed, SUBSCRIPTION failed', done => {
-    //     const testPayload = {
-    //       requesttypedescriptions: ['RISKDEC', 'ACCOUNTCHECK', 'THREEDQUERY', 'AUTH', 'SUBSCRIPTION'],
-    //       threedbypasspaymenttypes: ['VISA']
-    //     };
-    //     const jwt = jwtgenerator({ ...jwtDefaultPayload, ...testPayload } as any, jwtSecretKey, jwtIss);
+          if (condition) {
+            requestTypesCounter++;
+          }
+        });
 
-    //     testConfigProvider.setConfig({ datacenterurl, jwt });
-    //     Container.set(ConfigProvider, testConfigProvider);
+        expect(requestTypesCounter).toBe(3);
+      });
 
-    //     gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
-    //       if (Number(errorcode) === 0) {
-    //         gatewayClient.threedQuery({ ...requestObject, cachetoken }).subscribe({
-    //           next: response => {
-    //             expect(response.requesttypedescription).toBe('ACCOUNTCHECK');
-    //             expect(response.paymenttypedescription).toBe('VISA');
-    //             expect(response.customeroutput).toBe('RESULT');
-    //             expect(response.errormessage).toBe('Payment has been successfully processed');
-    //           },
-    //           complete: () => done()
-    //         });
-    //       }
-    //     });
-    //   });
+      gatewayClient
+        .jsInit()
+        .pipe(first())
+        .subscribe(({ cachetoken, errorcode }) => {
+          if (Number(errorcode) === 0) {
+            gatewayClient.threedQuery({ ...requestObject, cachetoken } as any);
+          }
+        });
 
-    //   it('THREEDQUERY failed (bypass card)', done => {
-    //     const testPayload = {
-    //       requesttypedescriptions: ['THREEDQUERY'],
-    //       threedbypasspaymenttypes: ['VISA']
-    //     };
-    //     const jwt = jwtgenerator({ ...jwtDefaultPayload, ...testPayload } as any, jwtSecretKey, jwtIss);
+      setTimeout(done, 5000);
+    });
 
-    //     testConfigProvider.setConfig({ datacenterurl, jwt });
-    //     Container.set(ConfigProvider, testConfigProvider);
+    it('RISKDEC / ACCOUNTCHECK / AUTH passed, THREEDQUERY bypassed, SUBSCRIPTION failed', done => {
+      const testPayload = {
+        requesttypedescriptions: ['RISKDEC', 'ACCOUNTCHECK', 'THREEDQUERY', 'AUTH', 'SUBSCRIPTION'],
+        threedbypasspaymenttypes: ['VISA'],
+        subscriptiontype: 'RECURRING',
+        subscriptionunit: 'MONTH',
+        subscriptionnumber: '1'
+      };
+      const jwt = jwtgenerator({ ...jwtDefaultPayload, ...testPayload } as any, jwtSecretKey, jwtIss);
 
-    //     gatewayClient.jsInit().subscribe(({ cachetoken, errorcode }) => {
-    //       if (Number(errorcode) === 0) {
-    //         gatewayClient.threedQuery({ ...requestObject, cachetoken }).subscribe({
-    //           next: response => {
-    //             expect(response.requesttypedescription).toBe('ERROR');
-    //             expect(response.customeroutput).toBe('TRYAGAIN');
-    //             expect(response.errorcode).toBe('22000');
-    //             expect(response.errormessage).toBe('Bypass');
-    //           },
-    //           complete: () => done()
-    //         });
-    //       }
-    //     });
-    //   });
+      testConfigProvider.setConfig({ datacenterurl, jwt });
+      gatewayClient = Container.get(GatewayClient);
+
+      messageBus.pipe(ofType('TRANSACTION_COMPLETE'), first()).subscribe(response => {
+        const { payload } = jwtDecoder.decode(response.data.jwt);
+        let requestTypesCounter = 0;
+
+        payload.response.forEach((response: any) => {
+          const { requesttypedescription } = response;
+          const condition = requesttypedescription === 'RISKDEC' || requesttypedescription === 'ACCOUNTCHECK';
+
+          if (requesttypedescription === 'SUBSCRIPTION') {
+            expect(response.errordata).toContain('subscriptionfrequency');
+          }
+
+          if (condition) {
+            requestTypesCounter++;
+          }
+        });
+
+        expect(requestTypesCounter).toBe(2);
+      });
+
+      gatewayClient
+        .jsInit()
+        .pipe(first())
+        .subscribe(({ cachetoken, errorcode }) => {
+          if (Number(errorcode) === 0) {
+            gatewayClient.threedQuery({ ...requestObject, cachetoken } as any);
+          }
+        });
+
+      setTimeout(done, 5000);
+    });
+
+    it.skip('THREEDQUERY failed (bypass card)', done => {
+      const testPayload = {
+        requesttypedescriptions: ['THREEDQUERY'],
+        threedbypasspaymenttypes: ['VISA']
+      };
+      const jwt = jwtgenerator({ ...jwtDefaultPayload, ...testPayload } as any, jwtSecretKey, jwtIss);
+
+      testConfigProvider.setConfig({ datacenterurl, jwt });
+      gatewayClient = Container.get(GatewayClient);
+
+      messageBus.pipe(ofType('TRANSACTION_COMPLETE'), first()).subscribe(response => {
+        expect(response.requesttypedescription).toBe('ERROR');
+        expect(response.customeroutput).toBe('TRYAGAIN');
+        expect(response.errorcode).toBe('22000');
+        expect(response.errormessage).toBe('Bypass');
+      });
+
+      gatewayClient
+        .jsInit()
+        .pipe(first())
+        .subscribe(({ cachetoken, errorcode }) => {
+          if (Number(errorcode) === 0) {
+            gatewayClient.threedQuery({ ...requestObject, cachetoken } as any);
+          }
+        });
+
+      setTimeout(done, 5000);
+    });
   });
 });
