@@ -125,7 +125,8 @@ export class ST {
     private applePayErrorService: ApplePayErrorService,
     private applePaySessionFactory: ApplePaySessionFactory,
     private applePaySessionService: ApplePaySessionService,
-    private jwtDecoder: JwtDecoder
+    private jwtDecoder: JwtDecoder,
+    private applePay: ApplePay
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -179,32 +180,21 @@ export class ST {
     });
   }
 
-  public ApplePay(config: IApplePayConfig): ApplePay {
+  public ApplePay(config: IApplePayConfig): void {
     if (config) {
       this._config = this._configService.updateFragment('applePay', config);
     }
 
-    if (environment.testEnvironment) {
-      return new ApplePayMock(
-        this._communicator,
-        this._messageBus,
-        this._applePayButtonService,
-        this._applePayConfigService,
-        this.applePayErrorService,
-        this.applePaySessionFactory,
-        this.applePaySessionService
+    this.initControlFrame$().subscribe(() => {
+      this.applePay.init();
+      this._messageBus.publish<undefined>(
+        {
+          type: PUBLIC_EVENTS.APPLE_PAY_INIT,
+          data: undefined
+        },
+        false
       );
-    } else {
-      return new ApplePay(
-        this._communicator,
-        this._messageBus,
-        this._applePayButtonService,
-        this._applePayConfigService,
-        this.applePayErrorService,
-        this.applePaySessionFactory,
-        this.applePaySessionService
-      );
-    }
+    });
   }
 
   public VisaCheckout(visaCheckoutConfig: IVisaCheckoutConfig | undefined): void {
