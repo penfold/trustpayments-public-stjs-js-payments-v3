@@ -26,14 +26,16 @@ export class ApplePayPaymentService {
       validateMerchantRequest,
       validationURL
     );
-
+    console.error('Step 1', request);
     return from(this.payment.walletVerify(request)).pipe(
       tap(() => {
+        console.error('Step 2', cancelled);
         if (cancelled) {
           return of(ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR);
         }
       }),
       switchMap((response: IApplePayWalletVerifyResponse) => {
+        console.error('Step 2', response);
         const { walletsession } = response.response;
 
         if (!walletsession) {
@@ -47,6 +49,4 @@ export class ApplePayPaymentService {
       })
     );
   }
-
-  processPayment() {}
 }
