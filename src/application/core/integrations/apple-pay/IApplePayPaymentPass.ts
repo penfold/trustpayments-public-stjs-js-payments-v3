@@ -1,7 +1,9 @@
+import { ApplePayPaymentPassActivationState } from './ApplePayPaymentPassActivationState';
+
 export interface IApplePayPaymentPass {
   primaryAccountIdentifier: string;
   primaryAccountNumberSuffix: string;
-  activationState: 'activated' | 'requiresActivation' | 'activating' | 'suspended' | 'deactivated';
+  activationState: ApplePayPaymentPassActivationState;
   deviceAccountIdentifier?: string;
   deviceAccountNumberSuffix?: string;
 }
