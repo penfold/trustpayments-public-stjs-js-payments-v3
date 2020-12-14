@@ -48,6 +48,8 @@ import { ApplePayConfigService } from '../../application/core/integrations/apple
 import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { ApplePayErrorService } from '../../application/core/integrations/apple-pay/apple-pay-error-service/ApplePayErrorService';
+import { ApplePaySessionFactory } from '../../application/core/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
+import { ApplePaySessionService } from '../../application/core/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 
 @Service()
 export class ST {
@@ -121,6 +123,8 @@ export class ST {
     private _applePayButtonService: ApplePayButtonService,
     private _applePayConfigService: ApplePayConfigService,
     private applePayErrorService: ApplePayErrorService,
+    private applePaySessionFactory: ApplePaySessionFactory,
+    private applePaySessionService: ApplePaySessionService,
     private jwtDecoder: JwtDecoder
   ) {
     this._googleAnalytics = new GoogleAnalytics();
@@ -186,7 +190,9 @@ export class ST {
         this._messageBus,
         this._applePayButtonService,
         this._applePayConfigService,
-        this.applePayErrorService
+        this.applePayErrorService,
+        this.applePaySessionFactory,
+        this.applePaySessionService
       );
     } else {
       return new ApplePay(
@@ -194,7 +200,9 @@ export class ST {
         this._messageBus,
         this._applePayButtonService,
         this._applePayConfigService,
-        this.applePayErrorService
+        this.applePayErrorService,
+        this.applePaySessionFactory,
+        this.applePaySessionService
       );
     }
   }
