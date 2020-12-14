@@ -13,6 +13,8 @@ import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { IResponseData } from '../../models/IResponseData';
 import { CustomerOutput } from '../../models/constants/CustomerOutput';
 import { RequestType } from '../../../../shared/types/RequestType';
+import { fromPromise } from 'rxjs/internal-compatibility';
+import { Observable } from 'rxjs';
 
 @Service()
 export class Payment {
@@ -67,11 +69,10 @@ export class Payment {
     return this.publishResponse(responseData);
   }
 
-  public walletVerify(walletVerify: IWalletVerify): Promise<object> {
+  public walletVerify(walletVerify: IWalletVerify): Observable<object> {
     console.error(walletVerify);
     Object.assign(this._walletVerifyRequest, walletVerify);
-    console.error(this._walletVerifyRequest);
-    return this._stTransport.sendRequest(this._walletVerifyRequest);
+    return fromPromise(this._stTransport.sendRequest(this._walletVerifyRequest));
   }
 
   private publishResponse(responseData?: IResponseData): Promise<object> {

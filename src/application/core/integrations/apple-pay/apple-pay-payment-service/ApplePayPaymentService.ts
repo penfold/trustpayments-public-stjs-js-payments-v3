@@ -35,7 +35,7 @@ export class ApplePayPaymentService {
       validationURL
     );
     console.error('Step 1', request);
-    return from(this.payment.walletVerify(request)).pipe(
+    return this.payment.walletVerify(request).pipe(
       tap(() => {
         console.error('Step 2', cancelled);
         if (cancelled) {
