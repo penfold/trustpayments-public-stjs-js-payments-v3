@@ -31,7 +31,7 @@ const ApplePaySession = (window as any).ApplePaySession;
 export class ApplePay {
   private applePaySession: any;
   private readonly completion: IApplePayPaymentAuthorizationResult = {
-    errors: { code: 'unknown' },
+    errors: undefined,
     status: undefined
   };
   private config: IApplePayConfigObject;
@@ -217,6 +217,7 @@ export class ApplePay {
           }
         }
       });
+      console.error(this.completion);
       this.applePaySession.completePayment(this.completion);
       return this.completion;
     }
