@@ -2,10 +2,6 @@ import { IApplePayPaymentMethodSelectedEvent } from '../IApplePayPaymentMethodSe
 import { IApplePayShippingMethodSelectedEvent } from '../IApplePayShippingMethodSelectedEvent';
 import { IApplePayShippingContactSelectedEvent } from '../IApplePayShippingContactSelectedEvent';
 import { IApplePayPaymentRequest } from '../IApplePayPaymentRequest';
-import { Subscriber } from 'rxjs';
-import { IApplePayClientStatus } from '../../../../../client/integrations/apple-pay/IApplePayClientStatus';
-import { ApplePayClientStatus } from '../../../../../client/integrations/apple-pay/ApplePayClientStatus';
-import { ApplePayErrorCodes } from '../apple-pay-error-service/ApplePayErrorCodes';
 
 const ApplePaySession = (window as any).ApplePaySession;
 

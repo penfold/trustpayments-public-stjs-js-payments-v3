@@ -28,8 +28,6 @@ import { ApplePayErrorService } from './apple-pay-error-service/ApplePayErrorSer
 import { Locale } from '../../shared/translator/Locale';
 import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
-import { IVisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/IVisaCheckoutClientStatus';
-import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
