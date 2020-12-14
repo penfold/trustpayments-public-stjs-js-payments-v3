@@ -95,12 +95,14 @@ Feature: E2E for tokenisation
     Given JS library configured by inline params TOKENISATION_WITH_DEFER_INIT_CONFIG and jwt JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
+      | baseamount              | 70000            |
     And User opens page WITH_UPDATE_JWT and jwt JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    When User fills only security code for saved VISA_INVALID_CVV card
+    When User fills only security code for saved VISA_NON_FRICTIONLESS card
     And User clicks Pay button
-    Then User will see payment status information: "Invalid field"
+    And User fills V2 authentication modal
+    Then User will see payment status information: "Decline"
     And User waits for payment status to disappear
     And User calls updateJWT function by filling amount field
     And User clears security code field

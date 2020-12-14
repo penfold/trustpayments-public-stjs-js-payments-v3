@@ -27,6 +27,8 @@ import { RequestType } from '../../../../shared/types/RequestType';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { filter, first } from 'rxjs/operators';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -115,7 +117,7 @@ export class ApplePay {
   protected paymentDetails: string;
   private _buttonStyle: string;
   private _buttonText: string;
-  private _messageBus: MessageBus;
+  private _messageBus: IMessageBus;
   private _session: any;
   private _stJwtInstance: StJwt;
   private _stTransportInstance: StTransport;
@@ -146,7 +148,7 @@ export class ApplePay {
 
   constructor(private _configProvider: ConfigProvider, private _communicator: InterFrameCommunicator) {
     this._notification = Container.get(NotificationService);
-    this._messageBus = Container.get(MessageBus);
+    this._messageBus = Container.get(MessageBusToken);
     this._localStorage = Container.get(BrowserLocalStorage);
 
     this._config$ = this._configProvider.getConfig$();
@@ -168,7 +170,7 @@ export class ApplePay {
       status: ApplePaySession ? this.getPaymentSuccessStatus() : ''
     };
 
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: { newJwt: string }) => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: { newJwt: string }) => {
       const { newJwt } = data;
       this._configurePaymentProcess(newJwt);
       this._setAmountAndCurrency();

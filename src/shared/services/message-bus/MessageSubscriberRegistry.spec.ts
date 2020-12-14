@@ -1,14 +1,15 @@
 import { instance, mock, verify } from 'ts-mockito';
 import { MessageSubscriberRegistry } from './MessageSubscriberRegistry';
 import { IMessageSubscriber } from './interfaces/IMessageSubscriber';
-import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
+import { MessageBusToken } from '../../dependency-injection/InjectionTokens';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 
 describe('MessageSubscriberRegistry', () => {
-  let messageBus: MessageBus;
+  let messageBus: IMessageBus;
   let messageSubscriberRegistry: MessageSubscriberRegistry;
 
   beforeEach(() => {
-    messageBus = instance(mock(MessageBus));
+    messageBus = instance(mock(MessageBusToken));
     messageSubscriberRegistry = new MessageSubscriberRegistry(messageBus);
   });
 
