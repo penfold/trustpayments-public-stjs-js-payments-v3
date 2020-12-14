@@ -24,7 +24,7 @@ import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySess
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { IApplePayConfigObject } from './apple-pay-config-service/IApplePayConfigObject';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
@@ -149,35 +149,49 @@ export class ApplePay {
     });
   }
 
-  private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): Promise<any> {
-    const payment = new Payment();
+  private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): Observable<any> {
     this.completeFailedTransaction();
-    return payment
+    console.error(event);
+    return this.applePayPaymentService
       .processPayment(
         this.config.paymentRequest.requestTypes,
-        {
-          walletsource: this.config.validateMerchantRequest.walletsource,
-          wallettoken: JSON.stringify(event.payment)
-        },
-        {
-          ...DomMethods.parseForm(this.config.formId),
-          termurl: 'https://termurl.com'
-        },
-        {
-          billingContact: event.payment.billingContact,
-          shippingContact: event.payment.shippingContact
-        }
+        this.config.validateMerchantRequest,
+        this.config.formId,
+        event
       )
-      .then((response: IApplePayProcessPaymentResponse) => {
-        console.error('THEN:', response);
-        this.handlePaymentProcessResponse(response.response.errorcode, response.response.errormessage);
-        this.gestureHandler();
-      })
-      .catch(e => {
-        console.error('CATCH:', e);
-        this.handlePaymentProcessResponse('1', PAYMENT_ERROR);
-        this.gestureHandler();
-      });
+      .pipe(
+        switchMap((response: any) => {
+          this.handlePaymentProcessResponse(response.errorcode, response.errormessage);
+          this.gestureHandler();
+          return of(ApplePayErrorCodes.SUCCESS);
+        })
+      );
+    // return payment
+    //   .processPayment(
+    //     this.config.paymentRequest.requestTypes,
+    //     {
+    //       walletsource: this.config.validateMerchantRequest.walletsource,
+    //       wallettoken: JSON.stringify(event.payment)
+    //     },
+    //     {
+    //       ...DomMethods.parseForm(this.config.formId),
+    //       termurl: 'https://termurl.com'
+    //     },
+    //     {
+    //       billingContact: event.payment.billingContact,
+    //       shippingContact: event.payment.shippingContact
+    //     }
+    //   )
+    //   .then((response: IApplePayProcessPaymentResponse) => {
+    //     console.error('THEN:', response);
+    //     this.handlePaymentProcessResponse(response.response.errorcode, response.response.errormessage);
+    //     this.gestureHandler();
+    //   })
+    //   .catch(e => {
+    //     console.error('CATCH:', e);
+    //     this.handlePaymentProcessResponse('1', PAYMENT_ERROR);
+    //     this.gestureHandler();
+    //   });
   }
 
   private onCancel() {

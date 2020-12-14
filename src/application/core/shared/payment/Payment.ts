@@ -67,8 +67,10 @@ export class Payment {
     return this.publishResponse(responseData);
   }
 
-  public walletVerify(walletVerify: IWalletVerify) {
+  public walletVerify(walletVerify: IWalletVerify): Promise<object> {
+    console.error(walletVerify);
     Object.assign(this._walletVerifyRequest, walletVerify);
+    console.error(this._walletVerifyRequest);
     return this._stTransport.sendRequest(this._walletVerifyRequest);
   }
 
