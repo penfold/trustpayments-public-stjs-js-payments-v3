@@ -18,6 +18,7 @@ import { Frame } from '../../shared/frame/Frame';
 import { IStJwtObj } from '../../models/IStJwtObj';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { Locale } from '../../shared/translator/Locale';
 
 export class StCodec {
   public static CONTENT_TYPE = 'application/json';
@@ -93,8 +94,7 @@ export class StCodec {
 
   private static _notification: NotificationService;
   private static _messageBus: IMessageBus;
-  private static _frame: Frame;
-  private static _locale: string;
+  private static _locale: Locale;
   private static REQUESTS_WITH_ERROR_MESSAGES = [
     'AUTH',
     'CACHETOKENISE',

@@ -1,3 +1,14 @@
+import { IApplePayError } from './IApplePayError';
+import { Translator } from '../../../shared/translator/Translator';
+import { ApplePayErrorCode } from './ApplePayErrorCode';
+import { Locale } from '../../../shared/translator/Locale';
+
+const ApplePayError = (window as any).ApplePayError;
+
 export class ApplePayErrorService {
-  constructor() {}
+  create(content: ApplePayErrorCode, locale: Locale): IApplePayError {
+    const translation: Translator = new Translator(locale);
+
+    return new ApplePayError(translation.translate(content));
+  }
 }
