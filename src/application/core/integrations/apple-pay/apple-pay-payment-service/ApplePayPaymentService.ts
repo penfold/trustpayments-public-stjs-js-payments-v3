@@ -44,7 +44,8 @@ export class ApplePayPaymentService {
         applePaySession.completeMerchantValidation(JSON.parse(walletsession));
         return of(ApplePayErrorCodes.VALIDATE_MERCHANT_SUCCESS);
       }),
-      catchError(() => {
+      catchError((e: any) => {
+        console.error(e);
         return of(ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR);
       })
     );
