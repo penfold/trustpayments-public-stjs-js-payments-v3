@@ -11,10 +11,15 @@ import { IDecodedJwt } from '../../../models/IDecodedJwt';
 import JwtDecode from 'jwt-decode';
 import { Locale } from '../../../shared/translator/Locale';
 import { Money } from 'ts-money';
+import { ApplePaySessionService } from '../apple-pay-session-service/ApplePaySessionService';
 
 @Service()
 export class ApplePayConfigService {
-  constructor(private jwtDecoder: JwtDecoder, private _applePayNetworkService: ApplePayNetworksService) {}
+  constructor(
+    private jwtDecoder: JwtDecoder,
+    private applePayNetworkService: ApplePayNetworksService,
+    private applePaySessionService: ApplePaySessionService
+  ) {}
 
   updateCurrencyCode(paymentRequest: IApplePayPaymentRequest, currencyCode: string): IApplePayPaymentRequest {
     return {
@@ -91,12 +96,27 @@ export class ApplePayConfigService {
     applePayVersion: number
   ): IApplePayPaymentRequest {
     let paymentRequest: IApplePayPaymentRequest = applePay.paymentRequest;
-    paymentRequest.supportedNetworks = this._applePayNetworkService.setSupportedNetworks(
+    paymentRequest.supportedNetworks = this.applePayNetworkService.setSupportedNetworks(
       applePayVersion,
       paymentRequest.supportedNetworks
     );
     paymentRequest = this.updateAmount(paymentRequest, mainamount);
     paymentRequest = this.updateCurrencyCode(paymentRequest, currencyiso3a);
     return this.updateRequestTypes(paymentRequest, JwtDecode<IDecodedJwt>(jwt).payload.requesttypedescriptions);
+  }
+
+  setConfig(config: IConfig, validateMerchantRequest: IApplePayValidateMerchantRequest) {
+    const { applePay, jwt, formId } = this.getConfigData(config);
+    const applePayVersion: number = this.applePaySessionService.getLatestSupportedApplePayVersion();
+    const { currencyiso3a, locale, mainamount } = this.getStJwtData(jwt);
+    return {
+      applePayConfig: applePay,
+      applePayVersion,
+      locale,
+      formId,
+      jwtFromConfig: jwt,
+      validateMerchantRequest: this.updateWalletMerchantId(validateMerchantRequest, applePay.merchantId),
+      paymentRequest: this.updatePaymentRequest(applePay, jwt, currencyiso3a, mainamount, applePayVersion)
+    };
   }
 }
