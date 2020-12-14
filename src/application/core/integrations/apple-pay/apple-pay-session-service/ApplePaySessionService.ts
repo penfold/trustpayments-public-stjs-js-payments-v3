@@ -81,18 +81,12 @@ export class ApplePaySessionService {
     }
   }
 
-  canMakePaymentsWithActiveCard(observer: Subscriber<IApplePayClientStatus>, merchantId: string): boolean {
+  canMakePaymentsWithActiveCard(merchantId: string): boolean {
     const canMakePaymentsWithActiveCard: boolean = ApplePaySession.canMakePaymentsWithActiveCard(merchantId).then(
       (canMakePayments: boolean) => canMakePayments
     );
 
-    observer.next({
-      status: ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD,
-      data: {
-        errorcode: ApplePayErrorCodes.CAN_MAKE_PAYMENT_WITH_ACTIVE_CARD,
-        errormessage: `Can make payment with active card: ${canMakePaymentsWithActiveCard}`
-      }
-    });
+    // publish with message bus
     if (!canMakePaymentsWithActiveCard) {
       console.error('User has not an active card provisioned into Wallet');
     }
