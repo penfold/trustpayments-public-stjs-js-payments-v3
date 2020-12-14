@@ -6,19 +6,19 @@ import { IApplePayShippingContact } from './IApplePayShippingContact';
 import { IApplePayShippingMethod } from './IApplePayShippingMethod';
 
 export interface IApplePayPaymentRequest {
-  applicationData?: string;
-  billingContact?: IApplePayBillingContact;
   countryCode: string;
   currencyCode: string;
   merchantCapabilities: string[];
-  shippingType?: any;
+  supportedNetworks: IApplePaySupportedNetworks[];
+  total: IApplePayLineItem;
+  lineItems?: IApplePayLineItem[];
+  applicationData?: string;
+  billingContact?: IApplePayBillingContact;
+  shippingType?: string;
   shippingMethods?: IApplePayShippingMethod;
   shippingContact?: IApplePayShippingContact;
-  supportedCountries?: any;
-  supportedNetworks: IApplePaySupportedNetworks[];
-  lineItems?: IApplePayLineItem[];
+  supportedCountries?: string;
   requestTypes?: RequestType[];
   requiredBillingContactFields?: string[];
   requiredShippingContactFields?: string[];
-  total: IApplePayLineItem;
 }

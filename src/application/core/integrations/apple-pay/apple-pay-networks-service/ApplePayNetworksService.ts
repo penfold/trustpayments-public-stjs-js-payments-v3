@@ -22,10 +22,10 @@ export class ApplePayNetworksService {
 
   setSupportedNetworks(
     version: number,
-    paymetnRequestNetworks: IApplePaySupportedNetworks[]
+    paymentRequestNetworks: IApplePaySupportedNetworks[]
   ): IApplePaySupportedNetworks[] {
     let supportedNetworks: IApplePaySupportedNetworks[] = this._getSupportedNetworks(version);
-    return (supportedNetworks = paymetnRequestNetworks.filter((item: IApplePaySupportedNetworks) => {
+    return (supportedNetworks = paymentRequestNetworks.filter((item: IApplePaySupportedNetworks) => {
       return supportedNetworks.includes(item);
     }));
   }

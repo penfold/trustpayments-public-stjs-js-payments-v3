@@ -1,5 +1,5 @@
-import { environment } from '../../../../environments/environment';
-import { IApplePayError } from './IApplePayError';
+import { environment } from '../../../../../environments/environment';
+import { IApplePayError } from '../apple-pay-error-service/IApplePayError';
 
 export class ApplePaySessionMock {
   public static STATUS_SUCCESS: any;

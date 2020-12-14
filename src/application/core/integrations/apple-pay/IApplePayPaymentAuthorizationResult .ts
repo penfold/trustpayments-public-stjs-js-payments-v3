@@ -1,4 +1,6 @@
+import { IApplePayError } from './apple-pay-error-service/IApplePayError';
+
 export interface IApplePayPaymentAuthorizationResult {
-  status: string;
-  errors: any;
+  status: number | undefined;
+  errors: IApplePayError;
 }
