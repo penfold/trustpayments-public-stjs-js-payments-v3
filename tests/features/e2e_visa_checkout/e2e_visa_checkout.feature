@@ -52,7 +52,6 @@ Feature: Visa checkout E2E tests
       | key                     | value       |
       | requesttypedescriptions | THREEDQUERY |
     And User opens example page
-    And User wait
     And User clicks on Visa Checkout button
     And User fills visa checkout email address
     And User fills visa checkout one time password
