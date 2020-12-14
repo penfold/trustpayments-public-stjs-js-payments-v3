@@ -6,7 +6,9 @@ import { from, Observable, of } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { ApplePayErrorCodes } from '../apple-pay-error-service/ApplePayErrorCodes';
 import { IApplePaySession } from '../apple-pay-session-service/IApplePaySession';
+import { Service } from 'typedi';
 
+@Service()
 export class ApplePayPaymentService {
   private payment: Payment;
 
