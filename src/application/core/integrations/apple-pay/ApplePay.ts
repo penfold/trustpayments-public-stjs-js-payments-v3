@@ -1,6 +1,5 @@
 import { Service } from 'typedi';
-import { Observable, Subscriber } from 'rxjs';
-import { filter, first, switchMap, tap } from 'rxjs/operators';
+import { filter, first, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from './apple-pay-config-service/ApplePayConfigService';
@@ -10,7 +9,7 @@ import { Payment } from '../../shared/payment/Payment';
 import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/ApplePayClientStatus';
 import { APPLE_PAY_BUTTON_ID } from './apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { MERCHANT_VALIDATION_FAILURE, PAYMENT_ERROR, VALIDATION_ERROR } from '../../models/constants/Translations';
+import { PAYMENT_ERROR, VALIDATION_ERROR } from '../../models/constants/Translations';
 import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
 import { IApplePayPaymentAuthorizationResult } from './IApplePayPaymentAuthorizationResult ';
 import { IApplePayPaymentAuthorizedEvent } from './IApplePayPaymentAuthorizedEvent';
@@ -264,10 +263,15 @@ export class ApplePay {
           const { data } = event;
           const { applePay, jwt } = this.applePayConfigService.getConfigData(data);
           this.locale = this.applePayConfigService.getStJwtData(jwt).locale;
+          console.error(this.locale);
           this.formId = this.applePayConfigService.getConfigData(data).formId;
+          console.error(this.formId);
           this.applePayVersion = this.applePaySessionService.getLatestSupportedApplePayVersion();
+          console.error(this.applePayVersion);
           this.validateMerchantRequest = this.setValidateMerchantRequest(applePay);
+          console.error(this.validateMerchantRequest);
           this.paymentRequest = this.setPaymentRequest(applePay, jwt);
+          console.error(this.paymentRequest);
 
           if (this.applePaySessionService.canMakePaymentsWithActiveCard(applePay.merchantId)) {
             this.applePayButtonService.insertButton(

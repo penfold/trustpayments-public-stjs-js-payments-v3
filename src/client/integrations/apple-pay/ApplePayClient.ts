@@ -1,9 +1,6 @@
 import { Service } from 'typedi';
 import { Observable, of, throwError } from 'rxjs';
 import { filter, switchMap, tap } from 'rxjs/operators';
-import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
-import { ApplePayNetworksService } from '../../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
-import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
 import { ApplePayNotificationService } from './apple-pay-notification-service/ApplePayNotificationService';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -18,18 +15,16 @@ import { IApplePayClientStatus } from './IApplePayClientStatus';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { IApplePayClient } from './IApplePayClient';
 
 @Service()
-export class ApplePayClient {
+export class ApplePayClient implements IApplePayClient {
   constructor(
     private configProvider: ConfigProvider,
     private interFrameCommunicator: InterFrameCommunicator,
     private messageBus: IMessageBus,
     private notificationService: NotificationService,
     private localStorage: BrowserLocalStorage,
-    private applePayButtonService: ApplePayButtonService,
-    private applePayNetworkService: ApplePayNetworksService,
-    private applePayConfigService: ApplePayConfigService,
     private applePayNotificationService: ApplePayNotificationService
   ) {}
 
