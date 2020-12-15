@@ -2,12 +2,9 @@ import { from, Observable, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
-import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
-import { IStJwtPayload } from '../../../models/IStJwtPayload';
 import { DomMethods } from '../../../shared/dom-methods/DomMethods';
 import { VisaCheckoutButtonService } from '../visa-checkout-button-service/VisaCheckoutButtonService';
 import { IVisaCheckoutUpdateConfig } from '../visa-checkout-update-service/IVisaCheckoutUpdateConfig';
-import { VisaCheckoutUpdateService } from '../visa-checkout-update-service/VisaCheckoutUpdateService';
 import { IVisaCheckoutSdk, IVisaCheckoutSdkLib } from './IVisaCheckoutSdk';
 import { IVisaCheckoutSdkProvider } from './IVisaCheckoutSdkProvider';
 
@@ -17,37 +14,25 @@ declare const V: IVisaCheckoutSdkLib;
 export class VisaCheckoutSdkProvider implements IVisaCheckoutSdkProvider {
   private isSdkLoaded: boolean = false;
 
-  constructor(
-    protected visaCheckoutUpdateService: VisaCheckoutUpdateService,
-    protected jwtDecoder: JwtDecoder,
-    protected visaCheckoutButtonService: VisaCheckoutButtonService
-  ) {}
+  constructor(protected visaCheckoutButtonService: VisaCheckoutButtonService) {}
 
-  getSdk$(config: IConfig): Observable<IVisaCheckoutSdk> {
-    const visaCheckoutUpdatedConfig: IVisaCheckoutUpdateConfig = this.getUpdatedConfig(config);
-
+  getSdk$(config: IConfig, visaCheckoutUpdateConfig: IVisaCheckoutUpdateConfig): Observable<IVisaCheckoutSdk> {
     if (this.isSdkLoaded) {
-      return of({
-        lib: V,
-        updateConfig: visaCheckoutUpdatedConfig
-      });
-    } else {
-      return this.insertScript$(config, visaCheckoutUpdatedConfig).pipe(
-        tap(() => {
-          this.visaCheckoutButtonService.mount(
-            config.visaCheckout.placement,
-            config.visaCheckout.buttonSettings,
-            visaCheckoutUpdatedConfig.buttonUrl
-          );
-        }),
-        switchMap(() => {
-          return of({
-            lib: V,
-            updateConfig: visaCheckoutUpdatedConfig
-          });
-        })
-      );
+      return of({ lib: V });
     }
+
+    return this.insertScript$(config, visaCheckoutUpdateConfig).pipe(
+      tap(() => {
+        this.visaCheckoutButtonService.mount(
+          config.visaCheckout.placement,
+          config.visaCheckout.buttonSettings,
+          visaCheckoutUpdateConfig.buttonUrl
+        );
+      }),
+      switchMap(() => {
+        return of({ lib: V });
+      })
+    );
   }
 
   // Needs to be public in order to mock it in unit test.
@@ -59,11 +44,5 @@ export class VisaCheckoutSdkProvider implements IVisaCheckoutSdkProvider {
         id: 'visaCheckout'
       })
     );
-  }
-
-  getUpdatedConfig(config: IConfig): IVisaCheckoutUpdateConfig {
-    const jwtPayload: IStJwtPayload = this.jwtDecoder.decode(config.jwt).payload;
-
-    return this.visaCheckoutUpdateService.updateConfigObject(config.visaCheckout, jwtPayload, config.livestatus);
   }
 }

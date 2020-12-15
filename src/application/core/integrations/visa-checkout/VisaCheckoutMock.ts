@@ -11,12 +11,17 @@ import { VisaCheckoutButtonProps } from './visa-checkout-button-service/VisaChec
 import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
 import { IVisaCheckoutStatusData } from './visa-checkout-status-data/IVisaCheckoutStatusData';
 import { IVisaCheckoutStatusDataSuccess } from './visa-checkout-status-data/IVisaCheckoutStatusDataSuccess';
+import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { VisaCheckout } from './VisaCheckout';
 
 @Service()
 export class VisaCheckoutMock extends VisaCheckout {
-  constructor(protected visaCheckoutSdkProvider: VisaCheckoutSdkProvider, protected messageBus: IMessageBus) {
-    super(visaCheckoutSdkProvider, messageBus);
+  constructor(
+    protected visaCheckoutSdkProvider: VisaCheckoutSdkProvider,
+    protected messageBus: IMessageBus,
+    protected visaCheckoutUpdateService: VisaCheckoutUpdateService
+  ) {
+    super(visaCheckoutSdkProvider, messageBus, visaCheckoutUpdateService);
   }
 
   init(): void {
@@ -24,11 +29,13 @@ export class VisaCheckoutMock extends VisaCheckout {
       .pipe(ofType(PUBLIC_EVENTS.VISA_CHECKOUT_CONFIG))
       .pipe(
         switchMap((event: IMessageBusEvent<IConfig>) => {
-          return this.visaCheckoutSdkProvider.getSdk$(event.data).pipe(
-            map(() => {
-              return event.data;
-            })
-          );
+          return this.visaCheckoutSdkProvider
+            .getSdk$(event.data, this.visaCheckoutUpdateService.updateConfigObject(event.data))
+            .pipe(
+              map(() => {
+                return event.data;
+              })
+            );
         })
       )
       .subscribe((config: IConfig) => {
