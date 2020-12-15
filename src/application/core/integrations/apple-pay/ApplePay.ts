@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { filter, first, switchMap, tap } from 'rxjs/operators';
+import { filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from './apple-pay-config-service/ApplePayConfigService';
@@ -60,29 +60,26 @@ export class ApplePay {
             console.error('Your device does not support making payments with Apple Pay');
           }
 
-          console.error(
-            'canmakepayment:',
-            from(this.applePaySessionService.canMakePaymentsWithActiveCard(event.data.applePay.merchantId)).pipe(
-              tap(console.error),
-              switchMap((canMakePayment: boolean) => {
-                if (canMakePayment) {
-                  this.applePayButtonService.insertButton(
-                    APPLE_PAY_BUTTON_ID,
-                    event.data.applePay.buttonText,
-                    event.data.applePay.buttonStyle,
-                    event.data.applePay.paymentRequest.countryCode
-                  );
-                  this.config = this.applePayConfigService.setConfig(event.data, {
-                    walletmerchantid: '',
-                    walletrequestdomain: window.location.hostname,
-                    walletsource: 'APPLEPAY',
-                    walletvalidationurl: ''
-                  });
-                  this.gestureHandler();
-                  return of(ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD);
-                }
-              })
-            )
+          from(this.applePaySessionService.canMakePaymentsWithActiveCard(event.data.applePay.merchantId)).pipe(
+            tap(console.error),
+            map((canMakePayment: boolean) => {
+              if (canMakePayment) {
+                this.applePayButtonService.insertButton(
+                  APPLE_PAY_BUTTON_ID,
+                  event.data.applePay.buttonText,
+                  event.data.applePay.buttonStyle,
+                  event.data.applePay.paymentRequest.countryCode
+                );
+                this.config = this.applePayConfigService.setConfig(event.data, {
+                  walletmerchantid: '',
+                  walletrequestdomain: window.location.hostname,
+                  walletsource: 'APPLEPAY',
+                  walletvalidationurl: ''
+                });
+                this.gestureHandler();
+                return of(ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD);
+              }
+            })
           );
         })
       )
