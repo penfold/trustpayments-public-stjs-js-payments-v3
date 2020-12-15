@@ -40,7 +40,7 @@ visa-checkout-headless-component-tests:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
       alias: merchant.securetrading.net
 
-e2e-tests:
+.e2e-tests:
   extends:
     - .image-test
     - .fast-tests
