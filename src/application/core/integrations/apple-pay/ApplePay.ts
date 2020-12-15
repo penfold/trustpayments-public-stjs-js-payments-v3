@@ -22,6 +22,7 @@ import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySess
 import { IApplePayConfigObject } from './apple-pay-config-service/IApplePayConfigObject';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 import { from, Observable, of } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
 
 const ApplePaySession = (window as any).ApplePaySession;
@@ -51,26 +52,32 @@ export class ApplePay {
     this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_CONFIG))
       .pipe(
-        tap((event: IMessageBusEvent<IConfig>) => {
+        map((event: IMessageBusEvent<IConfig>) => {
           if (!Boolean(ApplePaySession)) {
             console.error('Works only on Safari');
+            return { status: false, config: event.data };
           }
 
           if (!ApplePaySession.canMakePayments()) {
             console.error('Your device does not support making payments with Apple Pay');
+            return { status: false, config: event.data };
           }
-
-          from(this.applePaySessionService.canMakePaymentsWithActiveCard(event.data.applePay.merchantId)).pipe(
-            tap(console.error),
+          return { status: true, config: event.data };
+        }),
+        filter((v: any) => v.status),
+        switchMap((v: any) => {
+          return from(this.applePaySessionService.canMakePaymentsWithActiveCard(v.config.applePay.merchantId)).pipe(
+            filter((canMakePayment: boolean) => canMakePayment),
             map((canMakePayment: boolean) => {
+              console.error('dupa');
               if (canMakePayment) {
                 this.applePayButtonService.insertButton(
                   APPLE_PAY_BUTTON_ID,
-                  event.data.applePay.buttonText,
-                  event.data.applePay.buttonStyle,
-                  event.data.applePay.paymentRequest.countryCode
+                  v.config.applePay.buttonText,
+                  v.config.applePay.buttonStyle,
+                  v.config.applePay.paymentRequest.countryCode
                 );
-                this.config = this.applePayConfigService.setConfig(event.data, {
+                this.config = this.applePayConfigService.setConfig(v.config, {
                   walletmerchantid: '',
                   walletrequestdomain: window.location.hostname,
                   walletsource: 'APPLEPAY',
@@ -79,7 +86,8 @@ export class ApplePay {
                 this.gestureHandler();
                 return of(ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD);
               }
-            })
+            }),
+            take(1)
           );
         })
       )
@@ -135,7 +143,8 @@ export class ApplePay {
           );
           return of(code);
         })
-      );
+      )
+      .subscribe();
   }
 
   private handleWalletVerifyResponse(status: ApplePayClientStatus, code: ApplePayErrorCodes, message: string) {
@@ -148,23 +157,20 @@ export class ApplePay {
     });
   }
 
-  private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): Observable<any> {
+  private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): void {
     this.completeFailedTransaction();
     console.error(event);
-    return this.applePayPaymentService
+    this.applePayPaymentService
       .processPayment(
         this.config.paymentRequest.requestTypes,
         this.config.validateMerchantRequest,
         this.config.formId,
         event
       )
-      .pipe(
-        switchMap((response: any) => {
-          this.handlePaymentProcessResponse(response.errorcode, response.errormessage);
-          this.gestureHandler();
-          return of(ApplePayErrorCodes.SUCCESS);
-        })
-      );
+      .subscribe((response: any) => {
+        this.handlePaymentProcessResponse(response.errorcode, response.errormessage);
+        this.gestureHandler();
+      });
   }
 
   private onCancel() {

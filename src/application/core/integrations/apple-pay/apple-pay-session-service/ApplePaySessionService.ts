@@ -2,9 +2,11 @@ import { IApplePayPaymentMethodSelectedEvent } from '../IApplePayPaymentMethodSe
 import { IApplePayShippingMethodSelectedEvent } from '../IApplePayShippingMethodSelectedEvent';
 import { IApplePayShippingContactSelectedEvent } from '../IApplePayShippingContactSelectedEvent';
 import { IApplePayPaymentRequest } from '../IApplePayPaymentRequest';
+import { Service } from 'typedi';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
+@Service()
 export class ApplePaySessionService {
   private applePaySession: any;
   private paymentRequest: IApplePayPaymentRequest;
@@ -34,15 +36,14 @@ export class ApplePaySessionService {
   }
 
   canMakePaymentsWithActiveCard(merchantId: string): Promise<boolean> {
-    const canMakePaymentsWithActiveCard: Promise<boolean> = ApplePaySession.canMakePaymentsWithActiveCard(
-      merchantId
-    ).then((canMakePayments: boolean) => canMakePayments);
+    return ApplePaySession.canMakePaymentsWithActiveCard(merchantId);
+    // ).then((canMakePayments: boolean) => canMakePayments);
 
-    if (!canMakePaymentsWithActiveCard) {
-      console.error('User has not an active card provisioned into Wallet');
-    }
+    // if (!canMakePaymentsWithActiveCard) {
+    //   console.error('User has not an active card provisioned into Wallet');
+    // }
 
-    return canMakePaymentsWithActiveCard;
+    // return canMakePaymentsWithActiveCard;
   }
 
   private onPaymentMethodSelected(): void {
