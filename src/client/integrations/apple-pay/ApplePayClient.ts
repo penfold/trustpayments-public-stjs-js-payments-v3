@@ -57,8 +57,14 @@ export class ApplePayClient implements IApplePayClient {
               case ApplePayClientStatus.VALIDATE_MERCHANT_ERROR:
                 return this.onValidateMerchant$(event.data);
 
+              case ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS:
+                return this.onValidateMerchant$(event.data);
+
               case ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD:
                 return this.canMakePaymentWithActiveCard$(event.data);
+
+              case ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET:
+                return this.noActiveCardsInWallet$(event.data);
 
               default:
                 return throwError('Unknown Apple Pay status');
@@ -83,6 +89,14 @@ export class ApplePayClient implements IApplePayClient {
     this.localStorage.setItem('completePayment', 'false');
 
     return of(ApplePayClientStatus.ERROR);
+  }
+
+  private noActiveCardsInWallet$(
+    status: IApplePayClientStatus
+  ): Observable<ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET> {
+    console.error(ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET);
+
+    return of(ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET);
   }
 
   private onCancel$(status: IApplePayClientStatus): Observable<ApplePayClientStatus.CANCEL> {
