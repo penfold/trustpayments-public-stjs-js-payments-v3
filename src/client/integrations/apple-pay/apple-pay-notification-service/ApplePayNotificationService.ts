@@ -1,9 +1,7 @@
-import { MessageBus } from '../../../../application/core/shared/message-bus/MessageBus';
-import { PAYMENT_SUCCESS } from '../../../../application/core/models/constants/Translations';
-import { NotificationService } from '../../../notification/NotificationService';
+import { Service } from 'typedi';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
 import { ApplePayErrorCodes } from '../../../../application/core/integrations/apple-pay/apple-pay-error-service/ApplePayErrorCodes';
-import { Service } from 'typedi';
+import { NotificationService } from '../../../notification/NotificationService';
 
 @Service()
 export class ApplePayNotificationService {
@@ -12,8 +10,19 @@ export class ApplePayNotificationService {
   notification(errorcode: ApplePayErrorCodes, errormessage: string): void {
     switch (errorcode) {
       case ApplePayErrorCodes.SUCCESS:
-        this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
-        this.notificationService.success(PAYMENT_SUCCESS);
+        this.notificationService.success(errormessage);
+        break;
+      case ApplePayErrorCodes.ERROR:
+        this.notificationService.error(errormessage);
+        break;
+      case ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR:
+        this.notificationService.error(errormessage);
+        break;
+      case ApplePayErrorCodes.CANCEL:
+        this.notificationService.cancel(errormessage);
+        break;
+      case ApplePayErrorCodes.NO_ACTIVE_CARDS_IN_WALLET:
+        this.notificationService.error(errormessage);
         break;
       default:
         this.notificationService.error(errormessage);
