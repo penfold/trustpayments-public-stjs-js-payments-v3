@@ -1,17 +1,17 @@
-import { Service } from 'typedi';
-import { IApplePayPaymentRequest } from '../IApplePayPaymentRequest';
-import { IApplePayValidateMerchantRequest } from '../IApplePayValidateMerchantRequest';
-import { IConfig } from '../../../../../shared/model/config/IConfig';
-import { RequestType } from '../../../../../shared/types/RequestType';
-import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
-import { IStJwtPayload } from '../../../models/IStJwtPayload';
-import { IApplePayConfig } from '../IApplePayConfig';
-import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
-import { IDecodedJwt } from '../../../models/IDecodedJwt';
 import JwtDecode from 'jwt-decode';
-import { Locale } from '../../../shared/translator/Locale';
 import { Money } from 'ts-money';
+import { Service } from 'typedi';
+import { IApplePayConfig } from '../IApplePayConfig';
+import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
+import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
+import { IConfig } from '../../../../../shared/model/config/IConfig';
+import { IDecodedJwt } from '../../../models/IDecodedJwt';
+import { IStJwtPayload } from '../../../models/IStJwtPayload';
+import { Locale } from '../../../shared/translator/Locale';
+import { RequestType } from '../../../../../shared/types/RequestType';
+import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePaySessionService } from '../apple-pay-session-service/ApplePaySessionService';
+import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 
 @Service()
 export class ApplePayConfigService {
@@ -71,7 +71,6 @@ export class ApplePayConfigService {
       amount: parseInt(payload.baseamount, 10),
       currency: payload.currencyiso3a
     }).toString();
-    console.error(mainamount);
 
     return {
       currencyiso3a: payload.currencyiso3a,
@@ -102,13 +101,26 @@ export class ApplePayConfigService {
     );
     paymentRequest = this.updateAmount(paymentRequest, mainamount);
     paymentRequest = this.updateCurrencyCode(paymentRequest, currencyiso3a);
+
     return this.updateRequestTypes(paymentRequest, JwtDecode<IDecodedJwt>(jwt).payload.requesttypedescriptions);
   }
 
-  setConfig(config: IConfig, validateMerchantRequest: IApplePayValidateMerchantRequest) {
+  setConfig(
+    config: IConfig,
+    validateMerchantRequest: IApplePayValidateMerchantRequest
+  ): {
+    applePayConfig: IApplePayConfig;
+    applePayVersion: number;
+    locale: Locale;
+    formId: string;
+    jwtFromConfig: string;
+    validateMerchantRequest: IApplePayValidateMerchantRequest;
+    paymentRequest: IApplePayPaymentRequest;
+  } {
     const { applePay, jwt, formId } = this.getConfigData(config);
     const applePayVersion: number = this.applePaySessionService.getLatestSupportedApplePayVersion();
     const { currencyiso3a, locale, mainamount } = this.getStJwtData(jwt);
+
     return {
       applePayConfig: applePay,
       applePayVersion,

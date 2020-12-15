@@ -1,30 +1,29 @@
 import { Service } from 'typedi';
-import { filter, first, map, switchMap, tap } from 'rxjs/operators';
+import { from, of } from 'rxjs';
+import { filter, first, map, switchMap, take } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
-import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
-import { ApplePayConfigService } from './apple-pay-config-service/ApplePayConfigService';
-import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
+import { IApplePayInitObject } from './IApplePayInitObject';
+import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
+import { IApplePayConfigObject } from './apple-pay-config-service/IApplePayConfigObject';
+import { IApplePayPaymentAuthorizationResult } from './apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
+import { IApplePayPaymentAuthorizedEvent } from './apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
+import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
+import { IApplePayValidateMerchantEvent } from './apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
+import { IConfig } from '../../../../shared/model/config/IConfig';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/ApplePayClientStatus';
+import { ApplePayErrorCodes } from './apple-pay-error-service/ApplePayErrorCodes';
 import { APPLE_PAY_BUTTON_ID } from './apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { VALIDATION_ERROR } from '../../models/constants/Translations';
-import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
-import { IApplePayPaymentAuthorizationResult } from './IApplePayPaymentAuthorizationResult ';
-import { IApplePayPaymentAuthorizedEvent } from './IApplePayPaymentAuthorizedEvent';
-import { IApplePayValidateMerchantEvent } from './IApplePayValidateMerchantEvent';
-import { IConfig } from '../../../../shared/model/config/IConfig';
-import { IMessageBusEvent } from '../../models/IMessageBusEvent';
-import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { ApplePayErrorCodes } from './apple-pay-error-service/ApplePayErrorCodes';
+import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
+import { ApplePayConfigService } from './apple-pay-config-service/ApplePayConfigService';
 import { ApplePayErrorService } from './apple-pay-error-service/ApplePayErrorService';
+import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
-import { IApplePayConfigObject } from './apple-pay-config-service/IApplePayConfigObject';
-import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
-import { from, of } from 'rxjs';
-import { take } from 'rxjs/operators';
-import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
-import { IApplePayInitObject } from './IApplePayInitObject';
+import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
@@ -109,17 +108,14 @@ export class ApplePay {
     this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
 
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
-      console.error('onvalidatemerchant', event);
       this.onValidateMerchant(event);
     };
 
     this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
-      console.error('onpaymentauthorized', event);
       this.onPaymentAuthorized(event);
     };
 
     this.applePaySession.oncancel = (event: Event) => {
-      console.error('cancel', event);
       this.gestureHandler();
       this.paymentCancelled = true;
       this.onCancel();
@@ -195,7 +191,6 @@ export class ApplePay {
   }
 
   private handlePaymentProcessResponse(errorcode: string, errormessage: string): IApplePayPaymentAuthorizationResult {
-    console.error('errorcode:', errorcode, 'errormessage:', errormessage);
     if (Number(errorcode) === ApplePayErrorCodes.SUCCESS) {
       this.completion.status = ApplePaySession.STATUS_SUCCESS;
       this.messageBus.publish<IApplePayClientStatus>({
@@ -208,7 +203,6 @@ export class ApplePay {
           }
         }
       });
-      console.error(this.completion);
       this.applePaySession.completePayment(this.completion);
       return this.completion;
     }

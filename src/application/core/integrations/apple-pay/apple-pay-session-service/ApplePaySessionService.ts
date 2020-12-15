@@ -1,9 +1,9 @@
 import { Service } from 'typedi';
-import { IApplePayPaymentMethodSelectedEvent } from '../IApplePayPaymentMethodSelectedEvent';
-import { IApplePayShippingMethodSelectedEvent } from '../IApplePayShippingMethodSelectedEvent';
-import { IApplePayShippingContactSelectedEvent } from '../IApplePayShippingContactSelectedEvent';
-import { IApplePayPaymentRequest } from '../IApplePayPaymentRequest';
+import { IApplePayPaymentMethodSelectedEvent } from '../apple-pay-payment-data/IApplePayPaymentMethodSelectedEvent';
+import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePaySession } from './IApplePaySession';
+import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-payment-data/IApplePayShippingMethodSelectedEvent';
+import { IApplePayShippingContactSelectedEvent } from '../apple-pay-payment-data/IApplePayShippingContactSelectedEvent';
 
 const ApplePaySession = (window as any).ApplePaySession;
 

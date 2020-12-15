@@ -1,5 +1,5 @@
-import { IApplePaySupportedNetworks } from '../IApplePaySupportedNetworks';
-import { STAGE_ONE_NETWORKS, STAGE_THREE_NETWORKS, STAGE_TWO_NETWORKS } from '../ApplePaySupportedNetworks';
+import { IApplePaySupportedNetworks } from './IApplePaySupportedNetworks';
+import { STAGE_ONE_NETWORKS, STAGE_THREE_NETWORKS, STAGE_TWO_NETWORKS } from './ApplePaySupportedNetworks';
 
 export class ApplePayNetworksService {
   private _getSupportedNetworks(version: number): IApplePaySupportedNetworks[] {

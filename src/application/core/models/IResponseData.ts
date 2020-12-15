@@ -1,5 +1,5 @@
-import { IApplePayBillingContact } from '../integrations/apple-pay/IApplePayBillingContact';
-import { IApplePayShippingContact } from '../integrations/apple-pay/IApplePayShippingContact';
+import { IApplePayBillingContact } from '../integrations/apple-pay/apple-pay-payment-data/IApplePayBillingContact';
+import { IApplePayShippingContact } from '../integrations/apple-pay/apple-pay-payment-data/IApplePayShippingContact';
 
 export interface IResponseData {
   errorcode?: string;

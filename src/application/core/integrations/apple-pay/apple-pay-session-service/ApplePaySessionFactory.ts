@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { IApplePayPaymentRequest } from '../IApplePayPaymentRequest';
+import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
 
 const ApplePaySession = (window as any).ApplePaySession;
 

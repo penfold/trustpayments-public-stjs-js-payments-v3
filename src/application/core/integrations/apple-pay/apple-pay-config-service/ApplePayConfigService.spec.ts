@@ -1,11 +1,12 @@
-import { IApplePayPaymentRequest } from '../IApplePayPaymentRequest';
+import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
 import { RequestType } from '../../../../../shared/types/RequestType';
-import { IApplePayValidateMerchantRequest } from '../IApplePayValidateMerchantRequest';
+import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { ApplePayConfigService } from './ApplePayConfigService';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 import { instance, mock, when } from 'ts-mockito';
 import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
+import { ApplePaySessionService } from '../apple-pay-session-service/ApplePaySessionService';
 
 describe('ApplePayConfigService', () => {
   const paymentRequest: IApplePayPaymentRequest = {
@@ -37,11 +38,13 @@ describe('ApplePayConfigService', () => {
   };
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const applePayNetworkService: ApplePayNetworksService = mock(ApplePayNetworksService);
+  const applePaySessionService: ApplePaySessionService = mock(ApplePaySessionService);
   const jwt: string =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDcwOTA2NTEsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6InRlc3QgaXNvIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwibWFpbmFtb3VudCI6InRlc3QgYW1vdW50In19.Ni3igXSMvOIvrnAAaMh_BfiEfw6Mht1isTUDW9o7l_Q';
   let applePayConfigService: ApplePayConfigService = new ApplePayConfigService(
     instance(jwtDecoderMock),
-    instance(applePayNetworkService)
+    instance(applePayNetworkService),
+    instance(applePaySessionService)
   );
 
   describe('update paymentRequest object', () => {

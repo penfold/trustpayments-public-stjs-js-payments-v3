@@ -1,11 +1,11 @@
 export class ApplePayErrorMock {
-  private _errorCode: string;
-  private _contactField: string;
-  private _message: string;
+  private errorCode: string;
+  private contactField: string;
+  private message: string;
 
   constructor(errorCode: string, contactField?: string, message?: string) {
-    this._errorCode = errorCode;
-    this._contactField = contactField;
-    this._message = message;
+    this.errorCode = errorCode;
+    this.contactField = contactField;
+    this.message = message;
   }
 }

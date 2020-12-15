@@ -1,20 +1,17 @@
-import { Payment } from '../../../shared/payment/Payment';
-import { IApplePayValidateMerchantRequest } from '../IApplePayValidateMerchantRequest';
-import { ApplePayConfigService } from '../apple-pay-config-service/ApplePayConfigService';
-import { IApplePayWalletVerifyResponse } from '../IApplePayWalletVerifyResponse';
+import { Service } from 'typedi';
 import { from, Observable, of } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
-import { ApplePayErrorCodes } from '../apple-pay-error-service/ApplePayErrorCodes';
+import { IApplePayPaymentAuthorizedEvent } from '../apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
+import { IApplePayProcessPaymentResponse } from '../apple-pay-payment-data/IApplePayProcessPaymentResponse';
 import { IApplePaySession } from '../apple-pay-session-service/IApplePaySession';
-import { Service } from 'typedi';
-import { DomMethods } from '../../../shared/dom-methods/DomMethods';
-import { IApplePayProcessPaymentResponse } from '../IApplePayProcessPaymentResponse';
+import { IApplePayWalletVerifyResponse } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
+import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { PAYMENT_ERROR } from '../../../models/constants/Translations';
 import { RequestType } from '../../../../../shared/types/RequestType';
-import { ICard } from '../../../models/ICard';
-import { IWallet } from '../../../models/IWallet';
-import { IMerchantData } from '../../../models/IMerchantData';
-import { IApplePayPaymentAuthorizedEvent } from '../IApplePayPaymentAuthorizedEvent';
+import { ApplePayConfigService } from '../apple-pay-config-service/ApplePayConfigService';
+import { ApplePayErrorCodes } from '../apple-pay-error-service/ApplePayErrorCodes';
+import { DomMethods } from '../../../shared/dom-methods/DomMethods';
+import { Payment } from '../../../shared/payment/Payment';
 
 @Service()
 export class ApplePayPaymentService {
@@ -34,16 +31,14 @@ export class ApplePayPaymentService {
       validateMerchantRequest,
       validationURL
     );
-    console.error('Step 1', request);
+
     return this.payment.walletVerify(request).pipe(
       tap(() => {
-        console.error('Step 2', cancelled);
         if (cancelled) {
           return of(ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR);
         }
       }),
       switchMap((response: IApplePayWalletVerifyResponse) => {
-        console.error('Step 2', response);
         const { walletsession } = response.response;
 
         if (!walletsession) {
@@ -52,8 +47,7 @@ export class ApplePayPaymentService {
         applePaySession.completeMerchantValidation(JSON.parse(walletsession));
         return of(ApplePayErrorCodes.VALIDATE_MERCHANT_SUCCESS);
       }),
-      catchError((e: any) => {
-        console.error(e);
+      catchError(() => {
         return of(ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR);
       })
     );

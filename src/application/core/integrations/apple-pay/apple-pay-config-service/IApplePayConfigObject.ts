@@ -1,7 +1,7 @@
 import { IApplePayConfig } from '../IApplePayConfig';
 import { Locale } from '../../../shared/translator/Locale';
-import { IApplePayValidateMerchantRequest } from '../IApplePayValidateMerchantRequest';
-import { IApplePayPaymentRequest } from '../IApplePayPaymentRequest';
+import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
+import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
 
 export interface IApplePayConfigObject {
   applePayConfig: IApplePayConfig;

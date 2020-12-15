@@ -1,6 +1,6 @@
 import { IApplePayLineItem } from './IApplePayLineItem';
-import { IApplePaySupportedNetworks } from './IApplePaySupportedNetworks';
-import { RequestType } from '../../../../shared/types/RequestType';
+import { IApplePaySupportedNetworks } from '../apple-pay-networks-service/IApplePaySupportedNetworks';
+import { RequestType } from '../../../../../shared/types/RequestType';
 import { IApplePayBillingContact } from './IApplePayBillingContact';
 import { IApplePayShippingContact } from './IApplePayShippingContact';
 import { IApplePayShippingMethod } from './IApplePayShippingMethod';

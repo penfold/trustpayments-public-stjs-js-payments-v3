@@ -1,10 +1,10 @@
-import { IApplePayPaymentAuthorizedEvent } from '../IApplePayPaymentAuthorizedEvent';
-import { IApplePayPaymentMethodSelectedEvent } from '../IApplePayPaymentMethodSelectedEvent';
-import { IApplePayShippingContactSelectedEvent } from '../IApplePayShippingContactSelectedEvent';
-import { IApplePayShippingMethodSelectedEvent } from '../IApplePayShippingMethodSelectedEvent';
-import { IApplePayValidateMerchantEvent } from '../IApplePayValidateMerchantEvent';
-import { IApplePayLineItem } from '../IApplePayLineItem';
-import { IApplePayPaymentAuthorizationResult } from '../IApplePayPaymentAuthorizationResult ';
+import { IApplePayLineItem } from '../apple-pay-payment-data/IApplePayLineItem';
+import { IApplePayPaymentAuthorizationResult } from '../apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
+import { IApplePayPaymentAuthorizedEvent } from '../apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
+import { IApplePayPaymentMethodSelectedEvent } from '../apple-pay-payment-data/IApplePayPaymentMethodSelectedEvent';
+import { IApplePayShippingContactSelectedEvent } from '../apple-pay-payment-data/IApplePayShippingContactSelectedEvent';
+import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-payment-data/IApplePayShippingMethodSelectedEvent';
+import { IApplePayValidateMerchantEvent } from '../apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
 
 export interface IApplePaySession extends EventTarget {
   oncancel: (event: Event) => void;
