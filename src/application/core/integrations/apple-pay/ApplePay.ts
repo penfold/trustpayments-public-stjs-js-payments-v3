@@ -21,9 +21,10 @@ import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySess
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { IApplePayConfigObject } from './apple-pay-config-service/IApplePayConfigObject';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
-import { from, Observable, of } from 'rxjs';
+import { from, of } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
+import { IApplePayInitObject } from './IApplePayInitObject';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
@@ -64,20 +65,21 @@ export class ApplePay {
           }
           return { status: true, config: event.data };
         }),
-        filter((v: any) => v.status),
-        switchMap((v: any) => {
-          return from(this.applePaySessionService.canMakePaymentsWithActiveCard(v.config.applePay.merchantId)).pipe(
+        filter((initObject: IApplePayInitObject) => initObject.status),
+        switchMap((initObject: IApplePayInitObject) => {
+          return from(
+            this.applePaySessionService.canMakePaymentsWithActiveCard(initObject.config.applePay.merchantId)
+          ).pipe(
             filter((canMakePayment: boolean) => canMakePayment),
             map((canMakePayment: boolean) => {
-              console.error('dupa');
               if (canMakePayment) {
                 this.applePayButtonService.insertButton(
                   APPLE_PAY_BUTTON_ID,
-                  v.config.applePay.buttonText,
-                  v.config.applePay.buttonStyle,
-                  v.config.applePay.paymentRequest.countryCode
+                  initObject.config.applePay.buttonText,
+                  initObject.config.applePay.buttonStyle,
+                  initObject.config.applePay.paymentRequest.countryCode
                 );
-                this.config = this.applePayConfigService.setConfig(v.config, {
+                this.config = this.applePayConfigService.setConfig(initObject.config, {
                   walletmerchantid: '',
                   walletrequestdomain: window.location.hostname,
                   walletsource: 'APPLEPAY',
