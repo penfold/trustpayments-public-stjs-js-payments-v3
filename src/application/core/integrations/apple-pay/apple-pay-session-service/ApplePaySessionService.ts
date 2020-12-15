@@ -1,17 +1,18 @@
+import { Service } from 'typedi';
 import { IApplePayPaymentMethodSelectedEvent } from '../IApplePayPaymentMethodSelectedEvent';
 import { IApplePayShippingMethodSelectedEvent } from '../IApplePayShippingMethodSelectedEvent';
 import { IApplePayShippingContactSelectedEvent } from '../IApplePayShippingContactSelectedEvent';
 import { IApplePayPaymentRequest } from '../IApplePayPaymentRequest';
-import { Service } from 'typedi';
+import { IApplePaySession } from './IApplePaySession';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
 @Service()
 export class ApplePaySessionService {
-  private applePaySession: any;
+  private applePaySession: IApplePaySession;
   private paymentRequest: IApplePayPaymentRequest;
 
-  init(applePaySession: any, paymentRequest: IApplePayPaymentRequest) {
+  init(applePaySession: IApplePaySession, paymentRequest: IApplePayPaymentRequest) {
     this.applePaySession = applePaySession;
     this.paymentRequest = paymentRequest;
     this.onPaymentMethodSelected();
@@ -37,23 +38,14 @@ export class ApplePaySessionService {
 
   canMakePaymentsWithActiveCard(merchantId: string): Promise<boolean> {
     return ApplePaySession.canMakePaymentsWithActiveCard(merchantId);
-    // ).then((canMakePayments: boolean) => canMakePayments);
-
-    // if (!canMakePaymentsWithActiveCard) {
-    //   console.error('User has not an active card provisioned into Wallet');
-    // }
-
-    // return canMakePaymentsWithActiveCard;
   }
 
   private onPaymentMethodSelected(): void {
     this.applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethodSelectedEvent) => {
       this.applePaySession.completePaymentMethodSelection({
-        newTotal: {
-          amount: this.paymentRequest.total.amount,
-          label: this.paymentRequest.total.label,
-          type: 'final'
-        }
+        amount: this.paymentRequest.total.amount,
+        label: this.paymentRequest.total.label,
+        type: 'final'
       });
     };
   }
@@ -61,11 +53,9 @@ export class ApplePaySessionService {
   private onShippingMethodSelected(): void {
     this.applePaySession.onshippingmethodselected = (event: IApplePayShippingMethodSelectedEvent) => {
       this.applePaySession.completeShippingMethodSelection({
-        newTotal: {
-          amount: this.paymentRequest.total.amount,
-          label: this.paymentRequest.total.label,
-          type: 'final'
-        }
+        amount: this.paymentRequest.total.amount,
+        label: this.paymentRequest.total.label,
+        type: 'final'
       });
     };
   }
@@ -73,11 +63,9 @@ export class ApplePaySessionService {
   private onShippingContactSelected(): void {
     this.applePaySession.onshippingcontactselected = (event: IApplePayShippingContactSelectedEvent) => {
       this.applePaySession.completeShippingContactSelection({
-        newTotal: {
-          amount: this.paymentRequest.total.amount,
-          label: this.paymentRequest.total.label,
-          type: 'final'
-        }
+        amount: this.paymentRequest.total.amount,
+        label: this.paymentRequest.total.label,
+        type: 'final'
       });
     };
   }

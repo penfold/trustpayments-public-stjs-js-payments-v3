@@ -1,5 +1,5 @@
 export interface IApplePayLineItem {
   amount: string;
   label: string;
-  type?: string;
+  type?: 'final' | 'pending';
 }

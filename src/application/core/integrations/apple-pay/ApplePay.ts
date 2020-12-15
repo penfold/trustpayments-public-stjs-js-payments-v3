@@ -72,6 +72,11 @@ export class ApplePay {
           ).pipe(
             filter((canMakePayment: boolean) => canMakePayment),
             map((canMakePayment: boolean) => {
+              if (!canMakePayment) {
+                console.error('User has not an active card provisioned into Wallet');
+                return of(ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET);
+              }
+
               if (canMakePayment) {
                 this.applePayButtonService.insertButton(
                   APPLE_PAY_BUTTON_ID,
@@ -86,6 +91,7 @@ export class ApplePay {
                   walletvalidationurl: ''
                 });
                 this.gestureHandler();
+
                 return of(ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD);
               }
             }),
