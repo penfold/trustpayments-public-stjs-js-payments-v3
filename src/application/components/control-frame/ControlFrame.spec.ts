@@ -235,7 +235,7 @@ function controlFrameFixture() {
   const storeMock: Store = mock(Store);
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const visaCheckoutClientMock: VisaCheckoutClient = mock(VisaCheckoutClient);
-  const applePayClient: ApplePayClient = mock(ApplePayClient);
+  const applePayClientMock: ApplePayClient = mock(ApplePayClient);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -268,7 +268,7 @@ function controlFrameFixture() {
     }
   });
   when(visaCheckoutClientMock.init$()).thenReturn(of(VisaCheckoutClientStatus.SUCCESS));
-  when(applePayClient.init$()).thenReturn(of(ApplePayClientStatus.SUCCESS));
+  when(applePayClientMock.init$()).thenReturn(of(ApplePayClientStatus.SUCCESS));
 
   const instance = new ControlFrame(
     mockInstance(localStorage),
@@ -283,7 +283,7 @@ function controlFrameFixture() {
     mockInstance(frame),
     mockInstance(jwtDecoderMock),
     mockInstance(visaCheckoutClientMock),
-    mockInstance(applePayClient)
+    mockInstance(applePayClientMock)
   );
   const messageBusEvent = {
     type: ''
