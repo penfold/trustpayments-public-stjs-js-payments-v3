@@ -43,9 +43,11 @@ export class ApplePaySessionService {
   private onPaymentMethodSelected(): void {
     this.applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethodSelectedEvent) => {
       this.applePaySession.completePaymentMethodSelection({
-        amount: this.paymentRequest.total.amount,
-        label: this.paymentRequest.total.label,
-        type: 'final'
+        newTotal: {
+          amount: this.paymentRequest.total.amount,
+          label: this.paymentRequest.total.label,
+          type: 'final'
+        }
       });
     };
   }
@@ -53,9 +55,11 @@ export class ApplePaySessionService {
   private onShippingMethodSelected(): void {
     this.applePaySession.onshippingmethodselected = (event: IApplePayShippingMethodSelectedEvent) => {
       this.applePaySession.completeShippingMethodSelection({
-        amount: this.paymentRequest.total.amount,
-        label: this.paymentRequest.total.label,
-        type: 'final'
+        newTotal: {
+          amount: this.paymentRequest.total.amount,
+          label: this.paymentRequest.total.label,
+          type: 'final'
+        }
       });
     };
   }
@@ -63,9 +67,11 @@ export class ApplePaySessionService {
   private onShippingContactSelected(): void {
     this.applePaySession.onshippingcontactselected = (event: IApplePayShippingContactSelectedEvent) => {
       this.applePaySession.completeShippingContactSelection({
-        amount: this.paymentRequest.total.amount,
-        label: this.paymentRequest.total.label,
-        type: 'final'
+        newTotal: {
+          amount: this.paymentRequest.total.amount,
+          label: this.paymentRequest.total.label,
+          type: 'final'
+        }
       });
     };
   }

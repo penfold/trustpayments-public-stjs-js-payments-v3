@@ -5,6 +5,9 @@ import { IApplePayPaymentMethodSelectedEvent } from '../apple-pay-payment-data/I
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-payment-data/IApplePayShippingContactSelectedEvent';
 import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-payment-data/IApplePayShippingMethodSelectedEvent';
 import { IApplePayValidateMerchantEvent } from '../apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
+import { IApplePayPaymentMethodUpdate } from './IApplePayPaymentMethodUpdate';
+import { IApplePayShippingContactUpdate } from './IApplePayShippingContactUpdate';
+import { IApplePayShippingMethodUpdate } from './IApplePayShippingMethodUpdate';
 
 export interface IApplePaySession extends EventTarget {
   oncancel: (event: Event) => void;
@@ -35,11 +38,11 @@ export interface IApplePaySession extends EventTarget {
 
   completePayment(status: IApplePayPaymentAuthorizationResult): void;
 
-  completePaymentMethodSelection(newTotal: IApplePayLineItem, newLineItems?: IApplePayLineItem[]): void;
+  completePaymentMethodSelection(update: IApplePayPaymentMethodUpdate): void;
 
-  completeShippingContactSelection(newTotal: IApplePayLineItem, newLineItems?: IApplePayLineItem[]): void;
+  completeShippingContactSelection(update: IApplePayShippingContactUpdate): void;
 
-  completeShippingMethodSelection(newTotal: IApplePayLineItem, newLineItems?: IApplePayLineItem[]): void;
+  completeShippingMethodSelection(update: IApplePayShippingMethodUpdate): void;
 
   readonly STATUS_SUCCESS: number;
   readonly STATUS_FAILURE: number;
