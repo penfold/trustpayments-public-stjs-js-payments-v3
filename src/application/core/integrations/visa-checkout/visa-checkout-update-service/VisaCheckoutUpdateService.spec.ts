@@ -1,9 +1,13 @@
+import { mock, instance as mockInstance } from 'ts-mockito';
+import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
 import { IVisaCheckoutInitConfig } from '../IVisaCheckoutInitConfig';
 import { IStJwtPayload } from '../../../models/IStJwtPayload';
 
 describe('VisaCheckoutUpdateService', () => {
-  let instance: VisaCheckoutUpdateService = new VisaCheckoutUpdateService();
+  let instance: VisaCheckoutUpdateService;
+  let jwtDecoderMock: JwtDecoder;
+
   const stJwt: IStJwtPayload = {
     currencyiso3a: 'PLN',
     locale: 'pl_PL',
@@ -32,6 +36,12 @@ describe('VisaCheckoutUpdateService', () => {
       subtotal: '100'
     }
   };
+
+  beforeEach(() => {
+    jwtDecoderMock = mock(JwtDecoder);
+
+    instance = new VisaCheckoutUpdateService(mockInstance(jwtDecoderMock));
+  });
 
   it('should set updated config with certain values', () => {
     expect(instance.updateVisaInit(stJwt, config)).toEqual(updatedConfig);
