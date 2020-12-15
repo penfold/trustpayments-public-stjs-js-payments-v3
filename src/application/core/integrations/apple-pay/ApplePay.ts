@@ -163,7 +163,6 @@ export class ApplePay {
 
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): void {
     this.completeFailedTransaction();
-    console.error(event);
     this.applePayPaymentService
       .processPayment(
         this.config.paymentRequest.requestTypes,

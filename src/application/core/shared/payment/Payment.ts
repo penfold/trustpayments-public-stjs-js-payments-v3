@@ -69,7 +69,6 @@ export class Payment {
   }
 
   public walletVerify(walletVerify: IWalletVerify): Observable<object> {
-    console.error(walletVerify);
     Object.assign(this._walletVerifyRequest, walletVerify);
     return from(this._stTransport.sendRequest(this._walletVerifyRequest));
   }

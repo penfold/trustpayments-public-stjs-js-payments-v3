@@ -77,7 +77,6 @@ export class ApplePayClient implements IApplePayClient {
   private canMakePaymentWithActiveCard$(
     status: IApplePayClientStatus
   ): Observable<ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD> {
-    console.error('canMakePaymentWithActiveCard$', status);
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'init', 'Apple Pay can make payments');
 
     return of(ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD);
@@ -86,7 +85,6 @@ export class ApplePayClient implements IApplePayClient {
   private noActiveCardsInWallet$(
     status: IApplePayClientStatus
   ): Observable<ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET> {
-    console.error('noActiveCardsInWallet$', status);
     this.applePayNotificationService.notification(status.data.errorcode, status.data.errormessage);
     this.messageBus.publish(
       {
@@ -100,7 +98,6 @@ export class ApplePayClient implements IApplePayClient {
   }
 
   private onSuccess$(status: IApplePayClientStatus, config: IConfig): Observable<ApplePayClientStatus.SUCCESS> {
-    console.error('onSuccess$', config);
     this.localStorage.setItem('completePayment', 'true');
     this.applePayNotificationService.notification(status.data.errorcode, status.data.errormessage);
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
@@ -121,7 +118,6 @@ export class ApplePayClient implements IApplePayClient {
   }
 
   private onCancel$(status: IApplePayClientStatus): Observable<ApplePayClientStatus.CANCEL> {
-    console.error('onCancel$', status);
     this.applePayNotificationService.notification(status.data.errorcode, status.data.errormessage);
     this.messageBus.publish(
       {
@@ -144,7 +140,6 @@ export class ApplePayClient implements IApplePayClient {
   private onValidateMerchantError$(
     status: IApplePayClientStatus
   ): Observable<ApplePayClientStatus.VALIDATE_MERCHANT_ERROR> {
-    console.error('onValidateMerchantError$', status);
     this.applePayNotificationService.notification(status.data.errorcode, status.data.errormessage);
     this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'merchant validation', 'Apple Pay merchant validation failure');
@@ -155,7 +150,6 @@ export class ApplePayClient implements IApplePayClient {
   private onValidateMerchantSuccess$(
     status: IApplePayClientStatus
   ): Observable<ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS> {
-    console.error('onValidateMerchantSuccess$', status);
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'merchant validation', 'Apple Pay merchant validated');
 
     return of(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS);
