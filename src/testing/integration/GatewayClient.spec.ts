@@ -3,18 +3,17 @@ import { jwtgenerator } from '@trustpayments/jwt-generator';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from '../mocks/TestConfigProvider';
 import { GatewayClient } from '../../application/core/services/GatewayClient';
-import { MessageBusMock } from '../mocks/MessageBusMock';
-import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { IResponseData } from '../../application/core/models/IResponseData';
 import { WINDOW } from '../../shared/dependency-injection/InjectionTokens';
-import { first, tap } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
 import { StoreBasedStorage } from '../../shared/services/storage/StoreBasedStorage';
 import { SimpleStorage } from '../../shared/services/storage/SimpleStorage';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
-import each from 'jest-each';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 
 describe('GatewayClient', () => {
   const datacenterurl: string = 'https://webservices.securetrading.net/jwt/';
@@ -41,12 +40,12 @@ describe('GatewayClient', () => {
     const jwtDecoder = new JwtDecoder();
     let gatewayClient: GatewayClient;
     let testConfigProvider: TestConfigProvider;
-    let messageBus: MessageBus;
+    let messageBus: IMessageBus;
 
     beforeEach(() => {
       testConfigProvider = new TestConfigProvider();
-      messageBus = (new MessageBusMock() as unknown) as MessageBus;
-      Container.set(MessageBus, messageBus);
+      messageBus = new SimpleMessageBus();
+      Container.set(IMessageBus, messageBus);
       Container.set(ConfigProvider, testConfigProvider);
       Container.set({ id: StoreBasedStorage, type: SimpleStorage });
       Container.set(ContainerInstance, Container.of(undefined));
