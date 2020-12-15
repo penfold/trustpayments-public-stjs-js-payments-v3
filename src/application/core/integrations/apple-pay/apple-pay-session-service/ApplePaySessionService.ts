@@ -33,10 +33,10 @@ export class ApplePaySessionService {
     });
   }
 
-  canMakePaymentsWithActiveCard(merchantId: string): boolean {
-    const canMakePaymentsWithActiveCard: boolean = ApplePaySession.canMakePaymentsWithActiveCard(merchantId).then(
-      (canMakePayments: boolean) => canMakePayments
-    );
+  canMakePaymentsWithActiveCard(merchantId: string): Promise<boolean> {
+    const canMakePaymentsWithActiveCard: Promise<boolean> = ApplePaySession.canMakePaymentsWithActiveCard(
+      merchantId
+    ).then((canMakePayments: boolean) => canMakePayments);
 
     if (!canMakePaymentsWithActiveCard) {
       console.error('User has not an active card provisioned into Wallet');
