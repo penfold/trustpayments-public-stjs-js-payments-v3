@@ -18,7 +18,7 @@ export class VisaCheckoutSdkProvider implements IVisaCheckoutSdkProvider {
 
   getSdk$(config: IConfig, visaCheckoutUpdateConfig: IVisaCheckoutUpdateConfig): Observable<IVisaCheckoutSdk> {
     if (this.isSdkLoaded) {
-      return of({ lib: V });
+      return of(V);
     }
 
     return this.insertScript$(config, visaCheckoutUpdateConfig).pipe(
@@ -30,7 +30,7 @@ export class VisaCheckoutSdkProvider implements IVisaCheckoutSdkProvider {
         );
       }),
       switchMap(() => {
-        return of({ lib: V });
+        return of(V);
       })
     );
   }

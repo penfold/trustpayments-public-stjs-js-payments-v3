@@ -3,7 +3,8 @@ import { IVisaCheckoutStatusData } from '../visa-checkout-status-data/IVisaCheck
 import { VisaCheckoutResponseType } from '../VisaCheckoutResponseType';
 
 export interface IVisaCheckoutSdk {
-  lib: IVisaCheckoutSdkLib;
+  init: (visaInitConfig: IVisaCheckoutInitConfig) => void;
+  on: (callbackType: VisaCheckoutResponseType, callback: (statusData: IVisaCheckoutStatusData) => void) => void;
 }
 
 export interface IVisaCheckoutSdkLib {

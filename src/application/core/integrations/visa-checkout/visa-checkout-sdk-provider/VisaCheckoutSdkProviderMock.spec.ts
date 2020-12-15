@@ -66,10 +66,8 @@ describe('VisaCheckoutSdkProviderMock', () => {
           // Needs to stringify as Jest cannot compare functions
           expect(JSON.stringify(sdk)).toBe(
             JSON.stringify({
-              lib: {
-                init: () => {},
-                on: () => {}
-              }
+              init: () => {},
+              on: () => {}
             })
           );
 

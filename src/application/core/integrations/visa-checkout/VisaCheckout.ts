@@ -41,26 +41,23 @@ export class VisaCheckout {
             .getSdk$(config, this.visaCheckoutUpdateService.updateConfigObject(config))
             .pipe(
               map((visaCheckoutSdk: IVisaCheckoutSdk) => {
-                visaCheckoutSdk.lib.on(VisaCheckoutResponseType.cancel, (cancelData: IVisaCheckoutStatusDataCancel) => {
+                visaCheckoutSdk.on(VisaCheckoutResponseType.cancel, (cancelData: IVisaCheckoutStatusDataCancel) => {
                   this.onCancel(cancelData);
                 });
-                visaCheckoutSdk.lib.on(VisaCheckoutResponseType.error, (errorData: IVisaCheckoutStatusDataError) => {
+                visaCheckoutSdk.on(VisaCheckoutResponseType.error, (errorData: IVisaCheckoutStatusDataError) => {
                   this.onError(errorData);
                 });
-                visaCheckoutSdk.lib.on(
+                visaCheckoutSdk.on(
                   VisaCheckoutResponseType.prePayment,
                   (prePaymentData: IVisaCheckoutStatusDataPrePayment) => {
                     this.onPrePayment(prePaymentData);
                   }
                 );
-                visaCheckoutSdk.lib.on(
-                  VisaCheckoutResponseType.success,
-                  (successData: IVisaCheckoutStatusDataSuccess) => {
-                    this.onSuccess(config, successData);
-                  }
-                );
+                visaCheckoutSdk.on(VisaCheckoutResponseType.success, (successData: IVisaCheckoutStatusDataSuccess) => {
+                  this.onSuccess(config, successData);
+                });
 
-                visaCheckoutSdk.lib.init(visaCheckoutUpdateConfig.visaInitConfig);
+                visaCheckoutSdk.init(visaCheckoutUpdateConfig.visaInitConfig);
               })
             );
         })

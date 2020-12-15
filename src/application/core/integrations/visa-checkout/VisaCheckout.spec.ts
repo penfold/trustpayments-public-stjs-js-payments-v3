@@ -3,7 +3,7 @@ import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-c
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { IVisaCheckoutSdkLib } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
+import { IVisaCheckoutSdk } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
 import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
 import { IVisaCheckoutStatusData } from './visa-checkout-status-data/IVisaCheckoutStatusData';
 import { IVisaCheckoutUpdateConfig } from './visa-checkout-update-service/IVisaCheckoutUpdateConfig';
@@ -53,7 +53,7 @@ describe('VisaCheckout', () => {
       }
     }
   };
-  const visaCheckoutLibMock: IVisaCheckoutSdkLib = {
+  const visaCheckoutLibMock: IVisaCheckoutSdk = {
     init: () => {},
     on: (resType: VisaCheckoutResponseType, cb: (statusData: IVisaCheckoutStatusData) => void) => {
       switch (resType) {
@@ -82,11 +82,7 @@ describe('VisaCheckout', () => {
     visaCheckoutUpdateServiceMock = mock(VisaCheckoutUpdateService);
 
     when(messageBusMock.pipe(anything())).thenReturn(of(configMock));
-    when(visaCheckoutSdkProviderMock.getSdk$(anything(), anything())).thenReturn(
-      of({
-        lib: visaCheckoutLibMock
-      })
-    );
+    when(visaCheckoutSdkProviderMock.getSdk$(anything(), anything())).thenReturn(of(visaCheckoutLibMock));
     when(visaCheckoutUpdateServiceMock.updateConfigObject(anything())).thenReturn(visaCheckoutUpdateConfigMock);
 
     instance = new VisaCheckout(

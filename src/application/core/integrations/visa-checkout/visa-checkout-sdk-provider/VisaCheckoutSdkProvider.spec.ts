@@ -63,7 +63,7 @@ describe('VisaCheckoutSdkProvider', () => {
             visaCheckoutUpdateConfigMock.buttonUrl
           )
         ).once();
-        expect(sdk).toEqual({ lib: undefined });
+        expect(sdk).toEqual(undefined);
 
         done();
       });
