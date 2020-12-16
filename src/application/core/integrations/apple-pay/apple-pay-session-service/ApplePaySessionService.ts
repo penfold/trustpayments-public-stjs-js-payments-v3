@@ -12,7 +12,7 @@ export class ApplePaySessionService {
   private applePaySession: IApplePaySession;
   private paymentRequest: IApplePayPaymentRequest;
 
-  init(applePaySession: IApplePaySession, paymentRequest: IApplePayPaymentRequest) {
+  init(applePaySession: IApplePaySession, paymentRequest: IApplePayPaymentRequest): void {
     this.applePaySession = applePaySession;
     this.paymentRequest = paymentRequest;
     this.onPaymentMethodSelected();
@@ -31,6 +31,7 @@ export class ApplePaySessionService {
 
   getLatestSupportedApplePayVersion(): number {
     const versions: number[] = Array.from(Array(7).keys()).slice(1).reverse();
+
     return versions.find((version: number) => {
       return ApplePaySession.supportsVersion(version);
     });

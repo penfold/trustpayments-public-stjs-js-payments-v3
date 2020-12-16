@@ -1,4 +1,3 @@
-import { IApplePayShippingLineItem } from '../apple-pay-shipping-data/IApplePayShippingLineItem';
 import { IApplePayPaymentAuthorizationResult } from '../apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 import { IApplePayPaymentAuthorizedEvent } from '../apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { IApplePayPaymentMethodSelectedEvent } from '../apple-pay-payment-data/IApplePayPaymentMethodSelectedEvent';
@@ -10,6 +9,15 @@ import { IApplePayShippingContactUpdate } from './IApplePayShippingContactUpdate
 import { IApplePayShippingMethodUpdate } from './IApplePayShippingMethodUpdate';
 
 export interface IApplePaySession extends EventTarget {
+  readonly STATUS_SUCCESS: number;
+  readonly STATUS_FAILURE: number;
+  readonly STATUS_INVALID_BILLING_POSTAL_ADDRESS: number;
+  readonly STATUS_INVALID_SHIPPING_POSTAL_ADDRESS: number;
+  readonly STATUS_INVALID_SHIPPING_CONTACT: number;
+  readonly STATUS_PIN_INCORRECT: number;
+  readonly STATUS_PIN_LOCKOUT: number;
+  readonly STATUS_PIN_REQUIRED: number;
+
   oncancel: (event: Event) => void;
 
   onpaymentauthorized: (event: IApplePayPaymentAuthorizedEvent) => void;
@@ -43,13 +51,4 @@ export interface IApplePaySession extends EventTarget {
   completeShippingContactSelection(update: IApplePayShippingContactUpdate): void;
 
   completeShippingMethodSelection(update: IApplePayShippingMethodUpdate): void;
-
-  readonly STATUS_SUCCESS: number;
-  readonly STATUS_FAILURE: number;
-  readonly STATUS_INVALID_BILLING_POSTAL_ADDRESS: number;
-  readonly STATUS_INVALID_SHIPPING_POSTAL_ADDRESS: number;
-  readonly STATUS_INVALID_SHIPPING_CONTACT: number;
-  readonly STATUS_PIN_INCORRECT: number;
-  readonly STATUS_PIN_LOCKOUT: number;
-  readonly STATUS_PIN_REQUIRED: number;
 }
