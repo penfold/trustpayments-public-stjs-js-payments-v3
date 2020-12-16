@@ -3,10 +3,11 @@ import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-c
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { IVisaCheckoutSdkLib } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
+import { IVisaCheckoutSdk } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
 import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
 import { IVisaCheckoutStatusData } from './visa-checkout-status-data/IVisaCheckoutStatusData';
 import { IVisaCheckoutUpdateConfig } from './visa-checkout-update-service/IVisaCheckoutUpdateConfig';
+import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { VisaCheckout } from './VisaCheckout';
 import { mock, when, instance as mockInstance, verify, anything, deepEqual } from 'ts-mockito';
 import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
@@ -15,6 +16,7 @@ describe('VisaCheckout', () => {
   let instance: VisaCheckout;
   let visaCheckoutSdkProviderMock: VisaCheckoutSdkProvider;
   let messageBusMock: IMessageBus;
+  let visaCheckoutUpdateServiceMock: VisaCheckoutUpdateService;
 
   const visaCheckoutUpdateConfigMock: IVisaCheckoutUpdateConfig = {
     buttonUrl: 'https://button-mock-url.com',
@@ -51,7 +53,7 @@ describe('VisaCheckout', () => {
       }
     }
   };
-  const visaCheckoutLibMock: IVisaCheckoutSdkLib = {
+  const visaCheckoutLibMock: IVisaCheckoutSdk = {
     init: () => {},
     on: (resType: VisaCheckoutResponseType, cb: (statusData: IVisaCheckoutStatusData) => void) => {
       switch (resType) {
@@ -77,16 +79,17 @@ describe('VisaCheckout', () => {
   beforeEach(() => {
     visaCheckoutSdkProviderMock = mock(VisaCheckoutSdkProvider);
     messageBusMock = mock<IMessageBus>();
+    visaCheckoutUpdateServiceMock = mock(VisaCheckoutUpdateService);
 
     when(messageBusMock.pipe(anything())).thenReturn(of(configMock));
-    when(visaCheckoutSdkProviderMock.getSdk$(anything())).thenReturn(
-      of({
-        lib: visaCheckoutLibMock,
-        updateConfig: visaCheckoutUpdateConfigMock
-      })
-    );
+    when(visaCheckoutSdkProviderMock.getSdk$(anything(), anything())).thenReturn(of(visaCheckoutLibMock));
+    when(visaCheckoutUpdateServiceMock.updateConfigObject(anything())).thenReturn(visaCheckoutUpdateConfigMock);
 
-    instance = new VisaCheckout(mockInstance(visaCheckoutSdkProviderMock), mockInstance(messageBusMock));
+    instance = new VisaCheckout(
+      mockInstance(visaCheckoutSdkProviderMock),
+      mockInstance(messageBusMock),
+      mockInstance(visaCheckoutUpdateServiceMock)
+    );
 
     instance.init();
   });

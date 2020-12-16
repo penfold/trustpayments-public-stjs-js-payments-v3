@@ -12,7 +12,7 @@ import en_GB from '../../../../translations/json/en_GB.json';
 import en_US from '../../../../translations/json/en_US.json';
 // @ts-ignore
 import es_ES from '../../../../translations/json/es_ES.json';
-// @ts-ignore
+// @ts-ignores
 import fr_FR from '../../../../translations/json/fr_FR.json';
 // @ts-ignore
 import nl_NL from '../../../../translations/json/nl_NL.json';

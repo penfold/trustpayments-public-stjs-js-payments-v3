@@ -15,41 +15,51 @@ import { IVisaCheckoutStatusDataCancel } from './visa-checkout-status-data/IVisa
 import { IVisaCheckoutStatusDataError } from './visa-checkout-status-data/IVisaCheckoutStatusDataError';
 import { IVisaCheckoutStatusDataPrePayment } from './visa-checkout-status-data/IVisaCheckoutStatusDataPrePayment';
 import { IVisaCheckoutStatusDataSuccess } from './visa-checkout-status-data/IVisaCheckoutStatusDataSuccess';
+import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
 
 @Service()
 export class VisaCheckout {
-  constructor(protected visaCheckoutSdkProvider: VisaCheckoutSdkProvider, protected messageBus: IMessageBus) {}
+  constructor(
+    protected visaCheckoutSdkProvider: VisaCheckoutSdkProvider,
+    protected messageBus: IMessageBus,
+    protected visaCheckoutUpdateService: VisaCheckoutUpdateService
+  ) {}
 
   init(): void {
     this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.VISA_CHECKOUT_CONFIG))
       .pipe(
-        switchMap((event: IMessageBusEvent<IConfig>) => {
-          return this.visaCheckoutSdkProvider.getSdk$(event.data).pipe(
-            map((visaCheckoutSdk: IVisaCheckoutSdk) => {
-              visaCheckoutSdk.lib.on(VisaCheckoutResponseType.cancel, (cancelData: IVisaCheckoutStatusDataCancel) => {
-                this.onCancel(cancelData);
-              });
-              visaCheckoutSdk.lib.on(VisaCheckoutResponseType.error, (errorData: IVisaCheckoutStatusDataError) => {
-                this.onError(errorData);
-              });
-              visaCheckoutSdk.lib.on(
-                VisaCheckoutResponseType.prePayment,
-                (prePaymentData: IVisaCheckoutStatusDataPrePayment) => {
-                  this.onPrePayment(prePaymentData);
-                }
-              );
-              visaCheckoutSdk.lib.on(
-                VisaCheckoutResponseType.success,
-                (successData: IVisaCheckoutStatusDataSuccess) => {
-                  this.onSuccess(event.data, successData);
-                }
-              );
+        map((event: IMessageBusEvent<IConfig>) => {
+          return {
+            config: event.data,
+            visaCheckoutUpdateConfig: this.visaCheckoutUpdateService.updateConfigObject(event.data)
+          };
+        }),
+        switchMap(({ config, visaCheckoutUpdateConfig }) => {
+          return this.visaCheckoutSdkProvider
+            .getSdk$(config, this.visaCheckoutUpdateService.updateConfigObject(config))
+            .pipe(
+              map((visaCheckoutSdk: IVisaCheckoutSdk) => {
+                visaCheckoutSdk.on(VisaCheckoutResponseType.cancel, (cancelData: IVisaCheckoutStatusDataCancel) => {
+                  this.onCancel(cancelData);
+                });
+                visaCheckoutSdk.on(VisaCheckoutResponseType.error, (errorData: IVisaCheckoutStatusDataError) => {
+                  this.onError(errorData);
+                });
+                visaCheckoutSdk.on(
+                  VisaCheckoutResponseType.prePayment,
+                  (prePaymentData: IVisaCheckoutStatusDataPrePayment) => {
+                    this.onPrePayment(prePaymentData);
+                  }
+                );
+                visaCheckoutSdk.on(VisaCheckoutResponseType.success, (successData: IVisaCheckoutStatusDataSuccess) => {
+                  this.onSuccess(config, successData);
+                });
 
-              visaCheckoutSdk.lib.init(visaCheckoutSdk.updateConfig.visaInitConfig);
-            })
-          );
+                visaCheckoutSdk.init(visaCheckoutUpdateConfig.visaInitConfig);
+              })
+            );
         })
       )
       .subscribe();

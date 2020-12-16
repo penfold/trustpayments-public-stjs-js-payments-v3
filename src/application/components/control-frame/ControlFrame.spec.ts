@@ -112,7 +112,7 @@ describe('ControlFrame', () => {
 
     it('should call _initResetJwtEvent when RESET_JWT event has been called', () => {
       // @ts-ignore
-      instance._messageBus.subscribe = jest
+      instance._messageBus.subscribeType = jest
         .fn()
         .mockImplementationOnce((even, callback) => {
           callback();

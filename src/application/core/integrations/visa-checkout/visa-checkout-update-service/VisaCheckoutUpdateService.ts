@@ -1,13 +1,16 @@
 import { Service } from 'typedi';
 import { environment } from '../../../../../environments/environment';
+import { IConfig } from '../../../../../shared/model/config/IConfig';
+import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 import { VisaCheckoutButtonProps } from '../visa-checkout-button-service/VisaCheckoutButtonProps';
-import { IVisaCheckoutConfig } from '../IVisaCheckoutConfig';
 import { IVisaCheckoutInitConfig } from '../IVisaCheckoutInitConfig';
 import { IStJwtPayload } from '../../../models/IStJwtPayload';
 import { IVisaCheckoutUpdateConfig } from './IVisaCheckoutUpdateConfig';
 
 @Service()
 export class VisaCheckoutUpdateService {
+  constructor(private jwtDecoder: JwtDecoder) {}
+
   updateVisaInit(stJwt: IStJwtPayload, config: IVisaCheckoutInitConfig): IVisaCheckoutInitConfig {
     return {
       ...config,
@@ -24,26 +27,24 @@ export class VisaCheckoutUpdateService {
     };
   }
 
-  updateConfigObject(
-    visaCheckout: IVisaCheckoutConfig,
-    stJwt: IStJwtPayload,
-    livestatus: 0 | 1
-  ): IVisaCheckoutUpdateConfig {
+  updateConfigObject(config: IConfig): IVisaCheckoutUpdateConfig {
+    const jwtPayload: IStJwtPayload = this.jwtDecoder.decode(config.jwt).payload;
+
     return {
-      buttonUrl: livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_BUTTON_URL : VisaCheckoutButtonProps.src,
-      sdkUrl: livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_SDK : environment.VISA_CHECKOUT_URLS.TEST_SDK,
+      buttonUrl: config.livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_BUTTON_URL : VisaCheckoutButtonProps.src,
+      sdkUrl: config.livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_SDK : environment.VISA_CHECKOUT_URLS.TEST_SDK,
       visaInitConfig: {
-        apikey: visaCheckout.merchantId,
-        encryptionKey: visaCheckout.encryptionKey,
+        apikey: config.visaCheckout.merchantId,
+        encryptionKey: config.visaCheckout.encryptionKey,
         paymentRequest: {
-          currencyCode: stJwt.currencyiso3a,
-          subtotal: stJwt.mainamount,
-          total: stJwt.mainamount,
-          ...visaCheckout.paymentRequest
+          currencyCode: jwtPayload.currencyiso3a,
+          subtotal: jwtPayload.mainamount,
+          total: jwtPayload.mainamount,
+          ...config.visaCheckout.paymentRequest
         },
         settings: {
-          locale: stJwt.locale,
-          ...visaCheckout.settings
+          locale: jwtPayload.locale,
+          ...config.visaCheckout.settings
         }
       }
     };
