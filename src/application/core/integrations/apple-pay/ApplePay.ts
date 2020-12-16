@@ -158,6 +158,7 @@ export class ApplePay {
 
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): void {
     this.completeFailedTransaction();
+    console.error(event);
     this.applePayPaymentService
       .processPayment(
         this.config.paymentRequest.requestTypes,
@@ -166,8 +167,11 @@ export class ApplePay {
         event
       )
       .subscribe((response: any) => {
-        this.handlePaymentProcessResponse(response.errorcode, response.errormessage);
-        this.gestureHandler();
+        console.error(response);
+        if (Number(response.errorCode) === 0) {
+          this.handlePaymentProcessResponse(ApplePayErrorCodes.SUCCESS, response.errormessage);
+          this.gestureHandler();
+        }
       });
   }
 
@@ -184,8 +188,13 @@ export class ApplePay {
     });
   }
 
-  private handlePaymentProcessResponse(errorCode: string, errorMessage: string): IApplePayPaymentAuthorizationResult {
-    if (Number(errorCode) === ApplePayErrorCodes.SUCCESS) {
+  private handlePaymentProcessResponse(
+    errorCode: ApplePayErrorCodes,
+    errorMessage: string
+  ): IApplePayPaymentAuthorizationResult {
+    console.error(errorCode);
+    if (errorCode === ApplePayErrorCodes.SUCCESS) {
+      console.error(errorCode);
       this.completion.status = ApplePaySession.STATUS_SUCCESS;
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
@@ -197,6 +206,7 @@ export class ApplePay {
           }
         }
       });
+      console.error(errorCode);
       this.applePaySession.completePayment(this.completion);
       return this.completion;
     }

@@ -79,7 +79,7 @@ export class ApplePayPaymentService {
       switchMap((response: IApplePayProcessPaymentResponse) => {
         return of({
           errorCode: response.response.errorcode,
-          errorMessage: response.response.errorcode
+          errorMessage: response.response.errormessage
         });
       }),
       catchError(() => {
