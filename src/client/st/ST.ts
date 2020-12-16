@@ -2,7 +2,6 @@ import './st.css';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
-import { environment } from '../../environments/environment';
 import { CardFrames } from '../card-frames/CardFrames.class';
 import { CommonFrames } from '../common-frames/CommonFrames.class';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
@@ -38,17 +37,11 @@ import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
-import { ApplePayNetworksService } from '../../application/core/integrations/apple-pay/apple-pay-networks-service/ApplePayNetworksService';
-import { ApplePayButtonService } from '../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { NotificationService } from '../notification/NotificationService';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { Notification } from '../../application/core/shared/notification/Notification';
 import { IApplePayConfig } from '../../application/core/integrations/apple-pay/IApplePayConfig';
-import { ApplePayConfigService } from '../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
-import { ApplePayErrorService } from '../../application/core/integrations/apple-pay/apple-pay-error-service/ApplePayErrorService';
-import { ApplePaySessionFactory } from '../../application/core/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
-import { ApplePaySessionService } from '../../application/core/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 
 @Service()
 export class ST {
@@ -118,12 +111,6 @@ export class ST {
     private _visaCheckout: VisaCheckout,
     private _cybertonica: Cybertonica,
     private _cardinalClient: CardinalClient,
-    private _applePayNetworkService: ApplePayNetworksService,
-    private _applePayButtonService: ApplePayButtonService,
-    private _applePayConfigService: ApplePayConfigService,
-    private applePayErrorService: ApplePayErrorService,
-    private applePaySessionFactory: ApplePaySessionFactory,
-    private applePaySessionService: ApplePaySessionService,
     private jwtDecoder: JwtDecoder,
     private applePay: ApplePay
   ) {

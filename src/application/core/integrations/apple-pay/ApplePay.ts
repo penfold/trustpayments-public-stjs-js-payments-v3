@@ -23,6 +23,7 @@ import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaym
 import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
+import { ApplePayErrorCode } from './apple-pay-error-service/ApplePayErrorCode';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
@@ -150,7 +151,7 @@ export class ApplePay {
       type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
       data: {
         status,
-        data: { errorcode: code, errormessage: message }
+        data: { errorCode: code, errorMessage: message }
       }
     });
   }
@@ -176,30 +177,30 @@ export class ApplePay {
       data: {
         status: ApplePayClientStatus.CANCEL,
         data: {
-          errorcode: ApplePayErrorCodes.CANCEL,
-          errormessage: 'Payment has been cancelled'
+          errorCode: ApplePayErrorCodes.CANCEL,
+          errorMessage: 'Payment has been cancelled'
         }
       }
     });
   }
 
-  private handlePaymentProcessResponse(errorcode: string, errormessage: string): IApplePayPaymentAuthorizationResult {
-    if (Number(errorcode) === ApplePayErrorCodes.SUCCESS) {
+  private handlePaymentProcessResponse(errorCode: string, errorMessage: string): IApplePayPaymentAuthorizationResult {
+    if (Number(errorCode) === ApplePayErrorCodes.SUCCESS) {
       this.completion.status = ApplePaySession.STATUS_SUCCESS;
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
           status: ApplePayClientStatus.SUCCESS,
           data: {
-            errorcode: ApplePayErrorCodes.SUCCESS,
-            errormessage
+            errorCode: ApplePayErrorCodes.SUCCESS,
+            errorMessage
           }
         }
       });
       this.applePaySession.completePayment(this.completion);
       return this.completion;
     }
-    this.completion.errors = this.applePayErrorService.create('unknown', this.config.locale);
+    this.completion.errors = this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale);
     this.completion.status = ApplePaySession.STATUS_FAILURE;
 
     this.messageBus.publish<IApplePayClientStatus>({
@@ -207,8 +208,8 @@ export class ApplePay {
       data: {
         status: ApplePayClientStatus.ERROR,
         data: {
-          errorcode: ApplePayErrorCodes.ERROR,
-          errormessage
+          errorCode: ApplePayErrorCodes.ERROR,
+          errorMessage
         }
       }
     });

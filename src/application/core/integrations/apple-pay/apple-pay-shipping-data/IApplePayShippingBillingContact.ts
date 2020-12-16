@@ -1,4 +1,4 @@
-export interface IApplePayBillingContact {
+export interface IApplePayShippingBillingContact {
   phoneNumber: string;
   emailAddress: string;
   givenName: string;

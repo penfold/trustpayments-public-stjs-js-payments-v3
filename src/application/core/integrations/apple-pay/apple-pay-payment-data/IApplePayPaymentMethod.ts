@@ -1,11 +1,11 @@
-import { IApplePayBillingContact } from './IApplePayBillingContact';
+import { IApplePayShippingBillingContact } from '../apple-pay-shipping-data/IApplePayShippingBillingContact';
 import { IApplePayPaymentPass } from './IApplePayPaymentPass';
-import { ApplePaymentMethodType } from './ApplePaymentMethodType';
+import { ApplePayPaymentMethodType } from './ApplePayPaymentMethodType';
 
 export interface IApplePayPaymentMethod {
   displayName: string;
   network: string;
-  type: ApplePaymentMethodType;
+  type: ApplePayPaymentMethodType;
   paymentPass: IApplePayPaymentPass;
-  billingContact: IApplePayBillingContact;
+  billingContact: IApplePayShippingBillingContact;
 }

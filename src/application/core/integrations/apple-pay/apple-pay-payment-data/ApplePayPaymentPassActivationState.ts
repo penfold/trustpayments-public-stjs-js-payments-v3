@@ -1,7 +1,7 @@
 export enum ApplePayPaymentPassActivationState {
-  activated = 'activated',
-  requiresActivation = 'requiresActivation',
-  activating = 'activating',
-  suspended = 'suspended',
-  deactivated = 'deactivated'
+  ACTIVATED = 'activated',
+  REQUIRES_ACTIVATION = 'requiresActivation',
+  ACTIVATING = 'activating',
+  SUSPENDED = 'suspended',
+  DEACTIVATED = 'deactivated'
 }

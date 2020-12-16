@@ -58,7 +58,7 @@ export class ApplePayPaymentService {
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     formId: string,
     event: IApplePayPaymentAuthorizedEvent
-  ) {
+  ): Observable<{ errorCode: string; errorMessage: string }> {
     return from(
       this.payment.processPayment(
         requestTypes,
@@ -78,14 +78,14 @@ export class ApplePayPaymentService {
     ).pipe(
       switchMap((response: IApplePayProcessPaymentResponse) => {
         return of({
-          errorcode: response.response.errorcode,
-          errormessage: response.response.errorcode
+          errorCode: response.response.errorcode,
+          errorMessage: response.response.errorcode
         });
       }),
       catchError(() => {
         return of({
-          errorcode: '1',
-          errormessage: PAYMENT_ERROR
+          errorCode: '1',
+          errorMessage: PAYMENT_ERROR
         });
       })
     );

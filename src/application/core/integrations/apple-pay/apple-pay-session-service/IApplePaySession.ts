@@ -1,9 +1,9 @@
-import { IApplePayLineItem } from '../apple-pay-payment-data/IApplePayLineItem';
+import { IApplePayShippingLineItem } from '../apple-pay-shipping-data/IApplePayShippingLineItem';
 import { IApplePayPaymentAuthorizationResult } from '../apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 import { IApplePayPaymentAuthorizedEvent } from '../apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { IApplePayPaymentMethodSelectedEvent } from '../apple-pay-payment-data/IApplePayPaymentMethodSelectedEvent';
-import { IApplePayShippingContactSelectedEvent } from '../apple-pay-payment-data/IApplePayShippingContactSelectedEvent';
-import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-payment-data/IApplePayShippingMethodSelectedEvent';
+import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
+import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingMethodSelectedEvent';
 import { IApplePayValidateMerchantEvent } from '../apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
 import { IApplePayPaymentMethodUpdate } from './IApplePayPaymentMethodUpdate';
 import { IApplePayShippingContactUpdate } from './IApplePayShippingContactUpdate';

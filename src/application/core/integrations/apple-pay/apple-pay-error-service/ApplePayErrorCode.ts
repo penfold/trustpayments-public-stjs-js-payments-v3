@@ -1,6 +1,6 @@
 export enum ApplePayErrorCode {
-  shippingContactInvalid = 'shippingContactInvalid',
-  billingContactInvalid = 'billingContactInvalid',
-  addressUnserviceable = 'addressUnserviceable',
-  unknown = 'unknown'
+  SHIPPING_CONTACT_INVALID = 'shippingContactInvalid',
+  BILLING_CONTACT_INVALID = 'billingContactInvalid',
+  ADDRESS_UNSERVICEABLE = 'addressUnserviceable',
+  UNKNOWN = 'unknown'
 }

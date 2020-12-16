@@ -1,6 +1,6 @@
-import { IApplePayLineItem } from '../apple-pay-payment-data/IApplePayLineItem';
+import { IApplePayShippingLineItem } from '../apple-pay-shipping-data/IApplePayShippingLineItem';
 
 export interface IApplePayShippingMethodUpdate {
-  newTotal: IApplePayLineItem;
-  newLineItems?: IApplePayLineItem[];
+  newTotal: IApplePayShippingLineItem;
+  newLineItems?: IApplePayShippingLineItem[];
 }

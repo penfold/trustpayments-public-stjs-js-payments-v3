@@ -1,5 +1,5 @@
-import { IApplePayBillingContact } from '../integrations/apple-pay/apple-pay-payment-data/IApplePayBillingContact';
-import { IApplePayShippingContact } from '../integrations/apple-pay/apple-pay-payment-data/IApplePayShippingContact';
+import { IApplePayShippingBillingContact } from '../integrations/apple-pay/apple-pay-shipping-data/IApplePayShippingBillingContact';
+import { IApplePayShippingContact } from '../integrations/apple-pay/apple-pay-shipping-data/IApplePayShippingContact';
 
 export interface IResponseData {
   errorcode?: string;
@@ -8,7 +8,7 @@ export interface IResponseData {
   requesttypedescription?: string;
   threedresponse?: string;
   cachetoken?: string;
-  billingContact?: IApplePayBillingContact;
+  billingContact?: IApplePayShippingBillingContact;
   shippingContact?: IApplePayShippingContact;
   jwt?: string;
   walletsource?: 'APPLEPAY' | 'VISACHECKOUT';

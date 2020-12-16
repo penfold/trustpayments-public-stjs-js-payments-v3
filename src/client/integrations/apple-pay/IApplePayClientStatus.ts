@@ -5,8 +5,8 @@ import { ApplePayClientStatus } from './ApplePayClientStatus';
 export interface IApplePayClientStatus {
   status: ApplePayClientStatus;
   data: {
-    errorcode: ApplePayErrorCodes;
-    errormessage: string;
+    errorCode: ApplePayErrorCodes;
+    errorMessage: string;
   };
   merchantData?: IMerchantData; // For success callback only
 }
