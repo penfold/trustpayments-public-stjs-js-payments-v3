@@ -234,15 +234,24 @@ describe('Payment', () => {
   });
 
   describe('walletVerify()', () => {
-    it('should send WALLETVERIFY request with walletverify', () => {
-      instance.walletVerify(walletVerify);
+    it('should send WALLETVERIFY request with walletverify', done => {
+      const walletVerifyResponseMock = {};
       // @ts-ignore
-      expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
-        requesttypedescriptions: ['WALLETVERIFY'],
-        walletsource: 'APPLEPAY',
-        walletmerchantid: '123456789',
-        walletvalidationurl: 'https://example.com',
-        walletrequestdomain: 'https://example2.com'
+      instance._stTransport.sendRequest = jest
+        .fn()
+        .mockImplementationOnce(() => Promise.resolve(walletVerifyResponseMock));
+
+      instance.walletVerify(walletVerify).subscribe(value => {
+        // @ts-ignore
+        expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
+          requesttypedescriptions: ['WALLETVERIFY'],
+          walletsource: 'APPLEPAY',
+          walletmerchantid: '123456789',
+          walletvalidationurl: 'https://example.com',
+          walletrequestdomain: 'https://example2.com'
+        });
+        expect(value).toEqual(walletVerifyResponseMock);
+        done();
       });
     });
   });
