@@ -1,1 +1,6 @@
-export type ApplePayErrorCode = 'shippingContactInvalid' | 'billingContactInvalid' | 'addressUnserviceable' | 'unknown';
+export enum ApplePayErrorCode {
+  shippingContactInvalid = 'shippingContactInvalid',
+  billingContactInvalid = 'billingContactInvalid',
+  addressUnserviceable = 'addressUnserviceable',
+  unknown = 'unknown'
+}

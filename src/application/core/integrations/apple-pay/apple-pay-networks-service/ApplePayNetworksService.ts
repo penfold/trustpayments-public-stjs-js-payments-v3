@@ -1,6 +1,8 @@
+import { Service } from 'typedi';
 import { IApplePaySupportedNetworks } from './IApplePaySupportedNetworks';
 import { STAGE_ONE_NETWORKS, STAGE_THREE_NETWORKS, STAGE_TWO_NETWORKS } from './ApplePaySupportedNetworks';
 
+@Service()
 export class ApplePayNetworksService {
   private _getSupportedNetworks(version: number): IApplePaySupportedNetworks[] {
     const stageOneVersions: number[] = [1, 2, 3];

@@ -9,11 +9,11 @@ export class ApplePayButtonService {
 
   insertButton(targetId: string, label: string, style: string, locale: string): Element {
     return !this.isButtonInserted(targetId)
-      ? DomMethods.appendChildIntoDOM(targetId, this._createButton(label, style, locale))
+      ? DomMethods.appendChildIntoDOM(targetId, this.createButton(label, style, locale))
       : null;
   }
 
-  private _createButton(label: string, style: string, locale: string): HTMLElement {
+  private createButton(label: string, style: string, locale: string): HTMLElement {
     return DomMethods.createHtmlElement.apply(this, [
       {
         style: `-webkit-appearance: -apple-pay-button;

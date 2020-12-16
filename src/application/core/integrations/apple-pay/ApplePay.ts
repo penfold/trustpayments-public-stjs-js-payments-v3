@@ -2,7 +2,6 @@ import { Service } from 'typedi';
 import { from, of } from 'rxjs';
 import { filter, first, map, switchMap, take } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
-import { IApplePayInitObject } from './IApplePayInitObject';
 import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
 import { IApplePayConfigObject } from './apple-pay-config-service/IApplePayConfigObject';
 import { IApplePayPaymentAuthorizationResult } from './apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
@@ -64,8 +63,8 @@ export class ApplePay {
           }
           return { status: true, config: event.data };
         }),
-        filter((initObject: IApplePayInitObject) => initObject.status),
-        switchMap((initObject: IApplePayInitObject) => {
+        filter((initObject: { status: boolean; config: IConfig }) => initObject.status),
+        switchMap((initObject: { status: boolean; config: IConfig }) => {
           return from(
             this.applePaySessionService.canMakePaymentsWithActiveCard(initObject.config.applePay.merchantId)
           ).pipe(
@@ -76,23 +75,21 @@ export class ApplePay {
                 return of(ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET);
               }
 
-              if (canMakePayment) {
-                this.applePayButtonService.insertButton(
-                  APPLE_PAY_BUTTON_ID,
-                  initObject.config.applePay.buttonText,
-                  initObject.config.applePay.buttonStyle,
-                  initObject.config.applePay.paymentRequest.countryCode
-                );
-                this.config = this.applePayConfigService.setConfig(initObject.config, {
-                  walletmerchantid: '',
-                  walletrequestdomain: window.location.hostname,
-                  walletsource: 'APPLEPAY',
-                  walletvalidationurl: ''
-                });
-                this.gestureHandler();
+              this.applePayButtonService.insertButton(
+                APPLE_PAY_BUTTON_ID,
+                initObject.config.applePay.buttonText,
+                initObject.config.applePay.buttonStyle,
+                initObject.config.applePay.paymentRequest.countryCode
+              );
+              this.config = this.applePayConfigService.setConfig(initObject.config, {
+                walletmerchantid: '',
+                walletrequestdomain: window.location.hostname,
+                walletsource: 'APPLEPAY',
+                walletvalidationurl: ''
+              });
+              this.gestureHandler();
 
-                return of(ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD);
-              }
+              return of(ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD);
             }),
             take(1)
           );
@@ -130,25 +127,22 @@ export class ApplePay {
         this.paymentCancelled,
         this.applePaySession
       )
-      .pipe(
-        switchMap((code: ApplePayErrorCodes) => {
-          if (code !== ApplePayErrorCodes.VALIDATE_MERCHANT_SUCCESS) {
-            this.applePaySessionService.endMerchantValidation();
-            this.handleWalletVerifyResponse(
-              ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
-              ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR,
-              VALIDATION_ERROR
-            );
-          }
+      .subscribe((code: ApplePayErrorCodes) => {
+        if (code !== ApplePayErrorCodes.VALIDATE_MERCHANT_SUCCESS) {
+          this.applePaySessionService.endMerchantValidation();
           this.handleWalletVerifyResponse(
-            ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS,
-            ApplePayErrorCodes.VALIDATE_MERCHANT_SUCCESS,
-            'Merchant validation success'
+            ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
+            ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR,
+            VALIDATION_ERROR
           );
-          return of(code);
-        })
-      )
-      .subscribe();
+        }
+        this.handleWalletVerifyResponse(
+          ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS,
+          ApplePayErrorCodes.VALIDATE_MERCHANT_SUCCESS,
+          'Merchant validation success'
+        );
+        return of(code);
+      });
   }
 
   private handleWalletVerifyResponse(status: ApplePayClientStatus, code: ApplePayErrorCodes, message: string) {

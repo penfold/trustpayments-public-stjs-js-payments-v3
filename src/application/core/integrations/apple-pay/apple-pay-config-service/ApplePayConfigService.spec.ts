@@ -1,12 +1,12 @@
+import { instance, mock, when } from 'ts-mockito';
 import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
-import { RequestType } from '../../../../../shared/types/RequestType';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
+import { RequestType } from '../../../../../shared/types/RequestType';
 import { ApplePayConfigService } from './ApplePayConfigService';
-import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
-import { instance, mock, when } from 'ts-mockito';
 import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePaySessionService } from '../apple-pay-session-service/ApplePaySessionService';
+import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 
 describe('ApplePayConfigService', () => {
   const paymentRequest: IApplePayPaymentRequest = {
@@ -20,14 +20,7 @@ describe('ApplePayConfigService', () => {
       label: 'test'
     }
   };
-  let paymentRequestUpdated: IApplePayPaymentRequest;
-  let currencyCode: string;
-  let amount: string;
   let requestTypes: RequestType[];
-  let validateMerchantRequest: IApplePayValidateMerchantRequest;
-  let validateMerchantRequestUpdated: IApplePayValidateMerchantRequest;
-  let walletMerchantId: string;
-  let walletValidationUrl: string;
   let config: IConfig;
   const payload = {
     payload: {
@@ -39,8 +32,7 @@ describe('ApplePayConfigService', () => {
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const applePayNetworkService: ApplePayNetworksService = mock(ApplePayNetworksService);
   const applePaySessionService: ApplePaySessionService = mock(ApplePaySessionService);
-  const jwt: string =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDcwOTA2NTEsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6InRlc3QgaXNvIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwibWFpbmFtb3VudCI6InRlc3QgYW1vdW50In19.Ni3igXSMvOIvrnAAaMh_BfiEfw6Mht1isTUDW9o7l_Q';
+  const jwt: string = 'somerandomjwt';
   let applePayConfigService: ApplePayConfigService = new ApplePayConfigService(
     instance(jwtDecoderMock),
     instance(applePayNetworkService),
@@ -48,15 +40,10 @@ describe('ApplePayConfigService', () => {
   );
 
   describe('update paymentRequest object', () => {
-    beforeAll(() => {
-      currencyCode = 'PLN';
-      amount = '22.00';
-      requestTypes = ['ACCOUNTCHECK', 'AUTH'];
-    });
-
-    beforeEach(() => {
-      paymentRequestUpdated = paymentRequest;
-    });
+    const currencyCode: string = 'PLN';
+    const amount: string = '22.00';
+    const requestTypes: RequestType[] = ['ACCOUNTCHECK', 'AUTH'];
+    let paymentRequestUpdated: IApplePayPaymentRequest = paymentRequest;
 
     it(`should update paymentRequest object with indicated currency code`, () => {
       paymentRequestUpdated = {
@@ -87,20 +74,15 @@ describe('ApplePayConfigService', () => {
   });
 
   describe('update validateMerchantRequest object', () => {
-    beforeAll(() => {
-      validateMerchantRequest = {
-        walletmerchantid: 'some id',
-        walletrequestdomain: 'some domain',
-        walletsource: 'some source',
-        walletvalidationurl: 'some url'
-      };
-      walletMerchantId = 'new id';
-      walletValidationUrl = 'new url';
-    });
-
-    beforeEach(() => {
-      validateMerchantRequestUpdated = validateMerchantRequest;
-    });
+    const validateMerchantRequest: IApplePayValidateMerchantRequest = {
+      walletmerchantid: 'some id',
+      walletrequestdomain: 'some domain',
+      walletsource: 'some source',
+      walletvalidationurl: 'some url'
+    };
+    const walletMerchantId: string = 'new id';
+    const walletValidationUrl: string = 'new url';
+    let validateMerchantRequestUpdated: IApplePayValidateMerchantRequest = validateMerchantRequest;
 
     it(`should update paymentRequest object with indicated currency code`, () => {
       validateMerchantRequestUpdated = {
