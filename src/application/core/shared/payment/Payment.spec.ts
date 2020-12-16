@@ -2,7 +2,7 @@ import { Payment } from './Payment';
 import { StTransport } from '../../services/st-transport/StTransport.class';
 import { Container } from 'typedi';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
-import { mock, instance as mockInstance, when, verify, spy } from 'ts-mockito';
+import { mock, instance as mockInstance, when, verify, spy, anything } from 'ts-mockito';
 import { ICard } from '../../models/ICard';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
@@ -15,6 +15,7 @@ import { StCodec } from '../../services/st-codec/StCodec.class';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { CustomerOutput } from '../../models/constants/CustomerOutput';
+import { from } from 'rxjs';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 
@@ -230,20 +231,6 @@ describe('Payment', () => {
       expect((result as any).response).toBe(response);
       verify(stCodecSpy.publishResponse(response, 'jwt', 'foobar')).never();
       verify(notificationService.success(PAYMENT_SUCCESS)).never();
-    });
-  });
-
-  describe('walletVerify()', () => {
-    it('should send WALLETVERIFY request with walletverify', () => {
-      instance.walletVerify(walletVerify);
-      // @ts-ignore
-      expect(instance._stTransport.sendRequest).toHaveBeenCalledWith({
-        requesttypedescriptions: ['WALLETVERIFY'],
-        walletsource: 'APPLEPAY',
-        walletmerchantid: '123456789',
-        walletvalidationurl: 'https://example.com',
-        walletrequestdomain: 'https://example2.com'
-      });
     });
   });
 });

@@ -1,4 +1,4 @@
-import { instance, mock, when } from 'ts-mockito';
+import { anything, instance, mock, when } from 'ts-mockito';
 import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
@@ -24,9 +24,10 @@ describe('ApplePayConfigService', () => {
   let config: IConfig;
   const payload = {
     payload: {
-      currencyiso3a: 'test iso',
+      currencyiso3a: 'EUR',
       locale: 'en_GB',
-      mainamount: 'test amount'
+      baseamount: '1000',
+      mainamount: '10.00'
     }
   };
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
@@ -107,11 +108,15 @@ describe('ApplePayConfigService', () => {
 
   describe('get properties from StJwt object', () => {
     beforeAll(() => {
-      when(jwtDecoderMock.decode(jwt)).thenReturn(payload);
+      when(jwtDecoderMock.decode(anything())).thenReturn(payload);
     });
 
     it('should return currencyiso3a, locale and mainamount parameter ', () => {
-      expect(applePayConfigService.getStJwtData(jwt)).toEqual(payload.payload);
+      expect(applePayConfigService.getStJwtData(jwt)).toEqual({
+        currencyiso3a: payload.payload.currencyiso3a,
+        locale: payload.payload.locale,
+        mainamount: '10.00'
+      });
     });
   });
 
