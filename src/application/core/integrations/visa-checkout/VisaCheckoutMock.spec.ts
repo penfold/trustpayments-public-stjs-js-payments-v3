@@ -1,11 +1,11 @@
 import { of } from 'rxjs';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { IVisaCheckoutSdkLib } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
+import { IVisaCheckoutSdk } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
 import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
 import { IVisaCheckoutStatusData } from './visa-checkout-status-data/IVisaCheckoutStatusData';
-import { IVisaCheckoutUpdateConfig } from './visa-checkout-update-service/IVisaCheckoutUpdateConfig';
 import { mock, when, instance as mockInstance, verify, anything } from 'ts-mockito';
+import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { VisaCheckoutMock } from './VisaCheckoutMock';
 import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
 
@@ -15,20 +15,8 @@ describe('VisaCheckoutMock', () => {
   let instance: VisaCheckoutMock;
   let visaCheckoutSdkProviderMock: VisaCheckoutSdkProvider;
   let messageBusMock: IMessageBus;
+  let visaCheckoutUpdateServiceMock: VisaCheckoutUpdateService;
 
-  const visaCheckoutUpdateConfigMock: IVisaCheckoutUpdateConfig = {
-    buttonUrl: 'https://button-mock-url.com',
-    sdkUrl: 'https://sdk-mock-url.com',
-    visaInitConfig: {
-      apikey: '',
-      encryptionKey: '',
-      paymentRequest: {
-        currencyCode: '',
-        subtotal: '',
-        total: ''
-      }
-    }
-  };
   const configMock: IConfig = {
     jwt: '',
     formId: 'st-form',
@@ -51,7 +39,7 @@ describe('VisaCheckoutMock', () => {
       }
     }
   };
-  const visaCheckoutLibMock: IVisaCheckoutSdkLib = {
+  const visaCheckoutLibMock: IVisaCheckoutSdk = {
     init: () => {},
     on: (resType: VisaCheckoutResponseType, cb: (statusData: IVisaCheckoutStatusData) => void) => {
       switch (resType) {
@@ -77,16 +65,16 @@ describe('VisaCheckoutMock', () => {
   beforeEach(() => {
     visaCheckoutSdkProviderMock = mock(VisaCheckoutSdkProvider);
     messageBusMock = mock<IMessageBus>();
+    visaCheckoutUpdateServiceMock = mock(VisaCheckoutUpdateService);
 
     when(messageBusMock.pipe(anything())).thenReturn(of(configMock));
-    when(visaCheckoutSdkProviderMock.getSdk$(anything())).thenReturn(
-      of({
-        lib: visaCheckoutLibMock,
-        updateConfig: visaCheckoutUpdateConfigMock
-      })
-    );
+    when(visaCheckoutSdkProviderMock.getSdk$(anything(), anything())).thenReturn(of(visaCheckoutLibMock));
 
-    instance = new VisaCheckoutMock(mockInstance(visaCheckoutSdkProviderMock), mockInstance(messageBusMock));
+    instance = new VisaCheckoutMock(
+      mockInstance(visaCheckoutSdkProviderMock),
+      mockInstance(messageBusMock),
+      mockInstance(visaCheckoutUpdateServiceMock)
+    );
   });
 
   describe('init()', () => {
@@ -94,7 +82,7 @@ describe('VisaCheckoutMock', () => {
       instance.init();
 
       verify(messageBusMock.pipe(anything())).once();
-      verify(visaCheckoutSdkProviderMock.getSdk$(anything())).once();
+      verify(visaCheckoutSdkProviderMock.getSdk$(anything(), anything())).once();
     });
   });
 });

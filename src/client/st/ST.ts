@@ -260,24 +260,24 @@ export class ST {
   private initControlFrame$(): Observable<IConfig> {
     if (this._controlFrameLoader$) {
       return this._controlFrameLoader$;
-    } else {
-      this._controlFrameLoader$ = this._framesHub.waitForFrame(CONTROL_FRAME_IFRAME).pipe(
-        switchMap((controlFrame: string) => {
-          const queryEvent: IMessageBusEvent<string> = {
-            type: PUBLIC_EVENTS.INIT_CONTROL_FRAME,
-            data: JSON.stringify(this._config)
-          };
-
-          return from(this._communicator.query(queryEvent, controlFrame));
-        }),
-        tap(() => {
-          this._merchantFields.init();
-        }),
-        shareReplay(1)
-      );
-
-      return this._controlFrameLoader$;
     }
+
+    this._controlFrameLoader$ = this._framesHub.waitForFrame(CONTROL_FRAME_IFRAME).pipe(
+      switchMap((controlFrame: string) => {
+        const queryEvent: IMessageBusEvent<string> = {
+          type: PUBLIC_EVENTS.INIT_CONTROL_FRAME,
+          data: JSON.stringify(this._config)
+        };
+
+        return from(this._communicator.query(queryEvent, controlFrame));
+      }),
+      tap(() => {
+        this._merchantFields.init();
+      }),
+      shareReplay(1)
+    );
+
+    return this._controlFrameLoader$;
   }
 
   private CardFrames(): void {

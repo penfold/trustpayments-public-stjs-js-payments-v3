@@ -1,17 +1,12 @@
-import { anything, deepEqual, instance as mockInstance, mock, verify, when } from 'ts-mockito';
+import { deepEqual, instance as mockInstance, mock, verify } from 'ts-mockito';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
-import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
-import { IStJwtPayload } from '../../../models/IStJwtPayload';
 import { VisaCheckoutButtonService } from '../visa-checkout-button-service/VisaCheckoutButtonService';
 import { IVisaCheckoutUpdateConfig } from '../visa-checkout-update-service/IVisaCheckoutUpdateConfig';
-import { VisaCheckoutUpdateService } from '../visa-checkout-update-service/VisaCheckoutUpdateService';
 import { IVisaCheckoutSdk } from './IVisaCheckoutSdk';
 import { VisaCheckoutSdkProviderMock } from './VisaCheckoutSdkProviderMock';
 
 describe('VisaCheckoutSdkProviderMock', () => {
   let visaCheckoutSdkProviderMock: VisaCheckoutSdkProviderMock;
-  let visaCheckoutUpdateServiceMock: VisaCheckoutUpdateService;
-  let jwtDecoderMock: JwtDecoder;
   let visaCheckoutButtonServiceMock: VisaCheckoutButtonService;
 
   const configMock: IConfig = {
@@ -49,59 +44,35 @@ describe('VisaCheckoutSdkProviderMock', () => {
       }
     }
   };
-  const jwtDecodePayloadMock: IStJwtPayload = {
-    requesttypedescriptions: ['AUTH']
-  };
 
   beforeEach(() => {
-    visaCheckoutUpdateServiceMock = mock(VisaCheckoutUpdateService);
-    jwtDecoderMock = mock(JwtDecoder);
     visaCheckoutButtonServiceMock = mock(VisaCheckoutButtonService);
 
-    visaCheckoutSdkProviderMock = new VisaCheckoutSdkProviderMock(
-      mockInstance(visaCheckoutUpdateServiceMock),
-      mockInstance(jwtDecoderMock),
-      mockInstance(visaCheckoutButtonServiceMock)
-    );
-
-    when(jwtDecoderMock.decode(anything())).thenReturn({
-      payload: jwtDecodePayloadMock
-    });
-    when(visaCheckoutUpdateServiceMock.updateConfigObject(anything(), anything(), anything())).thenReturn(
-      visaCheckoutUpdateConfigMock
-    );
+    visaCheckoutSdkProviderMock = new VisaCheckoutSdkProviderMock(mockInstance(visaCheckoutButtonServiceMock));
   });
 
   describe('getSdk$()', () => {
     it('should invoke return proper sdk object and invoke proper services methods', done => {
-      visaCheckoutSdkProviderMock.getSdk$(configMock).subscribe((sdk: IVisaCheckoutSdk) => {
-        verify(
-          visaCheckoutUpdateServiceMock.updateConfigObject(
-            deepEqual(configMock.visaCheckout),
-            deepEqual(jwtDecodePayloadMock),
-            configMock.livestatus
-          )
-        ).once();
-        verify(
-          visaCheckoutButtonServiceMock.mount(
-            configMock.visaCheckout.placement,
-            deepEqual(configMock.visaCheckout.buttonSettings),
-            visaCheckoutUpdateConfigMock.buttonUrl
-          )
-        ).once();
-        // Needs to stringify as Jest cannot compare functions
-        expect(JSON.stringify(sdk)).toBe(
-          JSON.stringify({
-            lib: {
+      visaCheckoutSdkProviderMock
+        .getSdk$(configMock, visaCheckoutUpdateConfigMock)
+        .subscribe((sdk: IVisaCheckoutSdk) => {
+          verify(
+            visaCheckoutButtonServiceMock.mount(
+              configMock.visaCheckout.placement,
+              deepEqual(configMock.visaCheckout.buttonSettings),
+              visaCheckoutUpdateConfigMock.buttonUrl
+            )
+          ).once();
+          // Needs to stringify as Jest cannot compare functions
+          expect(JSON.stringify(sdk)).toBe(
+            JSON.stringify({
               init: () => {},
               on: () => {}
-            },
-            updateConfig: visaCheckoutUpdateConfigMock
-          })
-        );
+            })
+          );
 
-        done();
-      });
+          done();
+        });
     });
   });
 });
