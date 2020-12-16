@@ -1,13 +1,10 @@
-import { IApplePayError } from './IApplePayError';
-import { ApplePayErrorCode } from './ApplePayErrorCode';
+export class ApplePayErrorMock {
+  private errorCode: string;
+  private contactField: string;
+  private message: string;
 
-export class ApplePayErrorMock implements IApplePayError {
-  code: ApplePayErrorCode;
-  contactField: string;
-  message: string;
-
-  constructor(code: ApplePayErrorCode, contactField?: string, message?: string) {
-    this.code = code;
+  constructor(errorCode: string, contactField?: string, message?: string) {
+    this.errorCode = errorCode;
     this.contactField = contactField;
     this.message = message;
   }
