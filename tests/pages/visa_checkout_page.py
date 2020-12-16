@@ -15,7 +15,7 @@ class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
         if 'switch_to_parent_iframe' in context.scenario.tags:
             self._action.switch_to_default_iframe()
         self._executor.wait_for_element_to_be_clickable(VisaCheckoutLocators.visa_checkout_button)
-        self._action.click(VisaCheckoutLocators.visa_checkout_button)
+        self._action.click_by_javascript(VisaCheckoutLocators.visa_checkout_button)
 
     def click_visa_checkout_close_button(self):
         self._waits.wait_for_element_with_id_to_be_displayed(FieldType.VISA_CHECKOUT.value)
