@@ -26,7 +26,6 @@ export class ApplePayPaymentService {
   walletVerify(
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     validationURL: string,
-    cancelled: boolean,
     applePaySession: IApplePaySession
   ): Observable<ApplePayClientErrorCode> {
     const request: IApplePayValidateMerchantRequest = this.applePayConfigService.updateWalletValidationUrl(
@@ -35,11 +34,6 @@ export class ApplePayPaymentService {
     );
 
     return this.payment.walletVerify(request).pipe(
-      tap(() => {
-        if (cancelled) {
-          return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
-        }
-      }),
       switchMap((response: IApplePayWalletVerifyResponse) => {
         const { walletsession } = response.response;
 
@@ -86,7 +80,6 @@ export class ApplePayPaymentService {
         });
       }),
       catchError((error: any) => {
-        console.error(error);
         return of({
           errorCode: this.applePayClientErrorService.create('1'),
           errorMessage: error
