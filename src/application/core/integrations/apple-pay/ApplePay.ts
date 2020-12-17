@@ -24,6 +24,7 @@ import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySess
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { ApplePayErrorCode } from './apple-pay-error-service/ApplePayErrorCode';
+import { IApplePayClientErrorDetails } from '../../../../client/integrations/apple-pay/IApplePayClientErrorDetails';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
@@ -166,12 +167,10 @@ export class ApplePay {
         this.config.formId,
         event
       )
-      .subscribe((response: { errorCode: ApplePayClientErrorCode; errorMessage: string }) => {
+      .subscribe((response: IApplePayClientErrorDetails) => {
         console.error(response);
-        if (Number(response.errorCode) === 0) {
-          this.handlePaymentProcessResponse(ApplePayClientErrorCode.SUCCESS, response.errorMessage);
-          this.gestureHandler();
-        }
+        this.handlePaymentProcessResponse(response.errorCode, response.errorMessage);
+        this.gestureHandler();
       });
   }
 

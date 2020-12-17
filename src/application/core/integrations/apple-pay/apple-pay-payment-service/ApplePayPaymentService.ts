@@ -12,12 +12,17 @@ import { ApplePayConfigService } from '../apple-pay-config-service/ApplePayConfi
 import { ApplePayClientErrorCode } from '../../../../../client/integrations/apple-pay/ApplePayClientErrorCode';
 import { DomMethods } from '../../../shared/dom-methods/DomMethods';
 import { Payment } from '../../../shared/payment/Payment';
+import { IApplePayClientErrorDetails } from '../../../../../client/integrations/apple-pay/IApplePayClientErrorDetails';
+import { ApplePayClientErrorService } from '../../../../../client/integrations/apple-pay/apple-pay-client-error-service/ApplePayClientErrorService';
 
 @Service()
 export class ApplePayPaymentService {
   private payment: Payment;
 
-  constructor(private applePayConfigService: ApplePayConfigService) {
+  constructor(
+    private applePayConfigService: ApplePayConfigService,
+    private applePayClientErrorService: ApplePayClientErrorService
+  ) {
     this.payment = new Payment();
   }
 
@@ -58,7 +63,7 @@ export class ApplePayPaymentService {
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     formId: string,
     event: IApplePayPaymentAuthorizedEvent
-  ): Observable<{ errorCode: string; errorMessage: string }> {
+  ): Observable<IApplePayClientErrorDetails> {
     return from(
       this.payment.processPayment(
         requestTypes,
@@ -78,13 +83,14 @@ export class ApplePayPaymentService {
     ).pipe(
       switchMap((response: IApplePayProcessPaymentResponse) => {
         return of({
-          errorCode: response.response.errorcode,
+          errorCode: this.applePayClientErrorService.create(response.response.errorcode),
           errorMessage: response.response.errormessage
         });
       }),
-      catchError(() => {
+      catchError((error: any) => {
+        console.error(error);
         return of({
-          errorCode: '1',
+          errorCode: this.applePayClientErrorService.create('2'),
           errorMessage: PAYMENT_ERROR
         });
       })
