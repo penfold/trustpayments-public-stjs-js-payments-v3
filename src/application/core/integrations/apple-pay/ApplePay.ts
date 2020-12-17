@@ -36,6 +36,7 @@ export class ApplePay {
     status: undefined
   };
   private config: IApplePayConfigObject;
+  private paymentCancelled: boolean = false;
 
   constructor(
     private communicator: InterFrameCommunicator,
@@ -100,6 +101,7 @@ export class ApplePay {
   }
 
   private proceedPayment(): void {
+    this.paymentCancelled = false;
     // need to be here because of gesture handler
     this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
     this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
@@ -115,13 +117,19 @@ export class ApplePay {
     this.applePaySession.oncancel = (event: Event) => {
       console.error(event);
       this.gestureHandler();
+      this.paymentCancelled = true;
       this.onCancel();
     };
   }
 
   private onValidateMerchant(event: IApplePayValidateMerchantEvent): void {
     this.applePayPaymentService
-      .walletVerify(this.config.validateMerchantRequest, event.validationURL, this.applePaySession)
+      .walletVerify(
+        this.config.validateMerchantRequest,
+        event.validationURL,
+        this.paymentCancelled,
+        this.applePaySession
+      )
       .subscribe((code: ApplePayClientErrorCode) => {
         if (code !== ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS) {
           this.applePaySessionService.endMerchantValidation();
@@ -203,7 +211,7 @@ export class ApplePay {
       return this.completion;
     }
     if (errorCode === ApplePayClientErrorCode.CANCEL) {
-      console.error(this.completion);
+      console.error('cancel');
       this.applePaySessionService.endMerchantValidation();
       return this.completion;
     }

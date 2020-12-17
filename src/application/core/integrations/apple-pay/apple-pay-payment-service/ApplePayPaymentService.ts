@@ -6,7 +6,6 @@ import { IApplePayProcessPaymentResponse } from '../apple-pay-payment-data/IAppl
 import { IApplePaySession } from '../apple-pay-session-service/IApplePaySession';
 import { IApplePayWalletVerifyResponse } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
-import { PAYMENT_ERROR } from '../../../models/constants/Translations';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { ApplePayConfigService } from '../apple-pay-config-service/ApplePayConfigService';
 import { ApplePayClientErrorCode } from '../../../../../client/integrations/apple-pay/ApplePayClientErrorCode';
@@ -26,6 +25,7 @@ export class ApplePayPaymentService {
   walletVerify(
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     validationURL: string,
+    cancelled: boolean,
     applePaySession: IApplePaySession
   ): Observable<ApplePayClientErrorCode> {
     const request: IApplePayValidateMerchantRequest = this.applePayConfigService.updateWalletValidationUrl(
@@ -34,6 +34,11 @@ export class ApplePayPaymentService {
     );
 
     return this.payment.walletVerify(request).pipe(
+      tap(() => {
+        if (cancelled) {
+          return of(ApplePayClientErrorCode.CANCEL);
+        }
+      }),
       switchMap((response: IApplePayWalletVerifyResponse) => {
         const { walletsession } = response.response;
 
