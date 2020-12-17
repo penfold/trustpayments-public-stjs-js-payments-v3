@@ -166,10 +166,10 @@ export class ApplePay {
         this.config.formId,
         event
       )
-      .subscribe((response: any) => {
+      .subscribe((response: { errorCode: ApplePayClientErrorCode; errorMessage: string }) => {
         console.error(response);
         if (Number(response.errorCode) === 0) {
-          this.handlePaymentProcessResponse(ApplePayClientErrorCode.SUCCESS, response.errormessage);
+          this.handlePaymentProcessResponse(ApplePayClientErrorCode.SUCCESS, response.errorMessage);
           this.gestureHandler();
         }
       });
