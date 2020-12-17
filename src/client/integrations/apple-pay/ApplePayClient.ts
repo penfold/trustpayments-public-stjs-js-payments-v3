@@ -53,11 +53,11 @@ export class ApplePayClient implements IApplePayClient {
               case ApplePayClientStatus.CANCEL:
                 return this.onCancel$(event.data);
 
-              case ApplePayClientStatus.VALIDATE_MERCHANT_ERROR:
-                return this.onValidateMerchantError$(event.data);
-
               case ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS:
                 return this.onValidateMerchantSuccess$(event.data);
+
+              case ApplePayClientStatus.VALIDATE_MERCHANT_ERROR:
+                return this.onValidateMerchantError$(event.data);
 
               case ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD:
                 return this.canMakePaymentWithActiveCard$(event.data);
