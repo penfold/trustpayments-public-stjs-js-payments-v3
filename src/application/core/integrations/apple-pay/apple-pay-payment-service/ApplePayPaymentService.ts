@@ -40,8 +40,8 @@ export class ApplePayPaymentService {
         }
       }),
       switchMap((response: IApplePayWalletVerifyResponse) => {
+        console.error(response);
         const { walletsession } = response.response;
-
         if (!walletsession) {
           return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
         }
