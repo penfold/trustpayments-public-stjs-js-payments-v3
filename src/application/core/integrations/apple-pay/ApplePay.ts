@@ -102,6 +102,7 @@ export class ApplePay {
   }
 
   private proceedPayment(): void {
+    console.error(this.config);
     this.paymentCancelled = false;
     // need to be here because of gesture handler
     this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
@@ -163,6 +164,7 @@ export class ApplePay {
 
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): void {
     console.error(event);
+    console.error(this.config);
     this.applePayPaymentService
       .processPayment(
         this.config.paymentRequest.requestTypes,
@@ -229,6 +231,7 @@ export class ApplePay {
         }
       }
     });
+    this.applePaySessionService.endMerchantValidation();
     return this.completion;
   }
 
@@ -244,7 +247,7 @@ export class ApplePay {
           console.error('completeFailedTransaction', event.data.errormessage);
           this.applePaySession.completePayment({
             status: ApplePaySession.STATUS_FAILURE,
-            errors: this.applePayErrorService.create(event.data.errormessage, this.config.locale)
+            errors: this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale)
           });
         }
       });
