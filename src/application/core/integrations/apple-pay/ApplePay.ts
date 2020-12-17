@@ -209,20 +209,23 @@ export class ApplePay {
       this.applePaySession.completePayment(this.completion);
       return this.completion;
     }
+    console.error(this.completion);
     this.completion.errors = this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale);
     this.completion.status = ApplePaySession.STATUS_FAILURE;
+    console.error(this.completion);
 
     this.messageBus.publish<IApplePayClientStatus>({
       type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
       data: {
         status: ApplePayClientStatus.ERROR,
         data: {
-          errorCode: ApplePayClientErrorCode.ERROR,
+          errorCode,
           errorMessage
         }
       }
     });
-    this.applePaySession.completePayment(this.completion);
+    this.applePaySessionService.endMerchantValidation();
+    // this.applePaySession.completePayment(this.completion);
     return this.completion;
   }
 

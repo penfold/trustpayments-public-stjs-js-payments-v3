@@ -90,8 +90,8 @@ export class ApplePayPaymentService {
       catchError((error: any) => {
         console.error(error);
         return of({
-          errorCode: this.applePayClientErrorService.create('2'),
-          errorMessage: PAYMENT_ERROR
+          errorCode: this.applePayClientErrorService.create('1'),
+          errorMessage: error
         });
       })
     );
