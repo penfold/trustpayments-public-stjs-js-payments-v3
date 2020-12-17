@@ -17,14 +17,11 @@ import { ApplePayClientErrorService } from '../../../../../client/integrations/a
 
 @Service()
 export class ApplePayPaymentService {
-  private payment: Payment;
-
   constructor(
+    private payment: Payment,
     private applePayConfigService: ApplePayConfigService,
     private applePayClientErrorService: ApplePayClientErrorService
-  ) {
-    this.payment = new Payment();
-  }
+  ) {}
 
   walletVerify(
     validateMerchantRequest: IApplePayValidateMerchantRequest,
@@ -82,6 +79,7 @@ export class ApplePayPaymentService {
       )
     ).pipe(
       switchMap((response: IApplePayProcessPaymentResponse) => {
+        console.error(response);
         return of({
           errorCode: this.applePayClientErrorService.create(response.response.errorcode),
           errorMessage: response.response.errormessage
