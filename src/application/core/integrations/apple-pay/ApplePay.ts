@@ -63,6 +63,7 @@ export class ApplePay {
             console.error('Your device does not support making payments with Apple Pay');
             return { status: false, config: event.data };
           }
+
           return { status: true, config: event.data };
         }),
         filter((initObject: { status: boolean; config: IConfig }) => initObject.status),
@@ -102,7 +103,6 @@ export class ApplePay {
   }
 
   private proceedPayment(): void {
-    console.error(this.config);
     this.paymentCancelled = false;
     // need to be here because of gesture handler
     this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
@@ -119,7 +119,6 @@ export class ApplePay {
     };
 
     this.applePaySession.oncancel = (event: Event) => {
-      console.error(event);
       this.gestureHandler();
       this.paymentCancelled = true;
       this.onCancel();
@@ -163,8 +162,6 @@ export class ApplePay {
   }
 
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): void {
-    console.error(event);
-    console.error(this.config);
     this.applePayPaymentService
       .processPayment(
         this.config.paymentRequest.requestTypes,
@@ -173,7 +170,6 @@ export class ApplePay {
         event
       )
       .subscribe((response: IApplePayClientErrorDetails) => {
-        console.error(response);
         this.handlePaymentProcessResponse(response.errorCode, response.errorMessage);
         this.gestureHandler();
       });
@@ -196,9 +192,7 @@ export class ApplePay {
     errorCode: ApplePayClientErrorCode,
     errorMessage: string
   ): IApplePayPaymentAuthorizationResult {
-    console.error(errorCode);
     if (errorCode === ApplePayClientErrorCode.SUCCESS) {
-      console.error(errorCode);
       this.completion.status = ApplePaySession.STATUS_SUCCESS;
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
@@ -214,7 +208,6 @@ export class ApplePay {
       return this.completion;
     }
     if (errorCode === ApplePayClientErrorCode.CANCEL) {
-      console.error('cancel');
       this.applePaySessionService.endMerchantValidation();
       return this.completion;
     }
@@ -244,7 +237,6 @@ export class ApplePay {
       )
       .subscribe(event => {
         if (Number(event.data.errorcode) !== 0) {
-          console.error('completeFailedTransaction', event.data.errormessage);
           this.applePaySession.completePayment({
             status: ApplePaySession.STATUS_FAILURE,
             errors: this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale)

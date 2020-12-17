@@ -39,8 +39,8 @@ export class ApplePayPaymentService {
           return of(ApplePayClientErrorCode.CANCEL);
         }
       }),
+
       switchMap((response: IApplePayWalletVerifyResponse) => {
-        console.error(response);
         const { walletsession } = response.response;
         if (!walletsession) {
           return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
@@ -78,7 +78,6 @@ export class ApplePayPaymentService {
       )
     ).pipe(
       switchMap((response: IApplePayProcessPaymentResponse) => {
-        console.error(response);
         return of({
           errorCode: this.applePayClientErrorService.create(response.response.errorcode),
           errorMessage: response.response.errormessage
