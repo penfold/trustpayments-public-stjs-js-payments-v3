@@ -21,7 +21,8 @@
   },
   "scripts": {
     "build": "webpack --config webpack.prod.js",
-    "build:automated": "webpack --config webpack.test.js",
+    "build:prod": "webpack --config webpack.prod.js",
+    "build:test": "webpack --config webpack.test.js",
     "build:dev": "webpack --config webpack.dev.js",
     "build:rc": "webpack --config webpack.rc.js",
     "prod": "npm run build",
