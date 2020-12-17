@@ -1,6 +1,6 @@
 import { of } from 'rxjs';
 import { anything, deepEqual, instance as mockInstance, mock, verify, when } from 'ts-mockito';
-import { ApplePayErrorCodes } from '../../../application/core/integrations/apple-pay/apple-pay-error-service/ApplePayErrorCodes';
+import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { IConfig } from '../../../shared/model/config/IConfig';
@@ -73,7 +73,7 @@ describe('ApplePayClient', () => {
           data: {
             status: ApplePayClientStatus.SUCCESS,
             data: {
-              errorCode: ApplePayErrorCodes.SUCCESS,
+              errorCode: ApplePayClientErrorCode.SUCCESS,
               errorMessage: 'SUCCESS'
             }
           } as IApplePayClientStatus
@@ -83,7 +83,7 @@ describe('ApplePayClient', () => {
       applePayClient.init$().subscribe(status => {
         expect(status).toBe(ApplePayClientStatus.SUCCESS);
         verify(browserLocalStorageMock.setItem('completePayment', 'true')).once();
-        verify(applePayNotificationService.notification(ApplePayErrorCodes.SUCCESS, 'SUCCESS')).once();
+        verify(applePayNotificationService.notification(ApplePayClientErrorCode.SUCCESS, 'SUCCESS')).once();
 
         done();
       });
@@ -96,7 +96,7 @@ describe('ApplePayClient', () => {
           data: {
             status: ApplePayClientStatus.ERROR,
             data: {
-              errorCode: ApplePayErrorCodes.ERROR,
+              errorCode: ApplePayClientErrorCode.ERROR,
               errorMessage: 'ERROR'
             }
           } as IApplePayClientStatus
@@ -106,7 +106,7 @@ describe('ApplePayClient', () => {
       applePayClient.init$().subscribe(status => {
         expect(status).toBe(ApplePayClientStatus.ERROR);
         verify(browserLocalStorageMock.setItem('completePayment', 'false')).once();
-        verify(applePayNotificationService.notification(ApplePayErrorCodes.ERROR, 'ERROR')).once();
+        verify(applePayNotificationService.notification(ApplePayClientErrorCode.ERROR, 'ERROR')).once();
         verify(
           messageBusMock.publish(
             deepEqual({
@@ -127,7 +127,7 @@ describe('ApplePayClient', () => {
           data: {
             status: ApplePayClientStatus.CANCEL,
             data: {
-              errorCode: ApplePayErrorCodes.CANCEL,
+              errorCode: ApplePayClientErrorCode.CANCEL,
               errorMessage: 'CANCEL'
             }
           } as IApplePayClientStatus
@@ -136,7 +136,7 @@ describe('ApplePayClient', () => {
 
       applePayClient.init$().subscribe(status => {
         expect(status).toBe(ApplePayClientStatus.CANCEL);
-        verify(applePayNotificationService.notification(ApplePayErrorCodes.CANCEL, 'CANCEL')).once();
+        verify(applePayNotificationService.notification(ApplePayClientErrorCode.CANCEL, 'CANCEL')).once();
         verify(
           messageBusMock.publish(
             deepEqual({
@@ -220,7 +220,7 @@ describe('ApplePayClient', () => {
           data: {
             status: ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET,
             data: {
-              errorCode: ApplePayErrorCodes.NO_ACTIVE_CARDS_IN_WALLET,
+              errorCode: ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET,
               errorMessage: 'NO_ACTIVE_CARDS_IN_WALLET'
             }
           } as IApplePayClientStatus

@@ -12,7 +12,7 @@ import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/ApplePayClientStatus';
-import { ApplePayErrorCodes } from './apple-pay-error-service/ApplePayErrorCodes';
+import { ApplePayClientErrorCode } from '../../../../client/integrations/apple-pay/ApplePayClientErrorCode';
 import { APPLE_PAY_BUTTON_ID } from './apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { VALIDATION_ERROR } from '../../models/constants/Translations';
@@ -128,25 +128,25 @@ export class ApplePay {
         this.paymentCancelled,
         this.applePaySession
       )
-      .subscribe((code: ApplePayErrorCodes) => {
-        if (code !== ApplePayErrorCodes.VALIDATE_MERCHANT_SUCCESS) {
+      .subscribe((code: ApplePayClientErrorCode) => {
+        if (code !== ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS) {
           this.applePaySessionService.endMerchantValidation();
           this.handleWalletVerifyResponse(
             ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
-            ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR,
+            ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
             VALIDATION_ERROR
           );
         }
         this.handleWalletVerifyResponse(
           ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS,
-          ApplePayErrorCodes.VALIDATE_MERCHANT_SUCCESS,
+          ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
           'Merchant validation success'
         );
         return of(code);
       });
   }
 
-  private handleWalletVerifyResponse(status: ApplePayClientStatus, code: ApplePayErrorCodes, message: string) {
+  private handleWalletVerifyResponse(status: ApplePayClientStatus, code: ApplePayClientErrorCode, message: string) {
     this.messageBus.publish<IApplePayClientStatus>({
       type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
       data: {
@@ -169,7 +169,7 @@ export class ApplePay {
       .subscribe((response: any) => {
         console.error(response);
         if (Number(response.errorCode) === 0) {
-          this.handlePaymentProcessResponse(ApplePayErrorCodes.SUCCESS, response.errormessage);
+          this.handlePaymentProcessResponse(ApplePayClientErrorCode.SUCCESS, response.errormessage);
           this.gestureHandler();
         }
       });
@@ -181,7 +181,7 @@ export class ApplePay {
       data: {
         status: ApplePayClientStatus.CANCEL,
         data: {
-          errorCode: ApplePayErrorCodes.CANCEL,
+          errorCode: ApplePayClientErrorCode.CANCEL,
           errorMessage: 'Payment has been cancelled'
         }
       }
@@ -189,11 +189,11 @@ export class ApplePay {
   }
 
   private handlePaymentProcessResponse(
-    errorCode: ApplePayErrorCodes,
+    errorCode: ApplePayClientErrorCode,
     errorMessage: string
   ): IApplePayPaymentAuthorizationResult {
     console.error(errorCode);
-    if (errorCode === ApplePayErrorCodes.SUCCESS) {
+    if (errorCode === ApplePayClientErrorCode.SUCCESS) {
       console.error(errorCode);
       this.completion.status = ApplePaySession.STATUS_SUCCESS;
       this.messageBus.publish<IApplePayClientStatus>({
@@ -201,7 +201,7 @@ export class ApplePay {
         data: {
           status: ApplePayClientStatus.SUCCESS,
           data: {
-            errorCode: ApplePayErrorCodes.SUCCESS,
+            errorCode: ApplePayClientErrorCode.SUCCESS,
             errorMessage
           }
         }
@@ -218,7 +218,7 @@ export class ApplePay {
       data: {
         status: ApplePayClientStatus.ERROR,
         data: {
-          errorCode: ApplePayErrorCodes.ERROR,
+          errorCode: ApplePayClientErrorCode.ERROR,
           errorMessage
         }
       }
