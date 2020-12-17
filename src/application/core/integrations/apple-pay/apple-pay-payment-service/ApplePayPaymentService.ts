@@ -9,7 +9,7 @@ import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data
 import { PAYMENT_ERROR } from '../../../models/constants/Translations';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { ApplePayConfigService } from '../apple-pay-config-service/ApplePayConfigService';
-import { ApplePayErrorCodes } from '../apple-pay-error-service/ApplePayErrorCodes';
+import { ApplePayClientErrorCode } from '../../../../../client/integrations/apple-pay/ApplePayClientErrorCode';
 import { DomMethods } from '../../../shared/dom-methods/DomMethods';
 import { Payment } from '../../../shared/payment/Payment';
 
@@ -26,7 +26,7 @@ export class ApplePayPaymentService {
     validationURL: string,
     cancelled: boolean,
     applePaySession: IApplePaySession
-  ): Observable<ApplePayErrorCodes> {
+  ): Observable<ApplePayClientErrorCode> {
     const request: IApplePayValidateMerchantRequest = this.applePayConfigService.updateWalletValidationUrl(
       validateMerchantRequest,
       validationURL
@@ -35,20 +35,20 @@ export class ApplePayPaymentService {
     return this.payment.walletVerify(request).pipe(
       tap(() => {
         if (cancelled) {
-          return of(ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR);
+          return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
         }
       }),
       switchMap((response: IApplePayWalletVerifyResponse) => {
         const { walletsession } = response.response;
 
         if (!walletsession) {
-          return of(ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR);
+          return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
         }
         applePaySession.completeMerchantValidation(JSON.parse(walletsession));
-        return of(ApplePayErrorCodes.VALIDATE_MERCHANT_SUCCESS);
+        return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS);
       }),
       catchError(() => {
-        return of(ApplePayErrorCodes.VALIDATE_MERCHANT_ERROR);
+        return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
       })
     );
   }
@@ -79,7 +79,7 @@ export class ApplePayPaymentService {
       switchMap((response: IApplePayProcessPaymentResponse) => {
         return of({
           errorCode: response.response.errorcode,
-          errorMessage: response.response.errorcode
+          errorMessage: response.response.errormessage
         });
       }),
       catchError(() => {

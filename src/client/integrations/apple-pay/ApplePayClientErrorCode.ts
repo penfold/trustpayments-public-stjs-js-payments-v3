@@ -1,4 +1,4 @@
-export enum ApplePayErrorCodes {
+export enum ApplePayClientErrorCode {
   SUCCESS = 0,
   ERROR = 1,
   CANCEL = 2,
