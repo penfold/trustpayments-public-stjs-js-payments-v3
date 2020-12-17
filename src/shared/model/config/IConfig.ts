@@ -3,10 +3,8 @@ import { IComponentsConfig } from './IComponentsConfig';
 import { IComponentsIds } from './IComponentsIds';
 import { IStyles } from './IStyles';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
-import { IVisaCheckout } from '../../../application/core/models/constants/IVisaCheckout';
-import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
-import { IApplePayConfig } from '../../../application/core/models/IApplePayConfig';
+import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 
 export interface IConfig {
   analytics?: boolean;

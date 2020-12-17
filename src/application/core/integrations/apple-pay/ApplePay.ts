@@ -1,7 +1,9 @@
+import JwtDecode from 'jwt-decode';
 import { Service } from 'typedi';
 import { from, of } from 'rxjs';
 import { filter, first, map, switchMap, take } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
+import { IApplePayClientErrorDetails } from '../../../../client/integrations/apple-pay/IApplePayClientErrorDetails';
 import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
 import { IApplePayConfigObject } from './apple-pay-config-service/IApplePayConfigObject';
 import { IApplePayPaymentAuthorizationResult } from './apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
@@ -9,10 +11,12 @@ import { IApplePayPaymentAuthorizedEvent } from './apple-pay-payment-data/IApple
 import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
 import { IApplePayValidateMerchantEvent } from './apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
 import { IConfig } from '../../../../shared/model/config/IConfig';
+import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/ApplePayClientStatus';
 import { ApplePayClientErrorCode } from '../../../../client/integrations/apple-pay/ApplePayClientErrorCode';
+import { ApplePayErrorCode } from './apple-pay-error-service/ApplePayErrorCode';
 import { APPLE_PAY_BUTTON_ID } from './apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { VALIDATION_ERROR } from '../../models/constants/Translations';
@@ -23,8 +27,6 @@ import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaym
 import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { ApplePayErrorCode } from './apple-pay-error-service/ApplePayErrorCode';
-import { IApplePayClientErrorDetails } from '../../../../client/integrations/apple-pay/IApplePayClientErrorDetails';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
@@ -164,7 +166,7 @@ export class ApplePay {
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): void {
     this.applePayPaymentService
       .processPayment(
-        this.config.paymentRequest.requestTypes,
+        JwtDecode<IDecodedJwt>(this.config).payload.requesttypedescriptions,
         this.config.validateMerchantRequest,
         this.config.formId,
         event
