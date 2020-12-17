@@ -83,6 +83,7 @@ export class ApplePay {
                 initObject.config.applePay.buttonStyle,
                 initObject.config.applePay.paymentRequest.countryCode
               );
+
               this.config = this.applePayConfigService.setConfig(initObject.config, {
                 walletmerchantid: '',
                 walletrequestdomain: window.location.hostname,
@@ -105,6 +106,8 @@ export class ApplePay {
     // need to be here because of gesture handler
     this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
     this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
+
+    this.completeFailedTransaction();
 
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
       this.onValidateMerchant(event);
@@ -159,7 +162,6 @@ export class ApplePay {
   }
 
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): void {
-    this.completeFailedTransaction();
     console.error(event);
     this.applePayPaymentService
       .processPayment(
@@ -242,6 +244,7 @@ export class ApplePay {
       )
       .subscribe(event => {
         if (Number(event.data.errorcode) !== 0) {
+          console.error('completeFailedTransaction', errormessage);
           this.applePaySession.completePayment({
             status: ApplePaySession.STATUS_FAILURE,
             errors: this.applePayErrorService.create(event.data.errormessage, this.config.locale)
