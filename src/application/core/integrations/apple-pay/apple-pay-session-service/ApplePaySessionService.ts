@@ -22,7 +22,7 @@ export class ApplePaySessionService {
     this.beginMerchantValidation();
   }
 
-  endMerchantValidation(): void {
+  abortApplePaySession(): void {
     try {
       this.applePaySession.abort();
     } catch (error) {

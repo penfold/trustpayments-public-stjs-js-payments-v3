@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { from, Observable, of } from 'rxjs';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { IApplePayPaymentAuthorizedEvent } from '../apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { IApplePayProcessPaymentResponse } from '../apple-pay-payment-data/IApplePayProcessPaymentResponse';
 import { IApplePaySession } from '../apple-pay-session-service/IApplePaySession';

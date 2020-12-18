@@ -43,8 +43,7 @@ export class ApplePay {
     private applePayConfigService: ApplePayConfigService,
     private applePayErrorService: ApplePayErrorService,
     private applePaySessionFactory: ApplePaySessionFactory,
-    private applePaySessionService: ApplePaySessionService,
-    private applePayPaymentService: ApplePayPaymentService
+    private applePaySessionService: ApplePaySessionService
   ) {}
 
   init(): void {
@@ -72,6 +71,16 @@ export class ApplePay {
             map((canMakePayment: boolean) => {
               if (!canMakePayment) {
                 console.error('User has not an active card provisioned into Wallet');
+                this.messageBus.publish<IApplePayClientStatus>({
+                  type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+                  data: {
+                    status: ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET,
+                    data: {
+                      errorCode: ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET,
+                      errorMessage: 'User has not an active card provisioned into Wallet'
+                    }
+                  }
+                });
                 return of(ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET);
               }
 
@@ -88,8 +97,18 @@ export class ApplePay {
                 walletsource: 'APPLEPAY',
                 walletvalidationurl: ''
               });
-              this.gestureHandler();
 
+              this.gestureHandler();
+              this.messageBus.publish<IApplePayClientStatus>({
+                type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+                data: {
+                  status: ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD,
+                  data: {
+                    errorCode: ApplePayClientErrorCode.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD,
+                    errorMessage: 'Can make payment'
+                  }
+                }
+              });
               return of(ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD);
             }),
             take(1)
@@ -105,34 +124,36 @@ export class ApplePay {
     this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
     this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
 
-    this.completeFailedTransaction();
+    this.messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
+        filter(event => event.data.requesttypedescription !== 'WALLETVERIFY'),
+        first()
+      )
+      .subscribe(event => {
+        if (Number(event.data.errorcode) !== 0) {
+          this.applePaySession.completePayment({
+            status: ApplePaySession.STATUS_FAILURE,
+            errors: this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale)
+          });
+        }
+      });
 
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
-      this.onValidateMerchant(event);
-    };
+      this.messageBus.publish<IApplePayClientStatus>({
+        type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+        data: {
+          status: ApplePayClientStatus.ON_VALIDATE_MERCHANT,
+          data: {
+            errorCode: ApplePayClientErrorCode.ON_VALIDATE_MERCHANT,
+            errorEvent: event
+          }
+        }
+      });
 
-    this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
-      this.onPaymentAuthorized(event);
-    };
-
-    this.applePaySession.oncancel = (event: Event) => {
-      this.gestureHandler();
-      this.paymentCancelled = true;
-      this.onCancel();
-    };
-  }
-
-  private onValidateMerchant(event: IApplePayValidateMerchantEvent): void {
-    this.applePayPaymentService
-      .walletVerify(
-        this.config.validateMerchantRequest,
-        event.validationURL,
-        this.paymentCancelled,
-        this.applePaySession
-      )
-      .subscribe((code: ApplePayClientErrorCode) => {
-        if (code !== ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS) {
-          this.applePaySessionService.endMerchantValidation();
+      this.messageBus.subscribeType(PUBLIC_EVENTS.APPLE_PAY_WALLETVERIFY_STATUS, (response: unknown) => {
+        if (response.code !== ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS) {
+          this.applePaySessionService.abortApplePaySession();
           this.handleWalletVerifyResponse(
             ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
             ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
@@ -146,6 +167,53 @@ export class ApplePay {
         );
         return of(code);
       });
+    };
+
+    this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
+      this.messageBus.publish<IApplePayClientStatus>({
+        type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+        data: {
+          status: ApplePayClientStatus.ON_PAYMENT_AUTHORIZED,
+          data: {
+            errorCode: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
+            errorEvent: event
+          }
+        }
+      });
+
+      this.messageBus.subscribeType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION_STATUS, (response: unknown) => {
+        this.handlePaymentProcessResponse(response.errorCode, response.errorMessage);
+        this.gestureHandler();
+      });
+    };
+
+    this.applePaySession.oncancel = (event: Event) => {
+      this.gestureHandler();
+      this.paymentCancelled = true;
+      this.messageBus.publish<IApplePayClientStatus>({
+        type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+        data: {
+          status: ApplePayClientStatus.CANCEL,
+          data: {
+            errorCode: ApplePayClientErrorCode.CANCEL,
+            errorMessage: 'Payment has been cancelled'
+          }
+        }
+      });
+    };
+  }
+
+  private onValidateMerchant(event: IApplePayValidateMerchantEvent): void {
+    // this.applePayPaymentService
+    //   .walletVerify(
+    //     this.config.validateMerchantRequest,
+    //     event.validationURL,
+    //     this.paymentCancelled,
+    //     this.applePaySession
+    //   )
+    //   .subscribe((code: ApplePayClientErrorCode) => {
+    //
+    //   });
   }
 
   private handleWalletVerifyResponse(status: ApplePayClientStatus, code: ApplePayClientErrorCode, message: string) {
@@ -159,30 +227,16 @@ export class ApplePay {
   }
 
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): void {
-    this.applePayPaymentService
-      .processPayment(
-        JwtDecode<IDecodedJwt>(this.config).payload.requesttypedescriptions,
-        this.config.validateMerchantRequest,
-        this.config.formId,
-        event
-      )
-      .subscribe((response: IApplePayClientErrorDetails) => {
-        this.handlePaymentProcessResponse(response.errorCode, response.errorMessage);
-        this.gestureHandler();
-      });
-  }
-
-  private onCancel() {
-    this.messageBus.publish<IApplePayClientStatus>({
-      type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
-      data: {
-        status: ApplePayClientStatus.CANCEL,
-        data: {
-          errorCode: ApplePayClientErrorCode.CANCEL,
-          errorMessage: 'Payment has been cancelled'
-        }
-      }
-    });
+    // this.applePayPaymentService
+    //   .processPayment(
+    //     JwtDecode<IDecodedJwt>(this.config).payload.requesttypedescriptions,
+    //     this.config.validateMerchantRequest,
+    //     this.config.formId,
+    //     event
+    //   )
+    // .
+    //   subscribe((response: IApplePayClientErrorDetails) => {
+    // });
   }
 
   private handlePaymentProcessResponse(
@@ -210,7 +264,7 @@ export class ApplePay {
       return completion;
     }
     if (errorCode === ApplePayClientErrorCode.CANCEL) {
-      this.applePaySessionService.endMerchantValidation();
+      this.applePaySessionService.abortApplePaySession();
       return completion;
     }
     completion.errors = this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale);
@@ -226,25 +280,8 @@ export class ApplePay {
         }
       }
     });
-    this.applePaySessionService.endMerchantValidation();
+    this.applePaySessionService.abortApplePaySession();
     return completion;
-  }
-
-  private completeFailedTransaction(): void {
-    this.messageBus
-      .pipe(
-        ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
-        filter(event => event.data.requesttypedescription !== 'WALLETVERIFY'),
-        first()
-      )
-      .subscribe(event => {
-        if (Number(event.data.errorcode) !== 0) {
-          this.applePaySession.completePayment({
-            status: ApplePaySession.STATUS_FAILURE,
-            errors: this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale)
-          });
-        }
-      });
   }
 
   private gestureHandler(): void {
