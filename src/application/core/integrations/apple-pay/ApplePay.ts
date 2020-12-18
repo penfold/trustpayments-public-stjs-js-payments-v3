@@ -15,7 +15,6 @@ import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/
 import { ApplePayClientErrorCode } from '../../../../client/integrations/apple-pay/ApplePayClientErrorCode';
 import { ApplePayErrorCode } from './apple-pay-error-service/ApplePayErrorCode';
 import { APPLE_PAY_BUTTON_ID } from './apple-pay-button-service/ApplePayButtonProperties';
-import { CONTROL_FRAME_IFRAME } from '../../models/constants/Selectors';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { VALIDATION_ERROR } from '../../models/constants/Translations';
 import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
@@ -25,6 +24,7 @@ import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySess
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { GoogleAnalytics } from '../google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
+import { ApplePayGestureService } from './apple-pay-gesture-service/ApplePayGestureService';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
@@ -42,7 +42,8 @@ export class ApplePay {
     private applePayConfigService: ApplePayConfigService,
     private applePayErrorService: ApplePayErrorService,
     private applePaySessionFactory: ApplePaySessionFactory,
-    private applePaySessionService: ApplePaySessionService
+    private applePaySessionService: ApplePaySessionService,
+    private applePayGestureService: ApplePayGestureService
   ) {}
 
   init(): void {
@@ -109,7 +110,7 @@ export class ApplePay {
         }),
 
         tap(() => {
-          this.gestureHandler();
+          this.applePayGestureService.gestureHandle(this.proceedPayment);
         }),
 
         tap(() => {
@@ -222,7 +223,7 @@ export class ApplePay {
     };
 
     this.applePaySession.oncancel = (event: Event) => {
-      this.gestureHandler();
+      this.applePayGestureService.gestureHandle(this.proceedPayment);
       this.paymentCancelled = true;
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
@@ -296,17 +297,5 @@ export class ApplePay {
     });
     this.applePaySessionService.abortApplePaySession();
     return completion;
-  }
-
-  private gestureHandler(): void {
-    const button = document.getElementById(APPLE_PAY_BUTTON_ID);
-    const handler = () => {
-      this.proceedPayment();
-      button.removeEventListener('click', handler);
-    };
-
-    if (button) {
-      button.addEventListener('click', handler);
-    }
   }
 }
