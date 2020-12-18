@@ -25,8 +25,7 @@ export class ApplePayPaymentService {
   walletVerify(
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     validationURL: string,
-    cancelled: boolean,
-    applePaySession: IApplePaySession
+    cancelled: boolean
   ): Observable<ApplePayClientErrorCode> {
     const request: IApplePayValidateMerchantRequest = this.applePayConfigService.updateWalletValidationUrl(
       validateMerchantRequest,
