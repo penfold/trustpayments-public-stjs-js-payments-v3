@@ -15,11 +15,7 @@ import { Payment } from '../../../shared/payment/Payment';
 
 @Service()
 export class ApplePayPaymentService {
-  private payment: Payment;
-
-  constructor(private applePayConfigService: ApplePayConfigService) {
-    this.payment = new Payment();
-  }
+  constructor(private applePayConfigService: ApplePayConfigService, private payment: Payment) {}
 
   walletVerify(
     validateMerchantRequest: IApplePayValidateMerchantRequest,
