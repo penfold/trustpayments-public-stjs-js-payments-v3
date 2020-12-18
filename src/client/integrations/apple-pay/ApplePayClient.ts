@@ -104,8 +104,8 @@ export class ApplePayClient implements IApplePayClient {
             },
             MERCHANT_PARENT_FRAME
           )
-        ).subscribe((response: any) => {
-          console.error(response);
+        ).subscribe((sub: any) => {
+          console.error(sub);
           this.applePayNotificationService.notification(status.data.errorCode, status.data.errorMessage);
           this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
           return of(status.data);

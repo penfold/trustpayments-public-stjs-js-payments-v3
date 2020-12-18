@@ -1,17 +1,18 @@
 import { Service } from 'typedi';
 import { from, Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { IApplePayPaymentAuthorizedEvent } from '../apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
-import { IApplePayProcessPaymentResponse } from '../apple-pay-payment-data/IApplePayProcessPaymentResponse';
-import { IApplePayWalletVerifyResponse } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
-import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
-import { RequestType } from '../../../../../shared/types/RequestType';
-import { ApplePayConfigService } from '../apple-pay-config-service/ApplePayConfigService';
-import { ApplePayClientErrorCode } from '../../../../../client/integrations/apple-pay/ApplePayClientErrorCode';
-import { DomMethods } from '../../../shared/dom-methods/DomMethods';
-import { Payment } from '../../../shared/payment/Payment';
-import { IApplePayClientErrorDetails } from '../../../../../client/integrations/apple-pay/IApplePayClientErrorDetails';
-import { ApplePayClientErrorService } from '../../../../../client/integrations/apple-pay/apple-pay-client-error-service/ApplePayClientErrorService';
+import { IApplePayPaymentAuthorizedEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
+import { IApplePayProcessPaymentResponse } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayProcessPaymentResponse';
+import { IApplePayWalletVerifyResponse } from '../../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
+import { IApplePayValidateMerchantRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
+import { RequestType } from '../../../../shared/types/RequestType';
+import { ApplePayConfigService } from '../../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
+import { ApplePayClientErrorCode } from '../ApplePayClientErrorCode';
+import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
+import { Payment } from '../../../../application/core/shared/payment/Payment';
+import { IApplePayClientErrorDetails } from '../IApplePayClientErrorDetails';
+import { ApplePayClientErrorService } from '../apple-pay-client-error-service/ApplePayClientErrorService';
+import { IApplePayClientStatus } from '../IApplePayClientStatus';
 
 @Service()
 export class ApplePayPaymentService {
@@ -25,14 +26,17 @@ export class ApplePayPaymentService {
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     validationURL: string,
     cancelled: boolean
-  ): Observable<IApplePayClientErrorDetails> {
+  ): Observable<any> {
     const request: IApplePayValidateMerchantRequest = this.applePayConfigService.updateWalletValidationUrl(
       validateMerchantRequest,
       validationURL
     );
 
     if (cancelled) {
-      return of(ApplePayClientErrorCode.CANCEL);
+      return of({
+        status: ApplePayClientErrorCode.CANCEL,
+        data: {}
+      });
     }
 
     return this.payment.walletVerify(request).pipe(
