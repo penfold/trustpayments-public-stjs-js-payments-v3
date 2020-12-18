@@ -33,7 +33,6 @@ function ConfigResolverFixture() {
       buttonStyle: 'white-outline',
       buttonText: 'donate',
       merchantId: 'merchant.net.securetrading.test',
-      requestTypes: ['AUTH'],
       paymentRequest: {
         countryCode: 'US',
         currencyCode: 'USD',
@@ -133,7 +132,6 @@ function ConfigResolverFixture() {
       buttonStyle: 'white-outline',
       buttonText: 'donate',
       merchantId: 'merchant.net.securetrading.test',
-      requestTypes: ['AUTH'],
       paymentRequest: {
         countryCode: 'US',
         currencyCode: 'USD',

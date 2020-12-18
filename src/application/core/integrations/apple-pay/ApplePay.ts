@@ -1,7 +1,9 @@
+import JwtDecode from 'jwt-decode';
 import { Service } from 'typedi';
 import { from, of } from 'rxjs';
 import { filter, first, map, switchMap, take } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
+import { IApplePayClientErrorDetails } from '../../../../client/integrations/apple-pay/IApplePayClientErrorDetails';
 import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
 import { IApplePayConfigObject } from './apple-pay-config-service/IApplePayConfigObject';
 import { IApplePayPaymentAuthorizationResult } from './apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
@@ -9,10 +11,12 @@ import { IApplePayPaymentAuthorizedEvent } from './apple-pay-payment-data/IApple
 import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
 import { IApplePayValidateMerchantEvent } from './apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
 import { IConfig } from '../../../../shared/model/config/IConfig';
+import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/ApplePayClientStatus';
 import { ApplePayClientErrorCode } from '../../../../client/integrations/apple-pay/ApplePayClientErrorCode';
+import { ApplePayErrorCode } from './apple-pay-error-service/ApplePayErrorCode';
 import { APPLE_PAY_BUTTON_ID } from './apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { VALIDATION_ERROR } from '../../models/constants/Translations';
@@ -23,17 +27,12 @@ import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaym
 import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { ApplePayErrorCode } from './apple-pay-error-service/ApplePayErrorCode';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
 @Service()
 export class ApplePay {
   private applePaySession: IApplePaySession;
-  private readonly completion: IApplePayPaymentAuthorizationResult = {
-    errors: undefined,
-    status: undefined
-  };
   private config: IApplePayConfigObject;
   private paymentCancelled: boolean = false;
 
@@ -62,6 +61,7 @@ export class ApplePay {
             console.error('Your device does not support making payments with Apple Pay');
             return { status: false, config: event.data };
           }
+
           return { status: true, config: event.data };
         }),
         filter((initObject: { status: boolean; config: IConfig }) => initObject.status),
@@ -69,7 +69,6 @@ export class ApplePay {
           return from(
             this.applePaySessionService.canMakePaymentsWithActiveCard(initObject.config.applePay.merchantId)
           ).pipe(
-            filter((canMakePayment: boolean) => canMakePayment),
             map((canMakePayment: boolean) => {
               if (!canMakePayment) {
                 console.error('User has not an active card provisioned into Wallet');
@@ -82,6 +81,7 @@ export class ApplePay {
                 initObject.config.applePay.buttonStyle,
                 initObject.config.applePay.paymentRequest.countryCode
               );
+
               this.config = this.applePayConfigService.setConfig(initObject.config, {
                 walletmerchantid: '',
                 walletrequestdomain: window.location.hostname,
@@ -104,6 +104,8 @@ export class ApplePay {
     // need to be here because of gesture handler
     this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
     this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
+
+    this.completeFailedTransaction();
 
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
       this.onValidateMerchant(event);
@@ -157,21 +159,16 @@ export class ApplePay {
   }
 
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): void {
-    this.completeFailedTransaction();
-    console.error(event);
     this.applePayPaymentService
       .processPayment(
-        this.config.paymentRequest.requestTypes,
+        JwtDecode<IDecodedJwt>(this.config).payload.requesttypedescriptions,
         this.config.validateMerchantRequest,
         this.config.formId,
         event
       )
-      .subscribe((response: any) => {
-        console.error(response);
-        if (Number(response.errorCode) === 0) {
-          this.handlePaymentProcessResponse(ApplePayClientErrorCode.SUCCESS, response.errormessage);
-          this.gestureHandler();
-        }
+      .subscribe((response: IApplePayClientErrorDetails) => {
+        this.handlePaymentProcessResponse(response.errorCode, response.errorMessage);
+        this.gestureHandler();
       });
   }
 
@@ -192,10 +189,13 @@ export class ApplePay {
     errorCode: ApplePayClientErrorCode,
     errorMessage: string
   ): IApplePayPaymentAuthorizationResult {
-    console.error(errorCode);
+    const completion: IApplePayPaymentAuthorizationResult = {
+      errors: undefined,
+      status: undefined
+    };
+
     if (errorCode === ApplePayClientErrorCode.SUCCESS) {
-      console.error(errorCode);
-      this.completion.status = ApplePaySession.STATUS_SUCCESS;
+      completion.status = ApplePaySession.STATUS_SUCCESS;
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
@@ -206,25 +206,28 @@ export class ApplePay {
           }
         }
       });
-      console.error(errorCode);
-      this.applePaySession.completePayment(this.completion);
-      return this.completion;
+      this.applePaySession.completePayment(completion);
+      return completion;
     }
-    this.completion.errors = this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale);
-    this.completion.status = ApplePaySession.STATUS_FAILURE;
+    if (errorCode === ApplePayClientErrorCode.CANCEL) {
+      this.applePaySessionService.endMerchantValidation();
+      return completion;
+    }
+    completion.errors = this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale);
+    completion.status = ApplePaySession.STATUS_FAILURE;
 
     this.messageBus.publish<IApplePayClientStatus>({
       type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
       data: {
         status: ApplePayClientStatus.ERROR,
         data: {
-          errorCode: ApplePayClientErrorCode.ERROR,
+          errorCode,
           errorMessage
         }
       }
     });
-    this.applePaySession.completePayment(this.completion);
-    return this.completion;
+    this.applePaySessionService.endMerchantValidation();
+    return completion;
   }
 
   private completeFailedTransaction(): void {
@@ -238,7 +241,7 @@ export class ApplePay {
         if (Number(event.data.errorcode) !== 0) {
           this.applePaySession.completePayment({
             status: ApplePaySession.STATUS_FAILURE,
-            errors: this.applePayErrorService.create(event.data.errormessage, this.config.locale)
+            errors: this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale)
           });
         }
       });

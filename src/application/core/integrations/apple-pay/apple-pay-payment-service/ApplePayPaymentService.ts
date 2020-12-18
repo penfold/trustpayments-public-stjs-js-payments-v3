@@ -6,16 +6,21 @@ import { IApplePayProcessPaymentResponse } from '../apple-pay-payment-data/IAppl
 import { IApplePaySession } from '../apple-pay-session-service/IApplePaySession';
 import { IApplePayWalletVerifyResponse } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
-import { PAYMENT_ERROR } from '../../../models/constants/Translations';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { ApplePayConfigService } from '../apple-pay-config-service/ApplePayConfigService';
 import { ApplePayClientErrorCode } from '../../../../../client/integrations/apple-pay/ApplePayClientErrorCode';
 import { DomMethods } from '../../../shared/dom-methods/DomMethods';
 import { Payment } from '../../../shared/payment/Payment';
+import { IApplePayClientErrorDetails } from '../../../../../client/integrations/apple-pay/IApplePayClientErrorDetails';
+import { ApplePayClientErrorService } from '../../../../../client/integrations/apple-pay/apple-pay-client-error-service/ApplePayClientErrorService';
 
 @Service()
 export class ApplePayPaymentService {
-  constructor(private applePayConfigService: ApplePayConfigService, private payment: Payment) {}
+  constructor(
+    private payment: Payment,
+    private applePayConfigService: ApplePayConfigService,
+    private applePayClientErrorService: ApplePayClientErrorService
+  ) {}
 
   walletVerify(
     validateMerchantRequest: IApplePayValidateMerchantRequest,
@@ -31,7 +36,7 @@ export class ApplePayPaymentService {
     return this.payment.walletVerify(request).pipe(
       tap(() => {
         if (cancelled) {
-          return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
+          return of(ApplePayClientErrorCode.CANCEL);
         }
       }),
       switchMap((response: IApplePayWalletVerifyResponse) => {
@@ -54,7 +59,7 @@ export class ApplePayPaymentService {
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     formId: string,
     event: IApplePayPaymentAuthorizedEvent
-  ): Observable<{ errorCode: string; errorMessage: string }> {
+  ): Observable<IApplePayClientErrorDetails> {
     return from(
       this.payment.processPayment(
         requestTypes,
@@ -74,14 +79,14 @@ export class ApplePayPaymentService {
     ).pipe(
       switchMap((response: IApplePayProcessPaymentResponse) => {
         return of({
-          errorCode: response.response.errorcode,
+          errorCode: this.applePayClientErrorService.create(response.response.errorcode),
           errorMessage: response.response.errormessage
         });
       }),
-      catchError(() => {
+      catchError((error: any) => {
         return of({
-          errorCode: '1',
-          errorMessage: PAYMENT_ERROR
+          errorCode: this.applePayClientErrorService.create('1'),
+          errorMessage: error
         });
       })
     );

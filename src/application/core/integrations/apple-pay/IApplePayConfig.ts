@@ -7,5 +7,4 @@ export interface IApplePayConfig {
   merchantId: string;
   paymentRequest: IApplePayPaymentRequest;
   placement: string;
-  requestTypes: RequestType[];
 }

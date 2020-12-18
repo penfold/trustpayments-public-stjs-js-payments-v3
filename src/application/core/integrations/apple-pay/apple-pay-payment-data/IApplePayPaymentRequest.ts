@@ -1,6 +1,5 @@
 import { IApplePayShippingLineItem } from '../apple-pay-shipping-data/IApplePayShippingLineItem';
 import { IApplePaySupportedNetworks } from '../apple-pay-networks-service/IApplePaySupportedNetworks';
-import { RequestType } from '../../../../../shared/types/RequestType';
 import { IApplePayShippingBillingContact } from '../apple-pay-shipping-data/IApplePayShippingBillingContact';
 import { IApplePayShippingContact } from '../apple-pay-shipping-data/IApplePayShippingContact';
 import { IApplePayShippingMethod } from '../apple-pay-shipping-data/IApplePayShippingMethod';
@@ -18,7 +17,6 @@ export interface IApplePayPaymentRequest {
   shippingMethods?: IApplePayShippingMethod;
   shippingContact?: IApplePayShippingContact;
   supportedCountries?: string;
-  requestTypes?: RequestType[];
   requiredBillingContactFields?: string[];
   requiredShippingContactFields?: string[];
 }
