@@ -151,7 +151,6 @@ export class ApplePay {
       });
 
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
-      console.error('dupa');
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
