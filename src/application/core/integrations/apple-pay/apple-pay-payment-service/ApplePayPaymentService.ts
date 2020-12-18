@@ -34,12 +34,6 @@ export class ApplePayPaymentService {
     );
 
     return this.payment.walletVerify(request).pipe(
-      tap(() => {
-        if (cancelled) {
-          return of(ApplePayClientErrorCode.CANCEL);
-        }
-      }),
-
       switchMap((response: IApplePayWalletVerifyResponse) => {
         const { walletsession } = response.response;
         if (!walletsession) {
