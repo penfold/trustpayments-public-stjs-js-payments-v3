@@ -5,8 +5,9 @@ import { IApplePaySession } from './IApplePaySession';
 import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingMethodSelectedEvent';
 // tslint:disable-next-line:max-line-length
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
+import { from, Observable } from 'rxjs';
 
-const ApplePaySession = (window as any).ApplePaySession;
+const ApplePaySession: IApplePaySession = (window as any).ApplePaySession;
 
 @Service()
 export class ApplePaySessionService {
@@ -38,8 +39,8 @@ export class ApplePaySessionService {
     });
   }
 
-  canMakePaymentsWithActiveCard(merchantId: string): Promise<boolean> {
-    return ApplePaySession.canMakePaymentsWithActiveCard(merchantId);
+  canMakePaymentsWithActiveCard(merchantId: string): Observable<boolean> {
+    return from(ApplePaySession.canMakePaymentsWithActiveCard(merchantId));
   }
 
   private onPaymentMethodSelected(): void {

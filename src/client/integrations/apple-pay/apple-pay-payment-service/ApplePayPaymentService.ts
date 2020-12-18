@@ -3,7 +3,6 @@ import { from, Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { IApplePayPaymentAuthorizedEvent } from '../apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { IApplePayProcessPaymentResponse } from '../apple-pay-payment-data/IApplePayProcessPaymentResponse';
-import { IApplePaySession } from '../apple-pay-session-service/IApplePaySession';
 import { IApplePayWalletVerifyResponse } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { RequestType } from '../../../../../shared/types/RequestType';
@@ -26,7 +25,7 @@ export class ApplePayPaymentService {
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     validationURL: string,
     cancelled: boolean
-  ): Observable<ApplePayClientErrorCode> {
+  ): Observable<IApplePayClientErrorDetails> {
     const request: IApplePayValidateMerchantRequest = this.applePayConfigService.updateWalletValidationUrl(
       validateMerchantRequest,
       validationURL
@@ -38,15 +37,22 @@ export class ApplePayPaymentService {
 
     return this.payment.walletVerify(request).pipe(
       switchMap((response: IApplePayWalletVerifyResponse) => {
-        const { walletsession } = response.response;
-        if (!walletsession) {
-          return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
+        if (!response.response.walletsession) {
+          return of({
+            status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
+            data: {}
+          });
         }
-        applePaySession.completeMerchantValidation(JSON.parse(walletsession));
-        return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS);
+        return of({
+          status: ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
+          data: response.response.walletsession
+        });
       }),
       catchError(() => {
-        return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
+        return of({
+          status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
+          data: {}
+        });
       })
     );
   }
