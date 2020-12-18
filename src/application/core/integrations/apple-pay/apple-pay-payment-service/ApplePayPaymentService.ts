@@ -33,6 +33,10 @@ export class ApplePayPaymentService {
       validationURL
     );
 
+    if (cancelled) {
+      return of(ApplePayClientErrorCode.CANCEL);
+    }
+
     return this.payment.walletVerify(request).pipe(
       switchMap((response: IApplePayWalletVerifyResponse) => {
         const { walletsession } = response.response;
