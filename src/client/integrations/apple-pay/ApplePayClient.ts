@@ -49,6 +49,7 @@ export class ApplePayClient implements IApplePayClient {
       }),
       switchMap(() => this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS))),
       switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => {
+        console.error(event);
         switch (event.data.status) {
           case ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET:
             return this.noActiveCardsInWallet$(event.data);
@@ -91,10 +92,11 @@ export class ApplePayClient implements IApplePayClient {
     status: IApplePayClientStatus
   ): Observable<ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS | ApplePayClientStatus.VALIDATE_MERCHANT_ERROR> {
     const {
-      data: { validateMerchantEvent, config, paymentCancelled }
+      data: { validateMerchantURL, config, paymentCancelled }
     } = status;
+    console.error(status);
     this.applePayPaymentService
-      .walletVerify(config.validateMerchantRequest, validateMerchantEvent.validationURL, paymentCancelled)
+      .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
       .subscribe((response: IApplePayClientErrorDetails) => {
         from(
           this.interFrameCommunicator.query(

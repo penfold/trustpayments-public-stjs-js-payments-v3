@@ -134,7 +134,7 @@ export class ApplePay {
     // need to be here because of gesture handler
     this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
     this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
-
+    console.error(this.config);
     this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
@@ -151,13 +151,15 @@ export class ApplePay {
       });
 
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
-      this.messageBus.publish({
+      console.error('dupa');
+      this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
           status: ApplePayClientStatus.ON_VALIDATE_MERCHANT,
           data: {
             errorCode: ApplePayClientErrorCode.ON_VALIDATE_MERCHANT,
-            event,
+            errorMessage: '',
+            validateMerchantURL: event.validationURL,
             config: this.config,
             paymentCancelled: this.paymentCancelled
           }

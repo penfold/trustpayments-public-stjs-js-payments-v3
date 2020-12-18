@@ -5,7 +5,7 @@ import { IApplePayConfigObject } from '../../../application/core/integrations/ap
 
 export interface IApplePayClientErrorDetails {
   errorCode?: ApplePayClientErrorCode;
-  validateMerchantEvent?: IApplePayValidateMerchantEvent;
+  validateMerchantURL?: string;
   config?: IApplePayConfigObject;
   errorMessage?: string;
   paymentCancelled?: boolean;
