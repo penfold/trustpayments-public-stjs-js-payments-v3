@@ -1,6 +1,7 @@
 import { Money } from 'ts-money';
 import { Service } from 'typedi';
 import { IApplePayConfig } from '../IApplePayConfig';
+import { IApplePayConfigObject } from './IApplePayConfigObject';
 import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
@@ -18,36 +19,19 @@ export class ApplePayConfigService {
     private applePaySessionService: ApplePaySessionService
   ) {}
 
-  updateCurrencyCode(paymentRequest: IApplePayPaymentRequest, currencyCode: string): IApplePayPaymentRequest {
-    return {
-      ...paymentRequest,
-      currencyCode
-    };
-  }
+  setConfig(config: IConfig, validateMerchantRequest: IApplePayValidateMerchantRequest): IApplePayConfigObject {
+    const { applePay, jwt, formId } = this.getConfigData(config);
+    const applePayVersion: number = this.applePaySessionService.getLatestSupportedApplePayVersion();
+    const { currencyiso3a, locale, mainamount } = this.getStJwtData(jwt);
 
-  updateAmount(paymentRequest: IApplePayPaymentRequest, amount: string): IApplePayPaymentRequest {
     return {
-      ...paymentRequest,
-      total: {
-        ...paymentRequest.total,
-        amount
-      }
-    };
-  }
-
-  updateRequestTypes(paymentRequest: IApplePayPaymentRequest): IApplePayPaymentRequest {
-    return {
-      ...paymentRequest
-    };
-  }
-
-  updateWalletMerchantId(
-    validateMerchantRequest: IApplePayValidateMerchantRequest,
-    walletmerchantid: string
-  ): IApplePayValidateMerchantRequest {
-    return {
-      ...validateMerchantRequest,
-      walletmerchantid
+      applePayConfig: applePay,
+      applePayVersion,
+      locale,
+      formId,
+      jwtFromConfig: jwt,
+      validateMerchantRequest: this.updateWalletMerchantId(validateMerchantRequest, applePay.merchantId),
+      paymentRequest: this.updatePaymentRequest(applePay, currencyiso3a, mainamount, applePayVersion)
     };
   }
 
@@ -61,7 +45,40 @@ export class ApplePayConfigService {
     };
   }
 
-  getStJwtData(jwt: string): { currencyiso3a: string; locale: Locale; mainamount: string } {
+  private updateCurrencyCode(paymentRequest: IApplePayPaymentRequest, currencyCode: string): IApplePayPaymentRequest {
+    return {
+      ...paymentRequest,
+      currencyCode
+    };
+  }
+
+  private updateAmount(paymentRequest: IApplePayPaymentRequest, amount: string): IApplePayPaymentRequest {
+    return {
+      ...paymentRequest,
+      total: {
+        ...paymentRequest.total,
+        amount
+      }
+    };
+  }
+
+  private updateRequestTypes(paymentRequest: IApplePayPaymentRequest): IApplePayPaymentRequest {
+    return {
+      ...paymentRequest
+    };
+  }
+
+  private updateWalletMerchantId(
+    validateMerchantRequest: IApplePayValidateMerchantRequest,
+    walletmerchantid: string
+  ): IApplePayValidateMerchantRequest {
+    return {
+      ...validateMerchantRequest,
+      walletmerchantid
+    };
+  }
+
+  private getStJwtData(jwt: string): { currencyiso3a: string; locale: Locale; mainamount: string } {
     const payload: IStJwtPayload = this.jwtDecoder.decode(jwt).payload;
     const mainamount = Money.fromInteger({
       amount: parseInt(payload.baseamount, 10),
@@ -75,7 +92,7 @@ export class ApplePayConfigService {
     };
   }
 
-  getConfigData(config: IConfig): { applePay: IApplePayConfig; formId: string; jwt: string } {
+  private getConfigData(config: IConfig): { applePay: IApplePayConfig; formId: string; jwt: string } {
     return {
       applePay: config.applePay,
       formId: config.formId,
@@ -83,9 +100,8 @@ export class ApplePayConfigService {
     };
   }
 
-  updatePaymentRequest(
+  private updatePaymentRequest(
     applePay: IApplePayConfig,
-    jwt: string,
     currencyiso3a: string,
     mainamount: string,
     applePayVersion: number
@@ -99,32 +115,5 @@ export class ApplePayConfigService {
     paymentRequest = this.updateCurrencyCode(paymentRequest, currencyiso3a);
 
     return this.updateRequestTypes(paymentRequest);
-  }
-
-  setConfig(
-    config: IConfig,
-    validateMerchantRequest: IApplePayValidateMerchantRequest
-  ): {
-    applePayConfig: IApplePayConfig;
-    applePayVersion: number;
-    locale: Locale;
-    formId: string;
-    jwtFromConfig: string;
-    validateMerchantRequest: IApplePayValidateMerchantRequest;
-    paymentRequest: IApplePayPaymentRequest;
-  } {
-    const { applePay, jwt, formId } = this.getConfigData(config);
-    const applePayVersion: number = this.applePaySessionService.getLatestSupportedApplePayVersion();
-    const { currencyiso3a, locale, mainamount } = this.getStJwtData(jwt);
-
-    return {
-      applePayConfig: applePay,
-      applePayVersion,
-      locale,
-      formId,
-      jwtFromConfig: jwt,
-      validateMerchantRequest: this.updateWalletMerchantId(validateMerchantRequest, applePay.merchantId),
-      paymentRequest: this.updatePaymentRequest(applePay, jwt, currencyiso3a, mainamount, applePayVersion)
-    };
   }
 }

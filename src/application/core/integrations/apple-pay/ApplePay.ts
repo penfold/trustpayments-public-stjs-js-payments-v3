@@ -33,10 +33,6 @@ const ApplePaySession = (window as any).ApplePaySession;
 @Service()
 export class ApplePay {
   private applePaySession: IApplePaySession;
-  private readonly completion: IApplePayPaymentAuthorizationResult = {
-    errors: undefined,
-    status: undefined
-  };
   private config: IApplePayConfigObject;
   private paymentCancelled: boolean = false;
 
@@ -73,7 +69,6 @@ export class ApplePay {
           return from(
             this.applePaySessionService.canMakePaymentsWithActiveCard(initObject.config.applePay.merchantId)
           ).pipe(
-            filter((canMakePayment: boolean) => canMakePayment),
             map((canMakePayment: boolean) => {
               if (!canMakePayment) {
                 console.error('User has not an active card provisioned into Wallet');
@@ -194,8 +189,13 @@ export class ApplePay {
     errorCode: ApplePayClientErrorCode,
     errorMessage: string
   ): IApplePayPaymentAuthorizationResult {
+    const completion: IApplePayPaymentAuthorizationResult = {
+      errors: undefined,
+      status: undefined
+    };
+
     if (errorCode === ApplePayClientErrorCode.SUCCESS) {
-      this.completion.status = ApplePaySession.STATUS_SUCCESS;
+      completion.status = ApplePaySession.STATUS_SUCCESS;
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
@@ -206,15 +206,15 @@ export class ApplePay {
           }
         }
       });
-      this.applePaySession.completePayment(this.completion);
-      return this.completion;
+      this.applePaySession.completePayment(completion);
+      return completion;
     }
     if (errorCode === ApplePayClientErrorCode.CANCEL) {
       this.applePaySessionService.endMerchantValidation();
-      return this.completion;
+      return completion;
     }
-    this.completion.errors = this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale);
-    this.completion.status = ApplePaySession.STATUS_FAILURE;
+    completion.errors = this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale);
+    completion.status = ApplePaySession.STATUS_FAILURE;
 
     this.messageBus.publish<IApplePayClientStatus>({
       type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
@@ -227,7 +227,7 @@ export class ApplePay {
       }
     });
     this.applePaySessionService.endMerchantValidation();
-    return this.completion;
+    return completion;
   }
 
   private completeFailedTransaction(): void {
