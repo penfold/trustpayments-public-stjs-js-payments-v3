@@ -4,6 +4,7 @@ from typing import List
 
 @dataclass
 class JwtPayload:
+    # pylint: disable=too-many-instance-attributes
     requesttypedescriptions: List[str] = field(default_factory=list)
     threedbypasspaymenttypes: List[str] = field(default_factory=list)
     baseamount: str = ''
@@ -11,3 +12,4 @@ class JwtPayload:
     currencyiso3a: str = ''
     sitereference: str = ''
     locale: str = ''
+    cachetoken: str = ''

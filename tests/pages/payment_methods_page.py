@@ -472,6 +472,14 @@ class PaymentMethodsPage(BasePage):
             translation = json.load(f)
         return translation[key]
 
+    def get_cachetoken_value(self):
+        self._waits.wait_for_javascript()
+        actual_url = self._executor.get_page_url()
+        parsed_url = urlparse(actual_url)
+        parsed_query_from_url = parse_qs(parsed_url.query)
+        cachetoken_value = parsed_query_from_url['cachetoken'][0]
+        return cachetoken_value
+
     def validate_if_url_contains_info_about_payment(self, expected_url):
         self._executor.wait_until_url_contains(expected_url)
         actual_url = self._executor.get_page_url()
@@ -496,7 +504,7 @@ class PaymentMethodsPage(BasePage):
         if 'should not be none' in value:
             assert_that(parsed_query_from_url[key][0]).is_not_none()
         elif 'should be none' in value:
-            assert_that(key not in parsed_query_from_url.keys())
+            assert_that(key not in parsed_query_from_url.keys(), f'{key} is not none but should be').is_true()
         else:
             assert_that(parsed_query_from_url[key][0]).is_equal_to(value)
 

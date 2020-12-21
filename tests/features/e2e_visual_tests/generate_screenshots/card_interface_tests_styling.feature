@@ -11,7 +11,7 @@ Feature: Visual regression - E2E Card Payments
       | key                      | value                                 |
       | requesttypedescriptions  | THREEDQUERY RISKDEC ACCOUNTCHECK AUTH |
       | threedbypasspaymenttypes | MASTERCARD                            |
-    And User opens minimal example page
+    And User opens minimal.html page with inline param
     When User fills payment form with defined card MASTERCARD_FIXED_EXP_DATE_CARD
     And User clicks Pay button
     And Wait for notification frame
@@ -24,7 +24,7 @@ Feature: Visual regression - E2E Card Payments
       | key                      | value                                 |
       | requesttypedescriptions  | THREEDQUERY RISKDEC ACCOUNTCHECK AUTH |
       | threedbypasspaymenttypes | MASTERCARD                            |
-    And User opens minimal example page
+    And User opens minimal.html page with inline param
     Then Make screenshot after 6 seconds
 
   @visual_regression_styling_generation @scrn_card_interface_error_expiry_date_styling
@@ -33,7 +33,7 @@ Feature: Visual regression - E2E Card Payments
       | key                      | value                                 |
       | requesttypedescriptions  | THREEDQUERY RISKDEC ACCOUNTCHECK AUTH |
       | threedbypasspaymenttypes | MASTERCARD                            |
-    And User opens minimal example page
+    And User opens minimal.html page with inline param
     When User fills payment form with defined card MASTERCARD_INVALID_EXP_DATE_CARD
     And User clicks Pay button
     And Wait for notification frame
@@ -46,7 +46,7 @@ Feature: Visual regression - E2E Card Payments
       | key                      | value                                 |
       | requesttypedescriptions  | THREEDQUERY RISKDEC ACCOUNTCHECK AUTH |
       | threedbypasspaymenttypes | MASTERCARD                            |
-    And User opens minimal example page
+    And User opens minimal.html page with inline param
     When User fills payment form with defined card MASTERCARD_INVALID_PATTERN_CARD
     And User clicks Pay button
     Then Make screenshot after 6 seconds
@@ -56,7 +56,7 @@ Feature: Visual regression - E2E Card Payments
     Given JS library configured by inline params VALIDATION_STYLES_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens minimal example page
+    And User opens minimal.html page with inline param
     When User fills only security code for saved MASTERCARD_INVALID_CVV_CARD card
     And Change field focus
     Then Make screenshot after 6 seconds

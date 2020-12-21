@@ -1,48 +1,36 @@
-import { applyMiddleware, combineReducers, createStore, Reducer, Store } from 'redux';
-import { configReducer } from './reducers/config/ConfigReducer';
-import { Service } from 'typedi';
-import logger from 'redux-logger';
-import { combineEpics, createEpicMiddleware, Epic, EpicMiddleware } from 'redux-observable';
-import { catchError } from 'rxjs/operators';
-import { IAction } from './IAction';
-import { environment } from '../../../environments/environment';
-import { storageReducer } from './reducers/storage/StorageReducer';
+import { FrameIdentifier } from '../../../shared/services/message-bus/FrameIdentifier';
+import { IParentFrameState } from './state/IParentFrameState';
+import { IApplicationFrameState } from './state/IApplicationFrameState';
+import { LinkedStore } from './store/LinkedStore';
+import { IStore } from './IStore';
+import { ContainerInstance, Service } from 'typedi';
+import { ParentFrameStore } from './store/ParentFrameStore';
+import { ControlFrameStore } from './store/ControlFrameStore';
+import { CombinedReducerFactory } from './CombinedReducerFactory';
 
 @Service()
 export class StoreFactory {
-  createStore(): Store {
-    const epicMiddleware = createEpicMiddleware();
-    const middlewares: any[] = [epicMiddleware];
+  constructor(
+    private frameIdentifier: FrameIdentifier,
+    private container: ContainerInstance,
+    private reducerFactory: CombinedReducerFactory
+  ) {}
 
-    if (!environment.production) {
-      middlewares.push(logger);
+  create(): IStore<IParentFrameState | IApplicationFrameState> {
+    if (this.frameIdentifier.isParentFrame()) {
+      return this.withCombinedReducer(this.container.get(ParentFrameStore));
     }
 
-    const store = createStore(this.getRootReducer(), applyMiddleware(...middlewares));
+    if (this.frameIdentifier.isControlFrame()) {
+      return this.withCombinedReducer(this.container.get(ControlFrameStore));
+    }
 
-    epicMiddleware.run(this.getRootEpic());
+    return this.container.get(LinkedStore);
+  }
+
+  private withCombinedReducer<T extends ParentFrameStore | ControlFrameStore>(store: T): T {
+    store.addReducer(this.reducerFactory.getCombinedReducer());
 
     return store;
-  }
-
-  private getRootReducer(): Reducer {
-    return combineReducers({
-      config: configReducer,
-      storage: storageReducer
-    });
-  }
-
-  private getRootEpic(): Epic<IAction> {
-    const epics: Epic[] = [];
-
-    return (action$, store$, dependencies) => {
-      return combineEpics(...epics)(action$, store$, dependencies).pipe(
-        catchError((error, source) => {
-          console.error(error);
-
-          return source;
-        })
-      );
-    };
   }
 }
