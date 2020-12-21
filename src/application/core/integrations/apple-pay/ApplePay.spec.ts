@@ -24,20 +24,15 @@ jest.mock('./../../../../client/notification/NotificationService');
 
 Container.set({ id: StoreBasedStorage, type: SimpleStorage });
 
-// given
 describe('ApplePay', () => {
-  // given
   describe('On init', () => {
-    // then
     it('should set instance with proper settings', () => {
       const { instance } = ApplePayFixture();
       expect(instance).toBeTruthy();
     });
   });
 
-  // given
   describe('ifApplePayIsAvailable()', () => {
-    // then
     it('should return true if session exists', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -45,16 +40,14 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('_ifBrowserSupportsApplePayVersion()', () => {
-    // then
     it('should return true if browser supported', () => {
       const { instance } = ApplePayFixture();
       (window as any).ApplePaySession.supportsVersion = jest.fn().mockReturnValue(true);
       // @ts-ignore
       expect(instance._ifBrowserSupportsApplePayVersion(4)).toBeTruthy();
     });
-    // then
+
     it('should return false if browser supported', () => {
       const { instance } = ApplePayFixture();
       (window as any).ApplePaySession.supportsVersion = jest.fn().mockReturnValue(false);
@@ -63,9 +56,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('getApplePaySessionObject()', () => {
-    // then
     it('should get object', () => {
       const { instance } = ApplePayFixture();
       (window as any).ApplePaySession = jest.fn();
@@ -75,9 +66,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('checkApplePayWalletCardAvailability()', () => {
-    // then
     it('should check availability', () => {
       const { instance } = ApplePayFixture();
       (window as any).ApplePaySession.canMakePaymentsWithActiveCard = jest.fn();
@@ -89,9 +78,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('getApplePaySession()', () => {
-    // then
     it('should set applePayVersion', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -103,9 +90,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('set jwt and get jwt', () => {
-    // then
     it('should set _jwt and get _jwt', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -117,9 +102,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('setSupportedNetworks()', () => {
-    // when
     const { instance } = ApplePayFixture();
     const applePayVersions = [2, 3, 4, 5];
 
@@ -132,21 +115,20 @@ describe('ApplePay', () => {
       expect(instance._paymentRequest.supportedNetworks).toEqual(networks);
     }
 
-    // then
     it(`should set proper networks when Apple Pay version is equal ${applePayVersions[3]}`, () => {
       // @ts-ignore
       instance._paymentRequest.supportedNetworks = ApplePay.VERSION_5_SUPPORTED_NETWORKS;
       // @ts-ignore
       setPropertiesForVersion(applePayVersions[3], ApplePay.VERSION_5_SUPPORTED_NETWORKS);
     });
-    // then
+
     it(`should set subset of supported networks if merchant specifies subset ${applePayVersions[3]}`, () => {
       // @ts-ignore
       instance._paymentRequest.supportedNetworks = ['amex', 'visa'];
       // @ts-ignore
       setPropertiesForVersion(applePayVersions[3], ['amex', 'visa']);
     });
-    // then
+
     it(`should set full set of supported networks if merchant specifies empty array ${applePayVersions[3]}`, () => {
       // @ts-ignore
       instance._paymentRequest.supportedNetworks = [];
@@ -154,7 +136,6 @@ describe('ApplePay', () => {
       setPropertiesForVersion(applePayVersions[3], ApplePay.VERSION_5_SUPPORTED_NETWORKS);
     });
 
-    // then
     it(`should set proper networks when Apple Pay version is equal ${applePayVersions[2]}`, () => {
       // @ts-ignore
       instance._paymentRequest.supportedNetworks = ApplePay.VERSION_4_SUPPORTED_NETWORKS;
@@ -162,7 +143,6 @@ describe('ApplePay', () => {
       setPropertiesForVersion(applePayVersions[2], ApplePay.VERSION_4_SUPPORTED_NETWORKS);
     });
 
-    // then
     it(`should set proper networks when Apple Pay version is equal ${applePayVersions[1]}`, () => {
       // @ts-ignore
       instance._paymentRequest.supportedNetworks = ApplePay.VERSION_5_SUPPORTED_NETWORKS;
@@ -170,7 +150,6 @@ describe('ApplePay', () => {
       setPropertiesForVersion(applePayVersions[1], ApplePay.BASIC_SUPPORTED_NETWORKS);
     });
 
-    // then
     it(`should set proper networks when Apple Pay version is equal ${applePayVersions[0]}`, () => {
       // @ts-ignore
       instance._paymentRequest.supportedNetworks = ApplePay.VERSION_5_SUPPORTED_NETWORKS;
@@ -179,7 +158,6 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('_setApplePayButtonProps()', () => {
     let buttonStyle: string;
     let buttonText: string;
@@ -187,7 +165,7 @@ describe('ApplePay', () => {
       buttonStyle = 'white';
       buttonText = 'donate';
     });
-    // then
+
     it(`should set buttonText and buttonStyle if they are both from list of available values`, () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -198,7 +176,6 @@ describe('ApplePay', () => {
       expect(instance._buttonStyle).toEqual(buttonStyle);
     });
 
-    // then
     it('should set buttonText and buttonStyle with default values if they are both not from list of available values', () => {
       buttonStyle = 'NavajoWhite';
       buttonText = 'click here to pay with apple pay';
@@ -211,7 +188,6 @@ describe('ApplePay', () => {
       expect(instance._buttonStyle).toEqual(ApplePay.AVAILABLE_BUTTON_STYLES[0]);
     });
 
-    // then
     it('should set _applePayButtonProps style value', () => {
       const css = `-webkit-appearance: -apple-pay-button;-apple-pay-button-type: ${buttonText};-apple-pay-button-style: ${buttonStyle};pointer-events: auto;cursor: pointer;display: flex;role: button;`;
       const { instance } = ApplePayFixture();
@@ -221,9 +197,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('createApplePayButton()', () => {
-    // then
     it('should return Apple Pay button with all props set', () => {
       const { instance } = ApplePayFixture();
       const css = `-webkit-appearance: -apple-pay-button; -apple-pay-button-type: donate; -apple-pay-button-style: white`;
@@ -234,9 +208,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('addApplePayButton()', () => {
-    // then
     it('should add Apple Pay button to DOM', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -247,16 +219,13 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('ifApplePayButtonTextIsValid()', () => {
-    // then
     it('should return false if text is not from list of available', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
       expect(instance._ifApplePayButtonTextIsValid('click here to pay with apple pay')).toEqual(false);
     });
 
-    // then
     it('should return true if text is from list of available', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -264,16 +233,13 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('ifApplePayButtonStyleIsValid()', () => {
-    // then
     it('should return false if style is not from lst of available', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
       expect(instance._ifApplePayButtonStyleIsValid('NavajoWhite')).toEqual(false);
     });
 
-    // then
     it('should return true if style is from lst of available', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -281,9 +247,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('applePayButtonClickHandler()', () => {
-    // then
     it('should trigger paymentProcess method after click', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -313,9 +277,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('setAmountAndCurrency()', () => {
-    // then
     it('should set amount depends on value in JWT', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -324,7 +286,6 @@ describe('ApplePay', () => {
       expect(instance._paymentRequest.total.amount).toEqual(instance._stJwtInstance.mainamount);
     });
 
-    // then
     it('should set currency depends on value in JWT', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -332,7 +293,7 @@ describe('ApplePay', () => {
       // @ts-ignore
       expect(instance._paymentRequest.currencyCode).toEqual(instance._stJwtInstance.currencyiso3a);
     });
-    // then
+
     it('should handle error notification if it cannot set the value because amount is not set', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -348,7 +309,7 @@ describe('ApplePay', () => {
       // @ts-ignore
       expect(instance._notification.error).toHaveBeenCalledWith('Amount and currency are not set');
     });
-    // then
+
     it('should handle error notification if it cannot set the value because currency is not set', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -366,7 +327,6 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('_onInit()', () => {
     let instance: ApplePay;
     let spyApplePayVersion: any;
@@ -376,7 +336,6 @@ describe('ApplePay', () => {
     let spyAddApplePayButton: any;
     let spyApplePayProcess: any;
 
-    // when
     beforeEach(() => {
       instance = ApplePayFixture().instance;
       // @ts-ignore
@@ -396,40 +355,37 @@ describe('ApplePay', () => {
       // @ts-ignore
       spyApplePayProcess = jest.spyOn(instance, '_applePayProcess');
     });
-    // then
+
     it('should spyApplePayVersion be called', () => {
       // @ts-ignore
       instance._onInit('donate', 'white');
       expect(spyApplePayVersion).toHaveBeenCalled();
     });
-    // then
+
     it('should spySetSupportedNetworks be called', () => {
       // @ts-ignore
       instance._onInit('donate', 'white');
       expect(spySetSupportedNetworks).toHaveBeenCalled();
     });
-    // then
+
     it('should spySetAmountAndCurrency be called', () => {
       // @ts-ignore
       instance._onInit('donate', 'white');
       expect(spySetAmountAndCurrency).toHaveBeenCalled();
     });
 
-    // then
     it('should spySetApplePayButtonProps be called', () => {
       // @ts-ignore
       instance._onInit('donate', 'white');
       expect(spySetApplePayButtonProps).toHaveBeenCalled();
     });
 
-    // then
     it('should spyAddApplePayButton be called', () => {
       // @ts-ignore
       instance._onInit('donate', 'white');
       expect(spyAddApplePayButton).toHaveBeenCalled();
     });
 
-    // then
     it('should spyApplePayProcess be called', () => {
       // @ts-ignore
       instance._onInit('donate', 'white');
@@ -437,9 +393,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('onValidateMerchantRequest()', () => {
-    // then
     it('should onvalidatemerchant handler has been set', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -532,9 +486,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('onPaymentAuthorized()', () => {
-    // then
     it('should onpaymentauthorized handler has been set', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -658,9 +610,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('getPaymentSuccessStatus()', () => {
-    // then
     it('should return success', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -668,9 +618,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('Method getPaymentFailureStatus', () => {
-    // then
     it('should return error', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -678,9 +626,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('onPaymentCanceled()', () => {
-    // then
     it('should oncancel handler has been set', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -702,9 +648,8 @@ describe('ApplePay', () => {
       expect(instance._notification.cancel).toHaveBeenCalledWith('Payment has been cancelled');
     });
   });
-  // given
+
   describe('_onValidateMerchantResponseSuccess()', () => {
-    // then
     it('should call _onValidateMerchantResponseSuccess if walletsession is not set ', () => {
       const response = { walletsession: '' };
       const { instance } = ApplePayFixture();
@@ -719,7 +664,6 @@ describe('ApplePay', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-    // then
     it('should set merchantSession if walletsession is set and call _session.completeMerchantValidation with merchantSession', () => {
       const response = { walletsession: '{"someproperty":"somewalletsession"}' };
       const { instance } = ApplePayFixture();
@@ -734,9 +678,8 @@ describe('ApplePay', () => {
       expect(instance._session.completeMerchantValidation).toHaveBeenCalledWith({ someproperty: 'somewalletsession' });
     });
   });
-  // given
+
   describe('_onValidateMerchantResponseFailure()', () => {
-    // then
     it('should setNotification has been called', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -751,7 +694,6 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('subscribeStatusHandlers()', () => {
     let sessionObjectFake: object;
     let instance: any;
@@ -768,7 +710,7 @@ describe('ApplePay', () => {
       instance._session = sessionObjectFake;
       instance._paymentRequest = { total: { amount: '10.00', label: 'someLabel' } };
     });
-    // then
+
     it('should set callback functions', () => {
       instance._subscribeStatusHandlers();
       expect(instance._session.onpaymentmethodselected).toBeInstanceOf(Function);
@@ -776,7 +718,6 @@ describe('ApplePay', () => {
       expect(instance._session.onshippingmethodselected).toBeInstanceOf(Function);
     });
 
-    // then
     it('calling onpaymentmethodselected should call completePaymentMethodSelection', () => {
       instance._subscribeStatusHandlers();
       instance._session.onpaymentmethodselected({ paymentMethod: 'MYMETHOD' });
@@ -791,7 +732,7 @@ describe('ApplePay', () => {
       expect(instance._session.completeShippingMethodSelection).toHaveBeenCalledTimes(0);
       expect(instance._session.completeShippingContactSelection).toHaveBeenCalledTimes(0);
     });
-    // then
+
     it('calling onshippingmethodselected should call completeShippingMethodSelection', () => {
       instance._subscribeStatusHandlers();
       instance._session.onshippingmethodselected({ paymentMethod: 'MYMETHOD' });
@@ -806,7 +747,7 @@ describe('ApplePay', () => {
       });
       expect(instance._session.completeShippingContactSelection).toHaveBeenCalledTimes(0);
     });
-    // then
+
     it('calling onshippingmethodselected should call completeShippingContactSelection', () => {
       instance._subscribeStatusHandlers();
       instance._session.onshippingcontactselected({ paymentMethod: 'MYMETHOD' });
@@ -823,14 +764,12 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('paymentProcess()', () => {
     let sessionObjectFake: object;
     beforeEach(() => {
       sessionObjectFake = { begin: jest.fn() };
     });
 
-    // then
     it('should call correct functions', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -862,9 +801,7 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('applePayProcess()', () => {
-    // then
     it('should do nothing if isUserLoggedToAppleAccount returns false', () => {
       const { instance } = ApplePayFixture();
       // @ts-ignore
@@ -878,7 +815,7 @@ describe('ApplePay', () => {
       // @ts-ignore
       expect(instance.checkApplePayWalletCardAvailability).not.toHaveBeenCalled();
     });
-    // then
+
     it('should call only canMakePayments if isUserLoggedToAppleAccount returns true and canMakePayments returns false', async () => {
       const { instance } = ApplePayFixture();
       jest.resetAllMocks();
@@ -898,7 +835,6 @@ describe('ApplePay', () => {
       expect(instance.checkApplePayWalletCardAvailability).toHaveBeenCalled();
     });
 
-    // then
     it('should call applePayButtonClickHandler if isUserLoggedToAppleAccount returns true and canMakePayments returns true', async () => {
       const { instance } = ApplePayFixture();
       jest.resetAllMocks();
@@ -921,10 +857,9 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('_displayNotification()', () => {
     const { instance } = ApplePayFixture();
-    // when
+
     beforeEach(() => {
       // @ts-ignore
       instance._notification.success = jest.fn();
@@ -932,7 +867,6 @@ describe('ApplePay', () => {
       instance._notification.error = jest.fn();
     });
 
-    // then
     it('should call success notification when errorcode is equal 0', () => {
       // @ts-ignore
       instance._displayNotification('0', PAYMENT_SUCCESS);
@@ -940,7 +874,6 @@ describe('ApplePay', () => {
       expect(instance._notification.success).toHaveBeenCalledWith(PAYMENT_SUCCESS);
     });
 
-    // then
     it('should call error notification when errorcode is not equal 0', () => {
       // @ts-ignore
       instance._displayNotification('30000', PAYMENT_ERROR);
@@ -949,12 +882,10 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('_handleApplePayError()', () => {
     const errorObject = { errorcode: '', errormessage: 'Some error message', data: {} };
     const { instance } = ApplePayFixture();
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance.getPaymentSuccessStatus = jest.fn();
@@ -964,7 +895,6 @@ describe('ApplePay', () => {
       instance._translator.translate = jest.fn();
     });
 
-    // then
     it(`should call getPaymentSuccessStatus() when browser doesn't support ApplePay version and error code equals 0`, () => {
       errorObject.errorcode = '0';
       // @ts-ignore
@@ -975,7 +905,6 @@ describe('ApplePay', () => {
       expect(instance.getPaymentSuccessStatus).toHaveBeenCalledTimes(1);
     });
 
-    // then
     it(`should call getPaymentFailureStatus() when browser doesn't support ApplePay version and error code equals 30000`, () => {
       errorObject.errorcode = '30000';
       // @ts-ignore
@@ -985,7 +914,7 @@ describe('ApplePay', () => {
       // @ts-ignore
       expect(instance.getPaymentFailureStatus).toHaveBeenCalledTimes(1);
     });
-    // then
+
     it(`should call _translator.translate() when browser supports ApplePay version and error code equals 30000`, () => {
       errorObject.errorcode = '30000';
       // @ts-ignore
@@ -997,7 +926,6 @@ describe('ApplePay', () => {
     });
   });
 
-  // given
   describe('_addButtonHandler()', () => {
     const { instance } = ApplePayFixture();
     // @ts-ignore
@@ -1006,7 +934,6 @@ describe('ApplePay', () => {
     const event: string = 'click';
     const message: string = APPLE_PAY_NOT_LOGGED;
 
-    // then
     it(`should call notification with success if notification type is success`, () => {
       document.getElementById(id).addEventListener = jest.fn().mockImplementationOnce((event, callback) => {
         callback();
@@ -1019,7 +946,6 @@ describe('ApplePay', () => {
       expect(instance._notification.success).toHaveBeenCalledWith(message);
     });
 
-    // then
     it(`should call notification with error if notification type is error`, () => {
       document.getElementById(id).addEventListener = jest.fn().mockImplementationOnce((event, callback) => {
         callback();
@@ -1032,7 +958,6 @@ describe('ApplePay', () => {
       expect(instance._notification.error).toHaveBeenCalledWith(message);
     });
 
-    // then
     it(`should call notification with cancel if notification type is cancel`, () => {
       document.getElementById(id).addEventListener = jest.fn().mockImplementationOnce((event, callback) => {
         callback();
@@ -1045,7 +970,6 @@ describe('ApplePay', () => {
       expect(instance._notification.cancel).toHaveBeenCalledWith(message);
     });
 
-    // then
     it(`should call notification with info if notification type is different than previous`, () => {
       document.getElementById(id).addEventListener = jest.fn().mockImplementationOnce((event, callback) => {
         callback();
@@ -1058,7 +982,6 @@ describe('ApplePay', () => {
       expect(instance._notification.info).toHaveBeenCalledWith(message);
     });
 
-    // then
     it(`should return false if element doesn't exist`, () => {
       // @ts-ignore
       expect(instance._addButtonHandler('somerandomid', event, 'info', message)).toEqual(false);

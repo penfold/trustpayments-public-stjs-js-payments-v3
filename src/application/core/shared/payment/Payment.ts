@@ -6,7 +6,7 @@ import { IMerchantData } from '../../models/IMerchantData';
 import { IWallet } from '../../models/IWallet';
 import { IWalletVerify } from '../../models/IWalletVerify';
 import { Validation } from '../validation/Validation';
-import { Container } from 'typedi';
+import { Container, Service } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
 import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
@@ -14,6 +14,7 @@ import { IResponseData } from '../../models/IResponseData';
 import { CustomerOutput } from '../../models/constants/CustomerOutput';
 import { RequestType } from '../../../../shared/types/RequestType';
 
+@Service()
 export class Payment {
   private _notification: NotificationService;
   private _stTransport: StTransport;

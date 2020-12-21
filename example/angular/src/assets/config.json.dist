@@ -1,5 +1,6 @@
 {
   "analytics": true,
+  "animatedCard": true,
   "applePay": {
     "buttonStyle": "white-outline",
     "buttonText": "buy",
@@ -25,7 +26,6 @@
     },
     "placement": "st-apple-pay"
   },
-  "animatedCard": true,
   "buttonId": "merchant-submit-button",
   "bypassCards": [
     "PIBA"
