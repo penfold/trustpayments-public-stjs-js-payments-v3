@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class ExamplePage(Enum):
+class ExamplePageParam(Enum):
     WITHOUT_SUBMIT_BUTTON = 'noSubmitButton=true&'
     WITH_ADDITIONAL_BUTTON = 'additionalButton=true&'
     WITH_UPDATE_JWT = 'updatedJwt=%s&'
