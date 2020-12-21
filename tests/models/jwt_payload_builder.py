@@ -1,4 +1,5 @@
 from models.jwt_payload import JwtPayload
+from utils.helpers.request_executor import shared_dict
 
 
 class JwtPayloadBuilder:
@@ -34,6 +35,10 @@ class JwtPayloadBuilder:
         self._jwt_payload.threedbypasspaymenttypes = list(val.split(' '))
         return self
 
+    def with_cachetoken(self):
+        self._jwt_payload.cachetoken = shared_dict['cachetoken']
+        return self
+
     def build(self):
         return self._jwt_payload
 
@@ -55,6 +60,8 @@ class JwtPayloadBuilder:
                 self.with_requesttypedescriptions(value)
             elif key == 'threedbypasspaymenttypes':
                 self.with_threedbypasspaymenttypes(value)
+            elif key == 'cachetoken':
+                self.with_cachetoken()
             else:
                 raise Exception(f'Property {key} not exists in object JwtPayload {JwtPayload().__dict__}')
         return self
