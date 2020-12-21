@@ -26,7 +26,7 @@ def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
     context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
 
 
-@given(
+@step(
     'JS library configured by inline params (?P<e2e_config>.+) and jwt (?P<jwt_config>.+) with additional attributes')
 def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
     # parse old jwt config (payload part) to dictionary object
@@ -121,3 +121,10 @@ def _browser_device(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.wait_for_pay_processing_end('en_US')
+
+
+@step('User gets cachetoken value from url')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    cachetoken_value = payment_page.get_cachetoken_value()
+    add_to_shared_dict('cachetoken', cachetoken_value)

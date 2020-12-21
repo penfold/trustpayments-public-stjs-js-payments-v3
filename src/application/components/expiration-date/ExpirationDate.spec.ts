@@ -17,35 +17,29 @@ import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 
 jest.mock('./../../core/shared/notification/Notification');
 
-// given
 describe('ExpirationDate', () => {
-  // given
   describe('ExpirationDate.ifFieldExists()', () => {
-    // then
     it('should return input iframe-factory', () => {
       expect(ExpirationDate.ifFieldExists()).toBeTruthy();
     });
 
-    // then
     it('should return input iframe-factory', () => {
       expect(ExpirationDate.ifFieldExists()).toBeInstanceOf(HTMLInputElement);
     });
   });
 
-  // given
   describe('getLabel()', () => {
     const { expirationDateInstance } = expirationDateFixture();
-    // then
+
     it('should return translated label', () => {
       expect(expirationDateInstance.getLabel()).toEqual(LABEL_EXPIRATION_DATE);
     });
   });
 
-  // given
   describe('_setDisableListener()', () => {
     const { expirationDateInstance } = expirationDateFixture();
     const attributeName: string = 'disabled';
-    // then
+
     it('should have attribute disabled set', () => {
       // @ts-ignore
       expirationDateInstance.messageBus.subscribeType = jest.fn().mockImplementation((event, callback) => {
@@ -56,7 +50,6 @@ describe('ExpirationDate', () => {
       expect(expirationDateInstance._inputElement.hasAttribute(attributeName)).toBe(true);
     });
 
-    // then
     it('should have no attribute disabled and class disabled', () => {
       // @ts-ignore
       expirationDateInstance.messageBus.subscribeType = jest.fn().mockImplementation((event, callback) => {
@@ -70,75 +63,66 @@ describe('ExpirationDate', () => {
     });
   });
 
-  // given
   describe('format()', () => {
     const { expirationDateInstance } = expirationDateFixture();
     let spy: jest.SpyInstance;
     const testValue: string = '232';
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       spy = jest.spyOn(expirationDateInstance, 'setValue');
       // @ts-ignore
       expirationDateInstance.format(testValue);
     });
-    // then
+
     it('should trigger setValue method', () => {
       expect(spy).toHaveBeenCalled();
     });
   });
 
-  // given
   describe('onBlur()', () => {
     const { expirationDateInstance } = expirationDateFixture();
     let spy: jest.SpyInstance;
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       spy = jest.spyOn(expirationDateInstance, '_sendState');
       // @ts-ignore
       expirationDateInstance.onBlur();
     });
-    // then
+
     it('should call _sendState()', () => {
       expect(spy).toHaveBeenCalled();
     });
   });
 
-  // given
   describe('onFocus()', () => {
     const { expirationDateInstance } = expirationDateFixture();
     const event: Event = new Event('focus');
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       expirationDateInstance._inputElement.focus = jest.fn();
       // @ts-ignore
       expirationDateInstance.onFocus(event);
     });
-    // then
+
     it('should call focus method from parent', () => {
       // @ts-ignore
       expect(expirationDateInstance._inputElement.focus).toBeCalled();
     });
   });
 
-  // given
   describe('onInput()', () => {
     const { expirationDateInstance } = expirationDateFixture();
     const event: Event = new Event('input');
-    const inputTestvalue: string = '12121';
     let spy: jest.SpyInstance;
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       spy = jest.spyOn(expirationDateInstance, '_sendState');
     });
-    // then
+
     it('should call _sendState method', () => {
       // @ts-ignore
       expirationDateInstance.onInput(event);
@@ -147,10 +131,9 @@ describe('ExpirationDate', () => {
     });
   });
 
-  // given
   describe('onKeyPress()', () => {
     const { expirationDateInstance } = expirationDateFixture();
-    // when
+
     beforeEach(() => {
       // @ts-ignore
       const event: KeyboardEvent = new KeyboardEvent('keypress', { key: 1 });
@@ -161,17 +144,15 @@ describe('ExpirationDate', () => {
       expirationDateInstance.onKeyPress(event);
     });
 
-    // then
     it('should call focus() method', () => {
       // @ts-ignore
       expect(expirationDateInstance._inputElement.focus).toHaveBeenCalled();
     });
   });
 
-  // given
   describe('onKeydown()', () => {
     const { expirationDateInstance } = expirationDateFixture();
-    // when
+
     beforeEach(() => {
       // @ts-ignore
       const event: KeyboardEvent = new KeyboardEvent('keydown', { keyCode: 34 });
@@ -180,38 +161,33 @@ describe('ExpirationDate', () => {
       expirationDateInstance.onKeydown(event);
     });
 
-    // then
     it('should set _currentKeyCode', () => {
       // @ts-ignore
       expect(expirationDateInstance._currentKeyCode).toEqual(34);
     });
 
-    // then
     it('should set _inputSelectionStart', () => {
       // @ts-ignore
       expect(expirationDateInstance._inputSelectionStart).toEqual(0);
     });
 
-    // then
     it('should set _inputSelectionEnd', () => {
       // @ts-ignore
       expect(expirationDateInstance._inputSelectionEnd).toEqual(0);
     });
   });
 
-  // given
   describe('_sendState()', () => {
     const { expirationDateInstance } = expirationDateFixture();
     let spy: jest.SpyInstance;
 
-    // when
     beforeEach(() => {
       // @ts-ignore;
       spy = jest.spyOn(expirationDateInstance.messageBus, 'publish');
       // @ts-ignore;
       expirationDateInstance._sendState();
     });
-    // then
+
     it('should call publish()', () => {
       expect(spy).toHaveBeenCalled();
     });

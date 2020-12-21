@@ -1,38 +1,31 @@
 import SpyInstance = jest.SpyInstance;
 import { DomMethods } from './DomMethods';
 
-// given
 describe('DomMethods', () => {
-  // when
   beforeEach(() => {
     document.head.innerHTML = '';
     document.body.innerHTML = '';
   });
 
-  // given
   describe('DomMethods.insertScript', () => {
     const { scriptUrl } = createFormFixture();
-    // then
+
     it('should inject script to head', () => {
       DomMethods.insertScript('head', scriptUrl);
       expect(document.head.innerHTML).toBe('<script src="http://example.com/test.js"></script>');
     });
   });
 
-  // given
   describe('DomMethods.insertStyle', () => {
-    // then
     it('should inject style to head', () => {
       DomMethods.insertStyle(['.st-iframe-factory: {color: #fff}']);
       expect(document.head.innerHTML).toBe('<style id="insertedStyles" type="text/css"></style>');
     });
   });
 
-  // given
   describe('DomMethods.addDataToForm', () => {
     const { parseFormObject } = createFormFixture();
 
-    // then
     it('should add all fields if not provided', () => {
       const form = document.createElement('form');
       DomMethods.addDataToForm(form, parseFormObject);
@@ -44,7 +37,6 @@ describe('DomMethods', () => {
       expect(form.querySelector('[name="stSelectName"]').getAttribute('value')).toBe('B');
     });
 
-    // then
     it('should only add specified fields if provided', () => {
       const form = document.createElement('form');
       DomMethods.addDataToForm(form, parseFormObject, ['stFieldName', 'stFieldName2']);
@@ -65,26 +57,22 @@ describe('DomMethods', () => {
     });
   });
 
-  // given
   describe('DomMethods.parseMerchantForm', () => {
     let spy: SpyInstance;
     const { html } = createFormFixture();
-    // when
+
     beforeEach(() => {
       document.body.innerHTML = html;
       spy = jest.spyOn(DomMethods, 'parseForm');
     });
 
-    // then
     it('should call parseForm()', () => {
       DomMethods.parseForm('st-form');
       expect(spy).toHaveBeenCalled();
     });
   });
 
-  // given
   describe('DomMethods.removeAllChildren', () => {
-    // when
     beforeEach(() => {
       const element = document.createElement('div');
       const child1 = document.createElement('input');
@@ -94,7 +82,7 @@ describe('DomMethods', () => {
       document.body.appendChild(element);
       document.getElementById('some-id').appendChild(child1).appendChild(child2).appendChild(child3);
     });
-    // then
+
     it('should remove all children of specified iframe-factory', () => {
       expect(DomMethods.removeAllChildren('some-id').childNodes.length).toEqual(0);
     });

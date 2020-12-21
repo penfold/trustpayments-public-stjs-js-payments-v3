@@ -472,6 +472,14 @@ class PaymentMethodsPage(BasePage):
             translation = json.load(f)
         return translation[key]
 
+    def get_cachetoken_value(self):
+        self._waits.wait_for_javascript()
+        actual_url = self._executor.get_page_url()
+        parsed_url = urlparse(actual_url)
+        parsed_query_from_url = parse_qs(parsed_url.query)
+        cachetoken_value = parsed_query_from_url['cachetoken'][0]
+        return cachetoken_value
+
     def validate_if_url_contains_info_about_payment(self, expected_url):
         self._executor.wait_until_url_contains(expected_url)
         actual_url = self._executor.get_page_url()
@@ -616,9 +624,9 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_number_of_requests == actual_number_of_requests, assertion_message
 
-    def validate_updated_jwt_in_request_for_visa(self, request_type, update_jwt, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_with_updated_jwt_for_visa(request_type, update_jwt)
-        assertion_message = f'Number of {request_type} with updated jwt is not correct, ' \
+    def validate_updated_jwt_in_request_for_visa(self, payment_type, update_jwt, expected_number_of_requests):
+        actual_number_of_requests = get_number_of_requests_with_updated_jwt_for_visa(payment_type, update_jwt)
+        assertion_message = f'Number of {payment_type} with updated jwt is not correct, ' \
                             f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_number_of_requests == actual_number_of_requests, assertion_message

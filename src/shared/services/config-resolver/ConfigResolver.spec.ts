@@ -2,28 +2,23 @@ import { ConfigResolver } from './ConfigResolver';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigSchema } from '../storage/ConfigSchema';
 
-// given
 describe('ConfigResolver', () => {
   const configResolverInstance: ConfigResolver = new ConfigResolver();
 
-  // when
   beforeEach(() => {
     ConfigSchema.validate = jest.fn().mockReturnValueOnce({ error: null });
   });
 
-  // then
   it('should set default config-provider when some of properties are not set ', () => {
     let { config, configResolved } = ConfigResolverFixture();
     expect(configResolverInstance.resolve(config)).toEqual(configResolved);
   });
 
-  // then
   it('should set default config-provider when all of the properties are not set, except of those which are obligatory', () => {
     let { minimalDefaultConfigResolve, minimalConfig } = ConfigResolverFixture();
     expect(configResolverInstance.resolve(minimalConfig)).toEqual(minimalDefaultConfigResolve);
   });
 
-  // then
   it('should set config-provider with given values if they are correct', () => {
     let { minimalDefaultConfigResolve } = ConfigResolverFixture();
     expect(configResolverInstance.resolve(minimalDefaultConfigResolve)).toEqual(minimalDefaultConfigResolve);
@@ -116,13 +111,13 @@ function ConfigResolverFixture() {
     },
     visaCheckout: {
       buttonSettings: {
-        size: '154',
+        size: 154,
         color: 'neutral'
       },
       livestatus: 0,
       merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
       paymentRequest: {
-        subtotal: '20.00'
+        subtotal: '20.0'
       },
       placement: 'st-visa-checkout',
       settings: {
@@ -231,13 +226,13 @@ function ConfigResolverFixture() {
     },
     visaCheckout: {
       buttonSettings: {
-        size: '154',
+        size: 154,
         color: 'neutral'
       },
       livestatus: 0,
       merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
       paymentRequest: {
-        subtotal: '20.00'
+        subtotal: '20.0'
       },
       placement: 'st-visa-checkout',
       settings: {
@@ -307,7 +302,7 @@ function ConfigResolverFixture() {
     submitCallback: null,
     successCallback: null,
     translations: {},
-    visaCheckout: {}
+    visaCheckout: undefined
   };
   return {
     config,
