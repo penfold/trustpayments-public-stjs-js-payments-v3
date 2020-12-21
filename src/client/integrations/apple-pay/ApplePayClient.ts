@@ -22,8 +22,6 @@ import { MessageBus } from '../../../application/core/shared/message-bus/Message
 import { NotificationService } from '../../notification/NotificationService';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 import { IDecodedJwt } from '../../../application/core/models/IDecodedJwt';
-import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
-import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
 
 @Service()
 export class ApplePayClient implements IApplePayClient {

@@ -13,6 +13,7 @@ import { Payment } from '../../../../application/core/shared/payment/Payment';
 import { IApplePayClientErrorDetails } from '../IApplePayClientErrorDetails';
 import { ApplePayClientErrorService } from '../apple-pay-client-error-service/ApplePayClientErrorService';
 import { IApplePayClientStatus } from '../IApplePayClientStatus';
+import { IApplePayPayment } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPayment';
 
 @Service()
 export class ApplePayPaymentService {
