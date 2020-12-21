@@ -12,7 +12,7 @@ import { ConfigProvider } from '../../../../shared/services/config-provider/Conf
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { Observable } from 'rxjs';
 import { IConfig } from '../../../../shared/model/config/IConfig';
-import { IApplePay } from '../../models/IApplePay';
+import { IApplePayConfig } from '../../models/IApplePayConfig';
 import {
   APPLE_PAY_AMOUNT_AND_CURRENCY,
   APPLE_PAY_NOT_LOGGED,
@@ -21,6 +21,14 @@ import {
   PAYMENT_ERROR,
   PAYMENT_SUCCESS
 } from '../../models/constants/Translations';
+import JwtDecode from 'jwt-decode';
+import { IDecodedJwt } from '../../models/IDecodedJwt';
+import { RequestType } from '../../../../shared/types/RequestType';
+import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { filter, first } from 'rxjs/operators';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
 
 const ApplePaySession = (window as any).ApplePaySession;
 const ApplePayError = (window as any).ApplePayError;
@@ -109,7 +117,7 @@ export class ApplePay {
   protected paymentDetails: string;
   private _buttonStyle: string;
   private _buttonText: string;
-  private _messageBus: MessageBus;
+  private _messageBus: IMessageBus;
   private _session: any;
   private _stJwtInstance: StJwt;
   private _stTransportInstance: StTransport;
@@ -125,7 +133,7 @@ export class ApplePay {
   private _applePayButtonProps: any = {};
   private _payment: Payment;
   private _notification: NotificationService;
-  private _requestTypes: string[];
+  private _requestTypes: RequestType[];
   private _translator: Translator;
   private _merchantId: string;
   private _paymentRequest: any;
@@ -133,14 +141,14 @@ export class ApplePay {
   private _completion: { errors: []; status: string };
   private _localStorage: BrowserLocalStorage;
   private readonly _config$: Observable<IConfig>;
-  private _applePayConfig: IApplePay;
+  private _applePayConfig: IApplePayConfig;
   private _datacenterurl: string;
   private _formId: string;
   private _paymentCancelled: boolean = false;
 
   constructor(private _configProvider: ConfigProvider, private _communicator: InterFrameCommunicator) {
     this._notification = Container.get(NotificationService);
-    this._messageBus = Container.get(MessageBus);
+    this._messageBus = Container.get(MessageBusToken);
     this._localStorage = Container.get(BrowserLocalStorage);
 
     this._config$ = this._configProvider.getConfig$();
@@ -162,7 +170,7 @@ export class ApplePay {
       status: ApplePaySession ? this.getPaymentSuccessStatus() : ''
     };
 
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: { newJwt: string }) => {
+    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: { newJwt: string }) => {
       const { newJwt } = data;
       this._configurePaymentProcess(newJwt);
       this._setAmountAndCurrency();
@@ -215,7 +223,7 @@ export class ApplePay {
     this._placement = placement;
     this.payment = new Payment();
     this._paymentRequest = paymentRequest;
-    this._requestTypes = paymentRequest.requestTypes;
+    this._requestTypes = JwtDecode<IDecodedJwt>(jwt).payload.requesttypedescriptions;
     this._validateMerchantRequestData.walletmerchantid = merchantId;
     this._stJwtInstance = new StJwt(jwt);
     this._stTransportInstance = Container.get(StTransport);
@@ -331,6 +339,17 @@ export class ApplePay {
   }
 
   private _onPaymentAuthorized() {
+    this._messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
+        filter(event => event.data.requesttypedescription !== 'WALLETVERIFY'),
+        first()
+      )
+      .subscribe(event => {
+        if (Number(event.data.errorcode) !== 0) {
+          this._session.completePayment({ status: this.getPaymentFailureStatus(), errors: [] });
+        }
+      });
     this._session.onpaymentauthorized = (event: any) => {
       this.paymentDetails = JSON.stringify(event.payment);
       return this.payment
@@ -340,7 +359,10 @@ export class ApplePay {
             walletsource: this._validateMerchantRequestData.walletsource,
             wallettoken: this.paymentDetails
           },
-          DomMethods.parseForm(this._formId)
+          {
+            ...DomMethods.parseForm(this._formId),
+            termurl: 'https://termurl.com'
+          }
         )
         .then((response: any) => {
           const { errorcode, errormessage } = response.response;
@@ -351,9 +373,7 @@ export class ApplePay {
           this._localStorage.setItem('completePayment', 'true');
         })
         .catch(() => {
-          this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
           this._notification.error(PAYMENT_ERROR);
-          this._session.completePayment({ status: this.getPaymentFailureStatus(), errors: [] });
           this._applePayButtonClickHandler();
           this._localStorage.setItem('completePayment', 'true');
         });
@@ -390,7 +410,7 @@ export class ApplePay {
       if (walletsession) {
         try {
           this._session.completeMerchantValidation(JSON.parse(walletsession));
-          resolve();
+          resolve(undefined);
         } catch (error) {
           console.warn(error);
           reject(requestid);

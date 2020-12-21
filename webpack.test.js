@@ -6,7 +6,7 @@ const path = require('path');
 
 module.exports = merge(common, {
   mode: 'production',
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   devServer: {
     contentBase: './dist',
     port: 8443,
@@ -23,7 +23,7 @@ module.exports = merge(common, {
     new ManifestPlugin(),
     new webpack.DefinePlugin({
       WEBSERVICES_URL: JSON.stringify('https://webservices.securetrading.net:8443')
-    })
+    }),
   ],
   resolve: {
     alias: {

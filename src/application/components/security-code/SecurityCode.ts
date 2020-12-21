@@ -4,6 +4,7 @@ import { Formatter } from '../../core/shared/formatter/Formatter';
 import { Input } from '../../core/shared/input/Input';
 import { LABEL_SECURITY_CODE } from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import {
   SECURITY_CODE_INPUT,
   SECURITY_CODE_INPUT_SELECTOR,
@@ -14,11 +15,11 @@ import {
 import { Validation } from '../../core/shared/validation/Validation';
 import { Service } from 'typedi';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { merge, Observable } from 'rxjs';
-import JwtDecode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { IDecodedJwt } from '../../core/models/IDecodedJwt';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { DefaultPlaceholders } from '../../core/models/constants/config-resolver/DefaultPlaceholders';
@@ -44,13 +45,12 @@ export class SecurityCode extends Input {
   private _securityCodeLength: number;
   private _securityCodeWrapper: HTMLElement;
   private _validation: Validation;
-  private _config: IConfig;
 
   constructor(
     private _configProvider: ConfigProvider,
     private _localStorage: BrowserLocalStorage,
     private _formatter: Formatter,
-    private messageBus: MessageBus,
+    private messageBus: IMessageBus,
     private frame: Frame
   ) {
     super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER);
@@ -60,13 +60,34 @@ export class SecurityCode extends Input {
     this.placeholder = this._getPlaceholder(this._securityCodeLength);
     this._configProvider.getConfig$().subscribe((config: IConfig) => {
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
-      if (styler.isLinedUp(config.styles.securityCode)) {
-        styler.lineUp(
-          'st-security-code',
-          'st-security-code-label',
-          ['st-security-code', 'st-security-code--lined-up'],
-          ['security-code__label', 'security-code__label--required', 'lined-up']
-        );
+      if (styler.hasSpecificStyle('isLinedUp', config.styles.securityCode)) {
+        styler.addStyles([
+          {
+            elementId: 'st-security-code',
+            classList: ['st-security-code--lined-up']
+          },
+          {
+            elementId: 'st-security-code-label',
+            classList: ['security-code__label--required', 'lined-up']
+          }
+        ]);
+      }
+
+      if (styler.hasSpecificStyle('outline-input', config.styles.securityCode)) {
+        const outlineValue = config.styles.securityCode['outline-input'];
+        const outlineSize = Number(outlineValue.replace(/\D/g, ''));
+
+        styler.addStyles([
+          {
+            elementId: 'st-security-code-wrapper',
+            inlineStyles: [
+              {
+                property: 'padding',
+                value: `${outlineSize ? outlineSize : 3}px`
+              }
+            ]
+          }
+        ]);
       }
     });
     this._securityCodeUpdate$()
@@ -115,14 +136,12 @@ export class SecurityCode extends Input {
       map((event: IMessageBusEvent<IFormFieldState>) => event.data.value)
     );
     const cardNumberFromJwt$: Observable<string> = merge(jwtFromConfig$, jwtFromUpdate$).pipe(
-      map(jwt => JwtDecode<IDecodedJwt>(jwt).payload.pan)
+      map(jwt => jwt_decode<IDecodedJwt>(jwt).payload.pan)
     );
 
-    const maskedPanFromJsInit$: Observable<string> = this._configProvider.getConfig$().pipe(
-      filter((config: IConfig) => config.deferInit === false),
-      tap((config: IConfig) => (this._config = config)),
-      switchMap(() => this._localStorage.select(store => store['app.maskedpan']))
-    );
+    const maskedPanFromJsInit$: Observable<string> = this._configProvider
+      .getConfig$()
+      .pipe(switchMap(() => this._localStorage.select(store => store['app.maskedpan'])));
 
     return merge(cardNumberInput$, cardNumberFromJwt$, maskedPanFromJsInit$).pipe(
       filter(Boolean),
@@ -208,7 +227,7 @@ export class SecurityCode extends Input {
   }
 
   private _setDisableListener(): void {
-    this.messageBus.subscribe(MessageBus.EVENTS_PUBLIC.BLOCK_SECURITY_CODE, (state: FormState) => {
+    this.messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.BLOCK_SECURITY_CODE, (state: FormState) => {
       this._toggleSecurityCode(state);
     });
   }
@@ -240,7 +259,7 @@ export class SecurityCode extends Input {
         this._sendState();
       });
 
-    this.messageBus.subscribe(
+    this.messageBus.subscribeType(
       MessageBus.EVENTS.IS_CARD_WITHOUT_CVV,
       (data: { formState: FormState; isCardPiba: boolean }) => {
         const { formState, isCardPiba } = data;

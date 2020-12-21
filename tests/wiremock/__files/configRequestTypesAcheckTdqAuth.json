@@ -1,41 +1,15 @@
 {
   "analytics": true,
   "animatedCard": false,
-  "bypassCards": [
-    "PIBA"
-  ],
   "deferInit": false,
   "fieldsToSubmit": [
     "pan",
     "expirydate",
     "securitycode"
   ],
-  "buttonId": "merchant-submit-button",
-  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IifX0._VTiUjM-op-4KUoVGtqA92HwgwTNi_XckqP8pdcyKFc",
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJBQ0NPVU5UQ0hFQ0siLCJUSFJFRURRVUVSWSIsIkFVVEgiXX19.lY2TE2UcikmIBpY0vIJYPyqupX8JSUZcWAI3IZuo2Jw",
   "panIcon": true,
-  "styles": {
-    "defaultStyles": {
-      "background-color-input": "AliceBlue"
-    },
-    "notificationFrame": {
-      "color-error": "#FFF333"
-    },
-    "controlFrame": {
-      "color-error": "#3358FF"
-    }
-  },
   "submitOnSuccess": false,
-  "submitCallback": "",
-  "translations": {
-    "An error occurred": "Wystąpił błąd"
-  },
-  "components": {
-    "requestTypes": [
-      "ACCOUNTCHECK",
-      "THREEDQUERY",
-      "AUTH"
-    ]
-  },
   "applePay": {
     "buttonStyle": "white-outline",
     "buttonText": "donate",

@@ -3,6 +3,7 @@ import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
 import { Formatter } from '../../core/shared/formatter/Formatter';
 import { Input } from '../../core/shared/input/Input';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Utils } from '../../core/shared/utils/Utils';
 import { Validation } from '../../core/shared/validation/Validation';
@@ -47,7 +48,7 @@ export class CardNumber extends Input {
     private _iconFactory: IconFactory,
     private _formatter: Formatter,
     private frame: Frame,
-    private messageBus: MessageBus
+    private messageBus: IMessageBus
   ) {
     super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER);
     this._cardNumberField = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
@@ -69,13 +70,34 @@ export class CardNumber extends Input {
     this._inputElement.setAttribute(CardNumber.PLACEHOLDER_ATTRIBUTE, this.placeholder);
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
-      if (styler.isLinedUp(config.styles.cardNumber)) {
-        styler.lineUp(
-          'st-card-number',
-          'st-card-number-label',
-          ['st-card-number', 'st-card-number--lined-up'],
-          ['card-number__label', 'card-number__label--required', 'lined-up']
-        );
+      if (styler.hasSpecificStyle('isLinedUp', config.styles.cardNumber)) {
+        styler.addStyles([
+          {
+            elementId: 'st-card-number',
+            classList: ['st-card-number--lined-up']
+          },
+          {
+            elementId: 'st-card-number-label',
+            classList: ['card-number__label--required', 'lined-up']
+          }
+        ]);
+      }
+
+      if (styler.hasSpecificStyle('outline-input', config.styles.cardNumber)) {
+        const outlineValue = config.styles.cardNumber['outline-input'];
+        const outlineSize = Number(outlineValue.replace(/\D/g, ''));
+
+        styler.addStyles([
+          {
+            elementId: 'st-card-number-wrapper',
+            inlineStyles: [
+              {
+                property: 'padding',
+                value: `${outlineSize ? outlineSize : 3}px`
+              }
+            ]
+          }
+        ]);
       }
     });
   }
@@ -220,7 +242,7 @@ export class CardNumber extends Input {
   }
 
   private _setDisableListener() {
-    this.messageBus.subscribe(MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER, (state: FormState) => {
+    this.messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER, (state: FormState) => {
       if (state !== FormState.AVAILABLE) {
         this._inputElement.setAttribute(CardNumber.DISABLED_ATTRIBUTE, 'true');
         this._inputElement.classList.add(CardNumber.DISABLED_CLASS);

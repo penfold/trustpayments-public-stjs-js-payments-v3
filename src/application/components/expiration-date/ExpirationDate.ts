@@ -3,6 +3,7 @@ import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
 import { Formatter } from '../../core/shared/formatter/Formatter';
 import { Input } from '../../core/shared/input/Input';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import {
   EXPIRATION_DATE_INPUT,
   EXPIRATION_DATE_LABEL,
@@ -32,20 +33,42 @@ export class ExpirationDate extends Input {
   constructor(
     private _configProvider: ConfigProvider,
     private _formatter: Formatter,
-    private messageBus: MessageBus,
+    private messageBus: IMessageBus,
     private frame: Frame
   ) {
     super(EXPIRATION_DATE_INPUT, EXPIRATION_DATE_MESSAGE, EXPIRATION_DATE_LABEL, EXPIRATION_DATE_WRAPPER);
     this._init();
     this._configProvider.getConfig$().subscribe((config: IConfig) => {
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
-      if (styler.isLinedUp(config.styles.expirationDate)) {
-        styler.lineUp(
-          'st-expiration-date',
-          'st-expiration-date-label',
-          ['st-expiration-date', 'st-expiration-date--lined-up'],
-          ['expiration-date__label', 'expiration-date__label--required', 'lined-up']
-        );
+
+      if (styler.hasSpecificStyle('isLinedUp', config.styles.expirationDate)) {
+        styler.addStyles([
+          {
+            elementId: 'st-expiration-date',
+            classList: ['st-expiration-date--lined-up']
+          },
+          {
+            elementId: 'st-expiration-date-label',
+            classList: ['expiration-date__label--required', 'lined-up']
+          }
+        ]);
+      }
+
+      if (styler.hasSpecificStyle('outline-input', config.styles.expirationDate)) {
+        const outlineValue = config.styles.expirationDate['outline-input'];
+        const outlineSize = Number(outlineValue.replace(/\D/g, ''));
+
+        styler.addStyles([
+          {
+            elementId: 'st-expiration-date-wrapper',
+            inlineStyles: [
+              {
+                property: 'padding',
+                value: `${outlineSize ? outlineSize : 3}px`
+              }
+            ]
+          }
+        ]);
       }
     });
   }
@@ -55,7 +78,7 @@ export class ExpirationDate extends Input {
   }
 
   public setDisableListener() {
-    this.messageBus.subscribe(MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, (state: FormState) => {
+    this.messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, (state: FormState) => {
       state !== FormState.AVAILABLE ? this._disableInputField() : this._enableInputField();
     });
   }

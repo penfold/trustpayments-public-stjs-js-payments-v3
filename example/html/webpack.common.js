@@ -10,7 +10,7 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 
 module.exports = {
   mode: 'development',
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   entry: {
     example: ['./pages/index/index.ts'],
     receipt: ['./pages/receipt/receipt.ts'],
@@ -87,7 +87,11 @@ module.exports = {
       ]
     }),
     new StyleLintPlugin({
-      context: path.join(__dirname, '')
+      context: path.join(__dirname, ''),
+      files: [
+        'pages/**/*.scss',
+        'styles/**/*.scss',
+      ]
     }),
     new FriendlyErrorsWebpackPlugin(),
     new webpack.SourceMapDevToolPlugin({})

@@ -1,125 +1,144 @@
 """This module is essential for executing our test against real web browser.
-It provides 3 separated classes(SeleniumDriver, Driver and DriverFactory)
+It provides 2 separated classes(WebDriverFactory, DriverFactory)
 containing several functions which allow to create, manage and distribute
 WebDriver instance which is responsible for direct connection and allows
 to manipulate browser window thanks to its functions.
 It is based on singleton pattern to operate on a single instance of a driver.
 """
-import abc
-from enum import Enum
 from logging import INFO
 
+from logger import get_logger
+from retry import retry
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-
-from logger import get_logger
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager, IEDriverManager
+from webdriver_manager.opera import OperaDriverManager
 
 LOGGER = get_logger(INFO)
 
 
-class Drivers(Enum):
-    chrome = webdriver.Chrome
-    firefox = webdriver.Firefox
-    ie = webdriver.Ie
-    edge = webdriver.Edge
-    safari = webdriver.Safari
-    phantom = webdriver.PhantomJS
+def _create_chrome_web_driver(**args) -> RemoteWebDriver:
+    options = args['options']
+    desired_capabilities = args['capabilities']
+    desired_capabilities.update(DesiredCapabilities.CHROME)
+    executable_path = ChromeDriverManager().install()
+    return webdriver.Chrome(
+        executable_path=executable_path,
+        chrome_options=options,
+        desired_capabilities=desired_capabilities
+    )
 
 
-class DesiredCapabilities(Enum):
-    chrome = webdriver.DesiredCapabilities.CHROME
-    firefox = webdriver.DesiredCapabilities.FIREFOX
-    ie = webdriver.DesiredCapabilities.INTERNETEXPLORER
-    edge = webdriver.DesiredCapabilities.EDGE
-    phantom = webdriver.DesiredCapabilities.PHANTOMJS
-    safari = webdriver.DesiredCapabilities.SAFARI
+def _create_firefox_web_driver(**args) -> RemoteWebDriver:
+    options = args['options']
+    desired_capabilities = args['capabilities']
+    desired_capabilities.update(DesiredCapabilities.FIREFOX)
+    executable_path = GeckoDriverManager().install()
+    return webdriver.Firefox(
+        executable_path=executable_path,
+        firefox_options=options,
+        desired_capabilities=desired_capabilities
+    )
 
 
-class Driver:
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, browser_name, remote, command_executor, remote_capabilities, headless):
-        self._browser_name = browser_name
-        self._remote = remote
-        self._remote_capabilities = remote_capabilities
-        self._command_executor = command_executor
-        self._headless = headless
-
-    @abc.abstractmethod
-    def get_driver(self):
-        pass
-
-    @staticmethod
-    def _get_desired_capabilities(capability):
-        desired_capabilities = DesiredCapabilities[capability]
-        return desired_capabilities.value.copy()
+def _create_opera_web_driver(**args) -> RemoteWebDriver:
+    options = args['options']
+    desired_capabilities = args['capabilities']
+    desired_capabilities.update(DesiredCapabilities.OPERA)
+    executable_path = OperaDriverManager().install()
+    return webdriver.Opera(
+        executable_path=executable_path,
+        options=options,
+        desired_capabilities=desired_capabilities
+    )
 
 
-class SeleniumDriver(Driver):
-    def get_driver(self) -> RemoteWebDriver:
-        max_try = 3
-        while max_try:
-            try:
-                return self._create_remote() if self._remote else self._create_local()
-            except WebDriverException as exception:
-                print(str(exception) + '  - trying to open browser again')
-                max_try -=1
+def _create_ie_web_driver(**args) -> RemoteWebDriver:
+    options = args['options']
+    desired_capabilities = args['capabilities']
+    desired_capabilities.update(DesiredCapabilities.INTERNETEXPLORER)
+    executable_path = IEDriverManager().install()
+    return webdriver.Ie(
+        executable_path=executable_path,
+        ie_options=options,
+        desired_capabilities=desired_capabilities
+    )
 
-    def _create_remote(self) -> RemoteWebDriver:
-        remote_driver = webdriver.Remote(command_executor=self._command_executor,
-                                         desired_capabilities=self._remote_capabilities)
-        return remote_driver
 
-    def _create_local(self) -> RemoteWebDriver:
-        driver = Drivers[self._browser_name]
-        options = Options()
+def _create_edge_web_driver(**args) -> RemoteWebDriver:
+    desired_capabilities = args['capabilities']
+    desired_capabilities.update(DesiredCapabilities.EDGE)
+    executable_path = EdgeChromiumDriverManager().install()
+    return webdriver.Edge(
+        executable_path=executable_path,
+        capabilities=desired_capabilities
+    )
 
-        options.headless = self._headless
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--allow-insecure-localhost')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--ignore-certificate-errors')
-        options.add_argument('--remote-debugging-address=0.0.0.0')
-        options.add_argument('--remote-debugging-port=9222')
 
-        return driver.value(chrome_options=options)
+def _create_safari_web_driver(**args) -> RemoteWebDriver:
+    desired_capabilities = args['capabilities']
+    desired_capabilities.update(DesiredCapabilities.SAFARI)
+    return webdriver.Safari(desired_capabilities=desired_capabilities)
+
+
+def _create_phantom_web_driver(**args) -> RemoteWebDriver:
+    desired_capabilities = args['capabilities']
+    desired_capabilities.update(DesiredCapabilities.PHANTOMJS)
+    return webdriver.PhantomJS(desired_capabilities=desired_capabilities)
+
+
+def _get_local_options(headless):
+    options = Options()
+    options.headless = headless
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--allow-insecure-localhost')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--ignore-certificate-errors')
+    options.add_argument('--remote-debugging-address=0.0.0.0')
+    options.add_argument('--remote-debugging-port=9222')
+    return options
 
 
 def _get_remote_capabilities(configuration):
     # pylint: disable=unused-variable
-    network_logs='true'
+    network_logs = 'true'
     # disabling network logs on Safari as they are not accessible for this browser and cause browser instability
     if 'Safari' in configuration.REMOTE_BROWSER:
         network_logs = 'false'
 
-    possible_caps = {'os': configuration.REMOTE_OS,
-                     'os_version': configuration.REMOTE_OS_VERSION,
-                     'browserName': configuration.REMOTE_BROWSER,
-                     'browserVersion': configuration.REMOTE_BROWSER_VERSION,
-                     'browserstack.local': configuration.BROWSERSTACK_LOCAL,
-                     'browserstack.localIdentifier': configuration.BROWSERSTACK_LOCAL_IDENTIFIER,
-                     'device': configuration.REMOTE_DEVICE,
-                     'real_mobile': configuration.REMOTE_REAL_MOBILE,
-                     'acceptSslCerts': configuration.ACCEPT_SSL_CERTS,
-                     'project': configuration.PROJECT_NAME,
-                     'build': configuration.BUILD_NAME,
-                     'browserstack.debug': configuration.BROWSERSTACK_DEBUG,
-                     'browserstack.selenium_version': configuration.BROWSERSTACK_SELENIUM_VERSION,
-                     'browserstack.appium_version': configuration.BROWSERSTACK_APPIUM_VERSION,
-                     'browserstack.chrome.driver': configuration.BROWSERSTACK_CHROME_DRIVER,
-                     'browserstack.ie.driver': configuration.BROWSERSTACK_IE_DRIVER,
-                     'browserstack.safari.driver': configuration.BROWSERSTACK_SAFARI_DRIVER,
-                     'browserstack.firefox.driver': configuration.BROWSERSTACK_FIREFOX_DRIVER,
-                     'browserstack.networkLogs': network_logs,
-                     'browserstack.acceptInsecureCerts': 'true',
-                     'browserstack.console': 'errors',
-                     'ie.ensureCleanSession': 'true',
-                     'ie.forceCreateProcessApi': 'true',
-                     'resolution': '1920x1080'
-                     }
+    possible_caps = {
+        'os': configuration.REMOTE_OS,
+        'os_version': configuration.REMOTE_OS_VERSION,
+        'browserName': configuration.REMOTE_BROWSER,
+        'browserVersion': configuration.REMOTE_BROWSER_VERSION,
+        'browserstack.local': configuration.BROWSERSTACK_LOCAL,
+        'browserstack.localIdentifier': configuration.BROWSERSTACK_LOCAL_IDENTIFIER,
+        'device': configuration.REMOTE_DEVICE,
+        'real_mobile': configuration.REMOTE_REAL_MOBILE,
+        'acceptSslCerts': configuration.ACCEPT_SSL_CERTS,
+        'project': configuration.PROJECT_NAME,
+        'build': configuration.BUILD_NAME,
+        'browserstack.debug': configuration.BROWSERSTACK_DEBUG,
+        'browserstack.selenium_version': configuration.BROWSERSTACK_SELENIUM_VERSION,
+        'browserstack.appium_version': configuration.BROWSERSTACK_APPIUM_VERSION,
+        'browserstack.chrome.driver': configuration.BROWSERSTACK_CHROME_DRIVER,
+        'browserstack.ie.driver': configuration.BROWSERSTACK_IE_DRIVER,
+        'browserstack.safari.driver': configuration.BROWSERSTACK_SAFARI_DRIVER,
+        'browserstack.firefox.driver': configuration.BROWSERSTACK_FIREFOX_DRIVER,
+        'browserstack.networkLogs': network_logs,
+        'browserstack.acceptInsecureCerts': 'true',
+        'browserstack.console': 'errors',
+        'browserstack.autoWait': 0,
+        'ie.ensureCleanSession': 'true',
+        'ie.forceCreateProcessApi': 'true',
+        'resolution': '1920x1080'
+    }
     capabilities = {}
     for key, value in possible_caps.items():
         if value:
@@ -127,8 +146,43 @@ def _get_remote_capabilities(configuration):
     return capabilities
 
 
+class WebDriverFactory:
+    WEB_DRIVERS = {
+        'chrome': _create_chrome_web_driver,
+        'firefox': _create_firefox_web_driver,
+        'opera': _create_opera_web_driver,
+        'ie': _create_ie_web_driver,
+        'edge': _create_chrome_web_driver,
+        'safari': _create_chrome_web_driver,
+        'phantom': _create_chrome_web_driver
+    }
+
+    @classmethod
+    @retry(WebDriverException, tries=3, delay=10, logger=LOGGER)
+    def create_web_driver(cls, remote, browser, command_executor, configuration, headless) -> RemoteWebDriver:
+        if remote:
+            return cls._create_remote_web_driver(command_executor, configuration)
+        return cls._create_local_web_driver(browser, headless)
+
+    @classmethod
+    def _create_remote_web_driver(cls, command_executor, configuration) -> RemoteWebDriver:
+        remote_capabilities = _get_remote_capabilities(configuration)
+        remote_capabilities['goog:loggingPrefs'] = {'browser': 'SEVERE'}
+        return webdriver.Remote(command_executor=command_executor, desired_capabilities=remote_capabilities)
+
+    @classmethod
+    def _create_local_web_driver(cls, browser, headless) -> RemoteWebDriver:
+        if browser not in cls.WEB_DRIVERS:
+            raise RuntimeError(f'Unknown browser name: {browser}')
+
+        return cls.WEB_DRIVERS[browser](
+            options=_get_local_options(headless),
+            capabilities={'goog:loggingPrefs': {'browser': 'SEVERE'}}
+        )
+
+
 class DriverFactory:
-    _browser: RemoteWebDriver = None
+    _driver: RemoteWebDriver = None
 
     def __init__(self, configuration):
         self._browser_name = configuration.BROWSER
@@ -136,26 +190,26 @@ class DriverFactory:
         self._command_executor = configuration.COMMAND_EXECUTOR
         self._configuration = configuration
 
-    def _set_browser(self) -> None:
-        self._remote_capabilities = _get_remote_capabilities(self._configuration)
-        args = dict(browser_name=self._browser_name,
-                    remote=self._remote,
-                    command_executor=self._command_executor,
-                    remote_capabilities=self._remote_capabilities,
-                    headless=self._configuration.HEADLESS)
-        driver = SeleniumDriver(**args)  # type: ignore
-        browser = driver.get_driver()
-        type(self)._browser = browser
-        if not self._configuration.REMOTE_DEVICE or self._configuration.REMOTE_DEVICE is None:
-            self._browser.maximize_window()
+    def get_driver(self) -> RemoteWebDriver:
+        if not self._driver:
+            type(self)._driver = self._create_driver()
+        return self._driver
 
-    def get_browser(self) -> RemoteWebDriver:
-        if not self._browser:
-            self._set_browser()
-        return self._browser
-
-    def close_browser(self) -> None:
-        if self._browser:
+    def close_browser(self):
+        if self._driver:
             LOGGER.info('CLOSING BROWSER')
-            self._browser.quit()
-        type(self)._browser = None
+            self._driver.quit()
+        type(self)._driver = None
+
+    def _create_driver(self) -> RemoteWebDriver:
+        driver = WebDriverFactory.create_web_driver(
+            browser=self._browser_name,
+            remote=self._remote,
+            command_executor=self._command_executor,
+            configuration=self._configuration,
+            headless=self._configuration.HEADLESS
+        )
+
+        if not self._configuration.REMOTE_DEVICE:
+            driver.maximize_window()
+        return driver

@@ -4,15 +4,13 @@ import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalS
 import { SentryService } from '../../shared/services/sentry/SentryService';
 import { MessageSubscriberRegistry } from '../../shared/services/message-bus/MessageSubscriberRegistry';
 import { instance, mock, verify, when } from 'ts-mockito';
-import { Store } from '../../application/core/store/Store';
 import { environment } from '../../environments/environment';
 import { IMessageSubscriber } from '../../shared/services/message-bus/interfaces/IMessageSubscriber';
 import { ClientBootstrap } from './ClientBootstrap';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { ST } from '../st/ST';
 import { MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/Selectors';
-import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
-import { MessageSubscriberToken } from '../../shared/dependency-injection/InjectionTokens';
+import { MessageBusToken, MessageSubscriberToken, StoreToken } from '../../shared/dependency-injection/InjectionTokens';
 
 describe('ClientBootstrap', () => {
   let frameIdentifierMock: FrameIdentifier;
@@ -51,8 +49,8 @@ describe('ClientBootstrap', () => {
     it('initializes core services', () => {
       clientBootstrap.run(config);
 
-      verify(containerMock.get(MessageBus)).once();
-      verify(containerMock.get(Store)).once();
+      verify(containerMock.get(MessageBusToken)).once();
+      verify(containerMock.get(StoreToken)).once();
       verify(containerMock.get(BrowserLocalStorage)).once();
 
       verify(browserLocalStorageMock.init()).once();

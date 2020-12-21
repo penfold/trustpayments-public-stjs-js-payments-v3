@@ -10,9 +10,11 @@ Feature: Card Payments
   @base_config @extended_tests_part_1
   Scenario Outline: Payment form accessibility after payment process
     Given User opens page with payment form
-    When User fills payment form with credit card number "4000000000001000", expiration date "12/30" and cvv "123"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
+    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    And THREEDQUERY mock response is set to "ENROLLED_Y"
+    And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "<action_code>"
+    And user waits for payment to be processed
     Then User will see that Submit button is "<form_status>" after payment
     And User will see that ALL input fields are "<form_status>"
 
@@ -33,23 +35,22 @@ Feature: Card Payments
   @base_config
   Scenario: Verify number on JSINIT requests
     When User opens page with payment form
-    Then JSINIT request was sent only 1
+    Then JSINIT request was sent only once
 
   @config_defer_init
   Scenario: Verify number of JSINIT requests together with UpdateJWT
     Given User opens prepared payment form page WITH_UPDATE_JWT
       | jwtName          |
       | BASE_UPDATED_JWT |
-    When User fills payment form with defined card VISA_FRICTIONLESS
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-    And User calls updateJWT function by filling amount field
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+    And THREEDQUERY, AUTH mock response is set to OK
     And User calls updateJWT function by filling amount field
     And User clicks Pay button - AUTH response is set to "OK"
     Then User will see payment status information: "Payment has been successfully processed"
-    And JSINIT request was sent only 1
+    And JSINIT request was sent 2 time
     And JSINIT requests contains updated jwt
 
-  @base_config
+  @config_bypass_cards
   Scenario: Security code re-enabled if server error on PIBA
     Given User opens page with payment form
     When User fills payment form with credit card number "3089500000000000021", expiration date "12/23"

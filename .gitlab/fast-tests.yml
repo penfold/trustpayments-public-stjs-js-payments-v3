@@ -31,7 +31,7 @@ visa-checkout-headless-component-tests:
     - .services-test
     - .sequentially-component-tests
   variables:
-    FEATURE_FILE_NAME: 'visa_checkout_tests.feature'
+    FEATURE_FILE_NAME: 'visa_checkout.feature'
 
 .services-dev:
   services:
@@ -46,7 +46,7 @@ e2e-tests:
     - .fast-tests
     - .services-dev
     - .parallel-e2e-tests
-  parallel: 14
+  parallel: 16
 
 zap-baseline-scan-library-securetrading-net:
   services:

@@ -2,12 +2,14 @@ import { FramesHub } from '../../../shared/services/message-bus/FramesHub';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
 import { ContainerInstance, Service } from 'typedi';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
-import { Store } from '../store/Store';
 import { environment } from '../../../environments/environment';
 import { MessageSubscriberRegistry } from '../../../shared/services/message-bus/MessageSubscriberRegistry';
 import { FrameIdentifier } from '../../../shared/services/message-bus/FrameIdentifier';
-import { MessageBus } from '../shared/message-bus/MessageBus';
-import { MessageSubscriberToken } from '../../../shared/dependency-injection/InjectionTokens';
+import {
+  MessageBusToken,
+  MessageSubscriberToken,
+  StoreToken
+} from '../../../shared/dependency-injection/InjectionTokens';
 
 @Service()
 export class ComponentBootstrap {
@@ -16,8 +18,8 @@ export class ComponentBootstrap {
   run<T>(frameName: string, componentClass: new (...args: any[]) => T): T {
     this.frameIdentifier.setFrameName(frameName);
 
-    this.container.get(MessageBus);
-    this.container.get(Store);
+    this.container.get(MessageBusToken);
+    this.container.get(StoreToken);
     this.container.get(BrowserLocalStorage).init();
     this.container.get(FramesHub).notifyReadyState();
 

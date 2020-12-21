@@ -3,7 +3,6 @@ import { ContainerInstance } from 'typedi';
 import { ComponentBootstrap } from './ComponentBootstrap';
 import { instance, mock, verify, when } from 'ts-mockito';
 import { CardNumber } from '../../components/card-number/CardNumber';
-import { Store } from '../store/Store';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { FramesHub } from '../../../shared/services/message-bus/FramesHub';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
@@ -12,8 +11,11 @@ import { IMessageSubscriber } from '../../../shared/services/message-bus/interfa
 import { MessageSubscriberRegistry } from '../../../shared/services/message-bus/MessageSubscriberRegistry';
 import { ControlFrame } from '../../components/control-frame/ControlFrame';
 import { CARD_NUMBER_IFRAME, CONTROL_FRAME_IFRAME } from '../models/constants/Selectors';
-import { MessageBus } from '../shared/message-bus/MessageBus';
-import { MessageSubscriberToken } from '../../../shared/dependency-injection/InjectionTokens';
+import {
+  MessageBusToken,
+  MessageSubscriberToken,
+  StoreToken
+} from '../../../shared/dependency-injection/InjectionTokens';
 
 describe('ComponentBootstrap', () => {
   let frameIdentifierMock: FrameIdentifier;
@@ -50,8 +52,8 @@ describe('ComponentBootstrap', () => {
     it('initializes core services', () => {
       componentBootstrap.run(CARD_NUMBER_IFRAME, CardNumber);
 
-      verify(containerMock.get(MessageBus)).once();
-      verify(containerMock.get(Store)).once();
+      verify(containerMock.get(MessageBusToken)).once();
+      verify(containerMock.get(StoreToken)).once();
       verify(containerMock.get(BrowserLocalStorage)).once();
       verify(containerMock.get(FramesHub)).once();
 

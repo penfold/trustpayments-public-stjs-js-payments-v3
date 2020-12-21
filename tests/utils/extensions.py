@@ -1,5 +1,6 @@
 """ This class consist all necessary web elements extensions methods
 """
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
@@ -18,7 +19,7 @@ class WebElementsExtensions(Waits):
 
     def send_key_one_by_one(self, locator, string):
         # pylint: disable=invalid-name
-        for x in string:
+        for x in str(string):
             self.send_keys(locator, x)
 
     def switch_to_iframe_and_send_keys(self, iframe_name, locator, string):
@@ -36,7 +37,7 @@ class WebElementsExtensions(Waits):
     def switch_to_iframe_and_send_keys_by_java_script(self, iframe_name, locator, string):
         # self.switch_to_iframe(iframe_name)
         # element = self.find_element(locator)
-        self._browser.execute_script(
+        self._driver.execute_script(
             'window.frames[\'st-card-number-iframe\'].document.getElementById(\'st-card-number-input\').value=\'123\'')
         self.switch_to_default_iframe()
 
@@ -60,14 +61,14 @@ class WebElementsExtensions(Waits):
 
     def find_element(self, locator):
         # self.wait_for_ajax()
-        element = self._browser.find_element(*locator)
+        element = self._driver.find_element(*locator)
         # * collects all the positional arguments in a tuple
         return element
 
     def is_element_displayed(self, locator):
         # pylint: disable=bare-except
         try:
-            element = self._browser.find_element(*locator).is_displayed()
+            element = self._driver.find_element(*locator).is_displayed()
             return element is not None
         except:
             return False
@@ -75,19 +76,21 @@ class WebElementsExtensions(Waits):
     def is_iframe_displayed(self, iframe_name):
         # pylint: disable=bare-except
         try:
-            self._browser.switch_to.frame(iframe_name)
+            self._driver.switch_to.frame(iframe_name)
             return True
         except:
             return False
 
     def find_elements(self, locator):
         # self.wait_for_ajax()
-        elements = self._browser.find_elements(*locator)
+        elements = self._driver.find_elements(*locator)
         return elements
 
     def get_text(self, locator):
-        element = self.find_element(locator)
-        return element.text
+        try:
+            return self.find_element(locator).text
+        except StaleElementReferenceException:
+            return self.find_element(locator).text
 
     def get_text_with_wait(self, locator):
         self.wait_for_element(locator)
@@ -119,9 +122,7 @@ class WebElementsExtensions(Waits):
         return element.get_attribute(attribute_name)
 
     def is_element_enabled(self, locator):
-        element = self.find_element(locator)
-        is_enabled = element.is_enabled()
-        return is_enabled
+        return self.find_element(locator).is_enabled()
 
     def switch_to_iframe_and_get_element_attribute(self, iframe_name, locator, attribute_name):
         self.switch_to_iframe(iframe_name)
@@ -132,10 +133,14 @@ class WebElementsExtensions(Waits):
 
     def switch_to_iframe_and_check_is_element_enabled(self, iframe_name, locator):
         self.switch_to_iframe(iframe_name)
-        element = self.find_element(locator)
-        is_enabled = element.is_enabled()
+        is_enabled = self.is_element_enabled(locator)
         self.switch_to_default_iframe()
         return is_enabled
+
+    def switch_to_iframe_and_wait_for_element_to_be_displayed(self, iframe_name, locator):
+        self.switch_to_iframe(iframe_name)
+        self.wait_for_element_to_be_displayed(locator)
+        self.switch_to_default_iframe()
 
     def switch_to_iframe_and_get_css_value(self, iframe_name, locator, property_name):
         self.switch_to_iframe(iframe_name)
@@ -146,11 +151,11 @@ class WebElementsExtensions(Waits):
 
     def scroll_directly_to_element(self, locator):
         element = self.find_element(locator)
-        self._browser.execute_script('arguments[0].scrollIntoView();', element)
+        self._driver.execute_script('arguments[0].scrollIntoView();', element)
 
     def click_by_javascript(self, locator):
         element = self.find_element(locator)
-        self._browser.execute_script('arguments[0].click();', element)
+        self._driver.execute_script('arguments[0].click();', element)
 
     def enter(self, locator):
         element = self.find_element(locator)
@@ -167,7 +172,7 @@ class WebElementsExtensions(Waits):
         self.switch_to_default_iframe()
 
     def select_element_from_list(self, locator, element_number):
-        select = Select(self._browser.find_elements(*locator))
+        select = Select(self._driver.find_elements(*locator))
         select.select_by_index(element_number)
 
     def switch_to_iframe(self, iframe_name):
@@ -175,7 +180,7 @@ class WebElementsExtensions(Waits):
 
     def switch_to_default_iframe(self):
         self.switch_to_default_content()
-        if len(self._browser.find_elements(By.ID, 'st-parent-frame')) > 0:
+        if len(self._driver.find_elements(By.ID, 'st-parent-frame')) > 0:
             self.switch_to_iframe(PaymentMethodsLocators.parent_iframe)
 
     def switch_to_parent_iframe(self):

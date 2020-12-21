@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.32
+.cicd-os-ref: &cicd-os-ref 0.0.56
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
@@ -15,14 +15,15 @@ include:
 variables:
   CICD_OS_REF: *cicd-os-ref
 
-  IMAGE_JS_PAYMENTS_APP_HTML_TEST: ${CI_REGISTRY_IMAGE}/app-html-test:${CI_COMMIT_REF_SLUG}
-  IMAGE_JS_PAYMENTS_APP_HTML_DEV: ${CI_REGISTRY_IMAGE}/app-html-dev:${CI_COMMIT_REF_SLUG}
-  IMAGE_JS_PAYMENTS_TESTS: ${CI_REGISTRY_IMAGE}/payments-tests:${CI_COMMIT_REF_SLUG}
-  IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_COMMIT_REF_SLUG}
+  IMAGE_JS_PAYMENTS_APP_HTML_TEST: ${CI_REGISTRY_IMAGE}/app-html-test:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_DEV: ${CI_REGISTRY_IMAGE}/app-html-dev:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_TESTS: ${CI_REGISTRY_IMAGE}/payments-tests:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_PIPELINE_ID}
 
   SMOKE_TESTS_TAG: '@smoke_test'
   SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_test,@smoke_test_apple_pay'
   EXTENDED_TESTS_TAG: '@extended_tests_part_1,@extended_tests_part_2'
+  ARTIFACT_RELEASE_DESCRIPTION_TYPE: "EXTENDED"
 
   ### Disabled Jobs:
   # Initialize
@@ -39,10 +40,13 @@ variables:
   # DISABLE_JOB_ts_static_analysis: 'true'
   # DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
   # DISABLE_JOB_vuln_check: 'true'
+  # Extended Tests
+  # DISABLE_JOB_extended_tests: 'true'
   # Validate merge request description
   # DISABLE_JOB_validate_merge_request_description: 'true'
   # Release
   # DISABLE_JOB_release: 'true'
+  # DISABLE_JOB_release_generate_version: "true"
   # Post-Release
   DISABLE_JOB_npm_publish: 'true'
   ### Disabled Jobs : End
@@ -71,5 +75,6 @@ stages:
   - fast-tests
   - extended-tests
   - validate-merge-request-description
+# Release package
   - release
   - post-release

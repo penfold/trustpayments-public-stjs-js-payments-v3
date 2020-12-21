@@ -10,15 +10,16 @@ Feature: Notification frame
 
   @config_disable_notifications_true @extended_tests_part_1
   Scenario: Notification frame is not displayed after payment
-    When User fills payment form with credit card number "4111110000000211", expiration date "12/30" and cvv "123"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-    And User clicks Pay button - AUTH response is set to "OK"
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+    And THREEDQUERY, AUTH mock response is set to OK
+    And User clicks Pay button
     Then User will not see notification frame
 
   @config_submit_on_success_and_error_true
   Scenario Outline: Notification frame is not displayed after payment with submitOn<submitOn>
-    When User fills payment form with credit card number "4111110000000211", expiration date "12/30" and cvv "123"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
+    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    And THREEDQUERY mock response is set to "ENROLLED_Y"
+    And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "<action_code>"
     Then User will not see notification frame
 
@@ -30,10 +31,12 @@ Feature: Notification frame
   @base_config
   Scenario: Checking notification banner style after second payment
     When User fills payment form with credit card number "4000000000001018", expiration date "01/22" and cvv "123"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_U"
+    And THREEDQUERY mock response is set to "ENROLLED_Y"
+    And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "UNAUTHENTICATED"
     Then User will see payment status information: "Unauthenticated"
     And User will see that notification frame has "red" color
+    And User waits for payment status to disappear
     When User fills payment form with credit card number "4111110000000211", expiration date "01/22" and cvv "123"
     And User clicks Pay button - AUTH response is set to "OK"
     And user waits for payment to be processed

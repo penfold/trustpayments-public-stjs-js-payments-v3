@@ -5,11 +5,9 @@ import { environment } from '../../environments/environment';
 import { MessageSubscriberRegistry } from '../../shared/services/message-bus/MessageSubscriberRegistry';
 import { FrameIdentifier } from '../../shared/services/message-bus/FrameIdentifier';
 import { ST } from '../st/ST';
-import { Store } from '../../application/core/store/Store';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/Selectors';
-import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
-import { MessageSubscriberToken } from '../../shared/dependency-injection/InjectionTokens';
+import { MessageBusToken, MessageSubscriberToken, StoreToken } from '../../shared/dependency-injection/InjectionTokens';
 
 @Service()
 export class ClientBootstrap {
@@ -18,8 +16,8 @@ export class ClientBootstrap {
   run(config: IConfig): ST {
     this.frameIdentifier.setFrameName(MERCHANT_PARENT_FRAME);
 
-    this.container.get(MessageBus);
-    this.container.get(Store);
+    this.container.get(MessageBusToken);
+    this.container.get(StoreToken);
     this.container.get(BrowserLocalStorage).init();
     this.container.get(MessageSubscriberRegistry).register(...this.container.getMany(MessageSubscriberToken));
 

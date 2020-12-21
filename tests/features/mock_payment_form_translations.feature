@@ -11,6 +11,7 @@ Feature: Payment form translations
   @base_config @translations
   Scenario Outline: Checking translations of labels and fields error for <language>
     When User changes page language to "<language>"
+    And User waits for whole form to be displayed
     And User clicks Pay button
     Then User will see all labels displayed on page translated into "<language>"
     And User will see validation message "Field is required" under all fields translated into "<language>"
@@ -33,11 +34,10 @@ Feature: Payment form translations
   @base_config  @translations
   Scenario Outline: Cardinal Commerce - checking "Success" status translation for <language>
     When User changes page language to "<language>"
-    And User fills payment form with credit card number "4000000000001059", expiration date "01/22" and cvv "123"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-    And User clicks Pay button - AUTH response is set to "OK"
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+    And THREEDQUERY, AUTH mock response is set to OK
+    And User clicks Pay button
     Then User will see "Payment has been successfully processed" payment status translated into "<language>"
-    And AUTH and THREEDQUERY requests were sent only once with correct data
     @extended_tests_part_3
     Examples:
       | language |
@@ -58,14 +58,15 @@ Feature: Payment form translations
   @config_translations
   Scenario: Check translation overwriting mechanism for notification banner
     Given User opens page with payment form
-    When User fills payment form with defined card VISA_FRICTIONLESS
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-    And User clicks Pay button - AUTH response is set to "OK"
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+    And THREEDQUERY, AUTH mock response is set to OK
+    And User clicks Pay button
     Then User will see notification frame with message: "Victory"
 
   @config_translations @smoke_test
   Scenario: Check translation overwriting mechanism for Pay button and validation message
     Given User opens page with payment form
+    And User waits for whole form to be displayed
     And User clicks Pay button
     Then User will see that Pay button is translated into "Kup teraz!"
     And User will see that validation messages is translated into "This is wrong"

@@ -16,9 +16,9 @@ Feature: Payment form styles check
   @config_field_style @smoke_test @extended_tests_part_2
   Scenario: Checking style of notification frame
     Given User opens page with payment form
-    When User fills payment form with credit card number "4111110000000211", expiration date "12/30" and cvv "123"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-    And User clicks Pay button - AUTH response is set to "OK"
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+    And THREEDQUERY, AUTH mock response is set to OK
+    And User clicks Pay button
     Then User will see that "NOTIFICATION_FRAME" field has correct style
 
   @config_placeholders @smoke_test @extended_tests_part_2
@@ -29,7 +29,7 @@ Feature: Payment form styles check
   @base_config
   Scenario: Checking default placeholders in input fields
     When User opens page with payment form
-    Then User will see default placeholders in input fields: ***** ***** ***** *****, MM/YY, ***
+    Then User will see default placeholders in input fields: **** **** **** ****, MM/YY, ***
 
   @base_config @extended_tests_part_2
   Scenario: Checking default cvv placeholder for AMEX card

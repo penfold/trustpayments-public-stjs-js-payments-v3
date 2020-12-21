@@ -3,10 +3,11 @@ import { Service } from 'typedi';
 import { NotificationType } from '../../application/core/models/constants/NotificationType';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 
 @Service()
 export class NotificationService {
-  constructor(private _messageBus: MessageBus, private _configProvider: ConfigProvider) {}
+  constructor(private _messageBus: IMessageBus, private _configProvider: ConfigProvider) {}
 
   private get disableNotification(): boolean {
     return this._configProvider.getConfig() ? this._configProvider.getConfig().disableNotification : false;

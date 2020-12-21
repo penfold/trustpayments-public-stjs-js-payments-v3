@@ -1,5 +1,5 @@
 import './st.css';
-import JwtDecode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames.class';
 import { CommonFrames } from '../common-frames/CommonFrames.class';
@@ -10,7 +10,7 @@ import { ApplePayMock } from '../../application/core/integrations/apple-pay/Appl
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
 import { VisaCheckoutMock } from '../../application/core/integrations/visa-checkout/VisaCheckoutMock';
-import { IApplePay } from '../../application/core/models/IApplePay';
+import { IApplePayConfig } from '../../application/core/models/IApplePayConfig';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
@@ -29,7 +29,7 @@ import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalS
 import { Notification } from '../../application/core/shared/notification/Notification';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Subject, Subscription } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { delay, map, takeUntil } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
@@ -38,9 +38,16 @@ import { IframeFactory } from '../iframe-factory/IframeFactory';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { Frame } from '../../application/core/shared/frame/Frame';
 import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
+import { CardinalClient } from '../integrations/cardinal-commerce/CardinalClient';
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
+import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
+import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
+import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { IStore } from '../../application/core/store/IStore';
+import { IParentFrameState } from '../../application/core/store/state/IParentFrameState';
 
 @Service()
 export class ST {
@@ -59,6 +66,7 @@ export class ST {
   private _translation: Translator;
   private _destroy$: Subject<void> = new Subject();
   private _registeredCallbacks: { [eventName: string]: Subscription } = {};
+  private _cybertonicaTid: Promise<string>;
 
   set submitCallback(callback: (event: ISubmitEvent) => void) {
     if (callback) {
@@ -98,14 +106,19 @@ export class ST {
     private _communicator: InterFrameCommunicator,
     private _framesHub: FramesHub,
     private _storage: BrowserLocalStorage,
-    private _messageBus: MessageBus,
+    private _messageBus: IMessageBus,
     private _notification: Notification,
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
-    private _browserDetector: BrowserDetector
+    private _browserDetector: BrowserDetector,
+    private _cybertonica: Cybertonica,
+    private _cardinalClient: CardinalClient,
+    private _store: IStore<IParentFrameState>
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
+    this._messageBus.publish({ type: 'FOO' });
+    this._messageBus.publish({ type: 'FOOZ' });
   }
 
   public on(eventName: 'success' | 'error' | 'submit' | 'cancel', callback: (event: any) => void): void {
@@ -122,6 +135,7 @@ export class ST {
       .pipe(
         ofType(events[eventName]),
         map(event => event.data),
+        delay(0),
         takeUntil(this._destroy$)
       )
       .subscribe(callback);
@@ -134,17 +148,14 @@ export class ST {
     }
   }
 
-  public Components(config: IComponentsConfig): void {
-    this._config = this._configService.update({
-      ...this._config,
-      components: {
-        ...this._config.components,
-        ...(config || {})
-      }
-    });
+  public Components(config: IComponentsConfig | undefined): void {
+    if (config) {
+      this._config = this._configService.updateFragment('components', config);
+    }
+
     this.blockSubmitButton();
     // @ts-ignore
-    this._commonFrames._requestTypes = this._config.components.requestTypes;
+    this._commonFrames._requestTypes = jwt_decode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
     this._framesHub
       .waitForFrame(CONTROL_FRAME_IFRAME)
       .pipe(
@@ -164,53 +175,38 @@ export class ST {
       });
   }
 
-  public ApplePay(config: IApplePay): ApplePay {
+  public ApplePay(config: IApplePayConfig | undefined): ApplePay {
     const { applepay } = this.Environment();
 
-    this._config = this._configService.update({
-      ...this._config,
-      applePay: {
-        ...this._config.applePay,
-        ...(config || {})
-      }
-    });
+    if (config) {
+      this._config = this._configService.updateFragment('applePay', config);
+    }
 
     return new applepay(this._configProvider, this._communicator);
   }
 
-  public VisaCheckout(config: IVisaConfig): VisaCheckout {
+  public VisaCheckout(config: IVisaConfig | undefined): VisaCheckout {
     const { visa } = this.Environment();
 
-    this._config = this._configService.update({
-      ...this._config,
-      visaCheckout: {
-        ...this._config.visaCheckout,
-        ...(config || {})
-      }
-    });
+    if (config) {
+      this._config = this._configService.updateFragment('visaCheckout', config);
+    }
 
     return new visa(this._configProvider, this._communicator);
   }
 
   public Cybertonica(): Promise<string> {
-    return new Promise(resolve =>
-      this._framesHub
-        .waitForFrame(CONTROL_FRAME_IFRAME)
-        .pipe(
-          switchMap((controlFrame: string) =>
-            from(this._communicator.query({ type: MessageBus.EVENTS_PUBLIC.GET_CYBERTONICA_TID }, controlFrame))
-          )
-        )
-        .subscribe((tid: string) => {
-          resolve(tid);
-        })
-    );
+    if (!this._cybertonicaTid) {
+      this._cybertonica.init(this._config.cybertonicaApiKey);
+      this._cybertonicaTid = this._cybertonica.getTransactionId();
+    }
+
+    return this._cybertonicaTid;
   }
 
   public updateJWT(jwt: string): void {
     if (jwt) {
-      this._config = { ...this._config, jwt };
-      this._configService.update(this._config);
+      this._config = this._configService.updateJwt(jwt);
       StCodec.updateJWTValue(jwt);
     } else {
       throw Error(this._translation.translate(ST.JWT_NOT_SPECIFIED_MESSAGE));
@@ -233,17 +229,20 @@ export class ST {
   public init(config: IConfig): void {
     this._framesHub.reset();
     this._storage.init();
-    this._config = this._configService.update(config);
-    StCodec.updateJWTValue(config.jwt);
-    this.initCallbacks(config);
-    this.Storage();
-    this._translation = new Translator(this._storage.getItem(ST.LOCALE_STORAGE));
-    this._googleAnalytics.init();
-    this.CommonFrames();
-    this._commonFrames.init();
-    this.displayLiveStatus(Boolean(this._config.livestatus));
-    this.watchForFrameUnload();
-    this.initControlFrameModal();
+    this._config = this._configService.setup(config);
+    if (this._config.jwt) {
+      StCodec.updateJWTValue(config.jwt);
+      this.initCallbacks(config);
+      this.Storage();
+      this._translation = new Translator(this._storage.getItem(ST.LOCALE_STORAGE));
+      this._googleAnalytics.init();
+      this.CommonFrames();
+      this._commonFrames.init();
+      this.displayLiveStatus(Boolean(this._config.livestatus));
+      this.watchForFrameUnload();
+      this.initControlFrameModal();
+      this._cardinalClient.init();
+    }
   }
 
   public getBrowserInfo(): IBrowserInfo {
@@ -270,6 +269,7 @@ export class ST {
   }
 
   private CommonFrames(): void {
+    const requestTypes: string[] = jwt_decode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
     this._commonFrames = new CommonFrames(
       this._config.jwt,
       this._config.origin,
@@ -281,7 +281,7 @@ export class ST {
       this._config.submitFields,
       this._config.datacenterurl,
       this._config.animatedCard,
-      this._config.components.requestTypes,
+      requestTypes,
       this._config.formId,
       this._iframeFactory,
       this._frameService
@@ -297,7 +297,7 @@ export class ST {
 
   private Storage(): void {
     this._storage.setItem(ST.MERCHANT_TRANSLATIONS_STORAGE, JSON.stringify(this._config.translations));
-    this._storage.setItem(ST.LOCALE_STORAGE, JwtDecode<IStJwtObj>(this._config.jwt).payload.locale);
+    this._storage.setItem(ST.LOCALE_STORAGE, jwt_decode<IStJwtObj<IStJwtPayload>>(this._config.jwt).payload.locale);
   }
 
   private displayLiveStatus(liveStatus: boolean): void {

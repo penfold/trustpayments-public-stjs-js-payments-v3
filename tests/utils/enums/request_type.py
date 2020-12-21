@@ -9,8 +9,14 @@ request_type_response = {
     'ACCOUNTCHECK, AUTH, SUBSCRIPTION': 'ccAccountcheckAuthSub.json',
     'AUTH, SUBSCRIPTION': 'ccAuthSub.json',
     'RISKDEC, ACCOUNTCHECK, AUTH': 'ccRiskdecAccountcheckAuth.json',
+    'ACCOUNTCHECK, THREEDQUERY, AUTH': 'ccAcheckTdqAuth.json',
+    'THREEDQUERY, AUTH, RISKDEC': 'ccTdqAuthRiskdec.json',
+    'RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH': 'ccRiskdecAcheckTdqAuth.json',
+    'THREEDQUERY, AUTH': 'ccTdqAuth.json',
+    'THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH': 'ccInvalidField_requesttypedescriptions.json',
+    'THREEDQUERY': 'ccBypass_requesttypedescriptions.json',
     'ACCOUNTCHECK, RISKDEC, AUTH': 'ccAccountcheckRiskdecAuth.json',
-    'THREEDQUERY': 'ccTdq.json'
+    'ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION': 'ccAcheckTdqAuthSub.json'
 }
 
 request_type_tokenisation_response = {
@@ -25,6 +31,18 @@ request_type_applepay = {
     'RISKDEC, ACCOUNTCHECK, AUTH': 'appleRiskdecAccountcheckAuth.json',
     'AUTH, SUBSCRIPTION': 'appleAuthSubscription.json',
     'ACCOUNTCHECK, SUBSCRIPTION': 'appleAcheckSubscription.json'
+}
+
+frictionless_request_type = {
+    'OK': 'frictionlessOk.json',
+    'DECLINE': 'frictionlessDecline.json',
+    'UNAUTHENTICATED': 'frictionlessUnauthenticated.json',
+    'TDQ_U_OK': 'frictionlessUOk.json',
+    'TDQ_U_DECLINE': 'frictionlessUDecline.json',
+}
+
+step_up_request_type = {
+    'ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION': 'stepUpAcheckTdqAuthSub.json'
 }
 
 request_type_visa = {

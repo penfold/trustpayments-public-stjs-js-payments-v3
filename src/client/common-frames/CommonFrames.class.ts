@@ -6,7 +6,7 @@ import { Validation } from '../../application/core/shared/validation/Validation'
 import { Container } from 'typedi';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { IComponentsIds } from '../../shared/model/config/IComponentsIds';
-import { delay, filter, first, map, takeUntil } from 'rxjs/operators';
+import { delay, filter, first, map, takeUntil, tap } from 'rxjs/operators';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Observable } from 'rxjs';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
@@ -15,6 +15,9 @@ import { Frame } from '../../application/core/shared/frame/Frame';
 import { StJwt } from '../../application/core/shared/stjwt/StJwt';
 import { PAYMENT_CANCELLED, PAYMENT_SUCCESS } from '../../application/core/models/constants/Translations';
 import { CONTROL_FRAME_COMPONENT_NAME, CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
+import { CustomerOutput } from '../../application/core/models/constants/CustomerOutput';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { MessageBusToken } from '../../shared/dependency-injection/InjectionTokens';
 
 export class CommonFrames {
   get requestTypes(): string[] {
@@ -25,11 +28,10 @@ export class CommonFrames {
     this._requestTypes = requestTypes;
   }
 
-  private static readonly COMPLETED_REQUEST_TYPES = ['AUTH', 'CACHETOKENISE', 'ACCOUNTCHECK'];
   public elementsTargets: any;
   public elementsToRegister: HTMLElement[];
   private _controlFrame: HTMLIFrameElement;
-  private _messageBus: MessageBus;
+  private _messageBus: IMessageBus;
   private _requestTypes: string[];
   private readonly _gatewayUrl: string;
   private readonly _merchantForm: HTMLFormElement;
@@ -48,7 +50,7 @@ export class CommonFrames {
   protected componentIds: any;
   protected submitCallback: any;
   protected fieldsToSubmit: string[];
-  protected messageBus: MessageBus;
+  protected messageBus: IMessageBus;
   protected formId: string;
   private _stJwt: StJwt;
 
@@ -69,7 +71,7 @@ export class CommonFrames {
     private _frame: Frame
   ) {
     this._gatewayUrl = gatewayUrl;
-    this._messageBus = Container.get(MessageBus);
+    this._messageBus = Container.get(MessageBusToken);
     this.formId = formId;
     this._merchantForm = document.getElementById(formId) as HTMLFormElement;
     this._validation = new Validation();
@@ -158,37 +160,20 @@ export class CommonFrames {
     this.elementsToRegister.push(this._controlFrame);
   }
 
-  private _isThreedComplete(data: any): boolean {
-    if (this.requestTypes[this.requestTypes.length - 1] !== 'THREEDQUERY') {
-      return false;
-    }
-
-    if (data.requesttypedescription !== 'THREEDQUERY') {
-      return false;
-    }
-
-    if (data.validated) {
-      return true;
-    }
-
-    if (data.acsurl !== undefined) {
-      return false;
-    }
-
-    if (data.threedresponse !== undefined) {
-      return true;
-    }
-
-    return data.enrolled !== 'Y';
-  }
-
   private _isTransactionFinished(data: any): boolean {
-    if (CommonFrames.COMPLETED_REQUEST_TYPES.includes(data.requesttypedescription)) {
-      return true;
-    } else if (this._isThreedComplete(data)) {
+    if (Number(data.errorcode) !== 0) {
       return true;
     }
-    return false;
+
+    if (data.requesttypedescription === 'WALLETVERIFY' || data.requesttypedescription === 'JSINIT') {
+      return false;
+    }
+
+    if (data.customeroutput === CustomerOutput.THREEDREDIRECT) {
+      return Boolean(data.threedresponse || !data.acsurl || data.enrolled !== 'Y');
+    }
+
+    return true;
   }
 
   private _onInput(event: Event) {
@@ -200,27 +185,29 @@ export class CommonFrames {
   }
 
   private _onTransactionComplete(data: any): void {
-    if (this._isTransactionFinished(data) || data.errorcode !== '0') {
-      this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
+    this.addSubmitData(data);
+
+    if (!this._isTransactionFinished(data)) {
+      return;
     }
+
+    this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
 
     let result: 'success' | 'error' | 'cancel';
 
-    switch (true) {
-      case this._isTransactionFinished(data) && data.errorcode === '0':
+    switch (data.errorcode) {
+      case '0':
         result = 'success';
         data = { ...data, errormessage: PAYMENT_SUCCESS };
         break;
-      case data.errorcode === 'cancelled':
+      case 'cancelled':
         result = 'cancel';
         data = { ...data, errormessage: PAYMENT_CANCELLED };
         break;
-      case data.errorcode !== '0':
+      default:
         result = 'error';
         break;
     }
-
-    this.addSubmitData(data);
 
     if (
       (result === 'success' && this._submitOnSuccess) ||

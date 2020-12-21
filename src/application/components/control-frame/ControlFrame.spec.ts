@@ -8,15 +8,16 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { mock, instance as mockInstance, when, anyString, anything } from 'ts-mockito';
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
-import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { EMPTY, of } from 'rxjs';
-import { Store } from '../../core/store/Store';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
-import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
 import { IStyles } from '../../../shared/model/config/IStyles';
 import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -26,7 +27,7 @@ describe('ControlFrame', () => {
 
   beforeEach(() => {
     // @ts-ignore
-    instance._messageBus.subscribe = jest.fn().mockImplementationOnce((event, callback) => {
+    instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
       callback(data);
     });
   });
@@ -120,7 +121,7 @@ describe('ControlFrame', () => {
     // then
     it('should call _initResetJwtEvent when RESET_JWT event has been called', () => {
       // @ts-ignore
-      instance._messageBus.subscribe = jest
+      instance._messageBus.subscribeType = jest
         .fn()
         .mockImplementationOnce((even, callback) => {
           callback();
@@ -158,7 +159,7 @@ describe('ControlFrame', () => {
     // then
     it('should call notification success when promise is resolved', async () => {
       // @ts-ignore
-      instance._payment.processPayment = jest.fn().mockResolvedValueOnce(new Promise(resolve => resolve()));
+      instance._payment.processPayment = jest.fn().mockResolvedValueOnce(new Promise(resolve => resolve(undefined)));
       // @ts-ignore
       instance._processPayment(data);
     });
@@ -232,16 +233,18 @@ describe('ControlFrame', () => {
 });
 
 function controlFrameFixture() {
+  const JWT =
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw';
   const localStorage: BrowserLocalStorage = mock(BrowserLocalStorage);
   const communicator: InterFrameCommunicator = mock(InterFrameCommunicator);
   const configProvider: ConfigProvider = mock<ConfigProvider>();
   const notification: NotificationService = mock(NotificationService);
   const cybertonica: Cybertonica = mock(Cybertonica);
-  const cardinalCommerce: CardinalCommerce = mock(CardinalCommerce);
+  const threeDProcess: ThreeDProcess = mock(ThreeDProcess);
   const configService: ConfigService = mock(ConfigService);
-  const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
+  const messageBus: IMessageBus = new SimpleMessageBus();
   const frame: Frame = mock(Frame);
-  const storeMock: Store = mock(Store);
+  const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -253,17 +256,26 @@ function controlFrameFixture() {
   when(communicator.whenReceive(anyString())).thenReturn({
     thenRespond: () => undefined
   });
-  when(configProvider.getConfig$()).thenReturn(of({} as IConfig));
-  when(cardinalCommerce.init(anything())).thenReturn(EMPTY);
+  when(configProvider.getConfig$()).thenReturn(of({ jwt: JWT } as IConfig));
+  when(threeDProcess.init(anything())).thenReturn(EMPTY);
   when(frame.parseUrl()).thenReturn({
     locale: 'en_GB',
-    jwt:
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw',
-
+    jwt: JWT,
     styles: controlFrame
   });
   when(frame.getAllowedParams()).thenReturn(['locale', 'origin', 'styles']);
   when(frame.getAllowedStyles()).thenReturn(frameAllowedStyles);
+  when(jwtDecoderMock.decode(JWT)).thenReturn({
+    payload: {
+      baseamount: '1000',
+      accounttypedescription: 'ECOM',
+      currencyiso3a: 'GBP',
+      sitereference: 'test_james38641',
+      locale: 'en_GB',
+      pan: '3089500000000000021',
+      expirydate: '01/22'
+    }
+  });
 
   const instance = new ControlFrame(
     mockInstance(localStorage),
@@ -271,11 +283,11 @@ function controlFrameFixture() {
     mockInstance(configProvider),
     mockInstance(notification),
     mockInstance(cybertonica),
-    mockInstance(cardinalCommerce),
-    mockInstance(storeMock),
+    mockInstance(threeDProcess),
     mockInstance(configService),
     messageBus,
-    mockInstance(frame)
+    mockInstance(frame),
+    mockInstance(jwtDecoderMock)
   );
   const messageBusEvent = {
     type: ''
@@ -285,8 +297,10 @@ function controlFrameFixture() {
     value: 'test value'
   };
 
+  StCodec.jwt = JWT;
+
   // @ts-ignore
-  instance.init({} as IConfig);
+  instance.init({ jwt: JWT } as IConfig);
 
   return { data, instance, messageBusEvent };
 }

@@ -12,6 +12,7 @@ class MockUrl(Enum):
     WEBSERVICES_DOMAIN = 'https://webservices.securetrading.net:8443'
     WEBSERVICES_STJS_URI = 'https://webservices.securetrading.net:8443/st.js'
     THIRDPARTY_URL = 'https://thirdparty.example.com:8443'
+    LIBRARY_URL = 'https://library.securetrading.net:8443'
     VISA_MOCK_URI = '/visaPaymentStatus'
     CC_MOCK_ACS_URI = '/cardinalAuthenticateCard'
     APPLEPAY_MOCK_URI = '/applePaymentStatus'
@@ -76,7 +77,7 @@ def stub_st_request_type(mock_json, request_type):
         request=MappingRequest(
             method=HttpMethods.POST,
             url=MockUrl.GATEWAY_MOCK_URI.value,
-            body_patterns=[{'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==[' + request_type + '])]'}]
+            headers={'st-request-types': {'equalTo': request_type}}
         ),
         response=MappingResponse(
             status=200,
@@ -87,15 +88,15 @@ def stub_st_request_type(mock_json, request_type):
         persistent=False)
     Mappings.create_mapping(mapping)
 
-
-def stub_st_request_type_acheck_tdq(mock_json, request_type):
+def stub_jsinit(mock_json, request_type):
     stub_url_options_for_cors(MockUrl.GATEWAY_MOCK_URI.value)
     configure_for_local_host()
     mapping = Mapping(
         priority=100,
         request=MappingRequest(
             method=HttpMethods.POST,
-            url=MockUrl.GATEWAY_MOCK_URI.value
+            url=MockUrl.GATEWAY_MOCK_URI.value,
+            body_patterns=[{'matchesJsonPath': '$.request[:1][?(@.requesttypedescriptions==[' + request_type + '])]'}]
         ),
         response=MappingResponse(
             status=200,

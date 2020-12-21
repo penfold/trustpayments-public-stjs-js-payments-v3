@@ -6,15 +6,15 @@ import { anyFunction, instance, mock, when } from 'ts-mockito';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { EMPTY, of } from 'rxjs';
-import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { Formatter } from '../../core/shared/formatter/Formatter';
 import { Frame } from '../../core/shared/frame/Frame';
+import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 
 jest.mock('./../../core/shared/notification/Notification');
-jest.mock('./../../core/shared/message-bus/MessageBus');
 
 // given
 describe('SecurityCode', () => {
@@ -62,7 +62,7 @@ describe('SecurityCode', () => {
     // then
     it('should set attribute disabled and add class to classList', () => {
       // @ts-ignore
-      securityCodeInstance.messageBus.subscribe = jest.fn().mockImplementation((event, callback) => {
+      securityCodeInstance.messageBus.subscribeType = jest.fn().mockImplementation((event, callback) => {
         callback(true);
       });
       // @ts-ignore
@@ -72,7 +72,7 @@ describe('SecurityCode', () => {
     // then
     it('should remove attribute disabled and remove class from classList', () => {
       // @ts-ignore
-      securityCodeInstance.messageBus.subscribe = jest.fn().mockImplementation((event, callback) => {
+      securityCodeInstance.messageBus.subscribeType = jest.fn().mockImplementation((event, callback) => {
         callback(false);
       });
       // @ts-ignore
@@ -268,7 +268,7 @@ function securityCodeFixture() {
   when(localStorage.select(anyFunction())).thenReturn(of('34****4565'));
   when(configProvider.getConfig$()).thenReturn(of(config));
   when(configProvider.getConfig()).thenReturn(config);
-  const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
+  const messageBus: IMessageBus = new SimpleMessageBus();
   const securityCodeInstance = new SecurityCode(
     instance(configProvider),
     instance(localStorage),
