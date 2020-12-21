@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { from, Observable, of } from 'rxjs';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { IApplePayPaymentAuthorizedEvent } from '../apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { IApplePayProcessPaymentResponse } from '../apple-pay-payment-data/IApplePayProcessPaymentResponse';
 import { IApplePaySession } from '../apple-pay-session-service/IApplePaySession';
@@ -40,9 +40,15 @@ export class ApplePayPaymentService {
     return this.payment.walletVerify(request).pipe(
       switchMap((response: IApplePayWalletVerifyResponse) => {
         const { walletsession } = response.response;
+
+        if (cancelled) {
+          return of(ApplePayClientErrorCode.CANCEL);
+        }
+
         if (!walletsession) {
           return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
         }
+
         applePaySession.completeMerchantValidation(JSON.parse(walletsession));
         return of(ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS);
       }),
