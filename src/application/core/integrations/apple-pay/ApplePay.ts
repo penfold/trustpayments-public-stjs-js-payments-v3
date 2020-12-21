@@ -216,6 +216,7 @@ export class ApplePay {
         payment: event.payment,
         config: this.config
       });
+
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {

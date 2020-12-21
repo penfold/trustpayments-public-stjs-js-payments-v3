@@ -61,6 +61,12 @@ export class ApplePayClient implements IApplePayClient {
           case ApplePayClientStatus.ON_PAYMENT_AUTHORIZED:
             return this.onPaymentAuthorized$(event.data);
 
+          case ApplePayClientStatus.VALIDATE_MERCHANT_ERROR:
+            return this.onValidateMerchantError$(event.data);
+
+          case ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS:
+            return this.onValidateMerchantSuccess$(event.data);
+
           case ApplePayClientStatus.CANCEL:
             return this.onCancel$(event.data);
 
@@ -109,9 +115,7 @@ export class ApplePayClient implements IApplePayClient {
           )
         ).subscribe((event: IMessageBusEvent) => {
           console.error(event);
-          this.applePayNotificationService.notification(ApplePayClientErrorCode.SUCCESS, event.data.errormessage);
-          this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
-          return of(event.data);
+          return of(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS);
         });
       });
   }
@@ -125,10 +129,10 @@ export class ApplePayClient implements IApplePayClient {
     console.error(event);
     this.applePayPaymentService
       .processPayment(
-        JwtDecode<IDecodedJwt>(event.data.data.config.jwtFromConfig).payload.requesttypedescriptions,
-        config.validateMerchantRequest,
-        config.formId,
-        event
+        JwtDecode<IDecodedJwt>(event.data.config.jwtFromConfig).payload.requesttypedescriptions,
+        event.data.config.validateMerchantRequest,
+        event.data.config.formId,
+        event.data.payment
       )
       .pipe(
         switchMap((response: IApplePayClientErrorDetails) => {
@@ -201,5 +205,13 @@ export class ApplePayClient implements IApplePayClient {
     );
 
     return of(ApplePayClientStatus.CANCEL);
+  }
+
+  private onValidateMerchantError$(status: any) {
+    console.error(status);
+  }
+
+  private onValidateMerchantSuccess$(status: any) {
+    console.error(status);
   }
 }

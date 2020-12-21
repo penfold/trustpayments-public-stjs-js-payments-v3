@@ -67,6 +67,8 @@ export class ApplePayPaymentService {
     formId: string,
     payment: IApplePayPayment
   ): Observable<IApplePayClientErrorDetails> {
+    console.error(requestTypes, validateMerchantRequest, formId, payment);
+    console.error(DomMethods.parseForm(formId));
     return from(
       this.payment.processPayment(
         requestTypes,
@@ -75,7 +77,7 @@ export class ApplePayPaymentService {
           wallettoken: JSON.stringify(payment)
         },
         {
-          ...DomMethods.parseForm(formId),
+          // ...DomMethods.parseForm(formId),
           termurl: 'https://termurl.com'
         },
         {

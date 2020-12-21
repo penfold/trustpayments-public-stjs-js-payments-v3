@@ -89,6 +89,7 @@ export class DomMethods {
 
   public static parseForm(formId: string): {} {
     const form: HTMLElement = document.getElementById(formId);
+    console.error(document.getElementsByTagName('body'));
     const els = DomMethods.getAllFormElements(form);
     const result: any = {};
     for (const el of els) {
