@@ -6,6 +6,7 @@ import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-shipping-data
 // tslint:disable-next-line:max-line-length
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
 import { from, Observable } from 'rxjs';
+import { IApplePayPaymentAuthorizationResult } from '../apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 
 const ApplePaySession: IApplePaySession = (window as any).ApplePaySession;
 
@@ -47,6 +48,9 @@ export class ApplePaySessionService {
     this.applePaySession.completeMerchantValidation(walletsession);
   }
 
+  completePayment(status: IApplePayPaymentAuthorizationResult) {
+    this.applePaySession.completePayment(status);
+  }
   private onPaymentMethodSelected(): void {
     this.applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethodSelectedEvent) => {
       this.applePaySession.completePaymentMethodSelection({
