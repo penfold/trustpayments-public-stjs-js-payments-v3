@@ -1,12 +1,12 @@
 import { IApplePayError } from './IApplePayError';
-import { ApplePayErrorCode } from './ApplePayErrorCode';
+import { ApplePaySessionErrorCode } from './ApplePaySessionErrorCode';
 
 export class ApplePayErrorMock implements IApplePayError {
-  code: ApplePayErrorCode;
+  code: ApplePaySessionErrorCode;
   contactField: string;
   message: string;
 
-  constructor(code: ApplePayErrorCode, contactField?: string, message?: string) {
+  constructor(code: ApplePaySessionErrorCode, contactField?: string, message?: string) {
     this.code = code;
     this.contactField = contactField;
     this.message = message;

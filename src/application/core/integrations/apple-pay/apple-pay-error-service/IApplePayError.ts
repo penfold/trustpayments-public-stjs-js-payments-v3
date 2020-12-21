@@ -1,7 +1,7 @@
-import { ApplePayErrorCode } from './ApplePayErrorCode';
+import { ApplePaySessionErrorCode } from './ApplePaySessionErrorCode';
 
 export interface IApplePayError {
-  code: ApplePayErrorCode;
+  code: ApplePaySessionErrorCode;
   contactField?: string;
   message?: string;
 }

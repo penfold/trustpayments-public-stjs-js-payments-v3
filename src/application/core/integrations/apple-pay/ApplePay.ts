@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { EMPTY, observable, Observable, of, throwError } from 'rxjs';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
@@ -13,18 +13,18 @@ import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/ApplePayClientStatus';
 import { ApplePayClientErrorCode } from '../../../../client/integrations/apple-pay/ApplePayClientErrorCode';
-import { ApplePayErrorCode } from './apple-pay-error-service/ApplePayErrorCode';
+import { ApplePaySessionErrorCode } from './apple-pay-error-service/ApplePaySessionErrorCode';
 import { APPLE_PAY_BUTTON_ID } from './apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { VALIDATION_ERROR } from '../../models/constants/Translations';
 import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from './apple-pay-config-service/ApplePayConfigService';
 import { ApplePayErrorService } from './apple-pay-error-service/ApplePayErrorService';
+import { ApplePayGestureService } from './apple-pay-gesture-service/ApplePayGestureService';
 import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { GoogleAnalytics } from '../google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { ApplePayGestureService } from './apple-pay-gesture-service/ApplePayGestureService';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
@@ -32,10 +32,10 @@ const ApplePaySession = (window as any).ApplePaySession;
 export class ApplePay {
   private applePaySession: IApplePaySession;
   private config: IApplePayConfigObject;
-  private paymentCancelled: boolean = false;
-  private onValidateMerchant: Observable<IApplePayValidateMerchantEvent>;
-  private onPaymentAuthorized: Observable<IApplePayPaymentAuthorizedEvent>;
   private onCancel: Observable<Event>;
+  private onPaymentAuthorized: Observable<IApplePayPaymentAuthorizedEvent>;
+  private onValidateMerchant: Observable<IApplePayValidateMerchantEvent>;
+  private paymentCancelled: boolean = false;
 
   constructor(
     private communicator: InterFrameCommunicator,
@@ -170,7 +170,7 @@ export class ApplePay {
         if (Number(event.data.errorcode) !== 0) {
           this.applePaySession.completePayment({
             status: ApplePaySession.STATUS_FAILURE,
-            errors: this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale)
+            errors: this.applePayErrorService.create(ApplePaySessionErrorCode.UNKNOWN, this.config.locale)
           });
         }
       });
@@ -322,7 +322,7 @@ export class ApplePay {
       this.applePaySessionService.abortApplePaySession();
       return completion;
     }
-    completion.errors = this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale);
+    completion.errors = this.applePayErrorService.create(ApplePaySessionErrorCode.UNKNOWN, this.config.locale);
     completion.status = ApplePaySession.STATUS_FAILURE;
 
     this.messageBus.publish<IApplePayClientStatus>({

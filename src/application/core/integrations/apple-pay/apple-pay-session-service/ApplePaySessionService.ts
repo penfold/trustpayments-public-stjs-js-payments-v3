@@ -1,3 +1,4 @@
+import { from, Observable } from 'rxjs';
 import { Service } from 'typedi';
 import { IApplePayPaymentMethodSelectedEvent } from '../apple-pay-payment-data/IApplePayPaymentMethodSelectedEvent';
 import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
@@ -5,7 +6,6 @@ import { IApplePaySession } from './IApplePaySession';
 import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingMethodSelectedEvent';
 // tslint:disable-next-line:max-line-length
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
-import { from, Observable } from 'rxjs';
 import { IApplePayPaymentAuthorizationResult } from '../apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 
 const ApplePaySession: IApplePaySession = (window as any).ApplePaySession;
@@ -28,16 +28,8 @@ export class ApplePaySessionService {
     try {
       this.applePaySession.abort();
     } catch (error) {
-      console.warn(error);
+      console.error(error);
     }
-  }
-
-  getLatestSupportedApplePayVersion(): number {
-    const versions: number[] = Array.from(Array(7).keys()).slice(1).reverse();
-
-    return versions.find((version: number) => {
-      return ApplePaySession.supportsVersion(version);
-    });
   }
 
   canMakePaymentsWithActiveCard(merchantId: string): Observable<boolean> {
@@ -48,24 +40,29 @@ export class ApplePaySessionService {
     this.applePaySession.completeMerchantValidation(walletsession);
   }
 
-  completePayment(status: IApplePayPaymentAuthorizationResult) {
+  completePayment(status: IApplePayPaymentAuthorizationResult): void {
     this.applePaySession.completePayment(status);
   }
+
+  getLatestSupportedApplePayVersion(): number {
+    const versions: number[] = Array.from(Array(7).keys()).slice(1).reverse();
+
+    return versions.find((version: number) => {
+      return ApplePaySession.supportsVersion(version);
+    });
+  }
+
+  private beginMerchantValidation(): void {
+    try {
+      this.applePaySession.begin();
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
   private onPaymentMethodSelected(): void {
     this.applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethodSelectedEvent) => {
       this.applePaySession.completePaymentMethodSelection({
-        newTotal: {
-          amount: this.paymentRequest.total.amount,
-          label: this.paymentRequest.total.label,
-          type: 'final'
-        }
-      });
-    };
-  }
-
-  private onShippingMethodSelected(): void {
-    this.applePaySession.onshippingmethodselected = (event: IApplePayShippingMethodSelectedEvent) => {
-      this.applePaySession.completeShippingMethodSelection({
         newTotal: {
           amount: this.paymentRequest.total.amount,
           label: this.paymentRequest.total.label,
@@ -87,11 +84,15 @@ export class ApplePaySessionService {
     };
   }
 
-  private beginMerchantValidation(): void {
-    try {
-      this.applePaySession.begin();
-    } catch (error) {
-      console.warn(error);
-    }
+  private onShippingMethodSelected(): void {
+    this.applePaySession.onshippingmethodselected = (event: IApplePayShippingMethodSelectedEvent) => {
+      this.applePaySession.completeShippingMethodSelection({
+        newTotal: {
+          amount: this.paymentRequest.total.amount,
+          label: this.paymentRequest.total.label,
+          type: 'final'
+        }
+      });
+    };
   }
 }

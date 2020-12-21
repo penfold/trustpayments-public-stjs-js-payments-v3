@@ -1,7 +1,6 @@
 import { Service } from 'typedi';
 import { from, Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { IApplePayPaymentAuthorizedEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { IApplePayProcessPaymentResponse } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayProcessPaymentResponse';
 import { IApplePayWalletVerifyResponse } from '../../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
@@ -12,15 +11,14 @@ import { DomMethods } from '../../../../application/core/shared/dom-methods/DomM
 import { Payment } from '../../../../application/core/shared/payment/Payment';
 import { IApplePayClientErrorDetails } from '../IApplePayClientErrorDetails';
 import { ApplePayClientErrorService } from '../apple-pay-client-error-service/ApplePayClientErrorService';
-import { IApplePayClientStatus } from '../IApplePayClientStatus';
 import { IApplePayPayment } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPayment';
 
 @Service()
 export class ApplePayPaymentService {
   constructor(
-    private payment: Payment,
     private applePayConfigService: ApplePayConfigService,
-    private applePayClientErrorService: ApplePayClientErrorService
+    private applePayClientErrorService: ApplePayClientErrorService,
+    private payment: Payment
   ) {}
 
   walletVerify(
@@ -68,8 +66,6 @@ export class ApplePayPaymentService {
     formId: string,
     payment: IApplePayPayment
   ): Observable<IApplePayClientErrorDetails> {
-    console.error(requestTypes, validateMerchantRequest, formId, payment);
-    console.error(DomMethods.parseForm(formId));
     return from(
       this.payment.processPayment(
         requestTypes,
@@ -78,7 +74,7 @@ export class ApplePayPaymentService {
           wallettoken: JSON.stringify(payment)
         },
         {
-          // ...DomMethods.parseForm(formId),
+          ...DomMethods.parseForm(formId),
           termurl: 'https://termurl.com'
         },
         {
