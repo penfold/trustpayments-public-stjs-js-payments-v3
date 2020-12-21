@@ -472,6 +472,14 @@ class PaymentMethodsPage(BasePage):
             translation = json.load(f)
         return translation[key]
 
+    def get_cachetoken_value(self):
+        self._waits.wait_for_javascript()
+        actual_url = self._executor.get_page_url()
+        parsed_url = urlparse(actual_url)
+        parsed_query_from_url = parse_qs(parsed_url.query)
+        cachetoken_value = parsed_query_from_url['cachetoken'][0]
+        return cachetoken_value
+
     def validate_if_url_contains_info_about_payment(self, expected_url):
         self._executor.wait_until_url_contains(expected_url)
         actual_url = self._executor.get_page_url()
