@@ -27,20 +27,18 @@ import { StJwt } from '../../core/shared/stjwt/StJwt';
 import { Translator } from '../../core/shared/translator/Translator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IThreeDInitResponse } from '../../core/models/IThreeDInitResponse';
-import { Store } from '../../core/store/Store';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { UPDATE_CONFIG } from '../../core/store/reducers/config/ConfigActions';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
 import { Styler } from '../../core/shared/styler/Styler';
-import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { IThreeDSTokens } from '../../core/services/three-d-verification/data/IThreeDSTokens';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
 import { IThreeDQueryResponse } from '../../core/models/IThreeDQueryResponse';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 
 @Service()
 export class ControlFrame {
@@ -85,7 +83,6 @@ export class ControlFrame {
     private _notification: NotificationService,
     private _cybertonica: Cybertonica,
     private _threeDProcess: ThreeDProcess,
-    private _store: Store,
     private _configService: ConfigService,
     private _messageBus: IMessageBus,
     private _frame: Frame,
@@ -123,7 +120,6 @@ export class ControlFrame {
 
     this._messageBus.pipe(ofType(PUBLIC_EVENTS.CONFIG_CHANGED)).subscribe((event: IMessageBusEvent<IConfig>) => {
       if (event.data) {
-        this._store.dispatch({ type: UPDATE_CONFIG, payload: event.data });
         Container.set(CONFIG, event.data);
         return;
       }
