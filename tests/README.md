@@ -16,11 +16,16 @@ to the `hosts` file.
 Decide if you want to execute "test" (works on mocks) or "dev" (without wiremocks) version and choose one:
 ```bash
 TEST_VERSION="-f docker/compose/docker-compose.yml -f docker/compose/docker-compose.test.yml"
+TEST_BUILD_TYPE="test"
+
 DEV_VERSION="-f docker/compose/docker-compose.yml -f docker/compose/docker-compose.dev.yml"
+DEV_BUILD_TYPE="dev"
 ```
 
 Build docker images and run them (in this example you can see test version):
 ```bash'
+npm run build:${TEST_BUILD_TYPE}
+
 docker-compose $TEST_VERSION up -d
 # OR force rebuild version:
 # docker-compose $TEST_VERSION up --build -d
