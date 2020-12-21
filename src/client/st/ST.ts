@@ -1,24 +1,22 @@
 import './st.css';
 import jwt_decode from 'jwt-decode';
+import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
+import { environment } from '../../environments/environment';
 import { CardFrames } from '../card-frames/CardFrames.class';
 import { CommonFrames } from '../common-frames/CommonFrames.class';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
 import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
 import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
-import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
-import { VisaCheckoutMock } from '../../application/core/integrations/visa-checkout/VisaCheckoutMock';
 import { IApplePayConfig } from '../../application/core/models/IApplePayConfig';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
-import { IVisaConfig } from '../../application/core/integrations/visa-checkout/IVisaConfig';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { Translator } from '../../application/core/shared/translator/Translator';
-import { environment } from '../../environments/environment';
 import { Service, Container } from 'typedi';
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
 import { ISubmitEvent } from '../../application/core/models/ISubmitEvent';
@@ -27,10 +25,9 @@ import { IErrorEvent } from '../../application/core/models/IErrorEvent';
 import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
-import { Notification } from '../../application/core/shared/notification/Notification';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
-import { Subject, Subscription } from 'rxjs';
-import { delay, map, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { delay, map, shareReplay, takeUntil, tap } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
@@ -44,11 +41,13 @@ import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
+import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { IStore } from '../../application/core/store/IStore';
 import { IParentFrameState } from '../../application/core/store/state/IParentFrameState';
+import { Notification } from '../../application/core/shared/notification/Notification';
 
 @Service()
 export class ST {
@@ -69,6 +68,7 @@ export class ST {
   private _destroy$: Subject<void> = new Subject();
   private _registeredCallbacks: { [eventName: string]: Subscription } = {};
   private _cybertonicaTid: Promise<string>;
+  private _controlFrameLoader$: Observable<IConfig>;
 
   set submitCallback(callback: (event: ISubmitEvent) => void) {
     if (callback) {
@@ -115,7 +115,8 @@ export class ST {
     private _browserDetector: BrowserDetector,
     private _cybertonica: Cybertonica,
     private _cardinalClient: CardinalClient,
-    private _store: IStore<IParentFrameState>
+    private _store: IStore<IParentFrameState>,
+    private _visaCheckout: VisaCheckout
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
@@ -158,43 +159,46 @@ export class ST {
     this.blockSubmitButton();
     // @ts-ignore
     this._commonFrames._requestTypes = jwt_decode<IDecodedJwt>(this._config.jwt).payload.requesttypedescriptions;
-    this._framesHub
-      .waitForFrame(CONTROL_FRAME_IFRAME)
-      .pipe(
-        switchMap(controlFrame => {
-          const queryEvent: IMessageBusEvent<string> = {
-            type: PUBLIC_EVENTS.INIT_CONTROL_FRAME,
-            data: JSON.stringify(this._config)
-          };
-
-          return from(this._communicator.query(queryEvent, controlFrame));
-        })
-      )
-      .subscribe(() => {
-        this.CardFrames();
-        this._cardFrames.init();
-        this._merchantFields.init();
-      });
+    this.initControlFrame$().subscribe(() => {
+      this._messageBus.publish<string>(
+        {
+          type: PUBLIC_EVENTS.CARD_PAYMENTS_INIT,
+          data: JSON.stringify(this._config)
+        },
+        false
+      );
+      this.CardFrames();
+      this._cardFrames.init();
+    });
   }
 
   public ApplePay(config: IApplePayConfig | undefined): ApplePay {
-    const { applepay } = this.Environment();
-
     if (config) {
       this._config = this._configService.updateFragment('applePay', config);
     }
 
-    return new applepay(this._configProvider, this._communicator);
+    if (environment.testEnvironment) {
+      return new ApplePayMock(this._configProvider, this._communicator);
+    } else {
+      return new ApplePay(this._configProvider, this._communicator);
+    }
   }
 
-  public VisaCheckout(config: IVisaConfig | undefined): VisaCheckout {
-    const { visa } = this.Environment();
-
-    if (config) {
-      this._config = this._configService.updateFragment('visaCheckout', config);
+  public VisaCheckout(visaCheckoutConfig: IVisaCheckoutConfig | undefined): void {
+    if (visaCheckoutConfig) {
+      this._config = this._configService.updateFragment('visaCheckout', visaCheckoutConfig);
     }
 
-    return new visa(this._configProvider, this._communicator);
+    this.initControlFrame$().subscribe(() => {
+      this._visaCheckout.init();
+      this._messageBus.publish<undefined>(
+        {
+          type: PUBLIC_EVENTS.VISA_CHECKOUT_INIT,
+          data: undefined
+        },
+        false
+      );
+    });
   }
 
   public Cybertonica(): Promise<string> {
@@ -254,6 +258,29 @@ export class ST {
     return this._browserDetector.getBrowserInfo();
   }
 
+  private initControlFrame$(): Observable<IConfig> {
+    if (this._controlFrameLoader$) {
+      return this._controlFrameLoader$;
+    }
+
+    this._controlFrameLoader$ = this._framesHub.waitForFrame(CONTROL_FRAME_IFRAME).pipe(
+      switchMap((controlFrame: string) => {
+        const queryEvent: IMessageBusEvent<string> = {
+          type: PUBLIC_EVENTS.INIT_CONTROL_FRAME,
+          data: JSON.stringify(this._config)
+        };
+
+        return from(this._communicator.query(queryEvent, controlFrame));
+      }),
+      tap(() => {
+        this._merchantFields.init();
+      }),
+      shareReplay(1)
+    );
+
+    return this._controlFrameLoader$;
+  }
+
   private CardFrames(): void {
     this._cardFrames = new CardFrames(
       this._config.jwt,
@@ -291,13 +318,6 @@ export class ST {
       this._iframeFactory,
       this._frameService
     );
-  }
-
-  private Environment(): { applepay: any; visa: any } {
-    return {
-      applepay: environment.testEnvironment ? ApplePayMock : ApplePay,
-      visa: environment.testEnvironment ? VisaCheckoutMock : VisaCheckout
-    };
   }
 
   private Storage(): void {

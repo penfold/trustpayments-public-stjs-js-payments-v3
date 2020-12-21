@@ -29,5 +29,13 @@ jsinit_response = {
     'config_bypass_cards_acheck_tdq_auth': 'jsinitBypassAcheckTdqAuth.json',
     'config_bypass_cards_riskdec_acheck_tdq_auth': 'jsinitBypassRiskdecAcheckTdqAuth.json',
     'config_bypass_cards_acheck_tdq_auth_sub': 'jsinitBypassAcheckTdqAuthSub.json',
-    'config_bypass_cards_tdq_acheck_riskdec_auth': 'jsinitBypassTdqAcheckRiskdecAuth.json'
+    'config_bypass_cards_tdq_acheck_riskdec_auth': 'jsinitBypassTdqAcheckRiskdecAuth.json',
+    'config_visa_auth': 'jsinitAuth.json',
+    'config_visa_acheck_auth': 'jsinitAcheckAuth.json',
+    'config_visa_acheck': 'jsinitAcheck.json',
+    'config_visa_riskdec_auth': 'jsinitRiskdecAuth.json',
+    'config_visa_riskdec_acheck_auth': 'jsinitRiskdecAcheckAuth.json',
+    'config_visa_auth_subscription': 'jsinitAuthSubscription.json',
+    'config_visa_acheck_subscription': 'jsinitAcheckSubscription.json',
+    'BASE_UPDATED_JWT': 'jsinitBaseUpdatedJwt.json'
 }

@@ -2,27 +2,21 @@ import { MerchantFields } from './MerchantFields';
 
 jest.mock('./../../application/core/shared/notification/Notification');
 
-// given
 describe('MerchantField', () => {
-  // given
   describe('init()', () => {
-    // when
     const { instance } = merchantFieldsFixture();
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._onKeyPress = jest.fn();
       instance.init();
     });
 
-    // then
     it('should call _onKeyPress', () => {
       // @ts-ignore
       expect(instance._onKeyPress).toHaveBeenCalled();
     });
 
-    // then
     it('should return collection of merchant inputs', () => {
       const firstName = document.getElementById('example-form-name');
       const email = document.getElementById('example-form-email');
