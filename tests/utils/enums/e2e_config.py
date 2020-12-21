@@ -23,7 +23,7 @@ class E2eConfig(Enum):
     SUBMIT_ON_SUCCESS_CONFIG_SUBMIT_CALLBACK = 'e2eConfigSubmitOnSuccessCallbackSubmit.json'
     SUBMIT_ON_SUCCESS_SECURITY_CODE_CONFIG = 'e2eConfigSubmitOnSuccessSecurityCode.json'
     SUBMIT_ON_ERROR_REQUEST_TYPES_CONFIG = 'e2eConfigSubmitOnErrorRequestTypes.json'
-    SUBMIT_ON_SUCCESS_ERROR_REQUEST_TYPES_CONFIG = 'e2eConfigSubmitOnSuccessErrorRequestTypes.json'
+    SUBMIT_ON_SUCCESS_ERROR_CONFIG = 'e2eConfigSubmitOnSuccessErrorRequestTypes.json'
     DEFER_INIT_CONFIG = 'e2eConfigWithDeferinitTrue.json'
     DEFER_INIT_AND_SUBMIT_ON_SUCCESS_CONFIG = 'e2eConfigWithDeferinitTrueAndSumitOnSuccess.json'
     TOKENISATION_CONFIG = 'e2eForTokenisation.json'
