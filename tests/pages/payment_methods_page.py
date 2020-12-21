@@ -496,7 +496,7 @@ class PaymentMethodsPage(BasePage):
         if 'should not be none' in value:
             assert_that(parsed_query_from_url[key][0]).is_not_none()
         elif 'should be none' in value:
-            assert_that(key not in parsed_query_from_url.keys())
+            assert_that(key not in parsed_query_from_url.keys(), f'{key} is not none but should be').is_true()
         else:
             assert_that(parsed_query_from_url[key][0]).is_equal_to(value)
 
