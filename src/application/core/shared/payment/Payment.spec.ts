@@ -236,6 +236,7 @@ describe('Payment', () => {
   describe('walletVerify()', () => {
     it('should send WALLETVERIFY request with walletverify', done => {
       const walletVerifyResponseMock = {};
+      instance.walletVerify(walletVerify);
       // @ts-ignore
       instance._stTransport.sendRequest = jest
         .fn()

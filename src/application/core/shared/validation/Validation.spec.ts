@@ -246,8 +246,6 @@ describe('Validation', () => {
 function validationFixture() {
   let frame: Frame;
   let messageBus: IMessageBus;
-  frame = mock(Frame);
-  messageBus = mock(IMessageBus);
   const instance: Validation = new Validation();
   const inputElement = document.createElement('input');
   const inputElementMerchant = document.createElement('input');

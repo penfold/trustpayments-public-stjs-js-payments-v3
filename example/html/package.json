@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.dev.js",
     "build:dev": "webpack --config webpack.e2e.js",
-    "build:automated": "webpack --config webpack.test.js",
+    "build:test": "webpack --config webpack.test.js",
     "start": "webpack serve --color --progress --config webpack.dev.js"
   },
   "devDependencies": {

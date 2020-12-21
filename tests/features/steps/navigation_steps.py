@@ -8,7 +8,7 @@ from features.steps.payment_page_mocks_stubs_steps import stub_jsinit_update_jwt
 from models.jwt_payload_builder import JwtPayloadBuilder
 from utils.configurations.jwt_generator import encode_jwt_for_json, get_data_from_json, encode_jwt, \
     merge_json_conf_with_additional_attr, decode_jwt_from_jsinit
-from utils.enums.example_page import ExamplePage
+from utils.enums.example_page_param import ExamplePageParam
 from utils.enums.jwt_config import JwtConfig
 from utils.enums.responses.jsinit_response import jsinit_response
 from utils.mock_handler import MockUrl
@@ -36,12 +36,10 @@ def step_impl(context):
 @step('User opens minimal example page with payment form')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if 'config_immediate_payment' not in context.scenario.tags[0] and 'parent_iframe' not in context.scenario.tags and \
-        'config_cybertonica_immediate_payment' not in context.scenario.tags:
-        if 'Safari' in context.browser:
-            accept_untrusted_pages_on_safari_browsers(context)
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?')
-        payment_page.wait_for_iframe()
+    if 'Safari' in context.browser:
+        accept_untrusted_pages_on_safari_browsers(context)
+    payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?')
+    payment_page.wait_for_iframe()
 
 
 @step('User opens payment page')
@@ -58,7 +56,7 @@ def step_impl(context):
 
 
 @step('User opens prepared payment form page (?P<example_page>.+)')
-def step_impl(context, example_page: ExamplePage):
+def step_impl(context, example_page: ExamplePageParam):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
@@ -69,36 +67,36 @@ def step_impl(context, example_page: ExamplePage):
             jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
             stub_jsinit_update_jwt_request(f'{row["jwtName"]}')
             updated_jwt_from_jsinit = decode_jwt_from_jsinit(jsinit_response[f'{row["jwtName"]}'])
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}')
+        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}')
         payment_page.wait_for_iframe()
         context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
         context.test_data.update_jwt_from_jsinit = updated_jwt_from_jsinit
     elif 'WITH_SPECIFIC_IFRAME' in example_page:
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}')
+        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}')
         payment_page.switch_to_parent_iframe()
         payment_page.wait_for_parent_iframe()
     elif 'WITH_CHANGED_FORM_ID' in example_page:
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}')
+        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}')
     else:
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}')
+        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}')
         payment_page.wait_for_iframe()
 
 
 @step('User opens (?:example page|example page (?P<example_page>.+))')
-def step_impl(context, example_page: ExamplePage):
+def step_impl_example(context, example_page: ExamplePageParam):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     # setting url specific params accordingly to example page
     if example_page is None:
         url = f'{CONFIGURATION.URL.BASE_URL}/?{context.inline_config}'
     elif 'IN_IFRAME' in example_page:
-        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePage[example_page].value}{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}{context.inline_config}'
     elif 'WITH_UPDATE_JWT' in example_page:
         jwt = ''
         for row in context.table:
             jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}{context.inline_config}'
     else:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}&{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_config}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
     payment_page.open_page(url)
@@ -110,7 +108,7 @@ def step_impl(context, example_page: ExamplePage):
 
 
 @step('User opens page (?P<example_page>.+) and jwt (?P<jwt_config>.+) with additional attributes')
-def step_impl(context, example_page: ExamplePage, jwt_config: JwtConfig):
+def step_impl(context, example_page: ExamplePageParam, jwt_config: JwtConfig):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     # setting url specific params accordingly to example page
     if '' in example_page:
@@ -119,18 +117,18 @@ def step_impl(context, example_page: ExamplePage, jwt_config: JwtConfig):
         jwt_payload_dict = JwtPayloadBuilder().map_payload_fields(context.table).build().__dict__
         # merge both dictionaries (old is overridden by additional attr)
         jwt = encode_jwt(merge_json_conf_with_additional_attr(jwt_config_from_json_dict, jwt_payload_dict))
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value % jwt}{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}{context.inline_config}'
     else:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePage[example_page].value}&{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_config}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
     payment_page.open_page(url)
 
 
-@step('User opens minimal example page')
-def step_impl(context):
+@step('User opens (?P<html_page>.+) page with inline param')
+def step_impl(context, html_page):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    url = f'{CONFIGURATION.URL.BASE_URL}/minimal.html?{context.inline_config}'
+    url = f'{CONFIGURATION.URL.BASE_URL}/{html_page}?{context.inline_config}'
     payment_page.open_page(url)
     payment_page.wait_for_iframe()
 

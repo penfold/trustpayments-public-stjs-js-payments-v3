@@ -8,7 +8,7 @@ Feature: Visual regression - E2E Card Payments
       | key                      | value            |
       | requesttypedescriptions  | THREEDQUERY AUTH |
       | threedbypasspaymenttypes | MASTERCARD       |
-    And User opens minimal example page
+    And User opens minimal.html page with inline param
 
   @visual_regression @scrn_card_interface_after_successful_payment
   Scenario: Card interface after successful payment

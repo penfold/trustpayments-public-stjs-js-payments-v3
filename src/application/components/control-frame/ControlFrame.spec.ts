@@ -232,7 +232,6 @@ function controlFrameFixture() {
   const configService: ConfigService = mock(ConfigService);
   const messageBus: IMessageBus = new SimpleMessageBus();
   const frame: Frame = mock(Frame);
-  const storeMock: Store = mock(Store);
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const visaCheckoutClientMock: VisaCheckoutClient = mock(VisaCheckoutClient);
   const applePayClientMock: ApplePayClient = mock(ApplePayClient);
@@ -277,7 +276,6 @@ function controlFrameFixture() {
     mockInstance(notification),
     mockInstance(cybertonica),
     mockInstance(threeDProcess),
-    mockInstance(storeMock),
     mockInstance(configService),
     messageBus,
     mockInstance(frame),

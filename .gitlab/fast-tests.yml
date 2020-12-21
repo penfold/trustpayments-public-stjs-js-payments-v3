@@ -46,7 +46,7 @@ e2e-tests:
     - .fast-tests
     - .services-dev
     - .parallel-e2e-tests
-  parallel: 14
+  parallel: 18
 
 zap-baseline-scan-library-securetrading-net:
   services:

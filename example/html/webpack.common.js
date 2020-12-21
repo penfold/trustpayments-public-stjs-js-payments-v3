@@ -51,6 +51,11 @@ module.exports = {
       template: './pages/minimal/minimal.html',
       chunks: ['minimal']
     }),
+    new HtmlWebpackPlugin({
+      filename: 'minimal-content-security-header.html',
+      template: './pages/minimal/minimal-content-security-header.html',
+      chunks: ['minimal']
+    }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css'
