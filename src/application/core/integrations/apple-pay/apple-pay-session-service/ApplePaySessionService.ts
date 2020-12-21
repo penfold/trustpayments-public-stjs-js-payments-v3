@@ -43,6 +43,10 @@ export class ApplePaySessionService {
     return from(ApplePaySession.canMakePaymentsWithActiveCard(merchantId));
   }
 
+  completeMerchantValidation(walletsession: object): void {
+    this.applePaySession.completeMerchantValidation(walletsession);
+  }
+
   private onPaymentMethodSelected(): void {
     this.applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethodSelectedEvent) => {
       this.applePaySession.completePaymentMethodSelection({

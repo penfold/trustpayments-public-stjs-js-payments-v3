@@ -110,7 +110,7 @@ export class ApplePay {
         }),
 
         tap(() => {
-          this.applePayGestureService.gestureHandle(this.proceedPayment);
+          this.applePayGestureService.gestureHandle(this.proceedPayment.bind(this));
         }),
 
         tap(() => {
@@ -170,7 +170,12 @@ export class ApplePay {
         .whenReceive(PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT)
         .thenRespond((response: IMessageBusEvent) => {
           console.error(response);
-          if (response.data.errorCode !== ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS) {
+          console.error(response.data.data.errorcode);
+          console.error(Number(response.data.data.errorcode));
+          console.error(ApplePayClientErrorCode.SUCCESS);
+          console.error(Number(response.data.data.errorcode) !== ApplePayClientErrorCode.SUCCESS);
+          if (Number(response.data.data.errorcode) !== ApplePayClientErrorCode.SUCCESS) {
+            console.error(response);
             this.applePaySessionService.abortApplePaySession();
             this.handleWalletVerifyResponse(
               ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
@@ -191,40 +196,51 @@ export class ApplePay {
             ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
             'Merchant validation success'
           );
+          console.error(response);
+          this.applePaySessionService.completeMerchantValidation(JSON.parse(response.data.data.walletsession));
           GoogleAnalytics.sendGaData(
             'event',
             'Apple Pay',
             `${ApplePayClientStatus.VALIDATE_MERCHANT_ERROR}`,
             'Apple Pay Merchant validation success'
           );
-          return of(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS);
+          return of(response.data);
         });
     };
 
     this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
-      this.messageBus.publish({
+      console.error(event);
+      console.error({
+        errorCode: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
+        errorMessage: '',
+        payment: event.payment,
+        config: this.config
+      });
+      this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
           status: ApplePayClientStatus.ON_PAYMENT_AUTHORIZED,
           data: {
             errorCode: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
-            event,
+            errorMessage: '',
+            payment: event.payment,
             config: this.config
           }
         }
       });
 
       // this.interFrameCommunicator
-      //   .whenReceive(PUBLIC_EVENTS.APPLE_PAY_COMPLETE_SESSION)
+      //    .whenReceive(PUBLIC_EVENTS.APPLE_PAY_COMPLETE_SESSION)
       //   .thenRespond(() => {
-      //     this.handlePaymentProcessResponse(response.errorCode, response.errorMessage);
-      //     this.applePaySession.completePayment();
-      //   });
+      //      this.handlePaymentProcessResponse(response.errorCode, response.errorMessage);
+      //      this.applePaySession.completePayment();
+      //    });
     };
 
     this.applePaySession.oncancel = (event: Event) => {
-      this.applePayGestureService.gestureHandle(this.proceedPayment);
+      this.applePayGestureService.gestureHandle(this.proceedPayment.bind(this));
       this.paymentCancelled = true;
+      console.error(event);
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {

@@ -2,6 +2,7 @@ import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
 import { IApplePayValidateMerchantEvent } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
 import { IApplePayPaymentAuthorizedEvent } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
+import { IApplePayPayment } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPayment';
 
 export interface IApplePayClientErrorDetails {
   errorCode?: ApplePayClientErrorCode;
@@ -10,4 +11,5 @@ export interface IApplePayClientErrorDetails {
   errorMessage?: string;
   paymentCancelled?: boolean;
   walletverify?: object;
+  payment?: IApplePayPayment;
 }

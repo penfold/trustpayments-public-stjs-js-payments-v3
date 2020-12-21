@@ -49,7 +49,7 @@ export class ApplePayPaymentService {
         }
         return of({
           status: ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
-          data: response.response.walletsession
+          data: response.response
         });
       }),
       catchError(() => {
@@ -65,22 +65,22 @@ export class ApplePayPaymentService {
     requestTypes: RequestType[],
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     formId: string,
-    event: IApplePayPaymentAuthorizedEvent
+    payment: IApplePayPayment
   ): Observable<IApplePayClientErrorDetails> {
     return from(
       this.payment.processPayment(
         requestTypes,
         {
           walletsource: validateMerchantRequest.walletsource,
-          wallettoken: JSON.stringify(event.payment)
+          wallettoken: JSON.stringify(payment)
         },
         {
           ...DomMethods.parseForm(formId),
           termurl: 'https://termurl.com'
         },
         {
-          billingContact: event.payment.billingContact,
-          shippingContact: event.payment.shippingContact
+          billingContact: payment.billingContact,
+          shippingContact: payment.shippingContact
         }
       )
     ).pipe(
