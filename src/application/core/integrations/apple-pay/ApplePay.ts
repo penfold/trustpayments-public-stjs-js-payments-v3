@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { EMPTY, of, throwError } from 'rxjs';
+import { EMPTY, observable, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
@@ -33,6 +33,9 @@ export class ApplePay {
   private applePaySession: IApplePaySession;
   private config: IApplePayConfigObject;
   private paymentCancelled: boolean = false;
+  private onValidateMerchant: Observable<IApplePayValidateMerchantEvent>;
+  private onPaymentAuthorized: Observable<IApplePayPaymentAuthorizedEvent>;
+  private onCancel: Observable<Event>;
 
   constructor(
     private communicator: InterFrameCommunicator,
@@ -134,6 +137,28 @@ export class ApplePay {
     this.paymentCancelled = false;
     // need to be here because of gesture handler
     this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
+
+    this.onValidateMerchant = new Observable<IApplePayValidateMerchantEvent>(observer => {
+      this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
+        observer.next(event);
+        observer.complete();
+      };
+    });
+
+    this.onPaymentAuthorized = new Observable<IApplePayPaymentAuthorizedEvent>(observer => {
+      this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
+        observer.next(event);
+        observer.complete();
+      };
+    });
+
+    this.onCancel = new Observable<Event>(observer => {
+      this.applePaySession.oncancel = (event: Event) => {
+        observer.next(event);
+        observer.complete();
+      };
+    });
+
     this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
     this.messageBus
       .pipe(
@@ -165,8 +190,9 @@ export class ApplePay {
         }
       });
 
-      this.interFrameCommunicator
-        .whenReceive(PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT)
+      this.messageBus
+        .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT))
+
         .thenRespond((response: IMessageBusEvent) => {
           if (Number(response.data.data.errorcode) !== ApplePayClientErrorCode.SUCCESS) {
             this.applePaySessionService.abortApplePaySession();

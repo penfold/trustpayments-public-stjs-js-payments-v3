@@ -1,6 +1,6 @@
 import JwtDecode from 'jwt-decode';
 import { Service } from 'typedi';
-import { from, Observable, of, throwError } from 'rxjs';
+import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IConfig } from '../../../shared/model/config/IConfig';
@@ -37,8 +37,8 @@ export class ApplePayClient implements IApplePayClient {
     private applePayPaymentService: ApplePayPaymentService
   ) {}
 
-  init$(): Observable<ApplePayClientStatus> {
-    return this.configProvider.getConfig$().pipe(
+  init$(): Observable<void> {
+    this.configProvider.getConfig$().pipe(
       tap((config: IConfig) => {
         this.messageBus.publish<IConfig>(
           {
@@ -48,34 +48,35 @@ export class ApplePayClient implements IApplePayClient {
           true
         );
       }),
-      switchMap(() => this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS))),
-      switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => {
-        console.error(event);
-        switch (event.data.status) {
-          case ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET:
-            return this.noActiveCardsInWallet$(event.data);
-
-          case ApplePayClientStatus.ON_VALIDATE_MERCHANT:
-            return this.onValidateMerchant$(event.data);
-
-          case ApplePayClientStatus.ON_PAYMENT_AUTHORIZED:
-            return this.onPaymentAuthorized$(event.data);
-
-          case ApplePayClientStatus.VALIDATE_MERCHANT_ERROR:
-            return this.onValidateMerchantError$(event.data);
-
-          case ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS:
-            return this.onValidateMerchantSuccess$(event.data);
-
-          case ApplePayClientStatus.CANCEL:
-            return this.onCancel$(event.data);
-
-          default:
-            return throwError('Unknown Apple Pay status');
-        }
-      })
+      switchMap(() => this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS_VALIDATE_MERCHANT))),
+      switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => this.onValidateMerchant$(event.data)),
+      switchMap(() => this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS_VALIDATE_MERCHANT)))
     );
+    return EMPTY;
   }
+
+  // switch (event.data.status) {
+  //   // case ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET:
+  //   //   return this.noActiveCardsInWallet$(event.data);
+  //
+  //   case ApplePayClientStatus.ON_VALIDATE_MERCHANT:
+  //     return this.onValidateMerchant$(event.data);
+  //
+  //   case ApplePayClientStatus.ON_PAYMENT_AUTHORIZED:
+  //     return this.onPaymentAuthorized$(event.data);
+  //
+  //   case ApplePayClientStatus.VALIDATE_MERCHANT_ERROR:
+  //     return this.onValidateMerchantError$(event.data);
+  //
+  //   case ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS:
+  //     return this.onValidateMerchantSuccess$(event.data);
+  //
+  //   case ApplePayClientStatus.CANCEL:
+  //     return this.onCancel$(event.data);
+  //
+  //   default:
+  //     return throwError('Unknown Apple Pay status');
+  // }
 
   private noActiveCardsInWallet$(
     status: IApplePayClientStatus
@@ -95,9 +96,7 @@ export class ApplePayClient implements IApplePayClient {
     return of(ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET);
   }
 
-  private onValidateMerchant$(
-    status: IApplePayClientStatus
-  ): Observable<ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS | ApplePayClientStatus.VALIDATE_MERCHANT_ERROR> {
+  private onValidateMerchant$(status: IApplePayClientStatus): Observable<void> {
     const {
       data: { validateMerchantURL, config, paymentCancelled }
     } = status;
@@ -105,19 +104,16 @@ export class ApplePayClient implements IApplePayClient {
     this.applePayPaymentService
       .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
       .subscribe((response: IApplePayClientErrorDetails) => {
-        from(
-          this.interFrameCommunicator.query(
-            {
-              type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT,
-              data: response
-            },
-            MERCHANT_PARENT_FRAME
-          )
-        ).subscribe((event: IMessageBusEvent) => {
-          console.error(event);
-          return of(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS);
-        });
+        this.messageBus.publish(
+          {
+            type: PUBLIC_EVENTS.APPLE_PAY_STATUS_WALLETVERIFY,
+            data: response
+          },
+          true
+        );
       });
+
+    return of(null);
   }
 
   private onPaymentAuthorized$(event: IApplePayClientStatus): Observable<ApplePayClientStatus.SUCCESS> {
