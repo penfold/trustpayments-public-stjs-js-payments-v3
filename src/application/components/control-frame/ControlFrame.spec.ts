@@ -10,7 +10,6 @@ import { NotificationService } from '../../../client/notification/NotificationSe
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { EMPTY, of } from 'rxjs';
-import { Store } from '../../core/store/Store';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
 import { IStyles } from '../../../shared/model/config/IStyles';
@@ -245,7 +244,6 @@ function controlFrameFixture() {
   const configService: ConfigService = mock(ConfigService);
   const messageBus: IMessageBus = new SimpleMessageBus();
   const frame: Frame = mock(Frame);
-  const storeMock: Store = mock(Store);
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const controlFrame: IStyles[] = [
     {
@@ -286,7 +284,6 @@ function controlFrameFixture() {
     mockInstance(notification),
     mockInstance(cybertonica),
     mockInstance(threeDProcess),
-    mockInstance(storeMock),
     mockInstance(configService),
     messageBus,
     mockInstance(frame),

@@ -47,6 +47,8 @@ import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { IStore } from '../../application/core/store/IStore';
+import { IParentFrameState } from '../../application/core/store/state/IParentFrameState';
 
 @Service()
 export class ST {
@@ -112,10 +114,13 @@ export class ST {
     private _frameService: Frame,
     private _browserDetector: BrowserDetector,
     private _cybertonica: Cybertonica,
-    private _cardinalClient: CardinalClient
+    private _cardinalClient: CardinalClient,
+    private _store: IStore<IParentFrameState>
   ) {
     this._googleAnalytics = new GoogleAnalytics();
     this._merchantFields = new MerchantFields();
+    this._messageBus.publish({ type: 'FOO' });
+    this._messageBus.publish({ type: 'FOOZ' });
   }
 
   public on(eventName: 'success' | 'error' | 'submit' | 'cancel', callback: (event: any) => void): void {
