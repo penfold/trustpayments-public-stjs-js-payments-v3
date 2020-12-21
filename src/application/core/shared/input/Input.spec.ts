@@ -6,12 +6,10 @@ import { Validation } from '../validation/Validation';
 jest.mock('./../validation/Validation');
 jest.mock('./../notification/Notification');
 
-// given
 describe('FormField', () => {
-  // given
   describe('getLabel()', () => {
     const { instance } = formFieldFixture();
-    // then
+
     it('should throw exception', () => {
       // @ts-ignore
       instance.getLabel();
@@ -21,7 +19,6 @@ describe('FormField', () => {
     });
   });
 
-  // given
   describe('onClick()', () => {
     let spy: jest.SpyInstance;
     const { instance } = formFieldFixture();
@@ -39,11 +36,10 @@ describe('FormField', () => {
     });
   });
 
-  // given
   describe('onFocus()', () => {
     const { instance } = formFieldFixture();
     let spy: jest.SpyInstance;
-    // then
+
     it('should focus on input iframe-factory', () => {
       // @ts-ignore
       const mockFocus = (instance._inputElement.focus = jest.fn());
@@ -53,11 +49,10 @@ describe('FormField', () => {
     });
   });
 
-  // given
   describe('onInput()', () => {
     const { instance } = formFieldFixture();
     let spy: jest.SpyInstance;
-    // then
+
     it('should input on input iframe-factory', () => {
       // @ts-ignore
       spy = jest.spyOn(instance, 'format');
@@ -67,7 +62,6 @@ describe('FormField', () => {
     });
   });
 
-  // given
   describe('onPaste()', () => {
     const { instance } = formFieldFixture();
     const event = {
@@ -94,33 +88,28 @@ describe('FormField', () => {
       instance.onPaste(event);
     });
 
-    // then
     it('should event.preventDefault() has been called', () => {
       expect(event.preventDefault).toHaveBeenCalled();
     });
 
-    // then
     it('should Validation.setCustomValidationError method has been called', () => {
       expect(Validation.setCustomValidationError).toHaveBeenCalled();
     });
 
-    // then
     it('should format method has been called', () => {
       // @ts-ignore
       expect(instance.format).toHaveBeenCalledWith(instance._inputElement.value);
     });
 
-    // then
     it('should validate method has been called with inputElement and messageElement', () => {
       // @ts-ignore
       expect(instance.validation.validate).toHaveBeenCalledWith(instance._inputElement, instance._messageElement);
     });
   });
 
-  // given
   describe('_addTabListener', () => {
     const { instance } = formFieldFixture();
-    // when
+
     beforeEach(() => {
       window.addEventListener = jest.fn().mockImplementationOnce((event, callback) => {
         callback();
@@ -131,18 +120,15 @@ describe('FormField', () => {
       instance._addTabListener();
     });
 
-    // then
     it('should call onFocus', () => {
       // @ts-ignore
       expect(instance.onFocus).toHaveBeenCalled();
     });
   });
 
-  // given
   describe('_setInputListeners()', () => {
     const { instance } = formFieldFixture();
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._inputElement.addEventListener = jest.fn().mockImplementation((event, callback) => {
@@ -150,7 +136,6 @@ describe('FormField', () => {
       });
     });
 
-    // when
     beforeAll(() => {
       // @ts-ignore
       instance.onPaste = jest.fn();
@@ -166,7 +151,6 @@ describe('FormField', () => {
       instance.onClick = jest.fn();
     });
 
-    // then
     it('should call onPaste listener', () => {
       // @ts-ignore
       instance._setInputListeners();
@@ -174,7 +158,6 @@ describe('FormField', () => {
       expect(instance.onPaste).toHaveBeenCalled();
     });
 
-    // then
     it('should call onKeyPress listener', () => {
       // @ts-ignore
       instance._setInputListeners();
@@ -182,7 +165,6 @@ describe('FormField', () => {
       expect(instance.onKeyPress).toHaveBeenCalled();
     });
 
-    // then
     it('should call onInput listener', () => {
       // @ts-ignore
       instance._setInputListeners();
@@ -190,7 +172,6 @@ describe('FormField', () => {
       expect(instance.onInput).toHaveBeenCalled();
     });
 
-    // then
     it('should call onFocus listener', () => {
       // @ts-ignore
       instance._setInputListeners();
@@ -198,7 +179,6 @@ describe('FormField', () => {
       expect(instance.onFocus).toHaveBeenCalled();
     });
 
-    // then
     it('should call onBlur listener', () => {
       // @ts-ignore
       instance._setInputListeners();
@@ -206,7 +186,6 @@ describe('FormField', () => {
       expect(instance.onBlur).toHaveBeenCalled();
     });
 
-    // then
     it('should call onClick listener', () => {
       // @ts-ignore
       instance._setInputListeners();
@@ -215,11 +194,9 @@ describe('FormField', () => {
     });
   });
 
-  // given
   describe('_setLabelText()', () => {
     const { instance } = formFieldFixture();
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance.getLabel = jest.fn();

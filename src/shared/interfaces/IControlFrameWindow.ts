@@ -1,8 +1,8 @@
-import { Store } from 'redux';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
+import { IApplicationFrameState } from '../../application/core/store/state/IApplicationFrameState';
 
 export interface IControlFrameWindow extends Window {
-  stStore?: Store;
+  stStore?: BehaviorSubject<IApplicationFrameState>;
   stMessages?: Observable<IMessageBusEvent>;
 }

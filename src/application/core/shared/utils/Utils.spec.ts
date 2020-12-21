@@ -5,12 +5,10 @@ import { Container } from 'typedi';
 
 localStorage.setItem = jest.fn();
 
-// given
 describe('Utils', () => {
   const storage: BrowserLocalStorage = Container.get(BrowserLocalStorage);
-  // given
+
   describe('inArray', () => {
-    // then
     each([
       [[], '', false],
       [[''], '', true],
@@ -23,9 +21,7 @@ describe('Utils', () => {
     });
   });
 
-  // given
   describe('forEachBreak', () => {
-    // then
     each([
       [[], null, 0],
       [[0, 0, 0, 0], null, 4], // if we don't get a truthy result we iterate the whole length
@@ -41,14 +37,11 @@ describe('Utils', () => {
     });
   });
 
-  // given
   describe('timeoutPromise', () => {
-    // then
     each([[Error()], [Error('Communication timeout')]]).it('should reject with the specified error', async error => {
       await expect(Utils.timeoutPromise(0, error)).rejects.toThrow(error);
     });
 
-    // then
     each([[500], [10]]).it('should reject after the specified time', async timeout => {
       const before = Date.now();
       let after = before;
@@ -59,9 +52,7 @@ describe('Utils', () => {
     });
   });
 
-  // given
   describe('promiseWithTimeout', () => {
-    //then
     each([[{}, '42']]).it("should resolve with the promissory's value if it finishes first", async value => {
       function promissory() {
         return new Promise(resolve => resolve(value));
@@ -70,7 +61,6 @@ describe('Utils', () => {
       await expect(Utils.promiseWithTimeout(promissory)).resolves.toEqual(value);
     });
 
-    //then
     each([[Error(), Error('Communication timeout')]]).it(
       "should reject with the promissory's error if it finishes first",
       async err => {
@@ -82,16 +72,13 @@ describe('Utils', () => {
       }
     );
 
-    //then
     it('should reject with the timeout if it times out', async () => {
       const err = new Error('Timeout error');
       await expect(Utils.promiseWithTimeout(() => Utils.timeoutPromise(5), 2, err)).rejects.toEqual(err);
     });
   });
 
-  // given
   describe('retryPromise', () => {
-    //then
     each([[0], [1]]).it('should resolve as soon as the first promise does so', async rejects => {
       const value = {};
       let promises = rejects;
@@ -106,7 +93,6 @@ describe('Utils', () => {
       expect(promissory).toHaveBeenCalledTimes(rejects + 1);
     });
 
-    //then
     each([
       [10, 5, 1, Error('Connection timeout')],
       [900, 1, 1, Error('Retry')],
@@ -118,14 +104,11 @@ describe('Utils', () => {
     });
   });
 
-  // given
   describe('Utils.stripChars', () => {
-    // then
     it('should return string with only digits when regex is not specified', () => {
       expect(Utils.stripChars('s1o2me3t4es5t   val6ue', false)).toEqual('123456');
     });
 
-    // then
     it('should adjust string to given regex', () => {
       expect(Utils.stripChars('Quit  yo jibba  jabba !', /\s/g)).toEqual('Quityojibbajabba!');
     });

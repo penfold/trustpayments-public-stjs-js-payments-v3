@@ -177,8 +177,8 @@ Feature: Visa Checkout
       | transactionreference | should not be none                      |
       | jwt                  | should not be none                      |
       | settlestatus         | 0                                       |
-      | baseamount           | 1000                                    |
-      | currencyiso3a        | GBP                                     |
+#      | baseamount           | 2000                                    |
+#      | currencyiso3a        | USD                                     |
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
     And VISA_CHECKOUT requests contains updated jwt
 
