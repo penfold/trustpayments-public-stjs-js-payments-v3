@@ -1,6 +1,6 @@
 import JwtDecode from 'jwt-decode';
 import { Service } from 'typedi';
-import { EMPTY, from, Observable, of, throwError } from 'rxjs';
+import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IConfig } from '../../../shared/model/config/IConfig';
@@ -22,6 +22,7 @@ import { MessageBus } from '../../../application/core/shared/message-bus/Message
 import { NotificationService } from '../../notification/NotificationService';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 import { IDecodedJwt } from '../../../application/core/models/IDecodedJwt';
+import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 
 @Service()
 export class ApplePayClient implements IApplePayClient {

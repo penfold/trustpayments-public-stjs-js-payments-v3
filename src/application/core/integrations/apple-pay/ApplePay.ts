@@ -32,9 +32,6 @@ const ApplePaySession = (window as any).ApplePaySession;
 export class ApplePay {
   private applePaySession: IApplePaySession;
   private config: IApplePayConfigObject;
-  private onCancel: Observable<Event>;
-  private onPaymentAuthorized: Observable<IApplePayPaymentAuthorizedEvent>;
-  private onValidateMerchant: Observable<IApplePayValidateMerchantEvent>;
   private paymentCancelled: boolean = false;
 
   constructor(
@@ -149,7 +146,7 @@ export class ApplePay {
         if (Number(event.data.errorcode) !== 0) {
           this.applePaySession.completePayment({
             status: ApplePaySession.STATUS_FAILURE,
-            errors: this.applePayErrorService.create(ApplePayErrorCode.UNKNOWN, this.config.locale)
+            errors: this.applePayErrorService.create(ApplePaySessionErrorCode.UNKNOWN, this.config.locale)
           });
         }
       });
