@@ -26,7 +26,6 @@ import { GoogleAnalytics } from '../google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { RequestType } from '../../../../shared/types/RequestType';
 import { IApplePayClientStatusDetails } from '../../../../client/integrations/apple-pay/IApplePayClientStatusDetails';
-import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 
 const ApplePaySession = (window as any).ApplePaySession;
@@ -230,18 +229,18 @@ export class ApplePay {
       this.interFrameCommunicator
         .whenReceive(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION)
         .thenRespond((response: IMessageBusEvent) => {
-          console.error(response);
-          console.error('dupa');
-          this.handlePaymentProcessResponse(response.data.errorCode, response.data.errorMessage);
-          this.applePaySession.completePayment({ errors: undefined, status: ApplePaySession.STATUS_SUCCESS });
+          console.error('PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION', response);
+          this.applePaySession.completePayment(
+            this.handlePaymentProcessResponse(response.data.errorCode, response.data.errorMessage)
+          );
           return of(response.data);
         });
     };
 
     this.applePaySession.oncancel = (event: Event) => {
+      console.error('CANCEL', event);
       this.applePayGestureService.gestureHandle(this.proceedPayment.bind(this));
       this.paymentCancelled = true;
-      console.error(event);
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
