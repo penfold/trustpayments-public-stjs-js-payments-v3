@@ -1,34 +1,52 @@
-### app-html
-.build-app-html:
-  extends: .utility-images-build
-  variables:
-    DOCKER_TARGET: 'app-html'
-    DOCKERFILE_PATH: docker/app-html/Dockerfile
-    USE_PIPELINE_IMAGE: 'true'
+.build-sdk:
+  stage: build
+  extends:
+    - .variables
+    - .link_node_modules_before_script
+  image: ${IMAGE_PIPELINE}
+  after_script:
+    - mkdir -p "${ARTIFACTS_BUILD_PATH}"
+    - cp -R "./dist/." "${ARTIFACTS_BUILD_PATH}"
+  artifacts:
+    when: always
+    paths:
+      - "${ARTIFACTS_BUILD_PATH}"
 
-build-app-html-test:
-  extends: .build-app-html
+build-sdk-dev:
+  extends: .build-sdk
   variables:
-    UTILITY_NAME: 'app-html-test'
-    BUILD_ARGS_EXTRA: --build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=test
+    ARTIFACTS_BUILD_PATH: ".dist-dev"
+  script:
+    - npm config set js-payments:host merchant.securetrading.net
+    - npm run build:dev
 
-build-app-html-dev:
-  extends: .build-app-html
+build-sdk-test:
+  extends: .build-sdk
   variables:
-    UTILITY_NAME: 'app-html-dev'
-    BUILD_ARGS_EXTRA: --build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=dev
+    ARTIFACTS_BUILD_PATH: ".dist-test"
+  script:
+    - npm run build:test
 
-### testing repo
-build-payments-tests:
-  extends: .utility-images-build
+build-sdk-prod-review:
+  extends:
+    - .build-sdk
+    - .rules-when-review
   variables:
-    UTILITY_NAME: 'payments-tests'
-    DOCKERFILE_PATH: .cicd_scripts/docker/payments-tests/Dockerfile
-    BUILD_ARGS_EXTRA: --build-arg COPY_FROM=./tests
+    ARTIFACTS_BUILD_PATH: ".dist-prod"
+  script:
+    - npx lerna bootstrap
+    - npx lerna version "0.0.0" --no-git-tag-version --no-push --yes
+    - npx lerna run build:prod -- --frame_url="https://cdn.eu.trustpayments.com/js-payments-v3/0.0.0-test"
 
-#### wiremock for testing repo
-build-wiremock:
-  extends: .utility-images-build
+build-sdk-prod-release:
+  extends:
+    - .build-sdk
+    - .rules-when-release
   variables:
-    UTILITY_NAME: 'wiremock'
-    BUILD_ARGS_EXTRA: --build-arg COPY_FROM=./tests
+    ARTIFACTS_BUILD_PATH: ".dist-prod"
+  before_script:
+    - . .cicd_scripts/gitlab/release/load_release_artifact.sh "${ARTIFACT_RELEASE_CICD_FILENAME}"
+  script:
+    - npx lerna bootstrap
+    - npx lerna version "${RELEASE_TAG}" --no-git-tag-version --no-push --yes
+    - npx lerna run build:prod -- --frame_url="https://cdn.eu.trustpayments.com/js-payments-v3/${RELEASE_TAG}-${CDN_HASH}"

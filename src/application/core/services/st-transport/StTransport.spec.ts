@@ -14,7 +14,6 @@ customGlobal.fetchMock = customGlobal.fetch;
 
 jest.mock('./../../shared/notification/Notification');
 
-// given
 describe('StTransport class', () => {
   const config = {
     datacenterurl: 'https://example.com',
@@ -95,9 +94,7 @@ describe('StTransport class', () => {
     );
   });
 
-  // given
   describe('Method sendRequest', () => {
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._fetchRetry = jest.fn();
@@ -105,7 +102,6 @@ describe('StTransport class', () => {
       mockFT = instance._fetchRetry as jest.Mock;
     });
 
-    // then
     it('should build the fetch options', async () => {
       const requestBody = `{"jwt":"${config.jwt}"}`;
       const requestObject = { requesttypedescriptions: ['AUTH'] };
@@ -129,7 +125,6 @@ describe('StTransport class', () => {
       });
     });
 
-    // then
     each([
       [resolvingPromise({}), resolvingPromise({})],
       [rejectingPromise(timeoutError), resolvingPromise({})]
@@ -144,7 +139,6 @@ describe('StTransport class', () => {
       expect(response).toMatchObject(expected);
     });
 
-    // then
     each([
       [
         resolvingPromise({
@@ -185,16 +179,13 @@ describe('StTransport class', () => {
     });
   });
 
-  // given
   describe('_fetchRetry()', () => {
     const { options, url, connectTimeout, delay, retries, retryTimeout } = fetchRetryObject;
 
-    // when
     beforeEach(() => {
       Utils.promiseWithTimeout = jest.fn();
     });
 
-    // then
     it('should call Utils.retryPromise with provided parameters', () => {
       Utils.retryPromise = jest.fn();
       // @ts-ignore
@@ -202,7 +193,6 @@ describe('StTransport class', () => {
       expect(Utils.retryPromise).toHaveBeenCalled();
     });
 
-    // then
     it('should call Utils.retryPromise with default parameters', () => {
       Utils.retryPromise = jest.fn();
       // @ts-ignore

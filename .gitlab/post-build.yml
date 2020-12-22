@@ -1,0 +1,64 @@
+### app-html
+.build-app-html:
+  extends: .utility-images-build
+  stage: post-build
+  variables:
+    DOCKER_TARGET: 'app-html'
+    DOCKERFILE_PATH: docker/app-html/Dockerfile
+    USE_PIPELINE_IMAGE: 'true'
+  before_script:
+    - cp -r .dist-${BUILD_TYPE}/ dist/
+
+build-app-html-dev:
+  extends: .build-app-html
+  variables:
+    BUILD_TYPE: 'dev'
+    UTILITY_NAME: 'app-html-dev'
+    BUILD_ARGS_EXTRA: --build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=dev
+
+build-app-html-test:
+  extends: .build-app-html
+  variables:
+    BUILD_TYPE: 'test'
+    UTILITY_NAME: 'app-html-test'
+    BUILD_ARGS_EXTRA: --build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=test
+
+build-app-html-prod-review:
+  variables:
+    UTILITY_NAME: 'app-html-prod'
+  extends:
+    - .build-app-html
+    - .rules-when-review
+  before_script:
+    - cp -r .dist-prod/ dist/
+    - export LIBRARY_ARG="--library_url=https://cdn.eu.trustpayments.com/js-payments-v3/0.0.0-test"
+    - export BUILD_ARGS_EXTRA="--build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=prod --build-arg LIBRARY_ARG=${LIBRARY_ARG}"
+
+build-app-html-prod-release:
+  variables:
+    UTILITY_NAME: 'app-html-prod'
+  extends:
+    - .build-app-html
+    - .rules-when-release
+  before_script:
+    - cp -r .dist-prod/ dist/
+    - . .cicd_scripts/gitlab/release/load_release_artifact.sh "${ARTIFACT_RELEASE_CICD_FILENAME}"
+    - export LIBRARY_ARG="--library_url=https://cdn.eu.trustpayments.com/js-payments-v3/${RELEASE_TAG}-${CDN_HASH}"
+    - export BUILD_ARGS_EXTRA="--build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=prod --build-arg LIBRARY_ARG=${LIBRARY_ARG}"
+
+#### testing repo
+build-payments-tests:
+  extends: .utility-images-build
+  stage: post-build
+  variables:
+    UTILITY_NAME: 'payments-tests'
+    DOCKERFILE_PATH: .cicd_scripts/docker/payments-tests/Dockerfile
+    BUILD_ARGS_EXTRA: --build-arg COPY_FROM=./tests
+
+#### wiremock for testing repo
+build-wiremock:
+  extends: .utility-images-build
+  stage: post-build
+  variables:
+    UTILITY_NAME: 'wiremock'
+    BUILD_ARGS_EXTRA: --build-arg COPY_FROM=./tests

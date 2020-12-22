@@ -9,6 +9,7 @@ include:
     <<: *cicd-os
 
   - local: '/.gitlab/build.yml'
+  - local: '/.gitlab/post-build.yml'
   - local: '/.gitlab/fast-tests.yml'
   - local: '/.gitlab/extended-tests.yml'
 
@@ -72,6 +73,7 @@ stages:
   - initialize
   - pre-build
   - build
+  - post-build
   - fast-tests
   - extended-tests
   - validate-merge-request-description

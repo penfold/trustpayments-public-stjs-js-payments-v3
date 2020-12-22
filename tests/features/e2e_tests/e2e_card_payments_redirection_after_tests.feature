@@ -264,7 +264,7 @@ Feature: E2E Card Payments - redirection
 #      | errorcode    | cancelled                  |
 
   Scenario: Cancel Cardinal popup with enabled submitOnSuccess and request type: ACCOUNTCHECK, TDQ
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_REQUEST_TYPES_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                    |
       | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
     And User opens example page
@@ -280,6 +280,8 @@ Feature: E2E Card Payments - redirection
       | threedresponse | should not be none |
       | jwt            | should not be none |
 
+
+    #ToDo - @STJS-1256 This assertion should be turned on when ticket STJS-1256 will be resolved
   Scenario Outline: Cancel Cardinal popup with enabled submitOnError and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_ERROR_REQUEST_TYPES_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -294,7 +296,7 @@ Feature: E2E Card Payments - redirection
       | enrolled       | Y                  |
       | settlestatus   | 0                  |
       | errorcode      | 50003              |
-      | threedresponse | <threedresponse>   |
+#      | threedresponse | <threedresponse>   |
       | jwt            | should not be none |
 
     Examples:

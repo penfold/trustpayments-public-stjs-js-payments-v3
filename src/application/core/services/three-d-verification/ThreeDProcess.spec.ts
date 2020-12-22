@@ -1,5 +1,4 @@
 import { IThreeDVerificationService } from './IThreeDVerificationService';
-import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { ThreeDSTokensProvider } from './ThreeDSTokensProvider';
 import { GatewayClient } from '../GatewayClient';
 import { VerificationResultHandler } from './VerificationResultHandler';
