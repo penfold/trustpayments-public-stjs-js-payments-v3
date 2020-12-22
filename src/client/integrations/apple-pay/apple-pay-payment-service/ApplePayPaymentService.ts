@@ -64,7 +64,7 @@ export class ApplePayPaymentService {
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     formData: object,
     payment: IApplePayPayment
-  ): Observable<IApplePayClientStatusDetails> {
+  ): Observable<any> {
     const wallettoken = JSON.stringify(payment);
     return from(
       this.payment.processPayment(
@@ -83,21 +83,28 @@ export class ApplePayPaymentService {
         // }
       )
     ).pipe(
-      tap(console.error),
-      switchMap((response: IApplePayProcessPaymentResponse) => {
-        console.error(response);
-        return of({
-          errorCode: this.applePayClientErrorService.create(response.response.errorcode),
-          errorMessage: response.response.errormessage
-        });
-      }),
-      catchError((error: any) => {
-        console.error(error);
-        return of({
-          errorCode: this.applePayClientErrorService.create('1'),
-          errorMessage: error
-        });
+      switchMap((data: any) => {
+        console.error(data);
+        return of({ data });
       })
     );
+
+    //   .pipe(
+    //   tap(console.error),
+    //   switchMap((response: IApplePayProcessPaymentResponse) => {
+    //     console.error(response);
+    //     return of({
+    //       errorCode: this.applePayClientErrorService.create(response.response.errorcode),
+    //       errorMessage: response.response.errormessage
+    //     });
+    //   }),
+    //   catchError((error: any) => {
+    //     console.error(error);
+    //     return of({
+    //       errorCode: this.applePayClientErrorService.create('1'),
+    //       errorMessage: error
+    //     });
+    //   })
+    // );
   }
 }

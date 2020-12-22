@@ -227,20 +227,15 @@ export class ApplePay {
         }
       });
 
-      this.messageBus.pipe(
-        ofType(MessageBus.EVENTS_PUBLIC.APPLE_PAY_AUTHORIZATION),
-        tap(() => {
+      this.interFrameCommunicator
+        .whenReceive(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION)
+        .thenRespond((response: IMessageBusEvent) => {
+          console.error(response);
           console.error('dupa');
-        })
-      );
-
-      // this.interFrameCommunicator
-      //    .whenReceive(PUBLIC_EVENTS.APPLE_PAY_COMPLETE_SESSION)
-      //   .thenRespond(() => {
-      //   .thenRespond(() => {
-      //      this.handlePaymentProcessResponse(response.errorCode, response.errorMessage);
-      //      this.applePaySession.completePayment();
-      //    });
+          this.handlePaymentProcessResponse(response.data.errorCode, response.data.errorMessage);
+          this.applePaySession.completePayment({ errors: undefined, status: ApplePaySession.STATUS_SUCCESS });
+          return of(response.data);
+        });
     };
 
     this.applePaySession.oncancel = (event: Event) => {

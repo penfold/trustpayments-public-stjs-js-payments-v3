@@ -141,29 +141,21 @@ export class ApplePayClient implements IApplePayClient {
         formData,
         payment
       )
-      .pipe(
-        switchMap((response: IApplePayClientStatusDetails) => {
-          console.error(response);
-          this.messageBus.publish(
+      .subscribe((response: any) => {
+        console.error(response);
+        from(
+          this.interFrameCommunicator.query<IApplePayClientStatus>(
             {
-              data: response,
-              type: MessageBus.EVENTS_PUBLIC.APPLE_PAY_AUTHORIZATION
+              type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
+              data: {
+                status: ApplePayClientStatus.ON_PAYMENT_AUTHORIZED,
+                details: response
+              }
             },
-            true
-          );
-          return of(ApplePayClientStatus.SUCCESS);
-        }),
-        catchError(() => {
-          this.messageBus.publish(
-            {
-              data: false,
-              type: MessageBus.EVENTS_PUBLIC.APPLE_PAY_AUTHORIZATION
-            },
-            true
-          );
-          return of(ApplePayClientStatus.ERROR);
-        })
-      );
+            MERCHANT_PARENT_FRAME
+          )
+        ).subscribe();
+      });
 
     // GoogleAnalytics.sendGaData('event', 'Apple Pay', 'merchant validation', 'Apple Pay merchant validated');
     //
