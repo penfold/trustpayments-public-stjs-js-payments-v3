@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { EMPTY, Observable, of, throwError } from 'rxjs';
+import { EMPTY, of, throwError } from 'rxjs';
 import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
@@ -16,7 +16,6 @@ import { ApplePayClientErrorCode } from '../../../../client/integrations/apple-p
 import { ApplePaySessionErrorCode } from './apple-pay-error-service/ApplePaySessionErrorCode';
 import { APPLE_PAY_BUTTON_ID } from './apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { VALIDATION_ERROR } from '../../models/constants/Translations';
 import { ApplePayButtonService } from './apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from './apple-pay-config-service/ApplePayConfigService';
 import { ApplePayErrorService } from './apple-pay-error-service/ApplePayErrorService';
@@ -25,6 +24,10 @@ import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySess
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { GoogleAnalytics } from '../google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
+import { RequestType } from '../../../../shared/types/RequestType';
+import { IApplePayClientStatusDetails } from '../../../../client/integrations/apple-pay/IApplePayClientStatusDetails';
+import { MessageBus } from '../../shared/message-bus/MessageBus';
+import { DomMethods } from '../../shared/dom-methods/DomMethods';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
@@ -35,15 +38,15 @@ export class ApplePay {
   private paymentCancelled: boolean = false;
 
   constructor(
-    private communicator: InterFrameCommunicator,
-    private interFrameCommunicator: InterFrameCommunicator,
-    private messageBus: IMessageBus,
     private applePayButtonService: ApplePayButtonService,
     private applePayConfigService: ApplePayConfigService,
     private applePayErrorService: ApplePayErrorService,
+    private applePayGestureService: ApplePayGestureService,
     private applePaySessionFactory: ApplePaySessionFactory,
     private applePaySessionService: ApplePaySessionService,
-    private applePayGestureService: ApplePayGestureService
+    private communicator: InterFrameCommunicator,
+    private interFrameCommunicator: InterFrameCommunicator,
+    private messageBus: IMessageBus
   ) {}
 
   init(): void {
@@ -70,7 +73,7 @@ export class ApplePay {
                   type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
                   data: {
                     status: ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET,
-                    data: {
+                    details: {
                       errorCode: ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET,
                       errorMessage: 'User has not an active card provisioned into Wallet'
                     }
@@ -130,33 +133,35 @@ export class ApplePay {
       .subscribe();
   }
 
-  private proceedPayment(): void {
-    this.paymentCancelled = false;
-    // need to be here because of gesture handler
-    this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
-    this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
-    console.error(this.config);
+  private onTransactionComplete(): void {
     this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
-        filter(event => event.data.requesttypedescription !== 'WALLETVERIFY'),
+        filter(event => event.data.requesttypedescription !== RequestType.WALLETVERIFY),
         first()
       )
       .subscribe(event => {
-        if (Number(event.data.errorcode) !== 0) {
+        if (Number(event.data.errorcode) !== ApplePayClientErrorCode.SUCCESS) {
           this.applePaySession.completePayment({
             status: ApplePaySession.STATUS_FAILURE,
             errors: this.applePayErrorService.create(ApplePaySessionErrorCode.UNKNOWN, this.config.locale)
           });
         }
       });
+  }
 
+  private proceedPayment(): void {
+    this.paymentCancelled = false;
+    // need to be here because of gesture handler
+    this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
+    this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
+    this.onTransactionComplete();
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
           status: ApplePayClientStatus.ON_VALIDATE_MERCHANT,
-          data: {
+          details: {
             errorCode: ApplePayClientErrorCode.ON_VALIDATE_MERCHANT,
             errorMessage: '',
             validateMerchantURL: event.validationURL,
@@ -170,40 +175,29 @@ export class ApplePay {
         .whenReceive(PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT)
         .thenRespond((response: IMessageBusEvent) => {
           console.error(response);
-          console.error(response.data.data.errorcode);
-          console.error(Number(response.data.data.errorcode));
-          console.error(ApplePayClientErrorCode.SUCCESS);
-          console.error(Number(response.data.data.errorcode) !== ApplePayClientErrorCode.SUCCESS);
-          if (Number(response.data.data.errorcode) !== ApplePayClientErrorCode.SUCCESS) {
-            console.error(response);
+          if (Number(response.data.details.errorcode) !== ApplePayClientErrorCode.SUCCESS) {
             this.applePaySessionService.abortApplePaySession();
-            this.handleWalletVerifyResponse(
-              ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
-              ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
-              VALIDATION_ERROR
-            );
+
+            this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_ERROR, response.data.details);
 
             GoogleAnalytics.sendGaData(
               'event',
               'Apple Pay',
-              `${ApplePayClientStatus.VALIDATE_MERCHANT_ERROR}`,
+              `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
               'Apple Pay merchant validation error'
             );
-            return of(ApplePayClientStatus.VALIDATE_MERCHANT_ERROR);
+            return of(ApplePayClientStatus.ON_VALIDATE_MERCHANT);
           }
-          this.handleWalletVerifyResponse(
-            ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS,
-            ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
-            'Merchant validation success'
-          );
+          this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS, response.data.details);
           console.error(response);
-          this.applePaySessionService.completeMerchantValidation(JSON.parse(response.data.data.walletsession));
+          this.applePaySessionService.completeMerchantValidation(JSON.parse(response.data.details.walletsession));
           GoogleAnalytics.sendGaData(
             'event',
             'Apple Pay',
-            `${ApplePayClientStatus.VALIDATE_MERCHANT_ERROR}`,
+            `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
             'Apple Pay Merchant validation success'
           );
+          console.error(response.data);
           return of(response.data);
         });
     };
@@ -217,21 +211,32 @@ export class ApplePay {
         config: this.config
       });
 
+      const formData = DomMethods.parseForm(this.config.formId);
+
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
           status: ApplePayClientStatus.ON_PAYMENT_AUTHORIZED,
-          data: {
+          details: {
+            config: this.config,
+            formData,
             errorCode: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
             errorMessage: '',
-            payment: event.payment,
-            config: this.config
+            payment: event.payment
           }
         }
       });
 
+      this.messageBus.pipe(
+        ofType(MessageBus.EVENTS_PUBLIC.APPLE_PAY_AUTHORIZATION),
+        tap(() => {
+          console.error('dupa');
+        })
+      );
+
       // this.interFrameCommunicator
       //    .whenReceive(PUBLIC_EVENTS.APPLE_PAY_COMPLETE_SESSION)
+      //   .thenRespond(() => {
       //   .thenRespond(() => {
       //      this.handlePaymentProcessResponse(response.errorCode, response.errorMessage);
       //      this.applePaySession.completePayment();
@@ -246,7 +251,7 @@ export class ApplePay {
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
           status: ApplePayClientStatus.CANCEL,
-          data: {
+          details: {
             errorCode: ApplePayClientErrorCode.CANCEL,
             errorMessage: 'Payment has been cancelled'
           }
@@ -261,13 +266,10 @@ export class ApplePay {
     };
   }
 
-  private handleWalletVerifyResponse(status: ApplePayClientStatus, code: ApplePayClientErrorCode, message: string) {
+  private handleWalletVerifyResponse(status: ApplePayClientStatus, details: IApplePayClientStatusDetails) {
     this.messageBus.publish<IApplePayClientStatus>({
       type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
-      data: {
-        status,
-        data: { errorCode: code, errorMessage: message }
-      }
+      data: { status, details }
     });
   }
 
@@ -286,7 +288,7 @@ export class ApplePay {
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
           status: ApplePayClientStatus.SUCCESS,
-          data: {
+          details: {
             errorCode: ApplePayClientErrorCode.SUCCESS,
             errorMessage
           }
@@ -306,7 +308,7 @@ export class ApplePay {
       type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
       data: {
         status: ApplePayClientStatus.ERROR,
-        data: {
+        details: {
           errorCode,
           errorMessage
         }

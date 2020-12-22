@@ -1,24 +1,23 @@
 import { Service } from 'typedi';
 import { from, Observable, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { IApplePayProcessPaymentResponse } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayProcessPaymentResponse';
 import { IApplePayWalletVerifyResponse } from '../../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { RequestType } from '../../../../shared/types/RequestType';
 import { ApplePayConfigService } from '../../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
 import { ApplePayClientErrorCode } from '../ApplePayClientErrorCode';
-import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
 import { Payment } from '../../../../application/core/shared/payment/Payment';
-import { IApplePayClientErrorDetails } from '../IApplePayClientErrorDetails';
+import { IApplePayClientStatusDetails } from '../IApplePayClientStatusDetails';
 import { ApplePayClientErrorService } from '../apple-pay-client-error-service/ApplePayClientErrorService';
 import { IApplePayPayment } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPayment';
 
 @Service()
 export class ApplePayPaymentService {
   constructor(
+    private payment: Payment,
     private applePayConfigService: ApplePayConfigService,
-    private applePayClientErrorService: ApplePayClientErrorService,
-    private payment: Payment
+    private applePayClientErrorService: ApplePayClientErrorService
   ) {}
 
   walletVerify(
@@ -63,33 +62,37 @@ export class ApplePayPaymentService {
   processPayment(
     requestTypes: RequestType[],
     validateMerchantRequest: IApplePayValidateMerchantRequest,
-    formId: string,
+    formData: object,
     payment: IApplePayPayment
-  ): Observable<IApplePayClientErrorDetails> {
+  ): Observable<IApplePayClientStatusDetails> {
+    const wallettoken = JSON.stringify(payment);
     return from(
       this.payment.processPayment(
         requestTypes,
         {
           walletsource: validateMerchantRequest.walletsource,
-          wallettoken: JSON.stringify(payment)
+          wallettoken
         },
         {
-          ...DomMethods.parseForm(formId),
+          ...formData,
           termurl: 'https://termurl.com'
-        },
-        {
-          billingContact: payment.billingContact,
-          shippingContact: payment.shippingContact
         }
+        // {
+        //   billingContact: payment.billingContact,
+        //   shippingContact: payment.shippingContact
+        // }
       )
     ).pipe(
+      tap(console.error),
       switchMap((response: IApplePayProcessPaymentResponse) => {
+        console.error(response);
         return of({
           errorCode: this.applePayClientErrorService.create(response.response.errorcode),
           errorMessage: response.response.errormessage
         });
       }),
       catchError((error: any) => {
+        console.error(error);
         return of({
           errorCode: this.applePayClientErrorService.create('1'),
           errorMessage: error

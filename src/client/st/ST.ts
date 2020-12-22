@@ -2,7 +2,6 @@ import './st.css';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
-import { environment } from '../../environments/environment';
 import { CardFrames } from '../card-frames/CardFrames.class';
 import { CommonFrames } from '../common-frames/CommonFrames.class';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
@@ -37,18 +36,14 @@ import { CardinalClient } from '../integrations/cardinal-commerce/CardinalClient
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
-import { IDecodedJwt } from '../../application/core/models/IDecodedJwt';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
-import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
 import { NotificationService } from '../notification/NotificationService';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { IStore } from '../../application/core/store/IStore';
 import { IParentFrameState } from '../../application/core/store/state/IParentFrameState';
 import { Notification } from '../../application/core/shared/notification/Notification';
-import { Notification } from '../../application/core/shared/notification/Notification';
 import { IApplePayConfig } from '../../application/core/integrations/apple-pay/IApplePayConfig';
-import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 
 @Service()
 export class ST {
@@ -115,7 +110,6 @@ export class ST {
     private _iframeFactory: IframeFactory,
     private _frameService: Frame,
     private _browserDetector: BrowserDetector,
-    private _visaCheckout: VisaCheckout,
     private _cybertonica: Cybertonica,
     private _cardinalClient: CardinalClient,
     private jwtDecoder: JwtDecoder,

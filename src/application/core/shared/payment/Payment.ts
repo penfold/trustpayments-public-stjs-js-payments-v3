@@ -57,7 +57,8 @@ export class Payment {
 
     if (requestTypes.length > 0) {
       const requestData: IStRequest = { ...merchantData, ...payment } as IStRequest;
-
+      console.error(requestData);
+      console.error(responseData);
       return this.processRequestTypes(requestData, responseData);
     }
 
@@ -98,7 +99,7 @@ export class Payment {
     if (cybertonicaTid) {
       processPaymentRequestBody.fraudcontroltransactionid = cybertonicaTid;
     }
-
+    console.error(processPaymentRequestBody);
     return this._stTransport.sendRequest(processPaymentRequestBody);
   }
 
@@ -106,7 +107,7 @@ export class Payment {
     // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
     StCodec.publishResponse(responseData, responseData.jwt, responseData.threedresponse);
     this._notification.success(PAYMENT_SUCCESS);
-
+    console.error(responseData);
     return this.publishResponse(responseData);
   }
 }
