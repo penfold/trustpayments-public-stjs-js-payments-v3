@@ -14,7 +14,7 @@
       alias: thirdparty.example.com
       command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
 
-card-payments-headless-component-tests:
+.card-payments-headless-component-tests:
   extends:
     - .image-test
     - .fast-tests
@@ -24,7 +24,7 @@ card-payments-headless-component-tests:
     FEATURE_FILES_NAMES_CONTAINS: 'mock_'
   parallel: 22
 
-visa-checkout-headless-component-tests:
+.visa-checkout-headless-component-tests:
   extends:
     - .image-test
     - .fast-tests
@@ -40,7 +40,7 @@ visa-checkout-headless-component-tests:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
       alias: merchant.securetrading.net
 
-e2e-tests:
+.e2e-tests:
   extends:
     - .image-test
     - .fast-tests
@@ -48,7 +48,7 @@ e2e-tests:
     - .parallel-e2e-tests
   parallel: 18
 
-zap-baseline-scan-library-securetrading-net:
+.zap-baseline-scan-library-securetrading-net:
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
       alias: library.securetrading.net
@@ -58,7 +58,7 @@ zap-baseline-scan-library-securetrading-net:
     URL_TO_SCAN: 'https://library.securetrading.net'
     ZAP_CONFIG_PATH: "baseline-scan.conf"
 
-zap-baseline-scan-merchant-securetrading-net:
+.zap-baseline-scan-merchant-securetrading-net:
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
       alias: merchant.securetrading.net
