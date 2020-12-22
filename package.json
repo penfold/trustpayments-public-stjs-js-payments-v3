@@ -33,7 +33,7 @@
     "snyk-protect": "snyk protect",
     "snyk-container": "snyk container test $CI_REGISTRY_IMAGE/$APP_NAME:$CI_COMMIT_REF_SLUG",
     "snyk-monitor": "snyk monitor --org=platform-ff8 --all-projects",
-    "snyk-auth": "snyk auth $SNYK_API_TOKEN",
+    "snyk-auth": "snyk auth $SNYK_TEST_API_TOKEN",
     "behave": "npm run testdocker && cd js-payments-testing &&",
     "export:translations": "cross-env-shell i18next-conv -l '$npm_package_config_locale' -s src/application/core/translations/$npm_package_config_locale.json -t src/translations/$npm_package_config_locale.po",
     "import:translations": "cross-env-shell i18next-conv -l '$npm_package_config_locale' -s src/translations/$npm_package_config_locale.po -t src/application/core/translations/$npm_package_config_locale.json",
