@@ -55,7 +55,7 @@ export class StTransport {
       this._throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody, fetchOptions));
       setTimeout(() => this._throttlingRequests.delete(requestBody), StTransport.THROTTLE_TIME);
     }
-    console.error(requestBody);
+
     return this._throttlingRequests.get(requestBody);
   }
 
