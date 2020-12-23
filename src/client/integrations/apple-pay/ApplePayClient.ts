@@ -101,6 +101,7 @@ export class ApplePayClient implements IApplePayClient {
     this.applePayPaymentService
       .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
       .subscribe((response: any) => {
+        console.error(response);
         const { status, data } = response;
         from(
           this.interFrameCommunicator.query<IApplePayClientStatus>(

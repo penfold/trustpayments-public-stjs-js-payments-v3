@@ -168,29 +168,29 @@ export class ApplePay {
       this.interFrameCommunicator
         .whenReceive(PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT)
         .thenRespond((response: IMessageBusEvent) => {
-          if (Number(response.data.details.errorcode) !== ApplePayClientErrorCode.SUCCESS) {
-            this.applePaySessionService.abortApplePaySession();
-            this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_ERROR, response.data.details);
+          if (Number(response.data.details.errorcode) === ApplePayClientErrorCode.SUCCESS) {
+            this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS, response.data.details);
+            this.applePaySessionService.completeMerchantValidation(JSON.parse(response.data.details.walletsession));
             GoogleAnalytics.sendGaData(
               'event',
               'Apple Pay',
               `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
-              'Apple Pay merchant validation error'
+              'Apple Pay Merchant validation success'
             );
 
-            return of(ApplePayClientStatus.ON_VALIDATE_MERCHANT);
+            return of(response.data);
           }
 
-          this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS, response.data.details);
-          this.applePaySessionService.completeMerchantValidation(JSON.parse(response.data.details.walletsession));
+          this.applePaySessionService.abortApplePaySession();
+          this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_ERROR, response.data.details);
           GoogleAnalytics.sendGaData(
             'event',
             'Apple Pay',
             `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
-            'Apple Pay Merchant validation success'
+            'Apple Pay merchant validation error'
           );
 
-          return of(response.data);
+          return of(ApplePayClientStatus.ON_VALIDATE_MERCHANT);
         });
     };
   }

@@ -10,6 +10,7 @@ import { ApplePayClientErrorCode } from '../ApplePayClientErrorCode';
 import { Payment } from '../../../../application/core/shared/payment/Payment';
 import { IApplePayProcessPaymentData } from './IApplePayProcessPaymentData';
 import { IApplePayProcessPaymentResponse } from './IApplePayProcessPaymentResponse';
+import { TERM_URL } from '../../../../application/core/models/constants/RequestData';
 
 @Service()
 export class ApplePayPaymentService {
@@ -69,7 +70,7 @@ export class ApplePayPaymentService {
         },
         {
           ...formData,
-          termurl: 'https://termurl.com'
+          termurl: TERM_URL
         },
         {
           billingContact: payment.billingContact,
