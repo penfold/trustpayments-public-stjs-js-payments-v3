@@ -71,6 +71,9 @@ export class ApplePayClient implements IApplePayClient {
           case ApplePayClientStatus.CANCEL:
             return this.onCancel$(details);
 
+          case ApplePayClientStatus.SUCCESS:
+            return this.onSuccess$(details);
+
           default:
             return throwError('Unknown Apple Pay status');
         }
@@ -176,12 +179,9 @@ export class ApplePayClient implements IApplePayClient {
     return of(ApplePayClientStatus.SUCCESS);
   }
 
-  private onSuccess$(
-    event: IApplePayPaymentAuthorizedEvent,
-    config: IApplePayConfigObject
-  ): Observable<ApplePayClientStatus.SUCCESS> {
+  private onSuccess$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
     // this.localStorage.setItem('completePayment', 'true');
-    this.applePayNotificationService.notification(status.data.errorCode, status.data.errorMessage);
+    this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
     GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
     return of(ApplePayClientStatus.SUCCESS);
   }

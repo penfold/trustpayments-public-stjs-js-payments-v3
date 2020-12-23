@@ -230,8 +230,9 @@ export class ApplePay {
         .whenReceive(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION)
         .thenRespond((response: IMessageBusEvent) => {
           console.error('PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION', response);
-          this.applePaySession.completePayment(
-            this.handlePaymentProcessResponse(response.data.errorCode, response.data.errorMessage)
+          this.handlePaymentProcessResponse(
+            response.data.details.data.response.errorcode,
+            response.data.details.data.response.errormessage
           );
           return of(response.data);
         });
@@ -275,8 +276,9 @@ export class ApplePay {
       errors: undefined,
       status: undefined
     };
-
-    if (errorCode === ApplePayClientErrorCode.SUCCESS) {
+    console.error(typeof errorCode, typeof ApplePayClientErrorCode.SUCCESS, errorMessage);
+    if (Number(errorCode) === ApplePayClientErrorCode.SUCCESS) {
+      console.error('dupa');
       completion.status = ApplePaySession.STATUS_SUCCESS;
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
@@ -291,7 +293,7 @@ export class ApplePay {
       this.applePaySession.completePayment(completion);
       return completion;
     }
-    if (errorCode === ApplePayClientErrorCode.CANCEL) {
+    if (Number(errorCode) === ApplePayClientErrorCode.CANCEL) {
       this.applePaySessionService.abortApplePaySession();
       return completion;
     }
