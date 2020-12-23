@@ -18,6 +18,8 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 import { IDecodedJwt } from '../../../application/core/models/IDecodedJwt';
+import { IApplePayProcessPaymentData } from './apple-pay-payment-service/IApplePayProcessPaymentData';
+import { IApplePayProcessPaymentResponse } from './apple-pay-payment-service/IApplePayProcessPaymentResponse';
 
 @Service()
 export class ApplePayClient implements IApplePayClient {
@@ -129,7 +131,7 @@ export class ApplePayClient implements IApplePayClient {
         formData,
         payment
       )
-      .subscribe((response: any) => {
+      .subscribe((response: IApplePayProcessPaymentResponse) => {
         from(
           this.interFrameCommunicator.query<IApplePayClientStatus>(
             {

@@ -8,6 +8,8 @@ import { RequestType } from '../../../../shared/types/RequestType';
 import { ApplePayConfigService } from '../../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
 import { ApplePayClientErrorCode } from '../ApplePayClientErrorCode';
 import { Payment } from '../../../../application/core/shared/payment/Payment';
+import { IApplePayProcessPaymentData } from './IApplePayProcessPaymentData';
+import { IApplePayProcessPaymentResponse } from './IApplePayProcessPaymentResponse';
 
 @Service()
 export class ApplePayPaymentService {
@@ -57,7 +59,7 @@ export class ApplePayPaymentService {
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     formData: object,
     payment: IApplePayPayment
-  ): Observable<any> {
+  ): Observable<IApplePayProcessPaymentResponse> {
     return from(
       this.payment.processPayment(
         requestTypes,
@@ -68,16 +70,15 @@ export class ApplePayPaymentService {
         {
           ...formData,
           termurl: 'https://termurl.com'
+        },
+        {
+          billingContact: payment.billingContact,
+          shippingContact: payment.shippingContact
         }
-        // {
-        //   billingContact: payment.billingContact,
-        //   shippingContact: payment.shippingContact
-        // }
       )
     ).pipe(
-      switchMap((data: any) => {
-        console.error('processPayment', data);
-        return of({ data });
+      switchMap((data: IApplePayProcessPaymentData) => {
+        return of(data.response);
       })
     );
   }

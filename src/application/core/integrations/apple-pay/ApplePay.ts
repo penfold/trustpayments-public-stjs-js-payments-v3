@@ -216,10 +216,8 @@ export class ApplePay {
       this.interFrameCommunicator
         .whenReceive(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION)
         .thenRespond((response: IMessageBusEvent) => {
-          this.handlePaymentProcessResponse(
-            response.data.details.data.response.errorcode,
-            response.data.details.data.response.errormessage
-          );
+          console.error(response);
+          this.handlePaymentProcessResponse(response.data.details.errorcode, response.data.details.errormessage);
           return of(response.data);
         });
     };
