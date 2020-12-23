@@ -9,7 +9,7 @@ Feature: E2E Cybertonica
   @vueJS
   @react_native
   @e2e_config_cybertonica
-  @smoke_tests
+  @smoke_e2e_test
   Scenario: Cybertonica - successfull payment
     Given JS library configured by inline params CYBERTONICA_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |

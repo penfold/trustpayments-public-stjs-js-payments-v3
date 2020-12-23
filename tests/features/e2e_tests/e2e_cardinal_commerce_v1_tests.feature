@@ -8,7 +8,7 @@ Feature: Cardinal Commerce E2E tests
     @vueJS
     @react_native
     @e2e_cardinal_commerce_v1
-    @smoke_tests
+    @smoke_e2e_test
   Scenario Outline: TC_1 - Successful Authentication, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -93,7 +93,7 @@ Feature: Cardinal Commerce E2E tests
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @e2e_cardinal_commerce_v1 @smoke_tests
+  @e2e_cardinal_commerce_v1 @smoke_e2e_test
   Scenario Outline: TC_5 - Timeout, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |

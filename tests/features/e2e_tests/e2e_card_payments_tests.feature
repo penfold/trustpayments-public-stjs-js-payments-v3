@@ -133,7 +133,7 @@ Feature: E2E Card Payments
     And User will see payment status information: "Unauthenticated"
     And User will see that notification frame has "red" color
 
-  @smoke_test
+  @smoke_e2e_test
   Scenario: Submit payment form without data - fields validation
     Given JS library configured by inline params BYPASS_MASTERCARD_CONFIG and jwt BASE_JWT with additional attributes
       | key                      | value                                 |

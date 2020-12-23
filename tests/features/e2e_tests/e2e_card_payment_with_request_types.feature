@@ -61,7 +61,7 @@ Feature: E2E Card Payments with request types in config
     And "submit" callback is called only once
     And "success" callback is called only once
 
-  @smoke_test
+  @smoke_e2e_test
   Scenario Outline: Successful step up payment with defer init and requestTypes: <request_types>
     Given JS library configured by inline params REQUEST_TYPE_ACHECK_TDQ_WITH_DEFER_INIT and jwt BASE_JWT with additional attributes
       | key                     | value           |
