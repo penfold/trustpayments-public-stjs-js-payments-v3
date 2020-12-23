@@ -132,3 +132,14 @@ Feature: E2E Card Payments
     And User clicks Pay button
     And User will see payment status information: "Unauthenticated"
     And User will see that notification frame has "red" color
+
+  @smoke_test
+  Scenario: Submit payment form without data - fields validation
+    Given JS library configured by inline params BYPASS_MASTERCARD_CONFIG and jwt BASE_JWT with additional attributes
+      | key                      | value                                 |
+      | requesttypedescriptions  | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
+      | threedbypasspaymenttypes | MASTERCARD                            |
+    And User opens example page
+    When User clicks Pay button
+    Then User will see validation message "Field is required" under all fields
+    And User will see that all fields are highlighted

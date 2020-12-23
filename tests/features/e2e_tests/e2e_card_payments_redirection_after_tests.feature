@@ -8,6 +8,7 @@ Feature: E2E Card Payments - redirection
     @vueJS
     @react_native
     @e2e_config_submit_on_success
+    @smoke_test
   Scenario Outline: Successful frictionless payment with submitOnSuccess enabled
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -38,6 +39,7 @@ Feature: E2E Card Payments - redirection
     @vueJS
     @react_native
     @e2e_config_submit_on_success
+    @smoke_test
   Scenario Outline: Successful payment with submitOnSuccess enabled for non-frictionless card
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
