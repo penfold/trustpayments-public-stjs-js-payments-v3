@@ -139,7 +139,7 @@ export class ApplePay {
         filter(event => event.data.requesttypedescription !== RequestType.WALLETVERIFY),
         first()
       )
-      .subscribe(event => {
+      .subscribe((event: IMessageBusEvent) => {
         if (Number(event.data.errorcode) !== ApplePayClientErrorCode.SUCCESS) {
           this.applePaySession.completePayment({
             status: ApplePaySession.STATUS_FAILURE,
@@ -149,12 +149,7 @@ export class ApplePay {
       });
   }
 
-  private proceedPayment(): void {
-    this.paymentCancelled = false;
-    // need to be here because of gesture handler
-    this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
-    this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
-    this.onTransactionComplete();
+  private onValidateMerchant(): void {
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
@@ -198,7 +193,9 @@ export class ApplePay {
           return of(response.data);
         });
     };
+  }
 
+  private onPaymentAuthorized(): void {
     this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
       const formData = DomMethods.parseForm(this.config.formId);
 
@@ -226,10 +223,13 @@ export class ApplePay {
           return of(response.data);
         });
     };
+  }
 
+  private onCancel(): void {
     this.applePaySession.oncancel = (event: Event) => {
-      this.applePayGestureService.gestureHandle(this.proceedPayment.bind(this));
       this.paymentCancelled = true;
+      this.applePayGestureService.gestureHandle(this.proceedPayment.bind(this));
+
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
@@ -240,13 +240,19 @@ export class ApplePay {
           }
         }
       });
-      GoogleAnalytics.sendGaData(
-        'event',
-        'Apple Pay',
-        `${ApplePayClientStatus.CANCEL}`,
-        'Apple Pay Payment has been cancelled'
-      );
+
+      GoogleAnalytics.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.CANCEL}`, 'Payment has been cancelled');
     };
+  }
+
+  private proceedPayment(): void {
+    this.paymentCancelled = false;
+    this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
+    this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
+    this.onTransactionComplete();
+    this.onValidateMerchant();
+    this.onPaymentAuthorized();
+    this.onCancel();
   }
 
   private handleWalletVerifyResponse(status: ApplePayClientStatus, details: IApplePayClientStatusDetails): void {

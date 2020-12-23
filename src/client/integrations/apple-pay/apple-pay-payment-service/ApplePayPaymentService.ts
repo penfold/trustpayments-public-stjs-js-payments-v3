@@ -1,22 +1,17 @@
 import { Service } from 'typedi';
 import { from, Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
+import { IApplePayPayment } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPayment';
 import { IApplePayWalletVerifyResponse } from '../../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { RequestType } from '../../../../shared/types/RequestType';
 import { ApplePayConfigService } from '../../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
 import { ApplePayClientErrorCode } from '../ApplePayClientErrorCode';
 import { Payment } from '../../../../application/core/shared/payment/Payment';
-import { ApplePayClientErrorService } from '../apple-pay-client-error-service/ApplePayClientErrorService';
-import { IApplePayPayment } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPayment';
 
 @Service()
 export class ApplePayPaymentService {
-  constructor(
-    private payment: Payment,
-    private applePayConfigService: ApplePayConfigService,
-    private applePayClientErrorService: ApplePayClientErrorService
-  ) {}
+  constructor(private payment: Payment, private applePayConfigService: ApplePayConfigService) {}
 
   walletVerify(
     validateMerchantRequest: IApplePayValidateMerchantRequest,

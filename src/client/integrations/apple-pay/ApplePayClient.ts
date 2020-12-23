@@ -10,16 +10,14 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { IApplePayClient } from './IApplePayClient';
 import { IApplePayClientStatusDetails } from './IApplePayClientStatusDetails';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { ApplePayNotificationService } from './apple-pay-notification-service/ApplePayNotificationService';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
-import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
-import { NotificationService } from '../../notification/NotificationService';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 import { IDecodedJwt } from '../../../application/core/models/IDecodedJwt';
-import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 
 @Service()
 export class ApplePayClient implements IApplePayClient {
@@ -86,7 +84,7 @@ export class ApplePayClient implements IApplePayClient {
           errorCode,
           errorMessage
         },
-        type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK
+        type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK
       },
       true
     );
@@ -168,7 +166,7 @@ export class ApplePayClient implements IApplePayClient {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
     this.messageBus.publish(
       {
-        type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK
+        type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK
       },
       true
     );
@@ -179,13 +177,13 @@ export class ApplePayClient implements IApplePayClient {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
     this.messageBus.publish(
       {
-        type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK
+        type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK
       },
       true
     );
     this.messageBus.publish(
       {
-        type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE,
+        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {}
       },
       true
