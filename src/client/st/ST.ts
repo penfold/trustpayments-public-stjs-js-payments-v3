@@ -6,7 +6,7 @@ import { CardFrames } from '../card-frames/CardFrames.class';
 import { CommonFrames } from '../common-frames/CommonFrames.class';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
 import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
-import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
+import { ApplePay } from '../integrations/apple-pay/ApplePay';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';

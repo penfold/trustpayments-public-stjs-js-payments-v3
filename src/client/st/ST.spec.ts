@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
+import { ApplePayMock } from '../integrations/apple-pay/ApplePayMock';
 import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
-import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
+import { ApplePay } from '../integrations/apple-pay/ApplePay';
 import { environment } from '../../environments/environment';
 import ST from './ST';
 import { Container } from 'typedi';

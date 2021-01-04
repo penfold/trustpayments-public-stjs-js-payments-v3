@@ -8,8 +8,8 @@ import { CybertonicaMock } from './mocks/CybertonicaMock';
 import { environment } from '../environments/environment';
 import { CardinalProvider } from '../client/integrations/cardinal-commerce/CardinalProvider';
 import { MockCardinalProvider } from './mocks/MockCardinalProvider';
-import { ApplePay } from '../application/core/integrations/apple-pay/ApplePay';
-import { ApplePayMock } from '../application/core/integrations/apple-pay/ApplePayMock';
+import { ApplePay } from '../client/integrations/apple-pay/ApplePay';
+import { ApplePayMock } from '../client/integrations/apple-pay/ApplePayMock';
 
 if (environment.testEnvironment) {
   Container.set({ id: Cybertonica, type: CybertonicaMock });
