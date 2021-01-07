@@ -6,6 +6,7 @@ ARG BUILD_TYPE
 
 # Copy source code and build artifacts
 COPY . .
+RUN npm config set js-payments:host merchant.securetrading.net
 RUN npm install --prefix example/html
 RUN npm run build:${BUILD_TYPE} --prefix example/html ${LIBRARY_ARG}
 
