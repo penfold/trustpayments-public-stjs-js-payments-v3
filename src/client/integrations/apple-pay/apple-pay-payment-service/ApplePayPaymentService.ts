@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { from, Observable, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { IApplePayPayment } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPayment';
 import { IApplePayWalletVerifyResponse } from '../../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
@@ -34,17 +34,17 @@ export class ApplePayPaymentService {
     }
 
     return this.payment.walletVerify(request).pipe(
-      switchMap((response: IApplePayWalletVerifyResponse) => {
+      map((response: IApplePayWalletVerifyResponse) => {
         if (!response.response.walletsession) {
-          return of({
+          return {
             status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
             data: {}
-          });
+          };
         }
-        return of({
+        return {
           status: ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
           data: response.response
-        });
+        };
       }),
       catchError(() => {
         return of({
@@ -78,8 +78,8 @@ export class ApplePayPaymentService {
         }
       )
     ).pipe(
-      switchMap((data: IApplePayProcessPaymentData) => {
-        return of(data.response);
+      map((data: IApplePayProcessPaymentData) => {
+        return data.response;
       })
     );
   }

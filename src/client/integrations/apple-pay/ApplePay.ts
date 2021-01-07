@@ -4,9 +4,9 @@ import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IApplePayClientStatus } from './IApplePayClientStatus';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
-import { IApplePayPaymentAuthorizationResult } from './apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
+import { IApplePayPaymentAuthorizationResult } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 import { IApplePayPaymentAuthorizedEvent } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
-import { IApplePaySession } from '../../../application/core/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
+import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
 import { IApplePayValidateMerchantEvent } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
@@ -20,15 +20,13 @@ import { ApplePayButtonService } from '../../../application/core/integrations/ap
 import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
 import { ApplePayErrorService } from '../../../application/core/integrations/apple-pay/apple-pay-error-service/ApplePayErrorService';
 import { ApplePayGestureService } from '../../../application/core/integrations/apple-pay/apple-pay-gesture-service/ApplePayGestureService';
-import { ApplePaySessionFactory } from '../../../application/core/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
-import { ApplePaySessionService } from '../../../application/core/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
+import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
+import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { RequestType } from '../../../shared/types/RequestType';
 import { IApplePayClientStatusDetails } from './IApplePayClientStatusDetails';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
-
-const ApplePaySession = (window as any).ApplePaySession;
 
 @Service()
 export class ApplePay {
@@ -43,7 +41,6 @@ export class ApplePay {
     private applePayGestureService: ApplePayGestureService,
     private applePaySessionFactory: ApplePaySessionFactory,
     private applePaySessionService: ApplePaySessionService,
-    private communicator: InterFrameCommunicator,
     private interFrameCommunicator: InterFrameCommunicator,
     private messageBus: IMessageBus
   ) {}
@@ -53,11 +50,11 @@ export class ApplePay {
       .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_CONFIG))
       .pipe(
         switchMap((event: IMessageBusEvent<IConfig>) => {
-          if (!Boolean(ApplePaySession)) {
+          if (!this.applePaySessionService.hasApplePaySessionObject()) {
             return throwError('Works only on Safari');
           }
 
-          if (!ApplePaySession.canMakePayments()) {
+          if (!this.applePaySessionService.canMakePayments()) {
             return throwError('Your device does not support making payments with Apple Pay');
           }
 
@@ -142,7 +139,7 @@ export class ApplePay {
       .subscribe((event: IMessageBusEvent) => {
         if (Number(event.data.errorcode) !== ApplePayClientErrorCode.SUCCESS) {
           this.applePaySession.completePayment({
-            status: ApplePaySession.STATUS_FAILURE,
+            status: ApplePaySessionService.STATUS_FAILURE,
             errors: this.applePayErrorService.create(ApplePaySessionErrorCode.UNKNOWN, this.config.locale)
           });
         }
@@ -271,7 +268,7 @@ export class ApplePay {
 
     switch (Number(errorCode)) {
       case ApplePayClientErrorCode.SUCCESS:
-        completion.status = ApplePaySession.STATUS_SUCCESS;
+        completion.status = ApplePaySessionService.STATUS_SUCCESS;
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
@@ -292,7 +289,7 @@ export class ApplePay {
 
       default:
         completion.errors = this.applePayErrorService.create(ApplePaySessionErrorCode.UNKNOWN, this.config.locale);
-        completion.status = ApplePaySession.STATUS_FAILURE;
+        completion.status = ApplePaySessionService.STATUS_FAILURE;
 
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,

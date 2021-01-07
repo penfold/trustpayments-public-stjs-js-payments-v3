@@ -1,17 +1,19 @@
 import { from, Observable } from 'rxjs';
 import { Service } from 'typedi';
-import { IApplePayPaymentMethodSelectedEvent } from '../apple-pay-payment-data/IApplePayPaymentMethodSelectedEvent';
-import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
+import { IApplePayPaymentMethodSelectedEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentMethodSelectedEvent';
+import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePaySession } from './IApplePaySession';
 import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingMethodSelectedEvent';
 // tslint:disable-next-line:max-line-length
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
-import { IApplePayPaymentAuthorizationResult } from '../apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
+import { IApplePayPaymentAuthorizationResult } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 
 const ApplePaySession: IApplePaySession = (window as any).ApplePaySession;
 
 @Service()
 export class ApplePaySessionService {
+  static readonly STATUS_FAILURE = ApplePaySession.STATUS_FAILURE;
+  static readonly STATUS_SUCCESS = ApplePaySession.STATUS_SUCCESS;
   private applePaySession: IApplePaySession;
   private paymentRequest: IApplePayPaymentRequest;
 
@@ -30,6 +32,14 @@ export class ApplePaySessionService {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  hasApplePaySessionObject(): boolean {
+    return Boolean(ApplePaySession);
+  }
+
+  canMakePayments(): boolean {
+    return ApplePaySession.canMakePayments();
   }
 
   canMakePaymentsWithActiveCard(merchantId: string): Observable<boolean> {

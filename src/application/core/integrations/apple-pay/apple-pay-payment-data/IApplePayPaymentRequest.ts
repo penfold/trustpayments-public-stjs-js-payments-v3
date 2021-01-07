@@ -1,8 +1,8 @@
-import { IApplePayShippingLineItem } from '../apple-pay-shipping-data/IApplePayShippingLineItem';
+import { IApplePayShippingLineItem } from '../../../../../client/integrations/apple-pay/apple-pay-shipping-data/IApplePayShippingLineItem';
 import { IApplePaySupportedNetworks } from '../apple-pay-networks-service/IApplePaySupportedNetworks';
-import { IApplePayShippingBillingContact } from '../apple-pay-shipping-data/IApplePayShippingBillingContact';
-import { IApplePayShippingContact } from '../apple-pay-shipping-data/IApplePayShippingContact';
-import { IApplePayShippingMethod } from '../apple-pay-shipping-data/IApplePayShippingMethod';
+import { IApplePayShippingBillingContact } from '../../../../../client/integrations/apple-pay/apple-pay-shipping-data/IApplePayShippingBillingContact';
+import { IApplePayShippingContact } from '../../../../../client/integrations/apple-pay/apple-pay-shipping-data/IApplePayShippingContact';
+import { IApplePayShippingMethod } from '../../../../../client/integrations/apple-pay/apple-pay-shipping-data/IApplePayShippingMethod';
 
 export interface IApplePayPaymentRequest {
   countryCode: string;
