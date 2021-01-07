@@ -1,4 +1,3 @@
-import JwtDecode from 'jwt-decode';
 import { Service } from 'typedi';
 import { from, of } from 'rxjs';
 import { filter, first, map, switchMap, take } from 'rxjs/operators';
@@ -11,7 +10,6 @@ import { IApplePayPaymentAuthorizedEvent } from './apple-pay-payment-data/IApple
 import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
 import { IApplePayValidateMerchantEvent } from './apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
 import { IConfig } from '../../../../shared/model/config/IConfig';
-import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { ApplePayClientStatus } from '../../../../client/integrations/apple-pay/ApplePayClientStatus';
@@ -27,6 +25,7 @@ import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaym
 import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 
 const ApplePaySession = (window as any).ApplePaySession;
 
@@ -44,7 +43,8 @@ export class ApplePay {
     private applePayErrorService: ApplePayErrorService,
     private applePaySessionFactory: ApplePaySessionFactory,
     private applePaySessionService: ApplePaySessionService,
-    private applePayPaymentService: ApplePayPaymentService
+    private applePayPaymentService: ApplePayPaymentService,
+    private jwtDecoder: JwtDecoder
   ) {}
 
   init(): void {
@@ -161,7 +161,7 @@ export class ApplePay {
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent): void {
     this.applePayPaymentService
       .processPayment(
-        JwtDecode<IDecodedJwt>(this.config).payload.requesttypedescriptions,
+        this.jwtDecoder.decode(this.config.jwtFromConfig).payload.requesttypedescriptions,
         this.config.validateMerchantRequest,
         this.config.formId,
         event
