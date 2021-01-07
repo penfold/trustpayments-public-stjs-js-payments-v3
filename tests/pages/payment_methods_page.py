@@ -6,6 +6,7 @@ from assertpy import assert_that
 from configuration import CONFIGURATION
 from locators.payment_methods_locators import PaymentMethodsLocators
 from pages.base_page import BasePage
+from utils.driver_factory import LOGGER
 from utils.enums.auth_data import AuthData
 from utils.enums.auth_type import AuthType
 from utils.enums.field_type import FieldType
@@ -108,7 +109,11 @@ class PaymentMethodsPage(BasePage):
             self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v1_authentication_code_field)
             self._action.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
                                    AuthData.PASSWORD.value)
-            self._action.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
+            if 'Firefox' in CONFIGURATION.BROWSER:
+                self._action.click_by_javascript(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
+                LOGGER.info('submit with javascript on firefox done')
+            else:
+                self._action.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
             self._action.switch_to_parent_iframe()
         else:
             self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
