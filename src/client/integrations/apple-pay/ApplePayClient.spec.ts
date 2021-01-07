@@ -14,7 +14,7 @@ import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { IApplePayClientStatus } from './IApplePayClientStatus';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 
-describe('ApplePayClient', () => {
+describe.skip('ApplePayClient', () => {
   let applePayClient: ApplePayClient;
   let configProviderMock: ConfigProvider;
   let interFrameCommunicatorMock: InterFrameCommunicator;
