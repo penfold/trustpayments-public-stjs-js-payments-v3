@@ -19,7 +19,6 @@ import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { EMPTY, of } from 'rxjs';
-import { Store } from '../../core/store/Store';
 import { Frame } from '../../core/shared/frame/Frame';
 import { ApplePayClient } from '../../../client/integrations/apple-pay/ApplePayClient';
 import { ApplePayClientStatus } from '../../../client/integrations/apple-pay/ApplePayClientStatus';

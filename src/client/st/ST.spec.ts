@@ -1,11 +1,11 @@
 import 'reflect-metadata';
-import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
-import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
-import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
-import { environment } from '../../environments/environment';
-import ST from './ST';
 import { Container } from 'typedi';
+import { environment } from '../../environments/environment';
+import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
+import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import ST from './ST';
+import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 
 window.alert = jest.fn();
@@ -43,7 +43,7 @@ describe('ST', () => {
     });
 
     it('should assign new jwt value', () => {
-      expect(instance._config.jwt).toEqual('somenewjwtvalue');
+      expect(instance.config.jwt).toEqual('somenewjwtvalue');
     });
 
     it('should call updateJWTValue', () => {
@@ -60,7 +60,7 @@ describe('ST', () => {
   describe('cbrt', () => {
     const key: string = 'some random key';
     beforeEach(() => {
-      instance._cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(key);
+      instance.cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(key);
     });
 
     it('should return transaction id when standalone cybertonica function has been called', async () => {
