@@ -12,6 +12,7 @@ import { ApplePayNotificationService } from './apple-pay-notification-service/Ap
 import { ApplePayClient } from './ApplePayClient';
 import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { IApplePayClientStatus } from './IApplePayClientStatus';
+import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 
 describe('ApplePayClient', () => {
   let applePayClient: ApplePayClient;
@@ -21,6 +22,7 @@ describe('ApplePayClient', () => {
   let notificationServiceMock: NotificationService;
   let browserLocalStorageMock: BrowserLocalStorage;
   let applePayNotificationService: ApplePayNotificationService;
+  let applePayPaymentService: ApplePayPaymentService;
 
   const configMock: IConfig = {
     jwt: '',
@@ -51,14 +53,15 @@ describe('ApplePayClient', () => {
     notificationServiceMock = mock(NotificationService);
     browserLocalStorageMock = mock(BrowserLocalStorage);
     applePayNotificationService = mock(ApplePayNotificationService);
+    applePayPaymentService = mock(ApplePayPaymentService);
 
     applePayClient = new ApplePayClient(
+      mockInstance(applePayNotificationService),
+      mockInstance(applePayPaymentService),
       mockInstance(configProviderMock),
       mockInstance(interFrameCommunicatorMock),
-      mockInstance(messageBusMock),
-      mockInstance(notificationServiceMock),
       mockInstance(browserLocalStorageMock),
-      mockInstance(applePayNotificationService)
+      mockInstance(messageBusMock)
     );
 
     when(configProviderMock.getConfig$()).thenReturn(of(configMock));
@@ -72,7 +75,7 @@ describe('ApplePayClient', () => {
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
             status: ApplePayClientStatus.SUCCESS,
-            data: {
+            details: {
               errorCode: ApplePayClientErrorCode.SUCCESS,
               errorMessage: 'SUCCESS'
             }
@@ -95,7 +98,7 @@ describe('ApplePayClient', () => {
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
             status: ApplePayClientStatus.ERROR,
-            data: {
+            details: {
               errorCode: ApplePayClientErrorCode.ERROR,
               errorMessage: 'ERROR'
             }
@@ -126,7 +129,7 @@ describe('ApplePayClient', () => {
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
             status: ApplePayClientStatus.CANCEL,
-            data: {
+            details: {
               errorCode: ApplePayClientErrorCode.CANCEL,
               errorMessage: 'CANCEL'
             }
@@ -165,7 +168,7 @@ describe('ApplePayClient', () => {
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
             status: ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS,
-            data: {}
+            details: {}
           } as IApplePayClientStatus
         })
       );
@@ -183,7 +186,7 @@ describe('ApplePayClient', () => {
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
             status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
-            data: {}
+            details: {}
           } as IApplePayClientStatus
         })
       );
@@ -201,7 +204,7 @@ describe('ApplePayClient', () => {
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
             status: ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD,
-            data: {}
+            details: {}
           } as IApplePayClientStatus
         })
       );
@@ -219,7 +222,7 @@ describe('ApplePayClient', () => {
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
             status: ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET,
-            data: {
+            details: {
               errorCode: ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET,
               errorMessage: 'NO_ACTIVE_CARDS_IN_WALLET'
             }
@@ -240,7 +243,7 @@ describe('ApplePayClient', () => {
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
             status: 'No one knows' as ApplePayClientStatus,
-            data: undefined
+            details: undefined
           } as IApplePayClientStatus
         })
       );

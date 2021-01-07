@@ -1,11 +1,8 @@
 import 'reflect-metadata';
-import { ApplePayMock } from '../integrations/apple-pay/ApplePayMock';
-import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
-import { ApplePay } from '../integrations/apple-pay/ApplePay';
-import { environment } from '../../environments/environment';
-import ST from './ST';
 import { Container } from 'typedi';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import ST from './ST';
+import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 
 window.alert = jest.fn();
@@ -13,7 +10,6 @@ jest.mock('./../../application/core/shared/dom-methods/DomMethods');
 jest.mock('./../../client/common-frames/CommonFrames.class');
 jest.mock('./../../client/card-frames/CardFrames.class');
 jest.mock('./../../application/core/integrations/visa-checkout/VisaCheckout');
-jest.mock('./../../application/core/integrations/apple-pay/ApplePay');
 jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytics');
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
@@ -43,7 +39,7 @@ describe('ST', () => {
     });
 
     it('should assign new jwt value', () => {
-      expect(instance._config.jwt).toEqual('somenewjwtvalue');
+      expect(instance.config.jwt).toEqual('somenewjwtvalue');
     });
 
     it('should call updateJWTValue', () => {
@@ -60,7 +56,7 @@ describe('ST', () => {
   describe('cbrt', () => {
     const key: string = 'some random key';
     beforeEach(() => {
-      instance._cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(key);
+      instance.cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(key);
     });
 
     it('should return transaction id when standalone cybertonica function has been called', async () => {

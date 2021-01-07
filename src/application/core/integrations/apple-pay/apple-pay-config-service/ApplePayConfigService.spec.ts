@@ -14,7 +14,6 @@ describe('ApplePayConfigService', () => {
     currencyCode: 'EUR',
     merchantCapabilities: ['supports3DS'],
     supportedNetworks: ['visa', 'discover'],
-    requestTypes: ['AUTH'],
     total: {
       amount: '10.00',
       label: 'test'
@@ -51,6 +50,7 @@ describe('ApplePayConfigService', () => {
         ...paymentRequest,
         currencyCode
       };
+      // @ts-ignore
       expect(applePayConfigService.updateCurrencyCode(paymentRequest, currencyCode)).toEqual(paymentRequestUpdated);
     });
 
@@ -62,15 +62,16 @@ describe('ApplePayConfigService', () => {
           amount
         }
       };
+      // @ts-ignore
       expect(applePayConfigService.updateAmount(paymentRequest, amount)).toEqual(paymentRequestUpdated);
     });
 
     it(`should update paymentRequest object with indicated requestTypes`, () => {
       paymentRequestUpdated = {
-        ...paymentRequest,
-        requestTypes
+        ...paymentRequest
       };
-      expect(applePayConfigService.updateRequestTypes(paymentRequest, requestTypes)).toEqual(paymentRequestUpdated);
+      // @ts-ignore
+      expect(applePayConfigService.updateRequestTypes(paymentRequest)).toEqual(paymentRequestUpdated);
     });
   });
 
@@ -90,6 +91,7 @@ describe('ApplePayConfigService', () => {
         ...validateMerchantRequest,
         walletmerchantid: walletMerchantId
       };
+      // @ts-ignore
       expect(applePayConfigService.updateWalletMerchantId(validateMerchantRequest, walletMerchantId)).toEqual(
         validateMerchantRequestUpdated
       );
@@ -112,6 +114,7 @@ describe('ApplePayConfigService', () => {
     });
 
     it('should return currencyiso3a, locale and mainamount parameter ', () => {
+      // @ts-ignore
       expect(applePayConfigService.getStJwtData(jwt)).toEqual({
         currencyiso3a: payload.payload.currencyiso3a,
         locale: payload.payload.locale,
@@ -133,7 +136,6 @@ describe('ApplePayConfigService', () => {
           buttonStyle: 'some style',
           buttonText: 'test text',
           paymentRequest,
-          requestTypes,
           placement: 'test place'
         },
         panIcon: false,
@@ -142,6 +144,7 @@ describe('ApplePayConfigService', () => {
     });
 
     it('should return all necessary data for init apple pay', () => {
+      // @ts-ignore
       expect(applePayConfigService.getConfigData(config)).toEqual({
         jwt: config.jwt,
         formId: config.formId,

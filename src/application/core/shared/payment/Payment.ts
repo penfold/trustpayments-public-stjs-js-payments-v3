@@ -1,39 +1,35 @@
-import { IStRequest } from '../../models/IStRequest';
-import { StCodec } from '../../services/st-codec/StCodec.class';
-import { StTransport } from '../../services/st-transport/StTransport.class';
+import { Container, Service } from 'typedi';
+import { Observable, from } from 'rxjs';
+import { CustomerOutput } from '../../models/constants/CustomerOutput';
+import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
+import { RequestType } from '../../../../shared/types/RequestType';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
+import { IResponseData } from '../../models/IResponseData';
+import { IStRequest } from '../../models/IStRequest';
 import { IWallet } from '../../models/IWallet';
 import { IWalletVerify } from '../../models/IWalletVerify';
-import { Validation } from '../validation/Validation';
-import { Container, Service } from 'typedi';
-import { NotificationService } from '../../../../client/notification/NotificationService';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
-import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
-import { IResponseData } from '../../models/IResponseData';
-import { CustomerOutput } from '../../models/constants/CustomerOutput';
-import { RequestType } from '../../../../shared/types/RequestType';
-import { Observable, from } from 'rxjs';
+import { NotificationService } from '../../../../client/notification/NotificationService';
+import { StCodec } from '../../services/st-codec/StCodec.class';
+import { StTransport } from '../../services/st-transport/StTransport.class';
+import { Validation } from '../validation/Validation';
 
 @Service()
 export class Payment {
-  private _notification: NotificationService;
-  private _stTransport: StTransport;
-  private _validation: Validation;
-  private _cybertonica: Cybertonica;
-  private readonly _walletVerifyRequest: IStRequest;
+  private cybertonica: Cybertonica;
+  private notificationService: NotificationService;
+  private stTransport: StTransport;
+  private validation: Validation;
 
   constructor() {
-    this._notification = Container.get(NotificationService);
-    this._cybertonica = Container.get(Cybertonica);
-    this._stTransport = Container.get(StTransport);
-    this._validation = new Validation();
-    this._walletVerifyRequest = {
-      requesttypedescriptions: ['WALLETVERIFY']
-    };
+    this.cybertonica = Container.get(Cybertonica);
+    this.notificationService = Container.get(NotificationService);
+    this.stTransport = Container.get(StTransport);
+    this.validation = new Validation();
   }
 
-  public async processPayment(
+  async processPayment(
     requestTypes: RequestType[],
     payment: ICard | IWallet,
     merchantData: IMerchantData,
@@ -55,9 +51,8 @@ export class Payment {
       return this.publishErrorResponse(responseData);
     }
 
-    if (requestTypes.length > 0) {
-      const requestData: IStRequest = { ...merchantData, ...payment } as IStRequest;
-      return this.processRequestTypes(requestData, responseData);
+    if (requestTypes.length) {
+      return this.processRequestTypes({ ...merchantData, ...payment }, responseData);
     }
 
     if (responseData && responseData.requesttypedescription === 'THREEDQUERY' && responseData.threedresponse) {
@@ -67,9 +62,10 @@ export class Payment {
     return this.publishResponse(responseData);
   }
 
-  public walletVerify(walletVerify: IWalletVerify): Observable<object> {
-    Object.assign(this._walletVerifyRequest, walletVerify);
-    return from(this._stTransport.sendRequest(this._walletVerifyRequest));
+  walletVerify(walletVerify: IWalletVerify): Observable<object> {
+    return from(
+      this.stTransport.sendRequest(Object.assign({ requesttypedescriptions: ['WALLETVERIFY'] }, walletVerify))
+    );
   }
 
   private publishResponse(responseData?: IResponseData): Promise<object> {
@@ -92,18 +88,20 @@ export class Payment {
       processPaymentRequestBody.threedresponse = responseData.threedresponse;
     }
 
-    const cybertonicaTid = await this._cybertonica.getTransactionId();
+    const cybertonicaTid = await this.cybertonica.getTransactionId();
 
     if (cybertonicaTid) {
       processPaymentRequestBody.fraudcontroltransactionid = cybertonicaTid;
     }
-    return this._stTransport.sendRequest(processPaymentRequestBody);
+
+    return this.stTransport.sendRequest(processPaymentRequestBody);
   }
 
   private publishThreedResponse(responseData: IResponseData): Promise<object> {
     // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
     StCodec.publishResponse(responseData, responseData.jwt, responseData.threedresponse);
-    this._notification.success(PAYMENT_SUCCESS);
+    this.notificationService.success(PAYMENT_SUCCESS);
+
     return this.publishResponse(responseData);
   }
 }
