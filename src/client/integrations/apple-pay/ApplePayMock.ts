@@ -1,8 +1,6 @@
 import { ApplePay } from './ApplePay';
 import { ApplePaySessionMock } from './apple-pay-session-service/ApplePaySessionMock';
 
-const applePay: string = './img/apple-pay.png';
-
 export class ApplePayMock extends ApplePay {
   public paymentDetails: string;
 
