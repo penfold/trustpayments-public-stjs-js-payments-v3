@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { mapTo, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import JwtDecode from 'jwt-decode';
 import { IConfig } from '../../../shared/model/config/IConfig';
@@ -61,7 +61,7 @@ export class ApplePayClient implements IApplePayClient {
             return this.onValidateMerchantError$(details);
 
           case ApplePayClientStatus.ON_PAYMENT_AUTHORIZED:
-            return this.onPaymentAuthorized$(status, details);
+            return this.onPaymentAuthorized$(details);
 
           case ApplePayClientStatus.CANCEL:
             return this.onCancel$(details);
@@ -117,29 +117,30 @@ export class ApplePayClient implements IApplePayClient {
 
   private onPaymentAuthorized$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
     const { config, payment, formData } = details;
-    this.applePayPaymentService
+    return this.applePayPaymentService
       .processPayment(
         JwtDecode<IDecodedJwt>(config.jwtFromConfig).payload.requesttypedescriptions,
         config.validateMerchantRequest,
         formData,
         payment
       )
-      .subscribe((response: IApplePayProcessPaymentResponse) => {
-        from(
-          this.interFrameCommunicator.query<IApplePayClientStatus>(
-            {
-              type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
-              data: {
-                status: ApplePayClientStatus.ON_PAYMENT_AUTHORIZED,
-                details: response
-              }
-            },
-            MERCHANT_PARENT_FRAME
-          )
-        ).subscribe();
-      });
-
-    return of(ApplePayClientStatus.SUCCESS);
+      .pipe(
+        switchMap((response: IApplePayProcessPaymentResponse) => {
+          return from(
+            this.interFrameCommunicator.query<IApplePayClientStatus>(
+              {
+                type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
+                data: {
+                  status: ApplePayClientStatus.ON_PAYMENT_AUTHORIZED,
+                  details: response
+                }
+              },
+              MERCHANT_PARENT_FRAME
+            )
+          );
+        }),
+        mapTo(ApplePayClientStatus.SUCCESS)
+      );
   }
 
   private onSuccess$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
@@ -164,23 +165,25 @@ export class ApplePayClient implements IApplePayClient {
     details: IApplePayClientStatusDetails
   ): Observable<ApplePayClientStatus.ON_VALIDATE_MERCHANT> {
     const { validateMerchantURL, paymentCancelled, config } = details;
-    this.applePayPaymentService
+    return this.applePayPaymentService
       .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
-      .subscribe((response: { status: ApplePayClientErrorCode; data: IApplePayWalletVerifyResponseBody }) => {
-        from(
-          this.interFrameCommunicator.query<IApplePayClientStatus>(
-            {
-              type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT,
-              data: {
-                status: ApplePayClientStatus.ON_VALIDATE_MERCHANT,
-                details: response.data
-              }
-            },
-            MERCHANT_PARENT_FRAME
-          )
-        ).subscribe();
-      });
-    return EMPTY;
+      .pipe(
+        switchMap((response: { status: ApplePayClientErrorCode; data: IApplePayWalletVerifyResponseBody }) => {
+          return from(
+            this.interFrameCommunicator.query<IApplePayClientStatus>(
+              {
+                type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT,
+                data: {
+                  status: ApplePayClientStatus.ON_VALIDATE_MERCHANT,
+                  details: response.data
+                }
+              },
+              MERCHANT_PARENT_FRAME
+            )
+          );
+        }),
+        mapTo(ApplePayClientStatus.ON_VALIDATE_MERCHANT)
+      );
   }
 
   private onValidateMerchantError$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.ERROR> {
