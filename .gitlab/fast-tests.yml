@@ -46,7 +46,7 @@ e2e-tests:
     - .fast-tests
     - .services-dev
     - .parallel-e2e-tests
-  parallel: 18
+  parallel: 28
 
 zap-baseline-scan-library-securetrading-net:
   services:
@@ -67,3 +67,4 @@ zap-baseline-scan-merchant-securetrading-net:
   variables:
     URL_TO_SCAN: 'https://merchant.securetrading.net'
     ZAP_CONFIG_PATH: "baseline-scan.conf"
+

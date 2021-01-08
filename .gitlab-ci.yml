@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.56
+.cicd-os-ref: &cicd-os-ref 0.0.58
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
@@ -11,6 +11,7 @@ include:
   - local: '/.gitlab/build.yml'
   - local: '/.gitlab/post-build.yml'
   - local: '/.gitlab/fast-tests.yml'
+  - local: '/.gitlab/publish-to-cdn.yml'
   - local: '/.gitlab/extended-tests.yml'
 
 variables:
@@ -74,6 +75,7 @@ stages:
   - pre-build
   - build
   - post-build
+  - publish-to-cdn
   - fast-tests
   - extended-tests
   - validate-merge-request-description
