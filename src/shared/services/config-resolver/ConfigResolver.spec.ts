@@ -128,6 +128,7 @@ function ConfigResolverFixture() {
   const configResolved: IConfig = {
     analytics: true,
     animatedCard: true,
+    stopKeypressEvent: false,
     applePay: {
       buttonStyle: 'white-outline',
       buttonText: 'donate',
@@ -248,6 +249,7 @@ function ConfigResolverFixture() {
     animatedCard: false,
     applePay: {},
     buttonId: '',
+    stopKeypressEvent: false,
     cancelCallback: null,
     componentIds: {
       animatedCard: 'st-animated-card',
