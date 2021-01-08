@@ -39,7 +39,7 @@ import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
 import { IThreeDQueryResponse } from '../../core/models/IThreeDQueryResponse';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
-import { ApplePayClient } from '../../../client/integrations/apple-pay/ApplePayClient';
+import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 
 @Service()

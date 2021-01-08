@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
-import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
+import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { ApplePayClientErrorCode } from '../ApplePayClientErrorCode';
-import { NotificationService } from '../../../notification/NotificationService';
+import { NotificationService } from '../../../../../client/notification/NotificationService';
 
 @Service()
 export class ApplePayNotificationService {

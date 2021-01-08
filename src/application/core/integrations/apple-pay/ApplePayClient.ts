@@ -1,26 +1,26 @@
 import { Service } from 'typedi';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { mapTo, switchMap, tap } from 'rxjs/operators';
-import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import JwtDecode from 'jwt-decode';
-import { IConfig } from '../../../shared/model/config/IConfig';
+import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IApplePayClientStatus } from './IApplePayClientStatus';
-import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IApplePayClient } from './IApplePayClient';
 import { IApplePayClientStatusDetails } from './IApplePayClientStatusDetails';
-import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { MERCHANT_PARENT_FRAME } from '../../models/constants/Selectors';
 import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { ApplePayNotificationService } from './apple-pay-notification-service/ApplePayNotificationService';
-import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
-import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
-import { IDecodedJwt } from '../../../application/core/models/IDecodedJwt';
+import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { IApplePayProcessPaymentResponse } from './apple-pay-payment-service/IApplePayProcessPaymentResponse';
 import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
-import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
+import { IApplePayWalletVerifyResponseBody } from './apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 
 @Service()
 export class ApplePayClient implements IApplePayClient {

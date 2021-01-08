@@ -1,4 +1,4 @@
-import { IApplePayClientStatus } from '../../../../client/integrations/apple-pay/IApplePayClientStatus';
+import { IApplePayClientStatus } from './IApplePayClientStatus';
 
 export interface IApplePayStatus {
   type: 'ST_APPLE_PAY_STATUS';

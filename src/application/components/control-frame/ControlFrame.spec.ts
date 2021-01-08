@@ -20,8 +20,8 @@ import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { EMPTY, of } from 'rxjs';
 import { Frame } from '../../core/shared/frame/Frame';
-import { ApplePayClient } from '../../../client/integrations/apple-pay/ApplePayClient';
-import { ApplePayClientStatus } from '../../../client/integrations/apple-pay/ApplePayClientStatus';
+import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
+import { ApplePayClientStatus } from '../../core/integrations/apple-pay/ApplePayClientStatus';
 
 jest.mock('./../../core/shared/payment/Payment');
 

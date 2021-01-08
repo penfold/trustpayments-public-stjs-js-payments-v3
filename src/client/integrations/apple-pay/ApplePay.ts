@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 import { EMPTY, of, throwError } from 'rxjs';
 import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
-import { IApplePayClientStatus } from './IApplePayClientStatus';
+import { IApplePayClientStatus } from '../../../application/core/integrations/apple-pay/IApplePayClientStatus';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
 import { IApplePayPaymentAuthorizationResult } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 import { IApplePayPaymentAuthorizedEvent } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
@@ -11,8 +11,8 @@ import { IApplePayValidateMerchantEvent } from '../../../application/core/integr
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { ApplePayClientStatus } from './ApplePayClientStatus';
-import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
+import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
+import { ApplePayClientErrorCode } from '../../../application/core/integrations/apple-pay/ApplePayClientErrorCode';
 import { ApplePaySessionErrorCode } from '../../../application/core/integrations/apple-pay/apple-pay-error-service/ApplePaySessionErrorCode';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
@@ -25,7 +25,7 @@ import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySess
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { RequestType } from '../../../shared/types/RequestType';
-import { IApplePayClientStatusDetails } from './IApplePayClientStatusDetails';
+import { IApplePayClientStatusDetails } from '../../../application/core/integrations/apple-pay/IApplePayClientStatusDetails';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 
 @Service()

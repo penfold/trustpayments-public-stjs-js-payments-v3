@@ -1,8 +1,8 @@
 import { instance as mockInstance, mock, verify } from 'ts-mockito';
 import { ApplePayClientErrorCode } from '../ApplePayClientErrorCode';
-import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
-import { SimpleMessageBus } from '../../../../application/core/shared/message-bus/SimpleMessageBus';
-import { NotificationService } from '../../../notification/NotificationService';
+import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../../shared/message-bus/SimpleMessageBus';
+import { NotificationService } from '../../../../../client/notification/NotificationService';
 import { ApplePayNotificationService } from './ApplePayNotificationService';
 
 describe('ApplePayClient', () => {
