@@ -112,8 +112,6 @@ export class ST {
   ) {
     this.googleAnalytics = new GoogleAnalytics();
     this.merchantFields = new MerchantFields();
-    this.messageBus.publish({ type: 'FOO' });
-    this.messageBus.publish({ type: 'FOOZ' });
   }
 
   on(eventName: 'success' | 'error' | 'submit' | 'cancel', callback: (event: unknown) => void): void {
@@ -243,11 +241,27 @@ export class ST {
       this.watchForFrameUnload();
       this.initControlFrameModal();
       this.cardinalClient.init();
+
+      if (this.config.stopKeypressEvent) {
+        this.stopKeypressEvent();
+      }
     }
   }
 
   getBrowserInfo(): IBrowserInfo {
     return this.browserDetector.getBrowserInfo();
+  }
+
+  private stopKeypressEvent() {
+    const form: HTMLFormElement = document.getElementById(this.config.formId) as HTMLFormElement;
+
+    if (!form) {
+      return;
+    }
+
+    form.addEventListener('keydown', event => {
+      event.preventDefault();
+    });
   }
 
   private initControlFrame$(): Observable<IConfig> {

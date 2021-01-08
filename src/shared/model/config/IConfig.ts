@@ -37,4 +37,5 @@ export interface IConfig {
   successCallback?: any;
   translations?: {};
   visaCheckout?: IVisaCheckoutConfig;
+  stopKeypressEvent?: boolean;
 }

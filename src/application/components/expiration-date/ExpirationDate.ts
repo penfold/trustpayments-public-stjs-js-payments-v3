@@ -7,6 +7,7 @@ import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import {
   EXPIRATION_DATE_INPUT,
   EXPIRATION_DATE_LABEL,
+  EXPIRATION_DATE_INPUT_SELECTOR,
   EXPIRATION_DATE_MESSAGE,
   EXPIRATION_DATE_WRAPPER
 } from '../../core/models/constants/Selectors';
@@ -29,16 +30,24 @@ export class ExpirationDate extends Input {
   private _currentKeyCode: number;
   private _inputSelectionEnd: number;
   private _inputSelectionStart: number;
+  private expirationDateWrapper: HTMLElement;
 
   constructor(
-    private _configProvider: ConfigProvider,
+    private configProvider: ConfigProvider,
     private _formatter: Formatter,
     private messageBus: IMessageBus,
     private frame: Frame
   ) {
-    super(EXPIRATION_DATE_INPUT, EXPIRATION_DATE_MESSAGE, EXPIRATION_DATE_LABEL, EXPIRATION_DATE_WRAPPER);
+    super(
+      EXPIRATION_DATE_INPUT,
+      EXPIRATION_DATE_MESSAGE,
+      EXPIRATION_DATE_LABEL,
+      EXPIRATION_DATE_WRAPPER,
+      configProvider
+    );
+    this.expirationDateWrapper = document.getElementById(EXPIRATION_DATE_INPUT_SELECTOR) as HTMLElement;
     this._init();
-    this._configProvider.getConfig$().subscribe((config: IConfig) => {
+    this.configProvider.getConfig$().subscribe((config: IConfig) => {
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
 
       if (styler.hasSpecificStyle('isLinedUp', config.styles.expirationDate)) {
@@ -136,7 +145,7 @@ export class ExpirationDate extends Input {
     super.setEventListener(MessageBus.EVENTS.BLUR_EXPIRATION_DATE);
     super.setEventListener(MessageBus.EVENTS.FOCUS_EXPIRATION_DATE);
     this.setAttributes({ pattern: ExpirationDate.INPUT_PATTERN });
-    this.placeholder = this._configProvider.getConfig().placeholders.expirydate || '';
+    this.placeholder = this.configProvider.getConfig().placeholders.expirydate || '';
     this._inputElement.setAttribute(ExpirationDate.PLACEHOLDER_ATTRIBUTE, this.placeholder);
     this.setDisableListener();
     this.validation.backendValidation(
@@ -144,6 +153,10 @@ export class ExpirationDate extends Input {
       this._messageElement,
       MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD
     );
+
+    this.expirationDateWrapper.addEventListener('submit', event => {
+      event.preventDefault();
+    });
   }
 
   private _sendState() {
