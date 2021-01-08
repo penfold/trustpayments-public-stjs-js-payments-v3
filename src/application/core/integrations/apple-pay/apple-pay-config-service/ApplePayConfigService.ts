@@ -8,7 +8,7 @@ import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { IStJwtPayload } from '../../../models/IStJwtPayload';
 import { Locale } from '../../../shared/translator/Locale';
 import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
-import { ApplePaySessionService } from '../apple-pay-session-service/ApplePaySessionService';
+import { ApplePaySessionService } from '../../../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 
 @Service()

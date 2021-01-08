@@ -1,5 +1,5 @@
 import { ApplePay } from './ApplePay';
-import { ApplePaySessionMock } from '../../../application/core/integrations/apple-pay/apple-pay-session-service/ApplePaySessionMock';
+import { ApplePaySessionMock } from './apple-pay-session-service/ApplePaySessionMock';
 
 const applePay: string = './img/apple-pay.png';
 

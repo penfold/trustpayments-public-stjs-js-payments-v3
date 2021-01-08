@@ -19,6 +19,8 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 import { IDecodedJwt } from '../../../application/core/models/IDecodedJwt';
 import { IApplePayProcessPaymentResponse } from './apple-pay-payment-service/IApplePayProcessPaymentResponse';
+import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
+import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 
 @Service()
 export class ApplePayClient implements IApplePayClient {
@@ -113,10 +115,7 @@ export class ApplePayClient implements IApplePayClient {
     return of(ApplePayClientStatus.CANCEL);
   }
 
-  private onPaymentAuthorized$(
-    status: ApplePayClientStatus,
-    details: IApplePayClientStatusDetails
-  ): Observable<ApplePayClientStatus.SUCCESS> {
+  private onPaymentAuthorized$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
     const { config, payment, formData } = details;
     this.applePayPaymentService
       .processPayment(
@@ -164,19 +163,17 @@ export class ApplePayClient implements IApplePayClient {
   private onValidateMerchant$(
     details: IApplePayClientStatusDetails
   ): Observable<ApplePayClientStatus.ON_VALIDATE_MERCHANT> {
-    const { errorCode, errorMessage, validateMerchantURL, paymentCancelled, config } = details;
+    const { validateMerchantURL, paymentCancelled, config } = details;
     this.applePayPaymentService
       .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
-      .subscribe((response: any) => {
-        console.error(response);
-        const { status, data } = response;
+      .subscribe((response: { status: ApplePayClientErrorCode; data: IApplePayWalletVerifyResponseBody }) => {
         from(
           this.interFrameCommunicator.query<IApplePayClientStatus>(
             {
               type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT,
               data: {
                 status: ApplePayClientStatus.ON_VALIDATE_MERCHANT,
-                details: data
+                details: response.data
               }
             },
             MERCHANT_PARENT_FRAME
