@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { mapTo, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
-import JwtDecode from 'jwt-decode';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IApplePayClientStatus } from './IApplePayClientStatus';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
@@ -17,7 +17,6 @@ import { BrowserLocalStorage } from '../../../../shared/services/storage/Browser
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
-import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { IApplePayProcessPaymentResponse } from './apple-pay-payment-service/IApplePayProcessPaymentResponse';
 import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
 import { IApplePayWalletVerifyResponseBody } from './apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
@@ -30,7 +29,8 @@ export class ApplePayClient implements IApplePayClient {
     private configProvider: ConfigProvider,
     private interFrameCommunicator: InterFrameCommunicator,
     private localStorage: BrowserLocalStorage,
-    private messageBus: IMessageBus
+    private messageBus: IMessageBus,
+    private jwtDecoder: JwtDecoder
   ) {}
 
   init$(): Observable<ApplePayClientStatus> {
@@ -119,7 +119,7 @@ export class ApplePayClient implements IApplePayClient {
     const { config, payment, formData } = details;
     return this.applePayPaymentService
       .processPayment(
-        JwtDecode<IDecodedJwt>(config.jwtFromConfig).payload.requesttypedescriptions,
+        this.jwtDecoder.decode(config.jwtFromConfig).payload.requesttypedescriptions,
         config.validateMerchantRequest,
         formData,
         payment

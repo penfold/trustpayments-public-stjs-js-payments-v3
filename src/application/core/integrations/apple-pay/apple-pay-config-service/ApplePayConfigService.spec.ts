@@ -5,7 +5,7 @@ import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { ApplePayConfigService } from './ApplePayConfigService';
 import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
-import { ApplePaySessionService } from '../apple-pay-session-service/ApplePaySessionService';
+import { ApplePaySessionService } from '../../../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 
 describe('ApplePayConfigService', () => {
@@ -42,7 +42,6 @@ describe('ApplePayConfigService', () => {
   describe('update paymentRequest object', () => {
     const currencyCode: string = 'PLN';
     const amount: string = '22.00';
-    const requestTypes: RequestType[] = ['ACCOUNTCHECK', 'AUTH'];
     let paymentRequestUpdated: IApplePayPaymentRequest = paymentRequest;
 
     it(`should update paymentRequest object with indicated currency code`, () => {

@@ -12,8 +12,8 @@ const ApplePaySession: IApplePaySession = (window as any).ApplePaySession;
 
 @Service()
 export class ApplePaySessionService {
-  static readonly STATUS_FAILURE = ApplePaySession.STATUS_FAILURE;
-  static readonly STATUS_SUCCESS = ApplePaySession.STATUS_SUCCESS;
+  readonly STATUS_FAILURE = ApplePaySession.STATUS_FAILURE;
+  readonly STATUS_SUCCESS = ApplePaySession.STATUS_SUCCESS;
   private applePaySession: IApplePaySession;
   private paymentRequest: IApplePayPaymentRequest;
 

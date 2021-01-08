@@ -10,12 +10,13 @@ jest.mock('./../../application/core/shared/dom-methods/DomMethods');
 jest.mock('./../../client/common-frames/CommonFrames.class');
 jest.mock('./../../client/card-frames/CardFrames.class');
 jest.mock('./../../application/core/integrations/visa-checkout/VisaCheckout');
+jest.mock('./../../client/integrations/apple-pay/ApplePay');
 jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytics');
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 
 describe('ST', () => {
-  const { config, cacheConfig, instance } = stFixture();
+  const { cacheConfig, instance } = stFixture();
 
   describe('constructor()', () => {
     let stObject: any;
