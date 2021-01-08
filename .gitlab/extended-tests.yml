@@ -196,7 +196,6 @@ OSXCatalina-Firefox-latest-smoke-tests:
     OS_VERSION: Catalina
     BROWSER: Firefox
     BROWSER_VERSION: 'latest'
-    BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: smoke_e2e_test
@@ -326,7 +325,6 @@ win10-Firefox-latest-smoke-tests:
     OS_VERSION: 10
     BROWSER: Firefox
     BROWSER_VERSION: 'latest'
-    BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_4
