@@ -117,6 +117,7 @@ export class ApplePayClient implements IApplePayClient {
 
   private onPaymentAuthorized$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
     const { config, payment, formData } = details;
+
     return this.applePayPaymentService
       .processPayment(
         JwtDecode<IDecodedJwt>(config.jwtFromConfig).payload.requesttypedescriptions,
@@ -125,18 +126,16 @@ export class ApplePayClient implements IApplePayClient {
         payment
       )
       .pipe(
-        switchMap((response: IApplePayProcessPaymentResponse) => {
-          return from(
-            this.interFrameCommunicator.query<IApplePayClientStatus>(
-              {
-                type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
-                data: {
-                  status: ApplePayClientStatus.ON_PAYMENT_AUTHORIZED,
-                  details: response
-                }
-              },
-              MERCHANT_PARENT_FRAME
-            )
+        tap((response: IApplePayProcessPaymentResponse) => {
+          this.messageBus.publish(
+            {
+              type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
+              data: {
+                status: ApplePayClientStatus.ON_PAYMENT_AUTHORIZED,
+                details: response
+              }
+            },
+            true
           );
         }),
         mapTo(ApplePayClientStatus.SUCCESS)
@@ -165,21 +164,20 @@ export class ApplePayClient implements IApplePayClient {
     details: IApplePayClientStatusDetails
   ): Observable<ApplePayClientStatus.ON_VALIDATE_MERCHANT> {
     const { validateMerchantURL, paymentCancelled, config } = details;
+
     return this.applePayPaymentService
       .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
       .pipe(
-        switchMap((response: { status: ApplePayClientErrorCode; data: IApplePayWalletVerifyResponseBody }) => {
-          return from(
-            this.interFrameCommunicator.query<IApplePayClientStatus>(
-              {
-                type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT,
-                data: {
-                  status: ApplePayClientStatus.ON_VALIDATE_MERCHANT,
-                  details: response.data
-                }
-              },
-              MERCHANT_PARENT_FRAME
-            )
+        tap((response: { status: ApplePayClientErrorCode; data: IApplePayWalletVerifyResponseBody }) => {
+          this.messageBus.publish(
+            {
+              type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT,
+              data: {
+                status: ApplePayClientStatus.ON_VALIDATE_MERCHANT,
+                details: response.data
+              }
+            },
+            true
           );
         }),
         mapTo(ApplePayClientStatus.ON_VALIDATE_MERCHANT)

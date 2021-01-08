@@ -1,5 +1,4 @@
-import { IApplePayPaymentRequest } from './IApplePayPaymentRequest';
-import { RequestType } from '../../../../shared/types/RequestType';
+import { IApplePayPaymentRequest } from './apple-pay-payment-data/IApplePayPaymentRequest';
 
 export interface IApplePayConfig {
   buttonStyle: string;
