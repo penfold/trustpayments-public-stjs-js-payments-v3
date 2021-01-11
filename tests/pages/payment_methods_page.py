@@ -115,8 +115,7 @@ class PaymentMethodsPage(BasePage):
             #else:
 
             self._action.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
-            if not CONFIGURATION.REMOTE:
-                self._action.switch_to_parent_iframe()
+            self._waits.switch_to_default_content()
         else:
             self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
             self._action.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
