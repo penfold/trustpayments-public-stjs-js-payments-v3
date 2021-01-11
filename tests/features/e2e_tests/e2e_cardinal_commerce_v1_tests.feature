@@ -17,6 +17,7 @@ Feature: Cardinal Commerce E2E tests
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
     And User fills V1 authentication modal
+    And user waits for payment to be processed
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
@@ -101,6 +102,7 @@ Feature: Cardinal Commerce E2E tests
     And User opens example page
     When User fills payment form with defined card AMERICAN_EXPRESS_TIMEOUT_CARD
     And User clicks Pay button
+    And user waits for payment to be processed
     Then User will see payment status information: "An error occurred"
     And User will see that notification frame has "red" color
     And "submit" callback is called only once
