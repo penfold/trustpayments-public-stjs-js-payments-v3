@@ -7,7 +7,6 @@ import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import {
   SECURITY_CODE_INPUT,
-  SECURITY_CODE_INPUT_SELECTOR,
   SECURITY_CODE_LABEL,
   SECURITY_CODE_MESSAGE,
   SECURITY_CODE_WRAPPER
@@ -43,7 +42,6 @@ export class SecurityCode extends Input {
   private static MATCH_EXACTLY_THREE_DIGITS: string = '^[0-9]{3}$';
 
   private _securityCodeLength: number;
-  private securityCodeWrapper: HTMLElement;
   private _validation: Validation;
 
   constructor(
@@ -55,7 +53,6 @@ export class SecurityCode extends Input {
   ) {
     super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider);
     this._validation = new Validation();
-    this.securityCodeWrapper = document.getElementById(SECURITY_CODE_INPUT_SELECTOR) as HTMLElement;
     this._securityCodeLength = SHORT_CVC;
     this.placeholder = this._getPlaceholder(this._securityCodeLength);
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
@@ -207,10 +204,6 @@ export class SecurityCode extends Input {
       this._messageElement,
       MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD
     );
-
-    this.securityCodeWrapper.addEventListener('submit', event => {
-      event.preventDefault();
-    });
   }
 
   private _broadcastEvent(data: boolean, eventType: string): void {

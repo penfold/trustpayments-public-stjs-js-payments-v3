@@ -19,7 +19,6 @@ import {
   CARD_NUMBER_INPUT,
   CARD_NUMBER_LABEL,
   CARD_NUMBER_MESSAGE,
-  CARD_NUMBER_INPUT_SELECTOR,
   CARD_NUMBER_WRAPPER
 } from '../../core/models/constants/Selectors';
 
@@ -42,7 +41,6 @@ export class CardNumber extends Input {
   private _cardNumberValue: string;
   private _isCardNumberValid: boolean;
   private _fieldInstance: HTMLInputElement = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
-  private cardNumberWrapper: HTMLElement;
   private readonly _cardNumberField: HTMLInputElement;
 
   constructor(
@@ -54,7 +52,6 @@ export class CardNumber extends Input {
   ) {
     super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER, configProvider);
     this._cardNumberField = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
-    this.cardNumberWrapper = document.getElementById(CARD_NUMBER_INPUT_SELECTOR) as HTMLInputElement;
     this.validation = new Validation();
     this._isCardNumberValid = true;
     this._cardNumberLength = CardNumber.STANDARD_CARD_LENGTH;
@@ -102,10 +99,6 @@ export class CardNumber extends Input {
           }
         ]);
       }
-    });
-
-    this.cardNumberWrapper.addEventListener('submit', event => {
-      event.preventDefault();
     });
   }
 

@@ -7,7 +7,6 @@ import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import {
   EXPIRATION_DATE_INPUT,
   EXPIRATION_DATE_LABEL,
-  EXPIRATION_DATE_INPUT_SELECTOR,
   EXPIRATION_DATE_MESSAGE,
   EXPIRATION_DATE_WRAPPER
 } from '../../core/models/constants/Selectors';
@@ -30,7 +29,6 @@ export class ExpirationDate extends Input {
   private _currentKeyCode: number;
   private _inputSelectionEnd: number;
   private _inputSelectionStart: number;
-  private expirationDateWrapper: HTMLElement;
 
   constructor(
     private configProvider: ConfigProvider,
@@ -45,7 +43,6 @@ export class ExpirationDate extends Input {
       EXPIRATION_DATE_WRAPPER,
       configProvider
     );
-    this.expirationDateWrapper = document.getElementById(EXPIRATION_DATE_INPUT_SELECTOR) as HTMLElement;
     this._init();
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
@@ -153,10 +150,6 @@ export class ExpirationDate extends Input {
       this._messageElement,
       MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD
     );
-
-    this.expirationDateWrapper.addEventListener('submit', event => {
-      event.preventDefault();
-    });
   }
 
   private _sendState() {
