@@ -29,7 +29,7 @@ export class Input {
   private _frame: Frame;
   private _messageBus: IMessageBus;
   private _allowedStyles: AllowedStylesService;
-  private stopKeypressEvent: boolean;
+  private stopSubmitFormOnEnter: boolean;
 
   constructor(
     inputSelector: string,
@@ -49,7 +49,7 @@ export class Input {
     this._labelSelector = labelSelector;
     this._messageSelector = messageSelector;
     this._wrapperSelector = wrapperSelector;
-    this.stopKeypressEvent = configProvider.getConfig().stopKeypressEvent;
+    this.stopSubmitFormOnEnter = configProvider.getConfig().stopSubmitFormOnEnter;
     this._setInputListeners();
     this.init();
   }
@@ -200,7 +200,7 @@ export class Input {
       this.onPaste(event);
     });
 
-    if (!this.stopKeypressEvent) {
+    if (!this.stopSubmitFormOnEnter) {
       this._inputElement.addEventListener('keypress', (event: KeyboardEvent) => {
         this.onKeyPress(event);
       });

@@ -242,8 +242,8 @@ export class ST {
       this.initControlFrameModal();
       this.cardinalClient.init();
 
-      if (this.config.stopKeypressEvent) {
-        this.stopKeypressEvent();
+      if (this.config.stopSubmitFormOnEnter) {
+        this.stopSubmitFormOnEnter();
       }
     }
   }
@@ -252,7 +252,7 @@ export class ST {
     return this.browserDetector.getBrowserInfo();
   }
 
-  private stopKeypressEvent() {
+  private stopSubmitFormOnEnter() {
     const form: HTMLFormElement = document.getElementById(this.config.formId) as HTMLFormElement;
 
     if (!form) {
@@ -260,7 +260,9 @@ export class ST {
     }
 
     form.addEventListener('keydown', event => {
-      event.preventDefault();
+      if (event.key === 'Enter') {
+        event.preventDefault();
+      }
     });
   }
 

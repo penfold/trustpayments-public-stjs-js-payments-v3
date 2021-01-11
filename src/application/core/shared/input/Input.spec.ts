@@ -236,7 +236,7 @@ function formFieldFixture() {
     'st-form-field__wrapper',
     {
       getConfig: () => ({
-        stopKeypressEvent: false
+        stopSubmitFormOnEnter: false
       })
     } as ConfigProvider
   );
