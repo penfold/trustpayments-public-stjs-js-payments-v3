@@ -109,13 +109,7 @@ class PaymentMethodsPage(BasePage):
             self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v1_authentication_code_field)
             self._action.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
                                    AuthData.PASSWORD.value)
-            #if 'Firefox' in CONFIGURATION.BROWSER:
-            #    self._action.click_by_javascript(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
-            #    LOGGER.info('submit with javascript on firefox done')
-            #else:
-
             self._action.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
-            self._waits.switch_to_default_content()
         else:
             self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
             self._action.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
@@ -126,6 +120,7 @@ class PaymentMethodsPage(BasePage):
                 LOGGER.info('submit with javascript on firefox done')
             else:
                 self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
+        self._waits.switch_to_default_content()
 
     def click_cardinal_cancel_btn(self):
         self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
