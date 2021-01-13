@@ -10,4 +10,8 @@ ignore:
     - '*':
         reason: None Given
         expires: 2020-11-27T09:24:16.721Z
+  SNYK-JS-GLOBPARENT-1016905:
+  - '*':
+      reason: None Given
+      expires: 2021-02-13T09:24:16.721Z
 patch: {}
