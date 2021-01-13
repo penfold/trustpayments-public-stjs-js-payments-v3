@@ -255,7 +255,6 @@ export class StCodec {
           response: StCodec.verifyResponseObject(decoded.payload, responseData.jwt)
         });
       } else {
-        console.log('wywala sie')
         StCodec.jwt = StCodec.originalJwt;
         reject(StCodec._handleInvalidResponse());
       }
