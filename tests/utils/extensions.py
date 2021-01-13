@@ -50,7 +50,7 @@ class WebElementsExtensions(Waits):
     def switch_to_iframe_and_get_text(self, iframe_name, locator):
         self.switch_to_iframe(iframe_name)
         self.wait_for_element_to_be_displayed(locator)
-        element = self.get_text(locator)
+        element = self.get_text_excluding_children(locator)
         self.switch_to_default_iframe()
         return element
 
@@ -96,6 +96,21 @@ class WebElementsExtensions(Waits):
         self.wait_for_element(locator)
         element = self.find_element(locator)
         return element.text
+
+    def get_text_excluding_children(self, locator):
+        element = self.find_element(locator)
+        extracted_text = self._driver.execute_script('''
+        var parent = arguments[0];
+        var child = parent.firstChild;
+        var ret = "";
+        while(child) {
+            if (child.nodeType === Node.TEXT_NODE)
+                ret += child.textContent;
+            child = child.nextSibling;
+        }
+        return ret;
+        ''', element)
+        return extracted_text
 
     def get_css_value_with_wait(self, locator, property_name):
         self.wait_for_element_to_be_displayed(locator)
