@@ -238,10 +238,10 @@ export class ApplePay {
         first()
       )
       .subscribe((event: IMessageBusEvent) => {
+        this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
         if (Number(event.data.errorcode) !== ApplePayClientErrorCode.SUCCESS) {
           this.applePaySession.completePayment({
-            status: ApplePaySessionService.STATUS_FAILURE,
-            errors: this.applePayErrorService.create(ApplePaySessionErrorCode.UNKNOWN, this.config.locale)
+            status: ApplePaySessionService.STATUS_FAILURE
           });
         }
       });
