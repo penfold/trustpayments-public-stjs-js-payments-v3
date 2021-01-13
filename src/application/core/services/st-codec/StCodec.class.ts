@@ -255,9 +255,24 @@ export class StCodec {
           response: StCodec.verifyResponseObject(decoded.payload, responseData.jwt)
         });
       } else {
+        console.log('wywala sie')
         StCodec.jwt = StCodec.originalJwt;
         reject(StCodec._handleInvalidResponse());
       }
     });
+  }
+
+  public decodeErrorResponse(responseObject: AjaxResponse | {}): any {
+    if ('response' in responseObject) {
+      const responseData = responseObject.response;
+      const decoded = jwt_decode(responseData.jwt) as any;
+
+      return {
+        jwt: responseData.jwt,
+        response: StCodec._determineResponse(decoded.payload)
+      };
+    } else {
+      StCodec._handleInvalidResponse();
+    }
   }
 }

@@ -82,6 +82,7 @@ describe('GatewayClient', () => {
           expect(customeroutput).toBe('RESULT');
           expect(errorcode).toBe('0');
           expect(payload.response[1].errordata).toContain('subscriptionfrequency');
+          done();
         });
 
       gatewayClient
@@ -92,11 +93,9 @@ describe('GatewayClient', () => {
             gatewayClient.threedQuery({ ...requestObject, cachetoken } as any);
           }
         });
-
-      setTimeout(done, 5000);
     });
 
-    it.skip('AUTH passed, ACCOUNTCHECK failed', done => {
+    it('AUTH passed, ACCOUNTCHECK failed', done => {
       const testPayload = {
         requesttypedescriptions: ['AUTH', 'ACCOUNTCHECK']
       };
@@ -109,6 +108,7 @@ describe('GatewayClient', () => {
         .pipe(ofType('TRANSACTION_COMPLETE'), first())
         .subscribe((response: IMessageBusEvent<IResponseData>) => {
           const { customeroutput, errordata, errorcode } = response.data;
+          done();
         });
 
       gatewayClient
@@ -120,7 +120,7 @@ describe('GatewayClient', () => {
           }
         });
 
-      setTimeout(done, 5000);
+      // setTimeout(done, 5000);
     });
 
     it('RISKDEC / ACCOUNTCHECK / THREEDQUERY / AUTH passed', done => {
@@ -148,6 +148,7 @@ describe('GatewayClient', () => {
         });
 
         expect(requestTypesCounter).toBe(3);
+        done();
       });
 
       gatewayClient
@@ -158,8 +159,6 @@ describe('GatewayClient', () => {
             gatewayClient.threedQuery({ ...requestObject, cachetoken } as any);
           }
         });
-
-      setTimeout(done, 5000);
     });
 
     it('RISKDEC / ACCOUNTCHECK / AUTH passed, THREEDQUERY bypassed, SUBSCRIPTION failed', done => {
@@ -193,6 +192,7 @@ describe('GatewayClient', () => {
         });
 
         expect(requestTypesCounter).toBe(2);
+        done();
       });
 
       gatewayClient
@@ -203,11 +203,9 @@ describe('GatewayClient', () => {
             gatewayClient.threedQuery({ ...requestObject, cachetoken } as any);
           }
         });
-
-      setTimeout(done, 5000);
     });
 
-    it.skip('THREEDQUERY failed (bypass card)', done => {
+    it('THREEDQUERY failed (bypass card)', done => {
       const testPayload = {
         requesttypedescriptions: ['THREEDQUERY'],
         threedbypasspaymenttypes: ['VISA']
@@ -217,23 +215,22 @@ describe('GatewayClient', () => {
       testConfigProvider.setConfig({ datacenterurl, jwt });
       gatewayClient = Container.get(GatewayClient);
 
-      messageBus.pipe(ofType('TRANSACTION_COMPLETE'), first()).subscribe(response => {
-        expect(response.requesttypedescription).toBe('ERROR');
-        expect(response.customeroutput).toBe('TRYAGAIN');
-        expect(response.errorcode).toBe('22000');
-        expect(response.errormessage).toBe('Bypass');
-      });
-
       gatewayClient
         .jsInit()
         .pipe(first())
         .subscribe(({ cachetoken, errorcode }) => {
           if (Number(errorcode) === 0) {
-            gatewayClient.threedQuery({ ...requestObject, cachetoken } as any);
+            gatewayClient.threedQuery({ ...requestObject, cachetoken } as any).subscribe({
+              next: response => {
+                expect(response.requesttypedescription).toBe('ERROR');
+                expect(response.customeroutput).toBe('TRYAGAIN');
+                expect(response.errorcode).toBe('22000');
+                expect(response.errormessage).toBe('Bypass');
+              },
+              complete: done
+            })
           }
         });
-
-      setTimeout(done, 5000);
     });
   });
 });

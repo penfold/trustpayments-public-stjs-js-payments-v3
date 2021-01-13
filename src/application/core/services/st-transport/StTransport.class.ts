@@ -92,18 +92,19 @@ export class StTransport {
   private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions): Promise<object> {
     const codec = this.getCodec();
     const gatewayUrl = this.getConfig().datacenterurl;
+    let tmpReponse: any;
 
     return this._fetchRetry(gatewayUrl, {
       ...fetchOptions,
       body: requestBody
     })
       .then(response => {
-        console.log({ response });
+        tmpReponse = response;
         return response;
       })
       .then(codec.decode)
-      .catch(response => {
-        return codec.decode({});
+      .catch(() => {
+        return codec.decodeErrorResponse(tmpReponse);
       });
   }
 
