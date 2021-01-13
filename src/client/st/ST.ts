@@ -242,7 +242,7 @@ export class ST {
       this.initControlFrameModal();
       this.cardinalClient.init();
 
-      if (this.config.stopSubmitFormOnEnter) {
+      if (Boolean(this.config.stopSubmitFormOnEnter)) {
         this.stopSubmitFormOnEnter();
       }
     }

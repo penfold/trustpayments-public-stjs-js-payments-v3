@@ -49,7 +49,7 @@ export class Input {
     this._labelSelector = labelSelector;
     this._messageSelector = messageSelector;
     this._wrapperSelector = wrapperSelector;
-    this.stopSubmitFormOnEnter = configProvider.getConfig().stopSubmitFormOnEnter;
+    this.stopSubmitFormOnEnter = Boolean(configProvider.getConfig().stopSubmitFormOnEnter);
     this._setInputListeners();
     this.init();
   }
@@ -200,15 +200,17 @@ export class Input {
       this.onPaste(event);
     });
 
-    if (!this.stopSubmitFormOnEnter) {
-      this._inputElement.addEventListener('keypress', (event: KeyboardEvent) => {
+    this._inputElement.addEventListener('keypress', (event: KeyboardEvent) => {
+      if (this.stopSubmitFormOnEnter && event.key === 'Enter') {
+        event.preventDefault();
+      } else {
         this.onKeyPress(event);
-      });
+      }
+    });
 
-      this._inputElement.addEventListener('keydown', (event: KeyboardEvent) => {
-        this.onKeydown(event);
-      });
-    }
+    this._inputElement.addEventListener('keydown', (event: KeyboardEvent) => {
+      this.onKeydown(event);
+    });
 
     this._inputElement.addEventListener(
       'input',
