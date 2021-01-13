@@ -134,9 +134,10 @@ export class ApplePay {
       .pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY))))
       .subscribe(event => {
         const jwt = event.data.newJwt;
-
-        this.config.paymentRequest.currencyCode = '...';
-        this.config.paymentRequest.total = '...';
+        const { locale, mainamount, currencyiso3a } = this.applePayConfigService.getStJwtData(jwt);
+        this.config.paymentRequest.currencyCode = currencyiso3a;
+        this.config.paymentRequest.total.amount = mainamount;
+        this.config.locale = locale;
         this.applePaySessionService.updatePaymentRequest(this.config.paymentRequest);
       });
   }

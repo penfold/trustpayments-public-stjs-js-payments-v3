@@ -78,7 +78,7 @@ export class ApplePayConfigService {
     };
   }
 
-  private getStJwtData(jwt: string): { currencyiso3a: string; locale: Locale; mainamount: string } {
+  getStJwtData(jwt: string): { currencyiso3a: string; locale: Locale; mainamount: string } {
     const payload: IStJwtPayload = this.jwtDecoder.decode(jwt).payload;
     const mainamount = Money.fromInteger({
       amount: parseInt(payload.baseamount, 10),
