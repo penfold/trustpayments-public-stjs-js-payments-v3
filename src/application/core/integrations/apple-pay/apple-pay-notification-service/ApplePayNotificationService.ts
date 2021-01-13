@@ -8,12 +8,14 @@ export class ApplePayNotificationService {
   constructor(private messageBus: IMessageBus, private notificationService: NotificationService) {}
 
   notification(errorcode: ApplePayClientErrorCode, errormessage: string): void {
-    console.error(errorcode, ApplePayClientErrorCode.CANCEL);
     switch (errorcode) {
       case ApplePayClientErrorCode.SUCCESS:
         this.notificationService.success(errormessage);
         break;
       case ApplePayClientErrorCode.ERROR:
+        this.notificationService.error(errormessage);
+        break;
+      case ApplePayClientErrorCode.DECLINE:
         this.notificationService.error(errormessage);
         break;
       case ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR:

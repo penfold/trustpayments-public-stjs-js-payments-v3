@@ -7,5 +7,6 @@ export enum ApplePayClientErrorCode {
   ON_PAYMENT_AUTHORIZED = 9,
   ERROR = 1,
   CANCEL = 2,
-  SUCCESS = 0
+  SUCCESS = 0,
+  DECLINE = 70000
 }
