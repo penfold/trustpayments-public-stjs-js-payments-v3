@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IApplePayClientStatus } from '../../../application/core/integrations/apple-pay/IApplePayClientStatus';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
@@ -129,6 +129,16 @@ export class ApplePay {
     this.onPaymentAuthorized();
     this.onCancel();
     this.onTransactionComplete();
+
+    this.messageBus
+      .pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY))))
+      .subscribe(event => {
+        const jwt = event.data.newJwt;
+
+        this.config.paymentRequest.currencyCode = '...';
+        this.config.paymentRequest.total = '...';
+        this.applePaySessionService.updatePaymentRequest(this.config.paymentRequest);
+      });
   }
 
   private onValidateMerchant(): void {

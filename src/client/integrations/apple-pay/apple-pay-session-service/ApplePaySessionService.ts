@@ -62,6 +62,10 @@ export class ApplePaySessionService {
     });
   }
 
+  updatePaymentRequest(paymentRequest: IApplePayPaymentRequest): void {
+    this.paymentRequest = paymentRequest;
+  }
+
   private beginMerchantValidation(): void {
     try {
       this.applePaySession.begin();
