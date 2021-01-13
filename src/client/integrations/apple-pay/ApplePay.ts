@@ -60,6 +60,7 @@ export class ApplePay {
         ),
         tap((config: IApplePayConfigObject) => {
           this.config = config;
+          this.updateJwtListener();
           this.applePayButtonService.insertButton(
             APPLE_PAY_BUTTON_ID,
             config.applePayConfig.buttonText,
@@ -82,6 +83,14 @@ export class ApplePay {
         })
       )
       .subscribe();
+  }
+
+  private updateJwtListener(): void {
+    this.messageBus
+      .pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY))))
+      .subscribe((event: IMessageBusEvent) => {
+        this.applePayConfigService.updateConfigWithJwtData(event.data.newJwt, this.config);
+      });
   }
 
   private verifyAvailability(config: IConfig): Observable<IConfig> {
@@ -129,17 +138,6 @@ export class ApplePay {
     this.onPaymentAuthorized();
     this.onCancel();
     this.onTransactionComplete();
-
-    this.messageBus
-      .pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY))))
-      .subscribe(event => {
-        const jwt = event.data.newJwt;
-        const { locale, mainamount, currencyiso3a } = this.applePayConfigService.getStJwtData(jwt);
-        this.config.paymentRequest.currencyCode = currencyiso3a;
-        this.config.paymentRequest.total.amount = mainamount;
-        this.config.locale = locale;
-        this.applePaySessionService.updatePaymentRequest(this.config.paymentRequest);
-      });
   }
 
   private onValidateMerchant(): void {

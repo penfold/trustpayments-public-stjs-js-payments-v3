@@ -35,6 +35,16 @@ export class ApplePayConfigService {
     };
   }
 
+  updateConfigWithJwtData(newJwt: string, config: IApplePayConfigObject): IApplePayConfigObject {
+    const { locale, mainamount, currencyiso3a } = this.getStJwtData(newJwt);
+    const updatedConfig: IApplePayConfigObject = config;
+    updatedConfig.paymentRequest.currencyCode = currencyiso3a;
+    updatedConfig.paymentRequest.total.amount = mainamount;
+    updatedConfig.locale = locale;
+    this.applePaySessionService.updatePaymentRequest(updatedConfig.paymentRequest);
+    return updatedConfig;
+  }
+
   updateWalletValidationUrl(
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     walletvalidationurl: string

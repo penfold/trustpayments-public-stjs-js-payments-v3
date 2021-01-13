@@ -81,6 +81,7 @@ export class StCodec {
   }
 
   public static updateJWTValue(newJWT: string) {
+    console.error(newJWT);
     StCodec.jwt = newJWT ? newJWT : StCodec.jwt;
     StCodec.originalJwt = newJWT ? newJWT : StCodec.originalJwt;
     const messageBusEvent: IMessageBusEvent = {
