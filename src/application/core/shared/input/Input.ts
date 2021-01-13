@@ -41,7 +41,7 @@ export class Input {
     this._labelSelector = labelSelector;
     this._messageSelector = messageSelector;
     this._wrapperSelector = wrapperSelector;
-    this._setInputListeners();
+    this.setInputListeners();
     this.init();
   }
 
@@ -49,8 +49,9 @@ export class Input {
     this._translator = new Translator(this._frame.parseUrl().locale);
     this.validation = new Validation();
 
-    this._setLabelText();
-    this._addTabListener();
+    this.setLabelText();
+    this.setAsterisk();
+    this.addTabListener();
   }
 
   protected format(data: string) {
@@ -86,16 +87,16 @@ export class Input {
   }
 
   protected onBlur() {
-    this._blur();
+    this.blur();
     this.validation.validate(this._inputElement, this._messageElement);
   }
 
   protected onClick(event: Event) {
-    this._click();
+    this.click();
   }
 
   protected onFocus(event: Event) {
-    this._focus();
+    this.focus();
   }
 
   protected onInput(event: Event) {
@@ -110,7 +111,7 @@ export class Input {
       if (this._inputElement.id === CARD_NUMBER_INPUT) {
         this.validation.luhnCheck(this._cardNumberInput, this._inputElement, this._messageElement);
       }
-      this._validateInput();
+      this.validateInput();
       this.validation.callSubmitEvent();
     }
   }
@@ -151,7 +152,7 @@ export class Input {
   protected setEventListener(event: string, validate: boolean = true) {
     this._messageBus.subscribeType(event, () => {
       if (validate) {
-        this._validateInput();
+        this.validateInput();
       }
     });
   }
@@ -168,25 +169,25 @@ export class Input {
     };
   }
 
-  private _addTabListener() {
+  private addTabListener() {
     window.addEventListener('focus', event => {
       this.onFocus(event);
     });
   }
 
-  private _blur() {
+  private blur() {
     this._inputElement.blur();
   }
 
-  private _click() {
+  private click() {
     this._inputElement.click();
   }
 
-  private _focus() {
+  private focus() {
     this._inputElement.focus();
   }
 
-  private _setInputListeners() {
+  private setInputListeners() {
     this._inputElement.addEventListener('paste', (event: ClipboardEvent) => {
       this.onPaste(event);
     });
@@ -219,11 +220,22 @@ export class Input {
     });
   }
 
-  private _setLabelText() {
+  private setLabelText() {
     this._labelElement.textContent = this._translator.translate(this.getLabel());
   }
 
-  private _validateInput() {
+  private setAsterisk() {
+    const isRequiredField = this._labelElement.className.split(' ').some(name => name.includes('--required'));
+
+    if (isRequiredField) {
+      const span = document.createElement('span');
+      span.className = 'asterisk';
+      span.textContent = '*';
+      this._labelElement.appendChild(span);
+    }
+  }
+
+  private validateInput() {
     this.format(this._inputElement.value);
     if (this._inputElement.id === CARD_NUMBER_INPUT) {
       this.validation.luhnCheck(this._cardNumberInput, this._inputElement, this._messageElement);
