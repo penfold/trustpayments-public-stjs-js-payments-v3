@@ -25,6 +25,7 @@ build-sdk-test:
   variables:
     ARTIFACTS_BUILD_PATH: ".dist-test"
   script:
+    - npm config set js-payments:host merchant.securetrading.net
     - npm run build:test
 
 build-sdk-prod-review:

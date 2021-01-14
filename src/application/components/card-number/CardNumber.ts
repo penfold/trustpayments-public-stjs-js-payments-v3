@@ -50,7 +50,7 @@ export class CardNumber extends Input {
     private frame: Frame,
     private messageBus: IMessageBus
   ) {
-    super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER);
+    super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER, configProvider);
     this._cardNumberField = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
     this.validation = new Validation();
     this._isCardNumberValid = true;
