@@ -13,6 +13,7 @@ import { ApplePayClient } from './ApplePayClient';
 import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { IApplePayClientStatus } from './IApplePayClientStatus';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 
 describe.skip('ApplePayClient', () => {
   let applePayClient: ApplePayClient;
@@ -23,6 +24,7 @@ describe.skip('ApplePayClient', () => {
   let browserLocalStorageMock: BrowserLocalStorage;
   let applePayNotificationService: ApplePayNotificationService;
   let applePayPaymentService: ApplePayPaymentService;
+  let jwtDecoder: JwtDecoder;
 
   const configMock: IConfig = {
     jwt: '',
@@ -54,6 +56,7 @@ describe.skip('ApplePayClient', () => {
     browserLocalStorageMock = mock(BrowserLocalStorage);
     applePayNotificationService = mock(ApplePayNotificationService);
     applePayPaymentService = mock(ApplePayPaymentService);
+    jwtDecoder = mock(JwtDecoder);
 
     applePayClient = new ApplePayClient(
       mockInstance(applePayNotificationService),
@@ -61,7 +64,8 @@ describe.skip('ApplePayClient', () => {
       mockInstance(configProviderMock),
       mockInstance(interFrameCommunicatorMock),
       mockInstance(browserLocalStorageMock),
-      mockInstance(messageBusMock)
+      mockInstance(messageBusMock),
+      mockInstance(jwtDecoder)
     );
 
     when(configProviderMock.getConfig$()).thenReturn(of(configMock));
