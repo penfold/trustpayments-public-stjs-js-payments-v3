@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { IApplePayPaymentAuthorizationResult } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 import { IApplePayPaymentAuthorizedEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { IApplePayPaymentMethodSelectedEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentMethodSelectedEvent';
@@ -33,7 +34,7 @@ export interface IApplePaySession extends EventTarget {
 
   canMakePayments(): boolean;
 
-  canMakePaymentsWithActiveCard(merchantId: string): Promise<boolean>;
+  canMakePaymentsWithActiveCard(merchantId: string): Observable<boolean>;
 
   openPaymentSetup(merchantId: string): Promise<boolean>;
 

@@ -1,32 +1,29 @@
+import { Service } from 'typedi';
 import { ApplePay } from './ApplePay';
-import { ApplePaySessionMock } from './apple-pay-session-service/ApplePaySessionMock';
 
+@Service()
 export class ApplePayMock extends ApplePay {
-  public paymentDetails: string;
+  paymentDetails: string;
 
-  public ifApplePayIsAvailable() {
+  ifApplePayIsAvailable() {
     return true;
   }
 
-  public isUserLoggedToAppleAccount() {
+  isUserLoggedToAppleAccount() {
     return true;
   }
 
-  public checkApplePayWalletCardAvailability() {
-    return new Promise((resolve, reject) => {
+  checkApplePayWalletCardAvailability() {
+    return new Promise(resolve => {
       resolve(true);
     });
   }
 
-  public getApplePaySessionObject() {
-    return ApplePaySessionMock;
+  getPaymentSuccessStatus() {
+    return 'SUCCESS';
   }
 
-  public getPaymentSuccessStatus() {
-    return ApplePaySessionMock.STATUS_SUCCESS;
-  }
-
-  public getPaymentFailureStatus() {
-    return ApplePaySessionMock.STATUS_FAILURE;
+  getPaymentFailureStatus() {
+    return 'FAILURE';
   }
 }
