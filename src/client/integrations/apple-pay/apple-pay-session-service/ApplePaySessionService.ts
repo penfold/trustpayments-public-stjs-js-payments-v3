@@ -12,14 +12,16 @@ const ApplePaySession: IApplePaySession = (window as any).ApplePaySession;
 
 @Service()
 export class ApplePaySessionService {
-  static readonly STATUS_FAILURE = ApplePaySession.STATUS_FAILURE;
-  static readonly STATUS_SUCCESS = ApplePaySession.STATUS_SUCCESS;
+  STATUS_FAILURE: number;
+  STATUS_SUCCESS: number;
   private applePaySession: IApplePaySession;
   private paymentRequest: IApplePayPaymentRequest;
 
   init(applePaySession: IApplePaySession, paymentRequest: IApplePayPaymentRequest): void {
     this.applePaySession = applePaySession;
     this.paymentRequest = paymentRequest;
+    this.STATUS_FAILURE = ApplePaySession.STATUS_FAILURE;
+    this.STATUS_SUCCESS = ApplePaySession.STATUS_SUCCESS;
     this.onPaymentMethodSelected();
     this.onShippingMethodSelected();
     this.onShippingContactSelected();

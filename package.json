@@ -36,7 +36,7 @@
     "snyk-protect": "snyk protect",
     "snyk-auth": "snyk auth $SNYK_API_TOKEN",
     "postshrinkwrap": "npx npm-force-resolutions && npm install --ignore-scripts",
-    "prettier": "./node_modules/.bin/prettier --write ./src/**/*.{ts,css,json}",
+    "prettier": "./node_modules/.bin/prettier --write ./src/**/*.{ts,js,css,json}",
     "example": "ws --rewrite '/* -> /dist/$1' --https",
     "start:automated": "webpack serve --color --progress --config webpack.test.js",
     "start:bundle": "webpack serve --color --progress --config webpack.dev.js",
