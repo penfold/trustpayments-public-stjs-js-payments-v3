@@ -111,8 +111,6 @@ export class ST {
   ) {
     this.googleAnalytics = new GoogleAnalytics();
     this.merchantFields = new MerchantFields();
-    this.messageBus.publish({ type: 'FOO' });
-    this.messageBus.publish({ type: 'FOOZ' });
   }
 
   on(eventName: 'success' | 'error' | 'submit' | 'cancel', callback: (event: unknown) => void): void {
