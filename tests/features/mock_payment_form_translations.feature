@@ -69,4 +69,4 @@ Feature: Payment form translations
     And User waits for whole form to be displayed
     And User clicks Pay button
     Then User will see that Pay button is translated into "Kup teraz!"
-    And User will see that validation messages is translated into "This is wrong"
+    And User will see validation message "This is wrong" under all fields

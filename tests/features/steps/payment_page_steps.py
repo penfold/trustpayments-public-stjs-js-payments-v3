@@ -65,12 +65,6 @@ def step_impl(context):
     payment_page.accept_alert()
 
 
-@then('User will see validation message "(?P<expected_message>.+)" under all fields')
-def step_impl(context, expected_message):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_field_validation_message(FieldType.CARD_NUMBER.name, expected_message)
-    payment_page.validate_field_validation_message(FieldType.EXPIRATION_DATE.name, expected_message)
-    payment_page.validate_field_validation_message(FieldType.SECURITY_CODE.name, expected_message)
 
 
 @step('User will see that all fields are highlighted')
@@ -90,12 +84,6 @@ def step_impl(context, card_number, exp_date, cvv):
     context.cvv = cvv
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.fill_payment_form(card_number, exp_date, cvv)
-
-
-@step('User will see "(?P<expected_message>.+)" message under field: "(?P<field>.+)"')
-def step_impl(context, expected_message, field):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_field_validation_message(FieldType[field].name, expected_message)
 
 
 @step('User will see that "(?P<field>.+)" field is highlighted')
@@ -162,22 +150,42 @@ def step_impl(context, field):
 @then('User will see all labels displayed on page translated into "(?P<language>.+)"')
 def step_impl(context, language):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_labels_translation(language)
+    payment_page.validate_all_labels_translation(language)
 
 
 @step('User will see validation message "(?P<key>.+)" under all fields translated into "(?P<language>.+)"')
 def step_impl(context, key, language):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_message_translation_under_field(FieldType.CARD_NUMBER.name, language, key)
-    payment_page.validate_message_translation_under_field(FieldType.EXPIRATION_DATE.name, language, key)
-    payment_page.validate_message_translation_under_field(FieldType.SECURITY_CODE.name, language, key)
+    payment_page.validate_field_validation_message_translation(FieldType.CARD_NUMBER.name, language, key)
+    payment_page.validate_field_validation_message_translation(FieldType.EXPIRATION_DATE.name, language, key)
+    payment_page.validate_field_validation_message_translation(FieldType.SECURITY_CODE.name, language, key)
 
 
 @then(
     'User will see validation message "(?P<key>.+)" under "(?P<field>.+)" field translated into (?P<language>.+)')
-def step_impl(context, key, field, language):
+def step_validation_msg_translation(context, key, field, language):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_message_translation_under_field(FieldType[field].name, language, key)
+    payment_page.validate_field_validation_message_translation(FieldType[field].name, language, key)
+
+
+@then('User will see validation message "(?P<expected_message>.+)" under all fields')
+def step_impl(context, expected_message):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_field_validation_message(FieldType.CARD_NUMBER.name, expected_message)
+    payment_page.validate_field_validation_message(FieldType.EXPIRATION_DATE.name, expected_message)
+    payment_page.validate_field_validation_message(FieldType.SECURITY_CODE.name, expected_message)
+
+
+@step('User will see "(?P<expected_message>.+)" message under field: "(?P<field>.+)"')
+def step_validation_msg_translation_expected(context, expected_message, field):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_field_validation_message(FieldType[field].name, expected_message)
+
+
+@then('User will see that Pay button is translated into "(?P<expected_value>.+)"')
+def step_impl(context, expected_value):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_submit_btn_specific_translation(expected_value)
 
 
 @then('User will see "(?P<key>.+)" payment status translated into "(?P<language>.+)"')
@@ -286,15 +294,6 @@ def step_impl(context):
     payment_page.validate_callback_with_data_type('Error code: OK')
 
 
-@then('User will see that (?P<element>.+) is translated into "(?P<expected_value>.+)"')
-def step_impl(context, element, expected_value):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    if element in 'Pay button':
-        payment_page.validate_element_specific_translation(FieldType.SUBMIT_BUTTON.name, expected_value)
-    else:
-        payment_page.validate_element_specific_translation(FieldType.CARD_NUMBER.name, expected_value)
-        payment_page.validate_element_specific_translation(FieldType.EXPIRATION_DATE.name, expected_value)
-
 
 @step('"(?P<callback_popup>.+)" callback is called only once')
 def step_impl(context, callback_popup):
@@ -358,6 +357,7 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.clear_security_code_field()
+
 
 @step('User clears form')
 def step_impl(context):

@@ -105,13 +105,15 @@ class PaymentMethodsPage(BasePage):
 
         if auth == AuthType.V1.value:
             self._action.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
-            self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v1_authentication_code_field)
+            self._executor.wait_for_element_to_be_displayed(
+                PaymentMethodsLocators.cardinal_v1_authentication_code_field)
             self._action.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
                                    AuthData.PASSWORD.value)
             self._action.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
             self._action.switch_to_parent_iframe()
         else:
-            self._executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+            self._executor.wait_for_element_to_be_displayed(
+                PaymentMethodsLocators.cardinal_v2_authentication_code_field)
             self._action.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
                                    AuthData.PASSWORD.value)
             self.scroll_to_bottom()
@@ -228,21 +230,7 @@ class PaymentMethodsPage(BasePage):
         processing_text = f'{processing_text} ...'
 
         self._waits.wait_for_text_to_be_not_present_in_element(PaymentMethodsLocators.pay_mock_button,
-                                                                  processing_text)
-
-    def get_field_validation_message(self, field_type):
-        validation_message = ''
-        if field_type == FieldType.CARD_NUMBER.name:
-            validation_message = self._action.switch_to_iframe_and_get_text(PaymentMethodsLocators.card_number_iframe,
-                                                                            PaymentMethodsLocators.card_number_field_validation_message)
-        elif field_type == FieldType.EXPIRATION_DATE.name:
-            validation_message = self._action.switch_to_iframe_and_get_text(
-                PaymentMethodsLocators.expiration_date_iframe,
-                PaymentMethodsLocators.expiration_date_field_validation_message)
-        elif field_type == FieldType.SECURITY_CODE.name:
-            validation_message = self._action.switch_to_iframe_and_get_text(PaymentMethodsLocators.security_code_iframe,
-                                                                            PaymentMethodsLocators.security_code_field_validation_message)
-        return validation_message
+                                                               processing_text)
 
     def get_element_attribute(self, field_type, attribute):
         attribute_value = ''
@@ -284,7 +272,8 @@ class PaymentMethodsPage(BasePage):
                 PaymentMethodsLocators.security_code_input_field,
                 property_name)
         elif field_type == FieldType.NOTIFICATION_FRAME.name:
-            background_color = self._action.get_css_value_with_wait(PaymentMethodsLocators.notification_frame, property_name)
+            background_color = self._action.get_css_value_with_wait(PaymentMethodsLocators.notification_frame,
+                                                                    property_name)
         return background_color
 
     def is_field_displayed(self, field_type):
@@ -309,27 +298,22 @@ class PaymentMethodsPage(BasePage):
         credit_card_icon = credit_card_icon.upper()
         return credit_card_icon
 
-    def get_element_translation(self, field_type, locator):
-        element_translation = ''
-        if field_type == FieldType.CARD_NUMBER.name:
-            element_translation = self._action.switch_to_iframe_and_get_text(PaymentMethodsLocators.card_number_iframe,
-                                                                             locator)
-        elif field_type == FieldType.EXPIRATION_DATE.name:
-            element_translation = self._action.switch_to_iframe_and_get_text(
-                PaymentMethodsLocators.expiration_date_iframe,
-                locator)
-        elif field_type == FieldType.SECURITY_CODE.name:
-            element_translation = self._action.switch_to_iframe_and_get_text(
-                PaymentMethodsLocators.security_code_iframe,
-                locator)
-        elif field_type == FieldType.SUBMIT_BUTTON.name:
-            element_translation = self._action.get_text(locator)
-        return element_translation
+    def get_element_text(self, locator):
+        return self._action.get_text(locator)
+
+    def get_card_number_iframe_element_text(self, locator):
+        return self._action.switch_to_iframe_and_get_text(PaymentMethodsLocators.card_number_iframe, locator)
+
+    def get_expiration_date_iframe_element_text(self, locator):
+        return self._action.switch_to_iframe_and_get_text(PaymentMethodsLocators.expiration_date_iframe, locator)
+
+    def get_security_code_iframe_element_text(self, locator):
+        return self._action.switch_to_iframe_and_get_text(PaymentMethodsLocators.security_code_iframe, locator)
 
     def change_field_focus(self, field_type):
         if field_type == FieldType.CARD_NUMBER.name:
             self._action.switch_to_iframe_and_click(PaymentMethodsLocators.card_number_iframe,
-                                                                             PaymentMethodsLocators.card_number_input_field)
+                                                    PaymentMethodsLocators.card_number_input_field)
         elif field_type == FieldType.EXPIRATION_DATE.name:
             self._action.switch_to_iframe_and_click(PaymentMethodsLocators.expiration_date_iframe,
                                                     PaymentMethodsLocators.expiration_date_input_field)
@@ -342,13 +326,6 @@ class PaymentMethodsPage(BasePage):
 
     def switch_to_parent_iframe(self):
         self._action.switch_to_iframe(PaymentMethodsLocators.parent_iframe)
-
-    def validate_field_validation_message(self, field_type, expected_message):
-        actual_message = self.get_field_validation_message(field_type)
-        assertion_message = f'{FieldType[field_type].name} field validation message is not correct, ' \
-                            f'should be: "{expected_message}" but is: "{actual_message}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_message in actual_message, assertion_message
 
     def validate_value_of_input_field(self, field_type, expected_message):
         input_value = self.get_value_of_input_field(field_type)
@@ -412,61 +389,74 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_style in actual_css_style, assertion_message
 
-    def validate_element_translation(self, field_type, element, language, key):
-        actual_translation = self.get_element_translation(field_type, element)
-        expected_translation = self.get_translation_from_json(language, key)
-        assertion_message = f'{FieldType[field_type].name} element translation is not correct: ' \
+    @staticmethod
+    def validate_field_text(field_type, actual_translation, expected_translation):
+        assertion_message = f'{FieldType[field_type].name} field text is not correct: ' \
                             f' should be {expected_translation} but is {actual_translation}'
         add_to_shared_dict('assertion_message', assertion_message)
-        assert actual_translation in expected_translation, assertion_message
+        assert actual_translation == expected_translation, assertion_message
 
-    def validate_element_specific_translation(self, field_type, expected_translation):
+    def validate_field_validation_message(self, field_type, expected_text):
         actual_translation = ''
-        if field_type == FieldType.SUBMIT_BUTTON.name:
-            actual_translation = self.get_element_translation(field_type, PaymentMethodsLocators.pay_button_label)
-        elif field_type == FieldType.CARD_NUMBER.name:
-            actual_translation = self.get_element_translation(field_type,
-                                                              PaymentMethodsLocators.card_number_field_validation_message)
-        elif field_type == FieldType.EXPIRATION_DATE.name:
-            actual_translation = self.get_element_translation(field_type,
-                                                              PaymentMethodsLocators.expiration_date_field_validation_message)
-        assertion_message = f'{FieldType[field_type].name} element translation is not correct: ' \
-                            f' should be {expected_translation} but is {actual_translation}'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_translation in actual_translation, assertion_message
 
-    def validate_labels_translation(self, language):
-        self.validate_element_translation(FieldType.CARD_NUMBER.name, PaymentMethodsLocators.card_number_label,
-                                          language,
-                                          'Card number')
-        self.validate_element_translation(FieldType.EXPIRATION_DATE.name, PaymentMethodsLocators.expiration_date_label,
-                                          language, 'Expiration date')
-        self.validate_element_translation(FieldType.SECURITY_CODE.name, PaymentMethodsLocators.security_code_label,
-                                          language,
-                                          'Security code')
-        self.validate_element_translation(FieldType.SUBMIT_BUTTON.name, PaymentMethodsLocators.pay_button_label,
-                                          language,
-                                          'Pay')
-
-    def validate_message_translation_under_field(self, field_type, language, key):
         if field_type == FieldType.CARD_NUMBER.name:
-            self.validate_element_translation(FieldType.CARD_NUMBER.name,
-                                              PaymentMethodsLocators.card_number_field_validation_message, language,
-                                              key)
+            actual_translation = self.get_card_number_iframe_element_text(
+                PaymentMethodsLocators.card_number_field_validation_message)
         elif field_type == FieldType.EXPIRATION_DATE.name:
-            self.validate_element_translation(FieldType.EXPIRATION_DATE.name,
-                                              PaymentMethodsLocators.expiration_date_field_validation_message, language,
-                                              key)
+            actual_translation = self.get_expiration_date_iframe_element_text(
+                PaymentMethodsLocators.expiration_date_field_validation_message)
         elif field_type == FieldType.SECURITY_CODE.name:
-            self.validate_element_translation(FieldType.SECURITY_CODE.name,
-                                              PaymentMethodsLocators.security_code_field_validation_message, language,
-                                              key)
+            actual_translation = self.get_security_code_iframe_element_text(
+                PaymentMethodsLocators.security_code_field_validation_message)
 
-    def validate_payment_status_translation(self, language, key):
-        self.validate_element_translation(FieldType.NOTIFICATION_FRAME.name,
-                                          PaymentMethodsLocators.notification_frame, language, key)
+        self.validate_field_text(field_type, actual_translation, expected_text)
 
-    def get_translation_from_json(self, language, key):
+    def validate_field_validation_message_translation(self, field_type, language, translation_key):
+        expected_text = self.get_translation_from_json(language, translation_key)
+        self.validate_field_validation_message(field_type, expected_text)
+
+    def validate_all_labels_translation(self, language):
+        self.validate_card_number_iframe_element_text(PaymentMethodsLocators.card_number_label,
+                                                      self.get_translation_from_json(language, 'Card number'))
+        self.validate_expiration_date_iframe_element_text(PaymentMethodsLocators.expiration_date_label,
+                                                          self.get_translation_from_json(language,
+                                                                                                'Expiration date'))
+        self.validate_security_code_iframe_element_text(PaymentMethodsLocators.security_code_label,
+                                                        self.get_translation_from_json(language,
+                                                                                              'Security code'))
+        self.validate_no_iframe_element_text(FieldType.SUBMIT_BUTTON.name,
+                                             PaymentMethodsLocators.pay_button_label,
+                                             self.get_translation_from_json(language, 'Pay'))
+
+    def validate_submit_btn_specific_translation(self, expected_translation):
+        self.validate_no_iframe_element_text(FieldType.SUBMIT_BUTTON.name,
+                                             PaymentMethodsLocators.pay_button_label,
+                                             expected_translation)
+
+    def validate_payment_status_translation(self, language, translation_key):
+        expected_translation = self.get_translation_from_json(language, translation_key)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
+        self.validate_no_iframe_element_text(FieldType.NOTIFICATION_FRAME.name,
+                                             PaymentMethodsLocators.notification_frame, expected_translation)
+
+    def validate_card_number_iframe_element_text(self, locator, expected_text):
+        actual_text = self.get_card_number_iframe_element_text(locator)
+        self.validate_field_text(FieldType.CARD_NUMBER.name, actual_text, expected_text)
+
+    def validate_expiration_date_iframe_element_text(self, locator, expected_text):
+        actual_text = self.get_expiration_date_iframe_element_text(locator)
+        self.validate_field_text(FieldType.EXPIRATION_DATE.name, actual_text, expected_text)
+
+    def validate_security_code_iframe_element_text(self, locator, expected_text):
+        actual_text = self.get_security_code_iframe_element_text(locator)
+        self.validate_field_text(FieldType.SECURITY_CODE.name, actual_text, expected_text)
+
+    def validate_no_iframe_element_text(self, field_type, locator, expected_text):
+        actual_text = self.get_element_text(locator)
+        self.validate_field_text(field_type, actual_text, expected_text)
+
+    @staticmethod
+    def get_translation_from_json(language, key):
         # pylint: disable=invalid-name
         with open(f'resources/languages/{language}.json', 'r') as f:
             translation = json.load(f)
@@ -517,7 +507,8 @@ class PaymentMethodsPage(BasePage):
     def validate_if_callback_popup_is_displayed(self, callback_popup):
         is_displayed = False
         if 'success' in callback_popup:
-            is_displayed = self._waits.wait_and_check_is_element_displayed(PaymentMethodsLocators.callback_success_popup)
+            is_displayed = self._waits.wait_and_check_is_element_displayed(
+                PaymentMethodsLocators.callback_success_popup)
         elif 'error' in callback_popup:
             is_displayed = self._waits.wait_and_check_is_element_displayed(PaymentMethodsLocators.callback_error_popup)
         elif 'cancel' in callback_popup:
@@ -596,7 +587,6 @@ class PaymentMethodsPage(BasePage):
                             f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
 
     def validate_number_of_requests_with_data_and_fraudcontroltransactionid_flag(self, request_type, pan, expiry_date,
                                                                                  cvv, expected_number_of_requests):

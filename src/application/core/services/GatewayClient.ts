@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
-import { from, Observable } from 'rxjs';
+import { from, Observable, of, throwError } from 'rxjs';
 import { IThreeDInitResponse } from '../models/IThreeDInitResponse';
-import { map, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { IThreeDQueryResponse } from '../models/IThreeDQueryResponse';
 import { IStRequest } from '../models/IStRequest';
 import { StTransport } from './st-transport/StTransport.class';
@@ -15,7 +15,9 @@ export class GatewayClient {
 
   jsInit(): Observable<IThreeDInitResponse> {
     return from(this.stTransport.sendRequest(new ThreeDInitRequest())).pipe(
-      map((result: { jwt: string; response: IThreeDInitResponse }) => result.response),
+      switchMap(({ response }: { response: IThreeDInitResponse }) => {
+        return Number(response.errorcode) === 0 ? of(response) : throwError(response);
+      }),
       tap((response: IThreeDInitResponse) => {
         this.messageBus.publish({ type: PUBLIC_EVENTS.JSINIT_RESPONSE, data: response });
       })
