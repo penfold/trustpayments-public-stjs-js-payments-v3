@@ -154,7 +154,7 @@ Feature: Cardinal Commerce E2E tests
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card MASTERCARD_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION
+    When User fills payment form with defined card <test_card>
     And User clicks Pay button
     Then User will see payment status information: "<payment_status>"
     And User will see that notification frame has "<color>" color
@@ -162,10 +162,11 @@ Feature: Cardinal Commerce E2E tests
     And "<callback>" callback is called only once
 
     Examples:
-      | request_types            | payment_status                          | color | callback |
-      | THREEDQUERY AUTH         | Payment has been successfully processed | green | success  |
-      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | red   | error    |
-
+      |test_card                                    | request_types            | payment_status                          | color | callback |
+      |VISA_v22_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION  | THREEDQUERY AUTH         | Payment has been successfully processed | green | success  |
+      |VISA_v22_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION  | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | red   | error    |
+      |MASTERCARD_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION| THREEDQUERY AUTH         | Payment has been successfully processed | green | success  |
+      |MASTERCARD_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION| ACCOUNTCHECK THREEDQUERY | Bank System Error                       | red   | error    |
 
   @reactJS
     @angular

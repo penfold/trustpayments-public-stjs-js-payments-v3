@@ -35,7 +35,7 @@ export class StTransport {
   private static DELAY = 1000;
   private static RETRY_LIMIT = 5;
   private static RETRY_TIMEOUT = 10000;
-  private static TIMEOUT = 10000;
+  private static TIMEOUT = 60000;
   private _throttlingRequests = new Map<string, Promise<object>>();
   private _config: IConfig;
   private _codec: StCodec;
