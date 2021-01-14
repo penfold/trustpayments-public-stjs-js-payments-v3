@@ -256,7 +256,7 @@ def step_impl(context, field_type):
     payment_page.validate_if_field_is_not_displayed(FieldType[field_type].name)
 
 
-@step('User press enter button')
+@step('User press ENTER button in input field')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.press_enter_button_on_security_code_field()

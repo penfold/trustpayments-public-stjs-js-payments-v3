@@ -125,6 +125,6 @@ Feature: Successfull payments with various configurations
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And AUTH response is set to "OK"
-    And User press enter button
+    And User press ENTER button on input field
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see the same provided data in inputs fields

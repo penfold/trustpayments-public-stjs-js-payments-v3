@@ -4,14 +4,13 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
   In order to check payment functionality
 
 
-
   Scenario: Prevent submit payment form by 'Enter' button with enabled 'stopSubmitFormOnEnter' option
     Given JS library configured by inline params STOP_SUBMIT_FORM_ON_ENTER and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
-    And User press enter button
+    And User press ENTER button on input field
     Then User will not see notification frame
     And User will see that Submit button is "enabled" after payment
     And User will see that ALL input fields are "enabled"
@@ -23,7 +22,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card VISA_FRICTIONLESS
-    And User press enter button
+    And User press ENTER button on input field
     Then User will see payment status information: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
@@ -37,7 +36,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card VISA_FRICTIONLESS
-    And User press enter button
+    And User press ENTER button on input field
     Then User will see payment status information: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
