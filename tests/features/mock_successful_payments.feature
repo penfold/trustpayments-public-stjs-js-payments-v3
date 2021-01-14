@@ -118,13 +118,13 @@ Feature: Successfull payments with various configurations
     And User will see that notification frame has "green" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
-  @base_config
+  @base_config @stopSubmitFormOnEnter
   Scenario: Submit payment form by 'Enter' button
     Given User opens page with payment form
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And AUTH response is set to "OK"
-    And User press ENTER button on input field
+    And User press ENTER button in input field
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see the same provided data in inputs fields

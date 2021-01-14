@@ -1,3 +1,4 @@
+@stopSubmitFormOnEnter
 Feature: E2E for 'stopSubmitFormOnEnter' option
   As a user
   I want to use config with stopSubmitFormOnEnter
@@ -10,7 +11,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
-    And User press ENTER button on input field
+    And User press ENTER button in input field
     Then User will not see notification frame
     And User will see that Submit button is "enabled" after payment
     And User will see that ALL input fields are "enabled"
@@ -22,7 +23,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card VISA_FRICTIONLESS
-    And User press ENTER button on input field
+    And User press ENTER button in input field
     Then User will see payment status information: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
@@ -36,7 +37,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card VISA_FRICTIONLESS
-    And User press ENTER button on input field
+    And User press ENTER button in input field
     Then User will see payment status information: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
