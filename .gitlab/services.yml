@@ -1,0 +1,24 @@
+.services-app-html-test:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
+      alias: library.securetrading.net
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
+      alias: merchant.securetrading.net
+    - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
+      alias: webservices.securetrading.net
+      command: [ "--https-port", "8443", "--https-keystore", "/home/wiremock/keystore" ]
+    - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
+      alias: thirdparty.example.com
+      command: [ "--https-port", "8443", "--https-keystore", "/home/wiremock/keystore" ]
+
+.services-app-html-dev:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
+      alias: library.securetrading.net
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
+      alias: merchant.securetrading.net
+
+.services-app-html-prod:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_PROD}"
+      alias: merchant.securetrading.net
