@@ -27,7 +27,7 @@ describe('FormField', () => {
     beforeEach(() => {
       const event = new Event('click');
       // @ts-ignore
-      spy = jest.spyOn(instance, '_click');
+      spy = jest.spyOn(instance, 'click');
       // @ts-ignore
       instance.onClick(event);
     });
@@ -118,7 +118,7 @@ describe('FormField', () => {
       // @ts-ignore
       instance.onFocus = jest.fn();
       // @ts-ignore
-      instance._addTabListener();
+      instance.addTabListener();
     });
 
     it('should call onFocus', () => {
@@ -154,42 +154,42 @@ describe('FormField', () => {
 
     it('should call onPaste listener', () => {
       // @ts-ignore
-      instance._setInputListeners();
+      instance.setInputListeners();
       // @ts-ignore
       expect(instance.onPaste).toHaveBeenCalled();
     });
 
     it('should call onKeyPress listener', () => {
       // @ts-ignore
-      instance._setInputListeners();
+      instance.setInputListeners();
       // @ts-ignore
       expect(instance.onKeyPress).toHaveBeenCalled();
     });
 
     it('should call onInput listener', () => {
       // @ts-ignore
-      instance._setInputListeners();
+      instance.setInputListeners();
       // @ts-ignore
       expect(instance.onInput).toHaveBeenCalled();
     });
 
     it('should call onFocus listener', () => {
       // @ts-ignore
-      instance._setInputListeners();
+      instance.setInputListeners();
       // @ts-ignore
       expect(instance.onFocus).toHaveBeenCalled();
     });
 
     it('should call onBlur listener', () => {
       // @ts-ignore
-      instance._setInputListeners();
+      instance.setInputListeners();
       // @ts-ignore
       expect(instance.onBlur).toHaveBeenCalled();
     });
 
     it('should call onClick listener', () => {
       // @ts-ignore
-      instance._setInputListeners();
+      instance.setInputListeners();
       // @ts-ignore
       expect(instance.onClick).toHaveBeenCalled();
     });
@@ -202,7 +202,7 @@ describe('FormField', () => {
       // @ts-ignore
       instance.getLabel = jest.fn();
       // @ts-ignore
-      instance._setLabelText();
+      instance.setLabelText();
     });
     it('should call an error', () => {
       // @ts-ignore

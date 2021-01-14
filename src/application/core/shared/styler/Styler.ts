@@ -9,7 +9,7 @@ import { IStyles } from '../../../../shared/model/config/IStyles';
 import { forEach } from 'lodash';
 
 interface StylesAttributes {
-  elementId: string;
+  elementSelector: string;
   classList?: string[];
   inlineStyles?: {
     property: string;
@@ -54,8 +54,8 @@ export class Styler {
   }
 
   private addStylesToElement(props: StylesAttributes) {
-    const { elementId, classList, inlineStyles } = props;
-    const element = document.getElementById(elementId);
+    const { elementSelector, classList, inlineStyles } = props;
+    const element = document.querySelector(elementSelector) as HTMLElement;
 
     if (classList) {
       classList.forEach(className => element.classList.add(className));

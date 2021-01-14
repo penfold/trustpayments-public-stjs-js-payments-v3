@@ -60,11 +60,11 @@ export class SecurityCode extends Input {
       if (styler.hasSpecificStyle('isLinedUp', config.styles.securityCode)) {
         styler.addStyles([
           {
-            elementId: 'st-security-code',
+            elementSelector: '#st-security-code',
             classList: ['st-security-code--lined-up']
           },
           {
-            elementId: 'st-security-code-label',
+            elementSelector: '#st-security-code-label',
             classList: ['security-code__label--required', 'lined-up']
           }
         ]);
@@ -76,11 +76,26 @@ export class SecurityCode extends Input {
 
         styler.addStyles([
           {
-            elementId: 'st-security-code-wrapper',
+            elementSelector: '#st-security-code-wrapper',
             inlineStyles: [
               {
                 property: 'padding',
                 value: `${outlineSize ? outlineSize : 3}px`
+              }
+            ]
+          }
+        ]);
+      }
+
+      if (styler.hasSpecificStyle('color-asterisk', config.styles.securityCode)) {
+        const value = config.styles.securityCode['color-asterisk'];
+        styler.addStyles([
+          {
+            elementSelector: '#st-security-code-label .asterisk',
+            inlineStyles: [
+              {
+                property: 'color',
+                value
               }
             ]
           }

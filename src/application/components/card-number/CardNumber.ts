@@ -73,11 +73,11 @@ export class CardNumber extends Input {
       if (styler.hasSpecificStyle('isLinedUp', config.styles.cardNumber)) {
         styler.addStyles([
           {
-            elementId: 'st-card-number',
+            elementSelector: '#st-card-number',
             classList: ['st-card-number--lined-up']
           },
           {
-            elementId: 'st-card-number-label',
+            elementSelector: '#st-card-number-label',
             classList: ['card-number__label--required', 'lined-up']
           }
         ]);
@@ -89,11 +89,26 @@ export class CardNumber extends Input {
 
         styler.addStyles([
           {
-            elementId: 'st-card-number-wrapper',
+            elementSelector: '#st-card-number-wrapper',
             inlineStyles: [
               {
                 property: 'padding',
                 value: `${outlineSize ? outlineSize : 3}px`
+              }
+            ]
+          }
+        ]);
+      }
+
+      if (styler.hasSpecificStyle('color-asterisk', config.styles.cardNumber)) {
+        const value = config.styles.cardNumber['color-asterisk'];
+        styler.addStyles([
+          {
+            elementSelector: '#st-card-number-label .asterisk',
+            inlineStyles: [
+              {
+                property: 'color',
+                value
               }
             ]
           }
