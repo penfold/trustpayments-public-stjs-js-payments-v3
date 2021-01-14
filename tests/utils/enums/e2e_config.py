@@ -55,3 +55,4 @@ class E2eConfig(Enum):
     CHANGED_FORM_ID_CONFIG = 'e2eFormIdConfig.json'
     STOP_SUBMIT_FORM_ON_ENTER = 'e2eConfigStopSubmitFormOnEnter.json'
     STOP_SUBMIT_FORM_ON_ENTER_FALSE = 'e2eConfigStopSubmitFormOnEnterFalse.json'
+    SUBMIT_ON_SUCCESS_STOP_SUBMIT_FORM_ON_ENTER = 'e2eSubmitOnSuccessStopSubmitFormOnEnter.json'

@@ -18,7 +18,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
 
 
   Scenario: Submit payment form by 'Enter' button - 'stopSubmitFormOnEnter' option is disabled by default
-    Given JS library configured by inline params BASE_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
@@ -46,7 +46,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
 
 
   Scenario: Submit payment form by 'Pay' button with enabled options: submitOnSuccess and 'stopSubmitFormOnEnter'
-    Given JS library configured by inline params STOP_SUBMIT_FORM_ON_ENTER and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params SUBMIT_ON_SUCCESS_STOP_SUBMIT_FORM_ON_ENTER and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
@@ -66,7 +66,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
       | jwt                  | should not be none                      |
 
 
-  Scenario: Submit payment form by 'Pay' button with enabled options: submitOnSuccess and 'stopSubmitFormOnEnter'
+  Scenario: Submit payment form by 'Pay' button with enabled 'stopSubmitFormOnEnter' option
     Given JS library configured by inline params STOP_SUBMIT_FORM_ON_ENTER and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
