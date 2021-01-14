@@ -11,7 +11,11 @@ import { IMerchantData } from '../../core/models/IMerchantData';
 import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
 import { IResponseData } from '../../core/models/IResponseData';
 import { ISubmitData } from '../../core/models/ISubmitData';
-import { PAYMENT_SUCCESS, PAYMENT_ERROR } from '../../core/models/constants/Translations';
+import {
+  PAYMENT_SUCCESS,
+  PAYMENT_ERROR,
+  COMMUNICATION_ERROR_INVALID_RESPONSE
+} from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
 import { Validation } from '../../core/shared/validation/Validation';
@@ -258,9 +262,9 @@ export class ControlFrame {
     return validity;
   }
 
-  private _onPaymentFailure(errorData: IResponseData): Observable<never> {
+  private _onPaymentFailure(errorData: IResponseData, errorMessage: string = PAYMENT_ERROR): Observable<never> {
     const translator = new Translator(this._localStorage.getItem('locale'));
-    const translatedErrorMessage = translator.translate(PAYMENT_ERROR);
+    const translatedErrorMessage = translator.translate(errorMessage);
 
     this._messageBus.publish({ type: PUBLIC_EVENTS.RESET_JWT });
     this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
@@ -423,26 +427,29 @@ export class ControlFrame {
       };
     }
 
-    this._threeDProcess.init(initialTokens).subscribe(() => {
-      this._isPaymentReady = true;
+    this._threeDProcess.init(initialTokens).subscribe({
+      next: () => {
+        this._isPaymentReady = true;
 
-      if (config.components.startOnLoad) {
-        this._messageBus.publish({
-          type: PUBLIC_EVENTS.BIN_PROCESS,
-          data: new StJwt(config.jwt).payload.pan as string
-        });
+        if (config.components.startOnLoad) {
+          this._messageBus.publish({
+            type: PUBLIC_EVENTS.BIN_PROCESS,
+            data: new StJwt(config.jwt).payload.pan as string
+          });
 
-        this._messageBus.publish(
-          {
-            type: PUBLIC_EVENTS.SUBMIT_FORM,
-            data: {
-              dataInJwt: true,
-              requestTypes: this._remainingRequestTypes
-            }
-          },
-          true
-        );
-      }
+          this._messageBus.publish(
+            {
+              type: PUBLIC_EVENTS.SUBMIT_FORM,
+              data: {
+                dataInJwt: true,
+                requestTypes: this._remainingRequestTypes
+              }
+            },
+            true
+          );
+        }
+      },
+      error: (errorData: IResponseData) => this._onPaymentFailure(errorData, COMMUNICATION_ERROR_INVALID_RESPONSE)
     });
   }
 }
