@@ -17,10 +17,9 @@
 %label--required {
   position: relative;
 
-  &:after {
-    content: '*';
+  span.asterisk {
     display: inline;
-    font-size: 1.5em;
+    font-size: 18px;
     font-weight: bold;
     color: $color-error; // @param
     margin: 0 5px;
