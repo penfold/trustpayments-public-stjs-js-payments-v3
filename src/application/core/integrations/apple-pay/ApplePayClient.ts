@@ -84,13 +84,16 @@ export class ApplePayClient implements IApplePayClient {
   ): Observable<ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET> {
     const { errorCode, errorMessage } = details;
     this.applePayNotificationService.notification(errorCode, errorMessage);
-    this.messageBus.publish({
-      data: {
-        errorCode,
-        errorMessage
+    this.messageBus.publish(
+      {
+        data: {
+          errorCode,
+          errorMessage
+        },
+        type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK
       },
-      type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK
-    });
+      true
+    );
 
     return of(ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET);
   }
@@ -98,6 +101,7 @@ export class ApplePayClient implements IApplePayClient {
   private onCancel$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.CANCEL> {
     const { errorCode, errorMessage } = details;
     this.applePayNotificationService.notification(errorCode, errorMessage);
+    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, true);
     this.messageBus.publish(
       {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
@@ -105,7 +109,6 @@ export class ApplePayClient implements IApplePayClient {
       },
       true
     );
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK });
 
     return of(ApplePayClientStatus.CANCEL);
   }
@@ -139,7 +142,7 @@ export class ApplePayClient implements IApplePayClient {
 
   private onSuccess$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK });
+    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
     this.messageBus.publish(
       {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
@@ -189,7 +192,7 @@ export class ApplePayClient implements IApplePayClient {
 
   private onError$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.ERROR> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK });
+    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
     this.messageBus.publish(
       {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
