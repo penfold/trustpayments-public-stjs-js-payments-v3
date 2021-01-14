@@ -100,10 +100,10 @@ Feature: Cardinal Commerce E2E tests
     And User opens example page
     When User fills payment form with defined card AMERICAN_EXPRESS_TIMEOUT_CARD
     And User clicks Pay button
-    Then User will see payment status information: "An error occurred"
-    And User will see that notification frame has "red" color
+   Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
     And "submit" callback is called only once
-    And "error" callback is called only once
+    And "success" callback is called only once
 
     Examples:
       | request_types            |
