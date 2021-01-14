@@ -9,7 +9,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     Given JS library configured by inline params STOP_SUBMIT_FORM_ON_ENTER and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens page with payment form
+    And User opens example page
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User press enter button
     Then User will not see notification frame
@@ -21,7 +21,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     Given JS library configured by inline params BASE_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens page with payment form
+    And User opens example page
     When User fills payment form with defined card VISA_FRICTIONLESS
     And User press enter button
     Then User will see payment status information: "Payment has been successfully processed"
@@ -35,7 +35,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     Given JS library configured by inline params STOP_SUBMIT_FORM_ON_ENTER_FALSE and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens page with payment form
+    And User opens example page
     When User fills payment form with defined card VISA_FRICTIONLESS
     And User press enter button
     Then User will see payment status information: "Payment has been successfully processed"
@@ -70,7 +70,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     Given JS library configured by inline params STOP_SUBMIT_FORM_ON_ENTER and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens page with payment form
+    And User opens example page
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
