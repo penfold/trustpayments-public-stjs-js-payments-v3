@@ -34,6 +34,7 @@ Feature: E2E Card Payments with cachetoken
     And User opens example page
     And User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
+    And user waits for payment to be processed
     And User gets cachetoken value from url
     And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
