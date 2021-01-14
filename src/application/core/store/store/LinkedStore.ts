@@ -18,7 +18,7 @@ export class LinkedStore implements IStore<IApplicationFrameState> {
   }
 
   select<U>(selector: (state: IApplicationFrameState) => U): Observable<U> {
-    return this.store$.pipe(map(selector));
+    return new Observable<U>(observer => this.store$.pipe(map(selector)).subscribe(observer));
   }
 
   subscribe(observer: (state: IApplicationFrameState) => any): Unsubscribable {
