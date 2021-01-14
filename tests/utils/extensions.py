@@ -92,6 +92,12 @@ class WebElementsExtensions(Waits):
         except StaleElementReferenceException:
             return self.find_element(locator).text
 
+    def get_text_from_last_element(self, locator):
+        try:
+            return self.find_elements(locator)[-1].text
+        except StaleElementReferenceException:
+            return self.find_element(locator)[-1].text
+
     def get_text_with_wait(self, locator):
         self.wait_for_element(locator)
         element = self.find_element(locator)
