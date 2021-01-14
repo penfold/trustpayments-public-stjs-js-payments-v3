@@ -4,7 +4,7 @@ publish-to-cdn:
     - .trigger-publish-to-cdn-release
   before_script:
     - . .cicd_scripts/gitlab/release/load_release_artifact.sh "${ARTIFACT_RELEASE_CICD_FILENAME}"
-    - export PUBLISH_ARTIFACT_TARGET_RELATIVE_PATH="${RELEASE_TAG}-${CDN_HASH}/st.js"
+    - export PUBLISH_ARTIFACT_TARGET_RELATIVE_PATH="${RELEASE_TAG}-${CDN_HASH}"
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-prod-release'
-    PUBLISH_ARTIFACT_SOURCE_PATH: ".dist-prod/st.js"
+    PUBLISH_ARTIFACT_SOURCE_PATH: ".dist-prod"
