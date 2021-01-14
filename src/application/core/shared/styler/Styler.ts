@@ -8,7 +8,7 @@ import { Frame } from '../frame/Frame';
 import { IStyles } from '../../../../shared/model/config/IStyles';
 
 interface StylesAttributes {
-  elementId: string;
+  elementSelector: string;
   classList?: string[];
   inlineStyles?: {
     property: string;
@@ -53,8 +53,8 @@ export class Styler {
   }
 
   private addStylesToElement(props: StylesAttributes) {
-    const { elementId, classList, inlineStyles } = props;
-    const element = document.getElementById(elementId);
+    const { elementSelector, classList, inlineStyles } = props;
+    const element = document.querySelector(elementSelector) as HTMLElement;
 
     if (classList) {
       classList.forEach(className => element.classList.add(className));

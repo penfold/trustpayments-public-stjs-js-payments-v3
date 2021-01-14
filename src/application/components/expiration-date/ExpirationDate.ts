@@ -44,11 +44,11 @@ export class ExpirationDate extends Input {
       if (styler.hasSpecificStyle('isLinedUp', config.styles.expirationDate)) {
         styler.addStyles([
           {
-            elementId: 'st-expiration-date',
+            elementSelector: '#st-expiration-date',
             classList: ['st-expiration-date--lined-up']
           },
           {
-            elementId: 'st-expiration-date-label',
+            elementSelector: '#st-expiration-date-label',
             classList: ['expiration-date__label--required', 'lined-up']
           }
         ]);
@@ -60,11 +60,26 @@ export class ExpirationDate extends Input {
 
         styler.addStyles([
           {
-            elementId: 'st-expiration-date-wrapper',
+            elementSelector: '#st-expiration-date-wrapper',
             inlineStyles: [
               {
                 property: 'padding',
                 value: `${outlineSize ? outlineSize : 3}px`
+              }
+            ]
+          }
+        ]);
+      }
+
+      if (styler.hasSpecificStyle('color-asterisk', config.styles.expirationDate)) {
+        const value = config.styles.expirationDate['color-asterisk'];
+        styler.addStyles([
+          {
+            elementSelector: '#st-expiration-date-label .asterisk',
+            inlineStyles: [
+              {
+                property: 'color',
+                value
               }
             ]
           }
