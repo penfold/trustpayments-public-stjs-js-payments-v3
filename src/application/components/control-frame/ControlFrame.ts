@@ -255,7 +255,6 @@ export class ControlFrame {
     this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
 
     errorData.errormessage = translatedErrorMessage;
-
     StCodec.publishResponse(errorData, errorData.jwt, errorData.threedresponse);
 
     this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
