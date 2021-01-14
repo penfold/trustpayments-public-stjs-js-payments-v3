@@ -15,6 +15,7 @@ import { StCodec } from '../../services/st-codec/StCodec.class';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { CustomerOutput } from '../../models/constants/CustomerOutput';
+import { RequestType } from '../../../../shared/types/RequestType';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 
@@ -59,7 +60,7 @@ describe('Payment', () => {
     });
 
     it('should send remaining request types with card and merchant data', async () => {
-      await instance.processPayment(['AUTH'], card, {
+      await instance.processPayment([RequestType.AUTH], card, {
         merchant: 'data'
       });
       // @ts-ignore
@@ -74,7 +75,7 @@ describe('Payment', () => {
 
       when(cybertonica.getTransactionId()).thenResolve(cybertonicaTid);
 
-      await instance.processPayment(['AUTH'], card, {
+      await instance.processPayment([RequestType.AUTH], card, {
         merchant: 'data'
       });
 
@@ -87,13 +88,18 @@ describe('Payment', () => {
     });
 
     it('should send remaining request types with 3D response', async () => {
-      await instance.processPayment(['AUTH', 'RISKDEC'], card, { pan: 'overridden', merchant: 'data' }, ({
-        requesttypescription: 'THREEDQUERY',
-        customeroutput: CustomerOutput.THREEDREDIRECT,
-        cachetoken: 'foobar',
-        errorcode: '0',
-        threedresponse: 'xyzzzz'
-      } as unknown) as IThreeDQueryResponse);
+      await instance.processPayment(
+        [RequestType.AUTH, RequestType.RISKDEC],
+        card,
+        { pan: 'overridden', merchant: 'data' },
+        ({
+          requesttypescription: 'THREEDQUERY',
+          customeroutput: CustomerOutput.THREEDREDIRECT,
+          cachetoken: 'foobar',
+          errorcode: '0',
+          threedresponse: 'xyzzzz'
+        } as unknown) as IThreeDQueryResponse
+      );
       // @ts-ignore
       expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
         ...card,
@@ -104,13 +110,18 @@ describe('Payment', () => {
     });
 
     it('should not send remaining request types when previous response has RESULT customeroutput ', async () => {
-      await instance.processPayment(['AUTH', 'RISKDEC'], card, { pan: 'overridden', merchant: 'data' }, ({
-        requesttypescription: 'THREEDQUERY',
-        customeroutput: CustomerOutput.RESULT,
-        cachetoken: 'foobar',
-        threedresponse: 'xyzzzz',
-        errorcode: '0'
-      } as unknown) as IThreeDQueryResponse);
+      await instance.processPayment(
+        [RequestType.AUTH, RequestType.RISKDEC],
+        card,
+        { pan: 'overridden', merchant: 'data' },
+        ({
+          requesttypescription: 'THREEDQUERY',
+          customeroutput: CustomerOutput.RESULT,
+          cachetoken: 'foobar',
+          threedresponse: 'xyzzzz',
+          errorcode: '0'
+        } as unknown) as IThreeDQueryResponse
+      );
 
       // @ts-ignore
       expect(instance.stTransport.sendRequest).not.toHaveBeenCalled();
@@ -118,7 +129,7 @@ describe('Payment', () => {
 
     it('should not send remaining request types when previous response has TRYAGAIN customeroutput ', done => {
       instance
-        .processPayment(['AUTH', 'RISKDEC'], card, { pan: 'overridden', merchant: 'data' }, ({
+        .processPayment([RequestType.AUTH, RequestType.RISKDEC], card, { pan: 'overridden', merchant: 'data' }, ({
           requesttypescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.TRYAGAIN,
           cachetoken: 'foobar',
@@ -134,7 +145,7 @@ describe('Payment', () => {
 
     it('should not send remaining request types when previous response has no-zero errorcode', done => {
       instance
-        .processPayment(['AUTH', 'RISKDEC'], card, { pan: 'overridden', merchant: 'data' }, ({
+        .processPayment([RequestType.AUTH, RequestType.RISKDEC], card, { pan: 'overridden', merchant: 'data' }, ({
           requesttypescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.THREEDREDIRECT,
           cachetoken: 'foobar',
@@ -149,7 +160,7 @@ describe('Payment', () => {
     });
 
     it('should send AUTH request with wallet', async () => {
-      await instance.processPayment(['AUTH'], wallet, {
+      await instance.processPayment([RequestType.AUTH], wallet, {
         merchant: 'data'
       });
       // @ts-ignore
@@ -161,7 +172,7 @@ describe('Payment', () => {
     });
 
     it('should send AUTH request with wallet and additional data', async () => {
-      await instance.processPayment(['AUTH'], wallet, {
+      await instance.processPayment([RequestType.AUTH], wallet, {
         wallettoken: 'overridden',
         merchant: 'data'
       });
@@ -174,7 +185,7 @@ describe('Payment', () => {
     });
 
     it('should send CACHETOKENISE request with wallet and additional data', async () => {
-      await instance.processPayment(['CACHETOKENISE'], wallet, {
+      await instance.processPayment([RequestType.CACHETOKENISE], wallet, {
         wallettoken: 'overridden',
         merchant: 'data'
       });

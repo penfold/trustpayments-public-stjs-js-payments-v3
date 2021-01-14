@@ -1,4 +1,5 @@
 export enum RequestType {
+  AUTH = 'AUTH',
   WALLETVERIFY = 'WALLETVERIFY',
   JSINIT = 'JSINIT',
   THREEDQUERY = 'THREEDQUERY',
