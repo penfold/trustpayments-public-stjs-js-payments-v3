@@ -14,7 +14,7 @@ Feature: Card Payments
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "<action_code>"
-    And user waits for payment to be processed
+    And User waits for payment to be processed
     Then User will see that Submit button is "<form_status>" after payment
     And User will see that ALL input fields are "<form_status>"
 

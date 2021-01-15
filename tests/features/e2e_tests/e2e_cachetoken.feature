@@ -26,6 +26,7 @@ Feature: E2E Card Payments with cachetoken
       | jwt        | should not be none |
       | cachetoken | should not be none |
 
+
   @smoke_e2e_test
   Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - non-frictionless card
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
@@ -34,7 +35,7 @@ Feature: E2E Card Payments with cachetoken
     And User opens example page
     And User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
-    And user waits for payment to be processed
+    And User waits for payment to be processed
     And User gets cachetoken value from url
     And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
@@ -45,87 +46,88 @@ Feature: E2E Card Payments with cachetoken
     And "submit" callback is called only once
     And "success" callback is called only once
 
-  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - frictionless card
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
-      | key                     | value         |
-      | requesttypedescriptions | CACHETOKENISE |
-    And User opens example page
-    And User fills payment form with defined card VISA_FRICTIONLESS
-    And User clicks Pay button
-    And User gets cachetoken value from url
-    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | AUTH             |
-      | cachetoken              | cachetoken_value |
-    When User opens example page WITHOUT_SUBMIT_BUTTON
-    Then User will see payment status information: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
-
-  Scenario: Declined payment with cachetoken, startOnLoad and AUTH requestType - frictionless card
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
-      | key                     | value         |
-      | requesttypedescriptions | CACHETOKENISE |
-    And User opens example page
-    And User fills payment form with defined card VISA_FRICTIONLESS
-    And User clicks Pay button
-    And User gets cachetoken value from url
-    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | AUTH             |
-      | cachetoken              | cachetoken_value |
-      | baseamount              | 70000            |
-    When User opens example page WITHOUT_SUBMIT_BUTTON
-    Then User will see payment status information: "Decline"
-    And "submit" callback is called only once
-    And "error" callback is called only once
-
-  Scenario: Successful payment with cachetoken, submitOnSuccess, startOnLoad and AUTH requestType
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
-      | key                     | value         |
-      | requesttypedescriptions | CACHETOKENISE |
-    And User opens example page
-    And User fills payment form with defined card VISA_FRICTIONLESS
-    And User clicks Pay button
-    And User gets cachetoken value from url
-    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | AUTH             |
-      | cachetoken              | cachetoken_value |
-    When User opens example page WITHOUT_SUBMIT_BUTTON
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | baseamount           | 1000                                    |
-      | currencyiso3a        | GBP                                     |
-      | errorcode            | 0                                       |
-      | settlestatus         | 0                                       |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-
-  Scenario: Declined payment with cachetoken, submitOnError, startOnLoad and AUTH requestType
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
-      | key                     | value         |
-      | requesttypedescriptions | CACHETOKENISE |
-    And User opens example page
-    And User fills payment form with defined card VISA_FRICTIONLESS
-    And User clicks Pay button
-    And User gets cachetoken value from url
-    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | AUTH             |
-      | cachetoken              | cachetoken_value |
-      | baseamount              | 70000            |
-    When User opens example page WITHOUT_SUBMIT_BUTTON
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value              |
-      | errormessage         | Decline            |
-      | baseamount           | 70000              |
-      | currencyiso3a        | GBP                |
-      | errorcode            | 70000              |
-      | settlestatus         | 3                  |
-      | transactionreference | should not be none |
-      | jwt                  | should not be none |
+#  TODO - STJS-1278
+#  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - frictionless card
+#    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
+#      | key                     | value         |
+#      | requesttypedescriptions | CACHETOKENISE |
+#    And User opens example page
+#    And User fills payment form with defined card VISA_FRICTIONLESS
+#    And User clicks Pay button
+#    And User gets cachetoken value from url
+#    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value            |
+#      | requesttypedescriptions | AUTH             |
+#      | cachetoken              | cachetoken_value |
+#    When User opens example page WITHOUT_SUBMIT_BUTTON
+#    Then User will see payment status information: "Payment has been successfully processed"
+#    And "submit" callback is called only once
+#    And "success" callback is called only once
+#
+#  Scenario: Declined payment with cachetoken, startOnLoad and AUTH requestType - frictionless card
+#    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
+#      | key                     | value         |
+#      | requesttypedescriptions | CACHETOKENISE |
+#    And User opens example page
+#    And User fills payment form with defined card VISA_FRICTIONLESS
+#    And User clicks Pay button
+#    And User gets cachetoken value from url
+#    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value            |
+#      | requesttypedescriptions | AUTH             |
+#      | cachetoken              | cachetoken_value |
+#      | baseamount              | 70000            |
+#    When User opens example page WITHOUT_SUBMIT_BUTTON
+#    Then User will see payment status information: "Decline"
+#    And "submit" callback is called only once
+#    And "error" callback is called only once
+#
+#  Scenario: Successful payment with cachetoken, submitOnSuccess, startOnLoad and AUTH requestType
+#    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
+#      | key                     | value         |
+#      | requesttypedescriptions | CACHETOKENISE |
+#    And User opens example page
+#    And User fills payment form with defined card VISA_FRICTIONLESS
+#    And User clicks Pay button
+#    And User gets cachetoken value from url
+#    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value            |
+#      | requesttypedescriptions | AUTH             |
+#      | cachetoken              | cachetoken_value |
+#    When User opens example page WITHOUT_SUBMIT_BUTTON
+#    Then User will be sent to page with url "www.example.com" having params
+#      | key                  | value                                   |
+#      | errormessage         | Payment has been successfully processed |
+#      | baseamount           | 1000                                    |
+#      | currencyiso3a        | GBP                                     |
+#      | errorcode            | 0                                       |
+#      | settlestatus         | 0                                       |
+#      | transactionreference | should not be none                      |
+#      | jwt                  | should not be none                      |
+#
+#  Scenario: Declined payment with cachetoken, submitOnError, startOnLoad and AUTH requestType
+#    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
+#      | key                     | value         |
+#      | requesttypedescriptions | CACHETOKENISE |
+#    And User opens example page
+#    And User fills payment form with defined card VISA_FRICTIONLESS
+#    And User clicks Pay button
+#    And User gets cachetoken value from url
+#    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value            |
+#      | requesttypedescriptions | AUTH             |
+#      | cachetoken              | cachetoken_value |
+#      | baseamount              | 70000            |
+#    When User opens example page WITHOUT_SUBMIT_BUTTON
+#    Then User will be sent to page with url "www.example.com" having params
+#      | key                  | value              |
+#      | errormessage         | Decline            |
+#      | baseamount           | 70000              |
+#      | currencyiso3a        | GBP                |
+#      | errorcode            | 70000              |
+#      | settlestatus         | 3                  |
+#      | transactionreference | should not be none |
+#      | jwt                  | should not be none |
 
 #  Scenario: Successful payment with cachetoken and bypassCard
 #    Given User fills payment form with defined card VISA_NON_FRICTIONLESS

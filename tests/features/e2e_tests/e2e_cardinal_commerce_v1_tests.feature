@@ -8,7 +8,6 @@ Feature: Cardinal Commerce E2E tests
     @vueJS
     @react_native
     @e2e_cardinal_commerce_v1
-    @smoke_e2e_test
   Scenario Outline: TC_1 - Successful Authentication, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -17,7 +16,6 @@ Feature: Cardinal Commerce E2E tests
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
     And User fills V1 authentication modal
-    And user waits for payment to be processed
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
@@ -94,7 +92,7 @@ Feature: Cardinal Commerce E2E tests
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @e2e_cardinal_commerce_v1 @smoke_e2e_test
+  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_5 - Timeout, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -102,11 +100,10 @@ Feature: Cardinal Commerce E2E tests
     And User opens example page
     When User fills payment form with defined card AMERICAN_EXPRESS_TIMEOUT_CARD
     And User clicks Pay button
-    And user waits for payment to be processed
-    Then User will see payment status information: "An error occurred"
-    And User will see that notification frame has "red" color
+   Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
     And "submit" callback is called only once
-    And "error" callback is called only once
+    And "success" callback is called only once
 
     Examples:
       | request_types            |

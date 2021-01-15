@@ -39,6 +39,6 @@ Feature: Notification frame
     And User waits for payment status to disappear
     When User fills payment form with credit card number "4111110000000211", expiration date "01/22" and cvv "123"
     And User clicks Pay button - AUTH response is set to "OK"
-    And user waits for payment to be processed
+    And User waits for payment to be processed
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color

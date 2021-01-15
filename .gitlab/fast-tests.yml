@@ -1,24 +1,18 @@
-.image-test:
+.e2e-tests:
+  extends:
+    - .fast-tests
+    - .parallel-e2e-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
-.services-test:
-  services:
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
-      alias: library.securetrading.net
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_TEST}"
-      alias: merchant.securetrading.net
-    - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
-      alias: webservices.securetrading.net
-      command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
-    - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
-      alias: thirdparty.example.com
-      command: ["--https-port", "8443", "--https-keystore", "/home/wiremock/keystore"]
+.component-app-html-test:
+  extends:
+    - .fast-tests
+    - .services-app-html-test
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 card-payments-headless-component-tests:
   extends:
-    - .image-test
-    - .fast-tests
-    - .services-test
+    - .component-app-html-test
     - .parallel-component-tests
   variables:
     FEATURE_FILES_NAMES_CONTAINS: 'mock_'
@@ -26,26 +20,22 @@ card-payments-headless-component-tests:
 
 visa-checkout-headless-component-tests:
   extends:
-    - .image-test
-    - .fast-tests
-    - .services-test
+    - .component-app-html-test
     - .sequentially-component-tests
   variables:
     FEATURE_FILE_NAME: 'visa_checkout.feature'
 
-.services-dev:
-  services:
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
-      alias: library.securetrading.net
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
-      alias: merchant.securetrading.net
-
-e2e-tests:
+e2e-app-html-dev:
   extends:
-    - .image-test
-    - .fast-tests
-    - .services-dev
-    - .parallel-e2e-tests
+    - .e2e-tests
+    - .services-app-html-dev
+  parallel: 28
+
+e2e-app-html-release:
+  extends:
+    - .e2e-tests
+    - .services-app-html-prod
+    - .rules-when-release
   parallel: 28
 
 zap-baseline-scan-library-securetrading-net:
@@ -67,4 +57,3 @@ zap-baseline-scan-merchant-securetrading-net:
   variables:
     URL_TO_SCAN: 'https://merchant.securetrading.net'
     ZAP_CONFIG_PATH: "baseline-scan.conf"
-
