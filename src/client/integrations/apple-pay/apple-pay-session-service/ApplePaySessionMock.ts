@@ -47,17 +47,17 @@ export class ApplePaySessionMock implements IApplePaySession {
   }
 
   begin(): void {
-    // fetch(environment.APPLE_PAY_URLS.MOCK_DATA_URL)
-    //   .then((response: any) => {
-    //     return response.json();
-    //   })
-    //   .then((data: any) => {
-    //     this.handleResponse(data);
-    //   });
-    this.handleResponse({
-      status: 'SUCCESS',
-      payment: 'mockapplepaydata'
-    });
+    fetch(environment.APPLE_PAY_URLS.MOCK_DATA_URL)
+      .then((response: any) => {
+        return response.json();
+      })
+      .then((data: any) => {
+        this.handleResponse(data);
+      });
+    // this.handleResponse({
+    //   status: 'SUCCESS',
+    //   payment: 'mockapplepaydata'
+    // });
   }
 
   hasApplePaySessionObject(): boolean {
