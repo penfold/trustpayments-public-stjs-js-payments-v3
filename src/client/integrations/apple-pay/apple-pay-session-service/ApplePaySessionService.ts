@@ -29,7 +29,9 @@ export class ApplePaySessionService {
   }
 
   abortApplePaySession(): void {
+    console.error(this.applePaySession);
     try {
+      console.error(this.applePaySession);
       this.applePaySession.abort();
     } catch (error) {
       console.error(error);

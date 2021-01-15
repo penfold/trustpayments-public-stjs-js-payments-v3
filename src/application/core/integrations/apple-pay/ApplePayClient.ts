@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { EMPTY, from, Observable, of, throwError } from 'rxjs';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { mapTo, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
@@ -27,6 +27,7 @@ export class ApplePayClient implements IApplePayClient {
     private applePayPaymentService: ApplePayPaymentService,
     private configProvider: ConfigProvider,
     private interFrameCommunicator: InterFrameCommunicator,
+    private localStorage: BrowserLocalStorage,
     private messageBus: IMessageBus,
     private jwtDecoder: JwtDecoder
   ) {}
@@ -42,6 +43,7 @@ export class ApplePayClient implements IApplePayClient {
           true
         );
       }),
+      tap(() => this.localStorage.setItem('completePayment', 'false')),
       switchMap(() => this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS))),
       switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => {
         const { status, details } = event.data;
@@ -101,17 +103,6 @@ export class ApplePayClient implements IApplePayClient {
     const { errorCode, errorMessage } = details;
     this.applePayNotificationService.notification(errorCode, errorMessage);
     this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, true);
-    this.messageBus.publish(
-      {
-        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: {
-          errorcode: String(details.errorCode),
-          ...details
-        }
-      },
-      true
-    );
-
     return of(ApplePayClientStatus.CANCEL);
   }
 
@@ -126,6 +117,7 @@ export class ApplePayClient implements IApplePayClient {
         payment
       )
       .pipe(
+        tap(() => this.localStorage.setItem('completePayment', 'true')),
         tap((response: IApplePayProcessPaymentResponse) => {
           this.messageBus.publish(
             {
@@ -145,16 +137,6 @@ export class ApplePayClient implements IApplePayClient {
   private onSuccess$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
     this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
-    this.messageBus.publish(
-      {
-        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: {
-          errorcode: String(details.errorCode),
-          ...details
-        }
-      },
-      true
-    );
     return of(ApplePayClientStatus.SUCCESS);
   }
 
@@ -185,32 +167,11 @@ export class ApplePayClient implements IApplePayClient {
   private onValidateMerchantError$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.ERROR> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
     this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK });
-    this.messageBus.publish(
-      {
-        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: {
-          errorcode: String(details.errorCode),
-          ...details
-        }
-      },
-      true
-    );
     return of(ApplePayClientStatus.ERROR);
   }
 
   private onError$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.ERROR> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
-    this.messageBus.publish(
-      {
-        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: {
-          errorcode: String(details.errorCode),
-          ...details
-        }
-      },
-      true
-    );
     return of(ApplePayClientStatus.ERROR);
   }
 }

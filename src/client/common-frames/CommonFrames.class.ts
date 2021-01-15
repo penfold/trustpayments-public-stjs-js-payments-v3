@@ -185,6 +185,7 @@ export class CommonFrames {
   }
 
   private _onTransactionComplete(data: any): void {
+    console.error(data);
     this.addSubmitData(data);
 
     if (!this._isTransactionFinished(data)) {
@@ -200,7 +201,7 @@ export class CommonFrames {
         result = 'success';
         data = { ...data, errormessage: PAYMENT_SUCCESS };
         break;
-      case 'cancelled':
+      case 'cancelled' || '2':
         result = 'cancel';
         data = { ...data, errormessage: PAYMENT_CANCELLED };
         break;
@@ -246,6 +247,7 @@ export class CommonFrames {
         takeUntil(this._destroy$)
       )
       .subscribe((data: any) => {
+        console.error(data);
         if (data.walletsource !== 'APPLEPAY') {
           this._onTransactionComplete(data);
           return;

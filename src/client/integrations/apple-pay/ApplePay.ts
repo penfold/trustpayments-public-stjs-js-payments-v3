@@ -172,7 +172,7 @@ export class ApplePay {
             return;
           }
 
-          this.applePaySessionService.abortApplePaySession();
+          // this.applePaySessionService.abortApplePaySession();
           this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_ERROR, response.data.details);
           GoogleAnalytics.sendGaData(
             'event',
@@ -262,7 +262,7 @@ export class ApplePay {
       errors: undefined,
       status: undefined
     };
-
+    console.error(errorCode, details);
     switch (Number(errorCode)) {
       case ApplePayClientErrorCode.SUCCESS:
         completion.status = this.applePaySessionService.STATUS_SUCCESS;
@@ -281,13 +281,13 @@ export class ApplePay {
         return completion;
 
       case ApplePayClientErrorCode.CANCEL:
-        this.applePaySessionService.abortApplePaySession();
+        // this.applePaySessionService.abortApplePaySession();
         return completion;
 
       default:
         completion.errors = this.applePayErrorService.create(ApplePaySessionErrorCode.UNKNOWN, this.config.locale);
         completion.status = this.applePaySessionService.STATUS_FAILURE;
-
+        console.error(completion);
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
@@ -298,7 +298,7 @@ export class ApplePay {
             }
           }
         });
-        this.applePaySessionService.abortApplePaySession();
+        // this.applePaySessionService.abortApplePaySession();
 
         return completion;
     }
