@@ -59,12 +59,9 @@ export class ApplePay {
           })
         ),
         tap((config: IApplePayConfigObject) => {
-          const applePayConfigAction: IMessageBusEvent = {
+          const applePayConfigAction: IMessageBusEvent<IApplePayConfigObject> = {
             type: PUBLIC_EVENTS.APPLE_PAY_CONFIG_MOCK,
-            data: {
-              key: 'config',
-              value: config
-            }
+            data: config
           };
 
           this.config = config;
