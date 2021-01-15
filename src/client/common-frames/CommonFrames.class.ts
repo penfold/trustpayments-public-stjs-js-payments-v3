@@ -6,7 +6,7 @@ import { Validation } from '../../application/core/shared/validation/Validation'
 import { Container } from 'typedi';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { IComponentsIds } from '../../shared/model/config/IComponentsIds';
-import { delay, filter, first, map, takeUntil, tap } from 'rxjs/operators';
+import { delay, filter, first, map, takeUntil } from 'rxjs/operators';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Observable } from 'rxjs';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
@@ -95,22 +95,12 @@ export class CommonFrames {
     this.styles = this._getStyles(styles);
   }
 
-  public init() {
+  init() {
     this._initFormFields();
     this._setMerchantInputListeners();
     this._setTransactionCompleteListener();
     this.elementsTargets = this.setElementsFields();
     this.registerElements(this.elementsToRegister, this.elementsTargets);
-  }
-
-  private _getStyles(styles: any) {
-    for (const key in styles) {
-      if (styles[key] instanceof Object) {
-        return styles;
-      }
-    }
-    styles = { defaultStyles: styles };
-    return styles;
   }
 
   protected registerElements(fields: HTMLElement[], targets: string[]) {
@@ -126,6 +116,16 @@ export class CommonFrames {
     const elements = [];
     elements.push(this.formId);
     return elements;
+  }
+
+  private _getStyles(styles: any) {
+    for (const key in styles) {
+      if (styles[key] instanceof Object) {
+        return styles;
+      }
+    }
+    styles = { defaultStyles: styles };
+    return styles;
   }
 
   private _getSubmitFields(data: any) {
@@ -185,13 +185,12 @@ export class CommonFrames {
   }
 
   private _onTransactionComplete(data: any): void {
-    console.error(data);
     this.addSubmitData(data);
 
     if (!this._isTransactionFinished(data)) {
       return;
     }
-    console.error(data);
+
     this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
 
     let result: 'success' | 'error' | 'cancel';
@@ -209,9 +208,7 @@ export class CommonFrames {
         result = 'error';
         break;
     }
-    console.error('success:', this._submitOnSuccess, result);
-    console.error('cancel:', this._submitOnCancel, result);
-    console.error('error:', this._submitOnError, result);
+
     if (
       (result === 'success' && this._submitOnSuccess) ||
       (result === 'cancel' && this._submitOnCancel) ||

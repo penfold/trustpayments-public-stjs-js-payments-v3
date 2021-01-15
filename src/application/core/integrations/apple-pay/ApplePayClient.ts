@@ -9,16 +9,16 @@ import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IApplePayClient } from './IApplePayClient';
 import { IApplePayClientStatusDetails } from './IApplePayClientStatusDetails';
+import { IApplePayProcessPaymentResponse } from './apple-pay-payment-service/IApplePayProcessPaymentResponse';
+import { IApplePayWalletVerifyResponseBody } from './apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
 import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { ApplePayNotificationService } from './apple-pay-notification-service/ApplePayNotificationService';
+import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
-import { IApplePayProcessPaymentResponse } from './apple-pay-payment-service/IApplePayProcessPaymentResponse';
-import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
-import { IApplePayWalletVerifyResponseBody } from './apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 
 @Service()
 export class ApplePayClient implements IApplePayClient {
@@ -47,7 +47,6 @@ export class ApplePayClient implements IApplePayClient {
       switchMap(() => this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS))),
       switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => {
         const { status, details } = event.data;
-        console.error(status, details);
         switch (status) {
           case ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET:
             return this.noActiveCardsInWallet$(details);
