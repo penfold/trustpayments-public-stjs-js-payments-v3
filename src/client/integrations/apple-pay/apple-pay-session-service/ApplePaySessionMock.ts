@@ -1,5 +1,6 @@
 import { Observable, of } from 'rxjs';
 import { Service } from 'typedi';
+import { IApplePayConfigObject } from '../../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
 import { IApplePayPaymentAuthorizationResult } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 import { IApplePayPaymentAuthorizedEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { IApplePayPaymentMethodSelectedEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentMethodSelectedEvent';
@@ -8,7 +9,9 @@ import { ApplePayClientErrorCode } from '../../../../application/core/integratio
 import { ApplePayClientStatus } from '../../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 import { IApplePayClientStatus } from '../../../../application/core/integrations/apple-pay/IApplePayClientStatus';
 import { PUBLIC_EVENTS } from '../../../../application/core/models/constants/EventTypes';
+import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
+import { IStore } from '../../../../application/core/store/IStore';
 import { environment } from '../../../../environments/environment';
 // tslint:disable-next-line:max-line-length
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
@@ -20,7 +23,9 @@ import { IApplePayShippingMethodUpdate } from './IApplePayShippingMethodUpdate';
 
 @Service()
 export class ApplePaySessionMock implements IApplePaySession {
-  constructor(private messageBus: IMessageBus) {}
+  private applePayConfig: IApplePayConfigObject;
+
+  constructor(private messageBus: IMessageBus, private store: IStore<any>) {}
 
   STATUS_SUCCESS: any = 'SUCCESS';
   STATUS_FAILURE: any = 'FAILURE';
@@ -33,17 +38,26 @@ export class ApplePaySessionMock implements IApplePaySession {
   readonly STATUS_PIN_REQUIRED: number;
 
   init(): void {
-    this.begin();
+    this.store
+      .select(state => state.applePay.config)
+      .subscribe(applePayConfig => {
+        this.applePayConfig = applePayConfig;
+        this.begin();
+      });
   }
 
-  begin() {
-    return fetch(environment.APPLE_PAY_URLS.MOCK_DATA_URL)
+  begin(): void {
+    fetch(environment.APPLE_PAY_URLS.MOCK_DATA_URL)
       .then((response: any) => {
         return response.json();
       })
       .then((data: any) => {
         this.handleResponse(data);
       });
+    // this.handleResponse({
+    //   status: 'SUCCESS',
+    //   payment: 'mockapplepaydata'
+    // });
   }
 
   hasApplePaySessionObject(): boolean {
@@ -81,10 +95,13 @@ export class ApplePaySessionMock implements IApplePaySession {
     this.messageBus.publish<IApplePayClientStatus>({
       type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
       data: {
-        status: ApplePayClientStatus.SUCCESS,
+        status: ApplePayClientStatus.ON_PAYMENT_AUTHORIZED,
         details: {
-          errorCode: ApplePayClientErrorCode.SUCCESS,
-          errorMessage: 'Error ApplePay mock'
+          config: this.applePayConfig,
+          formData: DomMethods.parseForm(this.applePayConfig.formId),
+          errorCode: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
+          errorMessage: '',
+          payment: event.payment
         }
       }
     });

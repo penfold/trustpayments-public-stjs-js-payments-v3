@@ -22,8 +22,8 @@ if (environment.testEnvironment) {
   Container.set({ id: CardinalProvider, type: MockCardinalProvider });
   Container.set({ id: VisaCheckout, type: VisaCheckoutMock });
   Container.set({ id: VisaCheckoutSdkProvider, type: VisaCheckoutSdkProviderMock });
-  Container.set({ id: ApplePay, type: ApplePayMock });
-  Container.set({ id: ApplePaySessionService, type: ApplePaySessionMock });
-  Container.set({ id: ApplePayButtonService, type: ApplePayButtonServiceMock });
-  Container.set({ id: ApplePaySessionFactory, type: ApplePaySessionFactoryMock });
 }
+Container.set({ id: ApplePay, type: ApplePayMock });
+Container.set({ id: ApplePaySessionService, type: ApplePaySessionMock });
+Container.set({ id: ApplePayButtonService, type: ApplePayButtonServiceMock });
+Container.set({ id: ApplePaySessionFactory, type: ApplePaySessionFactoryMock });

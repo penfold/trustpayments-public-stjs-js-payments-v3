@@ -19,7 +19,7 @@ export class ApplePayConfigService {
     private applePaySessionService: ApplePaySessionService
   ) {}
 
-  setConfig(config: IConfig, validateMerchantRequest: IApplePayValidateMerchantRequest): IApplePayConfigObject {
+  getConfig(config: IConfig, validateMerchantRequest: IApplePayValidateMerchantRequest): IApplePayConfigObject {
     const { applePay, jwt, formId } = this.getConfigData(config);
     const applePayVersion: number = this.applePaySessionService.getLatestSupportedApplePayVersion();
     const { currencyiso3a, locale, mainamount } = this.getStJwtData(jwt);

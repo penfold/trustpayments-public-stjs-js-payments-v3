@@ -6,6 +6,6 @@ import { IApplePaySession } from './IApplePaySession';
 @Service()
 export class ApplePaySessionFactoryMock {
   create(applePayVersion: number, applePayPaymentRequest: IApplePayPaymentRequest): IApplePaySession {
-    return new ApplePaySessionMock({} as any);
+    return new ApplePaySessionMock({} as any, {} as any);
   }
 }

@@ -51,7 +51,7 @@ export class ApplePay {
       .pipe(
         switchMap((event: IMessageBusEvent<IConfig>) => this.verifyAvailability(event.data)),
         map((config: IConfig) =>
-          this.applePayConfigService.setConfig(config, {
+          this.applePayConfigService.getConfig(config, {
             walletmerchantid: '',
             walletrequestdomain: window.location.hostname,
             walletsource: 'APPLEPAY',
@@ -59,7 +59,16 @@ export class ApplePay {
           })
         ),
         tap((config: IApplePayConfigObject) => {
+          const applePayConfigAction: IMessageBusEvent = {
+            type: PUBLIC_EVENTS.APPLE_PAY_CONFIG_MOCK,
+            data: {
+              key: 'config',
+              value: config
+            }
+          };
+
           this.config = config;
+          this.messageBus.publish(applePayConfigAction);
           this.updateJwtListener();
           this.applePayButtonService.insertButton(
             APPLE_PAY_BUTTON_ID,
