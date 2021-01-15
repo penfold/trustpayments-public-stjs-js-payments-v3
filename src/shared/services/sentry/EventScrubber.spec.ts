@@ -1,5 +1,6 @@
-import { Event } from '@sentry/types';
+import { Event, EventHint } from '@sentry/types';
 import { EventScrubber } from './EventScrubber';
+import { GatewayError } from '../../../application/core/services/st-codec/GatewayError';
 
 describe('EventScrubber', () => {
   let eventScrubber: EventScrubber;
@@ -39,5 +40,14 @@ describe('EventScrubber', () => {
 
     expect(result.request.url).toBe(urlWithJwt('*****'));
     expect(result.request.query_string).toBe('jwt=*****');
+  });
+
+  it('filters out gateway errors', () => {
+    const event: Event = {};
+    const hint: EventHint = {
+      originalException: new GatewayError()
+    };
+
+    expect(eventScrubber.scrub(event, hint)).toBeNull();
   });
 });

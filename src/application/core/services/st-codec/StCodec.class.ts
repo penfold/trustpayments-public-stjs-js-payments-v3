@@ -18,6 +18,7 @@ import { Frame } from '../../shared/frame/Frame';
 import { IStJwtObj } from '../../models/IStJwtObj';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { GatewayError } from './GatewayError';
 
 export class StCodec {
   public static CONTENT_TYPE = 'application/json';
@@ -183,7 +184,7 @@ export class StCodec {
 
     if (responseContent.walletsource && responseContent.walletsource === 'APPLEPAY') {
       StCodec._propagateStatus(errormessageTranslated, responseContent, jwtResponse);
-      return new Error(errormessage);
+      return new GatewayError(errormessage);
     }
 
     if (responseContent.errordata) {
@@ -192,7 +193,7 @@ export class StCodec {
 
     validation.blockForm(FormState.AVAILABLE);
     StCodec._propagateStatus(errormessageTranslated, responseContent, jwtResponse);
-    throw new Error(errormessage);
+    throw new GatewayError(errormessage);
   }
 
   private static _decodeResponseJwt(jwt: string, reject: (error: Error) => void) {
