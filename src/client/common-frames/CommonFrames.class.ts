@@ -244,7 +244,6 @@ export class CommonFrames {
         takeUntil(this._destroy$)
       )
       .subscribe((data: any) => {
-        console.error(data);
         if (data.walletsource !== 'APPLEPAY') {
           this._onTransactionComplete(data);
           return;

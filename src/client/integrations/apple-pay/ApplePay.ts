@@ -249,7 +249,7 @@ export class ApplePay {
         this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
         if (Number(event.data.errorcode) !== ApplePayClientErrorCode.SUCCESS) {
           this.applePaySession.completePayment({
-            status: this.applePaySessionService.STATUS_FAILURE
+            status: ApplePaySessionService.STATUS_FAILURE
           });
         }
       });
@@ -273,7 +273,7 @@ export class ApplePay {
 
     switch (Number(errorCode)) {
       case ApplePayClientErrorCode.SUCCESS:
-        completion.status = this.applePaySessionService.STATUS_SUCCESS;
+        completion.status = ApplePaySessionService.STATUS_SUCCESS;
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
@@ -293,7 +293,7 @@ export class ApplePay {
 
       default:
         completion.errors = this.applePayErrorService.create(ApplePaySessionErrorCode.UNKNOWN, this.config.locale);
-        completion.status = this.applePaySessionService.STATUS_FAILURE;
+        completion.status = ApplePaySessionService.STATUS_FAILURE;
 
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,

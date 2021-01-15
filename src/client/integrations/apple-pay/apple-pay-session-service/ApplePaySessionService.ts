@@ -12,30 +12,18 @@ const ApplePaySession: IApplePaySession = (window as any).ApplePaySession;
 
 @Service()
 export class ApplePaySessionService {
-  STATUS_FAILURE: number;
-  STATUS_SUCCESS: number;
+  static readonly STATUS_FAILURE = (ApplePaySession && ApplePaySession.STATUS_FAILURE) || undefined;
+  static readonly STATUS_SUCCESS = (ApplePaySession && ApplePaySession.STATUS_SUCCESS) || undefined;
   private applePaySession: IApplePaySession;
   private paymentRequest: IApplePayPaymentRequest;
 
   init(applePaySession: IApplePaySession, paymentRequest: IApplePayPaymentRequest): void {
     this.applePaySession = applePaySession;
     this.paymentRequest = paymentRequest;
-    this.STATUS_FAILURE = ApplePaySession.STATUS_FAILURE;
-    this.STATUS_SUCCESS = ApplePaySession.STATUS_SUCCESS;
     this.onPaymentMethodSelected();
     this.onShippingMethodSelected();
     this.onShippingContactSelected();
     this.beginMerchantValidation();
-  }
-
-  abortApplePaySession(): void {
-    console.error(this.applePaySession);
-    try {
-      console.error(this.applePaySession);
-      this.applePaySession.abort();
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   hasApplePaySessionObject(): boolean {
