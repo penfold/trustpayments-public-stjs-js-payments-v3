@@ -3,7 +3,6 @@ Feature: E2E Card Payments with cachetoken
   I want to use cachetoken from previous payment
   In order to execute payment without card data
 
-
   Scenario: Proper receiving cachetoken value from url param
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
       | key                     | value         |
