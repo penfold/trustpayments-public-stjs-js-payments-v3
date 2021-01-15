@@ -8,7 +8,6 @@ ARG LIBRARY_ARG
 COPY . .
 RUN npm config set js-payments:host merchant.securetrading.net
 RUN npm install --prefix example/html
-RUN echo npm run build:${BUILD_TYPE} --prefix example/html ${LIBRARY_ARG}
 RUN npm run build:${BUILD_TYPE} --prefix example/html ${LIBRARY_ARG}
 
 FROM nginx:stable-alpine as app-html
