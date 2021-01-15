@@ -1,7 +1,7 @@
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { Service } from 'typedi';
 import { SentryContext } from './SentryContext';
-import { Event } from '@sentry/types';
+import { Event, EventHint } from '@sentry/types';
 import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';
 import { Observable } from 'rxjs';
@@ -45,7 +45,7 @@ export class SentryService {
       whitelistUrls,
       environment: this.sentryContext.getEnvironmentName(),
       release: this.sentryContext.getReleaseVersion(),
-      beforeSend: (event: Event) => this.eventScrubber.scrub(event)
+      beforeSend: (event: Event, hint?: EventHint) => this.eventScrubber.scrub(event, hint)
     });
   }
 }
