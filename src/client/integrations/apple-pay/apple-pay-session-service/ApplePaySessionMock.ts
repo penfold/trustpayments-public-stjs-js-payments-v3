@@ -54,10 +54,6 @@ export class ApplePaySessionMock implements IApplePaySession {
       .then((data: any) => {
         this.handleResponse(data);
       });
-    // this.handleResponse({
-    //   status: 'SUCCESS',
-    //   payment: 'mockapplepaydata'
-    // });
   }
 
   hasApplePaySessionObject(): boolean {
