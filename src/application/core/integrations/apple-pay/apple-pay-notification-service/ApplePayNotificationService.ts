@@ -7,28 +7,28 @@ import { NotificationService } from '../../../../../client/notification/Notifica
 export class ApplePayNotificationService {
   constructor(private messageBus: IMessageBus, private notificationService: NotificationService) {}
 
-  notification(errorcode: ApplePayClientErrorCode, errormessage: string): void {
-    switch (errorcode) {
+  notification(errorCode: ApplePayClientErrorCode, errorMessage: string): void {
+    switch (errorCode) {
       case ApplePayClientErrorCode.SUCCESS:
-        this.notificationService.success(errormessage);
+        this.notificationService.success(errorMessage);
         break;
       case ApplePayClientErrorCode.ERROR:
-        this.notificationService.error(errormessage);
+        this.notificationService.error(errorMessage);
         break;
       case ApplePayClientErrorCode.DECLINE:
-        this.notificationService.error(errormessage);
+        this.notificationService.error(errorMessage);
         break;
       case ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR:
-        this.notificationService.error(errormessage);
+        this.notificationService.error(errorMessage);
         break;
       case ApplePayClientErrorCode.CANCEL:
-        this.notificationService.cancel(errormessage);
+        this.notificationService.cancel(errorMessage);
         break;
       case ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET:
-        this.notificationService.error(errormessage);
+        this.notificationService.error(errorMessage);
         break;
       default:
-        this.notificationService.error(errormessage);
+        this.notificationService.error(errorMessage);
     }
   }
 }

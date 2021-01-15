@@ -27,7 +27,6 @@ export class ApplePayClient implements IApplePayClient {
     private applePayPaymentService: ApplePayPaymentService,
     private configProvider: ConfigProvider,
     private interFrameCommunicator: InterFrameCommunicator,
-    private localStorage: BrowserLocalStorage,
     private messageBus: IMessageBus,
     private jwtDecoder: JwtDecoder
   ) {}
@@ -43,7 +42,6 @@ export class ApplePayClient implements IApplePayClient {
           true
         );
       }),
-      tap(() => this.localStorage.setItem('completePayment', 'false')),
       switchMap(() => this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS))),
       switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => {
         const { status, details } = event.data;
@@ -87,11 +85,11 @@ export class ApplePayClient implements IApplePayClient {
     this.applePayNotificationService.notification(errorCode, errorMessage);
     this.messageBus.publish(
       {
+        type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
         data: {
-          errorCode,
-          errorMessage
-        },
-        type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK
+          errorcode: String(details.errorCode),
+          ...details
+        }
       },
       true
     );
@@ -108,7 +106,7 @@ export class ApplePayClient implements IApplePayClient {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {
           errorcode: String(details.errorCode),
-          errormessage: details
+          ...details
         }
       },
       true
@@ -128,7 +126,6 @@ export class ApplePayClient implements IApplePayClient {
         payment
       )
       .pipe(
-        tap(() => this.localStorage.setItem('completePayment', 'true')),
         tap((response: IApplePayProcessPaymentResponse) => {
           this.messageBus.publish(
             {
@@ -153,7 +150,7 @@ export class ApplePayClient implements IApplePayClient {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {
           errorcode: String(details.errorCode),
-          errormessage: details
+          ...details
         }
       },
       true
@@ -193,7 +190,7 @@ export class ApplePayClient implements IApplePayClient {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {
           errorcode: String(details.errorCode),
-          errormessage: details
+          ...details
         }
       },
       true
@@ -209,7 +206,7 @@ export class ApplePayClient implements IApplePayClient {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {
           errorcode: String(details.errorCode),
-          errormessage: details
+          ...details
         }
       },
       true
