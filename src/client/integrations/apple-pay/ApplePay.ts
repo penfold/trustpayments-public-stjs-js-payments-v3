@@ -181,7 +181,6 @@ export class ApplePay {
             return;
           }
 
-          this.applePaySessionService.abortApplePaySession();
           this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_ERROR, response.data.details);
           GoogleAnalytics.sendGaData(
             'event',
@@ -214,7 +213,7 @@ export class ApplePay {
       this.messageBus
         .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION), first())
         .subscribe((response: IMessageBusEvent) => {
-          this.handlePaymentProcessResponse(response.data.details.errorcode, response.data.details.errormessage);
+          this.handlePaymentProcessResponse(response.data.details.errorcode, response.data.details);
         });
     };
   }
@@ -265,7 +264,7 @@ export class ApplePay {
 
   private handlePaymentProcessResponse(
     errorCode: ApplePayClientErrorCode,
-    errorMessage: string
+    details: IApplePayClientStatusDetails
   ): IApplePayPaymentAuthorizationResult {
     const completion: IApplePayPaymentAuthorizationResult = {
       errors: undefined,
@@ -281,7 +280,7 @@ export class ApplePay {
             status: ApplePayClientStatus.SUCCESS,
             details: {
               errorCode: ApplePayClientErrorCode.SUCCESS,
-              errorMessage
+              ...details
             }
           }
         });
@@ -290,7 +289,6 @@ export class ApplePay {
         return completion;
 
       case ApplePayClientErrorCode.CANCEL:
-        this.applePaySessionService.abortApplePaySession();
         return completion;
 
       default:
@@ -303,11 +301,10 @@ export class ApplePay {
             status: ApplePayClientStatus.ERROR,
             details: {
               errorCode,
-              errorMessage
+              ...details
             }
           }
         });
-        this.applePaySessionService.abortApplePaySession();
 
         return completion;
     }

@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { EMPTY, from, Observable, of, throwError } from 'rxjs';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { mapTo, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
@@ -9,17 +9,16 @@ import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IApplePayClient } from './IApplePayClient';
 import { IApplePayClientStatusDetails } from './IApplePayClientStatusDetails';
+import { IApplePayProcessPaymentResponse } from './apple-pay-payment-service/IApplePayProcessPaymentResponse';
+import { IApplePayWalletVerifyResponseBody } from './apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { MERCHANT_PARENT_FRAME } from '../../models/constants/Selectors';
+import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
 import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { ApplePayNotificationService } from './apple-pay-notification-service/ApplePayNotificationService';
+import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
-import { IApplePayProcessPaymentResponse } from './apple-pay-payment-service/IApplePayProcessPaymentResponse';
-import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
-import { IApplePayWalletVerifyResponseBody } from './apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 
 @Service()
 export class ApplePayClient implements IApplePayClient {
@@ -44,6 +43,7 @@ export class ApplePayClient implements IApplePayClient {
           true
         );
       }),
+      tap(() => this.localStorage.setItem('completePayment', 'false')),
       switchMap(() => this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS))),
       switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => {
         const { status, details } = event.data;
@@ -86,11 +86,11 @@ export class ApplePayClient implements IApplePayClient {
     this.applePayNotificationService.notification(errorCode, errorMessage);
     this.messageBus.publish(
       {
+        type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
         data: {
-          errorCode,
-          errorMessage
-        },
-        type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK
+          errorcode: String(details.errorCode),
+          ...details
+        }
       },
       true
     );
@@ -105,7 +105,10 @@ export class ApplePayClient implements IApplePayClient {
     this.messageBus.publish(
       {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: { errorCode, errorMessage }
+        data: {
+          errorcode: String(details.errorCode),
+          ...details
+        }
       },
       true
     );
@@ -124,6 +127,7 @@ export class ApplePayClient implements IApplePayClient {
         payment
       )
       .pipe(
+        tap(() => this.localStorage.setItem('completePayment', 'true')),
         tap((response: IApplePayProcessPaymentResponse) => {
           this.messageBus.publish(
             {
@@ -143,13 +147,6 @@ export class ApplePayClient implements IApplePayClient {
   private onSuccess$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
     this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
-    this.messageBus.publish(
-      {
-        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: details
-      },
-      true
-    );
     return of(ApplePayClientStatus.SUCCESS);
   }
 
@@ -180,26 +177,11 @@ export class ApplePayClient implements IApplePayClient {
   private onValidateMerchantError$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.ERROR> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
     this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK });
-    this.messageBus.publish(
-      {
-        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: details
-      },
-      true
-    );
     return of(ApplePayClientStatus.ERROR);
   }
 
   private onError$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.ERROR> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
-    this.messageBus.publish(
-      {
-        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: details
-      },
-      true
-    );
     return of(ApplePayClientStatus.ERROR);
   }
 }

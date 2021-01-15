@@ -6,7 +6,7 @@ import { Validation } from '../../application/core/shared/validation/Validation'
 import { Container } from 'typedi';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { IComponentsIds } from '../../shared/model/config/IComponentsIds';
-import { delay, filter, first, map, takeUntil, tap } from 'rxjs/operators';
+import { delay, filter, first, map, takeUntil } from 'rxjs/operators';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Observable } from 'rxjs';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
@@ -95,22 +95,12 @@ export class CommonFrames {
     this.styles = this._getStyles(styles);
   }
 
-  public init() {
+  init() {
     this._initFormFields();
     this._setMerchantInputListeners();
     this._setTransactionCompleteListener();
     this.elementsTargets = this.setElementsFields();
     this.registerElements(this.elementsToRegister, this.elementsTargets);
-  }
-
-  private _getStyles(styles: any) {
-    for (const key in styles) {
-      if (styles[key] instanceof Object) {
-        return styles;
-      }
-    }
-    styles = { defaultStyles: styles };
-    return styles;
   }
 
   protected registerElements(fields: HTMLElement[], targets: string[]) {
@@ -126,6 +116,16 @@ export class CommonFrames {
     const elements = [];
     elements.push(this.formId);
     return elements;
+  }
+
+  private _getStyles(styles: any) {
+    for (const key in styles) {
+      if (styles[key] instanceof Object) {
+        return styles;
+      }
+    }
+    styles = { defaultStyles: styles };
+    return styles;
   }
 
   private _getSubmitFields(data: any) {
@@ -200,7 +200,7 @@ export class CommonFrames {
         result = 'success';
         data = { ...data, errormessage: PAYMENT_SUCCESS };
         break;
-      case 'cancelled':
+      case 'cancelled' || '2':
         result = 'cancel';
         data = { ...data, errormessage: PAYMENT_CANCELLED };
         break;
@@ -244,6 +244,7 @@ export class CommonFrames {
         takeUntil(this._destroy$)
       )
       .subscribe((data: any) => {
+        console.error(data);
         if (data.walletsource !== 'APPLEPAY') {
           this._onTransactionComplete(data);
           return;
