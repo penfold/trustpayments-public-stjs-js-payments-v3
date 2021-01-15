@@ -63,7 +63,6 @@ Feature: Cardinal Commerce E2E tests
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | should not be none |
 
 
-#ToDo - @STJS-1256 This assertion should be turned on when ticket STJS-1256 will be resolved
   @e2e_cardinal_commerce_v1
   Scenario Outline: TC_3 - Failed Authentication with submitOnError and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
@@ -81,12 +80,12 @@ Feature: Cardinal Commerce E2E tests
       | jwt                  | should not be none |
       | enrolled             | Y                  |
       | settlestatus         | 0                  |
-#      | threedresponse       | <threedresponse>   |
+      | threedresponse       | <threedresponse>   |
       | status               | should be none     |
 
     Examples:
       | request_types            | threedresponse     |
-      | THREEDQUERY AUTH         | should be none     |
+      | THREEDQUERY AUTH         | should not be none     |
       | ACCOUNTCHECK THREEDQUERY | should not be none |
 
   @e2e_cardinal_commerce_v1
@@ -237,7 +236,6 @@ Feature: Cardinal Commerce E2E tests
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | 60010     | should be none | should be none |
 
 
-  #ToDo - @STJS-1256 This assertion should be turned on when ticket STJS-1256 will be resolved
   @e2e_cardinal_commerce_v1
   Scenario Outline: TC_10 - Cmpi authenticate error with submitOnSuccess and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
@@ -255,12 +253,12 @@ Feature: Cardinal Commerce E2E tests
       | jwt                  | should not be none |
       | enrolled             | Y                  |
       | settlestatus         | 0                  |
-#      | threedresponse       | <threedresponse>   |
+      | threedresponse       | <threedresponse>   |
       | status               | should be none     |
 
     Examples:
       | request_types            | threedresponse     |
-      | THREEDQUERY AUTH         | should be none     |
+      | THREEDQUERY AUTH         | should not be none     |
       | ACCOUNTCHECK THREEDQUERY | should not be none |
 
 
