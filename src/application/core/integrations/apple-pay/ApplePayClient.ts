@@ -102,6 +102,17 @@ export class ApplePayClient implements IApplePayClient {
     const { errorCode, errorMessage } = details;
     this.applePayNotificationService.notification(errorCode, errorMessage);
     this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, true);
+    this.messageBus.publish(
+      {
+        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+        data: {
+          errorcode: String(details.errorCode),
+          ...details
+        }
+      },
+      true
+    );
+
     return of(ApplePayClientStatus.CANCEL);
   }
 
