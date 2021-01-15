@@ -1,13 +1,14 @@
 ARG IMAGE_PIPELINE
-ARG LIBRARY_ARG
 
 FROM ${IMAGE_PIPELINE} as builder
 ARG BUILD_TYPE
+ARG LIBRARY_ARG
 
 # Copy source code and build artifacts
 COPY . .
 RUN npm config set js-payments:host merchant.securetrading.net
 RUN npm install --prefix example/html
+RUN echo npm run build:${BUILD_TYPE} --prefix example/html ${LIBRARY_ARG}
 RUN npm run build:${BUILD_TYPE} --prefix example/html ${LIBRARY_ARG}
 
 FROM nginx:stable-alpine as app-html

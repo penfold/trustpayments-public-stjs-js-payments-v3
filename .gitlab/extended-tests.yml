@@ -4,20 +4,19 @@
 # Resource groups - https://docs.gitlab.com/ee/ci/yaml/#resource_group
 # We will have 4 resource groups for review and 4 for release: extended_tests_release_1 - ... - extended_tests_release_4, extended_tests_review_1 - ... - extended_tests_review_4
 # It will assure that we won't use more than 5 parallel extended Browserstack tests jobs.
-
 .extended-tests-browserstack:
   extends:
-    - .image-test
     - .extended-tests
-    - .services-test
+    - .services-app-html-test
     - .sequentially-component-browserstack-tests
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 .visual-regression-tests:
   extends:
-    - .image-test
     - .extended-tests
-    - .services-dev
+    - .services-app-html-dev
     - .sequentially-e2e-browserstack-tests
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 # smoke tests executed on review branches
 .apple-test-browserstack-component-test:
