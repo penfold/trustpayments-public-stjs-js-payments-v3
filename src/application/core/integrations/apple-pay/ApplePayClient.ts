@@ -108,7 +108,7 @@ export class ApplePayClient implements IApplePayClient {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {
           errorcode: String(details.errorCode),
-          errormessage: details.errorMessage
+          errormessage: details
         }
       },
       true
@@ -153,7 +153,7 @@ export class ApplePayClient implements IApplePayClient {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {
           errorcode: String(details.errorCode),
-          errormessage: details.errorMessage
+          errormessage: details
         }
       },
       true
@@ -193,7 +193,7 @@ export class ApplePayClient implements IApplePayClient {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {
           errorcode: String(details.errorCode),
-          errormessage: details.errorMessage
+          errormessage: details
         }
       },
       true
@@ -209,7 +209,7 @@ export class ApplePayClient implements IApplePayClient {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {
           errorcode: String(details.errorCode),
-          errormessage: details.errorMessage
+          errormessage: details
         }
       },
       true
