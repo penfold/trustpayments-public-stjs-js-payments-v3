@@ -190,7 +190,7 @@ export class CommonFrames {
     if (!this._isTransactionFinished(data)) {
       return;
     }
-
+    console.error(data);
     this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
 
     let result: 'success' | 'error' | 'cancel';
@@ -208,7 +208,9 @@ export class CommonFrames {
         result = 'error';
         break;
     }
-
+    console.error('success:', this._submitOnSuccess, result);
+    console.error('cancel:', this._submitOnCancel, result);
+    console.error('error:', this._submitOnError, result);
     if (
       (result === 'success' && this._submitOnSuccess) ||
       (result === 'cancel' && this._submitOnCancel) ||

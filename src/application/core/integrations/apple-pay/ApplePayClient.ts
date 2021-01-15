@@ -10,7 +10,6 @@ import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IApplePayClient } from './IApplePayClient';
 import { IApplePayClientStatusDetails } from './IApplePayClientStatusDetails';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { MERCHANT_PARENT_FRAME } from '../../models/constants/Selectors';
 import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { ApplePayNotificationService } from './apple-pay-notification-service/ApplePayNotificationService';
 import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
@@ -44,9 +43,11 @@ export class ApplePayClient implements IApplePayClient {
           true
         );
       }),
+      tap(() => this.localStorage.setItem('completePayment', 'false')),
       switchMap(() => this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS))),
       switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => {
         const { status, details } = event.data;
+        console.error(status, details);
         switch (status) {
           case ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET:
             return this.noActiveCardsInWallet$(details);
@@ -105,7 +106,10 @@ export class ApplePayClient implements IApplePayClient {
     this.messageBus.publish(
       {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: { errorCode, errorMessage }
+        data: {
+          errorcode: String(details.errorCode),
+          errormessage: details.errorMessage
+        }
       },
       true
     );
@@ -124,6 +128,7 @@ export class ApplePayClient implements IApplePayClient {
         payment
       )
       .pipe(
+        tap(() => this.localStorage.setItem('completePayment', 'true')),
         tap((response: IApplePayProcessPaymentResponse) => {
           this.messageBus.publish(
             {
@@ -146,7 +151,10 @@ export class ApplePayClient implements IApplePayClient {
     this.messageBus.publish(
       {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: details
+        data: {
+          errorcode: String(details.errorCode),
+          errormessage: details.errorMessage
+        }
       },
       true
     );
@@ -183,7 +191,10 @@ export class ApplePayClient implements IApplePayClient {
     this.messageBus.publish(
       {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: details
+        data: {
+          errorcode: String(details.errorCode),
+          errormessage: details.errorMessage
+        }
       },
       true
     );
@@ -196,7 +207,10 @@ export class ApplePayClient implements IApplePayClient {
     this.messageBus.publish(
       {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: details
+        data: {
+          errorcode: String(details.errorCode),
+          errormessage: details.errorMessage
+        }
       },
       true
     );
