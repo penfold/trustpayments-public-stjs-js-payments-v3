@@ -250,14 +250,14 @@ export class ControlFrame {
   private _onPaymentFailure(errorData: IResponseData, errorMessage: string = PAYMENT_ERROR): Observable<never> {
     const translator = new Translator(this._localStorage.getItem('locale'));
     const translatedErrorMessage = translator.translate(errorMessage);
-
-    this._messageBus.publish({ type: PUBLIC_EVENTS.RESET_JWT });
-    this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
-
     errorData.errormessage = translatedErrorMessage;
 
-    StCodec.publishResponse(errorData, errorData.jwt, errorData.threedresponse);
+    if (!errorData instanceof Error) {
+      this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+      StCodec.publishResponse(errorData, errorData.jwt, errorData.threedresponse);
+    }
 
+    this._messageBus.publish({ type: PUBLIC_EVENTS.RESET_JWT });
     this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
     this._notification.error(translatedErrorMessage);
 
