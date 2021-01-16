@@ -252,7 +252,7 @@ export class ControlFrame {
     const translatedErrorMessage = translator.translate(errorMessage);
     errorData.errormessage = translatedErrorMessage;
 
-    if (!errorData instanceof Error) {
+    if (!(errorData instanceof Error)) {
       this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
       StCodec.publishResponse(errorData, errorData.jwt, errorData.threedresponse);
     }
