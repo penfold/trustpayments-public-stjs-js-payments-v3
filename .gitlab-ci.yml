@@ -14,6 +14,7 @@ include:
   - local: '/.gitlab/fast-tests.yml'
   - local: '/.gitlab/publish-to-cdn.yml'
   - local: '/.gitlab/extended-tests.yml'
+  - local: '/.gitlab/post-release.yml'
 
 variables:
   CICD_OS_REF: *cicd-os-ref
