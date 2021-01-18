@@ -110,6 +110,10 @@ class Waits:
     def switch_to_parent_frame(self):
         self._driver.switch_to.parent_frame()
 
+    def switch_to_frame(self, locator):
+        self.wait_for_element(locator)
+        self._driver.switch_to.frame(self._driver.find_element(*locator))
+
     def wait_for_javascript(self):
         time.sleep(1)
         self._wait.until(lambda driver: self._driver.execute_script('return document.readyState') == 'complete')

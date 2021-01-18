@@ -2,6 +2,7 @@ import json
 from urllib.parse import urlparse, parse_qs
 
 from assertpy import assert_that
+from selenium.webdriver.common.by import By
 
 from configuration import CONFIGURATION
 from locators.payment_methods_locators import PaymentMethodsLocators
@@ -101,10 +102,14 @@ class PaymentMethodsPage(BasePage):
         self.select_proper_cardinal_authentication(auth)
 
     def select_proper_cardinal_authentication(self, auth):
-        self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
+        cardinal_modal: By = (By.ID, 'Cardinal-Modal')
+        cardinal_iframe: By = (By.ID, FieldType.CARDINAL_IFRAME.value)
+        self._waits.wait_for_element_to_be_displayed(cardinal_modal)
+        self._action.switch_to_frame(cardinal_iframe)
 
         if auth == AuthType.V1.value:
-            self._action.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
+            cardinal_v1_iframe: By = (By.ID, FieldType.V1_PARENT_IFRAME.value)
+            self._action.switch_to_frame(cardinal_v1_iframe)
             self._executor.wait_for_element_to_be_displayed(
                 PaymentMethodsLocators.cardinal_v1_authentication_code_field)
             self._action.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
