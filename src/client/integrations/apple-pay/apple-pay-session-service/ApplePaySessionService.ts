@@ -39,8 +39,8 @@ export class ApplePaySessionService {
     return from(ApplePaySession.canMakePaymentsWithActiveCard(merchantId));
   }
 
-  completeMerchantValidation(walletsession: object): void {
-    this.applePaySession.completeMerchantValidation(walletsession);
+  completeMerchantValidation(walletsession: string): void {
+    this.applePaySession.completeMerchantValidation(JSON.parse(walletsession));
   }
 
   completePayment(status: IApplePayPaymentAuthorizationResult): void {

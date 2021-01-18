@@ -149,6 +149,7 @@ export class ApplePay {
 
   private onValidateMerchant(): void {
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
+      console.error(event, this.config);
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
@@ -166,9 +167,13 @@ export class ApplePay {
       this.messageBus
         .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT), first())
         .subscribe((response: IMessageBusEvent) => {
-          if (Number(response.data.details.errorcode) === ApplePayClientErrorCode.SUCCESS) {
+          console.error(response);
+          console.error(response.data.details.errorcode);
+          console.error(ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS);
+          if (Number(response.data.status) === ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS) {
             this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS, response.data.details);
-            this.applePaySessionService.completeMerchantValidation(JSON.parse(response.data.details.walletsession));
+            this.applePaySessionService.completeMerchantValidation(response.data.details.walletsession);
+            console.error('dupa');
             GoogleAnalytics.sendGaData(
               'event',
               'Apple Pay',
@@ -176,6 +181,10 @@ export class ApplePay {
               'Apple Pay Merchant validation success'
             );
 
+            return;
+          }
+
+          if (Number(response.data.status) === ApplePayClientErrorCode.CANCEL) {
             return;
           }
 
@@ -245,11 +254,6 @@ export class ApplePay {
       )
       .subscribe((event: IMessageBusEvent) => {
         this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
-        if (Number(event.data.errorcode) !== ApplePayClientErrorCode.SUCCESS) {
-          this.applePaySession.completePayment({
-            status: ApplePaySessionService.STATUS_FAILURE
-          });
-        }
       });
   }
 
@@ -292,6 +296,7 @@ export class ApplePay {
       default:
         completion.errors = this.applePayErrorService.create(ApplePaySessionErrorCode.UNKNOWN, this.config.locale);
         completion.status = ApplePaySessionService.STATUS_FAILURE;
+        this.applePaySession.completePayment(completion);
 
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,

@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { mapTo, switchMap, tap } from 'rxjs/operators';
+import { catchError, mapTo, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IConfig } from '../../../../shared/model/config/IConfig';
@@ -153,7 +153,7 @@ export class ApplePayClient implements IApplePayClient {
   private onValidateMerchant$(
     details: IApplePayClientStatusDetails
   ): Observable<ApplePayClientStatus.ON_VALIDATE_MERCHANT> {
-    const { validateMerchantURL, paymentCancelled, config } = details;
+    const { validateMerchantURL, config, paymentCancelled } = details;
 
     return this.applePayPaymentService
       .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
@@ -163,7 +163,7 @@ export class ApplePayClient implements IApplePayClient {
             {
               type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT,
               data: {
-                status: ApplePayClientStatus.ON_VALIDATE_MERCHANT,
+                status: response.status,
                 details: response.data
               }
             },
