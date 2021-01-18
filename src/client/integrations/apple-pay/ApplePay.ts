@@ -27,6 +27,7 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { RequestType } from '../../../shared/types/RequestType';
 import { IApplePayClientStatusDetails } from '../../../application/core/integrations/apple-pay/IApplePayClientStatusDetails';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
+import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
 
 @Service()
 export class ApplePay {
@@ -261,7 +262,7 @@ export class ApplePay {
 
   private handlePaymentProcessResponse(
     errorCode: ApplePayClientErrorCode,
-    details: IApplePayClientStatusDetails
+    details: IApplePayProcessPaymentResponse
   ): IApplePayPaymentAuthorizationResult {
     const completion: IApplePayPaymentAuthorizationResult = {
       errors: undefined,
@@ -276,8 +277,8 @@ export class ApplePay {
           data: {
             status: ApplePayClientStatus.SUCCESS,
             details: {
-              errorCode: ApplePayClientErrorCode.SUCCESS,
-              ...details
+              errorMessage: details.errormessage,
+              errorCode: Number(details.errorcode)
             }
           }
         });
@@ -297,8 +298,8 @@ export class ApplePay {
           data: {
             status: ApplePayClientStatus.ERROR,
             details: {
-              errorCode,
-              ...details
+              errorMessage: details.errormessage,
+              errorCode: Number(details.errorcode)
             }
           }
         });
