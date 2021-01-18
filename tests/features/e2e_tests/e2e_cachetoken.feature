@@ -26,27 +26,27 @@ Feature: E2E Card Payments with cachetoken
       | jwt        | should not be none |
       | cachetoken | should not be none |
 
-
-  @smoke_e2e_test
-  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - non-frictionless card
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
-      | key                     | value         |
-      | requesttypedescriptions | CACHETOKENISE |
-    And User opens example page
-    And User fills payment form with defined card VISA_NON_FRICTIONLESS
-    And User clicks Pay button
-    And User waits for payment to be processed
-    And User gets cachetoken value from url
-    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | AUTH             |
-      | cachetoken              | cachetoken_value |
-    When User opens example page WITHOUT_SUBMIT_BUTTON
-    Then User will see payment status information: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
-
 #  TODO - STJS-1278
+#  @smoke_e2e_test
+#  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - non-frictionless card
+#    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
+#      | key                     | value         |
+#      | requesttypedescriptions | CACHETOKENISE |
+#    And User opens example page
+#    And User fills payment form with defined card VISA_NON_FRICTIONLESS
+#    And User clicks Pay button
+#    And User waits for payment to be processed
+#    And User gets cachetoken value from url
+#    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value            |
+#      | requesttypedescriptions | AUTH             |
+#      | cachetoken              | cachetoken_value |
+#    When User opens example page WITHOUT_SUBMIT_BUTTON
+#    Then User will see payment status information: "Payment has been successfully processed"
+#    And "submit" callback is called only once
+#    And "success" callback is called only once
+#
+#
 #  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - frictionless card
 #    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
 #      | key                     | value         |
