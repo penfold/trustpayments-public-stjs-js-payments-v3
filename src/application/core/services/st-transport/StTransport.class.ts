@@ -99,7 +99,7 @@ export class StTransport {
       .then(codec.decode)
       .catch((error: Error | unknown) => {
         if (error instanceof InvalidResponseError) {
-          return error;
+          return Promise.reject(error);
         }
 
         return codec.decode({});
