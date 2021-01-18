@@ -7,6 +7,7 @@ import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IStRequest } from '../../models/IStRequest';
 import { environment } from '../../../../environments/environment';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
+import { InvalidResponseError } from '../st-codec/InvalidResponseError';
 
 interface IFetchOptions {
   headers: {
@@ -96,7 +97,11 @@ export class StTransport {
       body: requestBody
     })
       .then(codec.decode)
-      .catch(() => {
+      .catch((error: Error | unknown) => {
+        if (error instanceof InvalidResponseError) {
+          return error;
+        }
+
         return codec.decode({});
       });
   }
