@@ -69,7 +69,7 @@ class Waits:
                 if not self._driver.find_elements(*locator):
                     break
             except:
-                pass
+                break
             time.sleep(0.5)
             max_try -= 1
 
