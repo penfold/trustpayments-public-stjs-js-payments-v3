@@ -19,6 +19,7 @@ import { IStJwtObj } from '../../models/IStJwtObj';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { GatewayError } from './GatewayError';
+import { InvalidResponseError } from './InvalidResponseError';
 
 export class StCodec {
   public static CONTENT_TYPE = 'application/json';
@@ -130,7 +131,7 @@ export class StCodec {
     validation.blockForm(FormState.AVAILABLE);
     StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
 
-    return new Error(COMMUNICATION_ERROR_INVALID_RESPONSE);
+    return new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
   }
 
   private static _isInvalidResponse(responseData: any) {
