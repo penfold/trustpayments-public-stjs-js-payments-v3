@@ -13,7 +13,8 @@ const ApplePaySession: IApplePaySession = (window as any).ApplePaySession;
 @Service()
 export class ApplePaySessionService {
   static readonly STATUS_FAILURE = (ApplePaySession && ApplePaySession.STATUS_FAILURE) || undefined;
-  static readonly STATUS_SUCCESS = (ApplePaySession && ApplePaySession.STATUS_SUCCESS) || undefined;
+  static readonly STATUS_SUCCESS =
+    ApplePaySession && ApplePaySession.STATUS_SUCCESS === 0 ? ApplePaySession.STATUS_SUCCESS : undefined;
   private applePaySession: IApplePaySession;
   private paymentRequest: IApplePayPaymentRequest;
 
