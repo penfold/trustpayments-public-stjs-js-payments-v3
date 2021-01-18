@@ -28,6 +28,7 @@ import { RequestType } from '../../../shared/types/RequestType';
 import { IApplePayClientStatusDetails } from '../../../application/core/integrations/apple-pay/IApplePayClientStatusDetails';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
+import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 
 @Service()
 export class ApplePay {
@@ -149,7 +150,6 @@ export class ApplePay {
 
   private onValidateMerchant(): void {
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
-      console.error(event, this.config);
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
@@ -167,13 +167,9 @@ export class ApplePay {
       this.messageBus
         .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT), first())
         .subscribe((response: IMessageBusEvent) => {
-          console.error(response);
-          console.error(response.data.details.errorcode);
-          console.error(ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS);
           if (Number(response.data.status) === ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS) {
             this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS, response.data.details);
             this.applePaySessionService.completeMerchantValidation(response.data.details.walletsession);
-            console.error('dupa');
             GoogleAnalytics.sendGaData(
               'event',
               'Apple Pay',
@@ -228,7 +224,7 @@ export class ApplePay {
   private onCancel(): void {
     this.applePaySession.oncancel = (event: Event) => {
       this.paymentCancelled = true;
-      this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
+      // this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
 
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
