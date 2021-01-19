@@ -148,6 +148,8 @@ export class ApplePayClient implements IApplePayClient {
   private onSuccess$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
     this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
+    this.messageBus.publish({ type: PUBLIC_EVENTS.RESET_JWT });
+
     return of(ApplePayClientStatus.SUCCESS);
   }
 
@@ -178,12 +180,14 @@ export class ApplePayClient implements IApplePayClient {
   private onValidateMerchantError$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.ERROR> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
     this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK });
+
     return of(ApplePayClientStatus.ERROR);
   }
 
   private onError$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.ERROR> {
     console.error(details);
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
+
     return of(ApplePayClientStatus.ERROR);
   }
 }

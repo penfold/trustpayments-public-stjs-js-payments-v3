@@ -265,7 +265,7 @@ export class ControlFrame {
   private _onPaymentFailure(errorData: IResponseData, errorMessage: string = PAYMENT_ERROR): Observable<never> {
     const translator = new Translator(this._localStorage.getItem('locale'));
     const translatedErrorMessage = translator.translate(errorMessage);
-
+    console.error(errorData);
     this._messageBus.publish({ type: PUBLIC_EVENTS.RESET_JWT });
     this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
 

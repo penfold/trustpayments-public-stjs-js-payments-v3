@@ -247,7 +247,6 @@ export class StCodec {
           console.error(responseData);
           const decoded: IStJwtObj = StCodec._decodeResponseJwt(responseData.jwt, reject);
           const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
-
           if (Number(verifiedResponse.errorcode) === 0) {
             StCodec.jwt = decoded.payload.jwt;
           } else {
