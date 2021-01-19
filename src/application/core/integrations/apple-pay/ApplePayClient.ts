@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { catchError, mapTo, switchMap, tap } from 'rxjs/operators';
+import { mapTo, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IConfig } from '../../../../shared/model/config/IConfig';
@@ -129,7 +129,6 @@ export class ApplePayClient implements IApplePayClient {
       .pipe(
         tap(() => this.localStorage.setItem('completePayment', 'true')),
         tap((response: IApplePayProcessPaymentResponse) => {
-          console.error(response);
           this.messageBus.publish(
             {
               type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
@@ -185,7 +184,6 @@ export class ApplePayClient implements IApplePayClient {
   }
 
   private onError$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.ERROR> {
-    console.error(details);
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
 
     return of(ApplePayClientStatus.ERROR);

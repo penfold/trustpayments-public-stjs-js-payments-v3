@@ -244,7 +244,6 @@ export class StCodec {
     return new Promise((resolve, reject) => {
       if ('json' in responseObject) {
         responseObject.json().then(responseData => {
-          console.error(responseData);
           const decoded: IStJwtObj = StCodec._decodeResponseJwt(responseData.jwt, reject);
           const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
           if (Number(verifiedResponse.errorcode) === 0) {

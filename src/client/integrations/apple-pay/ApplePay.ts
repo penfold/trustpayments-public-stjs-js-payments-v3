@@ -13,7 +13,6 @@ import { IMessageBus } from '../../../application/core/shared/message-bus/IMessa
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 import { ApplePayClientErrorCode } from '../../../application/core/integrations/apple-pay/ApplePayClientErrorCode';
-import { ApplePaySessionErrorCode } from '../../../application/core/integrations/apple-pay/apple-pay-error-service/ApplePaySessionErrorCode';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
@@ -28,7 +27,6 @@ import { RequestType } from '../../../shared/types/RequestType';
 import { IApplePayClientStatusDetails } from '../../../application/core/integrations/apple-pay/IApplePayClientStatusDetails';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
-import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 
 @Service()
 export class ApplePay {
@@ -198,13 +196,6 @@ export class ApplePay {
   private onPaymentAuthorized(): void {
     this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
       const formData = DomMethods.parseForm(this.config.formId);
-      console.error({
-        config: this.config,
-        formData,
-        errorCode: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
-        errorMessage: '',
-        payment: event.payment
-      });
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
@@ -222,7 +213,6 @@ export class ApplePay {
       this.messageBus
         .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION), first())
         .subscribe((response: IMessageBusEvent) => {
-          console.error(response);
           this.handlePaymentProcessResponse(response.data.details.errorcode, response.data.details);
         });
     };
@@ -231,7 +221,6 @@ export class ApplePay {
   private onCancel(): void {
     this.applePaySession.oncancel = (event: Event) => {
       this.paymentCancelled = true;
-
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
@@ -290,6 +279,7 @@ export class ApplePay {
         });
         this.applePaySession.completePayment(completion);
         GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
+
         return completion;
 
       case ApplePayClientErrorCode.CANCEL:

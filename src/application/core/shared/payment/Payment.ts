@@ -38,27 +38,26 @@ export class Payment {
     const customerOutput: CustomerOutput | undefined = responseData
       ? (responseData.customeroutput as CustomerOutput)
       : undefined;
-    console.error(customerOutput, responseData);
     if (customerOutput === CustomerOutput.RESULT) {
       return this.publishResponse(responseData);
     }
-    console.error('test');
+
     if (customerOutput === CustomerOutput.TRYAGAIN) {
       return this.publishErrorResponse(responseData);
     }
-    console.error('test');
+
     if (responseData && Number(responseData.errorcode)) {
       return this.publishErrorResponse(responseData);
     }
-    console.error('test');
+
     if (requestTypes.length) {
       return this.processRequestTypes({ ...merchantData, ...payment }, responseData);
     }
-    console.error('test');
+
     if (responseData && responseData.requesttypedescription === 'THREEDQUERY' && responseData.threedresponse) {
       return this.publishThreedResponse(responseData);
     }
-    console.error('test');
+
     return this.publishResponse(responseData);
   }
 
@@ -93,12 +92,11 @@ export class Payment {
     if (cybertonicaTid) {
       processPaymentRequestBody.fraudcontroltransactionid = cybertonicaTid;
     }
-    console.error(processPaymentRequestBody);
+
     return this.stTransport.sendRequest(processPaymentRequestBody);
   }
 
   private publishThreedResponse(responseData: IResponseData): Promise<object> {
-    console.error(responseData);
     // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
     StCodec.publishResponse(responseData, responseData.jwt, responseData.threedresponse);
     this.notificationService.success(PAYMENT_SUCCESS);

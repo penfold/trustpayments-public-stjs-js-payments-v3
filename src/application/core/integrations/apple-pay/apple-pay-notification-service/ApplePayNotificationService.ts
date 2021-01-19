@@ -12,21 +12,27 @@ export class ApplePayNotificationService {
       case ApplePayClientErrorCode.SUCCESS:
         this.notificationService.success(errorMessage);
         break;
+
       case ApplePayClientErrorCode.ERROR:
         this.notificationService.error(errorMessage);
         break;
+
       case ApplePayClientErrorCode.DECLINE:
         this.notificationService.error(errorMessage);
         break;
+
       case ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR:
         this.notificationService.error(errorMessage);
         break;
+
       case ApplePayClientErrorCode.CANCEL:
         this.notificationService.cancel(errorMessage);
         break;
+
       case ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET:
         this.notificationService.error(errorMessage);
         break;
+
       default:
         this.notificationService.error(errorMessage);
     }

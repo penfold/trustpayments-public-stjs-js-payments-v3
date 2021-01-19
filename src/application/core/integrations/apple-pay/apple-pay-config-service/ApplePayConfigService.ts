@@ -42,6 +42,7 @@ export class ApplePayConfigService {
     updatedConfig.paymentRequest.total.amount = mainamount;
     updatedConfig.locale = locale;
     this.applePaySessionService.updatePaymentRequest(updatedConfig.paymentRequest);
+
     return updatedConfig;
   }
 
