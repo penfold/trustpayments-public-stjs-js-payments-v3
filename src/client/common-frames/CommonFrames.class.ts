@@ -200,7 +200,11 @@ export class CommonFrames {
         result = 'success';
         data = { ...data, errormessage: PAYMENT_SUCCESS };
         break;
-      case 'cancelled' || '2':
+      case '2':
+        result = 'cancel';
+        data = { ...data, errormessage: PAYMENT_CANCELLED };
+        break;
+      case 'cancelled':
         result = 'cancel';
         data = { ...data, errormessage: PAYMENT_CANCELLED };
         break;
