@@ -14,7 +14,6 @@ import { Validation } from '../../shared/validation/Validation';
 import { version } from '../../../../../package.json';
 import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
-import { Frame } from '../../shared/frame/Frame';
 import { IStJwtObj } from '../../models/IStJwtObj';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
@@ -246,6 +245,7 @@ export class StCodec {
         responseObject.json().then(responseData => {
           const decoded: IStJwtObj = StCodec._decodeResponseJwt(responseData.jwt, reject);
           const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
+
           if (Number(verifiedResponse.errorcode) === 0) {
             StCodec.jwt = decoded.payload.jwt;
           } else {

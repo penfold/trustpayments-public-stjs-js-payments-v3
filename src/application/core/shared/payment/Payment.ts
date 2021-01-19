@@ -38,6 +38,7 @@ export class Payment {
     const customerOutput: CustomerOutput | undefined = responseData
       ? (responseData.customeroutput as CustomerOutput)
       : undefined;
+
     if (customerOutput === CustomerOutput.RESULT) {
       return this.publishResponse(responseData);
     }
