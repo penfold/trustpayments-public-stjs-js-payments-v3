@@ -61,6 +61,7 @@ export class ApplePayPaymentService {
     formData: object,
     payment: IApplePayPayment
   ): Observable<IApplePayProcessPaymentResponse> {
+    console.error(requestTypes, validateMerchantRequest, formData, payment);
     return from(
       this.payment.processPayment(
         requestTypes,

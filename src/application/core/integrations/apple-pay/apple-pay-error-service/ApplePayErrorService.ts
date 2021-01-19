@@ -2,8 +2,6 @@ import { Service } from 'typedi';
 import { IApplePayError } from './IApplePayError';
 import { ApplePaySessionErrorCode } from './ApplePaySessionErrorCode';
 import { ApplePayErrorContactField } from './ApplePayErrorContactField';
-import { Locale } from '../../../shared/translator/Locale';
-import { Translator } from '../../../shared/translator/Translator';
 
 const ApplePayError = (window as any).ApplePayError;
 
@@ -11,12 +9,9 @@ const ApplePayError = (window as any).ApplePayError;
 export class ApplePayErrorService {
   create(
     content: ApplePaySessionErrorCode,
-    locale: Locale,
     contactField?: ApplePayErrorContactField,
     message?: string
   ): IApplePayError {
-    const translation: Translator = new Translator(locale);
-
-    return new ApplePayError(translation.translate(content), contactField, message);
+    return new ApplePayError(content, contactField, message);
   }
 }

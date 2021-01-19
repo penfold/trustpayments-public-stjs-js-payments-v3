@@ -198,7 +198,13 @@ export class ApplePay {
   private onPaymentAuthorized(): void {
     this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => {
       const formData = DomMethods.parseForm(this.config.formId);
-
+      console.error({
+        config: this.config,
+        formData,
+        errorCode: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
+        errorMessage: '',
+        payment: event.payment
+      });
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
@@ -216,6 +222,7 @@ export class ApplePay {
       this.messageBus
         .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION), first())
         .subscribe((response: IMessageBusEvent) => {
+          console.error(response);
           this.handlePaymentProcessResponse(response.data.details.errorcode, response.data.details);
         });
     };
@@ -224,7 +231,6 @@ export class ApplePay {
   private onCancel(): void {
     this.applePaySession.oncancel = (event: Event) => {
       this.paymentCancelled = true;
-      // this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
 
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
@@ -290,10 +296,8 @@ export class ApplePay {
         return completion;
 
       default:
-        completion.errors = this.applePayErrorService.create(ApplePaySessionErrorCode.UNKNOWN, this.config.locale);
         completion.status = ApplePaySessionService.STATUS_FAILURE;
         this.applePaySession.completePayment(completion);
-
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
