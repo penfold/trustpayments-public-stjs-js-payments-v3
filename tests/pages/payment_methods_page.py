@@ -1,4 +1,5 @@
 import json
+import time
 from urllib.parse import urlparse, parse_qs
 
 from assertpy import assert_that
@@ -129,6 +130,9 @@ class PaymentMethodsPage(BasePage):
             else:
                 self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
         self._waits.wait_for_element_to_be_not_displayed(cardinal_modal)
+        if 'Edge' in CONFIGURATION.BROWSER:
+            time.sleep(2)
+        self._waits.switch_to_default_content()
 
     def click_cardinal_cancel_btn(self):
         self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
