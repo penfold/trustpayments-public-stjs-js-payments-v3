@@ -1,9 +1,16 @@
 import { Service } from 'typedi';
-import { Event } from '@sentry/types';
+import { Event, EventHint } from '@sentry/types';
+import { GatewayError } from '../../../application/core/services/st-codec/GatewayError';
 
 @Service()
 export class EventScrubber {
-  scrub(event: Event): Event {
+  scrub(event: Event, hint?: EventHint): Event | null {
+    const { originalException } = hint || {};
+
+    if (originalException instanceof GatewayError) {
+      return null;
+    }
+
     if (event.extra && typeof event.extra.config === 'object') {
       event.extra.config = { ...(event.extra.config as object), jwt: '*****' };
     }

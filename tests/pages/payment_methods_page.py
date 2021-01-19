@@ -537,14 +537,13 @@ class PaymentMethodsPage(BasePage):
     def validate_number_in_callback_counter_popup(self, callback_popup):
         counter = ''
         if 'success' in callback_popup:
-            counter = self._action.get_text(PaymentMethodsLocators.callback_success_counter)
+            counter = self._action.get_text_from_last_element(PaymentMethodsLocators.callback_success_counter)
         elif 'error' in callback_popup:
-            counter = self._action.get_text(PaymentMethodsLocators.callback_error_counter)
+            counter = self._action.get_text_from_last_element(PaymentMethodsLocators.callback_error_counter)
         elif 'cancel' in callback_popup:
-            counter = self._action.get_text(PaymentMethodsLocators.callback_cancel_counter)
+            counter = self._action.get_text_from_last_element(PaymentMethodsLocators.callback_cancel_counter)
         elif 'submit' in callback_popup:
-            counter = self._action.get_text(PaymentMethodsLocators.callback_submit_counter)
-        counter = counter[-1]
+            counter = self._action.get_text_from_last_element(PaymentMethodsLocators.callback_submit_counter)
         assertion_message = f'Number of {callback_popup} callback is not correct but should be 1 but is {counter}'
         add_to_shared_dict('assertion_message', assertion_message)
         assert '1' in counter, assertion_message
