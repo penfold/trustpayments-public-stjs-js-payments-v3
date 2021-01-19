@@ -1,8 +1,8 @@
 ARG IMAGE_PIPELINE
-ARG LIBRARY_ARG
 
 FROM ${IMAGE_PIPELINE} as builder
 ARG BUILD_TYPE
+ARG LIBRARY_ARG
 
 # Copy source code and build artifacts
 COPY . .
