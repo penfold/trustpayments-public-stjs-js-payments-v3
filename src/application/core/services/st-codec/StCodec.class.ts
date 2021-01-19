@@ -17,6 +17,8 @@ import { NotificationService } from '../../../../client/notification/Notificatio
 import { IStJwtObj } from '../../models/IStJwtObj';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { GatewayError } from './GatewayError';
+import { InvalidResponseError } from './InvalidResponseError';
 import { Locale } from '../../shared/translator/Locale';
 
 export class StCodec {
@@ -128,7 +130,7 @@ export class StCodec {
     validation.blockForm(FormState.AVAILABLE);
     StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
 
-    return new Error(COMMUNICATION_ERROR_INVALID_RESPONSE);
+    return new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
   }
 
   private static _isInvalidResponse(responseData: any) {
@@ -182,7 +184,7 @@ export class StCodec {
 
     if (responseContent.walletsource && responseContent.walletsource === 'APPLEPAY') {
       StCodec._propagateStatus(errormessageTranslated, responseContent, jwtResponse);
-      return new Error(errormessage);
+      return new GatewayError(errormessage);
     }
 
     if (responseContent.errordata) {
@@ -191,7 +193,7 @@ export class StCodec {
 
     validation.blockForm(FormState.AVAILABLE);
     StCodec._propagateStatus(errormessageTranslated, responseContent, jwtResponse);
-    throw new Error(errormessage);
+    throw new GatewayError(errormessage);
   }
 
   private static _decodeResponseJwt(jwt: string, reject: (error: Error) => void) {

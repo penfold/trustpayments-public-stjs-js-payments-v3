@@ -244,7 +244,6 @@ Feature: Cardinal Commerce E2E tests
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none | should not be none |
 
 
-  #ToDo - @STJS-1256 This assertion should be turned on when ticket STJS-1256 will be resolved
   @cardinal_commerce_v2.0
   Scenario Outline: TC_10 - Failed Step Up Authentication with submitOnError and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
@@ -260,13 +259,13 @@ Feature: Cardinal Commerce E2E tests
       | errorcode            | 50003              |
       | transactionreference | should not be none |
       | jwt                  | should not be none |
-#      | threedresponse       | <threedresponse>   |
+      | threedresponse       | <threedresponse>   |
       | enrolled             | Y                  |
       | settlestatus         | 0                  |
 
     Examples:
       | request_types            | threedresponse     |
-      | THREEDQUERY AUTH         | should be none     |
+      | THREEDQUERY AUTH         | should not be none |
       | ACCOUNTCHECK THREEDQUERY | should not be none |
 
 
@@ -299,7 +298,6 @@ Feature: Cardinal Commerce E2E tests
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none | should not be none |
 
 
-  #ToDo - @STJS-1256 This assertion should be turned on when ticket STJS-1256 will be resolved
   @cardinal_commerce_v2.0
   Scenario Outline: TC_12 - Error on Authentication with submitOnError and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
@@ -315,13 +313,13 @@ Feature: Cardinal Commerce E2E tests
       | errorcode            | 50003              |
       | transactionreference | should not be none |
       | jwt                  | should not be none |
-#      | threedresponse       | <threedresponse>   |
+      | threedresponse       | <threedresponse>   |
       | enrolled             | Y                  |
       | settlestatus         | 0                  |
 
     Examples:
       | request_types            | threedresponse     |
-      | THREEDQUERY AUTH         | should be none     |
+      | THREEDQUERY AUTH         | should not be none |
       | ACCOUNTCHECK THREEDQUERY | should not be none |
 
 
