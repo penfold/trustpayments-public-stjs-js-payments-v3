@@ -158,6 +158,14 @@ class PaymentMethodsPage(BasePage):
         text = self._action.get_text_with_wait(PaymentMethodsLocators.callback_data_popup)
         return text
 
+    def get_text_from_submit_callback_jwt(self):
+        text = self._action.get_text_with_wait(PaymentMethodsLocators.submit_callback_jwt_response)
+        return text
+
+    def get_text_from_submit_callback_threedresponse(self):
+        text = self._action.get_text_with_wait(PaymentMethodsLocators.submit_callback_threedresponse)
+        return text
+
     def get_text_from_browser_info(self):
         text = self._action.get_text_with_wait(PaymentMethodsLocators.browser_info_callback)
         return text
@@ -521,6 +529,23 @@ class PaymentMethodsPage(BasePage):
         assertion_message = f'{callback_popup} callback popup is not displayed but should be'
         add_to_shared_dict('assertion_message', assertion_message)
         assert is_displayed is True, assertion_message
+
+    def validate_jwt_response_in_callback(self):
+        response = self.get_text_from_submit_callback_jwt()
+        assertion_message = f'Submit callback data doesnt contain JWT response'
+        add_to_shared_dict('assertion_message', assertion_message)
+        assert 'undefined' not in response, assertion_message
+
+    def validate_threedresponse_in_callback(self, threedresponse_defined):
+        response = self.get_text_from_submit_callback_threedresponse()
+        if threedresponse_defined == 'True':
+            assertion_message = f'Submit callback data doesnt contain threedresponse'
+            add_to_shared_dict('assertion_message', assertion_message)
+            assert 'undefined' not in response, assertion_message
+        else:
+            assertion_message = f'Submit callback data contains threedresponse'
+            add_to_shared_dict('assertion_message', assertion_message)
+            assert 'undefined' in response, assertion_message
 
     def validate_number_in_callback_counter_popup(self, callback_popup):
         counter = ''
