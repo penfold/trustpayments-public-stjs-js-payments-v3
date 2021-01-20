@@ -10,7 +10,7 @@
     - .services-app-html-test
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
-card-payments-headless-component-tests:
+.card-payments-headless-component-tests:
   extends:
     - .component-app-html-test
     - .parallel-component-tests
@@ -18,7 +18,7 @@ card-payments-headless-component-tests:
     FEATURE_FILES_NAMES_CONTAINS: 'mock_'
   parallel: 22
 
-visa-checkout-headless-component-tests:
+.visa-checkout-headless-component-tests:
   extends:
     - .component-app-html-test
     - .sequentially-component-tests
