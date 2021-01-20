@@ -29,6 +29,9 @@ class PaymentMethodsPage(BasePage):
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe)
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
 
+    def wait_for_pay_button_to_be_active(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
+
     def fill_credit_card_field(self, field_type, value):
         if field_type == FieldType.CARD_NUMBER.name:
             self._action.switch_to_iframe_and_send_keys(PaymentMethodsLocators.card_number_iframe,

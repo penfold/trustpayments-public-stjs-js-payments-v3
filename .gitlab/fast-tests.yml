@@ -29,14 +29,14 @@ e2e-app-html-dev:
   extends:
     - .e2e-tests
     - .services-app-html-dev
-  parallel: 18
+  parallel: 19
 
 e2e-app-html-release:
   extends:
     - .e2e-tests
     - .services-app-html-prod
     - .rules-when-release
-  parallel: 18
+  parallel: 19
 
 zap-baseline-scan-library-securetrading-net:
   services:

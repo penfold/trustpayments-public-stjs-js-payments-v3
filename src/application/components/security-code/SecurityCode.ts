@@ -7,7 +7,6 @@ import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import {
   SECURITY_CODE_INPUT,
-  SECURITY_CODE_INPUT_SELECTOR,
   SECURITY_CODE_LABEL,
   SECURITY_CODE_MESSAGE,
   SECURITY_CODE_WRAPPER
@@ -43,22 +42,20 @@ export class SecurityCode extends Input {
   private static MATCH_EXACTLY_THREE_DIGITS: string = '^[0-9]{3}$';
 
   private _securityCodeLength: number;
-  private _securityCodeWrapper: HTMLElement;
   private _validation: Validation;
 
   constructor(
-    private _configProvider: ConfigProvider,
+    private configProvider: ConfigProvider,
     private _localStorage: BrowserLocalStorage,
     private _formatter: Formatter,
     private messageBus: IMessageBus,
     private frame: Frame
   ) {
-    super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER);
+    super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider);
     this._validation = new Validation();
-    this._securityCodeWrapper = document.getElementById(SECURITY_CODE_INPUT_SELECTOR) as HTMLElement;
     this._securityCodeLength = SHORT_CVC;
     this.placeholder = this._getPlaceholder(this._securityCodeLength);
-    this._configProvider.getConfig$().subscribe((config: IConfig) => {
+    this.configProvider.getConfig$().subscribe((config: IConfig) => {
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
       if (styler.hasSpecificStyle('isLinedUp', config.styles.securityCode)) {
         styler.addStyles([
@@ -119,29 +116,25 @@ export class SecurityCode extends Input {
   }
 
   private _getPlaceholder(securityCodeLength: number): string {
-    if (!this._configProvider.getConfig()) {
+    if (!this.configProvider.getConfig()) {
       return '***';
     }
-    if (
-      securityCodeLength === -1 &&
-      this._configProvider.getConfig() &&
-      this._configProvider.getConfig().placeholders
-    ) {
-      return this._configProvider.getConfig().placeholders.securitycode
-        ? this._configProvider.getConfig().placeholders.securitycode
+    if (securityCodeLength === -1 && this.configProvider.getConfig() && this.configProvider.getConfig().placeholders) {
+      return this.configProvider.getConfig().placeholders.securitycode
+        ? this.configProvider.getConfig().placeholders.securitycode
         : '***';
     }
     if (
-      this._configProvider.getConfig().placeholders.securitycode &&
-      this._configProvider.getConfig().placeholders.securitycode === DefaultPlaceholders.securitycode
+      this.configProvider.getConfig().placeholders.securitycode &&
+      this.configProvider.getConfig().placeholders.securitycode === DefaultPlaceholders.securitycode
     ) {
       return securityCodeLength === 4 ? '****' : DefaultPlaceholders.securitycode;
     }
-    return this._configProvider.getConfig().placeholders.securitycode;
+    return this.configProvider.getConfig().placeholders.securitycode;
   }
 
   private _securityCodeUpdate$(): Observable<number> {
-    const jwtFromConfig$: Observable<string> = this._configProvider.getConfig$().pipe(map(config => config.jwt));
+    const jwtFromConfig$: Observable<string> = this.configProvider.getConfig$().pipe(map(config => config.jwt));
     const jwtFromUpdate$: Observable<string> = this.messageBus.pipe(
       ofType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT),
       map(event => event.data.newJwt)
@@ -154,7 +147,7 @@ export class SecurityCode extends Input {
       map(jwt => jwt_decode<IDecodedJwt>(jwt).payload.pan)
     );
 
-    const maskedPanFromJsInit$: Observable<string> = this._configProvider
+    const maskedPanFromJsInit$: Observable<string> = this.configProvider
       .getConfig$()
       .pipe(switchMap(() => this._localStorage.select(store => store['app.maskedpan'])));
 
