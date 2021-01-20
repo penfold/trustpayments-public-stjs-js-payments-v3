@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { mapTo, switchMap, tap } from 'rxjs/operators';
+import { catchError, mapTo, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IConfig } from '../../../../shared/model/config/IConfig';
@@ -116,7 +116,7 @@ export class ApplePayClient implements IApplePayClient {
     return of(ApplePayClientStatus.CANCEL);
   }
 
-  private onPaymentAuthorized$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
+  private onPaymentAuthorized$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus> {
     const { config, payment, formData } = details;
 
     return this.applePayPaymentService
@@ -140,7 +140,23 @@ export class ApplePayClient implements IApplePayClient {
             true
           );
         }),
-        mapTo(ApplePayClientStatus.SUCCESS)
+        mapTo(ApplePayClientStatus.SUCCESS),
+        catchError((error: any) => {
+          this.messageBus.publish(
+            {
+              type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
+              data: {
+                status: ApplePayClientStatus.ERROR,
+                details: {
+                  errorcode: ApplePayClientErrorCode.ERROR,
+                  errormessage: error.message
+                }
+              }
+            },
+            true
+          );
+          return EMPTY;
+        })
       );
   }
 

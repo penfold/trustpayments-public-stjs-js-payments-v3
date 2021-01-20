@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { from, Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { EMPTY, from, merge, Observable, of } from 'rxjs';
+import { catchError, filter, map, tap } from 'rxjs/operators';
 import { IApplePayPayment } from '../apple-pay-payment-data/IApplePayPayment';
 import { IApplePayWalletVerifyResponse } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
@@ -11,10 +11,18 @@ import { Payment } from '../../../shared/payment/Payment';
 import { IApplePayProcessPaymentData } from './IApplePayProcessPaymentData';
 import { IApplePayProcessPaymentResponse } from './IApplePayProcessPaymentResponse';
 import { TERM_URL } from '../../../models/constants/RequestData';
+import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
+import { ofType } from '../../../../../shared/services/message-bus/operators/ofType';
+import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
+import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
 
 @Service()
 export class ApplePayPaymentService {
-  constructor(private payment: Payment, private applePayConfigService: ApplePayConfigService) {}
+  constructor(
+    private payment: Payment,
+    private applePayConfigService: ApplePayConfigService,
+    private messageBus: IMessageBus
+  ) {}
 
   walletVerify(
     validateMerchantRequest: IApplePayValidateMerchantRequest,
@@ -61,7 +69,16 @@ export class ApplePayPaymentService {
     formData: object,
     payment: IApplePayPayment
   ): Observable<IApplePayProcessPaymentResponse> {
-    return from(
+    const bypassError$ = this.messageBus.pipe(
+      ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
+      filter((event: IMessageBusEvent) => {
+        if (Number(event.data.errorcode) === 22000) {
+          return event.data.response;
+        }
+      })
+    );
+
+    const processPayment$ = from(
       this.payment.processPayment(
         requestTypes,
         {
@@ -82,5 +99,7 @@ export class ApplePayPaymentService {
         return data.response;
       })
     );
+
+    return merge(processPayment$, bypassError$);
   }
 }
