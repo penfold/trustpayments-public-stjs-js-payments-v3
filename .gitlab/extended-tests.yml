@@ -77,7 +77,7 @@ OSXCatalina-Safari-13.1-smoke-tests:
     OS_VERSION: Catalina
     BROWSER: Safari
     BROWSER_VERSION: '13.1'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
+    POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_1
 
 iPhone11-14.0-smoke-tests:
