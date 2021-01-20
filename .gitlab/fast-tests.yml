@@ -34,26 +34,48 @@ e2e-app-html-dev:
 e2e-app-html-release:
   extends:
     - .e2e-tests
-    - .services-app-html-prod
+    - .service-app-html-prod-merchant
     - .rules-when-release
   parallel: 19
 
-zap-baseline-scan-library-securetrading-net:
-  services:
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
-      alias: library.securetrading.net
+.zap-url-to-scan-merchant:
+  variables:
+    URL_TO_SCAN: "https://merchant.securetrading.net"
+
+.zap-url-to-scan-library:
+  variables:
+    URL_TO_SCAN: "https://library.securetrading.net:8443"
+
+zap-baseline-scan-merchant-securetrading-net-dev:
   extends:
     - .zap-baseline-scan
+    - .services-app-html-dev
+    - .zap-url-to-scan-merchant
   variables:
-    URL_TO_SCAN: 'https://library.securetrading.net'
     ZAP_CONFIG_PATH: "baseline-scan.conf"
 
-zap-baseline-scan-merchant-securetrading-net:
-  services:
-    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
-      alias: merchant.securetrading.net
+zap-baseline-scan-library-securetrading-net-dev:
   extends:
     - .zap-baseline-scan
+    - .services-app-html-dev
+    - .zap-url-to-scan-library
   variables:
-    URL_TO_SCAN: 'https://merchant.securetrading.net'
+    ZAP_CONFIG_PATH: "baseline-scan.conf"
+
+zap-baseline-scan-merchant-securetrading-net-release:
+  extends:
+    - .zap-baseline-scan
+    - .service-app-html-prod-merchant
+    - .zap-url-to-scan-merchant
+    - .rules-when-release
+  variables:
+    ZAP_CONFIG_PATH: "baseline-scan.conf"
+
+zap-baseline-scan-library-securetrading-net-release:
+  extends:
+    - .zap-baseline-scan
+    - .service-app-html-prod-library
+    - .zap-url-to-scan-library
+    - .rules-when-release
+  variables:
     ZAP_CONFIG_PATH: "baseline-scan.conf"
