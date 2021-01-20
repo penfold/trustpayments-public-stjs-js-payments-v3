@@ -26,7 +26,6 @@ Feature: E2E Card Payments with cachetoken
       | cachetoken | should not be none |
 
 #  TODO - STJS-1278
-#  @smoke_e2e_test
 #  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - non-frictionless card
 #    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
 #      | key                     | value         |

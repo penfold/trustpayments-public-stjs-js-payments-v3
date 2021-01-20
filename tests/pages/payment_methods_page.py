@@ -102,36 +102,36 @@ class PaymentMethodsPage(BasePage):
         auth = AuthType.__members__[auth_type].name
         self.select_proper_cardinal_authentication(auth)
 
-    def select_proper_cardinal_authentication(self, auth):
-        cardinal_modal: By = (By.ID, 'Cardinal-Modal')
-        cardinal_iframe: By = (By.ID, FieldType.CARDINAL_IFRAME.value)
-        self._waits.wait_for_element_to_be_displayed(cardinal_modal)
-        self._action.switch_to_frame(cardinal_iframe)
-
-        if auth == AuthType.V1.value:
-            cardinal_v1_iframe: By = (By.ID, FieldType.V1_PARENT_IFRAME.value)
-            self._action.switch_to_frame(cardinal_v1_iframe)
-            self._executor.wait_for_element_to_be_displayed(
-                PaymentMethodsLocators.cardinal_v1_authentication_code_field)
-            self._action.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
-                                   AuthData.PASSWORD.value)
-            if 'Firefox' in CONFIGURATION.BROWSER:
-                self._action.click_by_javascript(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
-            else:
-                self._action.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
+    def fill_cardinal_v1_popup(self):
+        self._action.switch_to_frame(PaymentMethodsLocators.cardinal_v1_iframe)
+        self._executor.wait_for_element_to_be_displayed(
+            PaymentMethodsLocators.cardinal_v1_authentication_code_field)
+        self._action.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
+                               AuthData.PASSWORD.value)
+        if 'Firefox' in CONFIGURATION.BROWSER:
+            self._action.click_by_javascript(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
         else:
-            self._executor.wait_for_element_to_be_displayed(
-                PaymentMethodsLocators.cardinal_v2_authentication_code_field)
-            self._action.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
-                                   AuthData.PASSWORD.value)
-            self.scroll_to_bottom()
-            if 'Firefox' in CONFIGURATION.BROWSER:
-                self._action.click_by_javascript(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
-            else:
-                self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
-        self._waits.wait_for_element_to_be_not_displayed(cardinal_modal)
-        if 'Edge' in CONFIGURATION.BROWSER:
-            time.sleep(2)
+            self._action.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
+
+    def fill_cardinal_v2_popup(self):
+        self._executor.wait_for_element_to_be_displayed(
+            PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+        self._action.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
+                               AuthData.PASSWORD.value)
+        self.scroll_to_bottom()
+        if 'Firefox' in CONFIGURATION.BROWSER:
+            self._action.click_by_javascript(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
+        else:
+            self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
+
+    def select_proper_cardinal_authentication(self, auth):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_modal)
+        self._action.switch_to_frame(PaymentMethodsLocators.cardinal_iframe)
+        if auth == AuthType.V1.value:
+            self.fill_cardinal_v1_popup()
+        else:
+            self.fill_cardinal_v2_popup()
+        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.cardinal_modal)
         self._waits.switch_to_default_content()
 
     def click_cardinal_cancel_btn(self):

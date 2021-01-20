@@ -60,11 +60,15 @@ class PaymentMethodsLocators:
 
     card_icon_in_input_field: By = (By.ID, 'card-icon')
 
+    cardinal_modal: By = (By.ID, 'Cardinal-Modal')
+    cardinal_iframe: By = (By.ID, FieldType.CARDINAL_IFRAME.value)
+
     cardinal_v2_authentication_code_field: By = (By.CLASS_NAME, 'input-field')
     cardinal_v2_authentication_submit_btn: By = (By.CLASS_NAME, 'primary')
     cardinal_v2_authentication_cancel_btn: By = (By.XPATH, '//input[@value=\'CANCEL\']')
     additional_button: By = (By.ID, 'additional-button')
 
+    cardinal_v1_iframe: By = (By.ID, FieldType.V1_PARENT_IFRAME.value)
     cardinal_v1_authentication_code_field: By = (By.ID, 'password')
     cardinal_v1_authentication_submit_btn: By = (By.NAME, 'UsernamePasswordEntry')
 
