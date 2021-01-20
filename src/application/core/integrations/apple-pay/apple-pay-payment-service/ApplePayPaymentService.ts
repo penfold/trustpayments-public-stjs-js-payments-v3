@@ -73,8 +73,11 @@ export class ApplePayPaymentService {
       ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
       filter((event: IMessageBusEvent) => {
         if (Number(event.data.errorcode) === 22000) {
-          return event.data.response;
+          return event.data;
         }
+      }),
+      map((response: { data: IApplePayProcessPaymentResponse }) => {
+        return response.data;
       })
     );
 

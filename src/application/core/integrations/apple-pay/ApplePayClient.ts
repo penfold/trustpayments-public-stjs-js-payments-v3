@@ -140,23 +140,7 @@ export class ApplePayClient implements IApplePayClient {
             true
           );
         }),
-        mapTo(ApplePayClientStatus.SUCCESS),
-        catchError((error: any) => {
-          this.messageBus.publish(
-            {
-              type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
-              data: {
-                status: ApplePayClientStatus.ERROR,
-                details: {
-                  errorcode: ApplePayClientErrorCode.ERROR,
-                  errormessage: error.message
-                }
-              }
-            },
-            true
-          );
-          return EMPTY;
-        })
+        mapTo(ApplePayClientStatus.SUCCESS)
       );
   }
 

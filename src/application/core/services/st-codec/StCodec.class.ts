@@ -14,7 +14,6 @@ import { Validation } from '../../shared/validation/Validation';
 import { version } from '../../../../../package.json';
 import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
-import { Frame } from '../../shared/frame/Frame';
 import { IStJwtObj } from '../../models/IStJwtObj';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
