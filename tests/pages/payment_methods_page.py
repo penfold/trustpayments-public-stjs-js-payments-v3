@@ -1,9 +1,7 @@
 import json
-import time
 from urllib.parse import urlparse, parse_qs
 
 from assertpy import assert_that
-from selenium.webdriver.common.by import By
 
 from configuration import CONFIGURATION
 from locators.payment_methods_locators import PaymentMethodsLocators
