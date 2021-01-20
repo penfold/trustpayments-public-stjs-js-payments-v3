@@ -41,6 +41,12 @@ def step_impl(context):
     payment_page.wait_for_payment_form_to_load()
 
 
+@step('User waits for Pay button to be active')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.wait_for_pay_button_to_be_active()
+
+
 @step('User will see that notification frame has "(?P<color>.+)" color')
 def step_impl(context, color):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
@@ -63,8 +69,6 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.accept_alert()
-
-
 
 
 @step('User will see that all fields are highlighted')
@@ -264,7 +268,7 @@ def step_impl(context, field_type):
     payment_page.validate_if_field_is_not_displayed(FieldType[field_type].name)
 
 
-@step('User press enter button')
+@step('User press ENTER button in input field')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.press_enter_button_on_security_code_field()
@@ -292,7 +296,6 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.validate_callback_with_data_type('Error code: OK')
-
 
 
 @step('"(?P<callback_popup>.+)" callback is called only once')
