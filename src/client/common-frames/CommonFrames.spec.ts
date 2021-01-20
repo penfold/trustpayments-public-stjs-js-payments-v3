@@ -1,4 +1,4 @@
-import { CommonFrames } from './CommonFrames.class';
+import { CommonFrames } from './CommonFrames';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import {
   ANIMATED_CARD_INPUT_SELECTOR,

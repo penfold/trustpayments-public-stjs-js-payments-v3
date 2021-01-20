@@ -1,7 +1,7 @@
 import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
 import { VisaCheckoutClientStatus } from '../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { ControlFrame } from './ControlFrame';
-import { StCodec } from '../../core/services/st-codec/StCodec.class';
+import { StCodec } from '../../core/services/st-codec/StCodec';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';

@@ -1,5 +1,5 @@
 import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
-import { StCodec } from '../../core/services/st-codec/StCodec.class';
+import { StCodec } from '../../core/services/st-codec/StCodec';
 import { FormFieldsDetails } from '../../core/models/constants/FormFieldsDetails';
 import { FormFieldsValidity } from '../../core/models/constants/FormFieldsValidity';
 import { FormState } from '../../core/models/constants/FormState';

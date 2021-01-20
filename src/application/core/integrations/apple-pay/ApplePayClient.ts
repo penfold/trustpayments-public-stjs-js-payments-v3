@@ -106,7 +106,7 @@ export class ApplePayClient implements IApplePayClient {
       {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {
-          errorcode: String(details.errorCode),
+          errorcode: 'cancelled',
           ...details
         }
       },

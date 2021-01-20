@@ -2,13 +2,13 @@ import 'reflect-metadata';
 import { Container } from 'typedi';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import ST from './ST';
-import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
+import { StCodec } from '../../application/core/services/st-codec/StCodec';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 
 window.alert = jest.fn();
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
-jest.mock('./../../client/common-frames/CommonFrames.class');
-jest.mock('./../../client/card-frames/CardFrames.class');
+jest.mock('./../../client/common-frames/CommonFrames');
+jest.mock('./../../client/card-frames/CardFrames');
 jest.mock('./../../application/core/integrations/visa-checkout/VisaCheckout');
 jest.mock('./../../client/integrations/apple-pay/ApplePay');
 jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytics');

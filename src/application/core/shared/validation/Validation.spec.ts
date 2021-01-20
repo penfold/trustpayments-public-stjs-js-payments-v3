@@ -1,5 +1,5 @@
 import each from 'jest-each';
-import { StCodec } from '../../services/st-codec/StCodec.class';
+import { StCodec } from '../../services/st-codec/StCodec';
 import { FormState } from '../../models/constants/FormState';
 import {
   VALIDATION_ERROR,

@@ -13,8 +13,8 @@ import { ICard } from '../../models/ICard';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { IWallet } from '../../models/IWallet';
 import { IWalletVerify } from '../../models/IWalletVerify';
-import { StCodec } from '../../services/st-codec/StCodec.class';
-import { StTransport } from '../../services/st-transport/StTransport.class';
+import { StCodec } from '../../services/st-codec/StCodec';
+import { StTransport } from '../../services/st-transport/StTransport';
 import { Payment } from './Payment';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });

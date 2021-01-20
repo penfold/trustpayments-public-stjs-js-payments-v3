@@ -1,4 +1,4 @@
-import { CardFrames } from './CardFrames.class';
+import { CardFrames } from './CardFrames';
 import { FormState } from '../../application/core/models/constants/FormState';
 import { DomMethods } from '../../application/core/shared/dom-methods/DomMethods';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';

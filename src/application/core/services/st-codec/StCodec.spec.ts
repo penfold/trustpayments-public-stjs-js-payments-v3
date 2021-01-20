@@ -1,7 +1,7 @@
 import each from 'jest-each';
 import JwtDecode from 'jwt-decode';
 import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
-import { StCodec } from './StCodec.class';
+import { StCodec } from './StCodec';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Translator } from '../../shared/translator/Translator';
 

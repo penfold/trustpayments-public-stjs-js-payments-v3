@@ -4,7 +4,7 @@ import { IThreeDInitResponse } from '../models/IThreeDInitResponse';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { IThreeDQueryResponse } from '../models/IThreeDQueryResponse';
 import { IStRequest } from '../models/IStRequest';
-import { StTransport } from './st-transport/StTransport.class';
+import { StTransport } from './st-transport/StTransport';
 import { PUBLIC_EVENTS } from '../models/constants/EventTypes';
 import { ThreeDInitRequest } from './three-d-verification/data/ThreeDInitRequest';
 import { IMessageBus } from '../shared/message-bus/IMessageBus';

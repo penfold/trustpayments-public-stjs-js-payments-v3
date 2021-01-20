@@ -1,6 +1,6 @@
 import JwtDecode from 'jwt-decode';
 import { Utils } from '../../shared/utils/Utils';
-import { StCodec } from '../st-codec/StCodec.class';
+import { StCodec } from '../st-codec/StCodec';
 import { Service } from 'typedi';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../../../shared/model/config/IConfig';

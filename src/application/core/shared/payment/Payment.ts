@@ -11,8 +11,8 @@ import { IWallet } from '../../models/IWallet';
 import { IWalletVerify } from '../../models/IWalletVerify';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
 import { NotificationService } from '../../../../client/notification/NotificationService';
-import { StCodec } from '../../services/st-codec/StCodec.class';
-import { StTransport } from '../../services/st-transport/StTransport.class';
+import { StCodec } from '../../services/st-codec/StCodec';
+import { StTransport } from '../../services/st-transport/StTransport';
 import { Validation } from '../validation/Validation';
 
 @Service()
