@@ -245,11 +245,29 @@ export class ST {
       this.watchForFrameUnload();
       this.initControlFrameModal();
       this.cardinalClient.init();
+
+      if (Boolean(this.config.stopSubmitFormOnEnter)) {
+        this.stopSubmitFormOnEnter();
+      }
     }
   }
 
   getBrowserInfo(): IBrowserInfo {
     return this.browserDetector.getBrowserInfo();
+  }
+
+  private stopSubmitFormOnEnter() {
+    const form: HTMLFormElement = document.getElementById(this.config.formId) as HTMLFormElement;
+
+    if (!form) {
+      return;
+    }
+
+    form.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+      }
+    });
   }
 
   private initControlFrame$(): Observable<IConfig> {

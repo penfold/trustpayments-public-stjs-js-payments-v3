@@ -11,6 +11,16 @@
       alias: thirdparty.example.com
       command: [ "--https-port", "8443", "--https-keystore", "/home/wiremock/keystore" ]
 
+.service-app-html-dev-library:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
+      alias: library.securetrading.net
+
+.service-app-html-dev-merchant:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
+      alias: merchant.securetrading.net
+
 .services-app-html-dev:
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
@@ -18,7 +28,12 @@
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_DEV}"
       alias: merchant.securetrading.net
 
-.services-app-html-prod:
+.service-app-html-prod-merchant:
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_PROD}"
       alias: merchant.securetrading.net
+
+.service-app-html-prod-library:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_PROD}"
+      alias: library.securetrading.net

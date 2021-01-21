@@ -5,12 +5,12 @@ Feature: E2E Card Payments with content-security-police header set
   In order to check full payment functionality when content-security-header is set
 
 
-  Scenario Outline: Successful payment with submitOnSuccess=false for VISA_FRICTIONLESS card and <request_types> request_types combination
+  Scenario Outline: Successful payment with submitOnSuccess=false for VISA_V21_FRICTIONLESS card and <request_types> request_types combination
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens minimal-content-security-header.html page with inline param
-    When User fills payment form with defined card VISA_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
@@ -23,12 +23,12 @@ Feature: E2E Card Payments with content-security-police header set
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  Scenario Outline: Successful payment with submitOnSuccess=false for VISA_NON_FRICTIONLESS card and <request_types> request_types combination
+  Scenario Outline: Successful payment with submitOnSuccess=false for VISA_V21_NON_FRICTIONLESS card and <request_types> request_types combination
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens minimal-content-security-header.html page with inline param
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
@@ -42,12 +42,12 @@ Feature: E2E Card Payments with content-security-police header set
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  Scenario Outline: Successful payment with submitOnSuccess=true for VISA_FRICTIONLESS card and <request_types> request_types combination
+  Scenario Outline: Successful payment with submitOnSuccess=true for VISA_V21_FRICTIONLESS card and <request_types> request_types combination
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens minimal-content-security-header.html page with inline param
-    When User fills payment form with defined card VISA_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "www.example.com" having params
@@ -68,12 +68,12 @@ Feature: E2E Card Payments with content-security-police header set
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
 
 
-  Scenario Outline: Successful payment with submitOnSuccess=true for VISA_NON_FRICTIONLESS card and <request_types> request_types combination
+  Scenario Outline: Successful payment with submitOnSuccess=true for VISA_V21_NON_FRICTIONLESS card and <request_types> request_types combination
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens minimal-content-security-header.html page with inline param
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will not see notification frame
@@ -95,13 +95,13 @@ Feature: E2E Card Payments with content-security-police header set
       | ACCOUNTCHECK THREEDQUERY | should not be none | should be none | should be none |
 
 
-  Scenario Outline: Successful payment with submitOnSuccess=false, bypass for VISA_NON_FRICTIONLESS card and <request_types> request_types combination
+  Scenario Outline: Successful payment with submitOnSuccess=false, bypass for VISA_V21_NON_FRICTIONLESS card and <request_types> request_types combination
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                      | value           |
       | requesttypedescriptions  | <request_types> |
       | threedbypasspaymenttypes | VISA            |
     And User opens minimal-content-security-header.html page with inline param
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
@@ -114,13 +114,13 @@ Feature: E2E Card Payments with content-security-police header set
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  Scenario Outline: Successful payment with submitOnSuccess=true, bypass for VISA_NON_FRICTIONLESS card and <request_types> request_types combination
+  Scenario Outline: Successful payment with submitOnSuccess=true, bypass for VISA_V21_NON_FRICTIONLESS card and <request_types> request_types combination
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                      | value           |
       | requesttypedescriptions  | <request_types> |
       | threedbypasspaymenttypes | VISA            |
     And User opens minimal-content-security-header.html page with inline param
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "www.example.com" having params

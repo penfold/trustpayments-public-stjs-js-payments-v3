@@ -31,14 +31,20 @@ export class ExpirationDate extends Input {
   private _inputSelectionStart: number;
 
   constructor(
-    private _configProvider: ConfigProvider,
+    private configProvider: ConfigProvider,
     private _formatter: Formatter,
     private messageBus: IMessageBus,
     private frame: Frame
   ) {
-    super(EXPIRATION_DATE_INPUT, EXPIRATION_DATE_MESSAGE, EXPIRATION_DATE_LABEL, EXPIRATION_DATE_WRAPPER);
+    super(
+      EXPIRATION_DATE_INPUT,
+      EXPIRATION_DATE_MESSAGE,
+      EXPIRATION_DATE_LABEL,
+      EXPIRATION_DATE_WRAPPER,
+      configProvider
+    );
     this._init();
-    this._configProvider.getConfig$().subscribe((config: IConfig) => {
+    this.configProvider.getConfig$().subscribe((config: IConfig) => {
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
 
       if (styler.hasSpecificStyle('isLinedUp', config.styles.expirationDate)) {
@@ -151,7 +157,7 @@ export class ExpirationDate extends Input {
     super.setEventListener(MessageBus.EVENTS.BLUR_EXPIRATION_DATE);
     super.setEventListener(MessageBus.EVENTS.FOCUS_EXPIRATION_DATE);
     this.setAttributes({ pattern: ExpirationDate.INPUT_PATTERN });
-    this.placeholder = this._configProvider.getConfig().placeholders.expirydate || '';
+    this.placeholder = this.configProvider.getConfig().placeholders.expirydate || '';
     this._inputElement.setAttribute(ExpirationDate.PLACEHOLDER_ATTRIBUTE, this.placeholder);
     this.setDisableListener();
     this.validation.backendValidation(
