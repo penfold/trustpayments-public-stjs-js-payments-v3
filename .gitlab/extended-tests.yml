@@ -4,11 +4,24 @@
 # Resource groups - https://docs.gitlab.com/ee/ci/yaml/#resource_group
 # We will have 4 resource groups for review and 4 for release: extended_tests_release_1 - ... - extended_tests_release_4, extended_tests_review_1 - ... - extended_tests_review_4
 # It will assure that we won't use more than 5 parallel extended Browserstack tests jobs.
-
+.extended-tests-sauce-labs:
+  extends:
+    - .extended-tests
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
+  before_script:
+    - wget --quiet https://saucelabs.com/downloads/sc-4.6.3-linux.tar.gz
+    - tar -xf sc-4.6.3-linux.tar.gz
+    - ./sc-4.6.3-linux/bin/sc -u "${SAUCE_LABS_USER}" -k "${SAUCE_LABS_API_KEY}" -x https://eu-central-1.saucelabs.com/rest/v1 -i pgs-test_tunnel_id&
+    - sleep 60
+  script:
+    - echo "run script"
+    # - poetry run behave --logging-level="${BEHAVE_LOGGING_LEVEL}" --tags="${poetry_tags}" "${tests_dir}"
+#
 .extended-tests-browserstack:
   extends:
     - .extended-tests
     - .services-app-html-test
+    - .extended-tests-sauce-labs
 #    - .sequentially-component-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
@@ -16,6 +29,7 @@
   extends:
     - .extended-tests
     - .services-app-html-dev
+    - .extended-tests-sauce-labs
 #    - .sequentially-e2e-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
@@ -57,19 +71,7 @@ win10-Chrome-latest-visual-tests:
   resource_group: extended_tests_review_1
 #
 
-extended-tests-sauce-labs:
-  extends:
-    - .extended-tests
-  image: ${IMAGE_JS_PAYMENTS_TESTS}
-  before_script:
-    - wget --quiet https://saucelabs.com/downloads/sc-4.6.3-linux.tar.gz
-    - tar -xf sc-4.6.3-linux.tar.gz
-    - ./sc-4.6.3-linux/bin/sc -u "${SAUCE_LABS_USER}" -k "${SAUCE_LABS_API_KEY}" -x https://eu-central-1.saucelabs.com/rest/v1 -i pgs-test_tunnel_id&
-    - sleep 60
-  script:
-    - echo "run script"
-    # - poetry run behave --logging-level="${BEHAVE_LOGGING_LEVEL}" --tags="${poetry_tags}" "${tests_dir}"
-#
+
 
 #win10-Chrome-latest-visual-tests-styling:
 #  extends:
