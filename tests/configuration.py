@@ -23,9 +23,10 @@ def load_config():
         'HEADLESS': get_from_env('HEADLESS', True),
         'TIMEOUT': get_from_env('AUTOMATION_TIMEOUT', 30),
         'REMOTE': strtobool(get_from_env('REMOTE', 'false')),
-        'COMMAND_EXECUTOR': get_from_env('AUTOMATION_COMMAND_EXECUTOR',
-                                         'https://' + str(get_from_env('BS_USERNAME')) + ':' +
-                                         str(get_from_env('BS_ACCESS_KEY')) + '@hub.browserstack.com/wd/hub'),
+        'COMMAND_EXECUTOR': 'https://pgs-test:e24dc638-0eea-4e9f-b088-a9baa5470ba8@ondemand.eu-central-1.saucelabs.com:443/wd/hub',
+        # get_from_env('AUTOMATION_COMMAND_EXECUTOR',
+        #                              'https://' + str(get_from_env('BS_USERNAME')) + ':' +
+        #                              str(get_from_env('BS_ACCESS_KEY')) + '@hub.browserstack.com/wd/hub'),
         'REMOTE_OS': get_from_env('OS', ''),
         'REMOTE_OS_VERSION': get_from_env('OS_VERSION', ''),
         'REMOTE_BROWSER': get_from_env('BROWSER', ''),
