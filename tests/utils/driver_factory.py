@@ -137,7 +137,8 @@ def _get_remote_capabilities(configuration):
         'browserstack.autoWait': 0,
         'ie.ensureCleanSession': 'true',
         'ie.forceCreateProcessApi': 'true',
-        'resolution': '1920x1080'
+        'resolution': '1920x1080',
+        'browserstack.idleTimeout': 300
     }
     capabilities = {}
     for key, value in possible_caps.items():
