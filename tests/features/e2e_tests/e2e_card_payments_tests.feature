@@ -132,3 +132,19 @@ Feature: E2E Card Payments
     And User clicks Pay button
     And User will see payment status information: "Unauthenticated"
     And User will see that notification frame has "red" color
+
+   @STJS-1336
+   Scenario: retry payment - all request types should be performed in second payment
+    Given JS library configured by inline params DEFER_INIT_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+      | baseamount              | 14492            |
+    And User opens example page
+    When User fills payment form with defined card VISA_V22_NON_FRICTIONLESS
+    And User clicks Pay button
+    And User fills V2 authentication modal
+    Then User will see payment status information: "Invalid process"
+    And Wait for notification frame to disappear
+    When User clicks Pay button
+    And User fills V2 authentication modal
+    Then User will see payment status information: "Invalid process"
