@@ -9,7 +9,7 @@
 #    And User opens example page
 #
 #  Scenario Outline: successful payment with cachetoken, request types <request_types> and submit on success - frictionless
-#    Given User fills payment form with defined card VISA_FRICTIONLESS
+#    Given User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
@@ -45,7 +45,7 @@
 #      | AUTH RISKDEC                          |
 #
 #  Scenario Outline: successful payment with cachetoken, request types <request_types> and submit on success - frictionless
-#    Given User fills payment form with defined card VISA_FRICTIONLESS
+#    Given User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
@@ -73,7 +73,7 @@
 #      | RISKDEC THREEDQUERY ACCOUNTCHECK SUBSCRIPTION      |
 #
 #  Scenario Outline: successful payment with cachetoken, request types <request_types> and submit on success - non-frictionless
-#    Given User fills payment form with defined card VISA_NON_FRICTIONLESS
+#    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
@@ -102,7 +102,7 @@
 #      | RISKDEC ACCOUNTCHECK THREEDQUERY      |
 #
 #  Scenario Outline: successful payment with cachetoken, request types <request_types> and submit on success - non-frictionless
-#    Given User fills payment form with defined card VISA_NON_FRICTIONLESS
+#    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    Given JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
@@ -127,7 +127,7 @@
 #      | RISKDEC ACCOUNTCHECK AUTH |
 #
 #  Scenario Outline: successful payment with cachetoken, request types <request_types> and submit on success - non-frictionless
-#    Given User fills payment form with defined card VISA_NON_FRICTIONLESS
+#    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
@@ -152,7 +152,7 @@
 #
 #
 #  Scenario Outline: successful payment with request types <request_types> and submit on success - non-frictionless
-#    Given User fills payment form with defined card VISA_NON_FRICTIONLESS
+#    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes

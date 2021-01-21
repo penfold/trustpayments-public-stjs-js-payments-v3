@@ -21,7 +21,7 @@ Feature: Successfull payments with various request types configurations
   @config_requestTypes_tdq_auth
   Scenario: Successful step-up payment with request types: THREEDQUERY, AUTH
     Given User opens page with payment form
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
@@ -100,7 +100,7 @@ Feature: Successfull payments with various request types configurations
   @config_requestTypes_acheck_tdq_auth_subscription
   Scenario: Successful payment with additional request types: ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION
     Given User opens page with payment form
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And Step up ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION response is set to OK
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH, SUBSCRIPTION response is set to "OK"
