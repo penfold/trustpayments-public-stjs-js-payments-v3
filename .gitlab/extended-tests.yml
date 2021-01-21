@@ -21,6 +21,8 @@
     - tar -xf sc-4.6.3-linux.tar.gz
     - ./sc-4.6.3-linux/bin/sc -u "${SAUCE_LABS_USER}" -k "${SAUCE_LABS_API_KEY}" -x https://eu-central-1.saucelabs.com/rest/v1 -i pgs-test_tunnel_id&
     - sleep 60
+    - . .cicd_scripts/execute/tests.sh
+    - validate_and_activate_e2e_variables
   script:
     - echo "run script"
     - . .cicd_scripts/execute/tests.sh
@@ -49,10 +51,10 @@
     - .extended-tests-browserstack
     - .rules-extended-tests-always
   variables:
-    OS: "OS X"
-    OS_VERSION: Mojave
+    OS: "macOS"
+    OS_VERSION: 10.14
     BROWSER: Safari
-    BROWSER_VERSION: '12.1'
+    BROWSER_VERSION: '12.0'
     BROWSERSTACK_SAFARI_DRIVER: '2.48'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
 

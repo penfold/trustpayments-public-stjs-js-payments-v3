@@ -122,7 +122,7 @@ def _get_remote_capabilities(configuration):
         # 'browserstack.localIdentifier': configuration.BROWSERSTACK_LOCAL_IDENTIFIER,
         'device': configuration.REMOTE_DEVICE,
         'real_mobile': configuration.REMOTE_REAL_MOBILE,
-        'acceptSslCerts': configuration.ACCEPT_SSL_CERTS,
+        'acceptSslCerts': True,
         'project': configuration.PROJECT_NAME,
         'build': configuration.BUILD_NAME,
         # 'browserstack.debug': configuration.BROWSERSTACK_DEBUG,
