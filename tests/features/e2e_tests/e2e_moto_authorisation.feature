@@ -20,8 +20,8 @@ Feature: E2E MOTO Payments
 
     Examples:
       | CARD                  |
-      | VISA_FRICTIONLESS     |
-      | VISA_NON_FRICTIONLESS |
+      | VISA_V21_FRICTIONLESS     |
+      | VISA_V21_NON_FRICTIONLESS |
       | MASTERCARD_CARD       |
 
 
@@ -46,6 +46,6 @@ Feature: E2E MOTO Payments
 
     Examples:
       | CARD                  |
-      | VISA_FRICTIONLESS     |
-      | VISA_NON_FRICTIONLESS |
+      | VISA_V21_FRICTIONLESS     |
+      | VISA_V21_NON_FRICTIONLESS |
       | MASTERCARD_CARD       |

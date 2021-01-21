@@ -95,7 +95,7 @@ Feature: request type with submit on success and bypass card - full test coverag
       | requesttypedescriptions | <request_types> |
       | threedbypasspaymenttypes| VISA MASTERCARD |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key          | value                                   |
@@ -129,7 +129,7 @@ Feature: request type with submit on success and bypass card - full test coverag
       | requesttypedescriptions | <request_types> |
       | threedbypasspaymenttypes| VISA MASTERCARD |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key          | value                                   |
@@ -157,7 +157,7 @@ Feature: request type with submit on success and bypass card - full test coverag
       | threedbypasspaymenttypes| VISA MASTERCARD |
       | currencyiso3a           | JPY             |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key          | value                                   |
