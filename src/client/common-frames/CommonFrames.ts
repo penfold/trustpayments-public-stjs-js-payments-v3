@@ -208,7 +208,7 @@ export class CommonFrames {
         result = 'error';
         break;
     }
-
+    console.error(result);
     if (
       (result === 'success' && this._submitOnSuccess) ||
       (result === 'cancel' && this._submitOnCancel) ||

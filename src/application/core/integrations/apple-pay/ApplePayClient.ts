@@ -73,6 +73,9 @@ export class ApplePayClient implements IApplePayClient {
           case ApplePayClientStatus.ERROR:
             return this.onError$(details);
 
+          case ApplePayClientStatus.EMPTY_JWT_ERROR:
+            return this.onError$(details, true);
+
           default:
             return throwError('Unknown Apple Pay status');
         }
@@ -184,9 +187,24 @@ export class ApplePayClient implements IApplePayClient {
     return of(ApplePayClientStatus.ERROR);
   }
 
-  private onError$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.ERROR> {
-    console.error(details);
+  private onError$(
+    details: IApplePayClientStatusDetails,
+    callTransactionComplete?: boolean
+  ): Observable<ApplePayClientStatus.ERROR> {
+    console.error(details, callTransactionComplete);
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
+    if (callTransactionComplete) {
+      this.messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data: {
+            ...details,
+            errorcode: 'error'
+          }
+        },
+        true
+      );
+    }
 
     return of(ApplePayClientStatus.ERROR);
   }

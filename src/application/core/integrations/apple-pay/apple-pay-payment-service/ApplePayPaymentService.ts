@@ -103,7 +103,8 @@ export class ApplePayPaymentService {
         if (!data.response.errorcode) {
           return {
             ...data.response,
-            errormessage: 'An error occured'
+            errormessage: 'An error occured',
+            errorcode: ApplePayClientErrorCode.EMPTY_JWT_ERROR
           };
         }
         return data.response;

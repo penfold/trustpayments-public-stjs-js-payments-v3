@@ -5,6 +5,7 @@ export enum ApplePayClientErrorCode {
   VALIDATE_MERCHANT_ERROR = 7,
   ON_VALIDATE_MERCHANT = 8,
   ON_PAYMENT_AUTHORIZED = 9,
+  EMPTY_JWT_ERROR = 10,
   ERROR = 1,
   CANCEL = 2,
   SUCCESS = 0,
