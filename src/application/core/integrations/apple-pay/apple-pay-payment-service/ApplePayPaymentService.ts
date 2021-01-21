@@ -72,7 +72,6 @@ export class ApplePayPaymentService {
     const bypassError$ = this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
       filter((event: IMessageBusEvent) => {
-        console.error(event.data);
         if (Number(event.data.errorcode) === 22000 || Number(event.data.errorcode) === 50003) {
           return event.data;
         }

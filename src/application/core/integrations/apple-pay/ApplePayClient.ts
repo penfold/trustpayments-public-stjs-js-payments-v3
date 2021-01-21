@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { catchError, mapTo, switchMap, tap } from 'rxjs/operators';
+import { mapTo, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IConfig } from '../../../../shared/model/config/IConfig';
@@ -47,7 +47,6 @@ export class ApplePayClient implements IApplePayClient {
       switchMap(() => this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS))),
       switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => {
         const { status, details } = event.data;
-        console.error(event.data, status);
         switch (status) {
           case ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET:
             return this.noActiveCardsInWallet$(details);
@@ -191,15 +190,16 @@ export class ApplePayClient implements IApplePayClient {
     details: IApplePayClientStatusDetails,
     callTransactionComplete?: boolean
   ): Observable<ApplePayClientStatus.ERROR> {
-    console.error(details, callTransactionComplete);
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
+
     if (callTransactionComplete) {
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK });
       this.messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data: {
             ...details,
-            errorcode: 'error'
+            errorcode: String(ApplePayClientErrorCode.ERROR)
           }
         },
         true

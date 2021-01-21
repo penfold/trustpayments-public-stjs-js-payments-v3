@@ -68,8 +68,6 @@ export class StCodec {
     const translator = new Translator(StCodec._locale);
     responseData.errormessage = translator.translate(responseData.errormessage);
     const eventData = { ...responseData };
-    console.error(responseData);
-    console.error(jwtResponse);
     if (jwtResponse !== undefined) {
       eventData.jwt = jwtResponse;
     }

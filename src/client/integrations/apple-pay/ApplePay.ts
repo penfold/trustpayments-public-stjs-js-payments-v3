@@ -213,7 +213,6 @@ export class ApplePay {
       this.messageBus
         .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION), first())
         .subscribe((response: IMessageBusEvent) => {
-          console.error(response);
           this.handlePaymentProcessResponse(response.data.details.errorcode, response.data.details);
         });
     };
