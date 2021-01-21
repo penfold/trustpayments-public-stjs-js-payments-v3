@@ -19,7 +19,7 @@ use_step_matcher('re')
 @step('User opens page with incorrect request type in config file')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.open_page(CONFIGURATION.URL.BASE_URL)
+    payment_page.open_page_with_not_private_connection_check(CONFIGURATION.URL.BASE_URL)
 
 
 @step('User opens page with payment form')
@@ -29,7 +29,7 @@ def step_impl(context):
         'config_cybertonica_immediate_payment' not in context.scenario.tags:
         if 'Safari' in context.browser:
             accept_untrusted_pages_on_safari_browsers(context)
-        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
+        payment_page.open_page_with_not_private_connection_check(CONFIGURATION.URL.BASE_URL)
         payment_page.wait_for_iframe()
 
 
@@ -38,7 +38,7 @@ def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
-    payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?')
+    payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?')
     payment_page.wait_for_iframe()
 
 
@@ -48,11 +48,11 @@ def step_impl(context):
     if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
     if 'parent_iframe' in context.scenario.tags:
-        payment_page.open_page(CONFIGURATION.URL.BASE_URL + '/iframe.html')
+        payment_page.open_page_with_not_private_connection_check(CONFIGURATION.URL.BASE_URL + '/iframe.html')
         payment_page.switch_to_parent_iframe()
         payment_page.wait_for_parent_iframe()
     else:
-        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
+        payment_page.open_page_with_not_private_connection_check(CONFIGURATION.URL.BASE_URL)
 
 
 @step('User opens prepared payment form page (?P<example_page>.+)')
@@ -67,18 +67,18 @@ def step_impl(context, example_page: ExamplePageParam):
             jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
             stub_jsinit_update_jwt_request(f'{row["jwtName"]}')
             updated_jwt_from_jsinit = decode_jwt_from_jsinit(jsinit_response[f'{row["jwtName"]}'])
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}')
+        payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}')
         payment_page.wait_for_iframe()
         context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
         context.test_data.update_jwt_from_jsinit = updated_jwt_from_jsinit
     elif 'WITH_SPECIFIC_IFRAME' in example_page:
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}')
+        payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}')
         payment_page.switch_to_parent_iframe()
         payment_page.wait_for_parent_iframe()
     elif 'WITH_CHANGED_FORM_ID' in example_page:
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}')
+        payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}')
     else:
-        payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}')
+        payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}')
         payment_page.wait_for_iframe()
 
 
@@ -87,7 +87,7 @@ def step_impl_example(context, example_page: ExamplePageParam):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
 
     if 'Safari' in context.browser:
-        payment_page.open_page(MockUrl.STJS_URI.value)
+        payment_page.open_page_with_not_private_connection_check(MockUrl.STJS_URI.value)
 
     # setting url specific params accordingly to example page
     if example_page is None:
@@ -103,7 +103,7 @@ def step_impl_example(context, example_page: ExamplePageParam):
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_config}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
-    payment_page.open_page(url)
+    payment_page.open_page_with_not_private_connection_check(url)
 
     if example_page is not None and 'IN_IFRAME' in example_page:
         payment_page.switch_to_parent_iframe()
@@ -126,14 +126,14 @@ def step_impl(context, example_page: ExamplePageParam, jwt_config: JwtConfig):
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_config}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
-    payment_page.open_page(url)
+    payment_page.open_page_with_not_private_connection_check(url)
 
 
 @step('User opens (?P<html_page>.+) page with inline param')
 def step_impl(context, html_page):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     url = f'{CONFIGURATION.URL.BASE_URL}/{html_page}?{context.inline_config}'
-    payment_page.open_page(url)
+    payment_page.open_page_with_not_private_connection_check(url)
     payment_page.wait_for_iframe()
 
 
@@ -157,7 +157,7 @@ def step_impl(context, language):
     context.language = language
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     jwt = payment_page.get_translation_from_json(language, 'jwt')
-    payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}?jwt={jwt}')
+    payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}?jwt={jwt}')
     payment_page.wait_for_iframe()
 
 
@@ -166,13 +166,13 @@ def step_impl(context, language):
     context.language = language
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     jwt = payment_page.get_translation_from_json(language, 'jwt')
-    payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?jwt={jwt}')
+    payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?jwt={jwt}')
     payment_page.wait_for_iframe()
 
 
 def accept_untrusted_pages_on_safari_browsers(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
-    payment_page.open_page(MockUrl.WEBSERVICES_STJS_URI.value)
-    payment_page.open_page(MockUrl.LIBRARY_URL.value)
-    payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
+    payment_page.open_page_with_not_private_connection_check(MockUrl.WEBSERVICES_DOMAIN.value)
+    payment_page.open_page_with_not_private_connection_check(MockUrl.WEBSERVICES_STJS_URI.value)
+    payment_page.open_page_with_not_private_connection_check(MockUrl.LIBRARY_URL.value)
+    payment_page.open_page_with_not_private_connection_check(MockUrl.THIRDPARTY_URL.value)
