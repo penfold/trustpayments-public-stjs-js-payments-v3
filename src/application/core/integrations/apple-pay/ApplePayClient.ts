@@ -181,8 +181,6 @@ export class ApplePayClient implements IApplePayClient {
 
   private onValidateMerchantError$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.ERROR> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK });
-
     return of(ApplePayClientStatus.ERROR);
   }
 
@@ -193,7 +191,7 @@ export class ApplePayClient implements IApplePayClient {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
 
     if (callTransactionComplete) {
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK });
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
       this.messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
