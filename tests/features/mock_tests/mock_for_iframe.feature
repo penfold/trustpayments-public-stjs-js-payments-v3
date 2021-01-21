@@ -17,7 +17,7 @@ Feature: Mock for iframe
   @base_config
   Scenario: Check if payment working on example page with defined iframe
     When User opens prepared payment form page WITH_SPECIFIC_IFRAME
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"

@@ -69,7 +69,7 @@ Feature: Payment form styles check
   @config_default
   Scenario: Checking that animated card and card icon are not displayed by default
     Given User opens page with payment form
-    When User fills payment form with defined card VISA_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
     Then User will not see ANIMATED_CARD
     And User will not see CARD_ICON
 
@@ -81,5 +81,5 @@ Feature: Payment form styles check
   @config_pan_icon_false
   Scenario: Checking that card icon is not displayed if 'panIcon' is false
     Given User opens page with payment form
-    When User fills payment form with defined card VISA_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
     Then User will not see CARD_ICON
