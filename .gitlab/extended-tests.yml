@@ -51,7 +51,7 @@
     - .extended-tests-browserstack
     - .rules-extended-tests-always
   variables:
-    OS: "macOS"
+    OS: macOS
     OS_VERSION: 10.14
     BROWSER: Safari
     BROWSER_VERSION: '12.0'
