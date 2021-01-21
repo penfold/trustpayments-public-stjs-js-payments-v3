@@ -87,7 +87,7 @@ def step_impl_example(context, example_page: ExamplePageParam):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
 
     if 'Safari' in context.browser:
-        accept_untrusted_pages_on_safari_browsers(context)
+        payment_page.open_page(MockUrl.STJS_URI)
 
     # setting url specific params accordingly to example page
     if example_page is None:
