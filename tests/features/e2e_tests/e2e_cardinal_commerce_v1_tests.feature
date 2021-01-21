@@ -20,15 +20,13 @@ Feature: Cardinal Commerce E2E tests
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
     Examples:
-      | request_types            | threedresponse_defined|
-      | THREEDQUERY AUTH         | False                 |
-      | ACCOUNTCHECK THREEDQUERY | True                  |
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
 
 
   @e2e_cardinal_commerce_v1
@@ -44,15 +42,13 @@ Feature: Cardinal Commerce E2E tests
     And User will see that notification frame has "<color>" color
     And "submit" callback is called only once
     And "<callback>" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
     And User will see that Submit button is "<state>" after payment
     And User will see that ALL input fields are "<state>"
 
     Examples:
-      | request_types            | payment_status                          | color | callback | state    |threedresponse_defined|
-      | THREEDQUERY AUTH         | Unauthenticated                         | red   | error    | enabled  |False                 |
-      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | green | success  | disabled |True                  |
+      | request_types            | payment_status                          | color | callback | state    |
+      | THREEDQUERY AUTH         | Unauthenticated                         | red   | error    | enabled  |
+      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | green | success  | disabled |
 
 
   @e2e_cardinal_commerce_v1
@@ -68,15 +64,13 @@ Feature: Cardinal Commerce E2E tests
     And User will see that notification frame has "red" color
     And "submit" callback is called only once
     And "error" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
     And User will see that Submit button is "enabled" after payment
     And User will see that ALL input fields are "enabled"
 
     Examples:
-      | request_types            | threedresponse_defined|
-      | THREEDQUERY AUTH         | False                 |
-      | ACCOUNTCHECK THREEDQUERY | True                  |
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
 
 
   @e2e_cardinal_commerce_v1
@@ -91,13 +85,11 @@ Feature: Cardinal Commerce E2E tests
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
     Examples:
-      | request_types            | threedresponse_defined|
-      | THREEDQUERY AUTH         | False                 |
-      | ACCOUNTCHECK THREEDQUERY | True                  |
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
 
 
   @e2e_cardinal_commerce_v1
@@ -112,13 +104,11 @@ Feature: Cardinal Commerce E2E tests
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
     Examples:
-      | request_types            | threedresponse_defined|
-      | THREEDQUERY AUTH         | False                 |
-      | ACCOUNTCHECK THREEDQUERY | True                  |
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
 
 
   @e2e_cardinal_commerce_v1
@@ -133,13 +123,11 @@ Feature: Cardinal Commerce E2E tests
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
     Examples:
-      | request_types            | threedresponse_defined|
-      | THREEDQUERY AUTH         | False                 |
-      | ACCOUNTCHECK THREEDQUERY | True                  |
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
 
 
   @e2e_cardinal_commerce_v1
@@ -154,13 +142,11 @@ Feature: Cardinal Commerce E2E tests
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
     Examples:
-      | request_types            | threedresponse_defined|
-      | THREEDQUERY AUTH         | False                 |
-      | ACCOUNTCHECK THREEDQUERY | True                  |
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
 
 
   @e2e_cardinal_commerce_v1
@@ -175,13 +161,11 @@ Feature: Cardinal Commerce E2E tests
     And User will see that notification frame has "<color>" color
     And "submit" callback is called only once
     And "<callback>" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
     Examples:
-      | request_types            | payment_status                          | color | callback |threedresponse_defined|
-      | THREEDQUERY AUTH         | Payment has been successfully processed | green | success  |False                 |
-      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | red   | error    |True                  |
+      | request_types            | payment_status                          | color | callback |
+      | THREEDQUERY AUTH         | Payment has been successfully processed | green | success  |
+      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | red   | error    |
 
 
   @e2e_cardinal_commerce_v1
@@ -196,13 +180,11 @@ Feature: Cardinal Commerce E2E tests
     And User will see that notification frame has "<color>" color
     And "submit" callback is called only once
     And "<callback>" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
     Examples:
-      | request_types            | payment_status                          | color | callback |threedresponse_defined|
-      | THREEDQUERY AUTH         | Payment has been successfully processed | green | success  |False                 |
-      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | red   | error    |True                  |
+      | request_types            | payment_status                          | color | callback |
+      | THREEDQUERY AUTH         | Payment has been successfully processed | green | success  |
+      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | red   | error    |
 
 
   @e2e_cardinal_commerce_v1
@@ -218,13 +200,11 @@ Feature: Cardinal Commerce E2E tests
     And User will see that notification frame has "red" color
     And "submit" callback is called only once
     And "error" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
     Examples:
-      | request_types            | threedresponse_defined|
-      | THREEDQUERY AUTH         | False                 |
-      | ACCOUNTCHECK THREEDQUERY | True                  |
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
 
 
   @e2e_cardinal_commerce_v1
@@ -240,13 +220,11 @@ Feature: Cardinal Commerce E2E tests
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
     Examples:
-      | request_types            | threedresponse_defined|
-      | THREEDQUERY AUTH         | False                 |
-      | ACCOUNTCHECK THREEDQUERY | True                  |
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
 
 
   @e2e_cardinal_commerce_v1
@@ -261,13 +239,11 @@ Feature: Cardinal Commerce E2E tests
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
     Examples:
-      | request_types            | threedresponse_defined|
-      | THREEDQUERY AUTH         | False                 |
-      | ACCOUNTCHECK THREEDQUERY | True                  |
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
 
 
   @e2e_cardinal_commerce_v1
