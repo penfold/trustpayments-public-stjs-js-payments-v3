@@ -46,23 +46,23 @@
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 # smoke tests executed on review branches
-.apple-test-browserstack-component-test:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-always
-  variables:
-    OS: macOS
-    OS_VERSION: 10.14
-    BROWSER: Safari
-    BROWSER_VERSION: '12.0'
-    BROWSERSTACK_SAFARI_DRIVER: '2.48'
-    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-
-apple-test-part1-browserstack-component-test:
-  extends: .apple-test-browserstack-component-test
-  variables:
-    POETRY_TAGS: apple_test_part1
-  resource_group: extended_tests_review_1
+#.apple-test-browserstack-component-test:
+#  extends:
+#    - .extended-tests-browserstack
+#    - .rules-extended-tests-always
+#  variables:
+#    OS: "OS X"
+#    OS_VERSION: 10.14
+#    BROWSER: Safari
+#    BROWSER_VERSION: '12.1'
+#    BROWSERSTACK_SAFARI_DRIVER: '2.48'
+#    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+#
+#apple-test-part1-browserstack-component-test:
+#  extends: .apple-test-browserstack-component-test
+#  variables:
+#    POETRY_TAGS: apple_test_part1
+#  resource_group: extended_tests_review_1
 #
 #apple-test-part2-browserstack-component-test:
 #  extends: .apple-test-browserstack-component-test
