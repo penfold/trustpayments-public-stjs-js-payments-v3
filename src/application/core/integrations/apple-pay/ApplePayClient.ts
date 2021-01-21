@@ -47,6 +47,7 @@ export class ApplePayClient implements IApplePayClient {
       switchMap(() => this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS))),
       switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => {
         const { status, details } = event.data;
+        console.error(event.data, status);
         switch (status) {
           case ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET:
             return this.noActiveCardsInWallet$(details);
@@ -184,6 +185,7 @@ export class ApplePayClient implements IApplePayClient {
   }
 
   private onError$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.ERROR> {
+    console.error(details);
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
 
     return of(ApplePayClientStatus.ERROR);

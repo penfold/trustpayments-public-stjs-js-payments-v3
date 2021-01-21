@@ -100,7 +100,7 @@
   "submitCallback": null,
   "submitFields": [],
   "submitOnSuccess": false,
-  "submitOnError": false,
+  "submitOnError": true,
   "submitOnCancel": false,
   "successCallback": null,
   "translations": {

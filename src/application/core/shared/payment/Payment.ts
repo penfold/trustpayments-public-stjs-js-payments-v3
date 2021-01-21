@@ -58,7 +58,7 @@ export class Payment {
     if (responseData && responseData.requesttypedescription === 'THREEDQUERY' && responseData.threedresponse) {
       return this.publishThreedResponse(responseData);
     }
-
+    console.error(responseData);
     return this.publishResponse(responseData);
   }
 
