@@ -23,20 +23,6 @@ extended-tests-sauce-labs:
     - .services-app-html-test
 #    - .sequentially-component-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
-#
-
-win8.1-Chrome-latest-smoke-tests:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-always
-  variables:
-    OS: Windows
-    OS_VERSION: '8.1'
-    BROWSER: Chrome
-    BROWSER_VERSION: 'latest'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_2
-
 
 .visual-regression-tests:
   extends:
