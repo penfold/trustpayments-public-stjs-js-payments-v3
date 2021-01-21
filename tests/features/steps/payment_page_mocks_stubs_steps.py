@@ -1,4 +1,5 @@
 # type: ignore[no-redef]
+import time
 
 from behave import use_step_matcher, given, step, when, then
 
@@ -119,6 +120,7 @@ def step_impl(context, action_code):
         stub_st_request_type(ApplePayResponse.ERROR.value, 'THREEDQUERY, AUTH')
     elif action_code == 'CANCEL':
         stub_payment_status(MockUrl.APPLEPAY_MOCK_URI.value, ApplePayResponse[action_code].value)
+    time.sleep(2000)
     payment_page.choose_payment_methods(PaymentType.APPLE_PAY.name)
 
 
