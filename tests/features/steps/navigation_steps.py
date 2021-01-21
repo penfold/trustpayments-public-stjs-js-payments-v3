@@ -67,19 +67,22 @@ def step_impl(context, example_page: ExamplePageParam):
             jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
             stub_jsinit_update_jwt_request(f'{row["jwtName"]}')
             updated_jwt_from_jsinit = decode_jwt_from_jsinit(jsinit_response[f'{row["jwtName"]}'])
-        payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}')
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}'
+        payment_page.open_page_with_not_private_connection_check(url)
         payment_page.wait_for_iframe()
         context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
         context.test_data.update_jwt_from_jsinit = updated_jwt_from_jsinit
-    elif 'WITH_SPECIFIC_IFRAME' in example_page:
-        payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}')
-        payment_page.switch_to_parent_iframe()
-        payment_page.wait_for_parent_iframe()
-    elif 'WITH_CHANGED_FORM_ID' in example_page:
-        payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}')
     else:
-        payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}')
-        payment_page.wait_for_iframe()
+        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}'
+        if 'WITH_SPECIFIC_IFRAME' in example_page:
+            payment_page.open_page_with_not_private_connection_check(url)
+            payment_page.switch_to_parent_iframe()
+            payment_page.wait_for_parent_iframe()
+        elif 'WITH_CHANGED_FORM_ID' in example_page:
+            payment_page.open_page_with_not_private_connection_check(url)
+        else:
+            payment_page.open_page_with_not_private_connection_check(url)
+            payment_page.wait_for_iframe()
 
 
 @step('User opens (?:example page|example page (?P<example_page>.+))')
