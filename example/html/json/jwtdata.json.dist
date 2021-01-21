@@ -1,14 +1,12 @@
 {
-  "iat": 1592298893548,
-  "iss": "am0310.autoapi",
-  "secret": "ja<n}yP]3$1E$iUYtn_*i7))24I,=^",
+  "iat": 1234567891011,
+  "iss": "test",
+  "secret": "test",
   "payload": {
     "baseamount": "1000",
     "accounttypedescription": "ECOM",
     "currencyiso3a": "GBP",
-    "sitereference": "test_james38641",
-    "locale": "en_GB",
-    "requesttypedescriptions": ["THREEDQUERY"]
+    "sitereference": "",
+    "locale": "en_GB"
   }
 }
-a
