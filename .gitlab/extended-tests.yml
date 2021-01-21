@@ -17,38 +17,52 @@ extended-tests-sauce-labs:
     - echo "run script"
     # - poetry run behave --logging-level="${BEHAVE_LOGGING_LEVEL}" --tags="${poetry_tags}" "${tests_dir}"
 #
-#.extended-tests-browserstack:
-#  extends:
-#    - .extended-tests
-#    - .services-app-html-test
+.extended-tests-browserstack:
+  extends:
+    - .extended-tests
+    - .services-app-html-test
 #    - .sequentially-component-browserstack-tests
-#  image: ${IMAGE_JS_PAYMENTS_TESTS}
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
 #
-#.visual-regression-tests:
-#  extends:
-#    - .extended-tests
-#    - .services-app-html-dev
+
+win8.1-Chrome-latest-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    OS: Windows
+    OS_VERSION: '8.1'
+    BROWSER: Chrome
+    BROWSER_VERSION: 'latest'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_release_2
+
+
+.visual-regression-tests:
+  extends:
+    - .extended-tests
+    - .services-app-html-dev
 #    - .sequentially-e2e-browserstack-tests
-#  image: ${IMAGE_JS_PAYMENTS_TESTS}
-#
-## smoke tests executed on review branches
-#.apple-test-browserstack-component-test:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-extended-tests-always
-#  variables:
-#    OS: "OS X"
-#    OS_VERSION: Mojave
-#    BROWSER: Safari
-#    BROWSER_VERSION: '12.1'
-#    ROWSERSTACK_SAFARI_DRIVER: '2.48'
-#    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-#
-#apple-test-part1-browserstack-component-test:
-#  extends: .apple-test-browserstack-component-test
-#  variables:
-#    POETRY_TAGS: apple_test_part1
-#  resource_group: extended_tests_review_1
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
+
+# smoke tests executed on review branches
+.apple-test-browserstack-component-test:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    OS: "OS X"
+    OS_VERSION: Mojave
+    BROWSER: Safari
+    BROWSER_VERSION: '12.1'
+    BROWSERSTACK_SAFARI_DRIVER: '2.48'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+
+apple-test-part1-browserstack-component-test:
+  extends: .apple-test-browserstack-component-test
+  variables:
+    POETRY_TAGS: apple_test_part1
+  resource_group: extended_tests_review_1
 #
 #apple-test-part2-browserstack-component-test:
 #  extends: .apple-test-browserstack-component-test
@@ -56,17 +70,17 @@ extended-tests-sauce-labs:
 #    POETRY_TAGS: apple_test_part2
 #  resource_group: extended_tests_review_2
 #
-#win10-Chrome-latest-visual-tests:
-#  extends:
-#    - .visual-regression-tests
-#    - .rules-extended-tests-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: Chrome
-#    BROWSER_VERSION: 'latest'
-#    POETRY_TAGS: visual_regression
-#  resource_group: extended_tests_review_1
+win10-Chrome-latest-visual-tests:
+  extends:
+    - .visual-regression-tests
+    - .rules-extended-tests-always
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Chrome
+    BROWSER_VERSION: 'latest'
+    POETRY_TAGS: visual_regression
+  resource_group: extended_tests_review_1
 #
 #win10-Chrome-latest-visual-tests-styling:
 #  extends:
