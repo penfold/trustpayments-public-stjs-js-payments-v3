@@ -12,7 +12,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     And User opens example page
     And User waits for whole form to be displayed
     And User waits for Pay button to be active
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User press ENTER button in input field
     Then User will not see notification frame
     And User will see that Submit button is "enabled" after payment
@@ -24,7 +24,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    When User fills payment form with defined card VISA_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User press ENTER button in input field
     Then User will see payment status information: "Payment has been successfully processed"
     And "submit" callback is called only once
@@ -38,7 +38,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    When User fills payment form with defined card VISA_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User press ENTER button in input field
     Then User will see payment status information: "Payment has been successfully processed"
     And "submit" callback is called only once
@@ -73,7 +73,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"

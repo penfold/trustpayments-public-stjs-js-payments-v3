@@ -43,7 +43,7 @@ Feature: E2E Card Payments - redirection
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will not see notification frame
@@ -159,7 +159,7 @@ Feature: E2E Card Payments - redirection
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page SUCCESS_CALLBACK
-    When User fills payment form with defined card VISA_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "example.org" having params
@@ -185,7 +185,7 @@ Feature: E2E Card Payments - redirection
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page SUBMIT_CALLBACK
-    When User fills payment form with defined card VISA_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "example.org" having params
@@ -268,7 +268,7 @@ Feature: E2E Card Payments - redirection
       | key                     | value                    |
       | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User clicks Cancel button on authentication modal
     Then User will be sent to page with url "www.example.com" having params
@@ -286,7 +286,7 @@ Feature: E2E Card Payments - redirection
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User clicks Cancel button on authentication modal
     Then User will be sent to page with url "www.example.com" having params
