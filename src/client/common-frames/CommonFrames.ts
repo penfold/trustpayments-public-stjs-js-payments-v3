@@ -136,6 +136,7 @@ export class CommonFrames {
     if (data.hasOwnProperty('threedresponse') && fields.indexOf('threedresponse') === -1) {
       fields.push('threedresponse');
     }
+    console.error(fields);
     return fields;
   }
 
@@ -185,8 +186,12 @@ export class CommonFrames {
   }
 
   private _onTransactionComplete(data: any): void {
-    this.addSubmitData(data);
-
+    console.error(data.errorcode);
+    if (data.errorcode !== 'cancelled') {
+      this.addSubmitData({ errorcode: 'cancelled' });
+    } else {
+      this.addSubmitData(data);
+    }
     if (!this._isTransactionFinished(data)) {
       return;
     }
@@ -203,6 +208,7 @@ export class CommonFrames {
       case 'cancelled':
         result = 'cancel';
         data = { ...data, errormessage: PAYMENT_CANCELLED };
+        console.error(data);
         break;
       default:
         result = 'error';
@@ -226,6 +232,11 @@ export class CommonFrames {
   }
 
   private addSubmitData(data: any) {
+    console.error(data, this._getSubmitFields(data));
+    if (data.errorcode === 'cancelled') {
+      DomMethods.addDataToForm(this._merchantForm, data);
+      return;
+    }
     DomMethods.addDataToForm(this._merchantForm, data, this._getSubmitFields(data));
   }
 

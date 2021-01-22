@@ -148,6 +148,7 @@ export class ApplePay {
 
   private onValidateMerchant(): void {
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
+      console.error(event);
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {
