@@ -141,4 +141,4 @@ Feature: request type with submit on error and bypasscard - full test coverage
    Examples:
     | card_type             |
     | MASTERCARD_CARD       |
-    | VISA_NON_FRICTIONLESS |
+    | VISA_V21_NON_FRICTIONLESS |

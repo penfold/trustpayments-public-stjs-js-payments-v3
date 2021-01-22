@@ -13,7 +13,7 @@ Feature: E2E for tokenisation
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    When User fills only security code for saved VISA_FRICTIONLESS card
+    When User fills only security code for saved VISA_V21_FRICTIONLESS card
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
@@ -26,7 +26,7 @@ Feature: E2E for tokenisation
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    When User fills only security code for saved VISA_NON_FRICTIONLESS card
+    When User fills only security code for saved VISA_V21_NON_FRICTIONLESS card
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
@@ -41,7 +41,7 @@ Feature: E2E for tokenisation
       | requesttypedescriptions  | THREEDQUERY AUTH RISKDEC |
       | threedbypasspaymenttypes | VISA MASTERCARD          |
     And User opens example page
-    When User fills only security code for saved VISA_NON_FRICTIONLESS card
+    When User fills only security code for saved VISA_V21_NON_FRICTIONLESS card
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
@@ -75,7 +75,7 @@ Feature: E2E for tokenisation
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     When User calls updateJWT function by filling amount field
-    And User fills only security code for saved VISA_FRICTIONLESS card
+    And User fills only security code for saved VISA_V21_FRICTIONLESS card
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "www.example.com" having params
@@ -99,7 +99,7 @@ Feature: E2E for tokenisation
     And User opens page WITH_UPDATE_JWT and jwt JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    When User fills only security code for saved VISA_NON_FRICTIONLESS card
+    When User fills only security code for saved VISA_V21_NON_FRICTIONLESS card
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "Decline"

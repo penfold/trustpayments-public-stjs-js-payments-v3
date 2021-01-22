@@ -23,6 +23,7 @@ export class ConfigResolver {
       animatedCard: this._getValueOrDefault(config.animatedCard, DefaultConfig.animatedCard),
       applePay: this._setApplePayConfig(config.applePay),
       buttonId: this._getValueOrDefault(config.buttonId, DefaultConfig.buttonId),
+      stopSubmitFormOnEnter: this._getValueOrDefault(config.stopSubmitFormOnEnter, DefaultConfig.stopSubmitFormOnEnter),
       cancelCallback: this._getValueOrDefault(config.cancelCallback, DefaultConfig.cancelCallback),
       componentIds: this._setComponentIds(config.componentIds),
       components: this._setComponentsProperties(config.components),

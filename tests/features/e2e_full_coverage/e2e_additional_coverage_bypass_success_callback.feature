@@ -66,7 +66,7 @@ Feature: request type with success callback and bypass card - full test coverage
       | requesttypedescriptions | <request_types> |
       | threedbypasspaymenttypes| VISA MASTERCARD |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     Then User will see "submit" popup
     And "submit" callback is called only once
@@ -99,7 +99,7 @@ Feature: request type with success callback and bypass card - full test coverage
       | requesttypedescriptions | <request_types> |
       | threedbypasspaymenttypes| VISA MASTERCARD |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see "submit" popup

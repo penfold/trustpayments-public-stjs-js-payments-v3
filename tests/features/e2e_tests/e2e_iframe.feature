@@ -13,7 +13,7 @@ Feature: E2E tests for iframe
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page IN_IFRAME
-    When User fills payment form with defined card VISA_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color

@@ -31,7 +31,7 @@ Feature: Successfull payments with various configurations
     Given User opens prepared payment form page WITH_UPDATE_JWT
       | jwtName          |
       | BASE_UPDATED_JWT |
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User calls updateJWT function by filling amount field
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
@@ -44,7 +44,7 @@ Feature: Successfull payments with various configurations
   @config_defer_init
   Scenario: Successful payment with deferInit
     Given User opens page with payment form
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
@@ -57,7 +57,7 @@ Feature: Successfull payments with various configurations
     Given User opens prepared payment form page WITH_UPDATE_JWT
       | jwtName          |
       | BASE_UPDATED_JWT |
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User calls updateJWT function by filling amount field
@@ -110,7 +110,7 @@ Feature: Successfull payments with various configurations
   @config_skip_jsinit @cardinal_commerce
   Scenario: Successful payment with skipped JSINIT process
     Given User opens page with payment form
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
@@ -118,13 +118,13 @@ Feature: Successfull payments with various configurations
     And User will see that notification frame has "green" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
-  @base_config
+  @base_config @stopSubmitFormOnEnter
   Scenario: Submit payment form by 'Enter' button
     Given User opens page with payment form
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And AUTH response is set to "OK"
-    And User press enter button
+    And User press ENTER button in input field
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see the same provided data in inputs fields
