@@ -112,8 +112,6 @@ def _get_remote_capabilities(configuration):
     if 'Safari' in configuration.REMOTE_BROWSER:
         network_logs = 'false'
 
-    print('\n Get Remote Caps\nusername ' + configuration.SL_USERNAME + 'accessKey ' + configuration.SL_ACCESS_KEY +
-          '')
     possible_caps = {
         # 'os': configuration.REMOTE_OS,
         # 'os_version': configuration.REMOTE_OS_VERSION,
@@ -140,8 +138,8 @@ def _get_remote_capabilities(configuration):
         # 'browserstack.autoWait': 0,
         'ie.ensureCleanSession': 'true',
         'ie.forceCreateProcessApi': 'true',
-        'username': configuration.SL_USERNAME,
-        'accessKey': configuration.SL_ACCESS_KEY,
+        # 'username': configuration.SL_USERNAME,
+        # 'accessKey': configuration.SL_ACCESS_KEY,
         'sauce:options': {
             'seleniumVersion': configuration.BROWSERSTACK_SELENIUM_VERSION,
             'chromedriverVersion': configuration.BROWSERSTACK_CHROME_DRIVER,
@@ -150,6 +148,10 @@ def _get_remote_capabilities(configuration):
             'screenResolution': '1920x1080'
         }
     }
+    # flag to determine that we using real device (for mobiles) or not
+    if configuration.DEVICE is None:
+        possible_caps['tunnelIdentifier'] = 'test_tunnel_for_web_test'
+
     capabilities = {}
     for key, value in possible_caps.items():
         if value:

@@ -19,7 +19,7 @@
   before_script:
     - wget --quiet https://saucelabs.com/downloads/sc-4.6.3-linux.tar.gz
     - tar -xf sc-4.6.3-linux.tar.gz
-    - ./sc-4.6.3-linux/bin/sc -u "${SAUCE_LABS_USER}" -k "${SAUCE_LABS_API_KEY}" &  #-x https://eu-central-1.saucelabs.com/rest/v1 -i pgs-test_tunnel_id&
+    - ./sc-4.6.3-linux/bin/sc -u "${SAUCE_LABS_USER}" -k "${SAUCE_LABS_API_KEY}" -i test_tunnel_for_web_test &  #-x https://eu-central-1.saucelabs.com/rest/v1  &
     - sleep 60
     - . .cicd_scripts/execute/tests.sh
     - validate_and_activate_e2e_variables
