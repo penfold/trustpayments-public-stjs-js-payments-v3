@@ -90,6 +90,7 @@ def step_impl_example(context, example_page: ExamplePageParam):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
 
     if 'Safari' in context.browser:
+        payment_page.open_page_with_not_private_connection_check(MockUrl.LIBRARY_URL.value)
         payment_page.open_page_with_not_private_connection_check(MockUrl.STJS_URI.value)
 
     # setting url specific params accordingly to example page
