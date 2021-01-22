@@ -23,8 +23,12 @@ def load_config():
         'HEADLESS': get_from_env('HEADLESS', True),
         'TIMEOUT': get_from_env('AUTOMATION_TIMEOUT', 30),
         'REMOTE': strtobool(get_from_env('REMOTE', 'false')),
-        'COMMAND_EXECUTOR': 'https://' + str(get_from_env('SL_USERNAME')) + ':' + str(
-            get_from_env('SL_ACCESS_KEY')) + '@ondemand.eu-central-1.saucelabs.com:443/wd/hub',
+        'SL_USERNAME': str(get_from_env('SL_USERNAME')),
+        'SL_ACCESS_KEY': str(get_from_env('SL_ACCESS_KEY')),
+        'SL_REMOTE_URL': 'ondemand.eu-central-1.saucelabs.com:443/wd/hub',
+        'COMMAND_EXECUTOR': 'https://ondemand.eu-central-1.saucelabs.com:443/wd/hub',
+        #                 + str(get_from_env('SL_USERNAME')) + ':' + str(
+        # get_from_env('SL_ACCESS_KEY')) + '@' + ,
         # get_from_env('AUTOMATION_COMMAND_EXECUTOR',
         #                              'https://' + str(get_from_env('BS_USERNAME')) + ':' +
         #                              str(get_from_env('BS_ACCESS_KEY')) + '@hub.browserstack.com/wd/hub'),

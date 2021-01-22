@@ -138,12 +138,14 @@ def _get_remote_capabilities(configuration):
         # 'browserstack.autoWait': 0,
         'ie.ensureCleanSession': 'true',
         'ie.forceCreateProcessApi': 'true',
+        'username': configuration.SL_USERNAME,
+        'accessKey': configuration.SL_ACCESS_KEY,
         'sauce:options': {
             'seleniumVersion': configuration.BROWSERSTACK_SELENIUM_VERSION,
             'chromedriverVersion': configuration.BROWSERSTACK_CHROME_DRIVER,
             'iedriverVersion': configuration.BROWSERSTACK_IE_DRIVER,
             'geckodriverVersion': configuration.BROWSERSTACK_FIREFOX_DRIVER,
-            'screenResolution': '1920x1080',
+            'screenResolution': '1920x1080'
         }
     }
     capabilities = {}
