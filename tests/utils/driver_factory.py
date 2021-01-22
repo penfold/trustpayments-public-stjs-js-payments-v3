@@ -140,6 +140,7 @@ def _get_remote_capabilities(configuration):
         'ie.forceCreateProcessApi': 'true',
         # 'username': configuration.SL_USERNAME,
         # 'accessKey': configuration.SL_ACCESS_KEY,
+        'tunnelIdentifier': 'test_tunnel_for_web_tests',
         'sauce:options': {
             'seleniumVersion': configuration.BROWSERSTACK_SELENIUM_VERSION,
             'chromedriverVersion': configuration.BROWSERSTACK_CHROME_DRIVER,
@@ -148,17 +149,11 @@ def _get_remote_capabilities(configuration):
             'screenResolution': '1920x1080'
         }
     }
-    # flag to determine that we using real device (for mobiles) or not
-    if configuration.REMOTE_REAL_MOBILE == 'false':
-        possible_caps['tunnelIdentifier'] = 'test_tunnel_for_web_tests'
-    else:
-        possible_caps['tunnelIdentifier'] = 'test_tunnel_for_mobile_tests'
-
-    LOGGER.info(f'tunnelIdentifier: \n' + possible_caps['tunnelIdentifier'])
     capabilities = {}
     for key, value in possible_caps.items():
         if value:
             capabilities[key] = value
+            LOGGER.info(value)
     return capabilities
 
 
