@@ -532,18 +532,18 @@ class PaymentMethodsPage(BasePage):
 
     def validate_jwt_response_in_callback(self):
         response = self.get_text_from_submit_callback_jwt()
-        assertion_message = f'Submit callback data doesnt contain JWT response'
+        assertion_message = 'Submit callback data doesnt contain JWT response'
         add_to_shared_dict('assertion_message', assertion_message)
         assert 'undefined' not in response, assertion_message
 
     def validate_threedresponse_in_callback(self, threedresponse_defined):
         response = self.get_text_from_submit_callback_threedresponse()
         if threedresponse_defined == 'True':
-            assertion_message = f'Submit callback data doesnt contain threedresponse'
+            assertion_message = 'Submit callback data doesnt contain threedresponse'
             add_to_shared_dict('assertion_message', assertion_message)
             assert 'undefined' not in response, assertion_message
         else:
-            assertion_message = f'Submit callback data contains threedresponse'
+            assertion_message = 'Submit callback data contains threedresponse'
             add_to_shared_dict('assertion_message', assertion_message)
             assert 'undefined' in response, assertion_message
 
