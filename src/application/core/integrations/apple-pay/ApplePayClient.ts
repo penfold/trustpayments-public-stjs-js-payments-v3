@@ -120,7 +120,6 @@ export class ApplePayClient implements IApplePayClient {
 
   private onPaymentAuthorized$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus> {
     const { config, payment, formData } = details;
-    console.error(details);
 
     return this.applePayPaymentService
       .processPayment(
@@ -132,7 +131,6 @@ export class ApplePayClient implements IApplePayClient {
       .pipe(
         tap(() => this.localStorage.setItem('completePayment', 'true')),
         tap((response: IApplePayProcessPaymentResponse) => {
-          console.error(response);
           this.messageBus.publish(
             {
               type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
