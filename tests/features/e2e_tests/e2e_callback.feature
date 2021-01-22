@@ -53,12 +53,12 @@ Feature: callbacks
     And "submit" callback is called only once
     And "error" callback is called only once
     And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
+    And submit callback contains THREEDRESPONSE: True
 
     Examples:
-      | request_types            | threedresponse_defined |
-      | THREEDQUERY AUTH         | False                  |
-      | ACCOUNTCHECK THREEDQUERY | True                   |
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
 
 #  @cancel_callback
 #  Scenario Outline: cancel and submit callback for cancelled payment
