@@ -186,7 +186,7 @@ export class CommonFrames {
   }
 
   private _onTransactionComplete(data: any): void {
-    if (data.errorcode !== 'cancelled') {
+    if (data.errorcode === 'cancelled') {
       this.addSubmitData({ errorcode: 'cancelled' });
     } else {
       this.addSubmitData(data);
