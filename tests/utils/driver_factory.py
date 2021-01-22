@@ -112,6 +112,8 @@ def _get_remote_capabilities(configuration):
     if 'Safari' in configuration.REMOTE_BROWSER:
         network_logs = 'false'
 
+    print('\n Get Remote Caps\nusername ' + configuration.SL_USERNAME + 'accessKey ' + configuration.SL_ACCESS_KEY +
+          '')
     possible_caps = {
         # 'os': configuration.REMOTE_OS,
         # 'os_version': configuration.REMOTE_OS_VERSION,
