@@ -140,7 +140,7 @@ def _get_remote_capabilities(configuration):
         'ie.forceCreateProcessApi': 'true',
         # 'username': configuration.SL_USERNAME,
         # 'accessKey': configuration.SL_ACCESS_KEY,
-        'tunnelIdentifier': 'test_tunnel_for_web_tests',
+        # 'tunnelIdentifier': 'test_tunnel_for_web_tests',
         'sauce:options': {
             'seleniumVersion': configuration.BROWSERSTACK_SELENIUM_VERSION,
             'chromedriverVersion': configuration.BROWSERSTACK_CHROME_DRIVER,
