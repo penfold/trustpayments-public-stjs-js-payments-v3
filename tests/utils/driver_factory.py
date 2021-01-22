@@ -149,7 +149,7 @@ def _get_remote_capabilities(configuration):
         }
     }
     # flag to determine that we using real device (for mobiles) or not
-    if configuration.DEVICE is None:
+    if configuration.REMOTE_REAL_MOBILE == 'false':
         possible_caps['tunnelIdentifier'] = 'test_tunnel_for_web_test'
 
     capabilities = {}
