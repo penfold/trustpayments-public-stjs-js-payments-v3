@@ -5,6 +5,7 @@ WebDriver instance which is responsible for direct connection and allows
 to manipulate browser window thanks to its functions.
 It is based on singleton pattern to operate on a single instance of a driver.
 """
+import pprint
 from logging import INFO
 
 from logger import get_logger
@@ -154,6 +155,7 @@ def _get_remote_capabilities(configuration):
     else:
         possible_caps['tunnelIdentifier'] = 'test_tunnel_for_mobile_tests'
 
+    LOGGER.info(f'CONFIGURATION: \n{pprint.pformat(possible_caps, indent=4)}')
     capabilities = {}
     for key, value in possible_caps.items():
         if value:
