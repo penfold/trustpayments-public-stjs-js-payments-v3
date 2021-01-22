@@ -1,49 +1,11 @@
 import Joi from 'joi';
+import { ApplePaySchema } from './apple-pay-schema/ApplePaySchema';
 import { VisaCheckoutSchema } from './VisaCheckoutSchema';
 
 export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   analytics: Joi.boolean(),
   animatedCard: Joi.boolean(),
-  applePay: {
-    buttonStyle: Joi.string().valid('black', 'white', 'white-outline'),
-    buttonText: Joi.string().valid('plain', 'buy', 'book', 'donate', 'check-out', 'subscribe'),
-    merchantId: Joi.string(),
-    paymentRequest: {
-      countryCode: Joi.string(),
-      currencyCode: Joi.string(),
-      merchantCapabilities: Joi.array().items(
-        Joi.string().valid('supports3DS', 'supportsCredit', 'supportsDebit', 'supportsEMV')
-      ),
-      supportedNetworks: Joi.array().items(
-        Joi.string().valid(
-          'amex',
-          'chinaUnionPay',
-          'discover',
-          'interac',
-          'jcb',
-          'masterCard',
-          'privateLabel',
-          'visa',
-          'cartesBancaires',
-          'eftpos',
-          'electron',
-          'maestro',
-          'vPay',
-          'elo',
-          'mada'
-        )
-      ),
-      total: {
-        amount: Joi.string(),
-        label: Joi.string()
-      },
-      billingContact: Joi.object(),
-      shippingContact: Joi.object(),
-      requiredBillingContactFields: Joi.array().items(Joi.string()),
-      requiredShippingContactFields: Joi.array().items(Joi.string())
-    },
-    placement: Joi.string()
-  },
+  applePay: ApplePaySchema,
   buttonId: Joi.string().allow(''),
   stopSubmitFormOnEnter: Joi.boolean(),
   cancelCallback: Joi.any(),
