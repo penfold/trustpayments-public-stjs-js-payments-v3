@@ -6,7 +6,7 @@ import { Validation } from '../../application/core/shared/validation/Validation'
 import { Container } from 'typedi';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { IComponentsIds } from '../../shared/model/config/IComponentsIds';
-import { delay, filter, first, map, takeUntil, tap } from 'rxjs/operators';
+import { delay, filter, first, map, takeUntil } from 'rxjs/operators';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Observable } from 'rxjs';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
