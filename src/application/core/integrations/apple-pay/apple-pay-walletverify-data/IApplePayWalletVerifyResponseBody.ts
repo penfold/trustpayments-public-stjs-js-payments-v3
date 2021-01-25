@@ -1,7 +1,7 @@
 export interface IApplePayWalletVerifyResponseBody {
   customeroutput: string;
   errorcode: string;
-  errormesage: string;
+  errormessage: string;
   requestid: string;
   requesttypedescription: string;
   transactionstartedtimestamp: string;

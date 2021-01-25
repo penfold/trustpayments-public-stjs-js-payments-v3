@@ -27,6 +27,7 @@ import { RequestType } from '../../../shared/types/RequestType';
 import { IApplePayClientStatusDetails } from '../../../application/core/integrations/apple-pay/IApplePayClientStatusDetails';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
+import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 
 @Service()
 export class ApplePay {
@@ -248,7 +249,7 @@ export class ApplePay {
       });
   }
 
-  private handleWalletVerifyResponse(status: ApplePayClientStatus, details: any): void {
+  private handleWalletVerifyResponse(status: ApplePayClientStatus, details: IApplePayWalletVerifyResponseBody): void {
     switch (Number(details.errorcode)) {
       case 30000:
         this.applePaySessionService.abort();

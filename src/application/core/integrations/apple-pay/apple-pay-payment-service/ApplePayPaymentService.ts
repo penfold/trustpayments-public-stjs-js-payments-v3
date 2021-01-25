@@ -15,6 +15,7 @@ import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { ofType } from '../../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
+import { ApplePayClientStatus } from '../ApplePayClientStatus';
 
 @Service()
 export class ApplePayPaymentService {
@@ -28,7 +29,7 @@ export class ApplePayPaymentService {
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     validationURL: string,
     cancelled: boolean
-  ): Observable<any> {
+  ): Observable<{ status: ApplePayClientErrorCode; data: {} }> {
     const request: IApplePayValidateMerchantRequest = this.applePayConfigService.updateWalletValidationUrl(
       validateMerchantRequest,
       validationURL
@@ -44,12 +45,12 @@ export class ApplePayPaymentService {
     const walletVerifyError$ = this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
       filter((event: IMessageBusEvent) => Number(event.data.errorcode) !== 0),
-      map((response: any) => {
+      map((event: IMessageBusEvent) => {
         return {
           status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
           data: {
-            errorcode: response.data.errorcode,
-            errormessage: response.data.errormessage
+            errorcode: event.data.errorcode,
+            errormessage: event.data.errormessage
           }
         };
       })
@@ -86,8 +87,8 @@ export class ApplePayPaymentService {
           return event.data;
         }
       }),
-      map((response: { data: IApplePayProcessPaymentResponse }) => {
-        return response.data;
+      map((event: { data: IApplePayProcessPaymentResponse }) => {
+        return event.data;
       })
     );
 
