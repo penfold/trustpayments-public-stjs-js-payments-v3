@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { EMPTY, from, merge, Observable, of } from 'rxjs';
-import { catchError, filter, map, tap } from 'rxjs/operators';
+import { EMPTY, from, merge, Observable, of, throwError } from 'rxjs';
+import { catchError, filter, map, tap, switchMap } from 'rxjs/operators';
 import { IApplePayPayment } from '../apple-pay-payment-data/IApplePayPayment';
 import { IApplePayWalletVerifyResponse } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
@@ -41,7 +41,22 @@ export class ApplePayPaymentService {
       });
     }
 
-    return this.payment.walletVerify(request).pipe(
+    const walletVerifyError$ = this.messageBus.pipe(
+      ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
+      filter((event: IMessageBusEvent) => Number(event.data.errorcode) !== 0),
+      map((response: any) => {
+        console.error(JSON.stringify(response));
+        return {
+          status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
+          data: {
+            errorcode: response.data.errorcode,
+            errormessage: response.data.errormessage
+          }
+        };
+      })
+    );
+
+    const walletVerify$ = this.payment.walletVerify(request).pipe(
       map((response: IApplePayWalletVerifyResponse) => {
         if (!response.response.walletsession) {
           return {
@@ -53,14 +68,10 @@ export class ApplePayPaymentService {
           status: ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
           data: response.response
         };
-      }),
-      catchError(() => {
-        return of({
-          status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
-          data: {}
-        });
       })
     );
+
+    return merge(walletVerify$, walletVerifyError$);
   }
 
   processPayment(

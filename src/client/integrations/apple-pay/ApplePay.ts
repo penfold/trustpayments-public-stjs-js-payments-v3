@@ -181,7 +181,7 @@ export class ApplePay {
           if (Number(response.data.status) === ApplePayClientErrorCode.CANCEL) {
             return;
           }
-
+          console.error(response.data);
           this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_ERROR, response.data.details);
           GoogleAnalytics.sendGaData(
             'event',
@@ -248,11 +248,27 @@ export class ApplePay {
       });
   }
 
-  private handleWalletVerifyResponse(status: ApplePayClientStatus, details: IApplePayClientStatusDetails): void {
-    this.messageBus.publish<IApplePayClientStatus>({
-      type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
-      data: { status, details }
-    });
+  private handleWalletVerifyResponse(status: ApplePayClientStatus, details: any): void {
+    switch (Number(details.errorcode)) {
+      case 30000:
+        this.applePaySessionService.completeMerchantValidation('{}');
+        this.messageBus.publish<IApplePayClientStatus>({
+          type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+          data: {
+            status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
+            details: {
+              errorMessage: details.errormessage,
+              errorCode: Number(details.errorcode)
+            }
+          }
+        });
+        GoogleAnalytics.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify failure');
+      default:
+        this.messageBus.publish<IApplePayClientStatus>({
+          type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+          data: { status, details }
+        });
+    }
   }
 
   private handlePaymentProcessResponse(
@@ -292,6 +308,22 @@ export class ApplePay {
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
             status: ApplePayClientStatus.EMPTY_JWT_ERROR,
+            details: {
+              errorMessage: details.errormessage,
+              errorCode: Number(details.errorcode)
+            }
+          }
+        });
+        return completion;
+
+      case ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR:
+        console.error(details);
+        completion.status = ApplePaySessionService.STATUS_FAILURE;
+        this.applePaySession.completePayment(completion);
+        this.messageBus.publish<IApplePayClientStatus>({
+          type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+          data: {
+            status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
             details: {
               errorMessage: details.errormessage,
               errorCode: Number(details.errorcode)
