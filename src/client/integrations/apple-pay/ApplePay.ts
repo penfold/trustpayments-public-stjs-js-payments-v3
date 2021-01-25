@@ -251,7 +251,7 @@ export class ApplePay {
   private handleWalletVerifyResponse(status: ApplePayClientStatus, details: any): void {
     switch (Number(details.errorcode)) {
       case 30000:
-        this.applePaySessionService.completeMerchantValidation('{}');
+        this.applePaySessionService.abort();
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {

@@ -59,6 +59,10 @@ export class ApplePaySessionService {
     this.paymentRequest = paymentRequest;
   }
 
+  abort(): void {
+    this.applePaySession.abort();
+  }
+
   private beginMerchantValidation(): void {
     try {
       this.applePaySession.begin();

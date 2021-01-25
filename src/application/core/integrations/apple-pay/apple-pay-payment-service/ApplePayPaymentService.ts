@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { EMPTY, from, merge, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, map, tap, switchMap } from 'rxjs/operators';
+import { catchError, filter, map, tap, switchMap, first } from 'rxjs/operators';
 import { IApplePayPayment } from '../apple-pay-payment-data/IApplePayPayment';
 import { IApplePayWalletVerifyResponse } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
@@ -70,7 +70,7 @@ export class ApplePayPaymentService {
       })
     );
 
-    return merge(walletVerify$, walletVerifyError$);
+    return merge(walletVerify$, walletVerifyError$).pipe(first());
   }
 
   processPayment(
@@ -120,6 +120,6 @@ export class ApplePayPaymentService {
       })
     );
 
-    return merge(processPayment$, bypassError$);
+    return merge(processPayment$, bypassError$).pipe(first());
   }
 }
