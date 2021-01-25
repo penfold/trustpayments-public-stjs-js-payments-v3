@@ -107,17 +107,19 @@ def _get_local_options(headless):
 
 def _get_remote_capabilities(configuration):
     # pylint: disable=unused-variable
-    network_logs = 'true'
+    network_logs = None
     screen_resolution = '1920x1080'
     accept_ssl_certs = True
-    # disabling network logs on Safari as they are not accessible for this browser and cause browser instability
 
     if 'Windows' not in configuration.REMOTE_OS:
         screen_resolution = '1920x1440'
+        accept_ssl_certs = None
 
     if 'internet explorer' in configuration.REMOTE_BROWSER:
         accept_ssl_certs = 1
 
+    if 'chrome' in configuration.REMOTE_BROWSER:
+        network_logs = True
 
     possible_caps = {
         # 'os': configuration.REMOTE_OS,
@@ -129,7 +131,6 @@ def _get_remote_capabilities(configuration):
         # 'browserstack.localIdentifier': configuration.BROWSERSTACK_LOCAL_IDENTIFIER,
         'device': configuration.REMOTE_DEVICE,
         'real_mobile': configuration.REMOTE_REAL_MOBILE,
-        'acceptSslCerts': accept_ssl_certs,
         'project': configuration.PROJECT_NAME,
         # 'browserstack.debug': configuration.BROWSERSTACK_DEBUG,
         # 'browserstack.selenium_version': configuration.BROWSERSTACK_SELENIUM_VERSION,
@@ -156,11 +157,19 @@ def _get_remote_capabilities(configuration):
             'screenResolution': screen_resolution
         }
     }
+
     capabilities = {}
     for key, value in possible_caps.items():
         if value:
             capabilities[key] = value
             LOGGER.info(value)
+
+    if accept_ssl_certs is not None:
+        capabilities['acceptSslCerts'] = accept_ssl_certs
+
+    if network_logs is not None:
+        capabilities['sauce:options']['extendedDebugging'] = True
+
     return capabilities
 
 
