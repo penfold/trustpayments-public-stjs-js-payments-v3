@@ -194,6 +194,7 @@ export class CommonFrames {
     if (!this._isTransactionFinished(data)) {
       return;
     }
+
     this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
 
     let result: 'success' | 'error' | 'cancel';
