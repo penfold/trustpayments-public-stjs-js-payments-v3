@@ -21,7 +21,7 @@
   before_script:
     - wget --quiet https://saucelabs.com/downloads/sc-4.6.3-linux.tar.gz
     - tar -xf sc-4.6.3-linux.tar.gz
-    - ./sc-4.6.3-linux/bin/sc -u "${SL_USERNAME}" -k "${SL_ACCESS_KEY}"  -x https://eu-central-1.saucelabs.com/rest/v1 & #-i test_tunnel_for_web_tests&
+    - ./sc-4.6.3-linux/bin/sc -u "${SL_USERNAME}" -k "${SL_ACCESS_KEY}" & #-x https://eu-central-1.saucelabs.com/rest/v1 -i test_tunnel_for_web_tests&
     - sleep 60
     - . .cicd_scripts/execute/tests.sh
     - validate_and_activate_e2e_variables
