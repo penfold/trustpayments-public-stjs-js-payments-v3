@@ -186,7 +186,6 @@ export class CommonFrames {
   }
 
   private _onTransactionComplete(data: any): void {
-    console.error(JSON.stringify(data));
     if (data.errorcode === 'cancelled') {
       this.addSubmitData({ errorcode: 'cancelled', errormessage: PAYMENT_CANCELLED });
     } else {
@@ -195,7 +194,6 @@ export class CommonFrames {
     if (!this._isTransactionFinished(data)) {
       return;
     }
-    console.error('dupa 11111');
     this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
 
     let result: 'success' | 'error' | 'cancel';
@@ -253,7 +251,6 @@ export class CommonFrames {
         takeUntil(this._destroy$)
       )
       .subscribe((data: any) => {
-        console.error(data);
         if (data.walletsource !== 'APPLEPAY') {
           this._onTransactionComplete(data);
           return;

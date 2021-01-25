@@ -45,7 +45,6 @@ export class ApplePayPaymentService {
       ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
       filter((event: IMessageBusEvent) => Number(event.data.errorcode) !== 0),
       map((response: any) => {
-        console.error(JSON.stringify(response));
         return {
           status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
           data: {

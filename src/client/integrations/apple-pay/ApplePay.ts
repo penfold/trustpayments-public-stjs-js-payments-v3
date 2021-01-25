@@ -181,7 +181,7 @@ export class ApplePay {
           if (Number(response.data.status) === ApplePayClientErrorCode.CANCEL) {
             return;
           }
-          console.error(response.data);
+
           this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_ERROR, response.data.details);
           GoogleAnalytics.sendGaData(
             'event',
@@ -317,7 +317,6 @@ export class ApplePay {
         return completion;
 
       case ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR:
-        console.error(details);
         completion.status = ApplePaySessionService.STATUS_FAILURE;
         this.applePaySession.completePayment(completion);
         this.messageBus.publish<IApplePayClientStatus>({
