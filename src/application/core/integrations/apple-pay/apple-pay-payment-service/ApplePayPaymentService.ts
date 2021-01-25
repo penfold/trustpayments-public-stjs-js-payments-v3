@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { EMPTY, from, merge, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, map, tap, switchMap, first } from 'rxjs/operators';
+import { from, merge, Observable, of } from 'rxjs';
+import { filter, map, first } from 'rxjs/operators';
 import { IApplePayPayment } from '../apple-pay-payment-data/IApplePayPayment';
 import { IApplePayWalletVerifyResponse } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
@@ -15,7 +15,6 @@ import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { ofType } from '../../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
-import { ApplePayClientStatus } from '../ApplePayClientStatus';
 
 @Service()
 export class ApplePayPaymentService {
