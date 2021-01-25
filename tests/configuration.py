@@ -26,7 +26,7 @@ def load_config():
         'SL_USERNAME': str(get_from_env('SL_USERNAME')),
         'SL_ACCESS_KEY': str(get_from_env('SL_ACCESS_KEY')),
         'COMMAND_EXECUTOR': 'https://' + str(get_from_env('SL_USERNAME')) + ':' + str(
-            get_from_env('SL_ACCESS_KEY')) + '@ondemand.eu-central-1.saucelabs.com:443/wd/hub',
+            get_from_env('SL_ACCESS_KEY')) + '@ondemand.us-west-1.saucelabs.com:443/wd/hub',
         # get_from_env('AUTOMATION_COMMAND_EXECUTOR',
         #                              'https://' + str(get_from_env('BS_USERNAME')) + ':' +
         #                              str(get_from_env('BS_ACCESS_KEY')) + '@hub.browserstack.com/wd/hub'),
