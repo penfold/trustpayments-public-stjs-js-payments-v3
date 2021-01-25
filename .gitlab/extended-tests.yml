@@ -208,7 +208,7 @@ win10-IE-latest-extended-tests-1:
 win10-Edge-latest-extended-tests-1:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-tests-always
   variables:
     OS: Windows
     OS_VERSION: 10

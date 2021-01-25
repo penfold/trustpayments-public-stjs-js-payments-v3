@@ -40,7 +40,7 @@ def load_config():
         'BROWSERSTACK_IE_DRIVER': get_from_env('BROWSERSTACK_IE_DRIVER', ''),
         'BROWSERSTACK_SAFARI_DRIVER': get_from_env('BROWSERSTACK_SAFARI_DRIVER', ''),
         'BROWSERSTACK_FIREFOX_DRIVER': get_from_env('BROWSERSTACK_FIREFOX_DRIVER', ''),
-        'REMOTE_DEVICE': get_from_env('DEVICE', ''),
+        'REMOTE_DEVICE': get_from_env('DEVICE', 'WEB_APP'),
         'REMOTE_REAL_MOBILE': get_from_env('REAL_MOBILE', 'false'),
         'BROWSERSTACK_LOCAL': get_from_env('LOCAL', 'true'),
         'BROWSERSTACK_LOCAL_IDENTIFIER': get_from_env('BS_LOCAL_IDENTIFIER', 'local_id'),

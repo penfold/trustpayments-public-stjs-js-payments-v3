@@ -111,15 +111,15 @@ def _get_remote_capabilities(configuration):
     screen_resolution = '1920x1080'
     accept_ssl_certs = None
 
-    if configuration.REMOTE_DEVICE is '':
+    if configuration.REMOTE_DEVICE is 'WEB_APP':
         accept_ssl_certs = True
 
         if 'Windows' not in configuration.REMOTE_OS:
             screen_resolution = '1920x1440'
             accept_ssl_certs = None
-
-        if 'internet explorer' in configuration.REMOTE_BROWSER:
-            accept_ssl_certs = 1
+        #
+        # if 'internet explorer' in configuration.REMOTE_BROWSER:
+        #     accept_ssl_certs = 1
 
         if 'chrome' in configuration.REMOTE_BROWSER:
             network_logs = True
