@@ -44,15 +44,13 @@ export class ApplePayPaymentService {
     const walletVerifyError$ = this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
       filter((event: IMessageBusEvent) => Number(event.data.errorcode) !== 0),
-      map((event: IMessageBusEvent) => {
-        return {
-          status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
-          data: {
-            errorcode: event.data.errorcode,
-            errormessage: event.data.errormessage
-          }
-        };
-      })
+      map((event: IMessageBusEvent) => ({
+        status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
+        data: {
+          errorcode: event.data.errorcode,
+          errormessage: event.data.errormessage
+        }
+      }))
     );
 
     const walletVerify$ = this.payment.walletVerify(request).pipe(
@@ -86,9 +84,7 @@ export class ApplePayPaymentService {
           return event.data;
         }
       }),
-      map((event: { data: IApplePayProcessPaymentResponse }) => {
-        return event.data;
-      })
+      map((event: { data: IApplePayProcessPaymentResponse }) => event.data)
     );
 
     const processPayment$ = from(
