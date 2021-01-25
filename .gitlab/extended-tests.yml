@@ -78,7 +78,98 @@
 #     SMOKE
 #
 ## smoke tests executed on master branch
-win10-Chrome-latest-smoke-tests:
+#win10-Chrome-latest-smoke-tests:
+#  extends:
+#    - .extended-tests-browserstack
+#    - .rules-extended-tests-always
+#  variables:
+#    OS: Windows
+#    OS_VERSION: 10
+#    BROWSER: chrome
+#    BROWSER_VERSION: 'latest'
+#    POETRY_TAGS: $SMOKE_TESTS_TAG
+#  resource_group: extended_tests_review_1
+#
+#win10-Firefox-latest-smoke-tests:
+#  extends:
+#    - .extended-tests-browserstack
+#    - .rules-extended-tests-always
+#  variables:
+#    OS: Windows
+#    OS_VERSION: 10
+#    BROWSER: firefox
+#    BROWSER_VERSION: 'latest'
+#    POETRY_TAGS: $SMOKE_TESTS_TAG
+#  resource_group: extended_tests_review_2
+#
+#win10-IE-latest-smoke-tests:
+#  extends:
+#    - .extended-tests-browserstack
+#    - .rules-extended-tests-always
+#  variables:
+#    OS: Windows
+#    OS_VERSION: 10
+#    BROWSER: internet explorer
+#    BROWSER_VERSION: 'latest'
+#    POETRY_TAGS: $SMOKE_TESTS_TAG
+#  resource_group: extended_tests_review_3
+#
+#win10-Edge-latest-smoke-tests:
+#  extends:
+#    - .extended-tests-browserstack
+#    - .rules-extended-tests-release
+#  variables:
+#    OS: Windows
+#    OS_VERSION: 10
+#    BROWSER: MicrosoftEdge
+#    BROWSER_VERSION: 'latest'
+#    POETRY_TAGS: $SMOKE_TESTS_TAG
+#  resource_group: extended_tests_review_4
+
+
+
+#OSXCatalina-Safari-13.1-smoke-tests:
+#  extends:
+#    - .extended-tests-browserstack
+#    - .rules-extended-tests-always
+#  variables:
+#    OS: macOS
+#    OS_VERSION: '10.15'
+#    BROWSER: safari
+#    BROWSER_VERSION: '13.1'
+#    AUTOMATION_TIMEOUT: 120
+#    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+#  resource_group: extended_tests_review_1
+#
+#OSXCatalina-Chrome-latest-smoke-tests:
+#  extends:
+#    - .extended-tests-browserstack
+#    - .rules-extended-tests-release
+#  variables:
+#    OS: macOS
+#    OS_VERSION: '10.15'
+#    BROWSER: Chrome
+#    BROWSER_VERSION: 'latest'
+#    AUTOMATION_TIMEOUT: 120
+#    POETRY_TAGS: $SMOKE_TESTS_TAG
+#  resource_group: extended_tests_review_2
+#
+#OSXCatalina-Firefox-latest-smoke-tests:
+#  extends:
+#    - .extended-tests-browserstack
+#    - .rules-extended-tests-release
+#  variables:
+#    OS: macOS
+#    OS_VERSION: '10.15'
+#    BROWSER: firefox
+#    BROWSER_VERSION: 'latest'
+#    AUTOMATION_TIMEOUT: 120
+#    POETRY_TAGS: $SMOKE_TESTS_TAG
+#  resource_group: extended_tests_review_3
+#
+#     EXTENDED
+#
+win10-Chrome-latest-extended-tests-1:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-always
@@ -87,102 +178,34 @@ win10-Chrome-latest-smoke-tests:
     OS_VERSION: 10
     BROWSER: chrome
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
+    POETRY_TAGS: extended_tests_part_1
   resource_group: extended_tests_review_1
 
-win10-Firefox-latest-smoke-tests:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-always
-  variables:
-    OS: Windows
-    OS_VERSION: 10
-    BROWSER: firefox
-    BROWSER_VERSION: 'latest'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_review_2
-
-win10-IE-latest-smoke-tests:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-always
-  variables:
-    OS: Windows
-    OS_VERSION: 10
-    BROWSER: internet explorer
-    BROWSER_VERSION: 'latest'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_review_3
-
-OSXCatalina-Safari-13.1-smoke-tests:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-always
-  variables:
-    OS: macOS
-    OS_VERSION: '10.15'
-    BROWSER: safari
-    BROWSER_VERSION: '13.1'
-    AUTOMATION_TIMEOUT: 120
-    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
-  resource_group: extended_tests_review_4
-
-OSXCatalina-Chrome-latest-smoke-tests:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-release
-  variables:
-    OS: macOS
-    OS_VERSION: '10.15'
-    BROWSER: Chrome
-    BROWSER_VERSION: 'latest'
-    AUTOMATION_TIMEOUT: 120
-    POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_3
-
-OSXCatalina-Firefox-latest-smoke-tests:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-release
-  variables:
-    OS: macOS
-    OS_VERSION: '10.15'
-    BROWSER: firefox
-    BROWSER_VERSION: 'latest'
-#    BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
-#    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-    AUTOMATION_TIMEOUT: 120
-    POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_4
-#
-#win8.1-Chrome-latest-smoke-tests:
+#win10-Firefox-latest-extended-tests-1:
 #  extends:
 #    - .extended-tests-browserstack
-#    - .rules-extended-tests-release
+#    - .rules-extended-tests-always
 #  variables:
 #    OS: Windows
-#    OS_VERSION: '8.1'
-#    BROWSER: Chrome
+#    OS_VERSION: 10
+#    BROWSER: firefox
 #    BROWSER_VERSION: 'latest'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_release_2
+#    POETRY_TAGS: extended_tests_part_1
+#  resource_group: extended_tests_review_2
 #
-
-
-win10-Edge-latest-smoke-tests:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-release
-  variables:
-    OS: Windows
-    OS_VERSION: 10
-    BROWSER: MicrosoftEdge
-    BROWSER_VERSION: 'latest'
-#    BROWSERSTACK_SELENIUM_VERSION: '3.14.0'
-    POETRY_TAGS: $SMOKE_TESTS_TAG
-  resource_group: extended_tests_release_1
+#win10-IE-latest-extended-tests-1:
+#  extends:
+#    - .extended-tests-browserstack
+#    - .rules-extended-tests-always
+#  variables:
+#    OS: Windows
+#    OS_VERSION: 10
+#    BROWSER: internet explorer
+#    BROWSER_VERSION: 'latest'
+#    POETRY_TAGS: extended_tests_part_1
+#  resource_group: extended_tests_review_3
 #
-#win10-Edge-18.0-smoke-tests:
+#win10-Edge-latest-extended-tests-1:
 #  extends:
 #    - .extended-tests-browserstack
 #    - .rules-extended-tests-release
@@ -190,43 +213,26 @@ win10-Edge-latest-smoke-tests:
 #    OS: Windows
 #    OS_VERSION: 10
 #    BROWSER: MicrosoftEdge
-#    BROWSER_VERSION: '18.0'
-#    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_release_2
-#
-#OSXHS-Safari-11.1-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-extended-tests-release
-#  variables:
-#    OS: OS X
-#    OS_VERSION: High Sierra
-#    BROWSER: Safari
-#    BROWSER_VERSION: '11.1'
-#    ROWSERSTACK_SAFARI_DRIVER: '2.48'
-#    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-#    AUTOMATION_TIMEOUT: 120
-#    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
-#  resource_group: extended_tests_release_3
+#    BROWSER_VERSION: 'latest'
+#    POETRY_TAGS: extended_tests_part_1
+#  resource_group: extended_tests_review_4
 
-#
-#     EXTENDED
-#
-win10-Firefox-latest-extended-tests-1:
+
+
+OSXCatalina-Safari-13.1-extended-test-part-1:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
   variables:
-    OS: Windows
-    OS_VERSION: 10
-    BROWSER: firefox
-    BROWSER_VERSION: 'latest'
-#    BROWSERSTACK_FIREFOX_DRIVER: '0.27.0'
-#    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+    OS: macOS
+    OS_VERSION: '10.15'
+    BROWSER: safari
+    BROWSER_VERSION: '13.1'
+    AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: extended_tests_part_1
-  resource_group: extended_tests_release_3
-#
+  resource_group: extended_tests_release_1
+
+
 #win10-Firefox-latest-extended-tests-2:
 #  extends:
 #    - .extended-tests-browserstack
@@ -254,19 +260,6 @@ win10-Firefox-latest-extended-tests-1:
 #    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
 #    POETRY_TAGS: extended_tests_part_3
 #  resource_group: extended_tests_release_1
-
-win10-IE-11.0-extended-test-part-1:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-release
-  variables:
-    OS: Windows
-    OS_VERSION: 10
-    BROWSER: internet explorer
-    BROWSER_VERSION: '11.285'
-#    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-    POETRY_TAGS: extended_tests_part_1
-  resource_group: extended_tests_release_1
 #
 #win10-IE-11.0-extended-test-part-2:
 #  extends:
@@ -294,21 +287,7 @@ win10-IE-11.0-extended-test-part-1:
 #    POETRY_TAGS: extended_tests_part_3
 #  resource_group: extended_tests_release_3
 #
-OSXMojave-Safari-12.1-extended-test-part-1:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-release
-  variables:
-    OS: OS X
-    OS_VERSION: Mojave
-    BROWSER: Safari
-    BROWSER_VERSION: '12.1'
-#    ROWSERSTACK_SAFARI_DRIVER: '2.48'
-#    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-    AUTOMATION_TIMEOUT: 120
-    POETRY_TAGS: extended_tests_part_1
-  resource_group: extended_tests_release_4
-#
+
 #OSXMojave-Safari-12.1-extended-test-part-2:
 #  extends:
 #    - .extended-tests-browserstack

@@ -5,12 +5,12 @@ from requests.auth import HTTPBasicAuth
 
 from utils.read_configuration import get_from_env
 
-browserstack_username = get_from_env('BS_USERNAME')
-browserstack_access_key = get_from_env('BS_ACCESS_KEY')
+browserstack_username = get_from_env('SL_USERNAME')
+browserstack_access_key = get_from_env('SL_ACCESS_KEY')
 
 shared_dict = {}
 
-BROWSERSTACK_API_URL = 'https://api.browserstack.com/automate/sessions/'
+BROWSERSTACK_API_URL = 'https://saucelabs.com/rest/v1/'
 WEBSERVICES_URL = 'https://webservices.securetrading.net:8443/'
 WEBSERVICES_ADMIN_REQUESTS_COUNT_URL = WEBSERVICES_URL + '__admin/requests/count'
 THIRDPARTY_URL = 'https://thirdparty.example.com:8443/'
@@ -35,7 +35,7 @@ def mark_test_as_passed(session_id):
 
 
 def set_scenario_name(session_id, scenario_name):
-    requests.put(BROWSERSTACK_API_URL + session_id + '.json',
+    requests.put(BROWSERSTACK_API_URL + browserstack_username + '/jobs/' + session_id,
                  auth=HTTPBasicAuth(browserstack_username, browserstack_access_key),
                  headers={'Content-Type': 'application/json'}, json={'name': scenario_name})
 
