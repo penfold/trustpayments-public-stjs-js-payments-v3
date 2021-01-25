@@ -4,6 +4,7 @@ import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Tra
 import { StCodec } from './StCodec.class';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Translator } from '../../shared/translator/Translator';
+import { GatewayError } from './GatewayError';
 
 jest.mock('./../../shared/message-bus/MessageBus');
 jest.mock('./../../shared/notification/Notification');
@@ -397,6 +398,26 @@ describe('StCodec class', () => {
       await expect(str.decode({})).rejects.toThrow(Error(COMMUNICATION_ERROR_INVALID_RESPONSE));
       // @ts-ignore
       expect(StCodec._handleInvalidResponse).toHaveBeenCalledTimes(1);
+    });
+
+    it('should reset the jwt in StCodec on error', done => {
+      instance.verifyResponseObject = jest.fn().mockImplementation(() => {
+        throw new GatewayError();
+      });
+
+      StCodec.jwt = 'jwt';
+      StCodec.originalJwt = 'original_jwt';
+
+      str.decode({
+        json: () => {
+          return new Promise(resolve => resolve(fullResponse));
+        }
+      });
+
+      setTimeout(() => {
+        expect(StCodec.jwt).toEqual('original_jwt');
+        done();
+      });
     });
   });
 
