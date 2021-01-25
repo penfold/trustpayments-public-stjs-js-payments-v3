@@ -14,16 +14,19 @@ Feature: Callback functionality
     And Frictionless THREEDQUERY, AUTH response is set to <action_code>
     And User clicks Pay button
     Then User will see "<callback_popup>" popup
+    And "submit" callback is called only once
     And "<callback_popup>" callback is called only once
+    And submit callback contains JWT response
+    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
     @smoke_test
     Examples:
-      | action_code | callback_popup |
-      | OK          | success        |
+      | action_code | callback_popup | threedresponse_defined |
+      | OK          | success        | False                  |
 
     Examples:
-      | action_code | callback_popup |
-      | DECLINE     | error          |
+      | action_code | callback_popup | threedresponse_defined |
+      | DECLINE     | error          | False                   |
 
   @base_config
   Scenario: Checking callback function for in-browser validation
