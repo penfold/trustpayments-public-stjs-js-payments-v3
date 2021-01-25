@@ -1,7 +1,7 @@
 @submit_callback @callback
 Feature: callbacks
 
-  @success_callback
+  @success_callback @smoke_test
   Scenario Outline: success and submit callback for successful payment - challenge flow
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
