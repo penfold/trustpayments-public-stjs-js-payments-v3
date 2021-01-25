@@ -262,6 +262,7 @@ export class StCodec {
             });
           } catch (error) {
             StCodec.jwt = StCodec.originalJwt;
+            reject(error);
           }
         });
       } else {

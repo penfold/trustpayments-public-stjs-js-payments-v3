@@ -408,16 +408,16 @@ describe('StCodec class', () => {
       StCodec.jwt = 'jwt';
       StCodec.originalJwt = 'original_jwt';
 
-      str.decode({
-        json: () => {
-          return new Promise(resolve => resolve(fullResponse));
-        }
-      });
-
-      setTimeout(() => {
-        expect(StCodec.jwt).toEqual('original_jwt');
-        done();
-      });
+      str
+        .decode({
+          json: () => {
+            return new Promise(resolve => resolve(fullResponse));
+          }
+        })
+        .catch(() => {
+          expect(StCodec.jwt).toEqual('original_jwt');
+          done();
+        });
     });
   });
 
