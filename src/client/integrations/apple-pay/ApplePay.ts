@@ -316,21 +316,6 @@ export class ApplePay {
         });
         return completion;
 
-      case ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR:
-        completion.status = ApplePaySessionService.STATUS_FAILURE;
-        this.applePaySession.completePayment(completion);
-        this.messageBus.publish<IApplePayClientStatus>({
-          type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
-          data: {
-            status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
-            details: {
-              errorMessage: details.errormessage,
-              errorCode: Number(details.errorcode)
-            }
-          }
-        });
-        return completion;
-
       default:
         completion.status = ApplePaySessionService.STATUS_FAILURE;
         this.applePaySession.completePayment(completion);
