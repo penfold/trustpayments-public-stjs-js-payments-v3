@@ -111,7 +111,7 @@ def _get_remote_capabilities(configuration):
     screen_resolution = '1920x1080'
     accept_ssl_certs = None
 
-    if configuration.REMOTE_DEVICE is not None:
+    if configuration.REMOTE_DEVICE is '':
         accept_ssl_certs = True
 
         if 'Windows' not in configuration.REMOTE_OS:
