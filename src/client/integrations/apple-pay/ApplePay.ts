@@ -264,10 +264,18 @@ export class ApplePay {
           }
         });
         GoogleAnalytics.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify failure');
+        break;
+
       default:
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
-          data: { status, details }
+          data: {
+            status,
+            details: {
+              errorMessage: details.errormessage,
+              errorCode: Number(details.errorcode)
+            }
+          }
         });
     }
   }
