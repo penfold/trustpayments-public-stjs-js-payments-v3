@@ -161,7 +161,6 @@ def _get_remote_capabilities(configuration):
     for key, value in possible_caps.items():
         if value:
             capabilities[key] = value
-            LOGGER.info(key + ' ' + json.dumps(value))
 
     if accept_ssl_certs is not None:
         capabilities['acceptSslCerts'] = accept_ssl_certs
