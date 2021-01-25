@@ -26,7 +26,7 @@ Feature: Callback functionality
 
     Examples:
       | action_code | callback_popup | threedresponse_defined |
-      | DECLINE     | error          | True                   |
+      | DECLINE     | error          | False                   |
 
   @base_config
   Scenario: Checking callback function for in-browser validation
