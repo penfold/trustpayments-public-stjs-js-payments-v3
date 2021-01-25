@@ -108,9 +108,16 @@ def _get_local_options(headless):
 def _get_remote_capabilities(configuration):
     # pylint: disable=unused-variable
     network_logs = 'true'
+    screen_resolution = '1920x1080'
+    accept_ssl_certs = True
     # disabling network logs on Safari as they are not accessible for this browser and cause browser instability
-    if 'Safari' in configuration.REMOTE_BROWSER:
-        network_logs = 'false'
+
+    if 'Windows' not in configuration.REMOTE_OS:
+        screen_resolution = '1920x1440'
+
+    if 'internet explorer' in configuration.REMOTE_BROWSER:
+        accept_ssl_certs = 1
+
 
     possible_caps = {
         # 'os': configuration.REMOTE_OS,
@@ -122,7 +129,7 @@ def _get_remote_capabilities(configuration):
         # 'browserstack.localIdentifier': configuration.BROWSERSTACK_LOCAL_IDENTIFIER,
         'device': configuration.REMOTE_DEVICE,
         'real_mobile': configuration.REMOTE_REAL_MOBILE,
-        'acceptSslCerts': True,
+        'acceptSslCerts': accept_ssl_certs,
         'project': configuration.PROJECT_NAME,
         'build': configuration.BUILD_NAME,
         # 'browserstack.debug': configuration.BROWSERSTACK_DEBUG,
@@ -146,7 +153,7 @@ def _get_remote_capabilities(configuration):
             'chromedriverVersion': configuration.BROWSERSTACK_CHROME_DRIVER,
             'iedriverVersion': configuration.BROWSERSTACK_IE_DRIVER,
             'geckodriverVersion': configuration.BROWSERSTACK_FIREFOX_DRIVER,
-            'screenResolution': '1920x1080'
+            'screenResolution': screen_resolution
         }
     }
     capabilities = {}
