@@ -1,5 +1,7 @@
 (function(ST) {
   window.addEventListener('load', function() {
+    let acsMessage = 'acs-off';
+
     function getConfig() {
       return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest;
@@ -46,10 +48,23 @@
         window.ReactNativeWebView.postMessage(entries[0].target.offsetHeight);
       });
     }
+
+    function handleAcsPopup() {
+      return new MutationObserver(function(entries) {
+        if (document.getElementById('Cardinal-ElementContainer')) {
+          acsMessage = 'acs-on';
+          window.ReactNativeWebView.postMessage(acsMessage);
+        } else if (acsMessage === 'acs-on') {
+          acsMessage = 'acs-off';
+          window.ReactNativeWebView.postMessage(acsMessage);
+        }
+      });
+    }
     
     function init(config) {
       setCallbacks(config);
       handleResize().observe(document.getElementById('st-form'));
+      handleAcsPopup().observe(document.body, {attributes: false, childList: true, characterData: false, subtree:true});
       var st = ST(config);
       st.Components(config.components);
       st.VisaCheckout(config.visaCheckout);

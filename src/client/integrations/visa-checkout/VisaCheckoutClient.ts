@@ -23,6 +23,7 @@ import { NotificationService } from '../../notification/NotificationService';
 import { IVisaCheckoutClient } from './IVisaCheckoutClient';
 import { IVisaCheckoutClientStatus } from './IVisaCheckoutClientStatus';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
+import { InvalidResponseError } from '../../../application/core/services/st-codec/InvalidResponseError';
 
 @Service()
 export class VisaCheckoutClient implements IVisaCheckoutClient {
@@ -95,9 +96,12 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
 
         return of(VisaCheckoutClientStatus.SUCCESS);
       }),
-      catchError(() => {
+      catchError(error => {
         this.notificationService.error(PAYMENT_ERROR);
-        this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+
+        if (!(error instanceof InvalidResponseError)) {
+          this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+        }
 
         return of(VisaCheckoutClientStatus.SUCCESS_FAILED);
       })

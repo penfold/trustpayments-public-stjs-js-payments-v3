@@ -2,6 +2,7 @@ import { Input } from './Input';
 import { NOT_IMPLEMENTED_ERROR } from '../../models/constants/Translations';
 import { Utils } from '../utils/Utils';
 import { Validation } from '../validation/Validation';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 
 jest.mock('./../validation/Validation');
 jest.mock('./../notification/Notification');
@@ -232,7 +233,12 @@ function formFieldFixture() {
     'st-form-field-input',
     'st-form-field-message',
     'st-form-field-label',
-    'st-form-field__wrapper'
+    'st-form-field__wrapper',
+    {
+      getConfig: () => ({
+        stopSubmitFormOnEnter: false
+      })
+    } as ConfigProvider
   );
   return { instance, inputElement, messageElement, labelElement };
 }

@@ -6,6 +6,7 @@ from assertpy import assert_that
 from configuration import CONFIGURATION
 from locators.payment_methods_locators import PaymentMethodsLocators
 from pages.base_page import BasePage
+from utils.configurations import jwt_generator
 from utils.enums.auth_data import AuthData
 from utils.enums.auth_type import AuthType
 from utils.enums.field_type import FieldType
@@ -28,6 +29,9 @@ class PaymentMethodsPage(BasePage):
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.card_number_iframe)
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe)
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
+
+    def wait_for_pay_button_to_be_active(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
 
     def fill_credit_card_field(self, field_type, value):
         if field_type == FieldType.CARD_NUMBER.name:
@@ -153,6 +157,14 @@ class PaymentMethodsPage(BasePage):
 
     def get_text_from_status_callback(self):
         text = self._action.get_text_with_wait(PaymentMethodsLocators.callback_data_popup)
+        return text
+
+    def get_text_from_submit_callback_jwt(self):
+        text = self._action.get_text_with_wait(PaymentMethodsLocators.submit_callback_jwt_response)
+        return text
+
+    def get_text_from_submit_callback_threedresponse(self):
+        text = self._action.get_text_with_wait(PaymentMethodsLocators.submit_callback_threedresponse)
         return text
 
     def get_text_from_browser_info(self):
@@ -519,17 +531,37 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert is_displayed is True, assertion_message
 
+    def validate_jwt_response_in_callback(self):
+        response = self.get_text_from_submit_callback_jwt()
+        assertion_message = 'Submit callback data doesnt contain JWT response'
+        add_to_shared_dict('assertion_message', assertion_message)
+        assert 'undefined' not in response, assertion_message
+        decoded_jwt = jwt_generator.decode_jwt(response.split('JWT: ')[-1])
+        assertion_message = 'JWT response didnt contain merchant JWT'
+        add_to_shared_dict('assertion_message', assertion_message)
+        assert 'jwt' in decoded_jwt.get('payload'), assertion_message
+
+    def validate_threedresponse_in_callback(self, threedresponse_defined):
+        response = self.get_text_from_submit_callback_threedresponse()
+        if threedresponse_defined == 'True':
+            assertion_message = 'Submit callback data doesnt contain threedresponse'
+            add_to_shared_dict('assertion_message', assertion_message)
+            assert 'undefined' not in response, assertion_message
+        else:
+            assertion_message = 'Submit callback data contains threedresponse'
+            add_to_shared_dict('assertion_message', assertion_message)
+            assert 'undefined' in response, assertion_message
+
     def validate_number_in_callback_counter_popup(self, callback_popup):
         counter = ''
         if 'success' in callback_popup:
-            counter = self._action.get_text(PaymentMethodsLocators.callback_success_counter)
+            counter = self._action.get_text_from_last_element(PaymentMethodsLocators.callback_success_counter)
         elif 'error' in callback_popup:
-            counter = self._action.get_text(PaymentMethodsLocators.callback_error_counter)
+            counter = self._action.get_text_from_last_element(PaymentMethodsLocators.callback_error_counter)
         elif 'cancel' in callback_popup:
-            counter = self._action.get_text(PaymentMethodsLocators.callback_cancel_counter)
+            counter = self._action.get_text_from_last_element(PaymentMethodsLocators.callback_cancel_counter)
         elif 'submit' in callback_popup:
-            counter = self._action.get_text(PaymentMethodsLocators.callback_submit_counter)
-        counter = counter[-1]
+            counter = self._action.get_text_from_last_element(PaymentMethodsLocators.callback_submit_counter)
         assertion_message = f'Number of {callback_popup} callback is not correct but should be 1 but is {counter}'
         add_to_shared_dict('assertion_message', assertion_message)
         assert '1' in counter, assertion_message

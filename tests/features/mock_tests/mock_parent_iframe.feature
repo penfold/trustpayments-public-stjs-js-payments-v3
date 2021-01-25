@@ -11,7 +11,7 @@ Feature: Payment form embeded into iframe
   @base_config @parent_iframe
   Scenario Outline: App is embedded in another iframe - Cardinal Commerce test
     When User opens payment page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "<action_code>"

@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.60
+.cicd-os-ref: &cicd-os-ref 0.0.62
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
@@ -14,6 +14,7 @@ include:
   - local: '/.gitlab/fast-tests.yml'
   - local: '/.gitlab/publish-to-cdn.yml'
   - local: '/.gitlab/extended-tests.yml'
+  - local: '/.gitlab/post-release.yml'
 
 variables:
   CICD_OS_REF: *cicd-os-ref

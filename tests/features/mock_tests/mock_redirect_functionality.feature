@@ -11,7 +11,7 @@ Feature: Redirect functionality
   @config_default
   Scenario: Cardinal Commerce - successful payment - checking that 'submitOnSuccess' is enabled by default
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
-    And User fills payment form with defined card VISA_NON_FRICTIONLESS
+    And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
@@ -52,7 +52,7 @@ Feature: Redirect functionality
   @config_submit_on_error_true @smoke_test @extended_tests_part_1
   Scenario: Cardinal Commerce - error payment with enabled 'submit on error' process
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
-    And User fills payment form with defined card VISA_NON_FRICTIONLESS
+    And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "DECLINE"
@@ -73,7 +73,7 @@ Feature: Redirect functionality
 
   @config_submit_on_error_false
   Scenario: Cardinal Commerce - error payment with disabled 'submit on error' process
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "DECLINE"

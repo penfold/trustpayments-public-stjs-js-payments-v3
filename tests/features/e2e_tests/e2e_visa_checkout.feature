@@ -17,7 +17,7 @@
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
 #    And User fills visa checkout one time password
-#    When User selects VISA_FRICTIONLESS card on visa checkout popup
+#    When User selects VISA_V21_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 ##    And User confirms visa checkout security code
 #    Then User will see payment status information: "Payment has been successfully processed"
@@ -53,7 +53,7 @@
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
 #    And User fills visa checkout one time password
-#    When User selects VISA_NON_FRICTIONLESS card on visa checkout popup
+#    When User selects VISA_V21_NON_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 ##    And User confirms visa checkout security code
 #    Then User will see payment status information: "Payment has been successfully processed"
@@ -89,7 +89,7 @@
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
 #    And User fills visa checkout one time password
-#    When User selects VISA_FRICTIONLESS card on visa checkout popup
+#    When User selects VISA_V21_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 ##    And User confirms visa checkout security code
 #    Then User will see payment status information: "Payment has been successfully processed"
@@ -118,7 +118,7 @@
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
 #    And User fills visa checkout one time password
-#    When User selects VISA_NON_FRICTIONLESS card on visa checkout popup
+#    When User selects VISA_V21_NON_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 ##    And User confirms visa checkout security code
 #    Then User will see payment status information: "Payment has been successfully processed"
@@ -236,7 +236,7 @@
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
 #    And User fills visa checkout one time password
-#    When User selects VISA_FRICTIONLESS card on visa checkout popup
+#    When User selects VISA_V21_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 #    #And User confirms visa checkout security code
 #    Then User will see payment status information: "Payment has been successfully processed"

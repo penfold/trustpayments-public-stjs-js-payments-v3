@@ -43,7 +43,7 @@ Feature: E2E Card Payments - redirection
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will not see notification frame
@@ -159,7 +159,7 @@ Feature: E2E Card Payments - redirection
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page SUCCESS_CALLBACK
-    When User fills payment form with defined card VISA_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "example.org" having params
@@ -185,7 +185,7 @@ Feature: E2E Card Payments - redirection
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page SUBMIT_CALLBACK
-    When User fills payment form with defined card VISA_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
     Then User will not see notification frame
     And User will be sent to page with url "example.org" having params
@@ -269,7 +269,7 @@ Feature: E2E Card Payments - redirection
       | key                     | value                    |
       | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User clicks Cancel button on authentication modal
     Then User will be sent to page with url "www.example.com" having params
@@ -282,13 +282,12 @@ Feature: E2E Card Payments - redirection
       | jwt            | should not be none |
 
 
-    #ToDo - @STJS-1256 This assertion should be turned on when ticket STJS-1256 will be resolved
   Scenario Outline: Cancel Cardinal popup with enabled submitOnError and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_ERROR_REQUEST_TYPES_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User clicks Cancel button on authentication modal
     Then User will be sent to page with url "www.example.com" having params
@@ -297,10 +296,10 @@ Feature: E2E Card Payments - redirection
       | enrolled       | Y                  |
       | settlestatus   | 0                  |
       | errorcode      | 50003              |
-#      | threedresponse | <threedresponse>   |
+      | threedresponse | <threedresponse>   |
       | jwt            | should not be none |
 
     Examples:
       | request_types            | threedresponse     |
-      | THREEDQUERY AUTH         | should be none     |
+      | THREEDQUERY AUTH         | should not be none     |
       | ACCOUNTCHECK THREEDQUERY | should not be none |

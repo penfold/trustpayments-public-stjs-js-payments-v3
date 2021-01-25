@@ -3,7 +3,6 @@ Feature: E2E Card Payments with cachetoken
   I want to use cachetoken from previous payment
   In order to execute payment without card data
 
-
   Scenario: Proper receiving cachetoken value from url param
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
       | key                     | value         |
@@ -33,7 +32,7 @@ Feature: E2E Card Payments with cachetoken
 #      | key                     | value         |
 #      | requesttypedescriptions | CACHETOKENISE |
 #    And User opens example page
-#    And User fills payment form with defined card VISA_NON_FRICTIONLESS
+#    And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
@@ -50,7 +49,7 @@ Feature: E2E Card Payments with cachetoken
 #      | key                     | value         |
 #      | requesttypedescriptions | CACHETOKENISE |
 #    And User opens example page
-#    And User fills payment form with defined card VISA_FRICTIONLESS
+#    And User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
@@ -67,7 +66,7 @@ Feature: E2E Card Payments with cachetoken
 #      | key                     | value         |
 #      | requesttypedescriptions | CACHETOKENISE |
 #    And User opens example page
-#    And User fills payment form with defined card VISA_FRICTIONLESS
+#    And User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
@@ -85,7 +84,7 @@ Feature: E2E Card Payments with cachetoken
 #      | key                     | value         |
 #      | requesttypedescriptions | CACHETOKENISE |
 #    And User opens example page
-#    And User fills payment form with defined card VISA_FRICTIONLESS
+#    And User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
@@ -108,7 +107,7 @@ Feature: E2E Card Payments with cachetoken
 #      | key                     | value         |
 #      | requesttypedescriptions | CACHETOKENISE |
 #    And User opens example page
-#    And User fills payment form with defined card VISA_FRICTIONLESS
+#    And User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
@@ -128,7 +127,7 @@ Feature: E2E Card Payments with cachetoken
 #      | jwt                  | should not be none |
 
 #  Scenario: Successful payment with cachetoken and bypassCard
-#    Given User fills payment form with defined card VISA_NON_FRICTIONLESS
+#    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
@@ -142,7 +141,7 @@ Feature: E2E Card Payments with cachetoken
 #    And "success" callback is called only once
 #
 #  Scenario Outline: Successful payment with cachetoken and requestTypes: <request_types>
-#    Given User fills payment form with defined card VISA_FRICTIONLESS
+#    Given User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
@@ -160,7 +159,7 @@ Feature: E2E Card Payments with cachetoken
 #      | ACCOUNTCHECK THREEDQUERY |
 #
 #  Scenario: Successful payment with cachetoken, submitOnSuccess and request type: ACCOUNTCHECK THREEDQUERY
-#    Given User fills payment form with defined card VISA_NON_FRICTIONLESS
+#    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
@@ -180,7 +179,7 @@ Feature: E2E Card Payments with cachetoken
 #      | threedresponse       | should not be none                      |
 #
 #  Scenario Outline: Cancel Cardinal popup with cachetoken, submitOnError and request type: <request_types>
-#    Given User fills payment form with defined card VISA_NON_FRICTIONLESS
+#    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
