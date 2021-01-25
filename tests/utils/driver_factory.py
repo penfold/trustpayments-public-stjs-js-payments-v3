@@ -5,6 +5,7 @@ WebDriver instance which is responsible for direct connection and allows
 to manipulate browser window thanks to its functions.
 It is based on singleton pattern to operate on a single instance of a driver.
 """
+import json
 from logging import INFO
 
 from logger import get_logger
@@ -107,11 +108,12 @@ def _get_local_options(headless):
 
 def _get_remote_capabilities(configuration):
     # pylint: disable=unused-variable
-    network_logs = None
+
     screen_resolution = '1920x1080'
+    network_logs = None
     accept_ssl_certs = None
 
-    if configuration.REMOTE_DEVICE is 'WEB_APP':
+    if 'WEB_APP' in configuration.REMOTE_DEVICE:
         accept_ssl_certs = True
 
         if 'Windows' not in configuration.REMOTE_OS:
@@ -159,7 +161,7 @@ def _get_remote_capabilities(configuration):
     for key, value in possible_caps.items():
         if value:
             capabilities[key] = value
-            LOGGER.info(value)
+            LOGGER.info(key + ' ' + json.dumps(value))
 
     if accept_ssl_certs is not None:
         capabilities['acceptSslCerts'] = accept_ssl_certs
