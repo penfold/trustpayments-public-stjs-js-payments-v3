@@ -334,7 +334,7 @@ SamsungGalaxyS8-7.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_review_1
 
-.iPhone11-14.0-smoke-tests:
+iPhone11-14.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-always
