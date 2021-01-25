@@ -258,7 +258,7 @@ Feature: Cardinal Commerce E2E tests
 
     Examples:
       | request_types            | threedresponse     |
-      | THREEDQUERY AUTH         | should not be none     |
+      | THREEDQUERY AUTH         | should not be none |
       | ACCOUNTCHECK THREEDQUERY | should not be none |
 
 

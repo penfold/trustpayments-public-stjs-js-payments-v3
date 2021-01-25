@@ -305,6 +305,18 @@ def step_impl(context, callback_popup):
     payment_page.validate_number_in_callback_counter_popup(callback_popup)
 
 
+@step('submit callback contains JWT response')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_jwt_response_in_callback()
+
+
+@step('submit callback contains THREEDRESPONSE: (?P<threedresponse_defined>.+)')
+def step_impl(context, threedresponse_defined):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_threedresponse_in_callback(threedresponse_defined)
+
+
 @then('User will see that (?P<field_type>.+) field has (?P<rgb_color>.+) color')
 def step_impl(context, field_type, rgb_color):
     payment_page = context.page_factory.get_page(page_name='payment_methods')

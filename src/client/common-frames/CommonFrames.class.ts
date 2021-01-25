@@ -186,12 +186,16 @@ export class CommonFrames {
 
   private _onTransactionComplete(data: any): void {
     this.addSubmitData(data);
-
     if (!this._isTransactionFinished(data)) {
       return;
     }
 
-    this._messageBus.publish({ data, type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK }, true);
+    const submitCallbackDataEvent: IMessageBusEvent = {
+      type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
+      data
+    };
+
+    this._messageBus.publish(submitCallbackDataEvent, true);
 
     let result: 'success' | 'error' | 'cancel';
 
