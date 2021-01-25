@@ -169,17 +169,17 @@
 #
 #     EXTENDED
 #
-win10-Chrome-latest-extended-tests-1:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-always
-  variables:
-    OS: Windows
-    OS_VERSION: 10
-    BROWSER: chrome
-    BROWSER_VERSION: 'latest'
-    POETRY_TAGS: extended_tests_part_1
-  resource_group: extended_tests_review_1
+#win10-Chrome-latest-extended-tests-1:
+#  extends:
+#    - .extended-tests-browserstack
+#    - .rules-extended-tests-always
+#  variables:
+#    OS: Windows
+#    OS_VERSION: 10
+#    BROWSER: chrome
+#    BROWSER_VERSION: 'latest'
+#    POETRY_TAGS: extended_tests_part_1
+#  resource_group: extended_tests_review_1
 
 #win10-Firefox-latest-extended-tests-1:
 #  extends:
@@ -193,36 +193,36 @@ win10-Chrome-latest-extended-tests-1:
 #    POETRY_TAGS: extended_tests_part_1
 #  resource_group: extended_tests_review_2
 #
-#win10-IE-latest-extended-tests-1:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-extended-tests-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: internet explorer
-#    BROWSER_VERSION: 'latest'
-#    POETRY_TAGS: extended_tests_part_1
-#  resource_group: extended_tests_review_3
-#
-#win10-Edge-latest-extended-tests-1:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-extended-tests-release
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: MicrosoftEdge
-#    BROWSER_VERSION: 'latest'
-#    POETRY_TAGS: extended_tests_part_1
-#  resource_group: extended_tests_review_4
+win10-IE-latest-extended-tests-1:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: internet explorer
+    BROWSER_VERSION: 'latest'
+    POETRY_TAGS: extended_tests_part_1
+  resource_group: extended_tests_review_3
+
+win10-Edge-latest-extended-tests-1:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-extended-tests-release
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: MicrosoftEdge
+    BROWSER_VERSION: 'latest'
+    POETRY_TAGS: extended_tests_part_1
+  resource_group: extended_tests_review_4
 
 
 
 OSXCatalina-Safari-13.1-extended-test-part-1:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-tests-always
   variables:
     OS: macOS
     OS_VERSION: '10.15'
@@ -230,7 +230,7 @@ OSXCatalina-Safari-13.1-extended-test-part-1:
     BROWSER_VERSION: '13.1'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: extended_tests_part_1
-  resource_group: extended_tests_release_1
+  resource_group: extended_tests_review_1
 
 
 #win10-Firefox-latest-extended-tests-2:
@@ -318,19 +318,37 @@ OSXCatalina-Safari-13.1-extended-test-part-1:
 #    POETRY_TAGS: extended_tests_part_3
 #  resource_group: extended_tests_release_2
 
+#      REAL DEVICE - MOBILE
 
-#.iPhone11-14.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-extended-tests-release
-#  variables:
-#    DEVICE: iPhone 11
-#    OS_VERSION: 14
-#    BROWSER: Safari
-#    REAL_MOBILE: 'true'
-#    AUTOMATION_TIMEOUT: 120
-#    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
-#  resource_group: extended_tests_release_2
+SamsungGalaxyS8-7.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    DEVICE: Samsung Galaxy S8 HD GoogleAPI Emulator
+    OS: Android
+    OS_VERSION: '7.0'
+    BROWSER: Chrome
+    REAL_MOBILE: 'true'
+    BROWSERSTACK_APPIUM_VERSION: '1.18.1'
+    POETRY_TAGS: $SMOKE_TESTS_TAG
+  resource_group: extended_tests_review_1
+
+.iPhone11-14.0-smoke-tests:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    DEVICE: iPhone 11 Simulator
+    OS: iOS
+    OS_VERSION: '14.0'
+    BROWSER: Safari
+    REAL_MOBILE: 'true'
+    AUTOMATION_TIMEOUT: 120
+    BROWSERSTACK_APPIUM_VERSION: '1.18.3'
+    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+  resource_group: extended_tests_review_2
+
 #
 #.iPhone8-11.0-smoke-tests:
 #  extends:
@@ -384,17 +402,7 @@ OSXCatalina-Safari-13.1-extended-test-part-1:
 #    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
 #  resource_group: extended_tests_release_4
 #
-#SamsungGalaxyS8-7.0-smoke-tests:
-#  extends:
-#    - .extended-tests-browserstack
-#    - .rules-extended-tests-release
-#  variables:
-#    DEVICE: Samsung Galaxy S8
-#    OS_VERSION: '7.0'
-#    REAL_MOBILE: 'true'
-#    BROWSERSTACK_APPIUM_VERSION: '1.14.0'
-#    POETRY_TAGS: $SMOKE_TESTS_TAG
-#  resource_group: extended_tests_release_4
+
 #
 #SamsungGalaxyS10Plus-9.0-smoke-tests:
 #  extends:

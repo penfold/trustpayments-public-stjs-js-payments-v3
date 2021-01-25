@@ -109,54 +109,51 @@ def _get_remote_capabilities(configuration):
     # pylint: disable=unused-variable
     network_logs = None
     screen_resolution = '1920x1080'
-    accept_ssl_certs = True
+    accept_ssl_certs = None
 
-    if 'Windows' not in configuration.REMOTE_OS:
-        screen_resolution = '1920x1440'
-        accept_ssl_certs = None
+    if configuration.REMOTE_DEVICE is not None:
+        accept_ssl_certs = True
 
-    if 'internet explorer' in configuration.REMOTE_BROWSER:
-        accept_ssl_certs = 1
+        if 'Windows' not in configuration.REMOTE_OS:
+            screen_resolution = '1920x1440'
+            accept_ssl_certs = None
 
-    if 'chrome' in configuration.REMOTE_BROWSER:
-        network_logs = True
+        if 'internet explorer' in configuration.REMOTE_BROWSER:
+            accept_ssl_certs = 1
 
-    possible_caps = {
-        # 'os': configuration.REMOTE_OS,
-        # 'os_version': configuration.REMOTE_OS_VERSION,
-        'platformName': configuration.REMOTE_OS + ' ' + configuration.REMOTE_OS_VERSION,
-        'browserName': configuration.REMOTE_BROWSER,
-        'browserVersion': configuration.REMOTE_BROWSER_VERSION,
-        # 'browserstack.local': configuration.BROWSERSTACK_LOCAL,
-        # 'browserstack.localIdentifier': configuration.BROWSERSTACK_LOCAL_IDENTIFIER,
-        'device': configuration.REMOTE_DEVICE,
-        'real_mobile': configuration.REMOTE_REAL_MOBILE,
-        'project': configuration.PROJECT_NAME,
-        # 'browserstack.debug': configuration.BROWSERSTACK_DEBUG,
-        # 'browserstack.selenium_version': configuration.BROWSERSTACK_SELENIUM_VERSION,
-        # 'browserstack.appium_version': configuration.BROWSERSTACK_APPIUM_VERSION,
-        # 'browserstack.chrome.driver': configuration.BROWSERSTACK_CHROME_DRIVER,
-        # 'browserstack.ie.driver': configuration.BROWSERSTACK_IE_DRIVER,
-        # 'browserstack.safari.driver': configuration.BROWSERSTACK_SAFARI_DRIVER,
-        # 'browserstack.firefox.driver': configuration.BROWSERSTACK_FIREFOX_DRIVER,
-        # 'browserstack.networkLogs': network_logs,
-        # 'browserstack.acceptInsecureCerts': 'true',
-        # 'browserstack.console': 'errors',
-        # 'browserstack.autoWait': 0,
-        # 'ie.ensureCleanSession': 'true',
-        # 'ie.forceCreateProcessApi': 'true',
-        # 'username': configuration.SL_USERNAME,
-        # 'accessKey': configuration.SL_ACCESS_KEY,
-        # 'tunnelIdentifier': 'test_tunnel_for_web_tests',
-        'sauce:options': {
-            'build': configuration.BUILD_NAME,
-            'seleniumVersion': configuration.BROWSERSTACK_SELENIUM_VERSION,
-            'chromedriverVersion': configuration.BROWSERSTACK_CHROME_DRIVER,
-            'iedriverVersion': configuration.BROWSERSTACK_IE_DRIVER,
-            'geckodriverVersion': configuration.BROWSERSTACK_FIREFOX_DRIVER,
-            'screenResolution': screen_resolution
+        if 'chrome' in configuration.REMOTE_BROWSER:
+            network_logs = True
+
+        possible_caps = {
+            'platformName': configuration.REMOTE_OS + ' ' + configuration.REMOTE_OS_VERSION,
+            'browserName': configuration.REMOTE_BROWSER,
+            'browserVersion': configuration.REMOTE_BROWSER_VERSION,
+            'device': configuration.REMOTE_DEVICE,
+            'real_mobile': configuration.REMOTE_REAL_MOBILE,
+            'project': configuration.PROJECT_NAME,
+            # 'tunnelIdentifier': 'test_tunnel_for_web_tests',
+            'sauce:options': {
+                'build': configuration.BUILD_NAME,
+                'seleniumVersion': configuration.BROWSERSTACK_SELENIUM_VERSION,
+                'chromedriverVersion': configuration.BROWSERSTACK_CHROME_DRIVER,
+                'iedriverVersion': configuration.BROWSERSTACK_IE_DRIVER,
+                'geckodriverVersion': configuration.BROWSERSTACK_FIREFOX_DRIVER,
+                'screenResolution': screen_resolution
+            }
         }
-    }
+    else:
+        possible_caps = {
+            'platformName': configuration.REMOTE_OS,
+            'platformVersion': configuration.REMOTE_OS_VERSION,
+            'deviceName': configuration.REMOTE_DEVICE,
+            'browserName': configuration.REMOTE_BROWSER,
+            'appiumVersion': configuration.BROWSERSTACK_APPIUM_VERSION,
+            'deviceOrientation': 'portrait',
+            'project': configuration.PROJECT_NAME,
+            'sauce:options': {
+                'build': configuration.BUILD_NAME,
+            }
+        }
 
     capabilities = {}
     for key, value in possible_caps.items():

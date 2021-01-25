@@ -23,14 +23,14 @@ def add_to_shared_dict(key, value):
 def mark_test_as_failed(session_id):
     requests.put(BROWSERSTACK_API_URL + session_id + '.json',
                  auth=HTTPBasicAuth(browserstack_username, browserstack_access_key),
-                 headers={'Content-Type': 'application/json'}, json={'status': 'failed',
+                 headers={'Content-Type': 'application/json'}, json={'passed': False,
                                                                      'reason': shared_dict['assertion_message']})
 
 
 def mark_test_as_passed(session_id):
     requests.put(BROWSERSTACK_API_URL + session_id + '.json',
                  auth=HTTPBasicAuth(browserstack_username, browserstack_access_key),
-                 headers={'Content-Type': 'application/json'}, json={'status': 'passed',
+                 headers={'Content-Type': 'application/json'}, json={'passed': True,
                                                                      'reason': ''})
 
 
