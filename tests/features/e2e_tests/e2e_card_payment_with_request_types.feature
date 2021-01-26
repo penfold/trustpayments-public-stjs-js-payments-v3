@@ -15,6 +15,7 @@ Feature: E2E Card Payments with request types in config
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
+    And User waits for payment to be processed
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
@@ -42,6 +43,7 @@ Feature: E2E Card Payments with request types in config
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
+    And User waits for payment to be processed
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
@@ -56,6 +58,7 @@ Feature: E2E Card Payments with request types in config
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
+    And User waits for payment to be processed
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
@@ -82,6 +85,7 @@ Feature: E2E Card Payments with request types in config
     And User opens example page
     When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
+    And User waits for payment to be processed
     Then User will see payment status information: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once

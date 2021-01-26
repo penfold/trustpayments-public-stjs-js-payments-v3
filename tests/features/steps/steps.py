@@ -117,7 +117,7 @@ def _browser_device(context):
     }[name]
 
 
-@step('user waits for payment to be processed')
+@step('User waits for payment to be processed')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.wait_for_pay_processing_end('en_US')
