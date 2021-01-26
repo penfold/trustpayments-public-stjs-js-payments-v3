@@ -38,13 +38,13 @@
   #    - .sequentially-component-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
-#.visual-regression-tests:
-#  extends:
-#    - .extended-tests
-#    - .services-app-html-dev
-#    - .extended-tests-sauce-labs
-#  #    - .sequentially-e2e-browserstack-tests
-#  image: ${IMAGE_JS_PAYMENTS_TESTS}
+.visual-regression-tests:
+  extends:
+    - .extended-tests
+    - .services-app-html-dev
+    - .extended-tests-sauce-labs
+  #    - .sequentially-e2e-browserstack-tests
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 #
 #       COMPONENT
@@ -373,7 +373,7 @@ win10-Chrome-latest-visual-tests:
 
 OSXCatalina-Safari-13.1-smoke-tests:
   extends:
-    - .extended-tests-browserstack
+    - .visual-regression-tests
     - .rules-extended-tests-always
   variables:
     OS: macOS
