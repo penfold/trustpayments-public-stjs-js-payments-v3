@@ -112,7 +112,21 @@ def _get_remote_capabilities(configuration):
     network_logs = None
     accept_ssl_certs = None
 
-    if ('iPhone' or 'Samsung') not in configuration.REMOTE_DEVICE:
+    if ('iPhone' or 'Samsung') in configuration.REMOTE_DEVICE:
+        LOGGER.info('MOBILE path')
+        possible_caps = {
+            'platformName': configuration.REMOTE_OS,
+            'platformVersion': configuration.REMOTE_OS_VERSION,
+            'deviceName': configuration.REMOTE_DEVICE,
+            'browserName': configuration.REMOTE_BROWSER,
+            'appiumVersion': configuration.BROWSERSTACK_APPIUM_VERSION,
+            'deviceOrientation': 'portrait',
+            'project': configuration.PROJECT_NAME,
+            'sauce:options': {
+                'build': configuration.BUILD_NAME,
+            }
+        }
+    else:
         accept_ssl_certs = True
 
         LOGGER.info('WEB path')
@@ -144,20 +158,7 @@ def _get_remote_capabilities(configuration):
                 'screenResolution': screen_resolution
             }
         }
-    else:
-        LOGGER.info('MOBILE path')
-        possible_caps = {
-            'platformName': configuration.REMOTE_OS,
-            'platformVersion': configuration.REMOTE_OS_VERSION,
-            'deviceName': configuration.REMOTE_DEVICE,
-            'browserName': configuration.REMOTE_BROWSER,
-            'appiumVersion': configuration.BROWSERSTACK_APPIUM_VERSION,
-            'deviceOrientation': 'portrait',
-            'project': configuration.PROJECT_NAME,
-            'sauce:options': {
-                'build': configuration.BUILD_NAME,
-            }
-        }
+
 
     capabilities = {}
     for key, value in possible_caps.items():

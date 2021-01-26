@@ -356,6 +356,23 @@ iPhone11-14.0-smoke-tests:
   resource_group: extended_tests_review_2
 
 
+
+#   E2E
+
+
+win10-Chrome-latest-e2e-tests:
+  extends:
+    - .visual-regression-tests
+    - .rules-extended-tests-always
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Chrome
+    BROWSER_VERSION: 'latest'
+    POETRY_TAGS: e2e_sl
+  resource_group: extended_tests_review_1
+
+
 #   VISUAL
 
 
