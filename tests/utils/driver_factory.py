@@ -112,8 +112,10 @@ def _get_remote_capabilities(configuration):
     network_logs = None
     accept_ssl_certs = None
 
-    if 'WEB_APP' in configuration.REMOTE_DEVICE:
+    if ('iPhone' or 'Samsung') not in configuration.REMOTE_DEVICE:
         accept_ssl_certs = True
+
+        LOGGER.info('WEB path')
 
         if 'Windows' not in configuration.REMOTE_OS:
             screen_resolution = '1920x1440'
@@ -143,6 +145,7 @@ def _get_remote_capabilities(configuration):
             }
         }
     else:
+        LOGGER.info('MOBILE path')
         possible_caps = {
             'platformName': configuration.REMOTE_OS,
             'platformVersion': configuration.REMOTE_OS_VERSION,

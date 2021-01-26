@@ -8,6 +8,7 @@ class Browser(Waits):
     # pylint: disable=too-many-public-methods
 
     def open_page(self, page_url):
+        print(f'Open page_url: {page_url}')
         self._driver.get(page_url)
 
     def open_page_with_jwt_config(self, page_url, jwt_json_config: JwtConfig):
