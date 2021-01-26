@@ -5,7 +5,6 @@ WebDriver instance which is responsible for direct connection and allows
 to manipulate browser window thanks to its functions.
 It is based on singleton pattern to operate on a single instance of a driver.
 """
-import json
 from logging import INFO
 
 from logger import get_logger
