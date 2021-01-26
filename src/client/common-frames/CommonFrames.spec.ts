@@ -1,3 +1,4 @@
+import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { CommonFrames } from './CommonFrames';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import {
@@ -238,6 +239,31 @@ describe('CommonFrames', () => {
 
       // @ts-ignore
       expect(instance._onTransactionComplete).toHaveBeenCalled();
+    });
+  });
+
+  describe('_onTransactionComplete()', () => {
+    const { instance } = commonFramesFixture();
+    const data = {
+      errorcode: '0',
+      errormessage: 'Ok'
+    };
+
+    beforeEach(() => {
+      // @ts-ignore
+      instance._messageBus.publish = jest.fn();
+      // @ts-ignore
+      instance._onTransactionComplete(data);
+    });
+
+    it(`should send ${PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK} event to parent with Gateway dta and config JWT`, () => {
+      const submitCallbackDataEvent: IMessageBusEvent = {
+        type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
+        data
+      };
+
+      // @ts-ignore
+      expect(instance._messageBus.publish).toHaveBeenCalledWith(submitCallbackDataEvent, true);
     });
   });
 });

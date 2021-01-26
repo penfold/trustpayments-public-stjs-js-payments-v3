@@ -82,6 +82,8 @@ Feature: Cardinal commerce
     And User will see that notification frame has "red" color
     And THREEDQUERY request was sent only once with correct data
     And User will see that Submit button is "enabled" after payment
+    And submit callback contains THREEDRESPONSE: True
+    And submit callback contains JWT response
 
   @base_config @cardinal_commerce
   Scenario Outline: Cardinal Commerce - check ACS response for code: <action_code>

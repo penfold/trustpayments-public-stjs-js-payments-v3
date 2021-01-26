@@ -35,6 +35,11 @@ def decode_jwt_from_jsinit(jsinit_filename):
     return jwt_json['payload']['jwt']
 
 
+def decode_jwt(encoded_jwt):
+    jwt_json = jwt.decode(encoded_jwt, SECRET_KEY, verify=False, algorithm='HS256')
+    return jwt_json
+
+
 def merge_json_conf_with_additional_attr(old_config_jwt_dict, jwt_payload_dict):
     payload_without_null = delete_empty_from_json(jwt_payload_dict)
     return {**old_config_jwt_dict, **payload_without_null}

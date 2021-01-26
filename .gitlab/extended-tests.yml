@@ -28,7 +28,6 @@
     OS_VERSION: Mojave
     BROWSER: Safari
     BROWSER_VERSION: '12.1'
-    ROWSERSTACK_SAFARI_DRIVER: '2.48'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
 
 apple-test-part1-browserstack-component-test:
@@ -130,7 +129,6 @@ OSXMojave-Safari-12.1-visual-tests:
     OS_VERSION: Mojave
     BROWSER: Safari
     BROWSER_VERSION: '12.1'
-    ROWSERSTACK_SAFARI_DRIVER: '2.48'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: visual_regression_safari
@@ -236,7 +234,6 @@ OSXHS-Safari-11.1-smoke-tests:
     OS_VERSION: High Sierra
     BROWSER: Safari
     BROWSER_VERSION: '11.1'
-    ROWSERSTACK_SAFARI_DRIVER: '2.48'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
@@ -255,7 +252,7 @@ OSXHS-Safari-11.1-smoke-tests:
     AUTOMATION_TIMEOUT: 120
   resource_group: extended_tests_release_2
 
-.iPhone11-13-smoke-tests:
+iPhone11-13-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -455,7 +452,6 @@ OSXMojave-Safari-12.1-extended-test-part-1:
     OS_VERSION: Mojave
     BROWSER: Safari
     BROWSER_VERSION: '12.1'
-    ROWSERSTACK_SAFARI_DRIVER: '2.48'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: extended_tests_part_1
@@ -470,7 +466,6 @@ OSXMojave-Safari-12.1-extended-test-part-2:
     OS_VERSION: Mojave
     BROWSER: Safari
     BROWSER_VERSION: '12.1'
-    ROWSERSTACK_SAFARI_DRIVER: '2.48'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: extended_tests_part_2,extended_tests_apple_pay
