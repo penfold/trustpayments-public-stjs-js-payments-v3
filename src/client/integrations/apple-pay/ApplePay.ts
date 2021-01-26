@@ -179,7 +179,10 @@ export class ApplePay {
             return;
           }
 
-          if (Number(response.data.status) === ApplePayClientErrorCode.CANCEL) {
+          if (
+            Number(response.data.status) === ApplePayClientErrorCode.CANCEL ||
+            response.data.details.errorcode === 'cancelled'
+          ) {
             return;
           }
 
