@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { EMPTY, from, merge, Observable, of } from 'rxjs';
-import { catchError, filter, map, tap } from 'rxjs/operators';
+import { from, merge, Observable, of } from 'rxjs';
+import { filter, map, first } from 'rxjs/operators';
 import { IApplePayPayment } from '../apple-pay-payment-data/IApplePayPayment';
 import { IApplePayWalletVerifyResponse } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
@@ -28,7 +28,7 @@ export class ApplePayPaymentService {
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     validationURL: string,
     cancelled: boolean
-  ): Observable<any> {
+  ): Observable<{ status: ApplePayClientErrorCode; data: {} }> {
     const request: IApplePayValidateMerchantRequest = this.applePayConfigService.updateWalletValidationUrl(
       validateMerchantRequest,
       validationURL
@@ -41,7 +41,19 @@ export class ApplePayPaymentService {
       });
     }
 
-    return this.payment.walletVerify(request).pipe(
+    const walletVerifyError$ = this.messageBus.pipe(
+      ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
+      filter((event: IMessageBusEvent) => Number(event.data.errorcode) !== 0),
+      map((event: IMessageBusEvent) => ({
+        status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
+        data: {
+          errorcode: event.data.errorcode,
+          errormessage: event.data.errormessage
+        }
+      }))
+    );
+
+    const walletVerify$ = this.payment.walletVerify(request).pipe(
       map((response: IApplePayWalletVerifyResponse) => {
         if (!response.response.walletsession) {
           return {
@@ -53,14 +65,10 @@ export class ApplePayPaymentService {
           status: ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
           data: response.response
         };
-      }),
-      catchError(() => {
-        return of({
-          status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
-          data: {}
-        });
       })
     );
+
+    return merge(walletVerify$, walletVerifyError$).pipe(first());
   }
 
   processPayment(
@@ -76,9 +84,7 @@ export class ApplePayPaymentService {
           return event.data;
         }
       }),
-      map((response: { data: IApplePayProcessPaymentResponse }) => {
-        return response.data;
-      })
+      map((event: { data: IApplePayProcessPaymentResponse }) => event.data)
     );
 
     const processPayment$ = from(
@@ -110,6 +116,6 @@ export class ApplePayPaymentService {
       })
     );
 
-    return merge(processPayment$, bypassError$);
+    return merge(processPayment$, bypassError$).pipe(first());
   }
 }

@@ -27,6 +27,7 @@ import { RequestType } from '../../../shared/types/RequestType';
 import { IApplePayClientStatusDetails } from '../../../application/core/integrations/apple-pay/IApplePayClientStatusDetails';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
+import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 
 @Service()
 export class ApplePay {
@@ -248,11 +249,35 @@ export class ApplePay {
       });
   }
 
-  private handleWalletVerifyResponse(status: ApplePayClientStatus, details: IApplePayClientStatusDetails): void {
-    this.messageBus.publish<IApplePayClientStatus>({
-      type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
-      data: { status, details }
-    });
+  private handleWalletVerifyResponse(status: ApplePayClientStatus, details: IApplePayWalletVerifyResponseBody): void {
+    switch (Number(details.errorcode)) {
+      case 30000:
+        this.applePaySessionService.abort();
+        this.messageBus.publish<IApplePayClientStatus>({
+          type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+          data: {
+            status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
+            details: {
+              errorMessage: details.errormessage,
+              errorCode: Number(details.errorcode)
+            }
+          }
+        });
+        GoogleAnalytics.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify failure');
+        break;
+
+      default:
+        this.messageBus.publish<IApplePayClientStatus>({
+          type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+          data: {
+            status,
+            details: {
+              errorMessage: details.errormessage,
+              errorCode: Number(details.errorcode)
+            }
+          }
+        });
+    }
   }
 
   private handlePaymentProcessResponse(

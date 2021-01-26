@@ -27,6 +27,14 @@ export class ApplePaySessionService {
     this.beginMerchantValidation();
   }
 
+  abort(): void {
+    try {
+      this.applePaySession.abort();
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
   hasApplePaySessionObject(): boolean {
     return Boolean(ApplePaySession);
   }
