@@ -2,7 +2,7 @@ publish-to-cdn-latest:
   stage: post-release
   extends:
     - .trigger-publish-to-cdn-release
-    - .rules-when-release-manual
+    - .rules-when-release-manual-required
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-prod-release'
     PUBLISH_ARTIFACT_SOURCE_PATH: ".dist-prod/st.js"
