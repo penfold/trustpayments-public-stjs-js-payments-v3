@@ -1,14 +1,10 @@
 @cardinal_commerce_v2.0_VISA_V21
-Feature: Cardinal Commerce E2E tests
+Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
   As a user
   I want to use card payments method
   In order to check Cardinal Commerce integration
 
-  @reactJS
-    @angular
-    @vueJS
-    @react_native
-    @cardinal_commerce_v2.0
+  @cardinal_commerce_v2.0
   Scenario Outline: TC_1 - Successful Frictionless Authentication with submitOnSuccess - Card: VISA_V21_SUCCESSFUL_FRICTIONLESS_AUTH
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -85,7 +81,7 @@ Feature: Cardinal Commerce E2E tests
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none |
 
 
-  @cardinal_commerce_v2.0
+  @e2e_smoke_test @cardinal_commerce_v2.0
   Scenario Outline: TC_4 - Unavailable Frictionless Authentication from the Issuer with submitOnSuccess - Card: VISA_V21_UNAVAILABLE_FRICTIONLESS_AUTH
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -211,12 +207,7 @@ Feature: Cardinal Commerce E2E tests
       | THREEDQUERY AUTH         | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | should be none | should be none | 60010     | 0            |
 
-
-  @reactJS
-    @angular
-    @vueJS
-    @react_native
-    @cardinal_commerce_v2.0
+  @cardinal_commerce_v2.0
   Scenario Outline: TC_9 -Successful Step Up Authentication with submitOnSuccess - Card: VISA_V21_NON_FRICTIONLESS
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |

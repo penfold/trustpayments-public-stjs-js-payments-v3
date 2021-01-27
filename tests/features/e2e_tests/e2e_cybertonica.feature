@@ -4,10 +4,7 @@ Feature: E2E Cybertonica
   I want to use card payments method with cybertonica config
   In order to check full payment functionality
 
-  @reactJS
-  @angular
-  @vueJS
-  @react_native
+  @e2e_smoke_test
   @e2e_config_cybertonica
   Scenario: Cybertonica - successfull payment
     Given JS library configured by inline params CYBERTONICA_CONFIG and jwt BASE_JWT with additional attributes

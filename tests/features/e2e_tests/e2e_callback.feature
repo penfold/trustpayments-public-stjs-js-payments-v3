@@ -1,5 +1,5 @@
 @submit_callback @callback
-Feature: callbacks
+Feature: E2E callbacks after payment
 
   @success_callback @e2e_smoke_test
   Scenario Outline: success and submit callback for successful payment - challenge flow

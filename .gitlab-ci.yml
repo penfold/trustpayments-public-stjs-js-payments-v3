@@ -27,7 +27,7 @@ variables:
   IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_PIPELINE_ID}
 
   SMOKE_TESTS_TAG: '@smoke_test'
-  SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_test,@smoke_test_apple_pay'
+  SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_test,@apple_pay_smoke_test'
   EXTENDED_TESTS_TAG: '@extended_tests_part_1,@extended_tests_part_2'
   ARTIFACT_RELEASE_DESCRIPTION_TYPE: "EXTENDED"
 

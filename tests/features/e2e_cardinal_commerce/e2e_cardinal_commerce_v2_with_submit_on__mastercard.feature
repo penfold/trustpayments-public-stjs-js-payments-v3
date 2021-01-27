@@ -1,14 +1,10 @@
 @cardinal_commerce_v2.0_MASTERCARD
-Feature: Cardinal Commerce E2E tests
+Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterCard
   As a user
   I want to use card payments method
   In order to check Cardinal Commerce integration
 
-  @reactJS
-    @angular
-    @vueJS
-    @react_native
-    @cardinal_commerce_v2.0
+  @cardinal_commerce_v2.0
   Scenario Outline: TC_1 - Successful Frictionless Authentication with submitOnSuccess - Card: MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -212,11 +208,7 @@ Feature: Cardinal Commerce E2E tests
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | should be none | should be none | 60010     | 0            |
 
 
-  @reactJS
-    @angular
-    @vueJS
-    @react_native
-    @cardinal_commerce_v2.0
+  @cardinal_commerce_v2.0
   Scenario Outline: TC_9 -Successful Step Up Authentication with submitOnSuccess - Card: MASTERCARD_NON_FRICTIONLESS
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |

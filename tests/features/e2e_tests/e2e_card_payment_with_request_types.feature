@@ -4,10 +4,6 @@ Feature: E2E Card Payments with request types in config
   I want to use card payments method with request types config
   In order to check full payment functionality
 
-  @reactJS
-  @angular
-  @vueJS
-  @react_native
   Scenario: Successful payment with config's requestTypes param having values in valid order
     Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                         |
@@ -32,10 +28,7 @@ Feature: E2E Card Payments with request types in config
     Then User will see payment status information: "Invalid field"
     And User will see that notification frame has "red" color
 
-  @reactJS
-  @angular
-  @vueJS
-  @react_native
+  @e2e_smoke_test
   Scenario: Successful payment with config's requestTypes: ACCOUNTCHECK, TDQ, AUTH, SUBSCRIPTION
     Given JS library configured by inline params REQUEST_TYPE_ACHECK_TDQ_AUTH_SUB_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value                                      |
@@ -48,22 +41,6 @@ Feature: E2E Card Payments with request types in config
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
-
-  @bypass_property
-  Scenario: Successful payment with bypassCard and requestTypes: RISKDEC, ACCOUNTCHECK,THREEDQUERY, AUTH
-    Given JS library configured by inline params BYPASS_MASTERCARD_REQUEST_TYPE_CONFIG and jwt BASE_JWT with additional attributes
-      | key                      | value                                 |
-      | requesttypedescriptions  | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
-      | threedbypasspaymenttypes | MASTERCARD                            |
-    And User opens example page
-    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
-    And User clicks Pay button
-    And User waits for payment to be processed
-    Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
-
 
   Scenario: Successful step up payment with defer init and requestTypes: ACCOUNTCHECK, TDQ
     Given JS library configured by inline params REQUEST_TYPE_ACHECK_TDQ_WITH_DEFER_INIT and jwt BASE_JWT with additional attributes
