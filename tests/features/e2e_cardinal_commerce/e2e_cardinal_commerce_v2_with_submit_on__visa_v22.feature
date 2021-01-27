@@ -78,7 +78,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 01             |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 06             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
 
 
@@ -105,7 +105,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 07             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
 
 
@@ -236,7 +236,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | status  | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | Y       | 02             | should be none     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | Y       | 05             | should be none     |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C       | should be none | should not be none |
 
 
@@ -291,7 +291,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | status  | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | U       | 00             | should be none     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | U       | 07             | should be none     |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C       | should be none | should not be none |
 
 

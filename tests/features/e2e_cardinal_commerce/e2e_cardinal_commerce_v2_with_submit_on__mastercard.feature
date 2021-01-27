@@ -370,9 +370,9 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | threedresponse       | <threedresponse>                        |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status         | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | Y              | 02             | should be none     |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none | should not be none |
+      | request_types            | baseamount     | currencyiso3a  | status  | eci            | threedresponse     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | Y       | 02             | should be none     |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C       | should be none | should not be none |
 
 
 # ToDo - This test case is no longer supported by Cardinal - to clarify
@@ -399,7 +399,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | baseamount           | <baseamount>                            |
       | currencyiso3a        | <currencyiso3a>                         |
       | errorcode            | 0                                       |
-      | status               | <status>                                |
+      | status               | U                                       |
       | transactionreference | should not be none                      |
       | jwt                  | should not be none                      |
       | enrolled             | Y                                       |
@@ -407,9 +407,9 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | eci                  | <eci>                                   |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status         | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | U              | 00             |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none |
+      | request_types            | baseamount     | currencyiso3a  | eci            |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
 
 
   @base_config @e2e_cardinal_commerce_v2.0
