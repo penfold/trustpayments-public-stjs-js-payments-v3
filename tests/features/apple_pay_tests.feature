@@ -13,11 +13,11 @@ Feature: ApplePay
     Then User will see payment status information: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And APPLE_PAY or AUTH requests were sent only once with correct data
-    And "submit" callback is called only once
+   # And "submit" callback is called only once
     And "<callback>" callback is called only once
-    And submit callback contains JWT response
-    And submit callback contains THREEDRESPONSE: False
-    
+   # And submit callback contains JWT response
+   # And submit callback contains THREEDRESPONSE: False
+
     @apple_pay_smoke_test
     Examples:
       | action_code | payment_status_message                  | color |callback|
