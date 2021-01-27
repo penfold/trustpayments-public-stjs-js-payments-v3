@@ -15,7 +15,7 @@ Feature: Visa Checkout
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
     And "submit" callback is called only once
     And "<callback>" callback is called only once
-    And submit callback contains JWT response
+    #And submit callback contains JWT response
 
     @smoke_test @visa_checkout_smoke_test
     Examples:
