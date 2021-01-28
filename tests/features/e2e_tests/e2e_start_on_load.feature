@@ -4,10 +4,7 @@ Feature: E2E startOnLoad
   I want to use card payments method with startOnLoad config
   In order to check full payment functionality
 
-  @reactJS
-  @angular
-  @vueJS
-  @react_native
+  @e2e_smoke_test
   Scenario: Successful non-frictionless payment with startOnLoad
     Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value            |
