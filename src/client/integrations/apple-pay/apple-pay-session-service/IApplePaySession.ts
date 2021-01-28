@@ -9,15 +9,6 @@ import { IApplePayShippingContactUpdate } from './IApplePayShippingContactUpdate
 import { IApplePayShippingMethodUpdate } from './IApplePayShippingMethodUpdate';
 
 export interface IApplePaySession {
-  /* static */ readonly STATUS_SUCCESS: number;
-  /* static */ readonly STATUS_FAILURE: number;
-  /* static */ readonly STATUS_INVALID_BILLING_POSTAL_ADDRESS: number;
-  /* static */ readonly STATUS_INVALID_SHIPPING_POSTAL_ADDRESS: number;
-  /* static */ readonly STATUS_INVALID_SHIPPING_CONTACT: number;
-  /* static */ readonly STATUS_PIN_INCORRECT: number;
-  /* static */ readonly STATUS_PIN_LOCKOUT: number;
-  /* static */ readonly STATUS_PIN_REQUIRED: number;
-
   oncancel: (event: Event) => void;
 
   onpaymentauthorized: (event: IApplePayPaymentAuthorizedEvent) => void;
@@ -29,12 +20,6 @@ export interface IApplePaySession {
   onshippingmethodselected: (event: IApplePayShippingMethodSelectedEvent) => void;
 
   onvalidatemerchant: (event: IApplePayValidateMerchantEvent) => void;
-
-  /* static */ canMakePayments(): boolean;
-
-  /* static */ canMakePaymentsWithActiveCard(merchantId: string): Promise<boolean>;
-
-  /* static */ supportsVersion(version: number): boolean;
 
   openPaymentSetup(merchantId: string): Promise<boolean>;
 

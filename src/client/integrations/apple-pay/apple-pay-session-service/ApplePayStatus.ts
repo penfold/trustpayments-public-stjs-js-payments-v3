@@ -1,6 +1,7 @@
 import { IApplePaySession } from './IApplePaySession';
+import { IApplePaySessionConstructor } from './IApplePaySessionConstructor';
 
-const ApplePaySession: IApplePaySession | undefined = (window as any).ApplePaySession;
+const ApplePaySession: IApplePaySessionConstructor | undefined = (window as any).ApplePaySession;
 
 export const ApplePayStatus = {
   STATUS_SUCCESS: ApplePaySession ? ApplePaySession.STATUS_SUCCESS : undefined,
