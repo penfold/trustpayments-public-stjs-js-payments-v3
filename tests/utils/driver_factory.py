@@ -113,6 +113,7 @@ def _get_remote_capabilities(configuration):
     accept_ssl_certs = None
 
     LOGGER.info('MOBILE path')
+
     possible_caps = {
         'platformName': configuration.REMOTE_OS,
         'platformVersion': configuration.REMOTE_OS_VERSION,
@@ -125,7 +126,7 @@ def _get_remote_capabilities(configuration):
             'build': configuration.BUILD_NAME,
         }
     }
-
+    LOGGER.info(possible_caps)
 
     # else:
     #     accept_ssl_certs = True
