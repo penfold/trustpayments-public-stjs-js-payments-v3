@@ -1,3 +1,4 @@
+@e2e_sl
 Feature: E2E Card Payments with request types in config
 
   As a user
