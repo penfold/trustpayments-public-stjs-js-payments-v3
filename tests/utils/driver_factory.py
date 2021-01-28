@@ -112,52 +112,53 @@ def _get_remote_capabilities(configuration):
     network_logs = None
     accept_ssl_certs = None
 
-    if ('iPhone' or 'Samsung') in configuration.REMOTE_DEVICE:
-        LOGGER.info('MOBILE path')
-        possible_caps = {
-            'platformName': configuration.REMOTE_OS,
-            'platformVersion': configuration.REMOTE_OS_VERSION,
-            'deviceName': configuration.REMOTE_DEVICE,
-            'browserName': configuration.REMOTE_BROWSER,
-            'appiumVersion': configuration.BROWSERSTACK_APPIUM_VERSION,
-            'deviceOrientation': 'portrait',
-            'project': configuration.PROJECT_NAME,
-            'sauce:options': {
-                'build': configuration.BUILD_NAME,
-            }
+    LOGGER.info('MOBILE path')
+    possible_caps = {
+        'platformName': configuration.REMOTE_OS,
+        'platformVersion': configuration.REMOTE_OS_VERSION,
+        'deviceName': configuration.REMOTE_DEVICE,
+        'browserName': configuration.REMOTE_BROWSER,
+        'appiumVersion': configuration.BROWSERSTACK_APPIUM_VERSION,
+        'deviceOrientation': 'portrait',
+        'project': configuration.PROJECT_NAME,
+        'sauce:options': {
+            'build': configuration.BUILD_NAME,
         }
-    else:
-        accept_ssl_certs = True
+    }
 
-        LOGGER.info('WEB path')
 
-        if 'Windows' not in configuration.REMOTE_OS:
-            screen_resolution = '1920x1440'
-            accept_ssl_certs = None
-        #
-        # if 'internet explorer' in configuration.REMOTE_BROWSER:
-        #     accept_ssl_certs = 1
-
-        if 'chrome' in configuration.REMOTE_BROWSER:
-            network_logs = True
-
-        possible_caps = {
-            'platformName': configuration.REMOTE_OS + ' ' + configuration.REMOTE_OS_VERSION,
-            'browserName': configuration.REMOTE_BROWSER,
-            'browserVersion': configuration.REMOTE_BROWSER_VERSION,
-            'device': configuration.REMOTE_DEVICE,
-            'real_mobile': configuration.REMOTE_REAL_MOBILE,
-            'project': configuration.PROJECT_NAME,
-            # 'tunnelIdentifier': 'test_tunnel_for_web_tests',
-            'sauce:options': {
-                'build': configuration.BUILD_NAME,
-                'seleniumVersion': configuration.BROWSERSTACK_SELENIUM_VERSION,
-                'chromedriverVersion': configuration.BROWSERSTACK_CHROME_DRIVER,
-                'iedriverVersion': configuration.BROWSERSTACK_IE_DRIVER,
-                'geckodriverVersion': configuration.BROWSERSTACK_FIREFOX_DRIVER,
-                'screenResolution': screen_resolution
-            }
-        }
+    # else:
+    #     accept_ssl_certs = True
+    #
+    #     LOGGER.info('WEB path')
+    #
+    #     if 'Windows' not in configuration.REMOTE_OS:
+    #         screen_resolution = '1920x1440'
+    #         accept_ssl_certs = None
+    #     #
+    #     # if 'internet explorer' in configuration.REMOTE_BROWSER:
+    #     #     accept_ssl_certs = 1
+    #
+    #     if 'chrome' in configuration.REMOTE_BROWSER:
+    #         network_logs = True
+    #
+    #     possible_caps = {
+    #         'platformName': configuration.REMOTE_OS + ' ' + configuration.REMOTE_OS_VERSION,
+    #         'browserName': configuration.REMOTE_BROWSER,
+    #         'browserVersion': configuration.REMOTE_BROWSER_VERSION,
+    #         'device': configuration.REMOTE_DEVICE,
+    #         'real_mobile': configuration.REMOTE_REAL_MOBILE,
+    #         'project': configuration.PROJECT_NAME,
+    #         # 'tunnelIdentifier': 'test_tunnel_for_web_tests',
+    #         'sauce:options': {
+    #             'build': configuration.BUILD_NAME,
+    #             'seleniumVersion': configuration.BROWSERSTACK_SELENIUM_VERSION,
+    #             'chromedriverVersion': configuration.BROWSERSTACK_CHROME_DRIVER,
+    #             'iedriverVersion': configuration.BROWSERSTACK_IE_DRIVER,
+    #             'geckodriverVersion': configuration.BROWSERSTACK_FIREFOX_DRIVER,
+    #             'screenResolution': screen_resolution
+    #         }
+    #     }
 
 
     capabilities = {}
