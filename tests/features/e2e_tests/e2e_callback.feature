@@ -1,5 +1,5 @@
 @submit_callback @callback
-Feature: callbacks
+Feature: E2E callbacks after payment
 
   @success_callback @e2e_smoke_test
   Scenario Outline: success and submit callback for successful payment - challenge flow
@@ -68,7 +68,7 @@ Feature: callbacks
 #    When User opens example page CANCEL_CALLBACK
 #    And User clicks on Visa Checkout button
 #    And User closes the visa checkout popup
-#    And user waits for payment to be processed
+#    And User waits for payment to be processed
 #    Then "cancel" callback is called only once
 #    And "submit" callback is called only once
 #    And submit callback contains JWT response

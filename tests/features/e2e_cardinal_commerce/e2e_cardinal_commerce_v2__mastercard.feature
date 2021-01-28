@@ -1,14 +1,10 @@
 @cardinal_commerce_v2.0_MASTERCARD
-Feature: Cardinal Commerce E2E tests
+Feature: Cardinal Commerce E2E tests v2 - MasterCard
   As a user
   I want to use card payments method
   In order to check Cardinal Commerce integration
 
-  @reactJS
-    @angular
-    @vueJS
-    @react_native
-    @base_config @cardinal_commerce_v2.0
+  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -167,11 +163,8 @@ Feature: Cardinal Commerce E2E tests
       | THREEDQUERY AUTH         | Payment has been successfully processed | green | success  |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | red   | error    |
 
-  @reactJS
-    @angular
-    @vueJS
-    @react_native
-    @base_config @cardinal_commerce_v2.0
+
+  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_9 -Successful Step Up Authentication - Card: MASTERCARD_NON_FRICTIONLESS
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
