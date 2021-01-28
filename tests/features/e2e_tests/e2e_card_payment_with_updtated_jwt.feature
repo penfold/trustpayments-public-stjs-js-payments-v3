@@ -4,10 +4,7 @@ Feature: E2E Card Payments with updated jwt
   I want to use card payments method
   In order to check full payment functionality with updated jwt
 
-  @reactJS
-  @angular
-  @vueJS
-  @react_native
+  @e2e_smoke_test
   Scenario: Successful payment with updated jwt
     Given JS library configured by inline params DEFER_INIT_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
@@ -36,11 +33,7 @@ Feature: E2E Card Payments with updated jwt
     And "submit" callback is called only once
     And "success" callback is called only once
 
-  #just to make sure data are taken from updated jwt
-  @reactJS
-  @angular
-  @vueJS
-  @react_native
+  @e2e_smoke_test
   @update_jwt_test
   Scenario: Successful payment with updated jwt without locale param and submit on success config
     Given JS library configured by inline params DEFER_INIT_AND_SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITHOUT_LOCALE with additional attributes

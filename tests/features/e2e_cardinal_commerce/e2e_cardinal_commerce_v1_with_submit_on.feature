@@ -1,14 +1,10 @@
-Feature: Cardinal Commerce E2E tests
+Feature: Cardinal Commerce E2E tests v1 with redirection after payment
   As a user
   I want to use card payments method
   In order to check Cardinal Commerce integration
 
 
-  @reactJS
-    @angular
-    @vueJS
-    @react_native
-    @e2e_cardinal_commerce_v1
+  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_1 - Successful Authentication with submitOnSuccess and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -63,7 +59,7 @@ Feature: Cardinal Commerce E2E tests
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | should not be none |
 
 
-  @e2e_cardinal_commerce_v1
+  @e2e_cardinal_commerce_v1 @e2e_smoke_test
   Scenario Outline: TC_3 - Failed Authentication with submitOnError and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -85,7 +81,7 @@ Feature: Cardinal Commerce E2E tests
 
     Examples:
       | request_types            | threedresponse     |
-      | THREEDQUERY AUTH         | should not be none     |
+      | THREEDQUERY AUTH         | should not be none |
       | ACCOUNTCHECK THREEDQUERY | should not be none |
 
   @e2e_cardinal_commerce_v1
