@@ -1,8 +1,6 @@
-import { Observable } from 'rxjs';
 import { IApplePayPaymentAuthorizationResult } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 import { IApplePayPaymentAuthorizedEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { IApplePayPaymentMethodSelectedEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentMethodSelectedEvent';
-// tslint:disable-next-line:max-line-length
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
 import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingMethodSelectedEvent';
 import { IApplePayValidateMerchantEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
@@ -10,15 +8,15 @@ import { IApplePayPaymentMethodUpdate } from './IApplePayPaymentMethodUpdate';
 import { IApplePayShippingContactUpdate } from './IApplePayShippingContactUpdate';
 import { IApplePayShippingMethodUpdate } from './IApplePayShippingMethodUpdate';
 
-export interface IApplePaySession extends EventTarget {
-  readonly STATUS_SUCCESS: number;
-  readonly STATUS_FAILURE: number;
-  readonly STATUS_INVALID_BILLING_POSTAL_ADDRESS: number;
-  readonly STATUS_INVALID_SHIPPING_POSTAL_ADDRESS: number;
-  readonly STATUS_INVALID_SHIPPING_CONTACT: number;
-  readonly STATUS_PIN_INCORRECT: number;
-  readonly STATUS_PIN_LOCKOUT: number;
-  readonly STATUS_PIN_REQUIRED: number;
+export interface IApplePaySession {
+  /* static */ readonly STATUS_SUCCESS: number;
+  /* static */ readonly STATUS_FAILURE: number;
+  /* static */ readonly STATUS_INVALID_BILLING_POSTAL_ADDRESS: number;
+  /* static */ readonly STATUS_INVALID_SHIPPING_POSTAL_ADDRESS: number;
+  /* static */ readonly STATUS_INVALID_SHIPPING_CONTACT: number;
+  /* static */ readonly STATUS_PIN_INCORRECT: number;
+  /* static */ readonly STATUS_PIN_LOCKOUT: number;
+  /* static */ readonly STATUS_PIN_REQUIRED: number;
 
   oncancel: (event: Event) => void;
 
@@ -32,13 +30,13 @@ export interface IApplePaySession extends EventTarget {
 
   onvalidatemerchant: (event: IApplePayValidateMerchantEvent) => void;
 
-  canMakePayments(): boolean;
+  /* static */ canMakePayments(): boolean;
 
-  canMakePaymentsWithActiveCard(merchantId: string): Observable<boolean>;
+  /* static */ canMakePaymentsWithActiveCard(merchantId: string): Promise<boolean>;
+
+  /* static */ supportsVersion(version: number): boolean;
 
   openPaymentSetup(merchantId: string): Promise<boolean>;
-
-  supportsVersion(version: number): boolean;
 
   abort(): void;
 

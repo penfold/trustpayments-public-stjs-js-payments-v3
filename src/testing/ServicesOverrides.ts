@@ -8,7 +8,7 @@ import { VisaCheckout } from '../application/core/integrations/visa-checkout/Vis
 import { VisaCheckoutMock } from '../application/core/integrations/visa-checkout/VisaCheckoutMock';
 import { ApplePaySessionFactory } from '../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePaySessionFactoryMock } from '../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactoryMock';
-import { ApplePaySessionMock } from '../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionMock';
+import { ApplePaySessionServiceMock } from '../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionServiceMock';
 import { ApplePaySessionService } from '../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 import { CybertonicaMock } from './mocks/CybertonicaMock';
 import { environment } from '../environments/environment';
@@ -23,7 +23,12 @@ if (environment.testEnvironment) {
   Container.set({ id: VisaCheckout, type: VisaCheckoutMock });
   Container.set({ id: VisaCheckoutSdkProvider, type: VisaCheckoutSdkProviderMock });
   Container.set({ id: ApplePay, type: ApplePayMock });
-  Container.set({ id: ApplePaySessionService, type: ApplePaySessionMock });
+  Container.set({ id: ApplePaySessionService, type: ApplePaySessionServiceMock });
   Container.set({ id: ApplePayButtonService, type: ApplePayButtonServiceMock });
   Container.set({ id: ApplePaySessionFactory, type: ApplePaySessionFactoryMock });
 }
+
+// Container.set({ id: ApplePay, type: ApplePayMock });
+// Container.set({ id: ApplePaySessionService, type: ApplePaySessionServiceMock });
+// Container.set({ id: ApplePayButtonService, type: ApplePayButtonServiceMock });
+// Container.set({ id: ApplePaySessionFactory, type: ApplePaySessionFactoryMock });

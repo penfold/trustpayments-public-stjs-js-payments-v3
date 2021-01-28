@@ -20,9 +20,10 @@ import { IApplePayPaymentMethodUpdate } from './IApplePayPaymentMethodUpdate';
 import { IApplePaySession } from './IApplePaySession';
 import { IApplePayShippingContactUpdate } from './IApplePayShippingContactUpdate';
 import { IApplePayShippingMethodUpdate } from './IApplePayShippingMethodUpdate';
+import { ApplePaySessionService } from './ApplePaySessionService';
 
 @Service()
-export class ApplePaySessionMock implements IApplePaySession {
+export class ApplePaySessionServiceMock extends ApplePaySessionService {
   private applePayConfig: IApplePayConfigObject;
 
   constructor(private messageBus: IMessageBus, private store: IStore<any>) {}
