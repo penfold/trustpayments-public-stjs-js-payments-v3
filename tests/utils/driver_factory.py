@@ -119,7 +119,9 @@ def _get_remote_capabilities(configuration):
         'platformVersion': configuration.REMOTE_OS_VERSION,
         'deviceName': configuration.REMOTE_DEVICE,
         'browserName': configuration.REMOTE_BROWSER,
-        'appiumVersion': configuration.BROWSERSTACK_APPIUM_VERSION,
+        'username': configuration.SL_USERNAME,
+        'accessKey': configuration.SL_ACCESS_KEY,
+        # 'appiumVersion': configuration.BROWSERSTACK_APPIUM_VERSION,
         'deviceOrientation': 'portrait',
         'project': configuration.PROJECT_NAME,
         'sauce:options': {
