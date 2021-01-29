@@ -43,6 +43,20 @@ Feature: E2E Card Payments with request types in config
     And "submit" callback is called only once
     And "success" callback is called only once
 
+    @bypass_property
+  Scenario: Successful payment with bypassCard and requestTypes: RISKDEC, ACCOUNTCHECK,THREEDQUERY, AUTH
+    Given JS library configured by inline params BYPASS_MASTERCARD_REQUEST_TYPE_CONFIG and jwt BASE_JWT with additional attributes
+      | key                      | value                                 |
+      | requesttypedescriptions  | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
+      | threedbypasspaymenttypes | MASTERCARD                            |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
+    And User clicks Pay button
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
+
   Scenario: Successful step up payment with defer init and requestTypes: ACCOUNTCHECK, TDQ
     Given JS library configured by inline params REQUEST_TYPE_ACHECK_TDQ_WITH_DEFER_INIT and jwt BASE_JWT with additional attributes
       | key                     | value                    |
@@ -54,7 +68,6 @@ Feature: E2E Card Payments with request types in config
     Then User will see payment status information: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
-
 
   Scenario: Successful frictionless payment with defer init and requestTypes: ACCOUNTCHECK, TDQ
     Given JS library configured by inline params REQUEST_TYPE_ACHECK_TDQ_WITH_DEFER_INIT and jwt BASE_JWT with additional attributes
