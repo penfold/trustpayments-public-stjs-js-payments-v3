@@ -25,6 +25,10 @@ class PaymentMethodsPage(BasePage):
         page_title = self._executor.get_page_title()
         return page_title
 
+    def get_page_url(self):
+        page_url = self._executor.get_page_url()
+        return page_url
+
     def wait_for_payment_form_to_load(self):
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.card_number_iframe)
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe)
@@ -498,11 +502,7 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert_that(parsed_url.hostname).is_equal_to(url)
 
-    def validate_if_url_contains_param(self, key, value):
-        self._waits.wait_for_javascript()
-        actual_url = self._executor.get_page_url()
-        parsed_url = urlparse(actual_url)
-        parsed_query_from_url = parse_qs(parsed_url.query)
+    def validate_if_url_contains_param(self, parsed_query_from_url, key, value):
         if 'should not be none' in value:
             assert_that(parsed_query_from_url[key][0]).is_not_none()
         elif 'should be none' in value:

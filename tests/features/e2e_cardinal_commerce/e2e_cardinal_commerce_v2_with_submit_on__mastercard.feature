@@ -1,14 +1,10 @@
 @cardinal_commerce_v2.0_MASTERCARD
-Feature: Cardinal Commerce E2E tests
+Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterCard
   As a user
   I want to use card payments method
   In order to check Cardinal Commerce integration
 
-  @reactJS
-    @angular
-    @vueJS
-    @react_native
-    @cardinal_commerce_v2.0
+  @cardinal_commerce_v2.0
   Scenario Outline: TC_1 - Successful Frictionless Authentication with submitOnSuccess - Card: MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -22,7 +18,7 @@ Feature: Cardinal Commerce E2E tests
       | baseamount           | <baseamount>                            |
       | currencyiso3a        | <currencyiso3a>                         |
       | errorcode            | 0                                       |
-      | status               | <status>                                |
+      | status               | Y                                       |
       | transactionreference | should not be none                      |
       | jwt                  | should not be none                      |
       | enrolled             | Y                                       |
@@ -30,9 +26,9 @@ Feature: Cardinal Commerce E2E tests
       | eci                  | <eci>                                   |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status         | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | Y              | 02             |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none |
+      | request_types            | baseamount     | currencyiso3a  | eci            |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 02             |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
 
 
   @cardinal_commerce_v2.0
@@ -51,11 +47,12 @@ Feature: Cardinal Commerce E2E tests
       | jwt                  | should not be none |
       | enrolled             | <enrolled>         |
       | settlestatus         | <settlestatus>     |
+      | status               | <status>           |
 
     Examples:
-      | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   |
-      | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none |
-      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              |
+      | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   | status         |
+      | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none | should be none |
+      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              | N              |
 
 
   @cardinal_commerce_v2.0
@@ -72,7 +69,7 @@ Feature: Cardinal Commerce E2E tests
       | baseamount           | <baseamount>                            |
       | currencyiso3a        | <currencyiso3a>                         |
       | errorcode            | 0                                       |
-      | status               | <status>                                |
+      | status               | A                                       |
       | transactionreference | should not be none                      |
       | jwt                  | should not be none                      |
       | enrolled             | Y                                       |
@@ -80,9 +77,9 @@ Feature: Cardinal Commerce E2E tests
       | eci                  | <eci>                                   |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status         | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | A              | 01             |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none |
+      | request_types            | baseamount     | currencyiso3a  | eci            |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 01             |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
 
 
   @cardinal_commerce_v2.0
@@ -99,7 +96,7 @@ Feature: Cardinal Commerce E2E tests
       | baseamount           | <baseamount>                            |
       | currencyiso3a        | <currencyiso3a>                         |
       | errorcode            | 0                                       |
-      | status               | <status>                                |
+      | status               | U                                       |
       | transactionreference | should not be none                      |
       | jwt                  | should not be none                      |
       | enrolled             | Y                                       |
@@ -107,9 +104,9 @@ Feature: Cardinal Commerce E2E tests
       | eci                  | <eci>                                   |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status         | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | U              | 00             |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none |
+      | request_types            | baseamount     | currencyiso3a  | eci            |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
 
 
   @cardinal_commerce_v2.0
@@ -128,11 +125,12 @@ Feature: Cardinal Commerce E2E tests
       | jwt                  | should not be none |
       | enrolled             | <enrolled>         |
       | settlestatus         | <settlestatus>     |
+      | status               | <status>           |
 
     Examples:
-      | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   |
-      | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none |
-      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              |
+      | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   | status         |
+      | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none | should be none |
+      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              | R              |
 
 
   @cardinal_commerce_v2.0
@@ -180,6 +178,7 @@ Feature: Cardinal Commerce E2E tests
       | jwt                  | should not be none |
       | enrolled             | U                  |
       | settlestatus         | <settlestatus>     |
+      | status               | should be none     |
 
     Examples:
       | request_types            | errormessage                            | baseamount     | currencyiso3a  | errorcode | settlestatus |
@@ -205,6 +204,7 @@ Feature: Cardinal Commerce E2E tests
       | jwt                  | should not be none |
       | enrolled             | U                  |
       | settlestatus         | <settlestatus>     |
+      | status               | should be none     |
 
     Examples:
       | request_types            | errormessage                            | baseamount     | currencyiso3a  | errorcode | settlestatus |
@@ -212,11 +212,7 @@ Feature: Cardinal Commerce E2E tests
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | should be none | should be none | 60010     | 0            |
 
 
-  @reactJS
-    @angular
-    @vueJS
-    @react_native
-    @cardinal_commerce_v2.0
+  @cardinal_commerce_v2.0
   Scenario Outline: TC_9 -Successful Step Up Authentication with submitOnSuccess - Card: MASTERCARD_NON_FRICTIONLESS
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -240,9 +236,9 @@ Feature: Cardinal Commerce E2E tests
       | threedresponse       | <threedresponse>                        |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status         | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | Y              | 02             | should be none     |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none | should not be none |
+      | request_types            | baseamount     | currencyiso3a  | status  | eci            | threedresponse     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | Y       | 02             | should be none     |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C       | should be none | should not be none |
 
 
   @cardinal_commerce_v2.0
@@ -263,6 +259,7 @@ Feature: Cardinal Commerce E2E tests
       | threedresponse       | <threedresponse>   |
       | enrolled             | Y                  |
       | settlestatus         | 0                  |
+      | status               | C                  |
 
     Examples:
       | request_types            | threedresponse     |
@@ -294,9 +291,9 @@ Feature: Cardinal Commerce E2E tests
       | threedresponse       | <threedresponse>                        |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status         | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | U              | 00             | should be none     |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none | should not be none |
+      | request_types            | baseamount     | currencyiso3a  | status  | eci            | threedresponse     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | U       | 00             | should be none     |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C       | should be none | should not be none |
 
 
   @cardinal_commerce_v2.0
@@ -317,6 +314,7 @@ Feature: Cardinal Commerce E2E tests
       | threedresponse       | <threedresponse>   |
       | enrolled             | Y                  |
       | settlestatus         | 0                  |
+      | status               | C                  |
 
     Examples:
       | request_types            | threedresponse     |
@@ -340,6 +338,7 @@ Feature: Cardinal Commerce E2E tests
       | jwt                  | should not be none                      |
       | enrolled             | B                                       |
       | settlestatus         | 0                                       |
+      | status               | should be none                          |
 
     Examples:
       | request_types            |
@@ -371,9 +370,9 @@ Feature: Cardinal Commerce E2E tests
       | threedresponse       | <threedresponse>                        |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status         | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | Y              | 02             | should be none     |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none | should not be none |
+      | request_types            | baseamount     | currencyiso3a  | status  | eci            | threedresponse     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | Y       | 02             | should be none     |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C       | should be none | should not be none |
 
 
 # ToDo - This test case is no longer supported by Cardinal - to clarify
@@ -400,7 +399,7 @@ Feature: Cardinal Commerce E2E tests
       | baseamount           | <baseamount>                            |
       | currencyiso3a        | <currencyiso3a>                         |
       | errorcode            | 0                                       |
-      | status               | <status>                                |
+      | status               | U                                       |
       | transactionreference | should not be none                      |
       | jwt                  | should not be none                      |
       | enrolled             | Y                                       |
@@ -408,9 +407,9 @@ Feature: Cardinal Commerce E2E tests
       | eci                  | <eci>                                   |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status         | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | U              | 00             |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none |
+      | request_types            | baseamount     | currencyiso3a  | eci            |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
 
 
   @base_config @e2e_cardinal_commerce_v2.0

@@ -13,14 +13,18 @@ Feature: Visa Checkout
     Then User will see payment status information: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
-    @smoke_test
+    And "submit" callback is called only once
+    And "<callback>" callback is called only once
+    #And submit callback contains JWT response
+
+    @smoke_test @visa_checkout_smoke_test
     Examples:
-      | action_code | payment_status_message                  | color |
-      | SUCCESS     | Payment has been successfully processed | green |
+      | action_code | payment_status_message                  | color | callback|
+      | SUCCESS     | Payment has been successfully processed | green | success |
     Examples:
-      | action_code | payment_status_message     | color  |
-      | CANCEL      | Payment has been cancelled | yellow |
-      | ERROR       | An error occurred          | red    |
+      | action_code | payment_status_message     | color  | callback|
+      | CANCEL      | Payment has been cancelled | yellow | cancel  |
+      | ERROR       | An error occurred          | red    | error   |
 
   @config_submit_on_success_true @extended_tests_part_2 @visa_test
   Scenario: Visa Checkout - successful payment with enabled 'submitOnSuccess' process
@@ -116,6 +120,7 @@ Feature: Visa Checkout
     Given User opens page with payment form
     When User chooses Visa Checkout as payment method - visa response is set to "<action_code>"
     Then User will see "<callback>" popup
+    And "submit" callback is called only once
     And "<callback>" callback is called only once
 
     @extended_tests_part_2
@@ -147,7 +152,7 @@ Feature: Visa Checkout
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
     And VISA_CHECKOUT requests contains updated jwt
 
-  @config_defer_init @smoke_test @visa_test
+  @config_defer_init @smoke_test @visa_test @visa_checkout_smoke_test
   Scenario: Visa Checkout - Successful payment with deferInit and updated JWT
     Given User opens prepared payment form page WITH_UPDATE_JWT
       | jwtName          |
@@ -159,7 +164,7 @@ Feature: Visa Checkout
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
     And VISA_CHECKOUT requests contains updated jwt
 
-  @config_submit_on_success_true @smoke_test @visa_test
+  @config_submit_on_success_true @smoke_test @visa_test @visa_checkout_smoke_test
   Scenario: Visa Checkout - with submitOnSuccess and updated JWT
     Given User opens prepared payment form page WITH_UPDATE_JWT
       | jwtName          |

@@ -3,10 +3,7 @@ Feature: E2E for tokenisation
   I want to use predefined jwt config files
   To execute payment with only cvv
 
-  @reactJS
-  @angular
-  @vueJS
-  @react_native
+  @e2e_smoke_test
   @e2e_for_tokenisation @jwt_config_visa_frictionless_with_parenttransaction
   Scenario: Visa Frictionless tokenisation
     Given JS library configured by inline params TOKENISATION_CONFIG and jwt JWT_VISA_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
@@ -62,10 +59,7 @@ Feature: E2E for tokenisation
     And User will see that Submit button is "disabled" after payment
     And User will see that SECURITY_CODE input fields are "disabled"
 
-  @reactJS
-  @angular
-  @vueJS
-  @react_native
+  @e2e_smoke_test
   @update_jwt_test
   Scenario: Updating payment references for tokenization
     Given JS library configured by inline params TOKENISATION_AND_SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
