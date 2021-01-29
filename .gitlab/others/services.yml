@@ -37,3 +37,8 @@
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_PROD}"
       alias: library.securetrading.net
+
+.services-app-html-smoke-merchant:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_SMOKE}"
+      alias: merchant.securetrading.net
