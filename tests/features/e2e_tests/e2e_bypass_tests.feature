@@ -1,4 +1,5 @@
-Feature: E2E Card Payments with bypass
+@e2e_sl
+Feature: E2E Card Payments
   As a user
   I want to use card payments method
   In order to check full payment functionality
@@ -70,4 +71,62 @@ Feature: E2E Card Payments with bypass
     When User fills payment form with defined card MAESTRO_CARD
     And User clicks Pay button
     Then User will see payment status information: "Maestro must use SecureCode"
+    And User will see that notification frame has "red" color
+
+  @reactJS
+  @angular
+  @vueJS
+  @react_native
+  Scenario: Successful payment with frictionless card
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
+    And User clicks Pay button
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
+
+  @reactJS
+  @angular
+  @vueJS
+  @react_native
+  Scenario: Successful payment with non-frictionless card
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
+    And User clicks Pay button
+    And User fills V2 authentication modal
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
+
+  @reactJS
+  @angular
+  @vueJS
+  @react_native
+  Scenario: Successful payment after form validation
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page
+    When User clicks Pay button
+    And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
+    And User clicks Pay button
+    And User fills V2 authentication modal
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
+
+  Scenario: Failed Frictionless Authentication in second payment
+    Given JS library configured by inline params DEFER_INIT_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page
+    When User fills payment form with defined card VISA_V21_FAILED_FRICTIONLESS_AUTH
+    And User clicks Pay button
+    Then User will see payment status information: "Unauthenticated"
+    And Wait for notification frame to disappear
+    And User clicks Pay button
+    And User will see payment status information: "Unauthenticated"
     And User will see that notification frame has "red" color
