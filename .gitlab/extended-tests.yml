@@ -345,7 +345,7 @@ iPhone11-14.0-smoke-tests:
     - .extended-tests-browserstack
     - .rules-extended-tests-always
   variables:
-    DEVICE: 'iPhone SE Simulator'
+    DEVICE: 'iPhone 11 Simulator'
     OS: 'iOS'
     OS_VERSION: '13.2'
     BROWSER: 'Safari'
