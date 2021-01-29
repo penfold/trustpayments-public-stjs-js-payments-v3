@@ -87,6 +87,7 @@ Feature: E2E Card Payments
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
 
+
   @reactJS
   @angular
   @vueJS
