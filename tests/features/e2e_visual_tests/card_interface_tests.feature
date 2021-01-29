@@ -10,7 +10,7 @@ Feature: Visual regression - E2E Card Payments
       | threedbypasspaymenttypes | MASTERCARD       |
     And User opens minimal.html page with inline param
 
-  @visual_regression @scrn_card_interface_after_successful_payment
+  @visual_regression @visual_regression_safari_test @scrn_card_interface_after_successful_payment
   Scenario: Card interface after successful payment
     When User fills payment form with defined card MASTERCARD_FIXED_EXP_DATE_CARD
     And User clicks Pay button

@@ -54,6 +54,35 @@ win10-Chrome-latest-visual-tests:
     POETRY_TAGS: visual_regression
   resource_group: extended_tests_review_1
 
+Safari - Catalina:
+  extends:
+    - .visual-regression-tests
+    - .rules-extended-tests-always
+  variables:
+    OS: OS X
+    OS_VERSION: Catalina
+    BROWSER: Safari
+    BROWSER_VERSION: '13.1'
+    ROWSERSTACK_SAFARI_DRIVER: '2.48'
+    BROWSERSTACK_SELENIUM_VERSION: '3.14.0'
+    AUTOMATION_TIMEOUT: 120
+    POETRY_TAGS: visual_regression_safari_test
+  resource_group: extended_tests_review_1
+
+Safari - Big Sur:
+  extends:
+    - .visual-regression-tests
+    - .rules-extended-tests-always
+  variables:
+    OS: OS X
+    OS_VERSION: Big Sur
+    BROWSER: Safari
+    BROWSER_VERSION: '14.01'
+    BROWSERSTACK_SELENIUM_VERSION: '3.14.0'
+    AUTOMATION_TIMEOUT: 120
+    POETRY_TAGS: visual_regression_safari_test
+  resource_group: extended_tests_review_1
+
 win10-Chrome-latest-visual-tests-styling:
   extends:
     - .visual-regression-tests
