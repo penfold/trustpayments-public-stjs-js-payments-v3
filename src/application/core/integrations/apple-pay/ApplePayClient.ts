@@ -55,7 +55,7 @@ export class ApplePayClient implements IApplePayClient {
             return this.onValidateMerchant$(details);
 
           case ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS:
-            return EMPTY;
+            return of(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS);
 
           case ApplePayClientStatus.VALIDATE_MERCHANT_ERROR:
             return this.onValidateMerchantError$(details);
