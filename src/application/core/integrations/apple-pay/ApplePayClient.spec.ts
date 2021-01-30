@@ -15,7 +15,7 @@ import { IApplePayClientStatus } from './IApplePayClientStatus';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 
-describe.skip('ApplePayClient', () => {
+describe('ApplePayClient', () => {
   let applePayClient: ApplePayClient;
   let configProviderMock: ConfigProvider;
   let interFrameCommunicatorMock: InterFrameCommunicator;
@@ -70,6 +70,16 @@ describe.skip('ApplePayClient', () => {
 
     when(configProviderMock.getConfig$()).thenReturn(of(configMock));
     when(messageBusMock.publish(anything())).thenCall(() => {});
+    when(jwtDecoder.decode(anything())).thenReturn({ payload: anything() });
+    when(applePayPaymentService.walletVerify(anything(), anything(), anything())).thenReturn(
+      of({
+        status: ApplePayClientErrorCode.SUCCESS,
+        data: anything()
+      })
+    );
+    when(applePayPaymentService.processPayment(anything(), anything(), anything(), anything())).thenReturn(
+      of(anything())
+    );
   });
 
   describe('init$()', () => {
@@ -89,7 +99,6 @@ describe.skip('ApplePayClient', () => {
 
       applePayClient.init$().subscribe(status => {
         expect(status).toBe(ApplePayClientStatus.SUCCESS);
-        verify(browserLocalStorageMock.setItem('completePayment', 'true')).once();
         verify(applePayNotificationService.notification(ApplePayClientErrorCode.SUCCESS, 'SUCCESS')).once();
 
         done();
@@ -112,8 +121,29 @@ describe.skip('ApplePayClient', () => {
 
       applePayClient.init$().subscribe(status => {
         expect(status).toBe(ApplePayClientStatus.ERROR);
-        verify(browserLocalStorageMock.setItem('completePayment', 'false')).once();
         verify(applePayNotificationService.notification(ApplePayClientErrorCode.ERROR, 'ERROR')).once();
+
+        done();
+      });
+    });
+
+    it(`should check ${ApplePayClientStatus.EMPTY_JWT_ERROR} callback`, done => {
+      when(messageBusMock.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+          data: {
+            status: ApplePayClientStatus.EMPTY_JWT_ERROR,
+            details: {
+              errorCode: ApplePayClientErrorCode.EMPTY_JWT_ERROR,
+              errorMessage: 'ERROR'
+            }
+          } as IApplePayClientStatus
+        })
+      );
+
+      applePayClient.init$().subscribe(status => {
+        expect(status).toBe(ApplePayClientStatus.ERROR);
+        verify(applePayNotificationService.notification(ApplePayClientErrorCode.EMPTY_JWT_ERROR, 'ERROR')).once();
         verify(
           messageBusMock.publish(
             deepEqual({
@@ -156,29 +186,13 @@ describe.skip('ApplePayClient', () => {
           messageBusMock.publish(
             deepEqual({
               type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-              data: {}
+              data: {
+                errorcode: 'cancelled'
+              }
             }),
             true
           )
         ).once();
-
-        done();
-      });
-    });
-
-    it(`should check ${ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS} callback`, done => {
-      when(messageBusMock.pipe(anything())).thenReturn(
-        of({
-          type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
-          data: {
-            status: ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS,
-            details: {}
-          } as IApplePayClientStatus
-        })
-      );
-
-      applePayClient.init$().subscribe(status => {
-        expect(status).toBe(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS);
 
         done();
       });
@@ -190,32 +204,77 @@ describe.skip('ApplePayClient', () => {
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
             status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
-            details: {}
+            details: {
+              errorCode: ApplePayClientErrorCode.ERROR,
+              errorMessage: 'ERROR'
+            }
           } as IApplePayClientStatus
         })
       );
 
       applePayClient.init$().subscribe(status => {
-        expect(status).toBe(ApplePayClientStatus.VALIDATE_MERCHANT_ERROR);
-
+        expect(status).toBe(ApplePayClientStatus.ERROR);
+        verify(applePayNotificationService.notification(ApplePayClientErrorCode.ERROR, 'ERROR')).once();
         done();
       });
     });
 
-    it(`should check ${ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD} callback`, done => {
+    it(`should check ${ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS} callback`, done => {
       when(messageBusMock.pipe(anything())).thenReturn(
         of({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
-            status: ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD,
-            details: {}
+            status: ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS,
+            details: {
+              errorCode: ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS
+            }
+          } as IApplePayClientStatus
+        })
+      );
+      applePayClient.init$().subscribe(status => {
+        expect(status).toBe(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS);
+        done();
+      });
+    });
+
+    it(`should check ${ApplePayClientStatus.ON_VALIDATE_MERCHANT} callback`, done => {
+      when(messageBusMock.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+          data: {
+            status: ApplePayClientStatus.ON_VALIDATE_MERCHANT,
+            details: {
+              validateMerchantURL: 'testurl',
+              config: {},
+              paymentCancelled: false
+            }
           } as IApplePayClientStatus
         })
       );
 
       applePayClient.init$().subscribe(status => {
-        expect(status).toBe(ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD);
+        expect(status).toBe(ApplePayClientStatus.ON_VALIDATE_MERCHANT);
+        done();
+      });
+    });
 
+    it(`should check ${ApplePayClientStatus.ON_PAYMENT_AUTHORIZED} callback`, done => {
+      when(messageBusMock.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+          data: {
+            status: ApplePayClientStatus.ON_PAYMENT_AUTHORIZED,
+            details: {
+              config: {},
+              payment: {},
+              formData: {}
+            }
+          } as IApplePayClientStatus
+        })
+      );
+
+      applePayClient.init$().subscribe(status => {
+        expect(status).toBe(ApplePayClientStatus.SUCCESS);
         done();
       });
     });
