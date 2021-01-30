@@ -5,6 +5,8 @@ import { MessageBusToken, StoreToken } from '../shared/dependency-injection/Inje
 import { IStore } from '../application/core/store/IStore';
 import { Store } from '../application/core/store/store/Store';
 import { BehaviorSubject } from 'rxjs';
+import { Cybertonica } from '../application/core/integrations/cybertonica/Cybertonica';
+import { CybertonicaMock } from './mocks/CybertonicaMock';
 
 const storeFactory = () => {
   const state = new BehaviorSubject<any>({});
@@ -17,3 +19,4 @@ Container.set({ id: IMessageBus, type: SimpleMessageBus });
 Container.set({ id: MessageBusToken, type: SimpleMessageBus });
 Container.set({ id: IStore, factory: storeFactory });
 Container.set({ id: StoreToken, factory: storeFactory });
+Container.set({ id: Cybertonica, type: CybertonicaMock });

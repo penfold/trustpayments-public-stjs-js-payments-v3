@@ -37,5 +37,12 @@ jsinit_response = {
     'config_visa_riskdec_acheck_auth': 'jsinitRiskdecAcheckAuth.json',
     'config_visa_auth_subscription': 'jsinitAuthSubscription.json',
     'config_visa_acheck_subscription': 'jsinitAcheckSubscription.json',
+    'config_apple_auth': 'jsinitAuth.json',
+    'config_apple_acheck': 'jsinitAcheck.json',
+    'config_apple_acheck_auth': 'jsinitAcheckAuth.json',
+    'config_apple_riskdec_auth': 'jsinitRiskdecAuth.json',
+    'config_apple_riskdec_acheck_auth': 'jsinitRiskdecAcheckAuth.json',
+    'config_auth_subscription': 'jsinitAuthSubscription.json',
+    'config_acheck_subscription': 'jsinitAcheckSubscription.json',
     'BASE_UPDATED_JWT': 'jsinitBaseUpdatedJwt.json'
 }

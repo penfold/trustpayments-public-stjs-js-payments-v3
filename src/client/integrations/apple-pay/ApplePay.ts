@@ -24,10 +24,10 @@ import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySess
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { RequestType } from '../../../shared/types/RequestType';
-import { IApplePayClientStatusDetails } from '../../../application/core/integrations/apple-pay/IApplePayClientStatusDetails';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
+import { ApplePayStatus } from './apple-pay-session-service/ApplePayStatus';
 
 @Service()
 export class ApplePay {
@@ -294,7 +294,7 @@ export class ApplePay {
 
     switch (Number(errorCode)) {
       case ApplePayClientErrorCode.SUCCESS:
-        completion.status = ApplePaySessionService.STATUS_SUCCESS;
+        completion.status = ApplePayStatus.STATUS_SUCCESS;
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
@@ -314,7 +314,7 @@ export class ApplePay {
         return completion;
 
       case ApplePayClientErrorCode.EMPTY_JWT_ERROR:
-        completion.status = ApplePaySessionService.STATUS_FAILURE;
+        completion.status = ApplePayStatus.STATUS_FAILURE;
         this.applePaySession.completePayment(completion);
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
@@ -329,7 +329,7 @@ export class ApplePay {
         return completion;
 
       default:
-        completion.status = ApplePaySessionService.STATUS_FAILURE;
+        completion.status = ApplePayStatus.STATUS_FAILURE;
         this.applePaySession.completePayment(completion);
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
