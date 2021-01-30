@@ -14,9 +14,7 @@ export class ApplePayMock extends ApplePay {
   }
 
   checkApplePayWalletCardAvailability() {
-    return new Promise(resolve => {
-      resolve(true);
-    });
+    return Promise.resolve(true);
   }
 
   getPaymentSuccessStatus() {

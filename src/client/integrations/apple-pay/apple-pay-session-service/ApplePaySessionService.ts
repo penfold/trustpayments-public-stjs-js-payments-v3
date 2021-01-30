@@ -7,16 +7,14 @@ import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-shipping-data
 // tslint:disable-next-line:max-line-length
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
 import { IApplePayPaymentAuthorizationResult } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
-
-const ApplePaySession: IApplePaySession = (window as any).ApplePaySession;
+import { IApplePaySessionWrapper } from './IApplePaySessionWrapper';
 
 @Service()
 export class ApplePaySessionService {
-  static readonly STATUS_FAILURE = (ApplePaySession && ApplePaySession.STATUS_FAILURE) || undefined;
-  static readonly STATUS_SUCCESS =
-    ApplePaySession && ApplePaySession.STATUS_SUCCESS === 0 ? ApplePaySession.STATUS_SUCCESS : undefined;
   private applePaySession: IApplePaySession;
   private paymentRequest: IApplePayPaymentRequest;
+
+  constructor(private applePaySessionWrapper: IApplePaySessionWrapper) {}
 
   init(applePaySession: IApplePaySession, paymentRequest: IApplePayPaymentRequest): void {
     this.applePaySession = applePaySession;
@@ -36,15 +34,15 @@ export class ApplePaySessionService {
   }
 
   hasApplePaySessionObject(): boolean {
-    return Boolean(ApplePaySession);
+    return this.applePaySessionWrapper.isApplePaySessionAvailable();
   }
 
   canMakePayments(): boolean {
-    return ApplePaySession.canMakePayments();
+    return this.applePaySessionWrapper.canMakePayments();
   }
 
   canMakePaymentsWithActiveCard(merchantId: string): Observable<boolean> {
-    return from(ApplePaySession.canMakePaymentsWithActiveCard(merchantId));
+    return from(this.applePaySessionWrapper.canMakePaymentsWithActiveCard(merchantId));
   }
 
   completeMerchantValidation(walletsession: string): void {
@@ -59,7 +57,7 @@ export class ApplePaySessionService {
     const versions: number[] = Array.from(Array(7).keys()).slice(1).reverse();
 
     return versions.find((version: number) => {
-      return ApplePaySession.supportsVersion(version);
+      return this.applePaySessionWrapper.supportsVersion(version);
     });
   }
 
