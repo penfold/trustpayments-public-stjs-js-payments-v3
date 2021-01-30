@@ -3,9 +3,10 @@ import { IApplePaySession } from './IApplePaySession';
 import { Inject, Service } from 'typedi';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
 import { IApplePaySessionConstructor } from './IApplePaySessionConstructor';
+import { IApplePaySessionWrapper } from './IApplePaySessionWrapper';
 
 @Service()
-export class ApplePaySessionWrapper {
+export class ApplePaySessionWrapper implements IApplePaySessionWrapper {
   private readonly applePaySession: IApplePaySessionConstructor | undefined;
 
   constructor(@Inject(WINDOW) private window: Window) {
