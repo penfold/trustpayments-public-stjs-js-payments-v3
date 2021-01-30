@@ -3,8 +3,6 @@ import { IApplePayError } from './IApplePayError';
 import { ApplePaySessionErrorCode } from './ApplePaySessionErrorCode';
 import { ApplePayErrorContactField } from './ApplePayErrorContactField';
 
-const ApplePayError = (window as any).ApplePayError;
-
 @Service()
 export class ApplePayErrorService {
   create(
@@ -12,6 +10,6 @@ export class ApplePayErrorService {
     contactField?: ApplePayErrorContactField,
     message?: string
   ): IApplePayError {
-    return new ApplePayError(content, contactField, message);
+    return new (window as any).ApplePayError(content, contactField, message);
   }
 }
