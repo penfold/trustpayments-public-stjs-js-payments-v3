@@ -67,6 +67,7 @@ Feature: Payment form translations
   Scenario: Check translation overwriting mechanism for Pay button and validation message
     Given User opens page with payment form
     And User waits for whole form to be displayed
+    Then User will see card payment label displayed on page translated into "Kartennummer"
     And User clicks Pay button
     Then User will see that Pay button is translated into "Kup teraz!"
     And User will see validation message "This is wrong" under all fields

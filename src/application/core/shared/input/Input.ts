@@ -36,7 +36,7 @@ export class Input {
     messageSelector: string,
     labelSelector: string,
     wrapperSelector: string,
-    configProvider: ConfigProvider
+    protected configProvider: ConfigProvider
   ) {
     this._messageBus = Container.get(MessageBusToken);
     this._allowedStyles = Container.get(AllowedStylesService);
@@ -49,7 +49,6 @@ export class Input {
     this._labelSelector = labelSelector;
     this._messageSelector = messageSelector;
     this._wrapperSelector = wrapperSelector;
-    this.stopSubmitFormOnEnter = Boolean(configProvider.getConfig().stopSubmitFormOnEnter);
     this.setInputListeners();
     this.init();
   }
@@ -57,10 +56,13 @@ export class Input {
   public init(): void {
     this._translator = new Translator(this._frame.parseUrl().locale);
     this.validation = new Validation();
-
-    this.setLabelText();
-    this.setAsterisk();
     this.addTabListener();
+
+    this.configProvider.getConfig$().subscribe(config => {
+      this.stopSubmitFormOnEnter = Boolean(config.stopSubmitFormOnEnter);
+      this.setLabelText();
+      this.setAsterisk();
+    });
   }
 
   protected format(data: string) {

@@ -9,13 +9,15 @@ import { IVisaCheckoutStatusData } from './visa-checkout-status-data/IVisaChecko
 import { IVisaCheckoutUpdateConfig } from './visa-checkout-update-service/IVisaCheckoutUpdateConfig';
 import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { VisaCheckout } from './VisaCheckout';
-import { mock, when, instance as mockInstance, verify, anything, deepEqual } from 'ts-mockito';
+import { mock, when, instance as mockInstance, verify, anything, deepEqual, spy } from 'ts-mockito';
 import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
+import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
 
 describe('VisaCheckout', () => {
   let instance: VisaCheckout;
   let visaCheckoutSdkProviderMock: VisaCheckoutSdkProvider;
-  let messageBusMock: IMessageBus;
+  let messageBus: IMessageBus;
+  let messageBusSpy: IMessageBus;
   let visaCheckoutUpdateServiceMock: VisaCheckoutUpdateService;
 
   const visaCheckoutUpdateConfigMock: IVisaCheckoutUpdateConfig = {
@@ -77,27 +79,35 @@ describe('VisaCheckout', () => {
   };
 
   beforeEach(() => {
+    const form = document.createElement('form');
+    form.setAttribute('id', configMock.formId);
+    document.body.appendChild(form);
+  });
+
+  beforeEach(() => {
     visaCheckoutSdkProviderMock = mock(VisaCheckoutSdkProvider);
-    messageBusMock = mock<IMessageBus>();
+    messageBus = new SimpleMessageBus();
+    messageBusSpy = spy(messageBus);
     visaCheckoutUpdateServiceMock = mock(VisaCheckoutUpdateService);
 
-    when(messageBusMock.pipe(anything())).thenReturn(of(configMock));
     when(visaCheckoutSdkProviderMock.getSdk$(anything(), anything())).thenReturn(of(visaCheckoutLibMock));
     when(visaCheckoutUpdateServiceMock.updateConfigObject(anything())).thenReturn(visaCheckoutUpdateConfigMock);
 
     instance = new VisaCheckout(
       mockInstance(visaCheckoutSdkProviderMock),
-      mockInstance(messageBusMock),
+      messageBus,
       mockInstance(visaCheckoutUpdateServiceMock)
     );
 
     instance.init();
+
+    messageBus.publish({ type: PUBLIC_EVENTS.VISA_CHECKOUT_CONFIG, data: configMock });
   });
 
   describe('init()', () => {
     it('should set VisaCheckout event response listeners and invoke Message Bus with proper data', () => {
       verify(
-        messageBusMock.publish(
+        messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
             data: {
@@ -109,7 +119,7 @@ describe('VisaCheckout', () => {
       ).once();
 
       verify(
-        messageBusMock.publish(
+        messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
             data: {
@@ -121,7 +131,7 @@ describe('VisaCheckout', () => {
       ).once();
 
       verify(
-        messageBusMock.publish(
+        messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
             data: {
