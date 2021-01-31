@@ -4,17 +4,23 @@ import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLoc
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
+import { filter } from 'rxjs/operators';
 
 @Service()
 export class AnimatedCard {
   private card: Card;
 
   constructor(private localStorage: BrowserLocalStorage, private messageBus: IMessageBus) {
-    this.card = new Card({
-      animatedCardContainer: 'st-animated-card',
-      locale: localStorage.getItem('locale') ? localStorage.getItem('locale') : 'en_GB'
-    });
-    this.initSubscribers();
+    this.localStorage
+      .select(storage => storage.locale)
+      .pipe(filter(Boolean))
+      .subscribe(locale => {
+        this.card = new Card({
+          locale,
+          animatedCardContainer: 'st-animated-card'
+        });
+        this.initSubscribers();
+      });
   }
 
   private initSubscribers(): void {

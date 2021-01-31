@@ -44,7 +44,7 @@ export class CardNumber extends Input {
   private readonly _cardNumberField: HTMLInputElement;
 
   constructor(
-    private configProvider: ConfigProvider,
+    configProvider: ConfigProvider,
     private _iconFactory: IconFactory,
     private _formatter: Formatter,
     private frame: Frame,
@@ -55,8 +55,6 @@ export class CardNumber extends Input {
     this.validation = new Validation();
     this._isCardNumberValid = true;
     this._cardNumberLength = CardNumber.STANDARD_CARD_LENGTH;
-    this.placeholder = this.configProvider.getConfig().placeholders.pan || '';
-    this._panIcon = this.configProvider.getConfig().panIcon;
     this.setFocusListener();
     this.setBlurListener();
     this.setSubmitListener();
@@ -67,8 +65,10 @@ export class CardNumber extends Input {
       MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD
     );
     this._sendState();
-    this._inputElement.setAttribute(CardNumber.PLACEHOLDER_ATTRIBUTE, this.placeholder);
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
+      this.placeholder = config.placeholders.pan || '';
+      this._inputElement.setAttribute(CardNumber.PLACEHOLDER_ATTRIBUTE, this.placeholder);
+      this._panIcon = config.panIcon;
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
       if (styler.hasSpecificStyle('isLinedUp', config.styles.cardNumber)) {
         styler.addStyles([

@@ -1,4 +1,4 @@
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { IVisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/IVisaCheckoutClientStatus';
 import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
@@ -17,14 +17,19 @@ import { IVisaCheckoutStatusDataPrePayment } from './visa-checkout-status-data/I
 import { IVisaCheckoutStatusDataSuccess } from './visa-checkout-status-data/IVisaCheckoutStatusDataSuccess';
 import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
+import { Observable } from 'rxjs';
 
 @Service()
 export class VisaCheckout {
+  private destroy$: Observable<IMessageBusEvent<unknown>>;
+
   constructor(
     protected visaCheckoutSdkProvider: VisaCheckoutSdkProvider,
     protected messageBus: IMessageBus,
     protected visaCheckoutUpdateService: VisaCheckoutUpdateService
-  ) {}
+  ) {
+    this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+  }
 
   init(): void {
     this.messageBus
@@ -60,7 +65,8 @@ export class VisaCheckout {
                 visaCheckoutSdk.init(visaCheckoutUpdateConfig.visaInitConfig);
               })
             );
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
