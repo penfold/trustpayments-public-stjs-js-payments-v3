@@ -5,7 +5,8 @@ import {
   View,
   Text,
   Platform,
-  Image
+  Image,
+  LayoutRectangle
 } from 'react-native';
 import { styles } from './style';
 
@@ -14,11 +15,15 @@ const librarySource = Platform.OS === 'ios' ? require('./library/template.html')
 const App = () => {
   const [webViewHeight, setWebViewHeight] = useState<number>(0);
   const [isScrollEnabled, setIsScrollEnabled] = useState<boolean>(true); 
+  const [webViewRef, setWebViewRef] = useState<any>(null);
+  const [webViewLayout, setWebViewLayout] = useState<LayoutRectangle>();
 
   const onWebViewMessage = (event: WebViewMessageEvent) => {
     const { data } = event.nativeEvent;
 
     if (data === 'acs-on') {
+      const { y, height } = webViewLayout as LayoutRectangle;
+      webViewRef.scrollTo({ y: y + height / 2, animated: true });
       setIsScrollEnabled(false);
     } else if (data === 'acs-off') {
       setIsScrollEnabled(true);
@@ -28,7 +33,11 @@ const App = () => {
   }
   
   return (
-    <ScrollView style={styles.scrollView} scrollEnabled={isScrollEnabled}>
+    <ScrollView 
+      style={styles.scrollView}
+      scrollEnabled={isScrollEnabled}
+      ref={setWebViewRef}
+    >
       <View style={styles.header}>
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={require('./assets/trustpayments.png')} />
@@ -37,6 +46,7 @@ const App = () => {
       </View>
       {webViewHeight == 0 && <Text style={styles.loadingLabel}>Loading data...</Text>}
       <WebView
+        onLayout={event => setWebViewLayout(event.nativeEvent.layout)}
         mixedContentMode="always"
         domStorageEnabled={true}
         allowFileAccess={true}
