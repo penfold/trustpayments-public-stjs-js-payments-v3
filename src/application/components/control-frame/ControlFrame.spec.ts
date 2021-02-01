@@ -106,29 +106,6 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('_initResetJwtEvent()', () => {
-    const obj = { data: { newJwt: 'some jwt' } };
-
-    it('should call _initResetJwtEvent when RESET_JWT event has been called', () => {
-      // @ts-ignore
-      instance._messageBus.subscribeType = jest
-        .fn()
-        .mockImplementationOnce((even, callback) => {
-          callback();
-        })
-        .mockImplementationOnce((even, callback) => {
-          callback(obj);
-        });
-      // @ts-ignore
-      ControlFrame._resetJwt = jest.fn();
-
-      // @ts-ignore
-      instance._resetJwtEvent();
-      // @ts-ignore
-      expect(ControlFrame._resetJwt).toHaveBeenCalled();
-    });
-  });
-
   // TODO: get know how handle this promise
 
   describe('_processPayment', () => {

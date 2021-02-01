@@ -21,7 +21,7 @@ import { merge, Observable } from 'rxjs';
 import { IDecodedJwt } from '../../core/models/IDecodedJwt';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { DefaultPlaceholders } from '../../core/models/constants/config-resolver/DefaultPlaceholders';
-import { LONG_CVC, SHORT_CVC } from '../../core/models/constants/SecurityCode';
+import { LONG_CVC, SHORT_CVC, UNKNOWN_CVC } from '../../core/models/constants/SecurityCode';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { Styler } from '../../core/shared/styler/Styler';
@@ -45,7 +45,7 @@ export class SecurityCode extends Input {
   private _validation: Validation;
 
   constructor(
-    private configProvider: ConfigProvider,
+    configProvider: ConfigProvider,
     private _localStorage: BrowserLocalStorage,
     private _formatter: Formatter,
     private messageBus: IMessageBus,
@@ -54,9 +54,11 @@ export class SecurityCode extends Input {
   ) {
     super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider);
     this._validation = new Validation();
-    this._securityCodeLength = SHORT_CVC;
-    this.placeholder = this._getPlaceholder(this._securityCodeLength);
+    this._securityCodeLength = UNKNOWN_CVC;
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
+      this.placeholder = this._getPlaceholder(this._securityCodeLength);
+      this._inputElement.setAttribute(SecurityCode.PLACEHOLDER_ATTRIBUTE, this.placeholder);
+
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
       if (styler.hasSpecificStyle('isLinedUp', config.styles.securityCode)) {
         styler.addStyles([
@@ -120,7 +122,11 @@ export class SecurityCode extends Input {
     if (!this.configProvider.getConfig()) {
       return '***';
     }
-    if (securityCodeLength === -1 && this.configProvider.getConfig() && this.configProvider.getConfig().placeholders) {
+    if (
+      securityCodeLength === UNKNOWN_CVC &&
+      this.configProvider.getConfig() &&
+      this.configProvider.getConfig().placeholders
+    ) {
       return this.configProvider.getConfig().placeholders.securitycode
         ? this.configProvider.getConfig().placeholders.securitycode
         : '***';
@@ -129,7 +135,7 @@ export class SecurityCode extends Input {
       this.configProvider.getConfig().placeholders.securitycode &&
       this.configProvider.getConfig().placeholders.securitycode === DefaultPlaceholders.securitycode
     ) {
-      return securityCodeLength === 4 ? '****' : DefaultPlaceholders.securitycode;
+      return securityCodeLength === LONG_CVC ? '****' : DefaultPlaceholders.securitycode;
     }
     return this.configProvider.getConfig().placeholders.securitycode;
   }
@@ -156,14 +162,14 @@ export class SecurityCode extends Input {
       filter(Boolean),
       map((cardNumber: string) => {
         if (!cardNumber || !iinLookup.lookup(cardNumber).type) {
-          return -1;
+          return UNKNOWN_CVC;
         }
         if (!iinLookup.lookup(cardNumber).cvcLength[0]) {
-          return 4;
+          return UNKNOWN_CVC;
         }
         return iinLookup.lookup(cardNumber).cvcLength[0];
       }),
-      startWith(-1)
+      startWith(UNKNOWN_CVC)
     );
   }
 
@@ -201,10 +207,10 @@ export class SecurityCode extends Input {
   }
 
   private _setInputValue(): void {
-    this._inputElement.value = this.validation.limitLength(this._inputElement.value, this._securityCodeLength);
+    this._inputElement.value = this.validation.limitLength(this._inputElement.value, this.getMaxSecurityCodeLenghth());
     this._inputElement.value = this._formatter.code(
       this._inputElement.value,
-      this._securityCodeLength,
+      this.getMaxSecurityCodeLenghth(),
       SECURITY_CODE_INPUT
     );
   }
@@ -214,7 +220,6 @@ export class SecurityCode extends Input {
     super.setEventListener(MessageBus.EVENTS.BLUR_SECURITY_CODE);
     this._subscribeSecurityCodeChange();
     this._setDisableListener();
-    this._inputElement.setAttribute(SecurityCode.PLACEHOLDER_ATTRIBUTE, this.placeholder);
     this.validation.backendValidation(
       this._inputElement,
       this._messageElement,
@@ -244,7 +249,7 @@ export class SecurityCode extends Input {
   private _setSecurityCodeProperties(length: number, pattern: string): void {
     this._securityCodeLength = length;
     this._setSecurityCodePattern(pattern);
-    this._inputElement.value = this.validation.limitLength(this._inputElement.value, this._securityCodeLength);
+    this._inputElement.value = this.validation.limitLength(this._inputElement.value, this.getMaxSecurityCodeLenghth());
   }
 
   private _checkSecurityCodeLength(length: number): void {
@@ -253,7 +258,7 @@ export class SecurityCode extends Input {
     } else if (length === SHORT_CVC) {
       this._setSecurityCodeProperties(length, SecurityCode.MATCH_EXACTLY_THREE_DIGITS);
     } else {
-      this._setSecurityCodeProperties(LONG_CVC, '^[0-9]{3,4}$');
+      this._setSecurityCodeProperties(UNKNOWN_CVC, '^[0-9]{3,4}$');
     }
   }
 
@@ -317,5 +322,9 @@ export class SecurityCode extends Input {
       this._enableSecurityCode();
       this._inputElement.classList.remove(SecurityCode.DISABLED_CLASS);
     }
+  }
+
+  private getMaxSecurityCodeLenghth(): number {
+    return this._securityCodeLength === UNKNOWN_CVC ? LONG_CVC : this._securityCodeLength;
   }
 }

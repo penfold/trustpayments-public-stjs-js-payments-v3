@@ -157,6 +157,12 @@ def step_impl(context, language):
     payment_page.validate_all_labels_translation(language)
 
 
+@then('User will see card payment label displayed on page translated into "(?P<text>.+)"')
+def step_impl(context, text):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_card_number_iframe_element_text(text)
+
+
 @step('User will see validation message "(?P<key>.+)" under all fields translated into "(?P<language>.+)"')
 def step_impl(context, key, language):
     payment_page = context.page_factory.get_page(page_name='payment_methods')

@@ -59,7 +59,7 @@ export class ControlFrame {
     field.value = data.value;
   }
 
-  private static _resetJwt(): void {
+  private _resetJwt(): void {
     StCodec.jwt = StCodec.originalJwt;
   }
 
@@ -114,7 +114,6 @@ export class ControlFrame {
       });
 
       const styler: Styler = new Styler(this._frame.getAllowedStyles(), this._frame.parseUrl().styles);
-      this._resetJwtEvent();
       this._updateJwtEvent();
       this._initCybertonica(config);
       this._updateMerchantFieldsEvent();
@@ -197,12 +196,6 @@ export class ControlFrame {
     });
   }
 
-  private _resetJwtEvent(): void {
-    this._messageBus.subscribeType(PUBLIC_EVENTS.RESET_JWT, () => {
-      ControlFrame._resetJwt();
-    });
-  }
-
   private _setRequestTypes(jwt: string): void {
     const { payload } = this._jwtDecoder.decode(jwt);
     this._remainingRequestTypes = payload.requesttypedescriptions;
@@ -272,7 +265,7 @@ export class ControlFrame {
       StCodec.publishResponse(errorData, errorData.jwt, errorData.threedresponse);
     }
 
-    this._messageBus.publish({ type: PUBLIC_EVENTS.RESET_JWT });
+    this._resetJwt();
     this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
     this._notification.error(translatedErrorMessage);
 
@@ -300,7 +293,7 @@ export class ControlFrame {
         this._validation.blockForm(FormState.AVAILABLE);
       })
       .finally(() => {
-        ControlFrame._resetJwt();
+        this._resetJwt();
       });
   }
 

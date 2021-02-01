@@ -227,6 +227,7 @@ export class ST {
     this.destroy$.next();
     this.destroy$.complete();
     this.communicator.close();
+    this.controlFrameLoader$ = undefined;
   }
 
   init(config: IConfig): void {
@@ -335,7 +336,7 @@ export class ST {
 
   private Storage(): void {
     this.storage.setItem('merchantTranslations', JSON.stringify(this.config.translations));
-    this.storage.setItem('locale', this.jwtDecoder.decode(this.config.jwt).payload.locale);
+    this.storage.setItem('locale', this.jwtDecoder.decode(this.config.jwt).payload.locale || 'en_GB');
   }
 
   private displayLiveStatus(liveStatus: boolean): void {

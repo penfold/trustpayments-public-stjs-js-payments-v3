@@ -1,22 +1,27 @@
 import { FrameAccessor } from '../../../../shared/services/message-bus/FrameAccessor';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { LinkedStore } from './LinkedStore';
 import { instance, mock, when } from 'ts-mockito';
 import { IApplicationFrameState } from '../state/IApplicationFrameState';
 import { IControlFrameWindow } from '../../../../shared/interfaces/IControlFrameWindow';
+import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
+import { CONTROL_FRAME_IFRAME } from '../../models/constants/Selectors';
 
 describe('LinkedStore', () => {
   let frameAccessorMock: FrameAccessor;
+  let framesHubMock: FramesHub;
   let store$: BehaviorSubject<IApplicationFrameState>;
   let linkedStore: LinkedStore;
 
   beforeEach(() => {
     frameAccessorMock = mock(FrameAccessor);
+    framesHubMock = mock(FramesHub);
     store$ = new BehaviorSubject(({ foo: 'bar' } as unknown) as IApplicationFrameState);
 
+    when(framesHubMock.waitForFrame(CONTROL_FRAME_IFRAME)).thenReturn(of(CONTROL_FRAME_IFRAME));
     when(frameAccessorMock.getControlFrame()).thenReturn({ stStore: store$ } as IControlFrameWindow);
 
-    linkedStore = new LinkedStore(instance(frameAccessorMock));
+    linkedStore = new LinkedStore(instance(frameAccessorMock), instance(framesHubMock));
   });
 
   it('returns state from control frames store', () => {
