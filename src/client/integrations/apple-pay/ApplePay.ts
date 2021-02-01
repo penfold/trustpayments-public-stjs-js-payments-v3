@@ -34,6 +34,7 @@ export class ApplePay {
   private applePaySession: IApplePaySession;
   private config: IApplePayConfigObject;
   private paymentCancelled: boolean = false;
+  private destroy$: Observable<IMessageBusEvent>;
 
   constructor(
     private applePayButtonService: ApplePayButtonService,
@@ -44,7 +45,9 @@ export class ApplePay {
     private applePaySessionService: ApplePaySessionService,
     private interFrameCommunicator: InterFrameCommunicator,
     private messageBus: IMessageBus
-  ) {}
+  ) {
+    this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+  }
 
   init(): void {
     this.messageBus
@@ -87,14 +90,15 @@ export class ApplePay {
         catchError((errorMessage: string) => {
           console.error(errorMessage);
           return EMPTY;
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
 
   private updateJwtListener(): void {
     this.messageBus
-      .pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY))))
+      .pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(this.destroy$))
       .subscribe((event: IMessageBusEvent) => {
         this.applePayConfigService.updateConfigWithJwtData(event.data.newJwt, this.config);
       });
@@ -164,7 +168,7 @@ export class ApplePay {
       });
 
       this.messageBus
-        .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT), first())
+        .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT), first(), takeUntil(this.destroy$))
         .subscribe((response: IMessageBusEvent) => {
           if (Number(response.data.status) === ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS) {
             this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS, response.data.details);
@@ -175,7 +179,6 @@ export class ApplePay {
               `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
               'Apple Pay Merchant validation success'
             );
-
             return;
           }
 
@@ -215,7 +218,7 @@ export class ApplePay {
       });
 
       this.messageBus
-        .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION), first())
+        .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION), first(), takeUntil(this.destroy$))
         .subscribe((response: IMessageBusEvent) => {
           this.handlePaymentProcessResponse(response.data.details.errorcode, response.data.details);
         });
@@ -245,7 +248,8 @@ export class ApplePay {
       .pipe(
         ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
         filter(event => event.data.requesttypedescription !== RequestType.WALLETVERIFY),
-        first()
+        first(),
+        takeUntil(this.destroy$)
       )
       .subscribe((event: IMessageBusEvent) => {
         this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
