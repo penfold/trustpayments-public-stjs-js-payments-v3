@@ -48,7 +48,7 @@ const mockedPayment: IApplePayPayment = {
     transactionIdentifier: 'identiefier',
     paymentData: ''
   }
-}
+};
 
 describe('ApplePayPaymentService', () => {
   let payment: Payment;
@@ -70,21 +70,23 @@ describe('ApplePayPaymentService', () => {
 
   describe('walletVerify', () => {
     beforeEach(() => {
-      when(applePayConfigService.updateWalletValidationUrl(anything(), anything())).thenReturn(config.validateMerchantRequest);
-    })
+      when(applePayConfigService.updateWalletValidationUrl(anything(), anything())).thenReturn(
+        config.validateMerchantRequest
+      );
+    });
 
     it('should verify wallet when payment is not cancelled', done => {
       const paymentCancelled = false;
 
       when(payment.walletVerify(anything())).thenReturn(of(walletVerifyResponse));
 
-      applePayPaymentService.walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
+      applePayPaymentService
+        .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
         .subscribe((response: { status: ApplePayClientErrorCode; data: {} }) => {
-            expect(response.data).toMatchObject(walletVerifyResponse.response);
-            expect(response.status).toBe(ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS);
-            done();
-          }
-        );
+          expect(response.data).toMatchObject(walletVerifyResponse.response);
+          expect(response.status).toBe(ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS);
+          done();
+        });
     });
 
     it('should not verify wallet when payment is cancelled', done => {
@@ -92,13 +94,13 @@ describe('ApplePayPaymentService', () => {
 
       when(payment.walletVerify(anything())).thenReturn(of({}));
 
-      applePayPaymentService.walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
+      applePayPaymentService
+        .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
         .subscribe((response: { status: ApplePayClientErrorCode; data: {} }) => {
-            expect(response.data).toMatchObject({});
-            expect(response.status).toBe(ApplePayClientErrorCode.CANCEL);
-            done();
-          }
-        );
+          expect(response.data).toMatchObject({});
+          expect(response.status).toBe(ApplePayClientErrorCode.CANCEL);
+          done();
+        });
     });
 
     it('should not verify wallet when walletsession value is empty', done => {
@@ -110,13 +112,13 @@ describe('ApplePayPaymentService', () => {
         })
       );
 
-      applePayPaymentService.walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
+      applePayPaymentService
+        .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
         .subscribe((response: { status: ApplePayClientErrorCode; data: {} }) => {
-            expect(response.data).toMatchObject({});
-            expect(response.status).toBe(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
-            done();
-          }
-        );
+          expect(response.data).toMatchObject({});
+          expect(response.status).toBe(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
+          done();
+        });
     });
   });
 
@@ -137,21 +139,23 @@ describe('ApplePayPaymentService', () => {
     });
 
     it.skip('should accept payment', done => {
-      const data = { 
-        response: { errorcode: '0' } 
+      const data = {
+        response: { errorcode: '0' }
       };
 
       when(payment.processPayment(anything(), anything(), anything(), anything())).thenResolve(data);
 
-      applePayPaymentService.processPayment(
-        [RequestType.AUTH, RequestType.THREEDQUERY],
-        config.validateMerchantRequest,
-        formData,
-        mockedPayment
-      ).subscribe((x: any ) => {
-        expect(x.response).toMatchObject(data.response);
-        done();
-      });
+      applePayPaymentService
+        .processPayment(
+          [RequestType.AUTH, RequestType.THREEDQUERY],
+          config.validateMerchantRequest,
+          formData,
+          mockedPayment
+        )
+        .subscribe((x: any) => {
+          expect(x.response).toMatchObject(data.response);
+          done();
+        });
     });
 
     it.skip('should declined payment when errorcode is not received', done => {
@@ -159,16 +163,18 @@ describe('ApplePayPaymentService', () => {
 
       when(payment.processPayment(anything(), anything(), anything(), anything())).thenResolve(data);
 
-      applePayPaymentService.processPayment(
-        [RequestType.AUTH, RequestType.THREEDQUERY],
-        config.validateMerchantRequest,
-        formData,
-        mockedPayment
-      ).subscribe((x: any ) => {
-        expect(x.errormessage).toBe('An error occured');
-        expect(x.errormessage).toBe(ApplePayClientErrorCode.EMPTY_JWT_ERROR);
-        done();
-      });
+      applePayPaymentService
+        .processPayment(
+          [RequestType.AUTH, RequestType.THREEDQUERY],
+          config.validateMerchantRequest,
+          formData,
+          mockedPayment
+        )
+        .subscribe((x: any) => {
+          expect(x.errormessage).toBe('An error occured');
+          expect(x.errormessage).toBe(ApplePayClientErrorCode.EMPTY_JWT_ERROR);
+          done();
+        });
     });
   });
 });

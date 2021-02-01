@@ -27,7 +27,7 @@ describe('ApplePayMock', () => {
     mockInstance(applePaySessionFactory),
     mockInstance(applePaySessionService),
     mockInstance(interFrameCommunicator),
-    mockInstance(messageBus),
+    mockInstance(messageBus)
   );
 
   describe('test functions to check expected results', () => {
@@ -42,7 +42,7 @@ describe('ApplePayMock', () => {
     it('returns true for checkApplePayWalletCardAvailability', () => {
       applePayMock.checkApplePayWalletCardAvailability().then(value => {
         expect(value).toBe(true);
-      })
+      });
     });
 
     it('returns SUCCESS for getPaymentSuccessStatus', () => {

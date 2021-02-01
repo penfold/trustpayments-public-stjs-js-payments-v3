@@ -5,24 +5,24 @@ import { ApplePaySessionErrorCode } from './ApplePaySessionErrorCode';
 class MockedApplePayError {
   constructor(strA: ApplePaySessionErrorCode, strB?: ApplePayErrorContactField, strC?: string) {
     if (strC) {
-      return { code: strA, contactField: strB, message: strC }
+      return { code: strA, contactField: strB, message: strC };
     }
     if (strB) {
-      return { code: strA, contactField: strB }
+      return { code: strA, contactField: strB };
     }
     return { code: strA };
   }
 }
 
-(window as any).ApplePayError = MockedApplePayError;  
+(window as any).ApplePayError = MockedApplePayError;
 
 describe('ApplePayErrorService', () => {
   const applePayErrorService = new ApplePayErrorService();
 
-  it(`should create an error object with message`, () => {  
+  it(`should create an error object with message`, () => {
     const error = applePayErrorService.create(
-      ApplePaySessionErrorCode.SHIPPING_CONTACT_INVALID, 
-      ApplePayErrorContactField.POSTAL_CODE, 
+      ApplePaySessionErrorCode.SHIPPING_CONTACT_INVALID,
+      ApplePayErrorContactField.POSTAL_CODE,
       'ZIP Code is invalid'
     );
     expect(error.code).toContain('shippingContactInvalid');
@@ -37,4 +37,3 @@ describe('ApplePayErrorService', () => {
     expect(error).not.toHaveProperty('message');
   });
 });
-  
