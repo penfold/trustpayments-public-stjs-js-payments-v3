@@ -19,6 +19,7 @@ import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaym
 import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
+import { StCodec } from '../../services/st-codec/StCodec';
 
 @Service()
 export class ApplePayClient implements IApplePayClient {
@@ -149,7 +150,7 @@ export class ApplePayClient implements IApplePayClient {
   private onSuccess$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
     this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
-    this.messageBus.publish({ type: PUBLIC_EVENTS.RESET_JWT });
+    StCodec.resetJwt();
 
     return of(ApplePayClientStatus.SUCCESS);
   }

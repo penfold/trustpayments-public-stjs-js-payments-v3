@@ -93,6 +93,10 @@ export class StCodec {
     StCodec.getMessageBus().publish(messageBusEvent, true);
   }
 
+  public static resetJwt(): void {
+    StCodec.jwt = StCodec.originalJwt;
+  }
+
   private static _notification: NotificationService;
   private static _messageBus: IMessageBus;
   private static _locale: Locale;

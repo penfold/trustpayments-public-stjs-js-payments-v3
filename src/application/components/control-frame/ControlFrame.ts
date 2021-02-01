@@ -60,7 +60,7 @@ export class ControlFrame {
   }
 
   private _resetJwt(): void {
-    StCodec.jwt = StCodec.originalJwt;
+    StCodec.resetJwt();
   }
 
   private static _updateJwt(jwt: string): void {
