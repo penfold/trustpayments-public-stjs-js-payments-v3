@@ -1,5 +1,5 @@
 import { of, throwError } from 'rxjs';
-import { anything, deepEqual, instance as mockInstance, mock, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance as mockInstance, mock, spy, verify, when } from 'ts-mockito';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
@@ -14,6 +14,7 @@ import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { ApplePay } from './ApplePay';
+import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 
 describe('ApplePay', () => {
   let applePay: ApplePay;
@@ -24,7 +25,8 @@ describe('ApplePay', () => {
   let applePaySessionFactoryMock: ApplePaySessionFactory;
   let applePaySessionServiceMock: ApplePaySessionService;
   let interFrameCommunicatorMock: InterFrameCommunicator;
-  let messageBusMock: IMessageBus;
+  let messageBus: IMessageBus;
+  let messageBusSpy: IMessageBus;
 
   const configMock: IConfig = {
     jwt: '',
@@ -92,7 +94,8 @@ describe('ApplePay', () => {
     applePaySessionFactoryMock = mock(ApplePaySessionFactory);
     applePaySessionServiceMock = mock(ApplePaySessionService);
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
-    messageBusMock = mock<IMessageBus>();
+    messageBus = new SimpleMessageBus();
+    messageBusSpy = spy(messageBus);
 
     applePay = new ApplePay(
       mockInstance(applePayButtonServiceMock),
@@ -102,13 +105,13 @@ describe('ApplePay', () => {
       mockInstance(applePaySessionFactoryMock),
       mockInstance(applePaySessionServiceMock),
       mockInstance(interFrameCommunicatorMock),
-      mockInstance(messageBusMock)
+      messageBus
     );
   });
 
   describe('init()', () => {
     it('init() should get config and call proper services', () => {
-      when(messageBusMock.pipe(anything())).thenReturn(
+      when(messageBusSpy.pipe(anything())).thenReturn(
         of({
           type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
           data: configMock
@@ -119,7 +122,7 @@ describe('ApplePay', () => {
       when(applePaySessionServiceMock.canMakePaymentsWithActiveCard(configMock.applePay.merchantId)).thenReturn(
         of(true)
       );
-      when(messageBusMock.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT))).thenReturn(
+      when(messageBusSpy.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT))).thenReturn(
         of({
           type: PUBLIC_EVENTS.UPDATE_JWT,
           data: {
@@ -134,7 +137,7 @@ describe('ApplePay', () => {
       applePay.init();
 
       verify(
-        messageBusMock.publish(
+        messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.APPLE_PAY_CONFIG_MOCK,
             data: applePayConfigMock
@@ -154,7 +157,7 @@ describe('ApplePay', () => {
     it('init() should throw an error when config could not be received', () => {
       const consoleErrSpy: jest.SpyInstance = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
-      when(messageBusMock.pipe(anything())).thenReturn(throwError('Error'));
+      when(messageBusSpy.pipe(anything())).thenReturn(throwError('Error'));
 
       applePay.init();
 
