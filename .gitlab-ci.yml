@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.67
+.cicd-os-ref: &cicd-os-ref INFRA-544-Docker_lint
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
