@@ -8,43 +8,43 @@
   before_script:
     - cp -r .dist-${BUILD_TYPE}/ dist/
 
-build-app-html-local:
+build-app-html-dev:
   extends: .build-app-html
   stage: post-build
   variables:
     BUILD_TYPE: 'dev'
-    UTILITY_NAME: 'app-html-local'
+    UTILITY_NAME: 'app-html-dev'
     BUILD_ARGS_EXTRA: --build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=dev
 
-build-app-html-mock:
+build-app-html-test:
   extends: .build-app-html
   stage: post-build
   variables:
     BUILD_TYPE: 'test'
-    UTILITY_NAME: 'app-html-mock'
+    UTILITY_NAME: 'app-html-test'
     BUILD_ARGS_EXTRA: --build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=test
 
-build-app-html-review:
+build-app-html-prod-review:
   variables:
-    UTILITY_NAME: 'app-html-release'
+    UTILITY_NAME: 'app-html-prod'
   extends:
     - .build-app-html
     - .rules-when-review
   stage: post-build
   before_script:
-    - cp -r .dist-release/ dist/
+    - cp -r .dist-prod/ dist/
     - export LIBRARY_ARG="--library_url=https://cdn.eu.trustpayments.com/js-payments-v3/0.0.0-test"
     - export BUILD_ARGS_EXTRA="--build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=prod --build-arg LIBRARY_ARG=${LIBRARY_ARG}"
 
-build-app-html-release:
+build-app-html-prod-release:
   variables:
-    UTILITY_NAME: 'app-html-release'
+    UTILITY_NAME: 'app-html-prod'
   extends:
     - .build-app-html
     - .rules-when-release
   stage: post-build
   before_script:
-    - cp -r .dist-release/ dist/
+    - cp -r .dist-prod/ dist/
     - . .cicd_scripts/gitlab/release/load_release_artifact.sh "${ARTIFACT_RELEASE_CICD_FILENAME}"
     - export LIBRARY_ARG="--library_url=https://cdn.eu.trustpayments.com/js-payments-v3/${RELEASE_TAG}-${CDN_HASH}"
     - export BUILD_ARGS_EXTRA="--build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=prod --build-arg LIBRARY_ARG=${LIBRARY_ARG}"
