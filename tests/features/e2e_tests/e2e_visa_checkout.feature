@@ -1,14 +1,15 @@
 ##TODO It should be uncommented when https://securetrading.atlassian.net/browse/STJS-942 will be done
-#Feature: Visa checkout E2E tests
-#
-#  As a user
-#  I want to use visa checkout
-#  To use defined card
-#
-#  @reactJS
-#    @angular
-#    @vueJS
-#    @react_native
+Feature: Visa checkout E2E tests
+
+  As a user
+  I want to use visa checkout
+  To use defined card
+
+  @reactJS
+    @angular
+    @vueJS
+    @react_native
+        @e2e_sl
   Scenario Outline: Successful Authentication by Visa checkout
     Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                     |

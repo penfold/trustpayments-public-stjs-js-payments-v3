@@ -9,7 +9,6 @@ Feature: E2E Card Payments with request types in config
   @angular
   @vueJS
   @react_native
-    @e2e_sl
   Scenario: Successful payment with config's requestTypes param having values in valid order
     Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                         |
