@@ -48,7 +48,6 @@ import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-ch
 @Service()
 export class ST {
   private cardFrames: CardFrames;
-  private commonFrames: CommonFrames;
   private config: IConfig;
   private controlFrameLoader$: Observable<IConfig>;
   private cybertonicaTid: Promise<string>;
@@ -107,7 +106,8 @@ export class ST {
     private notificationService: NotificationService,
     private storage: BrowserLocalStorage,
     private store: IStore<IParentFrameState>,
-    private visaCheckout: VisaCheckout
+    private visaCheckout: VisaCheckout,
+    private commonFrames: CommonFrames
   ) {
     this.googleAnalytics = new GoogleAnalytics();
     this.merchantFields = new MerchantFields();
@@ -146,8 +146,6 @@ export class ST {
     }
 
     this.blockSubmitButton();
-    // @ts-ignore
-    this.commonFrames._requestTypes = this.jwtDecoder.decode(this.config.jwt).payload.requesttypedescriptions;
     this.initControlFrame$().subscribe(() => {
       this.messageBus.publish<string>(
         {
@@ -240,8 +238,9 @@ export class ST {
       this.Storage();
       this.translation = new Translator(this.storage.getItem('locale'));
       this.googleAnalytics.init();
-      this.CommonFrames();
+      console.error('jdsajdnsjdnjksand');
       this.commonFrames.init();
+      console.error('jdsajdnsjdnjksand');
       this.displayLiveStatus(Boolean(this.config.livestatus));
       this.watchForFrameUnload();
       this.initControlFrameModal();
@@ -311,26 +310,6 @@ export class ST {
       this.frameService,
       this.messageBus,
       this.jwtDecoder
-    );
-  }
-
-  private CommonFrames(): void {
-    const requestTypes: string[] = this.jwtDecoder.decode(this.config.jwt).payload.requesttypedescriptions;
-    this.commonFrames = new CommonFrames(
-      this.config.jwt,
-      this.config.origin,
-      this.config.componentIds,
-      this.config.styles,
-      this.config.submitOnSuccess,
-      this.config.submitOnError,
-      this.config.submitOnCancel,
-      this.config.submitFields,
-      this.config.datacenterurl,
-      this.config.animatedCard,
-      requestTypes,
-      this.config.formId,
-      this.iframeFactory,
-      this.frameService
     );
   }
 
