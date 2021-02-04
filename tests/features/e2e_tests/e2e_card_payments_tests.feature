@@ -1,4 +1,3 @@
-@e2e_sl
 Feature: E2E Card Payments
   As a user
   I want to use card payments method

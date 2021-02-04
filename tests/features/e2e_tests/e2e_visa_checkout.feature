@@ -9,24 +9,24 @@
 #    @angular
 #    @vueJS
 #    @react_native
-#  Scenario Outline: Successful Authentication by Visa checkout
-#    Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes
-#      | key                     | value                     |
-#      | requesttypedescriptions | <requesttypedescriptions> |
-#    And User opens example page
-#    And User clicks on Visa Checkout button
-#    And User fills visa checkout email address
-#    And User fills visa checkout one time password
-#    When User selects VISA_FRICTIONLESS card on visa checkout popup
-#    And User confirms displayed card with data
-##    And User confirms visa checkout security code
-#    Then User will see payment status information: "Payment has been successfully processed"
-#    And User will see that notification frame has "green" color
-#
-#    Examples:
-#      | requesttypedescriptions               |
-#      | AUTH                                  |
-#      | RISKDEC                               |
+  Scenario Outline: Successful Authentication by Visa checkout
+    Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                     |
+      | requesttypedescriptions | <requesttypedescriptions> |
+    And User opens example page
+    And User clicks on Visa Checkout button
+    And User fills visa checkout email address
+    And User fills visa checkout one time password
+    When User selects VISA_FRICTIONLESS card on visa checkout popup
+    And User confirms displayed card with data
+#    And User confirms visa checkout security code
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
+
+    Examples:
+      | requesttypedescriptions               |
+      | AUTH                                  |
+      | RISKDEC                               |
 #      | THREEDQUERY                           |
 #      | ACCOUNTCHECK                          |
 #      | RISKDEC THREEDQUERY AUTH              |

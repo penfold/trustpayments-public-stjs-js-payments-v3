@@ -10,9 +10,9 @@
   image: ${IMAGE_JS_PAYMENTS_TESTS}
   variables:
 #    SL_USERNAME: ${SAUCE_LABS_USER}
-    SL_USERNAME: 'pgs-test-5'
+    SL_USERNAME: 'pgs-test-6'
 #    SL_ACCESS_KEY: ${SAUCE_LABS_API_KEY}
-    SL_ACCESS_KEY: '3ee3aa2d0106453a97042e79f4a9db43'
+    SL_ACCESS_KEY: '7edf8d291ca4494c9308b31467aba998'
     BUILD_NAME: ${CI_COMMIT_REF_SLUG}/${CI_PIPELINE_ID}/${CI_JOB_NAME}
     REMOTE: "true"
     BEHAVE_LOGGING_LEVEL: INFO
@@ -340,38 +340,38 @@
 #    POETRY_TAGS: $SMOKE_TESTS_TAG
 #  resource_group: extended_tests_review_1
 #
-iPhone11-14.0-smoke-tests:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-always
-  variables:
-    DEVICE: 'iPhone 11 Simulator'
-    OS: 'iOS'
-    OS_VERSION: '13.2'
-    BROWSER: 'Safari'
-    REAL_MOBILE: 'true'
-    AUTOMATION_TIMEOUT: 120
-    BROWSERSTACK_APPIUM_VERSION: '1.19.2'
-    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
-  resource_group: extended_tests_review_2
+#iPhone11-14.0-smoke-tests:
+#  extends:
+#    - .extended-tests-browserstack
+#    - .rules-extended-tests-always
+#  variables:
+#    DEVICE: 'iPhone 11 Simulator'
+#    OS: 'iOS'
+#    OS_VERSION: '13.2'
+#    BROWSER: 'Safari'
+#    REAL_MOBILE: 'true'
+#    AUTOMATION_TIMEOUT: 120
+#    BROWSERSTACK_APPIUM_VERSION: '1.19.2'
+#    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+#  resource_group: extended_tests_review_2
 
 
 
 #   E2E
 
 #
-#win10-Chrome-latest-e2e-tests:
-#  extends:
-#    - .visual-regression-tests
-#    - .rules-extended-tests-always
-#  variables:
-#    OS: Windows
-#    OS_VERSION: 10
-#    BROWSER: Chrome
-#    BROWSER_VERSION: 'latest'
-#    POETRY_TAGS: e2e_sl
-#  resource_group: extended_tests_review_1
-#
+win10-Chrome-latest-e2e-tests:
+  extends:
+    - .visual-regression-tests
+    - .rules-extended-tests-always
+  variables:
+    OS: Windows
+    OS_VERSION: 10
+    BROWSER: Chrome
+    BROWSER_VERSION: 'latest'
+    POETRY_TAGS: e2e_sl
+  resource_group: extended_tests_review_1
+
 ##
 ##   VISUAL
 #
