@@ -3,7 +3,7 @@ import { delay, filter, first, map, takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Service } from 'typedi';
 import { CONTROL_FRAME_COMPONENT_NAME, CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
-import { PAYMENT_CANCELLED, PAYMENT_SUCCESS } from '../../application/core/models/constants/Translations';
+import { PAYMENT_CANCELLED } from '../../application/core/models/constants/Translations';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { DomMethods } from '../../application/core/shared/dom-methods/DomMethods';
@@ -62,7 +62,7 @@ export class CommonFrames {
   }
 
   init(): void {
-    document.getElementById(this.formId).appendChild(
+    this.form.appendChild(
       this.iframeFactory.create(
         CONTROL_FRAME_COMPONENT_NAME,
         CONTROL_FRAME_IFRAME,
