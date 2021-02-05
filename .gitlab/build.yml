@@ -18,7 +18,7 @@ build-sdk-local:
     ARTIFACTS_BUILD_PATH: ".dist-dev"
   script:
     - npm config set js-payments:host merchant.securetrading.net
-    - npm run build:dev
+    - npm run build:dev --frame_url="https://library.securetrading.net"
 
 build-sdk-mock:
   extends: .build-sdk

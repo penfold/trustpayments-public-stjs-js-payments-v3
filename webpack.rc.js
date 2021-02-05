@@ -7,7 +7,7 @@ module.exports = merge(common, {
   mode: 'production',
   plugins: [
     new webpack.DefinePlugin({
-      WEBSERVICES_URL: JSON.stringify('https://webservices.securetrading.net/js/rc')
+      FRAME_URL: JSON.stringify(process.env.npm_config_frame_url),
     })
   ],
   resolve: {
