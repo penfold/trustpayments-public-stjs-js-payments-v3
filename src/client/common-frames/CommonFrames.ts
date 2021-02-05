@@ -62,119 +62,9 @@ export class CommonFrames {
   }
 
   init(): void {
-    this.form.appendChild(
-      this.iframeFactory.create(
-        CONTROL_FRAME_COMPONENT_NAME,
-        CONTROL_FRAME_IFRAME,
-        this.styles.controlFrame,
-        {
-          gatewayUrl: this.dataCenterUrl,
-          jwt: this.jwt,
-          origin: this.origin
-        },
-        -1
-      )
-    );
-
+    this.appendControlFrame();
     this.merchantInputsListener();
     this.transactionCompleteListener();
-  }
-
-  private getControlFrameStyles(styles: IStyles): IStyles {
-    if (styles.controlFrame) {
-      return { controlFrame: styles.controlFrame };
-    }
-
-    if (styles.defaultStyles) {
-      return { controlFrame: styles.defaultStyles };
-    }
-
-    return { controlFrame: {} };
-  }
-
-  private getSubmitFieldsFromPaymentResponse(data: IPaymentAuthorized, fields: string[]): string[] {
-    fields.forEach((field: string) => {
-      if (data.hasOwnProperty(field) && this.submitFields.indexOf(field) === -1) {
-        this.submitFields.push(field);
-      }
-    });
-
-    return this.submitFields;
-  }
-
-  private getTransactionStatus(errorcode: string): string {
-    if (errorcode === '0') {
-      return 'success';
-    }
-
-    if (errorcode === 'cancelled') {
-      return 'cancelled';
-    }
-
-    return 'error';
-  }
-
-  private isTransactionFinished(data: IPaymentAuthorized): boolean {
-    const { acsurl, customeroutput, enrolled, errorcode, requesttypedescription, threedresponse } = data;
-
-    if (Number(errorcode) !== 0) {
-      return true;
-    }
-
-    if (requesttypedescription === 'WALLETVERIFY' || requesttypedescription === 'JSINIT') {
-      return false;
-    }
-
-    if (customeroutput === CustomerOutput.THREEDREDIRECT) {
-      return Boolean(threedresponse || !acsurl || enrolled !== 'Y');
-    }
-
-    return true;
-  }
-
-  private onMerchantFieldInput(): void {
-    this.messageBus.publish({
-      data: DomMethods.parseForm(this.formId),
-      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS
-    });
-  }
-
-  private onTransactionCompleteEvent(data: IPaymentAuthorized): void {
-    if (!this.isTransactionFinished(data)) {
-      return;
-    }
-
-    if (data.errorcode === 'cancelled') {
-      DomMethods.addDataToForm(this.form, { errorcode: 'cancelled', errormessage: PAYMENT_CANCELLED });
-    } else {
-      DomMethods.addDataToForm(
-        this.form,
-        data,
-        this.getSubmitFieldsFromPaymentResponse(data, ['jwt', 'threedresponse'])
-      );
-    }
-
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data }, true);
-
-    if (this.shouldSubmitForm(this.getTransactionStatus(data.errorcode)) && !this.isFormSubmitted) {
-      this.isFormSubmitted = true;
-      this.form.submit();
-    }
-  }
-
-  private merchantInputsListener(): void {
-    const els = DomMethods.getAllFormElements(this.form);
-    for (const el of els) {
-      el.addEventListener('input', this.onMerchantFieldInput.bind(this));
-    }
-  }
-
-  private shouldSubmitForm(result: string): boolean {
-    return (
-      (result === 'success' && this.submitOnSuccess) ||
-      (result === 'cancel' && this.submitOnCancel) ||
-      (result === 'error' && this.submitOnError)
-    );
   }
 
   private transactionCompleteListener(): void {
@@ -199,5 +89,117 @@ export class CommonFrames {
           )
           .subscribe(() => this.onTransactionCompleteEvent(data));
       });
+  }
+
+  private onTransactionCompleteEvent(data: IPaymentAuthorized): void {
+    if (!this.isTransactionFinished(data)) {
+      return;
+    }
+
+    if (data.errorcode === 'cancelled') {
+      DomMethods.addDataToForm(this.form, { errorcode: 'cancelled', errormessage: PAYMENT_CANCELLED });
+    } else {
+      DomMethods.addDataToForm(this.form, data, this.getSubmitFieldsFromPaymentResponse(data));
+    }
+
+    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data }, true);
+
+    if (this.shouldSubmitForm(this.getTransactionStatus(data.errorcode)) && !this.isFormSubmitted) {
+      this.isFormSubmitted = true;
+      this.form.submit();
+    }
+  }
+
+  private isTransactionFinished(data: IPaymentAuthorized): boolean {
+    const { acsurl, customeroutput, enrolled, errorcode, requesttypedescription, threedresponse } = data;
+
+    if (Number(errorcode) !== 0) {
+      return true;
+    }
+
+    if (requesttypedescription === 'WALLETVERIFY' || requesttypedescription === 'JSINIT') {
+      return false;
+    }
+
+    if (customeroutput === CustomerOutput.THREEDREDIRECT) {
+      return Boolean(threedresponse || !acsurl || enrolled !== 'Y');
+    }
+
+    return true;
+  }
+
+  private getSubmitFieldsFromPaymentResponse(data: IPaymentAuthorized): string[] {
+    const submitFields: string[] = ['jwt', 'threedresponse', ...this.submitFields];
+    const submitFieldsFromResponse: string[] = [];
+
+    submitFields.forEach((field: string) => {
+      if (data.hasOwnProperty(field)) {
+        submitFieldsFromResponse.push(field);
+      }
+    });
+
+    return submitFieldsFromResponse;
+  }
+
+  private getTransactionStatus(errorcode: string): string {
+    if (errorcode === '0') {
+      return 'success';
+    }
+
+    if (errorcode === 'cancelled') {
+      return 'cancelled';
+    }
+
+    return 'error';
+  }
+
+  private shouldSubmitForm(result: string): boolean {
+    return (
+      (result === 'success' && this.submitOnSuccess) ||
+      (result === 'cancel' && this.submitOnCancel) ||
+      (result === 'error' && this.submitOnError)
+    );
+  }
+
+  private appendControlFrame(): void {
+    this.form.appendChild(
+      this.iframeFactory.create(
+        CONTROL_FRAME_COMPONENT_NAME,
+        CONTROL_FRAME_IFRAME,
+        this.styles.controlFrame,
+        {
+          gatewayUrl: this.dataCenterUrl,
+          jwt: this.jwt,
+          origin: this.origin
+        },
+        -1
+      )
+    );
+  }
+
+  private getControlFrameStyles(styles: IStyles): IStyles {
+    if (styles.controlFrame) {
+      return { controlFrame: styles.controlFrame };
+    }
+
+    if (styles.defaultStyles) {
+      return { controlFrame: styles.defaultStyles };
+    }
+
+    return { controlFrame: {} };
+  }
+
+  private onMerchantFieldInput(): void {
+    this.messageBus.publish({
+      data: DomMethods.parseForm(this.formId),
+      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS
+    });
+  }
+
+  private merchantInputsListener(): void {
+    const els = DomMethods.getAllFormElements(this.form);
+    for (const el of els) {
+      el.addEventListener('input', this.onMerchantFieldInput.bind(this));
+    }
   }
 }
