@@ -147,7 +147,7 @@ export class CommonFrames {
     }
 
     if (errorcode === 'cancelled') {
-      return 'cancelled';
+      return 'cancel';
     }
 
     return 'error';
