@@ -43,6 +43,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
     placement: Joi.string()
   },
   buttonId: Joi.string().allow(''),
+  stopSubmitFormOnEnter: Joi.boolean(),
   cancelCallback: Joi.any(),
   componentIds: Joi.object()
     .keys({

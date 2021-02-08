@@ -41,6 +41,12 @@ def step_impl(context):
     payment_page.wait_for_payment_form_to_load()
 
 
+@step('User waits for Pay button to be active')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.wait_for_pay_button_to_be_active()
+
+
 @step('User will see that notification frame has "(?P<color>.+)" color')
 def step_impl(context, color):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
@@ -63,8 +69,6 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.accept_alert()
-
-
 
 
 @step('User will see that all fields are highlighted')
@@ -151,6 +155,12 @@ def step_impl(context, field):
 def step_impl(context, language):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.validate_all_labels_translation(language)
+
+
+@then('User will see card payment label displayed on page translated into "(?P<text>.+)"')
+def step_impl(context, text):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_card_number_iframe_element_text(text)
 
 
 @step('User will see validation message "(?P<key>.+)" under all fields translated into "(?P<language>.+)"')
@@ -264,7 +274,7 @@ def step_impl(context, field_type):
     payment_page.validate_if_field_is_not_displayed(FieldType[field_type].name)
 
 
-@step('User press enter button')
+@step('User press ENTER button in input field')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.press_enter_button_on_security_code_field()
@@ -294,12 +304,23 @@ def step_impl(context):
     payment_page.validate_callback_with_data_type('Error code: OK')
 
 
-
 @step('"(?P<callback_popup>.+)" callback is called only once')
 def step_impl(context, callback_popup):
     time.sleep(1)
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.validate_number_in_callback_counter_popup(callback_popup)
+
+
+@step('submit callback contains JWT response')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_jwt_response_in_callback()
+
+
+@step('submit callback contains THREEDRESPONSE: (?P<threedresponse_defined>.+)')
+def step_impl(context, threedresponse_defined):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_threedresponse_in_callback(threedresponse_defined)
 
 
 @then('User will see that (?P<field_type>.+) field has (?P<rgb_color>.+) color')

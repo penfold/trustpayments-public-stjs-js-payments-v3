@@ -1,6 +1,5 @@
 {
   "analytics": true,
-  "deferInit": false,
   "fieldsToSubmit": [
     "pan",
     "expirydate",

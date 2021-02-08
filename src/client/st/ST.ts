@@ -112,8 +112,6 @@ export class ST {
   ) {
     this.googleAnalytics = new GoogleAnalytics();
     this.merchantFields = new MerchantFields();
-    this.messageBus.publish({ type: 'FOO' });
-    this.messageBus.publish({ type: 'FOOZ' });
   }
 
   on(eventName: 'success' | 'error' | 'submit' | 'cancel', callback: (event: unknown) => void): void {
@@ -225,6 +223,7 @@ export class ST {
     this.destroy$.next();
     this.destroy$.complete();
     this.communicator.close();
+    this.controlFrameLoader$ = undefined;
   }
 
   init(config: IConfig): void {
@@ -243,11 +242,29 @@ export class ST {
       this.watchForFrameUnload();
       this.initControlFrameModal();
       this.cardinalClient.init();
+
+      if (Boolean(this.config.stopSubmitFormOnEnter)) {
+        this.stopSubmitFormOnEnter();
+      }
     }
   }
 
   getBrowserInfo(): IBrowserInfo {
     return this.browserDetector.getBrowserInfo();
+  }
+
+  private stopSubmitFormOnEnter() {
+    const form: HTMLFormElement = document.getElementById(this.config.formId) as HTMLFormElement;
+
+    if (!form) {
+      return;
+    }
+
+    form.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+      }
+    });
   }
 
   private initControlFrame$(): Observable<IConfig> {
@@ -314,7 +331,7 @@ export class ST {
 
   private Storage(): void {
     this.storage.setItem('merchantTranslations', JSON.stringify(this.config.translations));
-    this.storage.setItem('locale', jwt_decode<IStJwtObj<IStJwtPayload>>(this.config.jwt).payload.locale);
+    this.storage.setItem('locale', jwt_decode<IStJwtObj<IStJwtPayload>>(this.config.jwt).payload.locale || 'en_GB');
   }
 
   private displayLiveStatus(liveStatus: boolean): void {

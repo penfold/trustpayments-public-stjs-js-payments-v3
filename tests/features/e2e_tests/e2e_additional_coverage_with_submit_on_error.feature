@@ -67,7 +67,7 @@ Feature: request type with submit on error - full test coverage
       | key                     | value               |
       | requesttypedescriptions | <request_types>     |
     And User opens example page
-    When User fills payment form with defined card MASTERCARD_FAILED_STEP_UP_AUTH
+    When User fills payment form with defined card MASTERCARD_STEP_UP_AUTH_FAILED
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will be sent to page with url "www.example.com" having params
@@ -117,7 +117,7 @@ Feature: request type with submit on error - full test coverage
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card MASTERCARD_FAILED_STEP_UP_AUTH
+    When User fills payment form with defined card MASTERCARD_STEP_UP_AUTH_FAILED
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will be sent to page with url "www.example.com" having params

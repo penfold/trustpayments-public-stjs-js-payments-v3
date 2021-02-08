@@ -52,6 +52,8 @@ class PaymentMethodsLocators:
     callback_error_popup: By = (By.ID, 'error-popup')
     callback_cancel_popup: By = (By.ID, 'cancel-popup')
     callback_data_popup: By = (By.ID, 'data-popup')
+    submit_callback_jwt_response: By = (By.ID, 'data-popup-jwt')
+    submit_callback_threedresponse: By = (By.ID, 'data-popup-threedresponse')
     callback_success_counter: By = (By.ID, 'success-callback-counter')
     callback_error_counter: By = (By.ID, 'error-callback-counter')
     callback_cancel_counter: By = (By.ID, 'cancel-callback-counter')

@@ -1,4 +1,5 @@
 # type: ignore[no-redef]
+from urllib.parse import parse_qs, urlparse
 
 from assertpy import soft_assertions
 from behave import use_step_matcher, step, then
@@ -90,7 +91,7 @@ def step_impl_example(context, example_page: ExamplePageParam):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
 
     if 'Safari' in context.browser:
-        payment_page.open_page_with_not_private_connection_check(MockUrl.LIBRARY_URL.value)
+        # payment_page.open_page_with_not_private_connection_check(MockUrl.LIBRARY_URL.value)
         payment_page.open_page_with_not_private_connection_check(MockUrl.STJS_URI.value)
 
     # setting url specific params accordingly to example page
@@ -152,8 +153,12 @@ def step_impl(context, url: str):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     with soft_assertions():
         payment_page.validate_base_url(url)
+        context.waits.wait_for_javascript()
+        actual_url = payment_page.get_page_url()
+        parsed_url = urlparse(actual_url)
+        parsed_query_from_url = parse_qs(parsed_url.query)
         for param in context.table:
-            payment_page.validate_if_url_contains_param(param['key'], param['value'])
+            payment_page.validate_if_url_contains_param(parsed_query_from_url, param['key'], param['value'])
 
 
 @step('User changes page language to "(?P<language>.+)"')

@@ -1,7 +1,6 @@
 {
   "analytics": true,
   "animatedCard": false,
-  "deferInit": false,
   "fieldsToSubmit": [
     "securitycode"
   ],

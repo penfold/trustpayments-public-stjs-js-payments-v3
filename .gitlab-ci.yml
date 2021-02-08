@@ -1,4 +1,4 @@
-.cicd-os-ref: &cicd-os-ref 0.0.62
+.cicd-os-ref: &cicd-os-ref 0.0.68
 
 .cicd-os: &cicd-os
   project: trustpayments-public/stjs/cicd-os
@@ -8,26 +8,29 @@ include:
   - file: /cicd_template.yml
     <<: *cicd-os
 
+  - local: '/.gitlab/others/services.yml'
   - local: '/.gitlab/build.yml'
   - local: '/.gitlab/post-build.yml'
-  - local: '/.gitlab/services.yml'
   - local: '/.gitlab/fast-tests.yml'
   - local: '/.gitlab/publish-to-cdn.yml'
   - local: '/.gitlab/extended-tests.yml'
   - local: '/.gitlab/post-release.yml'
+  - local: '/.gitlab/pre-smoke-tests.yml'
+  - local: '/.gitlab/smoke-tests.yml'
 
 variables:
   CICD_OS_REF: *cicd-os-ref
 
-  IMAGE_JS_PAYMENTS_APP_HTML_PROD: ${CI_REGISTRY_IMAGE}/app-html-prod:${CI_PIPELINE_ID}
-  IMAGE_JS_PAYMENTS_APP_HTML_TEST: ${CI_REGISTRY_IMAGE}/app-html-test:${CI_PIPELINE_ID}
-  IMAGE_JS_PAYMENTS_APP_HTML_DEV: ${CI_REGISTRY_IMAGE}/app-html-dev:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_RELEASE: ${CI_REGISTRY_IMAGE}/app-html-release:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_MOCK: ${CI_REGISTRY_IMAGE}/app-html-mock:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_LOCAL: ${CI_REGISTRY_IMAGE}/app-html-local:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_SMOKE: ${CI_REGISTRY_IMAGE}/app-html-smoke:${CI_PIPELINE_ID}
 
   IMAGE_JS_PAYMENTS_TESTS: ${CI_REGISTRY_IMAGE}/payments-tests:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_PIPELINE_ID}
 
   SMOKE_TESTS_TAG: '@smoke_test'
-  SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_test,@smoke_test_apple_pay'
+  SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_test,@apple_pay_smoke_test'
   EXTENDED_TESTS_TAG: '@extended_tests_part_1,@extended_tests_part_2'
   ARTIFACT_RELEASE_DESCRIPTION_TYPE: "EXTENDED"
 
@@ -80,9 +83,14 @@ stages:
   - build
   - post-build
   - publish-to-cdn
+# Tests
   - fast-tests
   - extended-tests
   - validate-merge-request-description
 # Release package
   - release
   - post-release
+# Smoke tests
+  - pre-smoke-tests
+  - smoke-tests
+

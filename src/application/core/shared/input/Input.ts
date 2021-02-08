@@ -11,6 +11,7 @@ import { CARD_NUMBER_INPUT, CARD_NUMBER_WRAPPER } from '../../models/constants/S
 import { AllowedStylesService } from './AllowedStylesService';
 import { IMessageBus } from '../message-bus/IMessageBus';
 import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 
 export class Input {
   protected static PLACEHOLDER_ATTRIBUTE: string = 'placeholder';
@@ -28,8 +29,15 @@ export class Input {
   private _frame: Frame;
   private _messageBus: IMessageBus;
   private _allowedStyles: AllowedStylesService;
+  private stopSubmitFormOnEnter: boolean;
 
-  constructor(inputSelector: string, messageSelector: string, labelSelector: string, wrapperSelector: string) {
+  constructor(
+    inputSelector: string,
+    messageSelector: string,
+    labelSelector: string,
+    wrapperSelector: string,
+    protected configProvider: ConfigProvider
+  ) {
     this._messageBus = Container.get(MessageBusToken);
     this._allowedStyles = Container.get(AllowedStylesService);
     this._frame = Container.get(Frame);
@@ -48,10 +56,13 @@ export class Input {
   public init(): void {
     this._translator = new Translator(this._frame.parseUrl().locale);
     this.validation = new Validation();
-
-    this.setLabelText();
-    this.setAsterisk();
     this.addTabListener();
+
+    this.configProvider.getConfig$().subscribe(config => {
+      this.stopSubmitFormOnEnter = Boolean(config.stopSubmitFormOnEnter);
+      this.setLabelText();
+      this.setAsterisk();
+    });
   }
 
   protected format(data: string) {
@@ -193,7 +204,11 @@ export class Input {
     });
 
     this._inputElement.addEventListener('keypress', (event: KeyboardEvent) => {
-      this.onKeyPress(event);
+      if (this.stopSubmitFormOnEnter && event.key === 'Enter') {
+        event.preventDefault();
+      } else {
+        this.onKeyPress(event);
+      }
     });
 
     this._inputElement.addEventListener('keydown', (event: KeyboardEvent) => {

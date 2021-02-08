@@ -15,7 +15,7 @@
     - .component-app-html-test
     - .parallel-component-tests
   variables:
-    FEATURE_FILES_NAMES_CONTAINS: 'mock_'
+    FEATURE_FILES_DIR: 'features/mock_tests'
   parallel: 22
 
 .visa-checkout-headless-component-tests:
@@ -25,18 +25,35 @@
   variables:
     FEATURE_FILE_NAME: 'visa_checkout.feature'
 
-.e2e-app-html-dev:
+e2e-cardinal-commerce-app-html-dev:
   extends:
     - .e2e-tests
     - .services-app-html-dev
-  parallel: 29
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_cardinal_commerce'
+  parallel: 8
+
+e2e-cardinal-commerce-app-html-release:
+  extends:
+    - .e2e-tests
+    - .service-app-html-prod-merchant
+    - .rules-when-release
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_cardinal_commerce'
+  parallel: 8
+
+e2e-app-html-dev:
+  extends:
+    - .e2e-tests
+    - .services-app-html-dev
+  parallel: 18
 
 e2e-app-html-release:
   extends:
     - .e2e-tests
     - .service-app-html-prod-merchant
     - .rules-when-release
-  parallel: 19
+  parallel: 18
 
 .zap-url-to-scan-merchant:
   variables:

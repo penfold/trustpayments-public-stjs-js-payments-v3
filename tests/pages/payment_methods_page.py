@@ -6,6 +6,7 @@ from assertpy import assert_that
 from configuration import CONFIGURATION
 from locators.payment_methods_locators import PaymentMethodsLocators
 from pages.base_page import BasePage
+from utils.configurations import jwt_generator
 from utils.enums.auth_data import AuthData
 from utils.enums.auth_type import AuthType
 from utils.enums.field_type import FieldType
@@ -24,10 +25,17 @@ class PaymentMethodsPage(BasePage):
         page_title = self._executor.get_page_title()
         return page_title
 
+    def get_page_url(self):
+        page_url = self._executor.get_page_url()
+        return page_url
+
     def wait_for_payment_form_to_load(self):
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.card_number_iframe)
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe)
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
+
+    def wait_for_pay_button_to_be_active(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
 
     def fill_credit_card_field(self, field_type, value):
         if field_type == FieldType.CARD_NUMBER.name:
@@ -166,6 +174,14 @@ class PaymentMethodsPage(BasePage):
 
     def get_text_from_status_callback(self):
         text = self._action.get_text_with_wait(PaymentMethodsLocators.callback_data_popup)
+        return text
+
+    def get_text_from_submit_callback_jwt(self):
+        text = self._action.get_text_with_wait(PaymentMethodsLocators.submit_callback_jwt_response)
+        return text
+
+    def get_text_from_submit_callback_threedresponse(self):
+        text = self._action.get_text_with_wait(PaymentMethodsLocators.submit_callback_threedresponse)
         return text
 
     def get_text_from_browser_info(self):
@@ -429,14 +445,9 @@ class PaymentMethodsPage(BasePage):
         self.validate_field_validation_message(field_type, expected_text)
 
     def validate_all_labels_translation(self, language):
-        self.validate_card_number_iframe_element_text(PaymentMethodsLocators.card_number_label,
-                                                      self.get_translation_from_json(language, 'Card number'))
-        self.validate_expiration_date_iframe_element_text(PaymentMethodsLocators.expiration_date_label,
-                                                          self.get_translation_from_json(language,
-                                                                                                'Expiration date'))
-        self.validate_security_code_iframe_element_text(PaymentMethodsLocators.security_code_label,
-                                                        self.get_translation_from_json(language,
-                                                                                              'Security code'))
+        self.validate_card_number_iframe_element_text(self.get_translation_from_json(language, 'Card number'))
+        self.validate_expiration_date_iframe_element_text(self.get_translation_from_json(language, 'Expiration date'))
+        self.validate_security_code_iframe_element_text(self.get_translation_from_json(language, 'Security code'))
         self.validate_no_iframe_element_text(FieldType.SUBMIT_BUTTON.name,
                                              PaymentMethodsLocators.pay_button_label,
                                              self.get_translation_from_json(language, 'Pay'))
@@ -452,16 +463,16 @@ class PaymentMethodsPage(BasePage):
         self.validate_no_iframe_element_text(FieldType.NOTIFICATION_FRAME.name,
                                              PaymentMethodsLocators.notification_frame, expected_translation)
 
-    def validate_card_number_iframe_element_text(self, locator, expected_text):
-        actual_text = self.get_card_number_iframe_element_text(locator)
+    def validate_card_number_iframe_element_text(self, expected_text):
+        actual_text = self.get_card_number_iframe_element_text(PaymentMethodsLocators.card_number_label)
         self.validate_field_text(FieldType.CARD_NUMBER.name, actual_text, expected_text)
 
-    def validate_expiration_date_iframe_element_text(self, locator, expected_text):
-        actual_text = self.get_expiration_date_iframe_element_text(locator)
+    def validate_expiration_date_iframe_element_text(self, expected_text):
+        actual_text = self.get_expiration_date_iframe_element_text(PaymentMethodsLocators.expiration_date_label)
         self.validate_field_text(FieldType.EXPIRATION_DATE.name, actual_text, expected_text)
 
-    def validate_security_code_iframe_element_text(self, locator, expected_text):
-        actual_text = self.get_security_code_iframe_element_text(locator)
+    def validate_security_code_iframe_element_text(self, expected_text):
+        actual_text = self.get_security_code_iframe_element_text(PaymentMethodsLocators.security_code_label)
         self.validate_field_text(FieldType.SECURITY_CODE.name, actual_text, expected_text)
 
     def validate_no_iframe_element_text(self, field_type, locator, expected_text):
@@ -499,11 +510,7 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert_that(parsed_url.hostname).is_equal_to(url)
 
-    def validate_if_url_contains_param(self, key, value):
-        self._waits.wait_for_javascript()
-        actual_url = self._executor.get_page_url()
-        parsed_url = urlparse(actual_url)
-        parsed_query_from_url = parse_qs(parsed_url.query)
+    def validate_if_url_contains_param(self, parsed_query_from_url, key, value):
         if 'should not be none' in value:
             assert_that(parsed_query_from_url[key][0]).is_not_none()
         elif 'should be none' in value:
@@ -531,6 +538,27 @@ class PaymentMethodsPage(BasePage):
         assertion_message = f'{callback_popup} callback popup is not displayed but should be'
         add_to_shared_dict('assertion_message', assertion_message)
         assert is_displayed is True, assertion_message
+
+    def validate_jwt_response_in_callback(self):
+        response = self.get_text_from_submit_callback_jwt()
+        assertion_message = 'Submit callback data doesnt contain JWT response'
+        add_to_shared_dict('assertion_message', assertion_message)
+        assert 'undefined' not in response, assertion_message
+        decoded_jwt = jwt_generator.decode_jwt(response.split('JWT: ')[-1])
+        assertion_message = 'JWT response didnt contain merchant JWT'
+        add_to_shared_dict('assertion_message', assertion_message)
+        assert 'jwt' in decoded_jwt.get('payload'), assertion_message
+
+    def validate_threedresponse_in_callback(self, threedresponse_defined):
+        response = self.get_text_from_submit_callback_threedresponse()
+        if threedresponse_defined == 'True':
+            assertion_message = 'Submit callback data doesnt contain threedresponse'
+            add_to_shared_dict('assertion_message', assertion_message)
+            assert 'undefined' not in response, assertion_message
+        else:
+            assertion_message = 'Submit callback data contains threedresponse'
+            add_to_shared_dict('assertion_message', assertion_message)
+            assert 'undefined' in response, assertion_message
 
     def validate_number_in_callback_counter_popup(self, callback_popup):
         counter = ''

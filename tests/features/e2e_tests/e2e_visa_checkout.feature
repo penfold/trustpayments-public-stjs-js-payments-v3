@@ -5,10 +5,7 @@
 #  I want to use visa checkout
 #  To use defined card
 #
-#  @reactJS
-#    @angular
-#    @vueJS
-#    @react_native
+#  @e2e_smoke_test
 #  Scenario Outline: Successful Authentication by Visa checkout
 #    Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes
 #      | key                     | value                     |
@@ -17,7 +14,7 @@
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
 #    And User fills visa checkout one time password
-#    When User selects VISA_FRICTIONLESS card on visa checkout popup
+#    When User selects VISA_V21_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 ##    And User confirms visa checkout security code
 #    Then User will see payment status information: "Payment has been successfully processed"
@@ -53,7 +50,7 @@
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
 #    And User fills visa checkout one time password
-#    When User selects VISA_NON_FRICTIONLESS card on visa checkout popup
+#    When User selects VISA_V21_NON_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 ##    And User confirms visa checkout security code
 #    Then User will see payment status information: "Payment has been successfully processed"
@@ -89,7 +86,7 @@
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
 #    And User fills visa checkout one time password
-#    When User selects VISA_FRICTIONLESS card on visa checkout popup
+#    When User selects VISA_V21_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 ##    And User confirms visa checkout security code
 #    Then User will see payment status information: "Payment has been successfully processed"
@@ -118,7 +115,7 @@
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
 #    And User fills visa checkout one time password
-#    When User selects VISA_NON_FRICTIONLESS card on visa checkout popup
+#    When User selects VISA_V21_NON_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 ##    And User confirms visa checkout security code
 #    Then User will see payment status information: "Payment has been successfully processed"
@@ -198,8 +195,8 @@
 #    Then User will see payment status information: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #
-#  Scenario: Successful Authentication by Visa checkout with updateJwt and deferinit true
-#    Given JS library is configured with VISA_CHECKOUT_WITH_DEFERINIT_TRUE_CONFIG and BASE_JWT
+#  Scenario: Successful Authentication by Visa checkout with updateJwt
+#    Given JS library is configured with VISA_CHECKOUT_CONFIG and BASE_JWT
 #    And User opens example page WITH_UPDATE_JWT
 #      | jwtName          |
 #      | BASE_UPDATED_JWT |
@@ -236,7 +233,7 @@
 #    And User clicks on Visa Checkout button
 #    And User fills visa checkout email address
 #    And User fills visa checkout one time password
-#    When User selects VISA_FRICTIONLESS card on visa checkout popup
+#    When User selects VISA_V21_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 #    #And User confirms visa checkout security code
 #    Then User will see payment status information: "Payment has been successfully processed"

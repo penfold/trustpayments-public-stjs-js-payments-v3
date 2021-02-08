@@ -53,7 +53,7 @@ export class StCodec {
     if (StCodec._isInvalidResponse(responseData)) {
       throw StCodec._handleInvalidResponse();
     }
-    const responseContent: IResponseData = StCodec._determineResponse(responseData);
+    const responseContent: IResponseData = StCodec._determineResponse(responseData, jwtResponse);
     StCodec._handleValidGatewayResponse(responseContent, jwtResponse);
     return responseContent;
   }
@@ -143,7 +143,7 @@ export class StCodec {
     );
   }
 
-  private static _determineResponse(responseData: any) {
+  private static _determineResponse(responseData: any, jwtResponse: string) {
     let responseContent: IResponseData;
     responseData.response.forEach((r: any) => {
       if (r.customeroutput) {
@@ -153,6 +153,9 @@ export class StCodec {
     if (!responseContent) {
       responseContent = responseData.response[responseData.response.length - 1];
     }
+
+    responseContent.jwt = jwtResponse;
+
     return responseContent;
   }
 
@@ -246,19 +249,23 @@ export class StCodec {
     return new Promise((resolve, reject) => {
       if ('json' in responseObject) {
         responseObject.json().then(responseData => {
-          const decoded: IStJwtObj = StCodec._decodeResponseJwt(responseData.jwt, reject);
-          const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
+          try {
+            const decoded: IStJwtObj = StCodec._decodeResponseJwt(responseData.jwt, reject);
+            const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
 
-          if (Number(verifiedResponse.errorcode) === 0) {
-            StCodec.jwt = decoded.payload.jwt;
-          } else {
+            if (Number(verifiedResponse.errorcode) === 0) {
+              StCodec.jwt = decoded.payload.jwt;
+            } else {
+              StCodec.jwt = StCodec.originalJwt;
+            }
+
+            resolve({
+              jwt: responseData.jwt,
+              response: verifiedResponse
+            });
+          } catch (error) {
             StCodec.jwt = StCodec.originalJwt;
           }
-
-          resolve({
-            jwt: responseData.jwt,
-            response: verifiedResponse
-          });
         });
       } else {
         StCodec.jwt = StCodec.originalJwt;
