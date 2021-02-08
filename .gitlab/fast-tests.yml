@@ -39,6 +39,7 @@ e2e-start-on-load-callback-app-html-dev:
     - .services-app-html-dev
   variables:
     FEATURE_FILES_DIR: 'features/e2e_start_on_load_with_callback'
+  parallel: 2
 
 .e2e-cardinal-commerce-app-html-release:
   extends:
