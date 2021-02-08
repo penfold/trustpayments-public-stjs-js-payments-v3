@@ -153,20 +153,6 @@ Feature: ApplePay
 #    And WALLETVERIFY requests contains updated jwt
 
   #    ToDo - Last step is blocked by STJS-800
-  @config_defer_init @apple_pay_smoke_test @extended_tests_apple_pay @apple_test @apple_test_part2
-  Scenario: ApplePay - Successful payment with deferInit and updated JWT
-    When User calls updateJWT function by filling amount field
-    And User chooses ApplePay as payment method - response is set to "SUCCESS"
-    Then User will see "success" popup
-    And "success" callback is called only once
-    And User will see "submit" popup
-    And "submit" callback is called only once
-    And User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And APPLE_PAY or AUTH requests were sent only once with correct data
-#    And WALLETVERIFY requests contains updated jwt
-
-  #    ToDo - Last step is blocked by STJS-800
   @config_submit_on_success_true @apple_test @apple_test_part2
   Scenario: ApplePay - update JWT and submitOnSuccess
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
