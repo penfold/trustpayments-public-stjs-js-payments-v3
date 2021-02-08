@@ -41,8 +41,8 @@ Feature: Successfull payments with various configurations
     And AUTH and THREEDQUERY requests were sent only once with correct data
     And JSINIT requests contains updated jwt
 
-  @config_defer_init
-  Scenario: Successful payment with deferInit
+  @base_config
+  Scenario: Successful payment
     Given User opens page with payment form
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
@@ -51,21 +51,6 @@ Feature: Successfull payments with various configurations
     Then User will see payment status information: "Payment has been successfully processed"
     Then JSINIT request was sent only once
     And AUTH and THREEDQUERY requests were sent only once with correct data
-
-  @config_defer_init
-  Scenario: Successful payment with deferInit and updated JWT
-    Given User opens prepared payment form page WITH_UPDATE_JWT
-      | jwtName          |
-      | BASE_UPDATED_JWT |
-    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
-    And THREEDQUERY mock response is set to "ENROLLED_Y"
-    And ACS mock response is set to "OK"
-    And User calls updateJWT function by filling amount field
-    And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And AUTH and THREEDQUERY requests were sent only once with correct data
-    And JSINIT requests contains updated jwt
 
   @config_submit_cvv_only @extended_tests_part_2
   @submit_cvv_only
