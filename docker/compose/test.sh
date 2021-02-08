@@ -9,7 +9,7 @@ function test() {
   docker-compose $params run payments-tests /bin/bash -c "\
     . venv/bin/activate \
     && echo 'Python venv activated. Executing tests.' \
-    && python3 -m behave --color --logging-level INFO --tags=@smoke_test_part_1"
+    && python3 -m behave --color --logging-level INFO --tags=@e2e_smoke_test"
 }
 
 function cleanup() {
