@@ -5,3 +5,4 @@ services:
     build:
       args:
         BUILD_TYPE: dev
+        LIBRARY_ARG: --library_url="https://library.securetrading.net:8443"

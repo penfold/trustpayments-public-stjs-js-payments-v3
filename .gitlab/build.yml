@@ -17,16 +17,14 @@ build-sdk-local:
   variables:
     ARTIFACTS_BUILD_PATH: ".dist-dev"
   script:
-    - npm config set js-payments:host merchant.securetrading.net
-    - npm run build:dev
+    - npm run build:dev --frame_url="https://library.securetrading.net:8443"
 
 build-sdk-mock:
   extends: .build-sdk
   variables:
     ARTIFACTS_BUILD_PATH: ".dist-test"
   script:
-    - npm config set js-payments:host merchant.securetrading.net
-    - npm run build:test
+    - npm run build:test --frame_url="https://library.securetrading.net:8443"
 
 build-sdk-review:
   extends:
