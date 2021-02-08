@@ -13,10 +13,8 @@ Feature: E2E second payment
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
 
-
-   @STJS-1336
    Scenario: retry payment - all request types should be performed in second payment
-    Given JS library configured by inline params DEFER_INIT_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
       | baseamount              | 14492            |
@@ -31,7 +29,7 @@ Feature: E2E second payment
     Then User will see payment status information: "Invalid process"
 
     Scenario: Failed Frictionless Authentication in second payment
-    Given JS library configured by inline params DEFER_INIT_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page

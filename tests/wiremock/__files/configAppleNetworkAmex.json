@@ -1,5 +1,4 @@
 {
-  "deferInit": false,
   "fieldsToSubmit": [
     "pan",
     "expirydate",

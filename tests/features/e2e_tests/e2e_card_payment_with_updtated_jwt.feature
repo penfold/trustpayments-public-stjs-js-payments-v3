@@ -6,7 +6,7 @@ Feature: E2E Card Payments with updated jwt
 
   @e2e_smoke_test
   Scenario: Successful payment with updated jwt
-    Given JS library configured by inline params DEFER_INIT_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page WITH_UPDATE_JWT
@@ -19,7 +19,7 @@ Feature: E2E Card Payments with updated jwt
     And User will see that notification frame has "green" color
 
   Scenario: Successful payment with updated jwt and without locale param
-    Given JS library configured by inline params DEFER_INIT_CONFIG and jwt JWT_WITHOUT_LOCALE with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt JWT_WITHOUT_LOCALE with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page WITH_UPDATE_JWT
@@ -36,7 +36,7 @@ Feature: E2E Card Payments with updated jwt
   @e2e_smoke_test
   @update_jwt_test
   Scenario: Successful payment with updated jwt without locale param and submit on success config
-    Given JS library configured by inline params DEFER_INIT_AND_SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITHOUT_LOCALE with additional attributes
+    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITHOUT_LOCALE with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page WITH_UPDATE_JWT

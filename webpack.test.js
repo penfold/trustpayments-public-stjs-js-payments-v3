@@ -22,7 +22,7 @@ module.exports = merge(common, {
   plugins: [
     new ManifestPlugin(),
     new webpack.DefinePlugin({
-      WEBSERVICES_URL: JSON.stringify('https://webservices.securetrading.net:8443')
+      FRAME_URL: JSON.stringify(process.env.npm_config_frame_url),
     }),
   ],
   resolve: {

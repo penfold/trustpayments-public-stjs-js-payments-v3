@@ -20,25 +20,15 @@ Feature: Tokenisation
 
   @config_tokenisation_amex
   @submit_cvv_only
-  Scenario: Tokenisation - successful payment by AMEX card
+  Scenario: Tokenisation case 1 - successful payment by AMEX card
     When User fills "SECURITY_CODE" field "1234"
     And Frictionless THREEDQUERY, AUTH response is set to OK
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
 
-  @config_tokenisation_visa_defer_init
+  @config_tokenisation_amex
   @submit_cvv_only
-  Scenario: Tokenisation with deferInit - successful payment by VISA card
-    When User fills "SECURITY_CODE" field "123"
-    And THREEDQUERY mock response is set to "ENROLLED_Y"
-    And ACS mock response is set to "OK"
-    And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
-    And THREEDQUERY, AUTH ware sent only once in one request
-
-  @config_tokenisation_amex_defer_init
-  @submit_cvv_only
-  Scenario: Tokenisation with deferInit - successful payment by AMEX card
+  Scenario: Tokenisation case 2 - successful payment by AMEX card
     When User fills "SECURITY_CODE" field "1234"
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
