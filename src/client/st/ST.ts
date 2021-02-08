@@ -4,7 +4,6 @@ import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames';
 import { CommonFrames } from '../common-frames/CommonFrames';
-import { MerchantFields } from '../merchant-fields/MerchantFields';
 import { StCodec } from '../../application/core/services/st-codec/StCodec';
 import { ApplePay } from '../integrations/apple-pay/ApplePay';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
@@ -53,7 +52,6 @@ export class ST {
   private cybertonicaTid: Promise<string>;
   private destroy$: Subject<void> = new Subject();
   private googleAnalytics: GoogleAnalytics;
-  private merchantFields: MerchantFields;
   private registeredCallbacks: { [eventName: string]: Subscription } = {};
   private translation: Translator;
 
@@ -110,7 +108,6 @@ export class ST {
     private commonFrames: CommonFrames
   ) {
     this.googleAnalytics = new GoogleAnalytics();
-    this.merchantFields = new MerchantFields();
   }
 
   on(eventName: 'success' | 'error' | 'submit' | 'cancel', callback: (event: unknown) => void): void {
@@ -283,9 +280,6 @@ export class ST {
         };
 
         return from(this.communicator.query(queryEvent, controlFrame));
-      }),
-      tap(() => {
-        this.merchantFields.init();
       }),
       shareReplay(1)
     );

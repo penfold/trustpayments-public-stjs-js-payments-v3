@@ -116,7 +116,6 @@ export class ControlFrame {
       const styler: Styler = new Styler(this._frame.getAllowedStyles(), this._frame.parseUrl().styles);
       this._updateJwtEvent();
       this._initCybertonica(config);
-      this._updateMerchantFieldsEvent();
 
       return of(config);
     });
@@ -204,12 +203,6 @@ export class ControlFrame {
   private _updateJwtEvent(): void {
     this._messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_JWT, (data: any) => {
       ControlFrame._updateJwt(data.newJwt);
-    });
-  }
-
-  private _updateMerchantFieldsEvent(): void {
-    this._messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
-      this._updateMerchantFields(data);
     });
   }
 
@@ -394,10 +387,6 @@ export class ControlFrame {
   private _setInstances(): void {
     this._payment = new Payment();
     this._validation = new Validation();
-  }
-
-  private _updateMerchantFields(data: IMerchantData): void {
-    this._merchantFormData = data;
   }
 
   private _initCybertonica(config: IConfig): void {

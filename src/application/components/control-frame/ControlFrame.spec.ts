@@ -94,18 +94,6 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('_initUpdateMerchantFieldsEvent()', () => {
-    it('should call _storeMerchantData when UPDATE_MERCHANT_FIELDS event has been called', () => {
-      // @ts-ignore
-      instance._updateMerchantFields = jest.fn();
-      messageBusEvent.type = MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS;
-      // @ts-ignore
-      instance._updateMerchantFieldsEvent();
-      // @ts-ignore
-      expect(instance._updateMerchantFields).toHaveBeenCalled();
-    });
-  });
-
   // TODO: get know how handle this promise
 
   describe('_processPayment', () => {
@@ -151,14 +139,7 @@ describe('ControlFrame', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      instance._updateMerchantFields(data);
-      // @ts-ignore
       instance._messageBus.publish = jest.fn();
-    });
-
-    it('should set _merchantFormData', () => {
-      // @ts-ignore
-      expect(instance._merchantFormData).toEqual(data);
     });
   });
 
