@@ -18,7 +18,6 @@
     "placement": "st-apple-pay"
   },
   "buttonId": "merchant-submit-button",
-  "bypassCards": ["VISA", "MASTERCARD", "AMEX", "DISCOVER", "JCB", "DINERS"],
   "componentIds": {
     "animatedCard": "",
     "cardNumber": "",
@@ -28,7 +27,6 @@
   },
   "components": {
     "defaultPaymentType": "",
-    "requestTypes": ["THREEDQUERY", "RISKDEC", "ACCOUNTCHECK", "AUTH"],
     "paymentTypes": [],
     "startOnLoad": false
   },
@@ -43,7 +41,7 @@
     "cachetoken": "",
     "threedinit": ""
   },
-  "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1OTQxMTQ3ODQsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiJ9fQ.jIPLq2eWITWsKHAMTT0CVQypsMPKYd7YQb1GH5BeQsk",
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYxMTk2MTU3MC41MTQ2MDg0LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDU2NjYiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJVU0QiLCJzaXRlcmVmZXJlbmNlIjoidGVzdF9qYW1lczM4NjQxIiwibG9jYWxlIjoiZW5fR0IiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJUSFJFRURRVUVSWSIsIkFVVEgiXX19.UEqE2RCtPlChJRHp0VsSAc20KFZhu69h8BZGgvJjbko",
   "livestatus": 0,
   "origin": "",
   "panIcon": true,
