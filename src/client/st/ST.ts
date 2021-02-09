@@ -235,9 +235,7 @@ export class ST {
       this.Storage();
       this.translation = new Translator(this.storage.getItem('locale'));
       this.googleAnalytics.init();
-      console.error('jdsajdnsjdnjksand');
       this.commonFrames.init();
-      console.error('jdsajdnsjdnjksand');
       this.displayLiveStatus(Boolean(this.config.livestatus));
       this.watchForFrameUnload();
       this.initControlFrameModal();
@@ -251,6 +249,15 @@ export class ST {
 
   getBrowserInfo(): IBrowserInfo {
     return this.browserDetector.getBrowserInfo();
+  }
+
+  cancelThreeDProcess(): void {
+    this.messageBus.publish(
+      {
+        type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL
+      },
+      true
+    );
   }
 
   private stopSubmitFormOnEnter() {

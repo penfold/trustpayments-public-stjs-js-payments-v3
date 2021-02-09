@@ -94,6 +94,7 @@ describe('ApplePay', () => {
     applePaySessionFactoryMock = mock(ApplePaySessionFactory);
     applePaySessionServiceMock = mock(ApplePaySessionService);
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
+    applePayConfigServiceMock.updateConfigWithJwtData = jest.fn();
     messageBus = new SimpleMessageBus();
     messageBusSpy = spy(messageBus);
 
@@ -135,7 +136,6 @@ describe('ApplePay', () => {
       applePay.updateJwtListener = jest.fn().mockImplementationOnce(() => {});
 
       applePay.init();
-
       verify(
         messageBusSpy.publish(
           deepEqual({
@@ -162,6 +162,58 @@ describe('ApplePay', () => {
       applePay.init();
 
       expect(consoleErrSpy).toHaveBeenCalledWith('Error');
+    });
+
+    it('should throw an error `Works only on Safari` when there is no ApplePaySession object', () => {
+      when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(false);
+      const consoleErrSpy: jest.SpyInstance = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
+      when(messageBusSpy.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+          data: configMock
+        })
+      );
+
+      applePay.init();
+
+      expect(consoleErrSpy).toHaveBeenCalledWith('Works only on Safari');
+    });
+
+    it('should throw an error `Your device does not support making payments with Apple Pay` when canMakePayments return false', () => {
+      when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
+      when(applePaySessionServiceMock.canMakePayments()).thenReturn(false);
+
+      const consoleErrSpy: jest.SpyInstance = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
+      when(messageBusSpy.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+          data: configMock
+        })
+      );
+
+      applePay.init();
+
+      expect(consoleErrSpy).toHaveBeenCalledWith('Your device does not support making payments with Apple Pay');
+    });
+
+    it('should throw an error `User has not an active card provisioned into Wallet` when canMakePaymentsWithActiveCard return false', () => {
+      when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
+      when(applePaySessionServiceMock.canMakePayments()).thenReturn(true);
+      when(applePaySessionServiceMock.canMakePaymentsWithActiveCard(configMock.applePay.merchantId)).thenReturn(
+        of(false)
+      );
+
+      const consoleErrSpy: jest.SpyInstance = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
+      when(messageBusSpy.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+          data: configMock
+        })
+      );
+
+      applePay.init();
+
+      expect(consoleErrSpy).toHaveBeenCalledWith('User has not an active card provisioned into Wallet');
     });
   });
 });

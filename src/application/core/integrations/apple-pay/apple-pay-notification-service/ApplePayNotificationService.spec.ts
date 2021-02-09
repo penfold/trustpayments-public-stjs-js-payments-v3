@@ -1,9 +1,9 @@
 import { instance as mockInstance, mock, verify } from 'ts-mockito';
 import { ApplePayClientErrorCode } from '../ApplePayClientErrorCode';
-import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
-import { SimpleMessageBus } from '../../../shared/message-bus/SimpleMessageBus';
-import { NotificationService } from '../../../../../client/notification/NotificationService';
 import { ApplePayNotificationService } from './ApplePayNotificationService';
+import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
+import { NotificationService } from '../../../../../client/notification/NotificationService';
+import { SimpleMessageBus } from '../../../shared/message-bus/SimpleMessageBus';
 
 describe('ApplePayClient', () => {
   let applePayNotificationService: ApplePayNotificationService;
@@ -53,6 +53,14 @@ describe('ApplePayClient', () => {
       verify(notificationServiceMock.cancel(expectedErrorMessage)).once();
     });
 
+    it(`should call NotificationService with ${ApplePayClientErrorCode.DECLINE}`, () => {
+      const expectedErrorMessage = 'Decline';
+
+      applePayNotificationService.notification(ApplePayClientErrorCode.DECLINE, expectedErrorMessage);
+
+      verify(notificationServiceMock.error(expectedErrorMessage)).once();
+    });
+
     it(`should call NotificationService with ${ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET}`, () => {
       const expectedErrorMessage = 'No active cards error message';
 
@@ -64,7 +72,7 @@ describe('ApplePayClient', () => {
     it(`should call NotificationService with error on unknown status`, () => {
       const expectedErrorMessage = 'Unknown';
 
-      applePayNotificationService.notification(7 as ApplePayClientErrorCode, expectedErrorMessage);
+      applePayNotificationService.notification(undefined, expectedErrorMessage);
 
       verify(notificationServiceMock.error(expectedErrorMessage)).once();
     });

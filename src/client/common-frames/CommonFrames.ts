@@ -63,7 +63,6 @@ export class CommonFrames {
 
   init(): void {
     this.appendControlFrame();
-    this.merchantInputsListener();
     this.transactionCompleteListener();
   }
 
@@ -92,14 +91,14 @@ export class CommonFrames {
   }
 
   private onTransactionCompleteEvent(data: IPaymentAuthorized): void {
-    if (!this.isTransactionFinished(data)) {
-      return;
-    }
-
     if (data.errorcode === 'cancelled') {
       DomMethods.addDataToForm(this.form, { errorcode: 'cancelled', errormessage: PAYMENT_CANCELLED });
     } else {
       DomMethods.addDataToForm(this.form, data, this.getSubmitFieldsFromPaymentResponse(data));
+    }
+
+    if (!this.isTransactionFinished(data)) {
+      return;
     }
 
     this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data }, true);
@@ -187,19 +186,5 @@ export class CommonFrames {
     }
 
     return { controlFrame: {} };
-  }
-
-  private onMerchantFieldInput(): void {
-    this.messageBus.publish({
-      data: DomMethods.parseForm(this.formId),
-      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS
-    });
-  }
-
-  private merchantInputsListener(): void {
-    const els = DomMethods.getAllFormElements(this.form);
-    for (const el of els) {
-      el.addEventListener('input', this.onMerchantFieldInput.bind(this));
-    }
   }
 }
