@@ -419,25 +419,6 @@ describe('CommonFrames', () => {
     });
   });
 
-  describe('when event has been called on Merchant fields', () => {
-    const event: Event = new Event('input');
-
-    beforeEach(() => {
-      DomMethods.parseForm = jest.fn().mockReturnValueOnce({ test: 'testValue' });
-    });
-
-    it('should call message bus UPDATE_MERCHANT_FIELDS event on input', done => {
-      when(
-        messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_MERCHANT_FIELDS)).subscribe(event => {
-          expect(event.data).toEqual({ test: 'testValue' });
-          done();
-        })
-      );
-      document.getElementById('test-field-1').dispatchEvent(event);
-      document.getElementById('test-field-2').dispatchEvent(event);
-    });
-  });
-
   describe('when walletsource property from PaymentRequest equals APPLEPAY', () => {
     beforeEach(() => {
       when(localStorage.select(anyFunction())).thenReturn(of('true'));
