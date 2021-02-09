@@ -254,6 +254,15 @@ export class ST {
     return this.browserDetector.getBrowserInfo();
   }
 
+  cancelThreeDProcess(): void {
+    this.messageBus.publish(
+      {
+        type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL
+      },
+      true
+    );
+  }
+
   private stopSubmitFormOnEnter() {
     const form: HTMLFormElement = document.getElementById(this.config.formId) as HTMLFormElement;
 

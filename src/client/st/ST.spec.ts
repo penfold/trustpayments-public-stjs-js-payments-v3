@@ -4,6 +4,9 @@ import { ConfigProvider } from '../../shared/services/config-provider/ConfigProv
 import ST from './ST';
 import { StCodec } from '../../application/core/services/st-codec/StCodec';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
+import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 
 window.alert = jest.fn();
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
@@ -13,7 +16,10 @@ jest.mock('./../../application/core/integrations/visa-checkout/VisaCheckout');
 jest.mock('./../../client/integrations/apple-pay/ApplePay');
 jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytics');
 
+const messageBusMock = new SimpleMessageBus();
+
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set(IMessageBus, messageBusMock);
 
 describe('ST', () => {
   const { cacheConfig, instance } = stFixture();
@@ -62,6 +68,19 @@ describe('ST', () => {
 
     it('should return transaction id when standalone cybertonica function has been called', async () => {
       expect(await instance.Cybertonica()).toEqual(key);
+    });
+  });
+
+  describe('cancelThreeDProcess', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should send THREED_CANCEL event on message bus', () => {
+      spyOn(messageBusMock, 'publish');
+      instance.cancelThreeDProcess();
+
+      expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.THREED_CANCEL }, true);
     });
   });
 });
