@@ -42,30 +42,6 @@ Feature: E2E Card Payments with request types in config
     And "submit" callback is called only once
     And "success" callback is called only once
 
-  Scenario: Successful step up payment with defer init and requestTypes: ACCOUNTCHECK, TDQ
-    Given JS library configured by inline params REQUEST_TYPE_ACHECK_TDQ_WITH_DEFER_INIT and jwt BASE_JWT with additional attributes
-      | key                     | value                    |
-      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
-    And User opens example page
-    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
-    And User clicks Pay button
-    And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
-
-
-  Scenario: Successful frictionless payment with defer init and requestTypes: ACCOUNTCHECK, TDQ
-    Given JS library configured by inline params REQUEST_TYPE_ACHECK_TDQ_WITH_DEFER_INIT and jwt BASE_JWT with additional attributes
-      | key                     | value                    |
-      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
-    And User opens example page
-    When User fills payment form with defined card VISA_V21_FRICTIONLESS
-    And User clicks Pay button
-    And User waits for payment to be processed
-    Then User will see payment status information: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
 
   Scenario Outline: Successful payment with single requestTypes <REQUEST_TYPE_TC>
     Given JS library configured by inline params <E2E_CONFIG> and jwt BASE_JWT with additional attributes

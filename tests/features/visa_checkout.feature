@@ -152,18 +152,6 @@ Feature: Visa Checkout
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
     And VISA_CHECKOUT requests contains updated jwt
 
-  @config_defer_init @smoke_test @visa_test @visa_checkout_smoke_test
-  Scenario: Visa Checkout - Successful payment with deferInit and updated JWT
-    Given User opens prepared payment form page WITH_UPDATE_JWT
-      | jwtName          |
-      | BASE_UPDATED_JWT |
-    When User calls updateJWT function by filling amount field
-    And User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And VISA_CHECKOUT or AUTH requests were sent only once with correct data
-    And VISA_CHECKOUT requests contains updated jwt
-
   @config_submit_on_success_true @smoke_test @visa_test @visa_checkout_smoke_test
   Scenario: Visa Checkout - with submitOnSuccess and updated JWT
     Given User opens prepared payment form page WITH_UPDATE_JWT

@@ -37,7 +37,7 @@ Feature: Card Payments
     When User opens page with payment form
     Then JSINIT request was sent only once
 
-  @config_defer_init
+  @base_config
   Scenario: Verify number of JSINIT requests together with UpdateJWT
     Given User opens prepared payment form page WITH_UPDATE_JWT
       | jwtName          |
