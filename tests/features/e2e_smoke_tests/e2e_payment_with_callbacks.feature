@@ -1,8 +1,8 @@
 @smoke_e2e_test
 Feature: payment flow with callbacks
 
-  Scenario Outline: Successful step up payment with defer init and requestTypes: THREEDQUERY AUTH
-    Given JS library configured by inline params REQUEST_TYPE_ACHECK_TDQ_WITH_DEFER_INIT and jwt BASE_JWT with additional attributes
+  Scenario Outline: Successful step up payment with requestTypes: <request_types>
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page

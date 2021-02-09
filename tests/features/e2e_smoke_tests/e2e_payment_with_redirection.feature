@@ -31,7 +31,7 @@ Feature: payment flow with redirect
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card VISA_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_V22_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will not see notification frame
