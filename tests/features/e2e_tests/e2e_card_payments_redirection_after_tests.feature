@@ -227,7 +227,6 @@ Feature: E2E Card Payments - redirection
       | eci                  | 07                 |
       | settlestatus         | 3                  |
 
-# Disabling test with VisaCheckout popup until VisaCheckout test account will be ready
 #  @e2e_config_submit_on_cancel_callback
 #  Scenario: Unsuccessful payment with submitOnCancel enabled and cancel callback set
 #  Given JS library configured by inline params SUBMIT_ON_CANCEL_CONFIG_CANCEL_CALLBACK and jwt BASE_JWT with additional attributes

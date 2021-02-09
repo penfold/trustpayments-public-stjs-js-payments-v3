@@ -25,6 +25,7 @@ Feature: E2E Card Payments with cachetoken
       | jwt        | should not be none |
       | cachetoken | should not be none |
 
+
 #  TODO - STJS-1278
 #  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - non-frictionless card
 #    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
@@ -33,7 +34,6 @@ Feature: E2E Card Payments with cachetoken
 #    And User opens example page
 #    And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
-#    And User waits for payment to be processed
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
 #      | key                     | value            |
@@ -43,7 +43,6 @@ Feature: E2E Card Payments with cachetoken
 #    Then User will see payment status information: "Payment has been successfully processed"
 #    And "submit" callback is called only once
 #    And "success" callback is called only once
-#
 #
 #  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - frictionless card
 #    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
