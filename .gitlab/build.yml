@@ -3,6 +3,8 @@
   extends:
     - .variables
     - .link_node_modules_before_script
+  tags:
+    - docker-specific
   image: ${IMAGE_PIPELINE}
   after_script:
     - mkdir -p "${ARTIFACTS_BUILD_PATH}"

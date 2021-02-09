@@ -3,12 +3,16 @@
     - .fast-tests
     - .parallel-e2e-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
+  tags:
+    - docker-specific
 
 .component-app-html-test:
   extends:
     - .fast-tests
     - .services-app-html-test
   image: ${IMAGE_JS_PAYMENTS_TESTS}
+  tags:
+    - docker-specific
 
 card-payments-headless-component-tests:
   extends:

@@ -10,6 +10,8 @@
     - .services-app-html-test
     - .sequentially-component-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
+  tags:
+    - docker-specific
 
 .visual-regression-tests:
   extends:
