@@ -1,13 +1,9 @@
-Feature: Cardinal Commerce E2E tests
+Feature: Cardinal Commerce E2E tests v1
   As a user
   I want to use card payments method
   In order to check Cardinal Commerce integration
 
-  @reactJS
-    @angular
-    @vueJS
-    @react_native
-    @e2e_cardinal_commerce_v1
+  @e2e_smoke_test @e2e_cardinal_commerce_v1
   Scenario Outline: TC_1 - Successful Authentication, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |

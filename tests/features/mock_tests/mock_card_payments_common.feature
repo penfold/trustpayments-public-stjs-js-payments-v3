@@ -14,7 +14,7 @@ Feature: Card Payments
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "<action_code>"
-    And user waits for payment to be processed
+    And User waits for payment to be processed
     Then User will see that Submit button is "<form_status>" after payment
     And User will see that ALL input fields are "<form_status>"
 
@@ -37,7 +37,7 @@ Feature: Card Payments
     When User opens page with payment form
     Then JSINIT request was sent only once
 
-  @config_defer_init
+  @base_config
   Scenario: Verify number of JSINIT requests together with UpdateJWT
     Given User opens prepared payment form page WITH_UPDATE_JWT
       | jwtName          |

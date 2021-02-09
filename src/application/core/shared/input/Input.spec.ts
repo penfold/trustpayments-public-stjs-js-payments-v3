@@ -3,6 +3,8 @@ import { NOT_IMPLEMENTED_ERROR } from '../../models/constants/Translations';
 import { Utils } from '../utils/Utils';
 import { Validation } from '../validation/Validation';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { instance as mockInstance, mock, when } from 'ts-mockito';
+import { of } from 'rxjs';
 
 jest.mock('./../validation/Validation');
 jest.mock('./../notification/Notification');
@@ -215,6 +217,7 @@ function formFieldFixture() {
   let inputElement: HTMLInputElement;
   let labelElement: HTMLLabelElement;
   let messageElement: HTMLParagraphElement;
+  const configProviderMock: ConfigProvider = mock<ConfigProvider>();
   labelElement = document.createElement('label');
   inputElement = document.createElement('input');
   messageElement = document.createElement('p');
@@ -229,16 +232,17 @@ function formFieldFixture() {
   Input.prototype.getLabel = jest.fn().mockReturnValueOnce(() => {
     throw new Error(NOT_IMPLEMENTED_ERROR);
   });
-  const instance = new Input(
+  when(configProviderMock.getConfig$()).thenReturn(
+    of({
+      stopSubmitFormOnEnter: false
+    })
+  );
+  const instance: Input = new Input(
     'st-form-field-input',
     'st-form-field-message',
     'st-form-field-label',
     'st-form-field__wrapper',
-    {
-      getConfig: () => ({
-        stopSubmitFormOnEnter: false
-      })
-    } as ConfigProvider
+    mockInstance(configProviderMock)
   );
   return { instance, inputElement, messageElement, labelElement };
 }

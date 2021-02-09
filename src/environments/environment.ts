@@ -1,4 +1,4 @@
-declare const WEBSERVICES_URL: string;
+declare const FRAME_URL: string | undefined;
 
 const GATEWAY_URL: string = 'https://webservices.securetrading.net/jwt/';
 const MOCK_GATEWAY_URL: string = 'https://merchant.example.com:8443';
@@ -25,7 +25,7 @@ export const environment = {
     logging: { level: 'on' }
   },
   // @ts-ignore
-  FRAME_URL: WEBSERVICES_URL,
+  FRAME_URL: FRAME_URL || 'https://localhost:8443',
   GATEWAY_URL,
   GA_MEASUREMENT_ID: '42057093-5',
   GA_SCRIPT_SRC: 'https://www.google-analytics.com/analytics_debug.js',

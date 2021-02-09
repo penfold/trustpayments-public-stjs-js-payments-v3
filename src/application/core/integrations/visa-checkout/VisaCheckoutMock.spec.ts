@@ -8,13 +8,15 @@ import { mock, when, instance as mockInstance, verify, anything } from 'ts-mocki
 import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { VisaCheckoutMock } from './VisaCheckoutMock';
 import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
 
 jest.mock('../../shared/dom-methods/DomMethods');
 
 describe('VisaCheckoutMock', () => {
   let instance: VisaCheckoutMock;
   let visaCheckoutSdkProviderMock: VisaCheckoutSdkProvider;
-  let messageBusMock: IMessageBus;
+  let messageBus: IMessageBus;
   let visaCheckoutUpdateServiceMock: VisaCheckoutUpdateService;
 
   const configMock: IConfig = {
@@ -64,15 +66,14 @@ describe('VisaCheckoutMock', () => {
 
   beforeEach(() => {
     visaCheckoutSdkProviderMock = mock(VisaCheckoutSdkProvider);
-    messageBusMock = mock<IMessageBus>();
+    messageBus = new SimpleMessageBus();
     visaCheckoutUpdateServiceMock = mock(VisaCheckoutUpdateService);
 
-    when(messageBusMock.pipe(anything())).thenReturn(of(configMock));
     when(visaCheckoutSdkProviderMock.getSdk$(anything(), anything())).thenReturn(of(visaCheckoutLibMock));
 
     instance = new VisaCheckoutMock(
       mockInstance(visaCheckoutSdkProviderMock),
-      mockInstance(messageBusMock),
+      messageBus,
       mockInstance(visaCheckoutUpdateServiceMock)
     );
   });
@@ -81,8 +82,9 @@ describe('VisaCheckoutMock', () => {
     it('should set VisaCheckout event response listeners and invoke Message Bus with proper data', () => {
       instance.init();
 
-      verify(messageBusMock.pipe(anything())).once();
-      verify(visaCheckoutSdkProviderMock.getSdk$(anything(), anything())).once();
+      messageBus.publish({ type: PUBLIC_EVENTS.VISA_CHECKOUT_CONFIG, data: configMock });
+
+      verify(visaCheckoutSdkProviderMock.getSdk$(configMock, anything())).once();
     });
   });
 });

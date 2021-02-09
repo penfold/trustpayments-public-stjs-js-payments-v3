@@ -12,39 +12,37 @@
     paths:
       - "${ARTIFACTS_BUILD_PATH}"
 
-build-sdk-dev:
+build-sdk-local:
   extends: .build-sdk
   variables:
     ARTIFACTS_BUILD_PATH: ".dist-dev"
   script:
-    - npm config set js-payments:host merchant.securetrading.net
-    - npm run build:dev
+    - npm run build:dev --frame_url="https://library.securetrading.net:8443"
 
-build-sdk-test:
+build-sdk-mock:
   extends: .build-sdk
   variables:
     ARTIFACTS_BUILD_PATH: ".dist-test"
   script:
-    - npm config set js-payments:host merchant.securetrading.net
-    - npm run build:test
+    - npm run build:test --frame_url="https://library.securetrading.net:8443"
 
-build-sdk-prod-review:
+build-sdk-review:
   extends:
     - .build-sdk
     - .rules-when-review
   variables:
-    ARTIFACTS_BUILD_PATH: ".dist-prod"
+    ARTIFACTS_BUILD_PATH: ".dist-release"
   script:
     - npx lerna bootstrap
     - npx lerna version "0.0.0" --no-git-tag-version --no-push --yes
     - npx lerna run build:prod -- --frame_url="https://cdn.eu.trustpayments.com/js-payments-v3/0.0.0-test"
 
-build-sdk-prod-release:
+build-sdk-release:
   extends:
     - .build-sdk
     - .rules-when-release
   variables:
-    ARTIFACTS_BUILD_PATH: ".dist-prod"
+    ARTIFACTS_BUILD_PATH: ".dist-release"
   before_script:
     - . .cicd_scripts/gitlab/release/load_release_artifact.sh "${ARTIFACT_RELEASE_CICD_FILENAME}"
   script:

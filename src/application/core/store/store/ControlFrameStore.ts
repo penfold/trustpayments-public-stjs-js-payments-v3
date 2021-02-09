@@ -8,7 +8,7 @@ import { IControlFrameWindow } from '../../../../shared/interfaces/IControlFrame
 
 @Service()
 export class ControlFrameStore extends Store<IApplicationFrameState> {
-  private static readonly INITIAL_STATE: IApplicationFrameState = {
+  static readonly INITIAL_STATE: IApplicationFrameState = {
     storage: {}
   };
 

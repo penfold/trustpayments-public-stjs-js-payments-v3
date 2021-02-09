@@ -13,15 +13,20 @@ Feature: ApplePay
     Then User will see payment status information: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And APPLE_PAY or AUTH requests were sent only once with correct data
-    @smoke_test_apple_pay
+   # And "submit" callback is called only once
+    And "<callback>" callback is called only once
+   # And submit callback contains JWT response
+   # And submit callback contains THREEDRESPONSE: False
+
+    @apple_pay_smoke_test
     Examples:
-      | action_code | payment_status_message                  | color |
-      | SUCCESS     | Payment has been successfully processed | green |
+      | action_code | payment_status_message                  | color |callback|
+      | SUCCESS     | Payment has been successfully processed | green |success |
     Examples:
-      | action_code | payment_status_message     | color  |
-#      | ERROR       | "Invalid response"          | red    |
-      | DECLINE     | Decline                    | red    |
-      | CANCEL      | Payment has been cancelled | yellow |
+      | action_code | payment_status_message     | color  |callback|
+#      | ERROR       | "Invalid response"          | red    |error|
+      | DECLINE     | Decline                    | red    |error   |
+      | CANCEL      | Payment has been cancelled | yellow |cancel  |
 
   @base_config @extended_tests_apple_pay @translations @apple_test @apple_test_part1
   Scenario Outline: ApplePay - checking translation for "Payment has been cancelled" status for <language>
@@ -32,7 +37,7 @@ Feature: ApplePay
       | language |
       | es_ES    |
 
-  @config_submit_on_success_true @smoke_test_apple_pay @extended_tests_apple_pay @apple_test @apple_test_part1
+  @config_submit_on_success_true @apple_pay_smoke_test @extended_tests_apple_pay @apple_test @apple_test_part1
   Scenario: ApplePay - successful payment with enabled 'submit on success' process
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User chooses ApplePay as payment method - response is set to "SUCCESS"
@@ -138,7 +143,7 @@ Feature: ApplePay
     And "submit" callback is called only once
 
 #    ToDo - Last step is blocked by STJS-800
-  @config_update_jwt_true @smoke_test_apple_pay @apple_test @apple_test_part2
+  @config_update_jwt_true @apple_pay_smoke_test @apple_test @apple_test_part2
   Scenario: ApplePay - Successful payment with updated JWT
     When User calls updateJWT function by filling amount field
     And User chooses ApplePay as payment method - response is set to "SUCCESS"
@@ -148,21 +153,7 @@ Feature: ApplePay
 #    And WALLETVERIFY requests contains updated jwt
 
   #    ToDo - Last step is blocked by STJS-800
-  @config_defer_init @smoke_test_apple_pay @extended_tests_apple_pay @apple_test @apple_test_part2
-  Scenario: ApplePay - Successful payment with deferInit and updated JWT
-    When User calls updateJWT function by filling amount field
-    And User chooses ApplePay as payment method - response is set to "SUCCESS"
-    Then User will see "success" popup
-    And "success" callback is called only once
-    And User will see "submit" popup
-    And "submit" callback is called only once
-    And User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And APPLE_PAY or AUTH requests were sent only once with correct data
-#    And WALLETVERIFY requests contains updated jwt
-
-  #    ToDo - Last step is blocked by STJS-800
-  @config_submit_on_success_true @smoke_test_apple_pay @apple_test @apple_test_part2
+  @config_submit_on_success_true @apple_test @apple_test_part2
   Scenario: ApplePay - update JWT and submitOnSuccess
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User calls updateJWT function by filling amount field

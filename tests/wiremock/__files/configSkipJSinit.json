@@ -5,7 +5,6 @@
   },
   "analytics": true,
   "animatedCard": false,
-  "deferInit": false,
   "fieldsToSubmit": [
     "pan",
     "expirydate",
