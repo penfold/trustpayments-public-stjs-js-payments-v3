@@ -19,6 +19,8 @@
     - .services-app-html-dev
     - .sequentially-e2e-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
+  tags:
+    - docker-specific
 
 # smoke tests executed on review branches
 .apple-test-browserstack-component-test:
