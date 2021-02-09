@@ -25,7 +25,7 @@
   variables:
     FEATURE_FILE_NAME: 'visa_checkout.feature'
 
-e2e-cardinal-commerce-app-html-dev:
+.e2e-cardinal-commerce-app-html-dev:
   extends:
     - .e2e-tests
     - .services-app-html-dev
@@ -33,7 +33,7 @@ e2e-cardinal-commerce-app-html-dev:
     FEATURE_FILES_DIR: 'features/e2e_cardinal_commerce'
   parallel: 8
 
-e2e-cardinal-commerce-app-html-release:
+.e2e-cardinal-commerce-app-html-release:
   extends:
     - .e2e-tests
     - .service-app-html-prod-merchant
@@ -42,13 +42,13 @@ e2e-cardinal-commerce-app-html-release:
     FEATURE_FILES_DIR: 'features/e2e_cardinal_commerce'
   parallel: 8
 
-e2e-app-html-dev:
+.e2e-app-html-dev:
   extends:
     - .e2e-tests
     - .services-app-html-dev
   parallel: 18
 
-e2e-app-html-release:
+.e2e-app-html-release:
   extends:
     - .e2e-tests
     - .service-app-html-prod-merchant
@@ -63,7 +63,7 @@ e2e-app-html-release:
   variables:
     URL_TO_SCAN: "https://library.securetrading.net:8443"
 
-zap-baseline-scan-merchant-securetrading-net-dev:
+.zap-baseline-scan-merchant-securetrading-net-dev:
   extends:
     - .zap-baseline-scan
     - .services-app-html-dev
@@ -71,7 +71,7 @@ zap-baseline-scan-merchant-securetrading-net-dev:
   variables:
     ZAP_CONFIG_PATH: "baseline-scan.conf"
 
-zap-baseline-scan-library-securetrading-net-dev:
+.zap-baseline-scan-library-securetrading-net-dev:
   extends:
     - .zap-baseline-scan
     - .services-app-html-dev
@@ -79,7 +79,7 @@ zap-baseline-scan-library-securetrading-net-dev:
   variables:
     ZAP_CONFIG_PATH: "baseline-scan.conf"
 
-zap-baseline-scan-merchant-securetrading-net-release:
+.zap-baseline-scan-merchant-securetrading-net-release:
   extends:
     - .zap-baseline-scan
     - .service-app-html-prod-merchant
@@ -88,7 +88,7 @@ zap-baseline-scan-merchant-securetrading-net-release:
   variables:
     ZAP_CONFIG_PATH: "baseline-scan.conf"
 
-zap-baseline-scan-library-securetrading-net-release:
+.zap-baseline-scan-library-securetrading-net-release:
   extends:
     - .zap-baseline-scan
     - .service-app-html-prod-library
