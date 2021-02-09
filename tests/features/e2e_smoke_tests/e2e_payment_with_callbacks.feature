@@ -18,6 +18,7 @@ Feature: payment flow with callbacks
     |THREEDQUERY AUTH        |
     |ACCOUNTCHECK THREEDQUERY|
 
+  @test
   Scenario Outline: Cardinal V1 TC_1 - Successful Authentication, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -36,7 +37,7 @@ Feature: payment flow with callbacks
     Examples:
       | request_types            |
       | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
+#      | ACCOUNTCHECK THREEDQUERY |
 
 #  TODO - STJS-1278
 #  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - non-frictionless card
