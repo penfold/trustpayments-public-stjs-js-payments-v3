@@ -46,7 +46,7 @@ e2e-app-html-dev:
   extends:
     - .e2e-tests
     - .services-app-html-dev
-  parallel: 18
+  parallel: 28
 
 e2e-app-html-release:
   extends:
