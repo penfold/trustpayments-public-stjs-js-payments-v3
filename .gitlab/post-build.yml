@@ -53,8 +53,6 @@ build-app-html-release:
 build-payments-tests:
   extends: .utility-images-build
   stage: post-build
-  tags:
-    - docker-specific
   variables:
     UTILITY_NAME: 'payments-tests'
     DOCKERFILE_PATH: .cicd_scripts/docker/payments-tests/Dockerfile
@@ -64,8 +62,6 @@ build-payments-tests:
 build-wiremock:
   extends: .utility-images-build
   stage: post-build
-  tags:
-    - docker-specific
   variables:
     UTILITY_NAME: 'wiremock'
     BUILD_ARGS_EXTRA: --build-arg COPY_FROM=./tests
