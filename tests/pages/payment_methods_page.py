@@ -547,7 +547,7 @@ class PaymentMethodsPage(BasePage):
             add_to_shared_dict('assertion_message', assertion_message)
             assert 'undefined' in response, assertion_message
 
-    def validate_number_in_callback_counter_popup(self, callback_popup):
+    def validate_number_in_callback_counter_popup(self, callback_popup, expected_callback_number):
         counter = ''
         if 'success' in callback_popup:
             counter = self._action.get_text_from_last_element(PaymentMethodsLocators.callback_success_counter)
@@ -559,7 +559,7 @@ class PaymentMethodsPage(BasePage):
             counter = self._action.get_text_from_last_element(PaymentMethodsLocators.callback_submit_counter)
         assertion_message = f'Number of {callback_popup} callback is not correct but should be 1 but is {counter}'
         add_to_shared_dict('assertion_message', assertion_message)
-        assert '1' in counter, assertion_message
+        assert expected_callback_number in counter, assertion_message
 
     def validate_placeholders(self, card_number, exp_date, cvv):
         self.validate_placeholder(FieldType.CARD_NUMBER.name, card_number)
