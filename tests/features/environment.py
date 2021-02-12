@@ -40,8 +40,6 @@ def before_all(context):
     setup_debug_on_error(context.configuration)
 
 
-
-
 def disable_headless_for_visa_checkout(context):
     if 'visa_checkout' in context.scenario.tags:
         context.configuration.HEADLESS = False
@@ -72,7 +70,7 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
-    if BEHAVE_DEBUG_ON_ERROR and scenario.status == "failed":
+    if BEHAVE_DEBUG_ON_ERROR and scenario.status == 'failed':
         # -- ENTER DEBUGGER: Zoom in on failure location.
         # NOTE: Use IPython debugger, same for pdb (basic python debugger).
         import ipdb
