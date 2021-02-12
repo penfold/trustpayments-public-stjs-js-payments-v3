@@ -34,6 +34,7 @@ def setup_debug_on_error(userdata):
 
 
 def before_all(context):
+    setup_debug_on_error(context.config.userdata)
     """Run before the whole shooting match"""
     context.configuration = CONFIGURATION
     MockServer.start_mock_server()
@@ -69,6 +70,12 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
+    if BEHAVE_DEBUG_ON_ERROR and scenario.status == "failed":
+        # -- ENTER DEBUGGER: Zoom in on failure location.
+        # NOTE: Use IPython debugger, same for pdb (basic python debugger).
+        import ipdb
+        ipdb.post_mortem(scenario.exc_traceback)
+
     """Run after each scenario"""
     LOGGER.info('AFTER SCENARIO')
     if scenario.status == 'failed':
