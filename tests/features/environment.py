@@ -19,6 +19,7 @@ from utils.reporter import Reporter
 from utils.test_data import TestData
 from utils.visual_regression.screenshot_manager import ScreenshotManager
 from utils.waits import Waits
+import ipdb
 
 BEHAVE_DEBUG_ON_ERROR = False
 LOGGER = get_logger(INFO)
@@ -57,7 +58,8 @@ def before_scenario(context, scenario):
     extensions = WebElementsExtensions(driver_factory=context.driver_factory, configuration=context.configuration)
     context.executor = Browser(driver_factory=context.driver_factory, configuration=context.configuration)
     context.reporter = Reporter(driver_factory=context.driver_factory, configuration=context.configuration)
-    context.screenshot_manager = ScreenshotManager(driver_factory=context.driver_factory, configuration=context.configuration)
+    context.screenshot_manager = ScreenshotManager(driver_factory=context.driver_factory,
+                                                   configuration=context.configuration)
     context.page_factory = PageFactory(executor=context.executor, extensions=extensions,
                                        reporter=context.reporter, configuration=context.configuration,
                                        wait=context.waits)
@@ -70,13 +72,10 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
+    """Run after each scenario"""
     if BEHAVE_DEBUG_ON_ERROR and scenario.status == 'failed':
-        # -- ENTER DEBUGGER: Zoom in on failure location.
-        # NOTE: Use IPython debugger, same for pdb (basic python debugger).
-        import ipdb
         ipdb.post_mortem(scenario.exc_traceback)
 
-    """Run after each scenario"""
     LOGGER.info('AFTER SCENARIO')
     if scenario.status == 'failed':
         LOGGER.info('Printing console logs:')
