@@ -70,7 +70,7 @@ win10-Chrome-latest-visual-tests-styling:
 OSXCatalina-Safari-13.1-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-tests-always
   variables:
     OS: OS X
     OS_VERSION: Catalina
@@ -162,7 +162,7 @@ SamsungGalaxyS20-10.0-visual-tests-styling:
 win8.1-Chrome-latest-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-tests-always
   variables:
     OS: Windows
     OS_VERSION: '8.1'
@@ -174,7 +174,7 @@ win8.1-Chrome-latest-smoke-tests:
 OSXCatalina-Chrome-latest-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-tests-always
   variables:
     OS: OS X
     OS_VERSION: Catalina
@@ -187,7 +187,7 @@ OSXCatalina-Chrome-latest-smoke-tests:
 OSXCatalina-Firefox-latest-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-tests-always
   variables:
     OS: OS X
     OS_VERSION: Catalina
@@ -202,7 +202,7 @@ OSXCatalina-Firefox-latest-smoke-tests:
 win10-Edge-latest-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-tests-always
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -215,7 +215,7 @@ win10-Edge-latest-smoke-tests:
 win10-Edge-18.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-tests-always
   variables:
     OS: Windows
     OS_VERSION: 10
@@ -228,7 +228,7 @@ win10-Edge-18.0-smoke-tests:
 OSXHS-Safari-11.1-smoke-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-tests-always
   variables:
     OS: OS X
     OS_VERSION: High Sierra
