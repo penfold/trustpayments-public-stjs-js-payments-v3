@@ -44,6 +44,7 @@ def load_config():
         'PROJECT_NAME': get_from_env('PROJECT_NAME', 'JS Payments Interface'),
         'BUILD_NAME': get_from_env('BUILD_NAME', 'Behavioral test: ' + str(date.today())),
         'BROWSERSTACK_DEBUG': get_from_env('BROWSERSTACK_DEBUG', 'true'),
+        'BEHAVE_DEBUG_ON_ERROR': get_from_env('BEHAVE_DEBUG_ON_ERROR', 'true')
     }
 
     return AttrDict(config)

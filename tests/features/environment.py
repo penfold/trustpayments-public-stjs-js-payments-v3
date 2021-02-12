@@ -34,10 +34,12 @@ def setup_debug_on_error(userdata):
 
 
 def before_all(context):
-    setup_debug_on_error(context.config.userdata)
     """Run before the whole shooting match"""
     context.configuration = CONFIGURATION
     MockServer.start_mock_server()
+    setup_debug_on_error(context.configuration)
+
+
 
 
 def disable_headless_for_visa_checkout(context):
