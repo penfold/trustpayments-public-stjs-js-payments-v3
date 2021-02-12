@@ -30,7 +30,7 @@ def setup_debug_on_error(userdata):
     """Debug-on-Error(in case of step failures) providing, by using after_step() hook.
     The debugger starts when step definition fails"""
     global BEHAVE_DEBUG_ON_ERROR
-    BEHAVE_DEBUG_ON_ERROR = userdata.getbool('BEHAVE_DEBUG_ON_ERROR')
+    BEHAVE_DEBUG_ON_ERROR = userdata.BEHAVE_DEBUG_ON_ERROR
 
 
 def before_all(context):
