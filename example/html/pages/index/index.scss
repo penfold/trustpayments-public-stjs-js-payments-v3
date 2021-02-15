@@ -1,0 +1,38 @@
+.st-helper-actions {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: calc(-100% + 30px);
+  background: #eeeeee;
+  border: 1px solid #000000;
+  box-sizing: border-box;
+  padding: 5px;
+  z-index: 1000000;
+  border-radius: 0 8px 8px 0;
+  transition: left 1s;
+
+  &__toggler {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 20px;
+    height: 100%;
+    color: #aaa;
+    text-decoration: none;
+    font-size: 24px;
+    padding: 5px;
+
+    &::before {
+      content: '»';
+    }
+  }
+
+  &--unfold {
+    left: 0;
+
+    .st-helper-actions__toggler::before {
+      content: '«';
+    }
+  }
+}
