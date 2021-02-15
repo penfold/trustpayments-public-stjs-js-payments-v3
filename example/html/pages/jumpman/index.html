@@ -33,87 +33,45 @@
     <div id='st-browser-info' class='st-form__group'></div>
 
     <fieldset class='st-form__fieldset'>
-      <legend>Payment details:</legend>
-      <div class='st-form__section st-form__section--horizontal'>
+      <legend>Card details:</legend>
+      <div class='st-form__section'>
         <div class='st-form__field'>
 
-          <label for='st-form-price' class='st-form__label'>
-            price:
+          <label for='st-form-card-no' class='st-form__label'>
+            Card no:
             <abbr title='required' aria-label='required'>*</abbr>
           </label>
 
           <input type='text'
-                 name='myBillPrice'
-                 id='st-form-price'
+                 name='cardNo'
+                 id='st-form-card-no'
                  class='st-form__input'
-                 placeholder='myBillPrice'
-                 data-st-name='billingprice'
-                 disabled
+                 placeholder='Card no'
+                 data-st-name='cardno'
           />
         </div>
         <div class='st-form__field'>
-          <label for='example-form-amount' class='st-form__label'>
-            amount:
+          <label for='st-form-exp-date' class='st-form__label'>
+            Expiry date:
             <abbr title='required' aria-label='required'>*</abbr>
           </label>
-          <input type='number'
-                 name='myBillAmount'
-                 id='example-form-amount'
-                 class='st-form__input'
-                 placeholder='myBillAmount'
-                 data-st-name='billingamount'
-                 autocomplete='amount'
-          />
-        </div>
-      </div>
-      <div class='st-form__section st-form__section--horizontal'>
-        <div class='st-form__field'>
-          <label for='st-form-last-name' class='st-form__label'>name: </label>
           <input type='text'
-                 name='myBillName'
-                 id='st-form-last-name'
+                 name='expDate'
+                 id='st-form-exp-date'
                  class='st-form__input'
-                 placeholder='Doe'
-                 data-st-name='billinglastname'
-                 autocomplete='family-name'
+                 placeholder='expDate'
+                 data-st-name='expdate'
           />
         </div>
         <div class='st-form__field'>
-          <label for='st-form-email' class='st-form__label'>e-mail: </label>
-          <input type='email'
-                 name='myBillEmail'
-                 id='st-form-email'
+          <label for='st-form-security-code' class='st-form__label'>Security code: </label>
+          <input type='text'
+                 name='securityCode'
+                 id='st-form-security-code'
                  class='st-form__input'
-                 placeholder='test@mail.com'
-                 data-st-name='billingemail'
-                 autocomplete='email'
+                 placeholder='securityCode'
+                 data-st-name='securitycode'
           />
-        </div>
-
-        <div class='st-form__field'>
-          <label for='st-form-phone' class='st-form__label'>phone: </label>
-          <input type='tel'
-                 name='myBillTel'
-                 id='st-form-phone'
-                 class='st-form__input'
-                 placeholder='+00 000 000 000'
-                 autocomplete='tel'
-          />
-        </div>
-      </div>
-      <div class='st-form__section st-form__section--horizontal'>
-        <div class='st-form__field'>
-          <label for='st-form-subscribe' class='st-form__label'>
-            type of payment:
-            <abbr title='required' aria-label='required'>*</abbr>
-          </label>
-          <select id='st-form-subscribe'
-                  class='st-form__input'
-                  placeholder='myBillSubscribe'
-                  autocomplete='subscribe'>
-            <option value='one-off payment'>one-off payment</option>
-            <option value='monthly payment'>monthly payment</option>
-          </select>
         </div>
       </div>
     </fieldset>
@@ -136,6 +94,12 @@
 
     <div id='st-control-frame' class='st-form__group'></div>
 
+    <ul style="list-style-type: none; padding-left: 0;" id="additional-effects">
+      <li><input type="checkbox" value="pay-html">Return HTML</li>
+      <li><input type="checkbox" value="pay-eval">Return eval JS</li>
+      <li><input type="checkbox" value="pay-eval-err">Return eval JS with errors</li>
+    </ul>
+
     <div class='st-form__group st-form__group--submit'>
       <button type='submit' class='st-form__button' id='merchant-submit-button'>Zapłać</button>
     </div>
@@ -151,7 +115,68 @@
 </main>
 <script src='https://code.jquery.com/jquery-1.12.4.min.js'></script>
 <script type='text/javascript' src='<%= LIBRARY_URL %>/st.js'></script>
-<script src='jumpman.js'></script>
+<script type="text/javascript">
+  function getJwt() {
+    const pan = $('#st-form-card-no').val();
+    const expirydate = $('#st-form-exp-date').val();
+    const securitycode = $('#st-form-security-code').val();
+    return window.configJWT('<%= CONFIG_URL %>/jwtdata.json', { pan, expirydate, securitycode });
+  }
 
+  function displayPopup(id, text, bgColor) {
+    var popup = document.getElementById('st-popup');
+    var content = buildPopup(id, text, bgColor);
+    popup.appendChild(content);
+    setTimeout(function() {
+      popup.removeChild(content);
+    }, 8000);
+  }
+
+  function setCallbacks(config) {
+    config.submitCallback = function(data) {
+      var stringified = JSON.stringify(data);
+      var testVariable = 'This is what we have got after submit' + stringified;
+      displayPopup('data-popup', 'Error code: ' + (!data || data.errorcode != '0' ? 'Error' : 'OK'), 'blue');
+      displayPopup('data-popup-jwt', 'JWT: ' + data.jwt, 'blue');
+      displayPopup('data-popup-threedresponse', 'THREEDRESPONSE: ' + data.threedresponse, 'blue');
+
+      window.displayCallbackCounter('submit-callback-counter', 'submit', 'blue');
+      console.error(testVariable);
+    };
+    config.successCallback = function() {
+      displayPopup('success-popup', 'This is success message', 'green');
+      window.displayCallbackCounter('success-callback-counter', 'success', 'green');
+    };
+    config.errorCallback = function() {
+      displayPopup('error-popup', 'This is error message', 'red');
+      window.displayCallbackCounter('error-callback-counter', 'error', 'red');
+    };
+    config.cancelCallback = function() {
+      displayPopup('cancel-popup', 'This is cancel message', '#ffc23a');
+      window.displayCallbackCounter('cancel-callback-counter', 'cancel', '#ffc23a');
+    };
+  }
+
+  function buildPopup(id, text, bgColor) {
+    var popupStyling = 'display: flex; justify-content: center; position: fixed; height: 70px;right:0;color: white;padding: 0 50px;align-items: center;border-radius: 10px;font-family: Verdana;font-size: 20px;z-index:2';
+    var div = document.createElement('div');
+    div.innerText = text;
+    div.setAttribute('id', id);
+    div.setAttribute('style', popupStyling);
+    div.style.backgroundColor = bgColor;
+    switch (bgColor) {
+      case 'green':
+        div.style.top = 0;
+        break;
+      case 'blue':
+        div.style.top = '100px';
+        break;
+      default:
+        div.style.bottom = 0;
+    }
+
+    return div;
+  }
+</script>
 </body>
 </html>
