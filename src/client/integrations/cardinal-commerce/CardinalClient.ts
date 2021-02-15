@@ -3,9 +3,9 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IInitializationData } from './data/IInitializationData';
 import { CardinalProvider } from './CardinalProvider';
-import { first, mapTo, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { first, mapTo, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ICardinal } from './ICardinal';
-import { defer, Observable } from 'rxjs';
+import { defer, Observable, Subject } from 'rxjs';
 import { PaymentEvents } from '../../../application/core/models/constants/PaymentEvents';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { PaymentBrand } from '../../../application/core/models/constants/PaymentBrand';
@@ -17,14 +17,20 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { IOnCardinalValidated } from '../../../application/core/models/IOnCardinalValidated';
 import { IVerificationData } from '../../../application/core/services/three-d-verification/data/IVerificationData';
 import { IVerificationResult } from '../../../application/core/services/three-d-verification/data/IVerificationResult';
+import { ActionCode } from '../../../application/core/services/three-d-verification/data/ActionCode';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 
 @Service()
 export class CardinalClient {
   private static readonly CARDINAL_VALIDATION_ERROR = 4000;
   private cardinal$: Observable<ICardinal>;
+  private threeDPopupCancel$: Subject<void>;
+  private destroy$: Observable<IMessageBusEvent<unknown>>;
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
+    private messageBus: IMessageBus,
     private cardinalProvider: CardinalProvider,
     private configProvider: ConfigProvider
   ) {
@@ -34,6 +40,9 @@ export class CardinalClient {
         shareReplay(1)
       )
     );
+
+    this.threeDPopupCancel$ = new Subject<void>();
+    this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
   init(): void {
@@ -52,6 +61,10 @@ export class CardinalClient {
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.CARDINAL_START)
       .thenRespond((event: IMessageBusEvent<IInitializationData>) => this.cardinalStart(event.data));
+
+    this.messageBus
+      .pipe(ofType(PUBLIC_EVENTS.THREED_CANCEL), takeUntil(this.destroy$))
+      .subscribe(() => this.cancelThreeDProcess());
   }
 
   private cardinalSetup(data: IInitializationData): Observable<void> {
@@ -90,6 +103,15 @@ export class CardinalClient {
                 subscriber.complete();
                 cardinal.off(PaymentEvents.VALIDATED);
               }
+            });
+
+            this.threeDPopupCancel$.subscribe(() => {
+              subscriber.next({
+                validated: false,
+                actionCode: ActionCode.FAILURE,
+                errorNumber: 4001,
+                errorDescription: '3DS process has been cancelled'
+              });
             });
 
             const { acsUrl, payload, transactionId, jwt } = data;
@@ -139,5 +161,16 @@ export class CardinalClient {
           })
       )
     );
+  }
+
+  private cancelThreeDProcess(): void {
+    this.threeDPopupCancel$.next();
+    const cardinalElementContainer = document.getElementById('Cardinal-ElementContainer');
+
+    if (!cardinalElementContainer) {
+      return;
+    }
+
+    cardinalElementContainer.parentNode.removeChild(cardinalElementContainer);
   }
 }

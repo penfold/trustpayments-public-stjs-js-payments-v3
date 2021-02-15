@@ -55,13 +55,3 @@
 #    Then User will see payment status information: "Payment has been successfully processed"
 #    And RISKDEC, ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
 #    And AUTH request was sent only once
-#
-#  @config_immediate_payment_and_defer_init
-#  Scenario: Immediate payment with deferInit - successful payment
-#    When THREEDQUERY mock response is set to "ENROLLED_Y"
-#    And ACS mock response is set to "OK"
-#    And AUTH response is set to "OK"
-#    And User opens payment page
-#    Then User will see payment status information: "Payment has been successfully processed"
-#    And JSINIT request was sent only once
-#    And AUTH and THREEDQUERY requests were sent only once

@@ -86,7 +86,7 @@ Feature: E2E for tokenisation
 
 
   Scenario: Updating payment references for tokenization - fully authentication in second payment
-    Given JS library configured by inline params TOKENISATION_WITH_DEFER_INIT_CONFIG and jwt JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
+    Given JS library configured by inline params TOKENISATION_CONFIG and jwt JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
       | baseamount              | 70000            |

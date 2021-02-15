@@ -195,8 +195,8 @@
 #    Then User will see payment status information: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #
-#  Scenario: Successful Authentication by Visa checkout with updateJwt and deferinit true
-#    Given JS library is configured with VISA_CHECKOUT_WITH_DEFERINIT_TRUE_CONFIG and BASE_JWT
+#  Scenario: Successful Authentication by Visa checkout with updateJwt
+#    Given JS library is configured with VISA_CHECKOUT_CONFIG and BASE_JWT
 #    And User opens example page WITH_UPDATE_JWT
 #      | jwtName          |
 #      | BASE_UPDATED_JWT |
