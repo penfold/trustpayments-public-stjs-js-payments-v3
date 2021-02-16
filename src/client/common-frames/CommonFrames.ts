@@ -42,7 +42,9 @@ export class CommonFrames {
     private jwtDecoder: JwtDecoder,
     private localStorage: BrowserLocalStorage,
     private messageBus: IMessageBus
-  ) {
+  ) {}
+
+  init(): void {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
     this.validation = new Validation();
 
@@ -59,9 +61,6 @@ export class CommonFrames {
       this.submitOnSuccess = config.submitOnSuccess;
       this.styles = this.getControlFrameStyles(config.styles);
     });
-  }
-
-  init(): void {
     this.appendControlFrame();
     this.merchantInputsListener();
     this.transactionCompleteListener();
