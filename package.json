@@ -156,6 +156,7 @@
     "bowser": "2.11.0",
     "browserslist": "4.14.7",
     "core-js": "2.6.11",
+    "element-remove": "1.0.4",
     "fastestsmallesttextencoderdecoder": "1.0.22",
     "i18next": "19.8.4",
     "joi": "17.3.0",
