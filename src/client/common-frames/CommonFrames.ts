@@ -92,7 +92,9 @@ export class CommonFrames {
   }
 
   private onTransactionCompleteEvent(data: IPaymentAuthorized): void {
+    this.removeHiddenInputs();
     if (data.errorcode === 'cancelled') {
+      this.removeThreedQuerySubmitFields();
       DomMethods.addDataToForm(this.form, { errorcode: 'cancelled', errormessage: PAYMENT_CANCELLED });
     } else {
       DomMethods.addDataToForm(this.form, data, this.getSubmitFieldsFromPaymentResponse(data));
@@ -187,6 +189,23 @@ export class CommonFrames {
     }
 
     return { controlFrame: {} };
+  }
+
+  private removeHiddenInputs(): void {
+    const threedQuerySubmitFields: string[] = ['enrolled', 'settlestatus'];
+    const basicSubmitFields: string[] = ['jwt', 'threedresponse', 'errordata', 'errorcode'];
+
+    [...basicSubmitFields, ...this.submitFields]
+      .filter((name: string) => !threedQuerySubmitFields.includes(name))
+      .flatMap((name: string) => Array.from(document.getElementsByName(name)))
+      .filter(Boolean)
+      .forEach((element: HTMLElement) => element.remove());
+  }
+
+  private removeThreedQuerySubmitFields(): void {
+    Array.from(document.getElementsByName('settlestatus'))
+      .filter(Boolean)
+      .forEach((element: HTMLElement) => element.remove());
   }
 
   private onMerchantFieldInput(): void {
