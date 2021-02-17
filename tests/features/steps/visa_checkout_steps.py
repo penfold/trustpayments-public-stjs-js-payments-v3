@@ -35,7 +35,7 @@ def step_impl(context):
 @step('User selects (?P<card>.+) card on visa checkout popup')
 def step_impl(context, card: Card):
     visa_checkout_page = context.page_factory.get_page(page_name='visa_checkout')
-    card = Card.__members__[card]
+    card = Card.__members__[card] # pylint: disable=unsubscriptable-object
     visa_checkout_page.select_card_by_ending_number(card.formatted_number[-4:])
 
 

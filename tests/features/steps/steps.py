@@ -16,7 +16,6 @@ from utils.enums.jwt_config import JwtConfig
 from utils.helpers.request_executor import add_to_shared_dict
 from models.jwt_payload_builder import JwtPayloadBuilder
 
-
 use_step_matcher('re')
 
 
@@ -39,9 +38,9 @@ def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
 
 
 @step('User fills payment form with defined card (?P<card>.+)')
-def step_impl(context, card: Card):
+def fill_payment_form_with_defined_card(context, card: Card):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    card = Card.__members__[card]
+    card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
     context.pan = str(card.number)
     context.exp_date = str(card.expiration_date)
     context.cvv = str(card.cvv)
@@ -50,10 +49,17 @@ def step_impl(context, card: Card):
     payment_page.fill_payment_form(card.number, card.expiration_date, card.cvv)
 
 
+@step('User re-fills payment form with defined card (?P<card>.+)')
+def step_impl(context, card: Card):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.clear_card_number_field()
+    fill_payment_form_with_defined_card(context, card)
+
+
 @step('User fills only security code for saved (?P<card>.+) card')
 def step_impl(context, card: Card):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    card = Card.__members__[card]
+    card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
     payment_page.fill_payment_form_with_only_cvv(card.cvv)
 
 
