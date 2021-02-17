@@ -10,7 +10,8 @@ from utils.mock_handler import stub_st_request_type
 use_step_matcher('re')
 
 
-@when('User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)" and cvv "(?P<cvv>.+)"')
+@when(
+    'User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)" and cvv "(?P<cvv>.+)"')
 def step_impl(context, card_number, exp_date, cvv):
     context.pan = card_number
     context.exp_date = exp_date
@@ -63,6 +64,18 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.click_additional_btn()
+
+
+@step('User toggle action buttons bar')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.toggle_action_buttons_bar()
+
+
+@step('User clicks cancel 3ds action button')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.click_cancel_3ds_btn()
 
 
 @step('User accept success alert')
@@ -122,7 +135,7 @@ def step_impl(context, form_status):
 @step('User will see that (?P<field>.+) input fields are "(?P<form_status>.+)"')
 def step_impl(context, field: FieldType, form_status):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    field = FieldType.__members__[field]
+    field = FieldType.__members__[field] # pylint: disable=unsubscriptable-object
     if field.name == 'ALL':
         payment_page.validate_form_status(FieldType.SECURITY_CODE.name, form_status)
         payment_page.validate_form_status(FieldType.CARD_NUMBER.name, form_status)
@@ -280,6 +293,12 @@ def step_impl(context):
     payment_page.press_enter_button_on_security_code_field()
 
 
+@step('User see (?P<auth_type>.+) authentication modal is displayed')
+def step_impl(context, auth_type):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.validate_cardinal_authentication_modal_appears(auth_type)
+
+
 @step('User fills (?P<auth_type>.+) authentication modal')
 def step_impl(context, auth_type):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
@@ -352,7 +371,7 @@ def step_impl(context):
 @then('User will see that browser is marked as supported: "(?P<is_supported>.+)"')
 def step_impl(context, is_supported):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    #ToDo - clarify if High Sierra should be removed from the pipeline (Safari 11 - not supported)
+    # ToDo - clarify if High Sierra should be removed from the pipeline (Safari 11 - not supported)
     # skipping assertion on mobile devices, as browserstack doesn't allow to set up latest version of browser
     if 'High Sierra' not in context.configuration.REMOTE_OS_VERSION and not context.configuration.REMOTE_DEVICE:
         payment_page.validate_if_browser_is_supported_in_info_callback(is_supported)

@@ -72,3 +72,10 @@ class PaymentMethodsLocators:
 
     not_private_connection_text: By = (By.XPATH, '//*[contains(text(),\'This Connection Is Not Private\')]')
     animated_card: By = (By.ID, 'st-animated-card')
+
+    # Js library actions (API methods)
+    actions_bar_toggle: By = (By.ID, 'st-actions-toggler')
+    action_btn_remove_frames: By = (By.ID, 'st-action-remove')
+    action_btn_destroy_st: By = (By.ID, 'st-action-destroy')
+    action_btn_start_st: By = (By.ID, 'st-action-start')
+    action_btn_cancel_3ds: By = (By.ID, 'st-action-cancel-3ds')
