@@ -157,7 +157,7 @@
     "browserslist": "4.14.7",
     "core-js": "2.6.11",
     "fastestsmallesttextencoderdecoder": "1.0.22",
-    "i18next": "19.8.4",
+    "i18next": "19.8.9",
     "joi": "17.3.0",
     "jwt-decode": "3.1.2",
     "location-origin": "1.1.4",
