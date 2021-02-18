@@ -177,3 +177,10 @@ def accept_untrusted_pages_on_safari_browsers(context):
     payment_page.open_page(MockUrl.WEBSERVICES_STJS_URI.value)
     payment_page.open_page(MockUrl.LIBRARY_URL.value)
     payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
+
+
+@step("User opens (?P<html_page>.+) example page")
+def step_impl(context, html_page):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    url = f'{CONFIGURATION.URL.BASE_URL}/{html_page}?'
+    payment_page.open_page(url)

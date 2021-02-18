@@ -15,7 +15,7 @@ def load_config():
     Set config env variables
     """
     config = {
-        'URL': AttrDict({'BASE_URL': get_from_env('BASE_URL', 'https://merchant.securetrading.net'),
+        'URL': AttrDict({'BASE_URL': get_from_env('BASE_URL', 'https://10.10.30.146:8444'),
                          'REACT_APP': get_from_env('REACT_APP', 'https://localhost:3000')}),
         'REPORTS_PATH': get_path_from_env('AUTOMATION_REPORTS', 'reports'),
         'SCREENSHOTS_PATH': get_path_from_env('AUTOMATION_SCREENSHOTS', 'screenshots'),

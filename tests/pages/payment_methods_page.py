@@ -62,6 +62,14 @@ class PaymentMethodsPage(BasePage):
                                                                    PaymentMethodsLocators.security_code_input_field,
                                                                    value)
 
+    def fill_custom_credit_card_field(self, field_type, value):
+        if field_type == FieldType.CARD_NUMBER.name:
+            self._action.send_keys(PaymentMethodsLocators.custom_card_number_input_field, value)
+        elif field_type == FieldType.EXPIRATION_DATE.name:
+            self._action.send_keys(PaymentMethodsLocators.custom_date_input_field, value)
+        elif field_type == FieldType.SECURITY_CODE.name:
+            self._action.send_keys(PaymentMethodsLocators.custom_code_input_field, value)
+
     def fill_payment_form(self, card_number, expiration_date, cvv):
         self.wait_for_payment_form_to_load()
         if 'IE' in self._configuration.BROWSER:
@@ -72,6 +80,11 @@ class PaymentMethodsPage(BasePage):
             self.fill_credit_card_field(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field(FieldType.EXPIRATION_DATE.name, expiration_date)
             self.fill_credit_card_field(FieldType.SECURITY_CODE.name, cvv)
+
+    def fill_custom_payment_form(self, card_number, expiration_date, cvv):
+        self.fill_custom_credit_card_field(FieldType.CARD_NUMBER.name, card_number)
+        self.fill_custom_credit_card_field(FieldType.EXPIRATION_DATE.name, expiration_date)
+        self.fill_custom_credit_card_field(FieldType.SECURITY_CODE.name, cvv)
 
     def fill_payment_form_without_cvv(self, card_number, expiration_date):
         if 'IE' in self._configuration.BROWSER:

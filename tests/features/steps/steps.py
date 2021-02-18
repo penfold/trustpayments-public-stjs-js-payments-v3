@@ -50,6 +50,18 @@ def step_impl(context, card: Card):
     payment_page.fill_payment_form(card.number, card.expiration_date, card.cvv)
 
 
+@step('User fills custom payment form with defined card (?P<card>.+)')
+def step_impl(context, card: Card):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    card = Card.__members__[card]
+    context.pan = str(card.number)
+    context.exp_date = str(card.expiration_date)
+    context.cvv = str(card.cvv)
+    if 'e2e_config_for_iframe' in context.scenario.tags:
+        payment_page._action.switch_to_iframe(FieldType.PARENT_IFRAME.value)
+    payment_page.fill_custom_payment_form(card.number, card.expiration_date, card.cvv)
+
+
 @step('User fills only security code for saved (?P<card>.+) card')
 def step_impl(context, card: Card):
     payment_page = context.page_factory.get_page(page_name='payment_methods')

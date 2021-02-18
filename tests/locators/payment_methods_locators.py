@@ -47,6 +47,11 @@ class PaymentMethodsLocators:
     security_code_label: By = (By.XPATH, '//label[@for=\'st-security-code-input\']')
     pay_button_label: By = (By.XPATH, '//button[@type=\'submit\']')
 
+    # Custom credit card form
+    custom_card_number_input_field: By = (By.ID, 'st-form-card-no')
+    custom_date_input_field: By = (By.ID, 'st-form-exp-date')
+    custom_code_input_field: By = (By.ID, 'st-form-security-code')
+
     popups: By = (By.CSS_SELECTOR, '.st-popup div')
     callback_success_popup: By = (By.ID, 'success-popup')
     callback_error_popup: By = (By.ID, 'error-popup')

@@ -94,7 +94,7 @@ def _create_phantom_web_driver(**args) -> RemoteWebDriver:
 
 def _get_local_options(headless):
     options = Options()
-    options.headless = headless
+    # options.headless = headless
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--allow-insecure-localhost')
