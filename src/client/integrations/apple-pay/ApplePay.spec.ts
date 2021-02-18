@@ -15,6 +15,11 @@ import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySess
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { ApplePay } from './ApplePay';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
+import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
+import { ApplePayClientErrorCode } from '../../../application/core/integrations/apple-pay/ApplePayClientErrorCode';
+import { first } from 'rxjs/operators';
+import { IApplePayClientStatus } from '../../../application/core/integrations/apple-pay/IApplePayClientStatus';
+import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 
 describe('ApplePay', () => {
   let applePay: ApplePay;
@@ -214,6 +219,115 @@ describe('ApplePay', () => {
       applePay.init();
 
       expect(consoleErrSpy).toHaveBeenCalledWith('User has not an active card provisioned into Wallet');
+    });
+  });
+
+  describe('handleWalletVerifyResponse()', () => {
+    beforeAll(() => {
+      messageBus = new SimpleMessageBus();
+      applePay = new ApplePay(
+        mockInstance(applePayButtonServiceMock),
+        mockInstance(applePayConfigServiceMock),
+        mockInstance(applePayErrorServiceMock),
+        mockInstance(applePayGestureServiceMock),
+        mockInstance(applePaySessionFactoryMock),
+        mockInstance(applePaySessionServiceMock),
+        mockInstance(interFrameCommunicatorMock),
+        messageBus
+      );
+
+      when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
+      when(applePaySessionServiceMock.canMakePayments()).thenReturn(true);
+      when(applePaySessionServiceMock.canMakePaymentsWithActiveCard(configMock.applePay.merchantId)).thenReturn(
+        of(true)
+      );
+      when(applePayConfigServiceMock.getConfig(anything(), anything())).thenReturn(applePayConfigMock);
+      when(applePayGestureServiceMock.gestureHandle).thenReturn(cb => cb());
+      when(applePaySessionFactoryMock.create(anything(), anything())).thenReturn({} as IApplePaySession);
+    });
+
+    it('should verify wallet when merchant is validated', done => {
+      const errorcode = '0';
+      const errormessage = 'validate-success';
+
+      messageBus
+        .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS))
+        .subscribe(response => {
+          const { status, details }: IApplePayClientStatus = response.data;
+
+          if (status === ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS) {
+            expect(details.errorCode).toBe(Number(errorcode));
+            expect(details.errorMessage).toBe(errormessage);
+            done();
+          }
+        }
+      );
+
+      applePay.init();
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+        data: configMock
+      });
+
+      // @ts-ignore
+      applePay.applePaySession.onvalidatemerchant({ validationURL: 'validation-url' });
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT,
+        data: {
+          status: ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
+          details: {
+            walletsession: 'walletsession',
+            errorcode,
+            errormessage,
+          },
+        }
+      });
+    });
+
+    it('should not verify wallet when errocode is 30000', done => {
+      const errorcode = '30000';
+      const errormessage = 'validate-fail';
+
+      messageBus
+        .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS))
+        .subscribe(response => {
+          const { status, details }: IApplePayClientStatus = response.data;
+
+          if (status === ApplePayClientStatus.VALIDATE_MERCHANT_ERROR) {
+            verify(
+              applePaySessionServiceMock.abort()
+            ).once();
+
+            expect(details.errorCode).toBe(Number(errorcode));
+            expect(details.errorMessage).toBe(errormessage);
+            done();
+          }
+        }
+      );
+
+      applePay.init();
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+        data: configMock
+      });
+
+      // @ts-ignore
+      applePay.applePaySession.onvalidatemerchant({ validationURL: 'validation-url' });
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT,
+        data: {
+          status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
+          details: {
+            walletsession: 'walletsession',
+            errorcode,
+            errormessage,
+          },
+        }
+      });
     });
   });
 });
