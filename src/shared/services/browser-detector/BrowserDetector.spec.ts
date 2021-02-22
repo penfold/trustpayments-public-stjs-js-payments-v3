@@ -6,7 +6,7 @@ jest.mock('bowser', () => {
     parse: jest.fn().mockReturnValue({
       browser: {
         name: 'Chrome',
-        version: '86'
+        version: '88'
       },
       os: {
         versionName: 'Windows',
@@ -32,7 +32,7 @@ describe('BrowserDetector', () => {
   });
 
   it('should return browser name and version', () => {
-    expect(browserDetector.getBrowserInfo().browser).toEqual({ name: 'Chrome', version: '86', isSupported: true });
+    expect(browserDetector.getBrowserInfo().browser).toEqual({ name: 'Chrome', version: '88', isSupported: true });
   });
 
   it('should return os name and version', () => {
