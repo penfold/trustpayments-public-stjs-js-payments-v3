@@ -90,6 +90,7 @@ class Waits:
             return self._wait.until(ec.alert_is_present())
         except TimeoutException:
             print(f'Alert was not presented in {self._timeout} seconds')
+            return None
 
     def wait_until_iframe_is_presented_and_switch_to_it(self, iframe_name):
         # pylint: disable=bare-except
