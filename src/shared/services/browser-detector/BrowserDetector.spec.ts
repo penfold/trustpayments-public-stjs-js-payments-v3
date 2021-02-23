@@ -1,45 +1,41 @@
 import { BrowserDetector } from './BrowserDetector';
-import { Container } from 'typedi';
-
-jest.mock('bowser', () => {
-  return {
-    parse: jest.fn().mockReturnValue({
-      browser: {
-        name: 'Chrome',
-        version: '87'
-      },
-      os: {
-        versionName: 'Windows',
-        version: '10',
-        name: 'Windows'
-      },
-      platform: {
-        type: 'desktop'
-      },
-      engine: {
-        name: 'test',
-        version: 'test'
-      }
-    })
-  };
-});
+import { instance, mock, when } from 'ts-mockito';
+import { BrowserSupport } from './browser-support/BrowserSupport';
+import { DeviceSupport } from './device-support/DeviceSupport';
 
 describe('BrowserDetector', () => {
   let browserDetector: BrowserDetector;
+  let windowMock: Window;
+  windowMock = mock<Window>();
+  let browserSupport: BrowserSupport;
+  let deviceSupport: DeviceSupport;
 
   beforeEach(() => {
-    browserDetector = Container.get(BrowserDetector);
+    when(windowMock.navigator).thenReturn(({
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'
+    } as unknown) as Navigator);
+
+    browserSupport = mock(BrowserSupport);
+    deviceSupport = mock(DeviceSupport);
+    when(browserSupport.isBrowserSupported('88.0.4324.182', 'Chrome')).thenReturn(true);
+    when(deviceSupport.isDeviceSupported('NT 10.0', 'Windows')).thenReturn(true);
+    browserDetector = new BrowserDetector(instance(windowMock), instance(browserSupport), instance(deviceSupport));
   });
 
   it('should return browser name and version', () => {
-    expect(browserDetector.getBrowserInfo().browser).toEqual({ name: 'Chrome', version: '87', isSupported: true });
+    expect(browserDetector.getBrowserInfo().browser).toEqual({
+      name: 'Chrome',
+      version: '88.0.4324.182',
+      isSupported: true
+    });
   });
 
   it('should return os name and version', () => {
     expect(browserDetector.getBrowserInfo().os).toEqual({
-      versionName: 'Windows',
       name: 'Windows',
-      version: '10',
+      version: 'NT 10.0',
+      versionName: '10',
       isSupported: true
     });
   });
