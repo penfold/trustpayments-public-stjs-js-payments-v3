@@ -68,7 +68,7 @@ describe('BrowserSupport', () => {
     ['11', 'Internet Explorer', true],
     ['1111', 'test', false]
   ]).it(
-    'should check if browser is supported in given version of not',
+    'should check if browser is supported in given version or not',
     (version: string, browser: string, isSupported: boolean) => {
       expect(browserSupport.isBrowserSupported(version, browser)).toEqual(isSupported);
     }
