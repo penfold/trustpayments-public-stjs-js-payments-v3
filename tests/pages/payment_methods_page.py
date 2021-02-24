@@ -351,6 +351,9 @@ class PaymentMethodsPage(BasePage):
             self._action.switch_to_iframe_and_click(PaymentMethodsLocators.animated_card_iframe,
                                                     PaymentMethodsLocators.animated_card)
 
+    def change_focus_to_page_title(self):
+        self._action.click(PaymentMethodsLocators.page_title)
+
     def switch_to_parent_iframe(self):
         self._action.switch_to_iframe(PaymentMethodsLocators.parent_iframe)
 

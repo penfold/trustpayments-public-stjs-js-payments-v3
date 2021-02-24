@@ -42,6 +42,7 @@ class PaymentMethodsLocators:
     apple_pay_mock_button: By = (By.ID, 'st-apple-pay')
 
     # labels
+    page_title: By = (By.XPATH, '//*[@id=\'st-form\']/h1')
     card_number_label: By = (By.XPATH, '//label[@for=\'st-card-number-input\']')
     expiration_date_label: By = (By.XPATH, '//label[@for=\'st-expiration-date-input\']')
     security_code_label: By = (By.XPATH, '//label[@for=\'st-security-code-input\']')
