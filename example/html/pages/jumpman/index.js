@@ -98,21 +98,23 @@ const getResponse = () => {
 
     $('#st-form').submit(function(event) {
       event.preventDefault();
-      window.getJwt().then((jwt) => {
+      window.getJwt().then((jwt) => new Promise(resolve => {
+        setTimeout(() => resolve(jwt), 1000);
+      })).then((jwt) => {
+        console.log('NEW JWT '+jwt);
         var st = SecureTrading({
           jwt,
           livestatus: 0,
           submitOnError: false,
           submitOnSuccess: false,
           submitCallback: (function(data){
-            var stringified = JSON.stringify(data);
-            var testVariable = 'This is what we have got after submit' + stringified;
             displayPopup('data-popup', 'Error code: ' + (!data || data.errorcode != '0' ? 'Error' : 'OK'), 'blue');
             displayPopup('data-popup-jwt', 'JWT: ' + data.jwt, 'blue');
             displayPopup('data-popup-threedresponse', 'THREEDRESPONSE: ' + data.threedresponse, 'blue');
 
             window.displayCallbackCounter('submit-callback-counter', 'submit', 'blue');
-            console.error(testVariable);
+            console.error('This is what we have got after submit');
+            console.error(JSON.stringify(data, null, 2));
 
             setTimeout(() => {
               completeHandler(getResponse());

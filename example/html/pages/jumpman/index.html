@@ -76,24 +76,6 @@
       </div>
     </fieldset>
 
-
-    <fieldset class='st-form__fieldset'>
-      <legend>APM's:</legend>
-      <div id='st-visa-checkout' class='st-form__group'></div>
-      <div id='st-apple-pay' class='st-form__group'></div>
-    </fieldset>
-
-    <fieldset class='st-form__fieldset'>
-      <legend>Credit card details:</legend>
-      <div id='st-card-number' class='st-form__group'></div>
-      <div id='st-expiration-date' class='st-form__group'></div>
-      <div id='st-security-code' class='st-form__group'></div>
-    </fieldset>
-
-    <div id='st-animated-card' class='st-form__st-animated-card'></div>
-
-    <div id='st-control-frame' class='st-form__group'></div>
-
     <ul style="list-style-type: none; padding-left: 0;" id="additional-effects">
       <li><input type="checkbox" value="pay-html">Return HTML</li>
       <li><input type="checkbox" value="pay-eval">Return eval JS</li>
@@ -101,11 +83,7 @@
     </ul>
 
     <div class='st-form__group st-form__group--submit'>
-      <button type='submit' class='st-form__button' id='merchant-submit-button'>Zapłać</button>
-    </div>
-
-    <div class='st-form__group st-form__group--submit'>
-      <button type='submit' class='st-form__button' id='additional-button' hidden>Additional Button</button>
+      <button type='submit'>Zapłać</button>
     </div>
   </form>
 
@@ -120,7 +98,7 @@
     const pan = $('#st-form-card-no').val();
     const expirydate = $('#st-form-exp-date').val();
     const securitycode = $('#st-form-security-code').val();
-    return window.configJWT('<%= CONFIG_URL %>/jwtdata.json', { pan, expirydate, securitycode });
+    return window.configJWT('<%= CONFIG_URL %>/jwtdata.json', { pan, expirydate, securitycode, baseamount: Math.round(Math.random()*10000) });
   }
 
   function displayPopup(id, text, bgColor) {
