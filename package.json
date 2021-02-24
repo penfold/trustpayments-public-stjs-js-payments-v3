@@ -152,6 +152,7 @@
     "@types/jwt-decode": "3.1.0",
     "@types/lodash": "4.14.168",
     "@types/redux-logger": "3.0.8",
+    "ajv": "7.1.1",
     "bowser": "2.11.0",
     "browserslist": "4.16.3",
     "core-js": "2.6.11",
