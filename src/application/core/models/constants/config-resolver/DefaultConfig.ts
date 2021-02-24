@@ -11,7 +11,7 @@ import { MERCHANT_FORM_SELECTOR } from '../Selectors';
 export const DefaultConfig: IConfig = {
   analytics: false,
   animatedCard: false,
-  applePay: {},
+  applePay: undefined,
   buttonId: '',
   stopSubmitFormOnEnter: false,
   cancelCallback: null,

@@ -1,4 +1,5 @@
 import { RequestType } from '../../../shared/types/RequestType';
+import { Locale } from '../shared/translator/Locale';
 
 export interface IStJwtPayload {
   requesttypedescriptions?: RequestType[];
@@ -9,7 +10,7 @@ export interface IStJwtPayload {
   sitereference?: string;
   threedbypasspaymenttypes?: string[];
   parenttransactionreference?: string;
-  locale?: string;
+  locale?: Locale;
   pan?: string;
   expirydate?: string;
   securitycode?: string;

@@ -247,7 +247,7 @@ function ConfigResolverFixture() {
   const minimalDefaultConfigResolve: IConfig = {
     analytics: false,
     animatedCard: false,
-    applePay: {},
+    applePay: undefined,
     buttonId: '',
     stopSubmitFormOnEnter: false,
     cancelCallback: null,

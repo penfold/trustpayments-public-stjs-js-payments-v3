@@ -1,11 +1,8 @@
 import 'reflect-metadata';
 import { Container } from 'typedi';
-import { environment } from '../../environments/environment';
-import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
-import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import ST from './ST';
-import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
+import { StCodec } from '../../application/core/services/st-codec/StCodec';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
@@ -13,10 +10,10 @@ import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventType
 
 window.alert = jest.fn();
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
-jest.mock('./../../client/common-frames/CommonFrames.class');
-jest.mock('./../../client/card-frames/CardFrames.class');
+jest.mock('./../../client/common-frames/CommonFrames');
+jest.mock('./../../client/card-frames/CardFrames');
 jest.mock('./../../application/core/integrations/visa-checkout/VisaCheckout');
-jest.mock('./../../application/core/integrations/apple-pay/ApplePay');
+jest.mock('./../../client/integrations/apple-pay/ApplePay');
 jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytics');
 
 const messageBusMock = new SimpleMessageBus();
@@ -25,7 +22,7 @@ Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set(IMessageBus, messageBusMock);
 
 describe('ST', () => {
-  const { config, cacheConfig, instance } = stFixture();
+  const { cacheConfig, instance } = stFixture();
 
   describe('constructor()', () => {
     let stObject: any;
@@ -34,20 +31,6 @@ describe('ST', () => {
       instance.Init = jest.fn();
       // @ts-ignore
       stObject = ST(cacheConfig);
-    });
-  });
-
-  describe('ApplePay()', () => {
-    const { applePayConfig } = stFixture();
-
-    it('should return ApplePayMock object when environment.testEnvironment equals true', () => {
-      environment.testEnvironment = true;
-      expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePayMock);
-    });
-
-    it('should return ApplePay object when environment.testEnvironment equals false', () => {
-      environment.testEnvironment = false;
-      expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePay);
     });
   });
 

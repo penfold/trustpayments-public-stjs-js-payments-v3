@@ -73,6 +73,8 @@ def step_impl(context, how_many_seconds):
 @then('Screenshot is taken after (?P<how_many_seconds>.+) seconds and checked')
 def step_impl(context, how_many_seconds):
     # pylint: disable=invalid-name)
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.change_focus_to_page_title()
     time.sleep(float(how_many_seconds))
     sm = context.screenshot_manager
 
