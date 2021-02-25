@@ -15,7 +15,9 @@ export class FramesHub {
   private static readonly GET_FRAMES_EVENT = 'ST_GET_ACTIVE_FRAMES';
   private activeFrame$: Subject<string[]> = new BehaviorSubject([]);
 
-  constructor(private communicator: InterFrameCommunicator, private identifier: FrameIdentifier) {
+  constructor(private communicator: InterFrameCommunicator, private identifier: FrameIdentifier) {}
+
+  init(): void {
     this.communicator.whenReceive(FramesHub.GET_FRAMES_EVENT).thenRespond(() => this.activeFrame$);
 
     this.getInitialFrames().subscribe(value => this.activeFrame$.next(value));

@@ -11,13 +11,17 @@ import { IConfig } from '../../shared/model/config/IConfig';
 import { ST } from '../st/ST';
 import { MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/Selectors';
 import { MessageBusToken, MessageSubscriberToken, StoreToken } from '../../shared/dependency-injection/InjectionTokens';
+import { FramesHub } from '../../shared/services/message-bus/FramesHub';
+import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
 
 describe('ClientBootstrap', () => {
   let frameIdentifierMock: FrameIdentifier;
+  let framesHubMock: FramesHub;
   let containerMock: ContainerInstance;
   let browserLocalStorageMock: BrowserLocalStorage;
   let sentryServiceMock: SentryService;
   let messageSubscriberRegistryMock: MessageSubscriberRegistry;
+  let interFrameCommunicatorMock: InterFrameCommunicator;
   let stMock: ST;
   let st: ST;
   let clientBootstrap: ClientBootstrap;
@@ -25,17 +29,21 @@ describe('ClientBootstrap', () => {
 
   beforeEach(() => {
     frameIdentifierMock = mock(FrameIdentifier);
+    framesHubMock = mock(FramesHub);
     containerMock = mock(ContainerInstance);
     browserLocalStorageMock = mock(BrowserLocalStorage);
     sentryServiceMock = mock(SentryService);
     messageSubscriberRegistryMock = mock(MessageSubscriberRegistry);
+    interFrameCommunicatorMock = mock(InterFrameCommunicator);
     stMock = mock(ST);
     st = instance(stMock);
     clientBootstrap = new ClientBootstrap(instance(frameIdentifierMock), instance(containerMock));
 
+    when(containerMock.get(FramesHub)).thenReturn(instance(framesHubMock));
     when(containerMock.get(BrowserLocalStorage)).thenReturn(instance(browserLocalStorageMock));
     when(containerMock.get(SentryService)).thenReturn(instance(sentryServiceMock));
     when(containerMock.get(MessageSubscriberRegistry)).thenReturn(instance(messageSubscriberRegistryMock));
+    when(containerMock.get(InterFrameCommunicator)).thenReturn(instance(interFrameCommunicatorMock));
     when(containerMock.get(ST)).thenReturn(st);
   });
 
@@ -52,8 +60,12 @@ describe('ClientBootstrap', () => {
       verify(containerMock.get(MessageBusToken)).once();
       verify(containerMock.get(StoreToken)).once();
       verify(containerMock.get(BrowserLocalStorage)).once();
+      verify(containerMock.get(FramesHub)).once();
+      verify(containerMock.get(InterFrameCommunicator)).once();
 
       verify(browserLocalStorageMock.init()).once();
+      verify(framesHubMock.init()).once();
+      verify(interFrameCommunicatorMock.init()).once();
     });
 
     it('creates and returns the ST instance', () => {

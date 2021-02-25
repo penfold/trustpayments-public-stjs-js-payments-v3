@@ -1,24 +1,21 @@
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { anything, instance as mockInstance, mock, when } from 'ts-mockito';
 import { ApplePayClientErrorCode } from '../ApplePayClientErrorCode';
 import { ApplePayClientStatus } from '../ApplePayClientStatus';
 import { ApplePayConfigService } from '../apple-pay-config-service/ApplePayConfigService';
 import { ApplePayPaymentService } from './ApplePayPaymentService';
-import { IApplePayClientStatus } from '../IApplePayClientStatus';
 import { IApplePayPayment } from '../apple-pay-payment-data/IApplePayPayment';
 import { IApplePayPaymentMethod } from '../apple-pay-payment-data/IApplePayPaymentMethod';
 import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { Payment } from '../../../shared/payment/Payment';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { RequestType } from '../../../../../shared/types/RequestType';
-import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
+import { SimpleMessageBus } from '../../../shared/message-bus/SimpleMessageBus';
 import { IApplePayProcessPaymentResponse } from './IApplePayProcessPaymentResponse';
-import { IApplePayPaymentAuthorizationResult } from '../apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
-import { IApplePayClientStatusDetails } from '../IApplePayClientStatusDetails';
-import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
 
 const formData = {};
 const validateMerchantURL = 'some-url';
+
 const config = {
   validateMerchantRequest: {
     walletmerchantid: 'id',
@@ -27,6 +24,7 @@ const config = {
     walletvalidationurl: 'url'
   }
 };
+
 const walletVerifyResponse = {
   response: {
     customeroutput: 'customeroutput',
@@ -39,6 +37,7 @@ const walletVerifyResponse = {
     walletsource: 'APPLEPAY'
   }
 };
+
 const mockedPayment: IApplePayPayment = {
   token: {
     paymentMethod: {} as IApplePayPaymentMethod,
@@ -47,21 +46,31 @@ const mockedPayment: IApplePayPayment = {
   }
 };
 
+const bypassResponseErrorData = {
+  errormessage: 'Bypass',
+  errorcode: '22000'
+};
+
+const invalidResponseErrorData = {
+  errormessage: 'Invalid response',
+  errorcode: '50003'
+};
+
 describe('ApplePayPaymentService', () => {
   let payment: Payment;
   let applePayConfigService: ApplePayConfigService;
-  let messageBusMock: IMessageBus;
+  let messageBus: IMessageBus;
   let applePayPaymentService: ApplePayPaymentService;
 
   beforeEach(() => {
     payment = mock(Payment);
     applePayConfigService = mock(ApplePayConfigService);
-    messageBusMock = mock<IMessageBus>();
+    messageBus = new SimpleMessageBus();
 
     applePayPaymentService = new ApplePayPaymentService(
       mockInstance(payment),
       mockInstance(applePayConfigService),
-      mockInstance(messageBusMock)
+      messageBus
     );
   });
 
@@ -117,26 +126,39 @@ describe('ApplePayPaymentService', () => {
           done();
         });
     });
+
+    it('should check if TRANSACTION_COMPLETE event is captured during walletverify process', done => {
+      const paymentCancelled = false;
+      when(payment.walletVerify(anything())).thenReturn(EMPTY);
+
+      applePayPaymentService
+        .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
+        .subscribe(
+          (response: { status: ApplePayClientErrorCode; data: { errorcode: string; errormessage: string } }) => {
+            expect(response.data.errormessage).toEqual('An error occured');
+            expect(response.data.errorcode).toEqual(String(ApplePayClientErrorCode.ERROR));
+            done();
+          }
+        );
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data: {
+            errormessage: 'An error occured',
+            errorcode: String(ApplePayClientErrorCode.ERROR)
+          }
+        },
+        true
+      );
+    });
   });
 
   describe('processPayment', () => {
-    it('should accept payment', done => {
+    it('should proceed payment when error code is equal 0', done => {
       const data = {
-        response: { errorcode: 0 }
+        response: { errorcode: '0' }
       };
-
-      when(messageBusMock.pipe(anything(), anything(), anything())).thenReturn(
-        of({
-          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data: {
-            status: ApplePayClientStatus.SUCCESS,
-            details: {
-              errorCode: ApplePayClientErrorCode.SUCCESS,
-              errorMessage: 'SUCCESS'
-            }
-          } as IApplePayClientStatus
-        })
-      );
 
       when(payment.processPayment(anything(), anything(), anything(), anything())).thenResolve(data);
 
@@ -147,29 +169,31 @@ describe('ApplePayPaymentService', () => {
           formData,
           mockedPayment
         )
-        .subscribe((response: any) => {
-          expect(response.data.details.errorCode).toEqual(data.response.errorcode);
+        .subscribe((response: IApplePayProcessPaymentResponse) => {
+          expect(response.errorcode).toEqual(data.response.errorcode);
           done();
         });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data: {
+            status: ApplePayClientStatus.SUCCESS,
+            details: {
+              errorCode: ApplePayClientErrorCode.SUCCESS,
+              errorMessage: 'SUCCESS'
+            }
+          }
+        },
+        true
+      );
     });
 
     it('should declined payment when errorcode is not received', done => {
-      when(messageBusMock.pipe(anything(), anything(), anything())).thenReturn(
-        of({
-          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data: {
-            status: ApplePayClientStatus.EMPTY_JWT_ERROR,
-            details: {
-              errorCode: ApplePayClientErrorCode.EMPTY_JWT_ERROR,
-              errorMessage: 'An error occured'
-            }
-          } as IApplePayClientStatus
-        })
-      );
       when(payment.processPayment(anything(), anything(), anything(), anything())).thenResolve({
         response: {
-          errormessage: 'An error occured',
-          errorcode: ApplePayClientErrorCode.EMPTY_JWT_ERROR
+          errorcode: undefined,
+          errormessage: 'An error occured'
         }
       });
 
@@ -180,11 +204,67 @@ describe('ApplePayPaymentService', () => {
           formData,
           mockedPayment
         )
-        .subscribe((response: any) => {
-          expect(response.data.details.errorCode).toBe(ApplePayClientErrorCode.EMPTY_JWT_ERROR);
-          expect(response.data.details.errorMessage).toBe('An error occured');
+        .subscribe((response: IApplePayProcessPaymentResponse) => {
+          expect(response.errorcode).toBe(ApplePayClientErrorCode.EMPTY_JWT_ERROR);
+          expect(response.errormessage).toBe('An error occured');
           done();
         });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data: {
+            status: ApplePayClientStatus.ERROR,
+            details: {
+              errorcode: undefined,
+              errormessage: 'An error occured'
+            }
+          }
+        },
+        true
+      );
+    });
+
+    it(`should return error data when TRANSACTION_COMPLETE event returns ${bypassResponseErrorData.errormessage} error number ${bypassResponseErrorData.errorcode}`, done => {
+      when(payment.processPayment(anything(), anything(), anything(), anything())).thenReturn(
+        new Promise((resolve, reject) => {})
+      );
+
+      applePayPaymentService
+        .processPayment(anything(), anything(), anything(), anything())
+        .subscribe((response: IApplePayProcessPaymentResponse) => {
+          expect(response).toEqual(bypassResponseErrorData);
+          done();
+        });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data: bypassResponseErrorData
+        },
+        true
+      );
+    });
+
+    it(`should return error data when TRANSACTION_COMPLETE event returns ${invalidResponseErrorData.errormessage} error number ${invalidResponseErrorData.errorcode}`, done => {
+      when(payment.processPayment(anything(), anything(), anything(), anything())).thenReturn(
+        new Promise((resolve, reject) => {})
+      );
+
+      applePayPaymentService
+        .processPayment(anything(), anything(), anything(), anything())
+        .subscribe((response: IApplePayProcessPaymentResponse) => {
+          expect(response).toEqual(invalidResponseErrorData);
+          done();
+        });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data: invalidResponseErrorData
+        },
+        true
+      );
     });
   });
 });

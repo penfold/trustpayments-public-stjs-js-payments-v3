@@ -288,7 +288,8 @@ export class ST {
 
         return from(this.communicator.query(queryEvent, controlFrame));
       }),
-      shareReplay(1)
+      shareReplay(1),
+      takeUntil(this.destroy$)
     );
 
     return this.controlFrameLoader$;

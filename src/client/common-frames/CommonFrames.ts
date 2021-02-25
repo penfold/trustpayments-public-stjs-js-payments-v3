@@ -42,7 +42,9 @@ export class CommonFrames {
     private jwtDecoder: JwtDecoder,
     private localStorage: BrowserLocalStorage,
     private messageBus: IMessageBus
-  ) {
+  ) {}
+
+  init(): void {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
     this.validation = new Validation();
 
@@ -59,9 +61,6 @@ export class CommonFrames {
       this.submitOnSuccess = config.submitOnSuccess;
       this.styles = this.getControlFrameStyles(config.styles);
     });
-  }
-
-  init(): void {
     this.appendControlFrame();
     this.transactionCompleteListener();
   }
@@ -84,14 +83,17 @@ export class CommonFrames {
           .pipe(
             filter((value: string) => value === 'true'),
             first(),
-            delay(4000)
+            delay(4000),
+            takeUntil(this.destroy$)
           )
           .subscribe(() => this.onTransactionCompleteEvent(data));
       });
   }
 
   private onTransactionCompleteEvent(data: IPaymentAuthorized): void {
+    this.removeHiddenInputs();
     if (data.errorcode === 'cancelled') {
+      this.removeThreedQuerySubmitFields();
       DomMethods.addDataToForm(this.form, { errorcode: 'cancelled', errormessage: PAYMENT_CANCELLED });
     } else {
       DomMethods.addDataToForm(this.form, data, this.getSubmitFieldsFromPaymentResponse(data));
@@ -186,5 +188,22 @@ export class CommonFrames {
     }
 
     return { controlFrame: {} };
+  }
+
+  private removeHiddenInputs(): void {
+    const threedQuerySubmitFields: string[] = ['enrolled', 'settlestatus'];
+    const basicSubmitFields: string[] = ['jwt', 'threedresponse', 'errordata', 'errorcode'];
+
+    [...basicSubmitFields, ...this.submitFields]
+      .filter((name: string) => !threedQuerySubmitFields.includes(name))
+      .flatMap((name: string) => Array.from(document.getElementsByName(name)))
+      .filter(Boolean)
+      .forEach((element: HTMLElement) => element.remove());
+  }
+
+  private removeThreedQuerySubmitFields(): void {
+    Array.from(document.getElementsByName('settlestatus'))
+      .filter(Boolean)
+      .forEach((element: HTMLElement) => element.remove());
   }
 }

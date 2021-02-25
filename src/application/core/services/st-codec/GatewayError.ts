@@ -1,6 +1,6 @@
 export class GatewayError extends Error {
   constructor(message?: string) {
     super(message);
-    Object.setPrototypeOf(this, GatewayError.prototype);
+    Object.setPrototypeOf(this, GatewayError.prototype); // required for instanceof check
   }
 }

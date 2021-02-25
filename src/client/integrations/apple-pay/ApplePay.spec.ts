@@ -15,6 +15,12 @@ import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySess
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { ApplePay } from './ApplePay';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
+import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
+import { ApplePayClientErrorCode } from '../../../application/core/integrations/apple-pay/ApplePayClientErrorCode';
+import { IApplePayClientStatus } from '../../../application/core/integrations/apple-pay/IApplePayClientStatus';
+import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { RequestType } from '../../../shared/types/RequestType';
 
 describe('ApplePay', () => {
   let applePay: ApplePay;
@@ -71,7 +77,7 @@ describe('ApplePay', () => {
     },
     applePayVersion: 5,
     locale: 'en_GB',
-    formId: '',
+    formId: 'st-form',
     jwtFromConfig: '',
     validateMerchantRequest: null,
     paymentRequest: {
@@ -214,6 +220,295 @@ describe('ApplePay', () => {
       applePay.init();
 
       expect(consoleErrSpy).toHaveBeenCalledWith('User has not an active card provisioned into Wallet');
+    });
+  });
+
+  describe('handleWalletVerifyResponse()', () => {
+    beforeAll(() => {
+      messageBus = new SimpleMessageBus();
+      applePay = new ApplePay(
+        mockInstance(applePayButtonServiceMock),
+        mockInstance(applePayConfigServiceMock),
+        mockInstance(applePayErrorServiceMock),
+        mockInstance(applePayGestureServiceMock),
+        mockInstance(applePaySessionFactoryMock),
+        mockInstance(applePaySessionServiceMock),
+        mockInstance(interFrameCommunicatorMock),
+        messageBus
+      );
+
+      when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
+      when(applePaySessionServiceMock.canMakePayments()).thenReturn(true);
+      when(applePaySessionServiceMock.canMakePaymentsWithActiveCard(configMock.applePay.merchantId)).thenReturn(
+        of(true)
+      );
+      when(applePayConfigServiceMock.getConfig(anything(), anything())).thenReturn(applePayConfigMock);
+      when(applePayGestureServiceMock.gestureHandle).thenReturn(cb => cb());
+      when(applePaySessionFactoryMock.create(anything(), anything())).thenReturn({} as IApplePaySession);
+    });
+
+    it('should verify wallet when merchant is validated', done => {
+      const errorcode = '0';
+      const errormessage = 'validate-success';
+
+      messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe(response => {
+        const { status, details }: IApplePayClientStatus = response.data;
+
+        if (status === ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS) {
+          expect(details.errorCode).toBe(Number(errorcode));
+          expect(details.errorMessage).toBe(errormessage);
+          done();
+        }
+      });
+
+      applePay.init();
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+        data: configMock
+      });
+
+      // @ts-ignore
+      applePay.applePaySession.onvalidatemerchant({ validationURL: 'validation-url' });
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT,
+        data: {
+          status: ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
+          details: {
+            walletsession: 'walletsession',
+            errorcode,
+            errormessage
+          }
+        }
+      });
+    });
+
+    it('should not verify wallet when errocode is 30000', done => {
+      const errorcode = '30000';
+      const errormessage = 'validate-fail';
+
+      messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe(response => {
+        const { status, details }: IApplePayClientStatus = response.data;
+
+        if (status === ApplePayClientStatus.VALIDATE_MERCHANT_ERROR) {
+          verify(applePaySessionServiceMock.abort()).once();
+
+          expect(details.errorCode).toBe(Number(errorcode));
+          expect(details.errorMessage).toBe(errormessage);
+          done();
+        }
+      });
+
+      applePay.init();
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+        data: configMock
+      });
+
+      // @ts-ignore
+      applePay.applePaySession.onvalidatemerchant({ validationURL: 'validation-url' });
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT,
+        data: {
+          status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
+          details: {
+            walletsession: 'walletsession',
+            errorcode,
+            errormessage
+          }
+        }
+      });
+    });
+  });
+
+  describe('processPayment()', () => {
+    const authorizedPaymentData = {
+      status: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
+      details: {}
+    };
+
+    const successPaymentData = {
+      status: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
+      details: {
+        errorcode: ApplePayClientErrorCode.SUCCESS,
+        errormessage: 'Payment has been successfully processed'
+      }
+    };
+
+    const cancelPaymentData = {
+      status: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
+      details: {
+        errorcode: ApplePayClientErrorCode.CANCEL
+      }
+    };
+
+    const errorEmptyJwtPaymentData = {
+      status: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
+      details: {
+        errorcode: ApplePayClientErrorCode.EMPTY_JWT_ERROR
+      }
+    };
+
+    const defaultErrorPaymentData = {
+      status: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
+      details: {
+        errorcode: ApplePayClientErrorCode.ERROR
+      }
+    };
+
+    beforeEach(() => {
+      const form = document.createElement('form');
+      form.setAttribute('id', configMock.formId);
+      document.body.appendChild(form);
+    });
+
+    it('should authorize payment process', done => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe((response: IMessageBusEvent) => {
+        const { status, details }: IApplePayClientStatus = response.data;
+
+        if (status === ApplePayClientStatus.ON_PAYMENT_AUTHORIZED) {
+          expect(details.errorCode).toBe(ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED);
+          expect(details.errorMessage).toBe('');
+          done();
+        }
+      });
+
+      applePay.init();
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+        data: configMock
+      });
+
+      // @ts-ignore
+      applePay.applePaySession.onpaymentauthorized({ payment: {} });
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
+        data: authorizedPaymentData
+      });
+    });
+
+    it('should check if payment has been authorized and returned with SUCCESS PAYMENT status', done => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION)).subscribe(response => {
+        expect(response.data.details.errorcode).toEqual(ApplePayClientErrorCode.SUCCESS);
+        expect(response.data.details.errormessage).toEqual('Payment has been successfully processed');
+        done();
+      });
+
+      applePay.init();
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+        data: configMock
+      });
+
+      // @ts-ignore
+      applePay.applePaySession.onpaymentauthorized({ payment: {} });
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
+        data: successPaymentData
+      });
+    });
+
+    it('should check if payment has been authorized and returned with CANCEL_PAYMENT status', done => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION)).subscribe(response => {
+        expect(response.data.details.errorcode).toEqual(ApplePayClientErrorCode.CANCEL);
+        expect(response.data.details.errormessage).toEqual(undefined);
+        done();
+      });
+
+      applePay.init();
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+        data: configMock
+      });
+
+      // @ts-ignore
+      applePay.applePaySession.oncancel(anything());
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
+        data: cancelPaymentData
+      });
+    });
+
+    it('should check if payment has been authorized but returned with EMPTY_JWT_ERROR status', done => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION)).subscribe(response => {
+        expect(response.data.details.errorcode).toEqual(ApplePayClientErrorCode.EMPTY_JWT_ERROR);
+        expect(response.data.details.errormessage).toEqual(undefined);
+        done();
+      });
+
+      applePay.init();
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+        data: configMock
+      });
+
+      // @ts-ignore
+      applePay.applePaySession.onpaymentauthorized({ payment: {} });
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
+        data: errorEmptyJwtPaymentData
+      });
+    });
+
+    it('should check if payment process return default error status', done => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION)).subscribe(response => {
+        expect(response.data.details.errorcode).toEqual(ApplePayClientErrorCode.ERROR);
+        expect(response.data.details.errormessage).toEqual(undefined);
+        done();
+      });
+
+      applePay.init();
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+        data: configMock
+      });
+
+      // @ts-ignore
+      applePay.applePaySession.onpaymentauthorized({ payment: {} });
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
+        data: defaultErrorPaymentData
+      });
+    });
+
+    it('should check if transaction complete event has been called if payment succeeded', done => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(response => {
+        expect(response.data.errorcode).toEqual(ApplePayClientErrorCode.SUCCESS);
+        expect(response.data.errormessage).toEqual('Payment has been successfully processed');
+        done();
+      });
+
+      applePay.init();
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+        data: configMock
+      });
+
+      // @ts-ignore
+      applePay.applePaySession.onpaymentauthorized({ payment: {} });
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+        data: {
+          requesttypedescription: RequestType.AUTH,
+          errorcode: 0,
+          errormessage: 'Payment has been successfully processed'
+        }
+      });
     });
   });
 });
