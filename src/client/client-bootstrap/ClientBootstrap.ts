@@ -8,6 +8,8 @@ import { ST } from '../st/ST';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/Selectors';
 import { MessageBusToken, MessageSubscriberToken, StoreToken } from '../../shared/dependency-injection/InjectionTokens';
+import { FramesHub } from '../../shared/services/message-bus/FramesHub';
+import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
 
 @Service()
 export class ClientBootstrap {
@@ -16,6 +18,8 @@ export class ClientBootstrap {
   run(config: IConfig): ST {
     this.frameIdentifier.setFrameName(MERCHANT_PARENT_FRAME);
 
+    this.container.get(InterFrameCommunicator).init();
+    this.container.get(FramesHub).init();
     this.container.get(MessageBusToken);
     this.container.get(StoreToken);
     this.container.get(BrowserLocalStorage).init();

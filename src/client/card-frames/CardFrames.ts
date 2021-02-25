@@ -22,8 +22,8 @@ import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Observable } from 'rxjs';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../shared/model/config/IConfig';
-import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
-import { first } from 'rxjs/operators';
+import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import { first, map, takeUntil } from 'rxjs/operators';
 import { Frame } from '../../application/core/shared/frame/Frame';
 import { StJwt } from '../../application/core/shared/stjwt/StJwt';
 import { IStJwtObj } from '../../application/core/models/IStJwtObj';
@@ -79,6 +79,7 @@ export class CardFrames {
   protected messageBus: IMessageBus;
   protected formId: string;
   private _stJwt: StJwt;
+  private destroy$: Observable<void>;
 
   constructor(
     jwt: string,
@@ -109,10 +110,8 @@ export class CardFrames {
     this._config$ = this._configProvider.getConfig$();
     this._setInitValues(buttonId, defaultPaymentType, paymentTypes, animatedCard, jwt, formId);
     this.configureFormFieldsAmount(jwt);
-    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.UNLOCK_BUTTON, () => {
-      this._disableSubmitButton(FormState.AVAILABLE);
-    });
     this.styles = this._getStyles(styles);
+    this.destroy$ = this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
   public init() {
@@ -377,41 +376,61 @@ export class CardFrames {
 
   private _submitFormListener(): void {
     if (this._submitButton) {
-      this._submitButton.addEventListener(CardFrames.CLICK_EVENT, () => {
-        this._publishSubmitEvent();
+      const clickHandler = () => this._publishSubmitEvent();
+      this._submitButton.addEventListener(CardFrames.CLICK_EVENT, clickHandler);
+
+      this.destroy$.pipe(first()).subscribe(() => {
+        this._submitButton.removeEventListener(CardFrames.CLICK_EVENT, clickHandler);
       });
     }
-    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.CALL_SUBMIT_EVENT, () => {
-      this._publishSubmitEvent();
-    });
+
+    this._messageBus
+      .pipe(ofType(PUBLIC_EVENTS.CALL_SUBMIT_EVENT), takeUntil(this.destroy$))
+      .subscribe(() => this._publishSubmitEvent());
   }
 
   private _subscribeBlockSubmit(): void {
     this._messageBus
-      .pipe(ofType(MessageBus.EVENTS_PUBLIC.SUBMIT_FORM))
+      .pipe(ofType(PUBLIC_EVENTS.SUBMIT_FORM), takeUntil(this.destroy$))
       .subscribe(() => this._disableSubmitButton(FormState.BLOCKED));
 
-    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.BLOCK_FORM, (state: FormState) => {
-      this._disableSubmitButton(state);
-      this._disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER, CARD_NUMBER_IFRAME);
-      this._disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, EXPIRATION_DATE_IFRAME);
-      this._disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_SECURITY_CODE, SECURITY_CODE_IFRAME);
-    });
+    this._messageBus
+      .pipe(ofType(PUBLIC_EVENTS.UNLOCK_BUTTON), takeUntil(this.destroy$))
+      .subscribe(() => this._disableSubmitButton(FormState.AVAILABLE));
+
+    this._messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.BLOCK_FORM),
+        map(event => event.data),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((state: FormState) => {
+        this._disableSubmitButton(state);
+        this._disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER, CARD_NUMBER_IFRAME);
+        this._disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, EXPIRATION_DATE_IFRAME);
+        this._disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_SECURITY_CODE, SECURITY_CODE_IFRAME);
+      });
   }
 
   private _validateFieldsAfterSubmit(): void {
-    this._messageBus.subscribeType(MessageBus.EVENTS.VALIDATE_FORM, (data: IValidationMessageBus) => {
-      const { cardNumber, expirationDate, securityCode } = data;
-      if (!cardNumber.state) {
-        this._publishValidatedFieldState(cardNumber, MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD);
-      }
-      if (!expirationDate.state) {
-        this._publishValidatedFieldState(expirationDate, MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD);
-      }
-      if (!securityCode.state) {
-        this._publishValidatedFieldState(securityCode, MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD);
-      }
-    });
+    this._messageBus
+      .pipe(
+        ofType(PRIVATE_EVENTS.VALIDATE_FORM),
+        map(event => event.data),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((data: IValidationMessageBus) => {
+        const { cardNumber, expirationDate, securityCode } = data;
+        if (!cardNumber.state) {
+          this._publishValidatedFieldState(cardNumber, MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD);
+        }
+        if (!expirationDate.state) {
+          this._publishValidatedFieldState(expirationDate, MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD);
+        }
+        if (!securityCode.state) {
+          this._publishValidatedFieldState(securityCode, MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD);
+        }
+      });
   }
 
   private _preventFormSubmit(): void {
@@ -420,7 +439,7 @@ export class CardFrames {
 
     paymentForm.addEventListener(CardFrames.SUBMIT_EVENT, preventFunction);
 
-    this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY), first()).subscribe(() => {
+    this.destroy$.pipe(first()).subscribe(() => {
       paymentForm.removeEventListener(CardFrames.SUBMIT_EVENT, preventFunction);
     });
   }
