@@ -45,6 +45,7 @@ import { IThreeDQueryResponse } from '../../core/models/IThreeDQueryResponse';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
+import { PaymentController } from '../../core/services/payments/PaymentController';
 
 @Service()
 export class ControlFrame {
@@ -94,7 +95,8 @@ export class ControlFrame {
     private _frame: Frame,
     private _jwtDecoder: JwtDecoder,
     private _visaCheckoutClient: VisaCheckoutClient,
-    private _applePayClient: ApplePayClient
+    private _applePayClient: ApplePayClient,
+    private paymentController: PaymentController
   ) {
     this.init();
     this._initVisaCheckout();
@@ -117,6 +119,7 @@ export class ControlFrame {
       this._updateJwtEvent();
       this._initCybertonica(config);
       this._updateMerchantFieldsEvent();
+      this.paymentController.init();
 
       return of(config);
     });

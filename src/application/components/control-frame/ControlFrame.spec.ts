@@ -22,6 +22,7 @@ import { EMPTY, of } from 'rxjs';
 import { Frame } from '../../core/shared/frame/Frame';
 import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
 import { ApplePayClientStatus } from '../../core/integrations/apple-pay/ApplePayClientStatus';
+import { PaymentController } from '../../core/services/payments/PaymentController';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -211,6 +212,7 @@ function controlFrameFixture() {
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const visaCheckoutClientMock: VisaCheckoutClient = mock(VisaCheckoutClient);
   const applePayClientMock: ApplePayClient = mock(ApplePayClient);
+  const paymentControllerMock: PaymentController = mock(PaymentController);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -257,7 +259,8 @@ function controlFrameFixture() {
     mockInstance(frame),
     mockInstance(jwtDecoderMock),
     mockInstance(visaCheckoutClientMock),
-    mockInstance(applePayClientMock)
+    mockInstance(applePayClientMock),
+    mockInstance(paymentControllerMock)
   );
   const messageBusEvent = {
     type: ''
