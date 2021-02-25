@@ -17,7 +17,8 @@ module.exports = {
     iframe: ['./pages/iframe/iframe.ts'],
     minimal: ['./pages/minimal/minimal.ts'],
     inlineConfig: ['./pages/index/inline-config.ts'],
-    counter: ['./pages/index/counter.ts']
+    counter: ['./pages/index/counter.ts'],
+    cookiebot: ['./pages/cookiebot/index.ts']
   },
   output: {
     filename: '[name].js',
@@ -55,6 +56,11 @@ module.exports = {
       filename: 'minimal-content-security-header.html',
       template: './pages/minimal/minimal-content-security-header.html',
       chunks: ['minimal']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'cookiebot.html',
+      template: './pages/cookiebot/index.html',
+      chunks: ['cookiebot']
     }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
