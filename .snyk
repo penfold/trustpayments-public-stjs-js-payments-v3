@@ -6,4 +6,12 @@ ignore:
   - '*':
       reason: The latest Stylelint package contains globparent in non-safety version 
       expires: 2021-03-13T09:24:16.721Z
+  SNYK-JS-LODASH-1040724:
+  - '*':
+      reason: There is no fixed version for lodash.
+      expires: 2021-03-13T09:24:16.721Z
+  SNYK-JS-LODASH-1018905:
+  - '*':
+      reason: There is no fixed version for lodash.
+      expires: 2021-03-13T09:24:16.721Z
 patch: {}

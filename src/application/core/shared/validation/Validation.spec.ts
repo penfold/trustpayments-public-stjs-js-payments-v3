@@ -1,5 +1,5 @@
 import each from 'jest-each';
-import { StCodec } from '../../services/st-codec/StCodec.class';
+import { StCodec } from '../../services/st-codec/StCodec';
 import { FormState } from '../../models/constants/FormState';
 import {
   VALIDATION_ERROR,
@@ -9,6 +9,7 @@ import {
 import { MessageBus } from '../message-bus/MessageBus';
 import { Validation } from './Validation';
 import { Frame } from '../frame/Frame';
+import { mock } from 'ts-mockito';
 import { IMessageBus } from '../message-bus/IMessageBus';
 
 jest.mock('./../message-bus/MessageBus');

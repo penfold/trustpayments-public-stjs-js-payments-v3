@@ -1,5 +1,5 @@
 import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
-import { StCodec } from '../../core/services/st-codec/StCodec.class';
+import { StCodec } from '../../core/services/st-codec/StCodec';
 import { FormFieldsDetails } from '../../core/models/constants/FormFieldsDetails';
 import { FormFieldsValidity } from '../../core/models/constants/FormFieldsValidity';
 import { FormState } from '../../core/models/constants/FormState';
@@ -43,6 +43,7 @@ import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
 import { IThreeDQueryResponse } from '../../core/models/IThreeDQueryResponse';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 
 @Service()
@@ -59,7 +60,7 @@ export class ControlFrame {
   }
 
   private _resetJwt(): void {
-    StCodec.jwt = StCodec.originalJwt;
+    StCodec.resetJwt();
   }
 
   private static _updateJwt(jwt: string): void {
@@ -92,10 +93,12 @@ export class ControlFrame {
     private _messageBus: IMessageBus,
     private _frame: Frame,
     private _jwtDecoder: JwtDecoder,
-    private _visaCheckoutClient: VisaCheckoutClient
+    private _visaCheckoutClient: VisaCheckoutClient,
+    private _applePayClient: ApplePayClient
   ) {
     this.init();
     this._initVisaCheckout();
+    this._initApplePay();
     this._initCardPayments();
     this._initJsInit();
     this._initConfigChange();
@@ -141,6 +144,18 @@ export class ControlFrame {
         first(),
         switchMap(() => {
           return this._visaCheckoutClient.init$();
+        })
+      )
+      .subscribe();
+  }
+
+  private _initApplePay(): void {
+    this._messageBus
+      .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_INIT))
+      .pipe(
+        first(),
+        switchMap(() => {
+          return this._applePayClient.init$();
         })
       )
       .subscribe();

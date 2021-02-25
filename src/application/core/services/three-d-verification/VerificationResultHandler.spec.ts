@@ -12,6 +12,8 @@ describe('VerificationResultHandler', () => {
     errormessage: 'success',
     jwt: 'jwt',
     acquirertransactionreference: 'qwe',
+    acquirerresponsecode: '0',
+    acquirerresponsemessage: 'Test message',
     acsurl: 'https://acsurl',
     enrolled: 'Y',
     threedpayload: '3dpayload',
