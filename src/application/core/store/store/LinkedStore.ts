@@ -2,7 +2,7 @@ import { IStore } from '../IStore';
 import { IApplicationFrameState } from '../state/IApplicationFrameState';
 import { BehaviorSubject, Observable, Unsubscribable } from 'rxjs';
 import { FrameAccessor } from '../../../../shared/services/message-bus/FrameAccessor';
-import { map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { ControlFrameStore } from './ControlFrameStore';
 import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';

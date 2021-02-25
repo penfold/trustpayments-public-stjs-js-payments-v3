@@ -84,7 +84,8 @@ export class CommonFrames {
           .pipe(
             filter((value: string) => value === 'true'),
             first(),
-            delay(4000)
+            delay(4000),
+            takeUntil(this.destroy$)
           )
           .subscribe(() => this.onTransactionCompleteEvent(data));
       });

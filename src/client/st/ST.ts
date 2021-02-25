@@ -294,7 +294,8 @@ export class ST {
       tap(() => {
         this.merchantFields.init();
       }),
-      shareReplay(1)
+      shareReplay(1),
+      takeUntil(this.destroy$)
     );
 
     return this.controlFrameLoader$;
