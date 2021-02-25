@@ -1,5 +1,4 @@
 import os
-from time import sleep
 
 from PIL import Image, ImageDraw
 
@@ -42,11 +41,9 @@ class ScreenshotManager:
 
     def make_double_screenshot(self, filepath):
         self._driver.execute_script('window.scrollTo(0, document.body.scrollHeight)')
-        sleep(2)
         filepath_1: str = filepath.replace('.png', '_1.png')
         self._driver.save_screenshot(filepath_1)
         self._driver.execute_script('window.scrollTo(0, -document.body.scrollHeight)')
-        sleep(2)
         filepath_2: str = filepath.replace('.png', '_2.png')
         self._driver.save_screenshot(filepath_2)
 

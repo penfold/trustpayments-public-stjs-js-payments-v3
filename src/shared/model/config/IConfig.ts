@@ -4,12 +4,12 @@ import { IComponentsIds } from './IComponentsIds';
 import { IStyles } from './IStyles';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
-import { IApplePayConfig } from '../../../application/core/models/IApplePayConfig';
+import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 
 export interface IConfig {
   analytics?: boolean;
   animatedCard?: boolean;
-  applePay?: IApplePayConfig | {};
+  applePay?: IApplePayConfig;
   buttonId?: string;
   cancelCallback?: any;
   components?: IComponentsConfig;

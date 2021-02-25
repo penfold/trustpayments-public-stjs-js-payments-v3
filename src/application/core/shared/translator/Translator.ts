@@ -21,11 +21,12 @@ import no_NO from '../../../../translations/json/no_NO.json';
 // @ts-ignore
 import sv_SE from '../../../../translations/json/sv_SE.json';
 import { Container } from 'typedi';
+import { Locale } from './Locale';
 
 export class Translator {
   private _storage: BrowserLocalStorage = Container.get(BrowserLocalStorage);
 
-  constructor(locale: string) {
+  constructor(locale: Locale) {
     i18next.init({
       debug: false,
       lng: locale,

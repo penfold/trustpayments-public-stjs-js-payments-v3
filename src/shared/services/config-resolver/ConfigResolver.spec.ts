@@ -1,12 +1,14 @@
 import { ConfigResolver } from './ConfigResolver';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigSchema } from '../storage/ConfigSchema';
+import { anything, spy, when } from 'ts-mockito';
 
 describe('ConfigResolver', () => {
   const configResolverInstance: ConfigResolver = new ConfigResolver();
 
   beforeEach(() => {
     ConfigSchema.validate = jest.fn().mockReturnValueOnce({ error: null });
+    when(spy(console).error(anything())).thenReturn(undefined);
   });
 
   it('should set default config-provider when some of properties are not set ', () => {
@@ -247,7 +249,7 @@ function ConfigResolverFixture() {
   const minimalDefaultConfigResolve: IConfig = {
     analytics: false,
     animatedCard: false,
-    applePay: {},
+    applePay: undefined,
     buttonId: '',
     stopSubmitFormOnEnter: false,
     cancelCallback: null,

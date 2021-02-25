@@ -1,7 +1,7 @@
 import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
 import { VisaCheckoutClientStatus } from '../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { ControlFrame } from './ControlFrame';
-import { StCodec } from '../../core/services/st-codec/StCodec.class';
+import { StCodec } from '../../core/services/st-codec/StCodec';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
@@ -11,15 +11,17 @@ import { mock, instance as mockInstance, when, anyString, anything } from 'ts-mo
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { EMPTY, of } from 'rxjs';
-import { ConfigService } from '../../../shared/services/config-service/ConfigService';
-import { Frame } from '../../core/shared/frame/Frame';
 import { IStyles } from '../../../shared/model/config/IStyles';
-import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
+import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
+import { EMPTY, of } from 'rxjs';
+import { Frame } from '../../core/shared/frame/Frame';
+import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
+import { ApplePayClientStatus } from '../../core/integrations/apple-pay/ApplePayClientStatus';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -208,6 +210,7 @@ function controlFrameFixture() {
   const frame: Frame = mock(Frame);
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const visaCheckoutClientMock: VisaCheckoutClient = mock(VisaCheckoutClient);
+  const applePayClientMock: ApplePayClient = mock(ApplePayClient);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -240,6 +243,7 @@ function controlFrameFixture() {
     }
   });
   when(visaCheckoutClientMock.init$()).thenReturn(of(VisaCheckoutClientStatus.SUCCESS));
+  when(applePayClientMock.init$()).thenReturn(of(ApplePayClientStatus.SUCCESS));
 
   const instance = new ControlFrame(
     mockInstance(localStorage),
@@ -252,7 +256,8 @@ function controlFrameFixture() {
     messageBus,
     mockInstance(frame),
     mockInstance(jwtDecoderMock),
-    mockInstance(visaCheckoutClientMock)
+    mockInstance(visaCheckoutClientMock),
+    mockInstance(applePayClientMock)
   );
   const messageBusEvent = {
     type: ''

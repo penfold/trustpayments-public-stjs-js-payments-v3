@@ -127,14 +127,12 @@
 
         <fieldset class="st-form__fieldset">
             <legend>Credit card details:</legend>
-            <div id="st-card-number" class="st-form__group"></div>
-            <div id="st-expiration-date" class="st-form__group"></div>
-            <div id="st-security-code" class="st-form__group"></div>
+            <div id="st-card-number" class="st-form__group st-form__iframe-container"></div>
+            <div id="st-expiration-date" class="st-form__group st-form__iframe-container"></div>
+            <div id="st-security-code" class="st-form__group st-form__iframe-container"></div>
         </fieldset>
 
-        <div id="st-animated-card" class="st-form__st-animated-card"></div>
-
-        <div id="st-control-frame" class="st-form__group"></div>
+        <div id="st-animated-card" class="st-form__st-animated-card st-form__iframe-container"></div>
 
         <div class="st-form__group st-form__group--submit">
             <button type="submit" class="st-form__button" id="merchant-submit-button">Zapłać</button>
@@ -149,6 +147,14 @@
         <p>&copy; Trust Payments 2020</p>
     </footer>
 </main>
+
+<div id="st-helper-actions" class="st-helper-actions">
+  <input type="button" id="st-action-remove" value="Remove frames">
+  <input type="button" id="st-action-destroy" value="Destroy ST">
+  <input type="button" id="st-action-start" value="Start ST">
+  <input type="button" id="st-action-cancel-3ds" value="Cancel 3DS">
+  <a href="#" id="st-actions-toggler" class="st-helper-actions__toggler"></a>
+</div>
 <script type="text/javascript" src="/counter.js"></script>
 <script type="text/javascript" src="/inlineConfig.js"></script>
 <script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
@@ -167,7 +173,26 @@
 
     getConfig()
       .then(function(config) {
-        init(config);
+        var st = init(config);
+
+        function addClickHandler(elementId, handler) {
+          document.getElementById(elementId).addEventListener('click', handler);
+        }
+
+        addClickHandler('st-action-start', function() { init(config); });
+        addClickHandler('st-action-destroy', function() { st.destroy(); });
+        addClickHandler('st-action-remove', function() {
+          document.querySelectorAll('.st-form__iframe-container').forEach(function(element) {
+            element.innerHTML = '';
+          });
+          document.getElementById('st-control-frame-iframe').remove();
+          document.getElementById('st-visa-checkout').innerHTML = '';
+          document.getElementById('st-apple-pay').innerHTML = '';
+        });
+        addClickHandler('st-action-cancel-3ds', function() { st.cancelThreeDProcess(); });
+        addClickHandler('st-actions-toggler', function() {
+          document.getElementById('st-helper-actions').classList.toggle('st-helper-actions--unfold');
+        });
       });
 
     function getConfig() {
@@ -217,6 +242,8 @@
         document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
       }
       updateJwtListener(st, updatedJwt);
+
+      return st;
     }
 
     function updateJwtListener(st, updatedJwt) {

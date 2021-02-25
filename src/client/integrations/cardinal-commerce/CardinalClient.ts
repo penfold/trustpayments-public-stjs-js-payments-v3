@@ -5,7 +5,7 @@ import { IInitializationData } from './data/IInitializationData';
 import { CardinalProvider } from './CardinalProvider';
 import { first, mapTo, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ICardinal } from './ICardinal';
-import { defer, Observable, Subject } from 'rxjs';
+import { defer, Observable, Subject, Subscription } from 'rxjs';
 import { PaymentEvents } from '../../../application/core/models/constants/PaymentEvents';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { PaymentBrand } from '../../../application/core/models/constants/PaymentBrand';
@@ -91,6 +91,15 @@ export class CardinalClient {
       switchMap(
         (cardinal: ICardinal) =>
           new Observable<IVerificationResult>(subscriber => {
+            const cancelSubscription: Subscription = this.threeDPopupCancel$.subscribe(() => {
+              subscriber.next({
+                validated: false,
+                actionCode: ActionCode.FAILURE,
+                errorNumber: 4001,
+                errorDescription: '3DS process has been cancelled'
+              });
+            });
+
             cardinal.on(PaymentEvents.VALIDATED, (result: IValidationResult, responseJwt: string) => {
               if (result.ErrorNumber !== CardinalClient.CARDINAL_VALIDATION_ERROR) {
                 subscriber.next({
@@ -102,16 +111,8 @@ export class CardinalClient {
                 });
                 subscriber.complete();
                 cardinal.off(PaymentEvents.VALIDATED);
+                cancelSubscription.unsubscribe();
               }
-            });
-
-            this.threeDPopupCancel$.subscribe(() => {
-              subscriber.next({
-                validated: false,
-                actionCode: ActionCode.FAILURE,
-                errorNumber: 4001,
-                errorDescription: '3DS process has been cancelled'
-              });
             });
 
             const { acsUrl, payload, transactionId, jwt } = data;
