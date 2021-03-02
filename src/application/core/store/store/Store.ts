@@ -28,7 +28,7 @@ export class Store<T> implements IStore<T> {
   }
 
   select<U>(selector: (state: T) => U): Observable<U> {
-    return this.state$.pipe(map(selector));
+    return this.state$.pipe(map(selector), distinctUntilChanged());
   }
 
   subscribe(observer: (state: T) => any): Unsubscribable {
