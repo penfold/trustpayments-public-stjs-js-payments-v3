@@ -32,7 +32,7 @@ export class InterFrameCommunicator {
     @Inject(WINDOW) private window: Window
   ) {
     this.incomingEvent$ = fromEvent<MessageEvent>(this.window, InterFrameCommunicator.MESSAGE_EVENT).pipe(
-      filter(event => event.data && event.data.type),
+      filter(event => event.data.type),
       map(event => event.data),
       share()
     );
