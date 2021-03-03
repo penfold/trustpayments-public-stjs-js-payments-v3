@@ -10,26 +10,40 @@ import { MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/S
 import { MessageBusToken, MessageSubscriberToken, StoreToken } from '../../shared/dependency-injection/InjectionTokens';
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { ofType } from '../../shared/services/message-bus/operators/ofType';
+import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import { first } from 'rxjs/operators';
 
 @Service()
 export class ClientBootstrap {
+  private isAlreadyRunning: boolean = false;
+
   constructor(private frameIdentifier: FrameIdentifier, private container: ContainerInstance) {}
 
   run(config: IConfig): ST {
-    this.frameIdentifier.setFrameName(MERCHANT_PARENT_FRAME);
+    if (this.isAlreadyRunning) {
+      throw new Error('Cannot init, ST instance already running. Call destroy() method first.');
+    }
 
+    this.isAlreadyRunning = true;
+    this.frameIdentifier.setFrameName(MERCHANT_PARENT_FRAME);
     this.container.get(InterFrameCommunicator).init();
     this.container.get(FramesHub).init();
     this.container.get(MessageBusToken);
     this.container.get(StoreToken);
     this.container.get(BrowserLocalStorage).init();
     this.container.get(MessageSubscriberRegistry).register(...this.container.getMany(MessageSubscriberToken));
-
-    const st = this.container.get(ST);
-
     this.container.get(SentryService).init(environment.SENTRY_DSN, environment.SENTRY_WHITELIST_URLS);
 
+    const st: ST = this.container.get(ST);
+    const messageBus: IMessageBus = this.container.get(MessageBusToken);
+
     st.init(config);
+
+    messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY), first()).subscribe(() => {
+      this.isAlreadyRunning = false;
+    });
 
     return st;
   }

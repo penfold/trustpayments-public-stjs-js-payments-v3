@@ -13,6 +13,9 @@ import { MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/S
 import { MessageBusToken, MessageSubscriberToken, StoreToken } from '../../shared/dependency-injection/InjectionTokens';
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
+import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 
 describe('ClientBootstrap', () => {
   let frameIdentifierMock: FrameIdentifier;
@@ -22,6 +25,7 @@ describe('ClientBootstrap', () => {
   let sentryServiceMock: SentryService;
   let messageSubscriberRegistryMock: MessageSubscriberRegistry;
   let interFrameCommunicatorMock: InterFrameCommunicator;
+  let messageBus: IMessageBus;
   let stMock: ST;
   let st: ST;
   let clientBootstrap: ClientBootstrap;
@@ -37,6 +41,7 @@ describe('ClientBootstrap', () => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
     stMock = mock(ST);
     st = instance(stMock);
+    messageBus = new SimpleMessageBus();
     clientBootstrap = new ClientBootstrap(instance(frameIdentifierMock), instance(containerMock));
 
     when(containerMock.get(FramesHub)).thenReturn(instance(framesHubMock));
@@ -44,6 +49,7 @@ describe('ClientBootstrap', () => {
     when(containerMock.get(SentryService)).thenReturn(instance(sentryServiceMock));
     when(containerMock.get(MessageSubscriberRegistry)).thenReturn(instance(messageSubscriberRegistryMock));
     when(containerMock.get(InterFrameCommunicator)).thenReturn(instance(interFrameCommunicatorMock));
+    when(containerMock.get(MessageBusToken)).thenReturn(messageBus);
     when(containerMock.get(ST)).thenReturn(st);
   });
 
@@ -57,7 +63,7 @@ describe('ClientBootstrap', () => {
     it('initializes core services', () => {
       clientBootstrap.run(config);
 
-      verify(containerMock.get(MessageBusToken)).once();
+      verify(containerMock.get(MessageBusToken)).called();
       verify(containerMock.get(StoreToken)).once();
       verify(containerMock.get(BrowserLocalStorage)).once();
       verify(containerMock.get(FramesHub)).once();
@@ -93,6 +99,28 @@ describe('ClientBootstrap', () => {
       clientBootstrap.run(config);
 
       verify(messageSubscriberRegistryMock.register(messageSubscriberOne, messageSubscriberTwo)).once();
+    });
+
+    it('throws error when initializing the library twice', () => {
+      clientBootstrap.run(config);
+
+      expect(() => clientBootstrap.run(config)).toThrowError(
+        'Cannot init, ST instance already running. Call destroy() method first.'
+      );
+    });
+
+    it('allows the second initialization after destroy has been called', () => {
+      const st: ST = clientBootstrap.run(config);
+
+      messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
+
+      let secondInstance: ST;
+
+      expect(() => {
+        secondInstance = clientBootstrap.run(config);
+      }).not.toThrowError();
+
+      expect(secondInstance).toBe(st);
     });
   });
 });

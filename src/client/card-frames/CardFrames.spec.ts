@@ -20,6 +20,8 @@ import { SimpleMessageBus } from '../../application/core/shared/message-bus/Simp
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import spyOn = jest.spyOn;
+import any = jasmine.any;
 
 jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/validation/Validation');
@@ -190,6 +192,16 @@ describe('CardFrames', () => {
       instance._submitFormListener();
       // @ts-ignore
       expect(instance._publishSubmitEvent).toHaveBeenCalled();
+    });
+
+    it('should remove the click listener on destroy event', () => {
+      // @ts-ignore
+      spyOn(instance._submitButton, 'removeEventListener');
+      // @ts-ignore
+      instance._submitFormListener();
+      messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
+      // @ts-ignore
+      expect(instance._submitButton.removeEventListener).toHaveBeenCalledWith('click', any(Function));
     });
   });
 
