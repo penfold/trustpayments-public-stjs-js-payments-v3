@@ -46,6 +46,7 @@ import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { PaymentController } from '../../core/services/payments/PaymentController';
+import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 
 @Service()
 export class ControlFrame {
@@ -62,11 +63,6 @@ export class ControlFrame {
 
   private _resetJwt(): void {
     StCodec.resetJwt();
-  }
-
-  private static _updateJwt(jwt: string): void {
-    StCodec.jwt = jwt;
-    StCodec.originalJwt = jwt;
   }
 
   private _card: ICard = {
@@ -107,6 +103,8 @@ export class ControlFrame {
   }
 
   protected init(): void {
+    this._updateJwtEvent();
+
     this._communicator.whenReceive(PUBLIC_EVENTS.INIT_CONTROL_FRAME).thenRespond((event: IMessageBusEvent<string>) => {
       const config: IConfig = JSON.parse(event.data);
 
@@ -115,8 +113,11 @@ export class ControlFrame {
         data: config
       });
 
+      if (config.jwt) {
+        StCodec.updateJwt(config.jwt);
+      }
+
       const styler: Styler = new Styler(this._frame.getAllowedStyles(), this._frame.parseUrl().styles);
-      this._updateJwtEvent();
       this._initCybertonica(config);
       this._updateMerchantFieldsEvent();
       this.paymentController.init();
@@ -205,8 +206,8 @@ export class ControlFrame {
   }
 
   private _updateJwtEvent(): void {
-    this._messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_JWT, (data: any) => {
-      ControlFrame._updateJwt(data.newJwt);
+    this._messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_JWT, (data: IUpdateJwt) => {
+      StCodec.updateJwt(data.newJwt);
     });
   }
 

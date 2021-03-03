@@ -2,9 +2,9 @@ import each from 'jest-each';
 import JwtDecode from 'jwt-decode';
 import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
 import { StCodec } from './StCodec';
-import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Translator } from '../../shared/translator/Translator';
 import { GatewayError } from './GatewayError';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 
 jest.mock('./../../shared/message-bus/MessageBus');
 jest.mock('./../../shared/notification/Notification');
@@ -421,28 +421,67 @@ describe('StCodec class', () => {
     });
   });
 
-  describe('StCodec.updateJWTValue', () => {
+  describe('StCodec.updateJwt', () => {
     const messageBusEvent = {
-      data: {
-        newJwt: 'somenewjwt'
-      },
-      type: MessageBus.EVENTS_PUBLIC.UPDATE_JWT
+      data: 'somenewjwt',
+      type: PUBLIC_EVENTS.JWT_UPDATED
     };
 
     beforeEach(() => {
       // @ts-ignore
       StCodec.getMessageBus().publish = jest.fn();
-      StCodec.updateJWTValue('somenewjwt');
+      StCodec.updateJwt('somenewjwt');
+    });
+
+    it('should set the current jwt and originalJwt', () => {
+      expect(StCodec.jwt).toEqual('somenewjwt');
+      expect(StCodec.originalJwt).toEqual('somenewjwt');
     });
 
     it('should call publish method with UPDATE_JWT event', () => {
       // @ts-ignore
-      expect(StCodec.getMessageBus().publish).toHaveBeenCalledWith(messageBusEvent, true);
+      expect(StCodec.getMessageBus().publish).toHaveBeenCalledWith(messageBusEvent);
+    });
+  });
+
+  describe('StCodec.resetJwt', () => {
+    beforeEach(() => {
+      // @ts-ignore
+      StCodec.getMessageBus().publish = jest.fn();
+      StCodec.jwt = 'currentjwt';
+      StCodec.originalJwt = 'originaljwt';
+      StCodec.resetJwt();
     });
 
-    it('should call publish method with UPDATE_JWT event', () => {
+    it('should replace the current jwt with original jwt', () => {
+      expect(StCodec.jwt).toEqual('originaljwt');
+    });
+
+    it('should send the JWT_RESET event', () => {
       // @ts-ignore
-      expect(StCodec.getMessageBus().publish).toHaveBeenCalledWith(messageBusEvent, true);
+      expect(StCodec.getMessageBus().publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.JWT_RESET });
+    });
+  });
+
+  describe('StCodec.replaceJwt', () => {
+    beforeEach(() => {
+      // @ts-ignore
+      StCodec.getMessageBus().publish = jest.fn();
+      StCodec.jwt = 'currentjwt';
+      StCodec.originalJwt = 'originaljwt';
+      StCodec.replaceJwt('newjwt');
+    });
+
+    it('should replace the current jwt with the new jwt', () => {
+      expect(StCodec.jwt).toEqual('newjwt');
+    });
+
+    it('should send the JWT_REPLACED event', () => {
+      // @ts-ignore
+      expect(StCodec.getMessageBus().publish).toHaveBeenCalledWith({
+        type: PUBLIC_EVENTS.JWT_REPLACED,
+        data: 'newjwt'
+      });
     });
   });
 });

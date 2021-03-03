@@ -2,12 +2,10 @@ import 'reflect-metadata';
 import { Container } from 'typedi';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import ST from './ST';
-import { StCodec } from '../../application/core/services/st-codec/StCodec';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
-import { anything, spy, when } from 'ts-mockito';
 
 window.alert = jest.fn();
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
@@ -36,22 +34,20 @@ describe('ST', () => {
   });
 
   describe('updateJWT()', () => {
-    const lodash = jest.requireActual('lodash');
-
     beforeEach(() => {
-      StCodec.updateJWTValue = jest.fn();
+      spyOn(messageBusMock, 'publish');
       instance.updateJWT('somenewjwtvalue');
-      lodash.debounce = jest.fn().mockImplementationOnce(() => {
-        StCodec.updateJWTValue('somenewjwtvalue');
-      });
     });
 
     it('should assign new jwt value', () => {
       expect(instance.config.jwt).toEqual('somenewjwtvalue');
     });
 
-    it('should call updateJWTValue', () => {
-      expect(StCodec.updateJWTValue).toHaveBeenCalled();
+    it('should send UPDATE_JWT event to message bus', () => {
+      expect(messageBusMock.publish).toHaveBeenCalledWith({
+        type: PUBLIC_EVENTS.UPDATE_JWT,
+        data: { newJwt: 'somenewjwtvalue' }
+      });
     });
 
     it('should throw an error if newJwt is not specified', () => {
