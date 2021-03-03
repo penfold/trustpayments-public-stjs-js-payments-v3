@@ -7,7 +7,6 @@ import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
-import { anything, spy, when } from 'ts-mockito';
 
 window.alert = jest.fn();
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
