@@ -2,7 +2,7 @@
 name = "behave-selenium"
 version = "0.1.0"
 description = "Example bahave selenium tests"
-authors = ["James Simpson <james.simpson@securetrading.com>"]
+authors = ["support@trustpayments.com"]
 license = "MIT"
 
 [tool.poetry.dependencies]
