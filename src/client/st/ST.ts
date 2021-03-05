@@ -1,10 +1,8 @@
 import './st.css';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
-import { debounce } from 'lodash';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames';
 import { CommonFrames } from '../common-frames/CommonFrames';
-import { StCodec } from '../../application/core/services/st-codec/StCodec';
 import { ApplePay } from '../integrations/apple-pay/ApplePay';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
@@ -43,6 +41,7 @@ import { IMessageBus } from '../../application/core/shared/message-bus/IMessageB
 import { IStore } from '../../application/core/store/IStore';
 import { IParentFrameState } from '../../application/core/store/state/IParentFrameState';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
+import { IUpdateJwt } from '../../application/core/models/IUpdateJwt';
 
 @Service()
 export class ST {
@@ -202,10 +201,10 @@ export class ST {
   updateJWT(jwt: string): void {
     if (jwt) {
       this.config = this.configService.updateJwt(jwt);
-      (() => {
-        const a = StCodec.updateJWTValue(jwt);
-        debounce(() => a, 900);
-      })();
+      this.messageBus.publish<IUpdateJwt>({
+        type: PUBLIC_EVENTS.UPDATE_JWT,
+        data: { newJwt: jwt }
+      });
     } else {
       throw Error(this.translation.translate('Jwt has not been specified'));
     }
@@ -230,7 +229,6 @@ export class ST {
     this.storage.init();
     this.config = this.configService.setup(config);
     if (this.config.jwt) {
-      StCodec.updateJWTValue(config.jwt);
       this.initCallbacks(config);
       this.Storage();
       this.translation = new Translator(this.storage.getItem('locale'));
@@ -238,7 +236,6 @@ export class ST {
       this.commonFrames.init();
       this.displayLiveStatus(Boolean(this.config.livestatus));
       this.watchForFrameUnload();
-      this.initControlFrameModal();
       this.cardinalClient.init();
 
       if (Boolean(this.config.stopSubmitFormOnEnter)) {
@@ -373,16 +370,6 @@ export class ST {
     if (config.cancelCallback) {
       this.cancelCallback = config.cancelCallback;
     }
-  }
-
-  private initControlFrameModal(): void {
-    this.messageBus
-      .pipe(ofType(MessageBus.EVENTS_PUBLIC.CONTROL_FRAME_SHOW), takeUntil(this.destroy$))
-      .subscribe(() => document.getElementById(CONTROL_FRAME_IFRAME).classList.add('modal'));
-
-    this.messageBus
-      .pipe(ofType(MessageBus.EVENTS_PUBLIC.CONTROL_FRAME_HIDE), takeUntil(this.destroy$))
-      .subscribe(() => document.getElementById(CONTROL_FRAME_IFRAME).classList.remove('modal'));
   }
 
   private blockSubmitButton(): void {

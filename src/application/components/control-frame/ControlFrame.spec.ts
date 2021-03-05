@@ -22,11 +22,15 @@ import { EMPTY, of } from 'rxjs';
 import { Frame } from '../../core/shared/frame/Frame';
 import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
 import { ApplePayClientStatus } from '../../core/integrations/apple-pay/ApplePayClientStatus';
+import { PaymentController } from '../../core/services/payments/PaymentController';
+import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
+import { IUpdateJwt } from '../../core/models/IUpdateJwt';
+import spyOn = jest.spyOn;
 
 jest.mock('./../../core/shared/payment/Payment');
 
 describe('ControlFrame', () => {
-  const { data, instance, messageBusEvent } = controlFrameFixture();
+  const { data, instance, messageBusEvent, messageBus } = controlFrameFixture();
 
   beforeEach(() => {
     // @ts-ignore
@@ -143,20 +147,6 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('_onUpdateJWT', () => {
-    beforeEach(() => {
-      StCodec.jwt = '1234';
-      StCodec.originalJwt = '56789';
-      // @ts-ignore
-      ControlFrame._updateJwt('997');
-    });
-
-    it('should update jwt and originalJwt', () => {
-      expect(StCodec.jwt).toEqual('997');
-      expect(StCodec.originalJwt).toEqual('997');
-    });
-  });
-
   describe('_getPan()', () => {
     // @ts-ignore
     instance.params = {
@@ -173,6 +163,16 @@ describe('ControlFrame', () => {
     it('should return pan from jwt', () => {
       // @ts-ignore
       expect(instance._getPanFromJwt(['jwt', 'gatewayUrl'])).toEqual('3089500000000000021');
+    });
+  });
+
+  describe('_updateJwtEvent', () => {
+    it('calls StCodec.updateJwt() on UPDATE_JWT event', () => {
+      const updateJwtSpy = spyOn(StCodec, 'updateJwt');
+
+      messageBus.publish<IUpdateJwt>({ type: PUBLIC_EVENTS.UPDATE_JWT, data: { newJwt: 'foobar' } });
+
+      expect(updateJwtSpy).toHaveBeenCalledWith('foobar');
     });
   });
 });
@@ -192,6 +192,7 @@ function controlFrameFixture() {
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const visaCheckoutClientMock: VisaCheckoutClient = mock(VisaCheckoutClient);
   const applePayClientMock: ApplePayClient = mock(ApplePayClient);
+  const paymentControllerMock: PaymentController = mock(PaymentController);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -238,7 +239,8 @@ function controlFrameFixture() {
     mockInstance(frame),
     mockInstance(jwtDecoderMock),
     mockInstance(visaCheckoutClientMock),
-    mockInstance(applePayClientMock)
+    mockInstance(applePayClientMock),
+    mockInstance(paymentControllerMock)
   );
   const messageBusEvent = {
     type: ''
@@ -250,5 +252,5 @@ function controlFrameFixture() {
 
   StCodec.jwt = JWT;
 
-  return { data, instance, messageBusEvent };
+  return { data, instance, messageBusEvent, messageBus };
 }

@@ -1,5 +1,5 @@
-import { MessageBus } from '../../../../application/core/shared/MessageBus';
+import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
 
 export interface IMessageSubscriber {
-  register(messageBus: MessageBus): void;
+  register(messageBus: IMessageBus): void;
 }
