@@ -20,6 +20,7 @@ import { MessageBusToken } from '../../../../shared/dependency-injection/Injecti
 import { GatewayError } from './GatewayError';
 import { InvalidResponseError } from './InvalidResponseError';
 import { Locale } from '../../shared/translator/Locale';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 
 export class StCodec {
   public static CONTENT_TYPE = 'application/json';
@@ -81,20 +82,20 @@ export class StCodec {
     StCodec.getMessageBus().publish(notificationEvent, true);
   }
 
-  public static updateJWTValue(newJWT: string) {
+  public static updateJwt(newJWT: string) {
     StCodec.jwt = newJWT ? newJWT : StCodec.jwt;
     StCodec.originalJwt = newJWT ? newJWT : StCodec.originalJwt;
-    const messageBusEvent: IMessageBusEvent = {
-      data: {
-        newJwt: StCodec.jwt
-      },
-      type: MessageBus.EVENTS_PUBLIC.UPDATE_JWT
-    };
-    StCodec.getMessageBus().publish(messageBusEvent, true);
+    this.getMessageBus().publish({ type: PUBLIC_EVENTS.JWT_UPDATED, data: newJWT });
   }
 
   public static resetJwt(): void {
     StCodec.jwt = StCodec.originalJwt;
+    this.getMessageBus().publish({ type: PUBLIC_EVENTS.JWT_RESET });
+  }
+
+  public static replaceJwt(jwt: string): void {
+    StCodec.jwt = jwt;
+    this.getMessageBus().publish({ type: PUBLIC_EVENTS.JWT_REPLACED, data: jwt });
   }
 
   private static _notification: NotificationService;
@@ -257,9 +258,9 @@ export class StCodec {
             const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
 
             if (Number(verifiedResponse.errorcode) === 0) {
-              StCodec.jwt = decoded.payload.jwt;
+              StCodec.replaceJwt(decoded.payload.jwt);
             } else {
-              StCodec.jwt = StCodec.originalJwt;
+              StCodec.resetJwt();
             }
 
             resolve({
@@ -267,11 +268,11 @@ export class StCodec {
               response: verifiedResponse
             });
           } catch (error) {
-            StCodec.jwt = StCodec.originalJwt;
+            StCodec.resetJwt();
           }
         });
       } else {
-        StCodec.jwt = StCodec.originalJwt;
+        StCodec.resetJwt();
         reject(StCodec._handleInvalidResponse());
       }
     });
