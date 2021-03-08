@@ -78,6 +78,24 @@ def step_impl(context):
     payment_page.click_cancel_3ds_btn()
 
 
+@step('User clicks Remove frames action button')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.click_remove_frames_btn()
+
+
+@step('User clicks Destroy ST action button')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.click_destroy_st_btn()
+
+
+@step('User clicks Start ST action button')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.click_start_st_btn()
+
+
 @step('User accept success alert')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
@@ -249,7 +267,7 @@ def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.validate_if_field_is_not_displayed(FieldType.CARD_NUMBER.name)
     payment_page.validate_if_field_is_not_displayed(FieldType.EXPIRATION_DATE.name)
-
+    payment_page.validate_if_field_is_not_displayed(FieldType.SECURITY_CODE.name)
 
 @then('User will see (?P<placeholders>.+) placeholders in input fields: (?P<card>.+), (?P<date>.+), (?P<cvv>.+)')
 def step_impl(context, placeholders, card, date, cvv):
