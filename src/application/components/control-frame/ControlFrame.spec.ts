@@ -1,7 +1,7 @@
 import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
 import { VisaCheckoutClientStatus } from '../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { ControlFrame } from './ControlFrame';
-import { StCodec } from '../../core/services/st-codec/StCodec.class';
+import { StCodec } from '../../core/services/st-codec/StCodec';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
@@ -11,20 +11,26 @@ import { mock, instance as mockInstance, when, anyString, anything } from 'ts-mo
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { EMPTY, of } from 'rxjs';
-import { ConfigService } from '../../../shared/services/config-service/ConfigService';
-import { Frame } from '../../core/shared/frame/Frame';
 import { IStyles } from '../../../shared/model/config/IStyles';
-import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
+import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
+import { EMPTY, of } from 'rxjs';
+import { Frame } from '../../core/shared/frame/Frame';
+import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
+import { ApplePayClientStatus } from '../../core/integrations/apple-pay/ApplePayClientStatus';
+import { PaymentController } from '../../core/services/payments/PaymentController';
+import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
+import { IUpdateJwt } from '../../core/models/IUpdateJwt';
+import spyOn = jest.spyOn;
 
 jest.mock('./../../core/shared/payment/Payment');
 
 describe('ControlFrame', () => {
-  const { data, instance, messageBusEvent } = controlFrameFixture();
+  const { data, instance, messageBusEvent, messageBus } = controlFrameFixture();
 
   beforeEach(() => {
     // @ts-ignore
@@ -160,20 +166,6 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('_onUpdateJWT', () => {
-    beforeEach(() => {
-      StCodec.jwt = '1234';
-      StCodec.originalJwt = '56789';
-      // @ts-ignore
-      ControlFrame._updateJwt('997');
-    });
-
-    it('should update jwt and originalJwt', () => {
-      expect(StCodec.jwt).toEqual('997');
-      expect(StCodec.originalJwt).toEqual('997');
-    });
-  });
-
   describe('_getPan()', () => {
     // @ts-ignore
     instance.params = {
@@ -192,6 +184,16 @@ describe('ControlFrame', () => {
       expect(instance._getPanFromJwt(['jwt', 'gatewayUrl'])).toEqual('3089500000000000021');
     });
   });
+
+  describe('_updateJwtEvent', () => {
+    it('calls StCodec.updateJwt() on UPDATE_JWT event', () => {
+      const updateJwtSpy = spyOn(StCodec, 'updateJwt');
+
+      messageBus.publish<IUpdateJwt>({ type: PUBLIC_EVENTS.UPDATE_JWT, data: { newJwt: 'foobar' } });
+
+      expect(updateJwtSpy).toHaveBeenCalledWith('foobar');
+    });
+  });
 });
 
 function controlFrameFixture() {
@@ -208,6 +210,8 @@ function controlFrameFixture() {
   const frame: Frame = mock(Frame);
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const visaCheckoutClientMock: VisaCheckoutClient = mock(VisaCheckoutClient);
+  const applePayClientMock: ApplePayClient = mock(ApplePayClient);
+  const paymentControllerMock: PaymentController = mock(PaymentController);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -240,6 +244,7 @@ function controlFrameFixture() {
     }
   });
   when(visaCheckoutClientMock.init$()).thenReturn(of(VisaCheckoutClientStatus.SUCCESS));
+  when(applePayClientMock.init$()).thenReturn(of(ApplePayClientStatus.SUCCESS));
 
   const instance = new ControlFrame(
     mockInstance(localStorage),
@@ -252,7 +257,9 @@ function controlFrameFixture() {
     messageBus,
     mockInstance(frame),
     mockInstance(jwtDecoderMock),
-    mockInstance(visaCheckoutClientMock)
+    mockInstance(visaCheckoutClientMock),
+    mockInstance(applePayClientMock),
+    mockInstance(paymentControllerMock)
   );
   const messageBusEvent = {
     type: ''
@@ -264,5 +271,5 @@ function controlFrameFixture() {
 
   StCodec.jwt = JWT;
 
-  return { data, instance, messageBusEvent };
+  return { data, instance, messageBusEvent, messageBus };
 }

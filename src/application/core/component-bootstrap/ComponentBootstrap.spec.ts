@@ -16,6 +16,7 @@ import {
   MessageSubscriberToken,
   StoreToken
 } from '../../../shared/dependency-injection/InjectionTokens';
+import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 
 describe('ComponentBootstrap', () => {
   let frameIdentifierMock: FrameIdentifier;
@@ -24,6 +25,7 @@ describe('ComponentBootstrap', () => {
   let framesHubMock: FramesHub;
   let sentryServiceMock: SentryService;
   let messageSubscriberRegistryMock: MessageSubscriberRegistry;
+  let interFrameCommunicatorMock: InterFrameCommunicator;
   let componentBootstrap: ComponentBootstrap;
 
   beforeEach(() => {
@@ -33,6 +35,7 @@ describe('ComponentBootstrap', () => {
     framesHubMock = mock(FramesHub);
     sentryServiceMock = mock(SentryService);
     messageSubscriberRegistryMock = mock(MessageSubscriberRegistry);
+    interFrameCommunicatorMock = mock(InterFrameCommunicator);
     componentBootstrap = new ComponentBootstrap(instance(frameIdentifierMock), instance(containerMock));
 
     when(frameIdentifierMock.isControlFrame()).thenReturn(false);
@@ -40,6 +43,7 @@ describe('ComponentBootstrap', () => {
     when(containerMock.get(FramesHub)).thenReturn(instance(framesHubMock));
     when(containerMock.get(SentryService)).thenReturn(instance(sentryServiceMock));
     when(containerMock.get(MessageSubscriberRegistry)).thenReturn(instance(messageSubscriberRegistryMock));
+    when(containerMock.get(InterFrameCommunicator)).thenReturn(instance(interFrameCommunicatorMock));
   });
 
   describe('run', () => {
@@ -52,13 +56,16 @@ describe('ComponentBootstrap', () => {
     it('initializes core services', () => {
       componentBootstrap.run(CARD_NUMBER_IFRAME, CardNumber);
 
+      verify(containerMock.get(InterFrameCommunicator)).once();
       verify(containerMock.get(MessageBusToken)).once();
       verify(containerMock.get(StoreToken)).once();
       verify(containerMock.get(BrowserLocalStorage)).once();
       verify(containerMock.get(FramesHub)).once();
 
       verify(browserLocalStorageMock.init()).once();
+      verify(framesHubMock.init()).once();
       verify(framesHubMock.notifyReadyState()).once();
+      verify(interFrameCommunicatorMock.init()).once();
     });
 
     it('creates and returns the component instance', () => {

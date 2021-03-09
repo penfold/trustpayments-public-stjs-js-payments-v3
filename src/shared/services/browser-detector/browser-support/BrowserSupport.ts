@@ -4,7 +4,7 @@ import { BrowserMap } from '../BrowserMap';
 
 @Service()
 export class BrowserSupport {
-  constructor(private _browserList: BrowsersList) {}
+  constructor(private browserList: BrowsersList) {}
 
   isBrowserSupported(version: string, name: string): boolean {
     const supportedVersions: string[] = this.getSupportedBrowserVersions(this.mapBrowserName(name));
@@ -22,14 +22,14 @@ export class BrowserSupport {
   }
 
   private mapBrowserName(name: string): string {
-    return Object.keys(BrowserMap).find(key => BrowserMap[key] === name);
+    return Object.keys(BrowserMap).find(key => BrowserMap[key] === name) || '';
   }
 
   private getSupportedBrowserVersions(name: string): string[] {
     // tslint:disable-next-line:no-var-requires
     const { browserslist: browserlist } = require('./../../../../../package.json');
-    const browsersFromPackageJson = this._browserList.getBrowsers(browserlist);
-    const supportedBrowsers = this._browserList.getSupportedBrowsers();
+    const browsersFromPackageJson = this.browserList.getBrowsers(browserlist);
+    const supportedBrowsers = this.browserList.getSupportedBrowsers();
 
     browsersFromPackageJson.map((browser: string) => {
       const browserNameVersionPair = browser.split(' ');

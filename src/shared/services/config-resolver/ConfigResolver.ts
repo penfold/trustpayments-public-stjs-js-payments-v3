@@ -8,11 +8,11 @@ import { DefaultSubmitFields } from '../../../application/core/models/constants/
 import { DefaultComponentsIds } from '../../../application/core/models/constants/config-resolver/DefaultComponentsIds';
 import { DefaultConfig } from '../../../application/core/models/constants/config-resolver/DefaultConfig';
 import { DefaultComponents } from '../../../application/core/models/constants/config-resolver/DefaultComponents';
-import { IApplePayConfig } from '../../../application/core/models/IApplePayConfig';
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
 import { environment } from '../../../environments/environment';
+import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 
 @Service()
 export class ConfigResolver {
@@ -21,7 +21,7 @@ export class ConfigResolver {
     const validatedConfig: IConfig = {
       analytics: this._getValueOrDefault(config.analytics, DefaultConfig.analytics),
       animatedCard: this._getValueOrDefault(config.animatedCard, DefaultConfig.animatedCard),
-      applePay: this._setApplePayConfig(config.applePay, DefaultConfig.applePay),
+      applePay: this._setApplePayConfig(config.applePay),
       buttonId: this._getValueOrDefault(config.buttonId, DefaultConfig.buttonId),
       stopSubmitFormOnEnter: this._getValueOrDefault(config.stopSubmitFormOnEnter, DefaultConfig.stopSubmitFormOnEnter),
       cancelCallback: this._getValueOrDefault(config.cancelCallback, DefaultConfig.cancelCallback),
@@ -98,9 +98,9 @@ export class ConfigResolver {
     return config;
   }
 
-  private _setApplePayConfig(config: IApplePayConfig | {}, defaultConfig: {}): IApplePayConfig | {} {
+  private _setApplePayConfig(config: IApplePayConfig): IApplePayConfig {
     if (!config || !Object.keys(config).length) {
-      return defaultConfig;
+      return;
     }
     return config;
   }

@@ -1,11 +1,11 @@
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { CardinalProvider } from './CardinalProvider';
-import { anyString, anything, instance, mock, when } from 'ts-mockito';
+import { anyString, anything, instance, mock, spy, verify, when } from 'ts-mockito';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { CardinalClient } from './CardinalClient';
 import { ICardinal } from './ICardinal';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IInitializationData } from './data/IInitializationData';
@@ -18,6 +18,8 @@ import { ITriggerData } from './data/ITriggerData';
 import { IVerificationData } from '../../../application/core/services/three-d-verification/data/IVerificationData';
 import { IVerificationResult } from '../../../application/core/services/three-d-verification/data/IVerificationResult';
 import { ActionCode } from '../../../application/core/services/three-d-verification/data/ActionCode';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 
 describe('CardinalClient', () => {
   let configProviderMock: ConfigProvider;
@@ -27,6 +29,7 @@ describe('CardinalClient', () => {
   let cardinalClient: CardinalClient;
   let cardinalMock: ICardinal;
   let communicationCallbacks: Map<string, (event: IMessageBusEvent) => any>;
+  let messageBusMock: IMessageBus;
 
   const config: IConfig = { livestatus: 0 } as IConfig;
   const sendMessage = (event: IMessageBusEvent): Observable<any> => {
@@ -40,6 +43,7 @@ describe('CardinalClient', () => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
     interFrameCommunicator = instance(interFrameCommunicatorMock);
     cardinalMock = new CardinalMock(true);
+    messageBusMock = new SimpleMessageBus();
 
     when(configProviderMock.getConfig$()).thenReturn(of(config));
     when(cardinalProviderMock.getCardinal$(false)).thenReturn(of(cardinalMock));
@@ -57,6 +61,7 @@ describe('CardinalClient', () => {
 
     cardinalClient = new CardinalClient(
       interFrameCommunicator,
+      messageBusMock,
       instance(cardinalProviderMock),
       instance(configProviderMock)
     );
@@ -208,6 +213,77 @@ describe('CardinalClient', () => {
           ErrorDescription: 'no error'
         },
         'foobar2'
+      );
+    });
+  });
+
+  describe('threeD cancel', () => {
+    const data: IVerificationData = {
+      transactionId: 'abc-123',
+      payload: 'fooobar',
+      jwt: 'xyz',
+      acsUrl: 'https://example.com/'
+    };
+
+    it('creates subscription to threeDPopupCancel which, when invoked, fails payment validation', done => {
+      sendMessage({ type: PUBLIC_EVENTS.CARDINAL_CONTINUE, data })
+        .pipe(delay(0))
+        .subscribe((result: IVerificationResult) => {
+          expect(result).toEqual({
+            validated: false,
+            actionCode: ActionCode.FAILURE,
+            errorNumber: 4001,
+            errorDescription: '3DS process has been cancelled'
+          });
+          done();
+        });
+
+      messageBusMock.publish({ type: PUBLIC_EVENTS.THREED_CANCEL });
+    });
+
+    it('should remove the cardinal popup container from DOM', () => {
+      const mockedContainer = document.createElement('div');
+      mockedContainer.setAttribute('id', 'Cardinal-ElementContainer');
+      document.body.appendChild(mockedContainer);
+
+      messageBusMock.publish({ type: PUBLIC_EVENTS.THREED_CANCEL });
+
+      const appendedContainer = document.getElementById('Cardinal-ElementContainer');
+      expect(appendedContainer).toBeNull();
+    });
+
+    it("should not remove the cardinal popup container from DOM if it doesn't exist", () => {
+      jest.spyOn(document, 'getElementById').mockReturnValue(null);
+      jest.spyOn(HTMLElement.prototype, 'removeChild');
+
+      messageBusMock.publish({ type: PUBLIC_EVENTS.THREED_CANCEL });
+
+      expect(HTMLElement.prototype.removeChild).not.toHaveBeenCalled();
+    });
+
+    it('unsubscribes from the cancel event when validation completes', done => {
+      // @ts-ignore
+      const popupCancelSpy: Subject<any> = spy(cardinalClient.threeDPopupCancel$);
+      const popupCancelSubscriptionMock: Subscription = mock<Subscription>();
+      when(popupCancelSpy.subscribe(anything())).thenReturn(instance(popupCancelSubscriptionMock));
+
+      sendMessage({ type: PUBLIC_EVENTS.CARDINAL_CONTINUE, data })
+        .pipe(delay(1000))
+        .subscribe((result: IVerificationResult) => {
+          expect(result.validated).toEqual(true);
+          verify(popupCancelSubscriptionMock.unsubscribe()).once();
+          done();
+        });
+
+      cardinalMock.trigger(
+        PaymentEvents.VALIDATED,
+        {
+          Validated: true,
+          ActionCode: ActionCode.SUCCESS,
+          ErrorNumber: 0,
+          ErrorDescription: 'no error'
+        },
+        'somejwt'
       );
     });
   });

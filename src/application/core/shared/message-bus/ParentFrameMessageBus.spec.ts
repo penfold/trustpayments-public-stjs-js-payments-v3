@@ -1,6 +1,6 @@
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
-import { instance, mock, spy, verify, when } from 'ts-mockito';
+import { anything, instance, mock, spy, verify, when } from 'ts-mockito';
 import { ParentFrameMessageBus } from './ParentFrameMessageBus';
 import { of, Subject } from 'rxjs';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
@@ -44,6 +44,7 @@ describe('ParentFrameMessageBus', () => {
     const consoleSpy = spy(console);
 
     when(interFrameCommunicatorMock.send(sampleEvent, CONTROL_FRAME_IFRAME)).thenThrow(new Error('foobar'));
+    when(consoleSpy.warn(anything())).thenReturn(undefined);
 
     messageBus.publish(sampleEvent);
 

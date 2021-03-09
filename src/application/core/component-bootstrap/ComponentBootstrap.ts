@@ -10,6 +10,7 @@ import {
   MessageSubscriberToken,
   StoreToken
 } from '../../../shared/dependency-injection/InjectionTokens';
+import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 
 @Service()
 export class ComponentBootstrap {
@@ -18,10 +19,14 @@ export class ComponentBootstrap {
   run<T>(frameName: string, componentClass: new (...args: any[]) => T): T {
     this.frameIdentifier.setFrameName(frameName);
 
+    this.container.get(InterFrameCommunicator).init();
     this.container.get(MessageBusToken);
     this.container.get(StoreToken);
     this.container.get(BrowserLocalStorage).init();
-    this.container.get(FramesHub).notifyReadyState();
+
+    const framesHub: FramesHub = this.container.get(FramesHub);
+    framesHub.init();
+    framesHub.notifyReadyState();
 
     if (this.frameIdentifier.isControlFrame()) {
       this.container.get(MessageSubscriberRegistry).register(...this.container.getMany(MessageSubscriberToken));

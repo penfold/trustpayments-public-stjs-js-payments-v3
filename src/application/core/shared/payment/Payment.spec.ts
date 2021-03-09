@@ -1,20 +1,21 @@
-import { Payment } from './Payment';
-import { StTransport } from '../../services/st-transport/StTransport.class';
+import { instance as mockInstance, mock, spy, verify, when } from 'ts-mockito';
 import { Container } from 'typedi';
-import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
-import { mock, instance as mockInstance, when, verify, spy } from 'ts-mockito';
-import { ICard } from '../../models/ICard';
+import { NotificationService } from '../../../../client/notification/NotificationService';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
-import { StoreBasedStorage } from '../../../../shared/services/storage/StoreBasedStorage';
 import { SimpleStorage } from '../../../../shared/services/storage/SimpleStorage';
+import { StoreBasedStorage } from '../../../../shared/services/storage/StoreBasedStorage';
+import { RequestType } from '../../../../shared/types/RequestType';
+import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
+import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
+import { CustomerOutput } from '../../models/constants/CustomerOutput';
+import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
+import { ICard } from '../../models/ICard';
+import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { IWallet } from '../../models/IWallet';
 import { IWalletVerify } from '../../models/IWalletVerify';
-import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
-import { StCodec } from '../../services/st-codec/StCodec.class';
-import { NotificationService } from '../../../../client/notification/NotificationService';
-import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
-import { CustomerOutput } from '../../models/constants/CustomerOutput';
+import { StCodec } from '../../services/st-codec/StCodec';
+import { StTransport } from '../../services/st-transport/StTransport';
+import { Payment } from './Payment';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 
@@ -59,7 +60,7 @@ describe('Payment', () => {
     });
 
     it('should send remaining request types with card and merchant data', async () => {
-      await instance.processPayment(['AUTH'], card, {
+      await instance.processPayment([RequestType.AUTH], card, {
         merchant: 'data'
       });
       // @ts-ignore
@@ -74,7 +75,7 @@ describe('Payment', () => {
 
       when(cybertonica.getTransactionId()).thenResolve(cybertonicaTid);
 
-      await instance.processPayment(['AUTH'], card, {
+      await instance.processPayment([RequestType.AUTH], card, {
         merchant: 'data'
       });
 
@@ -87,13 +88,18 @@ describe('Payment', () => {
     });
 
     it('should send remaining request types with 3D response', async () => {
-      await instance.processPayment(['AUTH', 'RISKDEC'], card, { pan: 'overridden', merchant: 'data' }, ({
-        requesttypescription: 'THREEDQUERY',
-        customeroutput: CustomerOutput.THREEDREDIRECT,
-        cachetoken: 'foobar',
-        errorcode: '0',
-        threedresponse: 'xyzzzz'
-      } as unknown) as IThreeDQueryResponse);
+      await instance.processPayment(
+        [RequestType.AUTH, RequestType.RISKDEC],
+        card,
+        { pan: 'overridden', merchant: 'data' },
+        ({
+          requesttypescription: 'THREEDQUERY',
+          customeroutput: CustomerOutput.THREEDREDIRECT,
+          cachetoken: 'foobar',
+          errorcode: '0',
+          threedresponse: 'xyzzzz'
+        } as unknown) as IThreeDQueryResponse
+      );
       // @ts-ignore
       expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
         ...card,
@@ -104,13 +110,18 @@ describe('Payment', () => {
     });
 
     it('should not send remaining request types when previous response has RESULT customeroutput ', async () => {
-      await instance.processPayment(['AUTH', 'RISKDEC'], card, { pan: 'overridden', merchant: 'data' }, ({
-        requesttypescription: 'THREEDQUERY',
-        customeroutput: CustomerOutput.RESULT,
-        cachetoken: 'foobar',
-        threedresponse: 'xyzzzz',
-        errorcode: '0'
-      } as unknown) as IThreeDQueryResponse);
+      await instance.processPayment(
+        [RequestType.AUTH, RequestType.RISKDEC],
+        card,
+        { pan: 'overridden', merchant: 'data' },
+        ({
+          requesttypescription: 'THREEDQUERY',
+          customeroutput: CustomerOutput.RESULT,
+          cachetoken: 'foobar',
+          threedresponse: 'xyzzzz',
+          errorcode: '0'
+        } as unknown) as IThreeDQueryResponse
+      );
 
       // @ts-ignore
       expect(instance.stTransport.sendRequest).not.toHaveBeenCalled();
@@ -118,7 +129,7 @@ describe('Payment', () => {
 
     it('should not send remaining request types when previous response has TRYAGAIN customeroutput ', done => {
       instance
-        .processPayment(['AUTH', 'RISKDEC'], card, { pan: 'overridden', merchant: 'data' }, ({
+        .processPayment([RequestType.AUTH, RequestType.RISKDEC], card, { pan: 'overridden', merchant: 'data' }, ({
           requesttypescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.TRYAGAIN,
           cachetoken: 'foobar',
@@ -134,7 +145,7 @@ describe('Payment', () => {
 
     it('should not send remaining request types when previous response has no-zero errorcode', done => {
       instance
-        .processPayment(['AUTH', 'RISKDEC'], card, { pan: 'overridden', merchant: 'data' }, ({
+        .processPayment([RequestType.AUTH, RequestType.RISKDEC], card, { pan: 'overridden', merchant: 'data' }, ({
           requesttypescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.THREEDREDIRECT,
           cachetoken: 'foobar',
@@ -149,7 +160,7 @@ describe('Payment', () => {
     });
 
     it('should send AUTH request with wallet', async () => {
-      await instance.processPayment(['AUTH'], wallet, {
+      await instance.processPayment([RequestType.AUTH], wallet, {
         merchant: 'data'
       });
       // @ts-ignore
@@ -161,7 +172,7 @@ describe('Payment', () => {
     });
 
     it('should send AUTH request with wallet and additional data', async () => {
-      await instance.processPayment(['AUTH'], wallet, {
+      await instance.processPayment([RequestType.AUTH], wallet, {
         wallettoken: 'overridden',
         merchant: 'data'
       });
@@ -174,7 +185,7 @@ describe('Payment', () => {
     });
 
     it('should send CACHETOKENISE request with wallet and additional data', async () => {
-      await instance.processPayment(['CACHETOKENISE'], wallet, {
+      await instance.processPayment([RequestType.CACHETOKENISE], wallet, {
         wallettoken: 'overridden',
         merchant: 'data'
       });
@@ -234,15 +245,24 @@ describe('Payment', () => {
   });
 
   describe('walletVerify()', () => {
-    it('should send WALLETVERIFY request with walletverify', () => {
-      instance.walletVerify(walletVerify);
+    it('should send WALLETVERIFY request with walletverify', done => {
+      const walletVerifyResponseMock = {};
       // @ts-ignore
-      expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
-        requesttypedescriptions: ['WALLETVERIFY'],
-        walletsource: 'APPLEPAY',
-        walletmerchantid: '123456789',
-        walletvalidationurl: 'https://example.com',
-        walletrequestdomain: 'https://example2.com'
+      instance.stTransport.sendRequest = jest
+        .fn()
+        .mockImplementationOnce(() => Promise.resolve(walletVerifyResponseMock));
+
+      instance.walletVerify(walletVerify).subscribe(value => {
+        // @ts-ignore
+        expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
+          requesttypedescriptions: ['WALLETVERIFY'],
+          walletsource: 'APPLEPAY',
+          walletmerchantid: '123456789',
+          walletvalidationurl: 'https://example.com',
+          walletrequestdomain: 'https://example2.com'
+        });
+        expect(value).toEqual(walletVerifyResponseMock);
+        done();
       });
     });
   });

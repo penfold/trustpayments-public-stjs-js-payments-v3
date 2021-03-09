@@ -13,7 +13,6 @@ Feature: Visual regression - E2E Card Payments
     When User fills payment form with defined card MASTERCARD_FIXED_EXP_DATE_CARD
     And User clicks Pay button
     And Wait for notification frame
-    And Wait for popups to disappear
     Then Screenshot is taken after 0 seconds and checked
 
   @visual_regression_styling @scrn_card_interface_before_payment_styling
@@ -36,7 +35,6 @@ Feature: Visual regression - E2E Card Payments
     When User fills payment form with defined card MASTERCARD_INVALID_EXP_DATE_CARD
     And User clicks Pay button
     And Wait for notification frame
-    And Wait for popups to disappear
     Then Screenshot is taken after 6 seconds and checked
 
   @visual_regression_styling @scrn_card_interface_error_invalid_patterns_styling
