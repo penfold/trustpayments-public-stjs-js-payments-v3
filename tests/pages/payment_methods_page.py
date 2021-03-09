@@ -130,6 +130,17 @@ class PaymentMethodsPage(BasePage):
         else:
             self._action.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
 
+    def validate_cardinal_authentication_modal_appears(self, auth):
+        self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
+        if auth == AuthType.V1.value:
+            self._action.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
+            self._executor.wait_for_element_to_be_displayed(
+                PaymentMethodsLocators.cardinal_v1_authentication_code_field)
+        else:
+            self._executor.wait_for_element_to_be_displayed(
+                PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+        self._action.switch_to_default_iframe()
+
     def select_proper_cardinal_authentication(self, auth):
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_modal)
         self._action.switch_to_frame(PaymentMethodsLocators.cardinal_iframe)
