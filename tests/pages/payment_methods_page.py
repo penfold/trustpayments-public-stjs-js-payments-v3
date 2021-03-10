@@ -179,7 +179,7 @@ class PaymentMethodsPage(BasePage):
         return text
 
     def get_text_from_submit_callback_threedresponse(self):
-        text = self._action.get_text_with_wait(PaymentMethodsLocators.submit_callback_threedresponse)
+        text = self._action.get_text_from_last_element(PaymentMethodsLocators.submit_callback_threedresponse)
         return text
 
     def get_text_from_browser_info(self):
@@ -683,3 +683,15 @@ class PaymentMethodsPage(BasePage):
     def click_cancel_3ds_btn(self):
         self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_cancel_3ds)
         self._action.click(PaymentMethodsLocators.action_btn_cancel_3ds)
+
+    def click_remove_frames_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_remove_frames)
+        self._action.click(PaymentMethodsLocators.action_btn_remove_frames)
+
+    def click_destroy_st_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_destroy_st)
+        self._action.click(PaymentMethodsLocators.action_btn_destroy_st)
+
+    def click_start_st_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_start_st)
+        self._action.click(PaymentMethodsLocators.action_btn_start_st)

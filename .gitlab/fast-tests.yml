@@ -37,7 +37,7 @@ e2e-merchants-features-app-html-dev:
     - .services-app-html-dev
   variables:
     FEATURE_FILES_DIR: 'features/e2e_merchants_features'
-  parallel: 4
+  parallel: 6
 
 e2e-merchants-features-app-html-release:
   extends:
@@ -46,7 +46,7 @@ e2e-merchants-features-app-html-release:
     - .rules-when-release
   variables:
     FEATURE_FILES_DIR: 'features/e2e_merchants_features'
-  parallel: 4
+  parallel: 6
 
 e2e-cardinal-commerce-app-html-dev:
   extends:
