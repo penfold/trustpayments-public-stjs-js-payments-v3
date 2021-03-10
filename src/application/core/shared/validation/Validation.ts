@@ -83,7 +83,7 @@ export class Validation {
   private static BACKSPACE_KEY_CODE: number = 8;
   private static CARD_NUMBER_DEFAULT_LENGTH: number = 16;
   private static CARD_NUMBER_FIELD_NAME: string = 'pan';
-  private static CLEAR_VALUE: string = '';
+  public static CLEAR_VALUE: string = '';
   private static DELETE_KEY_CODE: number = 46;
   private static ENTER_KEY_CODE = 13;
   private static ERROR_CLASS: string = 'error';
@@ -92,7 +92,7 @@ export class Validation {
   private static ID_PARAM_NAME: string = 'id';
   private static MATCH_CHARS = /[^\d]/g;
   private static MATCH_DIGITS = /^[0-9]*$/;
-  private static MERCHANT_EXTRA_FIELDS_PREFIX = 'billing';
+  public static MERCHANT_EXTRA_FIELDS_PREFIX = 'billing';
   private static SECURITY_CODE_FIELD_NAME: string = 'securitycode';
   private static BACKEND_ERROR_FIELDS_NAMES = {
     cardNumber: 'pan',
@@ -100,7 +100,7 @@ export class Validation {
     securityCode: 'securitycode'
   };
 
-  private static _setValidateEvent(errordata: string, event: IMessageBusEvent): IMessageBusEvent {
+  static setValidateEvent(errordata: string, event: IMessageBusEvent): IMessageBusEvent {
     switch (errordata) {
       case Validation.BACKEND_ERROR_FIELDS_NAMES.cardNumber:
         event.type = MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD;
