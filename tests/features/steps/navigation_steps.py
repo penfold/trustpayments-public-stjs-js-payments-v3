@@ -109,6 +109,9 @@ def step_impl_example(context, example_page: ExamplePageParam):
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
     payment_page.open_page_with_not_private_connection_check(url)
+    
+    #ToDo - only for test
+    payment_page.wait_for_pay_button_to_be_active()
 
     if example_page is not None and 'IN_IFRAME' in example_page:
         payment_page.switch_to_parent_iframe()

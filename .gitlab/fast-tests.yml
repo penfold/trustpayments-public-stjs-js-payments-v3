@@ -31,7 +31,7 @@
   variables:
     FEATURE_FILE_NAME: 'visa_checkout.feature'
 
-e2e-merchants-features-app-html-dev:
+.e2e-merchants-features-app-html-dev:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-dev
@@ -48,7 +48,7 @@ e2e-merchants-features-app-html-release:
     FEATURE_FILES_DIR: 'features/e2e_merchants_features'
   parallel: 6
 
-e2e-cardinal-commerce-app-html-dev:
+.e2e-cardinal-commerce-app-html-dev:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-dev
