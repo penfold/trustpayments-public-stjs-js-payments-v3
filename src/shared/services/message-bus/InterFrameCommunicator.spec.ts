@@ -244,18 +244,15 @@ describe('InterFrameCommunicator', () => {
     });
 
     it('ignores messages without data or data.type properties', done => {
-      const callbackSpy = jest.fn();
-
-      interFrameCommunicator.incomingEvent$.subscribe(callbackSpy);
+      interFrameCommunicator.incomingEvent$.subscribe(event => {
+        expect(event.type).toEqual('foobar');
+        done();
+      });
 
       window.postMessage(null, '*');
       window.postMessage('somestring', '*');
       window.postMessage({ foo: 'bar' }, '*');
-
-      setTimeout(() => {
-        expect(callbackSpy).not.toHaveBeenCalled();
-        done();
-      });
+      window.postMessage({ type: 'foobar' }, '*');
     });
 
     afterEach(() => {
