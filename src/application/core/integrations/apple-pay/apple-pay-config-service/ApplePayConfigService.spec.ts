@@ -38,7 +38,7 @@ describe('ApplePayConfigService', () => {
   };
 
   const applePayConfig: IApplePayConfig = {
-    buttonStyle: 'ys',
+    buttonStyle: 'white',
     buttonText: 'donate',
     merchantId: 'test-id',
     paymentRequest: paymentRequest,
@@ -158,8 +158,8 @@ describe('ApplePayConfigService', () => {
         formId: 'test id',
         applePay: {
           merchantId: 'test string',
-          buttonStyle: 'some style',
-          buttonText: 'test text',
+          buttonStyle: 'white',
+          buttonText: 'donate',
           paymentRequest,
           placement: 'test place'
         },
