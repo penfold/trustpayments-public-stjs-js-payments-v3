@@ -1,6 +1,13 @@
 import Joi from 'joi';
 
 export const VisaCheckoutSchema: Joi.ObjectSchema = Joi.object().keys({
+  merchantId: Joi.string(),
+  livestatus: Joi.number().valid(0, 1),
+  placement: Joi.string(),
+  encryptionKey: Joi.string(),
+  referenceCallID: Joi.string(),
+  externalProfileId: Joi.string(),
+  externalClientId: Joi.string(),
   buttonSettings: Joi.object().keys({
     color: Joi.string().allow('neutral', 'standard'),
     size: Joi.number(),
@@ -11,24 +18,6 @@ export const VisaCheckoutSchema: Joi.ObjectSchema = Joi.object().keys({
     acceptCanadianVisaDebit: Joi.string(),
     cobrand: Joi.string()
   }),
-  livestatus: Joi.number().valid(0, 1),
-  merchantId: Joi.string(),
-  paymentRequest: Joi.object().keys({
-    merchantRequestId: Joi.string().allow(''),
-    currencyCode: Joi.string().allow(''),
-    subtotal: Joi.string().allow(''),
-    shippingHandling: Joi.string().allow(''),
-    tax: Joi.string().allow(''),
-    discount: Joi.string().allow(''),
-    giftWrap: Joi.string().allow(''),
-    misc: Joi.string().allow(''),
-    total: Joi.string().allow(''),
-    orderId: Joi.string().allow(''),
-    description: Joi.string().allow(''),
-    promoCode: Joi.string().allow(''),
-    customData: Joi.any()
-  }),
-  placement: Joi.string(),
   settings: Joi.object().keys({
     locale: Joi.string(),
     countryCode: Joi.string(),
@@ -54,5 +43,20 @@ export const VisaCheckoutSchema: Joi.ObjectSchema = Joi.object().keys({
       threeDSSuppressChallenge: Joi.string().allow('true', 'false')
     }),
     dataLevel: Joi.string()
+  }),
+  paymentRequest: Joi.object().keys({
+    merchantRequestId: Joi.string().allow(''),
+    currencyCode: Joi.string().allow(''),
+    subtotal: Joi.string().allow(''),
+    shippingHandling: Joi.string().allow(''),
+    tax: Joi.string().allow(''),
+    discount: Joi.string().allow(''),
+    giftWrap: Joi.string().allow(''),
+    misc: Joi.string().allow(''),
+    total: Joi.string().allow(''),
+    orderId: Joi.string().allow(''),
+    description: Joi.string().allow(''),
+    promoCode: Joi.string().allow(''),
+    customData: Joi.any()
   })
 });
