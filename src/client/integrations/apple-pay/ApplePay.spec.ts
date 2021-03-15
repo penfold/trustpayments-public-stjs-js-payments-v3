@@ -60,8 +60,8 @@ describe('ApplePay', () => {
   };
   const applePayConfigMock: IApplePayConfigObject = {
     applePayConfig: {
-      buttonStyle: '',
-      buttonText: '',
+      buttonStyle: 'white',
+      buttonText: 'donate',
       merchantId: '',
       paymentRequest: {
         countryCode: 'GB',

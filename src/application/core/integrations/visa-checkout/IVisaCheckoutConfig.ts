@@ -5,8 +5,11 @@ import { IVisaCheckoutPaymentRequest } from './IVisaCheckoutPaymentRequest';
 export interface IVisaCheckoutConfig {
   merchantId: string; // That's VisaCheckout apikey property
   livestatus: 0 | 1;
-  encryptionKey?: string;
   placement: string;
+  encryptionKey?: string;
+  referenceCallID?: string;
+  externalProfileId?: string;
+  externalClientId?: string;
   buttonSettings?: IVisaCheckoutButtonSettings;
   settings?: IVisaCheckoutSettings;
   paymentRequest?: IVisaCheckoutPaymentRequest;

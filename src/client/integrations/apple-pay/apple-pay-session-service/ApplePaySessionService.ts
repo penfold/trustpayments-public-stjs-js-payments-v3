@@ -79,7 +79,7 @@ export class ApplePaySessionService {
         newTotal: {
           amount: this.paymentRequest.total.amount,
           label: this.paymentRequest.total.label,
-          type: 'final'
+          type: this.paymentRequest.total.type
         }
       });
     };
@@ -91,7 +91,7 @@ export class ApplePaySessionService {
         newTotal: {
           amount: this.paymentRequest.total.amount,
           label: this.paymentRequest.total.label,
-          type: 'final'
+          type: this.paymentRequest.total.type
         }
       });
     };
@@ -103,7 +103,7 @@ export class ApplePaySessionService {
         newTotal: {
           amount: this.paymentRequest.total.amount,
           label: this.paymentRequest.total.label,
-          type: 'final'
+          type: this.paymentRequest.total.type
         }
       });
     };
