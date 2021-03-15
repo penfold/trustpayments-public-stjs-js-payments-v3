@@ -22,7 +22,7 @@ describe('ApplePaySessionFactory', () => {
       currencyCode: 'GBP',
       merchantCapabilities: [],
       supportedNetworks: [],
-      total: { amount: '123', label: '' }
+      total: { amount: '123', label: '', type: 'final' }
     };
 
     expect(applePaySessionFactory.create(123, request)).toBe(applePaySessionMock);
