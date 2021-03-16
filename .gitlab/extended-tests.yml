@@ -110,7 +110,7 @@ SamsungGalaxyS20-10.0-visual-tests:
 iPhone12Mini-14-visual-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-always
+    - .rules-extended-tests-release
   variables:
     DEVICE: iPhone 12 Mini
     OS_VERSION: 14
@@ -123,7 +123,7 @@ iPhone12Mini-14-visual-tests:
 OSXBigSur-Safari-14.0-visual-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-always
+    - .rules-extended-tests-release
   variables:
     OS: OS X
     OS_VERSION: Big Sur
@@ -489,7 +489,7 @@ OSXMojave-Safari-12.1-extended-test-part-3:
 iPhone12Mini-14-visual-tests-styling:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-always
+    - .rules-extended-tests-release
   variables:
     DEVICE: iPhone 12 Mini
     OS_VERSION: 14
@@ -502,7 +502,7 @@ iPhone12Mini-14-visual-tests-styling:
 OSXBigSur-Safari-14.0-visual-tests-styling:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-always
+    - .rules-extended-tests-release
   variables:
     OS: OS X
     OS_VERSION: Big Sur
