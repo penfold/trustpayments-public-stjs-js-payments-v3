@@ -1,3 +1,4 @@
+import { IApplePayMerchantCapabilities } from '../IApplePayMerchantCapabilities';
 import { IApplePayShippingLineItem } from '../../../../../client/integrations/apple-pay/apple-pay-shipping-data/IApplePayShippingLineItem';
 import { IApplePaySupportedNetworks } from '../apple-pay-networks-service/IApplePaySupportedNetworks';
 import { IApplePayShippingBillingContact } from '../../../../../client/integrations/apple-pay/apple-pay-shipping-data/IApplePayShippingBillingContact';
@@ -7,7 +8,7 @@ import { IApplePayShippingMethod } from '../../../../../client/integrations/appl
 export interface IApplePayPaymentRequest {
   countryCode: string;
   currencyCode: string;
-  merchantCapabilities: string[];
+  merchantCapabilities: IApplePayMerchantCapabilities[];
   supportedNetworks: IApplePaySupportedNetworks[];
   total: IApplePayShippingLineItem;
   lineItems?: IApplePayShippingLineItem[];
