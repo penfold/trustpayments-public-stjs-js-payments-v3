@@ -70,11 +70,15 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
     """Run after each scenario"""
+    # pylint: bare-except
     LOGGER.info('AFTER SCENARIO')
-    if scenario.status == 'failed':
+    if scenario.status == 'failed' and (context.browser.upper() not in 'SAFARI'):
         LOGGER.info('Printing console logs:')
-        for entry in context.driver_factory.get_driver().get_log('browser'):
-            LOGGER.info(entry)
+        try:
+            for entry in context.driver_factory.get_driver().get_log('browser'):
+                LOGGER.info(entry)
+        except:
+            LOGGER.info('Exception thrown while printing console logs')
     browser_name = context.browser
     context.executor.clear_cookies()
     context.executor.close_browser()
