@@ -22,7 +22,7 @@ Feature: Callback functionality
     @smoke_test
     Examples:
       | action_code | callback_popup | threedresponse_defined |
-      | OK          | success        | False                  |
+      | OK          | success        | True                   |
 
     Examples:
       | action_code | callback_popup | threedresponse_defined |
