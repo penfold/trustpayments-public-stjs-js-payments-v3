@@ -3,6 +3,7 @@ import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
 import { Store } from './Store';
 import { BehaviorSubject } from 'rxjs';
 import { CallbackReducer } from '../CallbackReducer';
+import { toArray } from 'rxjs/operators';
 
 describe('Store', () => {
   const state = { foo: 'bar' };
@@ -21,13 +22,31 @@ describe('Store', () => {
     expect(store.getState()).toEqual(state);
   });
 
-  it('returns a piece of current state as observable', done => {
-    store
-      .select(s => s.foo)
-      .subscribe(result => {
-        expect(result).toBe('bar');
-        done();
-      });
+  describe('select', () => {
+    it('returns a piece of current state as observable', done => {
+      store
+        .select(s => s.foo)
+        .subscribe(result => {
+          expect(result).toBe('bar');
+          done();
+        });
+    });
+
+    it('emits values only when the value change', done => {
+      store
+        .select(s => s.foo)
+        .pipe(toArray())
+        .subscribe(result => {
+          expect(result).toEqual(['bar', 'baz']);
+          done();
+        });
+
+      state$.next({ foo: 'bar' });
+      state$.next({ foo: 'bar' });
+      state$.next({ foo: 'baz' });
+      state$.next({ foo: 'baz' });
+      state$.complete();
+    });
   });
 
   it('allows subscribing to current state changes', done => {

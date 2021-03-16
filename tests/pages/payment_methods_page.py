@@ -105,8 +105,19 @@ class PaymentMethodsPage(BasePage):
         self._executor.wait_for_javascript()
 
     def fill_cardinal_authentication_code(self, auth_type):
-        auth = AuthType.__members__[auth_type].name
+        auth = AuthType.__members__[auth_type].name  # pylint: disable=unsubscriptable-object
         self.select_proper_cardinal_authentication(auth)
+
+    def validate_cardinal_authentication_modal_appears(self, auth):
+        self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
+        if auth == AuthType.V1.value:
+            self._action.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
+            self._executor.wait_for_element_to_be_displayed(
+                PaymentMethodsLocators.cardinal_v1_authentication_code_field)
+        else:
+            self._executor.wait_for_element_to_be_displayed(
+                PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+        self._action.switch_to_default_iframe()
 
     def select_proper_cardinal_authentication(self, auth):
         self._action.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
@@ -168,7 +179,7 @@ class PaymentMethodsPage(BasePage):
         return text
 
     def get_text_from_submit_callback_threedresponse(self):
-        text = self._action.get_text_with_wait(PaymentMethodsLocators.submit_callback_threedresponse)
+        text = self._action.get_text_from_last_element(PaymentMethodsLocators.submit_callback_threedresponse)
         return text
 
     def get_text_from_browser_info(self):
@@ -340,6 +351,9 @@ class PaymentMethodsPage(BasePage):
             self._action.switch_to_iframe_and_click(PaymentMethodsLocators.animated_card_iframe,
                                                     PaymentMethodsLocators.animated_card)
 
+    def change_focus_to_page_title(self):
+        self._action.click(PaymentMethodsLocators.page_title)
+
     def switch_to_parent_iframe(self):
         self._action.switch_to_iframe(PaymentMethodsLocators.parent_iframe)
 
@@ -388,7 +402,7 @@ class PaymentMethodsPage(BasePage):
 
     def validate_field_accessibility(self, field_type, should_be_enabled):
         is_enabled = self.is_field_enabled(field_type)
-        assertion_message = f'{FieldType[field_type].name} field was not in proper accessibility state'
+        assertion_message = f'{FieldType[field_type].name} field enabled state should be: {should_be_enabled} but was: {is_enabled}'
         add_to_shared_dict('assertion_message', assertion_message)
         assert is_enabled is should_be_enabled, assertion_message
 
@@ -503,7 +517,7 @@ class PaymentMethodsPage(BasePage):
         elif 'should be none' in value:
             assert_that(key not in parsed_query_from_url.keys(), f'{key} is not none but should be').is_true()
         else:
-            assert_that(parsed_query_from_url[key][0]).is_equal_to(value)
+            assert_that(parsed_query_from_url[key][0], f'{key} param value: ').is_equal_to(value)
 
     def validate_form_status(self, field_type, form_status):
         if 'enabled' in form_status:
@@ -557,7 +571,7 @@ class PaymentMethodsPage(BasePage):
             counter = self._action.get_text_from_last_element(PaymentMethodsLocators.callback_cancel_counter)
         elif 'submit' in callback_popup:
             counter = self._action.get_text_from_last_element(PaymentMethodsLocators.callback_submit_counter)
-        assertion_message = f'Number of {callback_popup} callback is not correct but should be 1 but is {counter}'
+        assertion_message = f'Number of {callback_popup} callback is not correct but should be {expected_callback_number} but is {counter}'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_callback_number in counter, assertion_message
 
@@ -662,3 +676,22 @@ class PaymentMethodsPage(BasePage):
 
     def validate_if_os_is_supported_in_info_callback(self, is_supported):
         self._validate_browser_support_info('os', is_supported)
+
+    def toggle_action_buttons_bar(self):
+        self._action.click(PaymentMethodsLocators.actions_bar_toggle)
+
+    def click_cancel_3ds_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_cancel_3ds)
+        self._action.click(PaymentMethodsLocators.action_btn_cancel_3ds)
+
+    def click_remove_frames_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_remove_frames)
+        self._action.click(PaymentMethodsLocators.action_btn_remove_frames)
+
+    def click_destroy_st_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_destroy_st)
+        self._action.click(PaymentMethodsLocators.action_btn_destroy_st)
+
+    def click_start_st_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_start_st)
+        self._action.click(PaymentMethodsLocators.action_btn_start_st)

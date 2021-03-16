@@ -1,4 +1,4 @@
-import { CardFrames } from './CardFrames.class';
+import { CardFrames } from './CardFrames';
 import { FormState } from '../../application/core/models/constants/FormState';
 import { DomMethods } from '../../application/core/shared/dom-methods/DomMethods';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
@@ -11,11 +11,17 @@ import { PAY, PROCESSING } from '../../application/core/models/constants/Transla
 import {
   CARD_NUMBER_IFRAME,
   CARD_NUMBER_INPUT_SELECTOR,
+  EXPIRATION_DATE_IFRAME,
   EXPIRATION_DATE_INPUT_SELECTOR,
+  SECURITY_CODE_IFRAME,
   SECURITY_CODE_INPUT_SELECTOR
 } from '../../application/core/models/constants/Selectors';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
+import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import spyOn = jest.spyOn;
+import any = jasmine.any;
 
 jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/validation/Validation');
@@ -27,10 +33,13 @@ describe('CardFrames', () => {
   let iframeFactory: IframeFactory;
   let frame: Frame;
   let instance: CardFrames;
-  const messageBus: IMessageBus = new SimpleMessageBus();
+  let messageBus: IMessageBus;
+  let jwtDecoder: JwtDecoder;
 
   beforeEach(() => {
     iframeFactory = mock(IframeFactory);
+    jwtDecoder = mock(JwtDecoder);
+    messageBus = new SimpleMessageBus();
     frame = mock(Frame);
     const element = document.createElement('input');
     DomMethods.getAllFormElements = jest.fn().mockReturnValue([element]);
@@ -52,6 +61,17 @@ describe('CardFrames', () => {
       }
     );
     when(frame.parseUrl()).thenReturn({ params: { locale: 'en_GB' } });
+    when(jwtDecoder.decode(anything())).thenReturn({
+      payload: {
+        baseamount: '1000',
+        accounttypedescription: 'ECOM',
+        currencyiso3a: 'GBP',
+        sitereference: 'test_james38641',
+        locale: 'en_GB',
+        pan: '3089500000000000021',
+        expirydate: '01/22'
+      }
+    });
 
     instance = new CardFrames(
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NTM2NzE1OC44NDk1NDUyLCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwicGFuIjoiMzA4OTUwMDAwMDAwMDAwMDAyMSIsImV4cGlyeWRhdGUiOiIwMS8yMiJ9fQ.ey0e7_JVcwXinHZR-MFBWARiVy6F3GU5JrcuCgicGhU',
@@ -71,7 +91,8 @@ describe('CardFrames', () => {
       instanceOf(configProvider),
       instanceOf(iframeFactory),
       instanceOf(frame),
-      messageBus
+      messageBus,
+      instanceOf(jwtDecoder)
     );
     instance.init();
   });
@@ -172,31 +193,84 @@ describe('CardFrames', () => {
       // @ts-ignore
       expect(instance._publishSubmitEvent).toHaveBeenCalled();
     });
+
+    it('should remove the click listener on destroy event', () => {
+      // @ts-ignore
+      spyOn(instance._submitButton, 'removeEventListener');
+      // @ts-ignore
+      instance._submitFormListener();
+      messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
+      // @ts-ignore
+      expect(instance._submitButton.removeEventListener).toHaveBeenCalledWith('click', any(Function));
+    });
   });
 
   describe('_subscribeBlockSubmit', () => {
-    it('should subscribe listener been called', () => {
-      // @ts-ignore
-      instance._messageBus.subscribe = jest.fn();
-      // @ts-ignore
-      instance._subscribeBlockSubmit();
-      // @ts-ignore
-      expect(instance._messageBus.subscribe).toHaveBeenCalled();
-    });
-
-    it('should call disableSubmitButton method when BLOCK_FORM event has been called', () => {
+    beforeEach(() => {
       // @ts-ignore
       instance._disableSubmitButton = jest.fn();
       // @ts-ignore
-      instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
-        callback(true);
-      });
+      instance._disableFormField = jest.fn();
+    });
+
+    it('should block submit button on SUBMIT_FORM event', () => {
+      messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_FORM });
+
       // @ts-ignore
-      instance._subscribeBlockSubmit();
+      expect(instance._disableSubmitButton).toHaveBeenCalledWith(FormState.BLOCKED);
+    });
+
+    it('should unlock submit button on UNLOCK_BUTTON event', () => {
+      messageBus.publish({ type: PUBLIC_EVENTS.UNLOCK_BUTTON });
+
       // @ts-ignore
-      instance._messageBus.publish({ data: true, type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM });
+      expect(instance._disableSubmitButton).toHaveBeenCalledWith(FormState.AVAILABLE);
+    });
+
+    it('should set the state of submit button on BLOCK_FORM event', () => {
+      const state: FormState = FormState.BLOCKED;
+
+      messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: state });
+
       // @ts-ignore
-      expect(instance._disableSubmitButton).toHaveBeenCalled();
+      expect(instance._disableSubmitButton).toHaveBeenCalledWith(state);
+    });
+
+    it('should set the state of form fields on BLOCK_FORM event', () => {
+      const state: FormState = FormState.BLOCKED;
+
+      messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: state });
+
+      // @ts-ignore
+      expect(instance._disableFormField).toHaveBeenCalledWith(
+        state,
+        PUBLIC_EVENTS.BLOCK_CARD_NUMBER,
+        CARD_NUMBER_IFRAME
+      );
+      // @ts-ignore
+      expect(instance._disableFormField).toHaveBeenCalledWith(
+        state,
+        PUBLIC_EVENTS.BLOCK_EXPIRATION_DATE,
+        EXPIRATION_DATE_IFRAME
+      );
+      // @ts-ignore
+      expect(instance._disableFormField).toHaveBeenCalledWith(
+        state,
+        PUBLIC_EVENTS.BLOCK_SECURITY_CODE,
+        SECURITY_CODE_IFRAME
+      );
+    });
+
+    it('should not disable submit buttons nor form fields after DESTROY event', () => {
+      messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
+      messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_FORM });
+      messageBus.publish({ type: PUBLIC_EVENTS.UNLOCK_BUTTON });
+      messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE });
+
+      // @ts-ignore
+      expect(instance._disableSubmitButton).not.toHaveBeenCalled();
+      // @ts-ignore
+      expect(instance._disableFormField).not.toHaveBeenCalled();
     });
   });
 
@@ -247,12 +321,10 @@ describe('CardFrames', () => {
     });
 
     it(`should call _publishValidatedFieldState for cardNumber if it's state is false`, () => {
-      // @ts-ignore
-      instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
-        callback(validateFieldsAfterSubmitFixture(false, true, true));
-      });
-      // @ts-ignore
-      instance._validateFieldsAfterSubmit();
+      const validationResult = validateFieldsAfterSubmitFixture(false, true, true);
+
+      messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
+
       // @ts-ignore
       expect(instance._publishValidatedFieldState.mock.calls[0][0]).toEqual({ message: 'card', state: false });
       // @ts-ignore
@@ -262,13 +334,10 @@ describe('CardFrames', () => {
     });
 
     it(`should call _publishValidatedFieldState for expirationDate if it's state is false`, () => {
-      // @ts-ignore
-      instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
-        callback(validateFieldsAfterSubmitFixture(true, false, true));
-      });
+      const validationResult = validateFieldsAfterSubmitFixture(true, false, true);
 
-      // @ts-ignore
-      instance._validateFieldsAfterSubmit();
+      messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
+
       // @ts-ignore
       expect(instance._publishValidatedFieldState.mock.calls[0][0]).toEqual({ message: 'expiration', state: false });
       // @ts-ignore
@@ -278,19 +347,25 @@ describe('CardFrames', () => {
     });
 
     it(`should call _publishValidatedFieldState for securityCode if it's state is false`, () => {
-      // @ts-ignore
-      instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
-        callback(validateFieldsAfterSubmitFixture(true, true, false));
-      });
+      const validationResult = validateFieldsAfterSubmitFixture(true, true, false);
 
-      // @ts-ignore
-      instance._validateFieldsAfterSubmit();
+      messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
+
       // @ts-ignore
       expect(instance._publishValidatedFieldState.mock.calls[0][0]).toEqual({ message: 'security', state: false });
       // @ts-ignore
       expect(instance._publishValidatedFieldState.mock.calls[0][1]).toEqual(
         MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD
       );
+    });
+
+    it('should not call _publishValidatedFieldState after DESTROY event', () => {
+      const validationResult = validateFieldsAfterSubmitFixture(true, true, true);
+      messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
+      messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
+
+      // @ts-ignore
+      expect(instance._publishValidatedFieldState).not.toHaveBeenCalled();
     });
   });
 

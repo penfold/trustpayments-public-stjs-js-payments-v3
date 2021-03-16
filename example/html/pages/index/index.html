@@ -134,8 +134,6 @@
 
         <div id="st-animated-card" class="st-form__st-animated-card st-form__iframe-container"></div>
 
-        <div id="st-control-frame" class="st-form__group st-form__iframe-container"></div>
-
         <div class="st-form__group st-form__group--submit">
             <button type="submit" class="st-form__button" id="merchant-submit-button">Zapłać</button>
         </div>
@@ -175,21 +173,24 @@
 
     getConfig()
       .then(function(config) {
-        const st = init(config);
+        var st = init(config);
 
         function addClickHandler(elementId, handler) {
           document.getElementById(elementId).addEventListener('click', handler);
         }
 
-        addClickHandler('st-action-start', () => init(config));
-        addClickHandler('st-action-destroy', () => st.destroy());
-        addClickHandler('st-action-remove', () => {
+        addClickHandler('st-action-start', function() { init(config); });
+        addClickHandler('st-action-destroy', function() { st.destroy(); });
+        addClickHandler('st-action-remove', function() {
           document.querySelectorAll('.st-form__iframe-container').forEach(function(element) {
             element.innerHTML = '';
           });
+          document.getElementById('st-control-frame-iframe').remove();
+          document.getElementById('st-visa-checkout').innerHTML = '';
+          document.getElementById('st-apple-pay').innerHTML = '';
         });
-        addClickHandler('st-action-cancel-3ds', () => st.cancelThreeDProcess());
-        addClickHandler('st-actions-toggler', () => {
+        addClickHandler('st-action-cancel-3ds', function() { st.cancelThreeDProcess(); });
+        addClickHandler('st-actions-toggler', function() {
           document.getElementById('st-helper-actions').classList.toggle('st-helper-actions--unfold');
         });
       });

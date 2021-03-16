@@ -18,6 +18,7 @@ import { IVisaCheckoutStatusDataSuccess } from './visa-checkout-status-data/IVis
 import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
 import { Observable } from 'rxjs';
+import { TERM_URL } from '../../models/constants/RequestData';
 
 @Service()
 export class VisaCheckout {
@@ -74,7 +75,7 @@ export class VisaCheckout {
   protected onSuccess(config: IConfig, successData: IVisaCheckoutStatusDataSuccess): void {
     const merchantData: IMerchantData = {
       ...DomMethods.parseForm(config.formId),
-      termurl: 'https://termurl.com'
+      termurl: TERM_URL
     };
 
     this.messageBus.publish<IVisaCheckoutClientStatus>({

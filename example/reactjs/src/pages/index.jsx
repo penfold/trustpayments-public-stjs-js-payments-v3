@@ -81,8 +81,6 @@ class Index extends Component {
 
         <div id="st-animated-card" className="st-form__st-animated-card" />
 
-        <div id="st-control-frame" className="st-form__group" />
-
         <div className="st-form__group st-form__group--submit">
           <button type="submit" className="st-form__button" id="merchant-submit-button">
             Zapłać

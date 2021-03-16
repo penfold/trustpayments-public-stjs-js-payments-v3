@@ -10,7 +10,7 @@ describe('VisaCheckoutUpdateService', () => {
 
   const stJwt: IStJwtPayload = {
     currencyiso3a: 'PLN',
-    locale: 'pl_PL',
+    locale: 'de_DE',
     mainamount: '100'
   };
   const config: IVisaCheckoutInitConfig = {
@@ -18,6 +18,9 @@ describe('VisaCheckoutUpdateService', () => {
     settings: {
       locale: 'en_GB'
     },
+    referenceCallID: 'test ref id',
+    externalProfileId: 'test profile id',
+    externalClientId: 'test client id',
     paymentRequest: {
       currencyCode: 'GPB',
       total: '11',
@@ -28,8 +31,11 @@ describe('VisaCheckoutUpdateService', () => {
   const updatedConfig: IVisaCheckoutInitConfig = {
     apikey: 'some key',
     settings: {
-      locale: 'pl_PL'
+      locale: 'de_DE'
     },
+    referenceCallID: 'test ref id',
+    externalProfileId: 'test profile id',
+    externalClientId: 'test client id',
     paymentRequest: {
       currencyCode: 'PLN',
       total: '100',

@@ -9,7 +9,7 @@
       "countryCode": "US",
       "currencyCode": "USD",
       "merchantCapabilities": ["supports3DS", "supportsCredit", "supportsDebit"],
-      "supportedNetworks": [],
+      "supportedNetworks": ["visa"],
       "total": {
         "label": "Secure Trading Merchant",
         "amount": "10.0"
@@ -35,13 +35,9 @@
   "deferInit": false,
   "disableNotification": false,
   "errorCallback": null,
-  "fieldsToSubmit": ["pan", "expirydate", "securitycode"],
+  "fieldsToSubmit": [],
   "formId": "st-form",
-  "init": {
-    "cachetoken": "",
-    "threedinit": ""
-  },
-  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTYxMTk2MTU3MC41MTQ2MDg0LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDU2NjYiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJVU0QiLCJzaXRlcmVmZXJlbmNlIjoidGVzdF9qYW1lczM4NjQxIiwibG9jYWxlIjoiZW5fR0IiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJUSFJFRURRVUVSWSIsIkFVVEgiXX19.UEqE2RCtPlChJRHp0VsSAc20KFZhu69h8BZGgvJjbko",
+  "jwt": "",
   "livestatus": 0,
   "origin": "",
   "panIcon": true,

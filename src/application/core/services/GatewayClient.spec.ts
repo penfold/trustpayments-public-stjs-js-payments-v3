@@ -1,4 +1,4 @@
-import { StTransport } from './st-transport/StTransport.class';
+import { StTransport } from './st-transport/StTransport';
 import { IMessageBus } from '../shared/message-bus/IMessageBus';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { GatewayClient } from './GatewayClient';
@@ -69,6 +69,8 @@ describe('GatewayClient', () => {
   describe('threedQuery', () => {
     const threeDQueryRequest: IStRequest = { pan: '1234 1234 1234 1234' };
     const threeDQueryResponse: IThreeDQueryResponse = {
+      acquirerresponsecode: '',
+      acquirerresponsemessage: '',
       acquirertransactionreference: '',
       acsurl: '',
       enrolled: '',

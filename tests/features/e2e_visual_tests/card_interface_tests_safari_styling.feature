@@ -14,7 +14,6 @@ Feature: Visual regression - E2E Card Payments
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User clicks Pay button - AUTH response is set to "OK"
     And Wait for notification frame
-    And Wait for popups to disappear
     Then Screenshot is taken after 0 seconds and checked
 
   @base_config_visual_styling @visual_regression_styling_safari @scrn_card_interface_before_payment_styling
@@ -28,8 +27,7 @@ Feature: Visual regression - E2E Card Payments
     And InvalidField response set for "EXPIRATION_DATE"
     And User clicks Pay button
     And Wait for notification frame
-    And Wait for popups to disappear
-    Then Screenshot is taken after 3 seconds and checked
+    Then Screenshot is taken after 6 seconds and checked
 
   @base_config_visual_styling @visual_regression_styling_safari @scrn_card_interface_error_invalid_patterns_styling
   Scenario: Card interface before payment - invalid pattern data

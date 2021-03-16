@@ -1,4 +1,5 @@
 import { Container, Service } from 'typedi';
+import { Observable, from } from 'rxjs';
 import { CustomerOutput } from '../../models/constants/CustomerOutput';
 import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { RequestType } from '../../../../shared/types/RequestType';
@@ -10,8 +11,8 @@ import { IWallet } from '../../models/IWallet';
 import { IWalletVerify } from '../../models/IWalletVerify';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
 import { NotificationService } from '../../../../client/notification/NotificationService';
-import { StCodec } from '../../services/st-codec/StCodec.class';
-import { StTransport } from '../../services/st-transport/StTransport.class';
+import { StCodec } from '../../services/st-codec/StCodec';
+import { StTransport } from '../../services/st-transport/StTransport';
 import { Validation } from '../validation/Validation';
 
 @Service()
@@ -61,8 +62,22 @@ export class Payment {
     return this.publishResponse(responseData);
   }
 
-  walletVerify(walletVerify: IWalletVerify): Promise<object> {
-    return this.stTransport.sendRequest(Object.assign({ requesttypedescriptions: ['WALLETVERIFY'] }, walletVerify));
+  walletVerify(walletVerify: IWalletVerify): Observable<object> {
+    return from(
+      this.stTransport.sendRequest(Object.assign({ requesttypedescriptions: ['WALLETVERIFY'] }, walletVerify))
+    );
+  }
+
+  private publishResponse(responseData?: IResponseData): Promise<object> {
+    return Promise.resolve({
+      response: responseData || {}
+    });
+  }
+
+  private publishErrorResponse(responseData?: IResponseData): Promise<object> {
+    return Promise.reject({
+      response: responseData || {}
+    });
   }
 
   private async processRequestTypes(requestData: IStRequest, responseData?: IResponseData): Promise<object> {
@@ -80,18 +95,6 @@ export class Payment {
     }
 
     return this.stTransport.sendRequest(processPaymentRequestBody);
-  }
-
-  private publishErrorResponse(responseData?: IResponseData): Promise<object> {
-    return Promise.reject({
-      response: responseData || {}
-    });
-  }
-
-  private publishResponse(responseData?: IResponseData): Promise<object> {
-    return Promise.resolve({
-      response: responseData || {}
-    });
   }
 
   private publishThreedResponse(responseData: IResponseData): Promise<object> {
