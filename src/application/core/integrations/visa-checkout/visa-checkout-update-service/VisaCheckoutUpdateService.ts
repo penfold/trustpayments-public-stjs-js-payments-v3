@@ -36,6 +36,9 @@ export class VisaCheckoutUpdateService {
       visaInitConfig: {
         apikey: config.visaCheckout.merchantId,
         encryptionKey: config.visaCheckout.encryptionKey,
+        referenceCallID: config.visaCheckout.referenceCallID,
+        externalProfileId: config.visaCheckout.externalProfileId,
+        externalClientId: config.visaCheckout.externalClientId,
         paymentRequest: {
           currencyCode: jwtPayload.currencyiso3a,
           subtotal: jwtPayload.mainamount,

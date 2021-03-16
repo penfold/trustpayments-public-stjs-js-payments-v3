@@ -1,12 +1,12 @@
-.cicd-os-ref: &cicd-os-ref 0.0.77
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 0.0.356
 
-.cicd-os: &cicd-os
-  project: trustpayments-public/stjs/cicd-os
-  ref: *cicd-os-ref
+.project-infrastructure-cicd: &project-infrastructure-cicd
+  project: securetrading-gl/st-server-project/project-infrastructure-cicd
+  ref: *project-infrastructure-cicd-ref
 
 include:
-  - file: /cicd_template.yml
-    <<: *cicd-os
+  - file: /cicd_js.yml
+    <<: *project-infrastructure-cicd
 
   - local: '/.gitlab/others/services.yml'
   - local: '/.gitlab/build.yml'
@@ -19,7 +19,7 @@ include:
   - local: '/.gitlab/smoke-tests.yml'
 
 variables:
-  CICD_OS_REF: *cicd-os-ref
+  PROJECT_INFRASTRUCTURE_CICD_REF: *project-infrastructure-cicd-ref
 
   IMAGE_JS_PAYMENTS_APP_HTML_RELEASE: ${CI_REGISTRY_IMAGE}/app-html-release:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_APP_HTML_MOCK: ${CI_REGISTRY_IMAGE}/app-html-mock:${CI_PIPELINE_ID}

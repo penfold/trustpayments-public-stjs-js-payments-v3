@@ -55,7 +55,7 @@ build-payments-tests:
   stage: post-build
   variables:
     UTILITY_NAME: 'payments-tests'
-    DOCKERFILE_PATH: .cicd_scripts/docker/payments-tests/Dockerfile
+    DOCKERFILE_PATH: .cicd_scripts/docker/payments_tests/Dockerfile
     BUILD_ARGS_EXTRA: --build-arg COPY_FROM=./tests
 
 #### wiremock for testing repo
