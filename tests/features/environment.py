@@ -13,7 +13,7 @@ from page_factory import PageFactory
 from utils.browser import Browser
 from utils.driver_factory import DriverFactory
 from utils.extensions import WebElementsExtensions
-from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed
+from utils.helpers.request_executor import shared_dict
 from utils.mock_handler import MockServer
 from utils.reporter import Reporter
 from utils.test_data import TestData
@@ -56,7 +56,8 @@ def before_scenario(context, scenario):
     extensions = WebElementsExtensions(driver_factory=context.driver_factory, configuration=context.configuration)
     context.executor = Browser(driver_factory=context.driver_factory, configuration=context.configuration)
     context.reporter = Reporter(driver_factory=context.driver_factory, configuration=context.configuration)
-    context.screenshot_manager = ScreenshotManager(driver_factory=context.driver_factory, configuration=context.configuration)
+    context.screenshot_manager = ScreenshotManager(driver_factory=context.driver_factory,
+                                                   configuration=context.configuration)
     context.page_factory = PageFactory(executor=context.executor, extensions=extensions,
                                        reporter=context.reporter, configuration=context.configuration,
                                        wait=context.waits)
@@ -87,9 +88,9 @@ def after_scenario(context, scenario):
         set_scenario_name(context.session_id, scenario.name)
     scenario.name = f'{scenario.name}_{browser_name.upper()}'
     if scenario.status == 'failed' and context.configuration.REMOTE:
-        mark_test_as_failed(context.session_id)
+        mark_test_as_failed(context)
     elif context.configuration.REMOTE:
-        mark_test_as_passed(context.session_id)
+        mark_test_as_passed(context)
 
 
 def after_step(context, step):
@@ -123,3 +124,18 @@ def validate_if_proper_browser_is_set_for_test(context, scenario):
         scenario.skip('Scenario skipped for headless chrome')
     else:
         context.is_field_in_iframe = True
+
+
+def mark_test_as_passed(context):
+    context.executor.execute_script('browserstack_executor: {"action": "setSessionStatus", "arguments": '
+                                    '{"status":"passed", "reason": "Scenario  passed"}}')
+
+
+def mark_test_as_failed(context):
+    context.executor.execute_script('browserstack_executor: {"action": "setSessionStatus", "arguments": '
+                                    '{"status":"failed", "reason":' + shared_dict['assertion_message'] + '}}')
+
+
+def set_scenario_name(context, scenario_name):
+    context.executor.execute_script('browserstack_executor: {"action": "setSessionName", "arguments": '
+                                    '{"name": "' + scenario_name + '"}}')

@@ -24,7 +24,7 @@ Feature: ApplePay
     Examples:
       | action_code | payment_status_message     | color  | callback |
 #      | ERROR       | "Invalid response"          | red    |error|
-      | DECLINE     | Decline                    | red    | error    |
+      | DECLINE     | TEST                    | red    | error    |
 
   @base_config @extended_tests_apple_pay @translations @apple_test @apple_test_part1
   Scenario Outline: ApplePay - checking translation for "Payment has been cancelled" status for <language>
