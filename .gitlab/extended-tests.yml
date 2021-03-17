@@ -123,12 +123,12 @@ iPhone12Mini-14-visual-tests:
 OSXBigSur-Safari-14.0-visual-tests:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-tests-always
   variables:
     OS: OS X
-    OS_VERSION: Big Sur
+    OS_VERSION: latest
     BROWSER: Safari
-    BROWSER_VERSION: '14.0'
+    BROWSER_VERSION: 'latest'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: visual_regression_safari
@@ -502,12 +502,12 @@ iPhone12Mini-14-visual-tests-styling:
 OSXBigSur-Safari-14.0-visual-tests-styling:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-release
+    - .rules-extended-tests-always
   variables:
     OS: OS X
-    OS_VERSION: Big Sur
+    OS_VERSION: 'latest'
     BROWSER: Safari
-    BROWSER_VERSION: '14.0'
+    BROWSER_VERSION: 'latest'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: visual_regression_styling_safari
