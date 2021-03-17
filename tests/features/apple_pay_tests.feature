@@ -278,6 +278,16 @@ Feature: ApplePay
     And "submit" callback is called only once
     And submit callback contains JWT response
 
+  @config_mainamount @apple_test @apple_test_part2
+  Scenario : ApplePay - successful payment with mainamount property in jwt payload
+    When User chooses ApplePay as payment method - response is set to "SUCCESS"
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
+    And "success" callback is called only once
+    And "submit" callback is called only once
+    And submit callback contains JWT response
+    And APPLE_PAY or AUTH requests were sent only once with correct data
+
 
 
 
