@@ -279,7 +279,7 @@ Feature: ApplePay
     And submit callback contains JWT response
 
   @config_mainamount @apple_test @apple_test_part2
-  Scenario : ApplePay - successful payment with mainamount property in jwt payload
+  Scenario: ApplePay - successful payment with mainamount property in jwt payload
     When User chooses ApplePay as payment method - response is set to "SUCCESS"
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
