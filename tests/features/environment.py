@@ -65,6 +65,8 @@ def before_scenario(context, scenario):
     context.session_id = context.executor.get_session_id()
     context.language = 'en_GB'
     scenario.name = '%s executed on %s' % (scenario.name, context.browser.upper())
+    if context.configuration.REMOTE:
+        set_scenario_name(context, scenario.name)
     LOGGER.info(scenario.name)
     validate_if_proper_browser_is_set_for_test(context, scenario)
 
@@ -73,6 +75,10 @@ def after_scenario(context, scenario):
     """Run after each scenario"""
     # pylint: disable=bare-except
     LOGGER.info('AFTER SCENARIO')
+    if scenario.status == 'failed' and context.configuration.REMOTE:
+        mark_test_as_failed(context)
+    elif context.configuration.REMOTE:
+        mark_test_as_passed(context)
     if scenario.status == 'failed' and (context.browser.upper() not in 'SAFARI'):
         LOGGER.info('Printing console logs:')
         try:
@@ -84,13 +90,7 @@ def after_scenario(context, scenario):
     context.executor.clear_cookies()
     context.executor.close_browser()
     MockServer.stop_mock_server()
-    if context.configuration.REMOTE:
-        set_scenario_name(context, scenario.name)
     scenario.name = f'{scenario.name}_{browser_name.upper()}'
-    if scenario.status == 'failed' and context.configuration.REMOTE:
-        mark_test_as_failed(context)
-    elif context.configuration.REMOTE:
-        mark_test_as_passed(context)
 
 
 def after_step(context, step):
