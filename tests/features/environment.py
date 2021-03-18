@@ -13,7 +13,6 @@ from page_factory import PageFactory
 from utils.browser import Browser
 from utils.driver_factory import DriverFactory
 from utils.extensions import WebElementsExtensions
-from utils.helpers.request_executor import shared_dict
 from utils.mock_handler import MockServer
 from utils.reporter import Reporter
 from utils.test_data import TestData
