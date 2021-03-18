@@ -67,6 +67,7 @@ def before_scenario(context, scenario):
     scenario.name = '%s executed on %s' % (scenario.name, context.browser.upper())
     LOGGER.info(scenario.name)
     validate_if_proper_browser_is_set_for_test(context, scenario)
+    set_scenario_name(context)
 
 
 def after_scenario(context, scenario):
@@ -85,7 +86,7 @@ def after_scenario(context, scenario):
     context.executor.close_browser()
     MockServer.stop_mock_server()
     if context.configuration.REMOTE:
-        set_scenario_name(context, scenario.name)
+        set_scenario_name(context)
     scenario.name = f'{scenario.name}_{browser_name.upper()}'
     if scenario.status == 'failed' and context.configuration.REMOTE:
         mark_test_as_failed(context)
@@ -133,9 +134,9 @@ def mark_test_as_passed(context):
 
 def mark_test_as_failed(context):
     context.executor.execute_script('browserstack_executor: {"action": "setSessionStatus", "arguments": '
-                                    '{"status":"failed", "reason":"' + shared_dict['assertion_message'] + '"}}')
+                                    '{"status":"failed", "reason":"FAILED"}}')
 
 
-def set_scenario_name(context, scenario_name):
+def set_scenario_name(context):
     context.executor.execute_script('browserstack_executor: {"action": "setSessionName", "arguments": '
-                                    '{"name": "' + scenario_name + '"}}')
+                                    '{"name": "TEST"}}')
