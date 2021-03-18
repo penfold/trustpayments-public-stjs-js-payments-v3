@@ -67,7 +67,8 @@ def before_scenario(context, scenario):
     scenario.name = '%s executed on %s' % (scenario.name, context.browser.upper())
     LOGGER.info(scenario.name)
     validate_if_proper_browser_is_set_for_test(context, scenario)
-    set_scenario_name(context)
+    if context.configuration.REMOTE:
+        set_scenario_name(context)
 
 
 def after_scenario(context, scenario):

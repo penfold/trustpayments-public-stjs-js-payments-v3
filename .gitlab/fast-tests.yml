@@ -65,13 +65,13 @@
     FEATURE_FILES_DIR: 'features/e2e_cardinal_commerce'
   parallel: 8
 
-e2e-app-html-dev:
+.e2e-app-html-dev:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-dev
   parallel: 18
 
-e2e-app-html-release:
+.e2e-app-html-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-prod-merchant
