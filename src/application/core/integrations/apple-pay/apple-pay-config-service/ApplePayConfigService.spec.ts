@@ -58,7 +58,7 @@ describe('ApplePayConfigService', () => {
   const applePayNetworkService: ApplePayNetworksService = mock(ApplePayNetworksService);
   const applePaySessionService: ApplePaySessionService = mock(ApplePaySessionService);
   const jwt: string = 'somerandomjwt';
-  let applePayConfigService: ApplePayConfigService = new ApplePayConfigService(
+  const applePayConfigService: ApplePayConfigService = new ApplePayConfigService(
     instance(jwtDecoderMock),
     instance(applePayNetworkService),
     instance(applePaySessionService)

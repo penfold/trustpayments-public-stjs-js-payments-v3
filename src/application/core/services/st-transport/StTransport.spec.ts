@@ -37,7 +37,7 @@ describe('StTransport class', () => {
   };
 
   let instance: StTransport;
-  let configProviderMock = mock<ConfigProvider>();
+  const configProviderMock = mock<ConfigProvider>();
   let mockFT: jest.Mock;
   let codec: StCodec;
 
@@ -135,7 +135,7 @@ describe('StTransport class', () => {
         return await instance.sendRequest({ requesttypedescription: 'AUTH' });
       }
 
-      let response = testSendRequest();
+      const response = testSendRequest();
       expect(response).toMatchObject(expected);
     });
 

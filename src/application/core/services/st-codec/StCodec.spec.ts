@@ -155,9 +155,9 @@ describe('StCodec class', () => {
 
   describe('StCodec._handleInvalidResponse', () => {
     it('should call publishResponse and error notification and return the error object', () => {
-      let spy1 = jest.spyOn(StCodec, 'publishResponse');
+      const spy1 = jest.spyOn(StCodec, 'publishResponse');
       // @ts-ignore
-      let spy2 = jest.spyOn(StCodec.getNotification(), 'error');
+      const spy2 = jest.spyOn(StCodec.getNotification(), 'error');
       // @ts-ignore
       expect(StCodec._handleInvalidResponse()).toMatchObject(new Error(COMMUNICATION_ERROR_INVALID_RESPONSE));
       expect(spy1).toHaveBeenCalledTimes(1);

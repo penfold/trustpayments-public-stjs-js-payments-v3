@@ -11,18 +11,18 @@ describe('ConfigResolver', () => {
     when(spy(console).error(anything())).thenReturn(undefined);
   });
 
-  it('should set default config-provider when some of properties are not set ', () => {
-    let { config, configResolved } = ConfigResolverFixture();
+  it('should set default config-provider when some of properties are not set', () => {
+    const { config, configResolved } = ConfigResolverFixture();
     expect(configResolverInstance.resolve(config)).toEqual(configResolved);
   });
 
   it('should set default config-provider when all of the properties are not set, except of those which are obligatory', () => {
-    let { minimalDefaultConfigResolve, minimalConfig } = ConfigResolverFixture();
+    const { minimalDefaultConfigResolve, minimalConfig } = ConfigResolverFixture();
     expect(configResolverInstance.resolve(minimalConfig)).toEqual(minimalDefaultConfigResolve);
   });
 
   it('should set config-provider with given values if they are correct', () => {
-    let { minimalDefaultConfigResolve } = ConfigResolverFixture();
+    const { minimalDefaultConfigResolve } = ConfigResolverFixture();
     expect(configResolverInstance.resolve(minimalDefaultConfigResolve)).toEqual(minimalDefaultConfigResolve);
   });
 });

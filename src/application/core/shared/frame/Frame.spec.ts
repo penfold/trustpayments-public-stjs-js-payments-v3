@@ -33,12 +33,12 @@ describe('Frame', () => {
       }
     ]
   ]).test('Frame.parseUrl', (url, expected) => {
-    let frame = new Frame();
+    const frame = new Frame();
     window.history.pushState({}, 'Test Title', url);
     // @ts-ignore
     frame.getAllowedParams = jest.fn().mockReturnValueOnce(['locale', 'origin']);
     // @ts-ignore
-    let actual = frame.parseUrl();
+    const actual = frame.parseUrl();
     expect(actual.length).toBe(expected.length);
     expect(actual).toMatchObject(expected);
   });

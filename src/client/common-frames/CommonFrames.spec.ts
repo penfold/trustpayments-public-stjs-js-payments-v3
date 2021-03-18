@@ -263,7 +263,7 @@ describe('CommonFrames', () => {
       );
     });
 
-    it('should call submit process TRANSACTION COMPLETE WITHOUT CALLING SUBMIT CALLBACK AND SUBKIT ING FORM (customeroutput + enrolled!==Y) ', done => {
+    it('should call submit process TRANSACTION COMPLETE WITHOUT CALLING SUBMIT CALLBACK AND SUBKIT ING FORM (customeroutput + enrolled!==Y)', done => {
       const data = {
         errorcode: '0',
         errormessage: PAYMENT_SUCCESS,

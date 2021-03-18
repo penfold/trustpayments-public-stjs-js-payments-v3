@@ -61,30 +61,30 @@ const translationItems = {
 
 describe('translate()', () => {
   it('should leave english unchanged', () => {
-    let translator = new Translator('en_GB');
+    const translator = new Translator('en_GB');
     expect(translator.translate('Field is required')).toBe('Field is required');
     expect(translator.translate('Ok')).toBe('Payment has been successfully processed'); // Special case for success message
   });
 
   it('should translate to french', () => {
-    let translator = new Translator('fr_FR');
+    const translator = new Translator('fr_FR');
     expect(translator.translate('Field is required')).toBe('Champ requis');
     expect(translator.translate('Ok')).toBe('Le paiement a été traité avec succès');
   });
 
   it('should translate to german', () => {
-    let translator = new Translator('de_DE');
+    const translator = new Translator('de_DE');
     expect(translator.translate('Field is required')).toBe('Feld ist erforderlich');
     expect(translator.translate('Ok')).toBe('Zahlung wurde erfolgreich verarbeitet');
   });
 
   it('should have translations for all Language parameters', () => {
-    let translations = [en_GB, cy_GB, da_DK, de_DE, en_US, es_ES, fr_FR, nl_NL, no_NO, sv_SE];
-    for (let i in translations) {
-      let translation: any = translations[i];
-      let language: any = translationItems;
-      for (let key in language) {
-        let text = language[key];
+    const translations = [en_GB, cy_GB, da_DK, de_DE, en_US, es_ES, fr_FR, nl_NL, no_NO, sv_SE];
+    for (const i in translations) {
+      const translation: any = translations[i];
+      const language: any = translationItems;
+      for (const key in language) {
+        const text = language[key];
         // @TODO: looks like this test was not working, after changes it appeared that there is no translation for:
         // "A target iframe-factory for the input field with id could not be found. Please check your configuration"
         // console.error(language[key], translation[text]);
@@ -98,7 +98,7 @@ describe('translate()', () => {
     const translation: string = 'some random translation';
     const storage: BrowserLocalStorage = Container.get(BrowserLocalStorage);
     storage.getItem = jest.fn().mockReturnValueOnce(`{"${toTranslate}": "${translation}"}`);
-    let instance: Translator = new Translator('en_GB');
+    const instance: Translator = new Translator('en_GB');
     expect(instance.translate(toTranslate)).toEqual(translation);
   });
 });

@@ -71,7 +71,7 @@ describe('Validation', () => {
       merchantInputsErrorData
     } = validationFixture();
 
-    it('should pass error data with proper field equals pan ', () => {
+    it('should pass error data with proper field equals pan', () => {
       StCodec.getErrorData(cardNumberErrorData);
       // @ts-ignore
       expect(instance.getErrorData(cardNumberErrorData)).toEqual({
@@ -80,7 +80,7 @@ describe('Validation', () => {
       });
     });
 
-    it('should pass error data with proper field equals security code ', () => {
+    it('should pass error data with proper field equals security code', () => {
       StCodec.getErrorData(securityCodeErrorData);
       // @ts-ignore
       expect(instance.getErrorData(securityCodeErrorData)).toEqual({
@@ -89,7 +89,7 @@ describe('Validation', () => {
       });
     });
 
-    it('should pass error data with proper field equals expiration date ', () => {
+    it('should pass error data with proper field equals expiration date', () => {
       StCodec.getErrorData(expirationDateErrorData);
       // @ts-ignore
       expect(instance.getErrorData(expirationDateErrorData)).toEqual({

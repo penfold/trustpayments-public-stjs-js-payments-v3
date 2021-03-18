@@ -167,7 +167,7 @@ describe('InterFrameCommunicator', () => {
       communicatorSpy = spy(interFrameCommunicator);
     });
 
-    it('it listens to query messages and pass them to responders', done => {
+    it('listens to query messages and pass them to responders', done => {
       const fooResponder = jest.fn().mockImplementationOnce((event: IMessageBusEvent) => of({ type: 'BAR' }));
       const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
 
@@ -186,7 +186,7 @@ describe('InterFrameCommunicator', () => {
       });
     });
 
-    it('it processes all queries and doesnt cancel processing when new query arrives', done => {
+    it('processes all queries and doesnt cancel processing when new query arrives', done => {
       const fooResponder = (event: IMessageBusEvent) => timer(100).pipe(mapTo({ type: 'FOO_RESPONSE' }));
       const barResponder = (event: IMessageBusEvent) => of({ type: 'BAR_RESPONSE' });
       const fooQueryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');

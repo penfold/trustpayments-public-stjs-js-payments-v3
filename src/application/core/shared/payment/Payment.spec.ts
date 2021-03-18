@@ -109,7 +109,7 @@ describe('Payment', () => {
       });
     });
 
-    it('should not send remaining request types when previous response has RESULT customeroutput ', async () => {
+    it('should not send remaining request types when previous response has RESULT customeroutput', async () => {
       await instance.processPayment(
         [RequestType.AUTH, RequestType.RISKDEC],
         card,
@@ -127,7 +127,7 @@ describe('Payment', () => {
       expect(instance.stTransport.sendRequest).not.toHaveBeenCalled();
     });
 
-    it('should not send remaining request types when previous response has TRYAGAIN customeroutput ', done => {
+    it('should not send remaining request types when previous response has TRYAGAIN customeroutput', done => {
       instance
         .processPayment([RequestType.AUTH, RequestType.RISKDEC], card, { pan: 'overridden', merchant: 'data' }, ({
           requesttypescription: 'THREEDQUERY',
