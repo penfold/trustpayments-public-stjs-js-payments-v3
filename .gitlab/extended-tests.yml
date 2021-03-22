@@ -264,19 +264,6 @@ iPhone11-13-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_3
 
-iPhone7-10.0-smoke-tests:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-always
-  variables:
-    DEVICE: iPhone 7
-    OS_VERSION: 10
-    BROWSER: Safari
-    REAL_MOBILE: 'true'
-    AUTOMATION_TIMEOUT: 120
-    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
-  resource_group: extended_tests_release_4
-
 SamsungGalaxyS8-7.0-smoke-tests:
   extends:
     - .extended-tests-browserstack
