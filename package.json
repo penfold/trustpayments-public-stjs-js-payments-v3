@@ -145,6 +145,7 @@
     "@securetrading/js-payments-card": "1.0.23",
     "@sentry/browser": "6.2.0",
     "@sheerun/mutationobserver-shim": "0.3.3",
+    "@trustpayments/http-client": "0.1.31",
     "@trustpayments/jwt-generator": "0.1.22",
     "@trustpayments/ts-iin-lookup": "0.1.22",
     "@trustpayments/ts-luhn-check": "0.1.22",
