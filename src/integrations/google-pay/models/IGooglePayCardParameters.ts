@@ -1,6 +1,6 @@
 type IGooglePayAllowedCardAuthMethods = 'PAN_ONLY' | 'CRYPTOGRAM_3DS';
 
-type IGooglePaySupportedNetworks = 'AMEX' | 'DISCOVER' | 'INTERAC' | 'JCB' | 'MASTERCARD' | 'VISA';
+export type IGooglePaySupportedNetworks = 'AMEX' | 'DISCOVER' | 'INTERAC' | 'JCB' | 'MASTERCARD' | 'VISA';
 
 type IGooglePayBillingAddressParametersFormats = 'MIN' | 'FULL';
 

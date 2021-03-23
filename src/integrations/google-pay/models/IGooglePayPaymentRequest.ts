@@ -1,17 +1,17 @@
+import { IGooglePayAllowedPaymentMethodTypes } from './IGooglePayAllowedPaymentMethodTypes';
 import { IGooglePayCardParameters } from './IGooglePayCardParameters';
 import { IGooglePayPaypalParameters } from './IGooglePayPaypalParameters';
 
-type IGooglePayTotalPriceStatus = 'NOT_CURRENTLY_KNOWN' | 'ESTIMATED' | 'FINAL';
+export type IGooglePayTotalPriceStatus = 'NOT_CURRENTLY_KNOWN' | 'ESTIMATED' | 'FINAL';
 
-type IGooglePayCheckoutOption = 'DEFAULT' | 'COMPLETE_IMMEDIATE_PURCHASE';
+export type IGooglePayCheckoutOption = 'DEFAULT' | 'COMPLETE_IMMEDIATE_PURCHASE';
 
-type IGooglePayDisplayItemStatus = 'FINAL' | 'PENDING';
+export type IGooglePayDisplayItemStatus = 'FINAL' | 'PENDING';
 
-type IGooglePayDisplayItemTypes = 'LINE_ITEM' | 'SUBTOTAL';
+export type IGooglePayDisplayItemTypes = 'LINE_ITEM' | 'SUBTOTAL';
 
-type IGooglePayAllowedPaymentMethodTypes = 'CARD' | 'PAYPAL';
 
-type IGooglePayCallbackIntents = 'PAYMENT_AUTHORIZATION' | 'SHIPPING_ADDRESS' | 'SHIPPING_OPTION';
+export type IGooglePayCallbackIntents = 'PAYMENT_AUTHORIZATION' | 'SHIPPING_ADDRESS' | 'SHIPPING_OPTION';
 
 interface IGooglePayDisplayItem {
   label: string;

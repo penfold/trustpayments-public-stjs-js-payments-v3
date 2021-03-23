@@ -6,6 +6,7 @@ import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import { IGooglePayConfig } from '../../integrations/google-pay/models/IGooglePayConfig';
 
 window.alert = jest.fn();
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
@@ -171,6 +172,7 @@ function stFixture() {
     formId: 'example-form',
     translations: { ...translations }
   };
+
   const applePayConfig = {
     buttonStyle: 'white-outline',
     buttonText: 'donate',
@@ -185,6 +187,47 @@ function stFixture() {
       }
     },
     placement: 'st-apple-pay'
+  };
+
+  const googlePayConfig: IGooglePayConfig = {
+    buttonOptions: {
+      onClick: (): void => {}
+    },
+    paymentRequest: {
+      allowedPaymentMethods: {
+        parameters: {
+          allowedCardAuthMethods: ['PAN_ONLY'],
+          allowedCardNetworks: ['VISA']
+        },
+        tokenizationSpecification: {
+          parameters: {
+            gateway: 'https://someorigin.com',
+            gatewayMerchantId: 'merchant.net.securetrading'
+          },
+          type: 'test'
+        },
+        type: 'CARD'
+      },
+      apiVersion: 2,
+      apiVersionMinor: 0,
+      merchantInfo: {
+        merchantId: 'merchant.net.securetrading',
+        merchantName: 'merchang'
+      },
+      transactionInfo: {
+        countryCode: 'pl',
+        currencyCode: 'pln',
+        checkoutOption: 'COMPLETE_IMMEDIATE_PURCHASE',
+        displayItems: [
+          {
+            label: 'Example item',
+            price: '10.00',
+            type: 'LINE_ITEM',
+            status: 'FINAL'
+          }
+        ]
+      }
+    }
   };
 
   const visaCheckoutConfig = {
@@ -203,5 +246,5 @@ function stFixture() {
   };
   // @ts-ignore
   const instance: any = ST(config);
-  return { cacheConfig, config, instance, applePayConfig, visaCheckoutConfig };
+  return { cacheConfig, config, instance, applePayConfig, visaCheckoutConfig, googlePayConfig };
 }
