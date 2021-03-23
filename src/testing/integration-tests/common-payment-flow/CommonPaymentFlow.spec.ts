@@ -6,7 +6,7 @@ import { IMessageBus } from '../../../application/core/shared/message-bus/IMessa
 import { ConfigProviderToken, MessageBusToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IInitPaymentMethod } from '../../../application/core/services/payments/events/IInitPaymentMethod';
-import { ITestResultData} from './interfaces/ITestResultData';
+import { ITestResultData } from './interfaces/ITestResultData';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
@@ -38,7 +38,7 @@ describe('Common Payment Flow', () => {
       submitOnError: true,
     };
 
-    document.body.appendChild(form = DomMethods.createHtmlElement({id: 'st-form'}, 'form') as HTMLFormElement);
+    document.body.appendChild(form = DomMethods.createHtmlElement({ id: 'st-form' }, 'form') as HTMLFormElement);
 
     configProvider.setConfig(config);
     paymentResultSubmitterSubscriber.register(messageBus);
@@ -72,7 +72,7 @@ describe('Common Payment Flow', () => {
 
     messageBus.publish<IInitPaymentMethod<IConfig>>({
       type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-      data: {name: 'test', config},
+      data: { name: 'test', config },
     });
 
     messageBus.publish<IStartPaymentMethod<ITestStartData>>({
@@ -113,7 +113,7 @@ describe('Common Payment Flow', () => {
 
     messageBus.publish<IInitPaymentMethod<IConfig>>({
       type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-      data: {name: 'test', config},
+      data: { name: 'test', config },
     });
 
     messageBus.publish<IStartPaymentMethod<ITestStartData>>({
@@ -134,19 +134,19 @@ describe('Common Payment Flow', () => {
       const inputs: HTMLCollection = form.getElementsByTagName('input');
       const formData = Array.from(inputs).reduce((data, input: HTMLInputElement) => {
         const name = input.getAttribute('name');
-        return {...data, [name]: input.value};
+        return { ...data, [name]: input.value };
       }, {});
 
       expect(inputs.length).toBe(2);
-      expect(formData).toEqual({baz: 'baz', xyz: 'xyz'});
+      expect(formData).toEqual({ baz: 'baz', xyz: 'xyz' });
       done();
     });
 
-    DomMethods.addDataToForm(form, {old: 'value'});
+    DomMethods.addDataToForm(form, { old: 'value' });
 
     messageBus.publish<IInitPaymentMethod<IConfig>>({
       type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-      data: {name: 'test', config},
+      data: { name: 'test', config },
     });
 
     messageBus.publish<IStartPaymentMethod<ITestStartData>>({
