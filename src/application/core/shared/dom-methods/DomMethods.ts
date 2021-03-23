@@ -133,7 +133,6 @@ export class DomMethods {
   private static setMarkupAttributes(target: string, params: any): Element {
     const element: Element = document.createElement(target) as Element;
     Object.keys(params).forEach((param: string) => {
-      // @ts-ignore
       element.setAttribute(param, params[param]);
     });
     return element;

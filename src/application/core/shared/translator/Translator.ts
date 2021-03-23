@@ -1,24 +1,14 @@
 import i18next from 'i18next';
 import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
-// @ts-ignore
 import cy_GB from '../../../../translations/json/cy_GB.json';
-// @ts-ignore
 import da_DK from '../../../../translations/json/da_DK.json';
-// @ts-ignore
 import de_DE from '../../../../translations/json/de_DE.json';
-// @ts-ignore
 import en_GB from '../../../../translations/json/en_GB.json';
-// @ts-ignore
 import en_US from '../../../../translations/json/en_US.json';
-// @ts-ignore
 import es_ES from '../../../../translations/json/es_ES.json';
-// @ts-ignores
 import fr_FR from '../../../../translations/json/fr_FR.json';
-// @ts-ignore
 import nl_NL from '../../../../translations/json/nl_NL.json';
-// @ts-ignore
 import no_NO from '../../../../translations/json/no_NO.json';
-// @ts-ignore
 import sv_SE from '../../../../translations/json/sv_SE.json';
 import { Container } from 'typedi';
 import { Locale } from './Locale';
@@ -46,7 +36,7 @@ export class Translator {
   }
 
   public translate = (text: string) => {
-    let json: object;
+    let json: Record<string, any>;
 
     try {
       const translations: string = this._storage.getItem('merchantTranslations');
@@ -55,7 +45,6 @@ export class Translator {
       json = {};
     }
 
-    // @ts-ignore
     const translation: string = Object.keys(json).includes(text) ? json[text] : '';
     return translation ? translation : i18next.t(text, { content: text });
   };

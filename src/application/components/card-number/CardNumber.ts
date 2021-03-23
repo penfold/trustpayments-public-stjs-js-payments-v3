@@ -262,7 +262,6 @@ export class CardNumber extends Input {
         this._inputElement.setAttribute(CardNumber.DISABLED_ATTRIBUTE, 'true');
         this._inputElement.classList.add(CardNumber.DISABLED_CLASS);
       } else {
-        // @ts-ignore
         this._inputElement.removeAttribute(CardNumber.DISABLED_ATTRIBUTE);
         this._inputElement.classList.remove(CardNumber.DISABLED_CLASS);
       }

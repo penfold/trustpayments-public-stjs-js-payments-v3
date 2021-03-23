@@ -24,7 +24,6 @@ export const environment = {
   CARDINAL_COMMERCE_CONFIG: {
     logging: { level: 'on' }
   },
-  // @ts-ignore
   FRAME_URL: FRAME_URL || 'https://localhost:8443',
   GATEWAY_URL,
   GA_MEASUREMENT_ID: '42057093-5',

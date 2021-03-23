@@ -7,7 +7,7 @@ export class BrowsersList {
     return browserslist(list);
   }
 
-  getSupportedBrowsers() {
+  getSupportedBrowsers(): Record<string, string[]> {
     // @ts-ignore
     return Object.keys(browserslist.versionAliases).reduce((a, b) => ((a[b] = []), a), {});
   }
