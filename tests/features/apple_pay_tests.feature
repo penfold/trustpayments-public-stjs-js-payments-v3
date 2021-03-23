@@ -22,9 +22,9 @@ Feature: ApplePay
       | action_code | payment_status_message                  | color | callback |
       | SUCCESS     | Payment has been successfully processed | green | success  |
     Examples:
-      | action_code | payment_status_message     | color  | callback |
+      | action_code | payment_status_message | color | callback |
 #      | ERROR       | "Invalid response"          | red    |error|
-      | DECLINE     | Decline                    | red    | error    |
+      | DECLINE     | Decline                | red   | error    |
 
   @base_config @extended_tests_apple_pay @translations @apple_test @apple_test_part1
   Scenario Outline: ApplePay - checking translation for "Payment has been cancelled" status for <language>
@@ -279,14 +279,19 @@ Feature: ApplePay
     And submit callback contains JWT response
 
   @config_mainamount @apple_test @apple_test_part2
-  Scenario: ApplePay - successful payment with mainamount property in jwt payload
-    When User chooses ApplePay as payment method - response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "success" callback is called only once
+  Scenario Outline: ApplePay - <action_code> payment with mainamount field in jwt payload
+    When User chooses ApplePay as payment method - response is set to "<action_code>"
+    Then User will see payment status information: "<payment_status_message>"
+    And User will see that notification frame has "<color>" color
+    And "<callback>" callback is called only once
     And "submit" callback is called only once
     And submit callback contains JWT response
     And APPLE_PAY or AUTH requests were sent only once with correct data
+
+    Examples:
+      | action_code | payment_status_message                  | color | callback |
+      | SUCCESS     | Payment has been successfully processed | green | success  |
+      | DECLINE     | Decline                                 | red   | error    |
 
 
 
