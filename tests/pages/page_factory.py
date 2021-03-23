@@ -14,7 +14,7 @@ PAGES = {
 class PageFactory:
     def __init__(self, browser_executor, actions, reporter, configuration, waits):
         self._browser_executor = browser_executor
-        self._action = actions
+        self._actions = actions
         self._reporter = reporter
         self._config = configuration
         self._waits = waits
