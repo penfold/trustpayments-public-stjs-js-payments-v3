@@ -8,12 +8,12 @@
 from logging import INFO
 
 from configuration import CONFIGURATION
-from utils.logger import get_logger
 from pages.page_factory import PageFactory
+from utils.actions import Actions
 from utils.browser_executor import BrowserExecutor
 from utils.driver_factory import DriverFactory
-from utils.actions import Actions
 from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed
+from utils.logger import get_logger
 from utils.mock_handler import MockServer
 from utils.reporter import Reporter
 from utils.test_data import TestData

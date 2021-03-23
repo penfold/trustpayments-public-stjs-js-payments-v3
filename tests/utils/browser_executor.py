@@ -1,7 +1,6 @@
 """ This class consist all methods related with browser activities"""
 from utils.configurations.jwt_generator import encode_jwt_for_json
 from utils.enums.jwt_config import JwtConfig
-from utils.waits import Waits
 
 
 class BrowserExecutor:

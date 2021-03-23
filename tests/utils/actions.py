@@ -6,7 +6,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 
 from pages.locators.payment_methods_locators import PaymentMethodsLocators
-from utils.waits import Waits
 
 
 class Actions:
