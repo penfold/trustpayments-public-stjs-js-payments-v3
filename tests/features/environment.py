@@ -61,7 +61,7 @@ def before_scenario(context, scenario):
                                        reporter=context.reporter, configuration=context.configuration,
                                        waits=context.waits)
     context.test_data = TestData(configuration=context.configuration)
-    context.session_id = context.executor.get_session_id()
+    context.session_id = context.browser_executor.get_session_id()
     context.language = 'en_GB'
     scenario.name = '%s executed on %s' % (scenario.name, context.browser.upper())
     LOGGER.info(scenario.name)
@@ -80,8 +80,8 @@ def after_scenario(context, scenario):
         except:
             LOGGER.info('Error was thrown while printing console logs')
     browser_name = context.browser
-    context.executor.clear_cookies()
-    context.executor.close_browser()
+    context.browser_executor.clear_cookies()
+    context.browser_executor.close_browser()
     MockServer.stop_mock_server()
     if context.configuration.REMOTE:
         set_scenario_name(context.session_id, scenario.name)
