@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import { ApplePaySchema } from './apple-pay-schema/ApplePaySchema';
+import { GooglePaySchema } from './google-pay-schema/GooglePaySchema';
 import { VisaCheckoutSchema } from './VisaCheckoutSchema';
 
 export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
@@ -33,6 +34,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   errorCallback: Joi.any(),
   errorReporting: Joi.boolean(),
   fieldsToSubmit: Joi.array().items(Joi.string().valid('pan', 'expirydate', 'securitycode')),
+  googlePay: GooglePaySchema,
   formId: Joi.string(),
   init: Joi.object()
     .keys({
