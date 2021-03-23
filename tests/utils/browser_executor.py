@@ -4,8 +4,13 @@ from utils.enums.jwt_config import JwtConfig
 from utils.waits import Waits
 
 
-class Browser(Waits):
+class BrowserExecutor:
     # pylint: disable=too-many-public-methods
+
+    def __init__(self, driver_factory, waits):
+        self._driver_factory = driver_factory
+        self._driver = driver_factory.get_driver()
+        self._waits = waits
 
     def open_page(self, page_url):
         self._driver.get(page_url)
@@ -30,7 +35,7 @@ class Browser(Waits):
         return bool(self.get_cookie_by_name(cookie_name))
 
     def switch_to_alert(self):
-        self.wait_until_alert_is_presented()
+        self._waits.wait_until_alert_is_presented()
         alert = self._driver.switch_to_alert()
         return alert
 

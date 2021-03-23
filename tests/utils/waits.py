@@ -14,7 +14,6 @@ class Waits:
         self._driver_factory = driver_factory
         self._driver = driver_factory.get_driver()
         self._timeout = int(configuration.TIMEOUT)
-        self._device_type = configuration.REMOTE_DEVICE
         self._wait = WebDriverWait(self._driver, self._timeout)
 
     def wait_for_element(self, locator):

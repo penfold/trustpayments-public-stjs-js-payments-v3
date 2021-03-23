@@ -12,19 +12,19 @@ PAGES = {
 
 
 class PageFactory:
-    def __init__(self, executor, extensions, reporter, configuration, wait):
-        self._executor = executor
-        self._action = extensions
+    def __init__(self, browser_executor, actions, reporter, configuration, waits):
+        self._browser_executor = browser_executor
+        self._action = actions
         self._reporter = reporter
         self._config = configuration
-        self._wait = wait
+        self._waits = waits
 
     def get_page(self, page_name):
         """Get page name method"""
         page_name = f'{page_name}_page'
         page_name = page_name.lower()
         page_name = page_name.replace(' ', '_')
-        page = PAGES[page_name](executor=self._executor, extensions=self._action,
-                                reporter=self._reporter, config=self._config, wait=self._wait)
+        page = PAGES[page_name](browser_executor=self._browser_executor, actions=self._actions,
+                                reporter=self._reporter, config=self._config, waits=self._waits)
 
         return page

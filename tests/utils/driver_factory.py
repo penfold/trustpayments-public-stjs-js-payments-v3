@@ -7,7 +7,7 @@ It is based on singleton pattern to operate on a single instance of a driver.
 """
 from logging import INFO
 
-from logger import get_logger
+from utils.logger import get_logger
 from retry import retry
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException

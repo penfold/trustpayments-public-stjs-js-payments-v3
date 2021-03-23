@@ -8,11 +8,11 @@
 from logging import INFO
 
 from configuration import CONFIGURATION
-from logger import get_logger
-from page_factory import PageFactory
-from utils.browser import Browser
+from utils.logger import get_logger
+from pages.page_factory import PageFactory
+from utils.browser_executor import BrowserExecutor
 from utils.driver_factory import DriverFactory
-from utils.extensions import WebElementsExtensions
+from utils.actions import Actions
 from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed
 from utils.mock_handler import MockServer
 from utils.reporter import Reporter
@@ -53,13 +53,13 @@ def before_scenario(context, scenario):
     context.browser = context.configuration.BROWSER
     context.driver_factory = DriverFactory(configuration=context.configuration)
     context.waits = Waits(driver_factory=context.driver_factory, configuration=context.configuration)
-    extensions = WebElementsExtensions(driver_factory=context.driver_factory, configuration=context.configuration)
-    context.executor = Browser(driver_factory=context.driver_factory, configuration=context.configuration)
+    actions = Actions(driver_factory=context.driver_factory, waits=context.waits)
+    context.browser_executor = BrowserExecutor(driver_factory=context.driver_factory, waits=context.waits)
     context.reporter = Reporter(driver_factory=context.driver_factory, configuration=context.configuration)
     context.screenshot_manager = ScreenshotManager(driver_factory=context.driver_factory, configuration=context.configuration)
-    context.page_factory = PageFactory(executor=context.executor, extensions=extensions,
+    context.page_factory = PageFactory(browser_executor=context.browser_executor, actions=actions,
                                        reporter=context.reporter, configuration=context.configuration,
-                                       wait=context.waits)
+                                       waits=context.waits)
     context.test_data = TestData(configuration=context.configuration)
     context.session_id = context.executor.get_session_id()
     context.language = 'en_GB'
