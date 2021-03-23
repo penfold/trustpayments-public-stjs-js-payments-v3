@@ -19,7 +19,7 @@ describe('Validation', () => {
   describe('isCharNumber()', () => {
     const { isCharNumberTestCases } = validationFixture();
 
-    each(isCharNumberTestCases).test('Validation.isCharNumber', (event: KeyboardEvent, expected: any) => {
+    each(isCharNumberTestCases).it('Validation.isCharNumber', (event: KeyboardEvent, expected: any) => {
       expect(Validation.isCharNumber(event)).toBe(expected);
     });
   });
@@ -27,7 +27,7 @@ describe('Validation', () => {
   describe('getValidationMessage()', () => {
     const { getValidationMessagesTestCases } = validationFixture();
 
-    each(getValidationMessagesTestCases).test('Validation.getValidationMessage', (validityState, expected) => {
+    each(getValidationMessagesTestCases).it('Validation.getValidationMessage', (validityState, expected) => {
       // @ts-ignore
       expect(Validation.getValidationMessage(validityState)).toBe(expected);
     });

@@ -4,9 +4,8 @@ import { BrowserSupport } from './browser-support/BrowserSupport';
 import { DeviceSupport } from './device-support/DeviceSupport';
 
 describe('BrowserDetector', () => {
+  const windowMock: Window = mock<Window>();
   let browserDetector: BrowserDetector;
-  let windowMock: Window;
-  windowMock = mock<Window>();
   let browserSupport: BrowserSupport;
   let deviceSupport: DeviceSupport;
 

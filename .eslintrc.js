@@ -18,7 +18,10 @@ module.exports = {
     '@typescript-eslint/no-inferrable-types': 0,
     'jest/no-done-callback': 0,
     'jest/no-jasmine-globals': 0,
+    'jest/no-standalone-expect': [ 'error', { 'additionalTestBlockFunctions': ['each.it'] }],
+    'jest/expect-expect': ['error', { 'assertFunctionNames': ['expect', 'verify', 'done'] }],
     'object-curly-spacing': [2, 'always'],
-    'quotes': [2, 'single'],
+    'quotes': [2, 'single', { 'avoidEscape': true, 'allowTemplateLiterals': true }],
+    'no-prototype-builtins': 0,
   },
 };

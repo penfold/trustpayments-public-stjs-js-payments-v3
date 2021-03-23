@@ -26,6 +26,8 @@ import { PaymentController } from '../../core/services/payments/PaymentControlle
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import spyOn = jest.spyOn;
+import { PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Translations';
+import { FormState } from '../../core/models/constants/FormState';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -110,8 +112,6 @@ describe('ControlFrame', () => {
     });
   });
 
-  // TODO: get know how handle this promise
-
   describe('_processPayment', () => {
     const { instance } = controlFrameFixture();
     const data = {
@@ -131,21 +131,39 @@ describe('ControlFrame', () => {
     });
 
     it('should call notification success when promise is resolved', async () => {
+      // https://stackoverflow.com/a/51045733/2148667
+      const flushPromises = () => new Promise(setImmediate);
+
       // @ts-ignore
       instance._payment = {
         processPayment: jest.fn().mockResolvedValueOnce(Promise.resolve(undefined))
       };
       // @ts-ignore
       instance._processPayment(data);
+      await flushPromises();
+
+      // @ts-ignore
+      expect(instance._notification.success).toHaveBeenCalledWith(PAYMENT_SUCCESS);
+      // @ts-ignore
+      expect(instance._validation.blockForm).toHaveBeenCalledWith(FormState.COMPLETE);
     });
 
     it('should call notification error when promise is rejected', async () => {
+      // https://stackoverflow.com/a/51045733/2148667
+      const flushPromises = () => new Promise(setImmediate);
+
       // @ts-ignore
       instance._payment = {
         processPayment: jest.fn().mockRejectedValueOnce(Promise.reject())
       };
       // @ts-ignore
       instance._processPayment(data);
+      await flushPromises();
+
+      // @ts-ignore
+      expect(instance._notification.error).toHaveBeenCalledWith(PAYMENT_ERROR);
+      // @ts-ignore
+      expect(instance._validation.blockForm).toHaveBeenCalledWith(FormState.AVAILABLE);
     });
   });
 

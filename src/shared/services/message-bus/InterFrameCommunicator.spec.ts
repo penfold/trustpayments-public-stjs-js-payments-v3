@@ -96,7 +96,7 @@ describe('InterFrameCommunicator', () => {
 
   describe('close', () => {
     it('should emit communicationClosed$ event', done => {
-      interFrameCommunicator.communicationClosed$.pipe(first()).subscribe(done);
+      interFrameCommunicator.communicationClosed$.pipe(first()).subscribe(() => done());
       interFrameCommunicator.close();
     });
   });

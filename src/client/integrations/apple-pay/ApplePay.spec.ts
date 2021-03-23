@@ -254,11 +254,13 @@ describe('ApplePay', () => {
       messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe(response => {
         const { status, details }: IApplePayClientStatus = response.data;
 
-        if (status === ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS) {
-          expect(details.errorCode).toBe(Number(errorcode));
-          expect(details.errorMessage).toBe(errormessage);
-          done();
+        if (status !== ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS) {
+          return;
         }
+
+        expect(details.errorCode).toBe(Number(errorcode));
+        expect(details.errorMessage).toBe(errormessage);
+        done();
       });
 
       applePay.init();
@@ -291,13 +293,15 @@ describe('ApplePay', () => {
       messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe(response => {
         const { status, details }: IApplePayClientStatus = response.data;
 
-        if (status === ApplePayClientStatus.VALIDATE_MERCHANT_ERROR) {
-          verify(applePaySessionServiceMock.abort()).once();
-
-          expect(details.errorCode).toBe(Number(errorcode));
-          expect(details.errorMessage).toBe(errormessage);
-          done();
+        if (status !== ApplePayClientStatus.VALIDATE_MERCHANT_ERROR) {
+          return;
         }
+
+        verify(applePaySessionServiceMock.abort()).once();
+
+        expect(details.errorCode).toBe(Number(errorcode));
+        expect(details.errorMessage).toBe(errormessage);
+        done();
       });
 
       applePay.init();
@@ -369,11 +373,13 @@ describe('ApplePay', () => {
       messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe((response: IMessageBusEvent) => {
         const { status, details }: IApplePayClientStatus = response.data;
 
-        if (status === ApplePayClientStatus.ON_PAYMENT_AUTHORIZED) {
-          expect(details.errorCode).toBe(ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED);
-          expect(details.errorMessage).toBe('');
-          done();
+        if (status !== ApplePayClientStatus.ON_PAYMENT_AUTHORIZED) {
+          return;
         }
+
+        expect(details.errorCode).toBe(ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED);
+        expect(details.errorMessage).toBe('');
+        done();
       });
 
       applePay.init();

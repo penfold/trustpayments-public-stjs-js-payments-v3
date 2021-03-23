@@ -271,14 +271,13 @@ describe('Payment', () => {
 function paymentFixture() {
   const jwt =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0ZXN0X2p3dF9pc3N1ZXIiLCJwYXlsb2FkIjp7InNpdGVyZWZlcmVuY2UiOiJleGFtcGxlMTIzNDUiLCJiYXNlYW1vdW50IjoiMTAwMCIsImN1cnJlbmN5aXNvM2EiOiJHQlAifSwiaWF0IjoxNTE2MjM5MDIyfQ.jPuLMHxK3fznVddzkRoYC94hgheBXI1Y7zHAr7qNCig';
-  let instance: Payment;
   const cachetoken = 'somecachetoken';
   const cybertonicaMock = mock(Cybertonica);
   const notificationService = mock(NotificationService);
   when(cybertonicaMock.getTransactionId()).thenResolve(undefined);
   Container.set(Cybertonica, mockInstance(cybertonicaMock));
   Container.set(NotificationService, mockInstance(notificationService));
-  instance = new Payment();
+  const instance: Payment = new Payment();
   const card = {
     expirydate: '10/22',
     pan: '4111111111111111',

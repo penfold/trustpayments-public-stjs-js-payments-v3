@@ -214,13 +214,10 @@ describe('FormField', () => {
 });
 
 function formFieldFixture() {
-  let inputElement: HTMLInputElement;
-  let labelElement: HTMLLabelElement;
-  let messageElement: HTMLParagraphElement;
+  const inputElement: HTMLInputElement = document.createElement('input');
+  const labelElement: HTMLLabelElement = document.createElement('label');
+  const messageElement: HTMLParagraphElement = document.createElement('p');
   const configProviderMock: ConfigProvider = mock<ConfigProvider>();
-  labelElement = document.createElement('label');
-  inputElement = document.createElement('input');
-  messageElement = document.createElement('p');
   labelElement.id = 'st-form-field-label';
   inputElement.id = 'st-form-field-input';
   messageElement.id = 'st-form-field-message';

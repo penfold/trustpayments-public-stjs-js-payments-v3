@@ -22,7 +22,7 @@ export class VerificationResultHandler {
           cachetoken: tokens.cacheToken
         });
       case ActionCode.ERROR:
-      case ActionCode.FAILURE:
+      case ActionCode.FAILURE: {
         const errorResponse: IThreeDQueryResponse = {
           ...response,
           acquirerresponsecode: String(result.errorNumber),
@@ -34,6 +34,7 @@ export class VerificationResultHandler {
         };
 
         return throwError(errorResponse);
+      }
     }
   }
 }

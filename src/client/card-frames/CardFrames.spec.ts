@@ -387,7 +387,7 @@ describe('CardFrames', () => {
       expect(instance._messageBusEvent.data.message).toEqual(field.message);
     });
 
-    it('should set messageBusEvent properties', () => {
+    it('should call messageBus publish method', () => {
       // @ts-ignore
       expect(instance._messageBus.publish).toHaveBeenCalledWith({
         type: MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD,

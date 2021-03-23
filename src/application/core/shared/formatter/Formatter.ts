@@ -107,10 +107,9 @@ export class Formatter {
   }
 
   private _dateFixed(value: string) {
-    let date: string[];
     const month: string = value.slice(0, 2);
     const year: string = value.slice(2, 4);
-    date = [month, year];
+    const date: string[] = [month, year];
     return this._dateISO(this._date, date);
   }
 }

@@ -59,6 +59,10 @@ describe('SecurityCode', () => {
       });
       // @ts-ignore
       securityCodeInstance._setDisableListener();
+      // @ts-ignore
+      expect(securityCodeInstance._inputElement.hasAttribute(SecurityCode.DISABLED_ATTRIBUTE)).toEqual(true);
+      // @ts-ignore
+      expect(securityCodeInstance._inputElement.classList.contains(SecurityCode.DISABLED_CLASS)).toEqual(true);
     });
 
     it('should remove attribute disabled and remove class from classList', () => {
@@ -232,12 +236,9 @@ function securityCodeFixture() {
   when(communicatorMock.incomingEvent$).thenReturn(EMPTY);
 
   const configProvider: ConfigProvider = mock<ConfigProvider>();
-  let formatter: Formatter;
-  formatter = mock(Formatter);
-  let frame: Frame;
-  frame = mock(Frame);
-  let jwtDecoder: JwtDecoder;
-  jwtDecoder = mock(JwtDecoder);
+  const formatter: Formatter = mock(Formatter);
+  const frame: Frame = mock(Frame);
+  const jwtDecoder: JwtDecoder = mock(JwtDecoder);
   const localStorage: BrowserLocalStorage = mock(BrowserLocalStorage);
   when(localStorage.select(anyFunction())).thenReturn(of('34****4565'));
   when(configProvider.getConfig$()).thenReturn(of(config));

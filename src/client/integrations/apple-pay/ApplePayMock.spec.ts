@@ -39,9 +39,10 @@ describe('ApplePayMock', () => {
       expect(applePayMock.isUserLoggedToAppleAccount()).toBe(true);
     });
 
-    it('returns true for checkApplePayWalletCardAvailability', () => {
+    it('returns true for checkApplePayWalletCardAvailability', (done) => {
       applePayMock.checkApplePayWalletCardAvailability().then(value => {
         expect(value).toBe(true);
+        done();
       });
     });
 

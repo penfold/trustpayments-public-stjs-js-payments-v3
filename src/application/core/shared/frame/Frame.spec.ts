@@ -32,7 +32,7 @@ describe('Frame', () => {
         ]
       }
     ]
-  ]).test('Frame.parseUrl', (url, expected) => {
+  ]).it('Frame.parseUrl', (url, expected) => {
     const frame = new Frame();
     window.history.pushState({}, 'Test Title', url);
     // @ts-ignore

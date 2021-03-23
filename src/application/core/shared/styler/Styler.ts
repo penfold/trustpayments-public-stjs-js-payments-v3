@@ -103,13 +103,10 @@ export class Styler {
   }
 
   private _getStyleString(styles: IStyles[]): string[] {
-    let groupedStyles: IGroupedStyles;
-    let styled: IStyle;
+    const styled: IStyle = this._sanitize(this._filter(styles));
+    const groupedStyles: IGroupedStyles = this._group(styled);
     let tag: string;
     const templates: string[] = [`body { display: block; }`];
-    styled = this._filter(styles);
-    styled = this._sanitize(styled);
-    groupedStyles = this._group(styled);
     // tslint:disable-next-line:forin
     for (tag in groupedStyles) {
       const tagStyle = Styler._getTagStyles(groupedStyles[tag]);

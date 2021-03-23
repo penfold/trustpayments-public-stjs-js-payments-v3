@@ -29,7 +29,7 @@ describe('CardNumber', () => {
     expect(cardNumberInstance).toBeInstanceOf(CardNumber);
   });
 
-  it('should create cardNumberInstance of class CardNumber', () => {
+  it('should create cardNumberInstance of class Input', () => {
     expect(cardNumberInstance).toBeInstanceOf(Input);
   });
 
@@ -46,10 +46,6 @@ describe('CardNumber', () => {
   });
 
   describe('CardNumber.ifFieldExists', () => {
-    it('should return input iframe-factory', () => {
-      expect(CardNumber.ifFieldExists()).toBeTruthy();
-    });
-
     it('should return input iframe-factory', () => {
       expect(CardNumber.ifFieldExists()).toBeInstanceOf(HTMLInputElement);
     });
@@ -309,16 +305,12 @@ function cardNumberFixture() {
   const html =
     '<form id="st-card-number" class="card-number" novalidate=""><label id="st-card-number-label" for="st-card-number-input" class="card-number__label card-number__label--required">Card number</label><input id="st-card-number-input" class="card-number__input" type="text" autocomplete="off" required="" data-luhn-check="true" maxlength="NaN" minlength="19"><p id="st-card-number-message" class="card-number__message"></p></form>';
   document.body.innerHTML = html;
-  let configProvider: ConfigProvider;
-  let iconFactory: IconFactory;
-  let frame: Frame;
-  let formatter: Formatter;
-  iconFactory = mock(IconFactory);
-  configProvider = mock<ConfigProvider>();
+  const configProvider: ConfigProvider = mock<ConfigProvider>();
+  const iconFactory: IconFactory = mock(IconFactory);
+  const frame: Frame = mock(Frame);
+  const formatter: Formatter = mock(Formatter);
   const messageBus: IMessageBus = new SimpleMessageBus();
   when(configProvider.getConfig$()).thenReturn(of({} as IConfig));
-  frame = mock(Frame);
-  formatter = mock(Formatter);
   // @ts-ignore
   when(configProvider.getConfig()).thenReturn({
     jwt: '',

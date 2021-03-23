@@ -51,12 +51,7 @@ describe('ApplicationFrameMessageBus', () => {
     verify(interFrameCommunicatorMock.sendToParentFrame(publicSampleEvent)).once();
   });
 
-  it('throws error when sending published private message to parent frame', done => {
-    try {
-      messageBus.publish(sampleEvent, true);
-    } catch (error) {
-      expect(error.message).toEqual('Cannot publish private event "FOO" to parent frame.');
-      done();
-    }
+  it('throws error when sending published private message to parent frame', () => {
+    expect(() => messageBus.publish(sampleEvent, true)).toThrow('Cannot publish private event "FOO" to parent frame.')
   });
 });
