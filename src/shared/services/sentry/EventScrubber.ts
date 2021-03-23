@@ -12,7 +12,7 @@ export class EventScrubber {
     }
 
     if (event.extra && typeof event.extra.config === 'object') {
-      event.extra.config = { ...(event.extra.config as object), jwt: '*****' };
+      event.extra.config = { ...event.extra.config, jwt: '*****' };
     }
 
     if (event.request && event.request.url) {

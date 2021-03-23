@@ -84,7 +84,7 @@ export class CardFrames {
   constructor(
     jwt: string,
     origin: string,
-    componentIds: {},
+    componentIds: Record<string, any>,
     styles: IStyles,
     paymentTypes: string[],
     defaultPaymentType: string,
@@ -230,12 +230,12 @@ export class CardFrames {
     }
   }
 
-  private _initCardNumberFrame(styles: {}): void {
+  private _initCardNumberFrame(styles: Record<string, string>): void {
     this._cardNumber = this._iframeFactory.create(CARD_NUMBER_COMPONENT_NAME, CARD_NUMBER_IFRAME, styles, this.params);
     this.elementsToRegister.push(this._cardNumber);
   }
 
-  private _initExpiryDateFrame(styles: {}): void {
+  private _initExpiryDateFrame(styles: Record<string, string>): void {
     this._expirationDate = this._iframeFactory.create(
       EXPIRATION_DATE_COMPONENT_NAME,
       EXPIRATION_DATE_IFRAME,
@@ -245,7 +245,7 @@ export class CardFrames {
     this.elementsToRegister.push(this._expirationDate);
   }
 
-  private _initSecurityCodeFrame(styles: {}): void {
+  private _initSecurityCodeFrame(styles: Record<string, string>): void {
     this._securityCode = this._iframeFactory.create(
       SECURITY_CODE_COMPONENT_NAME,
       SECURITY_CODE_IFRAME,

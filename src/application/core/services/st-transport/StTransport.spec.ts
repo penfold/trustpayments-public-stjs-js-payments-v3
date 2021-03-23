@@ -29,7 +29,7 @@ describe('StTransport class', () => {
     retryTimeout: 20000
   };
   const timeoutError: any = null;
-  const resolvingPromise = (result: object) => {
+  const resolvingPromise = (result: Record<string, unknown>) => {
     return new Promise(resolve => resolve(result));
   };
   const rejectingPromise = (reason: Error) => {
@@ -51,7 +51,7 @@ describe('StTransport class', () => {
       decode: jest.fn(
         x =>
           new Promise((resolve, reject) => {
-            if ('json' in x) {
+            if (typeof x.json === 'function') {
               resolve(x.json());
               return;
             }

@@ -224,7 +224,7 @@ export class StCodec {
     StCodec._locale = new StJwt(StCodec.jwt).locale;
   }
 
-  public buildRequestObject(requestData: object): object {
+  public buildRequestObject(requestData: Record<string, any>): Record<string, any> {
     return {
       acceptcustomeroutput: '2.00',
       jwt: StCodec.jwt,
@@ -249,10 +249,10 @@ export class StCodec {
     return JSON.stringify(this.buildRequestObject(requestObject));
   }
 
-  public async decode(responseObject: Response | {}): Promise<object> {
+  public async decode(responseObject: Response | Record<string, unknown>): Promise<Record<string, unknown>> {
     return new Promise((resolve, reject) => {
-      if ('json' in responseObject) {
-        responseObject.json().then(responseData => {
+      if (typeof responseObject.json === 'function') {
+        responseObject.json().then((responseData: any) => {
           try {
             const decoded: IStJwtObj = StCodec._decodeResponseJwt(responseData.jwt, reject);
             const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);

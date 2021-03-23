@@ -89,10 +89,10 @@ export class DomMethods {
     contents.forEach((item: string) => (style.sheet as CSSStyleSheet).insertRule(item, 0));
   }
 
-  public static parseForm(formId: string): {} {
+  public static parseForm(formId: string): Record<string, unknown> {
     const form: HTMLElement = document.getElementById(formId);
     const els = DomMethods.getAllFormElements(form);
-    const result: any = {};
+    const result: Record<string, unknown> = {};
     for (const el of els) {
       if (el.hasAttribute(DomMethods.ST_NAME_ATTRIBUTE)) {
         result[el.getAttribute(DomMethods.ST_NAME_ATTRIBUTE)] = el.value;

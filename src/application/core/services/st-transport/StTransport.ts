@@ -37,7 +37,7 @@ export class StTransport {
   private static RETRY_LIMIT = 5;
   private static RETRY_TIMEOUT = 10000;
   private static TIMEOUT = 60000;
-  private _throttlingRequests = new Map<string, Promise<object>>();
+  private _throttlingRequests = new Map<string, Promise<Record<string, unknown>>>();
   private _config: IConfig;
   private _codec: StCodec;
 
@@ -48,7 +48,7 @@ export class StTransport {
    * @param requestObject A request object to send to ST
    * @return A Promise object that resolves the gateway response
    */
-  public async sendRequest(requestObject: IStRequest): Promise<object> {
+  public async sendRequest(requestObject: IStRequest): Promise<Record<string, unknown>> {
     const requestBody = this.getCodec().encode(requestObject);
     const fetchOptions = this._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
 
@@ -88,7 +88,7 @@ export class StTransport {
     return options;
   }
 
-  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions): Promise<object> {
+  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions): Promise<Record<string, unknown>> {
     const codec = this.getCodec();
     const gatewayUrl = this.getConfig().datacenterurl;
 
@@ -120,7 +120,7 @@ export class StTransport {
    */
   private _fetchRetry(
     url: string,
-    options: object,
+    options: Record<string, unknown>,
     connectTimeout = StTransport.TIMEOUT,
     delay = StTransport.DELAY,
     retries = StTransport.RETRY_LIMIT,

@@ -122,7 +122,7 @@ describe('ApplePayConfigService', () => {
       );
     });
 
-    it(`should update paymentRequest object with indicated currency code`, () => {
+    it(`should update paymentRequest object with indicated validation url`, () => {
       validateMerchantRequestUpdated = {
         ...validateMerchantRequest,
         walletvalidationurl: walletValidationUrl

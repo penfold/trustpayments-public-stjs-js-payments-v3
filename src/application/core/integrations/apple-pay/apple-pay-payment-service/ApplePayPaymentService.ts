@@ -15,6 +15,7 @@ import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { ofType } from '../../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
+import { IApplePayWalletVerifyResponseBody } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 
 @Service()
 export class ApplePayPaymentService {
@@ -28,7 +29,7 @@ export class ApplePayPaymentService {
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     validationURL: string,
     cancelled: boolean
-  ): Observable<{ status: ApplePayClientErrorCode; data: {} }> {
+  ): Observable<{ status: ApplePayClientErrorCode; data: Partial<IApplePayWalletVerifyResponseBody> }> {
     const request: IApplePayValidateMerchantRequest = this.applePayConfigService.updateWalletValidationUrl(
       validateMerchantRequest,
       validationURL
@@ -74,7 +75,7 @@ export class ApplePayPaymentService {
   processPayment(
     requestTypes: RequestType[],
     validateMerchantRequest: IApplePayValidateMerchantRequest,
-    formData: object,
+    formData: Record<string, unknown>,
     payment: IApplePayPayment
   ): Observable<IApplePayProcessPaymentResponse> {
     const bypassError$ = this.messageBus.pipe(

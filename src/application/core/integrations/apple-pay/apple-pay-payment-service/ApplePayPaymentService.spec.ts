@@ -12,6 +12,7 @@ import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { SimpleMessageBus } from '../../../shared/message-bus/SimpleMessageBus';
 import { IApplePayProcessPaymentResponse } from './IApplePayProcessPaymentResponse';
+import { IApplePayWalletVerifyResponseBody } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 
 const formData = {};
 const validateMerchantURL = 'some-url';
@@ -88,7 +89,7 @@ describe('ApplePayPaymentService', () => {
 
       applePayPaymentService
         .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
-        .subscribe((response: { status: ApplePayClientErrorCode; data: {} }) => {
+        .subscribe((response: { status: ApplePayClientErrorCode; data: IApplePayWalletVerifyResponseBody }) => {
           expect(response.data).toMatchObject(walletVerifyResponse.response);
           expect(response.status).toBe(ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS);
           done();
@@ -102,7 +103,7 @@ describe('ApplePayPaymentService', () => {
 
       applePayPaymentService
         .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
-        .subscribe((response: { status: ApplePayClientErrorCode; data: {} }) => {
+        .subscribe((response: { status: ApplePayClientErrorCode; data: IApplePayWalletVerifyResponseBody }) => {
           expect(response.data).toMatchObject({});
           expect(response.status).toBe(ApplePayClientErrorCode.CANCEL);
           done();
@@ -120,7 +121,7 @@ describe('ApplePayPaymentService', () => {
 
       applePayPaymentService
         .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
-        .subscribe((response: { status: ApplePayClientErrorCode; data: {} }) => {
+        .subscribe((response: { status: ApplePayClientErrorCode; data: IApplePayWalletVerifyResponseBody }) => {
           expect(response.data).toMatchObject({});
           expect(response.status).toBe(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
           done();
