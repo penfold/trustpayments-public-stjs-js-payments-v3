@@ -152,10 +152,9 @@ export class Input {
     this.validation.validate(this._inputElement, this._messageElement);
   }
 
-  protected setAttributes(attributes: object) {
+  protected setAttributes(attributes: Record<string, any>) {
     // tslint:disable-next-line:forin
     for (const attribute in attributes) {
-      // @ts-ignore
       this._inputElement.setAttribute(attribute, attributes[attribute]);
     }
   }

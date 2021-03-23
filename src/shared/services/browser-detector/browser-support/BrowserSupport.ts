@@ -33,11 +33,9 @@ export class BrowserSupport {
 
     browsersFromPackageJson.map((browser: string) => {
       const browserNameVersionPair = browser.split(' ');
-      // @ts-ignore
       return supportedBrowsers[browserNameVersionPair[0]].push(browserNameVersionPair[1]);
     });
 
-    // @ts-ignore
     return supportedBrowsers[name.toLowerCase()];
   }
 }

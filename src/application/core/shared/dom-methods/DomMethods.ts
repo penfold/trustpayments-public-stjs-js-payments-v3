@@ -9,6 +9,7 @@ export class DomMethods {
   private static SRC_ATTRIBUTE: string = 'src';
   private static ST_NAME_ATTRIBUTE: string = 'data-st-name';
   private static STYLE_MARKUP: string = 'style';
+  private static CREATED_FIELD_CLASSNAME: string = '-st-created-field';
 
   public static addDataToForm(form: HTMLFormElement, data: any, fields?: string[]): void {
     Object.entries(data).forEach(([field, value]) => {
@@ -22,6 +23,7 @@ export class DomMethods {
             {
               name: field,
               type: DomMethods.HIDDEN_ATTRIBUTE,
+              class: DomMethods.CREATED_FIELD_CLASSNAME,
               value
             },
             DomMethods.INPUT_MARKUP
@@ -110,6 +112,10 @@ export class DomMethods {
     return element;
   }
 
+  public static removeAllCreatedFields(form: HTMLFormElement): void {
+    form.querySelectorAll(`.${DomMethods.CREATED_FIELD_CLASSNAME}`).forEach(element => element.remove());
+  }
+
   private static isScriptLoaded(params: IScriptParams): Element {
     const { src, id } = params;
     const scripts: HTMLCollection = document.getElementsByTagName(DomMethods.SCRIPT_MARKUP);
@@ -127,7 +133,6 @@ export class DomMethods {
   private static setMarkupAttributes(target: string, params: any): Element {
     const element: Element = document.createElement(target) as Element;
     Object.keys(params).forEach((param: string) => {
-      // @ts-ignore
       element.setAttribute(param, params[param]);
     });
     return element;

@@ -20,5 +20,20 @@
       }
     },
     "placement": "st-apple-pay"
+  },
+  "visaCheckout": {
+    "buttonSettings": {
+      "size": "154",
+      "color": "neutral"
+    },
+    "livestatus": 0,
+    "merchantId": "SDUT1MEXJO10RARJF2S521ImTyKfn3_test",
+    "paymentRequest": {
+      "subtotal": "20.00"
+    },
+    "placement": "st-visa-checkout",
+    "settings": {
+      "displayName": "My Test Site"
+    }
   }
 }
