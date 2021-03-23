@@ -25,18 +25,18 @@ def get_data_from_jsinit_file(jsinit_filename):
 def encode_jwt_for_json(jwt_config: JwtConfig):
     data = get_data_from_json(jwt_config.value)
     jwt_token = jwt.encode({'iat': int(time.time()), 'iss': ISS_KEY, 'payload': data['payload']}, SECRET_KEY,
-                           algorithm='HS256')
-    return str(jwt_token, 'utf-8')
+                           algorithms='HS256')
+    return jwt_token
 
 
 def decode_jwt_from_jsinit(jsinit_filename):
     jwt_value = get_data_from_jsinit_file(jsinit_filename)
-    jwt_json = jwt.decode(jwt_value['jwt'], SECRET_KEY, verify=False, algorithm='HS256')
+    jwt_json = jwt.decode(jwt_value['jwt'], SECRET_KEY, audience=ISS_KEY, algorithms='HS256')
     return jwt_json['payload']['jwt']
 
 
 def decode_jwt(encoded_jwt):
-    jwt_json = jwt.decode(encoded_jwt, SECRET_KEY, verify=False, algorithm='HS256')
+    jwt_json = jwt.decode(encoded_jwt, SECRET_KEY, audience=ISS_KEY, algorithms='HS256')
     return jwt_json
 
 
@@ -48,7 +48,7 @@ def merge_json_conf_with_additional_attr(old_config_jwt_dict, jwt_payload_dict):
 def encode_jwt(jwt_payload):
     jwt_token = jwt.encode({'iat': int(time.time()), 'iss': ISS_KEY, 'payload': jwt_payload}, SECRET_KEY,
                            algorithm='HS256')
-    return str(jwt_token, 'utf-8')
+    return jwt_token
 
 
 def delete_empty_from_json(dictionary):
