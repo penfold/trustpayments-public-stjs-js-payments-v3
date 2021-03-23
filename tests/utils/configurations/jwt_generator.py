@@ -24,8 +24,7 @@ def get_data_from_jsinit_file(jsinit_filename):
 
 def encode_jwt_for_json(jwt_config: JwtConfig):
     data = get_data_from_json(jwt_config.value)
-    jwt_token = jwt.encode({'iat': int(time.time()), 'iss': ISS_KEY, 'payload': data['payload']}, SECRET_KEY,
-                           algorithms='HS256')
+    jwt_token = jwt.encode({'iat': int(time.time()), 'iss': ISS_KEY, 'payload': data['payload']}, SECRET_KEY)
     return jwt_token
 
 
