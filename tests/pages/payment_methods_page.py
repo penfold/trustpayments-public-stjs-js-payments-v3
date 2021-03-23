@@ -102,7 +102,7 @@ class PaymentMethodsPage(BasePage):
 
     def fill_amount_field(self, value):
         self._actions.send_keys(PaymentMethodsLocators.amount_field, value)
-        self._browser_executor.wait_for_javascript()
+        self._waits.wait_for_javascript()
 
     def fill_cardinal_authentication_code(self, auth_type):
         auth = AuthType.__members__[auth_type].name  # pylint: disable=unsubscriptable-object
@@ -112,10 +112,10 @@ class PaymentMethodsPage(BasePage):
         self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
         if auth == AuthType.V1.value:
             self._actions.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
-            self._browser_executor.wait_for_element_to_be_displayed(
+            self._waits.wait_for_element_to_be_displayed(
                 PaymentMethodsLocators.cardinal_v1_authentication_code_field)
         else:
-            self._browser_executor.wait_for_element_to_be_displayed(
+            self._waits.wait_for_element_to_be_displayed(
                 PaymentMethodsLocators.cardinal_v2_authentication_code_field)
         self._actions.switch_to_default_iframe()
 
@@ -124,14 +124,14 @@ class PaymentMethodsPage(BasePage):
 
         if auth == AuthType.V1.value:
             self._actions.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
-            self._browser_executor.wait_for_element_to_be_displayed(
+            self._waits.wait_for_element_to_be_displayed(
                 PaymentMethodsLocators.cardinal_v1_authentication_code_field)
             self._actions.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
                                     AuthData.PASSWORD.value)
             self._actions.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
             self._actions.switch_to_parent_iframe()
         else:
-            self._browser_executor.wait_for_element_to_be_displayed(
+            self._waits.wait_for_element_to_be_displayed(
                 PaymentMethodsLocators.cardinal_v2_authentication_code_field)
             self._actions.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
                                     AuthData.PASSWORD.value)
@@ -140,7 +140,7 @@ class PaymentMethodsPage(BasePage):
 
     def click_cardinal_cancel_btn(self):
         self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
-        self._browser_executor.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
         self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_cancel_btn)
 
     def click_cardinal_submit_btn(self):
@@ -496,7 +496,7 @@ class PaymentMethodsPage(BasePage):
         return cachetoken_value
 
     def validate_if_url_contains_info_about_payment(self, expected_url):
-        self._browser_executor.wait_until_url_contains(expected_url)
+        self._waits.wait_until_url_contains(expected_url)
         actual_url = self._browser_executor.get_page_url()
         assertion_message = f'Url is not correct, should be: "{expected_url}" but is: "{actual_url}"'
         add_to_shared_dict('assertion_message', assertion_message)

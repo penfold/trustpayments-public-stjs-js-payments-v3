@@ -14,7 +14,7 @@ class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
     def click_visa_checkout_button(self, context):
         if 'switch_to_parent_iframe' in context.scenario.tags:
             self._actions.switch_to_default_iframe()
-        self._browser_executor.wait_for_element_to_be_clickable(VisaCheckoutLocators.visa_checkout_button)
+        self._waits.wait_for_element_to_be_clickable(VisaCheckoutLocators.visa_checkout_button)
         self._actions.click(VisaCheckoutLocators.visa_checkout_button)
 
     def click_visa_checkout_close_button(self):
@@ -29,7 +29,7 @@ class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
         if field == VisaCheckoutField.EMAIL_ADDRESS.value:
             self.fill_email_address(EMAIL_LOGIN)
         elif field == VisaCheckoutField.ONE_TIME_PASSWORD.value:
-            self._browser_executor.wait_for_element_to_be_displayed(VisaCheckoutLocators.visa_one_time_code)
+            self._waits.wait_for_element_to_be_displayed(VisaCheckoutLocators.visa_one_time_code)
             mail_ids = gmail_service.get_unseen_mail_ids_with_wait(5)
             self.fill_one_time_password_with_wait(mail_ids)
             if self._actions.is_element_displayed(VisaCheckoutLocators.visa_one_time_code):
@@ -47,31 +47,31 @@ class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
 
     def fill_email_address(self, email):
         self._waits.wait_until_iframe_is_presented_and_switch_to_it(FieldType.VISA_CHECKOUT.value)
-        self._browser_executor.wait_for_element_to_be_displayed(VisaCheckoutLocators.visa_returning)
+        self._waits.wait_for_element_to_be_displayed(VisaCheckoutLocators.visa_returning)
         self._actions.click(VisaCheckoutLocators.visa_returning)
         self._actions.send_keys(VisaCheckoutLocators.visa_email, email)
 
     def click_continue_checkout_process(self):
-        self._browser_executor.wait_for_element_to_be_clickable(VisaCheckoutLocators.visa_confirm_process)
+        self._waits.wait_for_element_to_be_clickable(VisaCheckoutLocators.visa_confirm_process)
         self._actions.click(VisaCheckoutLocators.visa_confirm_process)
 
     def click_continue_visa_payment_process(self):
-        self._browser_executor.wait_for_element_to_be_clickable(VisaCheckoutLocators.visa_continue_payment_process)
+        self._waits.wait_for_element_to_be_clickable(VisaCheckoutLocators.visa_continue_payment_process)
         self._actions.click(VisaCheckoutLocators.visa_continue_payment_process)
 
     def fill_one_time_code(self, one_time_code):
-        self._browser_executor.wait_for_element_to_be_displayed(VisaCheckoutLocators.visa_one_time_code)
+        self._waits.wait_for_element_to_be_displayed(VisaCheckoutLocators.visa_one_time_code)
         while self._actions.get_element_attribute(VisaCheckoutLocators.visa_one_time_code, 'value'):
             self._actions.delete_on_input(VisaCheckoutLocators.visa_one_time_code)
         self._actions.send_keys(VisaCheckoutLocators.visa_one_time_code, one_time_code)
 
     def select_card_by_ending_number(self, card_number):
         self.visa_card_with_ending_number = card_number
-        self._browser_executor.wait_for_element_to_be_displayed(self.visa_card_with_ending_number)
+        self._waits.wait_for_element_to_be_displayed(self.visa_card_with_ending_number)
         self._actions.click(self.visa_card_with_ending_number)
 
     def fill_security_code(self):
-        self._browser_executor.wait_for_element_to_be_displayed(VisaCheckoutLocators.visa_security_code)
+        self._waits.wait_for_element_to_be_displayed(VisaCheckoutLocators.visa_security_code)
         self._actions.send_keys(VisaCheckoutLocators.visa_security_code, '123')
 
     def is_security_code_displayed(self):
