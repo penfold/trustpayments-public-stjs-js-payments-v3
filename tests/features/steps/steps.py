@@ -45,7 +45,7 @@ def fill_payment_form_with_defined_card(context, card: Card):
     context.exp_date = str(card.expiration_date)
     context.cvv = str(card.cvv)
     if 'e2e_config_for_iframe' in context.scenario.tags:
-        payment_page._action.switch_to_iframe(FieldType.PARENT_IFRAME.value)
+        payment_page._actions.switch_to_iframe(FieldType.PARENT_IFRAME.value)
     payment_page.fill_payment_form(card.number, card.expiration_date, card.cvv)
 
 
