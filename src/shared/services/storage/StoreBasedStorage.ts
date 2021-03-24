@@ -27,7 +27,7 @@ export class StoreBasedStorage implements IStorage, ISynchronizedStorage {
     return storage[name];
   }
 
-  setItem(name: string, value: any): void {
+  setItem(name: string, value: string): void {
     this.setItemWithoutSync(name, value);
     this.interFrameCommunicator.send(
       {

@@ -23,5 +23,6 @@ module.exports = {
     'object-curly-spacing': [2, 'always'],
     'quotes': [2, 'single', { 'avoidEscape': true, 'allowTemplateLiterals': true }],
     'no-prototype-builtins': 0,
+    'no-extra-boolean-cast': 'warn'
   },
 };

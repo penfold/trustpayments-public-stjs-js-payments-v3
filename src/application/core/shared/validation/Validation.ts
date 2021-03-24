@@ -283,7 +283,7 @@ export class Validation {
     this._selectionRangeEnd = element.selectionEnd;
   }
 
-  public setFormValidity(state: any) {
+  public setFormValidity(state: Record<string, any>) {
     const validationEvent: IMessageBusEvent = {
       data: { ...state },
       type: MessageBus.EVENTS.VALIDATE_FORM

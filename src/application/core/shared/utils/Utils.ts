@@ -49,7 +49,7 @@ export class Utils {
     });
   }
 
-  public static stripChars(string: string, regex: any) {
+  public static stripChars(string: string, regex?: RegExp | string) {
     if (typeof regex === 'undefined' || !regex) {
       regex = /[\D+]/g;
       return string.replace(regex, '');
@@ -60,7 +60,7 @@ export class Utils {
 
   public static getLastElementOfArray = (array: number[]) => array && array.slice(-1).pop();
 
-  public static setElementAttributes(attributes: any, element: HTMLInputElement) {
+  public static setElementAttributes(attributes: Record<string, any>, element: HTMLInputElement) {
     // tslint:disable-next-line: forin
     for (const attribute in attributes) {
       const value = attributes[attribute];

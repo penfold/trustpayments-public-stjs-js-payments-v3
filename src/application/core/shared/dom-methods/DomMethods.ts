@@ -11,7 +11,7 @@ export class DomMethods {
   private static STYLE_MARKUP: string = 'style';
   private static CREATED_FIELD_CLASSNAME: string = '-st-created-field';
 
-  public static addDataToForm(form: HTMLFormElement, data: any, fields?: string[]): void {
+  public static addDataToForm(form: HTMLFormElement, data: Record<string, any>, fields?: string[]): void {
     Object.entries(data).forEach(([field, value]) => {
       if (!fields || fields.includes(field)) {
         let inputElement: HTMLInputElement = form.querySelector(`${DomMethods.INPUT_MARKUP}[name="${field}"]`);
@@ -35,7 +35,7 @@ export class DomMethods {
     });
   }
 
-  public static addListener(targetId: string, listenerType: string, callback: any): void {
+  public static addListener(targetId: string, listenerType: string, callback: (...args: any[]) => void): void {
     document.getElementById(targetId).addEventListener(listenerType, callback);
   }
 
@@ -47,7 +47,7 @@ export class DomMethods {
     return element;
   }
 
-  public static createHtmlElement = (attributes: any, markup: string): HTMLElement => {
+  public static createHtmlElement = (attributes: Record<string, string>, markup: string): HTMLElement => {
     const element: HTMLElement = document.createElement(markup);
     Object.keys(attributes).map(item => element.setAttribute(item, attributes[item]));
     return element;

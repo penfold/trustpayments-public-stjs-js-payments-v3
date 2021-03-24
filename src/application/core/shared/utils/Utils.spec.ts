@@ -106,7 +106,7 @@ describe('Utils', () => {
 
   describe('Utils.stripChars', () => {
     it('should return string with only digits when regex is not specified', () => {
-      expect(Utils.stripChars('s1o2me3t4es5t   val6ue', false)).toEqual('123456');
+      expect(Utils.stripChars('s1o2me3t4es5t   val6ue')).toEqual('123456');
     });
 
     it('should adjust string to given regex', () => {
