@@ -5,6 +5,7 @@ import { CardFrames } from '../card-frames/CardFrames';
 import { CommonFrames } from '../common-frames/CommonFrames';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
 import { ApplePay } from '../integrations/apple-pay/ApplePay';
+import { GooglePay } from '../integrations/google-pay/GooglePay';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
@@ -109,7 +110,8 @@ export class ST {
     private storage: BrowserLocalStorage,
     private store: IStore<IParentFrameState>,
     private visaCheckout: VisaCheckout,
-    private commonFrames: CommonFrames
+    private commonFrames: CommonFrames,
+    private googlePay: GooglePay
   ) {
     this.googleAnalytics = new GoogleAnalytics();
     this.merchantFields = new MerchantFields();
