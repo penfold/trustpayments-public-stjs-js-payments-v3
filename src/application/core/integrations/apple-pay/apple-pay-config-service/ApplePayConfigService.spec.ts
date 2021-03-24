@@ -139,7 +139,7 @@ describe('ApplePayConfigService', () => {
         payload: {
           currencyiso3a: 'EUR',
           locale: 'en_GB',
-          baseamount: '1000',
+          baseamount: '1000'
         }
       };
 
@@ -148,7 +148,7 @@ describe('ApplePayConfigService', () => {
       expect(applePayConfigService.getStJwtData(jwt)).toEqual({
         currencyiso3a: payload.payload.currencyiso3a,
         locale: payload.payload.locale,
-        mainamount: '10.00',
+        mainamount: '10.00'
       });
     });
 
@@ -157,7 +157,7 @@ describe('ApplePayConfigService', () => {
         payload: {
           currencyiso3a: 'EUR',
           locale: 'en_GB',
-          mainamount: '10.00',
+          mainamount: '10.00'
         }
       };
 
@@ -166,7 +166,7 @@ describe('ApplePayConfigService', () => {
       expect(applePayConfigService.getStJwtData(jwt)).toEqual({
         currencyiso3a: payload.payload.currencyiso3a,
         locale: payload.payload.locale,
-        mainamount: '10.00',
+        mainamount: '10.00'
       });
     });
 
@@ -174,7 +174,7 @@ describe('ApplePayConfigService', () => {
       const payload = {
         payload: {
           currencyiso3a: 'EUR',
-          locale: 'en_GB',
+          locale: 'en_GB'
         }
       };
 
@@ -189,7 +189,7 @@ describe('ApplePayConfigService', () => {
           currencyiso3a: 'EUR',
           locale: 'en_GB',
           baseamount: '1000',
-          mainamount: '20.00',
+          mainamount: '20.00'
         }
       };
 
@@ -198,7 +198,7 @@ describe('ApplePayConfigService', () => {
       expect(applePayConfigService.getStJwtData(jwt)).toEqual({
         currencyiso3a: payload.payload.currencyiso3a,
         locale: payload.payload.locale,
-        mainamount: '20.00',
+        mainamount: '20.00'
       });
     });
   });

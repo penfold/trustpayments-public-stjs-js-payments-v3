@@ -80,7 +80,10 @@ export class Payment {
     });
   }
 
-  private async processRequestTypes(requestData: IStRequest, responseData?: IResponseData): Promise<Record<string, any>> {
+  private async processRequestTypes(
+    requestData: IStRequest,
+    responseData?: IResponseData
+  ): Promise<Record<string, any>> {
     const processPaymentRequestBody = { ...requestData };
 
     if (responseData) {

@@ -30,10 +30,12 @@ export class ResponseDecoderService {
   }
 
   private isResponsePayloadValid(payload: IResponsePayload): boolean {
-    return payload &&
+    return (
+      payload &&
       payload.version === ResponseDecoderService.RESPONSE_VERSION &&
       payload.response &&
-      payload.response.length > 0;
+      payload.response.length > 0
+    );
   }
 
   private extractResponseObject(payload: IResponsePayload): IRequestTypeResponse {

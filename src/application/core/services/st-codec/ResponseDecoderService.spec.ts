@@ -15,7 +15,7 @@ describe('ResponseDecoderService', () => {
     status: 200,
     statusText: 'OK',
     headers: {},
-    config: {},
+    config: {}
   });
 
   beforeEach(() => {
@@ -25,14 +25,22 @@ describe('ResponseDecoderService', () => {
 
   describe('decode()', () => {
     it('throws InvalidResponseError if response doesnt contain jwt', () => {
-      expect(() => responseDecoderService.decode(prepareResponse(null))).toThrow(new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE));
-      expect(() => responseDecoderService.decode(prepareResponse(''))).toThrow(new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE));
-      expect(() => responseDecoderService.decode(prepareResponse({}))).toThrow(new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE));
+      expect(() => responseDecoderService.decode(prepareResponse(null))).toThrow(
+        new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE)
+      );
+      expect(() => responseDecoderService.decode(prepareResponse(''))).toThrow(
+        new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE)
+      );
+      expect(() => responseDecoderService.decode(prepareResponse({}))).toThrow(
+        new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE)
+      );
     });
 
     it('throws InvalidResponseError if response jwt cannot be decoded', () => {
       when(jwtDecoder.decode('invalidjwt')).thenThrow(new Error('invalid jwt'));
-      expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'invalidjwt' }))).toThrow(new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE));
+      expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'invalidjwt' }))).toThrow(
+        new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE)
+      );
     });
 
     it('throws InvalidResponseError if response payload is missing', () => {
@@ -40,10 +48,12 @@ describe('ResponseDecoderService', () => {
         iat: 1616074548,
         payload: undefined,
         aud: 'foo',
-        sitereference: 'bar',
+        sitereference: 'bar'
       });
 
-      expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }))).toThrow(new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE));
+      expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }))).toThrow(
+        new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE)
+      );
     });
 
     it('throws InvalidResponseError if response payload has invalid version property', () => {
@@ -56,10 +66,12 @@ describe('ResponseDecoderService', () => {
           secrand: 'foobar'
         },
         aud: 'foo',
-        sitereference: 'bar',
+        sitereference: 'bar'
       });
 
-      expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }))).toThrow(new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE));
+      expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }))).toThrow(
+        new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE)
+      );
     });
 
     it('throws InvalidResponseError if response payload doesnt have response property', () => {
@@ -71,10 +83,12 @@ describe('ResponseDecoderService', () => {
           secrand: 'foobar'
         },
         aud: 'foo',
-        sitereference: 'bar',
+        sitereference: 'bar'
       });
 
-      expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }))).toThrow(new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE));
+      expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }))).toThrow(
+        new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE)
+      );
     });
 
     it('throws InvalidResponseError if response payload has empty response property', () => {
@@ -87,10 +101,12 @@ describe('ResponseDecoderService', () => {
           secrand: 'foobar'
         },
         aud: 'foo',
-        sitereference: 'bar',
+        sitereference: 'bar'
       });
 
-      expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }))).toThrow(new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE));
+      expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }))).toThrow(
+        new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE)
+      );
     });
 
     it('parses the response jwt and returns the response object that contains customeroutput property', () => {
@@ -102,22 +118,22 @@ describe('ResponseDecoderService', () => {
           response: [
             {
               aaa: 'aaa',
-              bbb: 'bbb',
+              bbb: 'bbb'
             },
             {
               ccc: 'ccc',
               ddd: 'ddd',
-              customeroutput: 'SUCCESS',
+              customeroutput: 'SUCCESS'
             },
             {
               eee: 'eee',
-              fff: 'fff',
-            },
+              fff: 'fff'
+            }
           ],
           secrand: 'foobar'
         },
         aud: 'foo',
-        sitereference: 'bar',
+        sitereference: 'bar'
       });
 
       const result = responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }));
@@ -126,7 +142,7 @@ describe('ResponseDecoderService', () => {
         ccc: 'ccc',
         ddd: 'ddd',
         customeroutput: 'SUCCESS',
-        jwt: 'somejwt',
+        jwt: 'somejwt'
       });
     });
 
@@ -139,21 +155,21 @@ describe('ResponseDecoderService', () => {
           response: [
             {
               aaa: 'aaa',
-              bbb: 'bbb',
+              bbb: 'bbb'
             },
             {
               ccc: 'ccc',
-              ddd: 'ddd',
+              ddd: 'ddd'
             },
             {
               eee: 'eee',
-              fff: 'fff',
-            },
+              fff: 'fff'
+            }
           ],
           secrand: 'foobar'
         },
         aud: 'foo',
-        sitereference: 'bar',
+        sitereference: 'bar'
       });
 
       const result = responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }));
@@ -161,7 +177,7 @@ describe('ResponseDecoderService', () => {
       expect(result).toEqual({
         eee: 'eee',
         fff: 'fff',
-        jwt: 'somejwt',
+        jwt: 'somejwt'
       });
     });
   });

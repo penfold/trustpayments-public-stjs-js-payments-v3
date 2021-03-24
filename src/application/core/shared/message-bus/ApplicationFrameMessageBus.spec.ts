@@ -52,6 +52,6 @@ describe('ApplicationFrameMessageBus', () => {
   });
 
   it('throws error when sending published private message to parent frame', () => {
-    expect(() => messageBus.publish(sampleEvent, true)).toThrow('Cannot publish private event "FOO" to parent frame.')
+    expect(() => messageBus.publish(sampleEvent, true)).toThrow('Cannot publish private event "FOO" to parent frame.');
   });
 });

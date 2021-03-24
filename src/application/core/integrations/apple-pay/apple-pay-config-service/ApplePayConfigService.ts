@@ -96,7 +96,7 @@ export class ApplePayConfigService {
     if (mainamount === undefined) {
       mainamount = Money.fromInteger({
         amount: parseInt(payload.baseamount, 10),
-        currency: payload.currencyiso3a,
+        currency: payload.currencyiso3a
       }).toString();
     }
 

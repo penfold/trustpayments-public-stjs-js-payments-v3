@@ -21,7 +21,13 @@ export class IframeFactory {
     })
   );
 
-  create(name: string, id: string, styles?: IStyle, params?: Record<string, string>, tabIndex?: number): HTMLIFrameElement {
+  create(
+    name: string,
+    id: string,
+    styles?: IStyle,
+    params?: Record<string, string>,
+    tabIndex?: number
+  ): HTMLIFrameElement {
     const componentParams = new URLSearchParams(params).toString();
     const componentStyles = new URLSearchParams(styles).toString();
     const componentAddress = IframeFactory.URLS.get(name);
