@@ -1,6 +1,11 @@
 import { Service } from 'typedi';
 import { environment } from '../../../environments/environment';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
+import { IConfig } from '../../../shared/model/config/IConfig';
+import { GooglePayPaymentService } from './GooglePayPaymentService';
+import { tap } from 'rxjs/operators';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 
 @Service()
 export class GooglePay {
@@ -32,9 +37,17 @@ export class GooglePay {
     this.baseCardPaymentMethod
   );
   private googlePayClient: any = null;
+  private config: any;
 
-  constructor() {
+  constructor(
+    configProvider: ConfigProvider,
+    private googlePayPaymentService: GooglePayPaymentService,
+    private jwtDecoder: JwtDecoder
+  ) {
     this.init();
+    configProvider.getConfig$().subscribe((config: IConfig) => {
+      this.config = config;
+    });
   }
 
   private init() {
@@ -118,8 +131,20 @@ export class GooglePay {
   };
 
   private processPayment(paymentData: any) {
-    console.log(paymentData);
-    console.log(paymentData.paymentMethodData.tokenizationData.token);
+    this.onPaymentAuthorized(paymentData.paymentMethodData.tokenizationData.token);
+  }
+
+  private onPaymentAuthorized(paymentToken: any): any {
+    const formData = DomMethods.parseForm(this.config.formId);
+    const config = this.config;
+
+    return this.googlePayPaymentService
+      .processPayment(this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions, formData, paymentToken)
+      .pipe(
+        tap((response: any) => {
+          console.log(response);
+        })
+      );
   }
 
   // TO PREFETCH DATA
