@@ -14,10 +14,6 @@ export class GooglePaymentMethod implements IPaymentMethod {
   }
 
   init(config: IConfig): Observable<void> {
-    /**
-     * TODO: initialize external google pay lib: https://pay.google.com/gp/p/js/pay.js
-     */
-
     return of(undefined);
   }
 

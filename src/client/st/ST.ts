@@ -43,7 +43,7 @@ import { IStore } from '../../application/core/store/IStore';
 import { IParentFrameState } from '../../application/core/store/state/IParentFrameState';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IUpdateJwt } from '../../application/core/models/IUpdateJwt';
-import { IGooglePayConfig, IGooglePayConfigName } from '../../integrations/google-pay/models/IGooglePayConfig';
+import { IGooglePayConfig, GooglePayConfigName } from '../../integrations/google-pay/models/IGooglePayConfig';
 import { IInitPaymentMethod } from '../../application/core/services/payments/events/IInitPaymentMethod';
 import { IGooglePaymentMethodName } from '../../integrations/google-pay/models/IGooglePaymentMethod';
 
@@ -180,7 +180,7 @@ export class ST {
 
   GooglePay(config: IGooglePayConfig): void {
     if (config) {
-      this.config = this.configService.updateFragment(IGooglePayConfigName, config);
+      this.config = this.configService.updateFragment(GooglePayConfigName, config);
     }
 
     this.initControlFrame$().subscribe(() => {

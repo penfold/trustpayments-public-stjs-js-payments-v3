@@ -9,7 +9,7 @@ import { filter, first } from 'rxjs/operators';
 import { CONFIG } from '../../dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { IGooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
+import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
 
 @Service()
 export class ConfigService implements ConfigProvider {
@@ -43,7 +43,7 @@ export class ConfigService implements ConfigProvider {
   }
 
   updateFragment<
-    K extends 'components' | 'visaCheckout' | 'applePay' | typeof IGooglePayConfigName,
+    K extends 'components' | 'visaCheckout' | 'applePay' | typeof GooglePayConfigName,
     C extends IConfig[K]
   >(key: K, config: C): IConfig {
     if (this.configFromJwt) {

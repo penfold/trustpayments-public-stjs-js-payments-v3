@@ -5,7 +5,7 @@ import { IStyles } from './IStyles';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
-import { IGooglePayConfig, IGooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
+import { IGooglePayConfig, GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
 
 export interface IConfig {
   analytics?: boolean;
@@ -23,7 +23,7 @@ export interface IConfig {
   errorReporting?: boolean;
   fieldsToSubmit?: string[];
   formId?: string;
-  [IGooglePayConfigName]?: IGooglePayConfig;
+  [GooglePayConfigName]?: IGooglePayConfig;
   init?: IBypassInit;
   jwt?: string;
   livestatus?: 0 | 1;
