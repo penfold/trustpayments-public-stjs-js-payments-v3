@@ -29,14 +29,11 @@ export class GooglePayPaymentService {
         requestTypes,
         {
           walletsource: 'GOOGLEPAY',
-          wallettoken: JSON.stringify(payment)
+          wallettoken: payment
         },
         {
-          termurl: TERM_URL,
-          currencyiso3a: 'GBP',
-          orderreference: 'order',
-          accounttypedescription: 'ECOM',
-          credentialsonfile: '1'
+          ...formData,
+          termurl: TERM_URL
         },
         {
           billingContact: payment.billingContact,

@@ -224,38 +224,20 @@ export class StCodec {
     StCodec._locale = new StJwt(StCodec.jwt).locale;
   }
 
-  public buildRequestObject(requestData: any): object {
-    // temp
-    if (requestData.walletsource === 'GOOGLEPAY') {
-      const { fraudcontroltransactionid, ...newRequestData } = requestData;
-      return {
-        alias: 'webservices@merchant.com',
-        version: StCodec.VERSION,
-        acceptcustomeroutput: '1.00',
-        request: [
-          {
-            ...newRequestData,
-            sitereference: new StJwt(StCodec.jwt).sitereference,
-            requesttypedescriptions: ['ACCOUNTCHECK', 'THREEDQUERY', 'AUTH'],
-            baseAmount: '100'
-          }
-        ]
-      };
-    } else {
-      return {
-        acceptcustomeroutput: '2.00',
-        jwt: StCodec.jwt,
-        request: [
-          {
-            ...requestData,
-            requestid: this._requestId,
-            sitereference: new StJwt(StCodec.jwt).sitereference
-          }
-        ],
-        version: StCodec.VERSION,
-        versioninfo: StCodec.VERSION_INFO
-      };
-    }
+  public buildRequestObject(requestData: object): object {
+    return {
+      acceptcustomeroutput: '2.00',
+      jwt: StCodec.jwt,
+      request: [
+        {
+          ...requestData,
+          requestid: this._requestId,
+          sitereference: new StJwt(StCodec.jwt).sitereference
+        }
+      ],
+      version: StCodec.VERSION,
+      versioninfo: StCodec.VERSION_INFO
+    };
   }
 
   public encode(requestObject: IStRequest) {
