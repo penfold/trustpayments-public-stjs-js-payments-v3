@@ -32,6 +32,7 @@ describe('DomMethods', () => {
       expect(form.querySelector('[name="stFieldName"]').getAttribute('value')).toBe('');
       expect(form.querySelector('[name="stFieldName"]').tagName).toBe('INPUT');
       expect(form.querySelector('[name="stFieldName"]').getAttribute('type')).toBe('hidden');
+      expect(form.querySelector('[name="stFieldName"]').getAttribute('class')).toBe('-st-created-field');
       expect(form.querySelector('[name="stFieldName2"]').getAttribute('value')).toBe('some value');
       expect(form.querySelector('[name="stDuplicate"]').getAttribute('value')).toBe('value2');
       expect(form.querySelector('[name="stSelectName"]').getAttribute('value')).toBe('B');
@@ -85,6 +86,17 @@ describe('DomMethods', () => {
 
     it('should remove all children of specified iframe-factory', () => {
       expect(DomMethods.removeAllChildren('some-id').childNodes.length).toEqual(0);
+    });
+  });
+
+  describe('DomMethods.removeAllCreatedFields()', () => {
+    it('should remove all fields added to form', () => {
+      const { form } = createFormFixture();
+
+      DomMethods.addDataToForm(form, { foo: 'bar', bar: 'baz' });
+      expect(form.querySelectorAll('.-st-created-field').length).toBe(2);
+      DomMethods.removeAllCreatedFields(form);
+      expect(form.querySelectorAll('.-st-created-field').length).toBe(0);
     });
   });
 });

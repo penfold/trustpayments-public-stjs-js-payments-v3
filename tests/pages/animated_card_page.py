@@ -1,8 +1,8 @@
 import json
 
 from configuration import CONFIGURATION
-from locators.animated_card_locators import AnimatedCardLocators
-from locators.payment_methods_locators import PaymentMethodsLocators
+from pages.locators.animated_card_locators import AnimatedCardLocators
+from pages.locators.payment_methods_locators import PaymentMethodsLocators
 from pages.base_page import BasePage
 from utils.enums.field_type import FieldType
 from utils.helpers.request_executor import add_to_shared_dict
@@ -11,14 +11,14 @@ from utils.helpers.request_executor import add_to_shared_dict
 class AnimatedCardPage(BasePage):
 
     def get_card_type_icon_from_animated_card(self):
-        credit_card_icon = self._action.get_element_attribute(AnimatedCardLocators.card_type_logo_from_animated_card,
+        credit_card_icon = self._actions.get_element_attribute(AnimatedCardLocators.card_type_logo_from_animated_card,
                                                               'alt')
         credit_card_icon = credit_card_icon.upper()
         return credit_card_icon
 
     def validate_credit_card_icon(self, expected_card_icon, is_field_in_iframe):
         if is_field_in_iframe:
-            self._action.switch_to_iframe(PaymentMethodsLocators.animated_card_iframe)
+            self._actions.switch_to_iframe(PaymentMethodsLocators.animated_card_iframe)
         actual_credit_card_icon = self.get_card_type_icon_from_animated_card()
         assertion_message = f'Credit card icon is not correct, ' \
                             f'should be: "{expected_card_icon}" but is: "{actual_credit_card_icon}"'
@@ -28,14 +28,14 @@ class AnimatedCardPage(BasePage):
     def get_data_from_animated_card(self, field_type, card_type):
         animated_card_data = ''
         if field_type == FieldType.CARD_NUMBER.name:
-            animated_card_data = self._action.get_text(AnimatedCardLocators.credit_card_number_on_animated_card)
+            animated_card_data = self._actions.get_text(AnimatedCardLocators.credit_card_number_on_animated_card)
         elif field_type == FieldType.EXPIRATION_DATE.name:
-            animated_card_data = self._action.get_text(AnimatedCardLocators.expiration_date_on_animated_card)
+            animated_card_data = self._actions.get_text(AnimatedCardLocators.expiration_date_on_animated_card)
         elif field_type == FieldType.SECURITY_CODE.name:
             if card_type == 'AMEX':
-                animated_card_data = self._action.get_text(AnimatedCardLocators.cvv_on_front_side_animated_card)
+                animated_card_data = self._actions.get_text(AnimatedCardLocators.cvv_on_front_side_animated_card)
             else:
-                animated_card_data = self._action.get_text(AnimatedCardLocators.cvv_on_back_side_animated_card)
+                animated_card_data = self._actions.get_text(AnimatedCardLocators.cvv_on_back_side_animated_card)
         return animated_card_data
 
     def validate_data_on_animated_card(self, expected_data, field_type, card_type):
@@ -57,7 +57,7 @@ class AnimatedCardPage(BasePage):
         if is_field_in_iframe and 'Safari' in CONFIGURATION.REMOTE_BROWSER:
             pass
         else:
-            animated_card_side = self._action.get_element_attribute(AnimatedCardLocators.animated_card, 'class')
+            animated_card_side = self._actions.get_element_attribute(AnimatedCardLocators.animated_card, 'class')
             if card_type == 'AMEX':
                 assertion_message = 'Animated card is flipped for AMEX but should not be'
                 add_to_shared_dict('assertion_message', assertion_message)
@@ -68,7 +68,7 @@ class AnimatedCardPage(BasePage):
                 assert 'flip-card' in animated_card_side, assertion_message
 
     def validate_animated_card_translation(self, language):
-        self._action.switch_to_iframe(FieldType.ANIMATED_CARD.value)
+        self._actions.switch_to_iframe(FieldType.ANIMATED_CARD.value)
         self.validate_animated_card_element_translation(AnimatedCardLocators.card_number_label,
                                                         language, 'Card number')
         self.validate_animated_card_element_translation(AnimatedCardLocators.expiration_date_label,
@@ -86,7 +86,7 @@ class AnimatedCardPage(BasePage):
         assert actual_translation in expected_translation, assertion_message
 
     def get_animated_card_label_translation(self, locator):
-        element_translation = self._action.get_text(locator)
+        element_translation = self._actions.get_text(locator)
         return element_translation
 
     def get_translation_from_json(self, language, key):

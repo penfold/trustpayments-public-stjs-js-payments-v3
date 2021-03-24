@@ -5,15 +5,18 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 
-from locators.payment_methods_locators import PaymentMethodsLocators
-from utils.waits import Waits
+from pages.locators.payment_methods_locators import PaymentMethodsLocators
 
 
-class WebElementsExtensions(Waits):
+class Actions:
     # pylint: disable=too-many-public-methods
 
+    def __init__(self, driver_factory, waits):
+        self._driver = driver_factory.get_driver()
+        self._waits = waits
+
     def send_keys(self, locator, string):
-        self.wait_for_element_to_be_displayed(locator)
+        self._waits.wait_for_element_to_be_displayed(locator)
         element = self.find_element(locator)
         element.send_keys(string)
 
@@ -49,13 +52,13 @@ class WebElementsExtensions(Waits):
 
     def switch_to_iframe_and_get_text(self, iframe_name, locator):
         self.switch_to_iframe(iframe_name)
-        self.wait_for_element_to_be_displayed(locator)
+        self._waits.wait_for_element_to_be_displayed(locator)
         element = self.get_text_excluding_children(locator)
         self.switch_to_default_iframe()
         return element
 
     def click(self, locator):
-        self.wait_for_element_to_be_displayed(locator)
+        self._waits.wait_for_element_to_be_displayed(locator)
         element = self.find_element(locator)
         element.click()
 
@@ -94,13 +97,13 @@ class WebElementsExtensions(Waits):
 
     def get_text_from_last_element(self, locator):
         try:
-            self.wait_for_element(locator)
+            self._waits.wait_for_element(locator)
             return self.find_elements(locator)[-1].text
         except StaleElementReferenceException:
             return self.find_element(locator)[-1].text
 
     def get_text_with_wait(self, locator):
-        self.wait_for_element(locator)
+        self._waits.wait_for_element(locator)
         element = self.find_element(locator)
         return element.text
 
@@ -120,7 +123,7 @@ class WebElementsExtensions(Waits):
         return extracted_text
 
     def get_css_value_with_wait(self, locator, property_name):
-        self.wait_for_element_to_be_displayed(locator)
+        self._waits.wait_for_element_to_be_displayed(locator)
         element = self.find_element(locator)
         css_value = element.value_of_css_property(property_name)
         return css_value
@@ -161,7 +164,7 @@ class WebElementsExtensions(Waits):
 
     def switch_to_iframe_and_wait_for_element_to_be_displayed(self, iframe_name, locator):
         self.switch_to_iframe(iframe_name)
-        self.wait_for_element_to_be_displayed(locator)
+        self._waits.wait_for_element_to_be_displayed(locator)
         self.switch_to_default_iframe()
 
     def switch_to_iframe_and_get_css_value(self, iframe_name, locator, property_name):
@@ -198,12 +201,12 @@ class WebElementsExtensions(Waits):
         select.select_by_index(element_number)
 
     def switch_to_iframe(self, iframe_name):
-        self.wait_until_iframe_is_presented_and_switch_to_it(iframe_name)
+        self._waits.wait_until_iframe_is_presented_and_switch_to_it(iframe_name)
 
     def switch_to_default_iframe(self):
-        self.switch_to_default_content()
+        self._waits.switch_to_default_content()
         if len(self._driver.find_elements(By.ID, 'st-parent-frame')) > 0:
             self.switch_to_iframe(PaymentMethodsLocators.parent_iframe)
 
     def switch_to_parent_iframe(self):
-        self.switch_to_parent_frame()
+        self._waits.switch_to_parent_frame()
