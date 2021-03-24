@@ -3,10 +3,11 @@
 import pprint
 from datetime import date
 from distutils.util import strtobool
+from logging import INFO
 
 from attrdict import AttrDict
 
-from utils.logger import _get_logger
+from utils.logger import get_logger
 from utils.read_configuration import get_path_from_env, get_from_env
 
 
@@ -55,7 +56,7 @@ def print_properties(config):
     """
     Printing all configuration data before starting the tests
     """
-    logger = _get_logger()
+    logger = get_logger(INFO)
     config_to_print = config.copy()
     config_to_print.pop('COMMAND_EXECUTOR')
     logger.info(f'CONFIGURATION: \n{pprint.pformat(config_to_print, indent=4)}')
