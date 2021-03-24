@@ -153,7 +153,6 @@ export class Input {
   }
 
   protected setAttributes(attributes: Record<string, any>) {
-    // tslint:disable-next-line:forin
     for (const attribute in attributes) {
       this._inputElement.setAttribute(attribute, attributes[attribute]);
     }

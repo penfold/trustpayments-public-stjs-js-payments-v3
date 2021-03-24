@@ -20,7 +20,6 @@ interface StylesAttributes {
 export class Styler {
   private static _getTagStyles(styles: ISubStyles): string {
     const results = [];
-    // tslint:disable-next-line:forin
     for (const style in styles) {
       results.push(`${style}: ${styles[style]};`);
     }
@@ -67,7 +66,6 @@ export class Styler {
 
   private _filter(styles: IStyles[]): IStyle {
     const filtered: IStyle = {};
-    // tslint:disable-next-line:forin
     styles.forEach((style: IStyle, index) => {
       const propName: string = Object.keys(style)[0];
       if (this._allowed.hasOwnProperty(propName)) {
@@ -80,7 +78,6 @@ export class Styler {
 
   private _sanitize(styles: IStyle): IStyle {
     const sanitized: IStyle = {};
-    // tslint:disable-next-line:forin
     for (const style in styles) {
       if (/^[A-Za-z0-9 _%#)(,.-]*[A-Za-z0-9][A-Za-z0-9 _%#)(,.-]*$/i.test(styles[style])) {
         sanitized[style] = styles[style];
@@ -91,7 +88,6 @@ export class Styler {
 
   private _group(styles: IStyle): IGroupedStyles {
     const grouped: IGroupedStyles = {};
-    // tslint:disable-next-line:forin
     for (const style in styles) {
       const allowed = this._allowed[style];
       if (!grouped.hasOwnProperty(allowed.selector)) {
@@ -107,7 +103,6 @@ export class Styler {
     const groupedStyles: IGroupedStyles = this._group(styled);
     let tag: string;
     const templates: string[] = [`body { display: block; }`];
-    // tslint:disable-next-line:forin
     for (tag in groupedStyles) {
       const tagStyle = Styler._getTagStyles(groupedStyles[tag]);
       templates.push(`${tag} { ${tagStyle} }`);

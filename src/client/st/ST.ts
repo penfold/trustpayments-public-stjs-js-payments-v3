@@ -325,7 +325,6 @@ export class ST {
 
   private displayLiveStatus(liveStatus: boolean): void {
     if (!liveStatus) {
-      /* tslint:disable:no-console */
       console.log(
         '%cThe %csecure%c//%ctrading %cLibrary is currently working in test mode. Please check your configuration.',
         'margin: 100px 0; font-size: 2em; color: #e71b5a',

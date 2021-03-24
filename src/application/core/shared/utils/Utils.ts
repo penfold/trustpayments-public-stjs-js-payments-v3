@@ -8,7 +8,6 @@ export class Utils {
     callback: (item: inputType) => returnType
   ): returnType {
     let result: returnType = null;
-    // tslint:disable-next-line:forin
     for (const i in iterable) {
       result = callback(iterable[i]);
       if (result) {
@@ -61,7 +60,6 @@ export class Utils {
   public static getLastElementOfArray = (array: number[]) => array && array.slice(-1).pop();
 
   public static setElementAttributes(attributes: Record<string, any>, element: HTMLInputElement) {
-    // tslint:disable-next-line: forin
     for (const attribute in attributes) {
       const value = attributes[attribute];
       if (Utils.inArray(['value'], attribute)) {

@@ -7,6 +7,5 @@ export class VisaCheckoutClientMock implements IVisaCheckoutClient {
     return of(VisaCheckoutClientStatus.SUCCESS);
   }
 
-  // tslint:disable-next-line:no-empty
   watchConfigAndJwtUpdates(): void {}
 }

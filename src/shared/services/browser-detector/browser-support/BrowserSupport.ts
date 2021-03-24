@@ -26,7 +26,6 @@ export class BrowserSupport {
   }
 
   private getSupportedBrowserVersions(name: string): string[] {
-    // tslint:disable-next-line:no-var-requires
     const { browserslist: browserlist } = require('./../../../../../package.json');
     const browsersFromPackageJson = this.browserList.getBrowsers(browserlist);
     const supportedBrowsers = this.browserList.getSupportedBrowsers();

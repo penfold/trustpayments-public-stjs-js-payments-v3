@@ -21,9 +21,7 @@ export class VisaCheckoutSdkProviderMock extends VisaCheckoutSdkProvider impleme
     );
 
     return of({
-      // tslint:disable-next-line:no-empty
       init: () => {},
-      // tslint:disable-next-line:no-empty
       on: () => {}
     });
   }
