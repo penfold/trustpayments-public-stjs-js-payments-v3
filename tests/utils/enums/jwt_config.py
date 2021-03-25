@@ -20,3 +20,5 @@ class JwtConfig(Enum):
     JWT_WITHOUT_LOCALE_AND_UPDATED_AMOUNT_AND_CURRENCY = 'jwt_config_without_locale_and_updated_amount_and_currency.json'
     INVALID_JWT = 'invalid_jwt_config_wrong_locale_data.json'
     JWT_FAILED_NON_FRICTIONLESS_CARD = 'jwt_config_failed_non_frictionless_card.json'
+    JWT_WITH_MAINAMOUNT = 'jwt_with_mainamount.json'
+    JWT_WITH_MAINAMOUNT_AND_FRICTIONLESS = 'jwt_with_mainamount_and_frictionless.json'

@@ -107,28 +107,28 @@ SamsungGalaxyS20-10.0-visual-tests:
     POETRY_TAGS: visual_regression
   resource_group: extended_tests_release_2
 
-iPhoneXS-12-visual-tests:
+iPhone12Mini-14-visual-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
   variables:
-    DEVICE: iPhone XS
-    OS_VERSION: 12
+    DEVICE: iPhone 12 Mini
+    OS_VERSION: 14
     BROWSER: Safari
     REAL_MOBILE: 'true'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: visual_regression_safari
   resource_group: extended_tests_release_3
 
-OSXMojave-Safari-12.1-visual-tests:
+OSXBigSur-Safari-14.0-visual-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
   variables:
     OS: OS X
-    OS_VERSION: Mojave
+    OS_VERSION: Big Sur
     BROWSER: Safari
-    BROWSER_VERSION: '12.1'
+    BROWSER_VERSION: '14.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: visual_regression_safari
@@ -486,29 +486,29 @@ OSXMojave-Safari-12.1-extended-test-part-3:
     POETRY_TAGS: extended_tests_part_3
   resource_group: extended_tests_release_2
 
-iPhoneXS-12-visual-tests-styling:
+iPhone12Mini-14-visual-tests-styling:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
   variables:
-    DEVICE: iPhone XS
-    OS_VERSION: 12
+    DEVICE: iPhone 12 Mini
+    OS_VERSION: 14
     BROWSER: Safari
     REAL_MOBILE: 'true'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: visual_regression_styling_safari
   resource_group: extended_tests_release_3
 
-OSXMojave-Safari-12.1-visual-tests-styling:
+OSXBigSur-Safari-14.0-visual-tests-styling:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
   variables:
     OS: OS X
-    OS_VERSION: Mojave
+    OS_VERSION: Big Sur
     BROWSER: Safari
-    BROWSER_VERSION: '12.1'
-    ROWSERSTACK_SAFARI_DRIVER: '2.48'
+    BROWSER_VERSION: '14.0'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: visual_regression_styling_safari
   resource_group: extended_tests_release_4

@@ -1,4 +1,4 @@
-import { mock, instance, when, anything } from 'ts-mockito';
+import { mock, instance, when } from 'ts-mockito';
 import { RequestEncoderService } from './RequestEncoderService';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { Store } from '../../store/store/Store';

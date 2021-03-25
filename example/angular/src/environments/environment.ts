@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   libraryUrl: 'https://localhost:8443/st.js',
-  configUrl: '/assets/config.json'
+  configUrl: '/assets/config.json',
+  jwtDataUrl: '/assets/jwtdata.json'
 };
 
 /*
