@@ -72,3 +72,8 @@ Not specified yet
 ## License
 
 - [MIT](https://opensource.org/licenses/MIT)
+
+
+## Contact Support
+
+If you need assistance with your integration or are experiencing issues with our JS library, please contact our Technical Support Team at [support@trustpayments.com](mailto:support@trustpayments.com)

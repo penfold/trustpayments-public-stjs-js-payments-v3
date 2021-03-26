@@ -103,27 +103,27 @@ iPhone11-14.0-smoke-tests:
     POETRY_TAGS: visual_regression
   resource_group: extended_tests_release_3
 
-.iPhoneXS-12-visual-tests:
+iPhone12Mini-14-visual-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-always
   variables:
-    DEVICE: iPhone XS
-    OS_VERSION: 12
+    DEVICE: iPhone 12 Mini
+    OS_VERSION: 14
     BROWSER: Safari
     REAL_MOBILE: 'true'
     POETRY_TAGS: visual_regression_safari
   resource_group: extended_tests_release_4
 
-.OSXMojave-Safari-12.1-visual-tests:
+OSXBigSur-Safari-14.0-visual-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-always
   variables:
     OS: OS X
-    OS_VERSION: Mojave
+    OS_VERSION: Big Sur
     BROWSER: Safari
-    BROWSER_VERSION: '12.1'
+    BROWSER_VERSION: '14.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: visual_regression_safari
@@ -358,27 +358,58 @@ OSXBigSur-Safari-14.0-smoke-tests:
     POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_4
 
-.iPhoneXS-12-visual-tests-styling:
+OSXMojave-Safari-12.1-extended-test-part-2:
   extends:
     - .extended-tests-browserstack
-    - .rules-extended-tests-always
-  variables:
-    DEVICE: iPhone XS
-    OS_VERSION: 12
-    BROWSER: Safari
-    REAL_MOBILE: 'true'
-    POETRY_TAGS: visual_regression_styling_safari
-  resource_group: extended_tests_release_1
-
-.OSXMojave-Safari-12.1-visual-tests-styling:
-  extends:
-    - .extended-tests-browserstack
-    - .rules-extended-tests-always
+    - .rules-extended-tests-release
   variables:
     OS: OS X
     OS_VERSION: Mojave
     BROWSER: Safari
     BROWSER_VERSION: '12.1'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+    AUTOMATION_TIMEOUT: 120
+    POETRY_TAGS: extended_tests_part_2,extended_tests_apple_pay
+  resource_group: extended_tests_release_1
+
+OSXMojave-Safari-12.1-extended-test-part-3:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-extended-tests-release
+  variables:
+    OS: OS X
+    OS_VERSION: Mojave
+    BROWSER: Safari
+    BROWSER_VERSION: '12.1'
+    BROWSERSTACK_SAFARI_DRIVER: '2.48'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+    AUTOMATION_TIMEOUT: 120
+    POETRY_TAGS: extended_tests_part_3
+  resource_group: extended_tests_release_2
+
+iPhone12Mini-14-visual-tests-styling:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    DEVICE: iPhone 12 Mini
+    OS_VERSION: 14
+    BROWSER: Safari
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: visual_regression_styling_safari
+  resource_group: extended_tests_release_1
+
+OSXBigSur-Safari-14.0-visual-tests-styling:
+  extends:
+    - .extended-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    OS: OS X
+    OS_VERSION: Big Sur
+    BROWSER: Safari
+    BROWSER_VERSION: '14.0'
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
+    AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: visual_regression_styling_safari
   resource_group: extended_tests_release_2
 

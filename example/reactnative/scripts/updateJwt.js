@@ -2,8 +2,8 @@ const fs = require('fs');
 const x = require('@trustpayments/jwt-generator');
 const jsonConfig = require('./../src/library/config.json');
 
-const jwtSecretKey = 'ja<n}yP]3$1E$iUYtn_*i7))24I,=^';
-const jwtIss = 'am0310.autoapi';
+const jwtSecretKey = 'test';
+const jwtIss = 'test';
 const jwtDefaultPayload = {
   baseamount: '1000',
   accounttypedescription: 'ECOM',

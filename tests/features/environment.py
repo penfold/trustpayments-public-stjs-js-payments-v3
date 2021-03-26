@@ -8,12 +8,12 @@
 from logging import INFO
 
 from configuration import CONFIGURATION
-from logger import get_logger
-from page_factory import PageFactory
-from utils.browser import Browser
+from pages.page_factory import PageFactory
+from utils.actions import Actions
+from utils.browser_executor import BrowserExecutor
 from utils.driver_factory import DriverFactory
-from utils.extensions import WebElementsExtensions
 from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed
+from utils.logger import get_logger
 from utils.mock_handler import MockServer
 from utils.reporter import Reporter
 from utils.test_data import TestData
@@ -53,15 +53,15 @@ def before_scenario(context, scenario):
     context.browser = context.configuration.BROWSER
     context.driver_factory = DriverFactory(configuration=context.configuration)
     context.waits = Waits(driver_factory=context.driver_factory, configuration=context.configuration)
-    extensions = WebElementsExtensions(driver_factory=context.driver_factory, configuration=context.configuration)
-    context.executor = Browser(driver_factory=context.driver_factory, configuration=context.configuration)
+    actions = Actions(driver_factory=context.driver_factory, waits=context.waits)
+    context.browser_executor = BrowserExecutor(driver_factory=context.driver_factory, waits=context.waits)
     context.reporter = Reporter(driver_factory=context.driver_factory, configuration=context.configuration)
     context.screenshot_manager = ScreenshotManager(driver_factory=context.driver_factory, configuration=context.configuration)
-    context.page_factory = PageFactory(executor=context.executor, extensions=extensions,
+    context.page_factory = PageFactory(browser_executor=context.browser_executor, actions=actions,
                                        reporter=context.reporter, configuration=context.configuration,
-                                       wait=context.waits)
+                                       waits=context.waits)
     context.test_data = TestData(configuration=context.configuration)
-    context.session_id = context.executor.get_session_id()
+    context.session_id = context.browser_executor.get_session_id()
     context.language = 'en_GB'
     scenario.name = '%s executed on %s' % (scenario.name, context.browser.upper())
     LOGGER.info(scenario.name)
@@ -70,14 +70,18 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
     """Run after each scenario"""
+    # pylint: disable=bare-except
     LOGGER.info('AFTER SCENARIO')
-    if scenario.status == 'failed':
+    if scenario.status == 'failed' and (context.browser.upper() not in 'SAFARI'):
         LOGGER.info('Printing console logs:')
-        for entry in context.driver_factory.get_driver().get_log('browser'):
-            LOGGER.info(entry)
+        try:
+            for entry in context.driver_factory.get_driver().get_log('browser'):
+                LOGGER.info(entry)
+        except:
+            LOGGER.info('Error was thrown while printing console logs')
     browser_name = context.browser
-    context.executor.clear_cookies()
-    context.executor.close_browser()
+    context.browser_executor.clear_cookies()
+    context.browser_executor.close_browser()
     MockServer.stop_mock_server()
     if context.configuration.REMOTE:
         set_scenario_name(context.session_id, scenario.name)

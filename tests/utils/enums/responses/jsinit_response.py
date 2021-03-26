@@ -44,5 +44,6 @@ jsinit_response = {
     'config_apple_riskdec_acheck_auth': 'jsinitRiskdecAcheckAuth.json',
     'config_auth_subscription': 'jsinitAuthSubscription.json',
     'config_acheck_subscription': 'jsinitAcheckSubscription.json',
+    'config_mainamount': 'jsinitMainamount.json',
     'BASE_UPDATED_JWT': 'jsinitBaseUpdatedJwt.json'
 }

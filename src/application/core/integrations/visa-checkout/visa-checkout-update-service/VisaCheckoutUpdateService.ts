@@ -28,6 +28,9 @@ export class VisaCheckoutUpdateService {
   }
 
   updateConfigObject(config: IConfig): IVisaCheckoutUpdateConfig {
+    if (!config.visaCheckout) {
+      throw new Error('VisaCheckout config has not been specified');
+    }
     const jwtPayload: IStJwtPayload = this.jwtDecoder.decode(config.jwt).payload;
 
     return {
@@ -36,6 +39,9 @@ export class VisaCheckoutUpdateService {
       visaInitConfig: {
         apikey: config.visaCheckout.merchantId,
         encryptionKey: config.visaCheckout.encryptionKey,
+        referenceCallID: config.visaCheckout.referenceCallID,
+        externalProfileId: config.visaCheckout.externalProfileId,
+        externalClientId: config.visaCheckout.externalClientId,
         paymentRequest: {
           currencyCode: jwtPayload.currencyiso3a,
           subtotal: jwtPayload.mainamount,

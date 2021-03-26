@@ -1,5 +1,5 @@
 export interface ISubmitData {
-  [index: string]: string;
+  [index: string]: any;
   fieldsToSubmit?: string[];
   dataInJwt?: boolean;
   requestTypes?: string[];

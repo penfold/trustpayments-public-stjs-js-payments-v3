@@ -38,7 +38,7 @@ describe('ApplePayConfigService', () => {
   };
 
   const applePayConfig: IApplePayConfig = {
-    buttonStyle: 'ys',
+    buttonStyle: 'white',
     buttonText: 'donate',
     merchantId: 'test-id',
     paymentRequest: paymentRequest,
@@ -134,16 +134,71 @@ describe('ApplePayConfigService', () => {
   });
 
   describe('get properties from StJwt object', () => {
-    beforeAll(() => {
-      when(jwtDecoderMock.decode(anything())).thenReturn(payload);
-    });
+    it('should return currencyiso3a, locale and mainamount parameter when baseamount is provided', () => {
+      const payload = {
+        payload: {
+          currencyiso3a: 'EUR',
+          locale: 'en_GB',
+          baseamount: '1000',
+        }
+      };
 
-    it('should return currencyiso3a, locale and mainamount parameter ', () => {
-      // @ts-ignore
+      when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn(payload);
+
       expect(applePayConfigService.getStJwtData(jwt)).toEqual({
         currencyiso3a: payload.payload.currencyiso3a,
         locale: payload.payload.locale,
-        mainamount: '10.00'
+        mainamount: '10.00',
+      });
+    });
+
+    it('should return currencyiso3a, locale and mainamount parameter when mainamount is provided', () => {
+      const payload = {
+        payload: {
+          currencyiso3a: 'EUR',
+          locale: 'en_GB',
+          mainamount: '10.00',
+        }
+      };
+
+      when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn(payload);
+
+      expect(applePayConfigService.getStJwtData(jwt)).toEqual({
+        currencyiso3a: payload.payload.currencyiso3a,
+        locale: payload.payload.locale,
+        mainamount: '10.00',
+      });
+    });
+
+    it('should throw an error when neither baseamount or mainamount are provided', () => {
+      const payload = {
+        payload: {
+          currencyiso3a: 'EUR',
+          locale: 'en_GB',
+        }
+      };
+
+      when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn(payload);
+
+      expect(() => applePayConfigService.getStJwtData(jwt)).toThrowError();
+    });
+
+    it('should use mainamount when both mainamount and baseamount are provided', () => {
+      const payload = {
+        payload: {
+          currencyiso3a: 'EUR',
+          locale: 'en_GB',
+          baseamount: '1000',
+          mainamount: '20.00',
+        }
+      };
+
+      when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn(payload);
+
+      expect(applePayConfigService.getStJwtData(jwt)).toEqual({
+        currencyiso3a: payload.payload.currencyiso3a,
+        locale: payload.payload.locale,
+        mainamount: '20.00',
       });
     });
   });
@@ -158,8 +213,8 @@ describe('ApplePayConfigService', () => {
         formId: 'test id',
         applePay: {
           merchantId: 'test string',
-          buttonStyle: 'some style',
-          buttonText: 'test text',
+          buttonStyle: 'white',
+          buttonText: 'donate',
           paymentRequest,
           placement: 'test place'
         },
