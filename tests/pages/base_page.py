@@ -17,7 +17,7 @@ class BasePage:
     def open_self_page(self):
         self._browser_executor.open_page(self._page_url)
 
-    def open_page(self, url):
+    def open_page_with_not_private_connection_check(self, url):
         self._browser_executor.open_page(url)
         if len(self._actions.find_elements(PaymentMethodsLocators.not_private_connection_text)) > 0:
             self._browser_executor.execute_script('browserstack_executor: {"action": "acceptSsl"}')
