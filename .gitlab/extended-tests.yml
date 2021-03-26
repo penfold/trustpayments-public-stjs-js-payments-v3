@@ -247,7 +247,7 @@ win8.1-Chrome-latest-smoke-tests:
 #
 #.iPhoneXS-12-applePay-tests:
 #  extends:
-#    - .extended-tests-browserstack
+#    - .component-tests-browserstack
 #    - .rules-extended-tests-always
 #  variables:
 #    DEVICE: iPhone XS
@@ -296,7 +296,7 @@ win8.1-Chrome-latest-smoke-tests:
 #
 #OSXMojave-Safari-12.1-extended-test-part-2:
 #  extends:
-#    - .extended-tests-browserstack
+#    - .component-tests-browserstack
 #    - .rules-extended-tests-release
 #  variables:
 #    OS: OS X
@@ -310,7 +310,7 @@ win8.1-Chrome-latest-smoke-tests:
 #
 #OSXMojave-Safari-12.1-extended-test-part-3:
 #  extends:
-#    - .extended-tests-browserstack
+#    - .component-tests-browserstack
 #    - .rules-extended-tests-release
 #  variables:
 #    OS: OS X
@@ -370,7 +370,7 @@ win8.1-Chrome-latest-smoke-tests:
 
 .iPhone12Mini-14-visual-tests:
   extends:
-    - .extended-tests-browserstack
+    - .component-tests-browserstack
     - .rules-extended-tests-always
   variables:
     DEVICE: iPhone 12 Mini
@@ -394,7 +394,7 @@ win8.1-Chrome-latest-smoke-tests:
 
 .OSXBigSur-Safari-14.0-visual-tests:
   extends:
-    - .extended-tests-browserstack
+    - .component-tests-browserstack
     - .rules-extended-tests-always
   variables:
     OS: OS X
@@ -433,7 +433,7 @@ win8.1-Chrome-latest-smoke-tests:
 
 .iPhone12Mini-14-visual-tests-styling:
   extends:
-    - .extended-tests-browserstack
+    - .component-tests-browserstack
     - .rules-extended-tests-always
   variables:
     DEVICE: iPhone 12 Mini
@@ -445,7 +445,7 @@ win8.1-Chrome-latest-smoke-tests:
 
 .OSXBigSur-Safari-14.0-visual-tests-styling:
   extends:
-    - .extended-tests-browserstack
+    - .component-tests-browserstack
     - .rules-extended-tests-always
   variables:
     OS: OS X
