@@ -28,7 +28,7 @@
 
 .apple-component-test-browserstack:
   extends:
-    - .extended-tests-browserstack
+    - .component-tests-browserstack
     - .rules-extended-tests-always
   variables:
     OS: "OS X"
