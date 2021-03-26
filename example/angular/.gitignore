@@ -1,5 +1,6 @@
 # app files
 /src/assets/config.json
+/src/assets/jwtdata.json
 
 # compiled output
 /dist

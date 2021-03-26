@@ -7,10 +7,10 @@ import { IVisaCheckoutButtonProps } from './IVisaCheckoutButtonProps';
 @Service()
 export class VisaCheckoutButtonService {
   mount(target: string, settings: IVisaCheckoutButtonSettings, src: string): Element {
-    return DomMethods.appendChildIntoDOM(target, this.create(settings, src));
+    return DomMethods.appendChildIntoDOM(target, this.create(src, settings));
   }
 
-  private customize(settings: IVisaCheckoutButtonSettings, src: string): IVisaCheckoutButtonProps {
+  private customize(src: string, settings: IVisaCheckoutButtonSettings): IVisaCheckoutButtonProps {
     const url = new URL(src);
     const props: IVisaCheckoutButtonProps = VisaCheckoutButtonProps;
 
@@ -24,7 +24,7 @@ export class VisaCheckoutButtonService {
     return props;
   }
 
-  private create(settings: IVisaCheckoutButtonSettings, src: string): HTMLElement {
-    return DomMethods.createHtmlElement.apply(this, [this.customize(settings, src), 'img']);
+  private create(src: string, settings: IVisaCheckoutButtonSettings = {}): HTMLElement {
+    return DomMethods.createHtmlElement.apply(this, [this.customize(src, settings), 'img']);
   }
 }

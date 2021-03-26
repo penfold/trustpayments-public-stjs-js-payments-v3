@@ -19,12 +19,12 @@ Feature: Visa Checkout
 
     @smoke_test @visa_checkout_smoke_test
     Examples:
-      | action_code | payment_status_message                  | color | callback|
-      | SUCCESS     | Payment has been successfully processed | green | success |
+      | action_code | payment_status_message                  | color | callback |
+      | SUCCESS     | Payment has been successfully processed | green | success  |
     Examples:
-      | action_code | payment_status_message     | color  | callback|
-      | CANCEL      | Payment has been cancelled | yellow | cancel  |
-      | ERROR       | An error occurred          | red    | error   |
+      | action_code | payment_status_message     | color  | callback |
+      | CANCEL      | Payment has been cancelled | yellow | cancel   |
+      | ERROR       | An error occurred          | red    | error    |
 
   @config_submit_on_success_true @extended_tests_part_2 @visa_test
   Scenario: Visa Checkout - successful payment with enabled 'submitOnSuccess' process
@@ -304,3 +304,18 @@ Feature: Visa Checkout
     And ACCOUNTCHECK, SUBSCRIPTION request for VISA_CHECKOUT is sent only once with correct data
     And "submit" callback is called only once
     And "success" callback is called only once
+
+  @config_mainamount @visa_test
+  Scenario Outline: Visa Checkout - <action_code> payment with mainamount field in jwt payload
+    Given User opens page with payment form
+    When User chooses Visa Checkout as payment method - visa response is set to "<action_code>"
+    Then User will see payment status information: "<payment_status_message>"
+    And User will see that notification frame has "<color>" color
+    And VISA_CHECKOUT or AUTH requests were sent only once with correct data
+    And "submit" callback is called only once
+    And "<callback>" callback is called only once
+
+    Examples:
+      | action_code | payment_status_message                  | color | callback |
+      | SUCCESS     | Payment has been successfully processed | green | success  |
+      | ERROR       | An error occurred                       | red   | error    |

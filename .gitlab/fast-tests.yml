@@ -69,14 +69,14 @@ e2e-app-html-dev:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-dev
-  parallel: 28
+  parallel: 29
 
 e2e-app-html-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-prod-merchant
     - .rules-when-release
-  parallel: 18
+  parallel: 19
 
 .zap-url-to-scan-merchant:
   variables:
