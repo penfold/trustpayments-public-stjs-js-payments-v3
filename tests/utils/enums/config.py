@@ -75,6 +75,7 @@ config = {
     'config_tokenisation_amex': 'configTokenisationAmex.json',
     'config_tokenisation_bypass_cards_visa': 'configTokenisationBypassCardVisa.json',
     'config_tokenisation_visa_request_types': 'configTokenisationVisaRequestTypes.json',
+    'config_mainamount': 'configMainamount.json',
     'e2e_config_bypass_mastercard': 'e2e_config/e2eConfigBypassMastercard.json',
     'e2e_config_submit_on_success': 'e2e_config/e2eConfigSubmitOnSuccess.json',
     'e2e_config_submit_on_error': 'e2e_config/e2eConfigSubmitOnError.json',
