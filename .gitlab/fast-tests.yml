@@ -82,10 +82,10 @@
 #  variables:
 #    URL_TO_SCAN: "https://merchant.securetrading.net"
 #
-#.zap-url-to-scan-library:
-#  variables:
-#    URL_TO_SCAN: "https://library.securetrading.net:8443"
-#
+.zap-url-to-scan-library:
+  variables:
+    URL_TO_SCAN: "https://library.securetrading.net:8443"
+
 #merchant-securetrading-net-dev-security-tests-zap-baseline-scan:
 #  extends:
 #    - .zap-baseline-scan
