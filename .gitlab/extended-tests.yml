@@ -74,13 +74,13 @@
 
 # component-tests
 
-apple-test-part1-component-test:
+.apple-test-part1-component-test:
   extends: .apple-component-test-browserstack
   variables:
     POETRY_TAGS: apple_test_part1
   resource_group: extended_tests_review_1
 
-apple-test-part2-component-test:
+.apple-test-part2-component-test:
   extends: .apple-component-test-browserstack
   variables:
     POETRY_TAGS: apple_test_part2
@@ -147,19 +147,7 @@ SamsungGalaxyS6-5.0-browser-not-supported-e2e-tests:
     POETRY_TAGS: browser_info_not_supported
   resource_group: extended_tests_release_4
 
-win8.1-Chrome-latest-e2e-tests:
-  extends:
-    - .e2e-tests-browserstack
-    - .rules-extended-tests-always
-  variables:
-    OS: Windows
-    OS_VERSION: '8.1'
-    BROWSER: Chrome
-    BROWSER_VERSION: 'latest'
-    POETRY_TAGS: smoke_e2e_test
-  resource_group: extended_tests_release_4
-
-win10-Chrome-almost-latest-e2e-tests:
+win10-Chrome-latest-e2e-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -167,11 +155,23 @@ win10-Chrome-almost-latest-e2e-tests:
     OS: Windows
     OS_VERSION: '10'
     BROWSER: Chrome
+    BROWSER_VERSION: 'latest'
+    POETRY_TAGS: smoke_e2e_test
+  resource_group: extended_tests_release_4
+
+win8.1-Chrome-almost-latest-e2e-tests:
+  extends:
+    - .e2e-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    OS: Windows
+    OS_VERSION: '8.1'
+    BROWSER: Chrome
     BROWSER_VERSION: 'latest-1'
     POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_4
 
-win10-IE-11.0-e2e-tests:
+.win10-IE-11.0-e2e-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -219,7 +219,7 @@ win10-Edge-almost-latest-e2e-tests:
     POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_3
 
-win10-Firefox-latest-e2e-tests:
+.win10-Firefox-latest-e2e-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -231,7 +231,7 @@ win10-Firefox-latest-e2e-tests:
     POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_4
 
-win10-Firefox-almost-latest-e2e-tests:
+.win10-Firefox-almost-latest-e2e-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -292,7 +292,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
   resource_group: extended_tests_release_2
 
 
-SamsungGalaxyS8-7.0-smoke-tests:
+.SamsungGalaxyS8-7.0-smoke-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
@@ -304,7 +304,7 @@ SamsungGalaxyS8-7.0-smoke-tests:
     POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_1
 
-SamsungGalaxyS9-8.0-smoke-tests:
+.SamsungGalaxyS9-8.0-smoke-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
@@ -328,7 +328,7 @@ SamsungGalaxyS10Plus-9.0-smoke-tests:
     POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_2
 
-SamsungGalaxyS20-10.0-smoke-tests:
+.SamsungGalaxyS20-10.0-smoke-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
@@ -340,7 +340,7 @@ SamsungGalaxyS20-10.0-smoke-tests:
     POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_3
 
-GooglePixel4-10.0-smoke-tests:
+.GooglePixel4-10.0-smoke-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always

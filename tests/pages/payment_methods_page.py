@@ -520,7 +520,7 @@ class PaymentMethodsPage(BasePage):
         self._waits.wait_until_url_starts_with(url)
         actual_url = self._browser_executor.get_page_url()
         parsed_url = urlparse(actual_url)
-        assertion_message = f'Url hostname is not correct, should be: "{type(url)}" but is: "{type(parsed_url.hostname)}"'
+        assertion_message = f'Url hostname is not correct, should be: "{url}" but is: "{parsed_url.hostname}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert_that(parsed_url.hostname).is_equal_to(url)
 
@@ -584,7 +584,8 @@ class PaymentMethodsPage(BasePage):
             counter = self._actions.get_text_from_last_element(PaymentMethodsLocators.callback_cancel_counter)
         elif 'submit' in callback_popup:
             counter = self._actions.get_text_from_last_element(PaymentMethodsLocators.callback_submit_counter)
-        assertion_message = f'Number of {callback_popup} callback is not correct but should be {expected_callback_number} but is {counter}'
+        assertion_message = f'Number of {callback_popup} callback is not correct - should be {expected_callback_number} but is {counter}'
+        # Number of success callback is not correct but should be 1 but is success Callback counter: 1
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_callback_number in counter, assertion_message
 

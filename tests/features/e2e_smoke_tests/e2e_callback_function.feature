@@ -5,13 +5,14 @@ Feature: Callback functionality
   In order to check callback popup in payment functionality
 
   Background:
-    Given JavaScript configuration is set for scenario based on scenario's @config tag
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value           |
+      | requesttypedescriptions | <request_types> |
 
   @base_config @extended_tests_part_2
   Scenario Outline: Checking <action_code> callback functionality
     When User opens page with payment form
     And User fills payment form with credit card number "4111110000000211", expiration date "12/30" and cvv "123"
-    And Frictionless THREEDQUERY, AUTH response is set to <action_code>
     And User clicks Pay button
     Then User will see "<callback_popup>" popup
     And "submit" callback is called only once
@@ -39,7 +40,6 @@ Feature: Callback functionality
   Scenario: Checking data type passing to callback function
     When User opens page with payment form
     And User fills payment form with credit card number "4111110000000211", expiration date "12/30" and cvv "123"
-    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User clicks Pay button - AUTH response is set to "OK"
     Then User will see correct error code displayed in popup
     And "submit" callback is called only once
@@ -53,7 +53,7 @@ Feature: Callback functionality
     Examples:
       | is_browser_supported | is_os_supported |
       | True                 | True            |
-
+    @browser_info_not_supported
     Examples:
       | is_browser_supported | is_os_supported |
       | False                | False           |
