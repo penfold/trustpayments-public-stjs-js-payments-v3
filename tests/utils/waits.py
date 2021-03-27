@@ -10,6 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class Waits:
 
+    MAX_TRY = 30
+
     def __init__(self, driver_factory, configuration):
         self._driver_factory = driver_factory
         self._driver = driver_factory.get_driver()
@@ -28,7 +30,7 @@ class Waits:
         except:
             return False
 
-    def wait_for_element_to_be_displayed(self, locator, max_try: int = 180):
+    def wait_for_element_to_be_displayed(self, locator, max_try: int = MAX_TRY):
         # pylint: disable=bare-except
 
         while max_try:
@@ -38,14 +40,14 @@ class Waits:
                     max_try = 0
                     return
                 else:
-                    time.sleep(0.5)
+                    time.sleep(1)
                     max_try -= 1
             except:
-                time.sleep(0.5)
+                time.sleep(1)
                 max_try -= 1
         raise Exception('Element not found within timeout')
 
-    def wait_for_element_with_id_to_be_displayed(self, locator, max_try: int = 200):
+    def wait_for_element_with_id_to_be_displayed(self, locator, max_try: int = MAX_TRY):
         # pylint: disable=bare-except
 
         while max_try:
@@ -57,11 +59,11 @@ class Waits:
                 else:
                     max_try -= 1
             except:
-                time.sleep(0.5)
+                time.sleep(1)
                 max_try -= 1
         raise Exception('Element not found within timeout')
 
-    def wait_for_element_to_be_not_displayed(self, locator, max_try: int = 20):
+    def wait_for_element_to_be_not_displayed(self, locator, max_try: int = MAX_TRY):
         # pylint: disable=bare-except
 
         while max_try:
@@ -70,7 +72,7 @@ class Waits:
                     break
             except:
                 break
-            time.sleep(0.5)
+            time.sleep(1)
             max_try -= 1
 
     def wait_for_element_to_be_clickable(self, locator):
@@ -92,11 +94,8 @@ class Waits:
             print(f'Alert was not presented in {self._timeout} seconds')
             return None
 
-    def wait_until_iframe_is_presented_and_switch_to_it(self, iframe_name):
+    def wait_until_iframe_is_presented_and_switch_to_it(self, iframe_name, max_try: int = MAX_TRY):
         # pylint: disable=bare-except
-        max_try = 10
-        if 'iP' in self._device_type:
-            max_try = 180
         while max_try:
             try:
                 return self._wait.until(ec.frame_to_be_available_and_switch_to_it(iframe_name))
@@ -128,11 +127,11 @@ class Waits:
                     return
             except:
                 actual_url = self._driver.current_url
-            time.sleep(0.5)
+            time.sleep(1)
             max_try -= 1
         raise Exception(f'Url didnt contain expected phrase within timeout, current url: "{actual_url}"')
 
-    def wait_until_url_starts_with(self, page_url, max_try: int = 60):
+    def wait_until_url_starts_with(self, page_url, max_try: int = MAX_TRY):
         # pylint: disable=bare-except
         actual_url = self._driver.current_url
         if 'https://' not in page_url:
@@ -143,6 +142,6 @@ class Waits:
                     return
             except:
                 actual_url = self._driver.current_url
-            time.sleep(0.5)
+            time.sleep(1)
             max_try -= 1
         raise Exception(f'Url didnt start with expected phrase within timeout, current url: "{actual_url}"')
