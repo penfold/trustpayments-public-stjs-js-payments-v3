@@ -520,7 +520,7 @@ class PaymentMethodsPage(BasePage):
         self._waits.wait_until_url_starts_with(url)
         actual_url = self._browser_executor.get_page_url()
         parsed_url = urlparse(actual_url)
-        assertion_message = f'Url hostname is not correct, should be: "{url}" but is: "{parsed_url.hostname}"'
+        assertion_message = f'Url hostname is not correct, should be: "{type(url)}" but is: "{type(parsed_url.hostname)}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert_that(parsed_url.hostname).is_equal_to(url)
 
