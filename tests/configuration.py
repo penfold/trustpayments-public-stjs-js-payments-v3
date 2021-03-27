@@ -16,12 +16,12 @@ def load_config():
     Set config env variables
     """
     config = {
-        'URL': AttrDict({'BASE_URL': get_from_env('BASE_URL', 'https://localhost:8444'),
+        'URL': AttrDict({'BASE_URL': get_from_env('BASE_URL', 'https://merchant.securetrading.net'),
                          'REACT_APP': get_from_env('REACT_APP', 'https://localhost:3000')}),
         'REPORTS_PATH': get_path_from_env('AUTOMATION_REPORTS', 'reports'),
         'SCREENSHOTS_PATH': get_path_from_env('AUTOMATION_SCREENSHOTS', 'screenshots'),
         'BROWSER': get_from_env('AUTOMATION_BROWSER', 'chrome'),
-        'HEADLESS': get_from_env('HEADLESS', False),
+        'HEADLESS': get_from_env('HEADLESS', True),
         'TIMEOUT': get_from_env('AUTOMATION_TIMEOUT', 30),
         'REMOTE': strtobool(get_from_env('REMOTE', 'false')),
         'COMMAND_EXECUTOR': get_from_env('AUTOMATION_COMMAND_EXECUTOR',
