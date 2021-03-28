@@ -69,7 +69,16 @@
 #    POETRY_TAGS: extended_tests_part_3
 #  resource_group: extended_tests_release_2
 #
-#
+#SamsungGalaxyS6-5.0-browser-not-supported-e2e-tests:
+  #  extends:
+  #    - .e2e-tests-browserstack
+  #    - .rules-extended-tests-always
+  #  variables:
+  #    DEVICE: Samsung Galaxy S6
+  #    OS_VERSION: '5.0'
+  #    REAL_MOBILE: 'true'
+  #    POETRY_TAGS: browser_info_not_supported
+  #  resource_group: extended_tests_release_4
 
 
 # component-tests
@@ -136,16 +145,7 @@
 
 # e2e-tests
 
-SamsungGalaxyS6-5.0-browser-not-supported-e2e-tests:
-  extends:
-    - .e2e-tests-browserstack
-    - .rules-extended-tests-always
-  variables:
-    DEVICE: Samsung Galaxy S6
-    OS_VERSION: '5.0'
-    REAL_MOBILE: 'true'
-    POETRY_TAGS: browser_info_not_supported
-  resource_group: extended_tests_release_4
+
 
 win10-Chrome-latest-e2e-tests:
   extends:
@@ -153,7 +153,7 @@ win10-Chrome-latest-e2e-tests:
     - .rules-extended-tests-always
   variables:
     OS: Windows
-    OS_VERSION: '10'
+    OS_VERSION: '8.1'
     BROWSER: Chrome
     BROWSER_VERSION: 'latest'
     POETRY_TAGS: smoke_e2e_test
@@ -189,7 +189,7 @@ win10-Edge-18.0-e2e-tests:
     - .rules-extended-tests-always
   variables:
     OS: Windows
-    OS_VERSION: 10
+    OS_VERSION: '8.1'
     BROWSER: Edge
     BROWSER_VERSION: '18.0'
     POETRY_TAGS: smoke_e2e_test
@@ -201,7 +201,7 @@ win10-Edge-latest-e2e-tests:
     - .rules-extended-tests-always
   variables:
     OS: Windows
-    OS_VERSION: 10
+    OS_VERSION: '8.1'
     BROWSER: Edge
     BROWSER_VERSION: 'latest'
     POETRY_TAGS: smoke_e2e_test
@@ -213,7 +213,7 @@ win10-Edge-almost-latest-e2e-tests:
     - .rules-extended-tests-always
   variables:
     OS: Windows
-    OS_VERSION: 10
+    OS_VERSION: '8.1'
     BROWSER: Edge
     BROWSER_VERSION: 'latest-1'
     POETRY_TAGS: smoke_e2e_test
@@ -243,7 +243,7 @@ win10-Edge-almost-latest-e2e-tests:
     POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_4
 
-OSXBigSur-Chrome-latest-e2e-tests:
+.OSXBigSur-Chrome-latest-e2e-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -255,7 +255,7 @@ OSXBigSur-Chrome-latest-e2e-tests:
     POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_1
 
-OSXBigSur-Firefox-latest-e2e-tests:
+.OSXBigSur-Firefox-latest-e2e-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -286,7 +286,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
   variables:
     OS: OS X
     OS_VERSION: Big Sur
-    BROWSER: Firefox
+    BROWSER: Safari
     BROWSER_VERSION: '14.0'
     POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_2
@@ -316,7 +316,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
     POETRY_TAGS: smoke_e2e_test
   resource_group: extended_tests_release_2
 
-SamsungGalaxyS10Plus-9.0-smoke-tests:
+.SamsungGalaxyS10Plus-9.0-smoke-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always

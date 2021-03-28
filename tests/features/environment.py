@@ -12,7 +12,8 @@ from pages.page_factory import PageFactory
 from utils.actions import Actions
 from utils.browser_executor import BrowserExecutor
 from utils.driver_factory import DriverFactory
-from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed
+from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed, \
+    clear_shared_dict
 from utils.logger import get_logger
 from utils.mock_handler import MockServer
 from utils.reporter import Reporter
@@ -66,6 +67,7 @@ def before_scenario(context, scenario):
     scenario.name = '%s executed on %s' % (scenario.name, context.browser.upper())
     LOGGER.info(scenario.name)
     validate_if_proper_browser_is_set_for_test(context, scenario)
+    clear_shared_dict()
 
 
 def after_scenario(context, scenario):
