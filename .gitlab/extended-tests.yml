@@ -96,58 +96,58 @@
   resource_group: extended_tests_review_2
 
 
-#iPhone8-11.0-smoke-tests:
-#  extends:
-#    - .visual-regression-tests
-#    - .rules-extended-tests-always
-#  variables:
-#    DEVICE: iPhone 8
-#    OS_VERSION: 11
-#    BROWSER: Safari
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: smoke_e2e_test
-#  resource_group: extended_tests_release_3
-#
-#iPhoneXS-12-smoke-tests:
-#  extends:
-#    - .visual-regression-tests
-#    - .rules-extended-tests-always
-#  variables:
-#    DEVICE: iPhone XS
-#    OS_VERSION: 12
-#    BROWSER: Safari
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: smoke_e2e_test
-#  resource_group: extended_tests_release_2
-#
-#iPhone11-13-smoke-tests:
-#  extends:
-#    - .visual-regression-tests
-#    - .rules-extended-tests-always
-#  variables:
-#    DEVICE: iPhone 11
-#    OS_VERSION: 13
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: smoke_e2e_test
-#  resource_group: extended_tests_release_3
-#
-#iPhone11-14.0-smoke-tests:
-#  extends:
-#    - .visual-regression-tests
-#    - .rules-extended-tests-always
-#  variables:
-#    DEVICE: iPhone 11
-#    OS_VERSION: 14
-#    BROWSER: Safari
-#    REAL_MOBILE: 'true'
-#    POETRY_TAGS: smoke_e2e_test
-#  resource_group: extended_tests_release_2
+iPhone8-11.0-component-smoke-tests:
+  extends:
+    - .component-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    DEVICE: iPhone 8
+    OS_VERSION: 11
+    BROWSER: Safari
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+  resource_group: extended_tests_release_3
+
+iPhoneXS-12-component-smoke-tests:
+  extends:
+    - .component-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    DEVICE: iPhone XS
+    OS_VERSION: 12
+    BROWSER: Safari
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+  resource_group: extended_tests_release_2
+
+iPhone11-13-component-smoke-tests:
+  extends:
+    - .component-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    DEVICE: iPhone 11
+    OS_VERSION: 13
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+  resource_group: extended_tests_release_3
+
+iPhone11-14.0-component-smoke-tests:
+  extends:
+    - .component-tests-browserstack
+    - .rules-extended-tests-always
+  variables:
+    DEVICE: iPhone 11
+    OS_VERSION: 14
+    BROWSER: Safari
+    REAL_MOBILE: 'true'
+    POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
+  resource_group: extended_tests_release_2
 
 # e2e-tests
 
 
 
-win10-Chrome-latest-e2e-tests:
+win10-Chrome-latest-e2e-smoke-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -156,10 +156,10 @@ win10-Chrome-latest-e2e-tests:
     OS_VERSION: '8.1'
     BROWSER: Chrome
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_4
 
-win8.1-Chrome-almost-latest-e2e-tests:
+win8.1-Chrome-almost-latest-e2e-smoke-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -168,10 +168,10 @@ win8.1-Chrome-almost-latest-e2e-tests:
     OS_VERSION: '8.1'
     BROWSER: Chrome
     BROWSER_VERSION: 'latest-1'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_4
 
-.win10-IE-11.0-e2e-tests:
+.win10-IE-11.0-e2e-smoke-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -180,10 +180,10 @@ win8.1-Chrome-almost-latest-e2e-tests:
     OS_VERSION: 10
     BROWSER: IE
     BROWSER_VERSION: '11.0'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_3
 
-win10-Edge-18.0-e2e-tests:
+win10-Edge-18.0-e2e-smoke-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -192,10 +192,10 @@ win10-Edge-18.0-e2e-tests:
     OS_VERSION: '8.1'
     BROWSER: Edge
     BROWSER_VERSION: '18.0'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_4
 
-win10-Edge-latest-e2e-tests:
+win8.1-Edge-latest-e2e-smoke-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -204,10 +204,10 @@ win10-Edge-latest-e2e-tests:
     OS_VERSION: '8.1'
     BROWSER: Edge
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_3
 
-win10-Edge-almost-latest-e2e-tests:
+win10-Edge-almost-latest-e2e-smoke-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -216,10 +216,10 @@ win10-Edge-almost-latest-e2e-tests:
     OS_VERSION: '8.1'
     BROWSER: Edge
     BROWSER_VERSION: 'latest-1'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_3
 
-.win10-Firefox-latest-e2e-tests:
+.win10-Firefox-latest-e2e-smoke-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -228,10 +228,10 @@ win10-Edge-almost-latest-e2e-tests:
     OS_VERSION: 10
     BROWSER: Firefox
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_4
 
-.win10-Firefox-almost-latest-e2e-tests:
+.win10-Firefox-almost-latest-e2e-smoke-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -240,10 +240,10 @@ win10-Edge-almost-latest-e2e-tests:
     OS_VERSION: 10
     BROWSER: Firefox
     BROWSER_VERSION: 'latest-1'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_4
 
-.OSXBigSur-Chrome-latest-e2e-tests:
+.OSXBigSur-Chrome-latest-e2e-smoke-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -252,10 +252,10 @@ win10-Edge-almost-latest-e2e-tests:
     OS_VERSION: Big Sur
     BROWSER: Chrome
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_1
 
-.OSXBigSur-Firefox-latest-e2e-tests:
+.OSXBigSur-Firefox-latest-e2e-smoke-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -264,10 +264,10 @@ win10-Edge-almost-latest-e2e-tests:
     OS_VERSION: Big Sur
     BROWSER: Firefox
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_2
 
-OSXCatalina-Safari-13.1-e2e-tests:
+OSXCatalina-Safari-13.1-e2e-smoke-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -276,10 +276,10 @@ OSXCatalina-Safari-13.1-e2e-tests:
     OS_VERSION: Catalina
     BROWSER: Safari
     BROWSER_VERSION: '13.1'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_1
 
-OSXBigSur-Safari-14.0-e2e-tests:
+OSXBigSur-Safari-14.0-e2e-smoke-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
@@ -288,11 +288,11 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: Big Sur
     BROWSER: Safari
     BROWSER_VERSION: '14.0'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_2
 
 
-.SamsungGalaxyS8-7.0-smoke-tests:
+.SamsungGalaxyS8-7.0-e2e-smoke-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
@@ -301,10 +301,10 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: '7.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.14.0'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_1
 
-.SamsungGalaxyS9-8.0-smoke-tests:
+.SamsungGalaxyS9-8.0-e2e-smoke-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
@@ -313,10 +313,10 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: '8.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.2'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_2
 
-.SamsungGalaxyS10Plus-9.0-smoke-tests:
+.SamsungGalaxyS10Plus-9.0-e2e-smoke-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
@@ -325,10 +325,10 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: '9.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_2
 
-.SamsungGalaxyS20-10.0-smoke-tests:
+.SamsungGalaxyS20-10.0-e2e-smoke-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
@@ -337,10 +337,10 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_3
 
-.GooglePixel4-10.0-smoke-tests:
+.GooglePixel4-10.0-e2e-smoke-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
@@ -349,7 +349,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
-    POETRY_TAGS: smoke_e2e_test
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_release_3
 
 # visual-tests
@@ -363,7 +363,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: '9.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.2'
-    POETRY_TAGS: visual_regression
+    POETRY_TAGS: $VISUAL_TESTS_TAG
   resource_group: extended_tests_release_1
 
 .iPhone12Mini-14-visual-tests:
@@ -375,7 +375,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: 14
     BROWSER: Safari
     REAL_MOBILE: 'true'
-    POETRY_TAGS: visual_regression_safari
+    POETRY_TAGS: $VISUAL_TESTS_SAFARI_TAG
   resource_group: extended_tests_release_2
 
 .win10-IE-11.0-visual-tests:
@@ -387,7 +387,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: 10
     BROWSER: IE
     BROWSER_VERSION: '11.0'
-    POETRY_TAGS: visual_regression
+    POETRY_TAGS: $VISUAL_TESTS_TAG
   resource_group: extended_tests_release_3
 
 .OSXBigSur-Safari-14.0-visual-tests:
@@ -401,7 +401,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
     BROWSER_VERSION: '14.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
-    POETRY_TAGS: visual_regression_safari
+    POETRY_TAGS: $VISUAL_TESTS_SAFARI_TAG
   resource_group: extended_tests_release_4
 
 .win10-Chrome-latest-visual-tests:
@@ -413,7 +413,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: 10
     BROWSER: Chrome
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: visual_regression
+    POETRY_TAGS: $VISUAL_TESTS_TAG
   resource_group: extended_tests_review_1
 
 
@@ -426,7 +426,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: '9.0'
     REAL_MOBILE: 'true'
     BROWSERSTACK_APPIUM_VERSION: '1.18.0'
-    POETRY_TAGS: visual_regression_styling
+    POETRY_TAGS: $VISUAL_STYLING_TESTS_TAG
   resource_group: extended_tests_release_1
 
 .iPhone12Mini-14-visual-tests-styling:
@@ -438,7 +438,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: 14
     BROWSER: Safari
     REAL_MOBILE: 'true'
-    POETRY_TAGS: visual_regression_styling_safari
+    POETRY_TAGS: $VISUAL_STYLING_TESTS_SAFARI_TAG
   resource_group: extended_tests_release_2
 
 .OSXBigSur-Safari-14.0-visual-tests-styling:
@@ -452,7 +452,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
     BROWSER_VERSION: '14.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     AUTOMATION_TIMEOUT: 120
-    POETRY_TAGS: visual_regression_styling_safari
+    POETRY_TAGS: $VISUAL_STYLING_TESTS_SAFARI_TAG
   resource_group: extended_tests_release_3
 
 .win10-IE-11.0-visual-tests-styling:
@@ -464,7 +464,7 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: 10
     BROWSER: IE
     BROWSER_VERSION: '11.0'
-    POETRY_TAGS: visual_regression_styling
+    POETRY_TAGS: $VISUAL_STYLING_TESTS_TAG
   resource_group: extended_tests_release_4
 
 .win10-Chrome-latest-visual-tests-styling:
@@ -476,6 +476,6 @@ OSXBigSur-Safari-14.0-e2e-tests:
     OS_VERSION: 10
     BROWSER: Chrome
     BROWSER_VERSION: 'latest'
-    POETRY_TAGS: visual_regression_styling
+    POETRY_TAGS: $VISUAL_STYLING_TESTS_TAG
   resource_group: extended_tests_review_2
 

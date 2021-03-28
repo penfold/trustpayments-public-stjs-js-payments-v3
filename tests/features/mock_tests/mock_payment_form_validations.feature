@@ -8,7 +8,7 @@ Feature: Payment form validations
     Given JavaScript configuration is set for scenario based on scenario's @config tag
     And User opens page with payment form
 
-  @base_config @smoke_test @extended_tests_part_3
+  @base_config @smoke_component_test @extended_tests_part_3
   Scenario: Submit payment form without data - fields validation
     When User clicks Pay button
     Then User will see validation message "Field is required" under all fields
