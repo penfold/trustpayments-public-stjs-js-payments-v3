@@ -22,9 +22,19 @@ import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import spyOn = jest.spyOn;
 import any = jasmine.any;
+import Container from 'typedi';
+import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../application/core/shared/translator/Translator';
+import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
+import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 
 jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/validation/Validation');
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('CardFrames', () => {
   document.body.innerHTML =
@@ -41,6 +51,7 @@ describe('CardFrames', () => {
     jwtDecoder = mock(JwtDecoder);
     messageBus = new SimpleMessageBus();
     frame = mock(Frame);
+    Container.get(TranslatorToken).init();
     const element = document.createElement('input');
     DomMethods.getAllFormElements = jest.fn().mockReturnValue([element]);
 

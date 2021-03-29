@@ -26,6 +26,7 @@ import { PaymentController } from '../../core/services/payments/PaymentControlle
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import spyOn = jest.spyOn;
+import { Translator } from '../../core/shared/translator/Translator';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -212,6 +213,7 @@ function controlFrameFixture() {
   const visaCheckoutClientMock: VisaCheckoutClient = mock(VisaCheckoutClient);
   const applePayClientMock: ApplePayClient = mock(ApplePayClient);
   const paymentControllerMock: PaymentController = mock(PaymentController);
+  const translator: Translator = mock(Translator);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -259,7 +261,8 @@ function controlFrameFixture() {
     mockInstance(jwtDecoderMock),
     mockInstance(visaCheckoutClientMock),
     mockInstance(applePayClientMock),
-    mockInstance(paymentControllerMock)
+    mockInstance(paymentControllerMock),
+    mockInstance(translator)
   );
   const messageBusEvent = {
     type: ''

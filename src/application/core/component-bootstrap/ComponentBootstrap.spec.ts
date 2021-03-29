@@ -1,5 +1,5 @@
 import { FrameIdentifier } from '../../../shared/services/message-bus/FrameIdentifier';
-import { ContainerInstance } from 'typedi';
+import Container, { ContainerInstance, Token } from 'typedi';
 import { ComponentBootstrap } from './ComponentBootstrap';
 import { instance, mock, verify, when } from 'ts-mockito';
 import { CardNumber } from '../../components/card-number/CardNumber';
@@ -14,9 +14,12 @@ import { CARD_NUMBER_IFRAME, CONTROL_FRAME_IFRAME } from '../models/constants/Se
 import {
   MessageBusToken,
   MessageSubscriberToken,
-  StoreToken
+  StoreToken,
+  TranslatorToken
 } from '../../../shared/dependency-injection/InjectionTokens';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { TranslatorWithMerchantTranslations } from '../shared/translator/TranslatorWithMerchantTranslations';
+import { ITranslator } from '../shared/translator/ITranslator';
 
 describe('ComponentBootstrap', () => {
   let frameIdentifierMock: FrameIdentifier;
@@ -27,6 +30,7 @@ describe('ComponentBootstrap', () => {
   let messageSubscriberRegistryMock: MessageSubscriberRegistry;
   let interFrameCommunicatorMock: InterFrameCommunicator;
   let componentBootstrap: ComponentBootstrap;
+  let translatorToken: ITranslator;
 
   beforeEach(() => {
     frameIdentifierMock = mock(FrameIdentifier);
@@ -36,10 +40,12 @@ describe('ComponentBootstrap', () => {
     sentryServiceMock = mock(SentryService);
     messageSubscriberRegistryMock = mock(MessageSubscriberRegistry);
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
+    translatorToken = mock(TranslatorWithMerchantTranslations);
     componentBootstrap = new ComponentBootstrap(instance(frameIdentifierMock), instance(containerMock));
 
     when(frameIdentifierMock.isControlFrame()).thenReturn(false);
     when(containerMock.get(BrowserLocalStorage)).thenReturn(instance(browserLocalStorageMock));
+    when(containerMock.get(TranslatorToken)).thenReturn(instance(translatorToken));
     when(containerMock.get(FramesHub)).thenReturn(instance(framesHubMock));
     when(containerMock.get(SentryService)).thenReturn(instance(sentryServiceMock));
     when(containerMock.get(MessageSubscriberRegistry)).thenReturn(instance(messageSubscriberRegistryMock));

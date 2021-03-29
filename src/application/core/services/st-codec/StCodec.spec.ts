@@ -1,13 +1,25 @@
 import each from 'jest-each';
 import JwtDecode from 'jwt-decode';
+import { mock } from 'ts-mockito';
+import Container from 'typedi';
 import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
 import { StCodec } from './StCodec';
 import { Translator } from '../../shared/translator/Translator';
 import { GatewayError } from './GatewayError';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { ITranslationProvider } from '../../shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../shared/translator/TranslationProvider';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
+import { ITranslator } from '../../shared/translator/ITranslator';
 
 jest.mock('./../../shared/message-bus/MessageBus');
 jest.mock('./../../shared/notification/Notification');
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('StCodec class', () => {
   const { instance, jwt } = stCodecFixture();
@@ -86,11 +98,10 @@ describe('StCodec class', () => {
   });
 
   describe('StCodec.publishResponse', () => {
-    let translator: Translator;
+    let translator: ITranslator;
 
     beforeEach(() => {
-      // @ts-ignore
-      translator = new Translator('en_GB');
+      translator = mock(Translator);
       translator.translate = jest.fn().mockReturnValue('Ok');
       // @ts-ignore
       StCodec.getMessageBus().publish = jest.fn();
@@ -375,8 +386,11 @@ describe('StCodec class', () => {
   });
 
   describe('StCodec.decode', () => {
+    let translator: Translator;
+
     beforeEach(() => {
       str = new StCodec(jwt);
+      translator = mock(Translator);
       // @ts-ignore
       StCodec._handleInvalidResponse = jest.fn().mockReturnValueOnce(Error(COMMUNICATION_ERROR_INVALID_RESPONSE));
     });
@@ -400,7 +414,7 @@ describe('StCodec class', () => {
       expect(StCodec._handleInvalidResponse).toHaveBeenCalledTimes(1);
     });
 
-    it('should reset the jwt in StCodec on error', done => {
+    it('should reset the jwt in StCodec on error', () => {
       instance.verifyResponseObject = jest.fn().mockImplementation(() => {
         throw new GatewayError();
       });
@@ -416,7 +430,6 @@ describe('StCodec class', () => {
 
       setTimeout(() => {
         expect(StCodec.jwt).toEqual('original_jwt');
-        done();
       });
     });
   });
@@ -489,6 +502,7 @@ describe('StCodec class', () => {
 function stCodecFixture() {
   const jwt =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsaXZlMl9hdXRvand0IiwiaWF0IjoxNTUzMjcwODAwLCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJsaXZlMiIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIn19.SGLwyTcqh6JGlrgzEabOLvCWRx_jeroYk67f_xSQpLM';
+  Container.get(TranslatorToken).init();
   const instance = StCodec;
   const obj: StCodec = new StCodec(jwt);
   return { instance, jwt, obj };

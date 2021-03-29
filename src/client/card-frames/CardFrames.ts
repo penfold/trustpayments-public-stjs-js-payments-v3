@@ -15,7 +15,6 @@ import {
   SECURITY_CODE_COMPONENT_NAME,
   SECURITY_CODE_IFRAME
 } from '../../application/core/models/constants/Selectors';
-import { Translator } from '../../application/core/shared/translator/Translator';
 import { Validation } from '../../application/core/shared/validation/Validation';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
@@ -26,12 +25,12 @@ import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/con
 import { first, map, takeUntil } from 'rxjs/operators';
 import { Frame } from '../../application/core/shared/frame/Frame';
 import { StJwt } from '../../application/core/shared/stjwt/StJwt';
-import { IStJwtObj } from '../../application/core/models/IStJwtObj';
 import { PAY, PROCESSING } from '../../application/core/models/constants/Translations';
-import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
-import { Locale } from '../../application/core/shared/translator/Locale';
+import Container from 'typedi';
+import { ITranslator } from '../../application/core/shared/translator/ITranslator';
+import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
 
 export class CardFrames {
   private static CARD_NUMBER_FIELD_NAME: string = 'pan';
@@ -52,7 +51,7 @@ export class CardFrames {
   private _expirationDate: HTMLIFrameElement;
   private _securityCode: HTMLIFrameElement;
   private _validation: Validation;
-  private _translator: Translator;
+  private _translator: ITranslator;
   private _messageBusEvent: IMessageBusEvent = { data: { message: '' }, type: '' };
   private _submitButton: HTMLInputElement | HTMLButtonElement;
   private _buttonId: string;
@@ -106,6 +105,7 @@ export class CardFrames {
     this.origin = origin;
     this.styles = this._getStyles(styles);
     this._stJwt = new StJwt(jwt);
+    this._translator = Container.get(TranslatorToken);
     this.params = { locale: this._stJwt.locale, origin: this.origin };
     this._config$ = this._configProvider.getConfig$();
     this._setInitValues(buttonId, defaultPaymentType, paymentTypes, animatedCard, jwt, formId);
@@ -340,8 +340,6 @@ export class CardFrames {
     formId: string
   ): void {
     this._validation = new Validation();
-    const locale: Locale = this._frame.parseUrl().locale || this.jwtDecoder.decode(jwt).payload.locale;
-    this._translator = new Translator(locale);
     this._buttonId = buttonId;
     this.formId = formId;
     this._defaultPaymentType = defaultPaymentType;
@@ -350,6 +348,16 @@ export class CardFrames {
     this._payMessage = this._translator.translate(PAY);
     this._processingMessage = `${this._translator.translate(PROCESSING)} ...`;
     this._loadAnimatedCard = loadAnimatedCard !== undefined ? loadAnimatedCard : true;
+
+    this._messageBus.pipe(
+      ofType(PUBLIC_EVENTS.LOCALE_CHANGED),
+      takeUntil(this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY))),
+    ).subscribe(event => {
+      this._payMessage = this._translator.translate(PAY);
+      this._processingMessage = `${this._translator.translate(PROCESSING)} ...`;
+      this._submitButton.textContent = this._submitButton.disabled ?
+        this._processingMessage : this._payMessage;
+    });
   }
 
   private _setSubmitButtonProperties(element: any, state: FormState): HTMLElement {

@@ -17,11 +17,11 @@ import {
 } from '../../models/constants/Translations';
 import { MessageBus } from '../message-bus/MessageBus';
 import { CARD_NUMBER_INPUT } from '../../models/constants/Selectors';
-import { Translator } from '../translator/Translator';
 import { Utils } from '../utils/Utils';
 import { Container, Service } from 'typedi';
 import { IMessageBus } from '../message-bus/IMessageBus';
-import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { MessageBusToken, TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { ITranslator } from '../translator/ITranslator';
 
 @Service()
 export class Validation {
@@ -149,11 +149,10 @@ export class Validation {
   private _matchDigitsRegexp: RegExp;
   private _selectionRangeEnd: number;
   private _selectionRangeStart: number;
-  private _translator: Translator;
   private _messageBus: IMessageBus;
   private _frame: Frame;
 
-  constructor() {
+  constructor(private translator: ITranslator = Container.get(TranslatorToken)) {
     this._messageBus = Container.get(MessageBusToken);
     this._frame = Container.get(Frame);
     this.init();
@@ -266,7 +265,7 @@ export class Validation {
   public setError(inputElement: HTMLInputElement, messageElement: HTMLElement, data: IMessageBusValidateField) {
     const { message } = data;
     if (message && messageElement && messageElement.innerText !== VALIDATION_ERROR_PATTERN_MISMATCH) {
-      messageElement.innerText = this._translator.translate(message);
+      messageElement.innerText = this.translator.translate(message);
       inputElement.classList.add(Validation.ERROR_FIELD_CLASS);
       messageElement.style.visibility = 'visible';
       inputElement.setCustomValidity(message);
@@ -299,7 +298,6 @@ export class Validation {
 
   public init() {
     this._matchDigitsRegexp = new RegExp(Validation.MATCH_DIGITS);
-    this._translator = new Translator(this._frame.parseUrl().locale);
   }
 
   public removeNonDigits(value: string): string {
@@ -341,11 +339,11 @@ export class Validation {
     customErrorMessage?: string
   ): string {
     if (messageElement && customErrorMessage && !isCardNumberInput) {
-      return this._translator.translate(customErrorMessage);
+      return this.translator.translate(customErrorMessage);
     } else if (messageElement && inputElement.value && isCardNumberInput && !inputElement.validity.valid) {
-      return this._translator.translate(VALIDATION_ERROR_PATTERN_MISMATCH);
+      return this.translator.translate(VALIDATION_ERROR_PATTERN_MISMATCH);
     } else {
-      return this._translator.translate(validityState);
+      return this.translator.translate(validityState);
     }
   }
 

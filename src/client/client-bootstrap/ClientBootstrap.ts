@@ -7,7 +7,12 @@ import { FrameIdentifier } from '../../shared/services/message-bus/FrameIdentifi
 import { ST } from '../st/ST';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/Selectors';
-import { MessageBusToken, MessageSubscriberToken, StoreToken } from '../../shared/dependency-injection/InjectionTokens';
+import {
+  MessageBusToken,
+  MessageSubscriberToken,
+  StoreToken,
+  TranslatorToken
+} from '../../shared/dependency-injection/InjectionTokens';
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
@@ -35,6 +40,8 @@ export class ClientBootstrap {
     this.container.get(BrowserLocalStorage).init();
     this.container.get(MessageSubscriberRegistry).register(...this.container.getMany(MessageSubscriberToken));
     this.container.get(SentryService).init(environment.SENTRY_DSN, environment.SENTRY_WHITELIST_URLS);
+    this.container.get(TranslatorToken).init();
+
 
     const st: ST = this.container.get(ST);
     const messageBus: IMessageBus = this.container.get(MessageBusToken);

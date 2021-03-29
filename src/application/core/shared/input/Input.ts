@@ -1,6 +1,6 @@
+import { takeUntil } from 'rxjs/operators';
 import { IFormFieldState } from '../../models/IFormFieldState';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
-import { Translator } from '../translator/Translator';
 import { Utils } from '../utils/Utils';
 import { Validation } from '../validation/Validation';
 import { onInputWraper } from '../on-input-wrapper/onInputWrapper';
@@ -10,8 +10,11 @@ import { NOT_IMPLEMENTED_ERROR } from '../../models/constants/Translations';
 import { CARD_NUMBER_INPUT, CARD_NUMBER_WRAPPER } from '../../models/constants/Selectors';
 import { AllowedStylesService } from './AllowedStylesService';
 import { IMessageBus } from '../message-bus/IMessageBus';
-import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { MessageBusToken, TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { ITranslator } from '../translator/ITranslator';
+import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 
 export class Input {
   protected static PLACEHOLDER_ATTRIBUTE: string = 'placeholder';
@@ -25,7 +28,7 @@ export class Input {
   protected _messageElement: HTMLDivElement;
   protected _cardNumberInput: HTMLInputElement;
   protected placeholder: string;
-  private _translator: Translator;
+  private _translator: ITranslator;
   private _frame: Frame;
   private _messageBus: IMessageBus;
   private _allowedStyles: AllowedStylesService;
@@ -41,6 +44,7 @@ export class Input {
     this._messageBus = Container.get(MessageBusToken);
     this._allowedStyles = Container.get(AllowedStylesService);
     this._frame = Container.get(Frame);
+    this._translator = Container.get(TranslatorToken);
     this._cardNumberInput = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
     this._inputElement = document.getElementById(inputSelector) as HTMLInputElement;
     this._labelElement = document.getElementById(labelSelector) as HTMLLabelElement;
@@ -54,7 +58,6 @@ export class Input {
   }
 
   public init(): void {
-    this._translator = new Translator(this._frame.parseUrl().locale);
     this.validation = new Validation();
     this.addTabListener();
 
@@ -63,6 +66,9 @@ export class Input {
       this.setLabelText();
       this.setAsterisk();
     });
+
+    const destroy$ = this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+    this._messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(destroy$)).subscribe(() => this.setLabelText());
   }
 
   protected format(data: string) {

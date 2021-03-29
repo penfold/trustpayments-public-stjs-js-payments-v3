@@ -21,6 +21,10 @@ import {
   CARD_NUMBER_MESSAGE,
   CARD_NUMBER_WRAPPER
 } from '../../core/models/constants/Selectors';
+import { ITranslator } from '../../core/shared/translator/ITranslator';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
+import { takeUntil } from 'rxjs/operators';
 
 @Service()
 export class CardNumber extends Input {
@@ -48,7 +52,8 @@ export class CardNumber extends Input {
     private _iconFactory: IconFactory,
     private _formatter: Formatter,
     private frame: Frame,
-    private messageBus: IMessageBus
+    private messageBus: IMessageBus,
+    private translator: ITranslator
   ) {
     super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER, configProvider);
     this._cardNumberField = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
@@ -66,7 +71,7 @@ export class CardNumber extends Input {
     );
     this._sendState();
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
-      this.placeholder = config.placeholders.pan || '';
+      this.placeholder = this.translator.translate(config.placeholders.pan) || '';
       this._inputElement.setAttribute(CardNumber.PLACEHOLDER_ATTRIBUTE, this.placeholder);
       this._panIcon = config.panIcon;
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
@@ -114,6 +119,12 @@ export class CardNumber extends Input {
           }
         ]);
       }
+
+      const destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+      this.messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(destroy$)).subscribe(() => {
+        this.placeholder = this.translator.translate(config.placeholders.pan) || '';
+        this._inputElement.setAttribute(CardNumber.PLACEHOLDER_ATTRIBUTE, this.placeholder);
+      });
     });
   }
 

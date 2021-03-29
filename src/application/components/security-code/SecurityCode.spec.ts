@@ -14,8 +14,18 @@ import { Frame } from '../../core/shared/frame/Frame';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import Container from 'typedi';
+import { TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../core/shared/translator/Translator';
+import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
+import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
 
 jest.mock('./../../core/shared/notification/Notification');
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('SecurityCode', () => {
   const { securityCodeInstance } = securityCodeFixture();

@@ -43,6 +43,7 @@ import { IStore } from '../../application/core/store/IStore';
 import { IParentFrameState } from '../../application/core/store/state/IParentFrameState';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IUpdateJwt } from '../../application/core/models/IUpdateJwt';
+import { ITranslator } from '../../application/core/shared/translator/ITranslator';
 
 @Service()
 export class ST {
@@ -54,7 +55,6 @@ export class ST {
   private googleAnalytics: GoogleAnalytics;
   private merchantFields: MerchantFields;
   private registeredCallbacks: { [eventName: string]: Subscription } = {};
-  private translation: Translator;
 
   set submitCallback(callback: (event: ISubmitEvent) => void) {
     if (callback) {
@@ -106,7 +106,8 @@ export class ST {
     private storage: BrowserLocalStorage,
     private store: IStore<IParentFrameState>,
     private visaCheckout: VisaCheckout,
-    private commonFrames: CommonFrames
+    private commonFrames: CommonFrames,
+    private translation: ITranslator,
   ) {
     this.googleAnalytics = new GoogleAnalytics();
     this.merchantFields = new MerchantFields();
@@ -231,10 +232,10 @@ export class ST {
     this.framesHub.reset();
     this.storage.init();
     this.config = this.configService.setup(config);
+
     if (this.config.jwt) {
       this.initCallbacks(config);
       this.Storage();
-      this.translation = new Translator(this.storage.getItem('locale'));
       this.googleAnalytics.init();
       this.commonFrames.init();
       this.displayLiveStatus(Boolean(this.config.livestatus));
