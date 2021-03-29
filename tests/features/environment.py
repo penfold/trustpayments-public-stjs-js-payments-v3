@@ -13,7 +13,7 @@ from utils.actions import Actions
 from utils.browser_executor import BrowserExecutor
 from utils.driver_factory import DriverFactory
 from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed, \
-    clear_shared_dict
+    clear_shared_dict, add_to_shared_dict
 from utils.logger import get_logger
 from utils.mock_handler import MockServer
 from utils.reporter import Reporter
@@ -47,6 +47,7 @@ def disable_headless_for_visa_checkout(context):
 
 def before_scenario(context, scenario):
     """Run before each scenario"""
+    add_to_shared_dict('assertion_message', 'Scenario execution error, for details check gitlab log')
     LOGGER.info('BEFORE SCENARIO')
     if context.configuration.REMOTE:
         context.configuration.BROWSER = context.configuration.REMOTE_BROWSER
