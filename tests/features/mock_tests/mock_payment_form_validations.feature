@@ -30,7 +30,7 @@ Feature: Payment form validations
     And User will see that "<field>" field is highlighted
     And THREEDQUERY, AUTH request was not sent
 
-    @smoke_test
+    @smoke_mock_test
     Examples:
       | card_number | expiration | cvv | field       |
       | None        | 12/22      | 123 | CARD_NUMBER |
@@ -52,7 +52,7 @@ Feature: Payment form validations
     And User will see that "<field>" field is highlighted
     And THREEDQUERY, AUTH request was not sent
 
-    @smoke_test
+    @smoke_mock_test
     Examples:
       | card_number      | expiration | cvv | field         |
       | 4000000000001000 | 12/22      | 12  | SECURITY_CODE |

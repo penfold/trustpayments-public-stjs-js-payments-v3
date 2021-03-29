@@ -19,7 +19,7 @@ Feature: Payment form embeded into iframe
     And User will see that notification frame has "<color>" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
-    @smoke_test @extended_tests_part_2
+    @smoke_mock_test @extended_tests_part_2
     Examples:
       | action_code | payment_status_message                  | color |
       | OK          | Payment has been successfully processed | green |

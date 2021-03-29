@@ -17,7 +17,7 @@ Feature: Visa Checkout
     And "<callback>" callback is called only once
     #And submit callback contains JWT response
 
-    @smoke_test @visa_checkout_smoke_test
+    @smoke_mock_test @visa_checkout_smoke_test
     Examples:
       | action_code | payment_status_message                  | color | callback |
       | SUCCESS     | Payment has been successfully processed | green | success  |
@@ -152,7 +152,7 @@ Feature: Visa Checkout
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
     And VISA_CHECKOUT requests contains updated jwt
 
-  @config_submit_on_success_true @smoke_test @visa_test @visa_checkout_smoke_test
+  @config_submit_on_success_true @smoke_mock_test @visa_test @visa_checkout_smoke_test
   Scenario: Visa Checkout - with submitOnSuccess and updated JWT
     Given User opens prepared payment form page WITH_UPDATE_JWT
       | jwtName          |

@@ -16,7 +16,7 @@ Feature: Successfull payments with various configurations
     Then User will see payment status information: "Payment has been successfully processed"
     And Frictionless AUTH and THREEDQUERY requests were sent only once with correct data
 
-    @smoke_test
+    @smoke_mock_test
     Examples:
       | card_number      | expiration_date | cvv | card_type |
       | 4111110000000211 | 12/22           | 123 | VISA      |
@@ -26,7 +26,7 @@ Feature: Successfull payments with various configurations
       | 5100000000000511 | 12/22           | 123  | MASTERCARD |
       | 340000000000611  | 12/22           | 1234 | AMEX       |
 
-  @config_update_jwt_true @smoke_test @extended_tests_part_2
+  @config_update_jwt_true @smoke_mock_test @extended_tests_part_2
   Scenario: Successful payment with updated JWT
     Given User opens prepared payment form page WITH_UPDATE_JWT
       | jwtName          |

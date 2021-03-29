@@ -51,7 +51,7 @@
 #    BROWSER_VERSION: '12.1'
 #    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
 #    AUTOMATION_TIMEOUT: 120
-#    POETRY_TAGS: extended_tests_part_2,extended_tests_apple_pay
+#    POETRY_TAGS: extended_tests_part_2
 #  resource_group: extended_tests_release_1
 #
 #OSXMojave-Safari-12.1-extended-test-part-3:

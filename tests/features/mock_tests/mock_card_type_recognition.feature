@@ -15,7 +15,7 @@ Feature: Payments Card recognition
     And User will see the same provided data on animated credit card "<formatted_card_number>", "<expiration_date>" and "<cvv>"
     And User will see that animated card is flipped, except for "AMEX"
 
-    @smoke_test
+    @smoke_mock_test
     Examples:
       | card_number      | formatted_card_number | expiration_date | cvv | card_type |
       | 4111110000000211 | 4111 1100 0000 0211   | 12/22           | 123 | VISA      |
@@ -34,7 +34,7 @@ Feature: Payments Card recognition
       | 3000000000000111 | 3000 000000 000111    | 12/23           | 123 | DINERS       |
       | 1801000000000901 | 1801 0000 0000 0901   | 12/23           | 123 | ASTROPAYCARD |
 
-  @base_config @smoke_test @extended_tests_part_1
+  @base_config @smoke_mock_test @extended_tests_part_1
   Scenario: Disabled CVV field for PIBA card type and card recognition
     When User fills payment form with credit card number "3089500000000000021", expiration date "12/23"
     Then User will see that "SECURITY_CODE" field is disabled

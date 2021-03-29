@@ -18,7 +18,7 @@ Feature: Cardinal commerce
     And User will see that notification frame has "<color>" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
-    @smoke_test @extended_tests_part_1
+    @smoke_mock_test @extended_tests_part_1
     Examples:
       | card_number      | action_code | payment_status_message                  | color |
       | 4000000000001091 | OK          | Payment has been successfully processed | green |

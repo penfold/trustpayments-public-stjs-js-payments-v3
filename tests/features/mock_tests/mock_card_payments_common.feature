@@ -18,7 +18,7 @@ Feature: Card Payments
     Then User will see that Submit button is "<form_status>" after payment
     And User will see that ALL input fields are "<form_status>"
 
-    @smoke_test
+    @smoke_mock_test
     Examples:
       | action_code | form_status |
       | OK          | disabled    |

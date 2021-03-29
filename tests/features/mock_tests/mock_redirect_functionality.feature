@@ -49,7 +49,7 @@ Feature: Redirect functionality
       | myBillTel    | 44422224444                     |
     And Single THREEDQUERY request was sent only once with correct data
 
-  @config_submit_on_error_true @smoke_test @extended_tests_part_1
+  @config_submit_on_error_true @smoke_mock_test @extended_tests_part_1
   Scenario: Cardinal Commerce - error payment with enabled 'submit on error' process
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
@@ -82,7 +82,7 @@ Feature: Redirect functionality
     And User will see that notification frame has "red" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
-  @config_submit_on_success_true @smoke_test @extended_tests_part_1
+  @config_submit_on_success_true @smoke_mock_test @extended_tests_part_1
   Scenario: Cardinal Commerce - successful payment with enabled 'submit on success' process
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And THREEDQUERY, AUTH mock response is set to OK

@@ -19,7 +19,7 @@ Feature: Callback functionality
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
-    @smoke_test
+    @smoke_mock_test
     Examples:
       | action_code | callback_popup | threedresponse_defined |
       | OK          | success        | False                  |
@@ -49,7 +49,7 @@ Feature: Callback functionality
     When User opens prepared payment form page WITH_BROWSER_INFO
     Then User will see that browser is marked as supported: "<is_browser_supported>"
     And User will see that operating system is marked as supported: "<is_os_supported>"
-    @smoke_test @extended_tests_part_3
+    @smoke_mock_test @extended_tests_part_3
     Examples:
       | is_browser_supported | is_os_supported |
       | True                 | True            |

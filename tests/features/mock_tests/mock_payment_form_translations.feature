@@ -15,7 +15,7 @@ Feature: Payment form translations
     And User clicks Pay button
     Then User will see all labels displayed on page translated into "<language>"
     And User will see validation message "Field is required" under all fields translated into "<language>"
-    @smoke_test @extended_tests_part_3
+    @smoke_mock_test @extended_tests_part_3
     Examples:
       | language |
       | de_DE    |
@@ -63,7 +63,7 @@ Feature: Payment form translations
     And User clicks Pay button
     Then User will see notification frame with message: "Victory"
 
-  @config_translations @smoke_test
+  @config_translations @smoke_mock_test
   Scenario: Check translation overwriting mechanism for Pay button and validation message
     Given User opens page with payment form
     And User waits for whole form to be displayed

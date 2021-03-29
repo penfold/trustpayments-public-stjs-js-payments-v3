@@ -6,8 +6,8 @@ import jwt
 
 from utils.enums.jwt_config import JwtConfig
 
-SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'you_will_never_guess'
-ISS_KEY = os.environ.get('JWT_ISS_KEY') or 'you_will_never_guess'
+SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or '60-07abad81e736712277a5d0abc329612992b9d1b3667098e15d9b2a83c37af5fe'
+ISS_KEY = os.environ.get('JWT_ISS_KEY') or 'jslibraryjwt'
 
 
 def get_data_from_json(jwt_config):

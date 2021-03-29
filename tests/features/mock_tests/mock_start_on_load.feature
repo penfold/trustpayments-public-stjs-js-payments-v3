@@ -50,7 +50,7 @@ Feature: Successfull payments with start on load configuration
     Then User will see payment status information: "An error occurred"
     And THREEDQUERY, AUTH ware sent only once in one request
 
-  @config_immediate_payment_and_submit_on_success @smoke_test @extended_tests_part_1
+  @config_immediate_payment_and_submit_on_success @smoke_mock_test @extended_tests_part_1
   Scenario: Immediate payment with submitOnSuccess - successful payment
     When THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
@@ -80,7 +80,7 @@ Feature: Successfull payments with start on load configuration
     Then User will see payment status information: "<payment_status_message>"
     And THREEDQUERY, AUTH ware sent only once in one request
 
-    @smoke_test
+    @smoke_mock_test
     Examples:
       | action_code | payment_status_message                  |
       | OK          | Payment has been successfully processed |

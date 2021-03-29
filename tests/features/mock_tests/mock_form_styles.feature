@@ -7,13 +7,13 @@ Feature: Payment form styles check
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
 
-  @config_field_style @smoke_test @extended_tests_part_2
+  @config_field_style @smoke_mock_test @extended_tests_part_2
   Scenario: Checking style of individual fields
     When User opens page with payment form
     Then User will see that "CARD_NUMBER" field has correct style
     And User will see that "EXPIRATION_DATE" field has correct style
 
-  @config_field_style @smoke_test @extended_tests_part_2
+  @config_field_style @smoke_mock_test @extended_tests_part_2
   Scenario: Checking style of notification frame
     Given User opens page with payment form
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
@@ -21,7 +21,7 @@ Feature: Payment form styles check
     And User clicks Pay button
     Then User will see that "NOTIFICATION_FRAME" field has correct style
 
-  @config_placeholders @smoke_test @extended_tests_part_2
+  @config_placeholders @smoke_mock_test @extended_tests_part_2
   Scenario: Checking placeholders in input fields
     When User opens page with payment form
     Then User will see specific placeholders in input fields: Card number, Exp date, CVV
@@ -43,7 +43,7 @@ Feature: Payment form styles check
     When User fills payment form with credit card number "<card_number>", expiration date "<expiration_date>"
     Then User will see "<card_type>" icon in card number input field
 
-    @smoke_test @extended_tests_part_2
+    @smoke_mock_test @extended_tests_part_2
     Examples:
       | card_number      | expiration_date | card_type |
       | 4111110000000211 | 12/22           | VISA      |
