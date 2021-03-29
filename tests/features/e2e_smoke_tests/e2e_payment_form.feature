@@ -8,6 +8,7 @@ Feature: payment form
       | threedbypasspaymenttypes | MASTERCARD                            |
     And User opens example page
     And User waits for whole form to be displayed
+    And User waits for Pay button to be active
     When User clicks Pay button
     Then User will see validation message "Field is required" under all fields
     And User will see that all fields are highlighted
@@ -18,6 +19,7 @@ Feature: payment form
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
+    And User waits for Pay button to be active
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
     And User fills V1 authentication modal
