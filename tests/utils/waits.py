@@ -94,7 +94,7 @@ class Waits:
 
     def wait_until_iframe_is_presented_and_switch_to_it(self, iframe_name):
         # pylint: disable=bare-except
-        max_try = 10
+        max_try = 20
         if 'iP' in self._device_type:
             max_try = 180
         while max_try:
