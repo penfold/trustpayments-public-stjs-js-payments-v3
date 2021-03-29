@@ -8,7 +8,8 @@ import { FrameIdentifier } from '../../../shared/services/message-bus/FrameIdent
 import {
   MessageBusToken,
   MessageSubscriberToken,
-  StoreToken
+  StoreToken,
+  TranslatorToken
 } from '../../../shared/dependency-injection/InjectionTokens';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 
@@ -23,6 +24,7 @@ export class ComponentBootstrap {
     this.container.get(MessageBusToken);
     this.container.get(StoreToken);
     this.container.get(BrowserLocalStorage).init();
+    this.container.get(TranslatorToken).init();
 
     const framesHub: FramesHub = this.container.get(FramesHub);
     framesHub.init();

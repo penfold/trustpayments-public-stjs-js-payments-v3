@@ -9,8 +9,18 @@ import {
 import { MessageBus } from '../message-bus/MessageBus';
 import { Validation } from './Validation';
 import { Frame } from '../frame/Frame';
-import { mock } from 'ts-mockito';
 import { IMessageBus } from '../message-bus/IMessageBus';
+import Container from 'typedi';
+import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../translator/Translator';
+import { ITranslationProvider } from '../translator/ITranslationProvider';
+import { TranslationProvider } from '../translator/TranslationProvider';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 jest.mock('./../message-bus/MessageBus');
 jest.mock('./../notification/Notification');
@@ -277,6 +287,8 @@ function validationFixture() {
     errordata: ['billingemail'],
     errormessage: 'Invalid field'
   };
+
+  Container.get(TranslatorToken).init();
 
   const isCharNumberTestCases = [
     [new KeyboardEvent('keypress', { key: 'a' }), true],

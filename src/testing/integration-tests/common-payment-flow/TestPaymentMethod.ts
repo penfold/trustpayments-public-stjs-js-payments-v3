@@ -4,11 +4,11 @@ import { PaymentMethodToken } from '../../../application/dependency-injection/In
 import { Observable, of } from 'rxjs';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { ITestResultData} from './interfaces/ITestResultData';
+import { ITestResultData } from './interfaces/ITestResultData';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { ITestStartData } from './interfaces/ITestStartData';
 
-@Service({id: PaymentMethodToken, multiple: true})
+@Service({ id: PaymentMethodToken, multiple: true })
 export class TestPaymentMethod implements IPaymentMethod<IConfig, ITestStartData, ITestResultData> {
   getName(): string {
     return 'test';
@@ -27,36 +27,36 @@ export class TestPaymentMethod implements IPaymentMethod<IConfig, ITestStartData
             baz: 'baz',
             xyz: 'xyz',
             jwt: 'jwt',
-            threedresponse: 'threedresponse',
-          },
+            threedresponse: 'threedresponse'
+          }
         });
       case PaymentStatus.CANCEL:
         return of({
           status: data.resultStatus,
           data: {
             xyz: 'xyz',
-            baz: 'baz',
-          },
+            baz: 'baz'
+          }
         });
       case PaymentStatus.FAILURE:
         return of({
           status: data.resultStatus,
           error: {
             code: 123,
-            message: 'payment failed',
+            message: 'payment failed'
           },
           data: {
             baz: 'baz',
-            xyz: 'xyz',
-          },
+            xyz: 'xyz'
+          }
         });
       case PaymentStatus.ERROR:
         return of({
           status: data.resultStatus,
           data: {
             baz: 'baz',
-            xyz: 'xyz',
-          },
+            xyz: 'xyz'
+          }
         });
     }
   }

@@ -9,14 +9,13 @@ import {
 } from '../../models/constants/Translations';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { StJwt } from '../../shared/stjwt/StJwt';
-import { Translator } from '../../shared/translator/Translator';
 import { Validation } from '../../shared/validation/Validation';
 import { version } from '../../../../../package.json';
 import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { IStJwtObj } from '../../models/IStJwtObj';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { MessageBusToken, TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { GatewayError } from './GatewayError';
 import { InvalidResponseError } from './InvalidResponseError';
 import { Locale } from '../../shared/translator/Locale';
@@ -66,7 +65,7 @@ export class StCodec {
    * @param threedresponse the response from Cardinal commerce after call to ACS
    */
   public static publishResponse(responseData: IResponseData, jwtResponse?: string, threedresponse?: string) {
-    const translator = new Translator(StCodec._locale);
+    const translator = Container.get(TranslatorToken);
     responseData.errormessage = translator.translate(responseData.errormessage);
     const eventData = { ...responseData };
     if (jwtResponse !== undefined) {
@@ -174,7 +173,7 @@ export class StCodec {
   }
 
   private static _handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
-    const translator = new Translator(StCodec._locale);
+    const translator = Container.get(TranslatorToken);
     const validation = new Validation();
 
     const { errorcode, errormessage, requesttypedescription } = responseContent;

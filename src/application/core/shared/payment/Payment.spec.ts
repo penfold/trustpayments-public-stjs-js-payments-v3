@@ -16,12 +16,18 @@ import { IWalletVerify } from '../../models/IWalletVerify';
 import { StCodec } from '../../services/st-codec/StCodec';
 import { StTransport } from '../../services/st-transport/StTransport';
 import { Payment } from './Payment';
+import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../translator/Translator';
+import { ITranslationProvider } from '../translator/ITranslationProvider';
+import { TranslationProvider } from '../translator/TranslationProvider';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 
 jest.mock('./../notification/Notification');
 
 Container.set({ id: StoreBasedStorage, type: SimpleStorage });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('Payment', () => {
   let card: ICard;

@@ -19,6 +19,16 @@ import {
   PAYMENT_ERROR,
   PAYMENT_SUCCESS
 } from '../../application/core/models/constants/Translations';
+import Container from 'typedi';
+import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../application/core/shared/translator/Translator';
+import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
+import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('CommonFrames', () => {
   const jwt = 'some jwt';

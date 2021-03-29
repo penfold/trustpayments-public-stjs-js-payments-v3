@@ -1,12 +1,11 @@
 import { INotificationEvent } from '../../models/INotificationEvent';
-import { Service } from 'typedi';
+import Container, { Service } from 'typedi';
 import {
   CONTROL_FRAME_IFRAME,
   NOTIFICATION_FRAME_CORE_CLASS,
   NOTIFICATION_FRAME_ID
 } from '../../models/constants/Selectors';
 import { environment } from '../../../../environments/environment';
-import { Translator } from '../translator/Translator';
 import { MessageBus } from '../message-bus/MessageBus';
 import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
 import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
@@ -18,11 +17,11 @@ import { NotificationsMessageTypes } from '../../models/constants/notifications/
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { Frame } from '../frame/Frame';
 import { IMessageBus } from '../message-bus/IMessageBus';
+import { ITranslator } from '../translator/ITranslator';
 
 @Service()
 export class Notification {
   private _messageMap: Map<string, string>;
-  private _translator: Translator;
   private _timeoutId: number;
 
   constructor(
@@ -30,17 +29,13 @@ export class Notification {
     private _browserLocalStorage: BrowserLocalStorage,
     private _configProvider: ConfigProvider,
     private _framesHub: FramesHub,
-    private _frame: Frame
+    private _frame: Frame,
+    private _translator: ITranslator
   ) {
     this._applyStyles();
-    this._translator = new Translator('en_GB');
     this._messageMap = new Map(Object.entries(NotificationsClasses));
     this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.NOTIFICATION, (event: INotificationEvent) => {
       this._displayNotification(event);
-    });
-
-    this._framesHub.waitForFrame(CONTROL_FRAME_IFRAME).subscribe(() => {
-      this._translator = new Translator(this._browserLocalStorage.getItem('locale'));
     });
   }
 
