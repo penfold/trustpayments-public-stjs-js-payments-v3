@@ -14,8 +14,18 @@ import {
 } from '../../core/models/constants/Selectors';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import Container from 'typedi';
+import { TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../core/shared/translator/Translator';
+import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
+import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
 
 jest.mock('./../../core/shared/notification/Notification');
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('ExpirationDate', () => {
   describe('ExpirationDate.ifFieldExists()', () => {

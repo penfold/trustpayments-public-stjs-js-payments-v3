@@ -5,9 +5,19 @@ import { Validation } from '../validation/Validation';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { instance as mockInstance, mock, when } from 'ts-mockito';
 import { of } from 'rxjs';
+import Container from 'typedi';
+import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../translator/Translator';
+import { ITranslationProvider } from '../translator/ITranslationProvider';
+import { TranslationProvider } from '../translator/TranslationProvider';
+import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
 
 jest.mock('./../validation/Validation');
 jest.mock('./../notification/Notification');
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('FormField', () => {
   describe('getLabel()', () => {

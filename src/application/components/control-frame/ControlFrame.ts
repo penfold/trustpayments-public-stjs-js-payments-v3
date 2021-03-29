@@ -29,7 +29,6 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { StJwt } from '../../core/shared/stjwt/StJwt';
-import { Translator } from '../../core/shared/translator/Translator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IThreeDInitResponse } from '../../core/models/IThreeDInitResponse';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -47,6 +46,7 @@ import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { PaymentController } from '../../core/services/payments/PaymentController';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
+import { ITranslator } from '../../core/shared/translator/ITranslator';
 
 @Service()
 export class ControlFrame {
@@ -92,7 +92,8 @@ export class ControlFrame {
     private _jwtDecoder: JwtDecoder,
     private _visaCheckoutClient: VisaCheckoutClient,
     private _applePayClient: ApplePayClient,
-    private paymentController: PaymentController
+    private paymentController: PaymentController,
+    private translator: ITranslator
   ) {
     this.init();
     this._initVisaCheckout();
@@ -260,8 +261,7 @@ export class ControlFrame {
   }
 
   private _onPaymentFailure(errorData: IResponseData, errorMessage: string = PAYMENT_ERROR): Observable<never> {
-    const translator = new Translator(this._localStorage.getItem('locale'));
-    const translatedErrorMessage = translator.translate(errorMessage);
+    const translatedErrorMessage = this.translator.translate(errorMessage);
     errorData.errormessage = translatedErrorMessage;
 
     if (!(errorData instanceof Error)) {

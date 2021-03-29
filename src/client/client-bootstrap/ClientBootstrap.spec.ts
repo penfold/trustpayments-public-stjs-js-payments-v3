@@ -1,5 +1,5 @@
 import { FrameIdentifier } from '../../shared/services/message-bus/FrameIdentifier';
-import { ContainerInstance } from 'typedi';
+import Container, { ContainerInstance } from 'typedi';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { SentryService } from '../../shared/services/sentry/SentryService';
 import { MessageSubscriberRegistry } from '../../shared/services/message-bus/MessageSubscriberRegistry';
@@ -10,12 +10,24 @@ import { ClientBootstrap } from './ClientBootstrap';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { ST } from '../st/ST';
 import { MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/Selectors';
-import { MessageBusToken, MessageSubscriberToken, StoreToken } from '../../shared/dependency-injection/InjectionTokens';
+import {
+  MessageBusToken,
+  MessageSubscriberToken,
+  StoreToken,
+  TranslatorToken
+} from '../../shared/dependency-injection/InjectionTokens';
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import { Translator } from '../../application/core/shared/translator/Translator';
+import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
+import { ITranslator } from '../../application/core/shared/translator/ITranslator';
+
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('ClientBootstrap', () => {
   let frameIdentifierMock: FrameIdentifier;
@@ -26,6 +38,7 @@ describe('ClientBootstrap', () => {
   let messageSubscriberRegistryMock: MessageSubscriberRegistry;
   let interFrameCommunicatorMock: InterFrameCommunicator;
   let messageBus: IMessageBus;
+  let translator: ITranslator;
   let stMock: ST;
   let st: ST;
   let clientBootstrap: ClientBootstrap;
@@ -39,6 +52,7 @@ describe('ClientBootstrap', () => {
     sentryServiceMock = mock(SentryService);
     messageSubscriberRegistryMock = mock(MessageSubscriberRegistry);
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
+    translator = mock(Translator);
     stMock = mock(ST);
     st = instance(stMock);
     messageBus = new SimpleMessageBus();
@@ -50,6 +64,7 @@ describe('ClientBootstrap', () => {
     when(containerMock.get(MessageSubscriberRegistry)).thenReturn(instance(messageSubscriberRegistryMock));
     when(containerMock.get(InterFrameCommunicator)).thenReturn(instance(interFrameCommunicatorMock));
     when(containerMock.get(MessageBusToken)).thenReturn(messageBus);
+    when(containerMock.get(TranslatorToken)).thenReturn(instance(translator));
     when(containerMock.get(ST)).thenReturn(st);
   });
 

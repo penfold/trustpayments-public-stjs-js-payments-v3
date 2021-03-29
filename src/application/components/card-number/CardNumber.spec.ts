@@ -13,8 +13,19 @@ import { of } from 'rxjs';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+import Container from 'typedi';
+import { TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../core/shared/translator/Translator';
+import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
+import { ITranslator } from '../../core/shared/translator/ITranslator';
+import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
 
 jest.mock('./../../core/shared/validation/Validation');
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('CardNumber', () => {
   const { inputElement, messageElement, cardNumberInstance, labelElement } = cardNumberFixture();
@@ -313,7 +324,9 @@ function cardNumberFixture() {
   let iconFactory: IconFactory;
   let frame: Frame;
   let formatter: Formatter;
+  let translator: ITranslator;
   iconFactory = mock(IconFactory);
+  translator = mock(Translator);
   configProvider = mock<ConfigProvider>();
   const messageBus: IMessageBus = new SimpleMessageBus();
   when(configProvider.getConfig$()).thenReturn(of({} as IConfig));
@@ -330,7 +343,8 @@ function cardNumberFixture() {
     instance(iconFactory),
     instance(formatter),
     instance(frame),
-    messageBus
+    messageBus,
+    instance(translator)
   );
 
   function createElement(markup: string) {
