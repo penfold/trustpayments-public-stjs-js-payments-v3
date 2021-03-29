@@ -7,7 +7,7 @@ Feature: Callback functionality
   Background:
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
-      | requesttypedescriptions | <request_types> |
+      | requesttypedescriptions | THREEDQUERY AUTH |
 
   @base_config @extended_tests_part_2
   Scenario Outline: Checking <action_code> callback functionality
@@ -20,7 +20,6 @@ Feature: Callback functionality
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
-    @smoke_test
     Examples:
       | action_code | callback_popup | threedresponse_defined |
       | OK          | success        | False                  |
@@ -49,7 +48,8 @@ Feature: Callback functionality
     When User opens prepared payment form page WITH_BROWSER_INFO
     Then User will see that browser is marked as supported: "<is_browser_supported>"
     And User will see that operating system is marked as supported: "<is_os_supported>"
-    @smoke_test @extended_tests_part_3
+
+    @extended_tests_part_3
     Examples:
       | is_browser_supported | is_os_supported |
       | True                 | True            |
