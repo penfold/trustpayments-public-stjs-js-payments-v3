@@ -2,7 +2,7 @@ const { merge } = require('webpack-merge');
 const path = require('path');
 const common = require('./webpack.common.js');
 const webpack = require('webpack');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const fs = require('fs');
 
 module.exports = merge(common, {
@@ -28,7 +28,7 @@ module.exports = merge(common, {
     }
   },
   plugins: [
-    new ManifestPlugin(),
+    new WebpackManifestPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       FRAME_URL: JSON.stringify(process.env.npm_config_frame_url),

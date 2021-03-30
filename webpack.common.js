@@ -5,7 +5,6 @@ const StyleLintPlugin = require('stylelint-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const webpack = require('webpack');
 
 module.exports = {
   entry: {
@@ -60,11 +59,6 @@ module.exports = {
     libraryTarget: 'umd',
     publicPath: ''
   },
-  node: {
-    net: 'empty',
-    tls: 'empty',
-    dns: 'empty'
-  },
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
@@ -116,7 +110,6 @@ module.exports = {
         from: 'src/application/core/services/icon/images/*.png',
         to: 'images',
         force: true,
-        flatten: true
       }]
     }),
     new StyleLintPlugin({
