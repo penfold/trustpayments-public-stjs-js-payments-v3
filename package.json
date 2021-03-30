@@ -78,6 +78,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.13.14",
+    "@babel/helper-define-map": "7.13.12",
     "@babel/plugin-proposal-class-properties": "7.13.0",
     "@babel/plugin-proposal-decorators": "7.13.5",
     "@babel/plugin-proposal-optional-catch-binding": "7.13.8",
@@ -154,7 +155,7 @@
     "@types/redux-logger": "3.0.8",
     "bowser": "2.11.0",
     "browserslist": "4.16.3",
-    "core-js": "2.6.11",
+    "core-js": "2.6.12",
     "element-remove": "1.0.4",
     "fastestsmallesttextencoderdecoder": "1.0.22",
     "i18next": "20.1.0",
