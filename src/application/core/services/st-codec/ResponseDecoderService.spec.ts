@@ -1,7 +1,7 @@
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { instance, mock, when } from 'ts-mockito';
 import { ResponseDecoderService } from './ResponseDecoderService';
-import { IHttpClientResponse } from '@trustpayments/http-client/lib/httpclient';
+import { IHttpClientResponse } from '@trustpayments/http-client';
 import { InvalidResponseError } from './InvalidResponseError';
 import { IJwtResponse } from './interfaces/IJwtResponse';
 import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
