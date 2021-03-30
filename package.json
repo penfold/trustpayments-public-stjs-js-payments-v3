@@ -50,7 +50,8 @@
     "example:react:dev": "npm run start --prefix ./example/reactjs",
     "example:react:start": "run-p start:bundle example:react:dev",
     "example:angular:dev": "npm run start --prefix ./example/angular",
-    "example:angular:start": "run-p start:bundle example:angular:dev"
+    "example:angular:start": "run-p start:bundle example:angular:dev",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -69,11 +70,6 @@
     "minimist": "1.2.5",
     "netmask": "2.0.1",
     "trim": "1.0.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "lint-staged": {
     "*.ts": [
@@ -106,7 +102,7 @@
     "friendly-errors-webpack-plugin": "1.7.0",
     "html-loader": "2.1.2",
     "html-webpack-plugin": "5.3.1",
-    "husky": "6.0.0",
+    "husky": "^6.0.0",
     "i18next-conv": "10.1.0",
     "jest": "26.6.3",
     "jest-each": "26.6.2",
