@@ -19,8 +19,8 @@ export class GooglePay {
   private tokenizationSpecification: any = {
     type: 'PAYMENT_GATEWAY',
     parameters: {
-      gateway: 'example',
-      gatewayMerchantId: 'exampleGatewayMerchantId'
+      gateway: 'trustpayments',
+      gatewayMerchantId: 'test_james38641'
     }
   };
   private allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
@@ -131,7 +131,7 @@ export class GooglePay {
   };
 
   private processPayment(paymentData: any) {
-    this.onPaymentAuthorized(paymentData.paymentMethodData.tokenizationData.token);
+    this.onPaymentAuthorized(paymentData);
   }
 
   private onPaymentAuthorized(paymentToken: any): any {
