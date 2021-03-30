@@ -28,7 +28,6 @@ import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
-import { StJwt } from '../../core/shared/stjwt/StJwt';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IThreeDInitResponse } from '../../core/models/IThreeDInitResponse';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -431,7 +430,7 @@ export class ControlFrame {
         if (config.components.startOnLoad) {
           this._messageBus.publish({
             type: PUBLIC_EVENTS.BIN_PROCESS,
-            data: new StJwt(config.jwt).payload.pan as string
+            data: this._jwtDecoder.decode(config.jwt).payload.pan
           });
 
           this._messageBus.publish(

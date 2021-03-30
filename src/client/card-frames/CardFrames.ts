@@ -24,7 +24,6 @@ import { IConfig } from '../../shared/model/config/IConfig';
 import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { Frame } from '../../application/core/shared/frame/Frame';
-import { StJwt } from '../../application/core/shared/stjwt/StJwt';
 import { PAY, PROCESSING } from '../../application/core/models/constants/Translations';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
@@ -77,7 +76,6 @@ export class CardFrames {
   protected fieldsToSubmit: string[];
   protected messageBus: IMessageBus;
   protected formId: string;
-  private _stJwt: StJwt;
   private destroy$: Observable<void>;
 
   constructor(
@@ -104,9 +102,8 @@ export class CardFrames {
     this.jwt = jwt;
     this.origin = origin;
     this.styles = this._getStyles(styles);
-    this._stJwt = new StJwt(jwt);
     this._translator = Container.get(TranslatorToken);
-    this.params = { locale: this._stJwt.locale, origin: this.origin };
+    this.params = { locale: this.jwtDecoder.decode(jwt).payload.locale || 'en_GB', origin: this.origin };
     this._config$ = this._configProvider.getConfig$();
     this._setInitValues(buttonId, defaultPaymentType, paymentTypes, animatedCard, jwt, formId);
     this.configureFormFieldsAmount(jwt);
@@ -349,15 +346,13 @@ export class CardFrames {
     this._processingMessage = `${this._translator.translate(PROCESSING)} ...`;
     this._loadAnimatedCard = loadAnimatedCard !== undefined ? loadAnimatedCard : true;
 
-    this._messageBus.pipe(
-      ofType(PUBLIC_EVENTS.LOCALE_CHANGED),
-      takeUntil(this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY))),
-    ).subscribe(event => {
-      this._payMessage = this._translator.translate(PAY);
-      this._processingMessage = `${this._translator.translate(PROCESSING)} ...`;
-      this._submitButton.textContent = this._submitButton.disabled ?
-        this._processingMessage : this._payMessage;
-    });
+    this._messageBus
+      .pipe(ofType(PUBLIC_EVENTS.LOCALE_CHANGED), takeUntil(this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY))))
+      .subscribe(event => {
+        this._payMessage = this._translator.translate(PAY);
+        this._processingMessage = `${this._translator.translate(PROCESSING)} ...`;
+        this._submitButton.textContent = this._submitButton.disabled ? this._processingMessage : this._payMessage;
+      });
   }
 
   private _setSubmitButtonProperties(element: any, state: FormState): HTMLElement {
