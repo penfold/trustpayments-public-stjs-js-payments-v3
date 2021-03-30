@@ -87,18 +87,8 @@ export class GooglePay {
     return Object.assign({}, this.config.googlePay.paymentRequest);
   }
 
-  private getGoogleTransactionInfo(): IGooglePayTransactionInfo {
-    return {
-      countryCode: 'US',
-      currencyCode: 'USD',
-      totalPriceStatus: 'FINAL',
-      totalPrice: '1.00'
-    };
-  }
-
   private onGooglePaymentButtonClicked = () => {
     const paymentDataRequest = this.getGooglePaymentDataRequest();
-    paymentDataRequest.transactionInfo = this.getGoogleTransactionInfo();
     const paymentsClient = this.getGooglePaymentsClient();
 
     if (paymentsClient) {
