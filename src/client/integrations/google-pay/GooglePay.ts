@@ -6,84 +6,74 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { GooglePayPaymentService } from './GooglePayPaymentService';
 import { tap } from 'rxjs/operators';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import {
+  IGooglePayTransactionInfo,
+  IGooglePayPaymentRequest,
+  IGooglePlayIsReadyToPayRequest
+} from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
 
 @Service()
 export class GooglePay {
   private SCRIPT_ADDRESS = environment.GOOGLE_PAY.GOOGLE_PAY_URL;
-  private DOM_TARGET: string = 'st-google-pay';
   private SCRIPT_TARGET: string = 'head';
-  private baseRequest: any = {
-    apiVersion: 2,
-    apiVersionMinor: 0
-  };
-  private tokenizationSpecification: any = {
-    type: 'PAYMENT_GATEWAY',
-    parameters: {
-      gateway: 'example',
-      gatewayMerchantId: 'exampleGatewayMerchantId'
-    }
-  };
-  private allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
-  private allowedCardNetworks = ['AMEX', 'DISCOVER', 'INTERAC', 'JCB', 'MASTERCARD', 'VISA'];
-  private baseCardPaymentMethod = {
-    type: 'CARD',
-    parameters: {
-      allowedAuthMethods: this.allowedCardAuthMethods,
-      allowedCardNetworks: this.allowedCardNetworks
-    }
-  };
-  private cardPaymentMethod = Object.assign(
-    { tokenizationSpecification: this.tokenizationSpecification },
-    this.baseCardPaymentMethod
-  );
+
   private googlePayClient: any = null;
-  private config: any;
+  private config: IConfig;
 
   constructor(
-    configProvider: ConfigProvider,
+    private configProvider: ConfigProvider,
     private googlePayPaymentService: GooglePayPaymentService,
     private jwtDecoder: JwtDecoder
-  ) {
-    this.init();
-    configProvider.getConfig$().subscribe((config: IConfig) => {
-      this.config = config;
-    });
+  ) {}
+
+  public async init(config: IConfig) {
+    this.config = config;
+
+    try {
+      await this.insertGooglePayLibrary();
+      await this.onGooglePayLoaded();
+
+      this.configProvider.getConfig$().subscribe((config: IConfig) => {
+        this.config = config;
+        this.onConfigUpdate();
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
-  private init() {
-    this.insertGooglePayLibrary().then(() => {
-      this.onGooglePayLoaded();
-    });
-  }
+  private onConfigUpdate(): void {}
 
   private insertGooglePayLibrary(): Promise<Element> {
     return DomMethods.insertScript(this.SCRIPT_TARGET, { src: this.SCRIPT_ADDRESS });
   }
 
-  private onGooglePayLoaded() {
+  private onGooglePayLoaded(): void {
     const paymentsClient = this.getGooglePaymentsClient();
-    paymentsClient
-      .isReadyToPay(this.getGoogleIsReadyToPayRequest())
-      .then((response: any) => {
-        if (response.result) {
-          this.addGooglePayButton();
-        }
-      })
-      .catch((err: any) => {
-        console.error(err);
-      });
+
+    paymentsClient.isReadyToPay(this.getGoogleIsReadyToPayRequest()).then((response: any) => {
+      if (response.result) {
+        this.addGooglePayButton();
+      }
+    });
   }
 
-  private getGoogleIsReadyToPayRequest() {
-    return Object.assign({}, this.baseRequest, {
-      allowedPaymentMethods: [this.baseCardPaymentMethod]
-    });
+  private getGoogleIsReadyToPayRequest(): IGooglePlayIsReadyToPayRequest {
+    return Object.assign(
+      {},
+      {
+        apiVersion: this.config.googlePay.paymentRequest.apiVersion,
+        apiVersionMinor: this.config.googlePay.paymentRequest.apiVersionMinor,
+        allowedPaymentMethods: this.config.googlePay.paymentRequest.allowedPaymentMethods
+      }
+    );
   }
 
   private addGooglePayButton() {
     const paymentsClient = this.getGooglePaymentsClient();
     const button = paymentsClient.createButton({ onClick: this.onGooglePaymentButtonClicked });
-    document.getElementById(this.DOM_TARGET).appendChild(button);
+
+    document.getElementById(this.config.googlePay.buttonOptions.buttonRootNode).appendChild(button);
   }
 
   private getGooglePaymentsClient() {
@@ -93,18 +83,11 @@ export class GooglePay {
     return this.googlePayClient;
   }
 
-  private getGooglePaymentDataRequest() {
-    const paymentDataRequest = Object.assign({}, this.baseRequest);
-    paymentDataRequest.allowedPaymentMethods = [this.cardPaymentMethod];
-    paymentDataRequest.transactionInfo = this.getGoogleTransactionInfo();
-    paymentDataRequest.merchantInfo = {
-      merchantName: 'Example Merchant',
-      merchantId: '12345678901234567890'
-    };
-    return paymentDataRequest;
+  private getGooglePaymentDataRequest(): IGooglePayPaymentRequest {
+    return Object.assign({}, this.config.googlePay.paymentRequest);
   }
 
-  private getGoogleTransactionInfo() {
+  private getGoogleTransactionInfo(): IGooglePayTransactionInfo {
     return {
       countryCode: 'US',
       currencyCode: 'USD',
@@ -123,6 +106,7 @@ export class GooglePay {
         .loadPaymentData(paymentDataRequest)
         .then((paymentData: any) => {
           this.processPayment(paymentData);
+          this.config.googlePay.buttonOptions.onClick();
         })
         .catch((err: any) => {
           console.error(err);
@@ -146,15 +130,4 @@ export class GooglePay {
         })
       );
   }
-
-  // TO PREFETCH DATA
-  // private prefetchGooglePaymentData() {
-  //   const paymentDataRequest = this.getGooglePaymentDataRequest();
-  //   paymentDataRequest.transactionInfo = {
-  //     totalPriceStatus: 'NOT_CURRENTLY_KNOWN',
-  //     currencyCode: 'USD'
-  //   };
-  //   const paymentsClient = this.getGooglePaymentsClient();
-  //   paymentsClient.prefetchPaymentData(paymentDataRequest);
-  // }
 }

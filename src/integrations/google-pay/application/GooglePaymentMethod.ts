@@ -4,16 +4,22 @@ import { IPaymentMethod } from '../../../application/core/services/payments/IPay
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
+import { GooglePay } from '../../../client/integrations/google-pay/GooglePay';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IGooglePaymentMethodName } from '../models/IGooglePaymentMethod';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class GooglePaymentMethod implements IPaymentMethod {
+  googlePay: GooglePay;
+  constructor(googlePay: GooglePay) {}
+
   getName(): string {
     return IGooglePaymentMethodName;
   }
 
   init(config: IConfig): Observable<void> {
+    this.googlePay.init(config);
+
     return of(undefined);
   }
 

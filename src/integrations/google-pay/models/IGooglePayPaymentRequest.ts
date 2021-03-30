@@ -10,7 +10,6 @@ export type IGooglePayDisplayItemStatus = 'FINAL' | 'PENDING';
 
 export type IGooglePayDisplayItemTypes = 'LINE_ITEM' | 'SUBTOTAL';
 
-
 export type IGooglePayCallbackIntents = 'PAYMENT_AUTHORIZATION' | 'SHIPPING_ADDRESS' | 'SHIPPING_OPTION';
 
 interface IGooglePayDisplayItem {
@@ -28,11 +27,12 @@ interface IGooglePayTokenizationSpecification {
   type: string;
 }
 
-interface IGooglePayTransactionInfo {
+export interface IGooglePayTransactionInfo {
   checkoutOption?: IGooglePayCheckoutOption;
   countryCode: string;
   currencyCode: string;
   displayItems?: IGooglePayDisplayItem[];
+  totalPrice?: string;
   totalPriceLabel?: string;
   totalPriceStatus?: IGooglePayTotalPriceStatus;
   transactionId?: string;
@@ -77,4 +77,11 @@ export interface IGooglePayPaymentRequest {
   shippingOptionParameters?: GooglePayShippingOptionParameters;
   shippingOptionRequired?: boolean;
   transactionInfo: IGooglePayTransactionInfo;
+}
+
+export interface IGooglePlayIsReadyToPayRequest {
+  apiVersion: number;
+  apiVersionMinor: number;
+  allowedPaymentMethods: GooglePayAllowedPaymentMethods;
+  existingPaymentMethodRequired?: boolean;
 }
