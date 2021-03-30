@@ -691,9 +691,9 @@ class PaymentMethodsPage(BasePage):
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
 
     def wait_for_security_code_iframe(self):
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
-        # self._waits.wait_until_iframe_is_presented_and_switch_to_it(PaymentMethodsLocators.security_code_iframe)
-        # self._actions.switch_to_default_iframe()
+        # self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
+        self._waits.wait_until_iframe_is_presented_and_switch_to_it(PaymentMethodsLocators.security_code_iframe)
+        self._actions.switch_to_default_iframe()
 
     def wait_for_pay_button_to_be_active(self):
         self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
