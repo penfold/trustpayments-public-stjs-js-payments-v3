@@ -72,9 +72,6 @@ class BrowserExecutor:
     def execute_script(self, script):
         self._driver.execute_script(script)
 
-    def switch_to_default_content(self):
-        return self._driver.current_url
-
     def clear_storage(self):
         self._driver.execute_script('window.localStorage.clear();')
 

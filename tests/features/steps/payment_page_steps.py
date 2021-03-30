@@ -24,7 +24,7 @@ def step_impl(context, card_number, exp_date, cvv):
 def step_impl(context, payment_status_message):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'switch_to_parent_iframe' in context.scenario.tags:
-        payment_page.switch_to_parent_iframe()
+        payment_page.switch_to_example_page_parent_iframe()
     payment_page.validate_payment_status_message(payment_status_message)
 
 
@@ -32,7 +32,7 @@ def step_impl(context, payment_status_message):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'switch_to_parent_iframe' in context.scenario.tags:
-        payment_page.switch_to_parent_iframe()
+        payment_page.switch_to_example_page_parent_iframe()
     payment_page.wait_for_notification_frame_to_disappear()
 
 
@@ -40,6 +40,12 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.wait_for_payment_form_to_load()
+
+
+@step('User waits for security code form field to be displayed')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page.wait_for_security_code_iframe()
 
 
 @step('User waits for Pay button to be active')
@@ -324,7 +330,7 @@ def step_impl(context, auth_type):
         payment_page._actions.switch_to_default_iframe()
     payment_page.fill_cardinal_authentication_code(auth_type)
     if 'parent_iframe' in context.scenario.tags:
-        payment_page.switch_to_parent_iframe()
+        payment_page.switch_to_example_page_parent_iframe()
 
 
 @step('User will see the same provided data in inputs fields')

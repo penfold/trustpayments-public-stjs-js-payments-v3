@@ -43,17 +43,17 @@ Feature: Callback functionality
 #    Then User will see correct error code displayed in popup
 #    And "submit" callback is called only once
 #
-#  @base_config @ignore_on_headless
-#  Scenario Outline: Checking callback function about browser data
-#    When User opens prepared payment form page WITH_BROWSER_INFO
-#    Then User will see that browser is marked as supported: "<is_browser_supported>"
-#    And User will see that operating system is marked as supported: "<is_os_supported>"
-#
+  @base_config @ignore_on_headless
+  Scenario Outline: Checking callback function about browser data
+    When User opens prepared payment form page WITH_BROWSER_INFO
+    Then User will see that browser is marked as supported: "<is_browser_supported>"
+    And User will see that operating system is marked as supported: "<is_os_supported>"
+
 #    @extended_tests_part_3
 #    Examples:
 #      | is_browser_supported | is_os_supported |
 #      | True                 | True            |
-#    @browser_info_not_supported
-#    Examples:
-#      | is_browser_supported | is_os_supported |
-#      | False                | False           |
+    @browser_info_not_supported
+    Examples:
+      | is_browser_supported | is_os_supported |
+      | False                | False           |

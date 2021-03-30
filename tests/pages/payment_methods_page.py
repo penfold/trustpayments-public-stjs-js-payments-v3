@@ -29,13 +29,35 @@ class PaymentMethodsPage(BasePage):
         page_url = self._browser_executor.get_page_url()
         return page_url
 
-    def wait_for_payment_form_to_load(self):
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.card_number_iframe)
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe)
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
+    def toggle_action_buttons_bar(self):
+        self._actions.click(PaymentMethodsLocators.actions_bar_toggle)
 
-    def wait_for_pay_button_to_be_active(self):
-        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
+    def click_cardinal_cancel_btn(self):
+        self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+        self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_cancel_btn)
+
+    def click_cardinal_submit_btn(self):
+        self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
+
+    def click_additional_btn(self):
+        self._actions.click(PaymentMethodsLocators.additional_button)
+
+    def click_cancel_3ds_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_cancel_3ds)
+        self._actions.click(PaymentMethodsLocators.action_btn_cancel_3ds)
+
+    def click_remove_frames_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_remove_frames)
+        self._actions.click(PaymentMethodsLocators.action_btn_remove_frames)
+
+    def click_destroy_st_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_destroy_st)
+        self._actions.click(PaymentMethodsLocators.action_btn_destroy_st)
+
+    def click_start_st_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_start_st)
+        self._actions.click(PaymentMethodsLocators.action_btn_start_st)
 
     def fill_credit_card_field(self, field_type, value):
         if field_type == FieldType.CARD_NUMBER.name:
@@ -64,28 +86,28 @@ class PaymentMethodsPage(BasePage):
 
     def fill_payment_form(self, card_number, expiration_date, cvv):
         self.wait_for_payment_form_to_load()
-        if 'IE' in self._configuration.BROWSER:
-            self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
-            self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
-            self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
-        else:
+        if 'IE' not in self._configuration.BROWSER:
             self.fill_credit_card_field(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field(FieldType.EXPIRATION_DATE.name, expiration_date)
             self.fill_credit_card_field(FieldType.SECURITY_CODE.name, cvv)
+        else:
+            self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
+            self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
+            self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
 
     def fill_payment_form_without_cvv(self, card_number, expiration_date):
-        if 'IE' in self._configuration.BROWSER:
-            self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
-            self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
-        else:
+        if 'IE' not in self._configuration.BROWSER:
             self.fill_credit_card_field(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field(FieldType.EXPIRATION_DATE.name, expiration_date)
+        else:
+            self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
+            self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
 
     def fill_payment_form_with_only_cvv(self, cvv):
-        if 'IE' in self._configuration.BROWSER:
-            self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
-        else:
+        if 'IE' not in self._configuration.BROWSER:
             self.fill_credit_card_field(FieldType.SECURITY_CODE.name, cvv)
+        else:
+            self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
 
     def fill_merchant_input_field(self, field_type, value):
         if field_type == FieldType.NAME.name:
@@ -150,17 +172,6 @@ class PaymentMethodsPage(BasePage):
             self.fill_cardinal_v2_popup()
         self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.cardinal_modal)
         self._waits.switch_to_default_content()
-
-    def click_cardinal_cancel_btn(self):
-        self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
-        self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_cancel_btn)
-
-    def click_cardinal_submit_btn(self):
-        self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
-
-    def click_additional_btn(self):
-        self._actions.click(PaymentMethodsLocators.additional_button)
 
     def press_enter_button_on_security_code_field(self):
         self._actions.switch_to_iframe_and_press_enter(FieldType.SECURITY_CODE.value,
@@ -260,18 +271,6 @@ class PaymentMethodsPage(BasePage):
         else:
             self._actions.click(PaymentMethodsLocators.visa_checkout_mock_button)
 
-    def wait_for_pay_processing_end(self, language: str):
-        # pylint: disable=invalid-name
-        processing_text: str = 'Processing'
-        if language not in ('en_US', 'en_GB'):
-            with open(f'resources/languages/{language}.json', 'r') as f:
-                translation = json.load(f)
-            processing_text = translation[processing_text]
-        processing_text = f'{processing_text} ...'
-
-        self._waits.wait_for_text_to_be_not_present_in_element(PaymentMethodsLocators.pay_mock_button,
-                                                               processing_text)
-
     def get_element_attribute(self, field_type, attribute):
         attribute_value = ''
         if field_type == FieldType.CARD_NUMBER.name:
@@ -367,9 +366,6 @@ class PaymentMethodsPage(BasePage):
     def change_focus_to_page_title(self):
         self._actions.click(PaymentMethodsLocators.page_title)
 
-    def switch_to_parent_iframe(self):
-        self._actions.switch_to_iframe(PaymentMethodsLocators.parent_iframe)
-
     def validate_value_of_input_field(self, field_type, expected_message):
         input_value = self.get_value_of_input_field(field_type)
         assertion_message = f'{FieldType[field_type].name} input value is not correct, ' \
@@ -385,15 +381,6 @@ class PaymentMethodsPage(BasePage):
         assertion_message = f'Payment status is not correct, should be: "{expected_message}" but is: "{actual_message}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_message in actual_message, assertion_message
-
-    def wait_for_notification_frame(self):
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
-
-    def wait_for_popups_to_disappear(self):
-        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.popups)
-
-    def wait_for_notification_frame_to_disappear(self):
-        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.notification_frame, 60)
 
     def validate_callback_with_data_type(self, expected_message):
         actual_message = self.get_text_from_status_callback()
@@ -676,7 +663,7 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_number_of_requests == actual_number_of_requests, assertion_message
 
-    def _validate_browser_support_info(self, data_object, is_supported):
+    def validate_browser_support_info(self, data_object, is_supported):
         browser_info_text = self.get_text_from_browser_info()
         browser_info_json = json.loads(browser_info_text)
         actual_is_supported_info = str(browser_info_json.get(data_object).get('isSupported'))
@@ -686,26 +673,47 @@ class PaymentMethodsPage(BasePage):
         assert is_supported in actual_is_supported_info, assertion_message
 
     def validate_if_browser_is_supported_in_info_callback(self, is_supported):
-        self._validate_browser_support_info('browser', is_supported)
+        self.validate_browser_support_info('browser', is_supported)
 
     def validate_if_os_is_supported_in_info_callback(self, is_supported):
-        self._validate_browser_support_info('os', is_supported)
+        self.validate_browser_support_info('os', is_supported)
 
-    def toggle_action_buttons_bar(self):
-        self._actions.click(PaymentMethodsLocators.actions_bar_toggle)
+    def switch_to_example_page_parent_iframe(self):
+        self._actions.switch_to_iframe(PaymentMethodsLocators.parent_iframe)
 
-    def click_cancel_3ds_btn(self):
-        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_cancel_3ds)
-        self._actions.click(PaymentMethodsLocators.action_btn_cancel_3ds)
+    def wait_for_example_page_parent_iframe(self):
+        self._waits.wait_until_iframe_is_presented_and_switch_to_it(PaymentMethodsLocators.security_code_iframe)
+        self._actions.switch_to_default_iframe()
 
-    def click_remove_frames_btn(self):
-        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_remove_frames)
-        self._actions.click(PaymentMethodsLocators.action_btn_remove_frames)
+    def wait_for_payment_form_to_load(self):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.card_number_iframe)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
 
-    def click_destroy_st_btn(self):
-        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_destroy_st)
-        self._actions.click(PaymentMethodsLocators.action_btn_destroy_st)
+    def wait_for_security_code_iframe(self):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
+        # self._waits.wait_until_iframe_is_presented_and_switch_to_it(PaymentMethodsLocators.security_code_iframe)
+        # self._actions.switch_to_default_iframe()
 
-    def click_start_st_btn(self):
-        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_start_st)
-        self._actions.click(PaymentMethodsLocators.action_btn_start_st)
+    def wait_for_pay_button_to_be_active(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
+
+    def wait_for_pay_processing_end(self, language: str):
+        # pylint: disable=invalid-name
+        processing_text: str = 'Processing'
+        if language not in ('en_US', 'en_GB'):
+            with open(f'resources/languages/{language}.json', 'r') as f:
+                translation = json.load(f)
+            processing_text = translation[processing_text]
+        processing_text = f'{processing_text} ...'
+
+        self._waits.wait_for_text_to_be_not_present_in_element(PaymentMethodsLocators.pay_mock_button,
+                                                               processing_text)
+    def wait_for_notification_frame(self):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
+
+    def wait_for_popups_to_disappear(self):
+        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.popups)
+
+    def wait_for_notification_frame_to_disappear(self):
+        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.notification_frame, 60)

@@ -53,7 +53,7 @@ Feature: Callback functionality
     Examples:
       | is_browser_supported | is_os_supported |
       | True                 | True            |
-    @browser_info_not_supported
-    Examples:
-      | is_browser_supported | is_os_supported |
-      | False                | False           |
+#    @browser_info_not_supported
+#    Examples:
+#      | is_browser_supported | is_os_supported |
+#      | False                | False           |

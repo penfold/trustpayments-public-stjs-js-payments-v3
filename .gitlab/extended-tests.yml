@@ -52,7 +52,7 @@ apple-part2-component_test:
     POETRY_TAGS: apple_test_part2
   resource_group: extended_tests_review_2
 
-SamsungGalaxyS6-5.0-browser-not-supported-component_test:
+.SamsungGalaxyS6-5.0-browser-not-supported-component_test:
   extends:
     - .component-tests-browserstack
     - .rules-extended-tests-always
@@ -113,7 +113,7 @@ iPhone11-14.0-component_tests_smoke:
 
 # e2e-tests
 
-.SamsungGalaxyS6-5.0-browser-not-supported-e2e-tests:
+SamsungGalaxyS6-5.0-browser-not-supported-e2e-tests:
   extends:
     - .e2e-tests-browserstack
     - .rules-extended-tests-always
