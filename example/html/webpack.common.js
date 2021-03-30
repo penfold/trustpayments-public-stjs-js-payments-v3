@@ -6,7 +6,7 @@ const StyleLintPlugin = require('stylelint-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 module.exports = {
   mode: 'development',
@@ -23,13 +23,8 @@ module.exports = {
     filename: '[name].js',
     path: path.join(__dirname, 'dist')
   },
-  node: {
-    net: 'empty',
-    tls: 'empty',
-    dns: 'empty'
-  },
   plugins: [
-    new ManifestPlugin(),
+    new WebpackManifestPlugin(),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
@@ -66,7 +61,6 @@ module.exports = {
           from: 'img/*.png',
           to: 'img',
           force: true,
-          flatten: true
         }
       ]
     }),
@@ -76,7 +70,6 @@ module.exports = {
           from: 'img/*.webp',
           to: 'img',
           force: true,
-          flatten: true
         }
       ]
     }),
@@ -86,7 +79,6 @@ module.exports = {
           from: 'json/*.json',
           to: 'json',
           force: true,
-          flatten: true,
           noErrorOnMissing: true
         }
       ]

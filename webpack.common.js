@@ -60,11 +60,6 @@ module.exports = {
     libraryTarget: 'umd',
     publicPath: ''
   },
-  node: {
-    net: 'empty',
-    tls: 'empty',
-    dns: 'empty'
-  },
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
@@ -116,7 +111,6 @@ module.exports = {
         from: 'src/application/core/services/icon/images/*.png',
         to: 'images',
         force: true,
-        flatten: true
       }]
     }),
     new StyleLintPlugin({
