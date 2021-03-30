@@ -115,7 +115,7 @@ export class GooglePay {
   };
 
   private processPayment(paymentData: any) {
-    this.onPaymentAuthorized(paymentData.paymentMethodData.tokenizationData.token);
+    this.onPaymentAuthorized(paymentData);
   }
 
   private onPaymentAuthorized(paymentToken: any): any {
