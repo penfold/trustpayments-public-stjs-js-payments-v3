@@ -1,8 +1,6 @@
 """BasePage is a parent class for each page class then this way of implementation allow us
 to use his self attributes inside typical page."""
-from configuration import CONFIGURATION
 from pages.locators.payment_methods_locators import PaymentMethodsLocators
-from utils.enums.field_type import FieldType
 
 
 class BasePage:
