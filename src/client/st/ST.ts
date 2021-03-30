@@ -107,7 +107,7 @@ export class ST {
     private store: IStore<IParentFrameState>,
     private visaCheckout: VisaCheckout,
     private commonFrames: CommonFrames,
-    private translation: ITranslator,
+    private translation: ITranslator
   ) {
     this.googleAnalytics = new GoogleAnalytics();
     this.merchantFields = new MerchantFields();

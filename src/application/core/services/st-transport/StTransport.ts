@@ -8,6 +8,7 @@ import { IStRequest } from '../../models/IStRequest';
 import { environment } from '../../../../environments/environment';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { InvalidResponseError } from '../st-codec/InvalidResponseError';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 
 interface IFetchOptions {
   headers: {
@@ -41,7 +42,7 @@ export class StTransport {
   private _config: IConfig;
   private _codec: StCodec;
 
-  constructor(private configProvider: ConfigProvider) {}
+  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder) {}
 
   /**
    * Perform a JSON API request with ST
@@ -145,7 +146,7 @@ export class StTransport {
   private getCodec(): StCodec {
     if (!this._codec) {
       const { jwt } = this.getConfig();
-      this._codec = new StCodec(jwt);
+      this._codec = new StCodec(this.jwtDecoder, jwt);
     }
 
     return this._codec;

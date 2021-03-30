@@ -42,7 +42,6 @@ export class ClientBootstrap {
     this.container.get(SentryService).init(environment.SENTRY_DSN, environment.SENTRY_WHITELIST_URLS);
     this.container.get(TranslatorToken).init();
 
-
     const st: ST = this.container.get(ST);
     const messageBus: IMessageBus = this.container.get(MessageBusToken);
 
