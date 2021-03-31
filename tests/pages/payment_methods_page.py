@@ -224,9 +224,11 @@ class PaymentMethodsPage(BasePage):
     def select_cardinal_commerce_payment(self):
         if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION or 'High Sierra' in CONFIGURATION.REMOTE_OS_VERSION or \
             'Google Nexus 6' in CONFIGURATION.REMOTE_DEVICE:
+            self.scroll_to_bottom()
             self._waits.wait_for_javascript()
             self._actions.click_by_javascript(PaymentMethodsLocators.pay_mock_button)
         else:
+            self.scroll_to_bottom()
             self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
             self._actions.click(PaymentMethodsLocators.pay_mock_button)
 
