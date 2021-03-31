@@ -686,12 +686,20 @@ class PaymentMethodsPage(BasePage):
         self._actions.switch_to_default_iframe()
 
     def wait_for_payment_form_to_load(self):
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.card_number_iframe)
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe)
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
+        self.wait_for_card_number_iframe()
+        self.wait_for_expiration_date_iframe()
+        self.wait_for_security_code_iframe()
+        self.wait_for_pay_button_to_be_active()
+
+    def wait_for_card_number_iframe(self):
+        self._waits.wait_until_iframe_is_presented_and_switch_to_it(PaymentMethodsLocators.card_number_iframe)
+        self._actions.switch_to_default_iframe()
+
+    def wait_for_expiration_date_iframe(self):
+        self._waits.wait_until_iframe_is_presented_and_switch_to_it(PaymentMethodsLocators.expiration_date_iframe)
+        self._actions.switch_to_default_iframe()
 
     def wait_for_security_code_iframe(self):
-        # self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
         self._waits.wait_until_iframe_is_presented_and_switch_to_it(PaymentMethodsLocators.security_code_iframe)
         self._actions.switch_to_default_iframe()
 
@@ -709,6 +717,7 @@ class PaymentMethodsPage(BasePage):
 
         self._waits.wait_for_text_to_be_not_present_in_element(PaymentMethodsLocators.pay_mock_button,
                                                                processing_text)
+
     def wait_for_notification_frame(self):
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
 
@@ -716,4 +725,4 @@ class PaymentMethodsPage(BasePage):
         self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.popups)
 
     def wait_for_notification_frame_to_disappear(self):
-        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.notification_frame, 60)
+        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.notification_frame)

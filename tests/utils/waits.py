@@ -1,19 +1,17 @@
 """ This class consist all methods related with different waits
 """
 import time
-from logging import INFO
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
-from utils.logger import get_logger
-
 
 class Waits:
-
-    MAX_TRY = 3
+    #
+    MAX_TRY_USED_WITH_DEFAULT_TIMEOUT = 3
+    MAX_TRY_WITHOUT_TIMEOUT = 30
 
     def __init__(self, driver_factory, configuration):
         self._driver_factory = driver_factory
@@ -33,9 +31,8 @@ class Waits:
         except:
             return False
 
-    def wait_for_element_to_be_displayed(self, locator, max_try: int = MAX_TRY):
+    def wait_for_element_to_be_displayed(self, locator, max_try: int = MAX_TRY_WITHOUT_TIMEOUT):
         # pylint: disable=bare-except
-
         while max_try:
             try:
                 is_element_displayed = self._driver.find_element(*locator).is_displayed()
@@ -50,7 +47,7 @@ class Waits:
                 max_try -= 1
         raise Exception('Element not found within timeout')
 
-    def wait_for_element_with_id_to_be_displayed(self, locator, max_try: int = MAX_TRY):
+    def wait_for_element_with_id_to_be_displayed(self, locator, max_try: int = MAX_TRY_WITHOUT_TIMEOUT):
         # pylint: disable=bare-except
 
         while max_try:
@@ -66,7 +63,7 @@ class Waits:
                 max_try -= 1
         raise Exception('Element not found within timeout')
 
-    def wait_for_element_to_be_not_displayed(self, locator, max_try: int = MAX_TRY):
+    def wait_for_element_to_be_not_displayed(self, locator, max_try: int = MAX_TRY_WITHOUT_TIMEOUT):
         # pylint: disable=bare-except
 
         while max_try:
@@ -97,22 +94,15 @@ class Waits:
             print(f'Alert was not presented in {self._timeout} seconds')
             return None
 
-    def wait_until_iframe_is_presented_and_switch_to_it(self, iframe_name, max_try: int = MAX_TRY):
+    def wait_until_iframe_is_presented_and_switch_to_it(self, iframe_name,
+                                                        max_try: int = MAX_TRY_USED_WITH_DEFAULT_TIMEOUT):
         # pylint: disable=bare-except
-        logger = get_logger(INFO)
-        logger.info('Wait started')
-        i = 0
         while max_try:
-            i += 1
             try:
-                logger.info(f' {i} Try started started')
                 return self._wait.until(ec.frame_to_be_available_and_switch_to_it(iframe_name))
             except:
-                logger.info(f' {i} exception occured')
                 time.sleep(1)
-                logger.info(f' {i} sleep ended')
             max_try -= 1
-            logger.info(f' Max_try reduced: {max_try}')
         raise Exception('Iframe was unavailable within timeout')
 
     def switch_to_default_content(self):
@@ -122,7 +112,7 @@ class Waits:
         time.sleep(1)
         self._wait.until(lambda driver: self._driver.execute_script('return document.readyState') == 'complete')
 
-    def wait_until_url_contains(self, page_url, max_try: int = 60):
+    def wait_until_url_contains(self, page_url, max_try: int = MAX_TRY_WITHOUT_TIMEOUT):
         # pylint: disable=bare-except
         actual_url = self._driver.current_url
         while max_try:
@@ -135,7 +125,7 @@ class Waits:
             max_try -= 1
         raise Exception(f'Url didnt contain expected phrase within timeout, current url: "{actual_url}"')
 
-    def wait_until_url_starts_with(self, page_url, max_try: int = MAX_TRY):
+    def wait_until_url_starts_with(self, page_url, max_try: int = MAX_TRY_WITHOUT_TIMEOUT):
         # pylint: disable=bare-except
         actual_url = self._driver.current_url
         if 'https://' not in page_url:

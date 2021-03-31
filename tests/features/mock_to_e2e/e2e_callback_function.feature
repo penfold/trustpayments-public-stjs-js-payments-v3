@@ -4,11 +4,11 @@ Feature: Callback functionality
   I want to use card payments method
   In order to check callback popup in payment functionality
 
-#  Background:
-#    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
-#      | key                     | value           |
-#      | requesttypedescriptions | THREEDQUERY AUTH |
-#
+  Background:
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value           |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+
 #  @base_config @extended_tests_part_2
 #  Scenario Outline: Checking <action_code> callback functionality
 #    When User opens page with payment form

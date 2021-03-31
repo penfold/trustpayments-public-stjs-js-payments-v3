@@ -31,7 +31,7 @@ def step_impl(context):
         if 'Safari' in context.browser:
             accept_untrusted_pages_on_safari_browsers(context)
         payment_page.open_page_with_not_private_connection_check(CONFIGURATION.URL.BASE_URL)
-        payment_page.wait_for_security_code_iframe()
+        payment_page.wait_for_payment_form_to_load()
 
 
 @step('User opens minimal example page with payment form')
@@ -40,7 +40,7 @@ def step_impl(context):
     if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
     payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?')
-    payment_page.wait_for_security_code_iframe()
+    payment_page.wait_for_payment_form_to_load()
 
 
 @step('User opens payment page')
@@ -70,7 +70,7 @@ def step_impl(context, example_page: ExamplePageParam):
             updated_jwt_from_jsinit = decode_jwt_from_jsinit(jsinit_response[f'{row["jwtName"]}'])
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}'
         payment_page.open_page_with_not_private_connection_check(url)
-        payment_page.wait_for_security_code_iframe()
+        payment_page.wait_for_payment_form_to_load()
         context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
         context.test_data.update_jwt_from_jsinit = updated_jwt_from_jsinit
     else:
@@ -84,11 +84,11 @@ def step_impl(context, example_page: ExamplePageParam):
             payment_page.open_page_with_not_private_connection_check(url)
         else:
             payment_page.open_page_with_not_private_connection_check(url)
-            payment_page.wait_for_security_code_iframe()
+            payment_page.wait_for_payment_form_to_load()
 
 
 @step('User opens (?:example page|example page (?P<example_page>.+))')
-def step_impl_example(context, example_page: ExamplePageParam):
+def step_impl(context, example_page: ExamplePageParam):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'Safari' in context.browser:
         # payment_page.open_page_with_not_private_connection_check(MockUrl.LIBRARY_URL.value)
@@ -114,8 +114,7 @@ def step_impl_example(context, example_page: ExamplePageParam):
         payment_page.switch_to_example_page_parent_iframe()
 
     if 'e2e_config_submit_on_error_invalid_jwt' not in context.scenario.tags:
-        payment_page.wait_for_security_code_iframe()
-        payment_page.wait_for_pay_button_to_be_active()
+        payment_page.wait_for_payment_form_to_load()
 
 
 @step('User opens page (?P<example_page>.+) and jwt (?P<jwt_config>.+) with additional attributes')
@@ -141,7 +140,7 @@ def step_impl(context, html_page):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     url = f'{CONFIGURATION.URL.BASE_URL}/{html_page}?{context.inline_config}'
     payment_page.open_page_with_not_private_connection_check(url)
-    payment_page.wait_for_security_code_iframe()
+    payment_page.wait_for_payment_form_to_load()
 
 
 @then('User remains on checkout page')
@@ -169,7 +168,7 @@ def step_impl(context, language):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     jwt = payment_page.get_translation_from_json(language, 'jwt')
     payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}?jwt={jwt}')
-    payment_page.wait_for_security_code_iframe()
+    payment_page.wait_for_payment_form_to_load()
 
 
 @step('User changes minimal example page language to "(?P<language>.+)"')
@@ -178,7 +177,7 @@ def step_impl(context, language):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     jwt = payment_page.get_translation_from_json(language, 'jwt')
     payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?jwt={jwt}')
-    payment_page.wait_for_security_code_iframe()
+    payment_page.wait_for_payment_form_to_load()
 
 
 def accept_untrusted_pages_on_safari_browsers(context):

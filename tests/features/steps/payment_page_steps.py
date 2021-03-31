@@ -42,22 +42,16 @@ def step_impl(context):
     payment_page.wait_for_payment_form_to_load()
 
 
-@step('User waits for security code form field to be displayed')
-def step_impl(context):
+@step('User will see that notification frame has "(?P<color>.+)" color')
+def step_impl(context, color):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.wait_for_security_code_iframe()
+    payment_page.validate_notification_frame_color(color)
 
 
 @step('User waits for Pay button to be active')
 def step_impl(context):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     payment_page.wait_for_pay_button_to_be_active()
-
-
-@step('User will see that notification frame has "(?P<color>.+)" color')
-def step_impl(context, color):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
-    payment_page.validate_notification_frame_color(color)
 
 
 @step('User clicks Pay button')

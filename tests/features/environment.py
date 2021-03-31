@@ -47,8 +47,9 @@ def disable_headless_for_visa_checkout(context):
 
 def before_scenario(context, scenario):
     """Run before each scenario"""
-    add_to_shared_dict('assertion_message', 'Scenario execution error, for details check gitlab log')
     LOGGER.info('BEFORE SCENARIO')
+    clear_shared_dict()
+    add_to_shared_dict('assertion_message', 'Scenario execution error, for details check gitlab log')
     if context.configuration.REMOTE:
         context.configuration.BROWSER = context.configuration.REMOTE_BROWSER
     disable_headless_for_visa_checkout(context)
@@ -68,7 +69,7 @@ def before_scenario(context, scenario):
     scenario.name = '%s executed on %s' % (scenario.name, context.browser.upper())
     LOGGER.info(scenario.name)
     validate_if_proper_browser_is_set_for_test(context, scenario)
-    clear_shared_dict()
+
 
 
 def after_scenario(context, scenario):
