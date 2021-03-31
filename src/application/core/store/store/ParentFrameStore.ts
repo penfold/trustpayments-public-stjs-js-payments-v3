@@ -7,7 +7,7 @@ import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 @Service()
 export class ParentFrameStore extends Store<IParentFrameState> {
   private static readonly INITIAL_STATE: IParentFrameState = {
-    storage: {}
+    storage: {},
   };
 
   constructor(messageBus: IMessageBus) {

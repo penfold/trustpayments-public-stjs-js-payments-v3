@@ -17,7 +17,7 @@ export class AnimatedCard {
       .subscribe(locale => {
         this.card = new Card({
           locale,
-          animatedCardContainer: 'st-animated-card'
+          animatedCardContainer: 'st-animated-card',
         });
         this.initSubscribers();
       });

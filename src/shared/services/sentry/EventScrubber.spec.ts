@@ -14,16 +14,16 @@ describe('EventScrubber', () => {
       extra: {
         config: {
           jwt: 'some-long-jwt-value',
-          foo: 'bar'
-        }
-      }
+          foo: 'bar',
+        },
+      },
     };
 
     const { config } = eventScrubber.scrub(event).extra;
 
     expect(config).toEqual({
       jwt: '*****',
-      foo: 'bar'
+      foo: 'bar',
     });
   });
 
@@ -32,8 +32,8 @@ describe('EventScrubber', () => {
     const event: Event = {
       request: {
         url: urlWithJwt('some-long-jwt'),
-        query_string: 'jwt=some-long-jwt'
-      }
+        query_string: 'jwt=some-long-jwt',
+      },
     };
 
     const result = eventScrubber.scrub(event);
@@ -45,7 +45,7 @@ describe('EventScrubber', () => {
   it('filters out gateway errors', () => {
     const event: Event = {};
     const hint: EventHint = {
-      originalException: new GatewayError()
+      originalException: new GatewayError(),
     };
 
     expect(eventScrubber.scrub(event, hint)).toBeNull();

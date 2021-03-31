@@ -12,7 +12,7 @@ export class Translator implements ITranslator {
     i18next.init({
       debug: false,
       lng: 'en_GB',
-      resources: this.translationProvider.getResources() as Resource
+      resources: this.translationProvider.getResources() as Resource,
     });
   }
 

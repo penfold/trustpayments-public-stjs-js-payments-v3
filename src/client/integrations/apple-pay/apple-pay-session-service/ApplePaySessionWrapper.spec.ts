@@ -12,7 +12,7 @@ describe('ApplePaySessionWrapper', () => {
     currencyCode: 'GBP',
     merchantCapabilities: [],
     supportedNetworks: [],
-    total: { amount: '123', label: '' }
+    total: { amount: '123', label: '' },
   };
 
   let windowMock: WindowType;

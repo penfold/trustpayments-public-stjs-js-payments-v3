@@ -72,8 +72,8 @@ describe('PaymentController', () => {
         type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
         data: {
           name: 'foo',
-          config
-        }
+          config,
+        },
       });
 
       verify(fooPaymentMethodMock.init(config)).once();
@@ -87,8 +87,8 @@ describe('PaymentController', () => {
         type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
         data: {
           name: 'nonexisting',
-          config
-        }
+          config,
+        },
       });
 
       expect(Debug.error).toHaveBeenCalledWith(
@@ -107,8 +107,8 @@ describe('PaymentController', () => {
         type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
         data: {
           name: 'foo',
-          config
-        }
+          config,
+        },
       });
 
       expect(Debug.error).toHaveBeenCalledWith('Payment method initialization failed: foo', initializationError);
@@ -125,16 +125,16 @@ describe('PaymentController', () => {
         type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
         data: {
           name: 'foo',
-          config
-        }
+          config,
+        },
       });
 
       messageBus.publish<IInitPaymentMethod<typeof config>>({
         type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
         data: {
           name: 'bar',
-          config
-        }
+          config,
+        },
       });
 
       zip(result1, result2).subscribe(() => {
@@ -156,16 +156,16 @@ describe('PaymentController', () => {
         type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
         data: {
           name: 'foo',
-          config
-        }
+          config,
+        },
       });
 
       messageBus.publish<IInitPaymentMethod<typeof config>>({
         type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
         data: {
           name: 'bar',
-          config
-        }
+          config,
+        },
       });
 
       verify(fooPaymentMethodMock.init(config)).once();
@@ -184,8 +184,8 @@ describe('PaymentController', () => {
         type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
         data: {
           name: 'foo',
-          data
-        }
+          data,
+        },
       });
 
       verify(fooPaymentMethodMock.start(data)).once();
@@ -199,8 +199,8 @@ describe('PaymentController', () => {
         type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
         data: {
           name: 'nonexisting',
-          data
-        }
+          data,
+        },
       });
 
       verify(paymentResultHandlerMock.handle(anything())).never();
@@ -220,8 +220,8 @@ describe('PaymentController', () => {
         type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
         data: {
           name: 'foo',
-          data
-        }
+          data,
+        },
       });
 
       verify(paymentResultHandlerMock.handle(anything())).never();
@@ -236,8 +236,8 @@ describe('PaymentController', () => {
         type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
         data: {
           name: 'foo',
-          config
-        }
+          config,
+        },
       });
 
       verify(fooPaymentMethodMock.init(anything())).never();
@@ -251,8 +251,8 @@ describe('PaymentController', () => {
         type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
         data: {
           name: 'foo',
-          data
-        }
+          data,
+        },
       });
 
       verify(fooPaymentMethodMock.start(anything())).never();
@@ -270,16 +270,16 @@ describe('PaymentController', () => {
         type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
         data: {
           name: 'foo',
-          data
-        }
+          data,
+        },
       });
 
       messageBus.publish<IStartPaymentMethod<typeof data>>({
         type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
         data: {
           name: 'bar',
-          data
-        }
+          data,
+        },
       });
 
       verify(fooPaymentMethodMock.start(data)).once();

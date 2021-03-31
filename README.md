@@ -37,9 +37,7 @@ Not specified yet
 - [npm](https://www.npmjs.com/)
 - [Sass (SCSS + BEM)](https://sass-lang.com/)
 - [PostCSS](https://postcss.org/)
-- [Prettier](https://prettier.io/)
 - [Stylelint](https://stylelint.io/)
-- [TSLint](https://palantir.github.io/tslint/)
 - [ESLint](https://eslint.org/)
 
 ##### CI/CD:

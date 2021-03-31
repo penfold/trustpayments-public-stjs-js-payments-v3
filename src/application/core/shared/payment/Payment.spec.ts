@@ -67,12 +67,12 @@ describe('Payment', () => {
 
     it('should send remaining request types with card and merchant data', async () => {
       await instance.processPayment([RequestType.AUTH], card, {
-        merchant: 'data'
+        merchant: 'data',
       });
       // @ts-ignore
       expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
         ...card,
-        merchant: 'data'
+        merchant: 'data',
       });
     });
 
@@ -82,14 +82,14 @@ describe('Payment', () => {
       when(cybertonica.getTransactionId()).thenResolve(cybertonicaTid);
 
       await instance.processPayment([RequestType.AUTH], card, {
-        merchant: 'data'
+        merchant: 'data',
       });
 
       // @ts-ignore
       expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
         ...card,
         merchant: 'data',
-        fraudcontroltransactionid: cybertonicaTid
+        fraudcontroltransactionid: cybertonicaTid,
       });
     });
 
@@ -103,7 +103,7 @@ describe('Payment', () => {
           customeroutput: CustomerOutput.THREEDREDIRECT,
           cachetoken: 'foobar',
           errorcode: '0',
-          threedresponse: 'xyzzzz'
+          threedresponse: 'xyzzzz',
         } as unknown) as IThreeDQueryResponse
       );
       // @ts-ignore
@@ -111,11 +111,11 @@ describe('Payment', () => {
         ...card,
         merchant: 'data',
         cachetoken: 'foobar',
-        threedresponse: 'xyzzzz'
+        threedresponse: 'xyzzzz',
       });
     });
 
-    it('should not send remaining request types when previous response has RESULT customeroutput ', async () => {
+    it('should not send remaining request types when previous response has RESULT customeroutput', async () => {
       await instance.processPayment(
         [RequestType.AUTH, RequestType.RISKDEC],
         card,
@@ -125,7 +125,7 @@ describe('Payment', () => {
           customeroutput: CustomerOutput.RESULT,
           cachetoken: 'foobar',
           threedresponse: 'xyzzzz',
-          errorcode: '0'
+          errorcode: '0',
         } as unknown) as IThreeDQueryResponse
       );
 
@@ -133,14 +133,14 @@ describe('Payment', () => {
       expect(instance.stTransport.sendRequest).not.toHaveBeenCalled();
     });
 
-    it('should not send remaining request types when previous response has TRYAGAIN customeroutput ', done => {
+    it('should not send remaining request types when previous response has TRYAGAIN customeroutput', done => {
       instance
         .processPayment([RequestType.AUTH, RequestType.RISKDEC], card, { pan: 'overridden', merchant: 'data' }, ({
           requesttypescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.TRYAGAIN,
           cachetoken: 'foobar',
           threedresponse: 'xyzzzz',
-          errorcode: '0'
+          errorcode: '0',
         } as unknown) as IThreeDQueryResponse)
         .catch(() => {
           // @ts-ignore
@@ -156,7 +156,7 @@ describe('Payment', () => {
           customeroutput: CustomerOutput.THREEDREDIRECT,
           cachetoken: 'foobar',
           threedresponse: 'xyzzzz',
-          errorcode: '1234'
+          errorcode: '1234',
         } as unknown) as IThreeDQueryResponse)
         .catch(() => {
           // @ts-ignore
@@ -167,39 +167,39 @@ describe('Payment', () => {
 
     it('should send AUTH request with wallet', async () => {
       await instance.processPayment([RequestType.AUTH], wallet, {
-        merchant: 'data'
+        merchant: 'data',
       });
       // @ts-ignore
       expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
         walletsource: 'APPLEPAY',
         wallettoken: 'encryptedpaymentdata',
-        merchant: 'data'
+        merchant: 'data',
       });
     });
 
     it('should send AUTH request with wallet and additional data', async () => {
       await instance.processPayment([RequestType.AUTH], wallet, {
         wallettoken: 'overridden',
-        merchant: 'data'
+        merchant: 'data',
       });
       // @ts-ignore
       expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
         walletsource: 'APPLEPAY',
         wallettoken: 'encryptedpaymentdata',
-        merchant: 'data'
+        merchant: 'data',
       });
     });
 
     it('should send CACHETOKENISE request with wallet and additional data', async () => {
       await instance.processPayment([RequestType.CACHETOKENISE], wallet, {
         wallettoken: 'overridden',
-        merchant: 'data'
+        merchant: 'data',
       });
       // @ts-ignore
       expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
         walletsource: 'APPLEPAY',
         wallettoken: 'encryptedpaymentdata',
-        merchant: 'data'
+        merchant: 'data',
       });
     });
 
@@ -207,7 +207,7 @@ describe('Payment', () => {
       const response: IThreeDQueryResponse = ({
         requesttypedescription: 'THREEDQUERY',
         threedresponse: 'foobar',
-        jwt: 'jwt'
+        jwt: 'jwt',
       } as unknown) as IThreeDQueryResponse;
 
       const stCodecSpy = spy(StCodec);
@@ -222,7 +222,7 @@ describe('Payment', () => {
     it('should not publish response if last request type is not TDQ', async () => {
       const response: IThreeDQueryResponse = ({
         requesttypedescription: 'RISKDEC',
-        jwt: 'jwt'
+        jwt: 'jwt',
       } as unknown) as IThreeDQueryResponse;
 
       const stCodecSpy = spy(StCodec);
@@ -237,7 +237,7 @@ describe('Payment', () => {
     it('should not publish response if last request type is TDQ but there is no threedresponse', async () => {
       const response: IThreeDQueryResponse = ({
         requesttypedescription: 'THREEDQUERY',
-        jwt: 'jwt'
+        jwt: 'jwt',
       } as unknown) as IThreeDQueryResponse;
 
       const stCodecSpy = spy(StCodec);
@@ -265,7 +265,7 @@ describe('Payment', () => {
           walletsource: 'APPLEPAY',
           walletmerchantid: '123456789',
           walletvalidationurl: 'https://example.com',
-          walletrequestdomain: 'https://example2.com'
+          walletrequestdomain: 'https://example2.com',
         });
         expect(value).toEqual(walletVerifyResponseMock);
         done();
@@ -277,28 +277,27 @@ describe('Payment', () => {
 function paymentFixture() {
   const jwt =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0ZXN0X2p3dF9pc3N1ZXIiLCJwYXlsb2FkIjp7InNpdGVyZWZlcmVuY2UiOiJleGFtcGxlMTIzNDUiLCJiYXNlYW1vdW50IjoiMTAwMCIsImN1cnJlbmN5aXNvM2EiOiJHQlAifSwiaWF0IjoxNTE2MjM5MDIyfQ.jPuLMHxK3fznVddzkRoYC94hgheBXI1Y7zHAr7qNCig';
-  let instance: Payment;
   const cachetoken = 'somecachetoken';
   const cybertonicaMock = mock(Cybertonica);
   const notificationService = mock(NotificationService);
   when(cybertonicaMock.getTransactionId()).thenResolve(undefined);
   Container.set(Cybertonica, mockInstance(cybertonicaMock));
   Container.set(NotificationService, mockInstance(notificationService));
-  instance = new Payment();
+  const instance: Payment = new Payment();
   const card = {
     expirydate: '10/22',
     pan: '4111111111111111',
-    securitycode: '123'
+    securitycode: '123',
   };
   const wallet = {
     walletsource: 'APPLEPAY',
-    wallettoken: 'encryptedpaymentdata'
+    wallettoken: 'encryptedpaymentdata',
   };
   const walletverify = {
     walletsource: 'APPLEPAY',
     walletmerchantid: '123456789',
     walletvalidationurl: 'https://example.com',
-    walletrequestdomain: 'https://example2.com'
+    walletrequestdomain: 'https://example2.com',
   };
   return { card, wallet, walletverify, instance, jwt, cachetoken, notificationService, cybertonicaMock };
 }

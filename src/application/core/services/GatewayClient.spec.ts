@@ -27,13 +27,13 @@ describe('GatewayClient', () => {
       errormessage: '',
       requesttypedescription: 'JSINIT',
       threedinit: 'bar',
-      transactionstartedtimestamp: ''
+      transactionstartedtimestamp: '',
     };
 
     beforeEach(() => {
       when(transportMock.sendRequest(deepEqual(threeDInitRequest))).thenResolve({
         jwt: 'jwt',
-        response: threeDInitResponse
+        response: threeDInitResponse,
       });
     });
 
@@ -47,13 +47,13 @@ describe('GatewayClient', () => {
     it('throws error when jsinit response has error code != 0', () => {
       const errorResponse = {
         ...threeDInitResponse,
-        errorcode: '123'
+        errorcode: '123',
       };
 
       beforeEach(() => {
         when(transportMock.sendRequest(deepEqual(threeDInitRequest))).thenResolve({
           jwt: 'jwt',
-          response: errorResponse
+          response: errorResponse,
         });
       });
 
@@ -61,7 +61,7 @@ describe('GatewayClient', () => {
         error: response => {
           expect(response).toBe(errorResponse);
           verify(messageBusMock.publish(anything())).never();
-        }
+        },
       });
     });
   });
@@ -79,13 +79,13 @@ describe('GatewayClient', () => {
       jwt: '',
       requesttypescription: 'THREEDQUERY',
       threedpayload: '',
-      transactionreference: ''
+      transactionreference: '',
     };
 
     beforeEach(() => {
       when(transportMock.sendRequest(deepEqual(threeDQueryRequest))).thenResolve({
         jwt: 'jwt',
-        response: threeDQueryResponse
+        response: threeDQueryResponse,
       });
     });
 

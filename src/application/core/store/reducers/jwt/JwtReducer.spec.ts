@@ -15,7 +15,7 @@ describe('JwtReducer', () => {
 
     expect(result).toEqual({
       jwt: 'newjwt',
-      originalJwt: 'newjwt'
+      originalJwt: 'newjwt',
     });
   });
 
@@ -25,7 +25,7 @@ describe('JwtReducer', () => {
 
     expect(result).toEqual({
       jwt: 'newjwt',
-      originalJwt: 'bar'
+      originalJwt: 'bar',
     });
   });
 
@@ -35,7 +35,7 @@ describe('JwtReducer', () => {
 
     expect(result).toEqual({
       jwt: 'bar',
-      originalJwt: 'bar'
+      originalJwt: 'bar',
     });
   });
 

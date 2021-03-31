@@ -47,7 +47,7 @@ export class TranslatorWithMerchantTranslations implements ITranslator {
   }
 
   translate(text: string): string {
-    let json: any;
+    let json: Record<string, string>;
 
     try {
       const translations: string = this.storage.getItem('merchantTranslations');

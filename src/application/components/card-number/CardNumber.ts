@@ -19,7 +19,7 @@ import {
   CARD_NUMBER_INPUT,
   CARD_NUMBER_LABEL,
   CARD_NUMBER_MESSAGE,
-  CARD_NUMBER_WRAPPER
+  CARD_NUMBER_WRAPPER,
 } from '../../core/models/constants/Selectors';
 import { ITranslator } from '../../core/shared/translator/ITranslator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
@@ -79,12 +79,12 @@ export class CardNumber extends Input {
         styler.addStyles([
           {
             elementSelector: '#st-card-number',
-            classList: ['st-card-number--lined-up']
+            classList: ['st-card-number--lined-up'],
           },
           {
             elementSelector: '#st-card-number-label',
-            classList: ['card-number__label--required', 'lined-up']
-          }
+            classList: ['card-number__label--required', 'lined-up'],
+          },
         ]);
       }
 
@@ -98,10 +98,10 @@ export class CardNumber extends Input {
             inlineStyles: [
               {
                 property: 'padding',
-                value: `${outlineSize ? outlineSize : 3}px`
-              }
-            ]
-          }
+                value: `${outlineSize ? outlineSize : 3}px`,
+              },
+            ],
+          },
         ]);
       }
 
@@ -113,10 +113,10 @@ export class CardNumber extends Input {
             inlineStyles: [
               {
                 property: 'color',
-                value
-              }
-            ]
-          }
+                value,
+              },
+            ],
+          },
         ]);
       }
 
@@ -183,7 +183,7 @@ export class CardNumber extends Input {
     const { value } = this.getState();
     const messageBusEvent: IMessageBusEvent = {
       data: this._getSecurityCodeLength(value),
-      type: MessageBus.EVENTS.CHANGE_SECURITY_CODE_LENGTH
+      type: MessageBus.EVENTS.CHANGE_SECURITY_CODE_LENGTH,
     };
     this.messageBus.publish(messageBusEvent);
   }
@@ -246,7 +246,7 @@ export class CardNumber extends Input {
     return {
       formattedValue: this._cardNumberFormatted,
       validity,
-      value: this._cardNumberValue
+      value: this._cardNumberValue,
     };
   }
 
@@ -273,7 +273,6 @@ export class CardNumber extends Input {
         this._inputElement.setAttribute(CardNumber.DISABLED_ATTRIBUTE, 'true');
         this._inputElement.classList.add(CardNumber.DISABLED_CLASS);
       } else {
-        // @ts-ignore
         this._inputElement.removeAttribute(CardNumber.DISABLED_ATTRIBUTE);
         this._inputElement.classList.remove(CardNumber.DISABLED_CLASS);
       }
@@ -286,7 +285,7 @@ export class CardNumber extends Input {
     const formState = isCardPiba ? FormState.BLOCKED : FormState.AVAILABLE;
     const messageBusEventPiba: IMessageBusEvent = {
       data: { formState, isCardPiba },
-      type: MessageBus.EVENTS.IS_CARD_WITHOUT_CVV
+      type: MessageBus.EVENTS.IS_CARD_WITHOUT_CVV,
     };
     this.messageBus.publish(messageBusEventPiba);
   }
@@ -295,12 +294,12 @@ export class CardNumber extends Input {
     const { value, validity } = this._getCardNumberFieldState();
     const messageBusEvent: IMessageBusEvent = {
       data: this._getCardNumberFieldState(),
-      type: MessageBus.EVENTS.CHANGE_CARD_NUMBER
+      type: MessageBus.EVENTS.CHANGE_CARD_NUMBER,
     };
     if (validity) {
       const binProcessEvent: IMessageBusEvent = {
         data: CardNumber._getCardNumberForBinProcess(value),
-        type: MessageBus.EVENTS_PUBLIC.BIN_PROCESS
+        type: MessageBus.EVENTS_PUBLIC.BIN_PROCESS,
       };
       this.messageBus.publish(binProcessEvent, true);
     }

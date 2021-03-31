@@ -19,7 +19,7 @@ describe('DeviceSupport', () => {
     ['15', 'iOS', false],
     ['NT 10.0', 'Windows', true],
     ['1111', 'test', true],
-    [undefined, 'test', false]
+    [undefined, 'test', false],
   ]).it('should ', (version: string, name: string, isSupported: boolean) => {
     expect(deviceSupport.isDeviceSupported(version, name)).toEqual(isSupported);
   });

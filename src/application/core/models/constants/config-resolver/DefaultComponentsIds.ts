@@ -4,7 +4,7 @@ import {
   CARD_NUMBER_INPUT_SELECTOR,
   EXPIRATION_DATE_INPUT_SELECTOR,
   NOTIFICATION_FRAME_ID,
-  SECURITY_CODE_INPUT_SELECTOR
+  SECURITY_CODE_INPUT_SELECTOR,
 } from '../Selectors';
 
 export const DefaultComponentsIds: IComponentsIds = {
@@ -12,5 +12,5 @@ export const DefaultComponentsIds: IComponentsIds = {
   cardNumber: CARD_NUMBER_INPUT_SELECTOR,
   expirationDate: EXPIRATION_DATE_INPUT_SELECTOR,
   notificationFrame: NOTIFICATION_FRAME_ID,
-  securityCode: SECURITY_CODE_INPUT_SELECTOR
+  securityCode: SECURITY_CODE_INPUT_SELECTOR,
 };

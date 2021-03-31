@@ -17,7 +17,7 @@ describe('ApplePayNetworksService', () => {
   it(`setSupportedNetworks() should check stage 2 network`, () => {
     expect(applePayNetworksService.setSupportedNetworks(4, ['amex', 'cartesBancaires', 'mada'])).toEqual([
       'amex',
-      'cartesBancaires'
+      'cartesBancaires',
     ]);
     expect(applePayNetworksService.setSupportedNetworks(4, ['mada'])).toEqual([]);
   });
@@ -25,11 +25,11 @@ describe('ApplePayNetworksService', () => {
   it(`setSupportedNetworks() should check stage 3 network`, () => {
     expect(applePayNetworksService.setSupportedNetworks(5, ['amex', 'cartesBancaires', 'mada'])).toEqual([
       'amex',
-      'mada'
+      'mada',
     ]);
     expect(applePayNetworksService.setSupportedNetworks(6, ['amex', 'cartesBancaires', 'mada'])).toEqual([
       'amex',
-      'mada'
+      'mada',
     ]);
   });
 });

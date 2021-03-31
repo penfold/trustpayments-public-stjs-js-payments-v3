@@ -38,6 +38,6 @@ export interface IConfig {
   submitOnError?: boolean;
   submitOnSuccess?: boolean;
   successCallback?: any;
-  translations?: {};
+  translations?: Record<string, unknown>;
   visaCheckout?: IVisaCheckoutConfig;
 }

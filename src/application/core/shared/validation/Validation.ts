@@ -13,7 +13,7 @@ import { Frame } from '../frame/Frame';
 import {
   VALIDATION_ERROR,
   VALIDATION_ERROR_FIELD_IS_REQUIRED,
-  VALIDATION_ERROR_PATTERN_MISMATCH
+  VALIDATION_ERROR_PATTERN_MISMATCH,
 } from '../../models/constants/Translations';
 import { MessageBus } from '../message-bus/MessageBus';
 import { CARD_NUMBER_INPUT } from '../../models/constants/Selectors';
@@ -76,7 +76,7 @@ export class Validation {
   public static returnInputAndErrorContainerPair(item: HTMLInputElement) {
     return {
       inputElement: document.getElementById(item.id) as HTMLInputElement,
-      messageElement: document.getElementById(item.id).nextSibling as HTMLElement
+      messageElement: document.getElementById(item.id).nextSibling as HTMLElement,
     };
   }
 
@@ -97,7 +97,7 @@ export class Validation {
   private static BACKEND_ERROR_FIELDS_NAMES = {
     cardNumber: 'pan',
     expirationDate: 'expirydate',
-    securityCode: 'securitycode'
+    securityCode: 'securitycode',
   };
 
   private static _setValidateEvent(errordata: string, event: IMessageBusEvent): IMessageBusEvent {
@@ -167,14 +167,14 @@ export class Validation {
   public blockForm(state: FormState) {
     const messageBusEvent: IMessageBusEvent = {
       data: state,
-      type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM
+      type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
     };
     this._messageBus.publish(messageBusEvent, true);
   }
 
   public callSubmitEvent() {
     const messageBusEvent: IMessageBusEvent = {
-      type: MessageBus.EVENTS_PUBLIC.CALL_SUBMIT_EVENT
+      type: MessageBus.EVENTS_PUBLIC.CALL_SUBMIT_EVENT,
     };
     this._messageBus.publish(messageBusEvent, true);
   }
@@ -197,7 +197,7 @@ export class Validation {
     }
     return {
       card: this._card,
-      validity: isFormReadyToSubmit
+      validity: isFormReadyToSubmit,
     };
   }
 
@@ -205,7 +205,7 @@ export class Validation {
     const { errordata, errormessage } = StCodec.getErrorData(errorData);
     const validationEvent: IMessageBusEvent = {
       data: { field: errordata[0], message: errormessage },
-      type: Validation.CLEAR_VALUE
+      type: Validation.CLEAR_VALUE,
     };
 
     this._broadcastFormFieldError(errordata[0], validationEvent);
@@ -282,10 +282,10 @@ export class Validation {
     this._selectionRangeEnd = element.selectionEnd;
   }
 
-  public setFormValidity(state: any) {
+  public setFormValidity(state: Record<string, any>) {
     const validationEvent: IMessageBusEvent = {
       data: { ...state },
-      type: MessageBus.EVENTS.VALIDATE_FORM
+      type: MessageBus.EVENTS.VALIDATE_FORM,
     };
     this._messageBus.publish(validationEvent);
   }
@@ -403,7 +403,7 @@ export class Validation {
       this._card = {
         expirydate: formFields.expirationDate.value,
         pan: formFields.cardNumber.value,
-        securitycode: formFields.securityCode.value
+        securitycode: formFields.securityCode.value,
       };
     }
   }

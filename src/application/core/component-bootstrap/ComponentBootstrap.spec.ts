@@ -1,5 +1,5 @@
 import { FrameIdentifier } from '../../../shared/services/message-bus/FrameIdentifier';
-import Container, { ContainerInstance, Token } from 'typedi';
+import { ContainerInstance } from 'typedi';
 import { ComponentBootstrap } from './ComponentBootstrap';
 import { instance, mock, verify, when } from 'ts-mockito';
 import { CardNumber } from '../../components/card-number/CardNumber';
@@ -15,7 +15,7 @@ import {
   MessageBusToken,
   MessageSubscriberToken,
   StoreToken,
-  TranslatorToken
+  TranslatorToken,
 } from '../../../shared/dependency-injection/InjectionTokens';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { TranslatorWithMerchantTranslations } from '../shared/translator/TranslatorWithMerchantTranslations';

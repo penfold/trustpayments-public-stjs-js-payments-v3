@@ -15,7 +15,7 @@ describe('ResponseDecoderService', () => {
     status: 200,
     statusText: 'OK',
     headers: {},
-    config: {}
+    config: {},
   });
 
   beforeEach(() => {
@@ -48,7 +48,7 @@ describe('ResponseDecoderService', () => {
         iat: 1616074548,
         payload: undefined,
         aud: 'foo',
-        sitereference: 'bar'
+        sitereference: 'bar',
       });
 
       expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }))).toThrow(
@@ -63,10 +63,10 @@ describe('ResponseDecoderService', () => {
           requestreference: '123456',
           version: 'invalid-version',
           response: [{ foo: 'bar' }],
-          secrand: 'foobar'
+          secrand: 'foobar',
         },
         aud: 'foo',
-        sitereference: 'bar'
+        sitereference: 'bar',
       });
 
       expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }))).toThrow(
@@ -80,10 +80,10 @@ describe('ResponseDecoderService', () => {
         payload: {
           requestreference: '123456',
           version: '1.00',
-          secrand: 'foobar'
+          secrand: 'foobar',
         },
         aud: 'foo',
-        sitereference: 'bar'
+        sitereference: 'bar',
       });
 
       expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }))).toThrow(
@@ -98,10 +98,10 @@ describe('ResponseDecoderService', () => {
           requestreference: '123456',
           version: '1.00',
           response: [],
-          secrand: 'foobar'
+          secrand: 'foobar',
         },
         aud: 'foo',
-        sitereference: 'bar'
+        sitereference: 'bar',
       });
 
       expect(() => responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }))).toThrow(
@@ -118,22 +118,22 @@ describe('ResponseDecoderService', () => {
           response: [
             {
               aaa: 'aaa',
-              bbb: 'bbb'
+              bbb: 'bbb',
             },
             {
               ccc: 'ccc',
               ddd: 'ddd',
-              customeroutput: 'SUCCESS'
+              customeroutput: 'SUCCESS',
             },
             {
               eee: 'eee',
-              fff: 'fff'
-            }
+              fff: 'fff',
+            },
           ],
-          secrand: 'foobar'
+          secrand: 'foobar',
         },
         aud: 'foo',
-        sitereference: 'bar'
+        sitereference: 'bar',
       });
 
       const result = responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }));
@@ -142,7 +142,7 @@ describe('ResponseDecoderService', () => {
         ccc: 'ccc',
         ddd: 'ddd',
         customeroutput: 'SUCCESS',
-        jwt: 'somejwt'
+        jwt: 'somejwt',
       });
     });
 
@@ -155,21 +155,21 @@ describe('ResponseDecoderService', () => {
           response: [
             {
               aaa: 'aaa',
-              bbb: 'bbb'
+              bbb: 'bbb',
             },
             {
               ccc: 'ccc',
-              ddd: 'ddd'
+              ddd: 'ddd',
             },
             {
               eee: 'eee',
-              fff: 'fff'
-            }
+              fff: 'fff',
+            },
           ],
-          secrand: 'foobar'
+          secrand: 'foobar',
         },
         aud: 'foo',
-        sitereference: 'bar'
+        sitereference: 'bar',
       });
 
       const result = responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }));
@@ -177,7 +177,7 @@ describe('ResponseDecoderService', () => {
       expect(result).toEqual({
         eee: 'eee',
         fff: 'fff',
-        jwt: 'somejwt'
+        jwt: 'somejwt',
       });
     });
   });

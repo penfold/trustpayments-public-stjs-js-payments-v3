@@ -16,7 +16,6 @@ import no_NO from '../../../../translations/json/no_NO.json';
 import sv_SE from '../../../../translations/json/sv_SE.json';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
-import i18next, { Resource } from 'i18next';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set({ id: TranslatorToken, type: Translator });
@@ -33,7 +32,7 @@ describe('Translator', () => {
     fr_FR: { translation: fr_FR },
     nl_NL: { translation: nl_NL },
     no_NO: { translation: no_NO },
-    sv_SE: { translation: sv_SE }
+    sv_SE: { translation: sv_SE },
   };
 
   describe('changeLanguage()', () => {

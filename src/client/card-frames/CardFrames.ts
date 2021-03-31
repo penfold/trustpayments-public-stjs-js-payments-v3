@@ -13,7 +13,7 @@ import {
   EXPIRATION_DATE_COMPONENT_NAME,
   EXPIRATION_DATE_IFRAME,
   SECURITY_CODE_COMPONENT_NAME,
-  SECURITY_CODE_IFRAME
+  SECURITY_CODE_IFRAME,
 } from '../../application/core/models/constants/Selectors';
 import { Validation } from '../../application/core/shared/validation/Validation';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
@@ -81,7 +81,7 @@ export class CardFrames {
   constructor(
     jwt: string,
     origin: string,
-    componentIds: {},
+    componentIds: Record<string, any>,
     styles: IStyles,
     paymentTypes: string[],
     defaultPaymentType: string,
@@ -167,7 +167,7 @@ export class CardFrames {
         this.componentIds.cardNumber,
         this.componentIds.expirationDate,
         this.componentIds.securityCode,
-        this.componentIds.animatedCard
+        this.componentIds.animatedCard,
       ];
     } else if (this._onlyCvvConfiguration) {
       return [this.componentIds.securityCode];
@@ -177,7 +177,7 @@ export class CardFrames {
       return [
         this.componentIds.cardNumber, //
         this.componentIds.expirationDate,
-        this.componentIds.securityCode
+        this.componentIds.securityCode,
       ];
     }
   }
@@ -209,7 +209,7 @@ export class CardFrames {
   private _disableFormField(state: FormState, eventName: string, target: string): void {
     const messageBusEvent: IMessageBusEvent = {
       data: state,
-      type: eventName
+      type: eventName,
     };
     this._messageBus.publish(messageBusEvent);
   }
@@ -227,12 +227,12 @@ export class CardFrames {
     }
   }
 
-  private _initCardNumberFrame(styles: {}): void {
+  private _initCardNumberFrame(styles: Record<string, string>): void {
     this._cardNumber = this._iframeFactory.create(CARD_NUMBER_COMPONENT_NAME, CARD_NUMBER_IFRAME, styles, this.params);
     this.elementsToRegister.push(this._cardNumber);
   }
 
-  private _initExpiryDateFrame(styles: {}): void {
+  private _initExpiryDateFrame(styles: Record<string, string>): void {
     this._expirationDate = this._iframeFactory.create(
       EXPIRATION_DATE_COMPONENT_NAME,
       EXPIRATION_DATE_IFRAME,
@@ -242,7 +242,7 @@ export class CardFrames {
     this.elementsToRegister.push(this._expirationDate);
   }
 
-  private _initSecurityCodeFrame(styles: {}): void {
+  private _initSecurityCodeFrame(styles: Record<string, string>): void {
     this._securityCode = this._iframeFactory.create(
       SECURITY_CODE_COMPONENT_NAME,
       SECURITY_CODE_IFRAME,
@@ -300,7 +300,7 @@ export class CardFrames {
   private _onInput(): void {
     const messageBusEvent: IMessageBusEvent = {
       data: DomMethods.parseForm(this.formId),
-      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS
+      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS,
     };
     this._messageBus.publish(messageBusEvent);
   }
@@ -308,9 +308,9 @@ export class CardFrames {
   private _publishSubmitEvent(): void {
     const messageBusEvent: IMessageBusEvent = {
       data: {
-        fieldsToSubmit: this.fieldsToSubmit
+        fieldsToSubmit: this.fieldsToSubmit,
       },
-      type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM
+      type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
     };
     this._messageBus.publish(messageBusEvent, true);
   }
