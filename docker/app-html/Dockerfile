@@ -7,6 +7,7 @@ ARG LIBRARY_ARG
 # Copy source code and build artifacts
 COPY . .
 RUN python3 .cicd_scripts/other/generate_sitemap.py --source-dir dist/ --site-domain https://library.securetrading.net:8443
+RUN apt-get install -y --no-install-recommends g++
 RUN npm install --prefix example/html
 RUN npm run build:${BUILD_TYPE} --prefix example/html ${LIBRARY_ARG}
 
