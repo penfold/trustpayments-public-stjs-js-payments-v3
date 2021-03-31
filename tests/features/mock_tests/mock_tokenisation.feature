@@ -9,7 +9,7 @@ Feature: Tokenisation
     And User opens page with payment form
 
   @config_tokenisation_visa @extended_tests_part_2
-  @submit_cvv_only @skip_form_inputs_load_wait
+  @submit_cvv_only @skip_form_inputs_load_wait @MI
   Scenario: Tokenisation - successful payment by VISA card
     When User fills "SECURITY_CODE" field "123"
     And THREEDQUERY mock response is set to "ENROLLED_Y"

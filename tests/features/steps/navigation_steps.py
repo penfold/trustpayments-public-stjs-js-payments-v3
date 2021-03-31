@@ -34,6 +34,8 @@ def step_impl(context):
         payment_page.open_page_with_not_private_connection_check(CONFIGURATION.URL.BASE_URL)
         payment_page.wait_for_payment_form_inputs_to_load()
 
+    wait_for_form_load(context)
+
 
 @step('User opens minimal example page with payment form')
 def step_impl(context):
@@ -114,10 +116,7 @@ def step_impl(context, example_page: ExamplePageParam):
     if example_page is not None and 'IN_IFRAME' in example_page:
         payment_page.switch_to_example_page_parent_iframe()
 
-    if 'skip_form_inputs_load_wait' not in context.scenario.tags:
-        payment_page.wait_for_payment_form_inputs_to_load()
-    if 'skip_form_button_load_wait' not in context.scenario.tags:
-        payment_page.wait_for_pay_button_to_be_active()
+    wait_for_form_load(context)
 
 
 @step('User opens page (?P<example_page>.+) and jwt (?P<jwt_config>.+) with additional attributes')
@@ -189,3 +188,11 @@ def accept_untrusted_pages_on_safari_browsers(context):
     payment_page.open_page_with_not_private_connection_check(MockUrl.WEBSERVICES_STJS_URI.value)
     payment_page.open_page_with_not_private_connection_check(MockUrl.LIBRARY_URL.value)
     payment_page.open_page_with_not_private_connection_check(MockUrl.THIRDPARTY_URL.value)
+
+
+def wait_for_form_load(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    if 'skip_form_inputs_load_wait' not in context.scenario.tags:
+        payment_page.wait_for_payment_form_inputs_to_load()
+    if 'skip_form_button_load_wait' not in context.scenario.tags:
+        payment_page.wait_for_pay_button_to_be_active()
