@@ -189,7 +189,7 @@ Feature: Visa Checkout
     Then User will see payment status information: "Payment has been successfully processed"
     And AUTH request was sent only once without 'fraudcontroltransactionid' flag
 
-  @config_visa_base @parent_iframe @full_test @visa_test
+  @config_visa_base @parent_iframe @full_test @visa_test @skip_form_inputs_load_wait @skip_form_button_load_wait
   Scenario: Visa Checkout - successful payment when app is embedded in another iframe
     Given User opens page with payment form
     When User opens payment page
