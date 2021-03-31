@@ -71,8 +71,8 @@ def step_impl(context, example_page: ExamplePageParam):
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}'
         payment_page.open_page_with_not_private_connection_check(url)
         payment_page.wait_for_payment_form_to_load()
-        context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
-        context.test_data.update_jwt_from_jsinit = updated_jwt_from_jsinit
+        context.update_jwt = jwt  # test data replaced to check required value in assertion
+        context.update_jwt_from_jsinit = updated_jwt_from_jsinit
     else:
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}'
         if 'WITH_SPECIFIC_IFRAME' in example_page:

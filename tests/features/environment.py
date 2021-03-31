@@ -17,7 +17,6 @@ from utils.helpers.request_executor import mark_test_as_failed, set_scenario_nam
 from utils.logger import get_logger
 from utils.mock_handler import MockServer
 from utils.reporter import Reporter
-from utils.test_data import TestData
 from utils.visual_regression.screenshot_manager import ScreenshotManager
 from utils.waits import Waits
 
@@ -63,7 +62,6 @@ def before_scenario(context, scenario):
     context.page_factory = PageFactory(browser_executor=context.browser_executor, actions=actions,
                                        reporter=context.reporter, configuration=context.configuration,
                                        waits=context.waits)
-    context.test_data = TestData(configuration=context.configuration)
     context.session_id = context.browser_executor.get_session_id()
     context.language = 'en_GB'
     scenario.name = '%s executed on %s' % (scenario.name, context.browser.upper())

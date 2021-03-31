@@ -286,13 +286,13 @@ def step_impl(context, request_type):
     payment_page = context.page_factory.get_page(page_name='payment_methods')
     if 'WALLETVERIFY' in request_type and 'APPLE_PAY' in context.thirdparty:
         payment_page.validate_updated_jwt_in_request(request_type, MockUrl.APPLEPAY_MOCK_URI.value,
-                                                     context.test_data.update_jwt, 1)
+                                                     context.update_jwt, 1)
     elif 'VISA_CHECKOUT' in request_type:
         payment_page.validate_updated_jwt_in_request_for_visa(PaymentType.VISA_CHECKOUT.value,
-                                                              context.test_data.update_jwt_from_jsinit, 1)
+                                                              context.update_jwt_from_jsinit, 1)
     else:
         payment_page.validate_updated_jwt_in_request(request_type, MockUrl.GATEWAY_MOCK_URI.value,
-                                                     context.test_data.update_jwt, 1)
+                                                     context.update_jwt, 1)
 
 
 def stub_jsinit_request(context):
