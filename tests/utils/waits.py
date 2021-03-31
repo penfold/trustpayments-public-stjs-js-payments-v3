@@ -1,16 +1,19 @@
 """ This class consist all methods related with different waits
 """
 import time
+from logging import INFO
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
+from utils.logger import get_logger
+
 
 class Waits:
 
-    MAX_TRY = 30
+    MAX_TRY = 3
 
     def __init__(self, driver_factory, configuration):
         self._driver_factory = driver_factory
@@ -96,12 +99,20 @@ class Waits:
 
     def wait_until_iframe_is_presented_and_switch_to_it(self, iframe_name, max_try: int = MAX_TRY):
         # pylint: disable=bare-except
+        logger = get_logger(INFO)
+        logger.info('Wait started')
+        i = 0
         while max_try:
+            i += 1
             try:
+                logger.info(f' {i} Try started started')
                 return self._wait.until(ec.frame_to_be_available_and_switch_to_it(iframe_name))
             except:
+                logger.info(f' {i} exception occured')
                 time.sleep(1)
+                logger.info(f' {i} sleep ended')
             max_try -= 1
+            logger.info(f' Max_try reduced: {max_try}')
         raise Exception('Iframe was unavailable within timeout')
 
     def switch_to_default_content(self):
