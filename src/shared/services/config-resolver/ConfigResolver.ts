@@ -49,7 +49,7 @@ export class ConfigResolver {
       submitOnSuccess: this._getValueOrDefault(config.submitOnSuccess, DefaultConfig.submitOnSuccess),
       successCallback: this._getValueOrDefault(config.successCallback, DefaultConfig.successCallback),
       translations: this._getValueOrDefault(config.translations, DefaultConfig.translations),
-      visaCheckout: this._setVisaCheckoutConfig(config.visaCheckout)
+      visaCheckout: this._setVisaCheckoutConfig(config.visaCheckout),
     };
     if (!environment.production) {
       console.error(validatedConfig);
@@ -87,7 +87,7 @@ export class ConfigResolver {
         }
         return Object.keys(value).length ? value : defaultValue;
       default:
-        return Boolean(value) ? value : defaultValue;
+        return value ? value : defaultValue;
     }
   }
 
@@ -114,7 +114,7 @@ export class ConfigResolver {
       cardNumber: this._getValueOrDefault(config.cardNumber, DefaultComponentsIds.cardNumber),
       expirationDate: this._getValueOrDefault(config.expirationDate, DefaultComponentsIds.expirationDate),
       notificationFrame: this._getValueOrDefault(config.notificationFrame, DefaultComponentsIds.notificationFrame),
-      securityCode: this._getValueOrDefault(config.securityCode, DefaultComponentsIds.securityCode)
+      securityCode: this._getValueOrDefault(config.securityCode, DefaultComponentsIds.securityCode),
     };
   }
 
@@ -125,7 +125,7 @@ export class ConfigResolver {
     return {
       defaultPaymentType: this._getValueOrDefault(config.defaultPaymentType, DefaultComponents.defaultPaymentType),
       paymentTypes: this._getValueOrDefault(config.paymentTypes, DefaultComponents.paymentTypes),
-      startOnLoad: this._getValueOrDefault(config.startOnLoad, DefaultComponents.startOnLoad)
+      startOnLoad: this._getValueOrDefault(config.startOnLoad, DefaultComponents.startOnLoad),
     };
   }
 
@@ -136,7 +136,7 @@ export class ConfigResolver {
     return {
       pan: this._getValueOrDefault(config.pan, DefaultPlaceholders.pan),
       expirydate: this._getValueOrDefault(config.expirydate, DefaultPlaceholders.expirydate),
-      securitycode: this._getValueOrDefault(config.securitycode, DefaultPlaceholders.securitycode)
+      securitycode: this._getValueOrDefault(config.securitycode, DefaultPlaceholders.securitycode),
     };
   }
 

@@ -9,5 +9,5 @@ export const DefaultSubmitFields: string[] = [
   'orderreference',
   'settlestatus',
   'status',
-  'transactionreference'
+  'transactionreference',
 ];

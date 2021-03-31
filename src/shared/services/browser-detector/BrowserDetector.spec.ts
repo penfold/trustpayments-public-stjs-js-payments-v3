@@ -4,16 +4,15 @@ import { BrowserSupport } from './browser-support/BrowserSupport';
 import { DeviceSupport } from './device-support/DeviceSupport';
 
 describe('BrowserDetector', () => {
+  const windowMock: Window = mock<Window>();
   let browserDetector: BrowserDetector;
-  let windowMock: Window;
-  windowMock = mock<Window>();
   let browserSupport: BrowserSupport;
   let deviceSupport: DeviceSupport;
 
   beforeEach(() => {
     when(windowMock.navigator).thenReturn(({
       userAgent:
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36',
     } as unknown) as Navigator);
 
     browserSupport = mock(BrowserSupport);
@@ -27,7 +26,7 @@ describe('BrowserDetector', () => {
     expect(browserDetector.getBrowserInfo().browser).toEqual({
       name: 'Chrome',
       version: '88.0.4324.182',
-      isSupported: true
+      isSupported: true,
     });
   });
 
@@ -36,7 +35,7 @@ describe('BrowserDetector', () => {
       name: 'Windows',
       version: 'NT 10.0',
       versionName: '10',
-      isSupported: true
+      isSupported: true,
     });
   });
 

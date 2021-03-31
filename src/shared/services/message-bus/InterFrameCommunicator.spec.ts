@@ -1,7 +1,7 @@
 import { FrameIdentifier } from './FrameIdentifier';
 import { FrameAccessor } from './FrameAccessor';
 import { InterFrameCommunicator } from './InterFrameCommunicator';
-import { anyOfClass, anything, capture, instance, mock, spy, verify, when } from 'ts-mockito';
+import { anything, capture, instance, mock, spy, verify, when } from 'ts-mockito';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { environment } from '../../../environments/environment';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
@@ -49,7 +49,7 @@ describe('InterFrameCommunicator', () => {
     when(frameAccessorMock.getFrame('foobar')).thenReturn(foobarFrame);
     when(containerMock.has(CONFIG)).thenReturn(true);
     when(containerMock.get(CONFIG)).thenReturn({
-      origin: PARENT_FRAME_ORIGIN
+      origin: PARENT_FRAME_ORIGIN,
     });
   });
 
@@ -96,7 +96,7 @@ describe('InterFrameCommunicator', () => {
 
   describe('close', () => {
     it('should emit communicationClosed$ event', done => {
-      interFrameCommunicator.communicationClosed$.pipe(first()).subscribe(done);
+      interFrameCommunicator.communicationClosed$.pipe(first()).subscribe(() => done());
       interFrameCommunicator.close();
     });
   });
@@ -167,7 +167,7 @@ describe('InterFrameCommunicator', () => {
       communicatorSpy = spy(interFrameCommunicator);
     });
 
-    it('it listens to query messages and pass them to responders', done => {
+    it('listens to query messages and pass them to responders', done => {
       const fooResponder = jest.fn().mockImplementationOnce((event: IMessageBusEvent) => of({ type: 'BAR' }));
       const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
 
@@ -186,7 +186,7 @@ describe('InterFrameCommunicator', () => {
       });
     });
 
-    it('it processes all queries and doesnt cancel processing when new query arrives', done => {
+    it('processes all queries and doesnt cancel processing when new query arrives', done => {
       const fooResponder = (event: IMessageBusEvent) => timer(100).pipe(mapTo({ type: 'FOO_RESPONSE' }));
       const barResponder = (event: IMessageBusEvent) => of({ type: 'BAR_RESPONSE' });
       const fooQueryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');

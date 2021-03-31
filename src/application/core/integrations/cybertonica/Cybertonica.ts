@@ -1,5 +1,4 @@
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
-import { Translator } from '../../shared/translator/Translator';
 import { Service } from 'typedi';
 import { IAFCybertonica } from './IAFCybertonica';
 import { environment } from '../../../../environments/environment';
@@ -22,12 +21,10 @@ export class Cybertonica implements ICybertonica {
     return 'https://' + link.hostname;
   }
 
-  private translator: Translator;
   private tid: Promise<string> = Promise.resolve(undefined);
 
   constructor(private storage: BrowserLocalStorage) {
     this.storage.setItem(Cybertonica.TID_KEY, '');
-    this.translator = new Translator(this.storage.getItem(Cybertonica.LOCALE));
   }
 
   private _insertCybertonicaLibrary(): Promise<Element> {

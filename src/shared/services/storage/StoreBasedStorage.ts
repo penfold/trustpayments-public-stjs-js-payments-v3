@@ -27,12 +27,12 @@ export class StoreBasedStorage implements IStorage, ISynchronizedStorage {
     return storage[name];
   }
 
-  setItem(name: string, value: any): void {
+  setItem(name: string, value: string): void {
     this.setItemWithoutSync(name, value);
     this.interFrameCommunicator.send(
       {
         type: PUBLIC_EVENTS.STORAGE_SYNC,
-        data: { key: name, value: JSON.stringify(value) }
+        data: { key: name, value: JSON.stringify(value) },
       },
       MERCHANT_PARENT_FRAME
     );
@@ -52,7 +52,7 @@ export class StoreBasedStorage implements IStorage, ISynchronizedStorage {
   private setItemWithoutSync(name: string, value: string): void {
     this.messageBus.publish({
       type: PUBLIC_EVENTS.STORAGE_SET_ITEM,
-      data: { key: name, value }
+      data: { key: name, value },
     });
   }
 

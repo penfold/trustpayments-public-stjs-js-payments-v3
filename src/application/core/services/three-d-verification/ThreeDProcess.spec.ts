@@ -43,7 +43,7 @@ describe('ThreeDProcess', () => {
     when(tokenProviderMock.getTokens()).thenReturn(
       of({
         jwt: 'cardinal-jwt',
-        cacheToken: 'cardinal-cache-token'
+        cacheToken: 'cardinal-cache-token',
       })
     );
 
@@ -96,7 +96,7 @@ describe('ThreeDProcess', () => {
     const card: ICard = {
       pan: '4111111111111111',
       expirydate: '12/23',
-      securitycode: '123'
+      securitycode: '123',
     };
     const requestTypes = ['ACCOUNTCHECK', 'THREEDQUERY'];
     const merchantData: IMerchantData = { foo: 'bar', termurl: 'https://test.com' };
@@ -120,7 +120,7 @@ describe('ThreeDProcess', () => {
       when(tokenProviderMock.getTokens()).thenReturn(
         of({
           jwt: 'updated-cardinal-jwt',
-          cacheToken: 'updated-cache-token'
+          cacheToken: 'updated-cache-token',
         })
       );
 
@@ -155,7 +155,7 @@ describe('ThreeDProcess', () => {
       when(gatewayClientMock.threedQuery(anything())).thenReturn(
         of({
           enrolled: 'U',
-          acsurl: undefined
+          acsurl: undefined,
         } as IThreeDQueryResponse)
       );
 
@@ -172,7 +172,7 @@ describe('ThreeDProcess', () => {
       when(gatewayClientMock.threedQuery(anything())).thenReturn(
         of({
           enrolled: 'Y',
-          acsurl: undefined
+          acsurl: undefined,
         } as IThreeDQueryResponse)
       );
 
@@ -198,14 +198,14 @@ describe('ThreeDProcess', () => {
         acquirerresponsemessage: 'Test message',
         acquirertransactionreference: 'foobar-123',
         threedpayload: 'abc3dpayload',
-        transactionreference: ''
+        transactionreference: '',
       };
 
       const verificationData: IVerificationData = {
         transactionId: 'foobar-123',
         jwt: 'cardinal-jwt',
         acsUrl: 'https://acs.url',
-        payload: 'abc3dpayload'
+        payload: 'abc3dpayload',
       };
 
       const verificationResult: IVerificationResult = {
@@ -213,18 +213,18 @@ describe('ThreeDProcess', () => {
         actionCode: ActionCode.SUCCESS,
         errorNumber: 0,
         errorDescription: '',
-        jwt: 'validation-result-jwt'
+        jwt: 'validation-result-jwt',
       };
 
       const finalResult: IThreeDQueryResponse = {
         ...threedqueryResponse,
         cachetoken: 'cardinal-cache-token',
-        threedresponse: 'validation-result-jwt'
+        threedresponse: 'validation-result-jwt',
       };
 
       const cardinalTokens: IThreeDSTokens = {
         jwt: 'cardinal-jwt',
-        cacheToken: 'cardinal-cache-token'
+        cacheToken: 'cardinal-cache-token',
       };
 
       reset(gatewayClientMock);

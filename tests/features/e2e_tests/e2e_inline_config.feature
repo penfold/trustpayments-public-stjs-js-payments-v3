@@ -38,6 +38,8 @@ Feature: Payment form styles check
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page
+    And User waits for whole form to be displayed
+    And User waits for Pay button to be active
     Then User will see that Pay button is translated into "KupTeraz!"
 
   @inline_config

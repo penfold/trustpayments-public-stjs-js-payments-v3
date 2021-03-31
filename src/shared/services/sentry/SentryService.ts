@@ -45,7 +45,7 @@ export class SentryService {
       whitelistUrls,
       environment: this.sentryContext.getEnvironmentName(),
       release: this.sentryContext.getReleaseVersion(),
-      beforeSend: (event: Event, hint?: EventHint) => this.eventScrubber.scrub(event, hint)
+      beforeSend: (event: Event, hint?: EventHint) => this.eventScrubber.scrub(event, hint),
     });
   }
 }

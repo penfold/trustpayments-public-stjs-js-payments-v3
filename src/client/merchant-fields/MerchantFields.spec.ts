@@ -1,6 +1,17 @@
 import { MerchantFields } from './MerchantFields';
+import Container from 'typedi';
+import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../application/core/shared/translator/Translator';
+import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
+import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 
 jest.mock('./../../application/core/shared/notification/Notification');
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('MerchantField', () => {
   describe('init()', () => {
@@ -22,7 +33,7 @@ describe('MerchantField', () => {
       const email = document.getElementById('example-form-email');
       // @ts-ignore
       expect(instance._getMerchantInputs()).toEqual({
-        inputs: [firstName, email]
+        inputs: [firstName, email],
       });
     });
   });

@@ -29,9 +29,9 @@ describe('VisaCheckout', () => {
       paymentRequest: {
         currencyCode: '',
         subtotal: '',
-        total: ''
-      }
-    }
+        total: '',
+      },
+    },
   };
   const configMock: IConfig = {
     jwt: '',
@@ -42,18 +42,18 @@ describe('VisaCheckout', () => {
     visaCheckout: {
       buttonSettings: {
         size: 154,
-        color: 'neutral'
+        color: 'neutral',
       },
       livestatus: 0,
       merchantId: '',
       paymentRequest: {
-        subtotal: '20.0'
+        subtotal: '20.0',
       },
       placement: 'st-visa-checkout',
       settings: {
-        displayName: 'My Test Site'
-      }
-    }
+        displayName: 'My Test Site',
+      },
+    },
   };
   const visaCheckoutLibMock: IVisaCheckoutSdk = {
     init: () => {},
@@ -75,7 +75,7 @@ describe('VisaCheckout', () => {
           cb({ prePaymentData: 'OK' });
           break;
       }
-    }
+    },
   };
 
   beforeEach(() => {
@@ -112,8 +112,8 @@ describe('VisaCheckout', () => {
             type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
             data: {
               status: VisaCheckoutClientStatus.CANCEL,
-              data: { cancelData: 'OK' }
-            }
+              data: { cancelData: 'OK' },
+            },
           })
         )
       ).once();
@@ -124,8 +124,8 @@ describe('VisaCheckout', () => {
             type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
             data: {
               status: VisaCheckoutClientStatus.ERROR,
-              data: { errorData: 'OK' }
-            }
+              data: { errorData: 'OK' },
+            },
           })
         )
       ).once();
@@ -136,8 +136,8 @@ describe('VisaCheckout', () => {
             type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
             data: {
               status: VisaCheckoutClientStatus.PRE_PAYMENT,
-              data: { prePaymentData: 'OK' }
-            }
+              data: { prePaymentData: 'OK' },
+            },
           })
         )
       ).once();

@@ -6,5 +6,5 @@ export const ApplePaySchema: Joi.ObjectSchema = Joi.object().keys({
   buttonText: Joi.string().valid('plain', 'buy', 'book', 'donate', 'check-out', 'subscribe'),
   merchantId: Joi.string(),
   paymentRequest: ApplePayPaymentRequestSchema,
-  placement: Joi.string()
+  placement: Joi.string(),
 });

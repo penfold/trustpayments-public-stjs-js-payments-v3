@@ -4,11 +4,11 @@ import { PaymentMethodToken } from '../../../application/dependency-injection/In
 import { Observable, of } from 'rxjs';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { ITestResultData} from './interfaces/ITestResultData';
+import { ITestResultData } from './interfaces/ITestResultData';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { ITestStartData } from './interfaces/ITestStartData';
 
-@Service({id: PaymentMethodToken, multiple: true})
+@Service({ id: PaymentMethodToken, multiple: true })
 export class TestPaymentMethod implements IPaymentMethod<IConfig, ITestStartData, ITestResultData> {
   getName(): string {
     return 'test';

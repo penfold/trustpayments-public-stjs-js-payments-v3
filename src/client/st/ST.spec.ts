@@ -6,6 +6,10 @@ import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../application/core/shared/translator/Translator';
+import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
 
 window.alert = jest.fn();
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
@@ -19,6 +23,8 @@ const messageBusMock = new SimpleMessageBus();
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set(IMessageBus, messageBusMock);
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('ST', () => {
   const { cacheConfig, instance } = stFixture();
@@ -46,7 +52,7 @@ describe('ST', () => {
     it('should send UPDATE_JWT event to message bus', () => {
       expect(messageBusMock.publish).toHaveBeenCalledWith({
         type: PUBLIC_EVENTS.UPDATE_JWT,
-        data: { newJwt: 'somenewjwtvalue' }
+        data: { newJwt: 'somenewjwtvalue' },
       });
     });
 
@@ -107,7 +113,7 @@ function stFixture() {
     Pay: 'Zapłać',
     Processing: 'Przetwarzanie',
     'Invalid field': 'Nieprawidłowe pole',
-    'Card number is invalid': 'Numer karty jest nieprawidłowy'
+    'Card number is invalid': 'Numer karty jest nieprawidłowy',
   };
   const config = {
     analytics: true,
@@ -115,7 +121,7 @@ function stFixture() {
     components: { defaultPaymentType: 'test', paymentTypes: ['test'] },
     init: {
       threedinit: 'test',
-      cachetoken: 'test'
+      cachetoken: 'test',
     },
     jwt:
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU2MDk0NjM4Ny4yNDIzMzQ0LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwicGFuIjoiNDExMTExMTExMTExMTExMSIsImV4cGlyeWRhdGUiOiIwMS8yMCIsInNlY3VyaXR5Y29kZSI6IjEyMyJ9fQ.UssdRcocpaeAqd-jDXpxWeWiKIX-W7zlpy0UWrDE5vg', // Can't use property shorthand because it isn't supported by IE
@@ -129,27 +135,27 @@ function stFixture() {
         'background-color-input-error': '#f8d7da',
         'color-input-error': '#721c24',
         'font-size-input': '12px',
-        'line-height-input': '12px'
+        'line-height-input': '12px',
       },
       expirationDate: {
         'background-color-input': 'AliceBlue',
         'background-color-input-error': '#f8d7da',
         'color-input-error': '#721c24',
         'font-size-input': '12px',
-        'line-height-input': '12px'
+        'line-height-input': '12px',
       },
       securityCode: {
         'background-color-input': 'AliceBlue',
         'background-color-input-error': '#f8d7da',
         'color-input-error': '#721c24',
         'font-size-input': '12px',
-        'line-height-input': '12px'
-      }
+        'line-height-input': '12px',
+      },
     },
     submitOnError: false,
     submitOnSuccess: false,
     translations: { ...translations },
-    buttonId: 'merchant-submit-button'
+    buttonId: 'merchant-submit-button',
   };
 
   const cacheConfig = {
@@ -159,7 +165,7 @@ function stFixture() {
       threedinit:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSZWZlcmVuY2VJZCI6IjQyLWYzYThjNDk0YWNkYzY2MDcyOTc4YzY0ODg4ZWY5Mjk4ZDE4YWE1ZDRkMzUwNjBmZTQzNmFmN2M1YzI1NDVhM2QiLCJpc3MiOiI1YzEyODg0NWMxMWI5MjIwZGMwNDZlOGUiLCJqdGkiOiI0Mi1mM2E4YzQ5NGFjZGM2NjA3Mjk3OGM2NDg4OGVmOTI5OGQxOGFhNWQ0ZDM1MDYwZmU0MzZhZjdjNWMyNTQ1YTNkIiwiaWF0IjoxNTYxNzI2ODA5LCJQYXlsb2FkIjp7Ik9yZGVyRGV0YWlscyI6eyJBbW91bnQiOjEwMDAsIkN1cnJlbmN5Q29kZSI6IjgyNiJ9fSwiT3JnVW5pdElkIjoiNWMxMTNlOGU2ZmUzZDEyNDYwMTQxODY4In0.GIpwP_MWbocwOkexF_AE1Bo0LuIYsXWFcKWog4EaygA',
       cachetoken:
-        'eyJkYXRhY2VudGVydXJsIjogbnVsbCwgImNhY2hldG9rZW4iOiAiNDItZjNhOGM0OTRhY2RjNjYwNzI5NzhjNjQ4ODhlZjkyOThkMThhYTVkNGQzNTA2MGZlNDM2YWY3YzVjMjU0NWEzZCJ9'
+        'eyJkYXRhY2VudGVydXJsIjogbnVsbCwgImNhY2hldG9rZW4iOiAiNDItZjNhOGM0OTRhY2RjNjYwNzI5NzhjNjQ4ODhlZjkyOThkMThhYTVkNGQzNTA2MGZlNDM2YWY3YzVjMjU0NWEzZCJ9',
     },
     disableNotification: false,
     livestatus: 0,
@@ -169,7 +175,7 @@ function stFixture() {
     submitOnSuccess: false,
     datacenterurl: 'https://example.com',
     formId: 'example-form',
-    translations: { ...translations }
+    translations: { ...translations },
   };
   const applePayConfig = {
     buttonStyle: 'white-outline',
@@ -181,25 +187,25 @@ function stFixture() {
       merchantCapabilities: ['supports3DS', 'supportsCredit', 'supportsDebit'],
       total: {
         label: 'Secure Trading Merchant',
-        amount: '10.00'
-      }
+        amount: '10.00',
+      },
     },
-    placement: 'st-apple-pay'
+    placement: 'st-apple-pay',
   };
 
   const visaCheckoutConfig = {
     buttonSettings: {
       size: '154',
-      color: 'neutral'
+      color: 'neutral',
     },
     merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
     paymentRequest: {
-      subtotal: '20.00'
+      subtotal: '20.00',
     },
     placement: 'st-visa-checkout',
     settings: {
-      displayName: 'My Test Site'
-    }
+      displayName: 'My Test Site',
+    },
   };
   // @ts-ignore
   const instance: any = ST(config);

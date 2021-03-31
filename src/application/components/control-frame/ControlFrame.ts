@@ -14,7 +14,7 @@ import { ISubmitData } from '../../core/models/ISubmitData';
 import {
   PAYMENT_SUCCESS,
   PAYMENT_ERROR,
-  COMMUNICATION_ERROR_INVALID_RESPONSE
+  COMMUNICATION_ERROR_INVALID_RESPONSE,
 } from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
@@ -28,8 +28,6 @@ import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
-import { StJwt } from '../../core/shared/stjwt/StJwt';
-import { Translator } from '../../core/shared/translator/Translator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IThreeDInitResponse } from '../../core/models/IThreeDInitResponse';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -47,6 +45,7 @@ import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { PaymentController } from '../../core/services/payments/PaymentController';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
+import { ITranslator } from '../../core/shared/translator/ITranslator';
 
 @Service()
 export class ControlFrame {
@@ -68,7 +67,7 @@ export class ControlFrame {
   private _card: ICard = {
     pan: '',
     expirydate: '',
-    securitycode: ''
+    securitycode: '',
   };
   private _isPaymentReady: boolean = false;
   private _formFields: IFormFieldsDetails = FormFieldsDetails;
@@ -92,7 +91,8 @@ export class ControlFrame {
     private _jwtDecoder: JwtDecoder,
     private _visaCheckoutClient: VisaCheckoutClient,
     private _applePayClient: ApplePayClient,
-    private paymentController: PaymentController
+    private paymentController: PaymentController,
+    private translator: ITranslator
   ) {
     this.init();
     this._initVisaCheckout();
@@ -110,7 +110,7 @@ export class ControlFrame {
 
       this._messageBus.publish({
         type: PUBLIC_EVENTS.CONFIG_CHANGED,
-        data: config
+        data: config,
       });
 
       if (config.jwt) {
@@ -178,7 +178,7 @@ export class ControlFrame {
 
         this._messageBus.publish({
           type: PUBLIC_EVENTS.BIN_PROCESS,
-          data: this._slicedPan
+          data: this._slicedPan,
         });
       });
   }
@@ -260,8 +260,7 @@ export class ControlFrame {
   }
 
   private _onPaymentFailure(errorData: IResponseData, errorMessage: string = PAYMENT_ERROR): Observable<never> {
-    const translator = new Translator(this._localStorage.getItem('locale'));
-    const translatedErrorMessage = translator.translate(errorMessage);
+    const translatedErrorMessage = this.translator.translate(errorMessage);
     errorData.errormessage = translatedErrorMessage;
 
     if (!(errorData instanceof Error)) {
@@ -284,7 +283,7 @@ export class ControlFrame {
       .then(() => {
         this._messageBus.publish(
           {
-            type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK
+            type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
           },
           true
         );
@@ -322,7 +321,7 @@ export class ControlFrame {
 
           return {
             ...merchantFormData,
-            fraudcontroltransactionid: cybertonicaTid
+            fraudcontroltransactionid: cybertonicaTid,
           };
         })
       );
@@ -337,13 +336,13 @@ export class ControlFrame {
 
   private _validateFormFields() {
     this._publishBlurEvent({
-      type: MessageBus.EVENTS.BLUR_CARD_NUMBER
+      type: MessageBus.EVENTS.BLUR_CARD_NUMBER,
     });
     this._publishBlurEvent({
-      type: MessageBus.EVENTS.BLUR_EXPIRATION_DATE
+      type: MessageBus.EVENTS.BLUR_EXPIRATION_DATE,
     });
     this._publishBlurEvent({
-      type: MessageBus.EVENTS.BLUR_SECURITY_CODE
+      type: MessageBus.EVENTS.BLUR_SECURITY_CODE,
     });
     this._validation.setFormValidity(this._formFieldsValidity);
   }
@@ -420,7 +419,7 @@ export class ControlFrame {
     if (threedinit && cachetoken) {
       initialTokens = {
         jwt: threedinit,
-        cacheToken: cachetoken
+        cacheToken: cachetoken,
       };
     }
 
@@ -431,7 +430,7 @@ export class ControlFrame {
         if (config.components.startOnLoad) {
           this._messageBus.publish({
             type: PUBLIC_EVENTS.BIN_PROCESS,
-            data: new StJwt(config.jwt).payload.pan as string
+            data: this._jwtDecoder.decode(config.jwt).payload.pan,
           });
 
           this._messageBus.publish(
@@ -439,14 +438,14 @@ export class ControlFrame {
               type: PUBLIC_EVENTS.SUBMIT_FORM,
               data: {
                 dataInJwt: true,
-                requestTypes: this._remainingRequestTypes
-              }
+                requestTypes: this._remainingRequestTypes,
+              },
             },
             true
           );
         }
       },
-      error: (errorData: IResponseData) => this._onPaymentFailure(errorData, COMMUNICATION_ERROR_INVALID_RESPONSE)
+      error: (errorData: IResponseData) => this._onPaymentFailure(errorData, COMMUNICATION_ERROR_INVALID_RESPONSE),
     });
   }
 }

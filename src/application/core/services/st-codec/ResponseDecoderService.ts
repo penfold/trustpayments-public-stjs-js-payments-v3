@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { IHttpClientResponse } from '@trustpayments/http-client/lib/httpclient';
+import { IHttpClientResponse } from '@trustpayments/http-client';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { InvalidResponseError } from './InvalidResponseError';
 import { IJwtResponse } from './interfaces/IJwtResponse';
@@ -30,17 +30,19 @@ export class ResponseDecoderService {
   }
 
   private isResponsePayloadValid(payload: IResponsePayload): boolean {
-    return payload &&
+    return (
+      payload &&
       payload.version === ResponseDecoderService.RESPONSE_VERSION &&
       payload.response &&
-      payload.response.length > 0;
+      payload.response.length > 0
+    );
   }
 
   private extractResponseObject(payload: IResponsePayload): IRequestTypeResponse {
     let responseObject: IRequestTypeResponse;
 
     for (responseObject of payload.response) {
-      if (Boolean(responseObject.customeroutput)) {
+      if (responseObject.customeroutput) {
         break;
       }
     }

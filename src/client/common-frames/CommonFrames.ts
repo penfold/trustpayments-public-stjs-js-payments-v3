@@ -172,7 +172,7 @@ export class CommonFrames {
         {
           gatewayUrl: this.dataCenterUrl,
           jwt: this.jwt,
-          origin: this.origin
+          origin: this.origin,
         },
         -1
       )
@@ -211,7 +211,7 @@ export class CommonFrames {
   private onMerchantFieldInput(): void {
     this.messageBus.publish({
       data: DomMethods.parseForm(this.formId),
-      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS
+      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS,
     });
   }
 

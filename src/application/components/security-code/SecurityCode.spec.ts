@@ -14,8 +14,18 @@ import { Frame } from '../../core/shared/frame/Frame';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import Container from 'typedi';
+import { TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../core/shared/translator/Translator';
+import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
+import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
 
 jest.mock('./../../core/shared/notification/Notification');
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('SecurityCode', () => {
   const { securityCodeInstance } = securityCodeFixture();
@@ -59,6 +69,10 @@ describe('SecurityCode', () => {
       });
       // @ts-ignore
       securityCodeInstance._setDisableListener();
+      // @ts-ignore
+      expect(securityCodeInstance._inputElement.hasAttribute(SecurityCode.DISABLED_ATTRIBUTE)).toEqual(true);
+      // @ts-ignore
+      expect(securityCodeInstance._inputElement.classList.contains(SecurityCode.DISABLED_CLASS)).toEqual(true);
     });
 
     it('should remove attribute disabled and remove class from classList', () => {
@@ -136,9 +150,9 @@ describe('SecurityCode', () => {
     beforeEach(() => {
       const event = {
         clipboardData: {
-          getData: jest.fn()
+          getData: jest.fn(),
         },
-        preventDefault: jest.fn()
+        preventDefault: jest.fn(),
       };
       Utils.stripChars = jest.fn().mockReturnValue('111');
       // @ts-ignore
@@ -225,19 +239,16 @@ function securityCodeFixture() {
   const config: IConfig = {
     jwt: 'test',
     disableNotification: false,
-    placeholders: { pan: '4154654', expirydate: '12/22', securitycode: '123' }
+    placeholders: { pan: '4154654', expirydate: '12/22', securitycode: '123' },
   };
 
   const communicatorMock: InterFrameCommunicator = mock(InterFrameCommunicator);
   when(communicatorMock.incomingEvent$).thenReturn(EMPTY);
 
   const configProvider: ConfigProvider = mock<ConfigProvider>();
-  let formatter: Formatter;
-  formatter = mock(Formatter);
-  let frame: Frame;
-  frame = mock(Frame);
-  let jwtDecoder: JwtDecoder;
-  jwtDecoder = mock(JwtDecoder);
+  const formatter: Formatter = mock(Formatter);
+  const frame: Frame = mock(Frame);
+  const jwtDecoder: JwtDecoder = mock(JwtDecoder);
   const localStorage: BrowserLocalStorage = mock(BrowserLocalStorage);
   when(localStorage.select(anyFunction())).thenReturn(of('34****4565'));
   when(configProvider.getConfig$()).thenReturn(of(config));

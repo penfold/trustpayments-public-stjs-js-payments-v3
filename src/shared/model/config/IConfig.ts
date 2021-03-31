@@ -5,6 +5,7 @@ import { IStyles } from './IStyles';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
+import { IGooglePayConfig } from '../../../application/core/integrations/google-pay/models/IGooglePayConfig';
 
 export interface IConfig {
   analytics?: boolean;
@@ -12,8 +13,8 @@ export interface IConfig {
   applePay?: IApplePayConfig;
   buttonId?: string;
   cancelCallback?: any;
-  components?: IComponentsConfig;
   componentIds?: IComponentsIds;
+  components?: IComponentsConfig;
   cybertonicaApiKey?: string;
   datacenterurl?: string;
   deferInit?: boolean;
@@ -22,12 +23,14 @@ export interface IConfig {
   errorReporting?: boolean;
   fieldsToSubmit?: string[];
   formId?: string;
+  googlePay?: IGooglePayConfig;
   init?: IBypassInit;
   jwt?: string;
   livestatus?: 0 | 1;
   origin?: string;
   panIcon?: boolean;
   placeholders?: IPlaceholdersConfig;
+  stopSubmitFormOnEnter?: boolean;
   styles?: IStyles;
   submitCallback?: any;
   submitFields?: string[];
@@ -35,7 +38,6 @@ export interface IConfig {
   submitOnError?: boolean;
   submitOnSuccess?: boolean;
   successCallback?: any;
-  translations?: {};
+  translations?: Record<string, unknown>;
   visaCheckout?: IVisaCheckoutConfig;
-  stopSubmitFormOnEnter?: boolean;
 }
