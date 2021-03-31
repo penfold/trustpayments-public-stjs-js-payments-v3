@@ -18,18 +18,18 @@ describe('VisaCheckoutSdkProviderMock', () => {
     visaCheckout: {
       buttonSettings: {
         size: 154,
-        color: 'neutral'
+        color: 'neutral',
       },
       livestatus: 0,
       merchantId: '',
       paymentRequest: {
-        subtotal: '20.0'
+        subtotal: '20.0',
       },
       placement: 'st-visa-checkout',
       settings: {
-        displayName: 'My Test Site'
-      }
-    }
+        displayName: 'My Test Site',
+      },
+    },
   };
   const visaCheckoutUpdateConfigMock: IVisaCheckoutUpdateConfig = {
     buttonUrl: 'https://button-mock-url.com',
@@ -40,9 +40,9 @@ describe('VisaCheckoutSdkProviderMock', () => {
       paymentRequest: {
         currencyCode: '',
         subtotal: '',
-        total: ''
-      }
-    }
+        total: '',
+      },
+    },
   };
 
   beforeEach(() => {
@@ -67,7 +67,7 @@ describe('VisaCheckoutSdkProviderMock', () => {
           expect(JSON.stringify(sdk)).toBe(
             JSON.stringify({
               init: () => {},
-              on: () => {}
+              on: () => {},
             })
           );
 

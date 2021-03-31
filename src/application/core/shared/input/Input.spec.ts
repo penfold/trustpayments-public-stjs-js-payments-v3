@@ -79,9 +79,9 @@ describe('FormField', () => {
     const { instance } = formFieldFixture();
     const event = {
       clipboardData: {
-        getData: jest.fn()
+        getData: jest.fn(),
       },
-      preventDefault: jest.fn()
+      preventDefault: jest.fn(),
     };
 
     // @ts-ignore
@@ -224,13 +224,10 @@ describe('FormField', () => {
 });
 
 function formFieldFixture() {
-  let inputElement: HTMLInputElement;
-  let labelElement: HTMLLabelElement;
-  let messageElement: HTMLParagraphElement;
+  const inputElement: HTMLInputElement = document.createElement('input');
+  const labelElement: HTMLLabelElement = document.createElement('label');
+  const messageElement: HTMLParagraphElement = document.createElement('p');
   const configProviderMock: ConfigProvider = mock<ConfigProvider>();
-  labelElement = document.createElement('label');
-  inputElement = document.createElement('input');
-  messageElement = document.createElement('p');
   labelElement.id = 'st-form-field-label';
   inputElement.id = 'st-form-field-input';
   messageElement.id = 'st-form-field-message';
@@ -244,7 +241,7 @@ function formFieldFixture() {
   });
   when(configProviderMock.getConfig$()).thenReturn(
     of({
-      stopSubmitFormOnEnter: false
+      stopSubmitFormOnEnter: false,
     })
   );
   const instance: Input = new Input(

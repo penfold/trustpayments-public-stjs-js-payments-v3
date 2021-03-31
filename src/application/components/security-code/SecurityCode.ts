@@ -9,7 +9,7 @@ import {
   SECURITY_CODE_INPUT,
   SECURITY_CODE_LABEL,
   SECURITY_CODE_MESSAGE,
-  SECURITY_CODE_WRAPPER
+  SECURITY_CODE_WRAPPER,
 } from '../../core/models/constants/Selectors';
 import { Validation } from '../../core/shared/validation/Validation';
 import { Service } from 'typedi';
@@ -18,7 +18,6 @@ import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { merge, Observable } from 'rxjs';
-import { IDecodedJwt } from '../../core/models/IDecodedJwt';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { DefaultPlaceholders } from '../../core/models/constants/config-resolver/DefaultPlaceholders';
 import { LONG_CVC, SHORT_CVC, UNKNOWN_CVC } from '../../core/models/constants/SecurityCode';
@@ -64,12 +63,12 @@ export class SecurityCode extends Input {
         styler.addStyles([
           {
             elementSelector: '#st-security-code',
-            classList: ['st-security-code--lined-up']
+            classList: ['st-security-code--lined-up'],
           },
           {
             elementSelector: '#st-security-code-label',
-            classList: ['security-code__label--required', 'lined-up']
-          }
+            classList: ['security-code__label--required', 'lined-up'],
+          },
         ]);
       }
 
@@ -83,10 +82,10 @@ export class SecurityCode extends Input {
             inlineStyles: [
               {
                 property: 'padding',
-                value: `${outlineSize ? outlineSize : 3}px`
-              }
-            ]
-          }
+                value: `${outlineSize ? outlineSize : 3}px`,
+              },
+            ],
+          },
         ]);
       }
 
@@ -98,10 +97,10 @@ export class SecurityCode extends Input {
             inlineStyles: [
               {
                 property: 'color',
-                value
-              }
-            ]
-          }
+                value,
+              },
+            ],
+          },
         ]);
       }
     });
@@ -112,7 +111,7 @@ export class SecurityCode extends Input {
         this._securityCodeLength = securityCodeLength;
         this.messageBus.publish({
           type: MessageBus.EVENTS.CHANGE_SECURITY_CODE_LENGTH,
-          data: this._securityCodeLength
+          data: this._securityCodeLength,
         });
       });
     this._init();
@@ -230,7 +229,7 @@ export class SecurityCode extends Input {
   private _broadcastEvent(data: boolean, eventType: string): void {
     const messageBusEvent: IMessageBusEvent = {
       data,
-      type: eventType
+      type: eventType,
     };
     this.messageBus.publish(messageBusEvent);
   }

@@ -1,7 +1,7 @@
 import { ContainerInstance, Inject, Service } from 'typedi';
 import { defer, EMPTY, fromEvent, Observable, Subject } from 'rxjs';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { filter, first, map, mergeMap, share, take, takeUntil, tap } from 'rxjs/operators';
+import { filter, first, map, mergeMap, share, take, takeUntil } from 'rxjs/operators';
 import { ofType } from './operators/ofType';
 import { QueryMessage } from './messages/QueryMessage';
 import { ResponseMessage } from './messages/ResponseMessage';
@@ -99,7 +99,7 @@ export class InterFrameCommunicator {
           },
           error(error) {
             reject(error);
-          }
+          },
         });
 
       this.send(query, target);
@@ -110,7 +110,7 @@ export class InterFrameCommunicator {
     return {
       thenRespond: <T>(responder: (queryEvent: IMessageBusEvent) => Observable<T>) => {
         this.responders.set(eventType, responder);
-      }
+      },
     };
   }
 

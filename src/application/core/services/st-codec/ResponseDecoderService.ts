@@ -42,7 +42,7 @@ export class ResponseDecoderService {
     let responseObject: IRequestTypeResponse;
 
     for (responseObject of payload.response) {
-      if (Boolean(responseObject.customeroutput)) {
+      if (responseObject.customeroutput) {
         break;
       }
     }

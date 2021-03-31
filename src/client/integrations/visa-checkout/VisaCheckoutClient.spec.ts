@@ -4,7 +4,7 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import {
   PAYMENT_CANCELLED,
   PAYMENT_ERROR,
-  PAYMENT_SUCCESS
+  PAYMENT_SUCCESS,
 } from '../../../application/core/models/constants/Translations';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { Payment } from '../../../application/core/shared/payment/Payment';
@@ -33,18 +33,18 @@ describe('VisaCheckoutClient', () => {
     visaCheckout: {
       buttonSettings: {
         size: 154,
-        color: 'neutral'
+        color: 'neutral',
       },
       livestatus: 0,
       merchantId: '',
       paymentRequest: {
-        subtotal: '20.0'
+        subtotal: '20.0',
       },
       placement: 'st-visa-checkout',
       settings: {
-        displayName: 'My Test Site'
-      }
-    }
+        displayName: 'My Test Site',
+      },
+    },
   };
 
   beforeEach(() => {
@@ -67,8 +67,8 @@ describe('VisaCheckoutClient', () => {
     when(configProviderMock.getConfig$()).thenReturn(of(configMock));
     when(jwtDecoderMock.decode(anything())).thenReturn({
       payload: {
-        requesttypedescriptions: ['AUTH']
-      }
+        requesttypedescriptions: ['AUTH'],
+      },
     });
   });
 
@@ -80,8 +80,8 @@ describe('VisaCheckoutClient', () => {
           data: {
             status: VisaCheckoutClientStatus.SUCCESS,
             data: {},
-            merchantData: {}
-          }
+            merchantData: {},
+          },
         })
       );
       when(paymentMock.processPayment(anything(), anything(), anything())).thenReturn(Promise.resolve({}));
@@ -102,8 +102,8 @@ describe('VisaCheckoutClient', () => {
           data: {
             status: VisaCheckoutClientStatus.SUCCESS,
             data: {},
-            merchantData: {}
-          }
+            merchantData: {},
+          },
         })
       );
       when(paymentMock.processPayment(anything(), anything(), anything())).thenReturn(Promise.reject());
@@ -123,8 +123,8 @@ describe('VisaCheckoutClient', () => {
           type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
           data: {
             status: VisaCheckoutClientStatus.ERROR,
-            data: {}
-          }
+            data: {},
+          },
         })
       );
 
@@ -143,8 +143,8 @@ describe('VisaCheckoutClient', () => {
           type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
           data: {
             status: VisaCheckoutClientStatus.CANCEL,
-            data: {}
-          }
+            data: {},
+          },
         })
       );
 
@@ -158,8 +158,8 @@ describe('VisaCheckoutClient', () => {
               type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
               data: {
                 errorcode: 'cancelled',
-                errormessage: PAYMENT_CANCELLED
-              }
+                errormessage: PAYMENT_CANCELLED,
+              },
             }),
             true
           )
@@ -175,8 +175,8 @@ describe('VisaCheckoutClient', () => {
           type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
           data: {
             status: VisaCheckoutClientStatus.PRE_PAYMENT,
-            data: {}
-          }
+            data: {},
+          },
         })
       );
 
@@ -193,8 +193,8 @@ describe('VisaCheckoutClient', () => {
           type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
           data: {
             status: 'UNKNOWN' as VisaCheckoutClientStatus,
-            data: {}
-          }
+            data: {},
+          },
         })
       );
 

@@ -23,7 +23,7 @@ describe('ConfigReducer', () => {
   it('handles CLEAR_CONFIG action', () => {
     const initialState: IApplicationFrameState = {
       config: ({ FOO: 'BAR' } as unknown) as IConfig,
-      storage: {}
+      storage: {},
     };
     const result = reducer.reduce(initialState, { type: PUBLIC_EVENTS.CONFIG_CLEARED });
 

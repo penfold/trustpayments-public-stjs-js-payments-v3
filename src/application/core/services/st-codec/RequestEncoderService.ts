@@ -33,11 +33,11 @@ export class RequestEncoderService {
         {
           ...requestData,
           requestid: this.createRequestId(),
-          sitereference: jwtPayload.sitereference
-        }
+          sitereference: jwtPayload.sitereference,
+        },
       ],
       version: VERSION,
-      versioninfo: VERSION_INFO
+      versioninfo: VERSION_INFO,
     };
   }
 

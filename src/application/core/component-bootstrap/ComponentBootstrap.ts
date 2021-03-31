@@ -9,7 +9,7 @@ import {
   MessageBusToken,
   MessageSubscriberToken,
   StoreToken,
-  TranslatorToken
+  TranslatorToken,
 } from '../../../shared/dependency-injection/InjectionTokens';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 

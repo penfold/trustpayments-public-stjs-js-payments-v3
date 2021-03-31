@@ -5,10 +5,9 @@ import { IResponseData } from '../../models/IResponseData';
 import { IStRequest } from '../../models/IStRequest';
 import {
   COMMUNICATION_ERROR_INVALID_RESPONSE,
-  COMMUNICATION_ERROR_INVALID_REQUEST
+  COMMUNICATION_ERROR_INVALID_REQUEST,
 } from '../../models/constants/Translations';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
-import { StJwt } from '../../shared/stjwt/StJwt';
 import { Validation } from '../../shared/validation/Validation';
 import { version } from '../../../../../package.json';
 import { Container } from 'typedi';
@@ -20,6 +19,7 @@ import { GatewayError } from './GatewayError';
 import { InvalidResponseError } from './InvalidResponseError';
 import { Locale } from '../../shared/translator/Locale';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 
 export class StCodec {
   public static CONTENT_TYPE = 'application/json';
@@ -36,7 +36,7 @@ export class StCodec {
    *   (since we prepend 'J-' the random section will be 2 char shorter)
    * @return A newly generated random request ID
    */
-  public static _createRequestId(length = 10) {
+  public static createRequestId(length = 10) {
     return 'J-' + Math.random().toString(36).substring(2, length);
   }
 
@@ -45,16 +45,16 @@ export class StCodec {
     return {
       errordata,
       errormessage,
-      requesttypedescription
+      requesttypedescription,
     };
   }
 
   public static verifyResponseObject(responseData: any, jwtResponse: string): IResponseData {
-    if (StCodec._isInvalidResponse(responseData)) {
-      throw StCodec._handleInvalidResponse();
+    if (StCodec.isInvalidResponse(responseData)) {
+      throw StCodec.handleInvalidResponse();
     }
-    const responseContent: IResponseData = StCodec._determineResponse(responseData, jwtResponse);
-    StCodec._handleValidGatewayResponse(responseContent, jwtResponse);
+    const responseContent: IResponseData = StCodec.determineResponse(responseData, jwtResponse);
+    StCodec.handleValidGatewayResponse(responseContent, jwtResponse);
     return responseContent;
   }
 
@@ -76,7 +76,7 @@ export class StCodec {
     }
     const notificationEvent: IMessageBusEvent = {
       data: eventData,
-      type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE
+      type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE,
     };
     StCodec.getMessageBus().publish(notificationEvent, true);
   }
@@ -97,9 +97,9 @@ export class StCodec {
     this.getMessageBus().publish({ type: PUBLIC_EVENTS.JWT_REPLACED, data: jwt });
   }
 
-  private static _notification: NotificationService;
-  private static _messageBus: IMessageBus;
-  private static _locale: Locale;
+  private static notification: NotificationService;
+  private static messageBus: IMessageBus;
+  private static locale: Locale;
   private static REQUESTS_WITH_ERROR_MESSAGES = [
     'AUTH',
     'CACHETOKENISE',
@@ -108,28 +108,28 @@ export class StCodec {
     'WALLETVERIFY',
     'RISKDEC',
     'SUBSCRIPTION',
-    'ACCOUNTCHECK'
+    'ACCOUNTCHECK',
   ];
   private static STATUS_CODES = { invalidfield: '30000', ok: '0', declined: '70000' };
 
   private static getMessageBus(): IMessageBus {
-    return StCodec._messageBus || (StCodec._messageBus = Container.get(MessageBusToken));
+    return StCodec.messageBus || (StCodec.messageBus = Container.get(MessageBusToken));
   }
 
   private static getNotification(): NotificationService {
-    return StCodec._notification || (StCodec._notification = Container.get(NotificationService));
+    return StCodec.notification || (StCodec.notification = Container.get(NotificationService));
   }
 
-  private static _createCommunicationError() {
+  private static createCommunicationError() {
     return {
       errorcode: '50003',
-      errormessage: COMMUNICATION_ERROR_INVALID_RESPONSE
+      errormessage: COMMUNICATION_ERROR_INVALID_RESPONSE,
     } as IResponseData;
   }
 
-  private static _handleInvalidResponse() {
+  private static handleInvalidResponse() {
     const validation = new Validation();
-    StCodec.publishResponse(StCodec._createCommunicationError());
+    StCodec.publishResponse(StCodec.createCommunicationError());
     StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_RESPONSE);
     validation.blockForm(FormState.AVAILABLE);
     StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
@@ -137,7 +137,7 @@ export class StCodec {
     return new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
   }
 
-  private static _isInvalidResponse(responseData: any) {
+  private static isInvalidResponse(responseData: any) {
     return !(
       responseData &&
       responseData.version === StCodec.VERSION &&
@@ -146,7 +146,7 @@ export class StCodec {
     );
   }
 
-  private static _determineResponse(responseData: any, jwtResponse: string) {
+  private static determineResponse(responseData: any, jwtResponse: string) {
     let responseContent: IResponseData;
     responseData.response.forEach((r: any) => {
       if (r.customeroutput) {
@@ -162,7 +162,7 @@ export class StCodec {
     return responseContent;
   }
 
-  private static _propagateStatus(
+  private static propagateStatus(
     errormessageTranslated: string,
     responseContent: IResponseData,
     jwtResponse: string
@@ -172,7 +172,7 @@ export class StCodec {
     StCodec.publishResponse(responseContent, jwtResponse);
   }
 
-  private static _handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
+  private static handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
     const translator = Container.get(TranslatorToken);
     const validation = new Validation();
 
@@ -190,7 +190,7 @@ export class StCodec {
     }
 
     if (responseContent.walletsource && responseContent.walletsource === 'APPLEPAY') {
-      StCodec._propagateStatus(errormessageTranslated, responseContent, jwtResponse);
+      StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
       return new GatewayError(errormessage);
     }
 
@@ -199,43 +199,45 @@ export class StCodec {
     }
 
     validation.blockForm(FormState.AVAILABLE);
-    StCodec._propagateStatus(errormessageTranslated, responseContent, jwtResponse);
+    StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
     throw new GatewayError(errormessage);
   }
 
-  private static _decodeResponseJwt(jwt: string, reject: (error: Error) => void) {
+  private static decodeResponseJwt(jwt: string, reject: (error: Error) => void) {
     let decoded: any;
     try {
       decoded = jwt_decode(jwt) as any;
     } catch (e) {
-      reject(StCodec._handleInvalidResponse());
+      reject(StCodec.handleInvalidResponse());
     }
     return decoded;
   }
 
-  private readonly _requestId: string;
+  private readonly requestId: string;
+  private jwtDecoder: JwtDecoder;
 
-  constructor(jwt: string) {
-    this._requestId = StCodec._createRequestId();
-    StCodec._notification = Container.get(NotificationService);
+  constructor(jwtDecoder: JwtDecoder, jwt: string) {
+    this.requestId = StCodec.createRequestId();
+    this.jwtDecoder = jwtDecoder;
+    StCodec.notification = Container.get(NotificationService);
     StCodec.jwt = jwt;
     StCodec.originalJwt = jwt;
-    StCodec._locale = new StJwt(StCodec.jwt).locale;
+    StCodec.locale = this.jwtDecoder.decode(StCodec.jwt).payload.locale || 'en_GB';
   }
 
-  public buildRequestObject(requestData: object): object {
+  public buildRequestObject(requestData: Record<string, any>): Record<string, any> {
     return {
       acceptcustomeroutput: '2.00',
       jwt: StCodec.jwt,
       request: [
         {
           ...requestData,
-          requestid: this._requestId,
-          sitereference: new StJwt(StCodec.jwt).sitereference
-        }
+          requestid: this.requestId,
+          sitereference: this.jwtDecoder.decode(StCodec.jwt).sitereference,
+        },
       ],
       version: StCodec.VERSION,
-      versioninfo: StCodec.VERSION_INFO
+      versioninfo: StCodec.VERSION_INFO,
     };
   }
 
@@ -248,12 +250,12 @@ export class StCodec {
     return JSON.stringify(this.buildRequestObject(requestObject));
   }
 
-  public async decode(responseObject: Response | {}): Promise<object> {
+  public async decode(responseObject: Response | Record<string, unknown>): Promise<Record<string, unknown>> {
     return new Promise((resolve, reject) => {
-      if ('json' in responseObject) {
-        responseObject.json().then(responseData => {
+      if (typeof responseObject.json === 'function') {
+        responseObject.json().then((responseData: any) => {
           try {
-            const decoded: IStJwtObj = StCodec._decodeResponseJwt(responseData.jwt, reject);
+            const decoded: IStJwtObj = StCodec.decodeResponseJwt(responseData.jwt, reject);
             const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
 
             if (Number(verifiedResponse.errorcode) === 0) {
@@ -264,7 +266,7 @@ export class StCodec {
 
             resolve({
               jwt: responseData.jwt,
-              response: verifiedResponse
+              response: verifiedResponse,
             });
           } catch (error) {
             StCodec.resetJwt();
@@ -272,7 +274,7 @@ export class StCodec {
         });
       } else {
         StCodec.resetJwt();
-        reject(StCodec._handleInvalidResponse());
+        reject(StCodec.handleInvalidResponse());
       }
     });
   }

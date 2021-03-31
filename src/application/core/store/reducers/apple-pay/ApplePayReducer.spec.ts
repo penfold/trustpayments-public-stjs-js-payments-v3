@@ -8,7 +8,7 @@ describe('ApplePayReducer', () => {
   const initialState: IApplicationFrameState = {
     config: null,
     storage: {},
-    applePay: {}
+    applePay: {},
   };
 
   it('returns given state by default', () => {
@@ -19,8 +19,8 @@ describe('ApplePayReducer', () => {
     const action: IMessageBusEvent = {
       type: PUBLIC_EVENTS.APPLE_PAY_CONFIG_MOCK,
       data: {
-        foo: 'bar'
-      }
+        foo: 'bar',
+      },
     };
     const result = storageReducer.reduce(initialState, action);
 
@@ -29,9 +29,9 @@ describe('ApplePayReducer', () => {
       storage: {},
       applePay: {
         config: {
-          foo: 'bar'
-        }
-      }
+          foo: 'bar',
+        },
+      },
     });
   });
 });

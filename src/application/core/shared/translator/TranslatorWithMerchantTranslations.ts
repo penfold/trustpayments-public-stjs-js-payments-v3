@@ -20,7 +20,7 @@ export class TranslatorWithMerchantTranslations implements ITranslator {
     private translator: Translator,
     private storage: BrowserLocalStorage,
     private messageBus: IMessageBus,
-    private configProvider: ConfigProvider,
+    private configProvider: ConfigProvider
   ) {}
 
   init() {
@@ -31,21 +31,23 @@ export class TranslatorWithMerchantTranslations implements ITranslator {
       this.configProvider.getConfig$().pipe(map(config => config.jwt)),
       this.messageBus.pipe(
         ofType(PUBLIC_EVENTS.UPDATE_JWT),
-        map((event: IMessageBusEvent<IUpdateJwt>) => event.data.newJwt),
-      ),
+        map((event: IMessageBusEvent<IUpdateJwt>) => event.data.newJwt)
+      )
     );
-    jwt$.pipe(
-      map((jwt: string) => this.jwtDecoder.decode(jwt).payload.locale),
-      filter(Boolean),
-      takeUntil(destroy$),
-    ).subscribe((locale: Locale) => {
-      this.translator.changeLanguage(locale);
-      this.messageBus.publish({type: PUBLIC_EVENTS.LOCALE_CHANGED, data: locale}, true);
-    });
+    jwt$
+      .pipe(
+        map((jwt: string) => this.jwtDecoder.decode(jwt).payload.locale),
+        filter(Boolean),
+        takeUntil(destroy$)
+      )
+      .subscribe((locale: Locale) => {
+        this.translator.changeLanguage(locale);
+        this.messageBus.publish({ type: PUBLIC_EVENTS.LOCALE_CHANGED, data: locale }, true);
+      });
   }
 
   translate(text: string): string {
-    let json: any;
+    let json: Record<string, string>;
 
     try {
       const translations: string = this.storage.getItem('merchantTranslations');

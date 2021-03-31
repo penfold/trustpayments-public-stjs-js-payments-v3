@@ -7,7 +7,7 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import {
   PAYMENT_CANCELLED,
   PAYMENT_ERROR,
-  PAYMENT_SUCCESS
+  PAYMENT_SUCCESS,
 } from '../../../application/core/models/constants/Translations';
 import { IMerchantData } from '../../../application/core/models/IMerchantData';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
@@ -43,7 +43,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
         this.messageBus.publish<IConfig>(
           {
             type: PUBLIC_EVENTS.VISA_CHECKOUT_CONFIG,
-            data: config
+            data: config,
           },
           true
         );
@@ -85,7 +85,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
     const requestTypeDescriptions = this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions;
     const walletData: IWallet = {
       walletsource: 'VISACHECKOUT',
-      wallettoken: JSON.stringify(successData)
+      wallettoken: JSON.stringify(successData),
     };
 
     return from(this.payment.processPayment(requestTypeDescriptions, walletData, merchantData)).pipe(
@@ -112,7 +112,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
     this.notificationService.cancel(PAYMENT_CANCELLED);
     this.messageBus.publish(
       {
-        type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK
+        type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK,
       },
       true
     );
@@ -121,8 +121,8 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {
           errorcode: 'cancelled',
-          errormessage: PAYMENT_CANCELLED
-        }
+          errormessage: PAYMENT_CANCELLED,
+        },
       },
       true
     );
@@ -135,7 +135,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
     this.notificationService.error(PAYMENT_ERROR);
     this.messageBus.publish(
       {
-        type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK
+        type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
       },
       true
     );

@@ -92,7 +92,7 @@ export class FramesHub {
 
     const event: IMessageBusEvent = {
       type: FramesHub.FRAME_READY_EVENT,
-      data: newFrame
+      data: newFrame,
     };
 
     activeFrames.forEach(frame => this.communicator.send(event, frame));

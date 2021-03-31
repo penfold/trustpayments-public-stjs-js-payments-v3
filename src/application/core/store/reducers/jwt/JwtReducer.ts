@@ -13,7 +13,7 @@ export class JwtReducer implements IReducer<IApplicationFrameState> {
         return {
           ...state,
           jwt: action.data,
-          originalJwt: action.data
+          originalJwt: action.data,
         };
       }
       case PUBLIC_EVENTS.JWT_REPLACED: {

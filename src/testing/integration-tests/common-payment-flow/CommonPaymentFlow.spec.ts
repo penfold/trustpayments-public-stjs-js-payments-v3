@@ -35,7 +35,7 @@ describe('Common Payment Flow', () => {
     config = {
       formId: 'st-form',
       submitFields: ['baz', 'xyz'],
-      submitOnError: true
+      submitOnError: true,
     };
 
     document.body.appendChild((form = DomMethods.createHtmlElement({ id: 'st-form' }, 'form') as HTMLFormElement));
@@ -56,17 +56,17 @@ describe('Common Payment Flow', () => {
           baz: 'baz',
           xyz: 'xyz',
           jwt: 'jwt',
-          threedresponse: 'threedresponse'
+          threedresponse: 'threedresponse',
         };
 
         expect(submitCallbackEvent).toEqual({
           type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
-          data: resultData
+          data: resultData,
         });
 
         expect(successCallbackEvent).toEqual({
           type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
-          data: resultData
+          data: resultData,
         });
 
         done();
@@ -74,7 +74,7 @@ describe('Common Payment Flow', () => {
 
     messageBus.publish<IInitPaymentMethod<IConfig>>({
       type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-      data: { name: 'test', config }
+      data: { name: 'test', config },
     });
 
     messageBus.publish<IStartPaymentMethod<ITestStartData>>({
@@ -84,9 +84,9 @@ describe('Common Payment Flow', () => {
         data: {
           resultStatus: PaymentStatus.SUCCESS,
           bar: 'bar',
-          foo: 'foo'
-        }
-      }
+          foo: 'foo',
+        },
+      },
     });
   });
 
@@ -99,17 +99,17 @@ describe('Common Payment Flow', () => {
       .subscribe(([submitCallbackEvent, cancelCallbackEvent]) => {
         const resultData: ITestResultData = {
           baz: 'baz',
-          xyz: 'xyz'
+          xyz: 'xyz',
         };
 
         expect(submitCallbackEvent).toEqual({
           type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
-          data: resultData
+          data: resultData,
         });
 
         expect(cancelCallbackEvent).toEqual({
           type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK,
-          data: resultData
+          data: resultData,
         });
 
         done();
@@ -117,7 +117,7 @@ describe('Common Payment Flow', () => {
 
     messageBus.publish<IInitPaymentMethod<IConfig>>({
       type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-      data: { name: 'test', config }
+      data: { name: 'test', config },
     });
 
     messageBus.publish<IStartPaymentMethod<ITestStartData>>({
@@ -127,9 +127,9 @@ describe('Common Payment Flow', () => {
         data: {
           resultStatus: PaymentStatus.CANCEL,
           bar: 'bar',
-          foo: 'foo'
-        }
-      }
+          foo: 'foo',
+        },
+      },
     });
   });
 
@@ -150,7 +150,7 @@ describe('Common Payment Flow', () => {
 
     messageBus.publish<IInitPaymentMethod<IConfig>>({
       type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-      data: { name: 'test', config }
+      data: { name: 'test', config },
     });
 
     messageBus.publish<IStartPaymentMethod<ITestStartData>>({
@@ -160,9 +160,9 @@ describe('Common Payment Flow', () => {
         data: {
           resultStatus: PaymentStatus.FAILURE,
           bar: 'bar',
-          foo: 'foo'
-        }
-      }
+          foo: 'foo',
+        },
+      },
     });
   });
 });

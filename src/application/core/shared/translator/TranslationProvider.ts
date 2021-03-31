@@ -24,7 +24,7 @@ export class TranslationProvider implements ITranslationProvider {
     fr_FR: { translation: fr_FR },
     nl_NL: { translation: nl_NL },
     no_NO: { translation: no_NO },
-    sv_SE: { translation: sv_SE }
+    sv_SE: { translation: sv_SE },
   };
 
   getResources(): IResources {

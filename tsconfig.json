@@ -19,14 +19,10 @@
       "ES2017.Object",
       "ES2016.Array.Include",
       "ES2019"
-    ]
+    ],
+    "skipLibCheck": true
   },
   "include": [
     "./src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "./src/**/*.spec.ts"
-    // exclude all that contain "spec.ts" in name
   ]
 }

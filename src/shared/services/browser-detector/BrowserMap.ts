@@ -5,5 +5,5 @@ export const BrowserMap: { [key: string]: string } = {
   edge: 'Microsoft Edge',
   opera: 'Opera',
   safari: 'Safari',
-  ios_saf: 'iOS'
+  ios_saf: 'iOS',
 };

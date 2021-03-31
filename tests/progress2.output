@@ -1,0 +1,57 @@
+features/e2e_cardinal_commerce/e2e_cardinal_commerce_v1_tests.feature  .E.E
+--------------------------------------------------------------------------------
+FAILURE in step 'User opens example page':
+  Feature:  Cardinal Commerce E2E tests v1
+  Scenario: TC_8 - Merchant Not Active, request type: THREEDQUERY AUTH -- @1.1  executed on CHROME_CHROME
+Traceback (most recent call last):
+  File "c:\python38\lib\site-packages\behave\model.py", line 1329, in run
+    match.run(runner.context)
+  File "c:\python38\lib\site-packages\behave\matchers.py", line 98, in run
+    self.func(context, *args, **kwargs)
+  File "features\steps\navigation_steps.py", line 103, in step_impl_example
+    payment_page.open_page(url)
+  File "D:\IDE\TrustPayments\js-payments-v3\tests\pages\base_page.py", line 21, in open_page
+    self._executor.open_page(url)
+  File "D:\IDE\TrustPayments\js-payments-v3\tests\utils\browser.py", line 11, in open_page
+    self._driver.get(page_url)
+  File "c:\python38\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 333, in get
+    self.execute(Command.GET, {'url': url})
+  File "c:\python38\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 321, in execute
+    self.error_handler.check_response(response)
+  File "c:\python38\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 242, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.WebDriverException: Message: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=89.0.4389.90)
+
+
+exception: Message: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=89.0.4389.90)
+
+FAILURE in step 'User opens example page':
+  Feature:  Cardinal Commerce E2E tests v1
+  Scenario: TC_8 - Merchant Not Active, request type: ACCOUNTCHECK THREEDQUERY -- @1.2  executed on CHROME_CHROME
+Traceback (most recent call last):
+  File "c:\python38\lib\site-packages\behave\model.py", line 1329, in run
+    match.run(runner.context)
+  File "c:\python38\lib\site-packages\behave\matchers.py", line 98, in run
+    self.func(context, *args, **kwargs)
+  File "features\steps\navigation_steps.py", line 103, in step_impl_example
+    payment_page.open_page(url)
+  File "D:\IDE\TrustPayments\js-payments-v3\tests\pages\base_page.py", line 21, in open_page
+    self._executor.open_page(url)
+  File "D:\IDE\TrustPayments\js-payments-v3\tests\utils\browser.py", line 11, in open_page
+    self._driver.get(page_url)
+  File "c:\python38\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 333, in get
+    self.execute(Command.GET, {'url': url})
+  File "c:\python38\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 321, in execute
+    self.error_handler.check_response(response)
+  File "c:\python38\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 242, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.WebDriverException: Message: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=89.0.4389.90)
+
+
+exception: Message: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=89.0.4389.90)
+
+--------------------------------------------------------------------------------

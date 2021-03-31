@@ -4,7 +4,7 @@ Feature: E2E for tokenisation
   To execute payment with only cvv
 
   @e2e_smoke_test
-  @e2e_for_tokenisation @jwt_config_visa_frictionless_with_parenttransaction
+  @e2e_for_tokenisation @jwt_config_visa_frictionless_with_parenttransaction @skip_form_inputs_load_wait
   Scenario: Visa Frictionless tokenisation
     Given JS library configured by inline params TOKENISATION_CONFIG and jwt JWT_VISA_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |
@@ -17,7 +17,7 @@ Feature: E2E for tokenisation
     And User will see that Submit button is "disabled" after payment
     And User will see that SECURITY_CODE input fields are "disabled"
 
-  @e2e_for_tokenisation @jwt_config_visa_non_frictionless_with_parenttransaction
+  @e2e_for_tokenisation @jwt_config_visa_non_frictionless_with_parenttransaction @skip_form_inputs_load_wait
   Scenario: Visa Non-Frictionless tokenisation
     Given JS library configured by inline params TOKENISATION_CONFIG and jwt JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |
@@ -31,7 +31,7 @@ Feature: E2E for tokenisation
     And User will see that Submit button is "disabled" after payment
     And User will see that SECURITY_CODE input fields are "disabled"
 
-  @e2e_for_tokenisation @jwt_config_visa_non_frictionless_with_parenttransaction
+  @e2e_for_tokenisation @jwt_config_visa_non_frictionless_with_parenttransaction @skip_form_inputs_load_wait
   Scenario: Visa Non-Frictionless tokenisation with bypass
     Given JS library configured by inline params TOKENISATION_CONFIG and jwt JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                      | value                    |
@@ -45,7 +45,7 @@ Feature: E2E for tokenisation
     And User will see that Submit button is "disabled" after payment
     And User will see that SECURITY_CODE input fields are "disabled"
 
-  @e2e_for_tokenisation @jwt_config_amex_non_frictionless_with_parenttransaction
+  @e2e_for_tokenisation @jwt_config_amex_non_frictionless_with_parenttransaction @skip_form_inputs_load_wait
   Scenario: Amex Non-Frictionless tokenisation
     Given JS library configured by inline params TOKENISATION_CONFIG and jwt JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |
@@ -60,7 +60,7 @@ Feature: E2E for tokenisation
     And User will see that SECURITY_CODE input fields are "disabled"
 
   @e2e_smoke_test
-  @update_jwt_test
+  @update_jwt_test @skip_form_inputs_load_wait
   Scenario: Updating payment references for tokenization
     Given JS library configured by inline params TOKENISATION_AND_SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |
@@ -84,7 +84,7 @@ Feature: E2E for tokenisation
       | enrolled             | Y                                       |
       | eci                  | 06                                      |
 
-
+  @skip_form_inputs_load_wait
   Scenario: Updating payment references for tokenization - fully authentication in second payment
     Given JS library configured by inline params TOKENISATION_CONFIG and jwt JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
       | key                     | value            |

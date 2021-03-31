@@ -14,7 +14,7 @@ import {
   MessageBusToken,
   MessageSubscriberToken,
   StoreToken,
-  TranslatorToken
+  TranslatorToken,
 } from '../../shared/dependency-injection/InjectionTokens';
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';

@@ -24,7 +24,7 @@ export class BrowserLocalStorage implements IStorage {
     return this.storage.getItem(name);
   }
 
-  setItem(name: string, value: any): void {
+  setItem(name: string, value: unknown): void {
     this.storage.setItem(name, value);
   }
 

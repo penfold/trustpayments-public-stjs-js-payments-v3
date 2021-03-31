@@ -34,7 +34,7 @@ export class Payment {
     payment: ICard | IWallet,
     merchantData: IMerchantData,
     responseData?: IResponseData
-  ): Promise<object> {
+  ): Promise<Record<string, any>> {
     const customerOutput: CustomerOutput | undefined = responseData
       ? (responseData.customeroutput as CustomerOutput)
       : undefined;
@@ -62,25 +62,28 @@ export class Payment {
     return this.publishResponse(responseData);
   }
 
-  walletVerify(walletVerify: IWalletVerify): Observable<object> {
+  walletVerify(walletVerify: IWalletVerify): Observable<Record<string, any>> {
     return from(
       this.stTransport.sendRequest(Object.assign({ requesttypedescriptions: ['WALLETVERIFY'] }, walletVerify))
     );
   }
 
-  private publishResponse(responseData?: IResponseData): Promise<object> {
+  private publishResponse(responseData?: IResponseData): Promise<Record<string, any>> {
     return Promise.resolve({
-      response: responseData || {}
+      response: responseData || {},
     });
   }
 
-  private publishErrorResponse(responseData?: IResponseData): Promise<object> {
+  private publishErrorResponse(responseData?: IResponseData): Promise<Record<string, any>> {
     return Promise.reject({
-      response: responseData || {}
+      response: responseData || {},
     });
   }
 
-  private async processRequestTypes(requestData: IStRequest, responseData?: IResponseData): Promise<object> {
+  private async processRequestTypes(
+    requestData: IStRequest,
+    responseData?: IResponseData
+  ): Promise<Record<string, any>> {
     const processPaymentRequestBody = { ...requestData };
 
     if (responseData) {
@@ -97,7 +100,7 @@ export class Payment {
     return this.stTransport.sendRequest(processPaymentRequestBody);
   }
 
-  private publishThreedResponse(responseData: IResponseData): Promise<object> {
+  private publishThreedResponse(responseData: IResponseData): Promise<Record<string, any>> {
     // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
     StCodec.publishResponse(responseData, responseData.jwt, responseData.threedresponse);
     this.notificationService.success(PAYMENT_SUCCESS);
