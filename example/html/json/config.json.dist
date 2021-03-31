@@ -64,6 +64,9 @@
   "googlePay": {
     "buttonOptions": {
       "buttonRootNode": "st-google-pay",
+      "buttonColor": "default",
+      "buttonType": "buy",
+      "buttonLocale": "en",
       "onClick": null
     },
     "paymentRequest": {
@@ -77,7 +80,7 @@
             "gateway": "trustpayments",
             "gatewayMerchantId": "test_james38641"
           },
-          "type": "test"
+          "type": "PAYMENT_GATEWAY"
         },
         "type": "CARD"
       },

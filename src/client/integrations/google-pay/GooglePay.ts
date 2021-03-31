@@ -1,17 +1,17 @@
 import { Service } from 'typedi';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { GooglePayPaymentService } from './GooglePayPaymentService';
-import { tap } from 'rxjs/operators';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import {
   IGooglePayPaymentRequest,
   IGooglePlayIsReadyToPayRequest,
   IPaymentData
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
-import { Observable } from 'rxjs';
 
 @Service()
 export class GooglePay {
@@ -51,7 +51,6 @@ export class GooglePay {
 
   private onGooglePayLoaded(): void {
     const paymentsClient = this.getGooglePaymentsClient();
-
     paymentsClient.isReadyToPay(this.getGoogleIsReadyToPayRequest()).then((response: any) => {
       if (response.result) {
         this.addGooglePayButton();
@@ -69,7 +68,7 @@ export class GooglePay {
         apiVersionMinor,
         allowedPaymentMethods: [
           {
-            type: 'CARD' as const,
+            type: allowedPaymentMethods.type,
             parameters: {
               allowedAuthMethods: allowedPaymentMethods.parameters.allowedCardAuthMethods,
               allowedCardNetworks: allowedPaymentMethods.parameters.allowedCardNetworks
@@ -81,10 +80,17 @@ export class GooglePay {
   }
 
   private addGooglePayButton(): void {
-    const paymentsClient = this.getGooglePaymentsClient();
-    const button = paymentsClient.createButton({ onClick: this.onGooglePaymentButtonClicked });
+    const { buttonRootNode, buttonColor, buttonType, buttonLocale } = this.config.googlePay.buttonOptions;
 
-    document.getElementById(this.config.googlePay.buttonOptions.buttonRootNode).appendChild(button);
+    const paymentsClient = this.getGooglePaymentsClient();
+    const button = paymentsClient.createButton({
+      buttonColor,
+      buttonType,
+      buttonLocale,
+      onClick: this.onGooglePaymentButtonClicked
+    });
+
+    document.getElementById(buttonRootNode).appendChild(button);
   }
 
   private getGooglePaymentsClient(): any {
@@ -104,13 +110,13 @@ export class GooglePay {
         apiVersionMinor,
         allowedPaymentMethods: [
           {
-            type: 'CARD',
+            type: allowedPaymentMethods.type,
             parameters: {
               allowedAuthMethods: allowedPaymentMethods.parameters.allowedCardAuthMethods,
               allowedCardNetworks: allowedPaymentMethods.parameters.allowedCardNetworks
             },
             tokenizationSpecification: {
-              type: 'PAYMENT_GATEWAY',
+              type: allowedPaymentMethods.tokenizationSpecification.type,
               parameters: {
                 gateway: allowedPaymentMethods.tokenizationSpecification.parameters.gateway,
                 gatewayMerchantId: allowedPaymentMethods.tokenizationSpecification.parameters.gatewayMerchantId
