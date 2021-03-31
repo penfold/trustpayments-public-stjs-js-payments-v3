@@ -81,6 +81,7 @@ export const GooglePayPaymentRequestSchema: Joi.ObjectSchema = Joi.object().keys
       ),
       totalPriceLabel: Joi.string(),
       totalPriceStatus: Joi.string().valid('NOT_CURRENTLY_KNOWN', 'ESTIMATED', 'FINAL'),
+      totalPrice: Joi.string(),
       transactionId: Joi.string()
     })
     .required()

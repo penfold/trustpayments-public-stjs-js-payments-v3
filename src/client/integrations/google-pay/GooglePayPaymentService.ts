@@ -29,7 +29,7 @@ export class GooglePayPaymentService {
         requestTypes,
         {
           walletsource: 'GOOGLEPAY',
-          wallettoken: payment
+          wallettoken: JSON.stringify(payment)
         },
         {
           ...formData,

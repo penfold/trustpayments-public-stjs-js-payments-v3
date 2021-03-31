@@ -183,6 +183,8 @@ export class ST {
   GooglePay(config: IGooglePayConfig): void {
     if (config) {
       this.config = this.configService.updateFragment(GooglePayConfigName, config);
+      // TODO: Move to initControlFrame$()
+      this.googlePay.init(this.config);
     }
 
     this.initControlFrame$().subscribe(() => {

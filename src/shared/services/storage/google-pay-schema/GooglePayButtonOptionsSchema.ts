@@ -38,5 +38,5 @@ export const GooglePayButtonOptionsSchema: Joi.ObjectSchema = Joi.object().keys(
   buttonRootNode: Joi.string().required(),
   buttonSizeMode: Joi.string().valid('static', 'fill'),
   buttonType: Joi.string().valid('buy', 'donate', 'plain', 'long', 'short'),
-  onClick: Joi.function().required()
+  onClick: Joi.any()
 });

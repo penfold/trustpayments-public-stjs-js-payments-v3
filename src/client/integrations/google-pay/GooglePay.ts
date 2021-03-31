@@ -29,20 +29,20 @@ export class GooglePay {
   public async init(config: IConfig) {
     this.config = config;
 
-    try {
-      await this.insertGooglePayLibrary();
-      await this.onGooglePayLoaded();
+    this.insertGooglePayLibrary().then(() => {
+      this.onGooglePayLoaded();
+    });
 
-      this.configProvider.getConfig$().subscribe((config: IConfig) => {
-        this.config = config;
-        this.onConfigUpdate();
-      });
-    } catch (err) {
-      console.error(err);
-    }
+    // tslint:disable-next-line:no-shadowed-variable
+    this.configProvider.getConfig$().subscribe((config: IConfig) => {
+      this.config = config;
+      this.onConfigUpdate();
+    });
   }
 
-  private onConfigUpdate(): void {}
+  private onConfigUpdate(): void {
+    console.log('update');
+  }
 
   private insertGooglePayLibrary(): Promise<Element> {
     return DomMethods.insertScript(this.SCRIPT_TARGET, { src: this.SCRIPT_ADDRESS });
@@ -64,19 +64,29 @@ export class GooglePay {
       {
         apiVersion: this.config.googlePay.paymentRequest.apiVersion,
         apiVersionMinor: this.config.googlePay.paymentRequest.apiVersionMinor,
-        allowedPaymentMethods: this.config.googlePay.paymentRequest.allowedPaymentMethods
+        allowedPaymentMethods: [
+          {
+            type: 'CARD',
+            parameters: {
+              allowedAuthMethods: this.config.googlePay.paymentRequest.allowedPaymentMethods.parameters
+                .allowedCardAuthMethods,
+              allowedCardNetworks: this.config.googlePay.paymentRequest.allowedPaymentMethods.parameters
+                .allowedCardNetworks
+            }
+          }
+        ]
       }
     );
   }
 
-  private addGooglePayButton() {
+  private addGooglePayButton(): void {
     const paymentsClient = this.getGooglePaymentsClient();
     const button = paymentsClient.createButton({ onClick: this.onGooglePaymentButtonClicked });
 
     document.getElementById(this.config.googlePay.buttonOptions.buttonRootNode).appendChild(button);
   }
 
-  private getGooglePaymentsClient() {
+  private getGooglePaymentsClient(): any {
     if (this.googlePayClient === null) {
       this.googlePayClient = new (window as any).google.payments.api.PaymentsClient({ environment: 'TEST' });
     }
@@ -84,10 +94,47 @@ export class GooglePay {
   }
 
   private getGooglePaymentDataRequest(): IGooglePayPaymentRequest {
-    return Object.assign({}, this.config.googlePay.paymentRequest);
+    const paymentDataRequest = Object.assign(
+      {},
+      {
+        apiVersion: this.config.googlePay.paymentRequest.apiVersion,
+        apiVersionMinor: this.config.googlePay.paymentRequest.apiVersionMinor,
+        allowedPaymentMethods: [
+          {
+            type: 'CARD',
+            parameters: {
+              allowedAuthMethods: this.config.googlePay.paymentRequest.allowedPaymentMethods.parameters
+                .allowedCardAuthMethods,
+              allowedCardNetworks: this.config.googlePay.paymentRequest.allowedPaymentMethods.parameters
+                .allowedCardNetworks
+            },
+            tokenizationSpecification: {
+              type: 'PAYMENT_GATEWAY',
+              parameters: {
+                gateway: this.config.googlePay.paymentRequest.allowedPaymentMethods.tokenizationSpecification.parameters
+                  .gateway,
+                gatewayMerchantId: this.config.googlePay.paymentRequest.allowedPaymentMethods.tokenizationSpecification
+                  .parameters.gatewayMerchantId
+              }
+            }
+          }
+        ],
+        transactionInfo: {
+          countryCode: 'US',
+          currencyCode: 'USD',
+          totalPriceStatus: 'FINAL' as const,
+          totalPrice: '1.00'
+        },
+        merchantInfo: {
+          merchantName: this.config.googlePay.paymentRequest.merchantInfo.merchantName,
+          merchantId: this.config.googlePay.paymentRequest.merchantInfo.merchantId
+        }
+      }
+    );
+    return paymentDataRequest;
   }
 
-  private onGooglePaymentButtonClicked = () => {
+  private onGooglePaymentButtonClicked = (): void => {
     const paymentDataRequest = this.getGooglePaymentDataRequest();
     const paymentsClient = this.getGooglePaymentsClient();
 

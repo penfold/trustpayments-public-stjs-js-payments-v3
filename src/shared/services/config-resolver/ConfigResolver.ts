@@ -13,6 +13,7 @@ import { IPlaceholdersConfig } from '../../../application/core/models/IPlacehold
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
 import { environment } from '../../../environments/environment';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
+import { IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
 
 @Service()
 export class ConfigResolver {
@@ -35,6 +36,7 @@ export class ConfigResolver {
       errorReporting: this._getValueOrDefault(config.errorReporting, DefaultConfig.errorReporting),
       fieldsToSubmit: this._getValueOrDefault(config.fieldsToSubmit, DefaultConfig.fieldsToSubmit),
       formId: this._getValueOrDefault(config.formId, DefaultConfig.formId),
+      googlePay: this._setGooglePayConfig(config.googlePay),
       init: this._getValueOrDefault(config.init, DefaultConfig.init),
       jwt: this._getValueOrDefault(config.jwt, DefaultConfig.jwt),
       livestatus: this._getValueOrDefault(config.livestatus, DefaultConfig.livestatus),
@@ -99,6 +101,13 @@ export class ConfigResolver {
   }
 
   private _setApplePayConfig(config: IApplePayConfig): IApplePayConfig {
+    if (!config || !Object.keys(config).length) {
+      return;
+    }
+    return config;
+  }
+
+  private _setGooglePayConfig(config: IGooglePayConfig): IGooglePayConfig {
     if (!config || !Object.keys(config).length) {
       return;
     }

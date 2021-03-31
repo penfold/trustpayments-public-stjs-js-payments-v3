@@ -191,7 +191,8 @@ function stFixture() {
 
   const googlePayConfig: IGooglePayConfig = {
     buttonOptions: {
-      onClick: (): void => {}
+      onClick: (): void => {},
+      buttonRootNode: 'test'
     },
     paymentRequest: {
       allowedPaymentMethods: {
