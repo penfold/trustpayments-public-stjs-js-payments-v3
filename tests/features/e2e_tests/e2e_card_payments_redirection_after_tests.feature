@@ -100,7 +100,7 @@ Feature: E2E Card Payments - redirection
       | transactionreference | should not be none |
       | jwt                  | should not be none |
 
-  @e2e_smoke_test @skip_form_inputs_load_wait
+  @e2e_smoke_test @skip_form_inputs_load_wait @skip_form_button_load_wait
   Scenario: Unsuccessful payment with submitOnError enabled - invalid jwt
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt INVALID_JWT with additional attributes
       | key                      | value            |

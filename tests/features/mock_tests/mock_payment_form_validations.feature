@@ -15,7 +15,7 @@ Feature: Payment form validations
     And User will see that all fields are highlighted
     And THREEDQUERY, AUTH request was not sent
 
-  @config_submit_cvv_only
+  @config_submit_cvv_only @skip_form_inputs_load_wait
   Scenario: Checking validation if only Security code field is enabled
     When User clicks Pay button
     Then User will see "Field is required" message under field: "SECURITY_CODE"
