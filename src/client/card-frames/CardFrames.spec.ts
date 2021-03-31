@@ -14,7 +14,7 @@ import {
   EXPIRATION_DATE_IFRAME,
   EXPIRATION_DATE_INPUT_SELECTOR,
   SECURITY_CODE_IFRAME,
-  SECURITY_CODE_INPUT_SELECTOR
+  SECURITY_CODE_INPUT_SELECTOR,
 } from '../../application/core/models/constants/Selectors';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
@@ -59,7 +59,7 @@ describe('CardFrames', () => {
       of({
         jwt: '',
         disableNotification: false,
-        placeholders: { pan: 'Card number', expirydate: 'MM/YY', securitycode: '***' }
+        placeholders: { pan: 'Card number', expirydate: 'MM/YY', securitycode: '***' },
       })
     );
 
@@ -80,8 +80,8 @@ describe('CardFrames', () => {
         sitereference: 'test_james38641',
         locale: 'en_GB',
         pan: '3089500000000000021',
-        expirydate: '01/22'
-      }
+        expirydate: '01/22',
+      },
     });
 
     instance = new CardFrames(
@@ -90,7 +90,7 @@ describe('CardFrames', () => {
       {
         cardNumber: CARD_NUMBER_INPUT_SELECTOR,
         expirationDate: EXPIRATION_DATE_INPUT_SELECTOR,
-        securityCode: SECURITY_CODE_INPUT_SELECTOR
+        securityCode: SECURITY_CODE_INPUT_SELECTOR,
       },
       {},
       ['VISA,MASTERCARD,AMEX'],
@@ -113,7 +113,7 @@ describe('CardFrames', () => {
     const type = MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER;
     const messageBusEvent = {
       data,
-      type
+      type,
     };
 
     beforeEach(() => {
@@ -154,16 +154,16 @@ describe('CardFrames', () => {
       data: {
         billingamount: '',
         billingemail: '',
-        billingfirstname: ''
+        billingfirstname: '',
       },
-      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS
+      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS,
     };
 
     beforeEach(() => {
       DomMethods.parseForm = jest.fn().mockReturnValueOnce({
         billingamount: '',
         billingemail: '',
-        billingfirstname: ''
+        billingfirstname: '',
       });
       // @ts-ignore
       instance._messageBus.publish = jest.fn();
@@ -289,9 +289,9 @@ describe('CardFrames', () => {
     const submitFormEvent = {
       data: {
         // @ts-ignore
-        fieldsToSubmit: ['pan', 'expirydate', 'securitycode']
+        fieldsToSubmit: ['pan', 'expirydate', 'securitycode'],
       },
-      type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM
+      type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
     };
 
     beforeEach(() => {
@@ -299,7 +299,7 @@ describe('CardFrames', () => {
       instance._messageBus.subscribe = jest.fn().mockReturnValueOnce({
         cardNumber: '',
         expirationDate: '',
-        securityCode: ''
+        securityCode: '',
       });
       // @ts-ignore
       instance._messageBus.publish = jest.fn();
@@ -322,7 +322,7 @@ describe('CardFrames', () => {
       return {
         cardNumber: { message: 'card', state: stateCardNumber },
         expirationDate: { message: 'expiration', state: stateExpirationDate },
-        securityCode: { message: 'security', state: stateSecurityCode }
+        securityCode: { message: 'security', state: stateSecurityCode },
       };
     }
 
@@ -398,11 +398,11 @@ describe('CardFrames', () => {
       expect(instance._messageBusEvent.data.message).toEqual(field.message);
     });
 
-    it('should set messageBusEvent properties', () => {
+    it('should call messageBus publish method', () => {
       // @ts-ignore
       expect(instance._messageBus.publish).toHaveBeenCalledWith({
         type: MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD,
-        data: { message: field.message }
+        data: { message: field.message },
       });
     });
   });

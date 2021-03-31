@@ -24,15 +24,15 @@ export class BrowserDetector {
     return {
       browser: {
         ...browserDetails.browser,
-        isSupported: isBrowserSupported
+        isSupported: isBrowserSupported,
       },
       engine: browserDetails.engine,
       os: {
         ...browserDetails.os,
-        isSupported: isDeviceSupported
+        isSupported: isDeviceSupported,
       },
       platform: browserDetails.platform,
-      isSupported: isBrowserSupported && isDeviceSupported
+      isSupported: isBrowserSupported && isDeviceSupported,
     };
   }
 }

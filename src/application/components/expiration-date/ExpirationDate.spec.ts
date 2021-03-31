@@ -10,7 +10,7 @@ import { LABEL_EXPIRATION_DATE } from '../../core/models/constants/Translations'
 import {
   EXPIRATION_DATE_INPUT,
   EXPIRATION_DATE_LABEL,
-  EXPIRATION_DATE_MESSAGE
+  EXPIRATION_DATE_MESSAGE,
 } from '../../core/models/constants/Selectors';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
@@ -29,10 +29,6 @@ Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('ExpirationDate', () => {
   describe('ExpirationDate.ifFieldExists()', () => {
-    it('should return input iframe-factory', () => {
-      expect(ExpirationDate.ifFieldExists()).toBeTruthy();
-    });
-
     it('should return input iframe-factory', () => {
       expect(ExpirationDate.ifFieldExists()).toBeInstanceOf(HTMLInputElement);
     });
@@ -214,20 +210,17 @@ function expirationDateFixture() {
   const config: IConfig = {
     jwt: 'test',
     disableNotification: false,
-    placeholders: { pan: '4154654', expirydate: '12/22', securitycode: '123' }
+    placeholders: { pan: '4154654', expirydate: '12/22', securitycode: '123' },
   };
-  let configProvider: ConfigProvider;
-  configProvider = mock<ConfigProvider>();
-  let formatter: Formatter;
-  let frame: Frame;
-  frame = mock(Frame);
+  const configProvider: ConfigProvider = mock<ConfigProvider>();
+  const formatter: Formatter = mock(Formatter);
+  const frame: Frame = mock(Frame);
   const messageBus: IMessageBus = new SimpleMessageBus();
-  formatter = mock(Formatter);
   // @ts-ignore
   when(configProvider.getConfig()).thenReturn({
     jwt: '',
     disableNotification: false,
-    placeholders: { pan: '4154654', expirydate: '12/22', securitycode: '123' }
+    placeholders: { pan: '4154654', expirydate: '12/22', securitycode: '123' },
   });
   when(configProvider.getConfig$()).thenReturn(of(config));
   const expirationDateInstance: ExpirationDate = new ExpirationDate(

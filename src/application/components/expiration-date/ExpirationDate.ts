@@ -8,7 +8,7 @@ import {
   EXPIRATION_DATE_INPUT,
   EXPIRATION_DATE_LABEL,
   EXPIRATION_DATE_MESSAGE,
-  EXPIRATION_DATE_WRAPPER
+  EXPIRATION_DATE_WRAPPER,
 } from '../../core/models/constants/Selectors';
 import { Service } from 'typedi';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -54,12 +54,12 @@ export class ExpirationDate extends Input {
         styler.addStyles([
           {
             elementSelector: '#st-expiration-date',
-            classList: ['st-expiration-date--lined-up']
+            classList: ['st-expiration-date--lined-up'],
           },
           {
             elementSelector: '#st-expiration-date-label',
-            classList: ['expiration-date__label--required', 'lined-up']
-          }
+            classList: ['expiration-date__label--required', 'lined-up'],
+          },
         ]);
       }
 
@@ -73,10 +73,10 @@ export class ExpirationDate extends Input {
             inlineStyles: [
               {
                 property: 'padding',
-                value: `${outlineSize ? outlineSize : 3}px`
-              }
-            ]
-          }
+                value: `${outlineSize ? outlineSize : 3}px`,
+              },
+            ],
+          },
         ]);
       }
 
@@ -88,10 +88,10 @@ export class ExpirationDate extends Input {
             inlineStyles: [
               {
                 property: 'color',
-                value
-              }
-            ]
-          }
+                value,
+              },
+            ],
+          },
         ]);
       }
     });

@@ -1,5 +1,5 @@
 import { Container } from 'typedi';
-import { mock, instance, anything, when, verify } from 'ts-mockito';
+import { mock, instance, when, verify } from 'ts-mockito';
 import { Translator } from './Translator';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IMessageBus } from '../message-bus/IMessageBus';
@@ -9,7 +9,6 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { ITranslationProvider } from './ITranslationProvider';
 import { TranslationProvider } from './TranslationProvider';
-import { ITranslator } from './ITranslator';
 
 Container.set({ id: TranslatorToken, type: Translator });
 Container.set({ id: ITranslationProvider, type: TranslationProvider });
@@ -34,8 +33,8 @@ describe('register()', () => {
     messageBus.publish({
       type: PUBLIC_EVENTS.UPDATE_JWT,
       data: {
-        newJwt
-      }
+        newJwt,
+      },
     });
     verify(translator.changeLanguage('no_NO')).once();
   });

@@ -23,7 +23,7 @@ const translationItems = { translations };
 describe('TranslationProvider', () => {
   describe('getResources()', () => {
     let translationProvider: TranslationProvider;
-    let translations: Array<any>;
+    let translations: Array<Record<string, string>>;
 
     beforeEach(() => {
       translationProvider = Container.get(TranslationProvider);
@@ -31,11 +31,11 @@ describe('TranslationProvider', () => {
     });
 
     it('should have translations for all Language parameters', () => {
-      for (let i in translations) {
-        let translation: any = translations[i];
-        let language: any = translationItems;
-        for (let key in language.translations) {
-          let text = language.translations[key];
+      for (const i in translations) {
+        const translation: Record<string, string> = translations[i];
+        const language: { translations: Record<string, string> } = translationItems;
+        for (const key in language.translations) {
+          const text = language.translations[key];
           expect(translation[text]).toBeDefined();
         }
       }

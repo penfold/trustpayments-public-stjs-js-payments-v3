@@ -15,7 +15,7 @@ export class SimpleStorage implements IStorage {
     return this.storage$.getValue()[name];
   }
 
-  setItem(name: string, value: any): void {
+  setItem(name: string, value: unknown): void {
     const storage = this.storage$.getValue();
     this.storage$.next({ ...storage, [name]: value });
   }

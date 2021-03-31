@@ -5,7 +5,7 @@ import { IResponseData } from '../../models/IResponseData';
 import { IStRequest } from '../../models/IStRequest';
 import {
   COMMUNICATION_ERROR_INVALID_RESPONSE,
-  COMMUNICATION_ERROR_INVALID_REQUEST
+  COMMUNICATION_ERROR_INVALID_REQUEST,
 } from '../../models/constants/Translations';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Validation } from '../../shared/validation/Validation';
@@ -45,7 +45,7 @@ export class StCodec {
     return {
       errordata,
       errormessage,
-      requesttypedescription
+      requesttypedescription,
     };
   }
 
@@ -76,7 +76,7 @@ export class StCodec {
     }
     const notificationEvent: IMessageBusEvent = {
       data: eventData,
-      type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE
+      type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE,
     };
     StCodec.getMessageBus().publish(notificationEvent, true);
   }
@@ -108,7 +108,7 @@ export class StCodec {
     'WALLETVERIFY',
     'RISKDEC',
     'SUBSCRIPTION',
-    'ACCOUNTCHECK'
+    'ACCOUNTCHECK',
   ];
   private static STATUS_CODES = { invalidfield: '30000', ok: '0', declined: '70000' };
 
@@ -123,7 +123,7 @@ export class StCodec {
   private static createCommunicationError() {
     return {
       errorcode: '50003',
-      errormessage: COMMUNICATION_ERROR_INVALID_RESPONSE
+      errormessage: COMMUNICATION_ERROR_INVALID_RESPONSE,
     } as IResponseData;
   }
 
@@ -225,7 +225,7 @@ export class StCodec {
     StCodec.locale = this.jwtDecoder.decode(StCodec.jwt).payload.locale || 'en_GB';
   }
 
-  public buildRequestObject(requestData: object): object {
+  public buildRequestObject(requestData: Record<string, any>): Record<string, any> {
     return {
       acceptcustomeroutput: '2.00',
       jwt: StCodec.jwt,
@@ -233,11 +233,11 @@ export class StCodec {
         {
           ...requestData,
           requestid: this.requestId,
-          sitereference: this.jwtDecoder.decode(StCodec.jwt).sitereference
-        }
+          sitereference: this.jwtDecoder.decode(StCodec.jwt).sitereference,
+        },
       ],
       version: StCodec.VERSION,
-      versioninfo: StCodec.VERSION_INFO
+      versioninfo: StCodec.VERSION_INFO,
     };
   }
 
@@ -250,10 +250,10 @@ export class StCodec {
     return JSON.stringify(this.buildRequestObject(requestObject));
   }
 
-  public async decode(responseObject: Response | {}): Promise<object> {
+  public async decode(responseObject: Response | Record<string, unknown>): Promise<Record<string, unknown>> {
     return new Promise((resolve, reject) => {
-      if ('json' in responseObject) {
-        responseObject.json().then(responseData => {
+      if (typeof responseObject.json === 'function') {
+        responseObject.json().then((responseData: any) => {
           try {
             const decoded: IStJwtObj = StCodec.decodeResponseJwt(responseData.jwt, reject);
             const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
@@ -266,7 +266,7 @@ export class StCodec {
 
             resolve({
               jwt: responseData.jwt,
-              response: verifiedResponse
+              response: verifiedResponse,
             });
           } catch (error) {
             StCodec.resetJwt();

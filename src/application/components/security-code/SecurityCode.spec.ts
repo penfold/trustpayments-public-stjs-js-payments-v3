@@ -69,6 +69,10 @@ describe('SecurityCode', () => {
       });
       // @ts-ignore
       securityCodeInstance._setDisableListener();
+      // @ts-ignore
+      expect(securityCodeInstance._inputElement.hasAttribute(SecurityCode.DISABLED_ATTRIBUTE)).toEqual(true);
+      // @ts-ignore
+      expect(securityCodeInstance._inputElement.classList.contains(SecurityCode.DISABLED_CLASS)).toEqual(true);
     });
 
     it('should remove attribute disabled and remove class from classList', () => {
@@ -146,9 +150,9 @@ describe('SecurityCode', () => {
     beforeEach(() => {
       const event = {
         clipboardData: {
-          getData: jest.fn()
+          getData: jest.fn(),
         },
-        preventDefault: jest.fn()
+        preventDefault: jest.fn(),
       };
       Utils.stripChars = jest.fn().mockReturnValue('111');
       // @ts-ignore
@@ -235,19 +239,16 @@ function securityCodeFixture() {
   const config: IConfig = {
     jwt: 'test',
     disableNotification: false,
-    placeholders: { pan: '4154654', expirydate: '12/22', securitycode: '123' }
+    placeholders: { pan: '4154654', expirydate: '12/22', securitycode: '123' },
   };
 
   const communicatorMock: InterFrameCommunicator = mock(InterFrameCommunicator);
   when(communicatorMock.incomingEvent$).thenReturn(EMPTY);
 
   const configProvider: ConfigProvider = mock<ConfigProvider>();
-  let formatter: Formatter;
-  formatter = mock(Formatter);
-  let frame: Frame;
-  frame = mock(Frame);
-  let jwtDecoder: JwtDecoder;
-  jwtDecoder = mock(JwtDecoder);
+  const formatter: Formatter = mock(Formatter);
+  const frame: Frame = mock(Frame);
+  const jwtDecoder: JwtDecoder = mock(JwtDecoder);
   const localStorage: BrowserLocalStorage = mock(BrowserLocalStorage);
   when(localStorage.select(anyFunction())).thenReturn(of('34****4565'));
   when(configProvider.getConfig$()).thenReturn(of(config));

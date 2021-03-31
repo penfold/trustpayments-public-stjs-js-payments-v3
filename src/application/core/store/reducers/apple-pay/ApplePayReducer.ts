@@ -14,7 +14,7 @@ export class ApplePayReducer implements IReducer<CommonState> {
     if (action.type === PUBLIC_EVENTS.APPLE_PAY_CONFIG_MOCK) {
       const applePay = {
         ...state.applePay,
-        config: action.data
+        config: action.data,
       };
 
       return { ...state, applePay };

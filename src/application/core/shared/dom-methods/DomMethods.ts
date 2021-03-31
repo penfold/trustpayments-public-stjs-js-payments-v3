@@ -11,7 +11,7 @@ export class DomMethods {
   private static STYLE_MARKUP: string = 'style';
   private static CREATED_FIELD_CLASSNAME: string = '-st-created-field';
 
-  public static addDataToForm(form: HTMLFormElement, data: any, fields?: string[]): void {
+  public static addDataToForm(form: HTMLFormElement, data: Record<string, any>, fields?: string[]): void {
     Object.entries(data).forEach(([field, value]) => {
       if (!fields || fields.includes(field)) {
         let inputElement: HTMLInputElement = form.querySelector(`${DomMethods.INPUT_MARKUP}[name="${field}"]`);
@@ -24,7 +24,7 @@ export class DomMethods {
               name: field,
               type: DomMethods.HIDDEN_ATTRIBUTE,
               class: DomMethods.CREATED_FIELD_CLASSNAME,
-              value
+              value,
             },
             DomMethods.INPUT_MARKUP
           ) as HTMLInputElement;
@@ -35,7 +35,7 @@ export class DomMethods {
     });
   }
 
-  public static addListener(targetId: string, listenerType: string, callback: any): void {
+  public static addListener(targetId: string, listenerType: string, callback: (...args: any[]) => void): void {
     document.getElementById(targetId).addEventListener(listenerType, callback);
   }
 
@@ -47,7 +47,7 @@ export class DomMethods {
     return element;
   }
 
-  public static createHtmlElement = (attributes: any, markup: string): HTMLElement => {
+  public static createHtmlElement = (attributes: Record<string, string>, markup: string): HTMLElement => {
     const element: HTMLElement = document.createElement(markup);
     Object.keys(attributes).map(item => element.setAttribute(item, attributes[item]));
     return element;
@@ -55,7 +55,7 @@ export class DomMethods {
 
   public static getAllFormElements = (form: HTMLElement): any[] => [
     ...Array.from(form.querySelectorAll(DomMethods.SELECT_MARKUP)),
-    ...Array.from(form.querySelectorAll(DomMethods.INPUT_MARKUP))
+    ...Array.from(form.querySelectorAll(DomMethods.INPUT_MARKUP)),
   ];
 
   public static insertScript(target: string, params: IScriptParams): Promise<Element> {
@@ -89,10 +89,10 @@ export class DomMethods {
     contents.forEach((item: string) => (style.sheet as CSSStyleSheet).insertRule(item, 0));
   }
 
-  public static parseForm(formId: string): {} {
+  public static parseForm(formId: string): Record<string, unknown> {
     const form: HTMLElement = document.getElementById(formId);
     const els = DomMethods.getAllFormElements(form);
-    const result: any = {};
+    const result: Record<string, unknown> = {};
     for (const el of els) {
       if (el.hasAttribute(DomMethods.ST_NAME_ATTRIBUTE)) {
         result[el.getAttribute(DomMethods.ST_NAME_ATTRIBUTE)] = el.value;
@@ -133,7 +133,6 @@ export class DomMethods {
   private static setMarkupAttributes(target: string, params: any): Element {
     const element: Element = document.createElement(target) as Element;
     Object.keys(params).forEach((param: string) => {
-      // @ts-ignore
       element.setAttribute(param, params[param]);
     });
     return element;

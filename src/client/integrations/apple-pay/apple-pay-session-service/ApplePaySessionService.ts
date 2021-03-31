@@ -4,7 +4,6 @@ import { IApplePayPaymentMethodSelectedEvent } from '../../../../application/cor
 import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePaySession } from './IApplePaySession';
 import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingMethodSelectedEvent';
-// tslint:disable-next-line:max-line-length
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
 import { IApplePayPaymentAuthorizationResult } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 import { IApplePaySessionWrapper } from './IApplePaySessionWrapper';
@@ -79,8 +78,8 @@ export class ApplePaySessionService {
         newTotal: {
           amount: this.paymentRequest.total.amount,
           label: this.paymentRequest.total.label,
-          type: this.paymentRequest.total.type
-        }
+          type: this.paymentRequest.total.type,
+        },
       });
     };
   }
@@ -91,8 +90,8 @@ export class ApplePaySessionService {
         newTotal: {
           amount: this.paymentRequest.total.amount,
           label: this.paymentRequest.total.label,
-          type: this.paymentRequest.total.type
-        }
+          type: this.paymentRequest.total.type,
+        },
       });
     };
   }
@@ -103,8 +102,8 @@ export class ApplePaySessionService {
         newTotal: {
           amount: this.paymentRequest.total.amount,
           label: this.paymentRequest.total.label,
-          type: this.paymentRequest.total.type
-        }
+          type: this.paymentRequest.total.type,
+        },
       });
     };
   }

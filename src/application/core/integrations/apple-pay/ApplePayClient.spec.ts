@@ -34,18 +34,18 @@ describe('ApplePayClient', () => {
     visaCheckout: {
       buttonSettings: {
         size: 154,
-        color: 'neutral'
+        color: 'neutral',
       },
       livestatus: 0,
       merchantId: '',
       paymentRequest: {
-        subtotal: '20.0'
+        subtotal: '20.0',
       },
       placement: 'st-visa-checkout',
       settings: {
-        displayName: 'My Test Site'
-      }
-    }
+        displayName: 'My Test Site',
+      },
+    },
   };
 
   beforeEach(() => {
@@ -74,7 +74,7 @@ describe('ApplePayClient', () => {
     when(applePayPaymentService.walletVerify(anything(), anything(), anything())).thenReturn(
       of({
         status: ApplePayClientErrorCode.SUCCESS,
-        data: anything()
+        data: anything(),
       })
     );
     when(applePayPaymentService.processPayment(anything(), anything(), anything(), anything())).thenReturn(
@@ -91,9 +91,9 @@ describe('ApplePayClient', () => {
             status: ApplePayClientStatus.SUCCESS,
             details: {
               errorCode: ApplePayClientErrorCode.SUCCESS,
-              errorMessage: 'SUCCESS'
-            }
-          } as IApplePayClientStatus
+              errorMessage: 'SUCCESS',
+            },
+          } as IApplePayClientStatus,
         })
       );
 
@@ -113,9 +113,9 @@ describe('ApplePayClient', () => {
             status: ApplePayClientStatus.ERROR,
             details: {
               errorCode: ApplePayClientErrorCode.ERROR,
-              errorMessage: 'ERROR'
-            }
-          } as IApplePayClientStatus
+              errorMessage: 'ERROR',
+            },
+          } as IApplePayClientStatus,
         })
       );
 
@@ -135,9 +135,9 @@ describe('ApplePayClient', () => {
             status: ApplePayClientStatus.EMPTY_JWT_ERROR,
             details: {
               errorCode: ApplePayClientErrorCode.EMPTY_JWT_ERROR,
-              errorMessage: 'ERROR'
-            }
-          } as IApplePayClientStatus
+              errorMessage: 'ERROR',
+            },
+          } as IApplePayClientStatus,
         })
       );
 
@@ -147,7 +147,7 @@ describe('ApplePayClient', () => {
         verify(
           messageBusMock.publish(
             deepEqual({
-              type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK
+              type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
             }),
             true
           )
@@ -165,9 +165,9 @@ describe('ApplePayClient', () => {
             status: ApplePayClientStatus.CANCEL,
             details: {
               errorCode: ApplePayClientErrorCode.CANCEL,
-              errorMessage: 'CANCEL'
-            }
-          } as IApplePayClientStatus
+              errorMessage: 'CANCEL',
+            },
+          } as IApplePayClientStatus,
         })
       );
 
@@ -177,7 +177,7 @@ describe('ApplePayClient', () => {
         verify(
           messageBusMock.publish(
             deepEqual({
-              type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK
+              type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK,
             }),
             true
           )
@@ -187,8 +187,8 @@ describe('ApplePayClient', () => {
             deepEqual({
               type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
               data: {
-                errorcode: 'cancelled'
-              }
+                errorcode: 'cancelled',
+              },
             }),
             true
           )
@@ -206,9 +206,9 @@ describe('ApplePayClient', () => {
             status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
             details: {
               errorCode: ApplePayClientErrorCode.ERROR,
-              errorMessage: 'ERROR'
-            }
-          } as IApplePayClientStatus
+              errorMessage: 'ERROR',
+            },
+          } as IApplePayClientStatus,
         })
       );
 
@@ -226,9 +226,9 @@ describe('ApplePayClient', () => {
           data: {
             status: ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS,
             details: {
-              errorCode: ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS
-            }
-          } as IApplePayClientStatus
+              errorCode: ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
+            },
+          } as IApplePayClientStatus,
         })
       );
       applePayClient.init$().subscribe(status => {
@@ -246,9 +246,9 @@ describe('ApplePayClient', () => {
             details: {
               validateMerchantURL: 'testurl',
               config: {},
-              paymentCancelled: false
-            }
-          } as IApplePayClientStatus
+              paymentCancelled: false,
+            },
+          } as IApplePayClientStatus,
         })
       );
 
@@ -267,9 +267,9 @@ describe('ApplePayClient', () => {
             details: {
               config: {},
               payment: {},
-              formData: {}
-            }
-          } as IApplePayClientStatus
+              formData: {},
+            },
+          } as IApplePayClientStatus,
         })
       );
 
@@ -287,9 +287,9 @@ describe('ApplePayClient', () => {
             status: ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET,
             details: {
               errorCode: ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET,
-              errorMessage: 'NO_ACTIVE_CARDS_IN_WALLET'
-            }
-          } as IApplePayClientStatus
+              errorMessage: 'NO_ACTIVE_CARDS_IN_WALLET',
+            },
+          } as IApplePayClientStatus,
         })
       );
 
@@ -306,8 +306,8 @@ describe('ApplePayClient', () => {
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
           data: {
             status: 'No one knows' as ApplePayClientStatus,
-            details: undefined
-          } as IApplePayClientStatus
+            details: undefined,
+          } as IApplePayClientStatus,
         })
       );
 

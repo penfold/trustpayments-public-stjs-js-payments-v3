@@ -12,11 +12,11 @@ export interface IOrderObject {
 }
 
 export interface ICardinal {
-  on(eventName: string, callback: (...eventData: any[]) => void);
-  off(event: string);
-  continue(paymentBrand: string, continueObject: IContinueObject, orderObject?: IOrderObject, jwt?: string);
-  setup(initializationType: string, initializationData: any);
-  start(paymentBrand: string, orderObject: IOrderObject, jwt?: string);
-  trigger(eventName: string, ...data: any[]);
-  configure(config: any);
+  on(eventName: string, callback: (...eventData: any[]) => void): void;
+  off(event: string): void;
+  continue(paymentBrand: string, continueObject: IContinueObject, orderObject?: IOrderObject, jwt?: string): void;
+  setup(initializationType: string, initializationData: any): void;
+  start(paymentBrand: string, orderObject: IOrderObject, jwt?: string): void;
+  trigger(eventName: string, ...data: any[]): void;
+  configure(config: any): void;
 }

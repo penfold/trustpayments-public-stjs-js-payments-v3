@@ -64,7 +64,7 @@ export class ThreeDProcess {
             }
             return of({
               ...response,
-              cachetoken: tokens.cacheToken
+              cachetoken: tokens.cacheToken,
             });
           }),
           tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed'))
@@ -90,7 +90,7 @@ export class ThreeDProcess {
       transactionId: response.acquirertransactionreference,
       jwt: tokens.jwt,
       acsUrl: response.acsurl,
-      payload: response.threedpayload
+      payload: response.threedpayload,
     };
 
     return this.verificationService.verify(verificationData).pipe(

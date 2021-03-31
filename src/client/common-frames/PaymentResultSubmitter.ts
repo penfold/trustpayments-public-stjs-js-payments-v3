@@ -16,7 +16,7 @@ export class PaymentResultSubmitter {
     const form: HTMLFormElement = document.getElementById(config.formId) as HTMLFormElement;
     const dataToSubmit: SubmitData = this.pickDataToSubmit(data, [
       ...PaymentResultSubmitter.REQUIRED_SUBMIT_FIELDS,
-      ...config.submitFields
+      ...config.submitFields,
     ]);
 
     DomMethods.removeAllCreatedFields(form);

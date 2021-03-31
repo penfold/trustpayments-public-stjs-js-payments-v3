@@ -58,7 +58,7 @@ export class AllowedStylesService {
       'position-right-label': { property: 'right', selector: label },
       'position-left-label': { property: 'left', selector: label },
       'width-label': { property: 'width', selector: label },
-      'space-inset-wrapper': { property: 'padding', selector: wrapper }
+      'space-inset-wrapper': { property: 'padding', selector: wrapper },
     };
   }
 }

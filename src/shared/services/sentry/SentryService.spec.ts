@@ -69,7 +69,7 @@ describe('SentryService', () => {
           dsn: DSN,
           environment: 'prod',
           release: '1.2.3',
-          beforeSend: anyFunction()
+          beforeSend: anyFunction(),
         })
       )
     ).once();

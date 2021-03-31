@@ -14,7 +14,7 @@ describe('PaymentResultSubmitter', () => {
 
     when(configProviderMock.getConfig()).thenReturn({
       formId: 'st-form',
-      submitFields: ['foo', 'bar', 'baz']
+      submitFields: ['foo', 'bar', 'baz'],
     });
 
     form = DomMethods.createHtmlElement({ id: 'st-form' }, 'form') as HTMLFormElement;
@@ -38,14 +38,14 @@ describe('PaymentResultSubmitter', () => {
         bar: 'bar',
         xyz: 'xyz',
         jwt: 'jwt',
-        threedresponse: 'threedresponse'
+        threedresponse: 'threedresponse',
       });
 
       expect(DomMethods.addDataToForm).toHaveBeenCalledWith(form, {
         foo: 'foo',
         bar: 'bar',
         jwt: 'jwt',
-        threedresponse: 'threedresponse'
+        threedresponse: 'threedresponse',
       });
     });
 

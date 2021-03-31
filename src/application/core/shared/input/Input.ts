@@ -87,7 +87,7 @@ export class Input {
         `label[for=${this._inputSelector}]`,
         `.${CARD_NUMBER_WRAPPER} #card-icon`,
         `.${this._wrapperSelector}`
-      )
+      ),
     };
     return allowed;
   }
@@ -99,7 +99,7 @@ export class Input {
   protected getState(): IFormFieldState {
     return {
       validity: this._inputElement.validity.valid,
-      value: this._inputElement.value
+      value: this._inputElement.value,
     };
   }
 
@@ -158,10 +158,8 @@ export class Input {
     this.validation.validate(this._inputElement, this._messageElement);
   }
 
-  protected setAttributes(attributes: object) {
-    // tslint:disable-next-line:forin
+  protected setAttributes(attributes: Record<string, any>) {
     for (const attribute in attributes) {
-      // @ts-ignore
       this._inputElement.setAttribute(attribute, attributes[attribute]);
     }
   }
@@ -182,7 +180,7 @@ export class Input {
     const formFieldState: IFormFieldState = this.getState();
     return {
       data: formFieldState,
-      type: event
+      type: event,
     };
   }
 

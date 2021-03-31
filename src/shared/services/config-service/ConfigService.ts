@@ -81,7 +81,7 @@ export class ConfigService implements ConfigProvider {
 
     this.messageBus.publish({
       type: PUBLIC_EVENTS.CONFIG_CHANGED,
-      data: JSON.parse(JSON.stringify(fullConfig))
+      data: JSON.parse(JSON.stringify(fullConfig)),
     });
 
     Container.set(CONFIG, fullConfig);
@@ -93,14 +93,14 @@ export class ConfigService implements ConfigProvider {
     if (!config) {
       return {
         configFromJwt: false,
-        config: { jwt: '' }
+        config: { jwt: '' },
       };
     }
 
     if (!config.jwt) {
       return {
         configFromJwt: false,
-        config: { ...config }
+        config: { ...config },
       };
     }
 
@@ -108,7 +108,7 @@ export class ConfigService implements ConfigProvider {
     if (!payload.config) {
       return {
         configFromJwt: false,
-        config
+        config,
       };
     }
 
@@ -124,8 +124,8 @@ export class ConfigService implements ConfigProvider {
         submitCallback: config.submitCallback,
         successCallback: config.successCallback,
         errorCallback: config.errorCallback,
-        cancelCallback: config.cancelCallback
-      }
+        cancelCallback: config.cancelCallback,
+      },
     };
   }
 
