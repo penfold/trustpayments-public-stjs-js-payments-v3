@@ -45,7 +45,7 @@ interface IGooglePayMerchantInfo {
 
 interface GooglePayAllowedPaymentMethods {
   parameters: IGooglePayCardParameters; // TODO: Update paypal
-  tokenizationSpecification: IGooglePayTokenizationSpecification;
+  tokenizationSpecification?: IGooglePayTokenizationSpecification;
   type: IGooglePayAllowedPaymentMethodTypes;
 }
 
@@ -66,7 +66,7 @@ interface GooglePayShippingOptionParameters {
 }
 
 export interface IGooglePayPaymentRequest {
-  allowedPaymentMethods: any // TODO: Update GooglePayAllowedPaymentMethods;
+  allowedPaymentMethods: any; // TODO: Update GooglePayAllowedPaymentMethods;
   apiVersion: number;
   apiVersionMinor: number;
   callbackIntents?: IGooglePayCallbackIntents;
@@ -82,6 +82,22 @@ export interface IGooglePayPaymentRequest {
 export interface IGooglePlayIsReadyToPayRequest {
   apiVersion: number;
   apiVersionMinor: number;
-  allowedPaymentMethods: any; // TODO Update: GooglePayAllowedPaymentMethods[]
+  allowedPaymentMethods: GooglePayAllowedPaymentMethods[];
   existingPaymentMethodRequired?: boolean;
+}
+
+export interface IPaymentData {
+  apiVersion: number;
+  apiVersionMinor: number;
+  paymentMethodData: {
+    description: string;
+    info: {
+      cardNetwork: string;
+      cardDetails: string;
+    };
+  };
+  tokenizationData: {
+    token: string;
+    type: string;
+  };
 }

@@ -12,7 +12,7 @@ interface IGooglePayBillingAddressParameters {
 export interface IGooglePayCardParameters {
   allowPrepaidCards?: boolean;
   alloweCreditCards?: boolean;
-  allowedCardAuthMethods: IGooglePayAllowedCardAuthMethods[];
+  allowedAuthMethods: IGooglePayAllowedCardAuthMethods[];
   allowedCardNetworks: IGooglePaySupportedNetworks[];
   assuranceDetailsRequired?: boolean;
   billingAddressParameters?: IGooglePayBillingAddressParameters;

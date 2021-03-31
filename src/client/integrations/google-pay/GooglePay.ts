@@ -7,10 +7,11 @@ import { GooglePayPaymentService } from './GooglePayPaymentService';
 import { tap } from 'rxjs/operators';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import {
-  IGooglePayTransactionInfo,
   IGooglePayPaymentRequest,
-  IGooglePlayIsReadyToPayRequest
+  IGooglePlayIsReadyToPayRequest,
+  IPaymentData
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
+import { Observable } from 'rxjs';
 
 @Service()
 export class GooglePay {
@@ -59,19 +60,19 @@ export class GooglePay {
   }
 
   private getGoogleIsReadyToPayRequest(): IGooglePlayIsReadyToPayRequest {
+    const { apiVersion, apiVersionMinor, allowedPaymentMethods } = this.config.googlePay.paymentRequest;
+
     return Object.assign(
       {},
       {
-        apiVersion: this.config.googlePay.paymentRequest.apiVersion,
-        apiVersionMinor: this.config.googlePay.paymentRequest.apiVersionMinor,
+        apiVersion,
+        apiVersionMinor,
         allowedPaymentMethods: [
           {
-            type: 'CARD',
+            type: 'CARD' as const,
             parameters: {
-              allowedAuthMethods: this.config.googlePay.paymentRequest.allowedPaymentMethods.parameters
-                .allowedCardAuthMethods,
-              allowedCardNetworks: this.config.googlePay.paymentRequest.allowedPaymentMethods.parameters
-                .allowedCardNetworks
+              allowedAuthMethods: allowedPaymentMethods.parameters.allowedCardAuthMethods,
+              allowedCardNetworks: allowedPaymentMethods.parameters.allowedCardNetworks
             }
           }
         ]
@@ -94,27 +95,25 @@ export class GooglePay {
   }
 
   private getGooglePaymentDataRequest(): IGooglePayPaymentRequest {
+    const { apiVersion, apiVersionMinor, allowedPaymentMethods, merchantInfo } = this.config.googlePay.paymentRequest;
+
     const paymentDataRequest = Object.assign(
       {},
       {
-        apiVersion: this.config.googlePay.paymentRequest.apiVersion,
-        apiVersionMinor: this.config.googlePay.paymentRequest.apiVersionMinor,
+        apiVersion,
+        apiVersionMinor,
         allowedPaymentMethods: [
           {
             type: 'CARD',
             parameters: {
-              allowedAuthMethods: this.config.googlePay.paymentRequest.allowedPaymentMethods.parameters
-                .allowedCardAuthMethods,
-              allowedCardNetworks: this.config.googlePay.paymentRequest.allowedPaymentMethods.parameters
-                .allowedCardNetworks
+              allowedAuthMethods: allowedPaymentMethods.parameters.allowedCardAuthMethods,
+              allowedCardNetworks: allowedPaymentMethods.parameters.allowedCardNetworks
             },
             tokenizationSpecification: {
               type: 'PAYMENT_GATEWAY',
               parameters: {
-                gateway: this.config.googlePay.paymentRequest.allowedPaymentMethods.tokenizationSpecification.parameters
-                  .gateway,
-                gatewayMerchantId: this.config.googlePay.paymentRequest.allowedPaymentMethods.tokenizationSpecification
-                  .parameters.gatewayMerchantId
+                gateway: allowedPaymentMethods.tokenizationSpecification.parameters.gateway,
+                gatewayMerchantId: allowedPaymentMethods.tokenizationSpecification.parameters.gatewayMerchantId
               }
             }
           }
@@ -126,8 +125,8 @@ export class GooglePay {
           totalPrice: '1.00'
         },
         merchantInfo: {
-          merchantName: this.config.googlePay.paymentRequest.merchantInfo.merchantName,
-          merchantId: this.config.googlePay.paymentRequest.merchantInfo.merchantId
+          merchantName: merchantInfo.merchantName,
+          merchantId: merchantInfo.merchantId
         }
       }
     );
@@ -141,9 +140,10 @@ export class GooglePay {
     if (paymentsClient) {
       paymentsClient
         .loadPaymentData(paymentDataRequest)
-        .then((paymentData: any) => {
-          this.processPayment(paymentData);
-          this.config.googlePay.buttonOptions.onClick();
+        .then((paymentData: IPaymentData) => {
+          this.onPaymentAuthorized(paymentData);
+          // TODO: Discuss about callback button
+          // this.config.googlePay.buttonOptions.onClick();
         })
         .catch((err: any) => {
           console.error(err);
@@ -151,16 +151,12 @@ export class GooglePay {
     }
   };
 
-  private processPayment(paymentData: any) {
-    this.onPaymentAuthorized(paymentData);
-  }
-
-  private onPaymentAuthorized(paymentToken: any): any {
+  private onPaymentAuthorized(paymentData: IPaymentData): Observable<any> {
     const formData = DomMethods.parseForm(this.config.formId);
     const config = this.config;
 
     return this.googlePayPaymentService
-      .processPayment(this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions, formData, paymentToken)
+      .processPayment(this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions, formData, paymentData)
       .pipe(
         tap((response: any) => {
           console.log(response);
