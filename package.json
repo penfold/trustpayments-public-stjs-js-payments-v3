@@ -20,8 +20,8 @@
     "locale": "en_GB"
   },
   "engines": {
-    "node": "14.x",
-    "npm": "7.x"
+    "node": "14.15.5",
+    "npm": "7.7.6"
   },
   "scripts": {
     "build": "webpack --config webpack.prod.js",
