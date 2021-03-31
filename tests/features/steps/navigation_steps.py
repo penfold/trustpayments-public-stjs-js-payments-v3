@@ -32,9 +32,7 @@ def step_impl(context):
         if 'Safari' in context.browser:
             accept_untrusted_pages_on_safari_browsers(context)
         payment_page.open_page_with_not_private_connection_check(CONFIGURATION.URL.BASE_URL)
-        payment_page.wait_for_payment_form_inputs_to_load()
-
-    wait_for_form_load(context)
+        wait_for_form_load(context)
 
 
 @step('User opens minimal example page with payment form')
