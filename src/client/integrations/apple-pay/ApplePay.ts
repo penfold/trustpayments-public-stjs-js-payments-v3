@@ -59,13 +59,13 @@ export class ApplePay {
             walletmerchantid: '',
             walletrequestdomain: window.location.hostname,
             walletsource: 'APPLEPAY',
-            walletvalidationurl: ''
+            walletvalidationurl: '',
           })
         ),
         tap((config: IApplePayConfigObject) => {
           const applePayConfigAction: IMessageBusEvent<IApplePayConfigObject> = {
             type: PUBLIC_EVENTS.APPLE_PAY_CONFIG_MOCK,
-            data: config
+            data: config,
           };
 
           this.config = config;
@@ -124,9 +124,9 @@ export class ApplePay {
             status: ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET,
             details: {
               errorMessage,
-              errorCode: ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET
-            }
-          }
+              errorCode: ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET,
+            },
+          },
         });
 
         GoogleAnalytics.sendGaData(
@@ -162,9 +162,9 @@ export class ApplePay {
             errorMessage: '',
             validateMerchantURL: event.validationURL,
             config: this.config,
-            paymentCancelled: this.paymentCancelled
-          }
-        }
+            paymentCancelled: this.paymentCancelled,
+          },
+        },
       });
 
       this.messageBus
@@ -212,9 +212,9 @@ export class ApplePay {
             formData,
             errorCode: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
             errorMessage: '',
-            payment: event.payment
-          }
-        }
+            payment: event.payment,
+          },
+        },
       });
 
       this.messageBus
@@ -234,9 +234,9 @@ export class ApplePay {
           status: ApplePayClientStatus.CANCEL,
           details: {
             errorCode: ApplePayClientErrorCode.CANCEL,
-            errorMessage: 'Payment has been cancelled'
-          }
-        }
+            errorMessage: 'Payment has been cancelled',
+          },
+        },
       });
 
       GoogleAnalytics.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.CANCEL}`, 'Payment has been cancelled');
@@ -266,9 +266,9 @@ export class ApplePay {
             status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
             details: {
               errorMessage: details.errormessage,
-              errorCode: Number(details.errorcode)
-            }
-          }
+              errorCode: Number(details.errorcode),
+            },
+          },
         });
         GoogleAnalytics.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify failure');
         break;
@@ -280,9 +280,9 @@ export class ApplePay {
             status,
             details: {
               errorMessage: details.errormessage,
-              errorCode: Number(details.errorcode)
-            }
-          }
+              errorCode: Number(details.errorcode),
+            },
+          },
         });
     }
   }
@@ -293,7 +293,7 @@ export class ApplePay {
   ): IApplePayPaymentAuthorizationResult {
     const completion: IApplePayPaymentAuthorizationResult = {
       errors: undefined,
-      status: undefined
+      status: undefined,
     };
 
     switch (Number(errorCode)) {
@@ -305,9 +305,9 @@ export class ApplePay {
             status: ApplePayClientStatus.SUCCESS,
             details: {
               errorMessage: details.errormessage,
-              errorCode: Number(details.errorcode)
-            }
-          }
+              errorCode: Number(details.errorcode),
+            },
+          },
         });
         this.applePaySession.completePayment(completion);
         GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
@@ -326,9 +326,9 @@ export class ApplePay {
             status: ApplePayClientStatus.EMPTY_JWT_ERROR,
             details: {
               errorMessage: details.errormessage,
-              errorCode: Number(details.errorcode)
-            }
-          }
+              errorCode: Number(details.errorcode),
+            },
+          },
         });
         return completion;
 
@@ -341,9 +341,9 @@ export class ApplePay {
             status: ApplePayClientStatus.ERROR,
             details: {
               errorMessage: details.errormessage,
-              errorCode: Number(details.errorcode)
-            }
-          }
+              errorCode: Number(details.errorcode),
+            },
+          },
         });
 
         return completion;

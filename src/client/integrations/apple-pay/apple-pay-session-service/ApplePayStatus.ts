@@ -1,4 +1,3 @@
-import { IApplePaySession } from './IApplePaySession';
 import { IApplePaySessionConstructor } from './IApplePaySessionConstructor';
 
 const ApplePaySession: IApplePaySessionConstructor | undefined = (window as any).ApplePaySession;
@@ -15,5 +14,5 @@ export const ApplePayStatus = {
   STATUS_INVALID_SHIPPING_CONTACT: ApplePaySession ? ApplePaySession.STATUS_INVALID_SHIPPING_CONTACT : undefined,
   STATUS_PIN_INCORRECT: ApplePaySession ? ApplePaySession.STATUS_PIN_INCORRECT : undefined,
   STATUS_PIN_LOCKOUT: ApplePaySession ? ApplePaySession.STATUS_PIN_LOCKOUT : undefined,
-  STATUS_PIN_REQUIRED: ApplePaySession ? ApplePaySession.STATUS_PIN_REQUIRED : undefined
+  STATUS_PIN_REQUIRED: ApplePaySession ? ApplePaySession.STATUS_PIN_REQUIRED : undefined,
 };

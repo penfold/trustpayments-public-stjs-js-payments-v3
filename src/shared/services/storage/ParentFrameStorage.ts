@@ -23,13 +23,13 @@ export class ParentFrameStorage implements IStorage, ISynchronizedStorage {
     return this.storage$.getValue()[name];
   }
 
-  setItem(name: string, value: any): void {
+  setItem(name: string, value: unknown): void {
     this.setItemWithoutSync(name, value);
     this.framesHub.waitForFrame(CONTROL_FRAME_IFRAME).subscribe(controlFrame => {
       this.interFrameCommunicator.send(
         {
           type: PUBLIC_EVENTS.STORAGE_SYNC,
-          data: { key: name, value: JSON.stringify(value) }
+          data: { key: name, value: JSON.stringify(value) },
         },
         controlFrame
       );

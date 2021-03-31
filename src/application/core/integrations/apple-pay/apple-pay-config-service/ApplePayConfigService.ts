@@ -31,7 +31,7 @@ export class ApplePayConfigService {
       formId,
       jwtFromConfig: jwt,
       validateMerchantRequest: this.updateWalletMerchantId(validateMerchantRequest, applePay.merchantId),
-      paymentRequest: this.updatePaymentRequest(applePay, currencyiso3a, mainamount, applePayVersion)
+      paymentRequest: this.updatePaymentRequest(applePay, currencyiso3a, mainamount, applePayVersion),
     };
   }
 
@@ -52,14 +52,14 @@ export class ApplePayConfigService {
   ): IApplePayValidateMerchantRequest {
     return {
       ...validateMerchantRequest,
-      walletvalidationurl
+      walletvalidationurl,
     };
   }
 
   private updateCurrencyCode(paymentRequest: IApplePayPaymentRequest, currencyCode: string): IApplePayPaymentRequest {
     return {
       ...paymentRequest,
-      currencyCode
+      currencyCode,
     };
   }
 
@@ -68,14 +68,14 @@ export class ApplePayConfigService {
       ...paymentRequest,
       total: {
         ...paymentRequest.total,
-        amount
-      }
+        amount,
+      },
     };
   }
 
   private updateRequestTypes(paymentRequest: IApplePayPaymentRequest): IApplePayPaymentRequest {
     return {
-      ...paymentRequest
+      ...paymentRequest,
     };
   }
 
@@ -85,7 +85,7 @@ export class ApplePayConfigService {
   ): IApplePayValidateMerchantRequest {
     return {
       ...validateMerchantRequest,
-      walletmerchantid
+      walletmerchantid,
     };
   }
 
@@ -96,14 +96,14 @@ export class ApplePayConfigService {
     if (mainamount === undefined) {
       mainamount = Money.fromInteger({
         amount: parseInt(payload.baseamount, 10),
-        currency: payload.currencyiso3a
+        currency: payload.currencyiso3a,
       }).toString();
     }
 
     return {
       currencyiso3a: payload.currencyiso3a,
       locale: payload.locale,
-      mainamount
+      mainamount,
     };
   }
 
@@ -111,7 +111,7 @@ export class ApplePayConfigService {
     return {
       applePay: config.applePay,
       formId: config.formId,
-      jwt: config.jwt
+      jwt: config.jwt,
     };
   }
 

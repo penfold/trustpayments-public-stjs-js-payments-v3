@@ -18,7 +18,7 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
   init(jwt: string): Observable<void> {
     const queryEvent: IMessageBusEvent<IInitializationData> = {
       type: PUBLIC_EVENTS.CARDINAL_SETUP,
-      data: { jwt }
+      data: { jwt },
     };
 
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
@@ -29,8 +29,8 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
       type: PUBLIC_EVENTS.CARDINAL_TRIGGER,
       data: {
         eventName: PaymentEvents.BIN_PROCESS,
-        data: pan
-      }
+        data: pan,
+      },
     };
 
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
@@ -39,7 +39,7 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
   start(jwt: string): Observable<void> {
     const queryEvent: IMessageBusEvent<IInitializationData> = {
       type: PUBLIC_EVENTS.CARDINAL_START,
-      data: { jwt }
+      data: { jwt },
     };
 
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
@@ -48,7 +48,7 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
   verify(data: IVerificationData): Observable<IVerificationResult> {
     const queryEvent: IMessageBusEvent<IVerificationData> = {
       type: PUBLIC_EVENTS.CARDINAL_CONTINUE,
-      data
+      data,
     };
 
     return from(this.interFrameCommunicator.query<IVerificationResult>(queryEvent, MERCHANT_PARENT_FRAME));

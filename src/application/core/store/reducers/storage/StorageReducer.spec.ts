@@ -18,8 +18,8 @@ describe('StorageReducer', () => {
     expect(result).toEqual({
       config: null,
       storage: {
-        foo: 123
-      }
+        foo: 123,
+      },
     });
   });
 });

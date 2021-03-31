@@ -20,7 +20,7 @@ export interface IVisaCheckoutStatusDataInitRequest {
     buttonPosition: string;
     displayName: string;
     locale: string;
-    payment: object;
+    payment: Record<string, unknown>;
     shipping: {
       collectShipping: string;
     };

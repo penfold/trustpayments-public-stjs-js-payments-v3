@@ -41,7 +41,7 @@ export class VisaCheckoutSdkProvider implements IVisaCheckoutSdkProvider {
     return from(
       DomMethods.insertScript(config.visaCheckout.placement, {
         src: visaCheckoutUpdatedConfig.sdkUrl,
-        id: 'visaCheckout'
+        id: 'visaCheckout',
       })
     );
   }

@@ -25,7 +25,7 @@ describe('CardinalProvider', () => {
       expect(result).toBe(cardinal);
       expect(DomMethods.insertScript).toHaveBeenCalledWith('head', {
         src: environment.CARDINAL_COMMERCE.SONGBIRD_LIVE_URL,
-        id: 'cardinalCommerce'
+        id: 'cardinalCommerce',
       });
       done();
     });
@@ -37,7 +37,7 @@ describe('CardinalProvider', () => {
       expect(result).toBe(cardinal);
       expect(DomMethods.insertScript).toHaveBeenCalledWith('head', {
         src: environment.CARDINAL_COMMERCE.SONGBIRD_TEST_URL,
-        id: 'cardinalCommerce'
+        id: 'cardinalCommerce',
       });
       done();
     });

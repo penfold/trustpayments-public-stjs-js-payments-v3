@@ -8,14 +8,14 @@ const STAGE_ONE_NETWORKS: IApplePaySupportedNetworks[] = [
   'jcb',
   'masterCard',
   'privateLabel',
-  'visa'
+  'visa',
 ];
 const STAGE_TWO_NETWORKS: IApplePaySupportedNetworks[] = STAGE_ONE_NETWORKS.concat([
   'cartesBancaires',
   'eftpos',
   'electron',
   'maestro',
-  'vPay'
+  'vPay',
 ]);
 const STAGE_THREE_NETWORKS: IApplePaySupportedNetworks[] = STAGE_ONE_NETWORKS.concat(['elo', 'mada']);
 

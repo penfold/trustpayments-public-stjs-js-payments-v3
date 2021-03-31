@@ -28,13 +28,13 @@ export const ApplePayPaymentRequestSchema: Joi.ObjectSchema = Joi.object().keys(
   total: {
     amount: Joi.string(),
     label: Joi.string(),
-    type: Joi.string().valid('final', 'pending')
+    type: Joi.string().valid('final', 'pending'),
   },
   lineItems: Joi.array().items(
     Joi.object().keys({
       amount: Joi.string(),
       label: Joi.string(),
-      type: Joi.string().valid('final', 'pending')
+      type: Joi.string().valid('final', 'pending'),
     })
   ),
   applicationData: Joi.string(),
@@ -52,14 +52,14 @@ export const ApplePayPaymentRequestSchema: Joi.ObjectSchema = Joi.object().keys(
     subAdministrativeArea: Joi.string(),
     administrativeArea: Joi.string(),
     country: Joi.string(),
-    countryCode: Joi.string()
+    countryCode: Joi.string(),
   }),
   shippingType: Joi.string(),
   shippingMethods: Joi.object().keys({
     label: Joi.string(),
     amount: Joi.string(),
     detail: Joi.string(),
-    identifier: Joi.string()
+    identifier: Joi.string(),
   }),
   shippingContact: Joi.object().keys({
     phoneNumber: Joi.string(),
@@ -75,9 +75,9 @@ export const ApplePayPaymentRequestSchema: Joi.ObjectSchema = Joi.object().keys(
     subAdministrativeArea: Joi.string(),
     administrativeArea: Joi.string(),
     country: Joi.string(),
-    countryCode: Joi.string()
+    countryCode: Joi.string(),
   }),
   supportedCountries: Joi.string(),
   requiredBillingContactFields: Joi.array().items(Joi.string()),
-  requiredShippingContactFields: Joi.array().items(Joi.string())
+  requiredShippingContactFields: Joi.array().items(Joi.string()),
 });

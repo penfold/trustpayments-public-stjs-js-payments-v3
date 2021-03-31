@@ -26,7 +26,9 @@ import { PaymentController } from '../../core/services/payments/PaymentControlle
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import spyOn = jest.spyOn;
+import { PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Translations';
 import { Translator } from '../../core/shared/translator/Translator';
+import { FormState } from '../../core/models/constants/FormState';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -43,11 +45,11 @@ describe('ControlFrame', () => {
   describe('ControlFrame._onFormFieldStateChange()', () => {
     const field: IFormFieldState = {
       validity: false,
-      value: ''
+      value: '',
     };
     const data: IFormFieldState = {
       validity: true,
-      value: '411111111'
+      value: '411111111',
     };
 
     beforeEach(() => {
@@ -111,13 +113,11 @@ describe('ControlFrame', () => {
     });
   });
 
-  // TODO: get know how handle this promise
-
   describe('_processPayment', () => {
     const { instance } = controlFrameFixture();
     const data = {
       errorcode: '40005',
-      errormessage: 'some error message'
+      errormessage: 'some error message',
     };
 
     beforeEach(() => {
@@ -127,26 +127,44 @@ describe('ControlFrame', () => {
       instance._notification.error = jest.fn();
       // @ts-ignore
       instance._validation = {
-        blockForm: jest.fn()
+        blockForm: jest.fn(),
       };
     });
 
     it('should call notification success when promise is resolved', async () => {
+      // https://stackoverflow.com/a/51045733/2148667
+      const flushPromises = () => new Promise(setImmediate);
+
       // @ts-ignore
       instance._payment = {
-        processPayment: jest.fn().mockResolvedValueOnce(Promise.resolve(undefined))
+        processPayment: jest.fn().mockResolvedValueOnce(undefined),
       };
       // @ts-ignore
       instance._processPayment(data);
+      await flushPromises();
+
+      // @ts-ignore
+      expect(instance._notification.success).toHaveBeenCalledWith(PAYMENT_SUCCESS);
+      // @ts-ignore
+      expect(instance._validation.blockForm).toHaveBeenCalledWith(FormState.COMPLETE);
     });
 
     it('should call notification error when promise is rejected', async () => {
+      // https://stackoverflow.com/a/51045733/2148667
+      const flushPromises = () => new Promise(setImmediate);
+
       // @ts-ignore
       instance._payment = {
-        processPayment: jest.fn().mockRejectedValueOnce(Promise.reject())
+        processPayment: jest.fn().mockRejectedValueOnce(undefined),
       };
       // @ts-ignore
       instance._processPayment(data);
+      await flushPromises();
+
+      // @ts-ignore
+      expect(instance._notification.error).toHaveBeenCalledWith(PAYMENT_ERROR);
+      // @ts-ignore
+      expect(instance._validation.blockForm).toHaveBeenCalledWith(FormState.AVAILABLE);
     });
   });
 
@@ -171,13 +189,13 @@ describe('ControlFrame', () => {
     // @ts-ignore
     instance.params = {
       jwt:
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw'
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw',
     };
 
     // @ts-ignore
     instance._frame.parseUrl = jest.fn().mockReturnValueOnce({
       jwt:
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw'
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw',
     });
 
     it('should return pan from jwt', () => {
@@ -217,20 +235,20 @@ function controlFrameFixture() {
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
-        'color-body': '#fff'
-      }
-    }
+        'color-body': '#fff',
+      },
+    },
   ];
 
   when(communicator.whenReceive(anyString())).thenReturn({
-    thenRespond: () => undefined
+    thenRespond: () => undefined,
   });
   when(configProvider.getConfig$()).thenReturn(of({ jwt: JWT } as IConfig));
   when(threeDProcess.init()).thenReturn(EMPTY);
   when(frame.parseUrl()).thenReturn({
     locale: 'en_GB',
     jwt: JWT,
-    styles: controlFrame
+    styles: controlFrame,
   });
   when(frame.getAllowedParams()).thenReturn(['locale', 'origin', 'styles']);
   when(frame.getAllowedStyles()).thenReturn(frameAllowedStyles);
@@ -242,8 +260,8 @@ function controlFrameFixture() {
       sitereference: 'test_james38641',
       locale: 'en_GB',
       pan: '3089500000000000021',
-      expirydate: '01/22'
-    }
+      expirydate: '01/22',
+    },
   });
   when(visaCheckoutClientMock.init$()).thenReturn(of(VisaCheckoutClientStatus.SUCCESS));
   when(applePayClientMock.init$()).thenReturn(of(ApplePayClientStatus.SUCCESS));
@@ -265,11 +283,11 @@ function controlFrameFixture() {
     mockInstance(translator)
   );
   const messageBusEvent = {
-    type: ''
+    type: '',
   };
   const data = {
     validity: true,
-    value: 'test value'
+    value: 'test value',
   };
 
   StCodec.jwt = JWT;

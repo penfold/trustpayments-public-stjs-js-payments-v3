@@ -33,7 +33,7 @@ describe('MerchantField', () => {
       const email = document.getElementById('example-form-email');
       // @ts-ignore
       expect(instance._getMerchantInputs()).toEqual({
-        inputs: [firstName, email]
+        inputs: [firstName, email],
       });
     });
   });

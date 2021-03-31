@@ -20,7 +20,7 @@ describe('ThreeDSTokensProvider', () => {
         errormessage: '',
         requesttypedescription: 'JSINIT',
         threedinit: 'bar',
-        transactionstartedtimestamp: '123456'
+        transactionstartedtimestamp: '123456',
       })
     );
 
