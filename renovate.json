@@ -1,6 +1,5 @@
 {
   "extends": [
     "gitlab>trustpayments-public/STJS/dependency-config"
-  ],
-  "ignoreDeps": ["core-js"]
+  ]
 }
