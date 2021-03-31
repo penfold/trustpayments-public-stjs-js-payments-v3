@@ -1,9 +1,7 @@
 # type: ignore[no-redef]
-from behave import step, use_step_matcher
+from behave import step
 
 from pages.page_factory import Pages
-
-use_step_matcher('re')
 
 
 @step('User switch tab to \'Personal Data\' in reactjs app')

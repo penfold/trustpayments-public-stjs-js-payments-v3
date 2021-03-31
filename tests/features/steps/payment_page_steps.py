@@ -1,7 +1,7 @@
 # type: ignore[no-redef]
 import time
 
-from behave import use_step_matcher, step, when, then
+from behave import step, when, then
 
 from pages.page_factory import Pages
 from utils.enums.field_type import FieldType
@@ -9,11 +9,9 @@ from utils.enums.payment_type import PaymentType
 from utils.enums.responses.invalid_field_response import InvalidFieldResponse
 from utils.mock_handler import stub_st_request_type
 
-use_step_matcher('re')
-
 
 @when(
-    'User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)" and cvv "(?P<cvv>.+)"')
+    'User fills payment form with credit card number "{card_number}", expiration date "{exp_date}" and cvv "{cvv}"')
 def step_impl(context, card_number, exp_date, cvv):
     context.pan = card_number
     context.exp_date = exp_date
@@ -22,7 +20,7 @@ def step_impl(context, card_number, exp_date, cvv):
     payment_page.fill_payment_form(card_number, exp_date, cvv)
 
 
-@step('User will see payment status information: "(?P<payment_status_message>.+)"')
+@step('User will see payment status information: "{payment_status_message}"')
 def step_impl(context, payment_status_message):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'switch_to_parent_iframe' in context.scenario.tags:
@@ -50,7 +48,7 @@ def step_impl(context):
     payment_page.wait_for_pay_button_to_be_active()
 
 
-@step('User will see that notification frame has "(?P<color>.+)" color')
+@step('User will see that notification frame has "{color}" color')
 def step_impl(context, color):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_notification_frame_color(color)
@@ -113,8 +111,8 @@ def step_impl(context):
 
 
 @when(
-    'User fills payment form with incorrect or missing data: card number "(?P<card_number>.+)",'
-    ' expiration date "(?P<exp_date>.+)" and cvv "(?P<cvv>.+)"')
+    'User fills payment form with incorrect or missing data: card number "{card_number}",'
+    ' expiration date "{exp_date}" and cvv "{cvv}"')
 def step_impl(context, card_number, exp_date, cvv):
     context.pan = card_number
     context.exp_date = exp_date
@@ -123,36 +121,36 @@ def step_impl(context, card_number, exp_date, cvv):
     payment_page.fill_payment_form(card_number, exp_date, cvv)
 
 
-@step('User will see that "(?P<field>.+)" field is highlighted')
+@step('User will see that "{field}" field is highlighted')
 def step_impl(context, field):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_if_field_is_highlighted(FieldType[field].name)
 
 
-@step('InvalidField response set for "(?P<field>.+)"')
+@step('InvalidField response set for "{field}"')
 def step_impl(context, field):
     stub_st_request_type(InvalidFieldResponse[field].value, 'THREEDQUERY, AUTH')
 
 
-@then('User will see notification frame with message: "(?P<expected_message>.+)"')
+@then('User will see notification frame with message: "{expected_message}"')
 def step_impl(context, expected_message):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_payment_status_message(expected_message)
 
 
-@when('User chooses (?P<payment_method>.+) as payment method')
+@when('User chooses {payment_method} as payment method')
 def step_impl(context, payment_method):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.choose_payment_methods(PaymentType[payment_method].name)
 
 
-@then('User will see that Submit button is "(?P<form_status>.+)" after payment')
+@then('User will see that Submit button is "{form_status}" after payment')
 def step_impl(context, form_status):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_form_status(FieldType.SUBMIT_BUTTON.name, form_status)
 
 
-@step('User will see that (?P<field>.+) input fields are "(?P<form_status>.+)"')
+@step('User will see that {field} input fields are "{form_status}"')
 def step_impl(context, field: FieldType, form_status):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     field = FieldType.__members__[field] # pylint: disable=unsubscriptable-object
@@ -164,14 +162,14 @@ def step_impl(context, field: FieldType, form_status):
         payment_page.validate_form_status(field.name, form_status)
 
 
-@when('User fills "(?P<field>.+)" field "(?P<value>.+)"')
+@when('User fills "{field}" field "{value}"')
 def step_impl(context, field, value):
     context.cvv = value
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.fill_credit_card_field(FieldType[field].name, value)
 
 
-@then('User will see that "(?P<field>.+)" field has correct style')
+@then('User will see that "{field}" field has correct style')
 def step_impl(context, field):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if field == FieldType.CARD_NUMBER.name:
@@ -184,19 +182,19 @@ def step_impl(context, field):
         payment_page.validate_css_style(FieldType.NOTIFICATION_FRAME.name, 'background-color', '100, 149, 237')
 
 
-@then('User will see all labels displayed on page translated into "(?P<language>.+)"')
+@then('User will see all labels displayed on page translated into "{language}"')
 def step_impl(context, language):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_all_labels_translation(language)
 
 
-@then('User will see card payment label displayed on page translated into "(?P<text>.+)"')
+@then('User will see card payment label displayed on page translated into "{text}"')
 def step_impl(context, text):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_card_number_iframe_element_text(text)
 
 
-@step('User will see validation message "(?P<key>.+)" under all fields translated into "(?P<language>.+)"')
+@step('User will see validation message "{key}" under all fields translated into "{language}"')
 def step_impl(context, key, language):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_field_validation_message_translation(FieldType.CARD_NUMBER.name, language, key)
@@ -205,13 +203,13 @@ def step_impl(context, key, language):
 
 
 @then(
-    'User will see validation message "(?P<key>.+)" under "(?P<field>.+)" field translated into (?P<language>.+)')
+    'User will see validation message "{key}" under "{field}" field translated into {language}')
 def step_validation_msg_translation(context, key, field, language):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_field_validation_message_translation(FieldType[field].name, language, key)
 
 
-@then('User will see validation message "(?P<expected_message>.+)" under all fields')
+@then('User will see validation message "{expected_message}" under all fields')
 def step_impl(context, expected_message):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_field_validation_message(FieldType.CARD_NUMBER.name, expected_message)
@@ -219,25 +217,25 @@ def step_impl(context, expected_message):
     payment_page.validate_field_validation_message(FieldType.SECURITY_CODE.name, expected_message)
 
 
-@step('User will see "(?P<expected_message>.+)" message under field: "(?P<field>.+)"')
+@step('User will see "{expected_message}" message under field: "{field}"')
 def step_validation_msg_translation_expected(context, expected_message, field):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_field_validation_message(FieldType[field].name, expected_message)
 
 
-@then('User will see that Pay button is translated into "(?P<expected_value>.+)"')
+@then('User will see that Pay button is translated into "{expected_value}"')
 def step_impl(context, expected_value):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_submit_btn_specific_translation(expected_value)
 
 
-@then('User will see "(?P<key>.+)" payment status translated into "(?P<language>.+)"')
+@then('User will see "{key}" payment status translated into "{language}"')
 def step_impl(context, key, language):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_payment_status_translation(language, key)
 
 
-@when('User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)"')
+@when('User fills payment form with credit card number "{card_number}", expiration date "{exp_date}"')
 def step_impl(context, card_number, exp_date):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     context.pan = str(card_number)
@@ -252,13 +250,13 @@ def step_impl(context):
     payment_page.fill_amount_field('1')
 
 
-@then('User will see that "(?P<field_type>.+)" field is disabled')
+@then('User will see that "{field_type}" field is disabled')
 def step_impl(context, field_type):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_field_accessibility(field_type, should_be_enabled=False)
 
 
-@step('User will see "(?P<callback_popup>.+)" popup')
+@step('User will see "{callback_popup}" popup')
 def step_impl(context, callback_popup):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_if_callback_popup_is_displayed(callback_popup)
@@ -271,19 +269,19 @@ def step_impl(context):
     payment_page.validate_if_field_is_not_displayed(FieldType.EXPIRATION_DATE.name)
     payment_page.validate_if_field_is_not_displayed(FieldType.SECURITY_CODE.name)
 
-@then('User will see (?P<placeholders>.+) placeholders in input fields: (?P<card>.+), (?P<date>.+), (?P<cvv>.+)')
+@then('User will see {placeholders} placeholders in input fields: {card}, {date}, {cvv}')
 def step_impl(context, placeholders, card, date, cvv):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_placeholders(card, date, cvv)
 
 
-@then('User will see "(?P<placeholder>.+)" placeholder in security code field')
+@then('User will see "{placeholder}" placeholder in security code field')
 def step_impl(context, placeholder):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_placeholder(FieldType.SECURITY_CODE.name, placeholder)
 
 
-@then('User will see "(?P<card_type>.+)" icon in card number input field')
+@then('User will see "{card_type}" icon in card number input field')
 def step_impl(context, card_type):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_credit_card_icon_in_input_field(card_type)
@@ -295,13 +293,13 @@ def step_impl(context):
     payment_page.validate_if_field_is_not_displayed(FieldType.NOTIFICATION_FRAME.name)
 
 
-@step('User fills merchant data with name "(?P<name>.+)", email "(?P<email>.+)", phone "(?P<phone>.+)"')
+@step('User fills merchant data with name "{name}", email "{email}", phone "{phone}"')
 def step_impl(context, name, email, phone):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.fill_merchant_form(name, email, phone)
 
 
-@then('User will not see (?P<field_type>.+)')
+@then('User will not see {field_type}')
 def step_impl(context, field_type):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_if_field_is_not_displayed(FieldType[field_type].name)
@@ -313,13 +311,13 @@ def step_impl(context):
     payment_page.press_enter_button_on_security_code_field()
 
 
-@step('User see (?P<auth_type>.+) authentication modal is displayed')
+@step('User see {auth_type} authentication modal is displayed')
 def step_impl(context, auth_type):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_cardinal_authentication_modal_appears(auth_type)
 
 
-@step('User fills (?P<auth_type>.+) authentication modal')
+@step('User fills {auth_type} authentication modal')
 def step_impl(context, auth_type):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'parent_iframe' in context.scenario.tags:
@@ -343,14 +341,14 @@ def step_impl(context):
     payment_page.validate_callback_with_data_type('Error code: OK')
 
 
-@step('"(?P<callback_popup>.+)" callback is called only once')
+@step('"{callback_popup}" callback is called only once')
 def step_impl(context, callback_popup):
     time.sleep(1)
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_number_in_callback_counter_popup(callback_popup, '1')
 
 
-@step('"(?P<callback_popup>.+)" callback is called only once in second payment')
+@step('"{callback_popup}" callback is called only once in second payment')
 def step_impl(context, callback_popup):
     time.sleep(1)
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -364,13 +362,13 @@ def step_impl(context):
     payment_page.validate_jwt_response_in_callback()
 
 
-@step('submit callback contains THREEDRESPONSE: (?P<threedresponse_defined>.+)')
+@step('submit callback contains THREEDRESPONSE: {threedresponse_defined}')
 def step_impl(context, threedresponse_defined):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_threedresponse_in_callback(threedresponse_defined)
 
 
-@then('User will see that (?P<field_type>.+) field has (?P<rgb_color>.+) color')
+@then('User will see that {field_type} field has {rgb_color} color')
 def step_impl(context, field_type, rgb_color):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_css_style(FieldType[field_type].name, 'background-color', rgb_color)
@@ -388,7 +386,7 @@ def step_impl(context):
     payment_page.wait_for_popups_to_disappear()
 
 
-@then('User will see that browser is marked as supported: "(?P<is_supported>.+)"')
+@then('User will see that browser is marked as supported: "{is_supported}"')
 def step_impl(context, is_supported):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     # ToDo - clarify if High Sierra should be removed from the pipeline (Safari 11 - not supported)
@@ -397,7 +395,7 @@ def step_impl(context, is_supported):
         payment_page.validate_if_browser_is_supported_in_info_callback(is_supported)
 
 
-@then('User will see that operating system is marked as supported: "(?P<is_supported>.+)"')
+@then('User will see that operating system is marked as supported: "{is_supported}"')
 def step_impl(context, is_supported):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_if_os_is_supported_in_info_callback(is_supported)

@@ -2,7 +2,7 @@
 import time
 
 from assertpy import assert_that
-from behave import given, step, then, use_step_matcher
+from behave import given, step, then
 
 from configuration import CONFIGURATION
 from pages.page_factory import Pages
@@ -17,17 +17,15 @@ from utils.enums.jwt_config import JwtConfig
 from utils.helpers.request_executor import add_to_shared_dict
 from models.jwt_payload_builder import JwtPayloadBuilder
 
-use_step_matcher('re')
 
-
-@given('JS library is configured with (?P<e2e_config>.+) and (?P<jwt_config>.+)')
+@given('JS library is configured with {e2e_config} and {jwt_config}')
 def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
     jwt = encode_jwt_for_json(JwtConfig[jwt_config])
     context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
 
 
 @step(
-    'JS library configured by inline params (?P<e2e_config>.+) and jwt (?P<jwt_config>.+) with additional attributes')
+    'JS library configured by inline params {e2e_config} and jwt {jwt_config} with additional attributes')
 def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
     # parse old jwt config (payload part) to dictionary object
     jwt_config_from_json_dict = get_data_from_json(JwtConfig[jwt_config].value)['payload']
@@ -38,7 +36,7 @@ def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
     context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
 
 
-@step('User fills payment form with defined card (?P<card>.+)')
+@step('User fills payment form with defined card {card}')
 def fill_payment_form_with_defined_card(context, card: Card):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
@@ -50,28 +48,28 @@ def fill_payment_form_with_defined_card(context, card: Card):
     payment_page.fill_payment_form(card.number, card.expiration_date, card.cvv)
 
 
-@step('User re-fills payment form with defined card (?P<card>.+)')
+@step('User re-fills payment form with defined card {card}')
 def step_impl(context, card: Card):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.clear_card_number_field()
     fill_payment_form_with_defined_card(context, card)
 
 
-@step('User fills only security code for saved (?P<card>.+) card')
+@step('User fills only security code for saved {card} card')
 def step_impl(context, card: Card):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
     payment_page.fill_payment_form_with_only_cvv(card.cvv)
 
 
-@step('Make screenshot after (?P<how_many_seconds>.+) seconds')
+@step('Make screenshot after {how_many_seconds} seconds')
 def step_impl(context, how_many_seconds):
     time.sleep(int(how_many_seconds))
     screenshot_filename = screenshots[_screenshot_tag(context.scenario.tags)]
     context.screenshot_manager.make_screenshot_for_visual_tests(screenshot_filename, date_postfix=True)
 
 
-@then('Screenshot is taken after (?P<how_many_seconds>.+) seconds and checked')
+@then('Screenshot is taken after {how_many_seconds} seconds and checked')
 def step_impl(context, how_many_seconds):
     # pylint: disable=invalid-name)
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)

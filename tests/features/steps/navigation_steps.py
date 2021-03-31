@@ -2,7 +2,7 @@
 from urllib.parse import parse_qs, urlparse
 
 from assertpy import soft_assertions
-from behave import use_step_matcher, step, then
+from behave import step, then
 
 from configuration import CONFIGURATION
 from features.steps.payment_page_mocks_stubs_steps import stub_jsinit_update_jwt_request
@@ -14,8 +14,6 @@ from utils.enums.example_page_param import ExamplePageParam
 from utils.enums.jwt_config import JwtConfig
 from utils.enums.responses.jsinit_response import jsinit_response
 from utils.mock_handler import MockUrl
-
-use_step_matcher('re')
 
 
 @step('User opens page with incorrect request type in config file')
@@ -57,7 +55,7 @@ def step_impl(context):
         payment_page.open_page(CONFIGURATION.URL.BASE_URL)
 
 
-@step('User opens prepared payment form page (?P<example_page>.+)')
+@step('User opens prepared payment form page {example_page}')
 def step_impl(context, example_page: ExamplePageParam):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'Safari' in context.browser:
@@ -84,7 +82,7 @@ def step_impl(context, example_page: ExamplePageParam):
         payment_page.wait_for_iframe()
 
 
-@step('User opens (?:example page|example page (?P<example_page>.+))')
+@step('User opens (?:example page|example page {example_page})')
 def step_impl_example(context, example_page: ExamplePageParam):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     # setting url specific params accordingly to example page
@@ -109,7 +107,7 @@ def step_impl_example(context, example_page: ExamplePageParam):
         payment_page.wait_for_iframe()
 
 
-@step('User opens page (?P<example_page>.+) and jwt (?P<jwt_config>.+) with additional attributes')
+@step('User opens page {example_page} and jwt {jwt_config} with additional attributes')
 def step_impl(context, example_page: ExamplePageParam, jwt_config: JwtConfig):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     # setting url specific params accordingly to example page
@@ -127,7 +125,7 @@ def step_impl(context, example_page: ExamplePageParam, jwt_config: JwtConfig):
     payment_page.open_page(url)
 
 
-@step('User opens (?P<html_page>.+) page with inline param')
+@step('User opens {html_page} page with inline param')
 def step_impl(context, html_page):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     url = f'{CONFIGURATION.URL.BASE_URL}/{html_page}?{context.inline_config}'
@@ -141,7 +139,7 @@ def step_impl(context):
     payment_page.validate_base_url(CONFIGURATION.URL.BASE_URL[8:])
 
 
-@step('User will be sent to page with url "(?P<url>.+)" having params')
+@step('User will be sent to page with url "{url}" having params')
 def step_impl(context, url: str):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     with soft_assertions():
@@ -154,7 +152,7 @@ def step_impl(context, url: str):
             payment_page.validate_if_url_contains_param(parsed_query_from_url, param['key'], param['value'])
 
 
-@step('User changes page language to "(?P<language>.+)"')
+@step('User changes page language to "{language}"')
 def step_impl(context, language):
     context.language = language
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -163,7 +161,7 @@ def step_impl(context, language):
     payment_page.wait_for_iframe()
 
 
-@step('User changes minimal example page language to "(?P<language>.+)"')
+@step('User changes minimal example page language to "{language}"')
 def step_impl(context, language):
     context.language = language
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
