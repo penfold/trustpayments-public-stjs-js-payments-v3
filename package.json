@@ -160,7 +160,7 @@
     "core-js": "3.9.1",
     "element-remove": "1.0.4",
     "fastestsmallesttextencoderdecoder": "1.0.22",
-    "i18next": "19.8.5",
+    "i18next": "20.1.0",
     "joi": "17.4.0",
     "jwt-decode": "3.1.2",
     "location-origin": "1.1.4",
