@@ -77,6 +77,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.12.17",
+    "@babel/helper-define-map": "^7.13.12",
     "@babel/plugin-proposal-class-properties": "7.12.13",
     "@babel/plugin-proposal-decorators": "7.12.13",
     "@babel/plugin-proposal-optional-catch-binding": "7.12.13",
@@ -166,7 +167,7 @@
     "location-origin": "1.1.4",
     "lodash": "4.17.20",
     "minimist": "1.2.5",
-    "npm-force-resolutions": "0.0.3",
+    "npm-force-resolutions": "0.0.10",
     "promise-polyfill": "8.2.0",
     "redux": "4.0.5",
     "redux-logger": "3.0.6",

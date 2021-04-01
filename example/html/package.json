@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.12.10",
+    "@babel/helper-define-map": "^7.13.12",
     "@babel/plugin-proposal-class-properties": "7.12.1",
     "@babel/plugin-proposal-decorators": "7.12.12",
     "@babel/plugin-proposal-optional-catch-binding": "7.12.1",
