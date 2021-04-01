@@ -52,11 +52,11 @@ describe('ApplePay', () => {
         supportedNetworks: [],
         total: {
           label: 'Secure Trading Merchant',
-          amount: '10.00'
-        }
+          amount: '10.00',
+        },
       },
-      placement: 'st-apple-pay'
-    }
+      placement: 'st-apple-pay',
+    },
   };
   const applePayConfigMock: IApplePayConfigObject = {
     applePayConfig: {
@@ -70,10 +70,10 @@ describe('ApplePay', () => {
         supportedNetworks: ['amex'],
         total: {
           amount: '100',
-          label: ''
-        }
+          label: '',
+        },
       },
-      placement: ''
+      placement: '',
     },
     applePayVersion: 5,
     locale: 'en_GB',
@@ -87,9 +87,9 @@ describe('ApplePay', () => {
       supportedNetworks: ['amex'],
       total: {
         amount: '100',
-        label: ''
-      }
-    }
+        label: '',
+      },
+    },
   };
 
   beforeAll(() => {
@@ -121,7 +121,7 @@ describe('ApplePay', () => {
       when(messageBusSpy.pipe(anything())).thenReturn(
         of({
           type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-          data: configMock
+          data: configMock,
         })
       );
       when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
@@ -133,8 +133,8 @@ describe('ApplePay', () => {
         of({
           type: PUBLIC_EVENTS.UPDATE_JWT,
           data: {
-            newJwt: ''
-          }
+            newJwt: '',
+          },
         })
       );
       when(applePayConfigServiceMock.getConfig(anything(), anything())).thenReturn(applePayConfigMock);
@@ -146,7 +146,7 @@ describe('ApplePay', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.APPLE_PAY_CONFIG_MOCK,
-            data: applePayConfigMock
+            data: applePayConfigMock,
           })
         )
       ).once();
@@ -176,7 +176,7 @@ describe('ApplePay', () => {
       when(messageBusSpy.pipe(anything())).thenReturn(
         of({
           type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-          data: configMock
+          data: configMock,
         })
       );
 
@@ -193,7 +193,7 @@ describe('ApplePay', () => {
       when(messageBusSpy.pipe(anything())).thenReturn(
         of({
           type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-          data: configMock
+          data: configMock,
         })
       );
 
@@ -213,7 +213,7 @@ describe('ApplePay', () => {
       when(messageBusSpy.pipe(anything())).thenReturn(
         of({
           type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-          data: configMock
+          data: configMock,
         })
       );
 
@@ -254,18 +254,20 @@ describe('ApplePay', () => {
       messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe(response => {
         const { status, details }: IApplePayClientStatus = response.data;
 
-        if (status === ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS) {
-          expect(details.errorCode).toBe(Number(errorcode));
-          expect(details.errorMessage).toBe(errormessage);
-          done();
+        if (status !== ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS) {
+          return;
         }
+
+        expect(details.errorCode).toBe(Number(errorcode));
+        expect(details.errorMessage).toBe(errormessage);
+        done();
       });
 
       applePay.init();
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-        data: configMock
+        data: configMock,
       });
 
       // @ts-ignore
@@ -278,9 +280,9 @@ describe('ApplePay', () => {
           details: {
             walletsession: 'walletsession',
             errorcode,
-            errormessage
-          }
-        }
+            errormessage,
+          },
+        },
       });
     });
 
@@ -291,20 +293,22 @@ describe('ApplePay', () => {
       messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe(response => {
         const { status, details }: IApplePayClientStatus = response.data;
 
-        if (status === ApplePayClientStatus.VALIDATE_MERCHANT_ERROR) {
-          verify(applePaySessionServiceMock.abort()).once();
-
-          expect(details.errorCode).toBe(Number(errorcode));
-          expect(details.errorMessage).toBe(errormessage);
-          done();
+        if (status !== ApplePayClientStatus.VALIDATE_MERCHANT_ERROR) {
+          return;
         }
+
+        verify(applePaySessionServiceMock.abort()).once();
+
+        expect(details.errorCode).toBe(Number(errorcode));
+        expect(details.errorMessage).toBe(errormessage);
+        done();
       });
 
       applePay.init();
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-        data: configMock
+        data: configMock,
       });
 
       // @ts-ignore
@@ -317,9 +321,9 @@ describe('ApplePay', () => {
           details: {
             walletsession: 'walletsession',
             errorcode,
-            errormessage
-          }
-        }
+            errormessage,
+          },
+        },
       });
     });
   });
@@ -327,36 +331,36 @@ describe('ApplePay', () => {
   describe('processPayment()', () => {
     const authorizedPaymentData = {
       status: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
-      details: {}
+      details: {},
     };
 
     const successPaymentData = {
       status: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
       details: {
         errorcode: ApplePayClientErrorCode.SUCCESS,
-        errormessage: 'Payment has been successfully processed'
-      }
+        errormessage: 'Payment has been successfully processed',
+      },
     };
 
     const cancelPaymentData = {
       status: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
       details: {
-        errorcode: ApplePayClientErrorCode.CANCEL
-      }
+        errorcode: ApplePayClientErrorCode.CANCEL,
+      },
     };
 
     const errorEmptyJwtPaymentData = {
       status: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
       details: {
-        errorcode: ApplePayClientErrorCode.EMPTY_JWT_ERROR
-      }
+        errorcode: ApplePayClientErrorCode.EMPTY_JWT_ERROR,
+      },
     };
 
     const defaultErrorPaymentData = {
       status: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
       details: {
-        errorcode: ApplePayClientErrorCode.ERROR
-      }
+        errorcode: ApplePayClientErrorCode.ERROR,
+      },
     };
 
     beforeEach(() => {
@@ -369,18 +373,20 @@ describe('ApplePay', () => {
       messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe((response: IMessageBusEvent) => {
         const { status, details }: IApplePayClientStatus = response.data;
 
-        if (status === ApplePayClientStatus.ON_PAYMENT_AUTHORIZED) {
-          expect(details.errorCode).toBe(ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED);
-          expect(details.errorMessage).toBe('');
-          done();
+        if (status !== ApplePayClientStatus.ON_PAYMENT_AUTHORIZED) {
+          return;
         }
+
+        expect(details.errorCode).toBe(ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED);
+        expect(details.errorMessage).toBe('');
+        done();
       });
 
       applePay.init();
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-        data: configMock
+        data: configMock,
       });
 
       // @ts-ignore
@@ -388,7 +394,7 @@ describe('ApplePay', () => {
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
-        data: authorizedPaymentData
+        data: authorizedPaymentData,
       });
     });
 
@@ -403,7 +409,7 @@ describe('ApplePay', () => {
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-        data: configMock
+        data: configMock,
       });
 
       // @ts-ignore
@@ -411,7 +417,7 @@ describe('ApplePay', () => {
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
-        data: successPaymentData
+        data: successPaymentData,
       });
     });
 
@@ -426,7 +432,7 @@ describe('ApplePay', () => {
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-        data: configMock
+        data: configMock,
       });
 
       // @ts-ignore
@@ -434,7 +440,7 @@ describe('ApplePay', () => {
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
-        data: cancelPaymentData
+        data: cancelPaymentData,
       });
     });
 
@@ -449,7 +455,7 @@ describe('ApplePay', () => {
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-        data: configMock
+        data: configMock,
       });
 
       // @ts-ignore
@@ -457,7 +463,7 @@ describe('ApplePay', () => {
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
-        data: errorEmptyJwtPaymentData
+        data: errorEmptyJwtPaymentData,
       });
     });
 
@@ -472,7 +478,7 @@ describe('ApplePay', () => {
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-        data: configMock
+        data: configMock,
       });
 
       // @ts-ignore
@@ -480,7 +486,7 @@ describe('ApplePay', () => {
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
-        data: defaultErrorPaymentData
+        data: defaultErrorPaymentData,
       });
     });
 
@@ -495,7 +501,7 @@ describe('ApplePay', () => {
 
       messageBus.publish({
         type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-        data: configMock
+        data: configMock,
       });
 
       // @ts-ignore
@@ -506,8 +512,8 @@ describe('ApplePay', () => {
         data: {
           requesttypedescription: RequestType.AUTH,
           errorcode: 0,
-          errormessage: 'Payment has been successfully processed'
-        }
+          errormessage: 'Payment has been successfully processed',
+        },
       });
     });
   });

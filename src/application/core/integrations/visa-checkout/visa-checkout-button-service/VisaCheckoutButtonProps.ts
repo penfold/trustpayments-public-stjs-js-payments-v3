@@ -5,5 +5,5 @@ export const VisaCheckoutButtonProps = {
   class: 'v-button',
   id: 'v-button',
   role: 'button',
-  src: environment.VISA_CHECKOUT_URLS.TEST_BUTTON_URL
+  src: environment.VISA_CHECKOUT_URLS.TEST_BUTTON_URL,
 };

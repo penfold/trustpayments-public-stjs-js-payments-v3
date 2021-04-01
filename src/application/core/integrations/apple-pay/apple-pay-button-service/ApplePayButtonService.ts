@@ -9,9 +9,9 @@ export class ApplePayButtonService {
         style: `-webkit-appearance: -apple-pay-button;
                 -apple-pay-button-type: ${label};
                 -apple-pay-button-style: ${style};pointer-events: auto;cursor: pointer;display: flex;role: button;`,
-        lang: locale
+        lang: locale,
       },
-      'a'
+      'a',
     ]);
   }
 

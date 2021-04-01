@@ -15,6 +15,7 @@ import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { ofType } from '../../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
+import { IApplePayWalletVerifyResponseBody } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 
 @Service()
 export class ApplePayPaymentService {
@@ -28,7 +29,7 @@ export class ApplePayPaymentService {
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     validationURL: string,
     cancelled: boolean
-  ): Observable<{ status: ApplePayClientErrorCode; data: {} }> {
+  ): Observable<{ status: ApplePayClientErrorCode; data: Partial<IApplePayWalletVerifyResponseBody> }> {
     const request: IApplePayValidateMerchantRequest = this.applePayConfigService.updateWalletValidationUrl(
       validateMerchantRequest,
       validationURL
@@ -37,7 +38,7 @@ export class ApplePayPaymentService {
     if (cancelled) {
       return of({
         status: ApplePayClientErrorCode.CANCEL,
-        data: {}
+        data: {},
       });
     }
 
@@ -48,8 +49,8 @@ export class ApplePayPaymentService {
         status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
         data: {
           errorcode: event.data.errorcode,
-          errormessage: event.data.errormessage
-        }
+          errormessage: event.data.errormessage,
+        },
       }))
     );
 
@@ -58,12 +59,12 @@ export class ApplePayPaymentService {
         if (!response.response.walletsession) {
           return {
             status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
-            data: {}
+            data: {},
           };
         }
         return {
           status: ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
-          data: response.response
+          data: response.response,
         };
       })
     );
@@ -74,7 +75,7 @@ export class ApplePayPaymentService {
   processPayment(
     requestTypes: RequestType[],
     validateMerchantRequest: IApplePayValidateMerchantRequest,
-    formData: object,
+    formData: Record<string, unknown>,
     payment: IApplePayPayment
   ): Observable<IApplePayProcessPaymentResponse> {
     const bypassError$ = this.messageBus.pipe(
@@ -92,15 +93,15 @@ export class ApplePayPaymentService {
         requestTypes,
         {
           walletsource: validateMerchantRequest.walletsource,
-          wallettoken: JSON.stringify(payment)
+          wallettoken: JSON.stringify(payment),
         },
         {
           ...formData,
-          termurl: TERM_URL
+          termurl: TERM_URL,
         },
         {
           billingContact: payment.billingContact,
-          shippingContact: payment.shippingContact
+          shippingContact: payment.shippingContact,
         }
       )
     ).pipe(
@@ -109,7 +110,7 @@ export class ApplePayPaymentService {
           return {
             ...data.response,
             errormessage: 'An error occured',
-            errorcode: ApplePayClientErrorCode.EMPTY_JWT_ERROR
+            errorcode: ApplePayClientErrorCode.EMPTY_JWT_ERROR,
           };
         }
         return data.response;

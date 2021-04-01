@@ -4,7 +4,7 @@ Feature: E2E tests for iframe
   To make payment
 
   @e2e_smoke_test
-  @e2e_config_for_iframe @parent_iframe
+  @e2e_config_for_iframe @parent_iframe @skip_form_inputs_load_wait
   Scenario: Successful frictionless payment on iframe
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |

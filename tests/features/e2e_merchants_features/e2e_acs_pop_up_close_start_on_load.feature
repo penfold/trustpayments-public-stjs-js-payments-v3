@@ -4,6 +4,7 @@ Feature: Close ACS pop-up (3DS modal) with start on load
   I should be able to close the popup (from code))
   In the case when the st.js token expired
 
+  @skip_form_button_load_wait
   Scenario: Close 3ds pop up for startOnLoad payment
     Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value            |

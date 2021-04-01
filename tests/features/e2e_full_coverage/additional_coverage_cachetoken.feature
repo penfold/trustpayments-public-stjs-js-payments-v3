@@ -8,6 +8,7 @@
 #      | requesttypedescriptions | CACHETOKENISE |
 #    And User opens example page
 #
+#  @skip_form_button_load_wait
 #  Scenario Outline: successful payment with cachetoken and request types <request_types> - frictionless
 #    Given User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
@@ -43,6 +44,7 @@
 #      | RISKDEC ACCOUNTCHECK                  |
 #      | AUTH RISKDEC                          |
 #
+#    @skip_form_button_load_wait
 #  Scenario Outline: successful payment with cachetoken and request types <request_types> - frictionless
 #    Given User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
@@ -70,6 +72,7 @@
 #      | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION |
 #      | RISKDEC THREEDQUERY ACCOUNTCHECK SUBSCRIPTION      |
 #
+#    @skip_form_button_load_wait
 #  Scenario Outline: successful payment with cachetoken and request types <request_types> - non-frictionless
 #    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
@@ -98,6 +101,7 @@
 #      | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
 #      | RISKDEC ACCOUNTCHECK THREEDQUERY      |
 #
+#    @skip_form_button_load_wait
 #  Scenario Outline: successful payment with cachetoken and request types <request_types> - non-frictionless
 #    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button

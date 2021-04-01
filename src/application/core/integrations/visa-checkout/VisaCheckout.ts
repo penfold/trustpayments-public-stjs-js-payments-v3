@@ -39,7 +39,7 @@ export class VisaCheckout {
         map((event: IMessageBusEvent<IConfig>) => {
           return {
             config: event.data,
-            visaCheckoutUpdateConfig: this.visaCheckoutUpdateService.updateConfigObject(event.data)
+            visaCheckoutUpdateConfig: this.visaCheckoutUpdateService.updateConfigObject(event.data),
           };
         }),
         switchMap(({ config, visaCheckoutUpdateConfig }) => {
@@ -75,7 +75,7 @@ export class VisaCheckout {
   protected onSuccess(config: IConfig, successData: IVisaCheckoutStatusDataSuccess): void {
     const merchantData: IMerchantData = {
       ...DomMethods.parseForm(config.formId),
-      termurl: TERM_URL
+      termurl: TERM_URL,
     };
 
     this.messageBus.publish<IVisaCheckoutClientStatus>({
@@ -83,8 +83,8 @@ export class VisaCheckout {
       data: {
         status: VisaCheckoutClientStatus.SUCCESS,
         data: successData,
-        merchantData
-      }
+        merchantData,
+      },
     });
   }
 
@@ -93,8 +93,8 @@ export class VisaCheckout {
       type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
       data: {
         status: VisaCheckoutClientStatus.CANCEL,
-        data: cancelData
-      }
+        data: cancelData,
+      },
     });
   }
 
@@ -103,8 +103,8 @@ export class VisaCheckout {
       type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
       data: {
         status: VisaCheckoutClientStatus.ERROR,
-        data: errorData
-      }
+        data: errorData,
+      },
     });
   }
 
@@ -113,8 +113,8 @@ export class VisaCheckout {
       type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
       data: {
         status: VisaCheckoutClientStatus.PRE_PAYMENT,
-        data: prePaymentData
-      }
+        data: prePaymentData,
+      },
     });
   }
 }

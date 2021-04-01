@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 export class CardinalMock implements ICardinal {
   private callbacks = {
     [PaymentEvents.SETUP_COMPLETE]: (...args: any[]): any => void 0,
-    [PaymentEvents.VALIDATED]: (...args: any[]): any => void 0
+    [PaymentEvents.VALIDATED]: (...args: any[]): any => void 0,
   };
 
   constructor(private manualCallbackTrigger: boolean = false) {}
@@ -58,7 +58,7 @@ export class CardinalMock implements ICardinal {
         ActionCode: 'ERROR',
         ErrorDescription: '',
         ErrorNumber: 4000,
-        Validated: false
+        Validated: false,
       },
       ''
     );

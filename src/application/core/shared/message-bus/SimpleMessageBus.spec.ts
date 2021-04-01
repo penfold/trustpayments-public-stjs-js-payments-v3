@@ -53,7 +53,7 @@ describe('SimpleMessageBus', () => {
       messageBus.pipe(map(event => ({ type: event.type, data: `${event.data}${event.data}` }))).subscribe(event => {
         expect(event).toEqual({
           type: 'FOO',
-          data: 'barbar'
+          data: 'barbar',
         });
         done();
       });

@@ -7,14 +7,14 @@ Feature: Successfull payments with start on load configuration
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
 
-  @config_start_on_load_requestTypes_tdq
+  @config_start_on_load_requestTypes_tdq  @skip_form_button_load_wait
   Scenario: Successful payment with startOnLoad and request types THREEDQUERY
     And Single THREEDQUERY mock response is set to "ENROLLED_Y_WITHOUT_ACS_URL"
     And User opens prepared payment form page WITHOUT_SUBMIT_BUTTON
     Then User will see payment status information: "Payment has been successfully processed"
     And Single THREEDQUERY request was sent only once with correct data
 
-  @config_start_on_load_acheck_tdq_auth_sub
+  @config_start_on_load_acheck_tdq_auth_sub  @skip_form_button_load_wait
   Scenario: Successful payment with startOnLoad and request types ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION
     And Step up ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION response is set to OK
     And ACS mock response is set to "OK"
@@ -24,7 +24,7 @@ Feature: Successfull payments with start on load configuration
     And ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION ware sent only once in one request
     And AUTH, SUBSCRIPTION ware sent only once in one request
 
-  @config_start_on_load_requestTypes_tdq_auth
+  @config_start_on_load_requestTypes_tdq_auth  @skip_form_button_load_wait
   Scenario: Successful payment with startOnLoad request types: THREEDQUERY, AUTH
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"

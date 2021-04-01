@@ -85,7 +85,7 @@ class PaymentMethodsPage(BasePage):
                                                                     value)
 
     def fill_payment_form(self, card_number, expiration_date, cvv):
-        self.wait_for_payment_form_to_load()
+        self.wait_for_payment_form_inputs_to_load()
         if 'IE' not in self._configuration.BROWSER:
             self.fill_credit_card_field(FieldType.CARD_NUMBER.name, card_number)
             self.fill_credit_card_field(FieldType.EXPIRATION_DATE.name, expiration_date)
@@ -248,9 +248,11 @@ class PaymentMethodsPage(BasePage):
     def select_cardinal_commerce_payment(self):
         if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION or 'High Sierra' in CONFIGURATION.REMOTE_OS_VERSION or \
             'Google Nexus 6' in CONFIGURATION.REMOTE_DEVICE:
+            self.scroll_to_bottom()
             self._waits.wait_for_javascript()
             self._actions.click_by_javascript(PaymentMethodsLocators.pay_mock_button)
         else:
+            self.scroll_to_bottom()
             self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
             self._actions.click(PaymentMethodsLocators.pay_mock_button)
 
@@ -685,11 +687,17 @@ class PaymentMethodsPage(BasePage):
         self._waits.wait_until_iframe_is_presented_and_switch_to_it(PaymentMethodsLocators.security_code_iframe)
         self._actions.switch_to_default_iframe()
 
-    def wait_for_payment_form_to_load(self):
+    def wait_for_payment_form_inputs_to_display(self):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.card_number_iframe)
+        self._browser_executor.scroll_into_view(PaymentMethodsLocators.expiration_date_iframe)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe)
+        self._browser_executor.scroll_into_view(PaymentMethodsLocators.security_code_iframe)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
+
+    def wait_for_payment_form_inputs_to_load(self):
         self.wait_for_card_number_iframe()
         self.wait_for_expiration_date_iframe()
         self.wait_for_security_code_iframe()
-        self.wait_for_pay_button_to_be_active()
 
     def wait_for_card_number_iframe(self):
         self._waits.wait_until_iframe_is_presented_and_switch_to_it(PaymentMethodsLocators.card_number_iframe)

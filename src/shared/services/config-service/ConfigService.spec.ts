@@ -46,8 +46,8 @@ describe('ConfigService', () => {
     when(jwtDecoderMock.decode<IStJwtObj>(JWT)).thenReturn({ payload: {} });
     when(jwtDecoderMock.decode<IStJwtObj>(JWT_WITH_CONFIG)).thenReturn({
       payload: {
-        config: configFromJwt
-      }
+        config: configFromJwt,
+      },
     } as IStJwtObj);
   });
 
@@ -74,7 +74,7 @@ describe('ConfigService', () => {
             submitCallback,
             errorCallback,
             successCallback: undefined,
-            cancelCallback: undefined
+            cancelCallback: undefined,
           })
         )
       ).once();
@@ -84,7 +84,7 @@ describe('ConfigService', () => {
       expect(() =>
         configService.setup({
           jwt: JWT_WITH_CONFIG,
-          buttonId: 'foobar'
+          buttonId: 'foobar',
         })
       ).toThrowError(CANNOT_OVERRIDE);
 
@@ -94,7 +94,7 @@ describe('ConfigService', () => {
           successCallback: (): any => null,
           submitCallback: (): any => null,
           errorCallback: (): any => null,
-          cancelCallback: (): any => null
+          cancelCallback: (): any => null,
         })
       ).not.toThrowError();
     });
@@ -178,7 +178,7 @@ describe('ConfigService', () => {
       const visaConfig: IVisaCheckoutConfig = {
         merchantId: 'foobar',
         livestatus: 1,
-        placement: 'st-visa'
+        placement: 'st-visa',
       };
 
       configService.setup(config);

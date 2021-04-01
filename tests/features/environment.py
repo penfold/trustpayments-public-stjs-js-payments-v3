@@ -69,7 +69,6 @@ def before_scenario(context, scenario):
     validate_if_proper_browser_is_set_for_test(context, scenario)
 
 
-
 def after_scenario(context, scenario):
     """Run after each scenario"""
     # pylint: disable=bare-except

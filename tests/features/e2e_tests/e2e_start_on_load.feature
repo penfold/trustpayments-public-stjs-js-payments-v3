@@ -4,7 +4,7 @@ Feature: E2E startOnLoad
   I want to use card payments method with startOnLoad config
   In order to check full payment functionality
 
-  @e2e_smoke_test
+  @e2e_smoke_test   @skip_form_button_load_wait
   Scenario: Successful non-frictionless payment with startOnLoad
     Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value            |
@@ -18,6 +18,7 @@ Feature: E2E startOnLoad
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
+  @skip_form_button_load_wait
   Scenario: Successful payment with startOnLoad and additional request types: ACCOUNTCHECK, TDQ, AUTH
     Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_CONFIG and jwt JWT_WITH_FRICTIONLESS_CARD with additional attributes
       | key                     | value                         |
@@ -30,6 +31,7 @@ Feature: E2E startOnLoad
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
+  @skip_form_button_load_wait
   Scenario: Successful payment with startOnLoad and additional request types: ACCOUNTCHECK, TDQ, AUTH, SUBSCRIPTION
     Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_NON_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
       | key                     | value                                      |
@@ -43,6 +45,7 @@ Feature: E2E startOnLoad
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
+  @skip_form_button_load_wait
   Scenario: Unsuccessful payment with request types: THREEDQUERY AUTH - non-frictionless
     Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_FAILED_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value            |
@@ -55,6 +58,7 @@ Feature: E2E startOnLoad
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: True
 
+  @skip_form_button_load_wait
   Scenario Outline: Successful non-frictionless payment with submitOnSuccess and request types: <request_types>
     Given JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value           |
@@ -78,7 +82,7 @@ Feature: E2E startOnLoad
       | THREEDQUERY AUTH         | should be none     | 1000           | GBP            |
       | ACCOUNTCHECK THREEDQUERY | should not be none | should be none | should be none |
 
-
+  @skip_form_button_load_wait
   Scenario: Unsuccessful payment with submitOnError and request types: THREEDQUERY AUTH
     Given JS library configured by inline params START_ON_LOAD_SUBMIT_ON_ERROR_CONFIG and jwt JWT_FAILED_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value            |

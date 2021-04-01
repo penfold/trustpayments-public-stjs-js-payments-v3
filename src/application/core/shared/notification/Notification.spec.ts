@@ -47,13 +47,13 @@ describe('Notification', () => {
         cardNumber: '',
         expirationDate: '',
         securityCode: '',
-        notificationFrame: 'st-notification-frame'
+        notificationFrame: 'st-notification-frame',
       },
       styles: {
         notificationFrame: {
-          'color-error': '#FFF333'
-        }
-      }
+          'color-error': '#FFF333',
+        },
+      },
     };
 
     when(configProvider.getConfig()).thenReturn(config);
@@ -76,7 +76,7 @@ describe('Notification', () => {
     messageBus.publish(
       {
         data: { content: 'Test', type: NotificationType.Error },
-        type: MessageBus.EVENTS_PUBLIC.NOTIFICATION
+        type: MessageBus.EVENTS_PUBLIC.NOTIFICATION,
       },
       true
     );

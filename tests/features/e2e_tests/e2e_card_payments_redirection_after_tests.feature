@@ -100,9 +100,7 @@ Feature: E2E Card Payments - redirection
       | transactionreference | should not be none |
       | jwt                  | should not be none |
 
-  @e2e_smoke_test
-  @e2e_config_submit_on_error_invalid_jwt
-  @bypass_property
+  @e2e_smoke_test @skip_form_inputs_load_wait @skip_form_button_load_wait
   Scenario: Unsuccessful payment with submitOnError enabled - invalid jwt
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt INVALID_JWT with additional attributes
       | key                      | value            |
@@ -117,7 +115,7 @@ Feature: E2E Card Payments - redirection
       | errordata    | locale        |
 
   @e2e_config_submit_on_success_security_code
-  @bypass_property
+  @bypass_property @skip_form_inputs_load_wait
   Scenario: Successful payment with submitOnSuccess enabled with field to submit securitycode
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_SECURITY_CODE_CONFIG and jwt JWT_WITH_PARENT_TRANSACTION with additional attributes
       | key                      | value            |

@@ -164,11 +164,6 @@ module.exports = {
         enforce: 'pre',
         use: [
           {
-            loader: 'tslint-loader',
-            options: {
-              emitErrors: true
-            }
-          }, {
             loader: 'source-map-loader'
           }
         ],

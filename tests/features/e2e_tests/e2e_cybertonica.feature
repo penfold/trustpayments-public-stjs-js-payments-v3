@@ -29,7 +29,7 @@ Feature: E2E Cybertonica
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
 
-  @e2e_config_cybertonica
+  @e2e_config_cybertonica   @skip_form_button_load_wait
   Scenario: Cybertonica - successfull payment with startOnLoad
     Given JS library configured by inline params CYBERTONICA_START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value            |

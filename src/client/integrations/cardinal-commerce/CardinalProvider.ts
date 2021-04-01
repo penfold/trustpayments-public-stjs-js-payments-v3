@@ -17,7 +17,7 @@ export class CardinalProvider implements ICardinalProvider {
 
     const scriptOptions = {
       src: sdkAddress,
-      id: CardinalProvider.SCRIPT_ID
+      id: CardinalProvider.SCRIPT_ID,
     };
 
     return from(DomMethods.insertScript('head', scriptOptions)).pipe(
