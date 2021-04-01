@@ -43,7 +43,7 @@ Feature: Callback functionality
 #    Then User will see correct error code displayed in popup
 #    And "submit" callback is called only once
 #
-  @base_config @ignore_on_headless
+  @base_config @ignore_on_headless @skip_form_inputs_load_wait @skip_form_button_load_wait
   Scenario Outline: Checking callback function about browser data
     When User opens prepared payment form page WITH_BROWSER_INFO
     Then User will see that browser is marked as supported: "<is_browser_supported>"

@@ -71,7 +71,7 @@ def step_impl(context, example_page: ExamplePageParam):
             updated_jwt_from_jsinit = decode_jwt_from_jsinit(jsinit_response[f'{row["jwtName"]}'])
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}'
         payment_page.open_page_with_not_private_connection_check(url)
-        payment_page.wait_for_payment_form_inputs_to_load()
+        wait_for_form_load(context)
         context.test_data.update_jwt = jwt  # test data replaced to check required value in assertion
         context.test_data.update_jwt_from_jsinit = updated_jwt_from_jsinit
     else:
@@ -85,7 +85,7 @@ def step_impl(context, example_page: ExamplePageParam):
             payment_page.open_page_with_not_private_connection_check(url)
         else:
             payment_page.open_page_with_not_private_connection_check(url)
-            payment_page.wait_for_payment_form_inputs_to_load()
+            wait_for_form_load(context)
 
 
 @step('User opens (?:example page|example page (?P<example_page>.+))')
