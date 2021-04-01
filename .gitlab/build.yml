@@ -45,6 +45,8 @@ build-sdk-release:
     ARTIFACTS_BUILD_PATH: ".dist-release"
   before_script:
     - . .cicd_scripts/gitlab/release/load_release_artifact.sh "${ARTIFACT_RELEASE_CICD_FILENAME}"
+    - export NVM_DIR="$HOME/.nvm/"
+    - source ${NVM_DIR}/nvm.sh
   script:
     - npx lerna bootstrap
     - npx lerna version "${RELEASE_TAG}" --no-git-tag-version --no-push --yes
