@@ -687,6 +687,13 @@ class PaymentMethodsPage(BasePage):
         self._waits.wait_until_iframe_is_presented_and_switch_to_it(PaymentMethodsLocators.security_code_iframe)
         self._actions.switch_to_default_iframe()
 
+    def wait_for_payment_form_inputs_to_display(self):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.card_number_iframe)
+        self._browser_executor.scroll_into_view(PaymentMethodsLocators.expiration_date_iframe)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.expiration_date_iframe)
+        self._browser_executor.scroll_into_view(PaymentMethodsLocators.security_code_iframe)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.security_code_iframe)
+
     def wait_for_payment_form_inputs_to_load(self):
         self.wait_for_card_number_iframe()
         self.wait_for_expiration_date_iframe()

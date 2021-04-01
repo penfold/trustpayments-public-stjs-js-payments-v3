@@ -41,7 +41,7 @@ def step_impl(context):
     if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
     payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?')
-    payment_page.wait_for_payment_form_inputs_to_load()
+    payment_page.wait_for_payment_form_inputs_to_display()
 
 
 @step('User opens payment page')
@@ -140,7 +140,7 @@ def step_impl(context, html_page):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     url = f'{CONFIGURATION.URL.BASE_URL}/{html_page}?{context.inline_config}'
     payment_page.open_page_with_not_private_connection_check(url)
-    payment_page.wait_for_payment_form_inputs_to_load()
+    payment_page.wait_for_payment_form_inputs_to_display()
 
 
 @then('User remains on checkout page')
@@ -191,6 +191,7 @@ def accept_untrusted_pages_on_safari_browsers(context):
 def wait_for_form_load(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'skip_form_inputs_load_wait' not in context.scenario.tags:
-        payment_page.wait_for_payment_form_inputs_to_load()
+        # payment_page.wait_for_payment_form_inputs_to_load()
+        payment_page.wait_for_payment_form_inputs_to_display()
     if 'skip_form_button_load_wait' not in context.scenario.tags:
         payment_page.wait_for_pay_button_to_be_active()
