@@ -20,8 +20,8 @@
     "locale": "en_GB"
   },
   "engines": {
-    "node": "14.x",
-    "npm": "7.x"
+    "node": "14.15.5",
+    "npm": "7.7.6"
   },
   "scripts": {
     "build": "webpack --config webpack.prod.js",
@@ -132,7 +132,7 @@
     "ts-jest": "26.5.1",
     "ts-loader": "8.0.17",
     "ts-mockito": "2.6.1",
-    "typescript": "4.2.3",
+    "typescript": "4.1.5",
     "url-loader": "4.1.1",
     "webpack": "4.44.1",
     "webpack-bundle-analyzer": "4.4.0",
