@@ -139,10 +139,12 @@ describe('ResponseDecoderService', () => {
       const result = responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }));
 
       expect(result).toEqual({
-        ccc: 'ccc',
-        ddd: 'ddd',
-        customeroutput: 'SUCCESS',
-        jwt: 'somejwt',
+        responseJwt: 'somejwt',
+        customerOutput: {
+          ccc: 'ccc',
+          ddd: 'ddd',
+          customeroutput: 'SUCCESS'
+        }
       });
     });
 
@@ -175,9 +177,42 @@ describe('ResponseDecoderService', () => {
       const result = responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }));
 
       expect(result).toEqual({
-        eee: 'eee',
-        fff: 'fff',
-        jwt: 'somejwt',
+        responseJwt: 'somejwt',
+        customerOutput: {
+          eee: 'eee',
+          fff: 'fff'
+        }
+      });
+    });
+
+    it('returns updated merchant jwt if its provided in the response payload', () => {
+      when(jwtDecoder.decode('somejwt')).thenReturn({
+        iat: 1616074548,
+        payload: {
+          requestreference: '123456',
+          version: '1.00',
+          jwt: 'updatedjwt',
+          response: [
+            {
+              aaa: 'aaa',
+              bbb: 'bbb'
+            }
+          ],
+          secrand: 'foobar'
+        },
+        aud: 'foo',
+        sitereference: 'bar'
+      });
+
+      const result = responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }));
+
+      expect(result).toEqual({
+        responseJwt: 'somejwt',
+        updatedMerchantJwt: 'updatedjwt',
+        customerOutput: {
+          aaa: 'aaa',
+          bbb: 'bbb'
+        }
       });
     });
   });
