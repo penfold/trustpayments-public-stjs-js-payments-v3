@@ -7,6 +7,7 @@ import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Tra
 import { IResponsePayload } from './interfaces/IResponsePayload';
 import { IRequestTypeResponse } from './interfaces/IRequestTypeResponse';
 import { IStJwtObj } from '../../models/IStJwtObj';
+import { IDecodedResponse } from './interfaces/IDecodedResponse';
 
 @Service()
 export class ResponseDecoderService {
@@ -14,7 +15,7 @@ export class ResponseDecoderService {
 
   constructor(private jwtDecoder: JwtDecoder) {}
 
-  decode(response: IHttpClientResponse<IJwtResponse>): IRequestTypeResponse & IJwtResponse {
+  decode(response: IHttpClientResponse<IJwtResponse>): IDecodedResponse {
     try {
       const jwt: string = response.data.jwt;
       const { payload } = this.jwtDecoder.decode<IStJwtObj<IResponsePayload>>(jwt);
@@ -23,7 +24,11 @@ export class ResponseDecoderService {
         throw new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
       }
 
-      return { ...this.extractResponseObject(payload), jwt };
+      return {
+        responseJwt: jwt,
+        customerOutput: this.extractResponseObject(payload),
+        updatedMerchantJwt: payload.jwt
+      };
     } catch (e) {
       throw new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
     }

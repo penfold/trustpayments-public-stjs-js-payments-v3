@@ -31,7 +31,7 @@ describe('RequestEncoderService', () => {
       const request = { pan: '4111111111111111', requesttypedescriptions: ['AUTH', 'SUBSCRIPTION'] };
       const result = str.encode(request);
 
-      expect(typeof result === 'string' && JSON.parse(result)).toEqual({
+      expect(result).toEqual({
         acceptcustomeroutput: '2.00',
         jwt: 'somejwt',
         request: [

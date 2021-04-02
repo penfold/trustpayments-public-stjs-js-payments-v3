@@ -23,7 +23,7 @@
     "@angular/platform-browser": "11.2.4",
     "@angular/platform-browser-dynamic": "11.2.4",
     "@angular/router": "11.2.4",
-    "@trustpayments/jwt-generator": "^0.1.31",
+    "@trustpayments/jwt-generator": "^0.1.40",
     "crypto": "^1.0.1",
     "crypto-js": "^4.0.0",
     "jwa": "^2.0.0",
