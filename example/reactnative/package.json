@@ -13,10 +13,10 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@trustpayments/jwt-generator": "0.1.21",
     "react": "16.13.1",
     "react-native": "0.63.3",
-    "react-native-webview": "11.0.0"
+    "react-native-webview": "11.0.0",
+    "@trustpayments/jwt-generator": "0.1.40"
   },
   "devDependencies": {
     "@babel/core": "7.12.13",
