@@ -94,7 +94,10 @@ module.exports = {
     }),
     new StyleLintPlugin({
       context: path.join(__dirname, '')
-    })
+    }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
   ],
   module: {
     rules: [
@@ -149,9 +152,9 @@ module.exports = {
       "zlib": false,
       "http": false,
       "https": false,
-      "crypto": require.resolve("crypto-js/"),
+      "crypto": require.resolve("crypto-browserify/"),
       "util": require.resolve("util/"),
       "stream": require.resolve("stream/")
-    }
+    },
   }
 };

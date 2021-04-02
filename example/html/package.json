@@ -31,6 +31,7 @@
     "postcss-import": "14.0.1",
     "postcss-loader": "5.2.0",
     "prettier": "2.2.0",
+    "process": "^0.11.10",
     "sass-loader": "11.0.1",
     "style-loader": "2.0.0",
     "stylelint-webpack-plugin": "2.1.1",
@@ -46,7 +47,7 @@
   },
   "dependencies": {
     "@trustpayments/jwt-generator": "0.1.38",
-    "crypto-js": "^4.0.0",
+    "crypto-browserify": "^3.12.0",
     "stream": "^0.0.2",
     "util": "^0.12.3"
   }
