@@ -2,7 +2,6 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
@@ -101,10 +100,6 @@ module.exports = {
       },
       chunks: ['controlFrame']
     }),
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[id].css'
-    }),
     new CopyPlugin({
       patterns: [{
         from: 'src/application/core/services/icon/images/*.png',
@@ -122,7 +117,6 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {

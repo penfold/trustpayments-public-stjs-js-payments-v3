@@ -9,7 +9,7 @@ import {
 } from '../../models/constants/Translations';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Validation } from '../../shared/validation/Validation';
-import { version } from '../../../../../package.json';
+import pckg from '../../../../../package.json';
 import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { IStJwtObj } from '../../models/IStJwtObj';
@@ -20,6 +20,8 @@ import { InvalidResponseError } from './InvalidResponseError';
 import { Locale } from '../../shared/translator/Locale';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+
+const { version } = pckg;
 
 export class StCodec {
   public static CONTENT_TYPE = 'application/json';

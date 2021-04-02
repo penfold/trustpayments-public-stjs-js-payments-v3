@@ -1,9 +1,9 @@
-const { merge } = require('webpack-merge');
-const path = require('path');
-const common = require('./webpack.common.js');
 const webpack = require('webpack');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const path = require('path');
 const fs = require('fs');
+const { merge } = require('webpack-merge');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const common = require('./webpack.common.js');
 
 module.exports = merge(common, {
   mode: 'development',

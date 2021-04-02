@@ -1,12 +1,14 @@
 import { Service } from 'typedi';
 import { IStRequest } from '../../models/IStRequest';
 import { COMMUNICATION_ERROR_INVALID_REQUEST } from '../../models/constants/Translations';
-import { version } from '../../../../../package.json';
+import pckg from '../../../../../package.json';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { InvalidRequestError } from './InvalidRequestError';
 import { IRequestObject } from '../../models/IRequestObject';
 import { IStore } from '../../store/IStore';
 import { IApplicationFrameState } from '../../store/state/IApplicationFrameState';
+
+const { version } = pckg;
 
 @Service()
 export class RequestEncoderService {
