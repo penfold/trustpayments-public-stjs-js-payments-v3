@@ -14,6 +14,8 @@ import { ApplePay } from '../client/integrations/apple-pay/ApplePay';
 import { ApplePayMock } from '../client/integrations/apple-pay/ApplePayMock';
 import { IApplePaySessionWrapper } from '../client/integrations/apple-pay/apple-pay-session-service/IApplePaySessionWrapper';
 import { ApplePaySessionWrapperMock } from '../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionWrapperMock';
+import { IHttpOptionsProvider } from '../application/core/services/st-transport/http-options-provider/IHttpOptionsProvider';
+import { TestHttpOptionsProvider } from '../application/core/services/st-transport/http-options-provider/TestHttpOptionsProvider';
 
 if (environment.testEnvironment) {
   Container.set({ id: Cybertonica, type: CybertonicaMock });
@@ -23,4 +25,5 @@ if (environment.testEnvironment) {
   Container.set({ id: ApplePay, type: ApplePayMock });
   Container.set({ id: ApplePayButtonService, type: ApplePayButtonServiceMock });
   Container.set({ id: IApplePaySessionWrapper, type: ApplePaySessionWrapperMock });
+  Container.set({ id: IHttpOptionsProvider, type: TestHttpOptionsProvider });
 }

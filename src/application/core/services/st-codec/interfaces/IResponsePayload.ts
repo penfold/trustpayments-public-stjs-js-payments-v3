@@ -5,4 +5,5 @@ export interface IResponsePayload {
   response: IRequestTypeResponse[];
   secrand: string;
   version: string;
+  jwt?: string;
 }
