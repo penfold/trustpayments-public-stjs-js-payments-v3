@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
@@ -85,7 +84,6 @@ module.exports = {
         'styles/**/*.scss',
       ]
     }),
-    new FriendlyErrorsWebpackPlugin(),
     new webpack.SourceMapDevToolPlugin({})
   ],
   module: {

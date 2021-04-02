@@ -4,7 +4,6 @@ const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
@@ -95,8 +94,7 @@ module.exports = {
     }),
     new StyleLintPlugin({
       context: path.join(__dirname, '')
-    }),
-    new FriendlyErrorsWebpackPlugin()
+    })
   ],
   module: {
     rules: [
@@ -142,6 +140,18 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
+    fallback: {
+      "fs": false,
+      "tls": false,
+      "net": false,
+      "path": false,
+      "zlib": false,
+      "http": false,
+      "https": false,
+      "crypto": require.resolve("crypto-js/"),
+      "util": require.resolve("util/"),
+      "stream": require.resolve("stream/")
+    }
   }
 };
