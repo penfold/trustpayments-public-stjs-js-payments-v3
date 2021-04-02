@@ -122,7 +122,7 @@
     "postcss-import": "14.0.0",
     "postcss-loader": "4.2.0",
     "postcss-preset-env": "6.7.0",
-    "postcss-scss": "3.0.4",
+    "postcss-scss": "3.0.5",
     "prettier": "2.2.1",
     "sass-loader": "10.1.1",
     "snyk": "1.521.0",
