@@ -1,4 +1,7 @@
+import { RequestType } from "../../../shared/types/RequestType";
+
 export interface IStRequest {
+  requestTypes?: RequestType[];
   requesttypedescription?: string;
   requesttypedescriptions?: string[];
   expirydate?: string;

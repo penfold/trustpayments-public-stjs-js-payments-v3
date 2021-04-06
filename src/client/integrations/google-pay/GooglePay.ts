@@ -161,12 +161,15 @@ export class GooglePay {
     const formData = DomMethods.parseForm(this.config.formId);
     const config = this.config;
 
-    return this.googlePayPaymentService
-      .processPayment(this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions, formData, paymentData)
-      .pipe(
-        tap((response: any) => {
-          console.log(response);
-        })
-      );
+    return this.googlePayPaymentService.processPayment(
+      this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions,
+      formData,
+      paymentData
+    );
+    // .pipe(
+    //   tap((response: any) => {
+    //     console.log(response);
+    //   })
+    // );
   }
 }

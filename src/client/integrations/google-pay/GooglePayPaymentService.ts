@@ -1,17 +1,17 @@
 import { Service } from 'typedi';
 import { from, merge, Observable } from 'rxjs';
 import { filter, map, first } from 'rxjs/operators';
-import { Payment } from '../../../application/core/shared/payment/Payment';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { RequestType } from '../../../shared/types/RequestType';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { TERM_URL } from '../../../application/core/models/constants/RequestData';
+import { TransportService } from '../../../application/core/services/st-transport/TransportService';
 
 @Service()
 export class GooglePayPaymentService {
-  constructor(private payment: Payment, private messageBus: IMessageBus) {}
+  constructor(private transportService: TransportService, private messageBus: IMessageBus) {}
 
   processPayment(requestTypes: RequestType[], formData: object, payment: any): Observable<any> {
     const bypassError$ = this.messageBus.pipe(
@@ -25,21 +25,14 @@ export class GooglePayPaymentService {
     );
 
     const processPayment$ = from(
-      this.payment.processPayment(
+      // this.payment.processPayment(
+      this.transportService.sendRequest({
         requestTypes,
-        {
-          walletsource: 'GOOGLEPAY',
-          wallettoken: JSON.stringify(payment)
-        },
-        {
-          ...formData,
-          termurl: TERM_URL
-        },
-        {
-          billingContact: payment.billingContact,
-          shippingContact: payment.shippingContact
-        }
-      )
+        walletsource: 'GOOGLEPAY',
+        wallettoken: JSON.stringify(payment),
+        ...formData,
+        termurl: TERM_URL
+      })
     ).pipe(
       map((data: any) => {
         if (!data.response.errorcode) {

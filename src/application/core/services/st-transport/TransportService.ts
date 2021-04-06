@@ -31,6 +31,7 @@ export class TransportService {
       ? of(gatewayUrl)
       : this.configProvider.getConfig$().pipe(map(config => config.datacenterurl));
     const requestObject: IRequestObject = this.requestEncoder.encode(request);
+    console.log(this.httpOptionsProvider);
     const httpOptions: IHttpClientConfig = this.httpOptionsProvider.getOptions(requestObject);
 
     return gatewayUrl$.pipe(

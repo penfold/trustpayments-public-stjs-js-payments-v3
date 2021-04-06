@@ -18,8 +18,6 @@ export class GooglePaymentMethod implements IPaymentMethod {
   }
 
   init(config: IConfig): Observable<void> {
-    // ts-lint: disable-next-line
-    debugger;
     this.googlePay.init(config);
 
     return of(undefined);
