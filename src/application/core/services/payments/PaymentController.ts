@@ -2,7 +2,7 @@ import { ContainerInstance, Service } from 'typedi';
 import { IPaymentMethod } from './IPaymentMethod';
 import { PaymentMethodToken } from '../../../dependency-injection/InjectionTokens';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { EMPTY, NEVER, Observable, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { catchError, first, map, mapTo, mergeMap, switchMap, takeUntil } from 'rxjs/operators';

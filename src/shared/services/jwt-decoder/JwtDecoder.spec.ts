@@ -19,8 +19,8 @@ describe('JwtDecoder', () => {
         baseamount: '2000',
         accounttypedescription: 'ECOM',
         currencyiso3a: 'GBP',
-        sitereference: 'test'
-      }
+        sitereference: 'test',
+      },
     });
   });
 

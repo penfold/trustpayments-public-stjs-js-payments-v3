@@ -31,7 +31,7 @@ visa-checkout-headless-component-tests:
   variables:
     FEATURE_FILE_NAME: 'visa_checkout.feature'
 
-e2e-merchants-features-app-html-dev:
+merchants-features-app-html-dev-e2e-tests:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-dev
@@ -39,7 +39,7 @@ e2e-merchants-features-app-html-dev:
     FEATURE_FILES_DIR: 'features/e2e_merchants_features'
   parallel: 6
 
-e2e-merchants-features-app-html-release:
+merchants-features-app-html-release-e2e-tests:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-prod-merchant
@@ -48,7 +48,7 @@ e2e-merchants-features-app-html-release:
     FEATURE_FILES_DIR: 'features/e2e_merchants_features'
   parallel: 6
 
-e2e-cardinal-commerce-app-html-dev:
+cardinal-commerce-app-html-dev-e2e-tests:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-dev
@@ -56,7 +56,7 @@ e2e-cardinal-commerce-app-html-dev:
     FEATURE_FILES_DIR: 'features/e2e_cardinal_commerce'
   parallel: 8
 
-e2e-cardinal-commerce-app-html-release:
+cardinal-commerce-app-html-release-e2e-tests:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-prod-merchant
@@ -65,18 +65,18 @@ e2e-cardinal-commerce-app-html-release:
     FEATURE_FILES_DIR: 'features/e2e_cardinal_commerce'
   parallel: 8
 
-e2e-app-html-dev:
+app-html-dev-e2e-tests:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-dev
-  parallel: 18
+  parallel: 19
 
-e2e-app-html-release:
+app-html-release-e2e-tests:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-prod-merchant
     - .rules-when-release
-  parallel: 18
+  parallel: 19
 
 .zap-url-to-scan-merchant:
   variables:
@@ -86,7 +86,7 @@ e2e-app-html-release:
   variables:
     URL_TO_SCAN: "https://library.securetrading.net:8443"
 
-zap-baseline-scan-merchant-securetrading-net-dev:
+merchant-securetrading-net-dev-security-tests-zap-baseline-scan:
   extends:
     - .zap-baseline-scan
     - .services-app-html-dev
@@ -94,7 +94,7 @@ zap-baseline-scan-merchant-securetrading-net-dev:
   variables:
     ZAP_CONFIG_PATH: "baseline-scan.conf"
 
-zap-baseline-scan-library-securetrading-net-dev:
+library-securetrading-net-dev-security-tests-zap-baseline-scan:
   extends:
     - .zap-baseline-scan
     - .services-app-html-dev
@@ -102,7 +102,7 @@ zap-baseline-scan-library-securetrading-net-dev:
   variables:
     ZAP_CONFIG_PATH: "baseline-scan.conf"
 
-zap-baseline-scan-merchant-securetrading-net-release:
+merchant-securetrading-net-release-security-tests-zap-baseline-scan:
   extends:
     - .zap-baseline-scan
     - .service-app-html-prod-merchant
@@ -111,7 +111,7 @@ zap-baseline-scan-merchant-securetrading-net-release:
   variables:
     ZAP_CONFIG_PATH: "baseline-scan.conf"
 
-zap-baseline-scan-library-securetrading-net-release:
+scan-library-securetrading-net-release-security-tests-zap-baseline-scan:
   extends:
     - .zap-baseline-scan
     - .service-app-html-prod-library

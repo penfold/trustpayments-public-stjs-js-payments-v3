@@ -3,8 +3,6 @@ import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecode
 import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
 import { IVisaCheckoutInitConfig } from '../IVisaCheckoutInitConfig';
 import { IStJwtPayload } from '../../../models/IStJwtPayload';
-import { RequestType } from '../../../../../shared/types/RequestType';
-import { Locale } from '../../../shared/translator/Locale';
 
 describe('VisaCheckoutUpdateService', () => {
   let instance: VisaCheckoutUpdateService;
@@ -13,12 +11,12 @@ describe('VisaCheckoutUpdateService', () => {
   const stJwt: IStJwtPayload = {
     currencyiso3a: 'PLN',
     locale: 'de_DE',
-    mainamount: '100'
+    mainamount: '100',
   };
   const config: IVisaCheckoutInitConfig = {
     apikey: 'some key',
     settings: {
-      locale: 'en_GB'
+      locale: 'en_GB',
     },
     referenceCallID: 'test ref id',
     externalProfileId: 'test profile id',
@@ -26,14 +24,14 @@ describe('VisaCheckoutUpdateService', () => {
     paymentRequest: {
       currencyCode: 'GPB',
       total: '11',
-      subtotal: '2'
-    }
+      subtotal: '2',
+    },
   };
 
   const updatedConfig: IVisaCheckoutInitConfig = {
     apikey: 'some key',
     settings: {
-      locale: 'de_DE'
+      locale: 'de_DE',
     },
     referenceCallID: 'test ref id',
     externalProfileId: 'test profile id',
@@ -41,8 +39,8 @@ describe('VisaCheckoutUpdateService', () => {
     paymentRequest: {
       currencyCode: 'PLN',
       total: '100',
-      subtotal: '100'
-    }
+      subtotal: '100',
+    },
   };
 
   beforeEach(() => {
@@ -51,8 +49,8 @@ describe('VisaCheckoutUpdateService', () => {
         currencyiso3a: 'EUR',
         locale: 'en_GB',
         baseamount: '1000',
-        mainamount: '10.00'
-      }
+        mainamount: '10.00',
+      },
     };
     jwtDecoderMock = mock(JwtDecoder);
     when(jwtDecoderMock.decode(anything())).thenReturn(payload);
@@ -72,18 +70,18 @@ describe('VisaCheckoutUpdateService', () => {
         visaCheckout: {
           buttonSettings: {
             size: 154,
-            color: 'neutral'
+            color: 'neutral',
           },
           livestatus: 0,
           merchantId: 'some id',
           paymentRequest: {
-            subtotal: '20.00'
+            subtotal: '20.00',
           },
           placement: 'st-visa-checkout',
           settings: {
-            displayName: 'My Test Site'
-          }
-        }
+            displayName: 'My Test Site',
+          },
+        },
       }).visaInitConfig
     ).toEqual({
       apikey: 'some id',
@@ -91,12 +89,12 @@ describe('VisaCheckoutUpdateService', () => {
       paymentRequest: {
         currencyCode: 'EUR',
         subtotal: '20.00',
-        total: '10.00'
+        total: '10.00',
       },
       settings: {
         displayName: 'My Test Site',
-        locale: 'en_GB'
-      }
+        locale: 'en_GB',
+      },
     });
   });
 

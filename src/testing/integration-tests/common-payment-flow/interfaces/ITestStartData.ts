@@ -3,5 +3,5 @@ import { PaymentStatus } from '../../../../application/core/services/payments/Pa
 export interface ITestStartData {
   foo: string;
   bar: string;
-  resultStatus: PaymentStatus,
+  resultStatus: PaymentStatus;
 }

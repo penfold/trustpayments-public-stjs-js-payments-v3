@@ -13,15 +13,15 @@ import { Frame } from '../frame/Frame';
 import {
   VALIDATION_ERROR,
   VALIDATION_ERROR_FIELD_IS_REQUIRED,
-  VALIDATION_ERROR_PATTERN_MISMATCH
+  VALIDATION_ERROR_PATTERN_MISMATCH,
 } from '../../models/constants/Translations';
 import { MessageBus } from '../message-bus/MessageBus';
 import { CARD_NUMBER_INPUT } from '../../models/constants/Selectors';
-import { Translator } from '../translator/Translator';
 import { Utils } from '../utils/Utils';
 import { Container, Service } from 'typedi';
 import { IMessageBus } from '../message-bus/IMessageBus';
-import { MessageBusToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { MessageBusToken, TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { ITranslator } from '../translator/ITranslator';
 
 @Service()
 export class Validation {
@@ -76,7 +76,7 @@ export class Validation {
   public static returnInputAndErrorContainerPair(item: HTMLInputElement) {
     return {
       inputElement: document.getElementById(item.id) as HTMLInputElement,
-      messageElement: document.getElementById(item.id).nextSibling as HTMLElement
+      messageElement: document.getElementById(item.id).nextSibling as HTMLElement,
     };
   }
 
@@ -97,7 +97,7 @@ export class Validation {
   private static BACKEND_ERROR_FIELDS_NAMES = {
     cardNumber: 'pan',
     expirationDate: 'expirydate',
-    securityCode: 'securitycode'
+    securityCode: 'securitycode',
   };
 
   private static _setValidateEvent(errordata: string, event: IMessageBusEvent): IMessageBusEvent {
@@ -149,11 +149,10 @@ export class Validation {
   private _matchDigitsRegexp: RegExp;
   private _selectionRangeEnd: number;
   private _selectionRangeStart: number;
-  private _translator: Translator;
   private _messageBus: IMessageBus;
   private _frame: Frame;
 
-  constructor() {
+  constructor(private translator: ITranslator = Container.get(TranslatorToken)) {
     this._messageBus = Container.get(MessageBusToken);
     this._frame = Container.get(Frame);
     this.init();
@@ -168,14 +167,14 @@ export class Validation {
   public blockForm(state: FormState) {
     const messageBusEvent: IMessageBusEvent = {
       data: state,
-      type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM
+      type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
     };
     this._messageBus.publish(messageBusEvent, true);
   }
 
   public callSubmitEvent() {
     const messageBusEvent: IMessageBusEvent = {
-      type: MessageBus.EVENTS_PUBLIC.CALL_SUBMIT_EVENT
+      type: MessageBus.EVENTS_PUBLIC.CALL_SUBMIT_EVENT,
     };
     this._messageBus.publish(messageBusEvent, true);
   }
@@ -198,7 +197,7 @@ export class Validation {
     }
     return {
       card: this._card,
-      validity: isFormReadyToSubmit
+      validity: isFormReadyToSubmit,
     };
   }
 
@@ -206,7 +205,7 @@ export class Validation {
     const { errordata, errormessage } = StCodec.getErrorData(errorData);
     const validationEvent: IMessageBusEvent = {
       data: { field: errordata[0], message: errormessage },
-      type: Validation.CLEAR_VALUE
+      type: Validation.CLEAR_VALUE,
     };
 
     this._broadcastFormFieldError(errordata[0], validationEvent);
@@ -266,7 +265,7 @@ export class Validation {
   public setError(inputElement: HTMLInputElement, messageElement: HTMLElement, data: IMessageBusValidateField) {
     const { message } = data;
     if (message && messageElement && messageElement.innerText !== VALIDATION_ERROR_PATTERN_MISMATCH) {
-      messageElement.innerText = this._translator.translate(message);
+      messageElement.innerText = this.translator.translate(message);
       inputElement.classList.add(Validation.ERROR_FIELD_CLASS);
       messageElement.style.visibility = 'visible';
       inputElement.setCustomValidity(message);
@@ -283,10 +282,10 @@ export class Validation {
     this._selectionRangeEnd = element.selectionEnd;
   }
 
-  public setFormValidity(state: any) {
+  public setFormValidity(state: Record<string, any>) {
     const validationEvent: IMessageBusEvent = {
       data: { ...state },
-      type: MessageBus.EVENTS.VALIDATE_FORM
+      type: MessageBus.EVENTS.VALIDATE_FORM,
     };
     this._messageBus.publish(validationEvent);
   }
@@ -299,7 +298,6 @@ export class Validation {
 
   public init() {
     this._matchDigitsRegexp = new RegExp(Validation.MATCH_DIGITS);
-    this._translator = new Translator(this._frame.parseUrl().locale);
   }
 
   public removeNonDigits(value: string): string {
@@ -341,11 +339,11 @@ export class Validation {
     customErrorMessage?: string
   ): string {
     if (messageElement && customErrorMessage && !isCardNumberInput) {
-      return this._translator.translate(customErrorMessage);
+      return this.translator.translate(customErrorMessage);
     } else if (messageElement && inputElement.value && isCardNumberInput && !inputElement.validity.valid) {
-      return this._translator.translate(VALIDATION_ERROR_PATTERN_MISMATCH);
+      return this.translator.translate(VALIDATION_ERROR_PATTERN_MISMATCH);
     } else {
-      return this._translator.translate(validityState);
+      return this.translator.translate(validityState);
     }
   }
 
@@ -405,7 +403,7 @@ export class Validation {
       this._card = {
         expirydate: formFields.expirationDate.value,
         pan: formFields.cardNumber.value,
-        securitycode: formFields.securityCode.value
+        securitycode: formFields.securityCode.value,
       };
     }
   }

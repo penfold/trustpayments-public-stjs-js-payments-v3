@@ -22,7 +22,7 @@ describe('CardinalCommerceVerificationService', () => {
       verificationService.init('foobar').subscribe(() => {
         const event = {
           type: PUBLIC_EVENTS.CARDINAL_SETUP,
-          data: { jwt: 'foobar' }
+          data: { jwt: 'foobar' },
         };
         verify(interFrameCommunicatorMock.query(deepEqual(event), MERCHANT_PARENT_FRAME)).once();
         done();
@@ -38,8 +38,8 @@ describe('CardinalCommerceVerificationService', () => {
           type: PUBLIC_EVENTS.CARDINAL_TRIGGER,
           data: {
             eventName: PaymentEvents.BIN_PROCESS,
-            data: pan
-          }
+            data: pan,
+          },
         };
         verify(interFrameCommunicatorMock.query(deepEqual(event), MERCHANT_PARENT_FRAME)).once();
         done();
@@ -52,7 +52,7 @@ describe('CardinalCommerceVerificationService', () => {
       verificationService.start('foobar').subscribe(() => {
         const event = {
           type: PUBLIC_EVENTS.CARDINAL_START,
-          data: { jwt: 'foobar' }
+          data: { jwt: 'foobar' },
         };
         verify(interFrameCommunicatorMock.query(deepEqual(event), MERCHANT_PARENT_FRAME)).once();
         done();
@@ -66,13 +66,13 @@ describe('CardinalCommerceVerificationService', () => {
         acsUrl: 'a',
         jwt: 'b',
         payload: 'c',
-        transactionId: 'd'
+        transactionId: 'd',
       };
 
       verificationService.verify(data).subscribe(() => {
         const event = {
           type: PUBLIC_EVENTS.CARDINAL_CONTINUE,
-          data
+          data,
         };
         verify(interFrameCommunicatorMock.query(deepEqual(event), MERCHANT_PARENT_FRAME)).once();
         done();

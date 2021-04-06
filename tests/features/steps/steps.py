@@ -5,6 +5,7 @@ from assertpy import assert_that
 from behave import given, step, then, use_step_matcher
 
 from configuration import CONFIGURATION
+from pages.page_factory import Pages
 from utils.configurations.inline_config_generator import create_inline_config
 from utils.configurations.jwt_generator import encode_jwt_for_json, encode_jwt, get_data_from_json, \
     merge_json_conf_with_additional_attr
@@ -39,26 +40,26 @@ def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
 
 @step('User fills payment form with defined card (?P<card>.+)')
 def fill_payment_form_with_defined_card(context, card: Card):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
     context.pan = str(card.number)
     context.exp_date = str(card.expiration_date)
     context.cvv = str(card.cvv)
     if 'e2e_config_for_iframe' in context.scenario.tags:
-        payment_page._action.switch_to_iframe(FieldType.PARENT_IFRAME.value)
+        payment_page._actions.switch_to_iframe(FieldType.PARENT_IFRAME.value)
     payment_page.fill_payment_form(card.number, card.expiration_date, card.cvv)
 
 
 @step('User re-fills payment form with defined card (?P<card>.+)')
 def step_impl(context, card: Card):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.clear_card_number_field()
     fill_payment_form_with_defined_card(context, card)
 
 
 @step('User fills only security code for saved (?P<card>.+) card')
 def step_impl(context, card: Card):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
     payment_page.fill_payment_form_with_only_cvv(card.cvv)
 
@@ -73,7 +74,7 @@ def step_impl(context, how_many_seconds):
 @then('Screenshot is taken after (?P<how_many_seconds>.+) seconds and checked')
 def step_impl(context, how_many_seconds):
     # pylint: disable=invalid-name)
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.change_focus_to_page_title()
     time.sleep(float(how_many_seconds))
     sm = context.screenshot_manager
@@ -114,12 +115,12 @@ def _browser_device(context):
 
 @step('User waits for payment to be processed')
 def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.wait_for_pay_processing_end('en_US')
 
 
 @step('User gets cachetoken value from url')
 def step_impl(context):
-    payment_page = context.page_factory.get_page(page_name='payment_methods')
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     cachetoken_value = payment_page.get_cachetoken_value()
     add_to_shared_dict('cachetoken', cachetoken_value)

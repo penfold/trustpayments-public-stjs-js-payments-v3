@@ -45,7 +45,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
-            data: resultData
+            data: resultData,
           }),
           true
         )
@@ -54,7 +54,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
-            data: resultData
+            data: resultData,
           }),
           true
         )
@@ -72,7 +72,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
-            data: resultData
+            data: resultData,
           }),
           true
         )
@@ -90,7 +90,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
-            data: resultData
+            data: resultData,
           }),
           true
         )
@@ -99,7 +99,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK,
-            data: resultData
+            data: resultData,
           }),
           true
         )
@@ -117,7 +117,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
-            data: resultData
+            data: resultData,
           }),
           true
         )
@@ -132,8 +132,8 @@ describe('PaymentResultHandler', () => {
         data: resultData,
         error: {
           message: errorMessage,
-          code: 123
-        }
+          code: 123,
+        },
       };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: false }));
 
@@ -143,7 +143,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
-            data: resultData
+            data: resultData,
           }),
           true
         )
@@ -152,7 +152,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
-            data: resultData
+            data: resultData,
           }),
           true
         )
@@ -167,8 +167,8 @@ describe('PaymentResultHandler', () => {
         data: resultData,
         error: {
           message: errorMessage,
-          code: 123
-        }
+          code: 123,
+        },
       };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: true }));
 
@@ -178,7 +178,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
-            data: resultData
+            data: resultData,
           }),
           true
         )
@@ -193,8 +193,8 @@ describe('PaymentResultHandler', () => {
         data: resultData,
         error: {
           message: errorMessage,
-          code: 123
-        }
+          code: 123,
+        },
       };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: false }));
 
@@ -204,7 +204,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
-            data: resultData
+            data: resultData,
           }),
           true
         )
@@ -213,7 +213,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
-            data: resultData
+            data: resultData,
           }),
           true
         )
@@ -228,8 +228,8 @@ describe('PaymentResultHandler', () => {
         data: resultData,
         error: {
           message: errorMessage,
-          code: 123
-        }
+          code: 123,
+        },
       };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: true }));
 
@@ -239,7 +239,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
-            data: resultData
+            data: resultData,
           }),
           true
         )

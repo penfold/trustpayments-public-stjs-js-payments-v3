@@ -1,5 +1,4 @@
-import { Observable } from 'rxjs';
-import { Unsubscribable } from 'rxjs/src/internal/types';
+import { Observable, Unsubscribable } from 'rxjs';
 
 export abstract class IStore<T> {
   abstract getState(): T;

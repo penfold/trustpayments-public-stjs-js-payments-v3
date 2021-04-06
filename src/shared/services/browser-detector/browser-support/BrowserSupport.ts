@@ -26,18 +26,15 @@ export class BrowserSupport {
   }
 
   private getSupportedBrowserVersions(name: string): string[] {
-    // tslint:disable-next-line:no-var-requires
     const { browserslist: browserlist } = require('./../../../../../package.json');
     const browsersFromPackageJson = this.browserList.getBrowsers(browserlist);
     const supportedBrowsers = this.browserList.getSupportedBrowsers();
 
     browsersFromPackageJson.map((browser: string) => {
       const browserNameVersionPair = browser.split(' ');
-      // @ts-ignore
       return supportedBrowsers[browserNameVersionPair[0]].push(browserNameVersionPair[1]);
     });
 
-    // @ts-ignore
     return supportedBrowsers[name.toLowerCase()];
   }
 }

@@ -3,8 +3,8 @@ import { APPLE_PAY_BUTTON_ID } from '../apple-pay-button-service/ApplePayButtonP
 
 describe('ApplePayGestureService', () => {
   let applePayGestureService: ApplePayGestureService;
-  let someCallback = jest.fn();
-  let event = new Event('click');
+  const someCallback = jest.fn();
+  const event = new Event('click');
 
   beforeEach(() => {
     applePayGestureService = new ApplePayGestureService();

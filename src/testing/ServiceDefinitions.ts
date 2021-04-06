@@ -9,21 +9,21 @@ import { Cybertonica } from '../application/core/integrations/cybertonica/Cybert
 import { CybertonicaMock } from './mocks/CybertonicaMock';
 import { ConfigProvider } from '../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from './mocks/TestConfigProvider';
-
-const storeFactory = () => {
-  const state = new BehaviorSubject<any>({});
-  const messageBus = Container.get(MessageBusToken);
-
-  return new Store(state, messageBus);
-};
+import { IHttpOptionsProvider } from '../application/core/services/st-transport/http-options-provider/IHttpOptionsProvider';
+import { DefaultHttpOptionsProvider } from '../application/core/services/st-transport/http-options-provider/DefaultHttpOptionsProvider';
 
 const messageBus: IMessageBus = new SimpleMessageBus();
 const configProvider: ConfigProvider = new TestConfigProvider();
+const store: IStore<any> = new Store(
+  new BehaviorSubject<any>({}),
+  messageBus,
+);
 
 Container.set({ id: IMessageBus, value: messageBus });
 Container.set({ id: MessageBusToken, value: messageBus });
-Container.set({ id: IStore, factory: storeFactory });
-Container.set({ id: StoreToken, factory: storeFactory });
+Container.set({ id: IStore, value: store });
+Container.set({ id: StoreToken, value: store });
 Container.set({ id: Cybertonica, type: CybertonicaMock });
 Container.set({ id: ConfigProvider, value: configProvider });
 Container.set({ id: ConfigProviderToken, value: configProvider });
+Container.set({ id: IHttpOptionsProvider, type: DefaultHttpOptionsProvider });

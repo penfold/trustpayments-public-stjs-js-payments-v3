@@ -19,7 +19,7 @@
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 # smoke tests executed on review branches
-.apple-test-browserstack-component-test:
+.OSX-Mojave_Safari-12.1-browserstack-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-always
@@ -30,19 +30,19 @@
     BROWSER_VERSION: '12.1'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
 
-apple-test-part1-browserstack-component-test:
-  extends: .apple-test-browserstack-component-test
+OSX-Mojave_Safari-12.1-part-1-browserstack-component-tests:
+  extends: .OSX-Mojave_Safari-12.1-browserstack-component-tests
   variables:
     POETRY_TAGS: apple_test_part1
   resource_group: extended_tests_review_1
 
-apple-test-part2-browserstack-component-test:
-  extends: .apple-test-browserstack-component-test
+OSX-Mojave_Safari-12.1-part-2-browserstack-component-tests:
+  extends: .OSX-Mojave_Safari-12.1-browserstack-component-tests
   variables:
     POETRY_TAGS: apple_test_part2
   resource_group: extended_tests_review_2
 
-win10-Chrome-latest-visual-tests:
+win10_Chrome-latest-visual-regression-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
@@ -54,7 +54,7 @@ win10-Chrome-latest-visual-tests:
     POETRY_TAGS: visual_regression
   resource_group: extended_tests_review_1
 
-win10-Chrome-latest-visual-tests-styling:
+win10_Chrome-latest-visual-regression-tests-styling:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-always
@@ -67,7 +67,7 @@ win10-Chrome-latest-visual-tests-styling:
   resource_group: extended_tests_review_2
 
 # smoke tests executed on master branch
-OSXCatalina-Safari-13.1-smoke-tests:
+OSX-Catalina_Safari-13.1_ApplePay-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -82,7 +82,7 @@ OSXCatalina-Safari-13.1-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_1
 
-.iPhone11-14.0-smoke-tests:
+.iPhone11-14.0_Safari_ApplePay-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -95,7 +95,7 @@ OSXCatalina-Safari-13.1-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_2
 
-SamsungGalaxyS20-10.0-visual-tests:
+SamsungGalaxyS20-10.0_Chrome-visual-regression-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-release
@@ -107,7 +107,7 @@ SamsungGalaxyS20-10.0-visual-tests:
     POETRY_TAGS: visual_regression
   resource_group: extended_tests_release_2
 
-iPhone12Mini-14-visual-tests:
+iPhone12Mini-14_Safari-visual-regression-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -120,7 +120,7 @@ iPhone12Mini-14-visual-tests:
     POETRY_TAGS: visual_regression_safari
   resource_group: extended_tests_release_3
 
-OSXBigSur-Safari-14.0-visual-tests:
+OSX-BigSur_Safari-14.0-visual-regression-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -134,7 +134,7 @@ OSXBigSur-Safari-14.0-visual-tests:
     POETRY_TAGS: visual_regression_safari
   resource_group: extended_tests_release_4
 
-SamsungGalaxyS20-10.0-visual-tests-styling:
+SamsungGalaxyS20-10.0_Chrome-visual-regression-tests-styling:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-release
@@ -146,7 +146,7 @@ SamsungGalaxyS20-10.0-visual-tests-styling:
     POETRY_TAGS: visual_regression_styling
   resource_group: extended_tests_release_1
 
-.iPhone8-11.0-smoke-tests:
+.iPhone8-11.0_Safari_ApplePay-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -159,7 +159,7 @@ SamsungGalaxyS20-10.0-visual-tests-styling:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_3
 
-win8.1-Chrome-latest-smoke-tests:
+win8.1_Chrome-latest-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -171,7 +171,7 @@ win8.1-Chrome-latest-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_2
 
-OSXCatalina-Chrome-latest-smoke-tests:
+OSX-Catalina_Chrome-latest-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -184,7 +184,7 @@ OSXCatalina-Chrome-latest-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_3
 
-OSXCatalina-Firefox-latest-smoke-tests:
+OSX-Catalina_Firefox-latest-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -199,7 +199,7 @@ OSXCatalina-Firefox-latest-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_4
 
-win10-Edge-latest-smoke-tests:
+win10_Edge-latest-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -212,7 +212,7 @@ win10-Edge-latest-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_1
 
-win10-Edge-18.0-smoke-tests:
+win10_Edge-18.0-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -225,7 +225,7 @@ win10-Edge-18.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_2
 
-OSXHS-Safari-11.1-smoke-tests:
+OSX-High-Sierra_Safari-11.1_ApplePay-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -239,7 +239,7 @@ OSXHS-Safari-11.1-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_3
 
-.iPhoneXS-12-smoke-tests:
+.iPhoneXS-12_Safari-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -252,7 +252,7 @@ OSXHS-Safari-11.1-smoke-tests:
     AUTOMATION_TIMEOUT: 120
   resource_group: extended_tests_release_2
 
-iPhone11-13-smoke-tests:
+iPhone11-13_Safari_ApplePay-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -264,7 +264,7 @@ iPhone11-13-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_3
 
-.iPhone7-10.0-smoke-tests:
+.iPhone7-10.0_Safari_ApplePay-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -277,7 +277,7 @@ iPhone11-13-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_release_4
 
-SamsungGalaxyS8-7.0-smoke-tests:
+SamsungGalaxyS8-7.0_Chrome-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -289,7 +289,7 @@ SamsungGalaxyS8-7.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_4
 
-SamsungGalaxyS10Plus-9.0-smoke-tests:
+SamsungGalaxyS10Plus-9.0_Chrome-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -301,7 +301,7 @@ SamsungGalaxyS10Plus-9.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_1
 
-GooglePixel4-10.0-smoke-tests:
+GooglePixel4-10.0_Chrome-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -313,7 +313,7 @@ GooglePixel4-10.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_2
 
-win10-Firefox-latest-extended-tests-1:
+win10_Firefox-latest-part-1-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -327,7 +327,7 @@ win10-Firefox-latest-extended-tests-1:
     POETRY_TAGS: extended_tests_part_1
   resource_group: extended_tests_release_3
 
-win10-Firefox-latest-extended-tests-2:
+win10_Firefox-latest-part-2-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -341,7 +341,7 @@ win10-Firefox-latest-extended-tests-2:
     POETRY_TAGS: extended_tests_part_2
   resource_group: extended_tests_release_4
 
-win10-Firefox-latest-extended-tests-3:
+win10_Firefox-latest-part-3-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -355,7 +355,7 @@ win10-Firefox-latest-extended-tests-3:
     POETRY_TAGS: extended_tests_part_3
   resource_group: extended_tests_release_1
 
-.iPhoneXS-12-applePay-tests:
+.iPhoneXS-12_Safari-ApplePay-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -368,7 +368,7 @@ win10-Firefox-latest-extended-tests-3:
     POETRY_TAGS: smoke_test_apple_pay
   resource_group: extended_tests_release_3
 
-SamsungGalaxyS9-8.0-extended-test-part-1:
+SamsungGalaxyS9-8.0_Chrome-part-1-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -380,7 +380,7 @@ SamsungGalaxyS9-8.0-extended-test-part-1:
     POETRY_TAGS: extended_tests_part_1
   resource_group: extended_tests_release_2
 
-SamsungGalaxyS9-8.0-extended-test-part-2:
+SamsungGalaxyS9-8.0_Chrome-part-2-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -392,7 +392,7 @@ SamsungGalaxyS9-8.0-extended-test-part-2:
     POETRY_TAGS: extended_tests_part_2
   resource_group: extended_tests_release_3
 
-SamsungGalaxyS9-8.0-extended-test-part-3:
+SamsungGalaxyS9-8.0_Chrome-part-3-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -404,7 +404,7 @@ SamsungGalaxyS9-8.0-extended-test-part-3:
     POETRY_TAGS: extended_tests_part_3
   resource_group: extended_tests_release_4
 
-win10-IE-11.0-extended-test-part-1:
+win10_IE-11.0-part-1-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -417,7 +417,7 @@ win10-IE-11.0-extended-test-part-1:
     POETRY_TAGS: extended_tests_part_1
   resource_group: extended_tests_release_1
 
-win10-IE-11.0-extended-test-part-2:
+win10_IE-11.0-part-2-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -430,7 +430,7 @@ win10-IE-11.0-extended-test-part-2:
     POETRY_TAGS: extended_tests_part_2
   resource_group: extended_tests_release_2
 
-win10-IE-11.0-extended-test-part-3:
+win10_IE-11.0-part-3-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -443,7 +443,7 @@ win10-IE-11.0-extended-test-part-3:
     POETRY_TAGS: extended_tests_part_3
   resource_group: extended_tests_release_3
 
-OSXMojave-Safari-12.1-extended-test-part-1:
+OSX-Mojave_Safari-12.1-part-1-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -457,7 +457,7 @@ OSXMojave-Safari-12.1-extended-test-part-1:
     POETRY_TAGS: extended_tests_part_1
   resource_group: extended_tests_release_4
 
-OSXMojave-Safari-12.1-extended-test-part-2:
+OSX-Mojave_Safari-12.1-part-2-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -471,7 +471,7 @@ OSXMojave-Safari-12.1-extended-test-part-2:
     POETRY_TAGS: extended_tests_part_2,extended_tests_apple_pay
   resource_group: extended_tests_release_1
 
-OSXMojave-Safari-12.1-extended-test-part-3:
+OSX-Mojave_Safari-12.1-part-3-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -486,7 +486,7 @@ OSXMojave-Safari-12.1-extended-test-part-3:
     POETRY_TAGS: extended_tests_part_3
   resource_group: extended_tests_release_2
 
-iPhone12Mini-14-visual-tests-styling:
+iPhone12Mini-14_Safari-visual-regression-tests-styling:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -499,7 +499,7 @@ iPhone12Mini-14-visual-tests-styling:
     POETRY_TAGS: visual_regression_styling_safari
   resource_group: extended_tests_release_3
 
-OSXBigSur-Safari-14.0-visual-tests-styling:
+OSX-Big-Sur_Safari-14.0-visual-regression-tests-styling:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -513,7 +513,7 @@ OSXBigSur-Safari-14.0-visual-tests-styling:
     POETRY_TAGS: visual_regression_styling_safari
   resource_group: extended_tests_release_4
 
-SamsungGalaxyS20-10.0-smoke-tests:
+SamsungGalaxyS20-10.0_Chrome-component-smoke-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -525,7 +525,7 @@ SamsungGalaxyS20-10.0-smoke-tests:
     POETRY_TAGS: $SMOKE_TESTS_TAG
   resource_group: extended_tests_release_1
 
-SamsungGalaxyS6-5.0-browser-not-supported:
+SamsungGalaxyS6-5.0_Chrome-browser-not-supported-component-tests:
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -536,7 +536,7 @@ SamsungGalaxyS6-5.0-browser-not-supported:
     POETRY_TAGS: browser_info_not_supported
   resource_group: extended_tests_release_2
 
-.iPhoneXR-12-full-test-part-1: # TODO https://securetrading.atlassian.net/browse/STJS-661
+.iPhoneXR-12_Safari-full-part-1-component-tests: # TODO https://securetrading.atlassian.net/browse/STJS-661
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -549,7 +549,7 @@ SamsungGalaxyS6-5.0-browser-not-supported:
     POETRY_TAGS: full_test_part_1
   resource_group: extended_tests_release_1
 
-.iPhoneXR-12-full-test-part-2: # TODO https://securetrading.atlassian.net/browse/STJS-661
+.iPhoneXR-12_Safari-full-part-2-component-tests: # TODO https://securetrading.atlassian.net/browse/STJS-661
   extends:
     - .extended-tests-browserstack
     - .rules-extended-tests-release
@@ -563,7 +563,7 @@ SamsungGalaxyS6-5.0-browser-not-supported:
   resource_group: extended_tests_release_2
 
 
-win10-IE-11.0-visual-tests:
+win10_IE-11.0-visual-regression-tests:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-release
@@ -576,7 +576,7 @@ win10-IE-11.0-visual-tests:
     POETRY_TAGS: visual_regression
   resource_group: extended_tests_release_3
 
-win10-IE-11.0-visual-tests-styling:
+win10_IE-11.0-visual-regression-tests-styling:
   extends:
     - .visual-regression-tests
     - .rules-extended-tests-release

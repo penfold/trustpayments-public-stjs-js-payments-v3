@@ -22,5 +22,7 @@
   "Invalid field": "Ungültiges Feld",
   "Card number is invalid": "Kartennummer ist ungültig",
   "You are not logged to Apple account": "Sie sind nicht bei Apple angemeldet",
-  "A target element for the input field with id could not be found. Please check your configuration": "Ein Zielelement für das Eingabefeld mit der ID konnte nicht gefunden werden. Bitte überprüfen Sie Ihre Konfiguration"
+  "A target element for the input field with id could not be found. Please check your configuration": "Ein Zielelement für das Eingabefeld mit der ID konnte nicht gefunden werden. Bitte überprüfen Sie Ihre Konfiguration",
+  "Jwt has not been specified": "Jwt wurde nicht angegeben",
+  "A target iframe-factory for the input field with id could not be found. Please check your configuration": "Eine Ziel-Iframe-Factory für das Eingabefeld mit der ID konnte nicht gefunden werden. Bitte überprüfen Sie Ihre Konfiguration"
 }

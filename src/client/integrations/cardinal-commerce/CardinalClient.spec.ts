@@ -51,7 +51,7 @@ describe('CardinalClient', () => {
       return {
         thenRespond: (callback: (event: IMessageBusEvent) => Observable<any>) => {
           communicationCallbacks.set(eventType, callback);
-        }
+        },
       };
     });
 
@@ -116,7 +116,7 @@ describe('CardinalClient', () => {
     it('calls cardinal.trigger with given data', done => {
       const triggerData: ITriggerData<string> = {
         eventName: PaymentEvents.BIN_PROCESS,
-        data: '4111111111111111'
+        data: '4111111111111111',
       };
 
       spyOn(cardinalMock, 'trigger');
@@ -132,7 +132,7 @@ describe('CardinalClient', () => {
       transactionId: 'abc-123',
       payload: 'fooobar',
       jwt: 'xyz',
-      acsUrl: 'https://example.com/'
+      acsUrl: 'https://example.com/',
     };
 
     it('calls cardinal continue with given data', () => {
@@ -144,13 +144,13 @@ describe('CardinalClient', () => {
         PaymentBrand,
         {
           AcsUrl: 'https://example.com/',
-          Payload: 'fooobar'
+          Payload: 'fooobar',
         },
         {
           Cart: [],
           OrderDetails: {
-            TransactionId: 'abc-123'
-          }
+            TransactionId: 'abc-123',
+          },
         },
         'xyz'
       );
@@ -169,7 +169,7 @@ describe('CardinalClient', () => {
             actionCode: ActionCode.SUCCESS,
             errorNumber: 0,
             errorDescription: 'no error',
-            jwt: RESPONSE_JWT
+            jwt: RESPONSE_JWT,
           });
           expect(cardinalMock.off).toHaveBeenCalledWith(PaymentEvents.VALIDATED);
           done();
@@ -181,7 +181,7 @@ describe('CardinalClient', () => {
           Validated: true,
           ActionCode: ActionCode.SUCCESS,
           ErrorNumber: 0,
-          ErrorDescription: 'no error'
+          ErrorDescription: 'no error',
         },
         RESPONSE_JWT
       );
@@ -199,7 +199,7 @@ describe('CardinalClient', () => {
           Validated: false,
           ActionCode: ActionCode.ERROR,
           ErrorNumber: 4000,
-          ErrorDescription: 'error description'
+          ErrorDescription: 'error description',
         },
         'foobar1'
       );
@@ -210,7 +210,7 @@ describe('CardinalClient', () => {
           Validated: true,
           ActionCode: ActionCode.SUCCESS,
           ErrorNumber: 0,
-          ErrorDescription: 'no error'
+          ErrorDescription: 'no error',
         },
         'foobar2'
       );
@@ -222,7 +222,7 @@ describe('CardinalClient', () => {
       transactionId: 'abc-123',
       payload: 'fooobar',
       jwt: 'xyz',
-      acsUrl: 'https://example.com/'
+      acsUrl: 'https://example.com/',
     };
 
     it('creates subscription to threeDPopupCancel which, when invoked, fails payment validation', done => {
@@ -233,7 +233,7 @@ describe('CardinalClient', () => {
             validated: false,
             actionCode: ActionCode.FAILURE,
             errorNumber: 4001,
-            errorDescription: '3DS process has been cancelled'
+            errorDescription: '3DS process has been cancelled',
           });
           done();
         });
@@ -281,7 +281,7 @@ describe('CardinalClient', () => {
           Validated: true,
           ActionCode: ActionCode.SUCCESS,
           ErrorNumber: 0,
-          ErrorDescription: 'no error'
+          ErrorDescription: 'no error',
         },
         'somejwt'
       );

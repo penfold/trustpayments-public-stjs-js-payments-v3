@@ -17,8 +17,8 @@ describe('ApplePayConfigService', () => {
     supportedNetworks: ['visa', 'discover'],
     total: {
       amount: '20.00',
-      label: 'test'
-    }
+      label: 'test',
+    },
   };
   let config: IConfig;
   const payload = {
@@ -26,15 +26,15 @@ describe('ApplePayConfigService', () => {
       currencyiso3a: 'EUR',
       locale: 'en_GB',
       baseamount: '1000',
-      mainamount: '10.00'
-    }
+      mainamount: '10.00',
+    },
   };
 
   const validateMerchantRequest: IApplePayValidateMerchantRequest = {
     walletmerchantid: '',
     walletrequestdomain: '',
     walletsource: '',
-    walletvalidationurl: ''
+    walletvalidationurl: '',
   };
 
   const applePayConfig: IApplePayConfig = {
@@ -42,7 +42,7 @@ describe('ApplePayConfigService', () => {
     buttonText: 'donate',
     merchantId: 'test-id',
     paymentRequest: paymentRequest,
-    placement: ''
+    placement: '',
   };
 
   const applePayConfigObject: IApplePayConfigObject = {
@@ -52,13 +52,13 @@ describe('ApplePayConfigService', () => {
     formId: 'st-form',
     jwtFromConfig: 'somerandomjwt',
     validateMerchantRequest,
-    paymentRequest
+    paymentRequest,
   };
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const applePayNetworkService: ApplePayNetworksService = mock(ApplePayNetworksService);
   const applePaySessionService: ApplePaySessionService = mock(ApplePaySessionService);
   const jwt: string = 'somerandomjwt';
-  let applePayConfigService: ApplePayConfigService = new ApplePayConfigService(
+  const applePayConfigService: ApplePayConfigService = new ApplePayConfigService(
     instance(jwtDecoderMock),
     instance(applePayNetworkService),
     instance(applePaySessionService)
@@ -73,7 +73,7 @@ describe('ApplePayConfigService', () => {
     it(`should update paymentRequest object with indicated currency code`, () => {
       paymentRequestUpdated = {
         ...paymentRequest,
-        currencyCode
+        currencyCode,
       };
       // @ts-ignore
       expect(applePayConfigService.updateCurrencyCode(paymentRequest, currencyCode)).toEqual(paymentRequestUpdated);
@@ -84,8 +84,8 @@ describe('ApplePayConfigService', () => {
         ...paymentRequest,
         total: {
           ...paymentRequest.total,
-          amount
-        }
+          amount,
+        },
       };
       // @ts-ignore
       expect(applePayConfigService.updateAmount(paymentRequest, amount)).toEqual(paymentRequestUpdated);
@@ -93,7 +93,7 @@ describe('ApplePayConfigService', () => {
 
     it(`should update paymentRequest object with indicated requestTypes`, () => {
       paymentRequestUpdated = {
-        ...paymentRequest
+        ...paymentRequest,
       };
       // @ts-ignore
       expect(applePayConfigService.updateRequestTypes(paymentRequest)).toEqual(paymentRequestUpdated);
@@ -105,7 +105,7 @@ describe('ApplePayConfigService', () => {
       walletmerchantid: 'some id',
       walletrequestdomain: 'some domain',
       walletsource: 'some source',
-      walletvalidationurl: 'some url'
+      walletvalidationurl: 'some url',
     };
     const walletMerchantId: string = 'new id';
     const walletValidationUrl: string = 'new url';
@@ -114,7 +114,7 @@ describe('ApplePayConfigService', () => {
     it(`should update paymentRequest object with indicated currency code`, () => {
       validateMerchantRequestUpdated = {
         ...validateMerchantRequest,
-        walletmerchantid: walletMerchantId
+        walletmerchantid: walletMerchantId,
       };
       // @ts-ignore
       expect(applePayConfigService.updateWalletMerchantId(validateMerchantRequest, walletMerchantId)).toEqual(
@@ -122,10 +122,10 @@ describe('ApplePayConfigService', () => {
       );
     });
 
-    it(`should update paymentRequest object with indicated currency code`, () => {
+    it(`should update paymentRequest object with indicated validation url`, () => {
       validateMerchantRequestUpdated = {
         ...validateMerchantRequest,
-        walletvalidationurl: walletValidationUrl
+        walletvalidationurl: walletValidationUrl,
       };
       expect(applePayConfigService.updateWalletValidationUrl(validateMerchantRequest, walletValidationUrl)).toEqual(
         validateMerchantRequestUpdated
@@ -140,7 +140,7 @@ describe('ApplePayConfigService', () => {
           currencyiso3a: 'EUR',
           locale: 'en_GB',
           baseamount: '1000',
-        }
+        },
       };
 
       when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn(payload);
@@ -158,7 +158,7 @@ describe('ApplePayConfigService', () => {
           currencyiso3a: 'EUR',
           locale: 'en_GB',
           mainamount: '10.00',
-        }
+        },
       };
 
       when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn(payload);
@@ -175,7 +175,7 @@ describe('ApplePayConfigService', () => {
         payload: {
           currencyiso3a: 'EUR',
           locale: 'en_GB',
-        }
+        },
       };
 
       when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn(payload);
@@ -190,7 +190,7 @@ describe('ApplePayConfigService', () => {
           locale: 'en_GB',
           baseamount: '1000',
           mainamount: '20.00',
-        }
+        },
       };
 
       when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn(payload);
@@ -216,10 +216,10 @@ describe('ApplePayConfigService', () => {
           buttonStyle: 'white',
           buttonText: 'donate',
           paymentRequest,
-          placement: 'test place'
+          placement: 'test place',
         },
         panIcon: false,
-        submitFields: ['pan']
+        submitFields: ['pan'],
       };
     });
 
@@ -228,7 +228,7 @@ describe('ApplePayConfigService', () => {
       expect(applePayConfigService.getConfigData(config)).toEqual({
         jwt: config.jwt,
         formId: config.formId,
-        applePay: config.applePay
+        applePay: config.applePay,
       });
     });
   });
@@ -246,7 +246,7 @@ describe('ApplePayConfigService', () => {
         formId: 'st-form',
         jwtFromConfig: 'somerandomjwt',
         validateMerchantRequest,
-        paymentRequest
+        paymentRequest,
       });
     });
   });
@@ -258,7 +258,7 @@ describe('ApplePayConfigService', () => {
       formId: 'st-form',
       animatedCard: true,
       panIcon: true,
-      datacenterurl: ''
+      datacenterurl: '',
     };
 
     it('should return apple pay config object', () => {
@@ -272,9 +272,9 @@ describe('ApplePayConfigService', () => {
           walletmerchantid: 'test-id',
           walletrequestdomain: '',
           walletsource: '',
-          walletvalidationurl: ''
+          walletvalidationurl: '',
         },
-        paymentRequest
+        paymentRequest,
       });
     });
   });

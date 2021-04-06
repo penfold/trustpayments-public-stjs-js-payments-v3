@@ -14,7 +14,7 @@ import {
   EXPIRATION_DATE_IFRAME,
   EXPIRATION_DATE_INPUT_SELECTOR,
   SECURITY_CODE_IFRAME,
-  SECURITY_CODE_INPUT_SELECTOR
+  SECURITY_CODE_INPUT_SELECTOR,
 } from '../../application/core/models/constants/Selectors';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
@@ -22,9 +22,19 @@ import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import spyOn = jest.spyOn;
 import any = jasmine.any;
+import Container from 'typedi';
+import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../application/core/shared/translator/Translator';
+import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
+import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 
 jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/validation/Validation');
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('CardFrames', () => {
   document.body.innerHTML =
@@ -41,6 +51,7 @@ describe('CardFrames', () => {
     jwtDecoder = mock(JwtDecoder);
     messageBus = new SimpleMessageBus();
     frame = mock(Frame);
+    Container.get(TranslatorToken).init();
     const element = document.createElement('input');
     DomMethods.getAllFormElements = jest.fn().mockReturnValue([element]);
 
@@ -48,7 +59,7 @@ describe('CardFrames', () => {
       of({
         jwt: '',
         disableNotification: false,
-        placeholders: { pan: 'Card number', expirydate: 'MM/YY', securitycode: '***' }
+        placeholders: { pan: 'Card number', expirydate: 'MM/YY', securitycode: '***' },
       })
     );
 
@@ -69,8 +80,8 @@ describe('CardFrames', () => {
         sitereference: 'test_james38641',
         locale: 'en_GB',
         pan: '3089500000000000021',
-        expirydate: '01/22'
-      }
+        expirydate: '01/22',
+      },
     });
 
     instance = new CardFrames(
@@ -79,7 +90,7 @@ describe('CardFrames', () => {
       {
         cardNumber: CARD_NUMBER_INPUT_SELECTOR,
         expirationDate: EXPIRATION_DATE_INPUT_SELECTOR,
-        securityCode: SECURITY_CODE_INPUT_SELECTOR
+        securityCode: SECURITY_CODE_INPUT_SELECTOR,
       },
       {},
       ['VISA,MASTERCARD,AMEX'],
@@ -102,7 +113,7 @@ describe('CardFrames', () => {
     const type = MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER;
     const messageBusEvent = {
       data,
-      type
+      type,
     };
 
     beforeEach(() => {
@@ -143,16 +154,16 @@ describe('CardFrames', () => {
       data: {
         billingamount: '',
         billingemail: '',
-        billingfirstname: ''
+        billingfirstname: '',
       },
-      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS
+      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS,
     };
 
     beforeEach(() => {
       DomMethods.parseForm = jest.fn().mockReturnValueOnce({
         billingamount: '',
         billingemail: '',
-        billingfirstname: ''
+        billingfirstname: '',
       });
       // @ts-ignore
       instance._messageBus.publish = jest.fn();
@@ -278,9 +289,9 @@ describe('CardFrames', () => {
     const submitFormEvent = {
       data: {
         // @ts-ignore
-        fieldsToSubmit: ['pan', 'expirydate', 'securitycode']
+        fieldsToSubmit: ['pan', 'expirydate', 'securitycode'],
       },
-      type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM
+      type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
     };
 
     beforeEach(() => {
@@ -288,7 +299,7 @@ describe('CardFrames', () => {
       instance._messageBus.subscribe = jest.fn().mockReturnValueOnce({
         cardNumber: '',
         expirationDate: '',
-        securityCode: ''
+        securityCode: '',
       });
       // @ts-ignore
       instance._messageBus.publish = jest.fn();
@@ -311,7 +322,7 @@ describe('CardFrames', () => {
       return {
         cardNumber: { message: 'card', state: stateCardNumber },
         expirationDate: { message: 'expiration', state: stateExpirationDate },
-        securityCode: { message: 'security', state: stateSecurityCode }
+        securityCode: { message: 'security', state: stateSecurityCode },
       };
     }
 
@@ -387,11 +398,11 @@ describe('CardFrames', () => {
       expect(instance._messageBusEvent.data.message).toEqual(field.message);
     });
 
-    it('should set messageBusEvent properties', () => {
+    it('should call messageBus publish method', () => {
       // @ts-ignore
       expect(instance._messageBus.publish).toHaveBeenCalledWith({
         type: MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD,
-        data: { message: field.message }
+        data: { message: field.message },
       });
     });
   });

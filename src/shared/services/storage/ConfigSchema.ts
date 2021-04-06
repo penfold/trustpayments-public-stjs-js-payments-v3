@@ -17,7 +17,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
       cardNumber: Joi.string().allow('').default('st-card-number'),
       expirationDate: Joi.string().allow('').default('st-expiration-date'),
       notificationFrame: Joi.string().allow('').default('st-notification-frame'),
-      securityCode: Joi.string().allow('').default('st-security-code')
+      securityCode: Joi.string().allow('').default('st-security-code'),
     })
     .allow({})
     .default({}),
@@ -25,7 +25,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
     .keys({
       defaultPaymentType: Joi.string().allow(''),
       paymentTypes: Joi.array().items(Joi.string().allow('')),
-      startOnLoad: Joi.boolean().allow('')
+      startOnLoad: Joi.boolean().allow(''),
     })
     .default({}),
   cybertonicaApiKey: Joi.string().allow(''),
@@ -40,7 +40,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   init: Joi.object()
     .keys({
       cachetoken: Joi.string().allow(''),
-      threedinit: Joi.string().allow('')
+      threedinit: Joi.string().allow(''),
     })
     .allow(null),
   jwt: Joi.string().allow(''),
@@ -50,7 +50,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   placeholders: Joi.object().keys({
     pan: Joi.string().allow(''),
     securitycode: Joi.string().allow(''),
-    expirydate: Joi.string().allow('')
+    expirydate: Joi.string().allow(''),
   }),
   styles: Joi.object(),
   submitCallback: Joi.any(),
@@ -60,5 +60,5 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   submitOnError: Joi.boolean(),
   submitOnSuccess: Joi.boolean(),
   translations: Joi.object(),
-  visaCheckout: VisaCheckoutSchema
+  visaCheckout: VisaCheckoutSchema,
 });

@@ -51,8 +51,8 @@ export const GooglePayPaymentRequestSchema: Joi.ObjectSchema = Joi.object().keys
       type: Joi.string().valid('CARD', 'PAYPAL').required()
     })
     .required(),
-  apiVersion: Joi.number().integer().required(),
-  apiVersionMinor: Joi.number().integer().required(),
+  apiVersion: Joi.number().min(2).max(2).integer().required(),
+  apiVersionMinor: Joi.number().min(0).max(0).integer().required(),
   callbackIntents: Joi.string().valid('PAYMENT_AUTHORIZATION', 'SHIPPING_ADDRESS', 'SHIPPING_OPTION'),
   emailRequired: Joi.boolean(),
   merchantInfo: Joi.object().keys({ merchantId: Joi.string(), merchantName: Joi.string() }).required(),

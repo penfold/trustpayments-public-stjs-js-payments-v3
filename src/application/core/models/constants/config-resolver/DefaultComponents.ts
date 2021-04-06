@@ -1,5 +1,5 @@
 export const DefaultComponents = {
   defaultPaymentType: '',
   paymentTypes: [''],
-  startOnLoad: false
+  startOnLoad: false,
 };

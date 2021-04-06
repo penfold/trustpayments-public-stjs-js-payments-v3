@@ -12,11 +12,12 @@ import { IApplicationFrameState } from '../../store/state/IApplicationFrameState
 export class RequestEncoderService {
   constructor(private jwtDecoder: JwtDecoder, private store: IStore<IApplicationFrameState>) {}
 
-  encode(requestObject: IStRequest): string {
+  encode(requestObject: IStRequest): IRequestObject {
     if (!Object.keys(requestObject).length) {
       throw new InvalidRequestError(COMMUNICATION_ERROR_INVALID_REQUEST);
     }
-    return JSON.stringify(this.buildRequestObject(requestObject));
+
+    return this.buildRequestObject(requestObject);
   }
 
   private buildRequestObject(requestData: IStRequest): IRequestObject {
@@ -33,11 +34,11 @@ export class RequestEncoderService {
         {
           ...requestData,
           requestid: this.createRequestId(),
-          sitereference: jwtPayload.sitereference
-        }
+          sitereference: jwtPayload.sitereference,
+        },
       ],
       version: VERSION,
-      versioninfo: VERSION_INFO
+      versioninfo: VERSION_INFO,
     };
   }
 

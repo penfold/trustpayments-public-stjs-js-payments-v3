@@ -17,8 +17,18 @@ import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventType
 import {
   PAYMENT_CANCELLED,
   PAYMENT_ERROR,
-  PAYMENT_SUCCESS
+  PAYMENT_SUCCESS,
 } from '../../application/core/models/constants/Translations';
+import Container from 'typedi';
+import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../application/core/shared/translator/Translator';
+import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
+import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('CommonFrames', () => {
   const jwt = 'some jwt';
@@ -50,11 +60,11 @@ describe('CommonFrames', () => {
         origin: 'testorigin',
         styles: {
           controlFrame: {
-            'background-color-input': 'AliceBlue'
-          }
+            'background-color-input': 'AliceBlue',
+          },
         },
         submitFields: ['baseamount', 'eci'],
-        submitOnSuccess: true
+        submitOnSuccess: true,
       } as IConfig)
     );
 
@@ -100,14 +110,14 @@ describe('CommonFrames', () => {
       errorcode: 'cancelled',
       errormessage: PAYMENT_CANCELLED,
       jwt: 'testjwt',
-      threedresponse: 'threedresponse'
+      threedresponse: 'threedresponse',
     };
 
     it('should call submit process with cancel status and check if jwt, thredresponse and additional fields were not included', done => {
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
         expect(event).toEqual({
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         });
 
         expect(document.getElementsByName('jwt')[0]).toEqual(undefined);
@@ -122,7 +132,7 @@ describe('CommonFrames', () => {
       messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         },
         true
       );
@@ -136,13 +146,13 @@ describe('CommonFrames', () => {
         threedresponse: 'threedresponse',
         baseamount: 'some amount',
         eci: 'test eci',
-        enrolled: 'Y'
+        enrolled: 'Y',
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
         expect(event).toEqual({
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         });
 
         expect(document.getElementsByName('jwt')[0]).toEqual(undefined);
@@ -157,7 +167,7 @@ describe('CommonFrames', () => {
       messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         },
         true
       );
@@ -172,14 +182,14 @@ describe('CommonFrames', () => {
       threedresponse: 'some threedresponse',
       baseamount: 'some amount',
       eci: 'test eci',
-      enrolled: 'Y'
+      enrolled: 'Y',
     };
 
     it('should call submit process with 50003 error status and check if jwt and threedresponse fields were included', done => {
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
         expect(event).toEqual({
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         });
         expect(document.getElementsByName('jwt')[0].getAttribute('value')).toEqual(data.jwt);
         expect(document.getElementsByName('threedresponse')[0].getAttribute('value')).toEqual(data.threedresponse);
@@ -191,7 +201,7 @@ describe('CommonFrames', () => {
       messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         },
         true
       );
@@ -205,13 +215,13 @@ describe('CommonFrames', () => {
         threedresponse: 'some threedresponse',
         baseamount: 'some amount',
         eci: 'test eci',
-        enrolled: 'Y'
+        enrolled: 'Y',
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
         expect(event).toEqual({
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         });
         expect(document.getElementsByName('jwt')[0].getAttribute('value')).toEqual('testjwt');
         expect(document.getElementsByName('threedresponse')[0].getAttribute('value')).toEqual('some threedresponse');
@@ -223,7 +233,7 @@ describe('CommonFrames', () => {
       messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         },
         true
       );
@@ -239,13 +249,13 @@ describe('CommonFrames', () => {
         threedresponse: 'some threedresponse',
         baseamount: 'some amount',
         eci: 'test eci',
-        enrolled: 'Y'
+        enrolled: 'Y',
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
         expect(event).toEqual({
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         });
         expect(document.getElementsByName('jwt')[0].getAttribute('value')).toEqual('testjwt');
         expect(document.getElementsByName('threedresponse')[0].getAttribute('value')).toEqual('some threedresponse');
@@ -257,13 +267,13 @@ describe('CommonFrames', () => {
       messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         },
         true
       );
     });
 
-    it('should call submit process TRANSACTION COMPLETE WITHOUT CALLING SUBMIT CALLBACK AND SUBKIT ING FORM (customeroutput + enrolled!==Y) ', done => {
+    it('should call submit process TRANSACTION COMPLETE WITHOUT CALLING SUBMIT CALLBACK AND SUBKIT ING FORM (customeroutput + enrolled!==Y)', done => {
       const data = {
         errorcode: '0',
         errormessage: PAYMENT_SUCCESS,
@@ -273,13 +283,13 @@ describe('CommonFrames', () => {
         eci: 'test eci',
         enrolled: 'U',
         threedresponse: 'some threedresponse',
-        customeroutput: CustomerOutput.THREEDREDIRECT
+        customeroutput: CustomerOutput.THREEDREDIRECT,
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
         expect(event).toEqual({
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         });
         expect(document.getElementsByName('jwt')[0].getAttribute('value')).toEqual('testjwt');
         expect(document.getElementsByName('threedresponse')[0].getAttribute('value')).toEqual('some threedresponse');
@@ -291,7 +301,7 @@ describe('CommonFrames', () => {
       messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         },
         true
       );
@@ -308,13 +318,13 @@ describe('CommonFrames', () => {
           origin: 'testorigin',
           styles: {
             controlFrame: {
-              'background-color-input': 'AliceBlue'
-            }
+              'background-color-input': 'AliceBlue',
+            },
           },
           submitFields: [],
           submitOnSuccess: true,
           submitOnCancel: true,
-          submitOnError: true
+          submitOnError: true,
         } as IConfig)
       );
     });
@@ -324,13 +334,13 @@ describe('CommonFrames', () => {
         errorcode: '0',
         errormessage: PAYMENT_SUCCESS,
         jwt: 'testjwt',
-        requesttypedescription: RequestType.WALLETVERIFY
+        requesttypedescription: RequestType.WALLETVERIFY,
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
         expect(event).toEqual({
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         });
         // @ts-ignore
         expect(commonFrames.isFormSubmitted).toEqual(false);
@@ -340,7 +350,7 @@ describe('CommonFrames', () => {
       messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         },
         true
       );
@@ -351,13 +361,13 @@ describe('CommonFrames', () => {
         errorcode: '0',
         errormessage: PAYMENT_SUCCESS,
         jwt: 'testjwt',
-        requesttypedescription: RequestType.JSINIT
+        requesttypedescription: RequestType.JSINIT,
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
         expect(event).toEqual({
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         });
         // @ts-ignore
         expect(commonFrames.isFormSubmitted).toEqual(false);
@@ -367,7 +377,7 @@ describe('CommonFrames', () => {
       messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         },
         true
       );
@@ -378,13 +388,13 @@ describe('CommonFrames', () => {
         errorcode: '0',
         errormessage: PAYMENT_SUCCESS,
         jwt: 'testjwt',
-        requesttypedescription: 'SOME_OTHER_DESC'
+        requesttypedescription: 'SOME_OTHER_DESC',
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
         expect(event).toEqual({
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         });
         // @ts-ignore
         expect(commonFrames.isFormSubmitted).toEqual(true);
@@ -394,7 +404,7 @@ describe('CommonFrames', () => {
       messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data
+          data,
         },
         true
       );
@@ -421,8 +431,8 @@ describe('CommonFrames', () => {
             errorcode: '60022',
             errormessage: 'An error occured',
             jwt: 'testjwt',
-            baseamount: '10.00'
-          }
+            baseamount: '10.00',
+          },
         },
         true
       );
@@ -460,8 +470,8 @@ describe('CommonFrames', () => {
             errormessage: PAYMENT_SUCCESS,
             jwt: 'testjwt',
             baseamount: 'some amount',
-            walletsource: 'APPLEPAY'
-          }
+            walletsource: 'APPLEPAY',
+          },
         });
         expect(document.getElementsByName('jwt')[0]).toEqual(undefined);
         done();
@@ -475,8 +485,8 @@ describe('CommonFrames', () => {
             errormessage: PAYMENT_SUCCESS,
             jwt: 'testjwt',
             baseamount: 'some amount',
-            walletsource: 'APPLEPAY'
-          }
+            walletsource: 'APPLEPAY',
+          },
         },
         true
       );
