@@ -122,7 +122,7 @@ export class ST {
       cancel: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK,
       success: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUCCESS_CALLBACK,
       error: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK,
-      submit: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK,
+      submit: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK
     };
 
     this.off(eventName);
@@ -154,7 +154,7 @@ export class ST {
       this.messageBus.publish<string>(
         {
           type: PUBLIC_EVENTS.CARD_PAYMENTS_INIT,
-          data: JSON.stringify(this.config),
+          data: JSON.stringify(this.config)
         },
         false
       );
@@ -173,7 +173,7 @@ export class ST {
       this.messageBus.publish<undefined>(
         {
           type: PUBLIC_EVENTS.APPLE_PAY_INIT,
-          data: undefined,
+          data: undefined
         },
         false
       );
@@ -183,22 +183,21 @@ export class ST {
   GooglePay(config: IGooglePayConfig): void {
     if (config) {
       this.config = this.configService.updateFragment(GooglePayConfigName, config);
-      // TODO: Move to initControlFrame$()
-      this.googlePay.init(this.config);
-    }
+      // this.googlePay.init(this.config);
 
-    this.initControlFrame$().subscribe(() => {
-      this.messageBus.publish<IInitPaymentMethod<IConfig>>(
-        {
-          type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-          data: {
-            name: IGooglePaymentMethodName,
-            config: this.config
-          }
-        },
-        false
-      );
-    });
+      this.initControlFrame$().subscribe(() => {
+        this.messageBus.publish<IInitPaymentMethod<IConfig>>(
+          {
+            type: PUBLIC_EVENTS.GOOGLE_PAY_INIT,
+            data: {
+              name: IGooglePaymentMethodName,
+              config: this.config
+            }
+          },
+          false
+        );
+      });
+    }
   }
 
   VisaCheckout(visaCheckoutConfig: IVisaCheckoutConfig | undefined): void {
@@ -211,7 +210,7 @@ export class ST {
       this.messageBus.publish<undefined>(
         {
           type: PUBLIC_EVENTS.VISA_CHECKOUT_INIT,
-          data: undefined,
+          data: undefined
         },
         false
       );
@@ -232,7 +231,7 @@ export class ST {
       this.config = this.configService.updateJwt(jwt);
       this.messageBus.publish<IUpdateJwt>({
         type: PUBLIC_EVENTS.UPDATE_JWT,
-        data: { newJwt: jwt },
+        data: { newJwt: jwt }
       });
     } else {
       throw Error(this.translation.translate('Jwt has not been specified'));
@@ -242,7 +241,7 @@ export class ST {
   destroy(): void {
     this.messageBus.publish(
       {
-        type: MessageBus.EVENTS_PUBLIC.DESTROY,
+        type: MessageBus.EVENTS_PUBLIC.DESTROY
       },
       true
     );
@@ -280,7 +279,7 @@ export class ST {
   cancelThreeDProcess(): void {
     this.messageBus.publish(
       {
-        type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL,
+        type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL
       },
       true
     );
@@ -309,7 +308,7 @@ export class ST {
       switchMap((controlFrame: string) => {
         const queryEvent: IMessageBusEvent<string> = {
           type: PUBLIC_EVENTS.INIT_CONTROL_FRAME,
-          data: JSON.stringify(this.config),
+          data: JSON.stringify(this.config)
         };
 
         return from(this.communicator.query(queryEvent, controlFrame));
@@ -381,7 +380,7 @@ export class ST {
 
     observer.observe(document, {
       subtree: true,
-      childList: true,
+      childList: true
     });
   }
 

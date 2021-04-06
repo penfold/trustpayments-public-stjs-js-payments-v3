@@ -25,6 +25,12 @@ export class GooglePaymentMethod implements IPaymentMethod {
 
   start(data: any): Observable<IPaymentResult<any>> {
     switch (data.resultStatus) {
+      case PaymentStatus.START:
+        console.log(data);
+        // return of({
+        //   status: data.resultStatus,
+        //   data: {}
+        // });
       case PaymentStatus.SUCCESS:
         return of({
           status: data.resultStatus,

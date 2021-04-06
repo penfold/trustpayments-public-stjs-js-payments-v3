@@ -14,7 +14,7 @@ import { ISubmitData } from '../../core/models/ISubmitData';
 import {
   PAYMENT_SUCCESS,
   PAYMENT_ERROR,
-  COMMUNICATION_ERROR_INVALID_RESPONSE,
+  COMMUNICATION_ERROR_INVALID_RESPONSE
 } from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
@@ -46,6 +46,7 @@ import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDPr
 import { PaymentController } from '../../core/services/payments/PaymentController';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import { ITranslator } from '../../core/shared/translator/ITranslator';
+import { GooglePay } from '../../../client/integrations/google-pay/GooglePay';
 
 @Service()
 export class ControlFrame {
@@ -67,7 +68,7 @@ export class ControlFrame {
   private _card: ICard = {
     pan: '',
     expirydate: '',
-    securitycode: '',
+    securitycode: ''
   };
   private _isPaymentReady: boolean = false;
   private _formFields: IFormFieldsDetails = FormFieldsDetails;
@@ -92,11 +93,13 @@ export class ControlFrame {
     private _visaCheckoutClient: VisaCheckoutClient,
     private _applePayClient: ApplePayClient,
     private paymentController: PaymentController,
-    private translator: ITranslator
+    private translator: ITranslator,
+    private googlePay: GooglePay
   ) {
     this.init();
     this._initVisaCheckout();
     this._initApplePay();
+    this._initGooglePay();
     this._initCardPayments();
     this._initJsInit();
     this._initConfigChange();
@@ -110,7 +113,7 @@ export class ControlFrame {
 
       this._messageBus.publish({
         type: PUBLIC_EVENTS.CONFIG_CHANGED,
-        data: config,
+        data: config
       });
 
       if (config.jwt) {
@@ -165,6 +168,21 @@ export class ControlFrame {
       .subscribe();
   }
 
+  private _initGooglePay(): void {
+    this._messageBus
+      .pipe(
+        // ofType(PUBLIC_EVENTS.GOOGLE_PAY_INIT),
+        tap((data) => console.log(data.type)),
+        tap(() => {
+          console.log('3');
+          return this._configProvider.getConfig$().pipe(
+            tap(config => this.googlePay.init(config)),
+          );
+        })
+      )
+      .subscribe();
+  }
+
   private _initJsInit(): void {
     this._messageBus
       .pipe(
@@ -178,7 +196,7 @@ export class ControlFrame {
 
         this._messageBus.publish({
           type: PUBLIC_EVENTS.BIN_PROCESS,
-          data: this._slicedPan,
+          data: this._slicedPan
         });
       });
   }
@@ -283,7 +301,7 @@ export class ControlFrame {
       .then(() => {
         this._messageBus.publish(
           {
-            type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
+            type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK
           },
           true
         );
@@ -321,7 +339,7 @@ export class ControlFrame {
 
           return {
             ...merchantFormData,
-            fraudcontroltransactionid: cybertonicaTid,
+            fraudcontroltransactionid: cybertonicaTid
           };
         })
       );
@@ -336,13 +354,13 @@ export class ControlFrame {
 
   private _validateFormFields() {
     this._publishBlurEvent({
-      type: MessageBus.EVENTS.BLUR_CARD_NUMBER,
+      type: MessageBus.EVENTS.BLUR_CARD_NUMBER
     });
     this._publishBlurEvent({
-      type: MessageBus.EVENTS.BLUR_EXPIRATION_DATE,
+      type: MessageBus.EVENTS.BLUR_EXPIRATION_DATE
     });
     this._publishBlurEvent({
-      type: MessageBus.EVENTS.BLUR_SECURITY_CODE,
+      type: MessageBus.EVENTS.BLUR_SECURITY_CODE
     });
     this._validation.setFormValidity(this._formFieldsValidity);
   }
@@ -419,7 +437,7 @@ export class ControlFrame {
     if (threedinit && cachetoken) {
       initialTokens = {
         jwt: threedinit,
-        cacheToken: cachetoken,
+        cacheToken: cachetoken
       };
     }
 
@@ -430,7 +448,7 @@ export class ControlFrame {
         if (config.components.startOnLoad) {
           this._messageBus.publish({
             type: PUBLIC_EVENTS.BIN_PROCESS,
-            data: this._jwtDecoder.decode(config.jwt).payload.pan,
+            data: this._jwtDecoder.decode(config.jwt).payload.pan
           });
 
           this._messageBus.publish(
@@ -438,14 +456,14 @@ export class ControlFrame {
               type: PUBLIC_EVENTS.SUBMIT_FORM,
               data: {
                 dataInJwt: true,
-                requestTypes: this._remainingRequestTypes,
-              },
+                requestTypes: this._remainingRequestTypes
+              }
             },
             true
           );
         }
       },
-      error: (errorData: IResponseData) => this._onPaymentFailure(errorData, COMMUNICATION_ERROR_INVALID_RESPONSE),
+      error: (errorData: IResponseData) => this._onPaymentFailure(errorData, COMMUNICATION_ERROR_INVALID_RESPONSE)
     });
   }
 }
