@@ -5,7 +5,7 @@ Feature: Mock for button id
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens prepared payment form page WITH_ADDITIONAL_BUTTON
+    And User opens mock payment page WITH_ADDITIONAL_BUTTON
 
   @base_config
   Scenario: Click on button configured as button id

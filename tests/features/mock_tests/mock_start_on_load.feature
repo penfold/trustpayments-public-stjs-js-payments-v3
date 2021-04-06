@@ -1,4 +1,4 @@
-Feature: Successfull payments with start on load configuration
+Feature: Successful payments with start on load configuration
 
   As a user
   I want to use start on load option when submit button is not displayed
@@ -10,7 +10,7 @@ Feature: Successfull payments with start on load configuration
   @config_start_on_load_requestTypes_tdq
   Scenario: Successful payment with startOnLoad and request types THREEDQUERY
     And Single THREEDQUERY mock response is set to "ENROLLED_Y_WITHOUT_ACS_URL"
-    And User opens prepared payment form page WITHOUT_SUBMIT_BUTTON
+    And User opens mock payment page WITHOUT_SUBMIT_BUTTON
     Then User will see payment status information: "Payment has been successfully processed"
     And Single THREEDQUERY request was sent only once with correct data
 
@@ -19,7 +19,7 @@ Feature: Successfull payments with start on load configuration
     And Step up ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION response is set to OK
     And ACS mock response is set to "OK"
     And AUTH, SUBSCRIPTION mock response is set to OK
-    And User opens prepared payment form page WITHOUT_SUBMIT_BUTTON
+    And User opens mock payment page WITHOUT_SUBMIT_BUTTON
     Then User will see payment status information: "Payment has been successfully processed"
     And ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION ware sent only once in one request
     And AUTH, SUBSCRIPTION ware sent only once in one request
@@ -29,7 +29,7 @@ Feature: Successfull payments with start on load configuration
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And AUTH response is set to "OK"
-    And User opens prepared payment form page WITHOUT_SUBMIT_BUTTON
+    And User opens mock payment page WITHOUT_SUBMIT_BUTTON
     Then User will see payment status information: "Payment has been successfully processed"
     And THREEDQUERY, AUTH ware sent only once in one request
     And THREEDQUERY request was not sent
@@ -37,7 +37,7 @@ Feature: Successfull payments with start on load configuration
   @config_immediate_payment
   Scenario: Immediate payment (card enrolled N) - checking payment status for OK response code
     And Frictionless THREEDQUERY, AUTH response is set to OK
-    And User opens payment page
+    And User opens mock payment page
     Then User will see payment status information: "Payment has been successfully processed"
     And JSINIT request was sent only once
     And THREEDQUERY, AUTH ware sent only once in one request
@@ -46,16 +46,16 @@ Feature: Successfull payments with start on load configuration
   Scenario: Immediate payment (card enrolled Y) - check ACS response for code: FAILURE
     When THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "FAILURE"
-    And User opens payment page
+    And User opens mock payment page
     Then User will see payment status information: "An error occurred"
     And THREEDQUERY, AUTH ware sent only once in one request
 
-  @config_immediate_payment_and_submit_on_success @smoke_test @extended_tests_part_1
+  @config_immediate_payment_and_submit_on_success
   Scenario: Immediate payment with submitOnSuccess - successful payment
     When THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And AUTH response is set to "OK"
-    And User opens payment page
+    And User opens mock payment page
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
       | errormessage         | Payment has been successfully processed |
@@ -71,16 +71,15 @@ Feature: Successfull payments with start on load configuration
     And THREEDQUERY, AUTH ware sent only once in one request
     And THREEDQUERY request was not sent
 
-  @config_immediate_payment @extended_tests_part_1
+  @config_immediate_payment
   Scenario Outline: Immediate payment (card enrolled Y) - checking payment status for <action_code> response code
     When THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And AUTH response is set to "<action_code>"
-    And User opens payment page
+    And User opens mock payment page
     Then User will see payment status information: "<payment_status_message>"
     And THREEDQUERY, AUTH ware sent only once in one request
 
-    @smoke_test
     Examples:
       | action_code | payment_status_message                  |
       | OK          | Payment has been successfully processed |

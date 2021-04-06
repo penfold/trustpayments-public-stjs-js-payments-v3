@@ -1,4 +1,4 @@
-Feature: Successfull payments with various request types configurations
+Feature: Successful payments with various request types configurations
 
   As a user
   I want to use card payments method with request types configurations
@@ -9,7 +9,7 @@ Feature: Successfull payments with various request types configurations
 
   @config_requestTypes_tdq
   Scenario: Successful frictionless payment with request types: THREEDQUERY
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And Single THREEDQUERY mock response is set to "ENROLLED_Y_WITHOUT_ACS_URL"
     And User clicks Pay button
@@ -20,7 +20,7 @@ Feature: Successfull payments with various request types configurations
 
   @config_requestTypes_tdq_auth
   Scenario: Successful step-up payment with request types: THREEDQUERY, AUTH
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
@@ -33,7 +33,7 @@ Feature: Successfull payments with various request types configurations
 
   @config_requestTypes_acheck_tdq_auth
   Scenario: Successful payment with additional request types: ACCOUNTCHECK, THREEDQUERY, AUTH
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And ACCOUNTCHECK, THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
@@ -44,7 +44,7 @@ Feature: Successfull payments with various request types configurations
 
   @config_requestTypes_tdq_auth_riskdec
   Scenario: Successful payment with additional request types: THREEDQUERY, AUTH, RISKDEC
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And THREEDQUERY, AUTH, RISKDEC mock response is set to OK
     And User clicks Pay button
@@ -55,7 +55,7 @@ Feature: Successfull payments with various request types configurations
 
   @config_requestTypes_riskdec_acheck_tdq_auth
   Scenario: Successful payment with additional request types: RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
@@ -67,7 +67,7 @@ Feature: Successfull payments with various request types configurations
     #Todo - Currently this combination is not supported by gateway
 #  @config_requestTypes_acheck_tdq_auth_riskdec
 #  Scenario: Successful payment with additional request types: ACCOUNTCHECK, THREEDQUERY, AUTH, RISKDEC
-#    Given User opens page with payment form
+#    Given User opens mock payment page
 #    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
 #    And ACCOUNTCHECK, THREEDQUERY mock response is set to OK
 #    And User clicks Pay button - AUTH, RISKDEC response is set to "OK"
@@ -79,7 +79,7 @@ Feature: Successfull payments with various request types configurations
 
   @config_requestTypes_tdq_submit_on_success
   Scenario: Successful payment with request types: THREEDQUERY and submitOnSuccess
-    Given User opens page with payment form
+    Given User opens mock payment page
     And User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And Single THREEDQUERY mock response is set to "NOT_ENROLLED_N"
@@ -99,7 +99,7 @@ Feature: Successfull payments with various request types configurations
 
   @config_requestTypes_acheck_tdq_auth_subscription
   Scenario: Successful payment with additional request types: ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And Step up ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION response is set to OK
     And ACS mock response is set to "OK"
@@ -111,7 +111,7 @@ Feature: Successfull payments with various request types configurations
   #ToDo
 #  @config_requestTypes_tdq_acheck_riskdec_auth
 #  Scenario: Invalid payment with additional request types: THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH
-#    Given User opens page with payment form
+#    Given User opens mock payment page
 #    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
 #    And User clicks Pay button - THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH response is set to "Invalid"
 #    Then User will see payment status information: "Invalid field"

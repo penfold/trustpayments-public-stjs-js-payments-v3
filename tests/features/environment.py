@@ -12,11 +12,11 @@ from pages.page_factory import PageFactory
 from utils.actions import Actions
 from utils.browser_executor import BrowserExecutor
 from utils.driver_factory import DriverFactory
-from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed
+from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed, \
+    clear_shared_dict, add_to_shared_dict
 from utils.logger import get_logger
 from utils.mock_handler import MockServer
 from utils.reporter import Reporter
-from utils.test_data import TestData
 from utils.visual_regression.screenshot_manager import ScreenshotManager
 from utils.waits import Waits
 
@@ -47,6 +47,8 @@ def disable_headless_for_visa_checkout(context):
 def before_scenario(context, scenario):
     """Run before each scenario"""
     LOGGER.info('BEFORE SCENARIO')
+    clear_shared_dict()
+    add_to_shared_dict('assertion_message', 'Scenario execution error, for details check gitlab log')
     if context.configuration.REMOTE:
         context.configuration.BROWSER = context.configuration.REMOTE_BROWSER
     disable_headless_for_visa_checkout(context)
@@ -60,7 +62,6 @@ def before_scenario(context, scenario):
     context.page_factory = PageFactory(browser_executor=context.browser_executor, actions=actions,
                                        reporter=context.reporter, configuration=context.configuration,
                                        waits=context.waits)
-    context.test_data = TestData(configuration=context.configuration)
     context.session_id = context.browser_executor.get_session_id()
     context.language = 'en_GB'
     scenario.name = '%s executed on %s' % (scenario.name, context.browser.upper())

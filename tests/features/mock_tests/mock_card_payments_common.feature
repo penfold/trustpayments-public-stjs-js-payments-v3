@@ -7,9 +7,10 @@ Feature: Card Payments
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
 
-  @base_config @extended_tests_part_1
+  @base_config
   Scenario Outline: Payment form accessibility after payment process
-    Given User opens page with payment form
+    Given User opens mock payment page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
@@ -18,7 +19,6 @@ Feature: Card Payments
     Then User will see that Submit button is "<form_status>" after payment
     And User will see that ALL input fields are "<form_status>"
 
-    @smoke_test
     Examples:
       | action_code | form_status |
       | OK          | disabled    |
@@ -27,19 +27,19 @@ Feature: Card Payments
       | action_code | form_status |
       | DECLINE     | enabled     |
 
-  @config_incorrect_request_type @extended_tests_part_2
+  @config_incorrect_request_type
   Scenario: Checking request types validation
-    When User opens page with incorrect request type in config file
+    When User opens mock payment page with incorrect request type in config file
     Then User will see that application is not fully loaded
 
   @base_config
   Scenario: Verify number on JSINIT requests
-    When User opens page with payment form
+    When User opens mock payment page
     Then JSINIT request was sent only once
 
   @base_config
   Scenario: Verify number of JSINIT requests together with UpdateJWT
-    Given User opens prepared payment form page WITH_UPDATE_JWT
+    Given User opens mock payment page WITH_UPDATE_JWT
       | jwtName          |
       | BASE_UPDATED_JWT |
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
@@ -52,7 +52,7 @@ Feature: Card Payments
 
   @config_bypass_cards
   Scenario: Security code re-enabled if server error on PIBA
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills payment form with credit card number "3089500000000000021", expiration date "12/23"
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"

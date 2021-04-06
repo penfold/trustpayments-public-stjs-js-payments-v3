@@ -12,6 +12,7 @@ Feature: Visual regression - E2E Card Payments
 
   @visual_regression @scrn_card_interface_after_successful_payment
   Scenario: Card interface after successful payment
+    And User waits for whole form to be displayed
     When User fills payment form with defined card MASTERCARD_FIXED_EXP_DATE_CARD
     And User clicks Pay button
     And Wait for notification frame
@@ -19,11 +20,13 @@ Feature: Visual regression - E2E Card Payments
 
   @visual_regression @scrn_card_interface_before_payment
   Scenario: Card interface before payment
-    Given User waits for whole form to be displayed
-    Then Screenshot is taken after 10 seconds and checked
+    And User waits for whole form to be displayed
+    And User waits for Pay button to be active
+    Then Screenshot is taken after 1 seconds and checked
 
   @visual_regression @scrn_card_interface_error_expiry_date
   Scenario: Card interface after unsuccessful payment - invalid expiration date
+    And User waits for whole form to be displayed
     When User fills payment form with defined card MASTERCARD_INVALID_EXP_DATE_CARD
     And User clicks Pay button
     And Wait for notification frame
@@ -31,6 +34,7 @@ Feature: Visual regression - E2E Card Payments
 
   @visual_regression @scrn_card_interface_error_invalid_patterns
   Scenario: Card interface before payment - invalid pattern data
+    And User waits for whole form to be displayed
     When User fills payment form with defined card MASTERCARD_INVALID_PATTERN_CARD
     And User clicks Pay button
     Then Screenshot is taken after 6 seconds and checked

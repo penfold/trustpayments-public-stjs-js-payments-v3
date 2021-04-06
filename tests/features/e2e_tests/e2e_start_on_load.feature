@@ -18,6 +18,7 @@ Feature: E2E startOnLoad
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
+
   Scenario: Successful payment with startOnLoad and additional request types: ACCOUNTCHECK, TDQ, AUTH
     Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_CONFIG and jwt JWT_WITH_FRICTIONLESS_CARD with additional attributes
       | key                     | value                         |
@@ -29,6 +30,7 @@ Feature: E2E startOnLoad
     And "success" callback is called only once
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
+
 
   Scenario: Successful payment with startOnLoad and additional request types: ACCOUNTCHECK, TDQ, AUTH, SUBSCRIPTION
     Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_NON_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
@@ -43,6 +45,7 @@ Feature: E2E startOnLoad
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
+
   Scenario: Unsuccessful payment with request types: THREEDQUERY AUTH - non-frictionless
     Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_FAILED_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value            |
@@ -54,6 +57,7 @@ Feature: E2E startOnLoad
     And "error" callback is called only once
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: True
+
 
   Scenario Outline: Successful non-frictionless payment with submitOnSuccess and request types: <request_types>
     Given JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
