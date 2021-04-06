@@ -6,7 +6,7 @@ Feature: Bypass Cards config
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens page with payment form
+    And User opens mock payment page
 
   @config_bypass_cards
   Scenario Outline: Bypass Cards - Successful payment by <card_type>

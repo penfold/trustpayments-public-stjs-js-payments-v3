@@ -6,9 +6,9 @@ Feature: Cybertonica
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens page with payment form
+    And User opens mock payment page
 
-  @config_cybertonica @extended_tests_part_2
+  @config_cybertonica @smoke_component_test
   Scenario: Cybertonica - 'fraudcontroltransactionid' flag is added to THREEDQUERY and AUTH requests during payment
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
@@ -41,7 +41,7 @@ Feature: Cybertonica
 #    And THREEDQUERY mock response is set to "ENROLLED_Y"
 #    And ACS mock response is set to "OK"
 #    And AUTH response is set to "OK"
-#    And User opens payment page
+#    And User opens mock payment page
 #    Then User will see payment status information: "Payment has been successfully processed"
 #    And THREEDQUERY, AUTH request was sent only once with 'fraudcontroltransactionid' flag
 #    And AUTH request was sent only once with 'fraudcontroltransactionid' flag

@@ -101,8 +101,6 @@ Feature: E2E Card Payments - redirection
       | jwt                  | should not be none |
 
   @e2e_smoke_test
-  @e2e_config_submit_on_error_invalid_jwt
-  @bypass_property
   Scenario: Unsuccessful payment with submitOnError enabled - invalid jwt
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt INVALID_JWT with additional attributes
       | key                      | value            |

@@ -2,7 +2,7 @@
 @angular
 @vueJS
 @react_native
-Feature: E2E Successfull payments on SPA app
+Feature: E2E Successful payments on SPA app
 
   As a user
   I want to use card payments method embeded on SPA example pages

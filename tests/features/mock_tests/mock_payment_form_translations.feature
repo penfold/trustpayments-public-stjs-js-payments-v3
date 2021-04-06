@@ -6,16 +6,17 @@ Feature: Payment form translations
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens page with payment form
+    And User opens mock payment page
 
   @base_config @translations
   Scenario Outline: Checking translations of labels and fields error for <language>
     When User changes page language to "<language>"
-    And User waits for whole form to be displayed
+    And User waits for whole form to be loaded
+    And User waits for Pay button to be active
     And User clicks Pay button
     Then User will see all labels displayed on page translated into "<language>"
     And User will see validation message "Field is required" under all fields translated into "<language>"
-    @smoke_test @extended_tests_part_3
+
     Examples:
       | language |
       | de_DE    |
@@ -38,7 +39,7 @@ Feature: Payment form translations
     And THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
     Then User will see "Payment has been successfully processed" payment status translated into "<language>"
-    @extended_tests_part_3
+
     Examples:
       | language |
       | de_DE    |
@@ -57,15 +58,15 @@ Feature: Payment form translations
 
   @config_translations
   Scenario: Check translation overwriting mechanism for notification banner
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
     Then User will see notification frame with message: "Victory"
 
-  @config_translations @smoke_test
+  @config_translations
   Scenario: Check translation overwriting mechanism for Pay button and validation message
-    Given User opens page with payment form
+    Given User opens mock payment page
     And User waits for whole form to be displayed
     Then User will see card payment label displayed on page translated into "Kartennummer"
     And User clicks Pay button

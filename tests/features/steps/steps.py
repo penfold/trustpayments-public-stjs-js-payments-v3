@@ -12,7 +12,6 @@ from utils.configurations.jwt_generator import encode_jwt_for_json, encode_jwt, 
 from utils.enums.card import Card
 from utils.enums.config import screenshots
 from utils.enums.e2e_config import E2eConfig
-from utils.enums.field_type import FieldType
 from utils.enums.jwt_config import JwtConfig
 from utils.helpers.request_executor import add_to_shared_dict
 from models.jwt_payload_builder import JwtPayloadBuilder
@@ -45,8 +44,6 @@ def fill_payment_form_with_defined_card(context, card: Card):
     context.pan = str(card.number)
     context.exp_date = str(card.expiration_date)
     context.cvv = str(card.cvv)
-    if 'e2e_config_for_iframe' in context.scenario.tags:
-        payment_page._actions.switch_to_iframe(FieldType.PARENT_IFRAME.value)
     payment_page.fill_payment_form(card.number, card.expiration_date, card.cvv)
 
 

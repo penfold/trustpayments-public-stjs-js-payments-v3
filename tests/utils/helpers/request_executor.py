@@ -20,6 +20,10 @@ def add_to_shared_dict(key, value):
     shared_dict[key] = value
 
 
+def clear_shared_dict():
+    shared_dict.clear()
+
+
 def mark_test_as_failed(session_id):
     requests.put(BROWSERSTACK_API_URL + session_id + '.json',
                  auth=HTTPBasicAuth(browserstack_username, browserstack_access_key),

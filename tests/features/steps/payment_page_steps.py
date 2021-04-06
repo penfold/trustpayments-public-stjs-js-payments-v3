@@ -26,7 +26,7 @@ def step_impl(context, card_number, exp_date, cvv):
 def step_impl(context, payment_status_message):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'switch_to_parent_iframe' in context.scenario.tags:
-        payment_page.switch_to_parent_iframe()
+        payment_page.switch_to_example_page_parent_iframe()
     payment_page.validate_payment_status_message(payment_status_message)
 
 
@@ -34,26 +34,32 @@ def step_impl(context, payment_status_message):
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'switch_to_parent_iframe' in context.scenario.tags:
-        payment_page.switch_to_parent_iframe()
+        payment_page.switch_to_example_page_parent_iframe()
     payment_page.wait_for_notification_frame_to_disappear()
+
+
+@step('User waits for whole form to be loaded')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_payment_form_inputs_to_load_with_refresh_page()
 
 
 @step('User waits for whole form to be displayed')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.wait_for_payment_form_to_load()
-
-
-@step('User waits for Pay button to be active')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.wait_for_pay_button_to_be_active()
+    payment_page.wait_for_payment_form_inputs_to_display()
 
 
 @step('User will see that notification frame has "(?P<color>.+)" color')
 def step_impl(context, color):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_notification_frame_color(color)
+
+
+@step('User waits for Pay button to be active')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_pay_button_to_be_active()
 
 
 @step('User clicks Pay button')
@@ -326,7 +332,7 @@ def step_impl(context, auth_type):
         payment_page._actions.switch_to_default_iframe()
     payment_page.fill_cardinal_authentication_code(auth_type)
     if 'parent_iframe' in context.scenario.tags:
-        payment_page.switch_to_parent_iframe()
+        payment_page.switch_to_example_page_parent_iframe()
 
 
 @step('User will see the same provided data in inputs fields')
@@ -345,6 +351,7 @@ def step_impl(context):
 
 @step('"(?P<callback_popup>.+)" callback is called only once')
 def step_impl(context, callback_popup):
+    # sleep added to handle potential issue with update callback counters after initial check count
     time.sleep(1)
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_number_in_callback_counter_popup(callback_popup, '1')

@@ -18,6 +18,9 @@ class BrowserExecutor:
         jwt = encode_jwt_for_json(jwt_json_config)
         self._driver.get(page_url + f'?jwt={jwt}')
 
+    def refresh(self):
+        self._driver.refresh()
+
     def close_browser(self):
         self._driver_factory.close_browser()
 
@@ -71,9 +74,6 @@ class BrowserExecutor:
 
     def execute_script(self, script):
         self._driver.execute_script(script)
-
-    def switch_to_default_content(self):
-        return self._driver.current_url
 
     def clear_storage(self):
         self._driver.execute_script('window.localStorage.clear();')

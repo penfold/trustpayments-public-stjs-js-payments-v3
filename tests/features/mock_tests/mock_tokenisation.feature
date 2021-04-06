@@ -6,9 +6,9 @@ Feature: Tokenisation
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens page with payment form
+    And User opens mock payment page
 
-  @config_tokenisation_visa @extended_tests_part_2
+  @config_tokenisation_visa
   @submit_cvv_only
   Scenario: Tokenisation - successful payment by VISA card
     When User fills "SECURITY_CODE" field "123"

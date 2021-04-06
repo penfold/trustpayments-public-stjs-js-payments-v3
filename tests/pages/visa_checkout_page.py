@@ -23,7 +23,7 @@ class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
         self._waits.wait_for_element_to_be_displayed(VisaCheckoutLocators.visa_close_popup_button)
         self._actions.click(VisaCheckoutLocators.visa_close_popup_button)
         self._waits.wait_for_element_to_be_not_displayed(VisaCheckoutLocators.visa_close_popup_button)
-        self._actions.switch_to_parent_iframe()
+        self._actions.switch_to_example_page_parent_iframe()
 
     def fill_selected_field(self, field):
         if field == VisaCheckoutField.EMAIL_ADDRESS.value:

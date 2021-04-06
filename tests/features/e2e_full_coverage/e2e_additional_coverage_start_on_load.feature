@@ -1,5 +1,6 @@
 Feature: request type + start on load - full test coverage
 
+
   Scenario Outline: successful payment with request types <request_types> and start on load - frictionless
     Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_CONFIG and jwt JWT_WITH_FRICTIONLESS_CARD with additional attributes
       | key                     | value           |
@@ -33,6 +34,7 @@ Feature: request type + start on load - full test coverage
       | RISKDEC ACCOUNTCHECK                  |
       | AUTH RISKDEC                          |
 
+
   Scenario Outline: successful payment request types <request_types> and start on load - frictionless
     Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_WITH_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
       | key                     | value           |
@@ -57,6 +59,7 @@ Feature: request type + start on load - full test coverage
       | ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION         |
       | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION |
       | RISKDEC THREEDQUERY ACCOUNTCHECK SUBSCRIPTION      |
+
 
   Scenario Outline: successful payment with request types <request_types> and start on load - non-frictionless
     Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
@@ -84,6 +87,7 @@ Feature: request type + start on load - full test coverage
       | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH | False                  |
       | RISKDEC ACCOUNTCHECK THREEDQUERY      | True                   |
 
+
   Scenario Outline: successful payment with request types <request_types> and start on load - non-frictionless
     Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value           |
@@ -106,6 +110,7 @@ Feature: request type + start on load - full test coverage
       | AUTH RISKDEC              |
       | RISKDEC ACCOUNTCHECK AUTH |
 
+
   Scenario Outline: successful payment with request types <request_types> and start on load - non-frictionless
     Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_NON_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
       | key                     | value           |
@@ -127,6 +132,7 @@ Feature: request type + start on load - full test coverage
       | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION |
       | RISKDEC THREEDQUERY ACCOUNTCHECK SUBSCRIPTION      |
 
+
   Scenario Outline: successful payment with request types <request_types> and start on load - non-frictionless
     Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_NON_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
       | key                     | value           |
@@ -145,6 +151,7 @@ Feature: request type + start on load - full test coverage
       | ACCOUNTCHECK AUTH SUBSCRIPTION         |
       | RISKDEC AUTH SUBSCRIPTION              |
       | AUTH SUBSCRIPTION                      |
+
 
   Scenario: Unsuccessful payment with request types: THREEDQUERY AUTH - non-frictionless
     Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_FAILED_NON_FRICTIONLESS_CARD with additional attributes

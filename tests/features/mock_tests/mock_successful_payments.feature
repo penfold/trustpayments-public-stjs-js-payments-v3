@@ -1,4 +1,4 @@
-Feature: Successfull payments with various configurations
+Feature: Successful payments with various configurations
 
   As a user
   I want to use card payments method
@@ -7,16 +7,18 @@ Feature: Successfull payments with various configurations
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
 
-  @base_config @extended_tests_part_1 @cardinal_commerce
+  @base_config @cardinal_commerce
   Scenario Outline: Successful payment using most popular Credit Cards: <card_type>
-    Given User opens page with payment form
+    Given User opens mock payment page
+    And User waits for whole form to be loaded
+    And User waits for Pay button to be active
     When User fills payment form with credit card number "<card_number>", expiration date "<expiration_date>" and cvv "<cvv>"
     And Frictionless THREEDQUERY, AUTH response is set to OK
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And Frictionless AUTH and THREEDQUERY requests were sent only once with correct data
 
-    @smoke_test
+    @smoke_mock_test
     Examples:
       | card_number      | expiration_date | cvv | card_type |
       | 4111110000000211 | 12/22           | 123 | VISA      |
@@ -26,11 +28,13 @@ Feature: Successfull payments with various configurations
       | 5100000000000511 | 12/22           | 123  | MASTERCARD |
       | 340000000000611  | 12/22           | 1234 | AMEX       |
 
-  @config_update_jwt_true @smoke_test @extended_tests_part_2
+  @config_update_jwt_true @smoke_mock_test @extended_tests_part_2
   Scenario: Successful payment with updated JWT
-    Given User opens prepared payment form page WITH_UPDATE_JWT
+    Given User opens mock payment page WITH_UPDATE_JWT
       | jwtName          |
       | BASE_UPDATED_JWT |
+    And User waits for whole form to be loaded
+    And User waits for Pay button to be active
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User calls updateJWT function by filling amount field
     And THREEDQUERY mock response is set to "ENROLLED_Y"
@@ -43,7 +47,7 @@ Feature: Successfull payments with various configurations
 
   @base_config
   Scenario: Successful payment
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
@@ -55,7 +59,7 @@ Feature: Successfull payments with various configurations
   @config_submit_cvv_only @extended_tests_part_2
   @submit_cvv_only
   Scenario: Successful payment when cvv field is selected to submit
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills "SECURITY_CODE" field "123"
     And THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
@@ -67,7 +71,7 @@ Feature: Successfull payments with various configurations
   @config_submit_cvv_for_amex
   @submit_cvv_only
   Scenario: Successful payment by AMEX when cvv field is selected to submit
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills "SECURITY_CODE" field "1234"
     And THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
@@ -79,7 +83,7 @@ Feature: Successfull payments with various configurations
   @config_cvvToSubmit_and_submitOnSuccess
   @submit_cvv_only
   Scenario: Successful payment with fieldToSubmit and submitOnSuccess
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills "SECURITY_CODE" field "123"
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
@@ -94,7 +98,7 @@ Feature: Successfull payments with various configurations
 
   @config_skip_jsinit @cardinal_commerce
   Scenario: Successful payment with skipped JSINIT process
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
@@ -105,7 +109,7 @@ Feature: Successfull payments with various configurations
 
   @base_config @stopSubmitFormOnEnter
   Scenario: Submit payment form by 'Enter' button
-    Given User opens page with payment form
+    Given User opens mock payment page
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
