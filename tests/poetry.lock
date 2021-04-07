@@ -99,7 +99,7 @@ python-versions = "*"
 
 [[package]]
 name = "faker"
-version = "6.6.2"
+version = "8.0.0"
 description = "Faker is a Python package that generates fake data for you."
 category = "main"
 optional = false
@@ -317,7 +317,7 @@ docs = ["Sphinx (>=2.4.3)", "sphinx-rtd-theme (>=0.4.3)", "watchdog (>=0.10.2)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "7e80e2e025020d710004d81eee02655755aff72791c33af3edeceedc0aa5397f"
+content-hash = "728d29a4bcefc071e40e09d205166fc1689161d8230beb84e2b9e5f6d086a316"
 
 [metadata.files]
 assertpy = [
@@ -362,8 +362,8 @@ enum34 = [
     {file = "enum34-1.1.6.zip", hash = "sha256:2d81cbbe0e73112bdfe6ef8576f2238f2ba27dd0d55752a776c41d38b7da2850"},
 ]
 faker = [
-    {file = "Faker-6.6.2-py3-none-any.whl", hash = "sha256:60a7263104ef7a14ecfe2af1142d53924aa534ccec85cea82bb67b2b32f84421"},
-    {file = "Faker-6.6.2.tar.gz", hash = "sha256:f43ac743c34affb1c7fccca8b06450371cd482b6ddcb4110e420acb24356e70b"},
+    {file = "Faker-8.0.0-py3-none-any.whl", hash = "sha256:225314932de94c282b096f6c3aac32db50119922747ac09a8350310da44241e5"},
+    {file = "Faker-8.0.0.tar.gz", hash = "sha256:fe4bc214ba448ca52b20a0ee0ed16ded3e1ddce7874f2a95cd321d21e2e388d9"},
 ]
 future = [
     {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},
