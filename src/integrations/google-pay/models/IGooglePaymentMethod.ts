@@ -1,1 +1,1 @@
-export const IGooglePaymentMethodName = 'GooglePlay';
+export const IGooglePaymentMethodName = 'GooglePay';

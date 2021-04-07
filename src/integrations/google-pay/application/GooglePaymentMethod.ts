@@ -4,52 +4,28 @@ import { IPaymentMethod } from '../../../application/core/services/payments/IPay
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
-import { GooglePay } from '../../../client/integrations/google-pay/GooglePay';
-import { IConfig } from '../../../shared/model/config/IConfig';
 import { IGooglePaymentMethodName } from '../models/IGooglePaymentMethod';
+import { TransportService } from '../../../application/core/services/st-transport/TransportService';
+import { map } from 'rxjs/operators';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class GooglePaymentMethod implements IPaymentMethod {
-  googlePay: GooglePay;
-  constructor(googlePay: GooglePay) {}
+  constructor(private transportService: TransportService) {}
 
   getName(): string {
     return IGooglePaymentMethodName;
   }
 
-  init(config: IConfig): Observable<void> {
-    this.googlePay.init(config);
-
+  init(): Observable<void> {
     return of(undefined);
   }
 
   start(data: any): Observable<IPaymentResult<any>> {
-    switch (data.resultStatus) {
-      case PaymentStatus.START:
-        console.log(data);
-        // return of({
-        //   status: data.resultStatus,
-        //   data: {}
-        // });
-      case PaymentStatus.SUCCESS:
-        return of({
-          status: data.resultStatus,
-          data: {}
-        });
-      case PaymentStatus.CANCEL:
-        return of({
-          status: data.resultStatus,
-          data: {}
-        });
-      case PaymentStatus.FAILURE:
-        return of({
-          status: data.resultStatus,
-          error: {
-            code: 500,
-            message: 'Payment failed'
-          },
-          data: {}
-        });
-    }
+    return this.transportService.sendRequest(data).pipe(
+      map((response: any) => ({
+        status: data.resultStatus,
+        data: response
+      }))
+    );
   }
 }

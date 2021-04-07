@@ -1,6 +1,5 @@
 import { Service } from 'typedi';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -157,7 +156,7 @@ export class GooglePay {
     }
   };
 
-  private onPaymentAuthorized(paymentData: IPaymentData): Observable<any> {
+  private onPaymentAuthorized(paymentData: IPaymentData): void {
     const formData = DomMethods.parseForm(this.config.formId);
     const config = this.config;
 
@@ -166,10 +165,5 @@ export class GooglePay {
       formData,
       paymentData
     );
-    // .pipe(
-    //   tap((response: any) => {
-    //     console.log(response);
-    //   })
-    // );
   }
 }

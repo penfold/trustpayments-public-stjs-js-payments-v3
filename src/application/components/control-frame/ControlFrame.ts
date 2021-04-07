@@ -99,7 +99,6 @@ export class ControlFrame {
     this.init();
     this._initVisaCheckout();
     this._initApplePay();
-    this._initGooglePay();
     this._initCardPayments();
     this._initJsInit();
     this._initConfigChange();
@@ -163,21 +162,6 @@ export class ControlFrame {
         first(),
         switchMap(() => {
           return this._applePayClient.init$();
-        })
-      )
-      .subscribe();
-  }
-
-  private _initGooglePay(): void {
-    this._messageBus
-      .pipe(
-        // ofType(PUBLIC_EVENTS.GOOGLE_PAY_INIT),
-        tap((data) => console.log(data.type)),
-        tap(() => {
-          console.log('3');
-          return this._configProvider.getConfig$().pipe(
-            tap(config => this.googlePay.init(config)),
-          );
         })
       )
       .subscribe();

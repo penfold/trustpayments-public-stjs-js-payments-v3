@@ -9,20 +9,20 @@ import { PaymentStatus } from '../../../application/core/services/payments/Payme
 export class GooglePayPaymentService {
   constructor(private messageBus: IMessageBus) {}
 
-  processPayment(requestTypes: RequestType[], formData: object, payment: any): any {
+  processPayment(requestTypes: RequestType[], formData: object, payment: any): void {
     this.messageBus.publish<any>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
-        requestTypes,
-        walletsource: 'GOOGLEPAY',
-        wallettoken: JSON.stringify(payment),
-        ...formData,
-        termurl: TERM_URL,
         data: {
-          resultStatus: PaymentStatus.START,
+          resultStatus: PaymentStatus.SUCCESS,
+          requestTypes,
+          walletsource: 'GOOGLEPAY',
+          wallettoken: JSON.stringify(payment),
+          ...formData,
+          termurl: TERM_URL
         },
         name: 'GooglePay'
       }
-    })
+    });
   }
 }

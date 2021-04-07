@@ -183,21 +183,21 @@ export class ST {
   GooglePay(config: IGooglePayConfig): void {
     if (config) {
       this.config = this.configService.updateFragment(GooglePayConfigName, config);
-      // this.googlePay.init(this.config);
-
-      this.initControlFrame$().subscribe(() => {
-        this.messageBus.publish<IInitPaymentMethod<IConfig>>(
-          {
-            type: PUBLIC_EVENTS.GOOGLE_PAY_INIT,
-            data: {
-              name: IGooglePaymentMethodName,
-              config: this.config
-            }
-          },
-          false
-        );
-      });
+      this.googlePay.init(this.config);
     }
+
+    this.initControlFrame$().subscribe(() => {
+      this.messageBus.publish<IInitPaymentMethod<IConfig>>(
+        {
+          type: PUBLIC_EVENTS.GOOGLE_PAY_INIT,
+          data: {
+            name: IGooglePaymentMethodName,
+            config: this.config
+          }
+        },
+        false
+      );
+    });
   }
 
   VisaCheckout(visaCheckoutConfig: IVisaCheckoutConfig | undefined): void {
