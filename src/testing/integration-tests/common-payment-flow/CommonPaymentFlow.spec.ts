@@ -26,6 +26,7 @@ describe('Common Payment Flow', () => {
   let paymentResultSubmitterSubscriber: PaymentResultSubmitterSubscriber;
 
   beforeAll(() => {
+    Container.set({ id: PaymentResultSubmitterSubscriber, type: PaymentResultSubmitterSubscriber });
     Container.import([TestPaymentMethod]);
     paymentController = Container.get(PaymentController);
     configProvider = Container.get(ConfigProviderToken) as TestConfigProvider;

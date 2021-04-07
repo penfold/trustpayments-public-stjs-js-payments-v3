@@ -175,7 +175,7 @@
     "rxjs": "6.6.7",
     "stylelint": "13.12.0",
     "ts-money": "0.4.6",
-    "typedi": "0.8.0",
+    "typedi": "0.10.0",
     "url-polyfill": "1.1.12",
     "whatwg-fetch": "3.6.1"
   },
