@@ -7,7 +7,7 @@ const StyleLintPlugin = require('stylelint-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 module.exports = {
   mode: 'development',
@@ -49,7 +49,7 @@ module.exports = {
     dns: 'empty'
   },
   plugins: [
-    new ManifestPlugin(),
+    new WebpackManifestPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       BUNDLE_URL: JSON.stringify(`https://${process.env.npm_package_config_host}:8443`),
