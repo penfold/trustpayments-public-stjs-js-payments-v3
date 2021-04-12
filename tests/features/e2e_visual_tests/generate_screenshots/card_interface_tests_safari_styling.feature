@@ -7,7 +7,7 @@ Feature: Visual regression - E2E Card Payments
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens minimal example page with payment form
+    And User opens mock payment page MINIMAL_HTML
     And User changes minimal example page language to "de_DE"
 
   @base_config_visual_styling @visual_regression_styling_generation_safari @scrn_card_interface_after_successful_payment_styling

@@ -6,7 +6,7 @@ Feature:Animated card translations
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens page with payment form
+    And User opens mock payment page
 
   @config_animated_card_true @animated_card @translations
   Scenario Outline: Checking animated card translation for <language>

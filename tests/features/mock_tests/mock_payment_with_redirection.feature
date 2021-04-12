@@ -1,4 +1,4 @@
-Feature: Redirect functionality
+Feature: payment flow with redirect
 
   As a user
   I want to use card payments method with redirect config
@@ -6,10 +6,12 @@ Feature: Redirect functionality
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens page with payment form
+    And User opens mock payment page
 
-  @config_default
+  @config_default @smoke_component_test
   Scenario: Cardinal Commerce - successful payment - checking that 'submitOnSuccess' is enabled by default
+    And User waits for whole form to be loaded
+    And User waits for Pay button to be active
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
@@ -49,8 +51,10 @@ Feature: Redirect functionality
       | myBillTel    | 44422224444                     |
     And Single THREEDQUERY request was sent only once with correct data
 
-  @config_submit_on_error_true @smoke_test @extended_tests_part_1
+  @config_submit_on_error_true @smoke_component_test
   Scenario: Cardinal Commerce - error payment with enabled 'submit on error' process
+    And User waits for whole form to be loaded
+    And User waits for Pay button to be active
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
@@ -82,8 +86,9 @@ Feature: Redirect functionality
     And User will see that notification frame has "red" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
-  @config_submit_on_success_true @smoke_test @extended_tests_part_1
+  @config_submit_on_success_true @smoke_component_test
   Scenario: Cardinal Commerce - successful payment with enabled 'submit on success' process
+    And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button

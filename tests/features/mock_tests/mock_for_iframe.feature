@@ -10,13 +10,13 @@ Feature: Mock for iframe
 #  @config_start_on_load_requestTypes_tdq
 #  Scenario: Check if start on load working on example page with defined iframe
 #    When THREEDQUERY mock response is set to "NOT_ENROLLED_N"
-#    When User opens prepared payment form page WITH_SPECIFIC_IFRAME
+#    When User opens mock payment page WITH_SPECIFIC_IFRAME
 #    Then User will see payment status information: "Payment has been successfully processed"
 #    And Single THREEDQUERY request was sent only once with correct data
 
   @base_config
   Scenario: Check if payment working on example page with defined iframe
-    When User opens prepared payment form page WITH_SPECIFIC_IFRAME
+    When User opens mock payment page WITH_SPECIFIC_IFRAME
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"

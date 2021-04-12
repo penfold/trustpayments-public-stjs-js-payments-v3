@@ -6,10 +6,11 @@ Feature: Cardinal commerce
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens page with payment form
+    And User opens mock payment page
 
   @base_config @cardinal_commerce
   Scenario Outline: Cardinal Commerce (step-up payment) - checking payment status for <action_code> response code
+    And User waits for whole form to be loaded
     When User fills payment form with credit card number "<card_number>", expiration date "12/30" and cvv "123"
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
@@ -18,7 +19,7 @@ Feature: Cardinal commerce
     And User will see that notification frame has "<color>" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
-    @smoke_test @extended_tests_part_1
+    @smoke_component_test
     Examples:
       | card_number      | action_code | payment_status_message                  | color |
       | 4000000000001091 | OK          | Payment has been successfully processed | green |
@@ -39,7 +40,7 @@ Feature: Cardinal commerce
     And User will see that notification frame has "<color>" color
     And Frictionless AUTH and THREEDQUERY requests were sent only once with correct data
 
-    @extended_tests_part_1
+    @smoke_component_test
     Examples:
       | card_number      | action_code | payment_status_message                  | color |
       | 4000000000001026 | OK          | Payment has been successfully processed | green |
@@ -63,7 +64,7 @@ Feature: Cardinal commerce
       | 5100000000000412 | TDQ_U_DECLINE | Decline                                 | red   |
       #|5100000000000412	 | UNAUTHENTICATED         | Unauthenticated                | red   |
 
-  @base_config @extended_tests_part_1
+  @base_config
   Scenario: Cardinal Commerce - check THREEDQUERY response for code: "INVALID_ACQUIRER"
     When User fills payment form with credit card number "4111110000000211", expiration date "01/22" and cvv "123"
     And THREEDQUERY mock response is set to "INVALID_ACQUIRER"
@@ -72,7 +73,7 @@ Feature: Cardinal commerce
     And User will see that notification frame has "red" color
     And THREEDQUERY request was sent only once with correct data
 
-  @base_config @extended_tests_part_1
+  @base_config
   Scenario: Cardinal Commerce - check ACS response for code: FAILURE
     When User fills payment form with credit card number "4111110000000211", expiration date "01/22" and cvv "123"
     And THREEDQUERY mock response is set to "ENROLLED_Y"

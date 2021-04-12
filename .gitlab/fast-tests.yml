@@ -22,7 +22,7 @@ card-payments-headless-component-tests:
     - .parallel-component-tests
   variables:
     FEATURE_FILES_DIR: 'features/mock_tests'
-  parallel: 22
+  parallel: 21
 
 visa-checkout-headless-component-tests:
   extends:

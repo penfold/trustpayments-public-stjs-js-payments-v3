@@ -6,7 +6,7 @@ Feature: Payment form translations
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens page with payment form
+    And User opens mock payment page
 
   @base_config @translations
   Scenario Outline: Checking translation of fields validation for <language>

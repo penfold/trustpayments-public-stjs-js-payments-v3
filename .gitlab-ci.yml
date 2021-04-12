@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 0.0.388
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 2.0.0
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -29,8 +29,13 @@ variables:
   IMAGE_JS_PAYMENTS_TESTS: ${CI_REGISTRY_IMAGE}/payments-tests:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_PIPELINE_ID}
 
-  SMOKE_TESTS_TAG: '@smoke_test'
-  SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_test,@apple_pay_smoke_test'
+  SMOKE_MOCK_TESTS_TAG: '@smoke_mock_test'
+  SMOKE_E2E_TESTS_TAG: '@smoke_e2e_test'
+  VISUAL_TESTS_TAG: '@visual_regression'
+  VISUAL_STYLING_TESTS_TAG: '@visual_regression_styling'
+  VISUAL_TESTS_SAFARI_TAG: '@visual_regression_safari'
+  VISUAL_STYLING_TESTS_SAFARI_TAG: '@visual_regression_styling_safari'
+  SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_component_test,@apple_pay_smoke_test'
   EXTENDED_TESTS_TAG: '@extended_tests_part_1,@extended_tests_part_2'
   ARTIFACT_RELEASE_DESCRIPTION_TYPE: "EXTENDED"
 
@@ -48,7 +53,7 @@ variables:
   # DISABLE_JOB_unit_tests: 'true'
   # DISABLE_JOB_ts_static_analysis: 'true'
   # DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
-  DISABLE_JOB_vuln_check: 'true'
+  DISABLE_JOB_vuln_check: 'true' # ADR-0018 - Snyk
   # Extended Tests
   # DISABLE_JOB_extended_tests: 'true'
   # Validate merge request description

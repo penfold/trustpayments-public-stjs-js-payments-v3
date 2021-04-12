@@ -1,5 +1,7 @@
 import json
+from urllib.parse import quote
 
+from configuration import CONFIGURATION
 from utils.enums.e2e_config import E2eConfig
 
 
@@ -10,9 +12,16 @@ def get_data_from_json(e2e_config):
 
 
 def covert_json_to_string(json_config):
-    inline_config = 'inlineConfig=' + json.dumps(json_config)
-    formatted_config = inline_config.replace(': ', ':').replace(', ', ',')
-    return formatted_config
+    if 'IE' in CONFIGURATION.BROWSER:
+        inline_config = ('inlineConfig=' + json.dumps(json_config)).replace(': ', ':').replace(', ', ',')
+    else:
+        inline_config = 'inlineConfig=' + encode_url(json.dumps(json_config))
+    return inline_config
+
+
+def encode_url(url):
+    encoded_url = quote(url, safe='/')
+    return encoded_url
 
 
 def create_inline_config(e2e_config: E2eConfig, jwt):

@@ -6,9 +6,9 @@ Feature: Notification frame
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens page with payment form
+    And User opens mock payment page
 
-  @config_disable_notifications_true @extended_tests_part_1
+  @config_disable_notifications_true
   Scenario: Notification frame is not displayed after payment
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And THREEDQUERY, AUTH mock response is set to OK

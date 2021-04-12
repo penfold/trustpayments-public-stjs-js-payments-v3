@@ -11,13 +11,14 @@ import { TranslatorToken } from '../../shared/dependency-injection/InjectionToke
 import { Translator } from '../../application/core/shared/translator/Translator';
 import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
+import { CommonFrames } from '../common-frames/CommonFrames';
+import { ApplePay } from '../integrations/apple-pay/ApplePay';
+import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
+import { CardFrames } from '../card-frames/CardFrames';
+import { instance, mock } from 'ts-mockito';
 
 window.alert = jest.fn();
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
-jest.mock('./../../client/common-frames/CommonFrames');
-jest.mock('./../../client/card-frames/CardFrames');
-jest.mock('./../../application/core/integrations/visa-checkout/VisaCheckout');
-jest.mock('./../../client/integrations/apple-pay/ApplePay');
 jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytics');
 
 const messageBusMock = new SimpleMessageBus();
@@ -26,6 +27,10 @@ Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set(IMessageBus, messageBusMock);
 Container.set({ id: TranslatorToken, type: Translator });
 Container.set({ id: ITranslationProvider, type: TranslationProvider });
+Container.set({ id: ApplePay, value: instance(mock(ApplePay)) });
+Container.set({ id: VisaCheckout, value: instance(mock(VisaCheckout)) });
+Container.set({ id: CommonFrames, value: instance(mock(CommonFrames)) });
+Container.set({ id: CardFrames, value: instance(mock(CardFrames)) });
 
 describe('ST', () => {
   const { cacheConfig, instance } = stFixture();

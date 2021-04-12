@@ -10,7 +10,7 @@ Feature: Mock for formId negative scenarios
   @form_id_config
   Scenario: Form id - decline payment
     And Frictionless THREEDQUERY, AUTH response is set to DECLINE
-    When User opens prepared payment form page WITH_SPECIFIC_FORM_ID
+    When User opens mock payment page WITH_SPECIFIC_FORM_ID
     And User fills payment form with defined card VISA_CARD
     And User clicks Pay button
     Then User will see payment status information: "Decline"
@@ -18,7 +18,7 @@ Feature: Mock for formId negative scenarios
 
   @form_id_config_visa_checkout
   Scenario: Form id - cancel payment with Visa checkout
-    When User opens prepared payment form page WITH_SPECIFIC_FORM_ID
+    When User opens mock payment page WITH_SPECIFIC_FORM_ID
     And User chooses Visa Checkout as payment method - visa response is set to "CANCEL"
     Then User will see payment status information: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
@@ -26,5 +26,5 @@ Feature: Mock for formId negative scenarios
 
   @form_id_config
   Scenario: Payment for form using different formId in config
-    When User opens prepared payment form page WITH_CHANGED_FORM_ID
+    When User opens mock payment page WITH_CHANGED_FORM_ID
     Then User will see that application is not fully loaded

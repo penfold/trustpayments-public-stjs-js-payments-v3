@@ -52,6 +52,7 @@ Feature: E2E Card Payments with mainamount field in jwt payload
       | transactionreference | should not be none |
       | jwt                  | should not be none |
 
+
   Scenario: Successful payment with startOnLoad and mainamount field in jwt payload
     Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_CONFIG and jwt JWT_WITH_MAINAMOUNT_AND_FRICTIONLESS with additional attributes
       | key                     | value            |

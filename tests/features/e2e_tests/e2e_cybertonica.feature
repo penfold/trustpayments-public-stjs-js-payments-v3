@@ -4,9 +4,8 @@ Feature: E2E Cybertonica
   I want to use card payments method with cybertonica config
   In order to check full payment functionality
 
-  @e2e_smoke_test
   @e2e_config_cybertonica
-  Scenario: Cybertonica - successfull payment
+  Scenario: Cybertonica - successful payment
     Given JS library configured by inline params CYBERTONICA_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
@@ -18,7 +17,7 @@ Feature: E2E Cybertonica
 
   @e2e_config_cybertonica_bypass_cards
   @bypass_property
-  Scenario: Cybertonica - successfull payment with bypass_pass
+  Scenario: Cybertonica - successful payment with bypass_pass
     Given JS library configured by inline params CYBERTONICA_WITH_BYPASSCARDS_CONFIG and jwt BASE_JWT with additional attributes
       | key                      | value                         |
       | requesttypedescriptions  | THREEDQUERY AUTH              |
@@ -30,7 +29,7 @@ Feature: E2E Cybertonica
     And User will see that notification frame has "green" color
 
   @e2e_config_cybertonica
-  Scenario: Cybertonica - successfull payment with startOnLoad
+  Scenario: Cybertonica - successful payment with startOnLoad
     Given JS library configured by inline params CYBERTONICA_START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |

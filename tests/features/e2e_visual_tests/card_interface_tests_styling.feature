@@ -10,6 +10,7 @@ Feature: Visual regression - E2E Card Payments
       | requesttypedescriptions  | THREEDQUERY AUTH |
       | threedbypasspaymenttypes | MASTERCARD       |
     And User opens minimal.html page with inline param
+    And User waits for whole form to be displayed
     When User fills payment form with defined card MASTERCARD_FIXED_EXP_DATE_CARD
     And User clicks Pay button
     And Wait for notification frame
@@ -23,7 +24,8 @@ Feature: Visual regression - E2E Card Payments
       | threedbypasspaymenttypes | MASTERCARD       |
     And User opens minimal.html page with inline param
     And User waits for whole form to be displayed
-    Then Screenshot is taken after 10 seconds and checked
+    And User waits for Pay button to be active
+    Then Screenshot is taken after 1 seconds and checked
 
   @visual_regression_styling @scrn_card_interface_error_expiry_date_styling
   Scenario: Card interface after unsuccessful payment - invalid expiration date
@@ -32,6 +34,7 @@ Feature: Visual regression - E2E Card Payments
       | requesttypedescriptions  | THREEDQUERY AUTH |
       | threedbypasspaymenttypes | MASTERCARD       |
     And User opens minimal.html page with inline param
+    And User waits for whole form to be displayed
     When User fills payment form with defined card MASTERCARD_INVALID_EXP_DATE_CARD
     And User clicks Pay button
     And Wait for notification frame
@@ -44,6 +47,7 @@ Feature: Visual regression - E2E Card Payments
       | requesttypedescriptions  | THREEDQUERY AUTH |
       | threedbypasspaymenttypes | MASTERCARD       |
     And User opens minimal.html page with inline param
+    And User waits for whole form to be displayed
     When User fills payment form with defined card MASTERCARD_INVALID_PATTERN_CARD
     And User clicks Pay button
     Then Screenshot is taken after 6 seconds and checked
@@ -54,6 +58,7 @@ Feature: Visual regression - E2E Card Payments
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens minimal.html page with inline param
+    And User waits for whole form to be displayed
     When User fills only security code for saved MASTERCARD_INVALID_CVV_CARD card
     And Change field focus
     Then Screenshot is taken after 6 seconds and checked
