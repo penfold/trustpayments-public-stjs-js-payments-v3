@@ -3,7 +3,6 @@ import { IMessageBus } from '../../../application/core/shared/message-bus/IMessa
 import { RequestType } from '../../../shared/types/RequestType';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { TERM_URL } from '../../../application/core/models/constants/RequestData';
-import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 
 @Service()
 export class GooglePayPaymentService {
@@ -14,7 +13,6 @@ export class GooglePayPaymentService {
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
         data: {
-          resultStatus: PaymentStatus.SUCCESS,
           requestTypes,
           walletsource: 'GOOGLEPAY',
           wallettoken: JSON.stringify(payment),

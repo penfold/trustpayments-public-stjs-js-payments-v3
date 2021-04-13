@@ -100,7 +100,7 @@ export class GooglePay {
   }
 
   private getGooglePaymentDataRequest(): IGooglePayPaymentRequest {
-    const { apiVersion, apiVersionMinor, allowedPaymentMethods, merchantInfo } = this.config.googlePay.paymentRequest;
+    const { apiVersion, apiVersionMinor, allowedPaymentMethods, merchantInfo, transactionInfo: { countryCode, currencyCode, totalPriceStatus, totalPrice } } = this.config.googlePay.paymentRequest;
 
     const paymentDataRequest = Object.assign(
       {},
@@ -124,10 +124,10 @@ export class GooglePay {
           }
         ],
         transactionInfo: {
-          countryCode: 'US',
-          currencyCode: 'USD',
-          totalPriceStatus: 'FINAL' as const,
-          totalPrice: '1.00'
+          countryCode,
+          currencyCode,
+          totalPriceStatus,
+          totalPrice
         },
         merchantInfo: {
           merchantName: merchantInfo.merchantName,
@@ -147,8 +147,6 @@ export class GooglePay {
         .loadPaymentData(paymentDataRequest)
         .then((paymentData: IPaymentData) => {
           this.onPaymentAuthorized(paymentData);
-          // TODO: Discuss about callback button
-          // this.config.googlePay.buttonOptions.onClick();
         })
         .catch((err: any) => {
           console.error(err);
