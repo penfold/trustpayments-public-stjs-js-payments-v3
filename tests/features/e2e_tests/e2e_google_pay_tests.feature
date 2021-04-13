@@ -45,6 +45,8 @@ Feature: Google payments
     @launch1
   Scenario Outline: Successful Payment with Google Pay test cards
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User clicks on Google Pay button
     And User fills google account <email address>

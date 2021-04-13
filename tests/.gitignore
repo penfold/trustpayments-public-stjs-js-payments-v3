@@ -20,4 +20,5 @@ eggs/
 tmp/*
 wheelhouse/
 *.log
+configuration.py
 
