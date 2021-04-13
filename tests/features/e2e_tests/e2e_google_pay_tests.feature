@@ -11,13 +11,14 @@ Feature: Google payments
       | requesttypedescriptions | <requesttypedescriptions> |
     And User opens example page
     When User clicks on Google Pay button
-    And User fills google account <email address>
+    And User will see Google Pay login window
+    And User fills google account <email> address
     And User fills google account <password>
     And User press next button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     Examples:
-      | email address            | password        |
+      | email                    | password        |
       | securetestpgs4@gmail.com | securetestpgs1! |
 
     Examples:
@@ -42,13 +43,14 @@ Feature: Google payments
       | RISKDEC ACCOUNTCHECK                  |
       | AUTH RISKDEC                          |
 
-    @launch1
+  @launch1
   Scenario Outline: Successful Payment with Google Pay test cards
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User clicks on Google Pay button
+    And User will see Google Pay login window
     And User fills google account <email address>
     And User fills google account <password>
     And User selects  google test <card>
@@ -71,6 +73,7 @@ Feature: Google payments
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
     And User opens example page
     When User clicks on Google Pay button
+    And User will see Google Pay login window
     And User fills google account <email address>
     And User fills google account <password>
     Then User will see card details to be filled
@@ -83,6 +86,7 @@ Feature: Google payments
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
     And User opens example page
     When User clicks on Google Pay button
+    And User will see Google Pay login window
     And User fills google account <email address>
     And User fills google account <password>
     And User selects  google test <card>

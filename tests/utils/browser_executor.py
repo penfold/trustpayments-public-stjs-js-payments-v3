@@ -80,3 +80,9 @@ class BrowserExecutor:
 
     def get_session_id(self):
         return self._driver.session_id
+
+    def switch_to_new_window(self):
+        self._driver.switch_to_window(self._driver.window_handles[1])
+
+    def switch_to_previous_window(self):
+        self._driver.switch_to_window(self._driver.window_handles[0])
