@@ -1,4 +1,4 @@
-import { anything, instance as mockInstance, mock, when } from 'ts-mockito';
+import { anything, instance as mockInstance, mock, when, verify } from 'ts-mockito';
 import { GooglePay } from './GooglePay';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { GooglePayPaymentService } from './GooglePayPaymentService';
@@ -13,6 +13,7 @@ describe('GooglePay', () => {
   let jwtDecoderMock: any;
   let googlePayPaymentService: any;
   let buttonWrapper: any;
+  let button: any;
   const configMock: IConfig = {
     jwt: '',
     formId: 'st-form',
@@ -25,8 +26,7 @@ describe('GooglePay', () => {
         buttonRootNode: 'st-google-pay',
         buttonColor: 'default',
         buttonType: 'buy',
-        buttonLocale: 'en',
-        onClick: null
+        buttonLocale: 'en'
       },
       paymentRequest: {
         allowedPaymentMethods: {
@@ -67,6 +67,22 @@ describe('GooglePay', () => {
       }
     }
   };
+  const paymentResponse = {
+    apiVersion: 2,
+    apiVersionMinor: 0,
+    paymentMethodData: {
+      description: 'Mastercard •••• 4444',
+      info: {
+        cardDetails: '4444',
+        cardNetwork: 'MASTERCARD'
+      }
+    },
+    tokenizationData: {
+      token: 'sometoken',
+      type: 'PAYMENT_GATEWAY'
+    },
+    type: 'CARD'
+  };
 
   beforeEach(() => {
     configProviderMock = mock<ConfigProvider>();
@@ -88,6 +104,8 @@ describe('GooglePay', () => {
     DomMethods.insertScript = jest.fn().mockImplementation((target, options) => {
       buttonWrapper = document.createElement('div');
       buttonWrapper.setAttribute('id', 'st-google-pay');
+      button = document.createElement('button');
+      buttonWrapper.appendChild(button);
 
       return Promise.resolve(document.createElement('script'));
     });
@@ -103,19 +121,9 @@ describe('GooglePay', () => {
     });
 
     it('should display button after init', () => {
-      
+      expect(buttonWrapper.childNodes.length > 0).toBe(true);
     });
 
-    it('should start payment after button click', () => {
-      
-    });
-
-    it('should get response from Google Pay', () => {
-      
-    });
-
-    it('should pass GooglePay response to the ST Transport', () => {
-      
-    });
+    it('should pass GooglePay response to the ST Transport after button is clicked', () => {});
   });
 });

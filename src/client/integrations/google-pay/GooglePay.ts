@@ -149,7 +149,7 @@ export class GooglePay {
           this.onPaymentAuthorized(paymentData);
         })
         .catch((err: any) => {
-          console.error(err);
+          this.onPaymentError();
         });
     }
   };
@@ -163,5 +163,9 @@ export class GooglePay {
       formData,
       paymentData
     );
+  }
+
+  private onPaymentError(): void {
+    return this.googlePayPaymentService.errorPayment();
   }
 }

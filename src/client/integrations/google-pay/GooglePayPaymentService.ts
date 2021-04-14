@@ -3,6 +3,7 @@ import { IMessageBus } from '../../../application/core/shared/message-bus/IMessa
 import { RequestType } from '../../../shared/types/RequestType';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { TERM_URL } from '../../../application/core/models/constants/RequestData';
+import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 
 @Service()
 export class GooglePayPaymentService {
@@ -18,6 +19,18 @@ export class GooglePayPaymentService {
           wallettoken: JSON.stringify(payment),
           ...formData,
           termurl: TERM_URL
+        },
+        name: 'GooglePay'
+      }
+    });
+  }
+
+  errorPayment() {
+    this.messageBus.publish<any>({
+      type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+      data: {
+        data: {
+          resultStatus: PaymentStatus.ERROR,
         },
         name: 'GooglePay'
       }
