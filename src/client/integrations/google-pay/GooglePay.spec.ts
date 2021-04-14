@@ -1,4 +1,4 @@
-import { anything, instance as mockInstance, mock, when, verify } from 'ts-mockito';
+import { anything, instance as mockInstance, mock, when, verify, instance } from 'ts-mockito';
 import { GooglePay } from './GooglePay';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { GooglePayPaymentService } from './GooglePayPaymentService';
@@ -6,6 +6,36 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { of } from 'rxjs';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
+import {
+  IGooglePayPaymentRequest,
+  IGooglePlayIsReadyToPayRequest
+} from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
+
+interface IGooglePaySessionPaymentsClient {
+  createButton(): void;
+  isReadyToPay(): void;
+  // loadPaymentData(request: IGooglePayPaymentRequest): Promise<any>;
+  // isReadyToPay(request: IGooglePlayIsReadyToPayRequest): Promise<any>;
+}
+
+interface IGooglePaySessionApi {
+  PaymentsClient(envConfig: any): IGooglePaySessionPaymentsClient;
+}
+
+interface IGooglePaySessionPayments {
+  api: IGooglePaySessionApi;
+}
+
+//.google.payments.api.PaymentsClient({ environment: 'TEST' });
+interface IGooglePaySessionConstructor {
+  payments: IGooglePaySessionPayments;
+}
+
+type WindowType = Window & { google: IGooglePaySessionConstructor | undefined };
+
+function flushPromises() {
+  return new Promise(resolve => setImmediate(resolve));
+}
 
 describe('GooglePay', () => {
   let googlePay: GooglePay;
@@ -14,6 +44,7 @@ describe('GooglePay', () => {
   let googlePayPaymentService: any;
   let buttonWrapper: any;
   let button: any;
+  let windowMock: WindowType;
   const configMock: IConfig = {
     jwt: '',
     formId: 'st-form',
@@ -88,11 +119,39 @@ describe('GooglePay', () => {
     configProviderMock = mock<ConfigProvider>();
     jwtDecoderMock = mock(JwtDecoder);
     googlePayPaymentService = mock(GooglePayPaymentService);
+    googlePayPaymentService.processPayment = jest.fn().mockImplementation(() => {});
+    // when(googlePayPaymentService.processPayment(anything())).thenReturn(null);
+    // jest.spyOn(googlePayPaymentService.processPayment);
+
+    (window.google as any) = {
+      payments: {
+        api: {
+          PaymentsClient: jest.fn().mockImplementation(() => {
+            return {
+              isReadyToPay: () => {
+                return Promise.resolve({ result: true });
+              },
+              loadPaymentData: () => {
+                return Promise.resolve(paymentResponse);
+              },
+              createButton: (config: any) => {
+                console.log('!!!!', document.getElementById('st-google-pay'))
+                button = document.createElement('button');
+                // button.addEventListener('click', () => {
+                //   config.onClick();
+                // });
+                buttonWrapper.appendChild(button);
+              }
+            };
+          })
+        }
+      }
+    };
 
     googlePay = new GooglePay(
       mockInstance(configProviderMock),
-      mockInstance(jwtDecoderMock),
-      mockInstance(googlePayPaymentService)
+      mockInstance(googlePayPaymentService),
+      mockInstance(jwtDecoderMock)
     );
 
     when(configProviderMock.getConfig$()).thenReturn(of(configMock));
@@ -101,13 +160,23 @@ describe('GooglePay', () => {
         requesttypedescriptions: ['AUTH']
       }
     });
+
     DomMethods.insertScript = jest.fn().mockImplementation((target, options) => {
       buttonWrapper = document.createElement('div');
       buttonWrapper.setAttribute('id', 'st-google-pay');
-      button = document.createElement('button');
-      buttonWrapper.appendChild(button);
 
+      // document.appendChild(buttonWrapper);
       return Promise.resolve(document.createElement('script'));
+    });
+    DomMethods.parseForm = jest.fn().mockImplementation(formId => {
+      if (formId === 'st-form') {
+        return {
+          billingprice: '',
+          billingamount: '',
+          billinglastname: '',
+          billingemail: ''
+        };
+      }
     });
 
     googlePay.init(configMock);
@@ -124,6 +193,16 @@ describe('GooglePay', () => {
       expect(buttonWrapper.childNodes.length > 0).toBe(true);
     });
 
-    it('should pass GooglePay response to the ST Transport after button is clicked', () => {});
+    // it('should pass GooglePay response to the ST Transport after button is clicked', async () => {
+    //   console.log(' =============================================== ');
+    //   console.log('=====>', buttonWrapper);
+    //   const event = new Event('click');
+    //   // @ts-ignore
+    //   button.dispatchEvent(event);
+
+    //   await flushPromises();
+    //   // expect(googlePayPaymentService.processPayment).toHaveBeenCalled();
+    //   expect(true).toBeTruthy();
+    // });
   });
 });
