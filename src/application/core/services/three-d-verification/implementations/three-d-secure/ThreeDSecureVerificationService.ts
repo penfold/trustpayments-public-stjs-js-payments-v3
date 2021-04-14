@@ -1,4 +1,5 @@
 import { from, Observable } from 'rxjs';
+import { Service } from 'typedi';
 import { IInitializationData } from '../../../../../../client/integrations/cardinal-commerce/data/IInitializationData';
 import { ITriggerData } from '../../../../../../client/integrations/cardinal-commerce/data/ITriggerData';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
@@ -10,6 +11,7 @@ import { IVerificationData } from '../../data/IVerificationData';
 import { IVerificationResult } from '../../data/IVerificationResult';
 import { IThreeDVerificationService } from '../../IThreeDVerificationService';
 
+@Service()
 export class ThreeDSecureVerificationService implements IThreeDVerificationService {
   constructor(private interFrameCommunicator: InterFrameCommunicator) {}
 
