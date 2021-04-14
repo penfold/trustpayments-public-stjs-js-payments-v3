@@ -43,7 +43,7 @@ Feature: Google payments
       | RISKDEC ACCOUNTCHECK                  |
       | AUTH RISKDEC                          |
 
-  @launch1
+
   Scenario Outline: Successful Payment with Google Pay test cards
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
@@ -109,7 +109,7 @@ Feature: Google payments
       | AMEX       |
       | VISA       |
 
-  Scenario : User Aborts Google Payment - Unsuccessful transaction
+  Scenario: User Aborts Google Payment - Unsuccessful transaction
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
