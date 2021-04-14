@@ -70,13 +70,13 @@ export class Payment {
 
   private publishResponse(responseData?: IResponseData): Promise<Record<string, any>> {
     return Promise.resolve({
-      response: responseData || {},
+      response: responseData || {}
     });
   }
 
   private publishErrorResponse(responseData?: IResponseData): Promise<Record<string, any>> {
     return Promise.reject({
-      response: responseData || {},
+      response: responseData || {}
     });
   }
 
@@ -96,7 +96,7 @@ export class Payment {
     if (cybertonicaTid) {
       processPaymentRequestBody.fraudcontroltransactionid = cybertonicaTid;
     }
-
+// tutaj merchantUrl request ?
     return this.stTransport.sendRequest(processPaymentRequestBody);
   }
 

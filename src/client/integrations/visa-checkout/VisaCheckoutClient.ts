@@ -34,7 +34,8 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
     private jwtDecoder: JwtDecoder,
     private notificationService: NotificationService,
     private payment: Payment
-  ) {}
+  ) {
+  }
 
   init$(): Observable<VisaCheckoutClientStatus> {
     return this.configProvider.getConfig$().pipe(
@@ -87,8 +88,8 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
       walletsource: 'VISACHECKOUT',
       wallettoken: JSON.stringify(successData),
     };
-
-    return from(this.payment.processPayment(requestTypeDescriptions, walletData, merchantData)).pipe(
+// pass config.merchantUrl to processPayment
+    return from(this.payment.processPayment(requestTypeDescriptions, walletData, merchantData, { merchantUrl: config.merchantUrl })).pipe(
       switchMap(() => {
         this.notificationService.success(PAYMENT_SUCCESS);
         this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }, true);

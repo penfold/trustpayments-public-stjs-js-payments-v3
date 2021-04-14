@@ -36,6 +36,7 @@ export class VisaCheckoutUpdateService {
     return {
       buttonUrl: config.livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_BUTTON_URL : VisaCheckoutButtonProps.src,
       sdkUrl: config.livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_SDK : environment.VISA_CHECKOUT_URLS.TEST_SDK,
+      merchantUrl: config.merchantUrl,
       visaInitConfig: {
         apikey: config.visaCheckout.merchantId,
         encryptionKey: config.visaCheckout.encryptionKey,

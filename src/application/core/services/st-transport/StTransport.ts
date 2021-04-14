@@ -91,7 +91,8 @@ export class StTransport {
 
   private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions): Promise<Record<string, unknown>> {
     const codec = this.getCodec();
-    const gatewayUrl = this.getConfig().datacenterurl;
+    const merchantUrl = this.getConfig().merchantUrl;
+    const gatewayUrl = merchantUrl ? merchantUrl : this.getConfig().datacenterurl;
 
     return this._fetchRetry(gatewayUrl, {
       ...fetchOptions,
