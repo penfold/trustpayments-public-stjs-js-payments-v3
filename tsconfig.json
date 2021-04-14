@@ -20,9 +20,17 @@
       "ES2016.Array.Include",
       "ES2019"
     ],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "rxjs": [
+        "node_modules/rxjs"
+      ],
+      "rxjs/*": [
+        "node_modules/rxjs/*"
+      ]
+    }
   },
   "include": [
     "./src/**/*"
-  ]
+  ],
 }

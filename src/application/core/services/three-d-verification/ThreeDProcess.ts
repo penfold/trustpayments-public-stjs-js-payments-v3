@@ -50,6 +50,8 @@ export class ThreeDProcess {
     card: ICard,
     merchantData: IMerchantData
   ): Observable<IThreeDQueryResponse> {
+    console.log('WHTRBIT ThreeDProcess.performThreeDQuery');
+
     return this.threeDSTokens$.pipe(
       first(),
       switchMap(tokens => {
@@ -57,11 +59,20 @@ export class ThreeDProcess {
 
         return iif(includesThreedquery, this.verificationService.start(tokens.jwt), of(null)).pipe(
           mapTo(new ThreeDQueryRequest(tokens.cacheToken, card, merchantData)),
-          switchMap(request => this.gatewayClient.threedQuery(request)),
+          switchMap(request => {
+            console.log('WHTRBIT ThreeDProcess.performThreeDQuery this.gatewayClient.threedQuery', request);
+            return this.gatewayClient.threedQuery(request);
+          }),
           switchMap(response => {
+            console.log('WHTRBIT ThreeDProcess.performThreeDQuery this.gatewayClient.threedQuery res', response);
+
+            // eslint-disable-next-line no-debugger
+            debugger;
+
             if (this.isThreeDAuthorisationRequired(response)) {
               return this.authenticateCard(response, tokens);
             }
+
             return of({
               ...response,
               cachetoken: tokens.cacheToken,
