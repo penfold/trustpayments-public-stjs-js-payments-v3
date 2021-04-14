@@ -89,7 +89,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
       wallettoken: JSON.stringify(successData),
     };
 // pass config.merchantUrl to processPayment
-    return from(this.payment.processPayment(requestTypeDescriptions, walletData, merchantData, { merchantUrl: config.merchantUrl })).pipe(
+    return from(this.payment.processPayment(requestTypeDescriptions, walletData, merchantData)).pipe(
       switchMap(() => {
         this.notificationService.success(PAYMENT_SUCCESS);
         this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
