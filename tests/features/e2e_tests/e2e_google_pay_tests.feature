@@ -71,6 +71,8 @@ Feature: Google payments
 
   Scenario Outline: User selects Payment with Google Pay - account without test cards
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User clicks on Google Pay button
     And User will see Google Pay login window
@@ -82,8 +84,11 @@ Feature: Google payments
       | email address           | password                 |
       | securetestpgs@gmail.com | securetestpgs/K5vXO+hZvQ |
 
-  Scenario Outline: Successful Payment with Google Pay test cards
+
+  Scenario Outline: User selects Payment with Google Pay - account without test cards
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User clicks on Google Pay button
     And User will see Google Pay login window
