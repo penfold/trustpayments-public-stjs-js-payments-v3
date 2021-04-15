@@ -10,3 +10,19 @@
     "locale": "en_GB"
   }
 }
+
+For GooglePay testing
+{
+  "iat": 1592298893548,
+  "iss": "jslibraryjwt",
+  "secret": "60-07abad81e736712277a5d0abc329612992b9d1b3667098e15d9b2a83c37af5fe",
+  "payload": {
+    "mainamount": "20.00",
+    "accounttypedescription": "ECOM",
+    "currencyiso3a": "GBP",
+    "sitereference": "test_james38641",
+    "requesttypedescriptions": ["AUTH"],
+    "threedbypasspaymenttypes": [],
+    "locale": "en_GB"
+  }
+}

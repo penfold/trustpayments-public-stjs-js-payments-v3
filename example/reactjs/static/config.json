@@ -9,7 +9,7 @@
       "countryCode": "US",
       "currencyCode": "USD",
       "merchantCapabilities": ["supports3DS", "supportsCredit", "supportsDebit"],
-      "supportedNetworks": ["visa"],
+      "supportedNetworks": [],
       "total": {
         "label": "Secure Trading Merchant",
         "amount": "10.0"
@@ -35,7 +35,7 @@
   "deferInit": false,
   "disableNotification": false,
   "errorCallback": null,
-  "fieldsToSubmit": [],
+  "fieldsToSubmit": ["pan", "expirydate", "securitycode"],
   "formId": "st-form",
   "googlePay": {
     "buttonOptions": {
@@ -66,8 +66,8 @@
         "merchantName": "merchang"
       },
       "transactionInfo": {
-        "countryCode": "pl",
-        "currencyCode": "pln",
+        "countryCode": "US",
+        "currencyCode": "USD",
         "checkoutOption": "COMPLETE_IMMEDIATE_PURCHASE",
         "totalPriceStatus": "FINAL",
         "totalPrice": "10.00",
@@ -82,7 +82,11 @@
       }
     }
   },
-  "jwt": "",
+  "init": {
+    "cachetoken": "",
+    "threedinit": ""
+  },
+  "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTg0NzM3NTYsImlzcyI6InRlc3QiLCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6IiIsImxvY2FsZSI6ImVuX0dCIn19.skvttwLRsXkWTPQi3ii3QneOY9k11w7JpgsaQRt6Ag4",
   "livestatus": 0,
   "origin": "",
   "panIcon": true,
@@ -120,7 +124,11 @@
   "submitOnError": false,
   "successCallback": null,
   "translations": {
-    "An error occurred": "Wystąpił błąd"
+    "Card number": "Kartennummer",
+    "An error occurred": "Wystąpił błąd",
+    "Pay": "Kup teraz!! :)",
+    "Payment has been successfully processed": "Victory",
+    "Field is required": "This is wrong"
   },
   "visaCheckout": {
     "buttonSettings": {

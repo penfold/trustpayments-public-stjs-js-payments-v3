@@ -66,8 +66,7 @@
       "buttonRootNode": "st-google-pay",
       "buttonColor": "default",
       "buttonType": "buy",
-      "buttonLocale": "en",
-      "onClick": null
+      "buttonLocale": "en"
     },
     "paymentRequest": {
       "allowedPaymentMethods": {
@@ -91,8 +90,8 @@
         "merchantName": "merchang"
       },
       "transactionInfo": {
-        "countryCode": "pl",
-        "currencyCode": "pln",
+        "countryCode": "US",
+        "currencyCode": "USD",
         "checkoutOption": "COMPLETE_IMMEDIATE_PURCHASE",
         "totalPriceStatus": "FINAL",
         "totalPrice": "10.00",
