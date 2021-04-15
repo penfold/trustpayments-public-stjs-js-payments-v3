@@ -177,7 +177,8 @@
     "ts-money": "0.4.6",
     "typedi": "0.10.0",
     "url-polyfill": "1.1.12",
-    "whatwg-fetch": "3.6.2"
+    "whatwg-fetch": "3.6.2",
+    "symbol-observable": "4.0.0"
   },
   "snyk": true
 }

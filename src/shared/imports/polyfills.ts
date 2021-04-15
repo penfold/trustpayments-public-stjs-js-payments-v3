@@ -9,3 +9,4 @@ import 'fastestsmallesttextencoderdecoder';
 import '@sheerun/mutationobserver-shim';
 import 'element-remove';
 import 'promise-polyfill/src/polyfill';
+import 'symbol-observable';

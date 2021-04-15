@@ -1,5 +1,4 @@
 import { EMPTY, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
@@ -49,10 +48,7 @@ export class ThreeDSecureClient {
 
     return this.threeDSecure.init$({
       challengeDisplayMode: ChallengeDisplayMode.POPUP,
-    }).pipe(switchMap(() => new Observable(observer => {
-      observer.next(void 0);
-      observer.complete();
-    })));
+    });
   }
 
   private start$(): Observable<any> {
