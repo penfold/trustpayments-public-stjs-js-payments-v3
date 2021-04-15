@@ -1,10 +1,8 @@
 import { from, Observable } from 'rxjs';
 import { Service } from 'typedi';
 import { IInitializationData } from '../../../../../../client/integrations/cardinal-commerce/data/IInitializationData';
-import { ITriggerData } from '../../../../../../client/integrations/cardinal-commerce/data/ITriggerData';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
-import { PaymentEvents } from '../../../../models/constants/PaymentEvents';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IVerificationData } from '../../data/IVerificationData';
@@ -29,12 +27,9 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
   binLookup(pan: string): Observable<void> {
     console.log('WHTRBIT verservice binlookup');
 
-    const queryEvent: IMessageBusEvent<ITriggerData<string>> = {
+    const queryEvent: IMessageBusEvent<string> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_TRIGGER,
-      data: {
-        eventName: PaymentEvents.BIN_PROCESS,
-        data: '4000000000001091',
-      },
+      data: pan,
     };
 
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));

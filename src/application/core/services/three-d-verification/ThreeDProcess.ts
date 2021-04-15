@@ -66,9 +66,6 @@ export class ThreeDProcess {
           switchMap(response => {
             console.log('WHTRBIT ThreeDProcess.performThreeDQuery this.gatewayClient.threedQuery res', response);
 
-            // eslint-disable-next-line no-debugger
-            debugger;
-
             if (this.isThreeDAuthorisationRequired(response)) {
               return this.authenticateCard(response, tokens);
             }
@@ -109,7 +106,8 @@ export class ThreeDProcess {
 
     return this.verificationService.verify(verificationData).pipe(
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
-      switchMap(validationResult => this.verificationResultHandler.handle(response, validationResult, tokens))
+      switchMap(validationResult => this.verificationResultHandler.handle(response, validationResult, tokens)),
+      tap(res => console.log('WHTRBIT resssssssssssss', res))
     );
   }
 

@@ -147,6 +147,8 @@ export class CardinalClient {
   }
 
   private cardinalStart(data: IInitializationData): Observable<void> {
+    console.log('WHTRBIT cardinal client start', data);
+
     return this.cardinal$.pipe(
       switchMap(
         (cardinal: ICardinal) =>
