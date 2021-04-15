@@ -45,7 +45,7 @@ import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-ch
 import { IUpdateJwt } from '../../application/core/models/IUpdateJwt';
 import { IGooglePayConfig, GooglePayConfigName } from '../../integrations/google-pay/models/IGooglePayConfig';
 import { IInitPaymentMethod } from '../../application/core/services/payments/events/IInitPaymentMethod';
-import { IGooglePaymentMethodName } from '../../integrations/google-pay/models/IGooglePaymentMethod';
+import { GooglePaymentMethodName } from '../../integrations/google-pay/models/IGooglePaymentMethod';
 import { ITranslator } from '../../application/core/shared/translator/ITranslator';
 
 @Service()
@@ -191,7 +191,7 @@ export class ST {
         {
           type: PUBLIC_EVENTS.GOOGLE_PAY_INIT,
           data: {
-            name: IGooglePaymentMethodName,
+            name: GooglePaymentMethodName,
             config: this.config
           }
         },

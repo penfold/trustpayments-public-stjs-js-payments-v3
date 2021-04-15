@@ -39,7 +39,7 @@ describe('GooglePay', () => {
   let googlePay: GooglePay;
   let configProviderMock: ConfigProvider;
   let jwtDecoderMock: JwtDecoder;
-  let googlePayPaymentService: GooglePayPaymentService;
+  let googlePayPaymentServiceMock: GooglePayPaymentService;
   let buttonWrapper: HTMLElement;
   let button: HTMLElement;
   const configMock: IConfig = {
@@ -115,16 +115,9 @@ describe('GooglePay', () => {
   beforeEach(() => {
     configProviderMock = mock<ConfigProvider>();
     jwtDecoderMock = mock(JwtDecoder);
-    googlePayPaymentService = mock(GooglePayPaymentService);
-    googlePayPaymentService.processPayment = jest.fn().mockImplementation(() => {});
-    
-    // TypeError: Cannot read property 'appendChild' of null
-    // GooglePay.ts line 92, how to mock it?
-    // document.getElementById = jest.fn(() => {
-    //   return buttonWrapper;
-    // });
-    // when(googlePayPaymentService.processPayment(anything())).thenReturn(null);
-    // jest.spyOn(googlePayPaymentService.processPayment);
+    googlePayPaymentServiceMock = mock(GooglePayPaymentService);
+    document.getElementById = jest.fn().mockImplementation(() => buttonWrapper);
+    googlePayPaymentServiceMock.processPayment = jest.fn().mockImplementation(() => {});
 
     (window as any).google = {
       payments: {
@@ -142,7 +135,7 @@ describe('GooglePay', () => {
                 button.addEventListener('click', () => {
                   config.onClick();
                 });
-                buttonWrapper.appendChild(button);
+                return button;
               }
             };
           })
@@ -152,7 +145,7 @@ describe('GooglePay', () => {
 
     googlePay = new GooglePay(
       mockInstance(configProviderMock),
-      mockInstance(googlePayPaymentService),
+      mockInstance(googlePayPaymentServiceMock),
       mockInstance(jwtDecoderMock)
     );
 
@@ -197,11 +190,9 @@ describe('GooglePay', () => {
     it('should pass GooglePay response to the ST Transport after button is clicked', async () => {
       const event = new Event('click');
       button.dispatchEvent(event);
-
-      // TypeError: Cannot read property 'appendChild' of null
-      // GooglePay.ts line 92, how to mock it?
+      
       await flushPromises();
-      expect(googlePayPaymentService.processPayment).toHaveBeenCalled();
+      expect(googlePayPaymentServiceMock.processPayment).toHaveBeenCalled();
       expect(true).toBe(false);
     });
   });
