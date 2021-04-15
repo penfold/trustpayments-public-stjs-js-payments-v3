@@ -134,9 +134,9 @@ def _get_remote_capabilities(configuration):
         'browserstack.safari.driver': configuration.BROWSERSTACK_SAFARI_DRIVER,
         'browserstack.firefox.driver': configuration.BROWSERSTACK_FIREFOX_DRIVER,
         'browserstack.networkLogs': network_logs,
-        'browserstack.acceptInsecureCerts': 'true',
         'browserstack.console': 'errors',
         'browserstack.autoWait': 0,
+        'browserstack.use_w3c' : 'true',
         'ie.ensureCleanSession': 'true',
         'ie.forceCreateProcessApi': 'true',
         'resolution': '1920x1080'
