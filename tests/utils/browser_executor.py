@@ -82,7 +82,12 @@ class BrowserExecutor:
         return self._driver.session_id
 
     def switch_to_new_window(self):
-        self._driver.switch_to_window(self._driver.window_handles[1])
+        current_window = self._driver.current_window_handle
+        windows = self._driver.window_handles
+        for w in windows:
+            # switch focus to child window
+            if (w != windows):
+                self._driver.switch_to.window(w)
 
     def switch_to_previous_window(self):
         self._driver.switch_to_window(self._driver.window_handles[0])

@@ -23,8 +23,8 @@ Feature: Google payments
     And submit callback contains THREEDRESPONSE: True
 
     Examples:
-      | email               | password           |
-      | GOOGLE_TEST_ACCOUNT | GOOGLE_TEST_SECRET |
+      | email                   | password                 |
+      | securetestpgs@gmail.com | securetestpgs/K5vXO+hZvQ |
     Examples:
       | requesttypedescriptions  |
       | THREEDQUERY AUTH         |
@@ -129,3 +129,16 @@ Feature: Google payments
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
       | THREEDQUERY ACCOUNTCHECK |
+
+  Scenario: Successful Google payment with updated jwt
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page WITH_UPDATE_JWT
+      | jwtName          |
+      | BASE_UPDATED_JWT |
+    And User clicks on Google Pay button
+    And User will see Google Pay login window
+    When User closes Google Pay login window
+    Then User will see payment status information: "An error occurred"
+    And User will see that notification frame has "red" color
