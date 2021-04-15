@@ -21,7 +21,7 @@ class Index extends Component {
   }
 
   loadST(config) {
-    const { components, applePay, visaCheckout } = config;
+    const { components, applePay, visaCheckout, googlePay } = config;
     this.instance = SecureTrading(config);
 
     this.instance.submitCallback = data => {
@@ -33,6 +33,7 @@ class Index extends Component {
     this.instance.Components(components);
     this.instance.ApplePay(applePay);
     this.instance.VisaCheckout(visaCheckout);
+    this.instance.GooglePay(googlePay);
     this.initUpdateJwtListener();
   }
 

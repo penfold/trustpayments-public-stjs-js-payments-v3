@@ -66,8 +66,7 @@
       "buttonRootNode": "st-google-pay",
       "buttonColor": "default",
       "buttonType": "buy",
-      "buttonLocale": "en",
-      "onClick": null
+      "buttonLocale": "en"
     },
     "paymentRequest": {
       "allowedPaymentMethods": {
