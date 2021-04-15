@@ -101,3 +101,20 @@ export interface IPaymentData {
     type: string;
   };
 }
+
+export interface IPaymentResponse {
+  apiVersion: number,
+  apiVersionMinor: number,
+  paymentMethodData: {
+    description: string,
+    info: {
+      cardDetails: string,
+      cardNetwork: string
+    }
+  },
+  tokenizationData: {
+    token: string,
+    type: string
+  },
+  type: string
+}

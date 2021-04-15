@@ -41,7 +41,7 @@ export class GooglePay {
   }
 
   private onConfigUpdate(): void {
-    console.log('update');
+    // console.log('update');
   }
 
   private insertGooglePayLibrary(): Promise<Element> {

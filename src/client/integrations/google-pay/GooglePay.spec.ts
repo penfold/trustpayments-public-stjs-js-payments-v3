@@ -8,7 +8,8 @@ import { of } from 'rxjs';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import {
   IGooglePayPaymentRequest,
-  IGooglePlayIsReadyToPayRequest
+  IGooglePlayIsReadyToPayRequest,
+  IPaymentResponse
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
 
 interface IGooglePaySessionPaymentsClient {
@@ -26,12 +27,9 @@ interface IGooglePaySessionPayments {
   api: IGooglePaySessionApi;
 }
 
-//.google.payments.api.PaymentsClient({ environment: 'TEST' });
 interface IGooglePaySessionConstructor {
   payments: IGooglePaySessionPayments;
 }
-
-type WindowType = Window & { google: IGooglePaySessionConstructor | undefined };
 
 function flushPromises() {
   return new Promise(resolve => setImmediate(resolve));
@@ -39,12 +37,11 @@ function flushPromises() {
 
 describe('GooglePay', () => {
   let googlePay: GooglePay;
-  let configProviderMock: any;
-  let jwtDecoderMock: any;
-  let googlePayPaymentService: any;
-  let buttonWrapper: any;
-  let button: any;
-  let windowMock: WindowType;
+  let configProviderMock: ConfigProvider;
+  let jwtDecoderMock: JwtDecoder;
+  let googlePayPaymentService: GooglePayPaymentService;
+  let buttonWrapper: HTMLElement;
+  let button: HTMLElement;
   const configMock: IConfig = {
     jwt: '',
     formId: 'st-form',
@@ -98,7 +95,7 @@ describe('GooglePay', () => {
       }
     }
   };
-  const paymentResponse = {
+  const paymentResponse: IPaymentResponse = {
     apiVersion: 2,
     apiVersionMinor: 0,
     paymentMethodData: {
@@ -120,10 +117,16 @@ describe('GooglePay', () => {
     jwtDecoderMock = mock(JwtDecoder);
     googlePayPaymentService = mock(GooglePayPaymentService);
     googlePayPaymentService.processPayment = jest.fn().mockImplementation(() => {});
+    
+    // TypeError: Cannot read property 'appendChild' of null
+    // GooglePay.ts line 92, how to mock it?
+    // document.getElementById = jest.fn(() => {
+    //   return buttonWrapper;
+    // });
     // when(googlePayPaymentService.processPayment(anything())).thenReturn(null);
     // jest.spyOn(googlePayPaymentService.processPayment);
 
-    (window.google as any) = {
+    (window as any).google = {
       payments: {
         api: {
           PaymentsClient: jest.fn().mockImplementation(() => {
@@ -135,11 +138,10 @@ describe('GooglePay', () => {
                 return Promise.resolve(paymentResponse);
               },
               createButton: (config: any) => {
-                console.log('!!!!', document.getElementById('st-google-pay'))
                 button = document.createElement('button');
-                // button.addEventListener('click', () => {
-                //   config.onClick();
-                // });
+                button.addEventListener('click', () => {
+                  config.onClick();
+                });
                 buttonWrapper.appendChild(button);
               }
             };
@@ -165,7 +167,6 @@ describe('GooglePay', () => {
       buttonWrapper = document.createElement('div');
       buttonWrapper.setAttribute('id', 'st-google-pay');
 
-      // document.appendChild(buttonWrapper);
       return Promise.resolve(document.createElement('script'));
     });
     DomMethods.parseForm = jest.fn().mockImplementation(formId => {
@@ -193,16 +194,15 @@ describe('GooglePay', () => {
       expect(buttonWrapper.childNodes.length > 0).toBe(true);
     });
 
-    // it('should pass GooglePay response to the ST Transport after button is clicked', async () => {
-    //   console.log(' =============================================== ');
-    //   console.log('=====>', buttonWrapper);
-    //   const event = new Event('click');
-    //   // @ts-ignore
-    //   button.dispatchEvent(event);
+    it('should pass GooglePay response to the ST Transport after button is clicked', async () => {
+      const event = new Event('click');
+      button.dispatchEvent(event);
 
-    //   await flushPromises();
-    //   // expect(googlePayPaymentService.processPayment).toHaveBeenCalled();
-    //   expect(true).toBeTruthy();
-    // });
+      // TypeError: Cannot read property 'appendChild' of null
+      // GooglePay.ts line 92, how to mock it?
+      await flushPromises();
+      expect(googlePayPaymentService.processPayment).toHaveBeenCalled();
+      expect(true).toBe(false);
+    });
   });
 });
