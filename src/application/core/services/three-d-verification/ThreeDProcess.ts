@@ -40,7 +40,7 @@ export class ThreeDProcess {
     this.threeDSTokens$ = merge(initialTokens, updatedTokens).pipe(shareReplay(1));
 
     return this.threeDSTokens$.pipe(
-      first(),
+      // first(),
       switchMap(threeDStokens => this.initVerificationService(threeDStokens))
     );
   }
@@ -85,10 +85,13 @@ export class ThreeDProcess {
   }
 
   private initVerificationService(tokens: IThreeDSTokens): Observable<void> {
+    console.log('WHTRBIT ThreeDProcess initVerificationService start');
+
     return this.verificationService.init(tokens.jwt).pipe(
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed')),
       tap(() => this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.UNLOCK_BUTTON }, true)),
       tap(() => {
+        console.log('WHTRBIT ThreeDProcess initVerificationService complete');
         this.messageBus
           .pipe(ofType(MessageBus.EVENTS_PUBLIC.BIN_PROCESS))
           .subscribe((event: IMessageBusEvent<string>) => this.verificationService.binLookup(event.data));

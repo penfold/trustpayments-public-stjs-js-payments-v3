@@ -3,6 +3,7 @@ import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames';
 import { CommonFrames } from '../common-frames/CommonFrames';
+import { ThreeDSecureClient } from '../integrations/three-d-secure/ThreeDSecureClient';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
 import { ApplePay } from '../integrations/apple-pay/ApplePay';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
@@ -91,6 +92,7 @@ export class ST {
     private applePay: ApplePay,
     private browserDetector: BrowserDetector,
     private cardinalClient: CardinalClient,
+    private threeDSecureClient: ThreeDSecureClient,
     private communicator: InterFrameCommunicator,
     private configProvider: ConfigProvider,
     private configService: ConfigService,
@@ -240,6 +242,7 @@ export class ST {
       this.displayLiveStatus(Boolean(this.config.livestatus));
       this.watchForFrameUnload();
       this.cardinalClient.init();
+      this.threeDSecureClient.init();
 
       if (this.config.stopSubmitFormOnEnter) {
         this.stopSubmitFormOnEnter();

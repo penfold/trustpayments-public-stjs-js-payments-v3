@@ -1,14 +1,14 @@
 import { EMPTY, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import {
   ThreeDSecureFactory,
-  ConfigInterface,
   ThreeDSecureInterface,
   ChallengeDisplayMode,
   ThreeDSecureVersion,
+  ConfigInterface,
   // @ts-ignore
 } from '3ds-sdk-js';
 
@@ -18,7 +18,6 @@ export class ThreeDSecureClient {
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
-    private messageBus: IMessageBus,
   ) {
     const threeDSecureFactory = new ThreeDSecureFactory();
 
@@ -26,6 +25,8 @@ export class ThreeDSecureClient {
   }
 
   init(): void {
+    console.log('WHTRBIT client init');
+
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_SETUP)
       .thenRespond(() => this.setup$());
@@ -44,13 +45,19 @@ export class ThreeDSecureClient {
   }
 
   private setup$(): Observable<ConfigInterface> {
-    // @ts-ignore
+    console.log('WHTRBIT client setup$');
+
     return this.threeDSecure.init$({
       challengeDisplayMode: ChallengeDisplayMode.POPUP,
-    });
+    }).pipe(switchMap(() => new Observable(observer => {
+      observer.next(void 0);
+      observer.complete();
+    })));
   }
 
   private start$(): Observable<any> {
+    console.log('WHTRBIT client start$');
+
     // @ts-ignore
     return this.threeDSecure.run3DSMethod$(
       '2af781fd-c5f6-486a-ada1-adc9320bd54f',
@@ -60,6 +67,8 @@ export class ThreeDSecureClient {
   }
 
   private verify$(): Observable<any> {
+    console.log('WHTRBIT client verify$');
+
     const creq = {
       messageType: 'CReq',
       messageVersion: ThreeDSecureVersion.v2_2,
@@ -77,6 +86,8 @@ export class ThreeDSecureClient {
   }
 
   private trigger$(): Observable<void> {
+    console.log('WHTRBIT client trigger$');
+
     return EMPTY;
   }
 }
