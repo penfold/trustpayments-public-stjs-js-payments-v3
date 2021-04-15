@@ -14,8 +14,8 @@ import {
 
 @Service()
 export class GooglePay {
-  private SCRIPT_ADDRESS = environment.GOOGLE_PAY.GOOGLE_PAY_URL;
-  private SCRIPT_TARGET: string = 'head';
+  private readonly SCRIPT_ADDRESS = environment.GOOGLE_PAY.GOOGLE_PAY_URL;
+  private readonly SCRIPT_TARGET: string = 'head';
 
   private googlePayClient: any = null;
   private config: IConfig;
@@ -60,22 +60,19 @@ export class GooglePay {
   private getGoogleIsReadyToPayRequest(): IGooglePlayIsReadyToPayRequest {
     const { apiVersion, apiVersionMinor, allowedPaymentMethods } = this.config.googlePay.paymentRequest;
 
-    return Object.assign(
-      {},
-      {
-        apiVersion,
-        apiVersionMinor,
-        allowedPaymentMethods: [
-          {
-            type: allowedPaymentMethods.type,
-            parameters: {
-              allowedAuthMethods: allowedPaymentMethods.parameters.allowedCardAuthMethods,
-              allowedCardNetworks: allowedPaymentMethods.parameters.allowedCardNetworks
-            }
+    return {
+      apiVersion,
+      apiVersionMinor,
+      allowedPaymentMethods: [
+        {
+          type: allowedPaymentMethods.type,
+          parameters: {
+            allowedAuthMethods: allowedPaymentMethods.parameters.allowedCardAuthMethods,
+            allowedCardNetworks: allowedPaymentMethods.parameters.allowedCardNetworks
           }
-        ]
-      }
-    );
+        }
+      ]
+    };
   }
 
   private addGooglePayButton(): void {
@@ -100,7 +97,13 @@ export class GooglePay {
   }
 
   private getGooglePaymentDataRequest(): IGooglePayPaymentRequest {
-    const { apiVersion, apiVersionMinor, allowedPaymentMethods, merchantInfo, transactionInfo: { countryCode, currencyCode, totalPriceStatus, totalPrice } } = this.config.googlePay.paymentRequest;
+    const {
+      apiVersion,
+      apiVersionMinor,
+      allowedPaymentMethods,
+      merchantInfo,
+      transactionInfo: { countryCode, currencyCode, totalPriceStatus, totalPrice }
+    } = this.config.googlePay.paymentRequest;
 
     const paymentDataRequest = Object.assign(
       {},

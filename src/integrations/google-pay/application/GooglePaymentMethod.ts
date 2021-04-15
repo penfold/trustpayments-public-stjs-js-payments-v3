@@ -1,10 +1,9 @@
-import { Observable, of } from 'rxjs';
+import { Observable, of, EMPTY } from 'rxjs';
 import { Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
-import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
-import { IGooglePaymentMethodName } from '../models/IGooglePaymentMethod';
+import { GooglePaymentMethodName } from '../models/IGooglePaymentMethod';
 import { TransportService } from '../../../application/core/services/st-transport/TransportService';
 import { map } from 'rxjs/operators';
 
@@ -13,11 +12,11 @@ export class GooglePaymentMethod implements IPaymentMethod {
   constructor(private transportService: TransportService) {}
 
   getName(): string {
-    return IGooglePaymentMethodName;
+    return GooglePaymentMethodName;
   }
 
   init(): Observable<void> {
-    return of(undefined);
+    return EMPTY;
   }
 
   start(data: any): Observable<IPaymentResult<any>> {
