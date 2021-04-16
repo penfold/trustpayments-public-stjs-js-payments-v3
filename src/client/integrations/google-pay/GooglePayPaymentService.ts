@@ -18,19 +18,22 @@ export class GooglePayPaymentService {
           walletsource: 'GOOGLEPAY',
           wallettoken: JSON.stringify(payment),
           ...formData,
-          termurl: TERM_URL
+          termurl: TERM_URL,
+          resultStatus: PaymentStatus.SUCCESS,
         },
         name: 'GooglePay'
       }
     });
   }
 
-  errorPayment() {
+  errorPayment(requestTypes: RequestType[], formData: object, errorCode = PaymentStatus.ERROR) {
     this.messageBus.publish<any>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
         data: {
-          resultStatus: PaymentStatus.ERROR,
+          ...formData,
+          requestTypes,
+          resultStatus: errorCode,
         },
         name: 'GooglePay'
       }
