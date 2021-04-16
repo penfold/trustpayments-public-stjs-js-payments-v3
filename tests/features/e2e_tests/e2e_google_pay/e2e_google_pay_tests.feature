@@ -114,7 +114,7 @@ Feature: Google payments
       | AMEX       |
       | VISA       |
 
-  Scenario Outline: User Aborts Google Payment - Unsuccessful transaction
+  Scenario Outline: User Aborts Google Payment - cancelled transaction
     Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                     |
       | requesttypedescriptions | <requesttypedescriptions> |
@@ -122,8 +122,8 @@ Feature: Google payments
     And User clicks on Google Pay button
     And User will see Google Pay login window
     When User closes Google Pay login window
-    Then User will see payment status information: "An error occurred"
-    And User will see that notification frame has "red" color
+    Then User will see payment status information: "Payment has been cancelled"
+    And User will see that notification frame has "yellow" color
     Examples:
       | requesttypedescriptions  |
       | THREEDQUERY AUTH         |
@@ -140,5 +140,34 @@ Feature: Google payments
     And User clicks on Google Pay button
     And User will see Google Pay login window
     When User closes Google Pay login window
-    Then User will see payment status information: "An error occurred"
-    And User will see that notification frame has "red" color
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see that notification frame has "green" color
+    And "submit" callback is called only once
+    And "success" callback is called only once
+    And submit callback contains JWT response
+
+  Scenario Outline: Successful Google payment with submitOnSuccess enabled
+    Given JS library configured by inline params GOOGLE_PAY_WITH_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value           |
+      | requesttypedescriptions | <request_types> |
+    And User clicks on Google Pay button
+    And User will see Google Pay login window
+    And User fills google account <email> address
+    And User fills google account <password>
+    When User press next button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | <baseamount>                            |
+      | currencyiso3a        | <currencyiso3a>                         |
+      | errorcode            | 0                                       |
+      | threedresponse       | <threedresponse>                        |
+      | enrolled             | U                                       |
+      | settlestatus         | 0                                       |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
+
+    Examples:
+      | request_types            | threedresponse | baseamount     | currencyiso3a  |
+      | THREEDQUERY AUTH         | should be none | 1000           | GBP            |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |

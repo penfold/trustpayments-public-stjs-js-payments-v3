@@ -28,4 +28,4 @@ def step_impl(context, password):
 @step("User will see Google Pay login window")
 def step_impl(context):
     google_pay_page = context.page_factory.get_page(Pages.GOOGLE_PAY_PAGE)
-    google_pay_page.validate_new_window_presence()
+    assert google_pay_page.validate_new_window_presence()

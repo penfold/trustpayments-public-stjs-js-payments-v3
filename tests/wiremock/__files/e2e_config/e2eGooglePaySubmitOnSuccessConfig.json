@@ -54,6 +54,11 @@
       }
     }
   },
-  "submitOnSuccess": false,
-  "submitCallback" : "callback"
+   "components": {
+    "defaultPaymentType": "",
+    "paymentTypes": [],
+    "startOnLoad": false
+  },
+  "submitOnSuccess": true,
+  "successCallback": "callback"
 }

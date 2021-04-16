@@ -17,7 +17,7 @@ class GooglePayPage(BasePage):
 
     def validate_new_window_presence(self):
         self._browser_executor.switch_to_new_window()
-        self._waits.wait_and_check_is_element_displayed(GooglePayLocators.gpay_heading_text)
+        return self._waits.wait_and_check_is_element_displayed(GooglePayLocators.gpay_heading_text)
 
     def fill_email_address_field(self, email):
         self._actions.send_keys(GooglePayLocators.gpay_email_address_input, email)
