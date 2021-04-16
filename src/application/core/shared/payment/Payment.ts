@@ -96,7 +96,7 @@ export class Payment {
     if (cybertonicaTid) {
       processPaymentRequestBody.fraudcontroltransactionid = cybertonicaTid;
     }
-// tutaj merchantUrl request ?
+
     return this.stTransport.sendRequest(processPaymentRequestBody);
   }
 
