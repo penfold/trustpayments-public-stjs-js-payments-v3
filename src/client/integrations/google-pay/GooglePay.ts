@@ -1,5 +1,4 @@
 import { Service } from 'typedi';
-import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -11,6 +10,7 @@ import {
   IGooglePlayIsReadyToPayRequest,
   IPaymentData
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
+import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 
 @Service()
 export class GooglePay {
@@ -152,7 +152,16 @@ export class GooglePay {
           this.onPaymentAuthorized(paymentData);
         })
         .catch((err: any) => {
-          this.onPaymentError();
+          switch (err.statusCode) {
+            case 'CANCELED': {
+              this.onPaymentError(PaymentStatus.CANCEL);
+              break;
+            }
+            default: {
+              this.onPaymentError(PaymentStatus.ERROR);
+              break;
+            }
+          }
         });
     }
   };
@@ -168,7 +177,14 @@ export class GooglePay {
     );
   }
 
-  private onPaymentError(): void {
-    return this.googlePayPaymentService.errorPayment();
+  private onPaymentError(errorCode: PaymentStatus): void {
+    const formData = DomMethods.parseForm(this.config.formId);
+    const config = this.config;
+
+    return this.googlePayPaymentService.errorPayment(
+      this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions,
+      formData,
+      errorCode
+    );
   }
 }
