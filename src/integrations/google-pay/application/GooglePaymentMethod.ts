@@ -6,10 +6,11 @@ import { PaymentMethodToken } from '../../../application/dependency-injection/In
 import { GooglePaymentMethodName } from '../models/IGooglePaymentMethod';
 import { TransportService } from '../../../application/core/services/st-transport/TransportService';
 import { map } from 'rxjs/operators';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class GooglePaymentMethod implements IPaymentMethod {
-  constructor(private transportService: TransportService) {}
+  constructor(private transportService: TransportService, private configProvider: ConfigProvider) {}
 
   getName(): string {
     return GooglePaymentMethodName;
@@ -20,7 +21,9 @@ export class GooglePaymentMethod implements IPaymentMethod {
   }
 
   start(data: any): Observable<IPaymentResult<any>> {
-    return this.transportService.sendRequest(data).pipe(
+    const gatewayUrl = this.configProvider.getConfig().merchantUrl;
+
+    return this.transportService.sendRequest(data, gatewayUrl).pipe(
       map((response: any) => ({
         status: data.resultStatus,
         data: response

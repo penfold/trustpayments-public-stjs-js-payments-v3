@@ -27,6 +27,7 @@ export interface IConfig {
   init?: IBypassInit;
   jwt?: string;
   livestatus?: 0 | 1;
+  merchantUrl?: string;
   origin?: string;
   panIcon?: boolean;
   placeholders?: IPlaceholdersConfig;

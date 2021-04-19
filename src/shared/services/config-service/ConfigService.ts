@@ -113,7 +113,7 @@ export class ConfigService implements ConfigProvider {
       };
     }
 
-    const allowedKeys = ['jwt', 'submitCallback', 'successCallback', 'errorCallback', 'cancelCallback'];
+    const allowedKeys = ['jwt', 'submitCallback', 'successCallback', 'errorCallback', 'cancelCallback', 'merchantUrl'];
 
     Object.keys(config).forEach(key => allowedKeys.includes(key) || this.cannotOverride());
 
@@ -126,6 +126,7 @@ export class ConfigService implements ConfigProvider {
         successCallback: config.successCallback,
         errorCallback: config.errorCallback,
         cancelCallback: config.cancelCallback,
+        merchantUrl: config.merchantUrl
       },
     };
   }
