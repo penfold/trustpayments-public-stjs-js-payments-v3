@@ -147,9 +147,10 @@ export class GooglePay {
   }
 
   private getGooglePaymentsClient(): any {
+    console.log('=== environment', environment);
     if (this.googlePayClient === null) {
       this.googlePayClient = new (window as any).google.payments.api.PaymentsClient({
-        environment: environment.testEnvironment ? GooglePlayTestEnvironment : GooglePlayProductionEnvironment,
+        environment: environment.production ? GooglePlayProductionEnvironment : GooglePlayTestEnvironment,
       });
     }
     return this.googlePayClient;
@@ -206,7 +207,7 @@ export class GooglePay {
 
     if (paymentsClient) {
       paymentsClient
-        .loadPaymentData(paymentDataRequest)
+        .loadPaymentData({ ...paymentDataRequest, transactionInfo: { ...paymentDataRequest.transactionInfo } })
         .then((paymentData: IPaymentData) => {
           this.onPaymentAuthorized(paymentData);
         })
@@ -232,7 +233,8 @@ export class GooglePay {
     return this.googlePayPaymentService.processPayment(
       this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions,
       formData,
-      paymentData
+      paymentData,
+      PaymentStatus.SUCCESS
     );
   }
 
