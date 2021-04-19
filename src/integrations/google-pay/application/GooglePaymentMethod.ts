@@ -23,7 +23,7 @@ export class GooglePaymentMethod implements IPaymentMethod {
   start(data: any): Observable<IPaymentResult<any>> {
     const gatewayUrl = this.configProvider.getConfig().merchantUrl;
 
-    return this.transportService.sendRequest(data, gatewayUrl).pipe(
+    return this.transportService.sendRequest(data).pipe(
       map((response: any) => ({
         status: data.resultStatus,
         data: response

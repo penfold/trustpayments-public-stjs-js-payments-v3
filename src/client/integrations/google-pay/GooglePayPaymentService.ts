@@ -18,7 +18,6 @@ export class GooglePayPaymentService {
           walletsource: 'GOOGLEPAY',
           wallettoken: JSON.stringify(payment),
           ...formData,
-          termurl: TERM_URL,
           resultStatus: PaymentStatus.SUCCESS,
         },
         name: 'GooglePay'
