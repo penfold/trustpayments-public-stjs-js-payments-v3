@@ -126,7 +126,7 @@ export class ConfigService implements ConfigProvider {
         successCallback: config.successCallback,
         errorCallback: config.errorCallback,
         cancelCallback: config.cancelCallback,
-        merchantUrl: config.merchantUrl
+        merchantUrl: config.merchantUrl,
       },
     };
   }

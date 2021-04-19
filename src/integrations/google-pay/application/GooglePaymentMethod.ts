@@ -1,4 +1,4 @@
-import { Observable, of, EMPTY } from 'rxjs';
+import { Observable, EMPTY } from 'rxjs';
 import { Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
@@ -26,7 +26,7 @@ export class GooglePaymentMethod implements IPaymentMethod {
     return this.transportService.sendRequest(data).pipe(
       map((response: any) => ({
         status: data.resultStatus,
-        data: response
+        data: response,
       }))
     );
   }

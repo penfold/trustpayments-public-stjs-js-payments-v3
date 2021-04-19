@@ -203,28 +203,28 @@ function stFixture() {
   const googlePayConfig: IGooglePayConfig = {
     buttonOptions: {
       onClick: (): void => {},
-      buttonRootNode: 'test'
+      buttonRootNode: 'test',
     },
     paymentRequest: {
       allowedPaymentMethods: {
         parameters: {
           allowedCardAuthMethods: ['PAN_ONLY'],
-          allowedCardNetworks: ['VISA']
+          allowedCardNetworks: ['VISA'],
         },
         tokenizationSpecification: {
           parameters: {
             gateway: 'https://someorigin.com',
-            gatewayMerchantId: 'merchant.net.securetrading'
+            gatewayMerchantId: 'merchant.net.securetrading',
           },
-          type: 'test'
+          type: 'test',
         },
-        type: 'CARD'
+        type: 'CARD',
       },
       apiVersion: 2,
       apiVersionMinor: 0,
       merchantInfo: {
         merchantId: 'merchant.net.securetrading',
-        merchantName: 'merchang'
+        merchantName: 'merchang',
       },
       transactionInfo: {
         countryCode: 'pl',
@@ -235,11 +235,11 @@ function stFixture() {
             label: 'Example item',
             price: '10.00',
             type: 'LINE_ITEM',
-            status: 'FINAL'
-          }
-        ]
-      }
-    }
+            status: 'FINAL',
+          },
+        ],
+      },
+    },
   };
 
   const visaCheckoutConfig = {

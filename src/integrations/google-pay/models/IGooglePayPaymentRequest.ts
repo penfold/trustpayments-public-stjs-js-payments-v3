@@ -1,6 +1,5 @@
 import { IGooglePayAllowedPaymentMethodTypes } from './IGooglePayAllowedPaymentMethodTypes';
 import { IGooglePayCardParameters } from './IGooglePayCardParameters';
-import { IGooglePayPaypalParameters } from './IGooglePayPaypalParameters';
 
 export type IGooglePayTotalPriceStatus = 'NOT_CURRENTLY_KNOWN' | 'ESTIMATED' | 'FINAL';
 

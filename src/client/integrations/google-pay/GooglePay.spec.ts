@@ -1,4 +1,4 @@
-import { anything, instance as mockInstance, mock, when, verify, instance } from 'ts-mockito';
+import { anything, instance as mockInstance, mock, when } from 'ts-mockito';
 import { GooglePay } from './GooglePay';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { GooglePayPaymentService } from './GooglePayPaymentService';
@@ -7,9 +7,7 @@ import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { of } from 'rxjs';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import {
-  IGooglePayPaymentRequest,
-  IGooglePlayIsReadyToPayRequest,
-  IPaymentResponse
+  IPaymentResponse,
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
 
 interface IGooglePaySessionPaymentsClient {
@@ -54,28 +52,28 @@ describe('GooglePay', () => {
         buttonRootNode: 'st-google-pay',
         buttonColor: 'default',
         buttonType: 'buy',
-        buttonLocale: 'en'
+        buttonLocale: 'en',
       },
       paymentRequest: {
         allowedPaymentMethods: {
           parameters: {
             allowedCardAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
-            allowedCardNetworks: ['AMEX', 'DISCOVER', 'INTERAC', 'JCB', 'MASTERCARD', 'VISA']
+            allowedCardNetworks: ['AMEX', 'DISCOVER', 'INTERAC', 'JCB', 'MASTERCARD', 'VISA'],
           },
           tokenizationSpecification: {
             parameters: {
               gateway: 'trustpayments',
-              gatewayMerchantId: 'test_james38641'
+              gatewayMerchantId: 'test_james38641',
             },
-            type: 'PAYMENT_GATEWAY'
+            type: 'PAYMENT_GATEWAY',
           },
-          type: 'CARD'
+          type: 'CARD',
         },
         apiVersion: 2,
         apiVersionMinor: 0,
         merchantInfo: {
           merchantId: 'merchant.net.securetrading',
-          merchantName: 'merchang'
+          merchantName: 'merchang',
         },
         transactionInfo: {
           countryCode: 'pl',
@@ -88,12 +86,12 @@ describe('GooglePay', () => {
               label: 'Example item',
               price: '10',
               type: 'LINE_ITEM',
-              status: 'FINAL'
-            }
-          ]
-        }
-      }
-    }
+              status: 'FINAL',
+            },
+          ],
+        },
+      },
+    },
   };
   const paymentResponse: IPaymentResponse = {
     apiVersion: 2,
@@ -102,14 +100,14 @@ describe('GooglePay', () => {
       description: 'Mastercard •••• 4444',
       info: {
         cardDetails: '4444',
-        cardNetwork: 'MASTERCARD'
-      }
+        cardNetwork: 'MASTERCARD',
+      },
     },
     tokenizationData: {
       token: 'sometoken',
-      type: 'PAYMENT_GATEWAY'
+      type: 'PAYMENT_GATEWAY',
     },
-    type: 'CARD'
+    type: 'CARD',
   };
 
   beforeEach(() => {
@@ -136,11 +134,11 @@ describe('GooglePay', () => {
                   config.onClick();
                 });
                 return button;
-              }
+              },
             };
-          })
-        }
-      }
+          }),
+        },
+      },
     };
 
     googlePay = new GooglePay(
@@ -152,8 +150,8 @@ describe('GooglePay', () => {
     when(configProviderMock.getConfig$()).thenReturn(of(configMock));
     when(jwtDecoderMock.decode(anything())).thenReturn({
       payload: {
-        requesttypedescriptions: ['AUTH']
-      }
+        requesttypedescriptions: ['AUTH'],
+      },
     });
 
     DomMethods.insertScript = jest.fn().mockImplementation((target, options) => {
@@ -179,7 +177,7 @@ describe('GooglePay', () => {
   describe('init()', () => {
     it('should insert Google Pay script', () => {
       expect(DomMethods.insertScript).toHaveBeenCalledWith('head', {
-        src: 'https://pay.google.com/gp/p/js/pay.js'
+        src: 'https://pay.google.com/gp/p/js/pay.js',
       });
     });
 
