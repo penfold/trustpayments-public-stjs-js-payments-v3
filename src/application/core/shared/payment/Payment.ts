@@ -33,7 +33,7 @@ export class Payment {
     requestTypes: RequestType[],
     payment: ICard | IWallet,
     merchantData: IMerchantData,
-    responseData?: IResponseData
+    responseData?: IResponseData,
   ): Promise<Record<string, any>> {
     const customerOutput: CustomerOutput | undefined = responseData
       ? (responseData.customeroutput as CustomerOutput)
@@ -64,27 +64,29 @@ export class Payment {
 
   walletVerify(walletVerify: IWalletVerify): Observable<Record<string, any>> {
     return from(
-      this.stTransport.sendRequest(Object.assign({ requesttypedescriptions: ['WALLETVERIFY'] }, walletVerify))
+      this.stTransport.sendRequest(Object.assign({ requesttypedescriptions: ['WALLETVERIFY'] }, walletVerify)),
     );
   }
 
   private publishResponse(responseData?: IResponseData): Promise<Record<string, any>> {
     return Promise.resolve({
-      response: responseData || {}
+      response: responseData || {},
     });
   }
 
   private publishErrorResponse(responseData?: IResponseData): Promise<Record<string, any>> {
     return Promise.reject({
-      response: responseData || {}
+      response: responseData || {},
     });
   }
 
   private async processRequestTypes(
     requestData: IStRequest,
-    responseData?: IResponseData
+    responseData?: IResponseData,
   ): Promise<Record<string, any>> {
     const processPaymentRequestBody = { ...requestData };
+    const merchantUrl: string = responseData ? responseData.merchantUrl : undefined;
+
 
     if (responseData) {
       processPaymentRequestBody.cachetoken = responseData.cachetoken;
@@ -97,7 +99,7 @@ export class Payment {
       processPaymentRequestBody.fraudcontroltransactionid = cybertonicaTid;
     }
 
-    return this.stTransport.sendRequest(processPaymentRequestBody);
+    return this.stTransport.sendRequest(processPaymentRequestBody, merchantUrl);
   }
 
   private publishThreedResponse(responseData: IResponseData): Promise<Record<string, any>> {

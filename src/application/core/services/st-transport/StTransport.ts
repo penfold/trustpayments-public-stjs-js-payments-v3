@@ -49,12 +49,12 @@ export class StTransport {
    * @param requestObject A request object to send to ST
    * @return A Promise object that resolves the gateway response
    */
-  public async sendRequest(requestObject: IStRequest): Promise<Record<string, unknown>> {
+  public async sendRequest(requestObject: IStRequest, merchantUrl?: string): Promise<Record<string, unknown>> {
     const requestBody = this.getCodec().encode(requestObject);
     const fetchOptions = this._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
 
     if (!this._throttlingRequests.has(requestBody)) {
-      this._throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody, fetchOptions));
+      this._throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody, fetchOptions, merchantUrl));
       setTimeout(() => this._throttlingRequests.delete(requestBody), StTransport.THROTTLE_TIME);
     }
 
@@ -89,9 +89,8 @@ export class StTransport {
     return options;
   }
 
-  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions): Promise<Record<string, unknown>> {
+  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions, merchantUrl?: string): Promise<Record<string, unknown>> {
     const codec = this.getCodec();
-    const merchantUrl = this.getConfig().merchantUrl;
     const gatewayUrl = merchantUrl ? merchantUrl : this.getConfig().datacenterurl;
 
     return this._fetchRetry(gatewayUrl, {

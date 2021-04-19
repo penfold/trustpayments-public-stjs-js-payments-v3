@@ -84,7 +84,7 @@ describe('VisaCheckoutClient', () => {
           },
         })
       );
-      when(paymentMock.processPayment(anything(), anything(), anything())).thenReturn(Promise.resolve({}));
+      when(paymentMock.processPayment(anything(), anything(), anything(), anything())).thenReturn(Promise.resolve({}));
 
       visaCheckoutClient.init$().subscribe(status => {
         expect(status).toBe(VisaCheckoutClientStatus.SUCCESS);
@@ -106,7 +106,7 @@ describe('VisaCheckoutClient', () => {
           },
         })
       );
-      when(paymentMock.processPayment(anything(), anything(), anything())).thenReturn(Promise.reject());
+      when(paymentMock.processPayment(anything(), anything(), anything(), anything())).thenReturn(Promise.reject());
 
       visaCheckoutClient.init$().subscribe(status => {
         expect(status).toBe(VisaCheckoutClientStatus.SUCCESS_FAILED);
