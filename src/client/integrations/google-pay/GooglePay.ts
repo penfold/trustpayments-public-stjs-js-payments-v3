@@ -8,10 +8,18 @@ import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import {
   IGooglePayPaymentRequest,
   IGooglePlayIsReadyToPayRequest,
+  IGooglePayTransactionInfo,
   IPaymentData
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
-
+import { takeUntil, tap } from 'rxjs/operators';
+import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { Observable } from 'rxjs';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { Money } from 'ts-money';
 @Service()
 export class GooglePay {
   private readonly SCRIPT_ADDRESS = environment.GOOGLE_PAY.GOOGLE_PAY_URL;
@@ -19,12 +27,16 @@ export class GooglePay {
 
   private googlePayClient: any = null;
   private config: IConfig;
+  private destroy$: Observable<IMessageBusEvent>;
 
   constructor(
     private configProvider: ConfigProvider,
     private googlePayPaymentService: GooglePayPaymentService,
-    private jwtDecoder: JwtDecoder
-  ) {}
+    private jwtDecoder: JwtDecoder,
+    private messageBus: IMessageBus
+  ) {
+    this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+  }
 
   public async init(config: IConfig) {
     this.config = config;
@@ -34,14 +46,55 @@ export class GooglePay {
     });
 
     // tslint:disable-next-line:no-shadowed-variable
-    this.configProvider.getConfig$().subscribe((config: IConfig) => {
-      this.config = config;
-      this.onConfigUpdate();
-    });
+    this.configProvider
+      .getConfig$()
+      .pipe(
+        tap((config: IConfig): void => {
+          this.config = config;
+          this.updateJwtListener();
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
-  private onConfigUpdate(): void {
-    // console.log('update');
+  private updateConfigWithJWT(jwt: string): IConfig {
+    const { payload }: { payload: IStJwtPayload } = this.jwtDecoder.decode(jwt);
+
+    let totalPrice = payload.mainamount;
+
+    if (totalPrice === undefined) {
+      totalPrice = Money.fromInteger({
+        amount: parseInt(payload.baseamount, 10),
+        currency: payload.currencyiso3a
+      }).toString();
+    }
+
+    const transactionInfo: IGooglePayTransactionInfo = {
+      ...this.config.googlePay.paymentRequest.transactionInfo,
+      currencyCode: payload.currencyiso3a,
+      totalPrice
+    };
+
+    return {
+      ...this.config,
+      googlePay: {
+        ...this.config.googlePay,
+        paymentRequest: { ...this.config.googlePay.paymentRequest, transactionInfo }
+      }
+    };
+  }
+
+  private updateJwtListener(): void {
+    this.messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.UPDATE_JWT),
+        tap((event: IMessageBusEvent) => {
+          this.updateConfigWithJWT(event.data.newJwt);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
   private insertGooglePayLibrary(): Promise<Element> {

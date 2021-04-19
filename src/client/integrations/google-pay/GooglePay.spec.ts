@@ -117,7 +117,7 @@ describe('GooglePay', () => {
     jwtDecoderMock = mock(JwtDecoder);
     googlePayPaymentServiceMock = mock(GooglePayPaymentService);
     document.getElementById = jest.fn().mockImplementation(() => buttonWrapper);
-    googlePayPaymentServiceMock.processPayment = jest.fn().mockImplementation(() => {});
+    googlePayPaymentServiceMock.processPayment = jest.fn().mockImplementation(() => { });
 
     (window as any).google = {
       payments: {
@@ -168,7 +168,7 @@ describe('GooglePay', () => {
           billingprice: '',
           billingamount: '',
           billinglastname: '',
-          billingemail: ''
+          billingemail: '',
         };
       }
     });
@@ -190,7 +190,7 @@ describe('GooglePay', () => {
     it('should pass GooglePay response to the ST Transport after button is clicked', async () => {
       const event = new Event('click');
       button.dispatchEvent(event);
-      
+
       await flushPromises();
       expect(googlePayPaymentServiceMock.processPayment).toHaveBeenCalled();
       expect(true).toBe(false);
