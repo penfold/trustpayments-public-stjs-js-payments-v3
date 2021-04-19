@@ -86,7 +86,7 @@
     "cachetoken": "",
     "threedinit": ""
   },
-  "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTg0NzM3NTYsImlzcyI6InRlc3QiLCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6IiIsImxvY2FsZSI6ImVuX0dCIn19.skvttwLRsXkWTPQi3ii3QneOY9k11w7JpgsaQRt6Ag4",
+  "jwt": "",
   "livestatus": 0,
   "origin": "",
   "panIcon": true,

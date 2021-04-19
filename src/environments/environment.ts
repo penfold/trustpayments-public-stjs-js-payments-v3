@@ -40,7 +40,7 @@ export const environment = {
     CYBERTONICA_LIVE_URL: 'https://cyber.securetrading.net/js/v2/afeasdwqwdasd.js',
   },
   GOOGLE_PAY: {
-    GOOGLE_PAY_URL: 'https://pay.google.com/gp/p/js/pay.js'
+    GOOGLE_PAY_URL: 'https://pay.google.com/gp/p/js/pay.js',
   },
   production: false,
   testEnvironment: false,

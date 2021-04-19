@@ -8,10 +8,22 @@ import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import {
   IGooglePayPaymentRequest,
   IGooglePlayIsReadyToPayRequest,
-  IPaymentData
+  IGooglePayTransactionInfo,
+  IPaymentData,
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
-
+import { takeUntil, tap } from 'rxjs/operators';
+import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { Observable } from 'rxjs';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { Money } from 'ts-money';
+import {
+  GooglePlayProductionEnvironment,
+  GooglePlayTestEnvironment,
+} from '../../../integrations/google-pay/models/IGooglePayConfig';
 @Service()
 export class GooglePay {
   private readonly SCRIPT_ADDRESS = environment.GOOGLE_PAY.GOOGLE_PAY_URL;
@@ -19,12 +31,16 @@ export class GooglePay {
 
   private googlePayClient: any = null;
   private config: IConfig;
+  private destroy$: Observable<IMessageBusEvent>;
 
   constructor(
     private configProvider: ConfigProvider,
     private googlePayPaymentService: GooglePayPaymentService,
-    private jwtDecoder: JwtDecoder
-  ) {}
+    private jwtDecoder: JwtDecoder,
+    private messageBus: IMessageBus
+  ) {
+    this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+  }
 
   public async init(config: IConfig) {
     this.config = config;
@@ -34,14 +50,55 @@ export class GooglePay {
     });
 
     // tslint:disable-next-line:no-shadowed-variable
-    this.configProvider.getConfig$().subscribe((config: IConfig) => {
-      this.config = config;
-      this.onConfigUpdate();
-    });
+    this.configProvider
+      .getConfig$()
+      .pipe(
+        tap((config: IConfig): void => {
+          this.config = config;
+          this.updateJwtListener();
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
-  private onConfigUpdate(): void {
-    // console.log('update');
+  private updateConfigWithJWT(jwt: string): IConfig {
+    const { payload }: { payload: IStJwtPayload } = this.jwtDecoder.decode(jwt);
+
+    let totalPrice = payload.mainamount;
+
+    if (totalPrice === undefined) {
+      totalPrice = Money.fromInteger({
+        amount: parseInt(payload.baseamount, 10),
+        currency: payload.currencyiso3a,
+      }).toString();
+    }
+
+    const transactionInfo: IGooglePayTransactionInfo = {
+      ...this.config.googlePay.paymentRequest.transactionInfo,
+      currencyCode: payload.currencyiso3a,
+      totalPrice,
+    };
+
+    return {
+      ...this.config,
+      googlePay: {
+        ...this.config.googlePay,
+        paymentRequest: { ...this.config.googlePay.paymentRequest, transactionInfo },
+      },
+    };
+  }
+
+  private updateJwtListener(): void {
+    this.messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.UPDATE_JWT),
+        tap((event: IMessageBusEvent) => {
+          this.updateConfigWithJWT(event.data.newJwt);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
   private insertGooglePayLibrary(): Promise<Element> {
@@ -68,10 +125,10 @@ export class GooglePay {
           type: allowedPaymentMethods.type,
           parameters: {
             allowedAuthMethods: allowedPaymentMethods.parameters.allowedCardAuthMethods,
-            allowedCardNetworks: allowedPaymentMethods.parameters.allowedCardNetworks
-          }
-        }
-      ]
+            allowedCardNetworks: allowedPaymentMethods.parameters.allowedCardNetworks,
+          },
+        },
+      ],
     };
   }
 
@@ -83,7 +140,7 @@ export class GooglePay {
       buttonColor,
       buttonType,
       buttonLocale,
-      onClick: this.onGooglePaymentButtonClicked
+      onClick: this.onGooglePaymentButtonClicked,
     });
 
     document.getElementById(buttonRootNode).appendChild(button);
@@ -91,7 +148,9 @@ export class GooglePay {
 
   private getGooglePaymentsClient(): any {
     if (this.googlePayClient === null) {
-      this.googlePayClient = new (window as any).google.payments.api.PaymentsClient({ environment: 'TEST' });
+      this.googlePayClient = new (window as any).google.payments.api.PaymentsClient({
+        environment: environment.testEnvironment ? GooglePlayTestEnvironment : GooglePlayProductionEnvironment,
+      });
     }
     return this.googlePayClient;
   }
@@ -102,7 +161,7 @@ export class GooglePay {
       apiVersionMinor,
       allowedPaymentMethods,
       merchantInfo,
-      transactionInfo: { countryCode, currencyCode, totalPriceStatus, totalPrice }
+      transactionInfo: { countryCode, currencyCode, totalPriceStatus, totalPrice },
     } = this.config.googlePay.paymentRequest;
 
     const paymentDataRequest = Object.assign(
@@ -115,27 +174,27 @@ export class GooglePay {
             type: allowedPaymentMethods.type,
             parameters: {
               allowedAuthMethods: allowedPaymentMethods.parameters.allowedCardAuthMethods,
-              allowedCardNetworks: allowedPaymentMethods.parameters.allowedCardNetworks
+              allowedCardNetworks: allowedPaymentMethods.parameters.allowedCardNetworks,
             },
             tokenizationSpecification: {
               type: allowedPaymentMethods.tokenizationSpecification.type,
               parameters: {
                 gateway: allowedPaymentMethods.tokenizationSpecification.parameters.gateway,
-                gatewayMerchantId: allowedPaymentMethods.tokenizationSpecification.parameters.gatewayMerchantId
-              }
-            }
-          }
+                gatewayMerchantId: allowedPaymentMethods.tokenizationSpecification.parameters.gatewayMerchantId,
+              },
+            },
+          },
         ],
         transactionInfo: {
           countryCode,
           currencyCode,
           totalPriceStatus,
-          totalPrice
+          totalPrice,
         },
         merchantInfo: {
           merchantName: merchantInfo.merchantName,
-          merchantId: merchantInfo.merchantId
-        }
+          merchantId: merchantInfo.merchantId,
+        },
       }
     );
     return paymentDataRequest;

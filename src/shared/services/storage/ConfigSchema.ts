@@ -45,6 +45,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
     .allow(null),
   jwt: Joi.string().allow(''),
   livestatus: Joi.number().valid(0, 1),
+  merchantUrl: Joi.string().allow(''),
   origin: Joi.string().allow(''),
   panIcon: Joi.boolean(),
   placeholders: Joi.object().keys({
