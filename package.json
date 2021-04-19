@@ -20,8 +20,8 @@
     "locale": "en_GB"
   },
   "engines": {
-    "node": "14.15.5",
-    "npm": "7.7.6"
+    "node": "14.16.1",
+    "npm": "7.9.0"
   },
   "scripts": {
     "build": "webpack --config webpack.prod.js",
@@ -99,7 +99,7 @@
     "coveralls": "3.1.0",
     "cross-env": "7.0.3",
     "css-loader": "5.2.0",
-    "cssnano": "4.1.11",
+    "cssnano": "4.1.10",
     "eslint": "7.23.0",
     "eslint-plugin-jest": "24.3.4",
     "eslint-plugin-unused-imports": "1.1.1",
