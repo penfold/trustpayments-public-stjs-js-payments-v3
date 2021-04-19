@@ -20,6 +20,10 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { Observable } from 'rxjs';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { Money } from 'ts-money';
+import {
+  GooglePlayProductionEnvironment,
+  GooglePlayTestEnvironment,
+} from '../../../integrations/google-pay/models/IGooglePayConfig';
 @Service()
 export class GooglePay {
   private readonly SCRIPT_ADDRESS = environment.GOOGLE_PAY.GOOGLE_PAY_URL;
@@ -144,7 +148,9 @@ export class GooglePay {
 
   private getGooglePaymentsClient(): any {
     if (this.googlePayClient === null) {
-      this.googlePayClient = new (window as any).google.payments.api.PaymentsClient({ environment: 'TEST' });
+      this.googlePayClient = new (window as any).google.payments.api.PaymentsClient({
+        environment: environment.testEnvironment ? GooglePlayTestEnvironment : GooglePlayProductionEnvironment,
+      });
     }
     return this.googlePayClient;
   }
