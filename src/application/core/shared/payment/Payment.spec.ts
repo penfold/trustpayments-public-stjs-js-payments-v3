@@ -248,6 +248,21 @@ describe('Payment', () => {
       verify(stCodecSpy.publishResponse(response, 'jwt', 'foobar')).never();
       verify(notificationService.success(PAYMENT_SUCCESS)).never();
     });
+
+    it('should send a request with wallet param and merchantUrl', async () => {
+      await instance.processPayment(
+        [RequestType.AUTH],
+        wallet,
+        { wallettoken: 'overridden' },
+        undefined,
+        'https://somemerchanturl.com',
+      );
+      // @ts-ignore
+      expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
+        walletsource: 'APPLEPAY',
+        wallettoken: 'encryptedpaymentdata',
+      }, 'https://somemerchanturl.com');
+    });
   });
 
   describe('walletVerify()', () => {
