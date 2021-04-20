@@ -147,7 +147,6 @@ export class GooglePay {
   }
 
   private getGooglePaymentsClient(): any {
-    console.log('=== environment', environment);
     if (this.googlePayClient === null) {
       this.googlePayClient = new (window as any).google.payments.api.PaymentsClient({
         environment: environment.production ? GooglePlayProductionEnvironment : GooglePlayTestEnvironment,

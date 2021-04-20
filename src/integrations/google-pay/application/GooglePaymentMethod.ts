@@ -7,6 +7,8 @@ import { GooglePaymentMethodName } from '../models/IGooglePaymentMethod';
 import { TransportService } from '../../../application/core/services/st-transport/TransportService';
 import { map } from 'rxjs/operators';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
+import { IGooglePayGatewayRequest } from '../models/IGooglePayRequest';
+import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class GooglePaymentMethod implements IPaymentMethod {
@@ -20,13 +22,13 @@ export class GooglePaymentMethod implements IPaymentMethod {
     return EMPTY;
   }
 
-  start(data: any): Observable<IPaymentResult<any>> {
+  start(data: IGooglePayGatewayRequest): Observable<IPaymentResult<IRequestTypeResponse>> {
     const gatewayUrl = this.configProvider.getConfig().merchantUrl;
 
-    return this.transportService.sendRequest(data).pipe(
-      map((response: any) => ({
+    return this.transportService.sendRequest(data, gatewayUrl).pipe(
+      map((response: IRequestTypeResponse) => ({
         status: data.resultStatus,
-        data: response,
+        data: response
       }))
     );
   }
