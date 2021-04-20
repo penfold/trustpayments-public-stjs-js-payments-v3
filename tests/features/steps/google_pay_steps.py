@@ -29,3 +29,9 @@ def step_impl(context, password):
 def step_impl(context):
     google_pay_page = context.page_factory.get_page(Pages.GOOGLE_PAY_PAGE)
     assert google_pay_page.validate_new_window_presence()
+
+@step("User press next button")
+def step_impl(context):
+    google_pay_page = context.page_factory.get_page(Pages.GOOGLE_PAY_PAGE)
+    google_pay_page.finalise_payment()
+

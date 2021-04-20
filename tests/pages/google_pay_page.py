@@ -23,7 +23,12 @@ class GooglePayPage(BasePage):
         self._actions.send_keys(GooglePayLocators.gpay_email_address_input, email)
 
     def fill_password_field(self, password):
-        pass
+        self._actions.send_keys(GooglePayLocators.gpay_password_input, password)
 
     def press_next_button(self):
+        self._waits.wait_for_element_to_be_clickable(GooglePayLocators.gpay_next_button)
         self._actions.click(GooglePayLocators.gpay_next_button)
+
+    def finalise_payment(self):
+        self._waits.wait_for_element_to_be_clickable(GooglePayLocators.gpay_final_next_button)
+        self._actions.click(GooglePayLocators.gpay_final_next_button)
