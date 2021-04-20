@@ -34,6 +34,7 @@ export class Payment {
     payment: ICard | IWallet,
     merchantData: IMerchantData,
     responseData?: IResponseData,
+    merchantUrl?: string
   ): Promise<Record<string, any>> {
     const customerOutput: CustomerOutput | undefined = responseData
       ? (responseData.customeroutput as CustomerOutput)
@@ -52,7 +53,7 @@ export class Payment {
     }
 
     if (requestTypes.length) {
-      return this.processRequestTypes({ ...merchantData, ...payment }, responseData);
+      return this.processRequestTypes({ ...merchantData, ...payment }, responseData, merchantUrl);
     }
 
     if (responseData && responseData.requesttypedescription === 'THREEDQUERY' && responseData.threedresponse) {
@@ -83,10 +84,9 @@ export class Payment {
   private async processRequestTypes(
     requestData: IStRequest,
     responseData?: IResponseData,
+    merchantUrl?: string
   ): Promise<Record<string, any>> {
     const processPaymentRequestBody = { ...requestData };
-    const merchantUrl: string = responseData ? responseData.merchantUrl : undefined;
-
 
     if (responseData) {
       processPaymentRequestBody.cachetoken = responseData.cachetoken;
