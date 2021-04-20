@@ -86,7 +86,6 @@ export class ControlFrame {
     private _notification: NotificationService,
     private _cybertonica: Cybertonica,
     private _threeDProcess: ThreeDProcess,
-    private _configService: ConfigService,
     private _messageBus: IMessageBus,
     private _frame: Frame,
     private _jwtDecoder: JwtDecoder,
@@ -94,7 +93,6 @@ export class ControlFrame {
     private _applePayClient: ApplePayClient,
     private paymentController: PaymentController,
     private translator: ITranslator,
-    private googlePay: GooglePay
   ) {
     this.init();
     this._initVisaCheckout();
