@@ -11,13 +11,7 @@ import {
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
-
-interface IGooglePaySessionPaymentsClient {
-  createButton(): void;
-  isReadyToPay(): void;
-  // loadPaymentData(request: IGooglePayPaymentRequest): Promise<any>;
-  // isReadyToPay(request: IGooglePlayIsReadyToPayRequest): Promise<any>;
-}
+import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 
 interface IGooglePaySessionApi {
   PaymentsClient(envConfig: any): IGooglePaySessionPaymentsClient;

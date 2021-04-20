@@ -4,7 +4,7 @@ import { RequestType } from "../../../shared/types/RequestType";
 export interface IGooglePayGatewayRequest {
     [key: string]: any;
     requestTypes: RequestType[];
-    resultStatus?: PaymentStatus
-    walletsource?: string
-    wallettoken?: string
+    resultStatus?: PaymentStatus;
+    walletsource?: string;
+    wallettoken?: string;
 }
