@@ -161,7 +161,7 @@ describe('ApplePayPaymentService', () => {
         response: { errorcode: '0' },
       };
 
-      when(payment.processPayment(anything(), anything(), anything(), anything())).thenResolve(data);
+      when(payment.processPayment(anything(), anything(), anything(), anything(), anything())).thenResolve(data);
 
       applePayPaymentService
         .processPayment(
@@ -191,7 +191,7 @@ describe('ApplePayPaymentService', () => {
     });
 
     it('should declined payment when errorcode is not received', done => {
-      when(payment.processPayment(anything(), anything(), anything(), anything())).thenResolve({
+      when(payment.processPayment(anything(), anything(), anything(), anything(), anything())).thenResolve({
         response: {
           errorcode: undefined,
           errormessage: 'An error occured',
@@ -227,12 +227,12 @@ describe('ApplePayPaymentService', () => {
     });
 
     it(`should return error data when TRANSACTION_COMPLETE event returns ${bypassResponseErrorData.errormessage} error number ${bypassResponseErrorData.errorcode}`, done => {
-      when(payment.processPayment(anything(), anything(), anything(), anything())).thenReturn(
+      when(payment.processPayment(anything(), anything(), anything(), anything(), anything())).thenReturn(
         new Promise((resolve, reject) => {})
       );
 
       applePayPaymentService
-        .processPayment(anything(), anything(), anything(), anything())
+        .processPayment(anything(), anything(), anything(), anything(), anything())
         .subscribe((response: IApplePayProcessPaymentResponse) => {
           expect(response).toEqual(bypassResponseErrorData);
           done();
@@ -248,12 +248,12 @@ describe('ApplePayPaymentService', () => {
     });
 
     it(`should return error data when TRANSACTION_COMPLETE event returns ${invalidResponseErrorData.errormessage} error number ${invalidResponseErrorData.errorcode}`, done => {
-      when(payment.processPayment(anything(), anything(), anything(), anything())).thenReturn(
+      when(payment.processPayment(anything(), anything(), anything(), anything(), anything())).thenReturn(
         new Promise((resolve, reject) => {})
       );
 
       applePayPaymentService
-        .processPayment(anything(), anything(), anything(), anything())
+        .processPayment(anything(), anything(), anything(), anything(), anything())
         .subscribe((response: IApplePayProcessPaymentResponse) => {
           expect(response).toEqual(invalidResponseErrorData);
           done();

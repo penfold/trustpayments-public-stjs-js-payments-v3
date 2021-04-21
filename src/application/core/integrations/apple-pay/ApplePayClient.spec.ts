@@ -77,7 +77,7 @@ describe('ApplePayClient', () => {
         data: anything(),
       })
     );
-    when(applePayPaymentService.processPayment(anything(), anything(), anything(), anything())).thenReturn(
+    when(applePayPaymentService.processPayment(anything(), anything(), anything(), anything(), anything())).thenReturn(
       of(anything())
     );
   });

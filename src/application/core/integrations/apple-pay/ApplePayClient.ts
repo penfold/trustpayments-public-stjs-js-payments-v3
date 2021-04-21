@@ -127,7 +127,8 @@ export class ApplePayClient implements IApplePayClient {
         this.jwtDecoder.decode(config.jwtFromConfig).payload.requesttypedescriptions,
         config.validateMerchantRequest,
         formData,
-        payment
+        payment,
+        config.merchantUrl
       )
       .pipe(
         tap(() => this.localStorage.setItem('completePayment', 'true')),
