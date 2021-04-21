@@ -82,7 +82,7 @@ describe('VisaCheckoutUpdateService', () => {
             displayName: 'My Test Site',
           },
         },
-      }).visaInitConfig
+      }).visaInitConfig,
     ).toEqual({
       apikey: 'some id',
       encryptionKey: undefined,
@@ -98,9 +98,24 @@ describe('VisaCheckoutUpdateService', () => {
     });
   });
 
+  it('should set config object with specified merchantUrl', () => {
+    expect(
+      instance.updateConfigObject({
+        jwt:
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw',
+        merchantUrl: 'https://somemerchanturl.com',
+        visaCheckout: {
+          livestatus: 0,
+          merchantId: 'some id',
+          placement: 'st-visa-checkout',
+        },
+      }).merchantUrl,
+    ).toEqual('https://somemerchanturl.com');
+  });
+
   it('should throw an error when visa checkout config has not been specified', () => {
     expect(() => instance.updateConfigObject({ jwt: 'some jwt' })).toThrowError(
-      'VisaCheckout config has not been specified'
+      'VisaCheckout config has not been specified',
     );
   });
 });
