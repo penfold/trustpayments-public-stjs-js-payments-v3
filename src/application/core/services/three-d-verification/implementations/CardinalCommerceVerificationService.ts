@@ -25,7 +25,6 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
   }
 
   binLookup(pan: string): Observable<void> {
-    console.log('WHTRBIT cardinal binLookup');
     const queryEvent: IMessageBusEvent<ITriggerData<string>> = {
       type: PUBLIC_EVENTS.CARDINAL_TRIGGER,
       data: {
@@ -38,7 +37,6 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
   }
 
   start(jwt: string): Observable<void> {
-    console.log('WHTRBIT cardinal start');
     const queryEvent: IMessageBusEvent<IInitializationData> = {
       type: PUBLIC_EVENTS.CARDINAL_START,
       data: { jwt },
@@ -48,7 +46,6 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
   }
 
   verify(data: IVerificationData): Observable<IVerificationResult> {
-    console.log('WHTRBIT cardinal verify');
     const queryEvent: IMessageBusEvent<IVerificationData> = {
       type: PUBLIC_EVENTS.CARDINAL_CONTINUE,
       data,

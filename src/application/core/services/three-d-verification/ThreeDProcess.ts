@@ -40,7 +40,7 @@ export class ThreeDProcess {
     this.threeDSTokens$ = merge(initialTokens, updatedTokens).pipe(shareReplay(1));
 
     return this.threeDSTokens$.pipe(
-      // first(),
+      first(),
       switchMap(threeDStokens => this.initVerificationService(threeDStokens))
     );
   }
