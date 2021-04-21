@@ -60,11 +60,12 @@ export class ThreeDProcess {
         return iif(includesThreedquery, this.verificationService.start(tokens.jwt), of(null)).pipe(
           mapTo(new ThreeDQueryRequest(tokens.cacheToken, card, merchantData)),
           switchMap(request => {
-            console.log('WHTRBIT ThreeDProcess.performThreeDQuery this.gatewayClient.threedQuery', request);
+            console.log('WHTRBIT ThreeDProcess.performThreeDQuery this.gatewayClient.performThreeDQuery req', request);
+
             return this.gatewayClient.threedQuery(request);
           }),
           switchMap(response => {
-            console.log('WHTRBIT ThreeDProcess.performThreeDQuery this.gatewayClient.threedQuery res', response);
+            console.log('WHTRBIT ThreeDProcess.performThreeDQuery this.gatewayClient.performThreeDQuery res', response);
 
             if (this.isThreeDAuthorisationRequired(response)) {
               return this.authenticateCard(response, tokens);
@@ -82,13 +83,10 @@ export class ThreeDProcess {
   }
 
   private initVerificationService(tokens: IThreeDSTokens): Observable<void> {
-    console.log('WHTRBIT ThreeDProcess initVerificationService start');
-
     return this.verificationService.init(tokens.jwt).pipe(
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed')),
       tap(() => this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.UNLOCK_BUTTON }, true)),
       tap(() => {
-        console.log('WHTRBIT ThreeDProcess initVerificationService complete');
         this.messageBus
           .pipe(ofType(MessageBus.EVENTS_PUBLIC.BIN_PROCESS))
           .subscribe((event: IMessageBusEvent<string>) => this.verificationService.binLookup(event.data));
@@ -107,7 +105,7 @@ export class ThreeDProcess {
     return this.verificationService.verify(verificationData).pipe(
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
       switchMap(validationResult => this.verificationResultHandler.handle(response, validationResult, tokens)),
-      tap(res => console.log('WHTRBIT resssssssssssss', res))
+      tap(res => console.log('WHTRBIT ThreeDProcess.authenticateCard res', res))
     );
   }
 

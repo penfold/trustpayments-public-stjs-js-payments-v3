@@ -31,8 +31,6 @@ export class ThreeDSecureClient {
   }
 
   init(): void {
-    console.log('WHTRBIT client init');
-
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_SETUP)
       .thenRespond(() => this.setup$());

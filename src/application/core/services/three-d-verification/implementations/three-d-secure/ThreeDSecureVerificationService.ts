@@ -14,8 +14,6 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
   constructor(private interFrameCommunicator: InterFrameCommunicator) {}
 
   init(jwt: string): Observable<void> {
-    console.log('WHTRBIT verservice init', jwt);
-
     const queryEvent: IMessageBusEvent<IInitializationData> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_SETUP,
       data: { jwt },
@@ -25,8 +23,6 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
   }
 
   binLookup(pan: string): Observable<void> {
-    console.log('WHTRBIT verservice binlookup');
-
     const queryEvent: IMessageBusEvent<string> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_TRIGGER,
       data: pan,
@@ -36,8 +32,6 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
   }
 
   start(jwt: string): Observable<any> {
-    console.log('WHTRBIT verservice start');
-
     const queryEvent: IMessageBusEvent<IInitializationData> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_START,
       data: { jwt },
@@ -47,8 +41,6 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
   }
 
   verify(data: IVerificationData): Observable<IVerificationResult> {
-    console.log('WHTRBIT verservice verify');
-
     const queryEvent: IMessageBusEvent<IVerificationData> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_VERIFY,
       data,
