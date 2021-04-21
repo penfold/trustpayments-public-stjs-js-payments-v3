@@ -54,6 +54,10 @@ describe('ApplePayConfigService', () => {
     validateMerchantRequest,
     paymentRequest,
   };
+  const applePayConfigObjectWithMerchantUrl: IApplePayConfigObject = {
+    ...applePayConfigObject,
+    merchantUrl: 'https://somemerchanturl.com',
+  };
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const applePayNetworkService: ApplePayNetworksService = mock(ApplePayNetworksService);
   const applePaySessionService: ApplePaySessionService = mock(ApplePaySessionService);
@@ -245,6 +249,19 @@ describe('ApplePayConfigService', () => {
         locale: payload.payload.locale,
         formId: 'st-form',
         jwtFromConfig: 'somerandomjwt',
+        validateMerchantRequest,
+        paymentRequest,
+      });
+    });
+
+    it('should return updated config object with merchantUrl', () => {
+      expect(applePayConfigService.updateConfigWithJwtData('somerandomjwtUpdated', applePayConfigObjectWithMerchantUrl)).toEqual({
+        applePayConfig: applePayConfig,
+        applePayVersion: 5,
+        locale: payload.payload.locale,
+        formId: 'st-form',
+        jwtFromConfig: 'somerandomjwt',
+        merchantUrl: 'https://somemerchanturl.com',
         validateMerchantRequest,
         paymentRequest,
       });

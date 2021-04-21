@@ -9,7 +9,7 @@ export interface IApplePayConfigObject {
   locale: Locale;
   formId: string;
   jwtFromConfig: string;
-  merchantUrl: string;
+  merchantUrl?: string;
   validateMerchantRequest: IApplePayValidateMerchantRequest;
   paymentRequest: IApplePayPaymentRequest;
 }
