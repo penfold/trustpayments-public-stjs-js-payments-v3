@@ -64,6 +64,7 @@ export class GooglePay {
   }
 
   private updateConfigWithJWT(jwt: string): IConfig {
+    this.config.jwt = jwt;
     const { payload }: { payload: IStJwtPayload } = this.jwtDecoder.decode(jwt);
 
     let totalPrice = payload.mainamount;
