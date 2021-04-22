@@ -24,12 +24,13 @@ import {
   GooglePlayProductionEnvironment,
   GooglePlayTestEnvironment,
 } from '../../../integrations/google-pay/models/IGooglePayConfig';
+import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 @Service()
 export class GooglePay {
   private readonly SCRIPT_ADDRESS = environment.GOOGLE_PAY.GOOGLE_PAY_URL;
   private readonly SCRIPT_TARGET: string = 'head';
 
-  private googlePayClient: any = null;
+  private googlePayClient: IGooglePaySessionPaymentsClient = null;
   private config: IConfig;
   private destroy$: Observable<IMessageBusEvent>;
 
@@ -146,8 +147,7 @@ export class GooglePay {
     document.getElementById(buttonRootNode).appendChild(button);
   }
 
-  private getGooglePaymentsClient(): any {
-    console.log('=== environment', environment);
+  private getGooglePaymentsClient(): IGooglePaySessionPaymentsClient {
     if (this.googlePayClient === null) {
       this.googlePayClient = new (window as any).google.payments.api.PaymentsClient({
         environment: environment.production ? GooglePlayProductionEnvironment : GooglePlayTestEnvironment,

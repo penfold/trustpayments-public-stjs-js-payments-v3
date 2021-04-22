@@ -9,13 +9,9 @@ import { DomMethods } from '../../../application/core/shared/dom-methods/DomMeth
 import {
   IPaymentResponse,
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
-
-interface IGooglePaySessionPaymentsClient {
-  createButton(): void;
-  isReadyToPay(): void;
-  // loadPaymentData(request: IGooglePayPaymentRequest): Promise<any>;
-  // isReadyToPay(request: IGooglePlayIsReadyToPayRequest): Promise<any>;
-}
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
+import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 
 interface IGooglePaySessionApi {
   PaymentsClient(envConfig: any): IGooglePaySessionPaymentsClient;
@@ -38,6 +34,7 @@ describe('GooglePay', () => {
   let configProviderMock: ConfigProvider;
   let jwtDecoderMock: JwtDecoder;
   let googlePayPaymentServiceMock: GooglePayPaymentService;
+  let messageBus: IMessageBus;
   let buttonWrapper: HTMLElement;
   let button: HTMLElement;
   const configMock: IConfig = {
@@ -116,6 +113,7 @@ describe('GooglePay', () => {
     googlePayPaymentServiceMock = mock(GooglePayPaymentService);
     document.getElementById = jest.fn().mockImplementation(() => buttonWrapper);
     googlePayPaymentServiceMock.processPayment = jest.fn().mockImplementation(() => { });
+    messageBus = new SimpleMessageBus();
 
     (window as any).google = {
       payments: {
@@ -144,7 +142,8 @@ describe('GooglePay', () => {
     googlePay = new GooglePay(
       mockInstance(configProviderMock),
       mockInstance(googlePayPaymentServiceMock),
-      mockInstance(jwtDecoderMock)
+      mockInstance(jwtDecoderMock),
+      messageBus
     );
 
     when(configProviderMock.getConfig$()).thenReturn(of(configMock));
