@@ -3,7 +3,7 @@ import { filter, map, switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
 import { environment } from '../../../../environments/environment';
-import { GooglePlayProductionEnvironment, GooglePlayTestEnvironment } from '../../../../integrations/google-pay/models/IGooglePayConfig';
+import { GooglePayProductionEnvironment, GooglePayTestEnvironment } from '../../../../integrations/google-pay/models/IGooglePayConfig';
 import { IGooglePlayIsReadyToPayRequest } from '../../../../integrations/google-pay/models/IGooglePayPaymentRequest';
 import { IGooglePaySessionPaymentsClient } from '../../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 import { IConfig } from '../../../../shared/model/config/IConfig';
@@ -18,7 +18,7 @@ export class GooglePaySdkProvider {
 
     return this.insertGooglePayLibrary().pipe(
       map(() => {
-        googlePaySdkInstance = this.getGooglePaySdkInstance()
+        googlePaySdkInstance = this.getGooglePaySdkInstance(config);
 
         return googlePaySdkInstance;
       }),
@@ -34,13 +34,15 @@ export class GooglePaySdkProvider {
     return from(DomMethods.insertScript(this.SCRIPT_TARGET, { src: this.SCRIPT_ADDRESS }));
   }
 
-  private getGooglePayEnvironment(): string {
-    return environment.production ? GooglePlayProductionEnvironment : GooglePlayTestEnvironment;
+  private getGooglePayEnvironment(config: IConfig): string {
+    const paymentRequest = config.googlePay.paymentRequest;
+    
+    return config.googlePay.paymentRequest.environment ? paymentRequest.environment : environment.production ? GooglePayProductionEnvironment : GooglePayTestEnvironment;
   }
 
-  private getGooglePaySdkInstance(): IGooglePaySessionPaymentsClient {
+  private getGooglePaySdkInstance(config: IConfig): IGooglePaySessionPaymentsClient {
     return (new (window as any).google.payments.api.PaymentsClient({
-      environment: this.getGooglePayEnvironment(),
+      environment: this.getGooglePayEnvironment(config),
     }));
   }
 
