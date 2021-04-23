@@ -21,8 +21,8 @@ import { Observable } from 'rxjs';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { Money } from 'ts-money';
 import {
-  GooglePlayProductionEnvironment,
-  GooglePlayTestEnvironment,
+  GooglePayProductionEnvironment,
+  GooglePayTestEnvironment,
 } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 @Service()
@@ -149,9 +149,11 @@ export class GooglePay {
   }
 
   private getGooglePaymentsClient(): IGooglePaySessionPaymentsClient {
+    const { paymentRequest } = this.config.googlePay;
+
     if (this.googlePayClient === null) {
       this.googlePayClient = new (window as any).google.payments.api.PaymentsClient({
-        environment: environment.production ? GooglePlayProductionEnvironment : GooglePlayTestEnvironment,
+        environment: paymentRequest.environment ? paymentRequest.environment : environment.production ? GooglePayProductionEnvironment : GooglePayTestEnvironment,
       });
     }
     return this.googlePayClient;
@@ -196,6 +198,7 @@ export class GooglePay {
         merchantInfo: {
           merchantName: merchantInfo.merchantName,
           merchantId: merchantInfo.merchantId,
+          merchantOrigin: merchantInfo.merchantOrigin,
         },
       }
     );

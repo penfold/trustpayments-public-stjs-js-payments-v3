@@ -1,5 +1,8 @@
 import { Service } from 'typedi';
+import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { IPaymentData } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
+import { IGooglePayGatewayRequest } from '../../../integrations/google-pay/models/IGooglePayRequest';
 import { RequestType } from '../../../shared/types/RequestType';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
@@ -9,8 +12,13 @@ import { GooglePaymentMethodName, GooglePaymentMethodwalletsource } from '../../
 export class GooglePayPaymentService {
   constructor(private messageBus: IMessageBus) {}
 
-  processPayment(requestTypes: RequestType[], formData: Record<string, unknown>, payment: any, resultStatus: PaymentStatus): void {
-    this.messageBus.publish<any>({
+  processPayment(
+    requestTypes: RequestType[],
+    formData: Record<string, unknown>,
+    payment: IPaymentData,
+    resultStatus: PaymentStatus,
+  ): void {
+    this.messageBus.publish<IStartPaymentMethod<IGooglePayGatewayRequest>>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
         data: {
@@ -25,8 +33,12 @@ export class GooglePayPaymentService {
     });
   }
 
-  errorPayment(requestTypes: RequestType[], formData: Record<string, unknown>, errorCode = PaymentStatus.ERROR): void {
-    this.messageBus.publish<any>({
+  errorPayment(
+    requestTypes: RequestType[],
+    formData: Record<string, unknown>,
+    errorCode = PaymentStatus.ERROR,
+  ): void {
+    this.messageBus.publish<IStartPaymentMethod<IGooglePayGatewayRequest>>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
         data: {
