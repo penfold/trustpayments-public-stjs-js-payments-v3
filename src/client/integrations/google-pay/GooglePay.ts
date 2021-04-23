@@ -12,12 +12,12 @@ import {
   IPaymentData,
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
-import { takeUntil, tap } from 'rxjs/operators';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { Money } from 'ts-money';
 import {
@@ -25,6 +25,7 @@ import {
   GooglePlayTestEnvironment,
 } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
+
 @Service()
 export class GooglePay {
   private readonly SCRIPT_ADDRESS = environment.GOOGLE_PAY.GOOGLE_PAY_URL;
@@ -43,24 +44,23 @@ export class GooglePay {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
-  public async init(config: IConfig) {
+  public init(config: IConfig) {
     this.config = config;
 
-    this.insertGooglePayLibrary().then(() => {
-      this.onGooglePayLoaded();
-    });
+    from(this.insertGooglePayLibrary()).pipe(
+      switchMap(() => {
+        this.setupGooglePayClient();
 
-    // tslint:disable-next-line:no-shadowed-variable
-    this.configProvider
-      .getConfig$()
-      .pipe(
-        tap((config: IConfig): void => {
-          this.config = config;
-          this.updateJwtListener();
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
+        return from(this.googlePayClient.isReadyToPay(this.getGoogleIsReadyToPayRequest()));
+      }),
+      tap(() => this.addGooglePayButton()),
+      switchMap(() => this.configProvider.getConfig$()),
+      tap((config: IConfig) => {
+        this.config = config;
+        this.updateJwtListener();
+      }),
+      takeUntil(this.destroy$),
+    ).subscribe();
   }
 
   private updateConfigWithJWT(jwt: string): IConfig {
@@ -107,15 +107,6 @@ export class GooglePay {
     return DomMethods.insertScript(this.SCRIPT_TARGET, { src: this.SCRIPT_ADDRESS });
   }
 
-  private onGooglePayLoaded(): void {
-    const paymentsClient = this.getGooglePaymentsClient();
-    paymentsClient.isReadyToPay(this.getGoogleIsReadyToPayRequest()).then((response: any) => {
-      if (response.result) {
-        this.addGooglePayButton();
-      }
-    });
-  }
-
   private getGoogleIsReadyToPayRequest(): IGooglePlayIsReadyToPayRequest {
     const { apiVersion, apiVersionMinor, allowedPaymentMethods } = this.config.googlePay.paymentRequest;
 
@@ -136,9 +127,7 @@ export class GooglePay {
 
   private addGooglePayButton(): void {
     const { buttonRootNode, buttonColor, buttonType, buttonLocale } = this.config.googlePay.buttonOptions;
-
-    const paymentsClient = this.getGooglePaymentsClient();
-    const button = paymentsClient.createButton({
+    const button = this.googlePayClient.createButton({
       buttonColor,
       buttonType,
       buttonLocale,
@@ -148,12 +137,11 @@ export class GooglePay {
     document.getElementById(buttonRootNode).appendChild(button);
   }
 
-  private getGooglePaymentsClient(): IGooglePaySessionPaymentsClient {
-    if (this.googlePayClient === null) {
-      this.googlePayClient = new (window as any).google.payments.api.PaymentsClient({
-        environment: environment.production ? GooglePlayProductionEnvironment : GooglePlayTestEnvironment,
-      });
-    }
+  private setupGooglePayClient(): IGooglePaySessionPaymentsClient {
+    this.googlePayClient = new (window as any).google.payments.api.PaymentsClient({
+      environment: environment.production ? GooglePlayProductionEnvironment : GooglePlayTestEnvironment,
+    });
+
     return this.googlePayClient;
   }
 
@@ -204,27 +192,24 @@ export class GooglePay {
 
   private onGooglePaymentButtonClicked = (): void => {
     const paymentDataRequest = this.getGooglePaymentDataRequest();
-    const paymentsClient = this.getGooglePaymentsClient();
 
-    if (paymentsClient) {
-      paymentsClient
-        .loadPaymentData({ ...paymentDataRequest, transactionInfo: { ...paymentDataRequest.transactionInfo } })
-        .then((paymentData: IPaymentData) => {
-          this.onPaymentAuthorized(paymentData);
-        })
-        .catch((err: any) => {
-          switch (err.statusCode) {
-            case 'CANCELED': {
-              this.onPaymentError(PaymentStatus.CANCEL);
-              break;
-            }
-            default: {
-              this.onPaymentError(PaymentStatus.ERROR);
-              break;
-            }
+    this.googlePayClient
+      .loadPaymentData({ ...paymentDataRequest, transactionInfo: { ...paymentDataRequest.transactionInfo } })
+      .then((paymentData: IPaymentData) => {
+        this.onPaymentAuthorized(paymentData);
+      })
+      .catch((err: any) => {
+        switch (err.statusCode) {
+          case 'CANCELED': {
+            this.onPaymentError(PaymentStatus.CANCEL);
+            break;
           }
-        });
-    }
+          default: {
+            this.onPaymentError(PaymentStatus.ERROR);
+            break;
+          }
+        }
+      });
   };
 
   private onPaymentAuthorized(paymentData: IPaymentData): void {
