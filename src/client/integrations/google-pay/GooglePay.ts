@@ -51,9 +51,7 @@ export class GooglePay {
         this.updateJwtListener();
       }),
       takeUntil(this.destroy$),
-    ).subscribe(() => {
-      console.log('Yoo');
-    });
+    ).subscribe();
   }
 
   private updateConfigWithJWT(jwt: string): IConfig {

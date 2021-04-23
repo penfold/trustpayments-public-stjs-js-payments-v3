@@ -27,7 +27,7 @@ export class GooglePaySdkProvider {
       }),
       filter((isReadyToPayResponse: any) => isReadyToPayResponse.result),
       switchMap(() => of(googlePaySdkInstance)),
-    )
+    );
   }
 
   private insertGooglePayLibrary(): Observable<Element> {
@@ -36,7 +36,7 @@ export class GooglePaySdkProvider {
 
   private getGooglePayEnvironment(config: IConfig): string {
     const paymentRequest = config.googlePay.paymentRequest;
-    
+
     return config.googlePay.paymentRequest.environment ? paymentRequest.environment : environment.production ? GooglePayProductionEnvironment : GooglePayTestEnvironment;
   }
 
