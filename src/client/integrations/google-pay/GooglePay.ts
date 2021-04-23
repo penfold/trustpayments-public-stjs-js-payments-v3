@@ -23,8 +23,7 @@ import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pa
 
 @Service()
 export class GooglePay {
-
-  private googlePaySdk: IGooglePaySessionPaymentsClient = null;
+  private googlePaySdk: IGooglePaySessionPaymentsClient;
   private config: IConfig;
   private destroy$: Observable<IMessageBusEvent>;
 
@@ -44,7 +43,7 @@ export class GooglePay {
     this.googlePaySdkProvider.setupSdk$(config).pipe(
       tap((googlePaySdk: IGooglePaySessionPaymentsClient) => {
         this.googlePaySdk = googlePaySdk;
-        this.addGooglePayButton()
+        this.addGooglePayButton();
       }),
       switchMap(() => this.configProvider.getConfig$()),
       tap((config: IConfig) => {
@@ -52,7 +51,9 @@ export class GooglePay {
         this.updateJwtListener();
       }),
       takeUntil(this.destroy$),
-    ).subscribe();
+    ).subscribe(() => {
+      console.log('Yoo');
+    });
   }
 
   private updateConfigWithJWT(jwt: string): IConfig {
