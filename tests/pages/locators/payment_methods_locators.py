@@ -30,10 +30,10 @@ class PaymentMethodsLocators:
 
     # Iframe
     control_form_iframe: By = (By.ID, 'st-control-frame-iframe')
-    card_number_iframe: By = (By.ID, FieldType.CARD_NUMBER_IFRAME.value)
-    expiration_date_iframe: By = (By.ID, FieldType.EXPIRATION_DATE_IFRAME.value)
-    security_code_iframe: By = (By.ID, FieldType.SECURITY_CODE_IFRAME.value)
-    animated_card_iframe: By = (By.ID, FieldType.ANIMATED_CARD_IFRAME.value)
+    card_number_iframe: By = (By.ID, FieldType.CARD_NUMBER.value)
+    expiration_date_iframe: By = (By.ID, FieldType.EXPIRATION_DATE.value)
+    security_code_iframe: By = (By.ID, FieldType.SECURITY_CODE.value)
+    animated_card_iframe: By = (By.ID, FieldType.ANIMATED_CARD.value)
     parent_iframe: By = (By.ID, FieldType.PARENT_IFRAME.value)
 
     # payment methods

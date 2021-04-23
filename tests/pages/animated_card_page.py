@@ -12,7 +12,7 @@ class AnimatedCardPage(BasePage):
 
     def get_card_type_icon_from_animated_card(self):
         credit_card_icon = self._actions.get_element_attribute(AnimatedCardLocators.card_type_logo_from_animated_card,
-                                                              'alt')
+                                                               'alt')
         credit_card_icon = credit_card_icon.upper()
         return credit_card_icon
 
@@ -27,11 +27,11 @@ class AnimatedCardPage(BasePage):
 
     def get_data_from_animated_card(self, field_type, card_type):
         animated_card_data = ''
-        if field_type == FieldType.CARD_NUMBER_IFRAME.name:
+        if field_type == FieldType.CARD_NUMBER.name:
             animated_card_data = self._actions.get_text(AnimatedCardLocators.credit_card_number_on_animated_card)
-        elif field_type == FieldType.EXPIRATION_DATE_IFRAME.name:
+        elif field_type == FieldType.EXPIRATION_DATE.name:
             animated_card_data = self._actions.get_text(AnimatedCardLocators.expiration_date_on_animated_card)
-        elif field_type == FieldType.SECURITY_CODE_IFRAME.name:
+        elif field_type == FieldType.SECURITY_CODE.name:
             if card_type == 'AMEX':
                 animated_card_data = self._actions.get_text(AnimatedCardLocators.cvv_on_front_side_animated_card)
             else:
@@ -46,10 +46,10 @@ class AnimatedCardPage(BasePage):
         assert expected_data in actual_data_on_animated_card, assertion_message
 
     def validate_all_data_on_animated_card(self, card_number, exp_date, cvv, card_type, is_field_in_iframe):
-        self.validate_data_on_animated_card(card_number, FieldType.CARD_NUMBER_IFRAME.name, card_type)
-        self.validate_data_on_animated_card(exp_date, FieldType.EXPIRATION_DATE_IFRAME.name, card_type)
+        self.validate_data_on_animated_card(card_number, FieldType.CARD_NUMBER.name, card_type)
+        self.validate_data_on_animated_card(exp_date, FieldType.EXPIRATION_DATE.name, card_type)
         if cvv is not None:
-            self.validate_data_on_animated_card(cvv, FieldType.SECURITY_CODE_IFRAME.name, card_type)
+            self.validate_data_on_animated_card(cvv, FieldType.SECURITY_CODE.name, card_type)
 
     def validate_if_animated_card_is_flipped(self, card_type, is_field_in_iframe):
         # Disabled checking flipping card for safari because switch_to_iframe method make card is back to the original
@@ -68,7 +68,7 @@ class AnimatedCardPage(BasePage):
                 assert 'flip-card' in animated_card_side, assertion_message
 
     def validate_animated_card_translation(self, language):
-        self._actions.switch_to_iframe(FieldType.ANIMATED_CARD_IFRAME.value)
+        self._actions.switch_to_iframe(FieldType.ANIMATED_CARD.value)
         self.validate_animated_card_element_translation(AnimatedCardLocators.card_number_label,
                                                         language, 'Card number')
         self.validate_animated_card_element_translation(AnimatedCardLocators.expiration_date_label,

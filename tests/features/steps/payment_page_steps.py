@@ -113,9 +113,9 @@ def step_impl(context):
 @step('User will see that all fields are highlighted')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_if_field_is_highlighted(FieldType.CARD_NUMBER_IFRAME.name)
-    payment_page.validate_if_field_is_highlighted(FieldType.EXPIRATION_DATE_IFRAME.name)
-    payment_page.validate_if_field_is_highlighted(FieldType.SECURITY_CODE_IFRAME.name)
+    payment_page.validate_if_field_is_highlighted(FieldType.CARD_NUMBER.name)
+    payment_page.validate_if_field_is_highlighted(FieldType.EXPIRATION_DATE.name)
+    payment_page.validate_if_field_is_highlighted(FieldType.SECURITY_CODE.name)
 
 
 @when(
@@ -163,9 +163,9 @@ def step_impl(context, field: FieldType, form_status):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     field = FieldType.__members__[field] # pylint: disable=unsubscriptable-object
     if field.name == 'ALL':
-        payment_page.validate_form_status(FieldType.SECURITY_CODE_IFRAME.name, form_status)
-        payment_page.validate_form_status(FieldType.CARD_NUMBER_IFRAME.name, form_status)
-        payment_page.validate_form_status(FieldType.EXPIRATION_DATE_IFRAME.name, form_status)
+        payment_page.validate_form_status(FieldType.SECURITY_CODE.name, form_status)
+        payment_page.validate_form_status(FieldType.CARD_NUMBER.name, form_status)
+        payment_page.validate_form_status(FieldType.EXPIRATION_DATE.name, form_status)
     else:
         payment_page.validate_form_status(field.name, form_status)
 
@@ -180,12 +180,12 @@ def step_impl(context, field, value):
 @then('User will see that "(?P<field>.+)" field has correct style')
 def step_impl(context, field):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    if field == FieldType.CARD_NUMBER_IFRAME.name:
-        payment_page.validate_css_style(FieldType.CARD_NUMBER_IFRAME.name, 'background-color', '100, 149, 237')
-    elif field == FieldType.EXPIRATION_DATE_IFRAME.name:
-        payment_page.validate_css_style(FieldType.EXPIRATION_DATE_IFRAME.name, 'background-color', '143, 188, 143')
-    elif field == FieldType.SECURITY_CODE_IFRAME.name:
-        payment_page.validate_css_style(FieldType.SECURITY_CODE_IFRAME.name, 'background-color', '255, 243, 51')
+    if field == FieldType.CARD_NUMBER.name:
+        payment_page.validate_css_style(FieldType.CARD_NUMBER.name, 'background-color', '100, 149, 237')
+    elif field == FieldType.EXPIRATION_DATE.name:
+        payment_page.validate_css_style(FieldType.EXPIRATION_DATE.name, 'background-color', '143, 188, 143')
+    elif field == FieldType.SECURITY_CODE.name:
+        payment_page.validate_css_style(FieldType.SECURITY_CODE.name, 'background-color', '255, 243, 51')
     if field == FieldType.NOTIFICATION_FRAME.name:
         payment_page.validate_css_style(FieldType.NOTIFICATION_FRAME.name, 'background-color', '100, 149, 237')
 
@@ -205,9 +205,9 @@ def step_impl(context, text):
 @step('User will see validation message "(?P<key>.+)" under all fields translated into "(?P<language>.+)"')
 def step_impl(context, key, language):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_field_validation_message_translation(FieldType.CARD_NUMBER_IFRAME.name, language, key)
-    payment_page.validate_field_validation_message_translation(FieldType.EXPIRATION_DATE_IFRAME.name, language, key)
-    payment_page.validate_field_validation_message_translation(FieldType.SECURITY_CODE_IFRAME.name, language, key)
+    payment_page.validate_field_validation_message_translation(FieldType.CARD_NUMBER.name, language, key)
+    payment_page.validate_field_validation_message_translation(FieldType.EXPIRATION_DATE.name, language, key)
+    payment_page.validate_field_validation_message_translation(FieldType.SECURITY_CODE.name, language, key)
 
 
 @then(
@@ -220,9 +220,9 @@ def step_validation_msg_translation(context, key, field, language):
 @then('User will see validation message "(?P<expected_message>.+)" under all fields')
 def step_impl(context, expected_message):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_field_validation_message(FieldType.CARD_NUMBER_IFRAME.name, expected_message)
-    payment_page.validate_field_validation_message(FieldType.EXPIRATION_DATE_IFRAME.name, expected_message)
-    payment_page.validate_field_validation_message(FieldType.SECURITY_CODE_IFRAME.name, expected_message)
+    payment_page.validate_field_validation_message(FieldType.CARD_NUMBER.name, expected_message)
+    payment_page.validate_field_validation_message(FieldType.EXPIRATION_DATE.name, expected_message)
+    payment_page.validate_field_validation_message(FieldType.SECURITY_CODE.name, expected_message)
 
 
 @step('User will see "(?P<expected_message>.+)" message under field: "(?P<field>.+)"')
@@ -273,9 +273,18 @@ def step_impl(context, callback_popup):
 @then('User will see that application is not fully loaded')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_if_field_is_not_displayed(FieldType.CARD_NUMBER_IFRAME.name)
-    payment_page.validate_if_field_is_not_displayed(FieldType.EXPIRATION_DATE_IFRAME.name)
-    payment_page.validate_if_field_is_not_displayed(FieldType.SECURITY_CODE_IFRAME.name)
+    payment_page.validate_if_field_is_not_displayed(FieldType.CARD_NUMBER.name)
+    payment_page.validate_if_field_is_not_displayed(FieldType.EXPIRATION_DATE.name)
+    payment_page.validate_if_field_is_not_displayed(FieldType.SECURITY_CODE.name)
+
+
+@step('User will see that (?P<field_type>.+) iframe is (?P<not_available>not )?available')
+def step_impl(context, field_type, not_available):
+    expected = False
+    if not_available is None:
+        expected = True
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.validate_iframe_is_available_in_page_source(field_type, expected)
 
 
 @then('User will see (?P<placeholders>.+) placeholders in input fields: (?P<card>.+), (?P<date>.+), (?P<cvv>.+)')
@@ -287,7 +296,7 @@ def step_impl(context, placeholders, card, date, cvv):
 @then('User will see "(?P<placeholder>.+)" placeholder in security code field')
 def step_impl(context, placeholder):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_placeholder(FieldType.SECURITY_CODE_IFRAME.name, placeholder)
+    payment_page.validate_placeholder(FieldType.SECURITY_CODE.name, placeholder)
 
 
 @then('User will see "(?P<card_type>.+)" icon in card number input field')
@@ -339,9 +348,9 @@ def step_impl(context, auth_type):
 @step('User will see the same provided data in inputs fields')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_value_of_input_field(FieldType.CARD_NUMBER_IFRAME.name, '4000 0000 0000 1091')
-    payment_page.validate_value_of_input_field(FieldType.EXPIRATION_DATE_IFRAME.name, context.exp_date)
-    payment_page.validate_value_of_input_field(FieldType.SECURITY_CODE_IFRAME.name, context.cvv)
+    payment_page.validate_value_of_input_field(FieldType.CARD_NUMBER.name, '4000 0000 0000 1091')
+    payment_page.validate_value_of_input_field(FieldType.EXPIRATION_DATE.name, context.exp_date)
+    payment_page.validate_value_of_input_field(FieldType.SECURITY_CODE.name, context.cvv)
 
 
 @step('User will see correct error code displayed in popup')
@@ -420,7 +429,7 @@ def step_impl(context):
 @step('Change field focus')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.change_field_focus(FieldType.ANIMATED_CARD_IFRAME.name)
+    payment_page.change_field_focus(FieldType.ANIMATED_CARD.name)
 
 
 @step('User clicks Cancel button on authentication modal')
