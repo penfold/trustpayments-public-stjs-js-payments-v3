@@ -11,11 +11,7 @@ from utils.enums.auth_data import AuthData
 from utils.enums.auth_type import AuthType
 from utils.enums.field_type import FieldType
 from utils.enums.payment_type import PaymentType
-from utils.helpers.request_executor import add_to_shared_dict, get_number_of_requests_with_data, \
-    get_number_of_wallet_verify_requests, get_number_of_thirdparty_requests, get_number_of_requests_without_data, \
-    get_number_of_requests_with_fraudcontroltransactionid_flag, \
-    get_number_of_requests_with_data_and_fraudcontroltransactionid_flag, get_number_of_requests_with_updated_jwt, \
-    get_number_of_requests_with_updated_jwt_for_visa, get_number_of_tokenisation_requests
+from utils.helpers.request_executor import add_to_shared_dict
 
 
 class PaymentMethodsPage(BasePage):

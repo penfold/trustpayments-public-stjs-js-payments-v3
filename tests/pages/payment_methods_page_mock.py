@@ -1,16 +1,4 @@
-import json
-from urllib.parse import urlparse, parse_qs
-
-from assertpy import assert_that
-
-from configuration import CONFIGURATION
-from pages.locators.payment_methods_locators import PaymentMethodsLocators
 from pages.base_page import BasePage
-from utils.configurations import jwt_generator
-from utils.enums.auth_data import AuthData
-from utils.enums.auth_type import AuthType
-from utils.enums.field_type import FieldType
-from utils.enums.payment_type import PaymentType
 from utils.helpers.request_executor import add_to_shared_dict, get_number_of_requests_with_data, \
     get_number_of_wallet_verify_requests, get_number_of_thirdparty_requests, get_number_of_requests_without_data, \
     get_number_of_requests_with_fraudcontroltransactionid_flag, \
