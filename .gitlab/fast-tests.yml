@@ -16,44 +16,49 @@
     - .services-app-html-test
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
-card-payments-headless-component-tests:
-  extends:
-    - .component-app-html-test
-    - .parallel-component-tests
-  variables:
-    FEATURE_FILES_DIR: 'features/mock_tests'
-  parallel: 21
+# e2e
 
-visa-checkout-headless-component-tests:
-  extends:
-    - .component-app-html-test
-    - .sequentially-component-tests
-  variables:
-    FEATURE_FILE_NAME: 'visa_checkout.feature'
-
-merchants-features-app-html-dev-e2e-tests:
+app-html-dev-e2e-tests:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-dev
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_merchants_features'
-  parallel: 6
+    FEATURE_FILES_DIR: 'features/e2e_tests'
+  parallel: 19
 
-merchants-features-app-html-release-e2e-tests:
+app-html-release-e2e-tests:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-prod-merchant
     - .rules-when-release
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_merchants_features'
-  parallel: 6
+    FEATURE_FILES_DIR: 'features/e2e_tests'
+  parallel: 19
+
+
+smoke-app-html-dev-e2e-tests:
+  extends:
+    - .e2e-tests-parallel
+    - .services-app-html-dev
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
+  parallel: 3
+
+smoke-app-html-release-e2e-tests:
+  extends:
+    - .e2e-tests-parallel
+    - .service-app-html-prod-merchant
+    - .rules-when-release
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
+  parallel: 3
 
 cardinal-commerce-app-html-dev-e2e-tests:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-dev
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_cardinal_commerce'
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
   parallel: 8
 
 cardinal-commerce-app-html-release-e2e-tests:
@@ -62,21 +67,47 @@ cardinal-commerce-app-html-release-e2e-tests:
     - .service-app-html-prod-merchant
     - .rules-when-release
   variables:
-    FEATURE_FILES_DIR: 'features/e2e_cardinal_commerce'
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
   parallel: 8
 
-app-html-dev-e2e-tests:
+merchants-features-app-html-dev-e2e-tests:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-dev
-  parallel: 19
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_features'
+  parallel: 6
 
-app-html-release-e2e-tests:
+merchants-features-app-html-release-e2e-tests:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-prod-merchant
     - .rules-when-release
-  parallel: 19
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_features'
+  parallel: 6
+
+
+
+card-payments-component-tests:
+  extends:
+    - .component-app-html-test
+    - .parallel-component-tests
+  variables:
+    FEATURE_FILES_DIR: 'features/component_tests'
+  parallel: 21
+
+visa-checkout-component-tests:
+  extends:
+    - .component-app-html-test
+    - .sequentially-component-tests
+  variables:
+    FEATURE_FILE_NAME: 'visa_checkout.feature'
+
+
+
+
+
 
 .zap-url-to-scan-merchant:
   variables:
