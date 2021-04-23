@@ -16,7 +16,6 @@ class PaymentMethodsLocators:
     amount_field: By = (By.ID, 'example-form-amount')
 
     # Credit card form
-    secure_trade_form: By = (By.ID, 'st-control-frame-iframe')
     card_number_input_field: By = (By.ID, 'st-card-number-input')
     expiration_date_input_field: By = (By.ID, 'st-expiration-date-input')
     security_code_input_field: By = (By.ID, 'st-security-code-input')
@@ -30,10 +29,11 @@ class PaymentMethodsLocators:
     notification_frame: By = (By.CSS_SELECTOR, '#st-notification-frame.notification-frame')
 
     # Iframe
-    card_number_iframe: By = (By.ID, FieldType.CARD_NUMBER.value)
-    expiration_date_iframe: By = (By.ID, FieldType.EXPIRATION_DATE.value)
-    security_code_iframe: By = (By.ID, FieldType.SECURITY_CODE.value)
-    animated_card_iframe: By = (By.ID, FieldType.ANIMATED_CARD.value)
+    control_form_iframe: By = (By.ID, 'st-control-frame-iframe')
+    card_number_iframe: By = (By.ID, FieldType.CARD_NUMBER_IFRAME.value)
+    expiration_date_iframe: By = (By.ID, FieldType.EXPIRATION_DATE_IFRAME.value)
+    security_code_iframe: By = (By.ID, FieldType.SECURITY_CODE_IFRAME.value)
+    animated_card_iframe: By = (By.ID, FieldType.ANIMATED_CARD_IFRAME.value)
     parent_iframe: By = (By.ID, FieldType.PARENT_IFRAME.value)
 
     # payment methods

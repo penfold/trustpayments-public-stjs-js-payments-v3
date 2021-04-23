@@ -60,53 +60,53 @@ class PaymentMethodsPage(BasePage):
         self._actions.click(PaymentMethodsLocators.action_btn_start_st)
 
     def fill_credit_card_field(self, field_type, value):
-        if field_type == FieldType.CARD_NUMBER.name:
+        if field_type == FieldType.CARD_NUMBER_IFRAME.name:
             self._actions.switch_to_iframe_and_send_keys(PaymentMethodsLocators.card_number_iframe,
                                                          PaymentMethodsLocators.card_number_input_field, value)
-        elif field_type == FieldType.EXPIRATION_DATE.name:
+        elif field_type == FieldType.EXPIRATION_DATE_IFRAME.name:
             self._actions.switch_to_iframe_and_send_keys(PaymentMethodsLocators.expiration_date_iframe,
                                                          PaymentMethodsLocators.expiration_date_input_field, value)
-        elif field_type == FieldType.SECURITY_CODE.name:
+        elif field_type == FieldType.SECURITY_CODE_IFRAME.name:
             self._actions.switch_to_iframe_and_send_keys(PaymentMethodsLocators.security_code_iframe,
                                                          PaymentMethodsLocators.security_code_input_field, value)
 
     def fill_credit_card_field_ie_browser(self, field_type, value):
-        if field_type == FieldType.CARD_NUMBER.name:
-            self._actions.switch_to_iframe_and_send_keys_one_by_one(FieldType.CARD_NUMBER.value,
+        if field_type == FieldType.CARD_NUMBER_IFRAME.name:
+            self._actions.switch_to_iframe_and_send_keys_one_by_one(FieldType.CARD_NUMBER_IFRAME.value,
                                                                     PaymentMethodsLocators.card_number_input_field,
                                                                     value)
-        elif field_type == FieldType.EXPIRATION_DATE.name:
-            self._actions.switch_to_iframe_and_send_keys_one_by_one(FieldType.EXPIRATION_DATE.value,
+        elif field_type == FieldType.EXPIRATION_DATE_IFRAME.name:
+            self._actions.switch_to_iframe_and_send_keys_one_by_one(FieldType.EXPIRATION_DATE_IFRAME.value,
                                                                     PaymentMethodsLocators.expiration_date_input_field,
                                                                     value)
-        elif field_type == FieldType.SECURITY_CODE.name:
-            self._actions.switch_to_iframe_and_send_keys_one_by_one(FieldType.SECURITY_CODE.value,
+        elif field_type == FieldType.SECURITY_CODE_IFRAME.name:
+            self._actions.switch_to_iframe_and_send_keys_one_by_one(FieldType.SECURITY_CODE_IFRAME.value,
                                                                     PaymentMethodsLocators.security_code_input_field,
                                                                     value)
 
     def fill_payment_form(self, card_number, expiration_date, cvv):
         if 'IE' not in self._configuration.BROWSER:
-            self.fill_credit_card_field(FieldType.CARD_NUMBER.name, card_number)
-            self.fill_credit_card_field(FieldType.EXPIRATION_DATE.name, expiration_date)
-            self.fill_credit_card_field(FieldType.SECURITY_CODE.name, cvv)
+            self.fill_credit_card_field(FieldType.CARD_NUMBER_IFRAME.name, card_number)
+            self.fill_credit_card_field(FieldType.EXPIRATION_DATE_IFRAME.name, expiration_date)
+            self.fill_credit_card_field(FieldType.SECURITY_CODE_IFRAME.name, cvv)
         else:
-            self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
-            self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
-            self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
+            self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER_IFRAME.name, card_number)
+            self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE_IFRAME.name, expiration_date)
+            self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE_IFRAME.name, cvv)
 
     def fill_payment_form_without_cvv(self, card_number, expiration_date):
         if 'IE' not in self._configuration.BROWSER:
-            self.fill_credit_card_field(FieldType.CARD_NUMBER.name, card_number)
-            self.fill_credit_card_field(FieldType.EXPIRATION_DATE.name, expiration_date)
+            self.fill_credit_card_field(FieldType.CARD_NUMBER_IFRAME.name, card_number)
+            self.fill_credit_card_field(FieldType.EXPIRATION_DATE_IFRAME.name, expiration_date)
         else:
-            self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER.name, card_number)
-            self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE.name, expiration_date)
+            self.fill_credit_card_field_ie_browser(FieldType.CARD_NUMBER_IFRAME.name, card_number)
+            self.fill_credit_card_field_ie_browser(FieldType.EXPIRATION_DATE_IFRAME.name, expiration_date)
 
     def fill_payment_form_with_only_cvv(self, cvv):
         if 'IE' not in self._configuration.BROWSER:
-            self.fill_credit_card_field(FieldType.SECURITY_CODE.name, cvv)
+            self.fill_credit_card_field(FieldType.SECURITY_CODE_IFRAME.name, cvv)
         else:
-            self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
+            self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE_IFRAME.name, cvv)
 
     def fill_merchant_input_field(self, field_type, value):
         if field_type == FieldType.NAME.name:
@@ -170,23 +170,23 @@ class PaymentMethodsPage(BasePage):
         else:
             self.fill_cardinal_v2_popup()
         self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.cardinal_modal)
-        self._waits.switch_to_default_content()
+        self._actions.switch_to_default_content()
 
     def press_enter_button_on_security_code_field(self):
-        self._actions.switch_to_iframe_and_press_enter(FieldType.SECURITY_CODE.value,
+        self._actions.switch_to_iframe_and_press_enter(FieldType.SECURITY_CODE_IFRAME.value,
 
                                                        PaymentMethodsLocators.security_code_input_field)
 
     def clear_security_code_field(self):
-        self._actions.switch_to_iframe_and_clear_input(FieldType.SECURITY_CODE.value,
+        self._actions.switch_to_iframe_and_clear_input(FieldType.SECURITY_CODE_IFRAME.value,
                                                        PaymentMethodsLocators.security_code_input_field)
 
     def clear_card_number_field(self):
-        self._actions.switch_to_iframe_and_clear_input(FieldType.CARD_NUMBER.value,
+        self._actions.switch_to_iframe_and_clear_input(FieldType.CARD_NUMBER_IFRAME.value,
                                                        PaymentMethodsLocators.card_number_input_field)
 
     def clear_expiry_date_field(self):
-        self._actions.switch_to_iframe_and_clear_input(FieldType.EXPIRATION_DATE.value,
+        self._actions.switch_to_iframe_and_clear_input(FieldType.EXPIRATION_DATE_IFRAME.value,
                                                        PaymentMethodsLocators.expiration_date_input_field)
 
     def get_payment_status_message(self):
@@ -220,15 +220,15 @@ class PaymentMethodsPage(BasePage):
 
     def is_field_enabled(self, field_type):
         is_enabled = False
-        if field_type == FieldType.CARD_NUMBER.name:
+        if field_type == FieldType.CARD_NUMBER_IFRAME.name:
             is_enabled = self._actions.switch_to_iframe_and_check_is_element_enabled(
                 PaymentMethodsLocators.card_number_iframe,
                 PaymentMethodsLocators.card_number_input_field)
-        elif field_type == FieldType.EXPIRATION_DATE.name:
+        elif field_type == FieldType.EXPIRATION_DATE_IFRAME.name:
             is_enabled = self._actions.switch_to_iframe_and_check_is_element_enabled(
                 PaymentMethodsLocators.expiration_date_iframe,
                 PaymentMethodsLocators.expiration_date_input_field)
-        elif field_type == FieldType.SECURITY_CODE.name:
+        elif field_type == FieldType.SECURITY_CODE_IFRAME.name:
             is_enabled = self._actions.switch_to_iframe_and_check_is_element_enabled(
                 PaymentMethodsLocators.security_code_iframe,
                 PaymentMethodsLocators.security_code_input_field)
@@ -274,17 +274,17 @@ class PaymentMethodsPage(BasePage):
 
     def get_element_attribute(self, field_type, attribute):
         attribute_value = ''
-        if field_type == FieldType.CARD_NUMBER.name:
+        if field_type == FieldType.CARD_NUMBER_IFRAME.name:
             attribute_value = self._actions.switch_to_iframe_and_get_element_attribute(
                 PaymentMethodsLocators.card_number_iframe,
                 PaymentMethodsLocators.card_number_input_field,
                 attribute)
-        elif field_type == FieldType.EXPIRATION_DATE.name:
+        elif field_type == FieldType.EXPIRATION_DATE_IFRAME.name:
             attribute_value = self._actions.switch_to_iframe_and_get_element_attribute(
                 PaymentMethodsLocators.expiration_date_iframe,
                 PaymentMethodsLocators.expiration_date_input_field,
                 attribute)
-        elif field_type == FieldType.SECURITY_CODE.name:
+        elif field_type == FieldType.SECURITY_CODE_IFRAME.name:
             attribute_value = self._actions.switch_to_iframe_and_get_element_attribute(
                 PaymentMethodsLocators.security_code_iframe,
                 PaymentMethodsLocators.security_code_input_field,
@@ -296,17 +296,17 @@ class PaymentMethodsPage(BasePage):
 
     def get_field_css_style(self, field_type, property_name):
         background_color = ''
-        if field_type == FieldType.CARD_NUMBER.name:
+        if field_type == FieldType.CARD_NUMBER_IFRAME.name:
             background_color = self._actions.switch_to_iframe_and_get_css_value(
                 PaymentMethodsLocators.card_number_iframe,
                 PaymentMethodsLocators.card_number_input_field,
                 property_name)
-        elif field_type == FieldType.EXPIRATION_DATE.name:
+        elif field_type == FieldType.EXPIRATION_DATE_IFRAME.name:
             background_color = self._actions.switch_to_iframe_and_get_css_value(
                 PaymentMethodsLocators.expiration_date_iframe,
                 PaymentMethodsLocators.expiration_date_input_field,
                 property_name)
-        elif field_type == FieldType.SECURITY_CODE.name:
+        elif field_type == FieldType.SECURITY_CODE_IFRAME.name:
             background_color = self._actions.switch_to_iframe_and_get_css_value(
                 PaymentMethodsLocators.security_code_iframe,
                 PaymentMethodsLocators.security_code_input_field,
@@ -319,7 +319,7 @@ class PaymentMethodsPage(BasePage):
     def is_field_displayed(self, field_type):
         is_displayed = False
         if field_type == FieldType.CARD_ICON.name:
-            self._actions.switch_to_iframe(FieldType.CARD_NUMBER.value)
+            self._actions.switch_to_iframe(FieldType.CARD_NUMBER_IFRAME.value)
             if len(self._actions.find_elements(PaymentMethodsLocators.card_icon_in_input_field)) > 0:
                 is_displayed = True
         elif field_type == FieldType.NOTIFICATION_FRAME.name:
@@ -327,7 +327,7 @@ class PaymentMethodsPage(BasePage):
                 if self._actions.get_text_with_wait(PaymentMethodsLocators.notification_frame):
                     is_displayed = True
         else:
-            is_displayed = self._actions.is_iframe_displayed(FieldType[field_type].value)
+            is_displayed = self._actions.is_iframe_available_in_page_source(FieldType[field_type].value)
         return is_displayed
 
     def get_card_type_icon_from_input_field(self):
@@ -351,16 +351,16 @@ class PaymentMethodsPage(BasePage):
         return self._actions.switch_to_iframe_and_get_text(PaymentMethodsLocators.security_code_iframe, locator)
 
     def change_field_focus(self, field_type):
-        if field_type == FieldType.CARD_NUMBER.name:
+        if field_type == FieldType.CARD_NUMBER_IFRAME.name:
             self._actions.switch_to_iframe_and_click(PaymentMethodsLocators.card_number_iframe,
                                                      PaymentMethodsLocators.card_number_input_field)
-        elif field_type == FieldType.EXPIRATION_DATE.name:
+        elif field_type == FieldType.EXPIRATION_DATE_IFRAME.name:
             self._actions.switch_to_iframe_and_click(PaymentMethodsLocators.expiration_date_iframe,
                                                      PaymentMethodsLocators.expiration_date_input_field)
-        elif field_type == FieldType.SECURITY_CODE.name:
+        elif field_type == FieldType.SECURITY_CODE_IFRAME.name:
             self._actions.switch_to_iframe_and_click(PaymentMethodsLocators.security_code_iframe,
                                                      PaymentMethodsLocators.security_code_input_field)
-        elif field_type == FieldType.ANIMATED_CARD.name:
+        elif field_type == FieldType.ANIMATED_CARD_IFRAME.name:
             self._actions.switch_to_iframe_and_click(PaymentMethodsLocators.animated_card_iframe,
                                                      PaymentMethodsLocators.animated_card)
 
@@ -430,13 +430,13 @@ class PaymentMethodsPage(BasePage):
     def validate_field_validation_message(self, field_type, expected_text):
         actual_translation = ''
 
-        if field_type == FieldType.CARD_NUMBER.name:
+        if field_type == FieldType.CARD_NUMBER_IFRAME.name:
             actual_translation = self.get_card_number_iframe_element_text(
                 PaymentMethodsLocators.card_number_field_validation_message)
-        elif field_type == FieldType.EXPIRATION_DATE.name:
+        elif field_type == FieldType.EXPIRATION_DATE_IFRAME.name:
             actual_translation = self.get_expiration_date_iframe_element_text(
                 PaymentMethodsLocators.expiration_date_field_validation_message)
-        elif field_type == FieldType.SECURITY_CODE.name:
+        elif field_type == FieldType.SECURITY_CODE_IFRAME.name:
             actual_translation = self.get_security_code_iframe_element_text(
                 PaymentMethodsLocators.security_code_field_validation_message)
 
@@ -467,15 +467,15 @@ class PaymentMethodsPage(BasePage):
 
     def validate_card_number_iframe_element_text(self, expected_text):
         actual_text = self.get_card_number_iframe_element_text(PaymentMethodsLocators.card_number_label)
-        self.validate_field_text(FieldType.CARD_NUMBER.name, actual_text, expected_text)
+        self.validate_field_text(FieldType.CARD_NUMBER_IFRAME.name, actual_text, expected_text)
 
     def validate_expiration_date_iframe_element_text(self, expected_text):
         actual_text = self.get_expiration_date_iframe_element_text(PaymentMethodsLocators.expiration_date_label)
-        self.validate_field_text(FieldType.EXPIRATION_DATE.name, actual_text, expected_text)
+        self.validate_field_text(FieldType.EXPIRATION_DATE_IFRAME.name, actual_text, expected_text)
 
     def validate_security_code_iframe_element_text(self, expected_text):
         actual_text = self.get_security_code_iframe_element_text(PaymentMethodsLocators.security_code_label)
-        self.validate_field_text(FieldType.SECURITY_CODE.name, actual_text, expected_text)
+        self.validate_field_text(FieldType.SECURITY_CODE_IFRAME.name, actual_text, expected_text)
 
     def validate_no_iframe_element_text(self, field_type, locator, expected_text):
         actual_text = self.get_element_text(locator)
@@ -579,9 +579,9 @@ class PaymentMethodsPage(BasePage):
         assert expected_callback_number in counter, assertion_message
 
     def validate_placeholders(self, card_number, exp_date, cvv):
-        self.validate_placeholder(FieldType.CARD_NUMBER.name, card_number)
-        self.validate_placeholder(FieldType.EXPIRATION_DATE.name, exp_date)
-        self.validate_placeholder(FieldType.SECURITY_CODE.name, cvv)
+        self.validate_placeholder(FieldType.CARD_NUMBER_IFRAME.name, card_number)
+        self.validate_placeholder(FieldType.EXPIRATION_DATE_IFRAME.name, exp_date)
+        self.validate_placeholder(FieldType.SECURITY_CODE_IFRAME.name, cvv)
 
     def validate_placeholder(self, field_type, expected_placeholder):
         actual_placeholder = self.get_element_attribute(field_type, 'placeholder')
@@ -597,74 +597,6 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_card_icon in actual_credit_card_icon, assertion_message
 
-    def validate_number_of_requests_with_data(self, request_type, pan, expiry_date, cvv, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_with_data(request_type, pan, expiry_date, cvv)
-        assertion_message = f'Number of {request_type} request(s) is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_number_of_requests_without_data(self, request_type, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_without_data(request_type)
-        assertion_message = f'Number of {request_type} request(s) is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_number_of_tokenisation_requests(self, request_type, cvv, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_tokenisation_requests(request_type, cvv)
-        assertion_message = f'Number of {request_type} requests is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_number_of_wallet_verify_requests(self, url, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_wallet_verify_requests(url)
-        assertion_message = f'Number of {url} requests is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_number_of_thirdparty_requests(self, request_type, walletsource, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_thirdparty_requests(request_type, walletsource)
-        assertion_message = f'Number of request with {request_type} is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_number_of_requests_with_data_and_fraudcontroltransactionid_flag(self, request_type, pan, expiry_date,
-                                                                                 cvv, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_with_data_and_fraudcontroltransactionid_flag(request_type,
-                                                                                                        pan,
-                                                                                                        expiry_date,
-                                                                                                        cvv)
-        assertion_message = f'Number of {request_type} requests or request data are not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_number_of_requests_with_fraudcontroltransactionid_flag(self, request_type,
-                                                                        expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_with_fraudcontroltransactionid_flag(request_type)
-        assertion_message = f'Number of {request_type} requests or request data are not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_updated_jwt_in_request(self, request_type, url, update_jwt, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_with_updated_jwt(request_type, url, update_jwt)
-        assertion_message = f'Number of {request_type} with updated jwt is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_updated_jwt_in_request_for_visa(self, payment_type, update_jwt, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_with_updated_jwt_for_visa(payment_type, update_jwt)
-        assertion_message = f'Number of {payment_type} with updated jwt is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
     def validate_browser_support_info(self, data_object, is_supported):
         browser_info_text = self.get_text_from_browser_info()
         browser_info_json = json.loads(browser_info_text)
@@ -679,6 +611,14 @@ class PaymentMethodsPage(BasePage):
 
     def validate_if_os_is_supported_in_info_callback(self, is_supported):
         self.validate_browser_support_info('os', is_supported)
+
+    def validate_iframe_is_available_in_page_source(self, field_type, expected):
+        assertion_message = f'{FieldType[field_type].name} iframe is available but should not be'
+        if expected:
+            assertion_message = f'{FieldType[field_type].name} iframe is not available but should be'
+        add_to_shared_dict('assertion_message', assertion_message)
+        actual = self._actions.is_iframe_available_in_page_source({FieldType[field_type].value})
+        assert_that(actual, assertion_message).is_equal_to(expected)
 
     def switch_to_example_page_parent_iframe(self):
         self._actions.switch_to_iframe(PaymentMethodsLocators.parent_iframe)

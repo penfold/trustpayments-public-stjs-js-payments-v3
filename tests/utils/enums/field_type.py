@@ -3,10 +3,10 @@ from enum import Enum
 
 class FieldType(Enum):
     ALL = 'all'
-    CARD_NUMBER = 'st-card-number-iframe'
-    EXPIRATION_DATE = 'st-expiration-date-iframe'
-    SECURITY_CODE = 'st-security-code-iframe'
-    ANIMATED_CARD = 'st-animated-card-iframe'
+    CARD_NUMBER_IFRAME = 'st-card-number-iframe'
+    EXPIRATION_DATE_IFRAME = 'st-expiration-date-iframe'
+    SECURITY_CODE_IFRAME = 'st-security-code-iframe'
+    ANIMATED_CARD_IFRAME = 'st-animated-card-iframe'
     NOTIFICATION_FRAME = 'st-notification-frame-iframe'
     CONTROL_IFRAME = 'st-control-frame-iframe'
     CT_FRAME = 'Cardinal-collector'
