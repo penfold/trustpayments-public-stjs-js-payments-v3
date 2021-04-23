@@ -24,6 +24,7 @@ app-html-dev-e2e-tests:
     - .services-app-html-dev
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
+    FEATURE_FILES_NAMES_CONTAINS: 'e2e_'
   parallel: 19
 
 app-html-release-e2e-tests:
@@ -33,6 +34,7 @@ app-html-release-e2e-tests:
     - .rules-when-release
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
+
   parallel: 19
 
 
