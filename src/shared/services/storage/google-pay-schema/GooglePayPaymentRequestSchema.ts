@@ -55,7 +55,8 @@ export const GooglePayPaymentRequestSchema: Joi.ObjectSchema = Joi.object().keys
   apiVersionMinor: Joi.number().min(0).max(0).integer().required(),
   callbackIntents: Joi.string().valid('PAYMENT_AUTHORIZATION', 'SHIPPING_ADDRESS', 'SHIPPING_OPTION'),
   emailRequired: Joi.boolean(),
-  merchantInfo: Joi.object().keys({ merchantId: Joi.string(), merchantName: Joi.string() }).required(),
+  merchantInfo: Joi.object().keys({ merchantId: Joi.string(), merchantName: Joi.string(), merchantOrigin: Joi.string() }).required(),
+  environment: Joi.string().valid('TEST', 'PRODUCTION'),
   shippingAddressParameters: Joi.object().keys({
     allowedCountryCodes: Joi.array().items(Joi.string()),
     phoneNumberRequired: Joi.boolean(),
