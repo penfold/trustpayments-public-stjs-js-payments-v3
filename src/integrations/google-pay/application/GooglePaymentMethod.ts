@@ -28,7 +28,7 @@ export class GooglePaymentMethod implements IPaymentMethod {
     return this.transportService.sendRequest(data, gatewayUrl).pipe(
       map((response: IRequestTypeResponse) => ({
         status: data.resultStatus,
-        data: response
+        data: response,
       }))
     );
   }

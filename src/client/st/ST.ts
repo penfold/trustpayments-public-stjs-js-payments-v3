@@ -5,7 +5,6 @@ import { CardFrames } from '../card-frames/CardFrames';
 import { CommonFrames } from '../common-frames/CommonFrames';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
 import { ApplePay } from '../integrations/apple-pay/ApplePay';
-import { GooglePay } from '../integrations/google-pay/GooglePay';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
@@ -110,7 +109,6 @@ export class ST {
     private store: IStore<IParentFrameState>,
     private visaCheckout: VisaCheckout,
     private commonFrames: CommonFrames,
-    private googlePay: GooglePay,
     private translation: ITranslator
   ) {
     this.googleAnalytics = new GoogleAnalytics();
@@ -183,19 +181,18 @@ export class ST {
   GooglePay(config: IGooglePayConfig): void {
     if (config) {
       this.config = this.configService.updateFragment(GooglePayConfigName, config);
-      this.googlePay.init(this.config);
     }
 
     this.initControlFrame$().subscribe(() => {
       this.messageBus.publish<IInitPaymentMethod<IConfig>>(
         {
-          type: PUBLIC_EVENTS.GOOGLE_PAY_INIT,
+          type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
           data: {
             name: GooglePaymentMethodName,
             config: this.config,
           },
         },
-        false
+        false,
       );
     });
   }
