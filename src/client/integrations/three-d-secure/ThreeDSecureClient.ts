@@ -1,5 +1,5 @@
 import { Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
@@ -49,29 +49,20 @@ export class ThreeDSecureClient {
   }
 
   private setup$(): Observable<ConfigInterface> {
-    console.log('WHTRBIT client setup$');
-
     return this.threeDSecure.init$({
       challengeDisplayMode: ChallengeDisplayMode.POPUP,
     });
   }
 
   private trigger$(pan: string): Observable<IThreeDSecure3dsMethod> {
-    console.log('WHTRBIT client trigger$', pan);
-
     return of({
       methodUrl: 'http://localhost:8887/three_ds_method',
       notificationUrl: 'mockNotificationURL',
       threeDSTransactionId: '2af781fd-c5f6-486a-ada1-adc9320bd54f', // SUCCESS
-    }).pipe(
-      tap(data => console.log('WHTRBIT client trigger tap', data))
-    );
+    });
   }
 
   private start$(jwt: string): Observable<any> {
-    console.log('WHTRBIT client start$ === threedquery + auth');
-
-    // @ts-ignore
     return this.threeDSecure.run3DSMethod$(
       '2af781fd-c5f6-486a-ada1-adc9320bd54f',
       'mockNotificationURL',
@@ -80,8 +71,6 @@ export class ThreeDSecureClient {
   }
 
   private verify$(verificationData: IVerificationData): Observable<IVerificationResult> {
-    console.log('WHTRBIT client verify$', verificationData);
-
     const creq = {
       messageType: 'CReq',
       messageVersion: ThreeDSecureVersion.v2_2,

@@ -50,8 +50,6 @@ export class ThreeDProcess {
     card: ICard,
     merchantData: IMerchantData
   ): Observable<IThreeDQueryResponse> {
-    console.log('WHTRBIT ThreeDProcess.performThreeDQuery');
-
     return this.threeDSTokens$.pipe(
       first(),
       switchMap(tokens => {
@@ -60,13 +58,9 @@ export class ThreeDProcess {
         return iif(includesThreedquery, this.verificationService.start(tokens.jwt), of(null)).pipe(
           mapTo(new ThreeDQueryRequest(tokens.cacheToken, card, merchantData)),
           switchMap(request => {
-            console.log('WHTRBIT ThreeDProcess.performThreeDQuery this.gatewayClient.performThreeDQuery req', request);
-
             return this.gatewayClient.threedQuery(request);
           }),
           switchMap(response => {
-            console.log('WHTRBIT ThreeDProcess.performThreeDQuery this.gatewayClient.performThreeDQuery res', response);
-
             if (this.isThreeDAuthorisationRequired(response)) {
               return this.authenticateCard(response, tokens);
             }
@@ -105,7 +99,6 @@ export class ThreeDProcess {
     return this.verificationService.verify(verificationData).pipe(
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
       switchMap(validationResult => this.verificationResultHandler.handle(response, validationResult, tokens)),
-      tap(res => console.log('WHTRBIT ThreeDProcess.authenticateCard res', res))
     );
   }
 
