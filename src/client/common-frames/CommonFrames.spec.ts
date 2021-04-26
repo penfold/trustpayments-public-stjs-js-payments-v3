@@ -103,6 +103,13 @@ describe('CommonFrames', () => {
       expect(iframe[0].getAttribute('id')).toEqual('st-control-frame-iframe');
       expect(iframe.length).toEqual(1);
     });
+
+    it('should remove the control frame iframe on destroy event', () => {
+      const iframeId = 'st-control-frame-iframe';
+      expect(document.getElementById(iframeId)).toBeTruthy();
+      messageBus.publish({type: PUBLIC_EVENTS.DESTROY});
+      expect(document.getElementById(iframeId)).toBeFalsy();
+    });
   });
 
   describe('submit process when payment has been cancelled', () => {

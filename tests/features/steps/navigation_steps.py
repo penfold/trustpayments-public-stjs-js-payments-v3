@@ -63,7 +63,7 @@ def step_impl(context):
 
 
 @step('User opens mock payment page (?P<example_page>.+)')
-def step_impl(context, example_page: ExamplePageParam):
+def step_impl(context, example_page):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
@@ -97,7 +97,7 @@ def step_impl(context, example_page: ExamplePageParam):
 
 
 @step('User opens (?:example page|example page (?P<example_page>.+))')
-def step_impl(context, example_page: ExamplePageParam):
+def step_impl(context, example_page):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'Safari' in context.browser:
         # payment_page.open_page_with_not_private_connection_check(MockUrl.LIBRARY_URL.value)
@@ -124,7 +124,7 @@ def step_impl(context, example_page: ExamplePageParam):
 
 
 @step('User opens page (?P<example_page>.+) and jwt (?P<jwt_config>.+) with additional attributes')
-def step_impl(context, example_page: ExamplePageParam, jwt_config: JwtConfig):
+def step_impl(context, example_page, jwt_config):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     # setting url specific params accordingly to example page
     if '' in example_page:

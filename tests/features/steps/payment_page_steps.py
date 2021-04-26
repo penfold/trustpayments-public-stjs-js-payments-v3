@@ -277,6 +277,16 @@ def step_impl(context):
     payment_page.validate_if_field_is_not_displayed(FieldType.EXPIRATION_DATE.name)
     payment_page.validate_if_field_is_not_displayed(FieldType.SECURITY_CODE.name)
 
+
+@step('User will see that (?P<field_type>.+) iframe is (?P<not_available>not )?available')
+def step_impl(context, field_type, not_available):
+    expected = False
+    if not_available is None:
+        expected = True
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.validate_iframe_is_available_in_page_source(field_type, expected)
+
+
 @then('User will see (?P<placeholders>.+) placeholders in input fields: (?P<card>.+), (?P<date>.+), (?P<cvv>.+)')
 def step_impl(context, placeholders, card, date, cvv):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
