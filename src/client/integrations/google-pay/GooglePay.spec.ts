@@ -1,42 +1,25 @@
-import { anything, instance as mockInstance, mock, when } from 'ts-mockito';
-import { GooglePay } from './GooglePay';
-import { IConfig } from '../../../shared/model/config/IConfig';
-import { GooglePayPaymentService } from './GooglePayPaymentService';
-import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { of } from 'rxjs';
-import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
-import {
-  IPaymentResponse,
-} from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
+import { anything, instance, mock, when } from 'ts-mockito';
+import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
-import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
-
-interface IGooglePaySessionApi {
-  PaymentsClient(envConfig: any): IGooglePaySessionPaymentsClient;
-}
-
-interface IGooglePaySessionPayments {
-  api: IGooglePaySessionApi;
-}
-
-interface IGooglePaySessionConstructor {
-  payments: IGooglePaySessionPayments;
-}
-
-function flushPromises() {
-  return new Promise(resolve => setImmediate(resolve));
-}
+import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
+import { IConfig } from '../../../shared/model/config/IConfig';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { GooglePaySdkProvider } from './google-pay-sdk-provider/GooglePaySdkProvider';
+import { GooglePay } from './GooglePay';
+import { googlePayConfigMock } from './GooglePayConfigMock';
+import { GooglePayPaymentService } from './GooglePayPaymentService';
 
 describe('GooglePay', () => {
-  let googlePay: GooglePay;
+  let sut: GooglePay;
   let configProviderMock: ConfigProvider;
-  let jwtDecoderMock: JwtDecoder;
   let googlePayPaymentServiceMock: GooglePayPaymentService;
-  let messageBus: IMessageBus;
-  let buttonWrapper: HTMLElement;
-  let button: HTMLElement;
+  let jwtDecoderMock: JwtDecoder;
+  let simpleMessageBus: IMessageBus;
+  let googlePaySdkProviderMock: GooglePaySdkProvider;
+
   const configMock: IConfig = {
     jwt: '',
     formId: 'st-form',
@@ -44,153 +27,57 @@ describe('GooglePay', () => {
     livestatus: 0,
     datacenterurl: 'https://example.com',
     visaCheckout: null,
-    googlePay: {
-      buttonOptions: {
-        buttonRootNode: 'st-google-pay',
-        buttonColor: 'default',
-        buttonType: 'buy',
-        buttonLocale: 'en',
-      },
-      paymentRequest: {
-        allowedPaymentMethods: {
-          parameters: {
-            allowedCardAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
-            allowedCardNetworks: ['AMEX', 'DISCOVER', 'INTERAC', 'JCB', 'MASTERCARD', 'VISA'],
-          },
-          tokenizationSpecification: {
-            parameters: {
-              gateway: 'trustpayments',
-              gatewayMerchantId: 'test_james38641',
-            },
-            type: 'PAYMENT_GATEWAY',
-          },
-          type: 'CARD',
-        },
-        apiVersion: 2,
-        apiVersionMinor: 0,
-        merchantInfo: {
-          merchantId: 'merchant.net.securetrading',
-          merchantName: 'merchang',
-        },
-        transactionInfo: {
-          countryCode: 'pl',
-          currencyCode: 'pln',
-          checkoutOption: 'COMPLETE_IMMEDIATE_PURCHASE',
-          totalPriceStatus: 'FINAL',
-          totalPrice: '10',
-          displayItems: [
-            {
-              label: 'Example item',
-              price: '10',
-              type: 'LINE_ITEM',
-              status: 'FINAL',
-            },
-          ],
-        },
-      },
-    },
-  };
-  const paymentResponse: IPaymentResponse = {
-    apiVersion: 2,
-    apiVersionMinor: 0,
-    paymentMethodData: {
-      description: 'Mastercard •••• 4444',
-      info: {
-        cardDetails: '4444',
-        cardNetwork: 'MASTERCARD',
-      },
-    },
-    tokenizationData: {
-      token: 'sometoken',
-      type: 'PAYMENT_GATEWAY',
-    },
-    type: 'CARD',
+    googlePay: googlePayConfigMock,
   };
 
   beforeEach(() => {
     configProviderMock = mock<ConfigProvider>();
-    jwtDecoderMock = mock(JwtDecoder);
     googlePayPaymentServiceMock = mock(GooglePayPaymentService);
-    document.getElementById = jest.fn().mockImplementation(() => buttonWrapper);
-    googlePayPaymentServiceMock.processPayment = jest.fn().mockImplementation(() => { });
-    messageBus = new SimpleMessageBus();
+    jwtDecoderMock = mock(JwtDecoder);
+    simpleMessageBus = new SimpleMessageBus();
+    googlePaySdkProviderMock = mock(GooglePaySdkProvider);
 
-    (window as any).google = {
-      payments: {
-        api: {
-          PaymentsClient: jest.fn().mockImplementation(() => {
-            return {
-              isReadyToPay: () => {
-                return Promise.resolve({ result: true });
-              },
-              loadPaymentData: () => {
-                return Promise.resolve(paymentResponse);
-              },
-              createButton: (config: any) => {
-                button = document.createElement('button');
-                button.addEventListener('click', () => {
-                  config.onClick();
-                });
-                return button;
-              },
-            };
-          }),
-        },
-      },
-    };
-
-    googlePay = new GooglePay(
-      mockInstance(configProviderMock),
-      mockInstance(googlePayPaymentServiceMock),
-      mockInstance(jwtDecoderMock),
-      messageBus
+    sut = new GooglePay(
+      instance(configProviderMock),
+      instance(googlePayPaymentServiceMock),
+      instance(jwtDecoderMock),
+      simpleMessageBus,
+      instance(googlePaySdkProviderMock),
     );
 
+    when(googlePaySdkProviderMock.setupSdk$(anything())).thenReturn(of({
+      createButton: jest.fn().mockImplementationOnce(() => document.createElement('button')),
+      loadPaymentData: jest.fn().mockImplementationOnce(() => Promise.resolve()),
+      isReadyToPay: jest.fn().mockImplementationOnce(() => Promise.resolve()),
+    }));
     when(configProviderMock.getConfig$()).thenReturn(of(configMock));
-    when(jwtDecoderMock.decode(anything())).thenReturn({
-      payload: {
-        requesttypedescriptions: ['AUTH'],
+
+    simpleMessageBus.publish({
+      type: PUBLIC_EVENTS.UPDATE_JWT,
+      data: {
+        newJwt: '',
       },
     });
 
-    DomMethods.insertScript = jest.fn().mockImplementation((target, options) => {
-      buttonWrapper = document.createElement('div');
-      buttonWrapper.setAttribute('id', 'st-google-pay');
-
-      return Promise.resolve(document.createElement('script'));
-    });
-    DomMethods.parseForm = jest.fn().mockImplementation(formId => {
-      if (formId === 'st-form') {
-        return {
-          billingprice: '',
-          billingamount: '',
-          billinglastname: '',
-          billingemail: '',
-        };
-      }
-    });
-
-    googlePay.init(configMock);
+    document.body.innerHTML = `
+      <div id="st-google-pay">
+        <button>GooglePay button mock</button>      
+      </div>
+    `;
   });
 
   describe('init()', () => {
-    it('should insert Google Pay script', () => {
-      expect(DomMethods.insertScript).toHaveBeenCalledWith('head', {
-        src: 'https://pay.google.com/gp/p/js/pay.js',
+    it('should add button do DOM based on GooglePay config button options', () => {
+      sut.init(configMock);
+
+      // @ts-ignore
+      expect(sut.googlePaySdk.createButton).toHaveBeenCalledWith({
+        buttonColor: configMock[GooglePayConfigName].buttonOptions.buttonColor,
+        buttonType: configMock[GooglePayConfigName].buttonOptions.buttonType,
+        buttonLocale: configMock[GooglePayConfigName].buttonOptions.buttonLocale,
+        // @ts-ignore
+        onClick: sut.onGooglePaymentButtonClicked,
       });
-    });
-
-    it('should display button after init', () => {
-      expect(buttonWrapper.childNodes.length > 0).toBe(true);
-    });
-
-    it('should pass GooglePay response to the ST Transport after button is clicked', async () => {
-      const event = new Event('click');
-      button.dispatchEvent(event);
-
-      await flushPromises();
-      expect(googlePayPaymentServiceMock.processPayment).toHaveBeenCalled();
-      expect(true).toBe(false);
     });
   });
 });
