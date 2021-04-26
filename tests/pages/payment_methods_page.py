@@ -11,11 +11,7 @@ from utils.enums.auth_data import AuthData
 from utils.enums.auth_type import AuthType
 from utils.enums.field_type import FieldType
 from utils.enums.payment_type import PaymentType
-from utils.helpers.request_executor import add_to_shared_dict, get_number_of_requests_with_data, \
-    get_number_of_wallet_verify_requests, get_number_of_thirdparty_requests, get_number_of_requests_without_data, \
-    get_number_of_requests_with_fraudcontroltransactionid_flag, \
-    get_number_of_requests_with_data_and_fraudcontroltransactionid_flag, get_number_of_requests_with_updated_jwt, \
-    get_number_of_requests_with_updated_jwt_for_visa, get_number_of_tokenisation_requests
+from utils.helpers.request_executor import add_to_shared_dict
 
 
 class PaymentMethodsPage(BasePage):
@@ -170,7 +166,7 @@ class PaymentMethodsPage(BasePage):
         else:
             self.fill_cardinal_v2_popup()
         self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.cardinal_modal)
-        self._waits.switch_to_default_content()
+        self._actions.switch_to_default_content()
 
     def press_enter_button_on_security_code_field(self):
         self._actions.switch_to_iframe_and_press_enter(FieldType.SECURITY_CODE.value,
@@ -327,7 +323,7 @@ class PaymentMethodsPage(BasePage):
                 if self._actions.get_text_with_wait(PaymentMethodsLocators.notification_frame):
                     is_displayed = True
         else:
-            is_displayed = self._actions.is_iframe_displayed(FieldType[field_type].value)
+            is_displayed = self._actions.is_iframe_available_in_page_source(FieldType[field_type].value)
         return is_displayed
 
     def get_card_type_icon_from_input_field(self):
@@ -597,74 +593,6 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_card_icon in actual_credit_card_icon, assertion_message
 
-    def validate_number_of_requests_with_data(self, request_type, pan, expiry_date, cvv, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_with_data(request_type, pan, expiry_date, cvv)
-        assertion_message = f'Number of {request_type} request(s) is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_number_of_requests_without_data(self, request_type, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_without_data(request_type)
-        assertion_message = f'Number of {request_type} request(s) is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_number_of_tokenisation_requests(self, request_type, cvv, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_tokenisation_requests(request_type, cvv)
-        assertion_message = f'Number of {request_type} requests is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_number_of_wallet_verify_requests(self, url, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_wallet_verify_requests(url)
-        assertion_message = f'Number of {url} requests is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_number_of_thirdparty_requests(self, request_type, walletsource, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_thirdparty_requests(request_type, walletsource)
-        assertion_message = f'Number of request with {request_type} is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_number_of_requests_with_data_and_fraudcontroltransactionid_flag(self, request_type, pan, expiry_date,
-                                                                                 cvv, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_with_data_and_fraudcontroltransactionid_flag(request_type,
-                                                                                                        pan,
-                                                                                                        expiry_date,
-                                                                                                        cvv)
-        assertion_message = f'Number of {request_type} requests or request data are not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_number_of_requests_with_fraudcontroltransactionid_flag(self, request_type,
-                                                                        expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_with_fraudcontroltransactionid_flag(request_type)
-        assertion_message = f'Number of {request_type} requests or request data are not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_updated_jwt_in_request(self, request_type, url, update_jwt, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_with_updated_jwt(request_type, url, update_jwt)
-        assertion_message = f'Number of {request_type} with updated jwt is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
-    def validate_updated_jwt_in_request_for_visa(self, payment_type, update_jwt, expected_number_of_requests):
-        actual_number_of_requests = get_number_of_requests_with_updated_jwt_for_visa(payment_type, update_jwt)
-        assertion_message = f'Number of {payment_type} with updated jwt is not correct, ' \
-                            f'should be: "{expected_number_of_requests}" but is: "{actual_number_of_requests}"'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert expected_number_of_requests == actual_number_of_requests, assertion_message
-
     def validate_browser_support_info(self, data_object, is_supported):
         browser_info_text = self.get_text_from_browser_info()
         browser_info_json = json.loads(browser_info_text)
@@ -679,6 +607,14 @@ class PaymentMethodsPage(BasePage):
 
     def validate_if_os_is_supported_in_info_callback(self, is_supported):
         self.validate_browser_support_info('os', is_supported)
+
+    def validate_iframe_is_available_in_page_source(self, field_type, expected):
+        assertion_message = f'{FieldType[field_type].name} iframe is available but should not be'
+        if expected:
+            assertion_message = f'{FieldType[field_type].name} iframe is not available but should be'
+        add_to_shared_dict('assertion_message', assertion_message)
+        actual = self._actions.is_iframe_available_in_page_source(FieldType[field_type].value)
+        assert_that(actual, assertion_message).is_equal_to(expected)
 
     def switch_to_example_page_parent_iframe(self):
         self._actions.switch_to_iframe(PaymentMethodsLocators.parent_iframe)

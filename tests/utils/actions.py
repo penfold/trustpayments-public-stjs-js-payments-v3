@@ -34,10 +34,15 @@ class Actions:
         except:
             return False
 
-    def is_iframe_displayed(self, iframe_name):
+    def is_iframe_available_in_page_source(self, iframe_name):
         # pylint: disable=bare-except
         try:
+            # This can be redundant according what is in selenium switch_to method but not have time to check it now
+            if isinstance(iframe_name, tuple):
+                iframe_name = self.find_element(iframe_name)
+
             self._driver.switch_to.frame(iframe_name)
+            self.switch_to_default_content()
             return True
         except:
             return False
@@ -201,8 +206,11 @@ class Actions:
     def switch_to_iframe(self, iframe_name):
         self._waits.wait_until_iframe_is_presented_and_switch_to_it(iframe_name)
 
+    def switch_to_default_content(self):
+        self._driver.switch_to.default_content()
+
     def switch_to_default_iframe(self):
-        self._waits.switch_to_default_content()
+        self.switch_to_default_content()
         if len(self._driver.find_elements(By.ID, 'st-parent-frame')) > 0:
             self.switch_to_iframe(PaymentMethodsLocators.parent_iframe)
 
