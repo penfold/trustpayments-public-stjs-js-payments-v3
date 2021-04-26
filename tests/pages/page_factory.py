@@ -2,6 +2,7 @@ from enum import Enum
 
 from pages.animated_card_page import AnimatedCardPage
 from pages.payment_methods_page import PaymentMethodsPage
+from pages.payment_methods_page_mock import PaymentMethodsPageMock
 from pages.reactjs_page import ReactjsPage
 from pages.visa_checkout_page import VisaCheckoutPage
 from pages.google_pay_page import GooglePayPage
@@ -9,6 +10,7 @@ from pages.google_pay_page import GooglePayPage
 
 class Pages(Enum):
     PAYMENT_METHODS_PAGE = PaymentMethodsPage
+    PAYMENT_METHODS_PAGE_MOCK = PaymentMethodsPageMock
     ANIMATED_CARD_PAGE = AnimatedCardPage
     VISA_CHECKOUT_PAGE = VisaCheckoutPage
     REACTJS_PAGE = ReactjsPage
