@@ -72,6 +72,16 @@ cardinal-commerce-app-html-release-e2e-tests:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
   parallel: 8
 
+# this is on purpose - STJS-1678
+cardinal-commerce-timeout-app-html-release-e2e-tests:
+  extends:
+    - .e2e-tests-parallel
+    - .service-app-html-prod-merchant
+    - .rules-when-release
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce/e2e_timeout'
+  parallel: 8
+
 merchants-features-app-html-dev-e2e-tests:
   extends:
     - .e2e-tests-parallel
