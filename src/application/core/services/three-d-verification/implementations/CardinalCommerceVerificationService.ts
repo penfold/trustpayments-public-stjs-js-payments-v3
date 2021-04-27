@@ -7,6 +7,7 @@ import { ITriggerData } from '../../../../../client/integrations/cardinal-commer
 import { PaymentEvents } from '../../../models/constants/PaymentEvents';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../models/constants/Selectors';
+import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { IThreeDVerificationService } from '../IThreeDVerificationService';
 import { IVerificationData } from '../data/IVerificationData';
 import { IVerificationResult } from '../data/IVerificationResult';
@@ -15,10 +16,12 @@ import { IVerificationResult } from '../data/IVerificationResult';
 export class CardinalCommerceVerificationService implements IThreeDVerificationService {
   constructor(private interFrameCommunicator: InterFrameCommunicator) {}
 
-  init(jwt: string): Observable<void> {
+  init(jsInitResponse: IThreeDInitResponse): Observable<void> {
     const queryEvent: IMessageBusEvent<IInitializationData> = {
       type: PUBLIC_EVENTS.CARDINAL_SETUP,
-      data: { jwt },
+      data: {
+        jwt: jsInitResponse.threedinit,
+      },
     };
 
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));

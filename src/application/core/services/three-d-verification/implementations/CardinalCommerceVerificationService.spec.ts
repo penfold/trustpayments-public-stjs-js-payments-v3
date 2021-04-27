@@ -18,7 +18,7 @@ describe('CardinalCommerceVerificationService', () => {
   });
 
   describe('init', () => {
-    it('calls init query', done => {
+    it('calls init$ query', done => {
       verificationService.init('foobar').subscribe(() => {
         const event = {
           type: PUBLIC_EVENTS.CARDINAL_SETUP,

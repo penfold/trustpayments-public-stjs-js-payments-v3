@@ -244,7 +244,7 @@ function controlFrameFixture() {
     thenRespond: () => undefined,
   });
   when(configProvider.getConfig$()).thenReturn(of({ jwt: JWT } as IConfig));
-  when(threeDProcess.init()).thenReturn(EMPTY);
+  when(threeDProcess.init$()).thenReturn(EMPTY);
   when(frame.parseUrl()).thenReturn({
     locale: 'en_GB',
     jwt: JWT,

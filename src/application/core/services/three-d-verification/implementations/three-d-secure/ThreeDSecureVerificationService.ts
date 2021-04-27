@@ -5,6 +5,7 @@ import { InterFrameCommunicator } from '../../../../../../shared/services/messag
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
+import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { IVerificationData } from '../../data/IVerificationData';
 import { IVerificationResult } from '../../data/IVerificationResult';
 import { IThreeDVerificationService } from '../../IThreeDVerificationService';
@@ -13,10 +14,10 @@ import { IThreeDVerificationService } from '../../IThreeDVerificationService';
 export class ThreeDSecureVerificationService implements IThreeDVerificationService {
   constructor(private interFrameCommunicator: InterFrameCommunicator) {}
 
-  init(jwt: string): Observable<void> {
-    const queryEvent: IMessageBusEvent<IInitializationData> = {
+  init(jsInitResponse: IThreeDInitResponse): Observable<void> {
+    const queryEvent: IMessageBusEvent<null> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_SETUP,
-      data: { jwt },
+      data: null,
     };
 
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
