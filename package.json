@@ -49,7 +49,7 @@
     "example:react:start": "run-p start:bundle example:react:dev",
     "example:angular:dev": "npm run start --prefix ./example/angular",
     "example:angular:start": "run-p start:bundle example:angular:dev",
-    "lint": "npx eslint ./src",
+    "lint": ".cicd_scripts/execute/local/js_static_analysis.sh",
     "lint:fix": "npx eslint --fix ./src",
     "lint:strict": "npx eslint -c .eslintrc-strict.js ./src",
     "lint:strict:fix": "npx eslint -c .eslintrc-strict.js --fix ./src",

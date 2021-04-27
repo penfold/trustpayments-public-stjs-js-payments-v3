@@ -26,7 +26,7 @@ while [[ $# -gt -0 ]]; do
 done
 
 # Try to figure out CICD version from .gitlab-ci.yaml
-PATTERN="^(\.cicd-os-ref:\s+&cicd-os-ref\s+)(.*)$"
+PATTERN="^(\.project-infrastructure-cicd-ref:\s+&project-infrastructure-cicd-ref\s+)(.*)$"
 INFERRED_BRANCH="$(grep -E "${PATTERN}" .gitlab-ci.yml | sed -E "s/${PATTERN}/\2/")"
 
 if [[ "${REQUESTED_BRANCH}" != "" ]]; then
@@ -50,7 +50,7 @@ fi
 
 rm -rf cicd_repo .cicd_scripts
 
-git clone --depth=1 --branch="${BRANCH}" -c advice.detachedHead=false git@gitlab.com:trustpayments-public/stjs/cicd-os.git cicd_repo
+git clone --depth=1 --branch="${BRANCH}" -c advice.detachedHead=false git@gitlab.com:securetrading-gl/st-server-project/project-infrastructure-cicd.git cicd_repo
 mv cicd_repo/.cicd_scripts .
 rm -rf cicd_repo
 test -d .cicd_scripts
