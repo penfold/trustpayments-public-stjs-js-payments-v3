@@ -31,7 +31,7 @@ export class ThreeDProcess {
     private threeDVerificationServiceProvider: ThreeDVerificationProviderService,
   ) {}
 
-  init$(tokens?: IThreeDSTokens): Observable<void> {
+  init$(tokens?: IThreeDSTokens): Observable<unknown> {
     const jsInit$: Observable<IThreeDInitResponse> = this.gatewayClient.jsInit().pipe(
       tap((jsInitResponse: IThreeDInitResponse) => {
         this.verificationService = this.threeDVerificationServiceProvider.getProvider(jsInitResponse.threedsprovider);
@@ -47,7 +47,7 @@ export class ThreeDProcess {
 
     return this.jsInit$.pipe(
       first(),
-      switchMap((jsInitResponse: IThreeDInitResponse) => this.initVerificationService(jsInitResponse))
+      switchMap((jsInitResponse: IThreeDInitResponse) => this.initVerificationService(jsInitResponse)),
     );
   }
 
@@ -82,8 +82,8 @@ export class ThreeDProcess {
     );
   }
 
-  private initVerificationService(jsInitResponse: IThreeDInitResponse): Observable<void> {
-    return this.verificationService.init(jsInitResponse).pipe(
+  private initVerificationService(jsInitResponse: IThreeDInitResponse): Observable<unknown> {
+    return this.verificationService.init<unknown>(jsInitResponse).pipe(
       tap(() => this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.UNLOCK_BUTTON }, true)),
       tap(() => {
         this.messageBus

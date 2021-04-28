@@ -1,7 +1,8 @@
+import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
+import { ThreeDVerificationProvider } from './ThreeDVerificationProvider';
 import { VerificationResultHandler } from './VerificationResultHandler';
 import { IVerificationResult } from './data/IVerificationResult';
 import { ActionCode } from './data/ActionCode';
-import { IThreeDSTokens } from './data/IThreeDSTokens';
 import { PAYMENT_ERROR } from '../../models/constants/Translations';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import DoneCallback = jest.DoneCallback;
@@ -20,6 +21,15 @@ describe('VerificationResultHandler', () => {
     transactionreference: 'ref',
     requesttypescription: 'THREEDQUERY',
   };
+  const jsInitResponseMock: IThreeDInitResponse = {
+    errorcode: '0',
+    errormessage: 'Success',
+    requesttypedescription: '',
+    threedinit: 'threedinit',
+    transactionstartedtimestamp: 'transactionstartedtimestamp',
+    threedsprovider: ThreeDVerificationProvider.CARDINAL,
+    cachetoken: 'aaa',
+  };
 
   let verificationResultHandler: VerificationResultHandler;
 
@@ -37,12 +47,8 @@ describe('VerificationResultHandler', () => {
         actionCode: ActionCode.SUCCESS,
         jwt: 'foobar',
       };
-      const tokens: IThreeDSTokens = {
-        cacheToken: 'aaa',
-        jwt: 'bbb',
-      };
 
-      verificationResultHandler.handle(threeDQueryResponse, result, tokens).subscribe(res => {
+      verificationResultHandler.handle(threeDQueryResponse, result, jsInitResponseMock).subscribe(res => {
         expect(res).toMatchObject(threeDQueryResponse);
         expect(res.cachetoken).toBe('aaa');
         expect(res.threedresponse).toBe('foobar');
@@ -59,12 +65,8 @@ describe('VerificationResultHandler', () => {
       actionCode: ActionCode.NOACTION,
       jwt: 'foobar',
     };
-    const tokens: IThreeDSTokens = {
-      cacheToken: 'aaa',
-      jwt: 'bbb',
-    };
 
-    verificationResultHandler.handle(threeDQueryResponse, result, tokens).subscribe(res => {
+    verificationResultHandler.handle(threeDQueryResponse, result, jsInitResponseMock).subscribe(res => {
       expect(res).toMatchObject(threeDQueryResponse);
       expect(res.cachetoken).toBe('aaa');
       expect(res.threedresponse).toBe('foobar');
@@ -82,12 +84,8 @@ describe('VerificationResultHandler', () => {
         actionCode: actionCode,
         jwt: 'foobar',
       };
-      const tokens: IThreeDSTokens = {
-        cacheToken: 'aaa',
-        jwt: 'bbb',
-      };
 
-      verificationResultHandler.handle(threeDQueryResponse, result, tokens).subscribe({
+      verificationResultHandler.handle(threeDQueryResponse, result, jsInitResponseMock).subscribe({
         error: response => {
           expect(response).toEqual({
             jwt: 'jwt',
