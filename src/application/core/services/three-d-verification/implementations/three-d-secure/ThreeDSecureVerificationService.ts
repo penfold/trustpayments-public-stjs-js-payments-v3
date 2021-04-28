@@ -9,18 +9,19 @@ import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { IVerificationData } from '../../data/IVerificationData';
 import { IVerificationResult } from '../../data/IVerificationResult';
 import { IThreeDVerificationService } from '../../IThreeDVerificationService';
+import { ConfigInterface } from '3ds-sdk-js';
 
 @Service()
 export class ThreeDSecureVerificationService implements IThreeDVerificationService {
   constructor(private interFrameCommunicator: InterFrameCommunicator) {}
 
-  init(jsInitResponse: IThreeDInitResponse): Observable<void> {
+  init<T = ConfigInterface>(jsInitResponse: IThreeDInitResponse): Observable<T> {
     const queryEvent: IMessageBusEvent<null> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_SETUP,
       data: null,
     };
 
-    return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
+    return from(this.interFrameCommunicator.query<T>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
   binLookup(pan: string): Observable<void> {
