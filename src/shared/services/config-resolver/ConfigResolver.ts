@@ -1,4 +1,8 @@
 import Joi from 'joi';
+import {
+  IThreeDSecureConfig,
+  threeDSecureConfigName,
+} from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
 import { IConfig } from '../../model/config/IConfig';
 import { Service } from 'typedi';
 import { IComponentsIds } from '../../model/config/IComponentsIds';
@@ -50,6 +54,7 @@ export class ConfigResolver {
       successCallback: this._getValueOrDefault(config.successCallback, DefaultConfig.successCallback),
       translations: this._getValueOrDefault(config.translations, DefaultConfig.translations),
       visaCheckout: this._setVisaCheckoutConfig(config.visaCheckout),
+      [threeDSecureConfigName]: this._setThreeDSecureConfig(config[threeDSecureConfigName]),
     };
     if (!environment.production) {
       console.error(validatedConfig);
@@ -101,6 +106,13 @@ export class ConfigResolver {
   private _setApplePayConfig(config: IApplePayConfig): IApplePayConfig {
     if (!config || !Object.keys(config).length) {
       return;
+    }
+    return config;
+  }
+
+  private _setThreeDSecureConfig(config: IThreeDSecureConfig): IThreeDSecureConfig {
+    if (!config || !Object.keys(config).length) {
+      return; // = undefined
     }
     return config;
   }

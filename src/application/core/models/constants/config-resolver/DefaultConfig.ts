@@ -38,4 +38,5 @@ export const DefaultConfig: IConfig = {
   submitOnSuccess: true,
   successCallback: null,
   translations: {},
+  // threeDSecure
 };

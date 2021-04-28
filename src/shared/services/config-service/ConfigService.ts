@@ -1,4 +1,5 @@
 import { Container, Service } from 'typedi';
+import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigResolver } from '../config-resolver/ConfigResolver';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
@@ -41,7 +42,7 @@ export class ConfigService implements ConfigProvider {
     return this.updateConfig({ ...this.getConfig(), jwt });
   }
 
-  updateFragment<K extends 'components' | 'visaCheckout' | 'applePay', C extends IConfig[K]>(
+  updateFragment<K extends 'components' | 'visaCheckout' | 'applePay' | typeof threeDSecureConfigName, C extends IConfig[K]>(
     key: K,
     config: C
   ): IConfig {

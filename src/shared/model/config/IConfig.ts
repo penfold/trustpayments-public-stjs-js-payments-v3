@@ -1,3 +1,4 @@
+import { IThreeDSecureConfig } from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
 import { IBypassInit } from './IBypassInit';
 import { IComponentsConfig } from './IComponentsConfig';
 import { IComponentsIds } from './IComponentsIds';
@@ -40,4 +41,5 @@ export interface IConfig {
   successCallback?: any;
   translations?: Record<string, unknown>;
   visaCheckout?: IVisaCheckoutConfig;
+  threeDSecure?: IThreeDSecureConfig;
 }
