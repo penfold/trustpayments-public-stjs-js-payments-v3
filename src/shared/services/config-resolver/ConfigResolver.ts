@@ -1,6 +1,5 @@
 import Joi from 'joi';
 import {
-  IThreeDSecureConfig,
   threeDSecureConfigName,
 } from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
 import { IConfig } from '../../model/config/IConfig';
@@ -17,6 +16,7 @@ import { IPlaceholdersConfig } from '../../../application/core/models/IPlacehold
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
 import { environment } from '../../../environments/environment';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
+import { ConfigInterface } from '3ds-sdk-js';
 
 @Service()
 export class ConfigResolver {
@@ -110,7 +110,7 @@ export class ConfigResolver {
     return config;
   }
 
-  private _setThreeDSecureConfig(config: IThreeDSecureConfig): IThreeDSecureConfig {
+  private _setThreeDSecureConfig(config: ConfigInterface): ConfigInterface {
     if (!config || !Object.keys(config).length) {
       return; // = undefined
     }

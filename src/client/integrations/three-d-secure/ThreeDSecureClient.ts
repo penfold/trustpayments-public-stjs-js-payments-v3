@@ -6,7 +6,6 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { ActionCode } from '../../../application/core/services/three-d-verification/data/ActionCode';
 import { IVerificationData } from '../../../application/core/services/three-d-verification/data/IVerificationData';
 import { IVerificationResult } from '../../../application/core/services/three-d-verification/data/IVerificationResult';
-import { IThreeDSecureConfig } from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
@@ -16,6 +15,7 @@ import {
   ThreeDSecureInterface,
   ThreeDSecureVersion,
   ChallengeResultInterface,
+  ConfigInterface,
   // @ts-ignore
 } from '3ds-sdk-js';
 
@@ -50,7 +50,7 @@ export class ThreeDSecureClient {
       .thenRespond((event: IMessageBusEvent<IVerificationData>) => this.verify$(event.data));
   }
 
-  private setup$(): Observable<IThreeDSecureConfig> {
+  private setup$(): Observable<ConfigInterface> {
     // @ts-ignore
     return this.configService.getConfig$().pipe(
       switchMap((config: IConfig) => {

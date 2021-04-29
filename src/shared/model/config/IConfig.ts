@@ -1,4 +1,3 @@
-import { IThreeDSecureConfig } from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
 import { IBypassInit } from './IBypassInit';
 import { IComponentsConfig } from './IComponentsConfig';
 import { IComponentsIds } from './IComponentsIds';
@@ -7,6 +6,7 @@ import { IPlaceholdersConfig } from '../../../application/core/models/IPlacehold
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 import { IGooglePayConfig } from '../../../application/core/integrations/google-pay/models/IGooglePayConfig';
+import { ConfigInterface } from '3ds-sdk-js';
 
 export interface IConfig {
   analytics?: boolean;
@@ -41,5 +41,5 @@ export interface IConfig {
   successCallback?: any;
   translations?: Record<string, unknown>;
   visaCheckout?: IVisaCheckoutConfig;
-  threeDSecure?: IThreeDSecureConfig;
+  threeDSecure?: ConfigInterface;
 }
