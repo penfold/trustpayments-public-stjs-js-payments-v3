@@ -163,6 +163,7 @@ export class ConfigResolver {
 
   private _setThreeDSecureProperties(config: ConfigInterface): ConfigInterface {
     return {
+      ...config,
       loggingLevel: this._getValueOrDefault(config.loggingLevel, DefaultConfig.threeDSecure.loggingLevel),
       challengeDisplayMode: this._getValueOrDefault(config.challengeDisplayMode, DefaultConfig.threeDSecure.challengeDisplayMode),
     };
