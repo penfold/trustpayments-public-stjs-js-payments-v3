@@ -7,6 +7,7 @@ import { DefaultComponents } from './DefaultComponents';
 import { DefaultPlaceholders } from './DefaultPlaceholders';
 import { DefaultInit } from './DefaultInit';
 import { MERCHANT_FORM_SELECTOR } from '../Selectors';
+import { ChallengeDisplayMode, LoggingLevel } from '3ds-sdk-js';
 
 export const DefaultConfig: IConfig = {
   analytics: false,
@@ -38,5 +39,8 @@ export const DefaultConfig: IConfig = {
   submitOnSuccess: true,
   successCallback: null,
   translations: {},
-  // threeDSecure
+  threeDSecure: {
+    loggingLevel: LoggingLevel.ERROR,
+    challengeDisplayMode: ChallengeDisplayMode.POPUP,
+  },
 };
