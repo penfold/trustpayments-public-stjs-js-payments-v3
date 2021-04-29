@@ -185,7 +185,7 @@ test = ["coverage (>=4.0.0)", "mock (>=1.0.1)", "pytest (>=2.7.3)"]
 
 [[package]]
 name = "pyjwt"
-version = "2.0.1"
+version = "2.1.0"
 description = "JSON Web Token implementation in Python"
 category = "main"
 optional = false
@@ -288,7 +288,7 @@ brotli = ["brotlipy (>=0.6.0)"]
 
 [[package]]
 name = "webdriver-manager"
-version = "3.4.0"
+version = "3.4.1"
 description = "Library provides the way to automatically manage drivers for different browsers"
 category = "main"
 optional = false
@@ -421,8 +421,8 @@ pyioc = [
     {file = "pyioc-0.3.0-py2.py3-none-any.whl", hash = "sha256:e4d56199852d4ff82b1082646916955d2233e08353ab70a99d7115de4027c3ca"},
 ]
 pyjwt = [
-    {file = "PyJWT-2.0.1-py3-none-any.whl", hash = "sha256:b70b15f89dc69b993d8a8d32c299032d5355c82f9b5b7e851d1a6d706dffe847"},
-    {file = "PyJWT-2.0.1.tar.gz", hash = "sha256:a5c70a06e1f33d81ef25eecd50d50bd30e34de1ca8b2b9fa3fe0daaabcf69bf7"},
+    {file = "PyJWT-2.1.0-py3-none-any.whl", hash = "sha256:934d73fbba91b0483d3857d1aff50e96b2a892384ee2c17417ed3203f173fca1"},
+    {file = "PyJWT-2.1.0.tar.gz", hash = "sha256:fba44e7898bbca160a2b2b501f492824fc8382485d3a6f11ba5d0c1937ce6130"},
 ]
 pyotp = [
     {file = "pyotp-2.6.0-py2.py3-none-any.whl", hash = "sha256:9d144de0f8a601d6869abe1409f4a3f75f097c37b50a36a3bf165810a6e23f28"},
@@ -457,8 +457,8 @@ urllib3 = [
     {file = "urllib3-1.26.4.tar.gz", hash = "sha256:e7b021f7241115872f92f43c6508082facffbd1c048e3c6e2bb9c2a157e28937"},
 ]
 webdriver-manager = [
-    {file = "webdriver_manager-3.4.0-py2.py3-none-any.whl", hash = "sha256:13a10d2aaf355103483c29b879d74c95629abdcc5fc40a0f0a92c7a4c7152e49"},
-    {file = "webdriver_manager-3.4.0.tar.gz", hash = "sha256:5e59c47d0df5c3449cbe8bd26c507ad8b70380cdba0d349a836448b4d5d0165e"},
+    {file = "webdriver_manager-3.4.1-py2.py3-none-any.whl", hash = "sha256:00bb38c91a1aee23ef09699df074f7328a3618abbe5bf23944b7e835ad561dd6"},
+    {file = "webdriver_manager-3.4.1.tar.gz", hash = "sha256:254a3c58a253785433ce0d8afd1d6a46ebf0e62137bb05a963c033958610c6da"},
 ]
 wiremock = [
     {file = "wiremock-2.3.0-py3-none-any.whl", hash = "sha256:f5dc71442809f8c19922442ebc49ae19d946856ea7a9ddeb2844a7634f5ade36"},
