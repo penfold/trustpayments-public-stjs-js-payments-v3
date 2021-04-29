@@ -115,7 +115,11 @@ export class ConfigResolver {
       return;
     }
 
-    return this._setThreeDSecureProperties(config);
+    return {
+      ...config,
+      loggingLevel: this._getValueOrDefault(config.loggingLevel, DefaultConfig.threeDSecure.loggingLevel),
+      challengeDisplayMode: this._getValueOrDefault(config.challengeDisplayMode, DefaultConfig.threeDSecure.challengeDisplayMode),
+    };
   }
 
   private _setComponentIds(config: IComponentsIds): IComponentsIds {
@@ -159,13 +163,5 @@ export class ConfigResolver {
     }
 
     return this._getValueOrDefault(value, DefaultConfig.cybertonicaApiKey);
-  }
-
-  private _setThreeDSecureProperties(config: ConfigInterface): ConfigInterface {
-    return {
-      ...config,
-      loggingLevel: this._getValueOrDefault(config.loggingLevel, DefaultConfig.threeDSecure.loggingLevel),
-      challengeDisplayMode: this._getValueOrDefault(config.challengeDisplayMode, DefaultConfig.threeDSecure.challengeDisplayMode),
-    };
   }
 }

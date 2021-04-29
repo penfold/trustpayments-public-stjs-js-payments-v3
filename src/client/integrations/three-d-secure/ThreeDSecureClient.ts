@@ -7,7 +7,7 @@ import { ActionCode } from '../../../application/core/services/three-d-verificat
 import { IVerificationData } from '../../../application/core/services/three-d-verification/data/IVerificationData';
 import { IVerificationResult } from '../../../application/core/services/three-d-verification/data/IVerificationResult';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { ConfigService } from '../../../shared/services/config-service/ConfigService';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { IThreeDSecure3dsMethod } from './IThreeDSecure3dsMethod';
 import {
@@ -24,7 +24,7 @@ export class ThreeDSecureClient {
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
-    private configService: ConfigService,
+    private configProvider: ConfigProvider,
   ) {
     const threeDSecureFactory = new ThreeDSecureFactory();
 
@@ -50,7 +50,7 @@ export class ThreeDSecureClient {
   }
 
   private setup$(): Observable<ConfigInterface> {
-    return this.configService.getConfig$().pipe(
+    return this.configProvider.getConfig$().pipe(
       switchMap((config: IConfig) => {
         return this.threeDSecure.init$(config.threeDSecure);
       }),
