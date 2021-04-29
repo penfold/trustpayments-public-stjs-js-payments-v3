@@ -1,7 +1,9 @@
+import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
 import { ConfigResolver } from './ConfigResolver';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigSchema } from '../storage/ConfigSchema';
 import { anything, spy, when } from 'ts-mockito';
+import { ChallengeDisplayMode, LoggingLevel } from '3ds-sdk-js';
 
 describe('ConfigResolver', () => {
   const configResolverInstance: ConfigResolver = new ConfigResolver();
@@ -24,6 +26,18 @@ describe('ConfigResolver', () => {
   it('should set config-provider with given values if they are correct', () => {
     const { minimalDefaultConfigResolve } = ConfigResolverFixture();
     expect(configResolverInstance.resolve(minimalDefaultConfigResolve)).toEqual(minimalDefaultConfigResolve);
+  });
+
+  it(`should set default ${threeDSecureConfigName} properties when not present`, () => {
+    const { minimalDefaultConfigResolve } = ConfigResolverFixture();
+
+    expect(configResolverInstance.resolve(minimalDefaultConfigResolve)).toEqual({
+      ...minimalDefaultConfigResolve,
+      [threeDSecureConfigName]: {
+        loggingLevel: LoggingLevel.ERROR,
+        challengeDisplayMode: ChallengeDisplayMode.POPUP,
+      },
+    });
   });
 });
 
@@ -307,6 +321,9 @@ function ConfigResolverFixture() {
     successCallback: null,
     translations: {},
     visaCheckout: undefined,
+    threeDSecure: {
+      loggingLevel: undefined,
+    },
   };
   return {
     config,
