@@ -112,7 +112,7 @@ export class ConfigResolver {
 
   private _setThreeDSecureConfig(config: ConfigInterface): ConfigInterface {
     if (!config || !Object.keys(config).length) {
-      return; // = undefined
+      return;
     }
     return config;
   }

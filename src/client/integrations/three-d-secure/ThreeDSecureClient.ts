@@ -16,7 +16,6 @@ import {
   ThreeDSecureVersion,
   ChallengeResultInterface,
   ConfigInterface,
-  // @ts-ignore
 } from '3ds-sdk-js';
 
 @Service()
@@ -51,7 +50,6 @@ export class ThreeDSecureClient {
   }
 
   private setup$(): Observable<ConfigInterface> {
-    // @ts-ignore
     return this.configService.getConfig$().pipe(
       switchMap((config: IConfig) => {
         return this.threeDSecure.init$(config.threeDSecure);
