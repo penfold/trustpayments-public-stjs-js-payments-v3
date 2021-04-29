@@ -18,11 +18,12 @@ import { GatewayClient } from '../GatewayClient';
 import { GoogleAnalytics } from '../../integrations/google-analytics/GoogleAnalytics';
 import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { ConfigInterface } from '3ds-sdk-js';
 
 @Service()
 export class ThreeDProcess {
-  private jsInit$: Observable<IThreeDInitResponse>;
-  private verificationService: IThreeDVerificationService;
+  private jsInitResponse$: Observable<IThreeDInitResponse>;
+  private verificationService: IThreeDVerificationService<ConfigInterface | void>;
 
   constructor(
     private messageBus: IMessageBus,
@@ -43,9 +44,9 @@ export class ThreeDProcess {
       switchMap(() => jsInit$),
     );
 
-    this.jsInit$ = merge(initialTokens$, updatedTokens$).pipe(shareReplay(1));
+    this.jsInitResponse$ = merge(initialTokens$, updatedTokens$).pipe(shareReplay(1));
 
-    return this.jsInit$.pipe(
+    return this.jsInitResponse$.pipe(
       first(),
       switchMap((jsInitResponse: IThreeDInitResponse) => this.initVerificationService(jsInitResponse)),
     );
@@ -56,7 +57,7 @@ export class ThreeDProcess {
     card: ICard,
     merchantData: IMerchantData
   ): Observable<IThreeDQueryResponse> {
-    return this.jsInit$.pipe(
+    return this.jsInitResponse$.pipe(
       first(),
       switchMap((jsInitResponse: IThreeDInitResponse) => {
         const includesThreeDQuery = () => requestTypes.includes('THREEDQUERY');

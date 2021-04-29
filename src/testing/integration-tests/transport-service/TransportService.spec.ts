@@ -21,12 +21,12 @@ describe('TransportService', () => {
     jwtDecoder = Container.get(JwtDecoder);
   });
 
-  xit('sends JSINIT request and updates the current JWT in the store', done => {
+  it.skip('sends JSINIT request and updates the current JWT in the store', done => {
     const jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTY3NjI4MDcsImlzcyI6ImpzbGlicmFyeWp3dCIsInBheWxvYWQiOnsibWFpbmFtb3VudCI6IjIwLjAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsInJlcXVlc3R0eXBlZGVzY3JpcHRpb25zIjpbIlRIUkVFRFFVRVJZIiwiQVVUSCJdfX0.HBtDAiRxSUb58hgkuVVwIMbPZ5IfJEWJJmQ3oiOcj_s';
 
     messageBus.publish({ type: PUBLIC_EVENTS.JWT_REPLACED, data: jwt });
 
-    transportService.sendRequest({requesttypedescriptions: ['JSINIT']}).subscribe(response => {
+    transportService.sendRequest({ requesttypedescriptions: ['JSINIT'] }).subscribe(response => {
       expect(response).toEqual({
         transactionstartedtimestamp: expect.any(String),
         errormessage: 'Ok',

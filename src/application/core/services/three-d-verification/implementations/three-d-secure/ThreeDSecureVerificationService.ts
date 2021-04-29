@@ -12,8 +12,10 @@ import { IThreeDVerificationService } from '../../IThreeDVerificationService';
 import { ConfigInterface } from '3ds-sdk-js';
 
 @Service()
-export class ThreeDSecureVerificationService implements IThreeDVerificationService {
-  constructor(private interFrameCommunicator: InterFrameCommunicator) {}
+export class ThreeDSecureVerificationService implements IThreeDVerificationService<ConfigInterface> {
+  constructor(private interFrameCommunicator: InterFrameCommunicator) {
+    console.log('WHTRBIT', this);
+  }
 
   init<T = ConfigInterface>(jsInitResponse: IThreeDInitResponse): Observable<T> {
     const queryEvent: IMessageBusEvent<null> = {

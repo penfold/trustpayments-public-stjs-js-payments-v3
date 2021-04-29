@@ -13,8 +13,10 @@ import { IVerificationData } from '../data/IVerificationData';
 import { IVerificationResult } from '../data/IVerificationResult';
 
 @Service()
-export class CardinalCommerceVerificationService implements IThreeDVerificationService {
-  constructor(private interFrameCommunicator: InterFrameCommunicator) {}
+export class CardinalCommerceVerificationService implements IThreeDVerificationService<void> {
+  constructor(private interFrameCommunicator: InterFrameCommunicator) {
+    console.log('WHTRBIT', this);
+  }
 
   init<T = void>(jsInitResponse: IThreeDInitResponse): Observable<T> {
     const queryEvent: IMessageBusEvent<IInitializationData> = {

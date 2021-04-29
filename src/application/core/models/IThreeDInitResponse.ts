@@ -4,9 +4,9 @@ export interface IThreeDInitResponse {
   errorcode: string;
   errormessage: string;
   requesttypedescription: string;
-  threedinit: string;
   transactionstartedtimestamp: string;
   threedsprovider: ThreeDVerificationProvider;
   cachetoken?: string;
+  threedinit?: string;
   maskedpan?: string;
 }

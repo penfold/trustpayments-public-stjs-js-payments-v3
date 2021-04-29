@@ -143,8 +143,8 @@ describe('ResponseDecoderService', () => {
         customerOutput: {
           ccc: 'ccc',
           ddd: 'ddd',
-          customeroutput: 'SUCCESS'
-        }
+          customeroutput: 'SUCCESS',
+        },
       });
     });
 
@@ -180,8 +180,8 @@ describe('ResponseDecoderService', () => {
         responseJwt: 'somejwt',
         customerOutput: {
           eee: 'eee',
-          fff: 'fff'
-        }
+          fff: 'fff',
+        },
       });
     });
 
@@ -195,13 +195,13 @@ describe('ResponseDecoderService', () => {
           response: [
             {
               aaa: 'aaa',
-              bbb: 'bbb'
-            }
+              bbb: 'bbb',
+            },
           ],
-          secrand: 'foobar'
+          secrand: 'foobar',
         },
         aud: 'foo',
-        sitereference: 'bar'
+        sitereference: 'bar',
       });
 
       const result = responseDecoderService.decode(prepareResponse({ jwt: 'somejwt' }));
@@ -211,8 +211,8 @@ describe('ResponseDecoderService', () => {
         updatedMerchantJwt: 'updatedjwt',
         customerOutput: {
           aaa: 'aaa',
-          bbb: 'bbb'
-        }
+          bbb: 'bbb',
+        },
       });
     });
   });
