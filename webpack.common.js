@@ -2,8 +2,6 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -59,11 +57,6 @@ module.exports = {
     libraryTarget: 'umd',
     publicPath: ''
   },
-  node: {
-    net: 'empty',
-    tls: 'empty',
-    dns: 'empty'
-  },
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
@@ -106,43 +99,26 @@ module.exports = {
       },
       chunks: ['controlFrame']
     }),
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[id].css'
-    }),
     new CopyPlugin({
       patterns: [{
         from: 'src/application/core/services/icon/images/*.png',
-        to: 'images',
+        to: 'images/[name][ext]',
         force: true,
-        flatten: true
       }]
     }),
     new StyleLintPlugin({
       context: path.join(__dirname, 'src')
     }),
-    new FriendlyErrorsWebpackPlugin(),
   ],
   module: {
     rules: [
       {
-        test: /\.scss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1
-            }
-          },
-          'postcss-loader',
-          'sass-loader',
-          'source-map-loader'
-        ]
+        test: /\.(scss|css)$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
-        use: ['file-loader']
+        type: 'asset/resource',
       },
       {
         test: /\.tsx?|js$/,
@@ -167,14 +143,23 @@ module.exports = {
           }
         ],
         exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader']
       }
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
+    fallback: {
+      "fs": false,
+      "tls": false,
+      "net": false,
+      "path": false,
+      "zlib": false,
+      "http": false,
+      "https": false,
+      "crypto": require.resolve("crypto-browserify/"),
+      "util": require.resolve("util/"),
+      "stream": require.resolve("stream-browserify/"),
+      "buffer": require.resolve("buffer/")
+    },
   }
 };
