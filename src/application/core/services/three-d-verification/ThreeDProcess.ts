@@ -25,7 +25,7 @@ export class ThreeDProcess {
   private threeDSmethod: IThreeDSecure3dsMethod;
 
   constructor(
-    private verificationService: IThreeDVerificationService,
+    private verificationService: IThreeDVerificationService<any, IThreeDSecure3dsMethod>,
     private messageBus: IMessageBus,
     private tokenProvider: ThreeDSTokensProvider,
     private gatewayClient: GatewayClient,
@@ -40,14 +40,6 @@ export class ThreeDProcess {
     );
 
     this.threeDSTokens$ = merge(initialTokens, updatedTokens).pipe(shareReplay(1));
-
-    this.gatewayClient.schemaLookup().subscribe(response => {
-      this.threeDSmethod = {
-        methodUrl: response.methodurl,
-        notificationUrl: response.notificationurl,
-        threeDSTransactionId: response.threedstransactionid
-      }
-    });
 
     return this.threeDSTokens$.pipe(
       first(),
@@ -65,7 +57,7 @@ export class ThreeDProcess {
       switchMap(tokens => {
         const includesThreedquery = () => requestTypes.includes('THREEDQUERY');
 
-        return iif(includesThreedquery, this.verificationService.start(tokens.jwt, this.threeDSmethod), of(null)).pipe(
+        return iif(includesThreedquery, this.verificationService.start(tokens.jwt), of(null)).pipe(
           mapTo(new ThreeDQueryRequest(tokens.cacheToken, card, merchantData)),
           switchMap(request => {
             return this.gatewayClient.threedQuery(request);
@@ -93,7 +85,7 @@ export class ThreeDProcess {
       tap(() => {
         this.messageBus
           .pipe(ofType(MessageBus.EVENTS_PUBLIC.BIN_PROCESS))
-          .subscribe((event: IMessageBusEvent<string>) => this.verificationService.binLookup(event.data, this.threeDSmethod));
+          .subscribe((event: IMessageBusEvent<string>) => this.verificationService.binLookup(event.data));
       })
     );
   }

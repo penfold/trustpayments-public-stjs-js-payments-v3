@@ -8,13 +8,14 @@ import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IVerificationData } from '../../data/IVerificationData';
 import { IVerificationResult } from '../../data/IVerificationResult';
+import { ThreeDSchemaLookupRequest } from '../../data/ThreeDSchemaLookupRequest';
 import { IThreeDVerificationService } from '../../IThreeDVerificationService';
 
 @Service()
-export class ThreeDSecureVerificationService implements IThreeDVerificationService {
+export class ThreeDSecureVerificationService implements IThreeDVerificationService<any, IThreeDSecure3dsMethod> {
   constructor(private interFrameCommunicator: InterFrameCommunicator) {}
 
-  init(jwt: string): Observable<void> {
+  init(jwt: string): Observable<any> {
     const queryEvent: IMessageBusEvent<IInitializationData> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_SETUP,
       data: { jwt },
@@ -23,19 +24,19 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
-  binLookup(pan: string, threeDSmethod: IThreeDSecure3dsMethod): Observable<void> {
-    const queryEvent: IMessageBusEvent<{ pan: string, threeDSmethod: IThreeDSecure3dsMethod }> = {
+  binLookup(pan: string): Observable<IThreeDSecure3dsMethod> {
+    const queryEvent: IMessageBusEvent<string> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_TRIGGER,
-      data: { pan, threeDSmethod }
+      data: pan
     };
 
-    return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
+    return from(this.interFrameCommunicator.query<IThreeDSecure3dsMethod>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
-  start(jwt: string, threeDSmethod: IThreeDSecure3dsMethod): Observable<any> {
-    const queryEvent: IMessageBusEvent<{ jwt: string, threeDSmethod: IThreeDSecure3dsMethod }> = {
+  start(jwt: string): Observable<any> {
+    const queryEvent: IMessageBusEvent<string> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_START,
-      data: { jwt, threeDSmethod }
+      data: jwt
     };
 
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));

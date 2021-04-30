@@ -1,5 +1,5 @@
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { first, map, switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
@@ -17,13 +17,17 @@ import {
   ChallengeResultInterface,
   // @ts-ignore
 } from '3ds-sdk-js';
+import { GatewayClient } from '../../../application/core/services/GatewayClient';
+import { IThreeDSchemaLookupResponse } from '../../../application/core/models/IThreeDSchemaLookupResponse';
 
 @Service()
 export class ThreeDSecureClient {
   private threeDSecure: ThreeDSecureInterface;
+  private schemaLookup: IThreeDSchemaLookupResponse;
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
+    private gatewayClient: GatewayClient,
   ) {
     const threeDSecureFactory = new ThreeDSecureFactory();
 
@@ -37,11 +41,11 @@ export class ThreeDSecureClient {
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_TRIGGER)
-      .thenRespond((event: IMessageBusEvent<{pan: string, threeDSmethod: IThreeDSecure3dsMethod}>) => this.trigger$(event.data));
+      .thenRespond((event: IMessageBusEvent<string>) => this.trigger$(event.data));
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_START)
-      .thenRespond((event: IMessageBusEvent<{ jwt: string, threeDSmethod: IThreeDSecure3dsMethod }>) => this.start$(event.data));
+      .thenRespond((event: IMessageBusEvent<string>) => this.start$(event.data));
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_VERIFY)
@@ -54,19 +58,26 @@ export class ThreeDSecureClient {
     });
   }
 
-  private trigger$({ pan, threeDSmethod }: { pan: string, threeDSmethod: IThreeDSecure3dsMethod }): Observable<IThreeDSecure3dsMethod> {
-    return of({
-      methodUrl: threeDSmethod.methodUrl,
-      notificationUrl: threeDSmethod.notificationUrl,
-      threeDSTransactionId: threeDSmethod.threeDSTransactionId,
-    });
+  private trigger$(pan: string): Observable<IThreeDSecure3dsMethod> {
+    return this.gatewayClient.schemaLookup(pan).pipe(
+      first(),
+      switchMap(response => {
+        this.schemaLookup = response;
+
+        return of({
+          methodUrl: response.methodurl,
+          notificationUrl: response.notificationurl,
+          threeDSTransactionId: response.threedstransactionid,
+        });
+      }),
+    );
   }
 
-  private start$({ jwt, threeDSmethod }: { jwt: string, threeDSmethod: IThreeDSecure3dsMethod }): Observable<any> {
+  private start$(jwt: string): Observable<any> {
     return this.threeDSecure.run3DSMethod$(
-      threeDSmethod.notificationUrl,
-      threeDSmethod.threeDSTransactionId,
-      threeDSmethod.methodUrl,
+      this.schemaLookup.notificationurl,
+      this.schemaLookup.threedstransactionid,
+      this.schemaLookup.methodurl,
     );
   }
 

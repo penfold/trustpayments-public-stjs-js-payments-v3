@@ -32,14 +32,11 @@ export class GatewayClient {
     );
   }
 
-  schemaLookup(): Observable<IThreeDSchemaLookupResponse> {
-    return from(this.stTransport.sendRequest(new ThreeDSchemaLookupRequest())).pipe(
+  schemaLookup(pan: string): Observable<IThreeDSchemaLookupResponse> {
+    return from(this.stTransport.sendRequest(new ThreeDSchemaLookupRequest(pan))).pipe(
       switchMap(({ response }: { response: IThreeDSchemaLookupResponse }) => {
         return Number(response.errorcode) === 0 ? of(response) : throwError(response);
-      }),
-      // tap((response: IThreeDInitResponse) => {
-      //   this.messageBus.publish({ type: PUBLIC_EVENTS.JSINIT_RESPONSE, data: response });
-      // })
+      })
     );
   }
 }

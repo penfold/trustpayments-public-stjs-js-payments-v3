@@ -3,9 +3,9 @@ import { IThreeDSecure3dsMethod } from '../../../../client/integrations/three-d-
 import { IVerificationData } from './data/IVerificationData';
 import { IVerificationResult } from './data/IVerificationResult';
 
-export abstract class IThreeDVerificationService {
-  abstract init(jwt: string): Observable<void>;
-  abstract binLookup(pan: string, threeDSmethod?: IThreeDSecure3dsMethod): Observable<void>;
-  abstract start(jwt: string, threeDSmethod?: IThreeDSecure3dsMethod): Observable<any>;
+export abstract class IThreeDVerificationService<T, C> {
+  abstract init(jwt: string): Observable<T>;
+  abstract binLookup(pan: string): Observable<C>;
+  abstract start(jwt: string): Observable<any>;
   abstract verify(data: IVerificationData): Observable<IVerificationResult>;
 }
