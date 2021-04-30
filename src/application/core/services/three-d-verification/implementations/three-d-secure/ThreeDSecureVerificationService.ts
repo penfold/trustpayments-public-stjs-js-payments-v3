@@ -1,6 +1,7 @@
 import { from, Observable } from 'rxjs';
 import { Service } from 'typedi';
 import { IInitializationData } from '../../../../../../client/integrations/cardinal-commerce/data/IInitializationData';
+import { IThreeDSecure3dsMethod } from '../../../../../../client/integrations/three-d-secure/IThreeDSecure3dsMethod';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
@@ -22,19 +23,19 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
-  binLookup(pan: string): Observable<void> {
-    const queryEvent: IMessageBusEvent<string> = {
+  binLookup(pan: string, threeDSmethod: IThreeDSecure3dsMethod): Observable<void> {
+    const queryEvent: IMessageBusEvent<{ pan: string, threeDSmethod: IThreeDSecure3dsMethod }> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_TRIGGER,
-      data: pan,
+      data: { pan, threeDSmethod }
     };
 
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
-  start(jwt: string): Observable<any> {
-    const queryEvent: IMessageBusEvent<IInitializationData> = {
+  start(jwt: string, threeDSmethod: IThreeDSecure3dsMethod): Observable<any> {
+    const queryEvent: IMessageBusEvent<{ jwt: string, threeDSmethod: IThreeDSecure3dsMethod }> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_START,
-      data: { jwt },
+      data: { jwt, threeDSmethod }
     };
 
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));

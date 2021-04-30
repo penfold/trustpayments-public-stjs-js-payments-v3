@@ -37,11 +37,11 @@ export class ThreeDSecureClient {
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_TRIGGER)
-      .thenRespond((event: IMessageBusEvent<string>) => this.trigger$(event.data));
+      .thenRespond((event: IMessageBusEvent<{pan: string, threeDSmethod: IThreeDSecure3dsMethod}>) => this.trigger$(event.data));
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_START)
-      .thenRespond((event: IMessageBusEvent<string>) => this.start$(event.data));
+      .thenRespond((event: IMessageBusEvent<{ jwt: string, threeDSmethod: IThreeDSecure3dsMethod }>) => this.start$(event.data));
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_VERIFY)
@@ -54,19 +54,19 @@ export class ThreeDSecureClient {
     });
   }
 
-  private trigger$(pan: string): Observable<IThreeDSecure3dsMethod> {
+  private trigger$({ pan, threeDSmethod }: { pan: string, threeDSmethod: IThreeDSecure3dsMethod }): Observable<IThreeDSecure3dsMethod> {
     return of({
-      methodUrl: 'http://localhost:8887/three_ds_method',
-      notificationUrl: 'mockNotificationURL',
-      threeDSTransactionId: '2af781fd-c5f6-486a-ada1-adc9320bd54f', // SUCCESS
+      methodUrl: threeDSmethod.methodUrl,
+      notificationUrl: threeDSmethod.notificationUrl,
+      threeDSTransactionId: threeDSmethod.threeDSTransactionId,
     });
   }
 
-  private start$(jwt: string): Observable<any> {
+  private start$({ jwt, threeDSmethod }: { jwt: string, threeDSmethod: IThreeDSecure3dsMethod }): Observable<any> {
     return this.threeDSecure.run3DSMethod$(
-      '2af781fd-c5f6-486a-ada1-adc9320bd54f',
-      'mockNotificationURL',
-      'http://localhost:8887/three_ds_method',
+      threeDSmethod.notificationUrl,
+      threeDSmethod.threeDSTransactionId,
+      threeDSmethod.methodUrl,
     );
   }
 

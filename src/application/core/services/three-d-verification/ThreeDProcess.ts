@@ -17,10 +17,12 @@ import { GatewayClient } from '../GatewayClient';
 import { GoogleAnalytics } from '../../integrations/google-analytics/GoogleAnalytics';
 import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { IThreeDSecure3dsMethod } from '../../../../client/integrations/three-d-secure/IThreeDSecure3dsMethod';
 
 @Service()
 export class ThreeDProcess {
   private threeDSTokens$: Observable<IThreeDSTokens>;
+  private threeDSmethod: IThreeDSecure3dsMethod;
 
   constructor(
     private verificationService: IThreeDVerificationService,
@@ -39,6 +41,14 @@ export class ThreeDProcess {
 
     this.threeDSTokens$ = merge(initialTokens, updatedTokens).pipe(shareReplay(1));
 
+    this.gatewayClient.schemaLookup().subscribe(response => {
+      this.threeDSmethod = {
+        methodUrl: response.methodurl,
+        notificationUrl: response.notificationurl,
+        threeDSTransactionId: response.threedstransactionid
+      }
+    });
+
     return this.threeDSTokens$.pipe(
       first(),
       switchMap(threeDStokens => this.initVerificationService(threeDStokens))
@@ -55,7 +65,7 @@ export class ThreeDProcess {
       switchMap(tokens => {
         const includesThreedquery = () => requestTypes.includes('THREEDQUERY');
 
-        return iif(includesThreedquery, this.verificationService.start(tokens.jwt), of(null)).pipe(
+        return iif(includesThreedquery, this.verificationService.start(tokens.jwt, this.threeDSmethod), of(null)).pipe(
           mapTo(new ThreeDQueryRequest(tokens.cacheToken, card, merchantData)),
           switchMap(request => {
             return this.gatewayClient.threedQuery(request);
@@ -83,7 +93,7 @@ export class ThreeDProcess {
       tap(() => {
         this.messageBus
           .pipe(ofType(MessageBus.EVENTS_PUBLIC.BIN_PROCESS))
-          .subscribe((event: IMessageBusEvent<string>) => this.verificationService.binLookup(event.data));
+          .subscribe((event: IMessageBusEvent<string>) => this.verificationService.binLookup(event.data, this.threeDSmethod));
       })
     );
   }
