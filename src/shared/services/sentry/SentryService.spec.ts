@@ -71,6 +71,7 @@ describe('SentryService', () => {
           environment: 'prod',
           release: '1.2.3',
           ignoreErrors: ExceptionsToSkip,
+          sampleRate: 0.1,
           beforeSend: anyFunction(),
         })
       )
