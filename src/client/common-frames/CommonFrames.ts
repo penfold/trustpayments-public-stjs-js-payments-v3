@@ -177,6 +177,12 @@ export class CommonFrames {
         -1
       )
     );
+
+    this.destroy$.pipe(
+      first(),
+      map(() => document.getElementById(CONTROL_FRAME_IFRAME)),
+      filter(Boolean),
+    ).subscribe((iframe: HTMLIFrameElement) => this.form.removeChild(iframe));
   }
 
   private getControlFrameStyles(styles: IStyles): IStyles {

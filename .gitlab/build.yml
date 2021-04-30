@@ -43,12 +43,8 @@ build-sdk-release:
     - .rules-when-release
   variables:
     ARTIFACTS_BUILD_PATH: ".dist-release"
-  before_script:
-    - /bin/bash .cicd_scripts/execute/link_node_modules.sh
-    - export NVM_DIR="$HOME/.nvm/"
-    - source ${NVM_DIR}/nvm.sh
-    - . .cicd_scripts/gitlab/release/load_release_artifact.sh "${ARTIFACT_RELEASE_CICD_FILENAME}"
   script:
+    - . .cicd_scripts/gitlab/release/load_release_artifact.sh "${ARTIFACT_RELEASE_CICD_FILENAME}"
     - npx lerna bootstrap
     - npx lerna version "${RELEASE_TAG}" --no-git-tag-version --no-push --yes
     - npx lerna run build:prod -- --frame_url="https://cdn.eu.trustpayments.com/js-payments-v3/${RELEASE_TAG}-${CDN_HASH}"

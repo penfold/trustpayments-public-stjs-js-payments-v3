@@ -6,7 +6,7 @@ from utils.date_util import convert_to_string, get_current_time, date_formats
 
 
 class ScreenshotManager:
-    SENSITIVITY_DEFAULT: int = 400
+    SENSITIVITY_DEFAULT: int = 1000
     COMPARISON_AREA_PX_DEFAULT: int = 20
 
     def __init__(self, driver_factory, configuration):

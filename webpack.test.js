@@ -11,13 +11,13 @@ module.exports = merge(common, {
     contentBase: './dist',
     port: 8443,
     https: true,
-    hot: true,
     host: '0.0.0.0',
     writeToDisk: true,
     disableHostCheck: true,
     watchOptions: {
       ignored: ['node_modules']
-    }
+    },
+    injectClient: false
   },
   plugins: [
     new WebpackManifestPlugin(),

@@ -37,9 +37,7 @@ Container.set({ id: TranslatorToken, type: Translator });
 Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('CardFrames', () => {
-  document.body.innerHTML =
-    '<form id="st-form" class="example-form" autocomplete="off" novalidate> <h1 class="example-form__title"> Secure Trading<span>AMOUNT: <strong>10.00 GBP</strong></span> </h1> <div class="example-form__section example-form__section--horizontal"> <div class="example-form__group"> <label for="example-form-name" class="example-form__label">AMOUNT</label> <input id="example-form-amount" class="example-form__input" type="number" placeholder="" name="myBillAmount" data-st-name="billingamount" /> </div> </div> <div class="example-form__section example-form__section--horizontal"> <div class="example-form__group"> <label for="example-form-name" class="example-form__label">NAME</label> <input id="example-form-name" class="example-form__input" type="text" placeholder="John Doe" autocomplete="name" name="myBillName" data-st-name="billingfirstname" /> </div> <div class="example-form__group"> <label for="example-form-email" class="example-form__label">E-MAIL</label> <input id="example-form-email" class="example-form__input" type="email" placeholder="test@mail.com" autocomplete="email" name="myBillEmail" data-st-name="billingemail" /> </div> <div class="example-form__group"> <label for="example-form-phone" class="example-form__label">PHONE</label> <input id="example-form-phone" class="example-form__input" type="tel" placeholder="+00 000 000 000" autocomplete="tel" name="myBillTel" /> <!-- no data-st-name attribute so this field will not be submitted to ST --> </div> </div> <div class="example-form__spacer"></div> <div class="example-form__section"> <div id="st-notification-frame" class="example-form__group"></div> <div id="st-card-number" class="example-form__group"></div> <div id="st-expiration-date" class="example-form__group"></div> <div id="st-security-code" class="example-form__group"></div> <div class="example-form__spacer"></div> </div> <div class="example-form__section"> <div class="example-form__group example-form__group--submit"> <button type="submit" class="example-form__button">Back</button> <button type="submit" class="example-form__button" id="merchant-submit-button">Submit</button> </div> </div> <div class="example-form__section"> <div id="st-control-frame" class="example-form__group"></div> <div id="st-visa-checkout" class="example-form__group"></div> <div id="st-apple-pay" class="example-form__group"></div> </div> <div id="st-animated-card" class="st-animated-card-wrapper"></div> </form>';
-  const configProvider: ConfigProvider = mock<ConfigProvider>();
+  let configProvider: ConfigProvider;
   let iframeFactory: IframeFactory;
   let frame: Frame;
   let instance: CardFrames;
@@ -47,8 +45,12 @@ describe('CardFrames', () => {
   let jwtDecoder: JwtDecoder;
 
   beforeEach(() => {
+    document.body.innerHTML =
+      '<form id="st-form" class="example-form" autocomplete="off" novalidate> <h1 class="example-form__title"> Secure Trading<span>AMOUNT: <strong>10.00 GBP</strong></span> </h1> <div class="example-form__section example-form__section--horizontal"> <div class="example-form__group"> <label for="example-form-name" class="example-form__label">AMOUNT</label> <input id="example-form-amount" class="example-form__input" type="number" placeholder="" name="myBillAmount" data-st-name="billingamount" /> </div> </div> <div class="example-form__section example-form__section--horizontal"> <div class="example-form__group"> <label for="example-form-name" class="example-form__label">NAME</label> <input id="example-form-name" class="example-form__input" type="text" placeholder="John Doe" autocomplete="name" name="myBillName" data-st-name="billingfirstname" /> </div> <div class="example-form__group"> <label for="example-form-email" class="example-form__label">E-MAIL</label> <input id="example-form-email" class="example-form__input" type="email" placeholder="test@mail.com" autocomplete="email" name="myBillEmail" data-st-name="billingemail" /> </div> <div class="example-form__group"> <label for="example-form-phone" class="example-form__label">PHONE</label> <input id="example-form-phone" class="example-form__input" type="tel" placeholder="+00 000 000 000" autocomplete="tel" name="myBillTel" /> <!-- no data-st-name attribute so this field will not be submitted to ST --> </div> </div> <div class="example-form__spacer"></div> <div class="example-form__section"> <div id="st-notification-frame" class="example-form__group"></div> <div id="st-card-number" class="example-form__group"></div> <div id="st-expiration-date" class="example-form__group"></div> <div id="st-security-code" class="example-form__group"></div> <div class="example-form__spacer"></div> </div> <div class="example-form__section"> <div class="example-form__group example-form__group--submit"> <button type="submit" class="example-form__button">Back</button> <button type="submit" class="example-form__button" id="merchant-submit-button">Submit</button> </div> </div> <div class="example-form__section"> <div id="st-control-frame" class="example-form__group"></div> <div id="st-visa-checkout" class="example-form__group"></div> <div id="st-apple-pay" class="example-form__group"></div> </div> <div id="st-animated-card" class="st-animated-card-wrapper"></div> </form>';
+
     iframeFactory = mock(IframeFactory);
     jwtDecoder = mock(JwtDecoder);
+    configProvider = mock<ConfigProvider>();
     messageBus = new SimpleMessageBus();
     frame = mock(Frame);
     Container.get(TranslatorToken).init();
@@ -60,6 +62,7 @@ describe('CardFrames', () => {
         jwt: '',
         disableNotification: false,
         placeholders: { pan: 'Card number', expirydate: 'MM/YY', securitycode: '***' },
+        components: {},
       })
     );
 
@@ -465,6 +468,21 @@ describe('CardFrames', () => {
       expect(instance._createSubmitButton().getAttribute('class')).toEqual('example-form__button');
       // @ts-ignore
       expect(instance._createSubmitButton().getAttribute('type')).toEqual('submit');
+    });
+  });
+
+  describe('init()', () => {
+    it('should create iframes for card fields and append them to DOM', () => {
+      expect(document.getElementById(CARD_NUMBER_IFRAME)).toBeInstanceOf(HTMLIFrameElement);
+      expect(document.getElementById(EXPIRATION_DATE_IFRAME)).toBeInstanceOf(HTMLIFrameElement);
+      expect(document.getElementById(SECURITY_CODE_IFRAME)).toBeInstanceOf(HTMLIFrameElement);
+    });
+
+    it('should remove card fields iframes from the DOM on destroy event', () => {
+      messageBus.publish({type: PUBLIC_EVENTS.DESTROY});
+      expect(document.getElementById(CARD_NUMBER_IFRAME)).toBeNull();
+      expect(document.getElementById(EXPIRATION_DATE_IFRAME)).toBeNull();
+      expect(document.getElementById(SECURITY_CODE_IFRAME)).toBeNull();
     });
   });
 });

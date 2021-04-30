@@ -3,8 +3,6 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
@@ -22,11 +20,6 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: path.join(__dirname, 'dist')
-  },
-  node: {
-    net: 'empty',
-    tls: 'empty',
-    dns: 'empty'
   },
   plugins: [
     new WebpackManifestPlugin(),
@@ -56,17 +49,12 @@ module.exports = {
       template: './pages/minimal/minimal-content-security-header.html',
       chunks: ['minimal']
     }),
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[id].css'
-    }),
     new CopyPlugin({
       patterns: [
         {
           from: 'img/*.png',
-          to: 'img',
+          to: '',
           force: true,
-          flatten: true
         }
       ]
     }),
@@ -74,9 +62,8 @@ module.exports = {
       patterns: [
         {
           from: 'img/*.webp',
-          to: 'img',
+          to: '',
           force: true,
-          flatten: true
         }
       ]
     }),
@@ -84,9 +71,8 @@ module.exports = {
       patterns: [
         {
           from: 'json/*.json',
-          to: 'json',
+          to: '',
           force: true,
-          flatten: true,
           noErrorOnMissing: true
         }
       ]
@@ -98,33 +84,26 @@ module.exports = {
         'styles/**/*.scss',
       ]
     }),
-    new FriendlyErrorsWebpackPlugin(),
-    new webpack.SourceMapDevToolPlugin({})
+    new webpack.SourceMapDevToolPlugin({}),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
+    })
   ],
   module: {
     rules: [
       {
-        test: /\.scss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1
-            }
-          },
-          'postcss-loader',
-          'sass-loader'
-        ]
+        test: /\.(scss|css)$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
-        use: ['file-loader']
+        type: 'asset/resource',
       },
       {
         test: /\.tsx?|js$/,
         use: 'babel-loader',
-        include: [path.join(__dirname, 'pages'), path.join(__dirname, 'shared')]
+        include: [path.join(__dirname, 'pages'), path.join(__dirname, 'shared'), path.resolve('./node_modules/buffer')]
       },
       {
         test: /\.ts$/,
@@ -139,13 +118,22 @@ module.exports = {
         ],
         exclude: /node_modules/
       },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader']
-      }
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
+    fallback: {
+      "fs": false,
+      "tls": false,
+      "net": false,
+      "path": false,
+      "zlib": false,
+      "http": false,
+      "https": false,
+      "crypto": require.resolve("crypto-browserify/"),
+      "util": require.resolve("util/"),
+      "stream": require.resolve("stream-browserify/"),
+      "buffer": require.resolve("buffer/")
+    },
   }
 };
