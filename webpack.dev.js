@@ -18,14 +18,14 @@ module.exports = merge(common, {
       cert: fs.readFileSync('./docker/app-html/nginx/cert/merchant.securetrading.net/cert.pem'),
       ca: fs.readFileSync('./docker/app-html/nginx/cert/minica.pem'),
     },
-    hot: true,
     host: '0.0.0.0',
     writeToDisk: true,
     index: 'index.html',
     disableHostCheck: true,
     watchOptions: {
       ignored: ['node_modules']
-    }
+    },
+    injectClient: false,
   },
   plugins: [
     new WebpackManifestPlugin(),

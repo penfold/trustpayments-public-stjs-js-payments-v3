@@ -4,14 +4,15 @@ const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 module.exports = {
   mode: 'development',
   devtool: 'inline-source-map',
+  experiments: {
+    asset: true
+  },
   devServer: {
     compress: true,
     contentBase: path.join(__dirname, './dist'),
@@ -22,14 +23,14 @@ module.exports = {
       cert: fs.readFileSync('./../../docker/app-html/nginx/cert/merchant.securetrading.net/cert.pem'),
       ca: fs.readFileSync('./../../docker/app-html/nginx/cert/minica.pem')
     },
-    hot: true,
     host: '0.0.0.0',
     writeToDisk: true,
     index: 'index.html',
     disableHostCheck: true,
     watchOptions: {
       ignored: ['node_modules']
-    }
+    },
+    injectClient: false,
   },
 
   entry: {
@@ -42,11 +43,6 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: path.join(__dirname, 'dist')
-  },
-  node: {
-    net: 'empty',
-    tls: 'empty',
-    dns: 'empty'
   },
   plugins: [
     new WebpackManifestPlugin(),
@@ -71,17 +67,12 @@ module.exports = {
       template: './pages/iframe/iframe.html',
       chunks: ['iframe']
     }),
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[id].css'
-    }),
     new CopyPlugin({
       patterns: [
         {
           from: 'img/*.png',
-          to: 'img',
-          force: true,
-          flatten: true
+          to: '',
+          force: true
         }
       ]
     }),
@@ -89,9 +80,8 @@ module.exports = {
       patterns: [
         {
           from: 'img/*.webp',
-          to: 'img',
-          force: true,
-          flatten: true
+          to: '',
+          force: true
         }
       ]
     }),
@@ -99,9 +89,8 @@ module.exports = {
       patterns: [
         {
           from: 'json/*.json',
-          to: 'json',
+          to: '',
           force: true,
-          flatten: true,
           noErrorOnMissing: true
         }
       ]
@@ -109,27 +98,19 @@ module.exports = {
     new StyleLintPlugin({
       context: path.join(__dirname, '')
     }),
-    new FriendlyErrorsWebpackPlugin()
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
   ],
   module: {
     rules: [
       {
-        test: /\.scss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1
-            }
-          },
-          'postcss-loader',
-          'sass-loader'
-        ]
+        test: /\.(scss|css)$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
-        use: ['file-loader']
+        type: 'asset/resource',
       },
       {
         test: /\.tsx?|js$/,
@@ -148,14 +129,22 @@ module.exports = {
           }
         ],
         exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader']
       }
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
+    fallback: {
+      "fs": false,
+      "tls": false,
+      "net": false,
+      "path": false,
+      "zlib": false,
+      "http": false,
+      "https": false,
+      "crypto": require.resolve("crypto-browserify/"),
+      "util": require.resolve("util/"),
+      "stream": require.resolve("stream/")
+    },
   }
 };

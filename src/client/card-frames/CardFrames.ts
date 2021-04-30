@@ -158,6 +158,16 @@ export class CardFrames {
           element.appendChild(fields[index]);
         }
       });
+
+      this.destroy$.pipe(first()).subscribe(() => {
+        targets.forEach((item, index) => {
+          const element: HTMLElement = document.getElementById(item);
+          const iframe: HTMLElement = fields[index];
+          if (element && iframe && iframe.parentElement === element) {
+            element.removeChild(iframe);
+          }
+        });
+      });
     }
   }
 

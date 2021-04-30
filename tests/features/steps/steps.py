@@ -20,14 +20,14 @@ use_step_matcher('re')
 
 
 @given('JS library is configured with (?P<e2e_config>.+) and (?P<jwt_config>.+)')
-def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
+def step_impl(context, e2e_config, jwt_config):
     jwt = encode_jwt_for_json(JwtConfig[jwt_config])
     context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
 
 
 @step(
     'JS library configured by inline params (?P<e2e_config>.+) and jwt (?P<jwt_config>.+) with additional attributes')
-def step_impl(context, e2e_config: E2eConfig, jwt_config: JwtConfig):
+def step_impl(context, e2e_config, jwt_config):
     # parse old jwt config (payload part) to dictionary object
     jwt_config_from_json_dict = get_data_from_json(JwtConfig[jwt_config].value)['payload']
     # build payload base on additional attributes and parse to dictionary

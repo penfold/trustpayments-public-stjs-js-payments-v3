@@ -117,9 +117,6 @@ class Waits:
             max_try -= 1
         return False
 
-    def switch_to_default_content(self):
-        self._driver.switch_to.default_content()
-
     def wait_for_javascript(self):
         time.sleep(1)
         self._wait.until(lambda driver: self._driver.execute_script('return document.readyState') == 'complete')
