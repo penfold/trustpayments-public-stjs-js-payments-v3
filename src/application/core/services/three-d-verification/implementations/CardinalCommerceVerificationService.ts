@@ -18,7 +18,7 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
     console.log('WHTRBIT', this);
   }
 
-  init<T = void>(jsInitResponse: IThreeDInitResponse): Observable<T> {
+  init(jsInitResponse: IThreeDInitResponse): Observable<void> {
     const queryEvent: IMessageBusEvent<IInitializationData> = {
       type: PUBLIC_EVENTS.CARDINAL_SETUP,
       data: {
@@ -26,7 +26,7 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
       },
     };
 
-    return from(this.interFrameCommunicator.query<T>(queryEvent, MERCHANT_PARENT_FRAME));
+    return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
   binLookup(pan: string): Observable<void> {

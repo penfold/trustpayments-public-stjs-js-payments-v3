@@ -13,17 +13,15 @@ import { ConfigInterface } from '3ds-sdk-js';
 
 @Service()
 export class ThreeDSecureVerificationService implements IThreeDVerificationService<ConfigInterface> {
-  constructor(private interFrameCommunicator: InterFrameCommunicator) {
-    console.log('WHTRBIT', this);
-  }
+  constructor(private interFrameCommunicator: InterFrameCommunicator) {}
 
-  init<T = ConfigInterface>(jsInitResponse: IThreeDInitResponse): Observable<T> {
+  init(jsInitResponse: IThreeDInitResponse): Observable<ConfigInterface> {
     const queryEvent: IMessageBusEvent<null> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_SETUP,
       data: null,
     };
 
-    return from(this.interFrameCommunicator.query<T>(queryEvent, MERCHANT_PARENT_FRAME));
+    return from(this.interFrameCommunicator.query<ConfigInterface>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
   binLookup(pan: string): Observable<void> {
@@ -35,7 +33,7 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
-  start(jwt: string): Observable<any> {
+  start(jwt: string): Observable<void> {
     const queryEvent: IMessageBusEvent<IInitializationData> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_START,
       data: { jwt },
