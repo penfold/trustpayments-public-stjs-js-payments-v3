@@ -6,8 +6,8 @@
   "scripts": {
     "build": "webpack --config webpack.dev.js",
     "build:prod": "webpack --config webpack.prod.js",
-    "build:dev": "webpack --config webpack.e2e.js",
-    "build:test": "webpack --config webpack.test.js",
+    "build:dev": "webpack --config webpack.dev.js",
+    "build:mock": "webpack --config webpack.mock.js",
     "start": "webpack serve --color --progress --config webpack.dev.js"
   },
   "devDependencies": {
