@@ -6,4 +6,4 @@ COPY ${COPY_FROM}/wiremock/__files /home/wiremock/__files
 COPY ${COPY_FROM}/wiremock/mappings /home/wiremock/mappings
 COPY ${COPY_FROM}/wiremock/keystore /home/wiremock/keystore
 
-EXPOSE 8443
+EXPOSE 6443

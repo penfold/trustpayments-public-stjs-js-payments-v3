@@ -1,14 +1,15 @@
 version: "3.6"
 services:
-
   app-html:
     build:
       context: ../..
       dockerfile: ./docker/app-html/Dockerfile
       target: app-html
       args:
-        PIPELINE_WORKDIR: /pipeline
-        IMAGE_PIPELINE: ${CI_REGISTRY_IMAGE}/pipeline:master
+        BUILD_TYPE: "prod"
+        LIBRARY_ARG: "--library_url=https://library.securetrading.net:8443"
+        PIPELINE_WORKDIR: "/pipeline"
+        IMAGE_PIPELINE: "${CI_REGISTRY_IMAGE}/pipeline:master"
     ports:
       - 80:80
       - 443:443
@@ -22,10 +23,11 @@ services:
   payments-tests:
     build:
       context: ../..
-      dockerfile: .cicd_scripts/docker/payments-tests/Dockerfile
+      dockerfile: ./docker/payments_tests/Dockerfile
       target: payments-tests
       args:
-        COPY_FROM: ./tests
+        COPY_FROM: "./tests"
+        IMAGE_PIPELINE: "${CI_REGISTRY_IMAGE}/pipeline:master"
     volumes:
       - ../../tests/features:/app/features
       - ../../tests/locators:/app/locators

@@ -7,18 +7,6 @@ const path = require('path');
 module.exports = merge(common, {
   mode: 'production',
   devtool: 'source-map',
-  devServer: {
-    contentBase: './dist',
-    port: 8443,
-    https: true,
-    host: '0.0.0.0',
-    writeToDisk: true,
-    disableHostCheck: true,
-    watchOptions: {
-      ignored: ['node_modules']
-    },
-    injectClient: false
-  },
   plugins: [
     new WebpackManifestPlugin(),
     new webpack.DefinePlugin({
@@ -27,8 +15,8 @@ module.exports = merge(common, {
   ],
   resolve: {
     alias: {
-      [path.resolve(__dirname, "src/environments/environment")]:
-        path.resolve(__dirname, "src/environments/environment.test.ts")
+      [path.resolve(__dirname, 'src/environments/environment')]:
+        path.resolve(__dirname, 'src/environments/environment.test.ts'),
     }
   }
 });
