@@ -14,9 +14,7 @@ import { IVerificationResult } from '../data/IVerificationResult';
 
 @Service()
 export class CardinalCommerceVerificationService implements IThreeDVerificationService<void> {
-  constructor(private interFrameCommunicator: InterFrameCommunicator) {
-    console.log('WHTRBIT', this);
-  }
+  constructor(private interFrameCommunicator: InterFrameCommunicator) {}
 
   init(jsInitResponse: IThreeDInitResponse): Observable<void> {
     const queryEvent: IMessageBusEvent<IInitializationData> = {
