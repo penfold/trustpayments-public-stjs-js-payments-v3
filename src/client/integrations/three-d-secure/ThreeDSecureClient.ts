@@ -64,7 +64,7 @@ export class ThreeDSecureClient {
   private trigger$(pan: string): Observable<IThreeDSecure3dsMethod> {
     return this.gatewayClient.schemaLookup(pan).pipe(
       first(),
-      switchMap(response => {
+      switchMap((response: IThreeDSchemaLookupResponse) => {
         this.schemaLookup = response;
 
         return of({
