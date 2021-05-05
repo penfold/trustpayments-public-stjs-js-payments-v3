@@ -29,14 +29,11 @@ describe('ConfigResolver', () => {
   });
 
   it(`should set default ${threeDSecureConfigName} properties when not present`, () => {
-    const { minimalDefaultConfigResolve } = ConfigResolverFixture();
+    const { config } = ConfigResolverFixture();
 
-    expect(configResolverInstance.resolve(minimalDefaultConfigResolve)).toEqual({
-      ...minimalDefaultConfigResolve,
-      [threeDSecureConfigName]: {
-        loggingLevel: LoggingLevel.ERROR,
-        challengeDisplayMode: ChallengeDisplayMode.POPUP,
-      },
+    expect(configResolverInstance.resolve(config).threeDSecure).toEqual({
+      loggingLevel: LoggingLevel.ERROR,
+      challengeDisplayMode: ChallengeDisplayMode.POPUP,
     });
   });
 });
@@ -139,6 +136,10 @@ function ConfigResolverFixture() {
       settings: {
         displayName: 'My Test Site',
       },
+    },
+    [threeDSecureConfigName]: {
+      loggingLevel: undefined,
+      challengeDisplayMode: undefined,
     },
   };
   const configResolved: IConfig = {
@@ -256,6 +257,10 @@ function ConfigResolverFixture() {
         displayName: 'My Test Site',
       },
     },
+    [threeDSecureConfigName]: {
+      loggingLevel: LoggingLevel.ERROR,
+      challengeDisplayMode: ChallengeDisplayMode.POPUP,
+    },
   };
   const minimalConfig: IConfig = {
     jwt: 'randomjwt',
@@ -321,9 +326,7 @@ function ConfigResolverFixture() {
     successCallback: null,
     translations: {},
     visaCheckout: undefined,
-    threeDSecure: {
-      loggingLevel: undefined,
-    },
+    threeDSecure: undefined,
   };
   return {
     config,

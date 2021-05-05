@@ -30,7 +30,7 @@ describe('ThreeDSecureVerificationService', () => {
 
       when(interFrameCommunicatorMock.query(anything(), anything())).thenResolve(threeDSecureConfigMock);
 
-      sut.init<ConfigInterface>(anything()).subscribe((config: ConfigInterface) => {
+      sut.init(anything()).subscribe((config: ConfigInterface) => {
         expect(config).toEqual(threeDSecureConfigMock);
         verify(interFrameCommunicatorMock.query<ConfigInterface>(
           deepEqual(eventMock),
