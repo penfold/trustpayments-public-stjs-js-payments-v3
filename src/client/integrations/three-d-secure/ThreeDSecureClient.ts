@@ -1,21 +1,21 @@
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { ActionCode } from '../../../application/core/services/three-d-verification/data/ActionCode';
 import { IVerificationData } from '../../../application/core/services/three-d-verification/data/IVerificationData';
 import { IVerificationResult } from '../../../application/core/services/three-d-verification/data/IVerificationResult';
+import { IConfig } from '../../../shared/model/config/IConfig';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { IThreeDSecure3dsMethod } from './IThreeDSecure3dsMethod';
 import {
   ThreeDSecureFactory,
   ThreeDSecureInterface,
-  ChallengeDisplayMode,
   ThreeDSecureVersion,
-  ConfigInterface,
   ChallengeResultInterface,
-  // @ts-ignore
+  ConfigInterface,
 } from '3ds-sdk-js';
 
 @Service()
@@ -24,6 +24,7 @@ export class ThreeDSecureClient {
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
+    private configProvider: ConfigProvider,
   ) {
     const threeDSecureFactory = new ThreeDSecureFactory();
 
@@ -49,9 +50,11 @@ export class ThreeDSecureClient {
   }
 
   private setup$(): Observable<ConfigInterface> {
-    return this.threeDSecure.init$({
-      challengeDisplayMode: ChallengeDisplayMode.POPUP,
-    });
+    return this.configProvider.getConfig$().pipe(
+      switchMap((config: IConfig) => {
+        return this.threeDSecure.init$(config.threeDSecure);
+      }),
+    );
   }
 
   private trigger$(pan: string): Observable<IThreeDSecure3dsMethod> {
