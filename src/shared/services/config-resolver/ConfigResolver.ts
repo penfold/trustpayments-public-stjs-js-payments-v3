@@ -38,6 +38,7 @@ export class ConfigResolver {
       init: this._getValueOrDefault(config.init, DefaultConfig.init),
       jwt: this._getValueOrDefault(config.jwt, DefaultConfig.jwt),
       livestatus: this._getValueOrDefault(config.livestatus, DefaultConfig.livestatus),
+      merchantUrl: this._getValueOrDefault(config.merchantUrl, DefaultConfig.merchantUrl),
       origin: this._getValueOrDefault(config.origin, DefaultConfig.origin),
       panIcon: this._getValueOrDefault(config.panIcon, DefaultConfig.panIcon),
       placeholders: this._setPlaceholders(config.placeholders),
