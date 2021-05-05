@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 5.1.1
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 10.0.0
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -22,9 +22,9 @@ variables:
   PROJECT_INFRASTRUCTURE_CICD_REF: *project-infrastructure-cicd-ref
 
   IMAGE_JS_PAYMENTS_APP_HTML_RELEASE: ${CI_REGISTRY_IMAGE}/app-html-release:${CI_PIPELINE_ID}
-  IMAGE_JS_PAYMENTS_APP_HTML_MOCK: ${CI_REGISTRY_IMAGE}/app-html-mock:${CI_PIPELINE_ID}
-  IMAGE_JS_PAYMENTS_APP_HTML_LOCAL: ${CI_REGISTRY_IMAGE}/app-html-local:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_REVIEW: ${CI_REGISTRY_IMAGE}/app-html-review:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_APP_HTML_SMOKE: ${CI_REGISTRY_IMAGE}/app-html-smoke:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_MOCK: ${CI_REGISTRY_IMAGE}/app-html-mock:${CI_PIPELINE_ID}
 
   IMAGE_JS_PAYMENTS_TESTS: ${CI_REGISTRY_IMAGE}/payments-tests:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_PIPELINE_ID}
@@ -51,7 +51,7 @@ variables:
   # utility-images-build - No need to disabling. Extends to enable.
   # Fast Tests
   # DISABLE_JOB_unit_tests: 'true'
-  # DISABLE_JOB_ts_static_analysis: 'true'
+  DISABLE_JOB_js_static_analysis: 'true'
   # DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
   # DISABLE_JOB_vuln_check: 'true'
   # Extended Tests
@@ -63,6 +63,7 @@ variables:
   # DISABLE_JOB_release_generate_version: "true"
   # Post-Release
   DISABLE_JOB_npm_publish: 'true'
+  DISABLE_JOB_npm_publish_dry_run : 'true'
   ### Disabled Jobs : End
 
   ### Disabled Activities
@@ -85,6 +86,7 @@ py-static-analysis:
 stages:
   - initialize
   - pre-build
+  - prepare-release
   - build
   - post-build
   - publish-to-cdn

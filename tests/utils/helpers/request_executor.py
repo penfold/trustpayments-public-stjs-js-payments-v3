@@ -11,9 +11,9 @@ browserstack_access_key = get_from_env('BS_ACCESS_KEY')
 shared_dict = {}
 
 BROWSERSTACK_API_URL = 'https://api.browserstack.com/automate/sessions/'
-WEBSERVICES_URL = 'https://webservices.securetrading.net:8443/'
+WEBSERVICES_URL = 'https://webservices.securetrading.net:6443/'
 WEBSERVICES_ADMIN_REQUESTS_COUNT_URL = WEBSERVICES_URL + '__admin/requests/count'
-THIRDPARTY_URL = 'https://thirdparty.example.com:8443/'
+THIRDPARTY_URL = 'https://thirdparty.example.com:6443/'
 
 
 def add_to_shared_dict(key, value):
