@@ -9,10 +9,10 @@ from wiremock.server import WireMockServer
 
 class MockUrl(Enum):
     BASE_URI = 'https://merchant.example.com:8443'
-    WEBSERVICES_DOMAIN = 'https://webservices.securetrading.net:8443'
-    WEBSERVICES_STJS_URI = 'https://webservices.securetrading.net:8443/st.js'
+    WEBSERVICES_DOMAIN = 'https://webservices.securetrading.net:6443'
+    WEBSERVICES_STJS_URI = 'https://webservices.securetrading.net:6443/st.js'
     STJS_URI = 'https://library.securetrading.net:8443/st.js'
-    THIRDPARTY_URL = 'https://thirdparty.example.com:8443'
+    THIRDPARTY_URL = 'https://thirdparty.example.com:6443'
     LIBRARY_URL = 'https://library.securetrading.net:8443'
     VISA_MOCK_URI = '/visaPaymentStatus'
     CC_MOCK_ACS_URI = '/cardinalAuthenticateCard'

@@ -47,6 +47,7 @@ export class SentryService {
       environment: this.sentryContext.getEnvironmentName(),
       release: this.sentryContext.getReleaseVersion(),
       ignoreErrors: ExceptionsToSkip,
+      sampleRate: 0.1,
       beforeSend: (event: Event, hint?: EventHint) => this.eventScrubber.scrub(event, hint),
     });
   }
