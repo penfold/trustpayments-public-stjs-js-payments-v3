@@ -423,7 +423,7 @@ export class ControlFrame {
       };
     }
 
-    this._threeDProcess.init(initialTokens).subscribe({
+    this._threeDProcess.init$(initialTokens).subscribe({
       next: () => {
         this._isPaymentReady = true;
 

@@ -1,4 +1,5 @@
 import { Service } from 'typedi';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IInitializationData } from './data/IInitializationData';
@@ -82,7 +83,10 @@ export class CardinalClient {
               jwt: data.jwt,
             });
           })
-      )
+      ),
+      tap(() => {
+        GoogleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed');
+      }),
     );
   }
 

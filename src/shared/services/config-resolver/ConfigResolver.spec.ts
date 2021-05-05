@@ -1,7 +1,9 @@
+import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
 import { ConfigResolver } from './ConfigResolver';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigSchema } from '../storage/ConfigSchema';
 import { anything, spy, when } from 'ts-mockito';
+import { ChallengeDisplayMode, LoggingLevel } from '3ds-sdk-js';
 
 describe('ConfigResolver', () => {
   const configResolverInstance: ConfigResolver = new ConfigResolver();
@@ -24,6 +26,15 @@ describe('ConfigResolver', () => {
   it('should set config-provider with given values if they are correct', () => {
     const { minimalDefaultConfigResolve } = ConfigResolverFixture();
     expect(configResolverInstance.resolve(minimalDefaultConfigResolve)).toEqual(minimalDefaultConfigResolve);
+  });
+
+  it(`should set default ${threeDSecureConfigName} properties when not present`, () => {
+    const { config } = ConfigResolverFixture();
+
+    expect(configResolverInstance.resolve(config).threeDSecure).toEqual({
+      loggingLevel: LoggingLevel.ERROR,
+      challengeDisplayMode: ChallengeDisplayMode.POPUP,
+    });
   });
 });
 
@@ -125,6 +136,10 @@ function ConfigResolverFixture() {
       settings: {
         displayName: 'My Test Site',
       },
+    },
+    [threeDSecureConfigName]: {
+      loggingLevel: undefined,
+      challengeDisplayMode: undefined,
     },
   };
   const configResolved: IConfig = {
@@ -242,6 +257,10 @@ function ConfigResolverFixture() {
         displayName: 'My Test Site',
       },
     },
+    [threeDSecureConfigName]: {
+      loggingLevel: LoggingLevel.ERROR,
+      challengeDisplayMode: ChallengeDisplayMode.POPUP,
+    },
   };
   const minimalConfig: IConfig = {
     jwt: 'randomjwt',
@@ -307,6 +326,7 @@ function ConfigResolverFixture() {
     successCallback: null,
     translations: {},
     visaCheckout: undefined,
+    threeDSecure: undefined,
   };
   return {
     config,

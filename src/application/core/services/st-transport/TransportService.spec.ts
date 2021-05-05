@@ -24,8 +24,8 @@ describe('TransportService', () => {
     config: {},
     headers: {},
     data: {
-      jwt: ''
-    }
+      jwt: '',
+    },
   };
 
   let requestEncoderMock: RequestEncoderService;
@@ -54,7 +54,7 @@ describe('TransportService', () => {
 
     when(configProviderMock.getConfig$()).thenReturn(
       of({
-        datacenterurl: gatewayUrl
+        datacenterurl: gatewayUrl,
       })
     );
     when(requestEncoderMock.encode(request)).thenReturn(requestObject);
@@ -68,8 +68,8 @@ describe('TransportService', () => {
         customeroutput: 'SUCCESS',
         errormessage: 'SUCCESS',
         requesttypedescription: 'FOOBAR',
-        transactionstartedtimestamp: ''
-      }
+        transactionstartedtimestamp: '',
+      },
     });
   });
 
@@ -83,7 +83,7 @@ describe('TransportService', () => {
           customeroutput: 'SUCCESS',
           errormessage: 'SUCCESS',
           requesttypedescription: 'FOOBAR',
-          transactionstartedtimestamp: ''
+          transactionstartedtimestamp: '',
         });
         done();
       });
@@ -109,8 +109,8 @@ describe('TransportService', () => {
           customeroutput: 'ERROR',
           errormessage: 'ERROR',
           requesttypedescription: 'FOOBAR',
-          transactionstartedtimestamp: ''
-        }
+          transactionstartedtimestamp: '',
+        },
       });
 
       transportService.sendRequest(request).subscribe(result => {
@@ -120,7 +120,7 @@ describe('TransportService', () => {
           customeroutput: 'ERROR',
           errormessage: 'ERROR',
           requesttypedescription: 'FOOBAR',
-          transactionstartedtimestamp: ''
+          transactionstartedtimestamp: '',
         });
         verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.JWT_RESET }))).once();
         done();
@@ -137,7 +137,7 @@ describe('TransportService', () => {
           expect(error).toBe(httpError);
           verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.JWT_RESET }))).once();
           done();
-        }
+        },
       });
     });
 
@@ -151,7 +151,7 @@ describe('TransportService', () => {
           expect(error).toBe(decodeError);
           verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.JWT_RESET }))).once();
           done();
-        }
+        },
       });
     });
 

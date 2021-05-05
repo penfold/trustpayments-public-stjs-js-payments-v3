@@ -1,4 +1,7 @@
 import Joi from 'joi';
+import {
+  threeDSecureConfigName,
+} from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
 import { IConfig } from '../../model/config/IConfig';
 import { Service } from 'typedi';
 import { IComponentsIds } from '../../model/config/IComponentsIds';
@@ -13,6 +16,7 @@ import { IPlaceholdersConfig } from '../../../application/core/models/IPlacehold
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
 import { environment } from '../../../environments/environment';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
+import { ConfigInterface } from '3ds-sdk-js';
 
 @Service()
 export class ConfigResolver {
@@ -50,6 +54,7 @@ export class ConfigResolver {
       successCallback: this._getValueOrDefault(config.successCallback, DefaultConfig.successCallback),
       translations: this._getValueOrDefault(config.translations, DefaultConfig.translations),
       visaCheckout: this._setVisaCheckoutConfig(config.visaCheckout),
+      [threeDSecureConfigName]: this._setThreeDSecureConfig(config[threeDSecureConfigName]),
     };
     if (!environment.production) {
       console.error(validatedConfig);
@@ -103,6 +108,18 @@ export class ConfigResolver {
       return;
     }
     return config;
+  }
+
+  private _setThreeDSecureConfig(config: ConfigInterface): ConfigInterface {
+    if (!config || !Object.keys(config).length) {
+      return;
+    }
+
+    return {
+      ...config,
+      loggingLevel: this._getValueOrDefault(config.loggingLevel, DefaultConfig.threeDSecure.loggingLevel),
+      challengeDisplayMode: this._getValueOrDefault(config.challengeDisplayMode, DefaultConfig.threeDSecure.challengeDisplayMode),
+    };
   }
 
   private _setComponentIds(config: IComponentsIds): IComponentsIds {
