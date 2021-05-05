@@ -1,4 +1,5 @@
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
+import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Service } from 'typedi';
@@ -10,40 +11,46 @@ import { IMerchantData } from '../../models/IMerchantData';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IThreeDVerificationService } from './IThreeDVerificationService';
 import { IThreeDSTokens } from './data/IThreeDSTokens';
-import { ThreeDSTokensProvider } from './ThreeDSTokensProvider';
 import { IVerificationData } from './data/IVerificationData';
+import { ThreeDVerificationProviderService } from './three-d-verification-provider/ThreeDVerificationProviderService';
 import { VerificationResultHandler } from './VerificationResultHandler';
 import { GatewayClient } from '../GatewayClient';
 import { GoogleAnalytics } from '../../integrations/google-analytics/GoogleAnalytics';
 import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IThreeDSecure3dsMethod } from '../../../../client/integrations/three-d-secure/IThreeDSecure3dsMethod';
+import { ConfigInterface } from '3ds-sdk-js';
 
 @Service()
 export class ThreeDProcess {
-  private threeDSTokens$: Observable<IThreeDSTokens>;
+  private jsInitResponse$: Observable<IThreeDInitResponse>;
+  private verificationService: IThreeDVerificationService<ConfigInterface | void, IThreeDSecure3dsMethod>;
   private threeDSmethod: IThreeDSecure3dsMethod;
 
   constructor(
-    private verificationService: IThreeDVerificationService<any, IThreeDSecure3dsMethod>,
     private messageBus: IMessageBus,
-    private tokenProvider: ThreeDSTokensProvider,
     private gatewayClient: GatewayClient,
-    private verificationResultHandler: VerificationResultHandler
+    private verificationResultHandler: VerificationResultHandler,
+    private threeDVerificationServiceProvider: ThreeDVerificationProviderService,
   ) {}
 
-  init(tokens?: IThreeDSTokens): Observable<void> {
-    const initialTokens = tokens ? of(tokens) : this.tokenProvider.getTokens();
-    const updatedTokens = this.messageBus.pipe(
+  init$(tokens?: IThreeDSTokens): Observable<ConfigInterface | void> {
+    const jsInit$: Observable<IThreeDInitResponse> = this.gatewayClient.jsInit().pipe(
+      tap((jsInitResponse: IThreeDInitResponse) => {
+        this.verificationService = this.threeDVerificationServiceProvider.getProvider(jsInitResponse.threedsprovider);
+      }),
+    );
+    const initialTokens$ = tokens ? of(tokens) : jsInit$;
+    const updatedTokens$ = this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.UPDATE_JWT),
-      switchMap(_ => this.tokenProvider.getTokens())
+      switchMap(() => jsInit$),
     );
 
-    this.threeDSTokens$ = merge(initialTokens, updatedTokens).pipe(shareReplay(1));
+    this.jsInitResponse$ = merge(initialTokens$, updatedTokens$).pipe(shareReplay(1));
 
-    return this.threeDSTokens$.pipe(
+    return this.jsInitResponse$.pipe(
       first(),
-      switchMap(threeDStokens => this.initVerificationService(threeDStokens))
+      switchMap((jsInitResponse: IThreeDInitResponse) => this.initVerificationService(jsInitResponse)),
     );
   }
 
@@ -52,24 +59,24 @@ export class ThreeDProcess {
     card: ICard,
     merchantData: IMerchantData
   ): Observable<IThreeDQueryResponse> {
-    return this.threeDSTokens$.pipe(
+    return this.jsInitResponse$.pipe(
       first(),
-      switchMap(tokens => {
-        const includesThreedquery = () => requestTypes.includes('THREEDQUERY');
+      switchMap((jsInitResponse: IThreeDInitResponse) => {
+        const includesThreeDQuery = () => requestTypes.includes('THREEDQUERY');
 
-        return iif(includesThreedquery, this.verificationService.start(tokens.jwt), of(null)).pipe(
-          mapTo(new ThreeDQueryRequest(tokens.cacheToken, card, merchantData)),
+        return iif(includesThreeDQuery, this.verificationService.start(jsInitResponse.threedinit), of(null)).pipe(
+          mapTo(new ThreeDQueryRequest(jsInitResponse.cachetoken, card, merchantData)),
           switchMap(request => {
             return this.gatewayClient.threedQuery(request);
           }),
           switchMap(response => {
             if (this.isThreeDAuthorisationRequired(response)) {
-              return this.authenticateCard(response, tokens);
+              return this.authenticateCard(response, jsInitResponse);
             }
 
             return of({
               ...response,
-              cachetoken: tokens.cacheToken,
+              cachetoken: jsInitResponse.cachetoken,
             });
           }),
           tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed'))
@@ -78,9 +85,8 @@ export class ThreeDProcess {
     );
   }
 
-  private initVerificationService(tokens: IThreeDSTokens): Observable<void> {
-    return this.verificationService.init(tokens.jwt).pipe(
-      tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed')),
+  private initVerificationService(jsInitResponse: IThreeDInitResponse): Observable<ConfigInterface | void> {
+    return this.verificationService.init(jsInitResponse).pipe(
       tap(() => this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.UNLOCK_BUTTON }, true)),
       tap(() => {
         this.messageBus
@@ -90,17 +96,17 @@ export class ThreeDProcess {
     );
   }
 
-  private authenticateCard(response: IThreeDQueryResponse, tokens: IThreeDSTokens): Observable<IThreeDQueryResponse> {
+  private authenticateCard(response: IThreeDQueryResponse, jsInitResponse: IThreeDInitResponse): Observable<IThreeDQueryResponse> {
     const verificationData: IVerificationData = {
       transactionId: response.acquirertransactionreference,
-      jwt: tokens.jwt,
+      jwt: jsInitResponse.threedinit,
       acsUrl: response.acsurl,
       payload: response.threedpayload,
     };
 
     return this.verificationService.verify(verificationData).pipe(
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
-      switchMap(validationResult => this.verificationResultHandler.handle(response, validationResult, tokens)),
+      switchMap(validationResult => this.verificationResultHandler.handle(response, validationResult, jsInitResponse)),
     );
   }
 

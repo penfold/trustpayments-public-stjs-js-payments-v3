@@ -107,7 +107,7 @@ describe('CommonFrames', () => {
     it('should remove the control frame iframe on destroy event', () => {
       const iframeId = 'st-control-frame-iframe';
       expect(document.getElementById(iframeId)).toBeTruthy();
-      messageBus.publish({type: PUBLIC_EVENTS.DESTROY});
+      messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
       expect(document.getElementById(iframeId)).toBeFalsy();
     });
   });

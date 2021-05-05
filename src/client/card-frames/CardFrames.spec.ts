@@ -479,7 +479,7 @@ describe('CardFrames', () => {
     });
 
     it('should remove card fields iframes from the DOM on destroy event', () => {
-      messageBus.publish({type: PUBLIC_EVENTS.DESTROY});
+      messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
       expect(document.getElementById(CARD_NUMBER_IFRAME)).toBeNull();
       expect(document.getElementById(EXPIRATION_DATE_IFRAME)).toBeNull();
       expect(document.getElementById(SECURITY_CODE_IFRAME)).toBeNull();

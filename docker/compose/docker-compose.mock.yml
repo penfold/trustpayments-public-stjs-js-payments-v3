@@ -1,10 +1,9 @@
 version: "3.6"
 services:
-
   app-html:
     build:
       args:
-        BUILD_TYPE: test
+        BUILD_TYPE: "mock"
 
   wiremock:
     build:
@@ -17,9 +16,9 @@ services:
       - ../../tests/wiremock/__files:/home/wiremock/__files
       - ../../tests/wiremock/mappings:/home/wiremock/mappings
       - ../../tests/wiremock/keystore:/home/wiremock/keystore
-    command: --https-port 8443 --https-keystore /home/wiremock/keystore
+    command: --https-port 6443 --https-keystore /home/wiremock/keystore
     ports:
-      - 8443:8443
+      - 6443:6443
     networks:
       securetrading:
         aliases:

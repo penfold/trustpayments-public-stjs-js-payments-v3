@@ -1,12 +1,13 @@
-import { StTransport } from './st-transport/StTransport';
-import { IMessageBus } from '../shared/message-bus/IMessageBus';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { GatewayClient } from './GatewayClient';
-import { ThreeDInitRequest } from './three-d-verification/data/ThreeDInitRequest';
-import { IThreeDInitResponse } from '../models/IThreeDInitResponse';
 import { PUBLIC_EVENTS } from '../models/constants/EventTypes';
 import { IStRequest } from '../models/IStRequest';
+import { IThreeDInitResponse } from '../models/IThreeDInitResponse';
 import { IThreeDQueryResponse } from '../models/IThreeDQueryResponse';
+import { IMessageBus } from '../shared/message-bus/IMessageBus';
+import { GatewayClient } from './GatewayClient';
+import { StTransport } from './st-transport/StTransport';
+import { ThreeDInitRequest } from './three-d-verification/data/ThreeDInitRequest';
+import { ThreeDVerificationProvider } from './three-d-verification/ThreeDVerificationProvider';
 
 describe('GatewayClient', () => {
   let transportMock: StTransport;
@@ -28,6 +29,7 @@ describe('GatewayClient', () => {
       requesttypedescription: 'JSINIT',
       threedinit: 'bar',
       transactionstartedtimestamp: '',
+      threedsprovider: ThreeDVerificationProvider.TP,
     };
 
     beforeEach(() => {

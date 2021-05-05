@@ -1,8 +1,0 @@
-version: "3.6"
-services:
-
-  app-html:
-    build:
-      args:
-        BUILD_TYPE: dev
-        LIBRARY_ARG: --library_url="https://library.securetrading.net:8443"

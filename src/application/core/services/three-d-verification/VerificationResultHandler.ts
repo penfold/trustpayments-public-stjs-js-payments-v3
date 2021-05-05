@@ -1,8 +1,8 @@
 import { Service } from 'typedi';
+import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { IVerificationResult } from './data/IVerificationResult';
 import { Observable, of, throwError } from 'rxjs';
 import { PAYMENT_ERROR } from '../../models/constants/Translations';
-import { IThreeDSTokens } from './data/IThreeDSTokens';
 import { ActionCode } from './data/ActionCode';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 
@@ -11,7 +11,7 @@ export class VerificationResultHandler {
   handle(
     response: IThreeDQueryResponse,
     result: IVerificationResult,
-    tokens: IThreeDSTokens
+    jsInitResponse: IThreeDInitResponse,
   ): Observable<IThreeDQueryResponse> {
     switch (result.actionCode) {
       case ActionCode.SUCCESS:
@@ -19,7 +19,7 @@ export class VerificationResultHandler {
         return of({
           ...response,
           threedresponse: result.jwt,
-          cachetoken: tokens.cacheToken,
+          cachetoken: jsInitResponse.cachetoken,
         });
       case ActionCode.ERROR:
       case ActionCode.FAILURE: {
@@ -30,7 +30,7 @@ export class VerificationResultHandler {
           errorcode: '50003',
           errormessage: PAYMENT_ERROR,
           threedresponse: result.jwt,
-          cachetoken: tokens.cacheToken,
+          cachetoken: jsInitResponse.cachetoken,
         };
 
         return throwError(errorResponse);

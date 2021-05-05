@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  libraryUrl: 'https://webservices.securetrading.net:8443/st.js',
-  configUrl: 'https://webservices.securetrading.net:8443/config.json'
+  libraryUrl: 'https://webservices.securetrading.net:6443/st.js',
+  configUrl: 'https://webservices.securetrading.net:6443/config.json',
 };
 
 /*
