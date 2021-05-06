@@ -1,5 +1,5 @@
-import '@securetrading/js-payments-card/stcardstyle.css';
-import Card from '@securetrading/js-payments-card/stcard';
+import '@trustpayments/js-payments-card/stcardstyle.css';
+import Card from '@trustpayments/js-payments-card/stcard';
 import { Container } from 'typedi';
 import '../../core/shared/override-domain/OverrideDomain';
 import { ComponentBootstrap } from '../../core/component-bootstrap/ComponentBootstrap';

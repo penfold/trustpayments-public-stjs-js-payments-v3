@@ -1,4 +1,4 @@
-import Card from '@securetrading/js-payments-card/stcard';
+import Card from '@trustpayments/js-payments-card/stcard';
 import { Service } from 'typedi';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
