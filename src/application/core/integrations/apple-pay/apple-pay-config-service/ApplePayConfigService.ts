@@ -113,7 +113,7 @@ export class ApplePayConfigService {
       applePay: config.applePay,
       formId: config.formId,
       jwt: config.jwt,
-      merchantUrl: config.merchantUrl
+      merchantUrl: config.applePay.merchantUrl
     };
   }
 

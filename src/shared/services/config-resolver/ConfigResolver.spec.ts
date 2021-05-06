@@ -35,6 +35,7 @@ function ConfigResolverFixture() {
       buttonStyle: 'white-outline',
       buttonText: 'donate',
       merchantId: 'merchant.net.securetrading.test',
+      merchantUrl: 'https://example.com',
       paymentRequest: {
         countryCode: 'US',
         currencyCode: 'USD',
@@ -74,7 +75,6 @@ function ConfigResolverFixture() {
     jwt:
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU4NTkxNDEzOS4wOTc5MjA3LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIn19.7mz-INqaGWutOvSO16WLuJFSCtJQkVPz_2hvQ6tbisc',
     livestatus: 0,
-    merchantUrl: 'https://example.com',
     origin: '',
     placeholders: {
       pan: 'Card number',
@@ -135,6 +135,7 @@ function ConfigResolverFixture() {
     applePay: {
       buttonStyle: 'white-outline',
       buttonText: 'donate',
+      merchantUrl: 'https://example.com',
       merchantId: 'merchant.net.securetrading.test',
       paymentRequest: {
         countryCode: 'US',
@@ -177,7 +178,6 @@ function ConfigResolverFixture() {
     jwt:
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU4NTkxNDEzOS4wOTc5MjA3LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIn19.7mz-INqaGWutOvSO16WLuJFSCtJQkVPz_2hvQ6tbisc',
     livestatus: 0,
-    merchantUrl: 'https://example.com',
     origin: 'http://localhost',
     placeholders: {
       pan: 'Card number',
@@ -281,7 +281,6 @@ function ConfigResolverFixture() {
     },
     jwt: 'randomjwt',
     livestatus: 0,
-    merchantUrl: '',
     origin: 'http://localhost',
     placeholders: {
       pan: '**** **** **** ****',
