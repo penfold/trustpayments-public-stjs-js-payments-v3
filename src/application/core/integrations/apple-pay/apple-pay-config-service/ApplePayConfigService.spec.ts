@@ -41,6 +41,7 @@ describe('ApplePayConfigService', () => {
     buttonStyle: 'white',
     buttonText: 'donate',
     merchantId: 'test-id',
+    merchantUrl: 'https://example.com',
     paymentRequest: paymentRequest,
     placement: '',
   };
@@ -217,6 +218,7 @@ describe('ApplePayConfigService', () => {
         formId: 'test id',
         applePay: {
           merchantId: 'test string',
+          merchantUrl: 'https://example.com',
           buttonStyle: 'white',
           buttonText: 'donate',
           paymentRequest,
@@ -233,6 +235,7 @@ describe('ApplePayConfigService', () => {
         jwt: config.jwt,
         formId: config.formId,
         applePay: config.applePay,
+        merchantUrl: config.applePay.merchantUrl
       });
     });
   });
@@ -283,6 +286,7 @@ describe('ApplePayConfigService', () => {
         applePayConfig,
         applePayVersion: 5,
         locale: 'en_GB',
+        merchantUrl: 'https://example.com',
         formId: 'st-form',
         jwtFromConfig: jwt,
         validateMerchantRequest: {
