@@ -119,6 +119,7 @@ function ConfigResolverFixture() {
       },
       livestatus: 0,
       merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
+      merchantUrl: 'https://example.com',
       paymentRequest: {
         subtotal: '20.0',
       },
@@ -235,6 +236,7 @@ function ConfigResolverFixture() {
         color: 'neutral',
       },
       livestatus: 0,
+      merchantUrl: 'https://example.com',
       merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
       paymentRequest: {
         subtotal: '20.0',
