@@ -28,7 +28,6 @@ export const DefaultConfig: IConfig = {
   init: DefaultInit,
   jwt: '',
   livestatus: 0,
-  merchantUrl: '',
   origin: window.location.origin,
   panIcon: false,
   placeholders: DefaultPlaceholders,

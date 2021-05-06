@@ -74,7 +74,6 @@ function ConfigResolverFixture() {
     jwt:
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU4NTkxNDEzOS4wOTc5MjA3LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIn19.7mz-INqaGWutOvSO16WLuJFSCtJQkVPz_2hvQ6tbisc',
     livestatus: 0,
-    merchantUrl: 'https://example.com',
     origin: '',
     placeholders: {
       pan: 'Card number',
@@ -119,6 +118,7 @@ function ConfigResolverFixture() {
       },
       livestatus: 0,
       merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
+      merchantUrl: 'https://example.com',
       paymentRequest: {
         subtotal: '20.0',
       },
@@ -177,7 +177,6 @@ function ConfigResolverFixture() {
     jwt:
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU4NTkxNDEzOS4wOTc5MjA3LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIn19.7mz-INqaGWutOvSO16WLuJFSCtJQkVPz_2hvQ6tbisc',
     livestatus: 0,
-    merchantUrl: 'https://example.com',
     origin: 'http://localhost',
     placeholders: {
       pan: 'Card number',
@@ -235,6 +234,7 @@ function ConfigResolverFixture() {
         color: 'neutral',
       },
       livestatus: 0,
+      merchantUrl: 'https://example.com',
       merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
       paymentRequest: {
         subtotal: '20.0',
@@ -281,7 +281,6 @@ function ConfigResolverFixture() {
     },
     jwt: 'randomjwt',
     livestatus: 0,
-    merchantUrl: '',
     origin: 'http://localhost',
     placeholders: {
       pan: '**** **** **** ****',
