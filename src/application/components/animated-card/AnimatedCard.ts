@@ -1,3 +1,4 @@
+// @ts-ignore
 import Card from '@trustpayments/js-payments-card/stcard';
 import { Service } from 'typedi';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';

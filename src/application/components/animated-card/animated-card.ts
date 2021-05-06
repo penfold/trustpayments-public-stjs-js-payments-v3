@@ -1,4 +1,5 @@
 import '@trustpayments/js-payments-card/stcardstyle.css';
+// @ts-ignore
 import Card from '@trustpayments/js-payments-card/stcard';
 import { Container } from 'typedi';
 import '../../core/shared/override-domain/OverrideDomain';
