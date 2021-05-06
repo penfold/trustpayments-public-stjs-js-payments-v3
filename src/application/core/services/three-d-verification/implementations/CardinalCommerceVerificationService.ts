@@ -13,7 +13,7 @@ import { IVerificationData } from '../data/IVerificationData';
 import { IVerificationResult } from '../data/IVerificationResult';
 
 @Service()
-export class CardinalCommerceVerificationService implements IThreeDVerificationService<void> {
+export class CardinalCommerceVerificationService implements IThreeDVerificationService<void, void> {
   constructor(private interFrameCommunicator: InterFrameCommunicator) {}
 
   init(jsInitResponse: IThreeDInitResponse): Observable<void> {

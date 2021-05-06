@@ -24,8 +24,7 @@ import { ConfigInterface } from '3ds-sdk-js';
 @Service()
 export class ThreeDProcess {
   private jsInitResponse$: Observable<IThreeDInitResponse>;
-  private verificationService: IThreeDVerificationService<ConfigInterface | void, IThreeDSecure3dsMethod>;
-  private threeDSmethod: IThreeDSecure3dsMethod;
+  private verificationService: IThreeDVerificationService<ConfigInterface | void, IThreeDSecure3dsMethod | void>;
 
   constructor(
     private messageBus: IMessageBus,
