@@ -24,7 +24,7 @@ describe('ThreeDSecureVerificationService', () => {
   describe('init()', () => {
     it('should return 3DS SDK JS config', (done: DoneCallback) => {
       const eventMock: IMessageBusEvent<null> = {
-        type: PUBLIC_EVENTS.THREE_D_SECURE_SETUP,
+        type: PUBLIC_EVENTS.THREE_D_SECURE_INIT,
         data: null,
       };
 

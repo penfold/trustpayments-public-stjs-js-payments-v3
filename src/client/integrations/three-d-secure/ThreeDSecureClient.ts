@@ -1,97 +1,64 @@
 import { Observable, of } from 'rxjs';
-import { first, map, switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { ActionCode } from '../../../application/core/services/three-d-verification/data/ActionCode';
-import { IVerificationData } from '../../../application/core/services/three-d-verification/data/IVerificationData';
-import { IVerificationResult } from '../../../application/core/services/three-d-verification/data/IVerificationResult';
-import { IConfig } from '../../../shared/model/config/IConfig';
-import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
-import { IThreeDSecure3dsMethod } from './IThreeDSecure3dsMethod';
 import {
   ThreeDSecureFactory,
   ThreeDSecureInterface,
-  ThreeDSecureVersion,
   ChallengeResultInterface,
   ConfigInterface,
+  MethodURLResultInterface,
 } from '3ds-sdk-js';
-import { GatewayClient } from '../../../application/core/services/GatewayClient';
-import { IThreeDSchemaLookupResponse } from '../../../application/core/models/IThreeDSchemaLookupResponse';
+import { IMethodUrlData } from './IMethodUrlData';
+import { IChallengeData } from './IChallengeData';
 
 @Service()
 export class ThreeDSecureClient {
   private threeDSecure: ThreeDSecureInterface;
-  private schemaLookup: IThreeDSchemaLookupResponse;
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
-    private gatewayClient: GatewayClient,
-    private configProvider: ConfigProvider,
+    private threeDSecureFactory: ThreeDSecureFactory,
   ) {
-    const threeDSecureFactory = new ThreeDSecureFactory();
-
-    this.threeDSecure = threeDSecureFactory.create();
+    this.threeDSecure = this.threeDSecureFactory.create();
   }
 
   init(): void {
     this.interFrameCommunicator
-      .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_SETUP)
-      .thenRespond(() => this.setup$());
+      .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_INIT)
+      .thenRespond((event: IMessageBusEvent<ConfigInterface>) => this.init$(event.data));
 
     this.interFrameCommunicator
-      .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_START)
-      .thenRespond((event: IMessageBusEvent<{ jwt: string, pan: string}>) => this.start$(event.data));
+      .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_METHOD_URL)
+      .thenRespond((event: IMessageBusEvent<IMethodUrlData>) => this.run3DSMethod$(event.data));
 
     this.interFrameCommunicator
-      .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_VERIFY)
-      .thenRespond((event: IMessageBusEvent<IVerificationData>) => this.verify$(event.data));
+      .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_CHALLENGE)
+      .thenRespond((event: IMessageBusEvent<IChallengeData>) => this.doChallenge$(event.data));
+
+    this.interFrameCommunicator
+      .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA)
+      .thenRespond(() => of(this.threeDSecure.getBrowserData()));
   }
 
-  private setup$(): Observable<ConfigInterface> {
-    return this.configProvider.getConfig$().pipe(
-      switchMap((config: IConfig) => {
-        return this.threeDSecure.init$(config.threeDSecure);
-      }),
+  private init$(config: ConfigInterface): Observable<ConfigInterface> {
+    return this.threeDSecure.init$(config);
+  }
+
+  private run3DSMethod$({ methodUrl, notificationUrl, transactionId }: IMethodUrlData): Observable<MethodURLResultInterface> {
+    return this.threeDSecure.run3DSMethod$(
+      notificationUrl,
+      transactionId,
+      methodUrl,
     );
   }
 
-  private start$({ jwt, pan }: { jwt: string, pan: string }): Observable<any> {
-    return this.gatewayClient.schemaLookup(pan).pipe(
-      first(),
-      switchMap((response: IThreeDSchemaLookupResponse) => {
-        const { methodurl, threedstransactionid, notificationurl } = response;
-
-        return this.threeDSecure.run3DSMethod$(
-          notificationurl,
-          threedstransactionid,
-          methodurl,
-        );
-      }),
-    );
-  }
-
-  private verify$(verificationData: IVerificationData): Observable<IVerificationResult> {
-    const creq = {
-      messageType: 'CReq',
-      messageVersion: ThreeDSecureVersion.v2_2,
-      threeDSServerTransID: '364581ed-d5f6-486b-ada1-adc9320bd55d',
-      acsTransID: 'acsTransId',
-      challengeWindowSize: '02',
-    };
-
+  private doChallenge$(data: IChallengeData): Observable<ChallengeResultInterface> {
     return this.threeDSecure.doChallenge$(
-      ThreeDSecureVersion.v2_2,
-      btoa(JSON.stringify(creq)),
-      'http://localhost:8887/v2/three_ds_challenge',
-    ).pipe(
-      map((challengeResult: ChallengeResultInterface) => ({
-        validated: true,
-        actionCode: ActionCode.SUCCESS,
-        errorNumber: 0,
-        errorDescription: 'Success',
-      })),
+      data.version,
+      data.payload,
+      data.challengeURL,
     );
   }
 }

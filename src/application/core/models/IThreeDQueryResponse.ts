@@ -12,4 +12,5 @@ export interface IThreeDQueryResponse extends IResponseData {
   threedresponse?: string;
   cachetoken?: string;
   requesttypescription: string;
+  threedversion: string;
 }

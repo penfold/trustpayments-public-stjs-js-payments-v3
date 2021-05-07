@@ -3,29 +3,24 @@ import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Service } from 'typedi';
-import { first, mapTo, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { iif, merge, Observable, of } from 'rxjs';
+import { first, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { merge, Observable, of } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IThreeDVerificationService } from './IThreeDVerificationService';
 import { IThreeDSTokens } from './data/IThreeDSTokens';
-import { IVerificationData } from './data/IVerificationData';
 import { ThreeDVerificationProviderService } from './three-d-verification-provider/ThreeDVerificationProviderService';
 import { VerificationResultHandler } from './VerificationResultHandler';
 import { GatewayClient } from '../GatewayClient';
-import { GoogleAnalytics } from '../../integrations/google-analytics/GoogleAnalytics';
-import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { IThreeDSecure3dsMethod } from '../../../../client/integrations/three-d-secure/IThreeDSecure3dsMethod';
 import { ConfigInterface } from '3ds-sdk-js';
-import { ConfigResolver } from '../../../../shared/services/config-resolver/ConfigResolver';
 
 @Service()
 export class ThreeDProcess {
   private jsInitResponse$: Observable<IThreeDInitResponse>;
-  private verificationService: IThreeDVerificationService<ConfigInterface | void, IThreeDSecure3dsMethod | void>;
+  private verificationService: IThreeDVerificationService<ConfigInterface | void>;
 
   constructor(
     private messageBus: IMessageBus,
@@ -61,27 +56,12 @@ export class ThreeDProcess {
   ): Observable<IThreeDQueryResponse> {
     return this.jsInitResponse$.pipe(
       first(),
-      switchMap((jsInitResponse: IThreeDInitResponse) => {
-        const includesThreeDQuery = () => requestTypes.includes('THREEDQUERY');
-
-        return iif(includesThreeDQuery, this.verificationService.start(jsInitResponse.threedinit, card.pan), of(null)).pipe(
-          mapTo(new ThreeDQueryRequest(jsInitResponse.cachetoken, card, merchantData)),
-          switchMap(request => {
-            return this.gatewayClient.threedQuery(request);
-          }),
-          switchMap(response => {
-            if (this.isThreeDAuthorisationRequired(response)) {
-              return this.authenticateCard(response, jsInitResponse);
-            }
-
-            return of({
-              ...response,
-              cachetoken: jsInitResponse.cachetoken,
-            });
-          }),
-          tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed'))
-        );
-      })
+      switchMap((jsInitResponse: IThreeDInitResponse) => this.verificationService.start(
+        jsInitResponse,
+        requestTypes,
+        card,
+        merchantData,
+      )),
     );
   }
 
@@ -94,23 +74,5 @@ export class ThreeDProcess {
           .subscribe((event: IMessageBusEvent<string>) => this.verificationService.binLookup(event.data));
       })
     );
-  }
-
-  private authenticateCard(response: IThreeDQueryResponse, jsInitResponse: IThreeDInitResponse): Observable<IThreeDQueryResponse> {
-    const verificationData: IVerificationData = {
-      transactionId: response.acquirertransactionreference,
-      jwt: jsInitResponse.threedinit,
-      acsUrl: response.acsurl,
-      payload: response.threedpayload,
-    };
-
-    return this.verificationService.verify(verificationData).pipe(
-      tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
-      switchMap(validationResult => this.verificationResultHandler.handle(response, validationResult, jsInitResponse)),
-    );
-  }
-
-  private isThreeDAuthorisationRequired(threeDResponse: IThreeDQueryResponse): boolean {
-    return threeDResponse.enrolled === 'Y' && threeDResponse.acsurl !== undefined;
   }
 }

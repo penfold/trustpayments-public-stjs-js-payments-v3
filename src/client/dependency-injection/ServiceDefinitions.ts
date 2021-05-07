@@ -3,7 +3,9 @@ import { ConfigProvider } from '../../shared/services/config-provider/ConfigProv
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
 import { PreventNavigationPopup } from '../message-subscribers/PreventNavigationPopup';
 import { PaymentResultSubmitterSubscriber } from '../common-frames/PaymentResultSubmitterSubscriber';
+import { ThreeDSecureFactory } from '3ds-sdk-js';
 import '../../shared/dependency-injection/ServiceDefinitions';
 
 Container.set({ id: ConfigProvider, factory: () => Container.get(ConfigService) });
+Container.set({ id: ThreeDSecureFactory, type: ThreeDSecureFactory });
 Container.import([PreventNavigationPopup, PaymentResultSubmitterSubscriber]);
