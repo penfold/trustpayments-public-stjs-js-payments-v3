@@ -20,6 +20,7 @@ import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IThreeDSecure3dsMethod } from '../../../../client/integrations/three-d-secure/IThreeDSecure3dsMethod';
 import { ConfigInterface } from '3ds-sdk-js';
+import { ConfigResolver } from '../../../../shared/services/config-resolver/ConfigResolver';
 
 @Service()
 export class ThreeDProcess {
@@ -63,7 +64,7 @@ export class ThreeDProcess {
       switchMap((jsInitResponse: IThreeDInitResponse) => {
         const includesThreeDQuery = () => requestTypes.includes('THREEDQUERY');
 
-        return iif(includesThreeDQuery, this.verificationService.start(jsInitResponse.threedinit), of(null)).pipe(
+        return iif(includesThreeDQuery, this.verificationService.start(jsInitResponse.threedinit, card.pan), of(null)).pipe(
           mapTo(new ThreeDQueryRequest(jsInitResponse.cachetoken, card, merchantData)),
           switchMap(request => {
             return this.gatewayClient.threedQuery(request);

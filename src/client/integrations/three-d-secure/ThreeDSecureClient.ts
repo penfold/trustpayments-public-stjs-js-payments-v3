@@ -42,7 +42,7 @@ export class ThreeDSecureClient {
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_START)
-      .thenRespond((event: IMessageBusEvent<string>) => this.start$(event.data));
+      .thenRespond((event: IMessageBusEvent<{ jwt: string, pan: string}>) => this.start$(event.data));
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_VERIFY)
@@ -57,8 +57,8 @@ export class ThreeDSecureClient {
     );
   }
 
-  private start$(jwt: string): Observable<any> {
-    return this.gatewayClient.schemaLookup('123').pipe(
+  private start$({ jwt, pan }: { jwt: string, pan: string }): Observable<any> {
+    return this.gatewayClient.schemaLookup(pan).pipe(
       first(),
       switchMap((response: IThreeDSchemaLookupResponse) => {
         const { methodurl, threedstransactionid, notificationurl } = response;

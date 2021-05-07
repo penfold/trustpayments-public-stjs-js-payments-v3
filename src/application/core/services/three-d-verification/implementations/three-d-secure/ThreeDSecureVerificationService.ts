@@ -29,10 +29,10 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
     return of();
   }
 
-  start(jwt: string): Observable<void> {
+  start(jwt: string, pan: string): Observable<void> {
     const queryEvent: IMessageBusEvent<IInitializationData> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_START,
-      data: { jwt },
+      data: { jwt, pan },
     };
 
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
