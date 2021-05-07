@@ -41,10 +41,6 @@ export class ThreeDSecureClient {
       .thenRespond(() => this.setup$());
 
     this.interFrameCommunicator
-      .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_TRIGGER)
-      .thenRespond((event: IMessageBusEvent<string>) => this.trigger$(event.data));
-
-    this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_START)
       .thenRespond((event: IMessageBusEvent<string>) => this.start$(event.data));
 
@@ -61,26 +57,18 @@ export class ThreeDSecureClient {
     );
   }
 
-  private trigger$(pan: string): Observable<IThreeDSecure3dsMethod> {
-    return this.gatewayClient.schemaLookup(pan).pipe(
+  private start$(jwt: string): Observable<any> {
+    return this.gatewayClient.schemaLookup('123').pipe(
       first(),
       switchMap((response: IThreeDSchemaLookupResponse) => {
-        this.schemaLookup = response;
+        const { methodurl, threedstransactionid, notificationurl } = response;
 
-        return of({
-          methodUrl: response.methodurl,
-          notificationUrl: response.notificationurl,
-          threeDSTransactionId: response.threedstransactionid,
-        });
+        return this.threeDSecure.run3DSMethod$(
+          notificationurl,
+          threedstransactionid,
+          methodurl,
+        );
       }),
-    );
-  }
-
-  private start$(jwt: string): Observable<any> {
-    return this.threeDSecure.run3DSMethod$(
-      this.schemaLookup.notificationurl,
-      this.schemaLookup.threedstransactionid,
-      this.schemaLookup.methodurl,
     );
   }
 

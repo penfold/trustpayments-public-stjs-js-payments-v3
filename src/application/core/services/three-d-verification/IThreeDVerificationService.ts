@@ -5,7 +5,7 @@ import { IVerificationResult } from './data/IVerificationResult';
 
 export abstract class IThreeDVerificationService<T, C> {
   abstract init(jsInitResponse: IThreeDInitResponse): Observable<T>;
-  abstract binLookup(pan: string): Observable<C>;
+  abstract binLookup(pan: string): Observable<void>;
   abstract start(jwt: string): Observable<void>;
   abstract verify(data: IVerificationData): Observable<IVerificationResult>;
 }

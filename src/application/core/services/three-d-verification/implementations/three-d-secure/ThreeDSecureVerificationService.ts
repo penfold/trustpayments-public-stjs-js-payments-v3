@@ -1,4 +1,4 @@
-import { from, Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { Service } from 'typedi';
 import { IInitializationData } from '../../../../../../client/integrations/cardinal-commerce/data/IInitializationData';
 import { IThreeDSecure3dsMethod } from '../../../../../../client/integrations/three-d-secure/IThreeDSecure3dsMethod';
@@ -25,13 +25,8 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
     return from(this.interFrameCommunicator.query<ConfigInterface>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
-  binLookup(pan: string): Observable<IThreeDSecure3dsMethod> {
-    const queryEvent: IMessageBusEvent<string> = {
-      type: PUBLIC_EVENTS.THREE_D_SECURE_TRIGGER,
-      data: pan,
-    };
-
-    return from(this.interFrameCommunicator.query<IThreeDSecure3dsMethod>(queryEvent, MERCHANT_PARENT_FRAME));
+  binLookup(): Observable<void> {
+    return of();
   }
 
   start(jwt: string): Observable<void> {
