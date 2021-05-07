@@ -1,3 +1,4 @@
+import { EMPTY } from 'rxjs';
 import { ConfigInterface, ChallengeDisplayMode, LoggingLevel } from '3ds-sdk-js';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
@@ -38,6 +39,19 @@ describe('ThreeDSecureVerificationService', () => {
         )).once();
 
         done();
+      });
+    });
+  });
+
+  describe('binLookup()', () => {
+    it('should return empty observable', (done: DoneCallback) => {
+      sut.binLookup().subscribe({
+        next(value) {
+          expect(value).toBe(EMPTY);
+        },
+        complete() {
+          done();
+        }
       });
     });
   });

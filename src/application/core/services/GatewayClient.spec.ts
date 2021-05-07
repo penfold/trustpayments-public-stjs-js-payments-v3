@@ -3,11 +3,15 @@ import { PUBLIC_EVENTS } from '../models/constants/EventTypes';
 import { IStRequest } from '../models/IStRequest';
 import { IThreeDInitResponse } from '../models/IThreeDInitResponse';
 import { IThreeDQueryResponse } from '../models/IThreeDQueryResponse';
+import { IThreeDSchemaLookupResponse } from '../models/IThreeDSchemaLookupResponse';
 import { IMessageBus } from '../shared/message-bus/IMessageBus';
 import { GatewayClient } from './GatewayClient';
 import { StTransport } from './st-transport/StTransport';
 import { ThreeDInitRequest } from './three-d-verification/data/ThreeDInitRequest';
+import { ThreeDSchemaLookupRequest } from './three-d-verification/data/ThreeDSchemaLookupRequest';
 import { ThreeDVerificationProvider } from './three-d-verification/ThreeDVerificationProvider';
+import DoneCallback = jest.DoneCallback;
+
 
 describe('GatewayClient', () => {
   let transportMock: StTransport;
@@ -94,6 +98,33 @@ describe('GatewayClient', () => {
     it('sends threeDQueryRequest and returns the response', () => {
       gatewayClient.threedQuery(threeDQueryRequest).subscribe(response => {
         expect(response).toBe(threeDQueryResponse);
+      });
+    });
+  });
+
+  describe('schemaLookup()', () => {
+    const pan: string = '4111111111111111';
+    const schemaLookupResponse: IThreeDSchemaLookupResponse = {
+        transactionstartedtimestamp: '',
+        errormessage: '',
+        errorcode: '',
+        requesttypedescription: "SCHEMALOOKUP",
+        customeroutput: "RESULT",
+        threedstransactionid: '',
+        methodurl: '',
+        notificationurl: '',
+        threedversion: "2.1.0"
+    };
+
+    it('sends request with pan number and returns the response', (done: DoneCallback) => {
+      when(transportMock.sendRequest(deepEqual(new ThreeDSchemaLookupRequest(pan)))).thenResolve({
+        jwt: 'jwt',
+        response: schemaLookupResponse,
+      });
+
+      gatewayClient.schemaLookup(pan).subscribe(response => {
+        expect(response).toBe(schemaLookupResponse);
+        done();
       });
     });
   });
