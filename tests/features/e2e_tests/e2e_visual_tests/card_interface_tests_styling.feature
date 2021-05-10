@@ -60,5 +60,5 @@ Feature: Visual regression - E2E Card Payments
     And User opens minimal.html page with inline param
     And User waits for whole form to be displayed
     When User fills only security code for saved MASTERCARD_INVALID_CVV_CARD card
-    And Change field focus
+    And User focuses on "ANIMATED_CARD" field
     Then Screenshot is taken after 6 seconds and checked
