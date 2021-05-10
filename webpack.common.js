@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack =  require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
@@ -109,6 +110,10 @@ module.exports = {
     new StyleLintPlugin({
       context: path.join(__dirname, 'src')
     }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
+    })
   ],
   module: {
     rules: [
