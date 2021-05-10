@@ -46,6 +46,7 @@ describe('ThreeDProcess', () => {
     );
 
     when(threeDVerificationServiceProviderMock.getProvider(anything())).thenReturn(instance(threeDSecureVerificationServiceMock));
+    //@ts-ignore
     when(threeDSecureVerificationServiceMock.init(anything())).thenReturn(of(void 0));
     when(cardinalCommerceVerificationServiceMock.init(anything())).thenReturn(of(void 0));
     when(gatewayClientMock.jsInit()).thenReturn(of(jsInitResponseMock));
@@ -54,7 +55,8 @@ describe('ThreeDProcess', () => {
   describe('init$()', () => {
     it('initializes 3ds verification service using JSINIT response', done => {
       threeDProcess.init$().subscribe(() => {
-        verify(threeDSecureVerificationServiceMock.init()).once();
+        //@ts-ignore
+        verify(threeDSecureVerificationServiceMock.init(jsInitResponseMock)).once();
         done();
       });
     });
@@ -72,7 +74,8 @@ describe('ThreeDProcess', () => {
       threeDProcess.init$().subscribe(() => {
         const pan = '4111111111111111';
         messageBusMock.publish({ type: PUBLIC_EVENTS.BIN_PROCESS, data: pan });
-        verify(threeDSecureVerificationServiceMock.binLookup()).once();
+        //@ts-ignore
+        verify(threeDSecureVerificationServiceMock.binLookup(pan)).once();
         done();
       });
     });

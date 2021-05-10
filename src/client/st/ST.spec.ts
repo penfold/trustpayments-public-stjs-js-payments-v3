@@ -15,6 +15,7 @@ import { ApplePay } from '../integrations/apple-pay/ApplePay';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
 import { CardFrames } from '../card-frames/CardFrames';
 import { instance, mock } from 'ts-mockito';
+import { ThreeDSecureFactory } from '3ds-sdk-js';
 
 window.alert = jest.fn();
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
@@ -30,6 +31,7 @@ Container.set({ id: ApplePay, value: instance(mock(ApplePay)) });
 Container.set({ id: VisaCheckout, value: instance(mock(VisaCheckout)) });
 Container.set({ id: CommonFrames, value: instance(mock(CommonFrames)) });
 Container.set({ id: CardFrames, value: instance(mock(CardFrames)) });
+Container.set({ id: ThreeDSecureFactory, value: instance(mock(ThreeDSecureFactory)) });
 
 describe('ST', () => {
   const { cacheConfig, instance } = stFixture();
