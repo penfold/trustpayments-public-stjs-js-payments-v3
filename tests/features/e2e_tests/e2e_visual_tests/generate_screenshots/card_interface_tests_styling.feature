@@ -58,6 +58,6 @@ Feature: Visual regression - E2E Card Payments
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens minimal.html page with inline param
     When User fills only security code for saved MASTERCARD_INVALID_CVV_CARD card
-    And Change field focus
+    And User focuses on "ANIMATED_CARD" field
     Then Make screenshot after 6 seconds
 
