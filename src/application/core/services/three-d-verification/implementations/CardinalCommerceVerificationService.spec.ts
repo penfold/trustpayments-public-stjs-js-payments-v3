@@ -8,10 +8,17 @@ import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { MERCHANT_PARENT_FRAME } from '../../../models/constants/Selectors';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { PaymentEvents } from '../../../models/constants/PaymentEvents';
-import { IVerificationData } from '../data/IVerificationData';
+import { GatewayClient } from '../../GatewayClient';
+import { VerificationResultHandler } from '../VerificationResultHandler';
+import { ICard } from '../../../models/ICard';
+import { RequestType } from '../../../../../shared/types/RequestType';
+import { of } from 'rxjs';
+import { IThreeDQueryResponse } from '../../../models/IThreeDQueryResponse';
 
 describe('CardinalCommerceVerificationService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
+  let gatewayClient: GatewayClient;
+  let verificationResultHandler: VerificationResultHandler;
   let verificationService: CardinalCommerceVerificationService;
 
   const jsInitResponseMock: IThreeDInitResponse = {
@@ -24,9 +31,34 @@ describe('CardinalCommerceVerificationService', () => {
     cachetoken: 'cachetoken',
   };
 
+  const threeDQueryResponseMock: IThreeDQueryResponse = {
+    jwt: '',
+    acquirertransactionreference: '',
+    acquirerresponsecode: '',
+    acquirerresponsemessage: '',
+    acsurl: '',
+    enrolled: '',
+    threedpayload: '',
+    transactionreference: '',
+    requesttypescription: '',
+    threedversion: '',
+  };
+
+  const cardMock: ICard = {
+    expirydate: '12/23',
+    pan: '4111111111111111',
+    securitycode: '123'
+  }
+
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
-    verificationService = new CardinalCommerceVerificationService(instance(interFrameCommunicatorMock));
+    gatewayClient = mock(GatewayClient);
+    verificationResultHandler = mock(VerificationResultHandler);
+    verificationService = new CardinalCommerceVerificationService(
+      instance(interFrameCommunicatorMock),
+      instance(gatewayClient),
+      instance(verificationResultHandler)
+    );
   });
 
   describe('init', () => {
@@ -70,36 +102,20 @@ describe('CardinalCommerceVerificationService', () => {
 
   describe('start', () => {
     it('calls start query', done => {
-      when(interFrameCommunicatorMock.query(anything(), MERCHANT_PARENT_FRAME)).thenResolve('hello');
+      when(interFrameCommunicatorMock.query(anything(), MERCHANT_PARENT_FRAME)).thenResolve('');
 
-      verificationService.start('foobar').subscribe(() => {
-        const event = {
-          type: PUBLIC_EVENTS.CARDINAL_START,
-          data: { jwt: 'foobar' },
-        };
-        verify(interFrameCommunicatorMock.query(deepEqual(event), MERCHANT_PARENT_FRAME)).once();
-        done();
-      });
-    });
-  });
+      when(gatewayClient.threedQuery(anything())).thenReturn(of(threeDQueryResponseMock));
 
-  describe('verify', () => {
-    it('calls continue query', done => {
-      when(interFrameCommunicatorMock.query(anything(), MERCHANT_PARENT_FRAME)).thenResolve('hello');
-
-      const data: IVerificationData = {
-        acsUrl: 'a',
-        jwt: 'b',
-        payload: 'c',
-        transactionId: 'd',
-      };
-
-      verificationService.verify(data).subscribe(() => {
-        const event = {
-          type: PUBLIC_EVENTS.CARDINAL_CONTINUE,
-          data,
-        };
-        verify(interFrameCommunicatorMock.query(deepEqual(event), MERCHANT_PARENT_FRAME)).once();
+      verificationService.start(
+        jsInitResponseMock,
+        [RequestType.THREEDQUERY],
+        cardMock,
+        { merchantData: 'merchantData' },
+      ).subscribe((response) => {
+        expect(response).toEqual({
+          ...threeDQueryResponseMock,
+          cachetoken: jsInitResponseMock.cachetoken
+        });
         done();
       });
     });

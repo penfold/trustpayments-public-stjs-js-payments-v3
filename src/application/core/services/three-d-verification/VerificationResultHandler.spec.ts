@@ -20,6 +20,7 @@ describe('VerificationResultHandler', () => {
     threedpayload: '3dpayload',
     transactionreference: 'ref',
     requesttypescription: 'THREEDQUERY',
+    threedversion: '',
   };
   const jsInitResponseMock: IThreeDInitResponse = {
     errorcode: '0',
@@ -101,6 +102,7 @@ describe('VerificationResultHandler', () => {
             errormessage: PAYMENT_ERROR,
             threedresponse: 'foobar',
             cachetoken: 'aaa',
+            threedversion: '',
           });
           done();
         },

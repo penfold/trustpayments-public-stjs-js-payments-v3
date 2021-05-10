@@ -71,6 +71,7 @@ describe('GatewayClient', () => {
   describe('threedQuery', () => {
     const threeDQueryRequest: IStRequest = { pan: '1234 1234 1234 1234' };
     const threeDQueryResponse: IThreeDQueryResponse = {
+      threedversion: '',
       acquirerresponsecode: '',
       acquirerresponsemessage: '',
       acquirertransactionreference: '',

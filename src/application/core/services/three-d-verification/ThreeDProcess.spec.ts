@@ -54,7 +54,7 @@ describe('ThreeDProcess', () => {
   describe('init$()', () => {
     it('initializes 3ds verification service using JSINIT response', done => {
       threeDProcess.init$().subscribe(() => {
-        verify(threeDSecureVerificationServiceMock.init(jsInitResponseMock)).once();
+        verify(threeDSecureVerificationServiceMock.init()).once();
         done();
       });
     });
@@ -72,7 +72,7 @@ describe('ThreeDProcess', () => {
       threeDProcess.init$().subscribe(() => {
         const pan = '4111111111111111';
         messageBusMock.publish({ type: PUBLIC_EVENTS.BIN_PROCESS, data: pan });
-        verify(threeDSecureVerificationServiceMock.binLookup(pan)).once();
+        verify(threeDSecureVerificationServiceMock.binLookup()).once();
         done();
       });
     });
