@@ -74,7 +74,7 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
 
   private perform3DSMethod$(methodUrl: string, notificationUrl: string, transactionId: string): Observable<MethodURLResultInterface> {
     if (!methodUrl) {
-      return of(null);
+      return of(undefined);
     }
 
     const queryEvent: IMessageBusEvent<IMethodUrlData> = {

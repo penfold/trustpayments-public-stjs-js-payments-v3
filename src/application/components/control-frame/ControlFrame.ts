@@ -35,7 +35,6 @@ import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
 import { Styler } from '../../core/shared/styler/Styler';
-import { IThreeDSTokens } from '../../core/services/three-d-verification/data/IThreeDSTokens';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
@@ -412,18 +411,7 @@ export class ControlFrame {
   }
 
   private _initThreeDProcess(config: IConfig): void {
-    let initialTokens: IThreeDSTokens;
-
-    const { threedinit, cachetoken } = config.init || {};
-
-    if (threedinit && cachetoken) {
-      initialTokens = {
-        jwt: threedinit,
-        cacheToken: cachetoken,
-      };
-    }
-
-    this._threeDProcess.init$(initialTokens).subscribe({
+    this._threeDProcess.init$().subscribe({
       next: () => {
         this._isPaymentReady = true;
 
