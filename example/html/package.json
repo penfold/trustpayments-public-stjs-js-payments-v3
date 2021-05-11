@@ -10,6 +10,9 @@
     "build:mock": "webpack --config webpack.mock.js",
     "start": "webpack serve --color --progress --config webpack.dev.js"
   },
+  "resolutions": {
+    "postcss": "8.2.10"
+  },
   "devDependencies": {
     "@babel/core": "7.13.16",
     "@babel/helper-define-map": "7.13.12",
