@@ -12,13 +12,16 @@ Feature: payment flow with callbacks
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
     Examples:
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+
 
   Scenario Outline: Cardinal V1 TC_1 - Successful Authentication, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
@@ -31,9 +34,10 @@ Feature: payment flow with callbacks
     And User clicks Pay button
     And User fills V1 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 

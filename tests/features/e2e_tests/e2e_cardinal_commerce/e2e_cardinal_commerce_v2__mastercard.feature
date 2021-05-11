@@ -13,9 +13,10 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
@@ -34,16 +35,17 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_FAILED_FRICTIONLESS_AUTH
     And User clicks Pay button
     Then User will see payment status information: "<payment_status>"
-    And User will see that notification frame has "<color>" color
-    And "submit" callback is called only once
-    And "<callback>" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | <callback>    |
     And User will see that Submit button is "<state>" after payment
     And User will see that ALL input fields are "<state>"
 
     Examples:
-      | request_types            | payment_status                          | color | callback | state    |
-      | THREEDQUERY AUTH         | Unauthenticated                         | red   | error    | enabled  |
-      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | green | success  | disabled |
+      | request_types            | payment_status                          | callback | state    |
+      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
+      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
 
 
   @base_config @cardinal_commerce_v2.0
@@ -55,9 +57,10 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_FRICTIONLESS
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
@@ -76,9 +79,10 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_UNAVAILABLE_FRICTIONLESS_AUTH
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
@@ -97,14 +101,15 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_REJECTED_FRICTIONLESS_AUTH
     And User clicks Pay button
     Then User will see payment status information: "<payment_status>"
-    And User will see that notification frame has "<color>" color
-    And "submit" callback is called only once
-    And "<callback>" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | <callback>    |
 
     Examples:
-      | request_types            | payment_status                          | color | callback |
-      | THREEDQUERY AUTH         | Unauthenticated                         | red   | error    |
-      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | green | success  |
+      | request_types            | payment_status                          | callback |
+      | THREEDQUERY AUTH         | Unauthenticated                         | error    |
+      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  |
 
 
   @base_config @cardinal_commerce_v2.0
@@ -116,9 +121,10 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_AUTH_NOT_AVAILABLE_ON_LOOKUP
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
     Examples:
       | request_types            |
@@ -135,14 +141,15 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_ERROR_ON_LOOKUP
     And User clicks Pay button
     Then User will see payment status information: "<payment_status>"
-    And User will see that notification frame has "<color>" color
-    And "submit" callback is called only once
-    And "<callback>" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | <callback>    |
 
     Examples:
-      | request_types            | payment_status                          | color | callback |
-      | THREEDQUERY AUTH         | Payment has been successfully processed | green | success  |
-      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | red   | error    |
+      | request_types            | payment_status                          | callback |
+      | THREEDQUERY AUTH         | Payment has been successfully processed | success  |
+      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    |
 
 
   @base_config @cardinal_commerce_v2.0
@@ -155,9 +162,10 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
     Examples:
       | request_types            |
@@ -175,9 +183,10 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "An error occurred"
-    And User will see that notification frame has "red" color
-    And "submit" callback is called only once
-    And "error" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | error         |
 
     Examples:
       | request_types            |
@@ -195,9 +204,10 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
     Examples:
       | request_types            |
@@ -215,9 +225,10 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "An error occurred"
-    And User will see that notification frame has "red" color
-    And "submit" callback is called only once
-    And "error" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | error         |
     And User will see that Submit button is "enabled" after payment
     And User will see that ALL input fields are "enabled"
 
@@ -236,9 +247,10 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_BYPASSED_AUTH
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
     Examples:
       | request_types            |
@@ -256,9 +268,10 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
     Examples:
       | request_types            |
@@ -284,9 +297,10 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_SUPPORT_TRANS_STATUS_I
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
     Examples:
       | request_types            |
@@ -304,13 +318,11 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "An error occurred"
-    And User will see that notification frame has "red" color
     And User waits for payment status to disappear
     And User clears form
     When User fills payment form with defined card MASTERCARD_BYPASSED_AUTH
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
 
     Examples:
       | request_types            |

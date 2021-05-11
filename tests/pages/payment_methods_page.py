@@ -4,8 +4,8 @@ from urllib.parse import urlparse, parse_qs
 from assertpy import assert_that
 
 from configuration import CONFIGURATION
-from pages.locators.payment_methods_locators import PaymentMethodsLocators
 from pages.base_page import BasePage
+from pages.locators.payment_methods_locators import PaymentMethodsLocators
 from utils.configurations import jwt_generator
 from utils.enums.auth_data import AuthData
 from utils.enums.auth_type import AuthType
