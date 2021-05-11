@@ -3,7 +3,7 @@ Feature: Visual regression - E2E Card Payments
   I want to use card payments method
   In order to check full payment functionality
 
-  @visual_regression_styling @scrn_card_interface_after_successful_payment_styling
+  @visual_regression_styling @scrn_card_interface_after_successful_payment_styling @STJS-1709_visual_regression_styling_IE
   Scenario: Card interface after successful payment
     Given JS library configured by inline params BYPASS_MASTERCARD_WITH_STYLING_CONFIG and jwt BASE_JWT_DE with additional attributes
       | key                      | value            |
@@ -16,7 +16,7 @@ Feature: Visual regression - E2E Card Payments
     And Wait for notification frame
     Then Screenshot is taken after 0 seconds and checked
 
-  @visual_regression_styling @scrn_card_interface_before_payment_styling
+  @visual_regression_styling @scrn_card_interface_before_payment_styling @STJS-1709
   Scenario: Card interface before payment
     Given JS library configured by inline params BYPASS_MASTERCARD_WITH_STYLING_CONFIG and jwt BASE_JWT_DE with additional attributes
       | key                      | value            |
@@ -27,7 +27,7 @@ Feature: Visual regression - E2E Card Payments
     And User waits for Pay button to be active
     Then Screenshot is taken after 1 seconds and checked
 
-  @visual_regression_styling @scrn_card_interface_error_expiry_date_styling
+  @visual_regression_styling @scrn_card_interface_error_expiry_date_styling @STJS-1709_visual_regression_styling_IE
   Scenario: Card interface after unsuccessful payment - invalid expiration date
     Given JS library configured by inline params BYPASS_MASTERCARD_WITH_STYLING_CONFIG and jwt BASE_JWT_DE with additional attributes
       | key                      | value            |
@@ -40,7 +40,7 @@ Feature: Visual regression - E2E Card Payments
     And Wait for notification frame
     Then Screenshot is taken after 6 seconds and checked
 
-  @visual_regression_styling @scrn_card_interface_error_invalid_patterns_styling
+  @visual_regression_styling @scrn_card_interface_error_invalid_patterns_styling @STJS-1709_visual_regression_styling_IE
   Scenario: Card interface before payment - invalid pattern data
     Given JS library configured by inline params BYPASS_MASTERCARD_WITH_STYLING_CONFIG and jwt BASE_JWT_DE with additional attributes
       | key                      | value            |
@@ -52,7 +52,7 @@ Feature: Visual regression - E2E Card Payments
     And User clicks Pay button
     Then Screenshot is taken after 6 seconds and checked
 
-  @visual_regression_styling @scrn_card_interface_with_validation_styling
+  @visual_regression_styling @scrn_card_interface_with_validation_styling @STJS-1709
   Scenario: Card interface with validation styling
     Given JS library configured by inline params VALIDATION_STYLES_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
