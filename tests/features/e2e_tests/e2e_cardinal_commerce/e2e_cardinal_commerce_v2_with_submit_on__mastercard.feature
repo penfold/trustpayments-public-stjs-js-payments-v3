@@ -396,7 +396,6 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "An error occurred"
-    And User will see that notification frame has "red" color
     And User waits for payment status to disappear
     And User clears form
     When User fills payment form with defined card MASTERCARD_BYPASSED_AUTH

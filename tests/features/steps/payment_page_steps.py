@@ -1,6 +1,7 @@
 # type: ignore[no-redef]
 import time
 
+from assertpy import soft_assertions
 from behave import use_step_matcher, step, when, then
 
 from pages.page_factory import Pages
@@ -161,7 +162,7 @@ def step_impl(context, form_status):
 @step('User will see that (?P<field>.+) input fields are "(?P<form_status>.+)"')
 def step_impl(context, field: FieldType, form_status):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    field = FieldType.__members__[field] # pylint: disable=unsubscriptable-object
+    field = FieldType.__members__[field]  # pylint: disable=unsubscriptable-object
     if field.name == 'ALL':
         payment_page.validate_form_status(FieldType.SECURITY_CODE.name, form_status)
         payment_page.validate_form_status(FieldType.CARD_NUMBER.name, form_status)
@@ -386,6 +387,16 @@ def step_impl(context, callback_popup):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     # Expected callback number should be 1 but first callback is from previous payment so together is 2
     payment_page.validate_number_in_callback_counter_popup(callback_popup, '2')
+
+
+@step('User will see following callback type called only once')
+def step_impl(context):
+    time.sleep(1)
+    # sleep added to handle potential issue with update callback counters after initial check count
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    with soft_assertions():
+        for row in context.table:
+            payment_page.validate_number_in_callback_counter_popup(row['callback_type'], '1')
 
 
 @step('submit callback contains JWT response')
