@@ -41,6 +41,6 @@ Feature: Visual regression - E2E Card Payments
   @base_config_validation_styling @visual_regression_styling_generation_safari @scrn_card_interface_with_validation_styling
   Scenario: Card interface with validation styling
     When User fills only security code for saved MASTERCARD_INVALID_CVV_CARD card
-    And Change field focus
+    And User focuses on "ANIMATED_CARD" field
     Then Make screenshot after 6 seconds
 

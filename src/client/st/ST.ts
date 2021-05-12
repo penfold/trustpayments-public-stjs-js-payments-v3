@@ -399,6 +399,6 @@ export class ST {
   }
 }
 
-export default (config: IConfig) => {
+export default (config: IConfig): ST => {
   return Container.get(ClientBootstrap).run(config);
 };

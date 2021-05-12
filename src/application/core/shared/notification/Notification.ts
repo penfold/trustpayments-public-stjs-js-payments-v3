@@ -1,3 +1,4 @@
+import { IConfig } from '../../../../shared/model/config/IConfig';
 import { INotificationEvent } from '../../models/INotificationEvent';
 import { Service } from 'typedi';
 import {
@@ -8,14 +9,13 @@ import { environment } from '../../../../environments/environment';
 import { MessageBus } from '../message-bus/MessageBus';
 import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
 import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
-import { Styler } from '../styler/Styler';
 import { IAllowedStyles } from '../../models/IAllowedStyles';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { NotificationsClasses } from '../../models/constants/notifications/NotificationsClasses';
 import { NotificationsMessageTypes } from '../../models/constants/notifications/NotificationsMessageTypes';
-import { IConfig } from '../../../../shared/model/config/IConfig';
 import { Frame } from '../frame/Frame';
 import { IMessageBus } from '../message-bus/IMessageBus';
+import { Styler } from '../styler/Styler';
 import { ITranslator } from '../translator/ITranslator';
 
 @Service()
@@ -44,7 +44,7 @@ export class Notification {
       const styles = Object.keys(definedStyles).map((item: string) => {
         return { [item]: definedStyles[item] };
       });
-      const styler: Styler = new Styler(this._getAllowedStyles(), styles);
+      new Styler(this._getAllowedStyles(), styles);
     });
   }
 

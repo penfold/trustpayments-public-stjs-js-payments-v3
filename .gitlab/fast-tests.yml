@@ -20,7 +20,7 @@ card-payments-e2e-tests-review:
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
     FEATURE_FILES_NAMES_CONTAINS: 'e2e_'
-  parallel: 19
+  parallel: 20
 
 card-payments-e2e-tests-app-html-release:
   extends:
@@ -29,7 +29,7 @@ card-payments-e2e-tests-app-html-release:
     - .rules-when-release
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
-  parallel: 19
+  parallel: 20
 
 # Cardinal Commerce E2E Tests Headless
 cardinal-commerce-e2e-tests-app-html-review:

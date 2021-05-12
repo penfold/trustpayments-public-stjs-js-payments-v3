@@ -34,7 +34,6 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
-import { Styler } from '../../core/shared/styler/Styler';
 import { IThreeDSTokens } from '../../core/services/three-d-verification/data/IThreeDSTokens';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
@@ -117,7 +116,6 @@ export class ControlFrame {
         StCodec.updateJwt(config.jwt);
       }
 
-      const styler: Styler = new Styler(this._frame.getAllowedStyles(), this._frame.parseUrl().styles);
       this._initCybertonica(config);
       this._updateMerchantFieldsEvent();
       this.paymentController.init();
@@ -290,7 +288,7 @@ export class ControlFrame {
         this._notification.success(PAYMENT_SUCCESS);
         this._validation.blockForm(FormState.COMPLETE);
       })
-      .catch((error: any) => {
+      .catch(() => {
         this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this._notification.error(PAYMENT_ERROR);
         this._validation.blockForm(FormState.AVAILABLE);

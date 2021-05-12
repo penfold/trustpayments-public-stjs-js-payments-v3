@@ -228,7 +228,7 @@ describe('ApplePayPaymentService', () => {
 
     it(`should return error data when TRANSACTION_COMPLETE event returns ${bypassResponseErrorData.errormessage} error number ${bypassResponseErrorData.errorcode}`, done => {
       when(payment.processPayment(anything(), anything(), anything(), anything())).thenReturn(
-        new Promise((resolve, reject) => {})
+        new Promise(() => {})
       );
 
       applePayPaymentService
@@ -249,7 +249,7 @@ describe('ApplePayPaymentService', () => {
 
     it(`should return error data when TRANSACTION_COMPLETE event returns ${invalidResponseErrorData.errormessage} error number ${invalidResponseErrorData.errorcode}`, done => {
       when(payment.processPayment(anything(), anything(), anything(), anything())).thenReturn(
-        new Promise((resolve, reject) => {})
+        new Promise(() => {})
       );
 
       applePayPaymentService
