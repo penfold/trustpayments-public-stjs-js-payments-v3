@@ -6,6 +6,7 @@ import { ICardinalProvider } from '../../client/integrations/cardinal-commerce/I
 
 @Service()
 export class MockCardinalProvider implements ICardinalProvider {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getCardinal$(liveStatus: boolean): Observable<ICardinal> {
     return of(new CardinalMock());
   }

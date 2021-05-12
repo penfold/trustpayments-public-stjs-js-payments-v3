@@ -27,7 +27,7 @@ export class ResponseDecoderService {
       return {
         responseJwt: jwt,
         customerOutput: this.extractResponseObject(payload),
-        updatedMerchantJwt: payload.jwt
+        updatedMerchantJwt: payload.jwt,
       };
     } catch (e) {
       throw new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);

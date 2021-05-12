@@ -1,6 +1,5 @@
 import { instance, mock, verify, when } from 'ts-mockito';
 import { ApplePaySessionWrapper } from './ApplePaySessionWrapper';
-import { IApplePaySession } from './IApplePaySession';
 import { IApplePaySessionConstructor } from './IApplePaySessionConstructor';
 import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 
@@ -17,12 +16,10 @@ describe('ApplePaySessionWrapper', () => {
 
   let windowMock: WindowType;
   let applePaySessionConstructorMock: IApplePaySessionConstructor;
-  let applePaySessionMock: IApplePaySession;
   let applePaySessionWrapper: ApplePaySessionWrapper;
 
   beforeEach(() => {
     windowMock = mock<WindowType>();
-    applePaySessionMock = mock<IApplePaySession>();
     applePaySessionConstructorMock = mock<IApplePaySessionConstructor>();
   });
 

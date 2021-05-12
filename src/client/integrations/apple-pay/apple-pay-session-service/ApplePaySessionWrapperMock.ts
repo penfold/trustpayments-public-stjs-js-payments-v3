@@ -14,14 +14,17 @@ export class ApplePaySessionWrapperMock implements IApplePaySessionWrapper {
     return true;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   canMakePaymentsWithActiveCard(merchantId: string): Promise<boolean> {
     return Promise.resolve(true);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   supportsVersion(version: number): boolean {
     return true;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   createInstance(applePayVersion: number, applePayPaymentRequest: IApplePayPaymentRequest): IApplePaySession {
     return new ApplePaySessionMock();
   }

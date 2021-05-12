@@ -51,7 +51,6 @@ describe('FormField', () => {
 
   describe('onFocus()', () => {
     const { instance } = formFieldFixture();
-    let spy: jest.SpyInstance;
 
     it('should focus on input iframe-factory', () => {
       // @ts-ignore

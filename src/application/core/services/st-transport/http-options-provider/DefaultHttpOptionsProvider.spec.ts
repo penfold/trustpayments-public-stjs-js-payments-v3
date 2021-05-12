@@ -18,9 +18,9 @@ describe('DefaultHttpOptionsProvider', () => {
       expect(options).toEqual({
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        timeout: 60000
+        timeout: 60000,
       });
     });
   });

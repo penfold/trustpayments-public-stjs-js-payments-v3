@@ -42,7 +42,7 @@ export class StoreBasedStorage implements IStorage, ISynchronizedStorage {
     return this.store.select(state => selector(state.storage));
   }
 
-  initSynchronization() {
+  initSynchronization(): void {
     this.interFrameCommunicator.incomingEvent$.pipe(ofType(PUBLIC_EVENTS.STORAGE_SYNC)).subscribe(event => {
       const { key, value } = event.data;
       this.setItemWithoutSync(key, this.parseEventData(value));

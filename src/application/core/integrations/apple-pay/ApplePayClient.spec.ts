@@ -7,7 +7,6 @@ import { IConfig } from '../../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
-import { NotificationService } from '../../../../client/notification/NotificationService';
 import { ApplePayNotificationService } from './apple-pay-notification-service/ApplePayNotificationService';
 import { ApplePayClient } from './ApplePayClient';
 import { ApplePayClientStatus } from './ApplePayClientStatus';
@@ -20,7 +19,6 @@ describe('ApplePayClient', () => {
   let configProviderMock: ConfigProvider;
   let interFrameCommunicatorMock: InterFrameCommunicator;
   let messageBusMock: IMessageBus;
-  let notificationServiceMock: NotificationService;
   let browserLocalStorageMock: BrowserLocalStorage;
   let applePayNotificationService: ApplePayNotificationService;
   let applePayPaymentService: ApplePayPaymentService;
@@ -52,7 +50,6 @@ describe('ApplePayClient', () => {
     configProviderMock = mock<ConfigProvider>();
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
     messageBusMock = mock<IMessageBus>();
-    notificationServiceMock = mock(NotificationService);
     browserLocalStorageMock = mock(BrowserLocalStorage);
     applePayNotificationService = mock(ApplePayNotificationService);
     applePayPaymentService = mock(ApplePayPaymentService);

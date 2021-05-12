@@ -1,5 +1,5 @@
 export class Utils {
-  public static inArray<T>(array: ArrayLike<T>, item: T) {
+  public static inArray<T>(array: ArrayLike<T>, item: T): boolean {
     return Array.from(array).indexOf(item) >= 0;
   }
 
@@ -48,7 +48,7 @@ export class Utils {
     });
   }
 
-  public static stripChars(string: string, regex?: RegExp | string) {
+  public static stripChars(string: string, regex?: RegExp | string): string {
     if (typeof regex === 'undefined' || !regex) {
       regex = /[\D+]/g;
       return string.replace(regex, '');
@@ -57,9 +57,9 @@ export class Utils {
     }
   }
 
-  public static getLastElementOfArray = (array: number[]) => array && array.slice(-1).pop();
+  public static getLastElementOfArray = (array: number[]): number => array && array.slice(-1).pop();
 
-  public static setElementAttributes(attributes: Record<string, any>, element: HTMLInputElement) {
+  public static setElementAttributes(attributes: Record<string, any>, element: HTMLInputElement): void {
     for (const attribute in attributes) {
       const value = attributes[attribute];
       if (Utils.inArray(['value'], attribute)) {

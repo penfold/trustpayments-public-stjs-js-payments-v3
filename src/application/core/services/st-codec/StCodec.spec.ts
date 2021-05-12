@@ -372,10 +372,7 @@ describe('StCodec class', () => {
   });
 
   describe('decode()', () => {
-    let translator: Translator;
-
     beforeEach(() => {
-      translator = mock(Translator);
       // @ts-ignore
       StCodec.handleInvalidResponse = jest.fn().mockReturnValueOnce(Error(COMMUNICATION_ERROR_INVALID_RESPONSE));
     });

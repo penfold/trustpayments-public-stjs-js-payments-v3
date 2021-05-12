@@ -59,7 +59,7 @@ export class DomMethods {
   ];
 
   public static insertScript(target: string, params: IScriptParams): Promise<Element> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const loaded: Element = DomMethods.isScriptLoaded(params);
       if (loaded) {
         resolve(loaded);
