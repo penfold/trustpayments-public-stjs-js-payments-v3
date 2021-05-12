@@ -38,7 +38,7 @@ describe('CardinalCommerceVerificationService', () => {
 
       when(interFrameCommunicatorMock.query(anything(), MERCHANT_PARENT_FRAME)).thenResolve(void 0);
 
-      verificationService.init(jsInitResponseMock).subscribe(res => {
+      verificationService.init(jsInitResponseMock).subscribe(() => {
         verify(interFrameCommunicatorMock.query(
           deepEqual(eventMock),
           MERCHANT_PARENT_FRAME,

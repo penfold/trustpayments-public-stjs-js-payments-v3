@@ -15,6 +15,7 @@ import { ConfigInterface } from '3ds-sdk-js';
 export class ThreeDSecureVerificationService implements IThreeDVerificationService<ConfigInterface> {
   constructor(private interFrameCommunicator: InterFrameCommunicator) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   init(jsInitResponse: IThreeDInitResponse): Observable<ConfigInterface> {
     const queryEvent: IMessageBusEvent<null> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_SETUP,

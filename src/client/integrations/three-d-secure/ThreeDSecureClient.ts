@@ -57,6 +57,7 @@ export class ThreeDSecureClient {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private trigger$(pan: string): Observable<IThreeDSecure3dsMethod> {
     return of({
       methodUrl: 'http://localhost:8887/three_ds_method',
@@ -65,6 +66,7 @@ export class ThreeDSecureClient {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private start$(jwt: string): Observable<any> {
     return this.threeDSecure.run3DSMethod$(
       '2af781fd-c5f6-486a-ada1-adc9320bd54f',
@@ -73,6 +75,7 @@ export class ThreeDSecureClient {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private verify$(verificationData: IVerificationData): Observable<IVerificationResult> {
     const creq = {
       messageType: 'CReq',
@@ -87,6 +90,7 @@ export class ThreeDSecureClient {
       btoa(JSON.stringify(creq)),
       'http://localhost:8887/v2/three_ds_challenge',
     ).pipe(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       map((challengeResult: ChallengeResultInterface) => ({
         validated: true,
         actionCode: ActionCode.SUCCESS,
