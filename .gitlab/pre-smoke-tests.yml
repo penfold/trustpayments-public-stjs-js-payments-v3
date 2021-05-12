@@ -6,7 +6,7 @@ validate-cdn-latest:
   variables:
       SLEEP_BEFORE_VALIDATE: '0'
       REMOTE_FILE_URL: "https://cdn.eu.trustpayments.com/js-payments-v3/latest/st.js"
-      TARGET_FILE_PATH: ".dist-prod/st.js"
+      TARGET_FILE_PATH: ".dist-release/st.js"
 
 build-app-html-smoke:
   variables:
@@ -16,6 +16,6 @@ build-app-html-smoke:
     - .rules-when-release
   stage: pre-smoke-tests
   before_script:
-    - cp -r .dist-prod/ dist/
+    - cp -r .dist-release/ dist/
     - export LIBRARY_ARG="--library_url=https://cdn.eu.trustpayments.com/js-payments-v3/latest"
     - export BUILD_ARGS_EXTRA="--build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=prod --build-arg LIBRARY_ARG=${LIBRARY_ARG}"
