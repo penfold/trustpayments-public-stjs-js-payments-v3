@@ -10,7 +10,7 @@ describe('CardinalProvider', () => {
   let cardinalProvider: CardinalProvider;
 
   beforeEach(() => {
-    DomMethods.insertScript = jest.fn().mockImplementation((target, options) => {
+    DomMethods.insertScript = jest.fn().mockImplementation(() => {
       (window as any).Cardinal = cardinal;
 
       return Promise.resolve(document.createElement('script'));

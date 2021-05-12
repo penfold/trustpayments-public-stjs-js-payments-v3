@@ -23,6 +23,7 @@ export class JwtReducer implements IReducer<IApplicationFrameState> {
         return { ...state, jwt: state.originalJwt };
       }
       case PUBLIC_EVENTS.DESTROY: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { jwt, originalJwt, ...newState } = state;
 
         return newState;

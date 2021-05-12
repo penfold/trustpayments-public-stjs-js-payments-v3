@@ -361,18 +361,6 @@ function cardNumberFixture() {
     ['79927398713', true],
     ['6759555555555555', false],
   ];
-  const cards = [
-    { number: 340000000000611, expirationDate: '12/22', securityCode: 1234, brand: 'AMEX' },
-    { number: 1801000000000901, expirationDate: '12/22', securityCode: 123, brand: 'ASTROPAYCARD' },
-    { number: 3000000000000111, expirationDate: '12/22', securityCode: 123, brand: 'DINERS' },
-    { number: 6011000000000301, expirationDate: '12/22', securityCode: 123, brand: 'DISCOVER' },
-    { number: 3528000000000411, expirationDate: '12/22', securityCode: 123, brand: 'JCB' },
-    { number: 5000000000000611, expirationDate: '12/22', securityCode: 123, brand: 'MAESTRO' },
-    { number: 5100000000000511, expirationDate: '12/22', securityCode: 123, brand: 'MASTERCARD' },
-    { number: 3089500000000000021, expirationDate: '12/22', securityCode: 123, brand: 'PIBA' },
-    { number: 4111110000000211, expirationDate: '12/22', securityCode: 123, brand: 'VISA' },
-  ];
-
   const formattedCards = [
     ['340000000000611', '3400 000000 00611'],
     ['1801000000000901', '1801 0000 0000 0901'],

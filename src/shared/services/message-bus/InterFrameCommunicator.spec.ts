@@ -168,6 +168,7 @@ describe('InterFrameCommunicator', () => {
     });
 
     it('listens to query messages and pass them to responders', done => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const fooResponder = jest.fn().mockImplementationOnce((event: IMessageBusEvent) => of({ type: 'BAR' }));
       const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
 
@@ -187,7 +188,9 @@ describe('InterFrameCommunicator', () => {
     });
 
     it('processes all queries and doesnt cancel processing when new query arrives', done => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const fooResponder = (event: IMessageBusEvent) => timer(100).pipe(mapTo({ type: 'FOO_RESPONSE' }));
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const barResponder = (event: IMessageBusEvent) => of({ type: 'BAR_RESPONSE' });
       const fooQueryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
       const barQueryMessage = new QueryMessage({ type: 'BAR' }, 'foobar');
@@ -213,6 +216,7 @@ describe('InterFrameCommunicator', () => {
     });
 
     it('processes each responder only once even if it was assigned multiple times', done => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const responder = (event: IMessageBusEvent) => of({ type: 'FOO_RESPONSE' });
       const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
 
@@ -229,6 +233,7 @@ describe('InterFrameCommunicator', () => {
     });
 
     it('doesnt process queries after communication closed event', done => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const fooResponder = jest.fn().mockImplementationOnce((event: IMessageBusEvent) => of({ type: 'BAR' }));
       const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
 

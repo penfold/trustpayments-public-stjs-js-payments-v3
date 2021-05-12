@@ -2,7 +2,7 @@ import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 
 export class GoogleAnalytics {
-  public static sendGaData(hitType: string, eventCategory: string, eventAction: string, eventLabel: string) {
+  public static sendGaData(hitType: string, eventCategory: string, eventAction: string, eventLabel: string): void | boolean {
     // @ts-ignore
     if (window.ga) {
       // @ts-ignore

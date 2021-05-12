@@ -15,6 +15,7 @@ export class SimpleMessageBus extends Subject<IMessageBusEvent> implements IMess
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   publish<T>(event: IMessageBusEvent<T>, publishToParent?: boolean): void {
     this.next(event);
   }

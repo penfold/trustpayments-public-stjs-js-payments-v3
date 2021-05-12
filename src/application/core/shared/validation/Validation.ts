@@ -59,11 +59,11 @@ export class Validation {
     }
   }
 
-  public static setCustomValidationError(errorContent: string, inputElement: HTMLInputElement) {
+  public static setCustomValidationError(errorContent: string, inputElement: HTMLInputElement): void {
     inputElement.setCustomValidity(errorContent);
   }
 
-  public static addErrorContainer(inputElement: HTMLInputElement, inputTarget: InsertPosition, errorContent: string) {
+  public static addErrorContainer(inputElement: HTMLInputElement, inputTarget: InsertPosition, errorContent: string): void {
     inputElement.insertAdjacentHTML(inputTarget, errorContent);
   }
 
@@ -73,7 +73,7 @@ export class Validation {
     input.nextSibling.textContent = Validation.CLEAR_VALUE;
   }
 
-  public static returnInputAndErrorContainerPair(item: HTMLInputElement) {
+  public static returnInputAndErrorContainerPair(item: HTMLInputElement): { inputElement: HTMLInputElement, messageElement: HTMLElement } {
     return {
       inputElement: document.getElementById(item.id) as HTMLInputElement,
       messageElement: document.getElementById(item.id).nextSibling as HTMLElement,
@@ -158,13 +158,13 @@ export class Validation {
     this.init();
   }
 
-  public backendValidation(inputElement: HTMLInputElement, messageElement: HTMLElement, event: string) {
+  public backendValidation(inputElement: HTMLInputElement, messageElement: HTMLElement, event: string): void {
     this._messageBus.subscribeType(event, (data: IMessageBusValidateField) => {
       this.setError(inputElement, messageElement, data);
     });
   }
 
-  public blockForm(state: FormState) {
+  public blockForm(state: FormState): void {
     const messageBusEvent: IMessageBusEvent = {
       data: state,
       type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
@@ -172,7 +172,7 @@ export class Validation {
     this._messageBus.publish(messageBusEvent, true);
   }
 
-  public callSubmitEvent() {
+  public callSubmitEvent(): void {
     const messageBusEvent: IMessageBusEvent = {
       type: MessageBus.EVENTS_PUBLIC.CALL_SUBMIT_EVENT,
     };
@@ -201,7 +201,8 @@ export class Validation {
     };
   }
 
-  public getErrorData(errorData: IErrorData) {
+  public getErrorData(errorData: IErrorData): { field: unknown, errormessage: unknown } {
+    // @ts-ignore
     const { errordata, errormessage } = StCodec.getErrorData(errorData);
     const validationEvent: IMessageBusEvent = {
       data: { field: errordata[0], message: errormessage },
@@ -218,7 +219,7 @@ export class Validation {
     return { field: errordata[0], errormessage };
   }
 
-  public keepCursorsPosition(element: HTMLInputElement) {
+  public keepCursorsPosition(element: HTMLInputElement): void {
     const cursorSingleSkip: number = 1;
     const cursorDoubleSkip: number = 2;
     const dateSlash: string = '/';
@@ -243,7 +244,7 @@ export class Validation {
     }
   }
 
-  public luhnCheck(field: HTMLInputElement, input: HTMLInputElement, message: HTMLDivElement) {
+  public luhnCheck(field: HTMLInputElement, input: HTMLInputElement, message: HTMLDivElement): void {
     const { value } = input;
     if (!luhnCheck(value)) {
       Validation.setCustomValidationError(VALIDATION_ERROR_PATTERN_MISMATCH, field);
@@ -257,12 +258,12 @@ export class Validation {
     return value ? value.substring(0, length) : Validation.CLEAR_VALUE;
   }
 
-  public removeError(element: HTMLInputElement, errorContainer: HTMLElement) {
+  public removeError(element: HTMLInputElement, errorContainer: HTMLElement): void {
     element.classList.remove(Validation.ERROR_CLASS);
     errorContainer.textContent = Validation.CLEAR_VALUE;
   }
 
-  public setError(inputElement: HTMLInputElement, messageElement: HTMLElement, data: IMessageBusValidateField) {
+  public setError(inputElement: HTMLInputElement, messageElement: HTMLElement, data: IMessageBusValidateField): void {
     const { message } = data;
     if (message && messageElement && messageElement.innerText !== VALIDATION_ERROR_PATTERN_MISMATCH) {
       messageElement.innerText = this.translator.translate(message);
@@ -276,13 +277,13 @@ export class Validation {
     }
   }
 
-  public setOnKeyDownProperties(element: HTMLInputElement, event: KeyboardEvent) {
+  public setOnKeyDownProperties(element: HTMLInputElement, event: KeyboardEvent): void {
     this._currentKeyCode = event.keyCode;
     this._selectionRangeStart = element.selectionStart;
     this._selectionRangeEnd = element.selectionEnd;
   }
 
-  public setFormValidity(state: Record<string, any>) {
+  public setFormValidity(state: Record<string, any>): void {
     const validationEvent: IMessageBusEvent = {
       data: { ...state },
       type: MessageBus.EVENTS.VALIDATE_FORM,
@@ -296,7 +297,7 @@ export class Validation {
     this._setMessage(inputElement, messageElement, customErrorMessage);
   }
 
-  public init() {
+  public init(): void {
     this._matchDigitsRegexp = new RegExp(Validation.MATCH_DIGITS);
   }
 
@@ -310,7 +311,7 @@ export class Validation {
     return iinLookup.lookup(cardNumber);
   }
 
-  public cardNumber(value: string) {
+  public cardNumber(value: string): void {
     this.cardNumberValue = this.removeNonDigits(value);
     this.cardDetails = this.getCardDetails(this.cardNumberValue);
     const length = this.cardDetails.type
@@ -319,15 +320,15 @@ export class Validation {
     this.cardNumberValue = this.limitLength(this.cardNumberValue, length);
   }
 
-  public expirationDate(value: string) {
+  public expirationDate(value: string): void {
     this.expirationDateValue = value ? this.removeNonDigits(value) : Validation.CLEAR_VALUE;
   }
 
-  public securityCode(value: string, length: number) {
+  public securityCode(value: string, length: number): void {
     this.securityCodeValue = value ? this.limitLength(this.removeNonDigits(value), length) : Validation.CLEAR_VALUE;
   }
 
-  private _broadcastFormFieldError(errordata: string, event: IMessageBusEvent) {
+  private _broadcastFormFieldError(errordata: string, event: IMessageBusEvent): void {
     this._messageBus.publish(Validation._setValidateEvent(errordata, event));
   }
 
@@ -359,7 +360,7 @@ export class Validation {
     return this._currentKeyCode === Validation.DELETE_KEY_CODE;
   }
 
-  private _setMessage(inputElement: HTMLInputElement, messageElement: HTMLElement, customErrorMessage?: string) {
+  private _setMessage(inputElement: HTMLInputElement, messageElement: HTMLElement, customErrorMessage?: string): void {
     const isCardNumberInput: boolean = inputElement.getAttribute(Validation.ID_PARAM_NAME) === CARD_NUMBER_INPUT;
     const validityState = Validation.getValidationMessage(inputElement.validity);
     messageElement.innerText = this._getTranslation(
@@ -393,7 +394,7 @@ export class Validation {
     },
     isPanPiba: boolean,
     paymentReady: boolean
-  ) {
+  ): void {
     if (dataInJwt) {
       this._formValidity = true;
       this._isPaymentReady = true;
