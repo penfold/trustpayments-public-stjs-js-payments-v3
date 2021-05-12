@@ -95,6 +95,7 @@ export class ThreeDProcess {
   }
 
   private authenticateCard(response: IThreeDQueryResponse, jsInitResponse: IThreeDInitResponse): Observable<IThreeDQueryResponse> {
+    console.log('WHTRBIT', response, jsInitResponse);
     const verificationData: IVerificationData = {
       transactionId: response.acquirertransactionreference,
       jwt: jsInitResponse.threedinit,
@@ -104,7 +105,10 @@ export class ThreeDProcess {
 
     return this.verificationService.verify(verificationData).pipe(
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
-      switchMap(validationResult => this.verificationResultHandler.handle(response, validationResult, jsInitResponse)),
+      switchMap(validationResult => {
+        console.log('WHTRBIT', verificationData);
+        return this.verificationResultHandler.handle(response, validationResult, jsInitResponse)
+      }),
     );
   }
 

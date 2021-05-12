@@ -16,6 +16,7 @@ import {
   ThreeDSecureVersion,
   ChallengeResultInterface,
   ConfigInterface,
+  ResultActionCode,
 } from '3ds-sdk-js';
 
 @Service()
@@ -90,13 +91,23 @@ export class ThreeDSecureClient {
       btoa(JSON.stringify(creq)),
       'http://localhost:8887/v2/three_ds_challenge',
     ).pipe(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      map((challengeResult: ChallengeResultInterface) => ({
-        validated: true,
-        actionCode: ActionCode.SUCCESS,
-        errorNumber: 0,
-        errorDescription: 'Success',
-      })),
+      map((challengeResult: ChallengeResultInterface) => {
+        console.log('WHTRBIT', challengeResult);
+
+        if (challengeResult.status === ResultActionCode.CANCELLED) {
+          return {
+            actionCode: ActionCode.CANCELLED,
+            errorNumber: 0,
+            errorDescription: 'xxxxxxxxxx 3DS cancel',
+          };
+        }
+
+        return {
+          actionCode: ActionCode.SUCCESS,
+          errorNumber: 0,
+          errorDescription: 'xxxxxxxxx 3DS success',
+        }
+      }),
     );
   }
 }

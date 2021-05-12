@@ -35,6 +35,7 @@ export class Payment {
     merchantData: IMerchantData,
     responseData?: IResponseData
   ): Promise<Record<string, any>> {
+    console.log('WHTRBIT processPayment', responseData);
     const customerOutput: CustomerOutput | undefined = responseData
       ? (responseData.customeroutput as CustomerOutput)
       : undefined;

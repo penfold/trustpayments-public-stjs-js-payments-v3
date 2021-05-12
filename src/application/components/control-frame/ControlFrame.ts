@@ -14,7 +14,7 @@ import { ISubmitData } from '../../core/models/ISubmitData';
 import {
   PAYMENT_SUCCESS,
   PAYMENT_ERROR,
-  COMMUNICATION_ERROR_INVALID_RESPONSE,
+  COMMUNICATION_ERROR_INVALID_RESPONSE, PAYMENT_CANCELLED,
 } from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
@@ -279,13 +279,30 @@ export class ControlFrame {
     this._payment
       .processPayment(this._remainingRequestTypes, this._card, this._merchantFormData, responseData)
       .then(() => {
-        this._messageBus.publish(
-          {
-            type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
-          },
-          true
-        );
-        this._notification.success(PAYMENT_SUCCESS);
+
+
+        console.log('WHTRBIT ======|||||++++++');
+        // @TODO how to handle it the best?
+
+
+        if (responseData.errormessage === PAYMENT_CANCELLED) {
+          this._messageBus.publish(
+            {
+              type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK,
+            },
+            true
+          );
+          this._notification.cancel('DUPA');
+        } else {
+          this._messageBus.publish(
+            {
+              type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
+            },
+            true
+          );
+          this._notification.success(PAYMENT_SUCCESS);
+        }
+
         this._validation.blockForm(FormState.COMPLETE);
       })
       .catch(() => {
