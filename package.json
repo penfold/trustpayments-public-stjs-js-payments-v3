@@ -147,7 +147,7 @@
     "@sentry/browser": "6.3.0",
     "@sheerun/mutationobserver-shim": "0.3.3",
     "@trustpayments/http-client": "0.1.53",
-    "@trustpayments/js-payments-card": "*",
+    "@trustpayments/js-payments-card": "1.0.333",
     "@trustpayments/jwt-generator": "0.1.53",
     "@trustpayments/ts-iin-lookup": "0.1.53",
     "@trustpayments/ts-luhn-check": "0.1.53",
