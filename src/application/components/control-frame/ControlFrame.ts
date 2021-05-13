@@ -286,6 +286,7 @@ export class ControlFrame {
             },
             true,
           );
+          this._notification.cancel(responseData.errormessage);
         } else {
           this._messageBus.publish(
             {

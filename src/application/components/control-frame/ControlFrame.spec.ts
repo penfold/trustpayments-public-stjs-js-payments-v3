@@ -26,7 +26,7 @@ import { PaymentController } from '../../core/services/payments/PaymentControlle
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import spyOn = jest.spyOn;
-import { PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Translations';
+import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Translations';
 import { Translator } from '../../core/shared/translator/Translator';
 import { FormState } from '../../core/models/constants/FormState';
 
@@ -126,6 +126,8 @@ describe('ControlFrame', () => {
       // @ts-ignore
       instance._notification.error = jest.fn();
       // @ts-ignore
+      instance._notification.cancel = jest.fn();
+      // @ts-ignore
       instance._validation = {
         blockForm: jest.fn(),
       };
@@ -145,6 +147,26 @@ describe('ControlFrame', () => {
 
       // @ts-ignore
       expect(instance._notification.success).toHaveBeenCalledWith(PAYMENT_SUCCESS);
+      // @ts-ignore
+      expect(instance._validation.blockForm).toHaveBeenCalledWith(FormState.COMPLETE);
+    });
+
+    it('should call notification cancel when promise is resolved but isCancelled flag is true', async () => {
+      const flushPromises = () => new Promise(setImmediate);
+
+      // @ts-ignore
+      instance._payment = {
+        processPayment: jest.fn().mockResolvedValueOnce(undefined),
+      };
+      // @ts-ignore
+      instance._processPayment({
+        errormessage: PAYMENT_CANCELLED,
+        isCancelled: true,
+      });
+      await flushPromises();
+
+      // @ts-ignore
+      expect(instance._notification.cancel).toHaveBeenCalledWith(PAYMENT_CANCELLED);
       // @ts-ignore
       expect(instance._validation.blockForm).toHaveBeenCalledWith(FormState.COMPLETE);
     });
