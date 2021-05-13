@@ -104,9 +104,7 @@ export class ThreeDProcess {
 
     return this.verificationService.verify(verificationData).pipe(
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
-      switchMap(validationResult => {
-        return this.verificationResultHandler.handle(response, validationResult, jsInitResponse)
-      }),
+      switchMap(validationResult => this.verificationResultHandler.handle(response, validationResult, jsInitResponse)),
     );
   }
 
