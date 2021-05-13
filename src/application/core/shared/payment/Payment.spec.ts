@@ -144,6 +144,7 @@ describe('Payment', () => {
         } as unknown) as IThreeDQueryResponse)
         .catch(() => {
           // @ts-ignore
+          // eslint-disable-next-line jest/no-conditional-expect
           expect(instance.stTransport.sendRequest).not.toHaveBeenCalled();
           done();
         });
@@ -160,6 +161,7 @@ describe('Payment', () => {
         } as unknown) as IThreeDQueryResponse)
         .catch(() => {
           // @ts-ignore
+          // eslint-disable-next-line jest/no-conditional-expect
           expect(instance.stTransport.sendRequest).not.toHaveBeenCalled();
           done();
         });
