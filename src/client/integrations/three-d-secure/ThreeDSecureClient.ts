@@ -12,13 +12,13 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { IThreeDSecure3dsMethod } from './IThreeDSecure3dsMethod';
 import {
-  ThreeDSecureFactory,
   ThreeDSecureInterface,
   ThreeDSecureVersion,
   ChallengeResultInterface,
   ConfigInterface,
   ResultActionCode,
 } from '3ds-sdk-js';
+import { ThreeDSecureProvider } from './three-d-secure-provider/ThreeDSecureProvider';
 
 @Service()
 export class ThreeDSecureClient {
@@ -27,13 +27,12 @@ export class ThreeDSecureClient {
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
     private configProvider: ConfigProvider,
-  ) {
-    const threeDSecureFactory = new ThreeDSecureFactory();
-
-    this.threeDSecure = threeDSecureFactory.create();
-  }
+    private threeDSecureProvider: ThreeDSecureProvider,
+  ) {}
 
   init(): void {
+    this.threeDSecure = this.threeDSecureProvider.getSdk();
+
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_SETUP)
       .thenRespond(() => this.setup$());
