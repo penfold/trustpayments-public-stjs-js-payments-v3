@@ -37,13 +37,12 @@ export class VerificationResultHandler {
       }
 
       case ActionCode.CANCELLED:
-        // @ts-ignore
         return of({
           ...response,
           errorcode: '0',
           errormessage: PAYMENT_CANCELLED,
+          isCancelled: true,
         });
-        // @TODO what about other fields like status?
     }
   }
 }

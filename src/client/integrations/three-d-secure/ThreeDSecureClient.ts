@@ -2,6 +2,7 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { PAYMENT_CANCELLED, PAYMENT_SUCCESS } from '../../../application/core/models/constants/Translations';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { ActionCode } from '../../../application/core/services/three-d-verification/data/ActionCode';
 import { IVerificationData } from '../../../application/core/services/three-d-verification/data/IVerificationData';
@@ -92,20 +93,18 @@ export class ThreeDSecureClient {
       'http://localhost:8887/v2/three_ds_challenge',
     ).pipe(
       map((challengeResult: ChallengeResultInterface) => {
-        console.log('WHTRBIT', challengeResult);
-
         if (challengeResult.status === ResultActionCode.CANCELLED) {
           return {
             actionCode: ActionCode.CANCELLED,
             errorNumber: 0,
-            errorDescription: 'xxxxxxxxxx 3DS cancel',
+            errorDescription: PAYMENT_CANCELLED,
           };
         }
 
         return {
           actionCode: ActionCode.SUCCESS,
           errorNumber: 0,
-          errorDescription: 'xxxxxxxxx 3DS success',
+          errorDescription: PAYMENT_SUCCESS,
         }
       }),
     );
