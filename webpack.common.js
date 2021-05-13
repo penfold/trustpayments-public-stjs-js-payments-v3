@@ -4,6 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: {
@@ -100,6 +102,10 @@ module.exports = {
       },
       chunks: ['controlFrame']
     }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css'
+    }),
     new CopyPlugin({
       patterns: [{
         from: 'src/application/core/services/icon/images/*.png',
@@ -115,10 +121,18 @@ module.exports = {
       Buffer: ['buffer', 'Buffer'],
     })
   ],
+  optimization: {
+    minimizer: [new TerserPlugin({ extractComments: false })],
+  },
   module: {
     rules: [
       {
         test: /\.(scss|css)$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        exclude: path.resolve(__dirname, './src/client/st/st.css'),
+      },
+      {
+        include: path.resolve(__dirname, './src/client/st/st.css'),
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
