@@ -13,4 +13,5 @@ export interface IResponseData {
   jwt?: string;
   walletsource?: 'APPLEPAY' | 'VISACHECKOUT';
   errordata?: string[];
+  merchantUrl?: string;
 }

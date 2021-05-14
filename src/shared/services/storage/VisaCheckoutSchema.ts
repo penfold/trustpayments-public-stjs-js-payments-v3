@@ -2,6 +2,7 @@ import Joi from 'joi';
 
 export const VisaCheckoutSchema: Joi.ObjectSchema = Joi.object().keys({
   merchantId: Joi.string(),
+  merchantUrl: Joi.string(),
   livestatus: Joi.number().valid(0, 1),
   placement: Joi.string(),
   encryptionKey: Joi.string(),
