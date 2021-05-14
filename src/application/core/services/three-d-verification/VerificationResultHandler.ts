@@ -35,9 +35,8 @@ export class VerificationResultHandler {
 
         return throwError(errorResponse);
       }
-
       case ActionCode.CANCELLED:
-        return of({
+        return throwError({
           ...response,
           errorcode: '0',
           errormessage: PAYMENT_CANCELLED,
