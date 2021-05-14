@@ -33,7 +33,8 @@ export class Payment {
     requestTypes: RequestType[],
     payment: ICard | IWallet,
     merchantData: IMerchantData,
-    responseData?: IResponseData
+    responseData?: IResponseData,
+    merchantUrl?: string
   ): Promise<Record<string, any>> {
     const customerOutput: CustomerOutput | undefined = responseData
       ? (responseData.customeroutput as CustomerOutput)
@@ -52,7 +53,7 @@ export class Payment {
     }
 
     if (requestTypes.length) {
-      return this.processRequestTypes({ ...merchantData, ...payment }, responseData);
+      return this.processRequestTypes({ ...merchantData, ...payment }, responseData, merchantUrl);
     }
 
     if (responseData && responseData.requesttypedescription === 'THREEDQUERY' && responseData.threedresponse) {
@@ -64,7 +65,7 @@ export class Payment {
 
   walletVerify(walletVerify: IWalletVerify): Observable<Record<string, any>> {
     return from(
-      this.stTransport.sendRequest(Object.assign({ requesttypedescriptions: ['WALLETVERIFY'] }, walletVerify))
+      this.stTransport.sendRequest(Object.assign({ requesttypedescriptions: ['WALLETVERIFY'] }, walletVerify)),
     );
   }
 
@@ -82,7 +83,8 @@ export class Payment {
 
   private async processRequestTypes(
     requestData: IStRequest,
-    responseData?: IResponseData
+    responseData?: IResponseData,
+    merchantUrl?: string
   ): Promise<Record<string, any>> {
     const processPaymentRequestBody = { ...requestData };
 
@@ -97,7 +99,7 @@ export class Payment {
       processPaymentRequestBody.fraudcontroltransactionid = cybertonicaTid;
     }
 
-    return this.stTransport.sendRequest(processPaymentRequestBody);
+    return this.stTransport.sendRequest(processPaymentRequestBody, merchantUrl);
   }
 
   private publishThreedResponse(responseData: IResponseData): Promise<Record<string, any>> {

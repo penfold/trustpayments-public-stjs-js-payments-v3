@@ -4,6 +4,7 @@ import { IVisaCheckoutPaymentRequest } from './IVisaCheckoutPaymentRequest';
 
 export interface IVisaCheckoutConfig {
   merchantId: string; // That's VisaCheckout apikey property
+  merchantUrl?: string;
   livestatus: 0 | 1;
   placement: string;
   encryptionKey?: string;
