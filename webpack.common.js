@@ -150,7 +150,8 @@ module.exports = {
           path.join(__dirname, 'node_modules/hoek'),
           path.join(__dirname, 'node_modules/isemail'),
           path.join(__dirname, 'node_modules/joi'),
-          path.join(__dirname, 'node_modules/topo')
+          path.join(__dirname, 'node_modules/topo'),
+          path.join(__dirname, 'node_modules/caniuse-lite'),
         ]
       },
       {
