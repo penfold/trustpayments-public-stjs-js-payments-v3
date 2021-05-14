@@ -1,5 +1,6 @@
 {
   "submitOnSuccess": false,
+  "datacenterurl": "http://localhost:8890/",
   "threeDSecure": {
     "loggingLevel": "ALL",
     "challengeDisplayMode": "INLINE",

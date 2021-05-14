@@ -359,6 +359,24 @@ def step_impl(context, auth_type):
         payment_page.switch_to_example_page_parent_iframe()
 
 
+@step('User see 3DS Challenge authentication (?P<type>.+) is displayed')
+def step_impl(context, type):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    assert payment_page.validate_3ds_challenge_modal_appears(type)
+
+
+@step('User fills 3DS Challenge authentication (?P<type>.+)')
+def step_impl(context, type):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.fill_3ds_challenge_modal()
+
+
+@step('User clicks Cancel button on 3DS Challenge (?P<type>.+)')
+def step_impl(context, type):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.cancel_3ds_modal(type)
+
+
 @step('User will see the same provided data in inputs fields')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
