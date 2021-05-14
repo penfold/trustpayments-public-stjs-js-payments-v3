@@ -22,6 +22,8 @@ include:
 variables:
   PROJECT_INFRASTRUCTURE_CICD_REF: *project-infrastructure-cicd-ref
 
+  PROJECT_PYTHON_TESTS: 'tests'
+
   IMAGE_JS_PAYMENTS_APP_HTML_RELEASE: ${CI_REGISTRY_IMAGE}/app-html-release:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_APP_HTML_REVIEW: ${CI_REGISTRY_IMAGE}/app-html-review:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_APP_HTML_SMOKE: ${CI_REGISTRY_IMAGE}/app-html-smoke:${CI_PIPELINE_ID}
@@ -94,13 +96,6 @@ variables:
     SCHEDULED_PACT_VERIFICATION:
       enabled: false
   ### Schedules configuration : End
-
-py-static-analysis:
-  variables:
-    PYTHONPATH: tests
-  before_script:
-    - touch src/skipy_mypy_analysis_for_src_directory.py
-    - cd tests && . ${PROJECT_VENV_DIR}/bin/activate && poetry install && cd ..
 
 stages:
   - initialize
