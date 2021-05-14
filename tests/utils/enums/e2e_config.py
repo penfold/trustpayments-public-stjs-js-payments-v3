@@ -50,3 +50,5 @@ class E2eConfig(Enum):
     STOP_SUBMIT_FORM_ON_ENTER = 'e2eConfigStopSubmitFormOnEnter.json'
     STOP_SUBMIT_FORM_ON_ENTER_FALSE = 'e2eConfigStopSubmitFormOnEnterFalse.json'
     SUBMIT_ON_SUCCESS_STOP_SUBMIT_FORM_ON_ENTER = 'e2eSubmitOnSuccessStopSubmitFormOnEnter.json'
+    LIBRARY_3DS_CONFIG = 'e2eConfig3dsLibrary.json'
+    LIBRARY_3DS_CONFIG_WITH_POPUP = 'e2eConfig3dsLibraryPopup.json'
