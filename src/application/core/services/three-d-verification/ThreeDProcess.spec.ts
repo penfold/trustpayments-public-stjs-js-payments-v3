@@ -5,20 +5,20 @@ import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
 import { GatewayClient } from '../GatewayClient';
-import { CardinalCommerceVerificationService } from './implementations/CardinalCommerceVerificationService';
-import { ThreeDSecureVerificationService } from './implementations/three-d-secure/ThreeDSecureVerificationService';
-import { ThreeDVerificationProviderService } from './three-d-verification-provider/ThreeDVerificationProviderService';
+import { ThreeDVerificationProviderService } from './ThreeDVerificationProviderService';
 import { ThreeDProcess } from './ThreeDProcess';
-import { ThreeDVerificationProvider } from './ThreeDVerificationProvider';
-import { VerificationResultHandler } from './VerificationResultHandler';
+import { ThreeDVerificationProviderName } from './data/ThreeDVerificationProviderName';
+import { IThreeDVerificationService } from './IThreeDVerificationService';
+import { RequestType } from '../../../../shared/types/RequestType';
+import { ICard } from '../../models/ICard';
+import { IMerchantData } from '../../models/IMerchantData';
+import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 
 describe('ThreeDProcess', () => {
   let messageBusMock: IMessageBus;
   let gatewayClientMock: GatewayClient;
-  let verificationResultHandlerMock: VerificationResultHandler;
   let threeDVerificationServiceProviderMock: ThreeDVerificationProviderService;
-  let threeDSecureVerificationServiceMock: ThreeDSecureVerificationService;
-  let cardinalCommerceVerificationServiceMock: CardinalCommerceVerificationService;
+  let threeDVerificationServiceMock: IThreeDVerificationService<unknown>;
   let threeDProcess: ThreeDProcess;
 
   const jsInitResponseMock: IThreeDInitResponse = {
@@ -27,36 +27,34 @@ describe('ThreeDProcess', () => {
     requesttypedescription: '',
     threedinit: 'threedinit',
     transactionstartedtimestamp: 'transactionstartedtimestamp',
-    threedsprovider: ThreeDVerificationProvider.CARDINAL,
+    threedsprovider: ThreeDVerificationProviderName.CARDINAL,
     cachetoken: 'cachetoken',
   };
 
   beforeEach(() => {
     messageBusMock = new SimpleMessageBus();
     gatewayClientMock = mock(GatewayClient);
-    verificationResultHandlerMock = mock(VerificationResultHandler);
     threeDVerificationServiceProviderMock = mock(ThreeDVerificationProviderService);
-    threeDSecureVerificationServiceMock = mock(ThreeDSecureVerificationService);
-    cardinalCommerceVerificationServiceMock = mock(CardinalCommerceVerificationService);
+    threeDVerificationServiceMock = mock<IThreeDVerificationService<unknown>>();
     threeDProcess = new ThreeDProcess(
       messageBusMock,
       instance(gatewayClientMock),
-      instance(verificationResultHandlerMock),
       instance(threeDVerificationServiceProviderMock),
     );
 
-    when(threeDVerificationServiceProviderMock.getProvider(anything())).thenReturn(instance(threeDSecureVerificationServiceMock));
-    //@ts-ignore
-    when(threeDSecureVerificationServiceMock.init(anything())).thenReturn(of(void 0));
-    when(cardinalCommerceVerificationServiceMock.init(anything())).thenReturn(of(void 0));
+    when(threeDVerificationServiceProviderMock.getProvider(jsInitResponseMock.threedsprovider))
+      .thenReturn(instance(threeDVerificationServiceMock));
+
+    when(threeDVerificationServiceMock.init(jsInitResponseMock)).thenReturn(of(void 0));
     when(gatewayClientMock.jsInit()).thenReturn(of(jsInitResponseMock));
   });
 
   describe('init$()', () => {
     it('initializes 3ds verification service using JSINIT response', done => {
       threeDProcess.init$().subscribe(() => {
-        //@ts-ignore
-        verify(threeDSecureVerificationServiceMock.init(jsInitResponseMock)).once();
+        verify(gatewayClientMock.jsInit()).once();
+        verify(threeDVerificationServiceProviderMock.getProvider(jsInitResponseMock.threedsprovider)).once();
+        verify(threeDVerificationServiceMock.init(jsInitResponseMock)).once();
         done();
       });
     });
@@ -74,8 +72,77 @@ describe('ThreeDProcess', () => {
       threeDProcess.init$().subscribe(() => {
         const pan = '4111111111111111';
         messageBusMock.publish({ type: PUBLIC_EVENTS.BIN_PROCESS, data: pan });
-        //@ts-ignore
-        verify(threeDSecureVerificationServiceMock.binLookup(pan)).once();
+        verify(threeDVerificationServiceMock.binLookup(pan)).once();
+        done();
+      });
+    });
+
+    it('doesnt initialize the verification service again on UPDATE_JWT event', done => {
+      threeDProcess.init$().subscribe(() => {
+        messageBusMock.publish({ type: PUBLIC_EVENTS.UPDATE_JWT });
+        messageBusMock.publish({ type: PUBLIC_EVENTS.UPDATE_JWT });
+        verify(threeDVerificationServiceMock.init(anything())).once();
+        done();
+      });
+    });
+  });
+
+  describe('performThreeDQuery$', () => {
+    const requestTypes = [RequestType.THREEDQUERY, RequestType.AUTH];
+    const card: ICard = { pan: '4111111111111111', expirydate: '12/23', securitycode: '123' };
+    const merchantData: IMerchantData = { foo: 'bar' };
+    const threeDQueryResponse: IThreeDQueryResponse = {
+      jwt: 'jwt',
+      acquirertransactionreference: '',
+      acquirerresponsecode: '',
+      acquirerresponsemessage: '',
+      acsurl: '',
+      enrolled: 'Y',
+      threedpayload: '',
+      transactionreference: '',
+      requesttypescription: '',
+      threedversion: '',
+    };
+    const newJsInitResponse: IThreeDInitResponse = {
+      errorcode: '0',
+      errormessage: '',
+      requesttypedescription: RequestType.JSINIT,
+      transactionstartedtimestamp: '',
+      threedsprovider: ThreeDVerificationProviderName.TP,
+    };
+
+    beforeEach(() => {
+      when(threeDVerificationServiceMock.start(
+        anything(),
+        requestTypes,
+        card,
+        merchantData,
+      )).thenReturn(of(threeDQueryResponse));
+
+      when(gatewayClientMock.jsInit()).thenReturn(
+        of(jsInitResponseMock),
+        of(newJsInitResponse),
+      );
+
+      threeDProcess.init$().subscribe();
+    });
+
+    it('runs start() on verificationService using the latest jsInit response', done => {
+      threeDProcess.performThreeDQuery$(requestTypes, card, merchantData).subscribe(result => {
+        verify(gatewayClientMock.jsInit()).once();
+        verify(threeDVerificationServiceMock.start(jsInitResponseMock, requestTypes, card, merchantData)).once();
+        expect(result).toBe(threeDQueryResponse);
+        done();
+      });
+    });
+
+    it('runs start() with updated jsInit response after UPDATE_JWT event', done => {
+      messageBusMock.publish({ type: PUBLIC_EVENTS.UPDATE_JWT });
+
+      threeDProcess.performThreeDQuery$(requestTypes, card, merchantData).subscribe(result => {
+        verify(gatewayClientMock.jsInit()).twice();
+        verify(threeDVerificationServiceMock.start(newJsInitResponse, requestTypes, card, merchantData)).once();
+        expect(result).toBe(threeDQueryResponse);
         done();
       });
     });

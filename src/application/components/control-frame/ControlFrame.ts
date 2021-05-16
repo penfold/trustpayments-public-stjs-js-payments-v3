@@ -328,7 +328,7 @@ export class ControlFrame {
     return of({ ...this._merchantFormData }).pipe(
       switchMap(applyCybertonicaTid),
       switchMap(merchantFormData =>
-        this._threeDProcess.performThreeDQuery(this._remainingRequestTypes, this._card, merchantFormData)
+        this._threeDProcess.performThreeDQuery$(this._remainingRequestTypes, this._card, merchantFormData)
       )
     );
   }

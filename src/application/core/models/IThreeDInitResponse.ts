@@ -1,11 +1,11 @@
-import { ThreeDVerificationProvider } from '../services/three-d-verification/ThreeDVerificationProvider';
+import { ThreeDVerificationProviderName } from '../services/three-d-verification/data/ThreeDVerificationProviderName';
 
 export interface IThreeDInitResponse {
   errorcode: string;
   errormessage: string;
   requesttypedescription: string;
   transactionstartedtimestamp: string;
-  threedsprovider: ThreeDVerificationProvider;
+  threedsprovider: ThreeDVerificationProviderName;
   cachetoken?: string;
   threedinit?: string;
   maskedpan?: string;

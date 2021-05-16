@@ -1,8 +1,8 @@
 import { instance, mock, when } from 'ts-mockito';
 import { ContainerInstance } from 'typedi';
-import { CardinalCommerceVerificationService } from '../implementations/CardinalCommerceVerificationService';
-import { ThreeDSecureVerificationService } from '../implementations/three-d-secure/ThreeDSecureVerificationService';
-import { ThreeDVerificationProvider } from '../ThreeDVerificationProvider';
+import { CardinalCommerceVerificationService } from './implementations/cardinal-commerce/CardinalCommerceVerificationService';
+import { ThreeDSecureVerificationService } from './implementations/trust-payments/ThreeDSecureVerificationService';
+import { ThreeDVerificationProviderName } from './data/ThreeDVerificationProviderName';
 import { ThreeDVerificationProviderService } from './ThreeDVerificationProviderService';
 
 describe('ThreeDVerificationProviderService', () => {
@@ -22,12 +22,12 @@ describe('ThreeDVerificationProviderService', () => {
   });
 
   describe('getProvider()', () => {
-    it(`should get ThreeDSecureVerificationService provider when ${ThreeDVerificationProvider.TP} set`, () => {
-      expect(sut.getProvider(ThreeDVerificationProvider.TP)).toEqual(instance(threeDSecureVerificationServiceMock));
+    it(`should get ThreeDSecureVerificationService provider when ${ThreeDVerificationProviderName.TP} set`, () => {
+      expect(sut.getProvider(ThreeDVerificationProviderName.TP)).toEqual(instance(threeDSecureVerificationServiceMock));
     });
 
-    it(`should get CardinalCommerceVerificationService provider when ${ThreeDVerificationProvider.CARDINAL} set`, () => {
-      expect(sut.getProvider(ThreeDVerificationProvider.CARDINAL)).toBe(instance(cardinalCommerceVerificationServiceMock));
+    it(`should get CardinalCommerceVerificationService provider when ${ThreeDVerificationProviderName.CARDINAL} set`, () => {
+      expect(sut.getProvider(ThreeDVerificationProviderName.CARDINAL)).toBe(instance(cardinalCommerceVerificationServiceMock));
     });
   });
 });

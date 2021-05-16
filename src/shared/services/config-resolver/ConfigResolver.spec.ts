@@ -1,4 +1,4 @@
-import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
+import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
 import { ConfigResolver } from './ConfigResolver';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigSchema } from '../storage/ConfigSchema';

@@ -7,7 +7,7 @@ import { IMessageBus } from '../shared/message-bus/IMessageBus';
 import { GatewayClient } from './GatewayClient';
 import { StTransport } from './st-transport/StTransport';
 import { ThreeDInitRequest } from './three-d-verification/data/ThreeDInitRequest';
-import { ThreeDVerificationProvider } from './three-d-verification/ThreeDVerificationProvider';
+import { ThreeDVerificationProviderName } from './three-d-verification/data/ThreeDVerificationProviderName';
 
 describe('GatewayClient', () => {
   let transportMock: StTransport;
@@ -29,7 +29,7 @@ describe('GatewayClient', () => {
       requesttypedescription: 'JSINIT',
       threedinit: 'bar',
       transactionstartedtimestamp: '',
-      threedsprovider: ThreeDVerificationProvider.TP,
+      threedsprovider: ThreeDVerificationProviderName.TP,
     };
 
     beforeEach(() => {

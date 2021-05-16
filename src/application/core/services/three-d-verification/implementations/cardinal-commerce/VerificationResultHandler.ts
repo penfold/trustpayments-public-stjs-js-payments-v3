@@ -1,10 +1,10 @@
 import { Service } from 'typedi';
-import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
+import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { IVerificationResult } from './data/IVerificationResult';
 import { Observable, of, throwError } from 'rxjs';
-import { PAYMENT_ERROR } from '../../models/constants/Translations';
+import { PAYMENT_ERROR } from '../../../../models/constants/Translations';
 import { ActionCode } from './data/ActionCode';
-import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
+import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 
 @Service()
 export class VerificationResultHandler {

@@ -9,7 +9,7 @@ import { StTransport } from './st-transport/StTransport';
 import { PUBLIC_EVENTS } from '../models/constants/EventTypes';
 import { ThreeDInitRequest } from './three-d-verification/data/ThreeDInitRequest';
 import { IMessageBus } from '../shared/message-bus/IMessageBus';
-import { ThreeDSchemaLookupRequest } from './three-d-verification/data/ThreeDSchemaLookupRequest';
+import { ThreeDSchemaLookupRequest } from './three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
 
 @Service()
 export class GatewayClient {

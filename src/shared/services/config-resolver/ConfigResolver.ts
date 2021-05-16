@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import {
   threeDSecureConfigName,
-} from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
+} from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
 import { IConfig } from '../../model/config/IConfig';
 import { Service } from 'typedi';
 import { IComponentsIds } from '../../model/config/IComponentsIds';

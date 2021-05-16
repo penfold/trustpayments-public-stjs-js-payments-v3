@@ -1,10 +1,10 @@
-import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
-import { ThreeDVerificationProvider } from './ThreeDVerificationProvider';
+import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
+import { ThreeDVerificationProviderName } from '../../data/ThreeDVerificationProviderName';
 import { VerificationResultHandler } from './VerificationResultHandler';
 import { IVerificationResult } from './data/IVerificationResult';
 import { ActionCode } from './data/ActionCode';
-import { PAYMENT_ERROR } from '../../models/constants/Translations';
-import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
+import { PAYMENT_ERROR } from '../../../../models/constants/Translations';
+import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import DoneCallback = jest.DoneCallback;
 
 describe('VerificationResultHandler', () => {
@@ -28,7 +28,7 @@ describe('VerificationResultHandler', () => {
     requesttypedescription: '',
     threedinit: 'threedinit',
     transactionstartedtimestamp: 'transactionstartedtimestamp',
-    threedsprovider: ThreeDVerificationProvider.CARDINAL,
+    threedsprovider: ThreeDVerificationProviderName.CARDINAL,
     cachetoken: 'aaa',
   };
 
@@ -39,7 +39,7 @@ describe('VerificationResultHandler', () => {
   });
 
   it.each<any>([ActionCode.SUCCESS, ActionCode.NOACTION])(
-    'returns response on success and noaction',
+    'returns response on %s status',
     (actionCode: ActionCode, done: DoneCallback) => {
       const result: IVerificationResult = {
         errorNumber: 0,

@@ -1,4 +1,4 @@
-export enum ThreeDVerificationProvider {
+export enum ThreeDVerificationProviderName {
   TP = 'TRUSTPAYMENTS',
   CARDINAL = 'CARDINALCOMMERCE',
 }

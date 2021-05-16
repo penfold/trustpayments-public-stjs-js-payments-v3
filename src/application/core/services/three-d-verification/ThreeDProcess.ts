@@ -10,8 +10,7 @@ import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IThreeDVerificationService } from './IThreeDVerificationService';
-import { ThreeDVerificationProviderService } from './three-d-verification-provider/ThreeDVerificationProviderService';
-import { VerificationResultHandler } from './VerificationResultHandler';
+import { ThreeDVerificationProviderService } from './ThreeDVerificationProviderService';
 import { GatewayClient } from '../GatewayClient';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { ConfigInterface } from '3ds-sdk-js';
@@ -24,11 +23,10 @@ export class ThreeDProcess {
   constructor(
     private messageBus: IMessageBus,
     private gatewayClient: GatewayClient,
-    private verificationResultHandler: VerificationResultHandler,
     private threeDVerificationServiceProvider: ThreeDVerificationProviderService,
   ) {}
 
-  init$(): Observable<IThreeDVerificationService<ConfigInterface | void>> {
+  init$(): Observable<void> {
     this.jsInitResponse$ = this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.UPDATE_JWT),
       startWith({ type: PUBLIC_EVENTS.UPDATE_JWT }),
@@ -42,10 +40,10 @@ export class ThreeDProcess {
       shareReplay(1),
     );
 
-    return this.verificationService$;
+    return this.verificationService$.pipe(mapTo(undefined));
   }
 
-  performThreeDQuery(
+  performThreeDQuery$(
     requestTypes: string[],
     card: ICard,
     merchantData: IMerchantData
