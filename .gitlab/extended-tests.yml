@@ -81,7 +81,7 @@ iPhone8-11.0-component-tests-smoke:
 iPhone8-11.0-component-tests-smoke-nightly:
   extends:
     - .component-tests-browserstack
-    - .iPhone8-11.0-component-tests-smoke
+    - iPhone8-11.0-component-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #
@@ -126,7 +126,7 @@ iPhone11-13-component-tests-smoke:
 iPhone11-13-component-tests-smoke-review:
   extends:
     - .component-tests-browserstack
-    - .iPhone11-13-component-tests-smoke
+    - iPhone11-13-component-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #
