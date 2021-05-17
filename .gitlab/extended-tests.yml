@@ -63,7 +63,7 @@ apple-pay-component-tests-part-2-release:
 
 #
 
-iPhone8-11.0-component-tests-smoke:
+.iPhone8-11.0-component-tests-smoke:
   variables:
     DEVICE: iPhone 8
     OS_VERSION: 11
@@ -72,16 +72,16 @@ iPhone8-11.0-component-tests-smoke:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_3
 
-.iPhone8-11.0-component-tests-smoke-release:
+iPhone8-11.0-component-tests-smoke-always:
   extends:
     - .component-tests-browserstack
-    - iPhone8-11.0-component-tests-smoke
+    - .iPhone8-11.0-component-tests-smoke
     - .rules-extended-tests-release
 
 iPhone8-11.0-component-tests-smoke-nightly:
   extends:
     - .component-tests-browserstack
-    - iPhone8-11.0-component-tests-smoke
+    - .iPhone8-11.0-component-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #
@@ -109,7 +109,7 @@ iPhoneXS-12-component-tests-smoke-review:
 
 #
 
-iPhone11-13-component-tests-smoke:
+.iPhone11-13-component-tests-smoke:
   variables:
     DEVICE: iPhone 11
     OS_VERSION: 13
@@ -120,13 +120,13 @@ iPhone11-13-component-tests-smoke:
 .iPhone11-13-component-tests-smoke-release:
   extends:
     - .component-tests-browserstack
-    - iPhone11-13-component-tests-smoke
+    - .iPhone11-13-component-tests-smoke
     - .rules-extended-tests-release
 
 iPhone11-13-component-tests-smoke-review:
   extends:
     - .component-tests-browserstack
-    - iPhone11-13-component-tests-smoke
+    - .iPhone11-13-component-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #
@@ -140,7 +140,7 @@ iPhone11-13-component-tests-smoke-review:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_1
 
-.iPhone11-14.0-component-tests-smoke-release:
+iPhone11-14.0-component-tests-smoke-always:
   extends:
     - .component-tests-browserstack
     - .iPhone11-14.0-component-tests-smoke
