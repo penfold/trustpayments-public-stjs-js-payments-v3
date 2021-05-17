@@ -168,22 +168,25 @@ class PaymentMethodsPage(BasePage):
         self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.cardinal_modal)
         self._actions.switch_to_default_content()
 
-    def validate_3ds_challenge_modal_appears(self, type):
-        if type == 'POPUP':
+    def validate_3ds_challenge_modal_appears(self, modal_type):
+        if modal_type == 'POPUP':
             self._actions.switch_to_iframe(PaymentMethodsLocators.three_ds_iframe)
         if self._waits.wait_and_check_is_element_displayed(PaymentMethodsLocators.three_ds_challenge_input):
             if self._waits.wait_and_check_is_element_displayed(PaymentMethodsLocators.three_ds_challenge_submit_button):
                 return True
         return False
 
-    def fill_3ds_challenge_modal(self, type):
-        if type == 'POPUP':
+    def fill_3ds_challenge_modal(self, modal_type, data):
+        if modal_type == 'POPUP':
             self._actions.switch_to_iframe(PaymentMethodsLocators.three_ds_iframe)
-        self._actions.send_keys(PaymentMethodsLocators.three_ds_challenge_input, AuthData.PASSWORD.value)
+        if data == 'CORRECT':
+            self._actions.send_keys(PaymentMethodsLocators.three_ds_challenge_input, AuthData.PASSWORD.value)
+        else:
+            self._actions.send_keys(PaymentMethodsLocators.three_ds_challenge_input, AuthData.INCORRECT_PASSWORD.value)
         self._actions.click(PaymentMethodsLocators.three_ds_challenge_submit_button)
 
-    def cancel_3ds_modal(self, type):
-        if type == 'POPUP':
+    def cancel_3ds_modal(self, modal_type):
+        if modal_type == 'POPUP':
             self._actions.click(PaymentMethodsLocators.three_ds_challenge_cancel_popup)
         self._actions.click(PaymentMethodsLocators.three_ds_challenge_cancel_button)
 
