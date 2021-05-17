@@ -76,10 +76,10 @@ class PaymentMethodsLocators:
     cardinal_v1_authentication_code_field: By = (By.ID, 'password')
     cardinal_v1_authentication_submit_btn: By = (By.NAME, 'UsernamePasswordEntry')
 
-    three_ds_iframe: By = (By.ID, 'tp-3ds-challenge-iframe')
+    three_ds_iframe = 'tp-3ds-challenge-iframe'
     three_ds_challenge_input: By = (By.ID, 'challengeDataEntry')
     three_ds_challenge_cancel_button: By = (By.CLASS_NAME, 'tp-3ds-inline-view-header-button')
-    three_ds_challenge_submit_button: By = (By.XPATH, '/html/body/form/button')
+    three_ds_challenge_submit_button: By = (By.ID, 'tp-3ds-challenge-submit')
 
     not_private_connection_text: By = (By.XPATH, '//*[contains(text(),\'This Connection Is Not Private\')]')
     animated_card: By = (By.ID, 'st-animated-card')

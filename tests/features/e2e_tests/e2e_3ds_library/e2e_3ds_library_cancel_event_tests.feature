@@ -11,8 +11,8 @@ Feature: Handle cancel event
     And User opens example page
     When User fills payment form with defined card MASTERCARD_FRICTIONLESS
     And User clicks Pay button
-    And User see 3DS Challenge authentication MODAL is displayed
-    And User clicks Cancel button on 3DS Challenge MODAL
+    And User see 3DS Challenge authentication is displayed
+    And User clicks Cancel button on 3DS Challenge
     Then User will see payment status information: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
     And User will see following callback type called only once
@@ -32,8 +32,8 @@ Feature: Handle cancel event
     And User opens example page
     When User fills payment form with defined card MASTERCARD_FRICTIONLESS
     And User clicks Pay button
-    And User see 3DS Challenge authentication POPUP is displayed
-    And User clicks Cancel button on 3DS Challenge POPUP
+    And User see 3DS Challenge authentication is displayed
+    And User clicks Cancel button on 3DS Challenge
     Then User will see payment status information: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
     And User will see following callback type called only once
@@ -52,9 +52,9 @@ Feature: Handle cancel event
     And User opens example page
     When User fills payment form with defined card MASTERCARD_FRICTIONLESS
     And User clicks Pay button
-    And User see 3DS Challenge authentication MODAL is displayed
-    And User fills 3DS Challenge authentication MODAL with INCORRECT password
-    And User clicks Cancel button on 3DS Challenge MODAL
+    And User see 3DS Challenge authentication is displayed
+    And User fills 3DS Challenge authentication with INCORRECT password
+    And User clicks Cancel button on 3DS Challenge
     Then User will see payment status information: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
     And User will see following callback type called only once
