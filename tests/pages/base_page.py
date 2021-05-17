@@ -21,6 +21,15 @@ class BasePage:
             self._browser_executor.execute_script('browserstack_executor: {"action": "acceptSsl"}')
             self._browser_executor.open_page(url)
 
+    def open_page(self, url):
+        self._browser_executor.open_page(url)
+        self._waits.wait_for_javascript()
+        if len(self._actions.find_elements(PaymentMethodsLocators.not_private_connection_text)) > 0:
+            self._browser_executor.execute_script('browserstack_executor: {"action": "acceptSsl"}')
+            self._browser_executor.open_page(url)
+        if self._browser_executor.get_page_url().replace('%22', '"') not in url:
+            self._browser_executor.open_page(url)
+
     def stop_page(self):
         self._browser_executor.stop_browser()
 

@@ -51,7 +51,7 @@ def step_impl(context, language):
 @step('User opens mock payment page')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    if 'Safari' in context.browser:
+    if 'Safari' in context.browser or 'iPhone' in context.device:
         accept_untrusted_pages_on_safari_browsers(context)
     if 'parent_iframe' in context.scenario.tags:
         # TODO this case should be moved to User opens mock payment page (?P<example_page>.+)')
@@ -163,7 +163,7 @@ def step_impl(context, url: str):
 
 def accept_untrusted_pages_on_safari_browsers(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.open_page_with_not_private_connection_check(MockUrl.WEBSERVICES_DOMAIN.value)
-    payment_page.open_page_with_not_private_connection_check(MockUrl.WEBSERVICES_STJS_URI.value)
-    payment_page.open_page_with_not_private_connection_check(MockUrl.LIBRARY_URL.value)
-    payment_page.open_page_with_not_private_connection_check(MockUrl.THIRDPARTY_URL.value)
+    payment_page.open_page(MockUrl.WEBSERVICES_DOMAIN.value)
+    payment_page.open_page(MockUrl.WEBSERVICES_STJS_URI.value)
+    payment_page.open_page(MockUrl.LIBRARY_URL.value)
+    payment_page.open_page(MockUrl.THIRDPARTY_URL.value)
