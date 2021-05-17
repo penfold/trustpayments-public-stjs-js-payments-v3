@@ -72,16 +72,16 @@ iPhone8-11.0-component-tests-smoke:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_3
 
-iPhone8-11.0-component-tests-smoke-release:
+.iPhone8-11.0-component-tests-smoke-release:
   extends:
     - .component-tests-browserstack
-    - iPhone8-11.0-component-tests-smoke
+    - .iPhone8-11.0-component-tests-smoke
     - .rules-extended-tests-release
 
-iPhone8-11.0-component-tests-smoke-nightly:
+.iPhone8-11.0-component-tests-smoke-nightly:
   extends:
     - .component-tests-browserstack
-    - iPhone8-11.0-component-tests-smoke
+    - .iPhone8-11.0-component-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #
@@ -143,7 +143,7 @@ iPhone11-14.0-component-tests-smoke:
 iPhone11-14.0-component-tests-smoke-release:
   extends:
     - .component-tests-browserstack
-    - iPhone11-14.0-component-tests-smoke
+    - .iPhone11-14.0-component-tests-smoke
     - .rules-extended-tests-always
 
 iPhone11-14.0-component-tests-smoke-review:
