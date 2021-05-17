@@ -72,7 +72,7 @@ apple-pay-component-tests-part-2-release:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_3
 
-iPhone8-11.0-component-tests-smoke-always:
+iPhone8-11.0-component-tests-smoke-release:
   extends:
     - .component-tests-browserstack
     - .iPhone8-11.0-component-tests-smoke
@@ -140,7 +140,7 @@ iPhone11-13-component-tests-smoke-review:
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
   resource_group: extended_tests_1
 
-iPhone11-14.0-component-tests-smoke-always:
+iPhone11-14.0-component-tests-smoke-release:
   extends:
     - .component-tests-browserstack
     - .iPhone11-14.0-component-tests-smoke
@@ -737,7 +737,6 @@ iPhone12Mini-14-visual-tests-review:
     BROWSER: Safari
     BROWSER_VERSION: '14.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-    AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: $VISUAL_TESTS_SAFARI_TAG
   resource_group: extended_tests_2
 
@@ -785,7 +784,6 @@ iPhone12Mini-14-visual-tests-styling-review:
     BROWSER: Safari
     BROWSER_VERSION: '14.0'
     BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
-    AUTOMATION_TIMEOUT: 120
     POETRY_TAGS: $VISUAL_STYLING_TESTS_SAFARI_TAG
   resource_group: extended_tests_4
 
