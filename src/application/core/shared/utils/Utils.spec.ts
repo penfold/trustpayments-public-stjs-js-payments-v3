@@ -1,13 +1,9 @@
 import each from 'jest-each';
 import { Utils } from './Utils';
-import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
-import { Container } from 'typedi';
 
 localStorage.setItem = jest.fn();
 
 describe('Utils', () => {
-  const storage: BrowserLocalStorage = Container.get(BrowserLocalStorage);
-
   describe('inArray', () => {
     each([
       [[], '', false],
@@ -45,7 +41,7 @@ describe('Utils', () => {
     each([[500], [10]]).it('should reject after the specified time', async timeout => {
       const before = Date.now();
       let after = before;
-      await Utils.timeoutPromise(timeout).catch(e => (after = Date.now()));
+      await Utils.timeoutPromise(timeout).catch(() => (after = Date.now()));
       // toBeCloseTo is intended to check N significant figures of floats
       // but by using -2 we can check it's within 50ms of the set value
       expect(after - before).toBeCloseTo(timeout, -2);

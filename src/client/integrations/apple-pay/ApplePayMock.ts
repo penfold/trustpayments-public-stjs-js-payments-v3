@@ -5,23 +5,23 @@ import { ApplePay } from './ApplePay';
 export class ApplePayMock extends ApplePay {
   paymentDetails: string;
 
-  ifApplePayIsAvailable() {
+  ifApplePayIsAvailable(): boolean {
     return true;
   }
 
-  isUserLoggedToAppleAccount() {
+  isUserLoggedToAppleAccount(): boolean {
     return true;
   }
 
-  checkApplePayWalletCardAvailability() {
+  checkApplePayWalletCardAvailability(): Promise<boolean> {
     return Promise.resolve(true);
   }
 
-  getPaymentSuccessStatus() {
+  getPaymentSuccessStatus(): string {
     return 'SUCCESS';
   }
 
-  getPaymentFailureStatus() {
+  getPaymentFailureStatus(): string {
     return 'FAILURE';
   }
 }

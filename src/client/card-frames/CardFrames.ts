@@ -111,7 +111,7 @@ export class CardFrames {
     this.destroy$ = this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
-  public init() {
+  public init(): void {
     this._preventFormSubmit();
     this._createSubmitButton();
     this._initSubscribes();
@@ -216,6 +216,7 @@ export class CardFrames {
     return this._submitButton;
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private _disableFormField(state: FormState, eventName: string, target: string): void {
     const messageBusEvent: IMessageBusEvent = {
       data: state,
@@ -358,7 +359,7 @@ export class CardFrames {
 
     this._messageBus
       .pipe(ofType(PUBLIC_EVENTS.LOCALE_CHANGED), takeUntil(this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY))))
-      .subscribe(event => {
+      .subscribe(() => {
         this._payMessage = this._translator.translate(PAY);
         this._processingMessage = `${this._translator.translate(PROCESSING)} ...`;
         this._submitButton.textContent = this._submitButton.disabled ? this._processingMessage : this._payMessage;

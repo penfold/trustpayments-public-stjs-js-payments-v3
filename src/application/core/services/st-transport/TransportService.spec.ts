@@ -94,7 +94,7 @@ describe('TransportService', () => {
 
       when(httpClientMock.post$(customUrl, requestObject, httpOptions)).thenReturn(of(response));
 
-      transportService.sendRequest(request, customUrl).subscribe(result => {
+      transportService.sendRequest(request, customUrl).subscribe(() => {
         verify(httpClientMock.post$(customUrl, requestObject, httpOptions)).once();
         done();
       });

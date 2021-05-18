@@ -126,6 +126,8 @@ describe('ControlFrame', () => {
       // @ts-ignore
       instance._notification.error = jest.fn();
       // @ts-ignore
+      instance._notification.cancel = jest.fn();
+      // @ts-ignore
       instance._validation = {
         blockForm: jest.fn(),
       };

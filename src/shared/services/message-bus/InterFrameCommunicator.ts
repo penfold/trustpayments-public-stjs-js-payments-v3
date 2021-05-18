@@ -106,7 +106,7 @@ export class InterFrameCommunicator {
     });
   }
 
-  public whenReceive(eventType: string) {
+  public whenReceive(eventType: string): Record<string, <T>(responder: (queryEvent: IMessageBusEvent) => Observable<T>) => void> {
     return {
       thenRespond: <T>(responder: (queryEvent: IMessageBusEvent) => Observable<T>) => {
         this.responders.set(eventType, responder);

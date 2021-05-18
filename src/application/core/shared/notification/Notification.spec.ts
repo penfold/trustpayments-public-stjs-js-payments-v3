@@ -61,6 +61,7 @@ describe('Notification', () => {
     when(browserLocalStorage.getItem('locale')).thenReturn('en');
     when(framesHub.waitForFrame(CONTROL_FRAME_IFRAME)).thenReturn(of(CONTROL_FRAME_IFRAME));
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     notification = new Notification(
       messageBus,
       instance(browserLocalStorage),

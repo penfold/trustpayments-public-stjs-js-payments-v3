@@ -14,11 +14,12 @@ Feature: Cardinal Commerce E2E tests v2 - Timeout - MasterCard
     When User fills payment form with defined card MASTERCARD_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION
     And User clicks Pay button
     Then User will see payment status information: "<payment_status>"
-    And User will see that notification frame has "<color>" color
-    And "submit" callback is called only once
-    And "<callback>" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | <callback>    |
 
     Examples:
-      | request_types            | payment_status                          | color | callback |
-      | THREEDQUERY AUTH         | Payment has been successfully processed | green | success  |
-      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | red   | error    |
+      | request_types            | payment_status                          | callback |
+      | THREEDQUERY AUTH         | Payment has been successfully processed | success  |
+      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    |

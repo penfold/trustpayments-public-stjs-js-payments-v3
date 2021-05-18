@@ -1,5 +1,6 @@
 import jwt_decode from 'jwt-decode';
 import { FormState } from '../../models/constants/FormState';
+import { IErrorData } from '../../models/IErrorData';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IResponseData } from '../../models/IResponseData';
 import { IStRequest } from '../../models/IStRequest';
@@ -36,11 +37,11 @@ export class StCodec {
    *   (since we prepend 'J-' the random section will be 2 char shorter)
    * @return A newly generated random request ID
    */
-  public static createRequestId(length = 10) {
+  public static createRequestId(length = 10): string {
     return 'J-' + Math.random().toString(36).substring(2, length);
   }
 
-  public static getErrorData(data: any) {
+  public static getErrorData(data: IResponseData): unknown {
     const { errordata, errormessage, requesttypedescription } = data;
     return {
       errordata,
@@ -49,7 +50,7 @@ export class StCodec {
     };
   }
 
-  public static verifyResponseObject(responseData: any, jwtResponse: string): IResponseData {
+  public static verifyResponseObject(responseData: Record<string, string>, jwtResponse: string): IResponseData {
     if (StCodec.isInvalidResponse(responseData)) {
       throw StCodec.handleInvalidResponse();
     }
@@ -64,7 +65,7 @@ export class StCodec {
    * @param jwtResponse The raw JWT response from the gateway
    * @param threedresponse the response from Cardinal commerce after call to ACS
    */
-  public static publishResponse(responseData: IResponseData, jwtResponse?: string, threedresponse?: string) {
+  public static publishResponse(responseData: IResponseData, jwtResponse?: string, threedresponse?: string): void {
     const translator = Container.get(TranslatorToken);
     responseData.errormessage = translator.translate(responseData.errormessage);
     const eventData = { ...responseData };
@@ -81,7 +82,7 @@ export class StCodec {
     StCodec.getMessageBus().publish(notificationEvent, true);
   }
 
-  public static updateJwt(newJWT: string) {
+  public static updateJwt(newJWT: string): void {
     StCodec.jwt = newJWT ? newJWT : StCodec.jwt;
     StCodec.originalJwt = newJWT ? newJWT : StCodec.originalJwt;
     this.getMessageBus().publish({ type: PUBLIC_EVENTS.JWT_UPDATED, data: newJWT });
@@ -195,7 +196,7 @@ export class StCodec {
     }
 
     if (responseContent.errordata) {
-      validation.getErrorData(StCodec.getErrorData(responseContent));
+      validation.getErrorData(StCodec.getErrorData(responseContent) as IErrorData);
     }
 
     validation.blockForm(FormState.AVAILABLE);
@@ -241,7 +242,7 @@ export class StCodec {
     };
   }
 
-  public encode(requestObject: IStRequest) {
+  public encode(requestObject: IStRequest): string {
     if (!Object.keys(requestObject).length) {
       StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
       StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_REQUEST);

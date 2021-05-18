@@ -1,10 +1,10 @@
-import { Service } from 'typedi';
-import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
-import { IVerificationResult } from './data/IVerificationResult';
 import { Observable, of, throwError } from 'rxjs';
-import { PAYMENT_ERROR } from '../../../../models/constants/Translations';
-import { ActionCode } from './data/ActionCode';
+import { Service } from 'typedi';
+import { PAYMENT_CANCELLED, PAYMENT_ERROR } from '../../../../models/constants/Translations';
+import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
+import { ActionCode } from './data/ActionCode';
+import { IVerificationResult } from './data/IVerificationResult';
 
 @Service()
 export class VerificationResultHandler {
@@ -35,6 +35,13 @@ export class VerificationResultHandler {
 
         return throwError(errorResponse);
       }
+      case ActionCode.CANCELLED:
+        return throwError({
+          ...response,
+          errorcode: '0',
+          errormessage: PAYMENT_CANCELLED,
+          isCancelled: true,
+        });
     }
   }
 }

@@ -13,9 +13,10 @@ Feature: Cardinal Commerce E2E tests v1 - Timeout
     When User fills payment form with defined card AMERICAN_EXPRESS_TIMEOUT_CARD
     And User clicks Pay button
    Then User will see payment status information: "Payment has been successfully processed"
-    And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
     Examples:
       | request_types            |

@@ -156,7 +156,7 @@ describe('ThreeDSecureVerificationService', () => {
     beforeEach(() => {
       when(gatewayClient.threedQuery(deepEqual(tdqRequestWithoutBrowserData))).thenReturn(of(threeDQueryResponseMock));
       when(gatewayClient.threedQuery(deepEqual(tdqRequestWithBrowserData))).thenReturn(of(threeDQueryResponseMock));
-      when(gatewayClient.schemaLookup(card.pan)).thenReturn(of(schemaLookupResponse));
+      when(gatewayClient.schemaLookup(card)).thenReturn(of(schemaLookupResponse));
       when(threeDSMethodService.perform3DSMethod$(
         schemaLookupResponse.methodurl,
         schemaLookupResponse.notificationurl,
@@ -181,7 +181,7 @@ describe('ThreeDSecureVerificationService', () => {
 
     it('runs SCHEMALOOKUP request on the gateway', done => {
       sut.start(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
-        verify(gatewayClient.schemaLookup(card.pan)).once();
+        verify(gatewayClient.schemaLookup(card)).once();
         done();
       });
     });

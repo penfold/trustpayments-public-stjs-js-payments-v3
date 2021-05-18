@@ -14,7 +14,7 @@ import { ISubmitData } from '../../core/models/ISubmitData';
 import {
   PAYMENT_SUCCESS,
   PAYMENT_ERROR,
-  COMMUNICATION_ERROR_INVALID_RESPONSE,
+  COMMUNICATION_ERROR_INVALID_RESPONSE, PAYMENT_CANCELLED,
 } from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
@@ -34,7 +34,6 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
-import { Styler } from '../../core/shared/styler/Styler';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
@@ -116,7 +115,6 @@ export class ControlFrame {
         StCodec.updateJwt(config.jwt);
       }
 
-      const styler: Styler = new Styler(this._frame.getAllowedStyles(), this._frame.parseUrl().styles);
       this._initCybertonica(config);
       this._updateMerchantFieldsEvent();
       this.paymentController.init();
@@ -234,7 +232,13 @@ export class ControlFrame {
             tap(config => this._setRequestTypes(config.jwt)),
             switchMap(() =>
               this._callThreeDQueryRequest().pipe(
-                catchError(errorData => this._onPaymentFailure(errorData)),
+                catchError(errorData => {
+                  if (errorData.isCancelled) {
+                    return this._onPaymentCancel(errorData);
+                  }
+
+                  return this._onPaymentFailure(errorData);
+                }),
                 catchError(() => EMPTY)
               )
             )
@@ -274,6 +278,22 @@ export class ControlFrame {
     return throwError(errorData);
   }
 
+  private _onPaymentCancel(errorData: IResponseData, errorMessage: string = PAYMENT_CANCELLED): Observable<never> {
+    const translatedErrorMessage = this.translator.translate(errorMessage);
+    errorData.errormessage = translatedErrorMessage;
+
+    if (!(errorData instanceof Error)) {
+      this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, true);
+      StCodec.publishResponse(errorData, errorData.jwt, errorData.threedresponse);
+    }
+
+    this._resetJwt();
+    this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+    this._notification.cancel(translatedErrorMessage);
+
+    return throwError(errorData);
+  }
+
   private _processPayment(responseData: IResponseData): void {
     this._setRequestTypes(StCodec.jwt);
 
@@ -284,12 +304,12 @@ export class ControlFrame {
           {
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
           },
-          true
+          true,
         );
         this._notification.success(PAYMENT_SUCCESS);
         this._validation.blockForm(FormState.COMPLETE);
       })
-      .catch((error: any) => {
+      .catch(() => {
         this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this._notification.error(PAYMENT_ERROR);
         this._validation.blockForm(FormState.AVAILABLE);

@@ -4,7 +4,6 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import {
-  ThreeDSecureFactory,
   ThreeDSecureInterface,
   ChallengeResultInterface,
   ConfigInterface,
@@ -12,6 +11,8 @@ import {
 } from '3ds-sdk-js';
 import { IMethodUrlData } from './IMethodUrlData';
 import { IChallengeData } from './IChallengeData';
+import { ThreeDSecureProvider } from './three-d-secure-provider/ThreeDSecureProvider';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 
 @Service()
 export class ThreeDSecureClient {
@@ -19,12 +20,13 @@ export class ThreeDSecureClient {
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
-    private threeDSecureFactory: ThreeDSecureFactory,
-  ) {
-    this.threeDSecure = this.threeDSecureFactory.create();
-  }
+    private configProvider: ConfigProvider,
+    private threeDSecureProvider: ThreeDSecureProvider,
+  ) {}
 
   init(): void {
+    this.threeDSecure = this.threeDSecureProvider.getSdk();
+
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_INIT)
       .thenRespond((event: IMessageBusEvent<ConfigInterface>) => this.init$(event.data));

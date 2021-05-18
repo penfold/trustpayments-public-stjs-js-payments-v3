@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { Container } from 'typedi';
+import { IConfig } from '../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import ST from './ST';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
@@ -41,7 +42,7 @@ describe('ST', () => {
 
     beforeEach(() => {
       instance.Init = jest.fn();
-      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       stObject = ST(cacheConfig);
     });
   });
@@ -122,7 +123,7 @@ function stFixture() {
     'Invalid field': 'Nieprawidłowe pole',
     'Card number is invalid': 'Numer karty jest nieprawidłowy',
   };
-  const config = {
+  const config: IConfig = {
     analytics: true,
     animatedCard: true,
     components: { defaultPaymentType: 'test', paymentTypes: ['test'] },
@@ -165,7 +166,7 @@ function stFixture() {
     buttonId: 'merchant-submit-button',
   };
 
-  const cacheConfig = {
+  const cacheConfig: IConfig = {
     animatedCard: true,
     jwt: config.jwt,
     init: {
