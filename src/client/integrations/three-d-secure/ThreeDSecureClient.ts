@@ -12,7 +12,6 @@ import {
 import { IMethodUrlData } from './IMethodUrlData';
 import { IChallengeData } from './IChallengeData';
 import { ThreeDSecureProvider } from './three-d-secure-provider/ThreeDSecureProvider';
-import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 
 @Service()
 export class ThreeDSecureClient {
@@ -20,7 +19,6 @@ export class ThreeDSecureClient {
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
-    private configProvider: ConfigProvider,
     private threeDSecureProvider: ThreeDSecureProvider,
   ) {}
 
