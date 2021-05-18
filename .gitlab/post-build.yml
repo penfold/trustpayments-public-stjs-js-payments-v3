@@ -69,7 +69,9 @@ build-app-html-release:
 
 #### testing repo
 build-payments-tests:
-  extends: .utility-images-build
+  extends:
+    - .utility-images-build
+    - .rules-when-review
   stage: post-build
   variables:
     UTILITY_NAME: 'payments-tests'
@@ -78,7 +80,9 @@ build-payments-tests:
 
 #### wiremock for testing repo
 build-wiremock:
-  extends: .utility-images-build
+  extends:
+    - .utility-images-build
+    - .rules-when-review
   stage: post-build
   variables:
     UTILITY_NAME: 'wiremock'
