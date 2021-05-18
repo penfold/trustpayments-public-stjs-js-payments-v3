@@ -105,7 +105,7 @@ smoke-e2e-tests-app-html-release:
     - .services-app-html-mock
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
-card-payments-component-tests:
+.card-payments-component-tests:
   extends:
     - .component-app-html-mock
     - .parallel-component-tests
@@ -113,9 +113,29 @@ card-payments-component-tests:
     FEATURE_FILES_DIR: 'features/component_tests'
   parallel: 21
 
-visa-checkout-component-tests:
+card-payments-component-tests-review:
+  extends:
+    - .card-payments-component-tests
+    - .rules-when-review
+
+card-payments-component-tests-release:
+  extends:
+    - .card-payments-component-tests
+    - .rules-when-release
+
+.visa-checkout-component-tests:
   extends:
     - .component-app-html-mock
     - .sequentially-component-tests
   variables:
     FEATURE_FILE_NAME: 'visa_checkout.feature'
+
+visa-checkout-component-tests-review:
+  extends:
+    - .visa-checkout-component-tests
+    - .rules-when-review
+
+visa-checkout-component-tests-release:
+  extends:
+    - .visa-checkout-component-tests
+    - .rules-when-release
