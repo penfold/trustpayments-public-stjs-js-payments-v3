@@ -38,7 +38,7 @@ describe('ChallengeResultHandler', () => {
         status: resultActionCode,
       };
 
-      challengeResultHandler.handle(threeDQueryResponse, challengeResult).subscribe({
+      challengeResultHandler.handle$(threeDQueryResponse, challengeResult).subscribe({
         error: (result) => {
           expect(result).toEqual({
             jwt: '',
@@ -69,7 +69,7 @@ describe('ChallengeResultHandler', () => {
         status: resultActionCode,
       };
 
-      challengeResultHandler.handle(threeDQueryResponse, challengeResult).subscribe(result => {
+      challengeResultHandler.handle$(threeDQueryResponse, challengeResult).subscribe(result => {
         expect(result).toEqual({
           jwt: '',
           acquirertransactionreference: '',
@@ -94,7 +94,7 @@ describe('ChallengeResultHandler', () => {
       status: ResultActionCode.CANCELLED,
     };
 
-    challengeResultHandler.handle(threeDQueryResponse, challengeResult).subscribe({
+    challengeResultHandler.handle$(threeDQueryResponse, challengeResult).subscribe({
       error: (result) => {
         expect(result).toEqual({
           jwt: '',

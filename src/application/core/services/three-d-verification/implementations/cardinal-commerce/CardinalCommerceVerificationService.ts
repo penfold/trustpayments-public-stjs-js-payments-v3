@@ -27,7 +27,7 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
     private challengeService: CardinalChallengeService,
   ) {}
 
-  init(jsInitResponse: IThreeDInitResponse): Observable<void> {
+  init$(jsInitResponse: IThreeDInitResponse): Observable<void> {
     const queryEvent: IMessageBusEvent<IInitializationData> = {
       type: PUBLIC_EVENTS.CARDINAL_SETUP,
       data: {
@@ -38,7 +38,7 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
-  binLookup(pan: string): Observable<void> {
+  binLookup$(pan: string): Observable<void> {
     const queryEvent: IMessageBusEvent<ITriggerData<string>> = {
       type: PUBLIC_EVENTS.CARDINAL_TRIGGER,
       data: {
@@ -50,18 +50,18 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
     return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME));
   }
 
-  start(
+  start$(
     jsInitResponse: IThreeDInitResponse,
     requestTypes: RequestType[],
     card: ICard,
     merchantData: IMerchantData,
   ): Observable<IThreeDQueryResponse> {
-    return this.callCardinalStart(requestTypes, jsInitResponse.threedinit).pipe(
+    return this.callCardinalStart$(requestTypes, jsInitResponse.threedinit).pipe(
       mapTo(new ThreeDQueryRequest(jsInitResponse.cachetoken, card, merchantData)),
       switchMap(request => this.gatewayClient.threedQuery(request)),
       switchMap(response => {
         if (this.challengeService.isChallengeRequired(response)) {
-          return this.challengeService.runChallenge(response, jsInitResponse);
+          return this.challengeService.runChallenge$(response, jsInitResponse);
         }
 
         return of({
@@ -73,7 +73,7 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
     );
   }
 
-  private callCardinalStart(requestTypes: RequestType[], jwt: string): Observable<void> {
+  private callCardinalStart$(requestTypes: RequestType[], jwt: string): Observable<void> {
     if (!requestTypes.includes(RequestType.THREEDQUERY)) {
       return of(undefined);
     }

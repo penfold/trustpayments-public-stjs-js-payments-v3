@@ -8,7 +8,7 @@ import { IVerificationResult } from './data/IVerificationResult';
 
 @Service()
 export class VerificationResultHandler {
-  handle(
+  handle$(
     response: IThreeDQueryResponse,
     result: IVerificationResult,
     jsInitResponse: IThreeDInitResponse,

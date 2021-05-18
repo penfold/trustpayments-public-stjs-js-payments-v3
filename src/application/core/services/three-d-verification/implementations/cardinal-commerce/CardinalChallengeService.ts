@@ -11,6 +11,7 @@ import { switchMap, tap } from 'rxjs/operators';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { VerificationResultHandler } from './VerificationResultHandler';
+import { Enrolled } from '../../../../models/constants/Enrolled';
 
 @Service()
 export class CardinalChallengeService {
@@ -21,10 +22,10 @@ export class CardinalChallengeService {
   }
 
   isChallengeRequired(threeDQueryResponse: IThreeDQueryResponse): boolean {
-    return threeDQueryResponse.enrolled === 'Y' && threeDQueryResponse.acsurl !== undefined;
+    return threeDQueryResponse.enrolled === Enrolled.Y && threeDQueryResponse.acsurl !== undefined;
   }
 
-  runChallenge(threeDQueryResponse: IThreeDQueryResponse, jsInitResponse: IThreeDInitResponse): Observable<IThreeDQueryResponse> {
+  runChallenge$(threeDQueryResponse: IThreeDQueryResponse, jsInitResponse: IThreeDInitResponse): Observable<IThreeDQueryResponse> {
     const verifyQueryEvent: IMessageBusEvent<IVerificationData> = {
       type: PUBLIC_EVENTS.CARDINAL_CONTINUE,
       data: {
@@ -37,7 +38,7 @@ export class CardinalChallengeService {
 
     return from(this.interFrameCommunicator.query<IVerificationResult>(verifyQueryEvent, MERCHANT_PARENT_FRAME)).pipe(
       tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
-      switchMap((validationResult: IVerificationResult) => this.verificationResultHandler.handle(threeDQueryResponse, validationResult, jsInitResponse)),
+      switchMap((validationResult: IVerificationResult) => this.verificationResultHandler.handle$(threeDQueryResponse, validationResult, jsInitResponse)),
     );
   }
 }

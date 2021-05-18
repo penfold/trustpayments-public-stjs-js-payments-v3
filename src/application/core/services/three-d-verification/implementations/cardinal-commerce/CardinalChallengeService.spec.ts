@@ -12,8 +12,9 @@ import { ActionCode } from './data/ActionCode';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { of } from 'rxjs';
 import { IVerificationResult } from './data/IVerificationResult';
-import spyOn = jest.spyOn;
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
+import { Enrolled } from '../../../../models/constants/Enrolled';
+import spyOn = jest.spyOn;
 
 describe('CardinalChallengeService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
@@ -26,7 +27,7 @@ describe('CardinalChallengeService', () => {
     acquirerresponsecode: '',
     acquirerresponsemessage: '',
     acsurl: 'https://acsurl',
-    enrolled: 'Y',
+    enrolled: Enrolled.Y,
     threedpayload: 'threedpayload',
     transactionreference: '',
     requesttypescription: '',
@@ -60,7 +61,7 @@ describe('CardinalChallengeService', () => {
     it('returns false if enrolled is not Y', () => {
       expect(cardinalChallengeService.isChallengeRequired({
         ...threeDQueryResponse,
-        enrolled: 'U',
+        enrolled: Enrolled.U,
       })).toBe(false);
     });
 
@@ -94,19 +95,19 @@ describe('CardinalChallengeService', () => {
 
     beforeEach(() => {
       when(interFrameCommunicatorMock.query(deepEqual(continueQueryEvent), MERCHANT_PARENT_FRAME)).thenResolve(verificationResult);
-      when(verificationResultHandlerMock.handle(threeDQueryResponse, verificationResult, jsInitResponse)).thenReturn(of(finalResponse));
+      when(verificationResultHandlerMock.handle$(threeDQueryResponse, verificationResult, jsInitResponse)).thenReturn(of(finalResponse));
     });
 
     it('sends CARDINAL_CONTINUE query to parent frame', done => {
-      cardinalChallengeService.runChallenge(threeDQueryResponse, jsInitResponse).subscribe(() => {
+      cardinalChallengeService.runChallenge$(threeDQueryResponse, jsInitResponse).subscribe(() => {
         verify(interFrameCommunicatorMock.query(deepEqual(continueQueryEvent), MERCHANT_PARENT_FRAME)).once();
         done();
       });
     });
 
     it('passes the challenge result to result handler and returns the final response', done => {
-      cardinalChallengeService.runChallenge(threeDQueryResponse, jsInitResponse).subscribe(result => {
-        verify(verificationResultHandlerMock.handle(threeDQueryResponse, verificationResult, jsInitResponse)).once();
+      cardinalChallengeService.runChallenge$(threeDQueryResponse, jsInitResponse).subscribe(result => {
+        verify(verificationResultHandlerMock.handle$(threeDQueryResponse, verificationResult, jsInitResponse)).once();
         expect(result).toBe(finalResponse);
         done();
       });
@@ -115,7 +116,7 @@ describe('CardinalChallengeService', () => {
     it('sends proper google analytics event', done => {
       spyOn(GoogleAnalytics, 'sendGaData');
 
-      cardinalChallengeService.runChallenge(threeDQueryResponse, jsInitResponse).subscribe(() => {
+      cardinalChallengeService.runChallenge$(threeDQueryResponse, jsInitResponse).subscribe(() => {
         expect(GoogleAnalytics.sendGaData).toBeCalledWith('event', 'Cardinal', 'auth', 'Cardinal card authenticated');
         done();
       });

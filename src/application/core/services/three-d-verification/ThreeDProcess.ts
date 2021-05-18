@@ -36,7 +36,7 @@ export class ThreeDProcess {
 
     this.verificationService$ = this.jsInitResponse$.pipe(
       first(),
-      switchMap(jsInitResponse => this.initVerificationService(jsInitResponse)),
+      switchMap(jsInitResponse => this.initVerificationService$(jsInitResponse)),
       shareReplay(1),
     );
 
@@ -50,7 +50,7 @@ export class ThreeDProcess {
   ): Observable<IThreeDQueryResponse> {
     return combineLatest([this.verificationService$, this.jsInitResponse$]).pipe(
       first(),
-      switchMap(([verificationService, jsInitResponse]) => verificationService.start(
+      switchMap(([verificationService, jsInitResponse]) => verificationService.start$(
         jsInitResponse,
         requestTypes,
         card,
@@ -59,15 +59,15 @@ export class ThreeDProcess {
     );
   }
 
-  private initVerificationService(jsInitResponse: IThreeDInitResponse): Observable<IThreeDVerificationService<ConfigInterface | void>> {
+  private initVerificationService$(jsInitResponse: IThreeDInitResponse): Observable<IThreeDVerificationService<ConfigInterface | void>> {
     const verificationService = this.threeDVerificationServiceProvider.getProvider(jsInitResponse.threedsprovider);
 
-    return verificationService.init(jsInitResponse).pipe(
+    return verificationService.init$(jsInitResponse).pipe(
       tap(() => this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.UNLOCK_BUTTON }, true)),
       tap(() => {
         this.messageBus
           .pipe(ofType(MessageBus.EVENTS_PUBLIC.BIN_PROCESS))
-          .subscribe((event: IMessageBusEvent<string>) => verificationService.binLookup(event.data));
+          .subscribe((event: IMessageBusEvent<string>) => verificationService.binLookup$(event.data));
       }),
       mapTo(verificationService),
     );

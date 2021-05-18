@@ -30,7 +30,7 @@ export class ThreeDSecureChallengeService {
 
     return from(this.interFrameCommunicator.query<ChallengeResultInterface>(queryEvent, MERCHANT_PARENT_FRAME)).pipe(
       switchMap((challengeResult: ChallengeResultInterface) => {
-        return this.challengeResultHandler.handle(threeDQueryResponse, challengeResult);
+        return this.challengeResultHandler.handle$(threeDQueryResponse, challengeResult);
       }),
     );
   }

@@ -6,7 +6,7 @@ import { Service } from 'typedi';
 
 @Service()
 export class ChallengeResultHandler {
-  handle(response: IThreeDQueryResponse, result: ChallengeResultInterface): Observable<IThreeDQueryResponse> {
+  handle$(response: IThreeDQueryResponse, result: ChallengeResultInterface): Observable<IThreeDQueryResponse> {
     switch (result.status) {
       case ResultActionCode.FAILURE:
       case ResultActionCode.ERROR:

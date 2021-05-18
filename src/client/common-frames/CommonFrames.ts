@@ -18,6 +18,7 @@ import { IStyles } from '../../shared/model/config/IStyles';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { Validation } from '../../application/core/shared/validation/Validation';
+import { Enrolled } from '../../application/core/models/constants/Enrolled';
 
 @Service()
 export class CommonFrames {
@@ -124,7 +125,7 @@ export class CommonFrames {
     }
 
     if (customeroutput === CustomerOutput.THREEDREDIRECT) {
-      return Boolean(threedresponse || !acsurl || enrolled !== 'Y');
+      return Boolean(threedresponse || !acsurl || enrolled !== Enrolled.Y);
     }
 
     return true;

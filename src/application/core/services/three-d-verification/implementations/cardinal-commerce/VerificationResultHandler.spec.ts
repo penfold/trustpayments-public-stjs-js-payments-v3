@@ -5,6 +5,7 @@ import { IVerificationResult } from './data/IVerificationResult';
 import { ActionCode } from './data/ActionCode';
 import { PAYMENT_ERROR } from '../../../../models/constants/Translations';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
+import { Enrolled } from '../../../../models/constants/Enrolled';
 import DoneCallback = jest.DoneCallback;
 
 describe('VerificationResultHandler', () => {
@@ -16,7 +17,7 @@ describe('VerificationResultHandler', () => {
     acquirerresponsecode: '0',
     acquirerresponsemessage: 'Test message',
     acsurl: 'https://acsurl',
-    enrolled: 'Y',
+    enrolled: Enrolled.Y,
     threedpayload: '3dpayload',
     transactionreference: 'ref',
     requesttypescription: 'THREEDQUERY',
@@ -49,7 +50,7 @@ describe('VerificationResultHandler', () => {
         jwt: 'foobar',
       };
 
-      verificationResultHandler.handle(threeDQueryResponse, result, jsInitResponseMock).subscribe(res => {
+      verificationResultHandler.handle$(threeDQueryResponse, result, jsInitResponseMock).subscribe(res => {
         expect(res).toMatchObject(threeDQueryResponse);
         expect(res.cachetoken).toBe('aaa');
         expect(res.threedresponse).toBe('foobar');
@@ -67,7 +68,7 @@ describe('VerificationResultHandler', () => {
       jwt: 'foobar',
     };
 
-    verificationResultHandler.handle(threeDQueryResponse, result, jsInitResponseMock).subscribe(res => {
+    verificationResultHandler.handle$(threeDQueryResponse, result, jsInitResponseMock).subscribe(res => {
       expect(res).toMatchObject(threeDQueryResponse);
       expect(res.cachetoken).toBe('aaa');
       expect(res.threedresponse).toBe('foobar');
@@ -86,13 +87,13 @@ describe('VerificationResultHandler', () => {
         jwt: 'foobar',
       };
 
-      verificationResultHandler.handle(threeDQueryResponse, result, jsInitResponseMock).subscribe({
+      verificationResultHandler.handle$(threeDQueryResponse, result, jsInitResponseMock).subscribe({
         error: response => {
           expect(response).toEqual({
             jwt: 'jwt',
             acquirertransactionreference: 'qwe',
             acsurl: 'https://acsurl',
-            enrolled: 'Y',
+            enrolled: Enrolled.Y,
             threedpayload: '3dpayload',
             transactionreference: 'ref',
             requesttypescription: 'THREEDQUERY',

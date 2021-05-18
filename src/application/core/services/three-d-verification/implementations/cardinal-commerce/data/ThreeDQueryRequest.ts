@@ -7,7 +7,7 @@ export class ThreeDQueryRequest implements IStRequest {
   readonly termurl = TERM_URL; // TODO this shouldn't be needed but currently the backend needs this
   readonly cachetoken: string;
 
-  [index: string]: any;
+  [index: string]: string | string[];
 
   constructor(cacheToken: string, card: ICard, merchantData: IMerchantData) {
     this.cachetoken = cacheToken;

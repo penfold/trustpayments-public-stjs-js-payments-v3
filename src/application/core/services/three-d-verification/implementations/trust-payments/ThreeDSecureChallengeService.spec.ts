@@ -9,6 +9,7 @@ import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { ChallengeResultInterface, ResultActionCode, ThreeDSecureVersion } from '3ds-sdk-js';
 import { of } from 'rxjs';
+import { Enrolled } from '../../../../models/constants/Enrolled';
 
 describe('ThreeDSecureChallengeService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
@@ -31,7 +32,7 @@ describe('ThreeDSecureChallengeService', () => {
       acquirerresponsecode: '',
       acquirerresponsemessage: '',
       acsurl: 'https://acsurl',
-      enrolled: 'Y',
+      enrolled: Enrolled.Y,
       threedpayload: '',
       transactionreference: '',
       requesttypescription: '',
@@ -58,11 +59,11 @@ describe('ThreeDSecureChallengeService', () => {
     };
 
     when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(challengeResultMock);
-    when(challengeResultHandlerMock.handle(threeDQueryResponseMock, challengeResultMock)).thenReturn(of(updatedThreeDQueryResponseMock));
+    when(challengeResultHandlerMock.handle$(threeDQueryResponseMock, challengeResultMock)).thenReturn(of(updatedThreeDQueryResponseMock));
 
     sut.doChallenge$(threeDQueryResponseMock).subscribe(result => {
       verify(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).once();
-      verify(challengeResultHandlerMock.handle(threeDQueryResponseMock, challengeResultMock)).once();
+      verify(challengeResultHandlerMock.handle$(threeDQueryResponseMock, challengeResultMock)).once();
       expect(result).toBe(updatedThreeDQueryResponseMock);
       done();
     });

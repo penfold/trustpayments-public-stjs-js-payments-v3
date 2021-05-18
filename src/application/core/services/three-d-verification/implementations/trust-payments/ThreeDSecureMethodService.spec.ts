@@ -16,40 +16,42 @@ describe('ThreeDSecureMethodService', () => {
     sut = new ThreeDSecureMethodService(instance(interFrameCommunicatorMock));
   });
 
-  it('returns undefined when methodUrl is empty', done => {
-    sut.perform3DSMethod$('', 'https://notificationurl', '12345').subscribe(result => {
-      expect(result).toBeUndefined();
-      verify(interFrameCommunicatorMock.query(anything(), MERCHANT_PARENT_FRAME)).never();
-      done();
+  describe('perform3DSMethod$()', () => {
+    it('returns undefined when methodUrl is empty', done => {
+      sut.perform3DSMethod$('', 'https://notificationurl', '12345').subscribe(result => {
+        expect(result).toBeUndefined();
+        verify(interFrameCommunicatorMock.query(anything(), MERCHANT_PARENT_FRAME)).never();
+        done();
+      });
     });
-  });
 
-  it('send the THREE_D_SECURE_METHOD_URL query and returns the result', done => {
-    const methodUrl = 'https://methodurl';
-    const notificationUrl = 'https://notificationurl';
-    const transactionId = '12345';
+    it('send the THREE_D_SECURE_METHOD_URL query and returns the result', done => {
+      const methodUrl = 'https://methodurl';
+      const notificationUrl = 'https://notificationurl';
+      const transactionId = '12345';
 
-    const queryEvent: IMessageBusEvent<IMethodUrlData> = {
-      type: PUBLIC_EVENTS.THREE_D_SECURE_METHOD_URL,
-      data: {
-        methodUrl,
-        notificationUrl,
-        transactionId,
-      },
-    };
+      const queryEvent: IMessageBusEvent<IMethodUrlData> = {
+        type: PUBLIC_EVENTS.THREE_D_SECURE_METHOD_URL,
+        data: {
+          methodUrl,
+          notificationUrl,
+          transactionId,
+        },
+      };
 
-    const methodUrlResult: MethodURLResultInterface = {
-      status: ResultActionCode.SUCCESS,
-      description: '',
-      transactionId: '12345',
-    };
+      const methodUrlResult: MethodURLResultInterface = {
+        status: ResultActionCode.SUCCESS,
+        description: '',
+        transactionId: '12345',
+      };
 
-    when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(methodUrlResult);
+      when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(methodUrlResult);
 
-    sut.perform3DSMethod$(methodUrl, notificationUrl, transactionId).subscribe(result => {
-      verify(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).once();
-      expect(result).toBe(methodUrlResult);
-      done();
+      sut.perform3DSMethod$(methodUrl, notificationUrl, transactionId).subscribe(result => {
+        verify(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).once();
+        expect(result).toBe(methodUrlResult);
+        done();
+      });
     });
   });
 });

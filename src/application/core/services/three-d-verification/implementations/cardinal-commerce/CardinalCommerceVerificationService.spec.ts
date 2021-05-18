@@ -16,8 +16,9 @@ import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { IMerchantData } from '../../../../models/IMerchantData';
 import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { CardinalChallengeService } from './CardinalChallengeService';
-import spyOn = jest.spyOn;
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
+import { Enrolled } from '../../../../models/constants/Enrolled';
+import spyOn = jest.spyOn;
 
 describe('CardinalCommerceVerificationService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
@@ -41,7 +42,7 @@ describe('CardinalCommerceVerificationService', () => {
     acquirerresponsecode: '',
     acquirerresponsemessage: '',
     acsurl: 'https://acsurl',
-    enrolled: 'Y',
+    enrolled: Enrolled.Y,
     threedpayload: '',
     transactionreference: '',
     requesttypescription: '',
@@ -78,7 +79,7 @@ describe('CardinalCommerceVerificationService', () => {
 
       when(interFrameCommunicatorMock.query(anything(), MERCHANT_PARENT_FRAME)).thenResolve(void 0);
 
-      verificationService.init(jsInitResponseMock).subscribe(() => {
+      verificationService.init$(jsInitResponseMock).subscribe(() => {
         verify(interFrameCommunicatorMock.query(
           deepEqual(eventMock),
           MERCHANT_PARENT_FRAME,
@@ -95,7 +96,7 @@ describe('CardinalCommerceVerificationService', () => {
 
       const pan = '4111111111111111';
 
-      verificationService.binLookup(pan).subscribe(() => {
+      verificationService.binLookup$(pan).subscribe(() => {
         const event = {
           type: PUBLIC_EVENTS.CARDINAL_TRIGGER,
           data: {
@@ -124,7 +125,7 @@ describe('CardinalCommerceVerificationService', () => {
         data: { jwt: 'threedinit' },
       };
 
-      verificationService.start(
+      verificationService.start$(
         jsInitResponseMock,
         [RequestType.THREEDQUERY],
         cardMock,
@@ -141,7 +142,7 @@ describe('CardinalCommerceVerificationService', () => {
         data: { jwt: 'threedinit' },
       };
 
-      verificationService.start(
+      verificationService.start$(
         jsInitResponseMock,
         [RequestType.ACCOUNTCHECK],
         cardMock,
@@ -153,7 +154,7 @@ describe('CardinalCommerceVerificationService', () => {
     });
 
     it('sends the THREEDQUERY request to the gateway', done => {
-      verificationService.start(
+      verificationService.start$(
         jsInitResponseMock,
         [RequestType.THREEDQUERY],
         cardMock,
@@ -167,7 +168,7 @@ describe('CardinalCommerceVerificationService', () => {
     it('skips the challenge and returns the TDQ response if challenge is not required', done => {
       when(challengeService.isChallengeRequired(deepEqual(threeDQueryResponseMock))).thenReturn(false);
 
-      verificationService.start(
+      verificationService.start$(
         jsInitResponseMock,
         [RequestType.THREEDQUERY],
         cardMock,
@@ -188,9 +189,9 @@ describe('CardinalCommerceVerificationService', () => {
       };
 
       when(challengeService.isChallengeRequired(deepEqual(threeDQueryResponseMock))).thenReturn(true);
-      when(challengeService.runChallenge(deepEqual(threeDQueryResponseMock), jsInitResponseMock)).thenReturn(of(updatedThreeDQueryResponse));
+      when(challengeService.runChallenge$(deepEqual(threeDQueryResponseMock), jsInitResponseMock)).thenReturn(of(updatedThreeDQueryResponse));
 
-      verificationService.start(
+      verificationService.start$(
         jsInitResponseMock,
         [RequestType.THREEDQUERY],
         cardMock,
@@ -204,7 +205,7 @@ describe('CardinalCommerceVerificationService', () => {
     it('sends proper google analytics event', done => {
       spyOn(GoogleAnalytics, 'sendGaData');
 
-      verificationService.start(
+      verificationService.start$(
         jsInitResponseMock,
         [RequestType.THREEDQUERY],
         cardMock,

@@ -15,13 +15,14 @@ import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { ThreeDVerificationProviderName } from '../../data/ThreeDVerificationProviderName';
 import { RequestType } from '../../../../../../shared/types/RequestType';
-import DoneCallback = jest.DoneCallback;
 import { of } from 'rxjs';
 import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { IThreeDSchemaLookupResponse } from '../../../../models/IThreeDSchemaLookupResponse';
 import { ThreeDSecureMethodService } from './ThreeDSecureMethodService';
 import { BrowserDataProvider } from './BrowserDataProvider';
 import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
+import { Enrolled } from '../../../../models/constants/Enrolled';
+import DoneCallback = jest.DoneCallback;
 
 describe('ThreeDSecureVerificationService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
@@ -69,7 +70,7 @@ describe('ThreeDSecureVerificationService', () => {
 
       when(interFrameCommunicatorMock.query(deepEqual(eventMock), MERCHANT_PARENT_FRAME)).thenResolve(threeDSecureConfigMock);
 
-      sut.init().subscribe(result => {
+      sut.init$().subscribe(result => {
         expect(result).toBe(threeDSecureConfigMock);
         verify(interFrameCommunicatorMock.query<ConfigInterface>(
           deepEqual(eventMock),
@@ -83,7 +84,7 @@ describe('ThreeDSecureVerificationService', () => {
 
   describe('binLookup()', () => {
     it('should return empty observable', done => {
-      sut.binLookup().pipe(toArray()).subscribe(result => {
+      sut.binLookup$().pipe(toArray()).subscribe(result => {
         expect(result).toEqual([]);
         done();
       });
@@ -115,7 +116,7 @@ describe('ThreeDSecureVerificationService', () => {
       acquirerresponsecode: '',
       acquirerresponsemessage: '',
       acsurl: 'https://acsurl',
-      enrolled: 'Y',
+      enrolled: Enrolled.Y,
       threedpayload: '',
       transactionreference: '',
       requesttypescription: '',
@@ -171,7 +172,7 @@ describe('ThreeDSecureVerificationService', () => {
     });
 
     it('only sends gateway request and returns response if THREEDQUERY request type is not present', done => {
-      sut.start(jsInitResponseMock, [RequestType.ACCOUNTCHECK], card, merchantData).subscribe(result => {
+      sut.start$(jsInitResponseMock, [RequestType.ACCOUNTCHECK], card, merchantData).subscribe(result => {
         expect(result).toBe(threeDQueryResponseMock);
         verify(gatewayClient.schemaLookup(anything())).never();
         verify(interFrameCommunicatorMock.query(anything(), MERCHANT_PARENT_FRAME)).never();
@@ -180,21 +181,21 @@ describe('ThreeDSecureVerificationService', () => {
     });
 
     it('runs SCHEMALOOKUP request on the gateway', done => {
-      sut.start(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
+      sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
         verify(gatewayClient.schemaLookup(card)).once();
         done();
       });
     });
 
     it('runs TDQ request on the gateway', done => {
-      sut.start(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
+      sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
         verify(gatewayClient.threedQuery(deepEqual(tdqRequestWithBrowserData))).once();
         done();
       });
     });
 
     it('runs the challenge and returns its result', done => {
-      sut.start(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(result => {
+      sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(result => {
         verify(challengeService.doChallenge$(threeDQueryResponseMock)).once();
         expect(result).toBe(updatedThreeDQueryResponseMock);
         done();
@@ -209,7 +210,7 @@ describe('ThreeDSecureVerificationService', () => {
 
       when(gatewayClient.threedQuery(deepEqual(tdqRequestWithBrowserData))).thenReturn(of(threeDQueryResponseWithoutAcsUrl));
 
-      sut.start(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(result => {
+      sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(result => {
         verify(challengeService.doChallenge$(anything())).never();
         expect(result).toBe(threeDQueryResponseWithoutAcsUrl);
         done();

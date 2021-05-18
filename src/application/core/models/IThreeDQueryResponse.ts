@@ -1,4 +1,5 @@
 import { IResponseData } from './IResponseData';
+import { Enrolled } from './constants/Enrolled';
 
 export interface IThreeDQueryResponse extends IResponseData {
   jwt: string;
@@ -6,7 +7,7 @@ export interface IThreeDQueryResponse extends IResponseData {
   acquirerresponsecode: string;
   acquirerresponsemessage: string;
   acsurl: string;
-  enrolled: string;
+  enrolled: Enrolled | string;
   threedpayload: string;
   transactionreference: string;
   threedresponse?: string;

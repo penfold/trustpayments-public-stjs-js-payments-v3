@@ -18,7 +18,7 @@ export class BrowserDataProvider {
 
     return from(this.interFrameCommunicator.query<BrowserDataInterface>(queryEvent, MERCHANT_PARENT_FRAME)).pipe(
       map(browserData => {
-        const mapProperty = ([key, value]: [string, unknown]) => [
+        const mapProperty = ([key, value]: [string, string | number | boolean]) => [
           key.toLowerCase(),
           typeof(value) === 'string' ? value : JSON.stringify(value),
         ];

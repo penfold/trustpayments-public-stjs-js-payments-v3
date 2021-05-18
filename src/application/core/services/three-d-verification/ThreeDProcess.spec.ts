@@ -13,6 +13,7 @@ import { RequestType } from '../../../../shared/types/RequestType';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
+import { Enrolled } from '../../models/constants/Enrolled';
 
 describe('ThreeDProcess', () => {
   let messageBusMock: IMessageBus;
@@ -45,7 +46,7 @@ describe('ThreeDProcess', () => {
     when(threeDVerificationServiceProviderMock.getProvider(jsInitResponseMock.threedsprovider))
       .thenReturn(instance(threeDVerificationServiceMock));
 
-    when(threeDVerificationServiceMock.init(jsInitResponseMock)).thenReturn(of(void 0));
+    when(threeDVerificationServiceMock.init$(jsInitResponseMock)).thenReturn(of(void 0));
     when(gatewayClientMock.jsInit()).thenReturn(of(jsInitResponseMock));
   });
 
@@ -54,7 +55,7 @@ describe('ThreeDProcess', () => {
       threeDProcess.init$().subscribe(() => {
         verify(gatewayClientMock.jsInit()).once();
         verify(threeDVerificationServiceProviderMock.getProvider(jsInitResponseMock.threedsprovider)).once();
-        verify(threeDVerificationServiceMock.init(jsInitResponseMock)).once();
+        verify(threeDVerificationServiceMock.init$(jsInitResponseMock)).once();
         done();
       });
     });
@@ -72,7 +73,7 @@ describe('ThreeDProcess', () => {
       threeDProcess.init$().subscribe(() => {
         const pan = '4111111111111111';
         messageBusMock.publish({ type: PUBLIC_EVENTS.BIN_PROCESS, data: pan });
-        verify(threeDVerificationServiceMock.binLookup(pan)).once();
+        verify(threeDVerificationServiceMock.binLookup$(pan)).once();
         done();
       });
     });
@@ -81,7 +82,7 @@ describe('ThreeDProcess', () => {
       threeDProcess.init$().subscribe(() => {
         messageBusMock.publish({ type: PUBLIC_EVENTS.UPDATE_JWT });
         messageBusMock.publish({ type: PUBLIC_EVENTS.UPDATE_JWT });
-        verify(threeDVerificationServiceMock.init(anything())).once();
+        verify(threeDVerificationServiceMock.init$(anything())).once();
         done();
       });
     });
@@ -97,7 +98,7 @@ describe('ThreeDProcess', () => {
       acquirerresponsecode: '',
       acquirerresponsemessage: '',
       acsurl: '',
-      enrolled: 'Y',
+      enrolled: Enrolled.Y,
       threedpayload: '',
       transactionreference: '',
       requesttypescription: '',
@@ -112,7 +113,7 @@ describe('ThreeDProcess', () => {
     };
 
     beforeEach(() => {
-      when(threeDVerificationServiceMock.start(
+      when(threeDVerificationServiceMock.start$(
         anything(),
         requestTypes,
         card,
@@ -130,7 +131,7 @@ describe('ThreeDProcess', () => {
     it('runs start() on verificationService using the latest jsInit response', done => {
       threeDProcess.performThreeDQuery$(requestTypes, card, merchantData).subscribe(result => {
         verify(gatewayClientMock.jsInit()).once();
-        verify(threeDVerificationServiceMock.start(jsInitResponseMock, requestTypes, card, merchantData)).once();
+        verify(threeDVerificationServiceMock.start$(jsInitResponseMock, requestTypes, card, merchantData)).once();
         expect(result).toBe(threeDQueryResponse);
         done();
       });
@@ -141,7 +142,7 @@ describe('ThreeDProcess', () => {
 
       threeDProcess.performThreeDQuery$(requestTypes, card, merchantData).subscribe(result => {
         verify(gatewayClientMock.jsInit()).twice();
-        verify(threeDVerificationServiceMock.start(newJsInitResponse, requestTypes, card, merchantData)).once();
+        verify(threeDVerificationServiceMock.start$(newJsInitResponse, requestTypes, card, merchantData)).once();
         expect(result).toBe(threeDQueryResponse);
         done();
       });

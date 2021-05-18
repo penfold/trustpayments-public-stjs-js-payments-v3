@@ -19,6 +19,8 @@ import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { BrowserDataProvider } from './BrowserDataProvider';
 import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
 import { ThreeDSecureMethodService } from './ThreeDSecureMethodService';
+import { IThreeDSchemaLookupResponse } from '../../../../models/IThreeDSchemaLookupResponse';
+import { IBrowserData } from './data/IBrowserData';
 
 @Service()
 export class ThreeDSecureVerificationService implements IThreeDVerificationService<ConfigInterface> {
@@ -31,7 +33,7 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
     private challengeService: ThreeDSecureChallengeService,
   ) {}
 
-  init(): Observable<ConfigInterface> {
+  init$(): Observable<ConfigInterface> {
     return this.configProvider.getConfig$().pipe(
       map(config => ({
         type: PUBLIC_EVENTS.THREE_D_SECURE_INIT,
@@ -43,11 +45,11 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
     );
   }
 
-  binLookup(): Observable<void> {
+  binLookup$(): Observable<void> {
     return EMPTY;
   }
 
-  start(
+  start$(
     jsInitResponse: IThreeDInitResponse,
     requestTypes: RequestType[],
     card: ICard,
@@ -58,11 +60,15 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
     }
 
     return this.gatewayClient.schemaLookup(card).pipe(
-      switchMap(response => this.threeDSMethodService.perform3DSMethod$(response.methodurl, response.notificationurl, response.threedstransactionid)),
+      switchMap((response: IThreeDSchemaLookupResponse) => this.threeDSMethodService.perform3DSMethod$(
+        response.methodurl,
+        response.notificationurl,
+        response.threedstransactionid,
+      )),
       switchMap(() => this.browserDataProvider.getBrowserData$()),
-      map(browserData => new ThreeDQueryRequest(card, merchantData, browserData)),
-      switchMap(requestData => this.gatewayClient.threedQuery(requestData)),
-      switchMap(response => {
+      map((browserData: IBrowserData) => new ThreeDQueryRequest(card, merchantData, browserData)),
+      switchMap((requestData: ThreeDQueryRequest) => this.gatewayClient.threedQuery(requestData)),
+      switchMap((response: IThreeDQueryResponse) => {
         if (!response.acsurl) {
           return of(response);
         }
