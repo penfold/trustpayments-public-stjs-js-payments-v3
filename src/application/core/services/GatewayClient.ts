@@ -3,7 +3,7 @@ import { from, Observable, of, throwError } from 'rxjs';
 import { IThreeDInitResponse } from '../models/IThreeDInitResponse';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { IThreeDQueryResponse } from '../models/IThreeDQueryResponse';
-import { IThreeDSchemaLookupResponse } from '../models/IThreeDSchemaLookupResponse';
+import { IThreeDLookupResponse } from '../models/IThreeDLookupResponse';
 import { IStRequest } from '../models/IStRequest';
 import { StTransport } from './st-transport/StTransport';
 import { PUBLIC_EVENTS } from '../models/constants/EventTypes';
@@ -33,9 +33,9 @@ export class GatewayClient {
     );
   }
 
-  schemaLookup({ expirydate, pan, securitycode }: ICard): Observable<IThreeDSchemaLookupResponse> {
+  threedLookup({ expirydate, pan, securitycode }: ICard): Observable<IThreeDLookupResponse> {
     return from(this.stTransport.sendRequest(new ThreeDLookupRequest(expirydate, pan, securitycode))).pipe(
-      switchMap(({ response }: { response: IThreeDSchemaLookupResponse }) => {
+      switchMap(({ response }: { response: IThreeDLookupResponse }) => {
         return Number(response.errorcode) === 0 ? of(response) : throwError(response);
       })
     );

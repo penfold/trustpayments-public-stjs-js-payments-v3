@@ -17,7 +17,7 @@ import { ThreeDVerificationProviderName } from '../../data/ThreeDVerificationPro
 import { RequestType } from '../../../../../../shared/types/RequestType';
 import { of } from 'rxjs';
 import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
-import { IThreeDSchemaLookupResponse } from '../../../../models/IThreeDSchemaLookupResponse';
+import { IThreeDLookupResponse } from '../../../../models/IThreeDLookupResponse';
 import { ThreeDSecureMethodService } from './ThreeDSecureMethodService';
 import { BrowserDataProvider } from './BrowserDataProvider';
 import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
@@ -128,15 +128,15 @@ describe('ThreeDSecureVerificationService', () => {
       threedresponse: 'threedresponse',
     };
 
-    const schemaLookupResponse: IThreeDSchemaLookupResponse = {
+    const threedLookupResponse: IThreeDLookupResponse = {
       transactionstartedtimestamp: '',
       errormessage: '',
       errorcode: '',
-      requesttypedescription: 'SCHEMALOOKUP',
+      requesttypedescription: 'THREEDLOOKUP',
       customeroutput: '',
       threedstransactionid: '12345',
-      methodurl: 'https://methodurl',
-      notificationurl: 'https://methodurlnotification',
+      threedmethodurl: 'https://methodurl',
+      threednotificationurl: 'https://methodurlnotification',
       threedversion: '2.1.0',
     };
 
@@ -157,15 +157,15 @@ describe('ThreeDSecureVerificationService', () => {
     beforeEach(() => {
       when(gatewayClient.threedQuery(deepEqual(tdqRequestWithoutBrowserData))).thenReturn(of(threeDQueryResponseMock));
       when(gatewayClient.threedQuery(deepEqual(tdqRequestWithBrowserData))).thenReturn(of(threeDQueryResponseMock));
-      when(gatewayClient.schemaLookup(card)).thenReturn(of(schemaLookupResponse));
+      when(gatewayClient.threedLookup(card)).thenReturn(of(threedLookupResponse));
       when(threeDSMethodService.perform3DSMethod$(
-        schemaLookupResponse.methodurl,
-        schemaLookupResponse.notificationurl,
-        schemaLookupResponse.threedstransactionid,
+        threedLookupResponse.threedmethodurl,
+        threedLookupResponse.threednotificationurl,
+        threedLookupResponse.threedstransactionid,
       )).thenReturn(of({
         status: ResultActionCode.SUCCESS,
         description: '',
-        transactionId: schemaLookupResponse.threedstransactionid,
+        transactionId: threedLookupResponse.threedstransactionid,
       }));
       when(browserDataProvider.getBrowserData$()).thenReturn(of(browserDataMock));
       when(challengeService.doChallenge$(threeDQueryResponseMock)).thenReturn(of(updatedThreeDQueryResponseMock));
@@ -174,15 +174,15 @@ describe('ThreeDSecureVerificationService', () => {
     it('only sends gateway request and returns response if THREEDQUERY request type is not present', done => {
       sut.start$(jsInitResponseMock, [RequestType.ACCOUNTCHECK], card, merchantData).subscribe(result => {
         expect(result).toBe(threeDQueryResponseMock);
-        verify(gatewayClient.schemaLookup(anything())).never();
+        verify(gatewayClient.threedLookup(anything())).never();
         verify(interFrameCommunicatorMock.query(anything(), MERCHANT_PARENT_FRAME)).never();
         done();
       });
     });
 
-    it('runs SCHEMALOOKUP request on the gateway', done => {
+    it('runs THREEDLOOKUP request on the gateway', done => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
-        verify(gatewayClient.schemaLookup(card)).once();
+        verify(gatewayClient.threedLookup(card)).once();
         done();
       });
     });

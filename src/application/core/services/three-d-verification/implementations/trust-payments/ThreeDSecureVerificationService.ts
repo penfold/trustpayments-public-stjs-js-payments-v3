@@ -19,7 +19,7 @@ import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { BrowserDataProvider } from './BrowserDataProvider';
 import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
 import { ThreeDSecureMethodService } from './ThreeDSecureMethodService';
-import { IThreeDSchemaLookupResponse } from '../../../../models/IThreeDSchemaLookupResponse';
+import { IThreeDLookupResponse } from '../../../../models/IThreeDLookupResponse';
 import { IBrowserData } from './data/IBrowserData';
 
 @Service()
@@ -59,10 +59,10 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
       return this.performRequestWithoutThreedQuery$(card, merchantData);
     }
 
-    return this.gatewayClient.schemaLookup(card).pipe(
-      switchMap((response: IThreeDSchemaLookupResponse) => this.threeDSMethodService.perform3DSMethod$(
-        response.methodurl,
-        response.notificationurl,
+    return this.gatewayClient.threedLookup(card).pipe(
+      switchMap((response: IThreeDLookupResponse) => this.threeDSMethodService.perform3DSMethod$(
+        response.threedmethodurl,
+        response.threednotificationurl,
         response.threedstransactionid,
       )),
       switchMap(() => this.browserDataProvider.getBrowserData$()),
