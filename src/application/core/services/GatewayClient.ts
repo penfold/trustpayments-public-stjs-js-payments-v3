@@ -9,7 +9,8 @@ import { StTransport } from './st-transport/StTransport';
 import { PUBLIC_EVENTS } from '../models/constants/EventTypes';
 import { ThreeDInitRequest } from './three-d-verification/data/ThreeDInitRequest';
 import { IMessageBus } from '../shared/message-bus/IMessageBus';
-import { ThreeDSchemaLookupRequest } from './three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
+import { ThreeDLookupRequest } from './three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
+import { ICard } from '../models/ICard';
 
 @Service()
 export class GatewayClient {
@@ -32,8 +33,8 @@ export class GatewayClient {
     );
   }
 
-  schemaLookup(pan: string): Observable<IThreeDSchemaLookupResponse> {
-    return from(this.stTransport.sendRequest(new ThreeDSchemaLookupRequest(pan))).pipe(
+  schemaLookup({ expirydate, pan, securitycode }: ICard): Observable<IThreeDSchemaLookupResponse> {
+    return from(this.stTransport.sendRequest(new ThreeDLookupRequest(expirydate, pan, securitycode))).pipe(
       switchMap(({ response }: { response: IThreeDSchemaLookupResponse }) => {
         return Number(response.errorcode) === 0 ? of(response) : throwError(response);
       })

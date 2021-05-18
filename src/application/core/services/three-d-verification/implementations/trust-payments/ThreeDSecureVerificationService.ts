@@ -57,7 +57,7 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
       return this.performRequestWithoutThreedQuery$(card, merchantData);
     }
 
-    return this.gatewayClient.schemaLookup(card.pan).pipe(
+    return this.gatewayClient.schemaLookup(card).pipe(
       switchMap(response => this.threeDSMethodService.perform3DSMethod$(response.methodurl, response.notificationurl, response.threedstransactionid)),
       switchMap(() => this.browserDataProvider.getBrowserData$()),
       map(browserData => new ThreeDQueryRequest(card, merchantData, browserData)),
