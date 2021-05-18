@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
-import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
+import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
 import { ApplePaySchema } from './apple-pay-schema/ApplePaySchema';
 import { GooglePaySchema } from './google-pay-schema/GooglePaySchema';
 import { VisaCheckoutSchema } from './VisaCheckoutSchema';
