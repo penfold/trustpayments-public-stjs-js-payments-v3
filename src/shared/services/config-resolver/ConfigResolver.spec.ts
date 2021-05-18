@@ -46,6 +46,7 @@ function ConfigResolverFixture() {
       buttonStyle: 'white-outline',
       buttonText: 'donate',
       merchantId: 'merchant.net.securetrading.test',
+      merchantUrl: 'https://example.com',
       paymentRequest: {
         countryCode: 'US',
         currencyCode: 'USD',
@@ -129,6 +130,7 @@ function ConfigResolverFixture() {
       },
       livestatus: 0,
       merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
+      merchantUrl: 'https://example.com',
       paymentRequest: {
         subtotal: '20.0',
       },
@@ -149,6 +151,7 @@ function ConfigResolverFixture() {
     applePay: {
       buttonStyle: 'white-outline',
       buttonText: 'donate',
+      merchantUrl: 'https://example.com',
       merchantId: 'merchant.net.securetrading.test',
       paymentRequest: {
         countryCode: 'US',
@@ -248,6 +251,7 @@ function ConfigResolverFixture() {
         color: 'neutral',
       },
       livestatus: 0,
+      merchantUrl: 'https://example.com',
       merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
       paymentRequest: {
         subtotal: '20.0',
@@ -292,6 +296,7 @@ function ConfigResolverFixture() {
     errorReporting: true,
     fieldsToSubmit: ['pan', 'expirydate', 'securitycode'],
     formId: 'st-form',
+    googlePay: undefined,
     init: {
       cachetoken: '',
       threedinit: '',

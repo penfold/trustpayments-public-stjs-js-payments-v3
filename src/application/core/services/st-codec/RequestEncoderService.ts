@@ -25,7 +25,7 @@ export class RequestEncoderService {
     const VERSION = '1.00';
     const VERSION_INFO = `STJS::N/A::${version}::N/A`;
     const jwt = this.store.getState().jwt;
-    const jwtPayload = this.jwtDecoder.decode(jwt);
+    const jwtPayload = this.jwtDecoder.decode(jwt).payload;
 
     return {
       acceptcustomeroutput: ACCEPT_CONSUMER_OUTPUT,

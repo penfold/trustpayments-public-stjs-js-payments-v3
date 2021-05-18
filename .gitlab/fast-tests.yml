@@ -105,7 +105,7 @@ smoke-e2e-tests-app-html-release:
     - .services-app-html-mock
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
-card-payments-component-tests:
+.card-payments-component-tests:
   extends:
     - .component-app-html-mock
     - .parallel-component-tests
@@ -113,54 +113,29 @@ card-payments-component-tests:
     FEATURE_FILES_DIR: 'features/component_tests'
   parallel: 21
 
-visa-checkout-component-tests:
+card-payments-component-tests-review:
+  extends:
+    - .card-payments-component-tests
+    - .rules-when-review
+
+card-payments-component-tests-release:
+  extends:
+    - .card-payments-component-tests
+    - .rules-when-release
+
+.visa-checkout-component-tests:
   extends:
     - .component-app-html-mock
     - .sequentially-component-tests
   variables:
     FEATURE_FILE_NAME: 'visa_checkout.feature'
 
-################################### Security ZAP scan ###################################
-.zap-url-to-scan-merchant:
-  variables:
-    URL_TO_SCAN: "https://merchant.securetrading.net"
-
-.zap-url-to-scan-library:
-  variables:
-    URL_TO_SCAN: "https://library.securetrading.net:8443"
-
-merchant-securetrading-net-review-security-tests-zap-baseline-scan:
+visa-checkout-component-tests-review:
   extends:
-    - .zap-baseline-scan
-    - .services-app-html-review
-    - .zap-url-to-scan-merchant
+    - .visa-checkout-component-tests
     - .rules-when-review
-  variables:
-    ZAP_CONFIG_PATH: "baseline-scan.conf"
 
-library-securetrading-net-review-security-tests-zap-baseline-scan:
+visa-checkout-component-tests-release:
   extends:
-    - .zap-baseline-scan
-    - .services-app-html-review
-    - .zap-url-to-scan-library
-    - .rules-when-review
-  variables:
-    ZAP_CONFIG_PATH: "baseline-scan.conf"
-
-merchant-securetrading-net-release-security-tests-zap-baseline-scan:
-  extends:
-    - .zap-baseline-scan
-    - .service-app-html-release-merchant
-    - .zap-url-to-scan-merchant
+    - .visa-checkout-component-tests
     - .rules-when-release
-  variables:
-    ZAP_CONFIG_PATH: "baseline-scan.conf"
-
-scan-library-securetrading-net-release-security-tests-zap-baseline-scan:
-  extends:
-    - .zap-baseline-scan
-    - .service-app-html-release-library
-    - .zap-url-to-scan-library
-    - .rules-when-release
-  variables:
-    ZAP_CONFIG_PATH: "baseline-scan.conf"

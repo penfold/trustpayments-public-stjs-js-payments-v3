@@ -43,5 +43,4 @@ export interface IGooglePayButtonOptions {
   buttonRootNode?: any;
   buttonSizeMode?: IGooglePayButtonSizeModes;
   buttonType?: IGooglePayButtonType;
-  onClick: () => void;
 }

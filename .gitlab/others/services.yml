@@ -16,7 +16,7 @@
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_REVIEW}"
       alias: library.securetrading.net
 
-.service-app-html-reviev-merchant:
+.service-app-html-review-merchant:
   services:
     - name: "${IMAGE_JS_PAYMENTS_APP_HTML_REVIEW}"
       alias: merchant.securetrading.net
