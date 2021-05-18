@@ -277,6 +277,7 @@ function ConfigResolverFixture() {
     errorReporting: true,
     fieldsToSubmit: ['pan', 'expirydate', 'securitycode'],
     formId: 'st-form',
+    googlePay: undefined,
     init: {
       cachetoken: '',
       threedinit: '',
