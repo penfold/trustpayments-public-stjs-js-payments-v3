@@ -123,6 +123,7 @@
             <legend>APM's:</legend>
             <div id="st-visa-checkout" class="st-form__group"></div>
             <div id="st-apple-pay" class="st-form__group"></div>
+            <div id="st-google-pay" class="st-form__group"></div>
         </fieldset>
 
         <fieldset class="st-form__fieldset">
@@ -235,6 +236,7 @@
       st.Components(config.components);
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
+      st.GooglePay(config.googlePay);
       st.Cybertonica().then(function(response) {
         console.error(response);
       });

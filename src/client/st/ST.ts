@@ -42,6 +42,9 @@ import { IStore } from '../../application/core/store/IStore';
 import { IParentFrameState } from '../../application/core/store/state/IParentFrameState';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IUpdateJwt } from '../../application/core/models/IUpdateJwt';
+import { IGooglePayConfig, GooglePayConfigName } from '../../integrations/google-pay/models/IGooglePayConfig';
+import { IInitPaymentMethod } from '../../application/core/services/payments/events/IInitPaymentMethod';
+import { GooglePaymentMethodName } from '../../integrations/google-pay/models/IGooglePaymentMethod';
 import { ITranslator } from '../../application/core/shared/translator/ITranslator';
 
 @Service()
@@ -171,6 +174,25 @@ export class ST {
           data: undefined,
         },
         false
+      );
+    });
+  }
+
+  GooglePay(config: IGooglePayConfig): void {
+    if (config) {
+      this.config = this.configService.updateFragment(GooglePayConfigName, config);
+    }
+
+    this.initControlFrame$().subscribe(() => {
+      this.messageBus.publish<IInitPaymentMethod<IConfig>>(
+        {
+          type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
+          data: {
+            name: GooglePaymentMethodName,
+            config: this.config,
+          },
+        },
+        false,
       );
     });
   }

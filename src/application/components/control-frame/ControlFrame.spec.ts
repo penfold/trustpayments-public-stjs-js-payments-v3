@@ -29,6 +29,7 @@ import spyOn = jest.spyOn;
 import { PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Translations';
 import { Translator } from '../../core/shared/translator/Translator';
 import { FormState } from '../../core/models/constants/FormState';
+import { GooglePay } from '../../../client/integrations/google-pay/GooglePay';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -232,6 +233,7 @@ function controlFrameFixture() {
   const applePayClientMock: ApplePayClient = mock(ApplePayClient);
   const paymentControllerMock: PaymentController = mock(PaymentController);
   const translator: Translator = mock(Translator);
+  const googlePay: GooglePay = mock(GooglePay);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -273,14 +275,13 @@ function controlFrameFixture() {
     mockInstance(notification),
     mockInstance(cybertonica),
     mockInstance(threeDProcess),
-    mockInstance(configService),
     messageBus,
     mockInstance(frame),
     mockInstance(jwtDecoderMock),
     mockInstance(visaCheckoutClientMock),
     mockInstance(applePayClientMock),
     mockInstance(paymentControllerMock),
-    mockInstance(translator)
+    mockInstance(translator),
   );
   const messageBusEvent = {
     type: '',
