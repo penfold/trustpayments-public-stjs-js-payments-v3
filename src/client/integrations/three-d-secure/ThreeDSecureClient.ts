@@ -17,6 +17,7 @@ import {
   ChallengeResultInterface,
   ConfigInterface,
 } from '3ds-sdk-js';
+import { Translator } from '../../../application/core/shared/translator/Translator';
 
 @Service()
 export class ThreeDSecureClient {
@@ -25,6 +26,7 @@ export class ThreeDSecureClient {
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
     private configProvider: ConfigProvider,
+    private translator: Translator,
   ) {
     const threeDSecureFactory = new ThreeDSecureFactory();
 
@@ -52,7 +54,18 @@ export class ThreeDSecureClient {
   private setup$(): Observable<ConfigInterface> {
     return this.configProvider.getConfig$().pipe(
       switchMap((config: IConfig) => {
-        return this.threeDSecure.init$(config.threeDSecure);
+        if (config.threeDSecure.translations) {
+          return this.threeDSecure.init$(config.threeDSecure);
+        }
+
+        const updatedConfig = {
+          ...config.threeDSecure,
+          translations: {
+            'Cancel': this.translator.translate('Cancel'),
+          },
+        };
+
+        return this.threeDSecure.init$(updatedConfig);
       }),
     );
   }
