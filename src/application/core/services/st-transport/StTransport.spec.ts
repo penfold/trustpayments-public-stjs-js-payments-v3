@@ -143,7 +143,7 @@ describe('StTransport class', () => {
       // @ts-ignore
       expect(instance._fetchRetry).toHaveBeenCalledTimes(1);
       // @ts-ignore
-      expect(instance._fetchRetry).toHaveBeenCalledWith("https://somemerchanturl.com", {
+      expect(instance._fetchRetry).toHaveBeenCalledWith('https://somemerchanturl.com', {
         // @ts-ignore
         ...instance._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions),
         body: JSON.stringify(requestObject),

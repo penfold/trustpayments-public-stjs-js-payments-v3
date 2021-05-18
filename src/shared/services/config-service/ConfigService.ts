@@ -125,7 +125,7 @@ export class ConfigService implements ConfigProvider {
         submitCallback: config.submitCallback,
         successCallback: config.successCallback,
         errorCallback: config.errorCallback,
-        cancelCallback: config.cancelCallback
+        cancelCallback: config.cancelCallback,
       },
     };
   }

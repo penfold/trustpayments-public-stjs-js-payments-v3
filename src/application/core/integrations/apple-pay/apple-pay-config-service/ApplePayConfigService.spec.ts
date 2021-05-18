@@ -235,7 +235,7 @@ describe('ApplePayConfigService', () => {
         jwt: config.jwt,
         formId: config.formId,
         applePay: config.applePay,
-        merchantUrl: config.applePay.merchantUrl
+        merchantUrl: config.applePay.merchantUrl,
       });
     });
   });

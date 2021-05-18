@@ -8,9 +8,8 @@ import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import {
   IGooglePayPaymentRequest,
   IGooglePayTransactionInfo,
-  IPaymentData
+  IPaymentData,
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
-import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
@@ -66,22 +65,22 @@ export class GooglePay {
     if (totalPrice === undefined) {
       totalPrice = Money.fromInteger({
         amount: parseInt(payload.baseamount, 10),
-        currency: payload.currencyiso3a
+        currency: payload.currencyiso3a,
       }).toString();
     }
 
     const transactionInfo: IGooglePayTransactionInfo = {
       ...this.config.googlePay.paymentRequest.transactionInfo,
       currencyCode: payload.currencyiso3a,
-      totalPrice
+      totalPrice,
     };
 
     return {
       ...this.config,
       googlePay: {
         ...this.config.googlePay,
-        paymentRequest: { ...this.config.googlePay.paymentRequest, transactionInfo }
-      }
+        paymentRequest: { ...this.config.googlePay.paymentRequest, transactionInfo },
+      },
     };
   }
 
@@ -103,7 +102,7 @@ export class GooglePay {
       buttonColor,
       buttonType,
       buttonLocale,
-      onClick: this.onGooglePaymentButtonClicked
+      onClick: this.onGooglePaymentButtonClicked,
     });
 
     document.getElementById(buttonRootNode).appendChild(button);
@@ -115,7 +114,7 @@ export class GooglePay {
       apiVersionMinor,
       allowedPaymentMethods,
       merchantInfo,
-      transactionInfo: { countryCode, currencyCode, totalPriceStatus, totalPrice }
+      transactionInfo: { countryCode, currencyCode, totalPriceStatus, totalPrice },
     } = this.config.googlePay.paymentRequest;
 
     const paymentDataRequest = Object.assign(
@@ -128,13 +127,13 @@ export class GooglePay {
           countryCode,
           currencyCode,
           totalPriceStatus,
-          totalPrice
+          totalPrice,
         },
         merchantInfo: {
           merchantName: merchantInfo.merchantName,
           merchantId: merchantInfo.merchantId,
-          merchantOrigin: merchantInfo.merchantOrigin
-        }
+          merchantOrigin: merchantInfo.merchantOrigin,
+        },
       }
     );
     return paymentDataRequest;
