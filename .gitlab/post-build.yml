@@ -8,7 +8,7 @@
   before_script:
     - cp -r "${ARTIFACTS_BUILD_PATH}/" 'dist/'
 
-build-app-html-local:
+.build-app-html-local:
   extends: .build-app-html
   stage: post-build
   variables:
@@ -16,13 +16,33 @@ build-app-html-local:
     UTILITY_NAME: 'app-html-local'
     BUILD_ARGS_EXTRA: '--build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=dev'
 
-build-app-html-mock:
+build-app-html-local-review:
+  extends:
+    - .build-app-html-local
+    - .rules-when-review
+
+build-app-html-local-release:
+  extends:
+    - .build-app-html-local
+    - .rules-when-release
+
+.build-app-html-mock:
   extends: .build-app-html
   stage: post-build
   variables:
     ARTIFACTS_BUILD_PATH: '.dist-mock'
     UTILITY_NAME: 'app-html-mock'
     BUILD_ARGS_EXTRA: '--build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=mock'
+
+build-app-html-mock-review:
+  extends:
+    - .build-app-html-mock
+    - .rules-when-review
+
+build-app-html-mock-release:
+  extends:
+    - .build-app-html-mock
+    - .rules-when-release
 
 build-app-html-review:
   extends:

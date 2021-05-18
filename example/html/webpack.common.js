@@ -5,6 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   mode: 'development',
@@ -84,6 +85,10 @@ module.exports = {
         'styles/**/*.scss',
       ]
     }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css'
+    }),
     new webpack.SourceMapDevToolPlugin({}),
     new webpack.ProvidePlugin({
       process: 'process/browser',
@@ -94,6 +99,11 @@ module.exports = {
     rules: [
       {
         test: /\.(scss|css)$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        exclude: path.resolve(__dirname, '../../src/client/st/st.css'),
+      },
+      {
+        include: path.resolve(__dirname, '../../src/client/st/st.css'),
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {

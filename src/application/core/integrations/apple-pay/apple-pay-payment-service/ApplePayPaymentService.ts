@@ -22,17 +22,18 @@ export class ApplePayPaymentService {
   constructor(
     private payment: Payment,
     private applePayConfigService: ApplePayConfigService,
-    private messageBus: IMessageBus
-  ) {}
+    private messageBus: IMessageBus,
+  ) {
+  }
 
   walletVerify(
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     validationURL: string,
-    cancelled: boolean
+    cancelled: boolean,
   ): Observable<{ status: ApplePayClientErrorCode; data: Partial<IApplePayWalletVerifyResponseBody> }> {
     const request: IApplePayValidateMerchantRequest = this.applePayConfigService.updateWalletValidationUrl(
       validateMerchantRequest,
-      validationURL
+      validationURL,
     );
 
     if (cancelled) {
@@ -51,7 +52,7 @@ export class ApplePayPaymentService {
           errorcode: event.data.errorcode,
           errormessage: event.data.errormessage,
         },
-      }))
+      })),
     );
 
     const walletVerify$ = this.payment.walletVerify(request).pipe(
@@ -66,7 +67,7 @@ export class ApplePayPaymentService {
           status: ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS,
           data: response.response,
         };
-      })
+      }),
     );
 
     return merge(walletVerify$, walletVerifyError$).pipe(first());
@@ -76,7 +77,8 @@ export class ApplePayPaymentService {
     requestTypes: RequestType[],
     validateMerchantRequest: IApplePayValidateMerchantRequest,
     formData: Record<string, unknown>,
-    payment: IApplePayPayment
+    payment: IApplePayPayment,
+    merchantUrl?: string,
   ): Observable<IApplePayProcessPaymentResponse> {
     const bypassError$ = this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
@@ -85,7 +87,7 @@ export class ApplePayPaymentService {
           return event.data;
         }
       }),
-      map((event: { data: IApplePayProcessPaymentResponse }) => event.data)
+      map((event: { data: IApplePayProcessPaymentResponse }) => event.data),
     );
 
     const processPayment$ = from(
@@ -102,8 +104,9 @@ export class ApplePayPaymentService {
         {
           billingContact: payment.billingContact,
           shippingContact: payment.shippingContact,
-        }
-      )
+        },
+        merchantUrl,
+      ),
     ).pipe(
       map((data: IApplePayProcessPaymentData) => {
         if (!data.response.errorcode) {
@@ -114,7 +117,7 @@ export class ApplePayPaymentService {
           };
         }
         return data.response;
-      })
+      }),
     );
 
     return merge(processPayment$, bypassError$).pipe(first());

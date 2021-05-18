@@ -53,7 +53,8 @@
     "lint:fix": "npx eslint --fix ./src",
     "lint:strict": "npx eslint -c .eslintrc-strict.js ./src",
     "lint:strict:fix": "npx eslint -c .eslintrc-strict.js --fix ./src",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "npm run install --prefix ./node_modules/@sentry/cli"
   },
   "repository": {
     "type": "git",
