@@ -2,7 +2,7 @@ import { ResultActionCode, ChallengeResultInterface } from '3ds-sdk-js';
 import { ChallengeResultHandler } from './ChallengeResultHandler';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import DoneCallback = jest.DoneCallback;
-import { PAYMENT_ERROR } from '../../../../models/constants/Translations';
+import { PAYMENT_CANCELLED, PAYMENT_ERROR } from '../../../../models/constants/Translations';
 
 describe('ChallengeResultHandler', () => {
   const threeDQueryResponse: IThreeDQueryResponse = {
@@ -87,4 +87,32 @@ describe('ChallengeResultHandler', () => {
       });
     }
   );
+
+  it('returns a cancelled response on CANCELLED status', (done: DoneCallback) => {
+    const challengeResult: ChallengeResultInterface = {
+      ...challengeResultTemplate,
+      status: ResultActionCode.CANCELLED,
+    };
+
+    challengeResultHandler.handle(threeDQueryResponse, challengeResult).subscribe({
+      error: (result) => {
+        expect(result).toEqual({
+          jwt: '',
+          acquirertransactionreference: '',
+          acquirerresponsecode: '',
+          acquirerresponsemessage: '',
+          errorcode: '0',
+          errormessage: PAYMENT_CANCELLED,
+          acsurl: '',
+          enrolled: '',
+          threedpayload: '',
+          transactionreference: '',
+          requesttypescription: '',
+          threedversion: '',
+          isCancelled: true,
+        });
+        done();
+      },
+    });
+  });
 });
