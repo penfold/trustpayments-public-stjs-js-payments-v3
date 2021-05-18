@@ -2,6 +2,7 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { PAYMENT_CANCELLED, PAYMENT_SUCCESS } from '../../../application/core/models/constants/Translations';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { ActionCode } from '../../../application/core/services/three-d-verification/data/ActionCode';
 import { IVerificationData } from '../../../application/core/services/three-d-verification/data/IVerificationData';
@@ -11,13 +12,14 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { IThreeDSecure3dsMethod } from './IThreeDSecure3dsMethod';
 import {
-  ThreeDSecureFactory,
   ThreeDSecureInterface,
   ThreeDSecureVersion,
   ChallengeResultInterface,
   ConfigInterface,
+  ResultActionCode,
 } from '3ds-sdk-js';
 import { Translator } from '../../../application/core/shared/translator/Translator';
+import { ThreeDSecureProvider } from './three-d-secure-provider/ThreeDSecureProvider';
 
 @Service()
 export class ThreeDSecureClient {
@@ -26,14 +28,13 @@ export class ThreeDSecureClient {
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
     private configProvider: ConfigProvider,
+    private threeDSecureProvider: ThreeDSecureProvider,
     private translator: Translator,
-  ) {
-    const threeDSecureFactory = new ThreeDSecureFactory();
-
-    this.threeDSecure = threeDSecureFactory.create();
-  }
+  ) {}
 
   init(): void {
+    this.threeDSecure = this.threeDSecureProvider.getSdk();
+
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_SETUP)
       .thenRespond(() => this.setup$());
@@ -103,13 +104,21 @@ export class ThreeDSecureClient {
       btoa(JSON.stringify(creq)),
       'http://localhost:8887/v2/three_ds_challenge',
     ).pipe(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      map((challengeResult: ChallengeResultInterface) => ({
-        validated: true,
-        actionCode: ActionCode.SUCCESS,
-        errorNumber: 0,
-        errorDescription: 'Success',
-      })),
+      map((challengeResult: ChallengeResultInterface) => {
+        if (challengeResult.status === ResultActionCode.CANCELLED) {
+          return {
+            actionCode: ActionCode.CANCELLED,
+            errorNumber: 0,
+            errorDescription: PAYMENT_CANCELLED,
+          };
+        }
+
+        return {
+          actionCode: ActionCode.SUCCESS,
+          errorNumber: 0,
+          errorDescription: PAYMENT_SUCCESS,
+        }
+      }),
     );
   }
 }
