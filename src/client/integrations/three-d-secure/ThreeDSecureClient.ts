@@ -54,7 +54,7 @@ export class ThreeDSecureClient {
   private setup$(): Observable<ConfigInterface> {
     return this.configProvider.getConfig$().pipe(
       switchMap((config: IConfig) => {
-        if (config.threeDSecure.translations) {
+        if (config.threeDSecure.translations && config.threeDSecure.translations.cancel) {
           return this.threeDSecure.init$(config.threeDSecure);
         }
 
