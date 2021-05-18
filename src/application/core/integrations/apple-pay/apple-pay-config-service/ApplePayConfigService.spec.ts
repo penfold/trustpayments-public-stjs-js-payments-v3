@@ -41,6 +41,7 @@ describe('ApplePayConfigService', () => {
     buttonStyle: 'white',
     buttonText: 'donate',
     merchantId: 'test-id',
+    merchantUrl: 'https://example.com',
     paymentRequest: paymentRequest,
     placement: '',
   };
@@ -53,6 +54,10 @@ describe('ApplePayConfigService', () => {
     jwtFromConfig: 'somerandomjwt',
     validateMerchantRequest,
     paymentRequest,
+  };
+  const applePayConfigObjectWithMerchantUrl: IApplePayConfigObject = {
+    ...applePayConfigObject,
+    merchantUrl: 'https://somemerchanturl.com',
   };
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const applePayNetworkService: ApplePayNetworksService = mock(ApplePayNetworksService);
@@ -213,6 +218,7 @@ describe('ApplePayConfigService', () => {
         formId: 'test id',
         applePay: {
           merchantId: 'test string',
+          merchantUrl: 'https://example.com',
           buttonStyle: 'white',
           buttonText: 'donate',
           paymentRequest,
@@ -229,6 +235,7 @@ describe('ApplePayConfigService', () => {
         jwt: config.jwt,
         formId: config.formId,
         applePay: config.applePay,
+        merchantUrl: config.applePay.merchantUrl
       });
     });
   });
@@ -245,6 +252,19 @@ describe('ApplePayConfigService', () => {
         locale: payload.payload.locale,
         formId: 'st-form',
         jwtFromConfig: 'somerandomjwt',
+        validateMerchantRequest,
+        paymentRequest,
+      });
+    });
+
+    it('should return updated config object with merchantUrl', () => {
+      expect(applePayConfigService.updateConfigWithJwtData('somerandomjwtUpdated', applePayConfigObjectWithMerchantUrl)).toEqual({
+        applePayConfig: applePayConfig,
+        applePayVersion: 5,
+        locale: payload.payload.locale,
+        formId: 'st-form',
+        jwtFromConfig: 'somerandomjwt',
+        merchantUrl: 'https://somemerchanturl.com',
         validateMerchantRequest,
         paymentRequest,
       });
@@ -266,6 +286,7 @@ describe('ApplePayConfigService', () => {
         applePayConfig,
         applePayVersion: 5,
         locale: 'en_GB',
+        merchantUrl: 'https://example.com',
         formId: 'st-form',
         jwtFromConfig: jwt,
         validateMerchantRequest: {

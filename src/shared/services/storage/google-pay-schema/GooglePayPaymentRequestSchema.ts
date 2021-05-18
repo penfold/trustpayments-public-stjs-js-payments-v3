@@ -3,9 +3,10 @@ import Joi from 'joi';
 const GooglePayCardSchema: Joi.ObjectSchema = Joi.object().keys({
   allowPrepaidCards: Joi.boolean(),
   alloweCreditCards: Joi.boolean(),
-  allowedCardAuthMethods: Joi.array()
-    .items(Joi.string())
+  allowedAuthMethods: Joi.array()
+    .items(Joi.string().required(), Joi.string().required())
     .has(Joi.string().valid('PAN_ONLY', 'CRYPTOGRAM_3DS'))
+    .min(2)
     .required(),
   allowedCardNetworks: Joi.array()
     .items(Joi.string())
@@ -36,9 +37,10 @@ const GooglePayPaypalSchema: Joi.ObjectSchema = Joi.object().keys({
 });
 
 export const GooglePayPaymentRequestSchema: Joi.ObjectSchema = Joi.object().keys({
-  allowedPaymentMethods: Joi.object()
+  allowedPaymentMethods: Joi.array()
+  .items(Joi.object()
     .keys({
-      parameters: Joi.object().allow(GooglePayCardSchema, GooglePayPaypalSchema).required(),
+      parameters: GooglePayCardSchema,
       tokenizationSpecification: Joi.object()
         .keys({
           parameters: {
@@ -50,12 +52,14 @@ export const GooglePayPaymentRequestSchema: Joi.ObjectSchema = Joi.object().keys
         .required(),
       type: Joi.string().valid('CARD', 'PAYPAL').required(),
     })
-    .required(),
+    .min(1)
+    .required()),
   apiVersion: Joi.number().min(2).max(2).integer().required(),
   apiVersionMinor: Joi.number().min(0).max(0).integer().required(),
   callbackIntents: Joi.string().valid('PAYMENT_AUTHORIZATION', 'SHIPPING_ADDRESS', 'SHIPPING_OPTION'),
   emailRequired: Joi.boolean(),
-  merchantInfo: Joi.object().keys({ merchantId: Joi.string(), merchantName: Joi.string() }).required(),
+  merchantInfo: Joi.object().keys({ merchantId: Joi.string(), merchantName: Joi.string(), merchantOrigin: Joi.string() }).required(),
+  environment: Joi.string().valid('TEST', 'PRODUCTION'),
   shippingAddressParameters: Joi.object().keys({
     allowedCountryCodes: Joi.array().items(Joi.string()),
     phoneNumberRequired: Joi.boolean(),
@@ -81,6 +85,7 @@ export const GooglePayPaymentRequestSchema: Joi.ObjectSchema = Joi.object().keys
       ),
       totalPriceLabel: Joi.string(),
       totalPriceStatus: Joi.string().valid('NOT_CURRENTLY_KNOWN', 'ESTIMATED', 'FINAL'),
+      totalPrice: Joi.string(),
       transactionId: Joi.string(),
     })
     .required(),

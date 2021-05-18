@@ -12,19 +12,41 @@
     paths:
       - "${ARTIFACTS_BUILD_PATH}"
 
-build-sdk-local:
+.build-sdk-local:
   extends: .build-sdk
   variables:
     ARTIFACTS_BUILD_PATH: ".dist-local"
   script:
     - npm run build:dev
 
-build-sdk-mock:
+build-sdk-local-review:
+  extends:
+    - .build-sdk-local
+    - .rules-when-review
+  variables:
+    SCHEDULED_NIGHTLY_TESTS_WORKER: 'false'
+
+build-sdk-local-release:
+  extends:
+    - .build-sdk-local
+    - .rules-when-release
+
+.build-sdk-mock:
   extends: .build-sdk
   variables:
     ARTIFACTS_BUILD_PATH: ".dist-mock"
   script:
     - npm run build:mock --frame_url="https://library.securetrading.net:8443"
+
+build-sdk-mock-review:
+  extends:
+    - .build-sdk-mock
+    - .rules-when-review
+
+build-sdk-mock-release:
+  extends:
+    - .build-sdk-mock
+    - .rules-when-release
 
 build-sdk-review:
   extends:

@@ -73,7 +73,7 @@ describe('Payment', () => {
       expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
         ...card,
         merchant: 'data',
-      });
+      }, undefined);
     });
 
     it('should send remaining request types with cybertonica tid', async () => {
@@ -90,7 +90,7 @@ describe('Payment', () => {
         ...card,
         merchant: 'data',
         fraudcontroltransactionid: cybertonicaTid,
-      });
+      }, undefined);
     });
 
     it('should send remaining request types with 3D response', async () => {
@@ -104,7 +104,7 @@ describe('Payment', () => {
           cachetoken: 'foobar',
           errorcode: '0',
           threedresponse: 'xyzzzz',
-        } as unknown) as IThreeDQueryResponse
+        } as unknown) as IThreeDQueryResponse,
       );
       // @ts-ignore
       expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
@@ -112,7 +112,7 @@ describe('Payment', () => {
         merchant: 'data',
         cachetoken: 'foobar',
         threedresponse: 'xyzzzz',
-      });
+      }, undefined);
     });
 
     it('should not send remaining request types when previous response has RESULT customeroutput', async () => {
@@ -126,7 +126,7 @@ describe('Payment', () => {
           cachetoken: 'foobar',
           threedresponse: 'xyzzzz',
           errorcode: '0',
-        } as unknown) as IThreeDQueryResponse
+        } as unknown) as IThreeDQueryResponse,
       );
 
       // @ts-ignore
@@ -176,7 +176,7 @@ describe('Payment', () => {
         walletsource: 'APPLEPAY',
         wallettoken: 'encryptedpaymentdata',
         merchant: 'data',
-      });
+      }, undefined);
     });
 
     it('should send AUTH request with wallet and additional data', async () => {
@@ -189,7 +189,7 @@ describe('Payment', () => {
         walletsource: 'APPLEPAY',
         wallettoken: 'encryptedpaymentdata',
         merchant: 'data',
-      });
+      }, undefined);
     });
 
     it('should send CACHETOKENISE request with wallet and additional data', async () => {
@@ -202,7 +202,7 @@ describe('Payment', () => {
         walletsource: 'APPLEPAY',
         wallettoken: 'encryptedpaymentdata',
         merchant: 'data',
-      });
+      }, undefined);
     });
 
     it('should publish the response when TDQ is the last request type and there is threedresponse', async () => {
@@ -249,6 +249,21 @@ describe('Payment', () => {
       expect((result as any).response).toBe(response);
       verify(stCodecSpy.publishResponse(response, 'jwt', 'foobar')).never();
       verify(notificationService.success(PAYMENT_SUCCESS)).never();
+    });
+
+    it('should send a request with wallet param and merchantUrl', async () => {
+      await instance.processPayment(
+        [RequestType.AUTH],
+        wallet,
+        { wallettoken: 'overridden' },
+        undefined,
+        'https://somemerchanturl.com',
+      );
+      // @ts-ignore
+      expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
+        walletsource: 'APPLEPAY',
+        wallettoken: 'encryptedpaymentdata',
+      }, 'https://somemerchanturl.com');
     });
   });
 

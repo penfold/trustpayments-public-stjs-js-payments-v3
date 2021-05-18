@@ -1,5 +1,6 @@
 import Joi from 'joi';
-import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
+import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
+import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/three-d-secure/IThreeDSecure';
 import { ApplePaySchema } from './apple-pay-schema/ApplePaySchema';
 import { GooglePaySchema } from './google-pay-schema/GooglePaySchema';
 import { VisaCheckoutSchema } from './VisaCheckoutSchema';
@@ -35,7 +36,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   errorCallback: Joi.any(),
   errorReporting: Joi.boolean(),
   fieldsToSubmit: Joi.array().items(Joi.string().valid('pan', 'expirydate', 'securitycode')),
-  googlePay: GooglePaySchema,
+  [GooglePayConfigName]: GooglePaySchema,
   formId: Joi.string(),
   init: Joi.object()
     .keys({

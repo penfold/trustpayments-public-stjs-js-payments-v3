@@ -44,6 +44,7 @@ import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDPr
 import { PaymentController } from '../../core/services/payments/PaymentController';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import { ITranslator } from '../../core/shared/translator/ITranslator';
+import { GooglePay } from '../../../client/integrations/google-pay/GooglePay';
 
 @Service()
 export class ControlFrame {
@@ -83,14 +84,13 @@ export class ControlFrame {
     private _notification: NotificationService,
     private _cybertonica: Cybertonica,
     private _threeDProcess: ThreeDProcess,
-    private _configService: ConfigService,
     private _messageBus: IMessageBus,
     private _frame: Frame,
     private _jwtDecoder: JwtDecoder,
     private _visaCheckoutClient: VisaCheckoutClient,
     private _applePayClient: ApplePayClient,
     private paymentController: PaymentController,
-    private translator: ITranslator
+    private translator: ITranslator,
   ) {
     this.init();
     this._initVisaCheckout();
