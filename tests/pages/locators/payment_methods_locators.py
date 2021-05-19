@@ -60,7 +60,6 @@ class PaymentMethodsLocators:
     callback_cancel_counter: By = (By.ID, 'cancel-callback-counter')
     callback_submit_counter: By = (By.ID, 'submit-callback-counter')
     browser_info_callback: By = (By.ID, 'st-browser-info')
-    three_ds_challenge_cancel_popup: By = (By.CLASS_NAME, 'tp-3ds-popup-view-header-button')
 
     card_icon_in_input_field: By = (By.ID, 'card-icon')
 
@@ -75,8 +74,6 @@ class PaymentMethodsLocators:
     cardinal_v1_iframe: By = (By.ID, FieldType.V1_PARENT_IFRAME.value)
     cardinal_v1_authentication_code_field: By = (By.ID, 'password')
     cardinal_v1_authentication_submit_btn: By = (By.NAME, 'UsernamePasswordEntry')
-
-
 
     not_private_connection_text: By = (By.XPATH, '//*[contains(text(),\'This Connection Is Not Private\')]')
     animated_card: By = (By.ID, 'st-animated-card')
