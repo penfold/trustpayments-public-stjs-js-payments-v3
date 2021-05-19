@@ -4,6 +4,7 @@ from pages.animated_card_page import AnimatedCardPage
 from pages.payment_methods_page import PaymentMethodsPage
 from pages.payment_methods_page_mock import PaymentMethodsPageMock
 from pages.reactjs_page import ReactjsPage
+from pages.three_ds_page import ThreeDSPage
 from pages.visa_checkout_page import VisaCheckoutPage
 
 
@@ -13,6 +14,7 @@ class Pages(Enum):
     ANIMATED_CARD_PAGE = AnimatedCardPage
     VISA_CHECKOUT_PAGE = VisaCheckoutPage
     REACTJS_PAGE = ReactjsPage
+    THREE_DS_PAGE = ThreeDSPage
 
 
 class PageFactory:
