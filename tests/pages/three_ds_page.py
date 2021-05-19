@@ -1,18 +1,7 @@
-import json
-from urllib.parse import urlparse, parse_qs
+from selenium.common.exceptions import NoSuchElementException
 
-from assertpy import assert_that
-
-from configuration import CONFIGURATION
 from pages.base_page import BasePage
-from pages.locators.payment_methods_locators import PaymentMethodsLocators
 from pages.locators.three_ds_locators import ThreeDSMethodsLocators
-from utils.configurations import jwt_generator
-from utils.enums.auth_data import AuthData
-from utils.enums.auth_type import AuthType
-from utils.enums.field_type import FieldType
-from utils.enums.payment_type import PaymentType
-from utils.helpers.request_executor import add_to_shared_dict
 
 
 class ThreeDSPage(BasePage):
@@ -34,7 +23,7 @@ class ThreeDSPage(BasePage):
     def cancel_3ds_authentication(self):
         try:
             self._actions.find_element(ThreeDSMethodsLocators.three_ds_challenge_popup_cancel_button)
-        except:
+        except NoSuchElementException:
             self._actions.click(ThreeDSMethodsLocators.three_ds_challenge_cancel_button)
         else:
             self._actions.click(ThreeDSMethodsLocators.three_ds_challenge_popup_cancel_button)
