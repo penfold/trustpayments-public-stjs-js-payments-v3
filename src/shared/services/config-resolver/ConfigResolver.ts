@@ -37,7 +37,6 @@ export class ConfigResolver {
       fieldsToSubmit: this._getValueOrDefault(config.fieldsToSubmit, DefaultConfig.fieldsToSubmit),
       formId: this._getValueOrDefault(config.formId, DefaultConfig.formId),
       googlePay: this._setGooglePayConfig(config.googlePay),
-      init: this._getValueOrDefault(config.init, DefaultConfig.init),
       jwt: this._getValueOrDefault(config.jwt, DefaultConfig.jwt),
       livestatus: this._getValueOrDefault(config.livestatus, DefaultConfig.livestatus),
       origin: this._getValueOrDefault(config.origin, DefaultConfig.origin),

@@ -410,18 +410,8 @@ export class ControlFrame {
   }
 
   private _initThreeDProcess(config: IConfig): void {
-    let initialTokens: IThreeDSTokens;
 
-    const { threedinit, cachetoken } = config.init || {};
-
-    if (threedinit && cachetoken) {
-      initialTokens = {
-        jwt: threedinit,
-        cacheToken: cachetoken,
-      };
-    }
-
-    this._threeDProcess.init(initialTokens).subscribe({
+    this._threeDProcess.init().subscribe({
       next: () => {
         this._isPaymentReady = true;
 

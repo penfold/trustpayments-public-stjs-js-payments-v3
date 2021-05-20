@@ -58,13 +58,6 @@ describe('ThreeDProcess', () => {
       });
     });
 
-    it('initializes 3ds verification service using tokens passed as argument', done => {
-      threeDProcess.init({ jwt: 'foo', cacheToken: 'bar' }).subscribe(() => {
-        verify(verificationServiceMock.init('foo')).once();
-        done();
-      });
-    });
-
     it('unlocks the submit button', done => {
       spyOn(messageBusMock, 'publish');
 

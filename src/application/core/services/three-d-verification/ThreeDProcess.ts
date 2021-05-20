@@ -30,8 +30,8 @@ export class ThreeDProcess {
     private verificationResultHandler: VerificationResultHandler
   ) {}
 
-  init(tokens?: IThreeDSTokens): Observable<void> {
-    const initialTokens = tokens ? of(tokens) : this.tokenProvider.getTokens();
+  init(): Observable<void> {
+    const initialTokens = this.tokenProvider.getTokens();
     const updatedTokens = this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.UPDATE_JWT),
       switchMap(() => this.tokenProvider.getTokens())

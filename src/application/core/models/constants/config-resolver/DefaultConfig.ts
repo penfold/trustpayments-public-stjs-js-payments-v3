@@ -5,7 +5,6 @@ import { DefaultComponentsIds } from './DefaultComponentsIds';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { DefaultComponents } from './DefaultComponents';
 import { DefaultPlaceholders } from './DefaultPlaceholders';
-import { DefaultInit } from './DefaultInit';
 import { MERCHANT_FORM_SELECTOR } from '../Selectors';
 
 export const DefaultConfig: IConfig = {
@@ -25,7 +24,6 @@ export const DefaultConfig: IConfig = {
   errorReporting: true,
   fieldsToSubmit: DefaultFieldsToSubmit,
   formId: MERCHANT_FORM_SELECTOR,
-  init: DefaultInit,
   jwt: '',
   livestatus: 0,
   origin: window.location.origin,
