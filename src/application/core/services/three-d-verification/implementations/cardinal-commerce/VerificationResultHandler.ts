@@ -1,6 +1,6 @@
 import { Observable, of, throwError } from 'rxjs';
 import { Service } from 'typedi';
-import { PAYMENT_CANCELLED, PAYMENT_ERROR } from '../../../../models/constants/Translations';
+import { PAYMENT_ERROR } from '../../../../models/constants/Translations';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { ActionCode } from './data/ActionCode';
@@ -35,13 +35,6 @@ export class VerificationResultHandler {
 
         return throwError(errorResponse);
       }
-      case ActionCode.CANCELLED:
-        return throwError({
-          ...response,
-          errorcode: '0',
-          errormessage: PAYMENT_CANCELLED,
-          isCancelled: true,
-        });
     }
   }
 }

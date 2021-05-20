@@ -48,8 +48,8 @@ export class ThreeDSecureClient {
 
   private run3DSMethod$({ methodUrl, notificationUrl, transactionId }: IMethodUrlData): Observable<MethodURLResultInterface> {
     return this.threeDSecure.run3DSMethod$(
-      notificationUrl,
       transactionId,
+      notificationUrl,
       methodUrl,
     );
   }

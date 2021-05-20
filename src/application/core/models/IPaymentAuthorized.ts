@@ -31,4 +31,5 @@ export interface IPaymentAuthorized {
   transactionreference: string;
   transactionstartedtimestamp: string;
   walletsource?: string;
+  isCancelled?: boolean;
 }

@@ -180,6 +180,26 @@ describe('CommonFrames', () => {
         true
       );
     });
+
+    it('should call submit callback when TP-3DS popup is cancelled - isCancelled flag', done => {
+      const data = {
+        errorcode: '0',
+        errormessage: PAYMENT_CANCELLED,
+        jwt: 'testjwt',
+        baseamount: '20',
+        eci: 'eci',
+        enrolled: Enrolled.Y,
+        requesttypedescription: RequestType.THREEDQUERY,
+        isCancelled: true,
+      };
+
+      messageBus.pipe(ofType(PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK)).subscribe(event => {
+        expect(event.data).toBe(data);
+        done();
+      });
+
+      messageBus.publish({ type: PUBLIC_EVENTS.TRANSACTION_COMPLETE, data });
+    });
   });
 
   describe('submit process when payment status is error', () => {
