@@ -10,7 +10,7 @@ class ThreeDsPage(BasePage):
         self._waits.wait_for_element_to_be_displayed(ThreeDSMethodsLocators.three_ds_challenge_submit_button)
         self._actions.switch_to_default_iframe()
 
-    def fill_3ds_challenge_modal(self, data):
+    def fill_3ds_challenge_modal_and_submit(self, data):
         self._actions.switch_to_iframe(ThreeDSMethodsLocators.three_ds_iframe[1])
         self._actions.send_keys(ThreeDSMethodsLocators.three_ds_challenge_input, data)
         self._actions.click(ThreeDSMethodsLocators.three_ds_challenge_submit_button)
