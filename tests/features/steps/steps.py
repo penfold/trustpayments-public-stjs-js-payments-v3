@@ -35,6 +35,7 @@ def step_impl(context, e2e_config, jwt_config):
     # merge both dictionaries (old is overridden by additional attr)
     jwt = encode_jwt(merge_json_conf_with_additional_attr(jwt_config_from_json_dict, jwt_payload_dict))
     context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
+    context.config_name = e2e_config
 
 
 @step('User fills payment form with defined card (?P<card>.+)')
