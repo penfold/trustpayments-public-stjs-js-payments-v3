@@ -8,20 +8,19 @@ import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { GatewayClient } from '../../../GatewayClient';
 import { ThreeDSecureVerificationService } from './ThreeDSecureVerificationService';
-import { toArray } from 'rxjs/operators';
 import { ICard } from '../../../../models/ICard';
 import { IMerchantData } from '../../../../models/IMerchantData';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { ThreeDVerificationProviderName } from '../../data/ThreeDVerificationProviderName';
 import { RequestType } from '../../../../../../shared/types/RequestType';
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { IThreeDLookupResponse } from '../../../../models/IThreeDLookupResponse';
 import { ThreeDSecureMethodService } from './ThreeDSecureMethodService';
 import { BrowserDataProvider } from './BrowserDataProvider';
 import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
-import { Enrolled } from '../../../../models/constants/Enrolled';
+import { Enrollment } from '../../../../models/constants/Enrollment';
 import DoneCallback = jest.DoneCallback;
 
 describe('ThreeDSecureVerificationService', () => {
@@ -83,11 +82,8 @@ describe('ThreeDSecureVerificationService', () => {
   });
 
   describe('binLookup()', () => {
-    it('should return empty observable', done => {
-      sut.binLookup$().pipe(toArray()).subscribe(result => {
-        expect(result).toEqual([]);
-        done();
-      });
+    it('should return empty observable', () => {
+      expect(sut.binLookup$()).toEqual(EMPTY);
     });
   });
 
@@ -116,7 +112,7 @@ describe('ThreeDSecureVerificationService', () => {
       acquirerresponsecode: '',
       acquirerresponsemessage: '',
       acsurl: 'https://acsurl',
-      enrolled: Enrolled.Y,
+      enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       threedpayload: '',
       transactionreference: '',
       requesttypescription: '',
@@ -194,7 +190,7 @@ describe('ThreeDSecureVerificationService', () => {
       });
     });
 
-    it('runs the challenge and returns its result', done => {
+    it('runs the challenge and returns its result if acsurl is not undefined', done => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(result => {
         verify(challengeService.doChallenge$(threeDQueryResponseMock)).once();
         expect(result).toBe(updatedThreeDQueryResponseMock);

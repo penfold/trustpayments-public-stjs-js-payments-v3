@@ -13,7 +13,7 @@ import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { of } from 'rxjs';
 import { IVerificationResult } from './data/IVerificationResult';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
-import { Enrolled } from '../../../../models/constants/Enrolled';
+import { Enrollment } from '../../../../models/constants/Enrollment';
 import spyOn = jest.spyOn;
 
 describe('CardinalChallengeService', () => {
@@ -27,7 +27,7 @@ describe('CardinalChallengeService', () => {
     acquirerresponsecode: '',
     acquirerresponsemessage: '',
     acsurl: 'https://acsurl',
-    enrolled: Enrolled.Y,
+    enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
     threedpayload: 'threedpayload',
     transactionreference: '',
     requesttypescription: '',
@@ -61,7 +61,7 @@ describe('CardinalChallengeService', () => {
     it('returns false if enrolled is not Y', () => {
       expect(cardinalChallengeService.isChallengeRequired({
         ...threeDQueryResponse,
-        enrolled: Enrolled.U,
+        enrolled: Enrollment.AUTHENTICATION_UNAVAILABLE,
       })).toBe(false);
     });
 

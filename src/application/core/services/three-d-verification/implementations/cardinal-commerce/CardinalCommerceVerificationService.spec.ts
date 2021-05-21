@@ -17,7 +17,7 @@ import { IMerchantData } from '../../../../models/IMerchantData';
 import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { CardinalChallengeService } from './CardinalChallengeService';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
-import { Enrolled } from '../../../../models/constants/Enrolled';
+import { Enrollment } from '../../../../models/constants/Enrollment';
 import spyOn = jest.spyOn;
 
 describe('CardinalCommerceVerificationService', () => {
@@ -42,7 +42,7 @@ describe('CardinalCommerceVerificationService', () => {
     acquirerresponsecode: '',
     acquirerresponsemessage: '',
     acsurl: 'https://acsurl',
-    enrolled: Enrolled.Y,
+    enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
     threedpayload: '',
     transactionreference: '',
     requesttypescription: '',
@@ -174,6 +174,7 @@ describe('CardinalCommerceVerificationService', () => {
         cardMock,
         merchantData,
       ).subscribe((result) => {
+        verify(challengeService.runChallenge$(anything(), anything())).never();
         expect(result).toEqual({
           ...threeDQueryResponseMock,
           cachetoken: 'cachetoken',

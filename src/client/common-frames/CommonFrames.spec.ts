@@ -25,7 +25,7 @@ import { Translator } from '../../application/core/shared/translator/Translator'
 import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
-import { Enrolled } from '../../application/core/models/constants/Enrolled';
+import { Enrollment } from '../../application/core/models/constants/Enrollment';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set({ id: TranslatorToken, type: Translator });
@@ -154,7 +154,7 @@ describe('CommonFrames', () => {
         threedresponse: 'threedresponse',
         baseamount: 'some amount',
         eci: 'test eci',
-        enrolled: Enrolled.Y,
+        enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
@@ -188,7 +188,7 @@ describe('CommonFrames', () => {
         jwt: 'testjwt',
         baseamount: '20',
         eci: 'eci',
-        enrolled: Enrolled.Y,
+        enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
         requesttypedescription: RequestType.THREEDQUERY,
         isCancelled: true,
       };
@@ -210,7 +210,7 @@ describe('CommonFrames', () => {
       threedresponse: 'some threedresponse',
       baseamount: 'some amount',
       eci: 'test eci',
-      enrolled: Enrolled.Y,
+      enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
     };
 
     it('should call submit process with 50003 error status and check if jwt and threedresponse fields were included', done => {
@@ -243,7 +243,7 @@ describe('CommonFrames', () => {
         threedresponse: 'some threedresponse',
         baseamount: 'some amount',
         eci: 'test eci',
-        enrolled: Enrolled.Y,
+        enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
@@ -277,7 +277,7 @@ describe('CommonFrames', () => {
         threedresponse: 'some threedresponse',
         baseamount: 'some amount',
         eci: 'test eci',
-        enrolled: Enrolled.Y,
+        enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
@@ -309,7 +309,7 @@ describe('CommonFrames', () => {
         baseamount: 'some amount',
         acsurl: 'some acs url',
         eci: 'test eci',
-        enrolled: Enrolled.U,
+        enrolled: Enrollment.AUTHENTICATION_UNAVAILABLE,
         threedresponse: 'some threedresponse',
         customeroutput: CustomerOutput.THREEDREDIRECT,
       };

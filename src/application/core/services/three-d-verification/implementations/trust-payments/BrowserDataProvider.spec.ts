@@ -15,7 +15,7 @@ describe('BrowserDataProvider', () => {
     sut = new BrowserDataProvider(instance(interFrameCommunicatorMock));
   });
 
-  it('gets the browser data from parent frame and maps it to lowercase', done => {
+  it('gets the browser data from parent frame and maps keys to lowercase and values to strings', done => {
     const queryEvent: IMessageBusEvent = { type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA };
     const browserData: BrowserDataInterface = {
       browserJavaEnabled: true,

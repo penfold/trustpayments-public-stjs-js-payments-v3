@@ -13,7 +13,7 @@ import { RequestType } from '../../../../shared/types/RequestType';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
-import { Enrolled } from '../../models/constants/Enrolled';
+import { Enrollment } from '../../models/constants/Enrollment';
 
 describe('ThreeDProcess', () => {
   let messageBusMock: IMessageBus;
@@ -98,7 +98,7 @@ describe('ThreeDProcess', () => {
       acquirerresponsecode: '',
       acquirerresponsemessage: '',
       acsurl: '',
-      enrolled: Enrolled.Y,
+      enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       threedpayload: '',
       transactionreference: '',
       requesttypescription: '',

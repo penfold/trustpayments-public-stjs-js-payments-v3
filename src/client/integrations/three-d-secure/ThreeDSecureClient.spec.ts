@@ -1,10 +1,11 @@
-import { ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode, ThreeDSecureInterface, ThreeDSecureVersion } from '3ds-sdk-js';
+import { ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode,
+  ThreeDSecureFactory,
+  ThreeDSecureInterface, ThreeDSecureVersion } from '3ds-sdk-js';
 import { Observable, of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
-import { ThreeDSecureProvider } from './three-d-secure-provider/ThreeDSecureProvider';
 import { ThreeDSecureClient } from './ThreeDSecureClient';
 import DoneCallback = jest.DoneCallback;
 import { IMethodUrlData } from './IMethodUrlData';
@@ -12,7 +13,7 @@ import { IChallengeData } from './IChallengeData';
 
 describe('ThreeDSecureClient', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
-  let threeDSecureProviderMock: ThreeDSecureProvider;
+  let threeDSecureFactoryMock: ThreeDSecureFactory;
   let threeDSecureMock: ThreeDSecureInterface;
   let sut: ThreeDSecureClient;
   let communicationCallbacks: Map<string, (event: IMessageBusEvent) => any>;
@@ -48,7 +49,7 @@ describe('ThreeDSecureClient', () => {
 
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
-    threeDSecureProviderMock = mock(ThreeDSecureProvider);
+    threeDSecureFactoryMock = mock(ThreeDSecureFactory);
     threeDSecureMock = mock<ThreeDSecureInterface>();
     communicationCallbacks = new Map();
 
@@ -60,7 +61,7 @@ describe('ThreeDSecureClient', () => {
       };
     });
 
-    when(threeDSecureProviderMock.getSdk()).thenReturn(instance(threeDSecureMock));
+    when(threeDSecureFactoryMock.create()).thenReturn(instance(threeDSecureMock));
     when(threeDSecureMock.init$(anything())).thenReturn(of(configMock));
     when(threeDSecureMock.run3DSMethod$(anything(), anything(), anything())).thenReturn(of(methodUrlResultMock));
     when(threeDSecureMock.doChallenge$(anything(), anything(), anything())).thenReturn(of(challengeResultMock));
@@ -68,7 +69,7 @@ describe('ThreeDSecureClient', () => {
 
     sut = new ThreeDSecureClient(
       instance(interFrameCommunicatorMock),
-      instance(threeDSecureProviderMock),
+      instance(threeDSecureFactoryMock),
     );
 
     sut.init();
@@ -94,8 +95,8 @@ describe('ThreeDSecureClient', () => {
 
       sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_METHOD_URL, data: methodUrlData }).subscribe(result => {
         verify(threeDSecureMock.run3DSMethod$(
-          methodUrlData.notificationUrl,
           methodUrlData.transactionId,
+          methodUrlData.notificationUrl,
           methodUrlData.methodUrl,
         )).once();
         expect(result).toBe(methodUrlResultMock);
@@ -123,5 +124,4 @@ describe('ThreeDSecureClient', () => {
       });
     });
   });
-
 });

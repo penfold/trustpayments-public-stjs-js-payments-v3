@@ -9,7 +9,7 @@ import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { ChallengeResultInterface, ResultActionCode, ThreeDSecureVersion } from '3ds-sdk-js';
 import { of } from 'rxjs';
-import { Enrolled } from '../../../../models/constants/Enrolled';
+import { Enrollment } from '../../../../models/constants/Enrollment';
 
 describe('ThreeDSecureChallengeService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
@@ -32,7 +32,7 @@ describe('ThreeDSecureChallengeService', () => {
       acquirerresponsecode: '',
       acquirerresponsemessage: '',
       acsurl: 'https://acsurl',
-      enrolled: Enrolled.Y,
+      enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       threedpayload: '',
       transactionreference: '',
       requesttypescription: '',

@@ -8,10 +8,10 @@ import {
   ChallengeResultInterface,
   ConfigInterface,
   MethodURLResultInterface,
+  ThreeDSecureFactory,
 } from '3ds-sdk-js';
 import { IMethodUrlData } from './IMethodUrlData';
 import { IChallengeData } from './IChallengeData';
-import { ThreeDSecureProvider } from './three-d-secure-provider/ThreeDSecureProvider';
 
 @Service()
 export class ThreeDSecureClient {
@@ -19,11 +19,11 @@ export class ThreeDSecureClient {
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
-    private threeDSecureProvider: ThreeDSecureProvider,
+    private threeDSecureFactory: ThreeDSecureFactory,
   ) {}
 
   init(): void {
-    this.threeDSecure = this.threeDSecureProvider.getSdk();
+    this.threeDSecure = this.threeDSecureFactory.create();
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_INIT)

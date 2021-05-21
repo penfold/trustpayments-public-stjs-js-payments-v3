@@ -11,7 +11,7 @@ import { switchMap, tap } from 'rxjs/operators';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { VerificationResultHandler } from './VerificationResultHandler';
-import { Enrolled } from '../../../../models/constants/Enrolled';
+import { Enrollment } from '../../../../models/constants/Enrollment';
 
 @Service()
 export class CardinalChallengeService {
@@ -22,7 +22,7 @@ export class CardinalChallengeService {
   }
 
   isChallengeRequired(threeDQueryResponse: IThreeDQueryResponse): boolean {
-    return threeDQueryResponse.enrolled === Enrolled.Y && threeDQueryResponse.acsurl !== undefined;
+    return threeDQueryResponse.enrolled === Enrollment.AUTHENTICATION_SUCCESSFUL && threeDQueryResponse.acsurl !== undefined;
   }
 
   runChallenge$(threeDQueryResponse: IThreeDQueryResponse, jsInitResponse: IThreeDInitResponse): Observable<IThreeDQueryResponse> {

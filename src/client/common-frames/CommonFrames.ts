@@ -18,7 +18,7 @@ import { IStyles } from '../../shared/model/config/IStyles';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { Validation } from '../../application/core/shared/validation/Validation';
-import { Enrolled } from '../../application/core/models/constants/Enrolled';
+import { Enrollment } from '../../application/core/models/constants/Enrollment';
 import { RequestType } from '../../shared/types/RequestType';
 
 @Service()
@@ -130,7 +130,7 @@ export class CommonFrames {
     }
 
     if (customeroutput === CustomerOutput.THREEDREDIRECT) {
-      return Boolean(threedresponse || !acsurl || enrolled !== Enrolled.Y);
+      return Boolean(threedresponse || !acsurl || enrolled !== Enrollment.AUTHENTICATION_SUCCESSFUL);
     }
 
     return true;

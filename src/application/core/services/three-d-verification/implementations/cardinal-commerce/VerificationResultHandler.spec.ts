@@ -5,7 +5,7 @@ import { IVerificationResult } from './data/IVerificationResult';
 import { ActionCode } from './data/ActionCode';
 import { PAYMENT_ERROR } from '../../../../models/constants/Translations';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
-import { Enrolled } from '../../../../models/constants/Enrolled';
+import { Enrollment } from '../../../../models/constants/Enrollment';
 import DoneCallback = jest.DoneCallback;
 
 describe('VerificationResultHandler', () => {
@@ -17,7 +17,7 @@ describe('VerificationResultHandler', () => {
     acquirerresponsecode: '0',
     acquirerresponsemessage: 'Test message',
     acsurl: 'https://acsurl',
-    enrolled: Enrolled.Y,
+    enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
     threedpayload: '3dpayload',
     transactionreference: 'ref',
     requesttypescription: 'THREEDQUERY',
@@ -93,7 +93,7 @@ describe('VerificationResultHandler', () => {
             jwt: 'jwt',
             acquirertransactionreference: 'qwe',
             acsurl: 'https://acsurl',
-            enrolled: Enrolled.Y,
+            enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
             threedpayload: '3dpayload',
             transactionreference: 'ref',
             requesttypescription: 'THREEDQUERY',
