@@ -18,7 +18,7 @@ export class BrowserDataProvider {
 
     return from(this.interFrameCommunicator.query<BrowserDataInterface>(queryEvent, MERCHANT_PARENT_FRAME)).pipe(
       map((browserData: BrowserDataInterface) => Object.entries(browserData).reduce(
-        (reduced, [key, value]) => ({ ...reduced, [key.toLowerCase()]: String(value) }),
+        (reduced, [key, value]) => ({ ...reduced, [key.toLowerCase()]: value === undefined ? value : String(value) }),
         {} as IBrowserData,
       )),
     );
