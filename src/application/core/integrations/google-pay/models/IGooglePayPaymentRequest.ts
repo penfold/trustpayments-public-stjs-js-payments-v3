@@ -41,6 +41,7 @@ interface IGooglePayTransactionInfo {
 interface IGooglePayMerchantInfo {
   merchantId: string;
   merchantName?: string;
+  merchantOrigin?: string;
 }
 
 interface GooglePayAllowedPaymentMethods {
@@ -71,6 +72,7 @@ export interface IGooglePayPaymentRequest {
   apiVersionMinor: number;
   callbackIntents?: IGooglePayCallbackIntents;
   emailRequired?: boolean;
+  environment: 'TEST' | 'PRODUCTION';
   merchantInfo: IGooglePayMerchantInfo;
   shippingAddressParameters?: GooglePayShippingAddressParameters;
   shippingAddressRequired?: boolean;

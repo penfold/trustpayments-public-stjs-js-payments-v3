@@ -18,7 +18,7 @@ describe('RequestEncoderService', () => {
       storeMock = mock(Store);
       str = new RequestEncoderService(instance(jwtDecoderMock), instance(storeMock));
 
-      const payload = { payload: {}, sitereference: 'foo' };
+      const payload = { payload: { sitereference: 'foo' } };
       const statePayload = {
         jwt: 'somejwt',
         storage: {},

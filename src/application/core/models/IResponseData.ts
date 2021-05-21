@@ -14,4 +14,5 @@ export interface IResponseData {
   walletsource?: 'APPLEPAY' | 'VISACHECKOUT';
   errordata?: string[];
   merchantUrl?: string;
+  isCancelled?: boolean;
 }
