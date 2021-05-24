@@ -1,6 +1,6 @@
 # type: ignore[no-redef]
 
-from behave import use_step_matcher, step
+from behave import use_step_matcher, step, then
 
 from pages.page_factory import Pages
 from utils.enums.auth_data import AuthData
@@ -30,3 +30,15 @@ def step_impl(context):
         three_ds_page.cancel_3ds_inline_challenge()
     else:
         three_ds_page.cancel_3ds_popup_challenge()
+
+
+@then('User see 3ds SDK challenge \'cancel\' button translated into (?P<locale_code>.+)')
+def step_impl(context, locale_code):
+    three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
+    three_ds_page.validate_3ds_challenge_cancel_btn_translation_locale(locale_code)
+
+
+@then('User see 3ds SDK challenge \'cancel\' button translation is "(?P<config_translation>.+)"')
+def step_impl(context, config_translation):
+    three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
+    three_ds_page.validate_3ds_challenge_cancel_btn_translation(config_translation)
