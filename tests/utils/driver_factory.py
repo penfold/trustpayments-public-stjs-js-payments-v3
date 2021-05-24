@@ -136,7 +136,7 @@ def _get_remote_capabilities(configuration):
         'browserstack.networkLogs': network_logs,
         'browserstack.console': 'errors',
         'browserstack.autoWait': 0,
-        'browserstack.use_w3c' : 'true',
+        'browserstack.use_w3c': 'true',
         'ie.ensureCleanSession': 'true',
         'ie.forceCreateProcessApi': 'true',
         'resolution': '1920x1080'

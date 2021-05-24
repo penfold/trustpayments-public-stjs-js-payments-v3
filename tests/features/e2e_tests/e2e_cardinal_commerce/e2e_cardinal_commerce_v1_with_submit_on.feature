@@ -1,10 +1,10 @@
+@cardinal_commerce_v1
 Feature: Cardinal Commerce E2E tests v1 with redirection after payment
   As a user
   I want to use card payments method
   In order to check Cardinal Commerce integration
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_1 - Successful Authentication with submitOnSuccess and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -33,7 +33,6 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none | should not be none |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_2 - Failed Signature with submitOn and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -59,7 +58,6 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | should not be none |
 
 
-  @e2e_cardinal_commerce_v1 @e2e_smoke_test
   Scenario Outline: TC_3 - Failed Authentication with submitOnError and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -84,7 +82,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | THREEDQUERY AUTH         | should not be none |
       | ACCOUNTCHECK THREEDQUERY | should not be none |
 
-  @e2e_cardinal_commerce_v1
+
   Scenario Outline: TC_4 - Attempts/Non-Participating with submitOnSuccess and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -112,7 +110,6 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none | should not be none |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_6 - Not Enrolled with submitOnSuccess and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -139,7 +136,6 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_7 - Unavailable with submitOnSuccess and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -166,7 +162,6 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_8 - Merchant Not Active with submitOn and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -192,7 +187,6 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | 60010     | should be none | should be none |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_9 - Cmpi lookup error with submitOn and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -218,7 +212,6 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | 60010     | should be none | should be none |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_10 - Cmpi authenticate error with submitOnError and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -244,7 +237,6 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | ACCOUNTCHECK THREEDQUERY | should not be none |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_11 - Authentication Unavailable with submitOnSuccess and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -273,7 +265,6 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none | should not be none |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_12 - Bypassed Authentication with submitOnSuccess and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -296,7 +287,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
 
-  @e2e_cardinal_commerce_v1
+
   Scenario Outline: retry payment after failed transaction with submitOnSuccess and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |

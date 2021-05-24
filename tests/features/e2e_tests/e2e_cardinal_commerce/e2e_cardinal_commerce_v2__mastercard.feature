@@ -4,7 +4,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
   I want to use card payments method
   In order to check Cardinal Commerce integration
 
-  @base_config @cardinal_commerce_v2.0
+
   Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -26,7 +26,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_2 - Failed Frictionless Authentication - Card: MASTERCARD_FAILED_FRICTIONLESS_AUTH
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -48,7 +47,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_3 - Attempts Stand-In Frictionless Authentication - Card: MASTERCARD_FRICTIONLESS
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -70,7 +68,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_4 - Unavailable Frictionless Authentication from the Issuer - Card: MASTERCARD_UNAVAILABLE_FRICTIONLESS_AUTH
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -92,7 +89,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_5 - Rejected Frictionless Authentication by the Issuer - Card: MASTERCARD_REJECTED_FRICTIONLESS_AUTH
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -112,7 +108,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_6 - Authentication Not Available on Lookup - Card: MASTERCARD_AUTH_NOT_AVAILABLE_ON_LOOKUP
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -132,7 +127,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_7 - Error on Lookup - Card: MASTERCARD_ERROR_ON_LOOKUP
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -152,7 +146,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_9 -Successful Step Up Authentication - Card: MASTERCARD_NON_FRICTIONLESS
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -173,7 +166,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_10 - Failed Step Up Authentication - Card: MASTERCARD_STEP_UP_AUTH_FAILED
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -194,7 +186,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_11 - Step Up Authentication is Unavailable - Card: MASTERCARD_STEP_UP_AUTH_UNAVAILABLE
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -215,7 +206,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_12 - Error on Authentication - Card: MASTERCARD_ERROR_ON_AUTH
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -238,7 +228,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_13 - Bypassed Authentication - Card: MASTERCARD_BYPASSED_AUTH
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -258,7 +247,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: Prompt for Whitelist
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -279,7 +267,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | ACCOUNTCHECK THREEDQUERY |
 
 # ToDo - This test case is no longer supported by Cardinal - to clarify
-#  @base_config @cardinal_commerce_v2.0
+#
 #  Scenario: Pre-Whitelisted - Visabase_config
 #    When User fills payment form with defined card VISA_PRE_WHITELISTED_VISABASE_CONFIG
 #    And User clicks Pay button
@@ -288,7 +276,6 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
 #    And User will see that notification frame has "green" color
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: Support TransStatus I
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |

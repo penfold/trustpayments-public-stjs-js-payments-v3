@@ -4,7 +4,7 @@ Feature: Cardinal Commerce E2E tests v2 - Timeout - Visa v2.1
   I want to use card payments method
   In order to check Cardinal Commerce integration
 
-  @base_config @cardinal_commerce_v2.0
+
   Scenario Outline: TC_8 - Timeout on cmpi_lookup Transaction - Card: VISA_V21_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |

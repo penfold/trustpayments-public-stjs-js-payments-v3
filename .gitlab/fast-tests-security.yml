@@ -1,4 +1,4 @@
-################################### Security ZAP scan ###################################
+#################################### Security ZAP scan ###################################
 .zap-url-to-scan-merchant:
   variables:
     URL_TO_SCAN: "https://merchant.securetrading.net"

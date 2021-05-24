@@ -115,13 +115,13 @@ class Actions:
 
     def get_text_from_last_element(self, locator):
         try:
-            self._waits.wait_for_element(locator)
+            self._waits.wait_until_element_presence(locator)
             return self.find_elements(locator)[-1].text
         except StaleElementReferenceException:
             return self.find_element(locator)[-1].text
 
     def get_text_with_wait(self, locator):
-        self._waits.wait_for_element(locator)
+        self._waits.wait_until_element_presence(locator)
         element = self.find_element(locator)
         return element.text
 

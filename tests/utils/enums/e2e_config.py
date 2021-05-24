@@ -3,16 +3,11 @@ from enum import Enum
 
 class E2eConfig(Enum):
     BASIC_CONFIG = 'e2eBasicConfig.json'
-    BYPASS_MASTERCARD_CONFIG = 'e2eConfigBypassMastercard.json'
-    BYPASS_MASTERCARD_REQUEST_TYPE_CONFIG = 'e2eConfigBypassMastercardRequestType.json'
-    BYPASS_MASTERCARD_WITH_STYLING_CONFIG = 'e2eConfigBypassMastercardWithStyling.json'
+    VISUAL_BASIC_CONFIG = 'visualBaseConfig.json'
+    VISUAL_BASIC_WITH_STYLES_CONFIG = 'visualBaseConfigWithStyling.json'
     CYBERTONICA_CONFIG = 'e2eConfigCybertonica.json'
-    CYBERTONICA_WITH_BYPASSCARDS_CONFIG = 'e2eConfigCybertonicaWithBypass.json'
     CYBERTONICA_START_ON_LOAD_CONFIG = 'e2eConfigCybertonicaStartOnLoadTrue.json'
-    BYPASS_CARDS_CONFIG = 'e2eConfigForBypassCards.json'
     START_ON_LOAD_CONFIG = 'e2eConfigStartOnLoadTrue.json'
-    START_ON_LOAD_REQUEST_TYPES_CONFIG = 'e2eConfigStartOnLoadRequestTypes.json'
-    START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG = 'e2eConfigStartOnLoadRequestTypesSub.json'
     START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG = 'e2eConfigStartOnLoadSubmitOnSuccess.json'
     START_ON_LOAD_SUBMIT_ON_ERROR_CONFIG = 'e2eConfigStartOnLoadSubmitOnError.json'
     SUBMIT_ON_ERROR_CONFIG = 'e2eConfigSubmitOnError.json'
