@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 class Waits:
 
     MAX_TRY_USED_WITH_DEFAULT_TIMEOUT = 2
-    MAX_TRY_WITHOUT_TIMEOUT = 15
+    MAX_TRY_WITHOUT_TIMEOUT = 30
 
     def __init__(self, driver_factory, configuration):
         self._driver_factory = driver_factory
