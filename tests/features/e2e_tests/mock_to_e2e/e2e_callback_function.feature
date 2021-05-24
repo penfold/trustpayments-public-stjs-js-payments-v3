@@ -49,7 +49,7 @@ Feature: Callback functionality
     Then User will see that browser is marked as supported: "<is_browser_supported>"
     And User will see that operating system is marked as supported: "<is_os_supported>"
 
-#    @extended_tests_part_3
+#
 #    Examples:
 #      | is_browser_supported | is_os_supported |
 #      | True                 | True            |

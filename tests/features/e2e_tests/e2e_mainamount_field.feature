@@ -54,7 +54,7 @@ Feature: E2E Card Payments with mainamount field in jwt payload
 
 
   Scenario: Successful payment with startOnLoad and mainamount field in jwt payload
-    Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_CONFIG and jwt JWT_WITH_MAINAMOUNT_AND_FRICTIONLESS with additional attributes
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_MAINAMOUNT_AND_FRICTIONLESS with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page WITHOUT_SUBMIT_BUTTON

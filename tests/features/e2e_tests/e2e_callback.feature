@@ -1,7 +1,6 @@
-@submit_callback @callback
 Feature: E2E callbacks after payment
 
-  @success_callback @e2e_smoke_test
+
   Scenario Outline: success and submit callback for successful payment - challenge flow
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -21,7 +20,7 @@ Feature: E2E callbacks after payment
       | THREEDQUERY AUTH         | False                  |
       | ACCOUNTCHECK THREEDQUERY | True                   |
 
-  @success_callback
+
   Scenario Outline: success and submit callback for successful payment - frictionless payment
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -40,7 +39,7 @@ Feature: E2E callbacks after payment
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
 
-  @error_callback
+
   Scenario Outline: error and submit callback for unsuccessful payment
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -60,7 +59,7 @@ Feature: E2E callbacks after payment
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
 
-#  @cancel_callback
+#
 #  Scenario Outline: cancel and submit callback for cancelled payment
 #    Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes
 #      | key                     | value           |

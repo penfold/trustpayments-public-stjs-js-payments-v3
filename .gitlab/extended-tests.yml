@@ -40,8 +40,6 @@
     - .apple-pay-component-tests-part-1
     - .rules-extended-tests-release
 
-
-
 apple-pay-component-tests-part-1-review:
   extends:
     - .apple-pay-component-tests-part-1
@@ -158,14 +156,14 @@ iPhone11-14.0-component-tests-smoke-nightly:
 .e2e-tests-browserstack-review:
   extends:
     - .extended-tests
-    - .service-app-html-review-merchant
+    - .services-app-html-review
     - .sequentially-e2e-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 .e2e-tests-browserstack-release:
   extends:
     - .extended-tests
-    - .service-app-html-release-merchant
+    - .services-app-html-release
     - .sequentially-e2e-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
@@ -516,7 +514,7 @@ SamsungGalaxyS10Plus-9.0-e2e-tests-smoke-nightly:
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: extended_tests_5
 
-.SamsungGalaxyS20-10.0-e2e-tests-smoke-release:
+SamsungGalaxyS20-10.0-e2e-tests-smoke-release:
   extends:
     - .visual-regression-tests-release
     - .SamsungGalaxyS20-10.0-e2e-tests-smoke
@@ -563,12 +561,11 @@ GooglePixel4-10.0-e2e-tests-smoke-nightly:
 .visual-regression-tests-release:
   extends:
     - .extended-tests
-    - .service-app-html-release-merchant
+    - .services-app-html-release
     - .sequentially-e2e-browserstack-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 #
-
 
 .win10-Chrome-latest-visual-tests:
   variables:
@@ -721,7 +718,7 @@ OSXBigSur-Safari-14.0-visual-tests-styling-nightly:
     POETRY_TAGS: $VISUAL_TESTS_TAG
   resource_group: extended_tests_4
 
-SamsungGalaxyS20-10.0-visual-tests-release:
+.SamsungGalaxyS20-10.0-visual-tests-release:
   extends:
     - .visual-regression-tests-release
     - .SamsungGalaxyS20-10.0-visual-tests

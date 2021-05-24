@@ -210,9 +210,9 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | threedresponse       | <threedresponse>                        |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status  | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | Y       | 05             | should be none     |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C       | should be none | should not be none |
+      | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | Y      | 05             | should be none     |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
 
 
   @cardinal_commerce_v2.0
@@ -265,9 +265,9 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | threedresponse       | <threedresponse>                        |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status  | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | U       | 07             | should be none     |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C       | should be none | should not be none |
+      | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | U      | 07             | should be none     |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
 
 
   @cardinal_commerce_v2.0
@@ -296,7 +296,6 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | ACCOUNTCHECK THREEDQUERY | should not be none |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_13 - Bypassed Authentication with submitOnSuccess - Card: VISA_V22_BYPASSED_AUTH
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |

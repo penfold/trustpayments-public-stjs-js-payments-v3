@@ -9,9 +9,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class Waits:
-    #
-    MAX_TRY_USED_WITH_DEFAULT_TIMEOUT = 3
-    MAX_TRY_WITHOUT_TIMEOUT = 30
+
+    MAX_TRY_USED_WITH_DEFAULT_TIMEOUT = 2
+    MAX_TRY_WITHOUT_TIMEOUT = 15
 
     def __init__(self, driver_factory, configuration):
         self._driver_factory = driver_factory
@@ -20,7 +20,7 @@ class Waits:
         self._device_type = configuration.REMOTE_DEVICE
         self._wait = WebDriverWait(self._driver, self._timeout)
 
-    def wait_for_element(self, locator):
+    def wait_until_element_presence(self, locator):
         return self._wait.until(ec.presence_of_element_located(locator))
 
     def wait_and_check_is_element_displayed(self, locator):
@@ -106,7 +106,7 @@ class Waits:
         raise Exception('Iframe was unavailable within timeout')
 
     def wait_until_iframe_is_presented_and_check_is_possible_switch_to_it(self, iframe_name,
-                                                        max_try: int = MAX_TRY_USED_WITH_DEFAULT_TIMEOUT):
+                                                                          max_try: int = MAX_TRY_USED_WITH_DEFAULT_TIMEOUT):
         # pylint: disable=bare-except
         while max_try:
             try:

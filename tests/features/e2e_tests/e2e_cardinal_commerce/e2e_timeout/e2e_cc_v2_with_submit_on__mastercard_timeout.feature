@@ -5,7 +5,6 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - Timeout
   In order to check Cardinal Commerce integration
 
 
-  @cardinal_commerce_v2.0
   Scenario Outline: TC_8 - Timeout on cmpi_lookup Transaction with submitOn - Card: MASTERCARD_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |

@@ -4,7 +4,7 @@ Feature: E2E startOnLoad
   I want to use card payments method with startOnLoad config
   In order to check full payment functionality
 
-  @e2e_smoke_test
+
   Scenario: Successful non-frictionless payment with startOnLoad
     Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value            |
@@ -20,7 +20,7 @@ Feature: E2E startOnLoad
 
 
   Scenario: Successful payment with startOnLoad and additional request types: ACCOUNTCHECK, TDQ, AUTH
-    Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_CONFIG and jwt JWT_WITH_FRICTIONLESS_CARD with additional attributes
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_FRICTIONLESS_CARD with additional attributes
       | key                     | value                         |
       | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY AUTH |
     And User opens example page WITHOUT_SUBMIT_BUTTON
@@ -33,7 +33,7 @@ Feature: E2E startOnLoad
 
 
   Scenario: Successful payment with startOnLoad and additional request types: ACCOUNTCHECK, TDQ, AUTH, SUBSCRIPTION
-    Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_NON_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_NON_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
       | key                     | value                                      |
       | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION |
     And User opens example page WITHOUT_SUBMIT_BUTTON
