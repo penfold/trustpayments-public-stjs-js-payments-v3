@@ -7,9 +7,7 @@ from utils.enums.field_type import FieldType
 
 @dataclass
 class ThreeDSMethodsLocators:
-
-
-# pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-instance-attributes
 
     three_ds_iframe: By = (By.ID, 'tp-3ds-challenge-iframe')
     three_ds_challenge_input: By = (By.ID, 'challengeDataEntry')
