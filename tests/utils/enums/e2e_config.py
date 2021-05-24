@@ -52,3 +52,4 @@ class E2eConfig(Enum):
     SUBMIT_ON_SUCCESS_STOP_SUBMIT_FORM_ON_ENTER = 'e2eSubmitOnSuccessStopSubmitFormOnEnter.json'
     THREE_DS_LIBRARY_INLINE_CONFIG = 'e2eConfig3dsLibraryInline.json'
     THREE_DS_LIBRARY_POPUP_CONFIG = 'e2eConfig3dsLibraryPopup.json'
+    THREE_DS_LIBRARY_POPUP_TRANSLATIONS_CONFIG = 'e2eConfig3dsLibraryPopupTranslations.json'

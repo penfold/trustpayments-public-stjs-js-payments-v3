@@ -1,0 +1,11 @@
+{
+  "submitOnSuccess": false,
+  "datacenterurl": "http://localhost:8890/",
+  "threeDSecure": {
+    "loggingLevel": "ALL",
+    "challengeDisplayMode": "POPUP",
+    "translations": {
+      "Cancel": "INTENTIONALLY_HARDCODED_VALUE"
+    }
+  }
+}
