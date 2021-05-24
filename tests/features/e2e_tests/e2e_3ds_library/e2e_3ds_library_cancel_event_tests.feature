@@ -1,4 +1,3 @@
-# Created by amiendlarzewski at 14.05.2021
 Feature: Cancel payment with 3ds SDK library
   As a user
   I want to be able to cancel 3ds payment
