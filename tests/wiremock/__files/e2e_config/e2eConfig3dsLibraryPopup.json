@@ -3,7 +3,6 @@
   "datacenterurl": "http://localhost:8890/",
   "threeDSecure": {
     "loggingLevel": "ALL",
-    "challengeDisplayMode": "POPUP",
-    "challengeDisplayInlineTargetElementId": "st-card-payment"
+    "challengeDisplayMode": "POPUP"
   }
 }
