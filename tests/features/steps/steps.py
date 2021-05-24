@@ -6,13 +6,14 @@ from behave import given, step, then, use_step_matcher
 
 from configuration import CONFIGURATION
 from pages.page_factory import Pages
-from utils.configurations.inline_config_generator import create_inline_config
-from utils.configurations.jwt_generator import encode_jwt_for_json, encode_jwt, get_data_from_json, \
+from utils.configurations.inline_config_generator import create_inline_config, get_e2e_config_from_json
+from utils.configurations.jwt_generator import encode_jwt_for_json, encode_jwt, get_jwt_config_from_json, \
     merge_json_conf_with_additional_attr
 from utils.enums.card import Card
 from utils.enums.config import screenshots
 from utils.enums.e2e_config import E2eConfig
 from utils.enums.jwt_config import JwtConfig
+from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import add_to_shared_dict
 from models.jwt_payload_builder import JwtPayloadBuilder
 
@@ -29,12 +30,14 @@ def step_impl(context, e2e_config, jwt_config):
     'JS library configured by inline params (?P<e2e_config>.+) and jwt (?P<jwt_config>.+) with additional attributes')
 def step_impl(context, e2e_config, jwt_config):
     # parse old jwt config (payload part) to dictionary object
-    jwt_config_from_json_dict = get_data_from_json(JwtConfig[jwt_config].value)['payload']
+    jwt_config_from_json_dict = get_jwt_config_from_json(JwtConfig[jwt_config].value)['payload']
     # build payload base on additional attributes and parse to dictionary
     jwt_payload_dict = JwtPayloadBuilder().map_payload_fields(context.table).build().__dict__
     # merge both dictionaries (old is overridden by additional attr)
     jwt = encode_jwt(merge_json_conf_with_additional_attr(jwt_config_from_json_dict, jwt_payload_dict))
     context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
+    context.raw_e2e_config = get_e2e_config_from_json(E2eConfig[e2e_config].value)
+    add_to_shared_dict(SharedDictKey.RAW_E2E_CONFIG.value, context.raw_e2e_config)
     context.config_name = e2e_config
 
 
