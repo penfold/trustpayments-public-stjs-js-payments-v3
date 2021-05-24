@@ -130,7 +130,7 @@ class PaymentMethodsPage(BasePage):
         self._waits.wait_for_element_to_be_displayed(
             PaymentMethodsLocators.cardinal_v1_authentication_code_field)
         self._actions.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
-                                AuthData.PASSWORD.value)
+                                AuthData.THREE_DS_CODE.value)
         if 'Firefox' in CONFIGURATION.BROWSER:
             self._actions.click_by_javascript(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
         else:
@@ -140,7 +140,7 @@ class PaymentMethodsPage(BasePage):
         self._waits.wait_for_element_to_be_displayed(
             PaymentMethodsLocators.cardinal_v2_authentication_code_field)
         self._actions.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
-                                AuthData.PASSWORD.value)
+                                AuthData.THREE_DS_CODE.value)
         self.scroll_to_bottom()
         if 'Firefox' in CONFIGURATION.BROWSER:
             self._actions.click_by_javascript(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
