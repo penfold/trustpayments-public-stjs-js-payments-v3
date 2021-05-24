@@ -6,6 +6,7 @@ from pages.locators.payment_methods_locators import PaymentMethodsLocators
 from pages.base_page import BasePage
 from utils.enums.field_type import FieldType
 from utils.helpers.request_executor import add_to_shared_dict
+from utils.helpers.resources_reader import get_translation_from_json
 
 
 class AnimatedCardPage(BasePage):
@@ -78,7 +79,7 @@ class AnimatedCardPage(BasePage):
 
     def validate_animated_card_element_translation(self, element, language, key):
         actual_translation = self.get_animated_card_label_translation(element)
-        expected_translation = self.get_translation_from_json(language, key)
+        expected_translation = get_translation_from_json(language, key)
         if 'Safari' not in CONFIGURATION.REMOTE_BROWSER:
             expected_translation = expected_translation.upper()
         assertion_message = f'Translation is not correct: should be {expected_translation} but is {actual_translation}'
@@ -88,9 +89,3 @@ class AnimatedCardPage(BasePage):
     def get_animated_card_label_translation(self, locator):
         element_translation = self._actions.get_text(locator)
         return element_translation
-
-    def get_translation_from_json(self, language, key):
-        # pylint: disable=invalid-name
-        with open(f'resources/languages/{language}.json', 'r') as f:
-            translation = json.load(f)
-        return translation[key]

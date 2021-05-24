@@ -5,7 +5,7 @@ from configuration import CONFIGURATION
 from utils.enums.e2e_config import E2eConfig
 
 
-def get_data_from_json(e2e_config):
+def get_e2e_config_from_json(e2e_config):
     with open('wiremock/__files/e2e_config' + f'/{e2e_config}', 'r') as file:
         jwt_json = json.load(file)
     return jwt_json
@@ -25,7 +25,6 @@ def encode_url(url):
 
 
 def create_inline_config(e2e_config: E2eConfig, jwt):
-    json_config = get_data_from_json(e2e_config.value)
+    json_config = get_e2e_config_from_json(e2e_config.value)
     json_config['jwt'] = jwt
-    formatted_config = covert_json_to_string(json_config)
-    return formatted_config
+    return covert_json_to_string(json_config)

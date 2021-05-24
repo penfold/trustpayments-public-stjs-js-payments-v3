@@ -12,6 +12,7 @@ from utils.enums.auth_type import AuthType
 from utils.enums.field_type import FieldType
 from utils.enums.payment_type import PaymentType
 from utils.helpers.request_executor import add_to_shared_dict
+from utils.helpers.resources_reader import get_translation_from_json
 
 
 class PaymentMethodsPage(BasePage):
@@ -439,16 +440,16 @@ class PaymentMethodsPage(BasePage):
         self.validate_field_text(field_type, actual_translation, expected_text)
 
     def validate_field_validation_message_translation(self, field_type, language, translation_key):
-        expected_text = self.get_translation_from_json(language, translation_key)
+        expected_text = get_translation_from_json(language, translation_key)
         self.validate_field_validation_message(field_type, expected_text)
 
     def validate_all_labels_translation(self, language):
-        self.validate_card_number_iframe_element_text(self.get_translation_from_json(language, 'Card number'))
-        self.validate_expiration_date_iframe_element_text(self.get_translation_from_json(language, 'Expiration date'))
-        self.validate_security_code_iframe_element_text(self.get_translation_from_json(language, 'Security code'))
+        self.validate_card_number_iframe_element_text(get_translation_from_json(language, 'Card number'))
+        self.validate_expiration_date_iframe_element_text(get_translation_from_json(language, 'Expiration date'))
+        self.validate_security_code_iframe_element_text(get_translation_from_json(language, 'Security code'))
         self.validate_no_iframe_element_text(FieldType.SUBMIT_BUTTON.name,
                                              PaymentMethodsLocators.pay_button_label,
-                                             self.get_translation_from_json(language, 'Pay'))
+                                             get_translation_from_json(language, 'Pay'))
 
     def validate_submit_btn_specific_translation(self, expected_translation):
         self.validate_no_iframe_element_text(FieldType.SUBMIT_BUTTON.name,
@@ -456,7 +457,7 @@ class PaymentMethodsPage(BasePage):
                                              expected_translation)
 
     def validate_payment_status_translation(self, language, translation_key):
-        expected_translation = self.get_translation_from_json(language, translation_key)
+        expected_translation = get_translation_from_json(language, translation_key)
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
         self.validate_no_iframe_element_text(FieldType.NOTIFICATION_FRAME.name,
                                              PaymentMethodsLocators.notification_frame, expected_translation)
@@ -476,13 +477,6 @@ class PaymentMethodsPage(BasePage):
     def validate_no_iframe_element_text(self, field_type, locator, expected_text):
         actual_text = self.get_element_text(locator)
         self.validate_field_text(field_type, actual_text, expected_text)
-
-    @staticmethod
-    def get_translation_from_json(language, key):
-        # pylint: disable=invalid-name
-        with open(f'resources/languages/{language}.json', 'r') as f:
-            translation = json.load(f)
-        return translation[key]
 
     def get_cachetoken_value(self):
         self._waits.wait_for_javascript()
