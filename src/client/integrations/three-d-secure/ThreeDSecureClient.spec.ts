@@ -6,6 +6,8 @@ import { PAYMENT_CANCELLED } from '../../../application/core/models/constants/Tr
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { ActionCode } from '../../../application/core/services/three-d-verification/data/ActionCode';
 import { IVerificationData } from '../../../application/core/services/three-d-verification/data/IVerificationData';
+import { TranslationProvider } from '../../../application/core/shared/translator/TranslationProvider';
+import { Translator } from '../../../application/core/shared/translator/Translator';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
@@ -20,6 +22,8 @@ describe('ThreeDSecureClient', () => {
   let configProviderMock: ConfigProvider;
   let threeDSecureProviderMock: ThreeDSecureProvider;
   let sut: ThreeDSecureClient;
+  let translator: Translator;
+  let translationProvider: TranslationProvider;
 
   const sendMessage = (event: IMessageBusEvent): Observable<any> => {
     return (interFrameCommunicator.send(event, '') as unknown) as Observable<any>;
@@ -29,6 +33,9 @@ describe('ThreeDSecureClient', () => {
     threeDSecure: {
       loggingLevel: LoggingLevel.ALL,
       challengeDisplayMode: ChallengeDisplayMode.POPUP,
+      translations: {
+        "Cancel": "Cancel",
+      }
     },
   };
 
@@ -37,6 +44,8 @@ describe('ThreeDSecureClient', () => {
     interFrameCommunicator = instance(interFrameCommunicatorMock);
     configProviderMock = mock<ConfigProvider>();
     threeDSecureProviderMock = new ThreeDSecureProviderMock(window);
+    translationProvider = new TranslationProvider();
+    translator = new Translator(translationProvider);
 
     when(interFrameCommunicatorMock.whenReceive(anything())).thenCall((eventType: string) => {
       return {
@@ -54,6 +63,7 @@ describe('ThreeDSecureClient', () => {
       interFrameCommunicator,
       instance(configProviderMock),
       threeDSecureProviderMock,
+      translator
     );
   });
 
@@ -68,6 +78,28 @@ describe('ThreeDSecureClient', () => {
 
       sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_SETUP, data: null }).subscribe(() => {
         expect(spy).toHaveBeenCalledWith(configMock.threeDSecure);
+
+        done();
+      });
+    });
+
+    it('should initialize the 3DS SDK with custom translation for the cancel button', (done: DoneCallback) => {
+      // @ts-ignore
+      const spy = jest.spyOn(sut.threeDSecure, 'init$');
+      const updatedConfig = {
+        ...configMock,
+        threeDSecure: {
+          ...configMock.threeDSecure,
+          translations: {
+            "Cancel": "testcancel"
+          }
+        }
+      };
+
+      when(configProviderMock.getConfig$()).thenReturn(of(updatedConfig));
+
+      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_SETUP, data: null }).subscribe(() => {
+        expect(spy).toHaveBeenCalledWith(updatedConfig.threeDSecure);
 
         done();
       });

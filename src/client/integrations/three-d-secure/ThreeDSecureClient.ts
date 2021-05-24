@@ -34,6 +34,7 @@ export class ThreeDSecureClient {
 
   init(): void {
     this.threeDSecure = this.threeDSecureProvider.getSdk();
+    this.translator.init();
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_SETUP)
@@ -55,7 +56,7 @@ export class ThreeDSecureClient {
   private setup$(): Observable<ConfigInterface> {
     return this.configProvider.getConfig$().pipe(
       switchMap((config: IConfig) => {
-        if (config.threeDSecure.translations && config.threeDSecure.translations.cancel) {
+        if (config.threeDSecure.translations && config.threeDSecure.translations["Cancel"]) {
           return this.threeDSecure.init$(config.threeDSecure);
         }
 
