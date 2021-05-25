@@ -17,7 +17,7 @@ Feature: E2E Card Payments with request types in config
     And "submit" callback is called only once
     And "success" callback is called only once
 
-  @e2e_config_requesttypes_invalid_order
+
   Scenario: Unsuccessful payment with config's requestTypes param having values in invalid order
     Given JS library configured by inline params REQUEST_TYPES_CONFIG_INVALID_ORDER and jwt BASE_JWT with additional attributes
       | key                     | value                                 |
@@ -28,7 +28,7 @@ Feature: E2E Card Payments with request types in config
     Then User will see payment status information: "Invalid field"
     And User will see that notification frame has "red" color
 
-  @e2e_smoke_test
+
   Scenario: Successful payment with config's requestTypes: ACCOUNTCHECK, TDQ, AUTH, SUBSCRIPTION
     Given JS library configured by inline params REQUEST_TYPE_ACHECK_TDQ_AUTH_SUB_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value                                      |

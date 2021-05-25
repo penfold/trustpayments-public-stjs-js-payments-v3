@@ -4,7 +4,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
   I want to use config with stopSubmitFormOnEnter
   In order to check payment functionality
 
-  @e2e_smoke_test
+
   Scenario: Prevent submit payment form by 'Enter' button with enabled 'stopSubmitFormOnEnter' option
     Given JS library configured by inline params STOP_SUBMIT_FORM_ON_ENTER and jwt BASE_JWT with additional attributes
       | key                     | value            |

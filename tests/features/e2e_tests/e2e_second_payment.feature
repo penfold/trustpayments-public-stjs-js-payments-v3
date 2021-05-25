@@ -1,6 +1,6 @@
 Feature: E2E second payment
 
-  @e2e_smoke_test
+
   Scenario: Successful payment after form validation
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |

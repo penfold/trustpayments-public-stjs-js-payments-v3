@@ -23,7 +23,7 @@ use_step_matcher('re')
 @step('User opens mock payment page with incorrect request type in config file')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.open_page_with_not_private_connection_check(CONFIGURATION.URL.BASE_URL)
+    payment_page.open_page(CONFIGURATION.URL.BASE_URL)
 
 
 @then('User remains on checkout page')
@@ -37,7 +37,7 @@ def step_impl(context, language):
     context.language = language
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     jwt = payment_page.get_translation_from_json(language, 'jwt')
-    payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}?jwt={jwt}')
+    payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}?jwt={jwt}')
 
 
 @step('User changes minimal example page language to "(?P<language>.+)"')
@@ -45,28 +45,28 @@ def step_impl(context, language):
     context.language = language
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     jwt = payment_page.get_translation_from_json(language, 'jwt')
-    payment_page.open_page_with_not_private_connection_check(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?jwt={jwt}')
+    payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?jwt={jwt}')
 
 
 @step('User opens mock payment page')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'Safari' in context.browser:
-        accept_untrusted_pages_on_safari_browsers(context)
+        accept_untrusted_pages_on_safari_browsers_mocks(context)
     if 'parent_iframe' in context.scenario.tags:
         # TODO this case should be moved to User opens mock payment page (?P<example_page>.+)')
-        payment_page.open_page_with_not_private_connection_check(CONFIGURATION.URL.BASE_URL + '/iframe.html')
+        payment_page.open_page(CONFIGURATION.URL.BASE_URL + '/iframe.html')
         payment_page.switch_to_example_page_parent_iframe()
         payment_page.wait_for_example_page_parent_iframe()
     else:
-        payment_page.open_page_with_not_private_connection_check(CONFIGURATION.URL.BASE_URL)
+        payment_page.open_page(CONFIGURATION.URL.BASE_URL)
 
 
 @step('User opens mock payment page (?P<example_page>.+)')
 def step_impl(context, example_page):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'Safari' in context.browser:
-        accept_untrusted_pages_on_safari_browsers(context)
+        accept_untrusted_pages_on_safari_browsers_mocks(context)
     if 'WITH_UPDATE_JWT' in example_page:
         jwt = ''
         updated_jwt_from_jsinit = ''
@@ -75,22 +75,22 @@ def step_impl(context, example_page):
             stub_jsinit_update_jwt_request(f'{row["jwtName"]}')
             updated_jwt_from_jsinit = decode_jwt_from_jsinit(jsinit_response[f'{row["jwtName"]}'])
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}'
-        payment_page.open_page_with_not_private_connection_check(url)
+        payment_page.open_page(url)
         context.update_jwt = jwt  # test data replaced to check required value in assertion
         context.update_jwt_from_jsinit = updated_jwt_from_jsinit
     elif 'WITH_SPECIFIC_IFRAME' in example_page:
         url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}'
-        payment_page.open_page_with_not_private_connection_check(url)
+        payment_page.open_page(url)
         payment_page.switch_to_example_page_parent_iframe()
         payment_page.wait_for_example_page_parent_iframe()
     else:
         if 'MINIMAL_HTML' in example_page or 'IN_IFRAME' in example_page:
             url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}'
-            payment_page.open_page_with_not_private_connection_check(url)
+            payment_page.open_page(url)
         else:
             url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}'
 
-        payment_page.open_page_with_not_private_connection_check(url)
+        payment_page.open_page(url)
 
 
 #   E2E
@@ -100,9 +100,7 @@ def step_impl(context, example_page):
 def step_impl(context, example_page):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'Safari' in context.browser:
-        # payment_page.open_page_with_not_private_connection_check(MockUrl.LIBRARY_URL.value)
-        payment_page.open_page_with_not_private_connection_check(MockUrl.STJS_URI.value)
-
+        accept_untrusted_pages_on_safari_browsers(context)
     # setting url specific params accordingly to example page
     if example_page is None:
         url = f'{CONFIGURATION.URL.BASE_URL}/?{context.inline_config}'
@@ -117,7 +115,7 @@ def step_impl(context, example_page):
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_config}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
-    payment_page.open_page_with_not_private_connection_check(url)
+    payment_page.open_page(url)
 
     if example_page is not None and 'IN_IFRAME' in example_page:
         payment_page.switch_to_example_page_parent_iframe()
@@ -138,14 +136,16 @@ def step_impl(context, example_page, jwt_config):
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_config}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
-    payment_page.open_page_with_not_private_connection_check(url)
+    payment_page.open_page(url)
 
 
 @step('User opens (?P<path>.+) page with inline param')
 def step_impl(context, path):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     url = f'{CONFIGURATION.URL.BASE_URL}/{path}?{context.inline_config}'
-    payment_page.open_page_with_not_private_connection_check(url)
+    if 'Safari' in context.browser:
+        accept_untrusted_pages_on_safari_browsers(context)
+    payment_page.open_page(url)
 
 
 @step('User will be sent to page with url "(?P<url>.+)" having params')
@@ -163,7 +163,12 @@ def step_impl(context, url: str):
 
 def accept_untrusted_pages_on_safari_browsers(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.open_page_with_not_private_connection_check(MockUrl.WEBSERVICES_DOMAIN.value)
-    payment_page.open_page_with_not_private_connection_check(MockUrl.WEBSERVICES_STJS_URI.value)
-    payment_page.open_page_with_not_private_connection_check(MockUrl.LIBRARY_URL.value)
-    payment_page.open_page_with_not_private_connection_check(MockUrl.THIRDPARTY_URL.value)
+    payment_page.open_page_with_safari_issue_fix(MockUrl.LIBRARY_URL.value)
+
+
+def accept_untrusted_pages_on_safari_browsers_mocks(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.open_page_with_safari_issue_fix(MockUrl.WEBSERVICES_DOMAIN.value)
+    payment_page.open_page_with_safari_issue_fix(MockUrl.WEBSERVICES_STJS_URI.value)
+    payment_page.open_page_with_safari_issue_fix(MockUrl.THIRDPARTY_URL.value)
+    accept_untrusted_pages_on_safari_browsers(context)

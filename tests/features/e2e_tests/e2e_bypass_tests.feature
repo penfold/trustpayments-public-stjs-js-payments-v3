@@ -3,10 +3,9 @@ Feature: E2E Card Payments with bypass
   I want to use card payments method
   In order to check full payment functionality
 
-  @e2e_config_bypass_mastercard
   @bypass_property
   Scenario: Successful payment with bypassCard using Mastercard
-    Given JS library configured by inline params BYPASS_MASTERCARD_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                      | value                                 |
       | requesttypedescriptions  | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
       | threedbypasspaymenttypes | MASTERCARD                            |
@@ -16,11 +15,10 @@ Feature: E2E Card Payments with bypass
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
 
-  @e2e_smoke_test
-  @e2e_config_for_bypass_cards
+
   @bypass_property
   Scenario: Successful payment bypass cards without 3d secure
-    Given JS library configured by inline params BYPASS_CARDS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                      | value                                 |
       | requesttypedescriptions  | THREEDQUERY AUTH                      |
       | threedbypasspaymenttypes | VISA AMEX DISCOVER JCB DINERS MAESTRO |
@@ -30,10 +28,10 @@ Feature: E2E Card Payments with bypass
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
 
-  @e2e_config_for_bypass_cards
+
   @bypass_property
   Scenario: Successful payment bypass cards with 3d secure
-    Given JS library configured by inline params BYPASS_CARDS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                      | value                                 |
       | requesttypedescriptions  | THREEDQUERY AUTH                      |
       | threedbypasspaymenttypes | VISA AMEX DISCOVER JCB DINERS MAESTRO |
@@ -44,10 +42,10 @@ Feature: E2E Card Payments with bypass
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
 
-  @e2e_config_bypass_mastercard
+
   @bypass_property
   Scenario: Unsuccessful payment with bypassCard using Mastercard - invalid expiration date
-    Given JS library configured by inline params BYPASS_MASTERCARD_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                      | value                                 |
       | requesttypedescriptions  | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
       | threedbypasspaymenttypes | MASTERCARD                            |
@@ -59,10 +57,10 @@ Feature: E2E Card Payments with bypass
     And User will see that "EXPIRATION_DATE" field is highlighted
     And User will see "Invalid field" message under field: "EXPIRATION_DATE"
 
-  @e2e_config_bypass_maestro
+
   @bypass_property
   Scenario: Unsuccessful payment with bypassCard using Maestro - lack of secure code
-    Given JS library configured by inline params BYPASS_CARDS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                      | value                                 |
       | requesttypedescriptions  | THREEDQUERY AUTH                      |
       | threedbypasspaymenttypes | VISA AMEX DISCOVER JCB DINERS MAESTRO |

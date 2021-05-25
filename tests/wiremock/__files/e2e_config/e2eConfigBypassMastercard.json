@@ -1,8 +1,0 @@
-{
-  "components": {
-    "defaultPaymentType": "",
-    "startOnLoad": false
-  },
-  "panIcon": true,
-  "submitOnSuccess": false
-}

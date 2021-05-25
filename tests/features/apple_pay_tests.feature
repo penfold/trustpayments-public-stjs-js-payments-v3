@@ -8,7 +8,7 @@ Feature: ApplePay
     Given JavaScript configuration is set for scenario based on scenario's @config tag
     And User opens mock payment page
 
-  @base_config @wallet_test  @apple_test_part1
+  @base_config @wallet_test @apple_test_part1
   Scenario Outline: ApplePay - checking payment status for <action_code> response code
     When User chooses ApplePay as payment method - response is set to "<action_code>"
     Then User will see payment status information: "<payment_status_message>"
