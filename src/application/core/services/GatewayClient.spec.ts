@@ -7,7 +7,10 @@ import { IMessageBus } from '../shared/message-bus/IMessageBus';
 import { GatewayClient } from './GatewayClient';
 import { StTransport } from './st-transport/StTransport';
 import { ThreeDInitRequest } from './three-d-verification/data/ThreeDInitRequest';
-import { ThreeDVerificationProvider } from './three-d-verification/ThreeDVerificationProvider';
+import { ThreeDVerificationProviderName } from './three-d-verification/data/ThreeDVerificationProviderName';
+import { ThreeDLookupRequest } from './three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
+import { ICard } from '../models/ICard';
+import { IThreeDLookupResponse } from '../models/IThreeDLookupResponse';
 
 describe('GatewayClient', () => {
   let transportMock: StTransport;
@@ -29,7 +32,7 @@ describe('GatewayClient', () => {
       requesttypedescription: 'JSINIT',
       threedinit: 'bar',
       transactionstartedtimestamp: '',
-      threedsprovider: ThreeDVerificationProvider.TP,
+      threedsprovider: ThreeDVerificationProviderName.TP,
     };
 
     beforeEach(() => {
@@ -71,6 +74,7 @@ describe('GatewayClient', () => {
   describe('threedQuery', () => {
     const threeDQueryRequest: IStRequest = { pan: '1234 1234 1234 1234' };
     const threeDQueryResponse: IThreeDQueryResponse = {
+      threedversion: '',
       acquirerresponsecode: '',
       acquirerresponsemessage: '',
       acquirertransactionreference: '',
@@ -94,6 +98,55 @@ describe('GatewayClient', () => {
     it('sends threeDQueryRequest and returns the response', () => {
       gatewayClient.threedQuery(threeDQueryRequest).subscribe(response => {
         expect(response).toBe(threeDQueryResponse);
+      });
+    });
+  });
+
+  describe('threedLookup()', () => {
+    const card: ICard = { pan: '4111111111111111', expirydate: '12/23', securitycode: '123' };
+    const request = new ThreeDLookupRequest(card.expirydate, card.pan, card.securitycode);
+
+    it('sends ThreeDLookupRequest to the transport service and returns the response if errorcode is 0', done => {
+      const expectedResponse: IThreeDLookupResponse = {
+        transactionstartedtimestamp: '',
+        errormessage: '',
+        errorcode: '0',
+        requesttypedescription: '',
+        customeroutput: '',
+        threedstransactionid: '',
+        threedmethodurl: '',
+        threednotificationurl: '',
+        threedversion: '',
+      };
+
+      when(transportMock.sendRequest(deepEqual(request))).thenResolve({ response: expectedResponse });
+
+      gatewayClient.threedLookup(card).subscribe(response => {
+        expect(response).toBe(expectedResponse);
+        done();
+      });
+    });
+
+    it('sends ThreeDLookupRequest to the transport service and throws the error response if errorcode is not 0', done => {
+      const expectedResponse = {
+        transactionstartedtimestamp: '',
+        errormessage: '',
+        errorcode: '50003',
+        requesttypedescription: '',
+        customeroutput: '',
+        threedstransactionid: '',
+        threedmethodurl: '',
+        threednotificationurl: '',
+        threedversion: '',
+      };
+
+      when(transportMock.sendRequest(deepEqual(request))).thenResolve({ response: expectedResponse });
+
+      gatewayClient.threedLookup(card).subscribe({
+        error: response => {
+          expect(response).toBe(expectedResponse);
+          done();
+        },
       });
     });
   });

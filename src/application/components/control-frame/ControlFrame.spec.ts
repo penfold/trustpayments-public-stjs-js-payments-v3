@@ -12,7 +12,6 @@ import { NotificationService } from '../../../client/notification/NotificationSe
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IStyles } from '../../../shared/model/config/IStyles';
-import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
@@ -226,7 +225,6 @@ function controlFrameFixture() {
   const notification: NotificationService = mock(NotificationService);
   const cybertonica: Cybertonica = mock(Cybertonica);
   const threeDProcess: ThreeDProcess = mock(ThreeDProcess);
-  const configService: ConfigService = mock(ConfigService);
   const messageBus: IMessageBus = new SimpleMessageBus();
   const frame: Frame = mock(Frame);
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
@@ -275,14 +273,13 @@ function controlFrameFixture() {
     mockInstance(notification),
     mockInstance(cybertonica),
     mockInstance(threeDProcess),
-    mockInstance(configService),
     messageBus,
     mockInstance(frame),
     mockInstance(jwtDecoderMock),
     mockInstance(visaCheckoutClientMock),
     mockInstance(applePayClientMock),
     mockInstance(paymentControllerMock),
-    mockInstance(translator)
+    mockInstance(translator),
   );
   const messageBusEvent = {
     type: '',

@@ -1,49 +1,64 @@
-import { ChallengeDisplayMode, LoggingLevel, ResultActionCode } from '3ds-sdk-js';
+import { ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode,
+  ThreeDSecureFactory,
+  ThreeDSecureInterface, ThreeDSecureVersion } from '3ds-sdk-js';
 import { Observable, of } from 'rxjs';
-import { anything, instance, mock, when } from 'ts-mockito';
+import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { PAYMENT_CANCELLED } from '../../../application/core/models/constants/Translations';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { ActionCode } from '../../../application/core/services/three-d-verification/data/ActionCode';
-import { IVerificationData } from '../../../application/core/services/three-d-verification/data/IVerificationData';
 import { TranslationProvider } from '../../../application/core/shared/translator/TranslationProvider';
 import { Translator } from '../../../application/core/shared/translator/Translator';
-import { IConfig } from '../../../shared/model/config/IConfig';
-import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
-import { ThreeDSecureProvider } from './three-d-secure-provider/ThreeDSecureProvider';
-import { ThreeDSecureProviderMock } from './three-d-secure-provider/ThreeDSecureProviderMock';
 import { ThreeDSecureClient } from './ThreeDSecureClient';
 import DoneCallback = jest.DoneCallback;
+import { IMethodUrlData } from './IMethodUrlData';
+import { IChallengeData } from './IChallengeData';
 
 describe('ThreeDSecureClient', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
-  let interFrameCommunicator: InterFrameCommunicator;
-  let configProviderMock: ConfigProvider;
-  let threeDSecureProviderMock: ThreeDSecureProvider;
+  let threeDSecureFactoryMock: ThreeDSecureFactory;
+  let threeDSecureMock: ThreeDSecureInterface;
   let sut: ThreeDSecureClient;
   let translator: Translator;
   let translationProvider: TranslationProvider;
+  let communicationCallbacks: Map<string, (event: IMessageBusEvent) => any>;
 
-  const sendMessage = (event: IMessageBusEvent): Observable<any> => {
-    return (interFrameCommunicator.send(event, '') as unknown) as Observable<any>;
-  };
-  const communicationCallbacks: Map<string, (event: IMessageBusEvent) => any> = new Map();
-  const configMock: IConfig = {
-    threeDSecure: {
-      loggingLevel: LoggingLevel.ALL,
-      challengeDisplayMode: ChallengeDisplayMode.POPUP,
-      translations: {
-        "Cancel": "Cancel",
-      }
-    },
+  const sendMessage = <T>(event: IMessageBusEvent): Observable<T> => {
+    return communicationCallbacks.get(event.type)(event);
   };
 
-  beforeAll(() => {
+  const configMock: ConfigInterface = {
+    loggingLevel: LoggingLevel.ALL,
+    challengeDisplayMode: ChallengeDisplayMode.POPUP,
+    translations: {
+      "Cancel": "Cancel",
+    }
+  };
+  const browserDataMock = {
+    browserJavaEnabled: window.navigator.javaEnabled(),
+    browserJavascriptEnabled: true,
+    browserLanguage: window.navigator.language,
+    browserScreenWidth: window.screen.width,
+    browserScreenHeight: window.screen.height,
+    browserColorDepth: 24,
+    browserUserAgent: window.navigator.userAgent,
+    browserTZ: new Date().getTimezoneOffset(),
+  };
+  const methodUrlResultMock = {
+    status: ResultActionCode.SUCCESS,
+    description: 'Success',
+    transactionId: 'mockTransId',
+  };
+  const challengeResultMock = {
+    status: ResultActionCode.SUCCESS,
+    description: 'Success',
+    transactionId: 'mockTransId',
+  };
+
+  beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
-    interFrameCommunicator = instance(interFrameCommunicatorMock);
-    configProviderMock = mock<ConfigProvider>();
-    threeDSecureProviderMock = new ThreeDSecureProviderMock(window);
+    threeDSecureFactoryMock = mock(ThreeDSecureFactory);
+    threeDSecureMock = mock<ThreeDSecureInterface>();
+    communicationCallbacks = new Map();
     translationProvider = new TranslationProvider();
     translator = new Translator(translationProvider);
 
@@ -54,31 +69,47 @@ describe('ThreeDSecureClient', () => {
         },
       };
     });
-    when(interFrameCommunicatorMock.send(anything(), anything())).thenCall((event: IMessageBusEvent) => {
-      return communicationCallbacks.get(event.type)(event);
-    });
-    when(configProviderMock.getConfig$()).thenReturn(of(configMock));
+
+    when(threeDSecureFactoryMock.create()).thenReturn(instance(threeDSecureMock));
+    when(threeDSecureMock.init$(anything())).thenReturn(of(configMock));
+    when(threeDSecureMock.run3DSMethod$(anything(), anything(), anything())).thenReturn(of(methodUrlResultMock));
+    when(threeDSecureMock.doChallenge$(anything(), anything(), anything())).thenReturn(of(challengeResultMock));
+    when(threeDSecureMock.getBrowserData()).thenReturn(browserDataMock);
 
     sut = new ThreeDSecureClient(
-      interFrameCommunicator,
-      instance(configProviderMock),
-      threeDSecureProviderMock,
+      instance(interFrameCommunicatorMock),
+      instance(threeDSecureFactoryMock),
       translator
     );
-  });
 
-  beforeEach(() => {
     sut.init();
   });
 
   describe('init$()', () => {
     it('should initialize the 3DS SDK with provided config', (done: DoneCallback) => {
-      // @ts-ignore
-      const spy = jest.spyOn(sut.threeDSecure, 'init$');
+      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_INIT, data: configMock }).subscribe(result => {
+        verify(threeDSecureMock.init$(configMock)).once();
+        expect(result).toBe(configMock);
+        done();
+      });
+    });
+  });
 
-      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_SETUP, data: null }).subscribe(() => {
-        expect(spy).toHaveBeenCalledWith(configMock.threeDSecure);
+  describe('run3DSMethod$', () => {
+    it('should run 3DSMethod using received data', (done: DoneCallback) => {
+      const methodUrlData: IMethodUrlData = {
+        methodUrl: 'https://methodurl',
+        transactionId: '12345',
+        notificationUrl: 'https://notificationurl',
+      };
 
+      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_METHOD_URL, data: methodUrlData }).subscribe(result => {
+        verify(threeDSecureMock.run3DSMethod$(
+          methodUrlData.transactionId,
+          methodUrlData.notificationUrl,
+          methodUrlData.methodUrl,
+        )).once();
+        expect(result).toBe(methodUrlResultMock);
         done();
       });
     });
@@ -88,45 +119,35 @@ describe('ThreeDSecureClient', () => {
       const spy = jest.spyOn(sut.threeDSecure, 'init$');
       const updatedConfig = {
         ...configMock,
-        threeDSecure: {
-          ...configMock.threeDSecure,
-          translations: {
-            "Cancel": "testcancel"
-          }
+        translations: {
+          "Cancel": "testcancel"
         }
       };
+      when(threeDSecureMock.init$(anything())).thenReturn(of(updatedConfig));
 
-      when(configProviderMock.getConfig$()).thenReturn(of(updatedConfig));
-
-      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_SETUP, data: null }).subscribe(() => {
-        expect(spy).toHaveBeenCalledWith(updatedConfig.threeDSecure);
+      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_INIT, data: updatedConfig }).subscribe(() => {
+        expect(spy).toHaveBeenCalledWith(updatedConfig);
 
         done();
       });
     });
   });
 
-  describe('verify()', () => {
-    it(`should return cancel state when cancel event returned from 3DS SDK`, (done: DoneCallback) => {
-      // @ts-ignore
-      jest.spyOn(sut.threeDSecure, 'doChallenge$').mockImplementationOnce(() => of({
-        status: ResultActionCode.CANCELLED,
-        description: 'Cancel',
-      }));
-      const verificationData: IVerificationData = {
-        acsUrl: 'acsUrlMock',
-        payload: 'payloadMock',
-        transactionId: 'transactionIdMock',
-        jwt: 'jwtMock',
+  describe('doChallenge$', () => {
+    it('should run 3DS challenge using received data', (done: DoneCallback) => {
+      const challengeData: IChallengeData = {
+        challengeURL: 'https://acsurl',
+        payload: '1234',
+        version: ThreeDSecureVersion.v2_2,
       };
 
-      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_VERIFY, data: verificationData }).subscribe(res => {
-        expect(res).toEqual({
-          actionCode: ActionCode.CANCELLED,
-          errorNumber: 0,
-          errorDescription: PAYMENT_CANCELLED,
-        });
-
+      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_CHALLENGE, data: challengeData }).subscribe(result => {
+        verify(threeDSecureMock.doChallenge$(
+          challengeData.version,
+          challengeData.payload,
+          challengeData.challengeURL,
+        )).once();
+        expect(result).toBe(challengeResultMock);
         done();
       });
     });

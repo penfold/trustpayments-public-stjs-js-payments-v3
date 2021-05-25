@@ -18,6 +18,8 @@ import { IStyles } from '../../shared/model/config/IStyles';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { Validation } from '../../application/core/shared/validation/Validation';
+import { Enrollment } from '../../application/core/models/constants/Enrollment';
+import { RequestType } from '../../shared/types/RequestType';
 
 @Service()
 export class CommonFrames {
@@ -93,7 +95,7 @@ export class CommonFrames {
 
   private onTransactionCompleteEvent(data: IPaymentAuthorized): void {
     this.removeHiddenInputs();
-    if (data.errorcode === 'cancelled') {
+    if (data.errorcode === 'cancelled' || data.isCancelled) {
       this.removeThreedQuerySubmitFields();
       DomMethods.addDataToForm(this.form, { errorcode: 'cancelled', errormessage: PAYMENT_CANCELLED });
     } else {
@@ -113,18 +115,22 @@ export class CommonFrames {
   }
 
   private isTransactionFinished(data: IPaymentAuthorized): boolean {
-    const { acsurl, customeroutput, enrolled, errorcode, requesttypedescription, threedresponse } = data;
+    const { acsurl, customeroutput, enrolled, errorcode, requesttypedescription, threedresponse, isCancelled } = data;
 
     if (Number(errorcode) !== 0) {
       return true;
     }
 
-    if (requesttypedescription === 'WALLETVERIFY' || requesttypedescription === 'JSINIT') {
+    if (requesttypedescription === RequestType.THREEDQUERY && isCancelled === true) {
+      return true;
+    }
+
+    if (requesttypedescription === RequestType.WALLETVERIFY || requesttypedescription === RequestType.JSINIT) {
       return false;
     }
 
     if (customeroutput === CustomerOutput.THREEDREDIRECT) {
-      return Boolean(threedresponse || !acsurl || enrolled !== 'Y');
+      return Boolean(threedresponse || !acsurl || enrolled !== Enrollment.AUTHENTICATION_SUCCESSFUL);
     }
 
     return true;

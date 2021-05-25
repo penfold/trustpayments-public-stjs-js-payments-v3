@@ -9,6 +9,7 @@ import { filter, first } from 'rxjs/operators';
 import { CONFIG } from '../../dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
 
 @Service()
 export class ConfigService implements ConfigProvider {
@@ -41,10 +42,10 @@ export class ConfigService implements ConfigProvider {
     return this.updateConfig({ ...this.getConfig(), jwt });
   }
 
-  updateFragment<K extends 'components' | 'visaCheckout' | 'applePay', C extends IConfig[K]>(
-    key: K,
-    config: C
-  ): IConfig {
+  updateFragment<
+    K extends 'components' | 'visaCheckout' | 'applePay' | typeof GooglePayConfigName,
+    C extends IConfig[K]
+  >(key: K, config: C): IConfig {
     if (this.configFromJwt) {
       this.cannotOverride();
     }

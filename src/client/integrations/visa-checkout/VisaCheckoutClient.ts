@@ -33,8 +33,9 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
     private configProvider: ConfigProvider,
     private jwtDecoder: JwtDecoder,
     private notificationService: NotificationService,
-    private payment: Payment
-  ) {}
+    private payment: Payment,
+  ) {
+  }
 
   init$(): Observable<VisaCheckoutClientStatus> {
     return this.configProvider.getConfig$().pipe(
@@ -45,7 +46,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
             type: PUBLIC_EVENTS.VISA_CHECKOUT_CONFIG,
             data: config,
           },
-          true
+          true,
         );
       }),
       switchMap((config: IConfig) => {
@@ -56,7 +57,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
                 return this.onSuccess$(
                   config,
                   event.data.data as IVisaCheckoutStatusDataSuccess,
-                  event.data.merchantData
+                  event.data.merchantData,
                 );
 
               case VisaCheckoutClientStatus.CANCEL:
@@ -71,16 +72,16 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
               default:
                 return of('Unknown Visa Checkout status' as VisaCheckoutClientStatus);
             }
-          })
+          }),
         );
-      })
+      }),
     );
   }
 
   private onSuccess$(
     config: IConfig,
     successData: IVisaCheckoutStatusDataSuccess,
-    merchantData: IMerchantData
+    merchantData: IMerchantData,
   ): Observable<VisaCheckoutClientStatus> {
     const requestTypeDescriptions = this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions;
     const walletData: IWallet = {
@@ -88,7 +89,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
       wallettoken: JSON.stringify(successData),
     };
 
-    return from(this.payment.processPayment(requestTypeDescriptions, walletData, merchantData)).pipe(
+    return from(this.payment.processPayment(requestTypeDescriptions, walletData, merchantData, undefined, config.visaCheckout.merchantUrl)).pipe(
       switchMap(() => {
         this.notificationService.success(PAYMENT_SUCCESS);
         this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
@@ -104,7 +105,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
         }
 
         return of(VisaCheckoutClientStatus.SUCCESS_FAILED);
-      })
+      }),
     );
   }
 
@@ -114,7 +115,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
       {
         type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK,
       },
-      true
+      true,
     );
     this.messageBus.publish(
       {
@@ -124,7 +125,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
           errormessage: PAYMENT_CANCELLED,
         },
       },
-      true
+      true,
     );
     GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment canceled');
 
@@ -137,7 +138,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
       {
         type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
       },
-      true
+      true,
     );
     GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
 

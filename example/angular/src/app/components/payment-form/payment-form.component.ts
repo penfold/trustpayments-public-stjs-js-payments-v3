@@ -21,6 +21,7 @@ export class PaymentFormComponent implements AfterViewInit {
     this.st.Components(this.config.components);
     this.st.VisaCheckout(this.config.visaCheckout);
     this.st.ApplePay(this.config.applePay);
+    this.st.GooglePay(this.config.googlePay);
 
     if (!this.config.successCallback) {
       this.st.on('success', () => {

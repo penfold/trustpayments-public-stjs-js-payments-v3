@@ -127,6 +127,29 @@ describe('StTransport class', () => {
       });
     });
 
+    it('should build the fetch options with merchantUrl is set', async () => {
+      const requestBody = `{"jwt":"${config.jwt}"}`;
+      const requestObject = { requesttypedescriptions: ['AUTH'] };
+
+      mockFT.mockReturnValue(
+        resolvingPromise({
+          json: () =>
+            resolvingPromise({
+              errorcode: 0,
+            }),
+        })
+      );
+      await instance.sendRequest(requestObject, 'https://somemerchanturl.com');
+      // @ts-ignore
+      expect(instance._fetchRetry).toHaveBeenCalledTimes(1);
+      // @ts-ignore
+      expect(instance._fetchRetry).toHaveBeenCalledWith('https://somemerchanturl.com', {
+        // @ts-ignore
+        ...instance._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions),
+        body: JSON.stringify(requestObject),
+      });
+    });
+
     each([
       [resolvingPromise({}), resolvingPromise({})],
       [rejectingPromise(timeoutError), resolvingPromise({})],

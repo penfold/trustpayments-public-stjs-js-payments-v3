@@ -45,6 +45,7 @@ describe('ApplePay', () => {
       buttonStyle: 'white-outline',
       buttonText: 'donate',
       merchantId: 'merchant.net.securetrading.test',
+      merchantUrl: 'https://example.com',
       paymentRequest: {
         countryCode: 'US',
         currencyCode: 'USD',
@@ -63,6 +64,7 @@ describe('ApplePay', () => {
       buttonStyle: 'white',
       buttonText: 'donate',
       merchantId: '',
+      merchantUrl: '',
       paymentRequest: {
         countryCode: 'GB',
         currencyCode: 'GBP',

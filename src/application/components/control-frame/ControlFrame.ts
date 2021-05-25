@@ -32,9 +32,7 @@ import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IThreeDInitResponse } from '../../core/models/IThreeDInitResponse';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
-import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
-import { IThreeDSTokens } from '../../core/services/three-d-verification/data/IThreeDSTokens';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
@@ -84,14 +82,13 @@ export class ControlFrame {
     private _notification: NotificationService,
     private _cybertonica: Cybertonica,
     private _threeDProcess: ThreeDProcess,
-    private _configService: ConfigService,
     private _messageBus: IMessageBus,
     private _frame: Frame,
     private _jwtDecoder: JwtDecoder,
     private _visaCheckoutClient: VisaCheckoutClient,
     private _applePayClient: ApplePayClient,
     private paymentController: PaymentController,
-    private translator: ITranslator
+    private translator: ITranslator,
   ) {
     this.init();
     this._initVisaCheckout();
@@ -349,7 +346,7 @@ export class ControlFrame {
     return of({ ...this._merchantFormData }).pipe(
       switchMap(applyCybertonicaTid),
       switchMap(merchantFormData =>
-        this._threeDProcess.performThreeDQuery(this._remainingRequestTypes, this._card, merchantFormData)
+        this._threeDProcess.performThreeDQuery$(this._remainingRequestTypes, this._card, merchantFormData)
       )
     );
   }
@@ -432,18 +429,7 @@ export class ControlFrame {
   }
 
   private _initThreeDProcess(config: IConfig): void {
-    let initialTokens: IThreeDSTokens;
-
-    const { threedinit, cachetoken } = config.init || {};
-
-    if (threedinit && cachetoken) {
-      initialTokens = {
-        jwt: threedinit,
-        cacheToken: cachetoken,
-      };
-    }
-
-    this._threeDProcess.init$(initialTokens).subscribe({
+    this._threeDProcess.init$().subscribe({
       next: () => {
         this._isPaymentReady = true;
 
