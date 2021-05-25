@@ -1,8 +1,11 @@
 const path = require('path');
+const webpack =  require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: {
@@ -99,6 +102,10 @@ module.exports = {
       },
       chunks: ['controlFrame']
     }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css'
+    }),
     new CopyPlugin({
       patterns: [{
         from: 'src/application/core/services/icon/images/*.png',
@@ -109,11 +116,23 @@ module.exports = {
     new StyleLintPlugin({
       context: path.join(__dirname, 'src')
     }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
+    })
   ],
+  optimization: {
+    minimizer: [new TerserPlugin({ extractComments: false })],
+  },
   module: {
     rules: [
       {
         test: /\.(scss|css)$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        exclude: path.resolve(__dirname, './src/client/st/st.css'),
+      },
+      {
+        include: path.resolve(__dirname, './src/client/st/st.css'),
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
@@ -131,7 +150,8 @@ module.exports = {
           path.join(__dirname, 'node_modules/hoek'),
           path.join(__dirname, 'node_modules/isemail'),
           path.join(__dirname, 'node_modules/joi'),
-          path.join(__dirname, 'node_modules/topo')
+          path.join(__dirname, 'node_modules/topo'),
+          path.join(__dirname, 'node_modules/caniuse-lite'),
         ]
       },
       {

@@ -2,7 +2,7 @@
 Feature: payment form
 
   Scenario: Submit payment form without data - fields validation
-    Given JS library configured by inline params BYPASS_MASTERCARD_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                      | value                                 |
       | requesttypedescriptions  | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
       | threedbypasspaymenttypes | MASTERCARD                            |

@@ -18,8 +18,8 @@ describe('TestHttpOptionsProvider', () => {
     when(request.request).thenReturn([{ requestid: '', sitereference: '' }]);
     when(jwtDecoderMock.decode('somejwt')).thenReturn({
       payload: {
-        requesttypedescriptions: []
-      }
+        requesttypedescriptions: [],
+      },
     });
   });
 
@@ -31,17 +31,17 @@ describe('TestHttpOptionsProvider', () => {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'ST-Request-Types': ''
+          'ST-Request-Types': '',
         },
-        timeout: 60000
+        timeout: 60000,
       });
     });
 
     it('put request types from jwt payload into headers', () => {
       when(jwtDecoderMock.decode('somejwt')).thenReturn({
         payload: {
-          requesttypedescriptions: ['RISKDEC', 'THREEDQUERY', 'AUTH']
-        }
+          requesttypedescriptions: ['RISKDEC', 'THREEDQUERY', 'AUTH'],
+        },
       });
 
       const options: IHttpClientConfig = testHttpOptionsProvider.getOptions(instance(request));
@@ -52,16 +52,16 @@ describe('TestHttpOptionsProvider', () => {
     it('put request types from request payload into headers if they exist instead of those from jwt', () => {
       when(jwtDecoderMock.decode('somejwt')).thenReturn({
         payload: {
-          requesttypedescriptions: ['RISKDEC', 'THREEDQUERY', 'AUTH']
-        }
+          requesttypedescriptions: ['RISKDEC', 'THREEDQUERY', 'AUTH'],
+        },
       });
 
       when(request.request).thenReturn([
         {
           requestid: '',
           sitereference: '',
-          requesttypedescriptions: ['ACCOUNTCHECK', 'THREEDQUERY', 'AUTH']
-        }
+          requesttypedescriptions: ['ACCOUNTCHECK', 'THREEDQUERY', 'AUTH'],
+        },
       ]);
 
       const options: IHttpClientConfig = testHttpOptionsProvider.getOptions(instance(request));
@@ -69,13 +69,13 @@ describe('TestHttpOptionsProvider', () => {
       expect(options.headers['ST-Request-Types']).toEqual('ACCOUNTCHECK, THREEDQUERY, AUTH');
     });
 
-    it('it puts empty request type array if they are not provided in jwt nor request payload', () => {
+    it('puts empty request type array if they are not provided in jwt nor request payload', () => {
       const options: IHttpClientConfig = testHttpOptionsProvider.getOptions(instance(request));
 
       expect(options.headers['ST-Request-Types']).toEqual('');
     });
 
-    it('it puts empty request type array if jwt paylaod cannot be decoded', () => {
+    it('puts empty request type array if jwt paylaod cannot be decoded', () => {
       when(jwtDecoderMock.decode('somejwt')).thenThrow(new Error('decode failed'));
 
       const options: IHttpClientConfig = testHttpOptionsProvider.getOptions(instance(request));

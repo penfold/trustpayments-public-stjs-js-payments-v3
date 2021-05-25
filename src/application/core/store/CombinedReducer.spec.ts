@@ -10,8 +10,11 @@ describe('CombinedReducer', () => {
   });
 
   it('combines multiple reducers', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const fooReducer = new CallbackReducer<string>((state, action) => `${state}foo`);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const barReducer = new CallbackReducer<string>((state, action) => `${state}bar`);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const xyzReducer = new CallbackReducer<string>((state, action) => `${state}xyz`);
     const combinedReducer = new CombinedReducer<string>([fooReducer, barReducer, xyzReducer]);
 

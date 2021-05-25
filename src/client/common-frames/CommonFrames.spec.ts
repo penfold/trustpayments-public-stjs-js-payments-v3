@@ -107,7 +107,7 @@ describe('CommonFrames', () => {
     it('should remove the control frame iframe on destroy event', () => {
       const iframeId = 'st-control-frame-iframe';
       expect(document.getElementById(iframeId)).toBeTruthy();
-      messageBus.publish({type: PUBLIC_EVENTS.DESTROY});
+      messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
       expect(document.getElementById(iframeId)).toBeFalsy();
     });
   });
@@ -420,7 +420,7 @@ describe('CommonFrames', () => {
 
   describe('when TRANSACTION_COMPLETE event has been called and hidden fields were attached', () => {
     it('should remove all existing hidden inputs except defined by merchant and replace with new ones based on submitFields', done => {
-      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(() => {
         expect(document.getElementsByName('baseamount')[0].getAttribute('value')).toEqual('10.00');
         expect(document.getElementsByName('somefield1')[0].getAttribute('value')).toEqual('somefield1');
         expect(document.getElementsByName('somefield2')[0].getAttribute('value')).toEqual('somefield2');

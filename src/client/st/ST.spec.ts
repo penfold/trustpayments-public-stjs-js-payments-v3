@@ -1,11 +1,13 @@
 import 'reflect-metadata';
 import { Container } from 'typedi';
+import { IConfig } from '../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import ST from './ST';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import { IGooglePayConfig } from '../../integrations/google-pay/models/IGooglePayConfig';
 import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../../application/core/shared/translator/Translator';
 import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
@@ -39,7 +41,7 @@ describe('ST', () => {
 
     beforeEach(() => {
       instance.Init = jest.fn();
-      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       stObject = ST(cacheConfig);
     });
   });
@@ -120,7 +122,7 @@ function stFixture() {
     'Invalid field': 'Nieprawidłowe pole',
     'Card number is invalid': 'Numer karty jest nieprawidłowy',
   };
-  const config = {
+  const config: IConfig = {
     analytics: true,
     animatedCard: true,
     components: { defaultPaymentType: 'test', paymentTypes: ['test'] },
@@ -163,7 +165,7 @@ function stFixture() {
     buttonId: 'merchant-submit-button',
   };
 
-  const cacheConfig = {
+  const cacheConfig: IConfig = {
     animatedCard: true,
     jwt: config.jwt,
     init: {
@@ -182,6 +184,7 @@ function stFixture() {
     formId: 'example-form',
     translations: { ...translations },
   };
+
   const applePayConfig = {
     buttonStyle: 'white-outline',
     buttonText: 'donate',
@@ -196,6 +199,47 @@ function stFixture() {
       },
     },
     placement: 'st-apple-pay',
+  };
+
+  const googlePayConfig: IGooglePayConfig = {
+    buttonOptions: {
+      buttonRootNode: 'test',
+    },
+    paymentRequest: {
+      allowedPaymentMethods: [{
+        parameters: {
+          allowedAuthMethods: ['PAN_ONLY'],
+          allowedCardNetworks: ['VISA'],
+        },
+        tokenizationSpecification: {
+          parameters: {
+            gateway: 'https://someorigin.com',
+            gatewayMerchantId: 'merchant.net.securetrading',
+          },
+          type: 'test',
+        },
+        type: 'CARD',
+      }],
+      apiVersion: 2,
+      apiVersionMinor: 0,
+      merchantInfo: {
+        merchantId: 'merchant.net.securetrading',
+        merchantName: 'merchang',
+      },
+      transactionInfo: {
+        countryCode: 'pl',
+        currencyCode: 'pln',
+        checkoutOption: 'COMPLETE_IMMEDIATE_PURCHASE',
+        displayItems: [
+          {
+            label: 'Example item',
+            price: '10.00',
+            type: 'LINE_ITEM',
+            status: 'FINAL',
+          },
+        ],
+      },
+    },
   };
 
   const visaCheckoutConfig = {
@@ -214,5 +258,5 @@ function stFixture() {
   };
   // @ts-ignore
   const instance: any = ST(config);
-  return { cacheConfig, config, instance, applePayConfig, visaCheckoutConfig };
+  return { cacheConfig, config, instance, applePayConfig, visaCheckoutConfig, googlePayConfig };
 }

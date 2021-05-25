@@ -1,4 +1,5 @@
 import each from 'jest-each';
+import { IResponseData } from '../../models/IResponseData';
 import { StCodec } from '../../services/st-codec/StCodec';
 import { FormState } from '../../models/constants/FormState';
 import {
@@ -8,8 +9,6 @@ import {
 } from '../../models/constants/Translations';
 import { MessageBus } from '../message-bus/MessageBus';
 import { Validation } from './Validation';
-import { Frame } from '../frame/Frame';
-import { IMessageBus } from '../message-bus/IMessageBus';
 import Container from 'typedi';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../translator/Translator';
@@ -254,8 +253,6 @@ describe('Validation', () => {
 });
 
 function validationFixture() {
-  let frame: Frame;
-  let messageBus: IMessageBus;
   const instance: Validation = new Validation();
   const inputElement = document.createElement('input');
   const inputElementMerchant = document.createElement('input');
@@ -275,7 +272,7 @@ function validationFixture() {
     errordata: ['expirydate'],
     errormessage: 'Invalid field',
   };
-  const securityCodeErrorData = {
+  const securityCodeErrorData: IResponseData = {
     errordata: ['securitycode'],
     errormessage: 'Invalid field',
   };

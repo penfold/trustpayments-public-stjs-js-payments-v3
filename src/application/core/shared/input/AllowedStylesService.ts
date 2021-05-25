@@ -10,7 +10,7 @@ export class AllowedStylesService {
     label: string,
     icon?: string,
     wrapper?: string
-  ) {
+  ): Record<string, { property: string, selector: string }> {
     return {
       'background-color-input': { property: 'background-color', selector: input },
       'background-color-input-error': { property: 'background-color', selector: inputError },

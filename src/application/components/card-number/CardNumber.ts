@@ -132,34 +132,34 @@ export class CardNumber extends Input {
     return LABEL_CARD_NUMBER;
   }
 
-  protected onBlur() {
+  protected onBlur(): void {
     super.onBlur();
     this.validation.luhnCheck(this._fieldInstance, this._inputElement, this._messageElement);
     this._sendState();
   }
 
-  protected onFocus(event: Event) {
+  protected onFocus(event: Event): void {
     super.onFocus(event);
     this._disableSecurityCodeField(this._inputElement.value);
   }
 
-  protected onInput(event: Event) {
+  protected onInput(event: Event): void {
     super.onInput(event);
     this._setInputValue();
     this._sendState();
   }
 
-  protected onPaste(event: ClipboardEvent) {
+  protected onPaste(event: ClipboardEvent): void {
     super.onPaste(event);
     this._setInputValue();
     this._sendState();
   }
 
-  protected onKeyPress(event: KeyboardEvent) {
+  protected onKeyPress(event: KeyboardEvent): void {
     super.onKeyPress(event);
   }
 
-  protected onKeydown(event: KeyboardEvent) {
+  protected onKeydown(event: KeyboardEvent): void {
     super.onKeydown(event);
     if (Validation.isEnter(event)) {
       this.validation.luhnCheck(this._cardNumberInput, this._inputElement, this._messageElement);
@@ -167,19 +167,19 @@ export class CardNumber extends Input {
     }
   }
 
-  protected setFocusListener() {
+  protected setFocusListener(): void {
     super.setEventListener(MessageBus.EVENTS.FOCUS_CARD_NUMBER);
   }
 
-  protected setBlurListener() {
+  protected setBlurListener(): void {
     super.setEventListener(MessageBus.EVENTS.BLUR_CARD_NUMBER);
   }
 
-  protected setSubmitListener() {
+  protected setSubmitListener(): void {
     super.setEventListener(MessageBus.EVENTS_PUBLIC.SUBMIT_FORM);
   }
 
-  private _publishSecurityCodeLength() {
+  private _publishSecurityCodeLength(): void {
     const { value } = this.getState();
     const messageBusEvent: IMessageBusEvent = {
       data: this._getSecurityCodeLength(value),

@@ -76,17 +76,6 @@ config = {
     'config_tokenisation_bypass_cards_visa': 'configTokenisationBypassCardVisa.json',
     'config_tokenisation_visa_request_types': 'configTokenisationVisaRequestTypes.json',
     'config_mainamount': 'configMainamount.json',
-    'e2e_config_bypass_mastercard': 'e2e_config/e2eConfigBypassMastercard.json',
-    'e2e_config_submit_on_success': 'e2e_config/e2eConfigSubmitOnSuccess.json',
-    'e2e_config_submit_on_error': 'e2e_config/e2eConfigSubmitOnError.json',
-    'e2e_config_request_types': 'e2e_config/e2eConfigRequestTypes.json',
-    'e2e_config_for_bypass_cards': 'e2e_config/e2eConfigForByPassCards.json',
-    'e2e_config_cybertonica_bypass_cards': 'e2e_config/e2eConfigCybertonicaWithBypass.json',
-    'e2e_config_cybertonica': 'e2e_config/e2eConfigCybertonica.json',
-    'e2e_config_submit_on_success_security_code': 'e2e_config/e2eConfigSubmitOnSuccessSecurityCode.json',
-    'e2e_config_for_iframe': 'e2e_config/e2eConfigForIframe.json',
-    'e2e_config_for_iframe_start_on_load_true': 'e2e_config/e2eConfigForIframeStartOnLoadTrue.json',
-    'e2e_button_id_config': 'e2e_config/e2eButtonIdConfig.json',
     'form_id_config': 'configFormId.json',
     'form_id_config_visa_checkout': 'configFormIdVisaCheckout.json'
 }

@@ -37,26 +37,32 @@ export class ApplePaySessionMock implements IApplePaySession {
     console.log('abort() called');
   }
 
-  completeMerchantValidation(merchantSession: any): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  completeMerchantValidation(merchantSession: unknown): void {
     console.log('completeMerchantValidation() called');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   completePayment(status: IApplePayPaymentAuthorizationResult): void {
     console.log('completePayment() called');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   completePaymentMethodSelection(update: IApplePayPaymentMethodUpdate): void {
     console.log('completePaymentMethodSelection() called');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   completeShippingContactSelection(update: IApplePayShippingContactUpdate): void {
     console.log('completeShippingContactSelection() called');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   completeShippingMethodSelection(update: IApplePayShippingMethodUpdate): void {
     console.log('completeShippingMethodSelection() called');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   openPaymentSetup(merchantId: string): Promise<boolean> {
     return Promise.resolve(true);
   }

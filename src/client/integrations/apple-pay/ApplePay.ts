@@ -226,7 +226,7 @@ export class ApplePay {
   }
 
   private onCancel(): void {
-    this.applePaySession.oncancel = (event: Event) => {
+    this.applePaySession.oncancel = () => {
       this.paymentCancelled = true;
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
@@ -251,7 +251,7 @@ export class ApplePay {
         first(),
         takeUntil(this.destroy$)
       )
-      .subscribe((event: IMessageBusEvent) => {
+      .subscribe(() => {
         this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
       });
   }

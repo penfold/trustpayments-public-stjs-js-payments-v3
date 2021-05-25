@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 10.0.0
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 16.1.0
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -12,6 +12,7 @@ include:
   - local: '/.gitlab/build.yml'
   - local: '/.gitlab/post-build.yml'
   - local: '/.gitlab/fast-tests.yml'
+  - local: '/.gitlab/fast-tests-security.yml'
   - local: '/.gitlab/publish-to-cdn.yml'
   - local: '/.gitlab/extended-tests.yml'
   - local: '/.gitlab/post-release.yml'
@@ -20,6 +21,8 @@ include:
 
 variables:
   PROJECT_INFRASTRUCTURE_CICD_REF: *project-infrastructure-cicd-ref
+
+  PROJECT_PYTHON_TESTS: 'tests'
 
   IMAGE_JS_PAYMENTS_APP_HTML_RELEASE: ${CI_REGISTRY_IMAGE}/app-html-release:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_APP_HTML_REVIEW: ${CI_REGISTRY_IMAGE}/app-html-review:${CI_PIPELINE_ID}
@@ -33,6 +36,8 @@ variables:
   SMOKE_E2E_TESTS_TAG: '@smoke_e2e_test'
   VISUAL_TESTS_TAG: '@visual_regression'
   VISUAL_STYLING_TESTS_TAG: '@visual_regression_styling'
+  VISUAL_TESTS_TAG_STJS_1709: '@STJS-1709_visual_regression_IE'
+  VISUAL_STYLING_TESTS_TAG_STJS_1709: '@STJS-1709_visual_regression_styling_IE'
   VISUAL_TESTS_SAFARI_TAG: '@visual_regression_safari'
   VISUAL_STYLING_TESTS_SAFARI_TAG: '@visual_regression_styling_safari'
   SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_component_test,@apple_pay_smoke_test'
@@ -50,10 +55,10 @@ variables:
   # Build
   # utility-images-build - No need to disabling. Extends to enable.
   # Fast Tests
-  # DISABLE_JOB_unit_tests: 'true'
-  DISABLE_JOB_js_static_analysis: 'true'
-  # DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
-  # DISABLE_JOB_vuln_check: 'true'
+  # DISABLE_JOB_unit_tests: 'true' #TODO turn off nightly tests
+  DISABLE_JOB_js_static_analysis: 'true' #TODO turn off nightly tests
+  # DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950 #TODO turn off nightly tests
+  # DISABLE_JOB_vuln_check: 'true' #TODO turn off nightly tests
   # Extended Tests
   # DISABLE_JOB_extended_tests: 'true'
   # Validate merge request description
@@ -62,8 +67,8 @@ variables:
   # DISABLE_JOB_release: 'true'
   # DISABLE_JOB_release_generate_version: "true"
   # Post-Release
+  DISABLE_JOB_npm_publish_dry_run: 'true'
   DISABLE_JOB_npm_publish: 'true'
-  DISABLE_JOB_npm_publish_dry_run : 'true'
   ### Disabled Jobs : End
 
   ### Disabled Activities
@@ -76,12 +81,21 @@ variables:
   # CI_DEBUG_TRACE: "true" # For CI/CD extra logs (like actually using variables)
   # LOG_LEVEL: DEBUG # For bash and python scripts
 
-py-static-analysis:
-  variables:
-    PYTHONPATH: tests
-  before_script:
-    - touch src/skipy_mypy_analysis_for_src_directory.py
-    - cd tests && . ${PROJECT_VENV_DIR}/bin/activate && poetry install && cd ..
+  ### Schedules configuration - If you want to use defaults, don't create SCHEDULES_CONFIGURATION variable
+  SCHEDULES_CONFIGURATION: |
+    SCHEDULED_MASTER_BUILD:
+      enabled: false
+    SCHEDULED_SMOKE_TESTS:
+      enabled: false
+    SCHEDULED_NIGHTLY_TESTS_SUPERVISOR:
+      enabled: true
+      cron: 0 17 * * *
+      cron_random: 0
+    SCHEDULED_NIGHTLY_TESTS_WORKER:
+      enabled: true
+    SCHEDULED_PACT_VERIFICATION:
+      enabled: false
+  ### Schedules configuration : End
 
 stages:
   - initialize
@@ -90,14 +104,17 @@ stages:
   - build
   - post-build
   - publish-to-cdn
-# Tests
+  # Tests
   - fast-tests
   - extended-tests
   - validate-merge-request-description
-# Release package
+  # Scheduled tests supervisor
+  - scheduled-supervisor-prepare
+  - scheduled-supervisor-check
+  # Release package
   - release
   - post-release
-# Smoke tests
+  # Smoke tests
   - pre-smoke-tests
   - smoke-tests
 

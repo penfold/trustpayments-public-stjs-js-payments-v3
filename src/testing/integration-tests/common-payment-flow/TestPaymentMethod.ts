@@ -14,6 +14,7 @@ export class TestPaymentMethod implements IPaymentMethod<IConfig, ITestStartData
     return 'test';
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   init(config: IConfig): Observable<void> {
     return of(undefined);
   }

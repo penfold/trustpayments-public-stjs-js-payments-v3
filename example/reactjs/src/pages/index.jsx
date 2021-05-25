@@ -21,7 +21,7 @@ class Index extends Component {
   }
 
   loadST(config) {
-    const { components, applePay, visaCheckout } = config;
+    const { components, applePay, visaCheckout, googlePay } = config;
     this.instance = SecureTrading(config);
 
     this.instance.submitCallback = data => {
@@ -33,6 +33,7 @@ class Index extends Component {
     this.instance.Components(components);
     this.instance.ApplePay(applePay);
     this.instance.VisaCheckout(visaCheckout);
+    this.instance.GooglePay(googlePay);
     this.initUpdateJwtListener();
   }
 
@@ -70,6 +71,7 @@ class Index extends Component {
           <legend>APM's:</legend>
           <div id="st-visa-checkout" className="st-form__group" />
           <div id="st-apple-pay" className="st-form__group" />
+          <div id="st-google-pay" className="st-form__group" />
         </fieldset>
 
         <fieldset className="st-form__fieldset">

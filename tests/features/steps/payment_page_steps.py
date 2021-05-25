@@ -1,6 +1,7 @@
 # type: ignore[no-redef]
 import time
 
+from assertpy import soft_assertions
 from behave import use_step_matcher, step, when, then
 
 from pages.page_factory import Pages
@@ -161,7 +162,7 @@ def step_impl(context, form_status):
 @step('User will see that (?P<field>.+) input fields are "(?P<form_status>.+)"')
 def step_impl(context, field: FieldType, form_status):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    field = FieldType.__members__[field] # pylint: disable=unsubscriptable-object
+    field = FieldType.__members__[field]  # pylint: disable=unsubscriptable-object
     if field.name == 'ALL':
         payment_page.validate_form_status(FieldType.SECURITY_CODE.name, form_status)
         payment_page.validate_form_status(FieldType.CARD_NUMBER.name, form_status)
@@ -264,6 +265,12 @@ def step_impl(context, field_type):
     payment_page.validate_field_accessibility(field_type, should_be_enabled=False)
 
 
+@then('User will see that "(?P<field_type>.+)" field is enabled')
+def step_impl(context, field_type):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.validate_field_accessibility(field_type, should_be_enabled=True)
+
+
 @step('User will see "(?P<callback_popup>.+)" popup')
 def step_impl(context, callback_popup):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -303,6 +310,13 @@ def step_impl(context, placeholder):
 def step_impl(context, card_type):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_credit_card_icon_in_input_field(card_type)
+
+
+@step('User replaces value of the card number field to "(?P<new_card_number>.+)"')
+def step_impl(context, new_card_number: str):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.clear_card_number_field()
+    payment_page.fill_credit_card_field(FieldType.CARD_NUMBER.name, new_card_number)
 
 
 @then('User will not see notification frame')
@@ -375,6 +389,16 @@ def step_impl(context, callback_popup):
     payment_page.validate_number_in_callback_counter_popup(callback_popup, '2')
 
 
+@step('User will see following callback type called only once')
+def step_impl(context):
+    time.sleep(1)
+    # sleep added to handle potential issue with update callback counters after initial check count
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    with soft_assertions():
+        for row in context.table:
+            payment_page.validate_number_in_callback_counter_popup(row['callback_type'], '1')
+
+
 @step('submit callback contains JWT response')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -426,10 +450,10 @@ def step_impl(context):
     payment_page.wait_for_notification_frame_to_disappear()
 
 
-@step('Change field focus')
-def step_impl(context):
+@step('User focuses on "(?P<field_type>.+)" field')
+def step_impl(context, field_type):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.change_field_focus(FieldType.ANIMATED_CARD.name)
+    payment_page.change_field_focus(FieldType[field_type].name)
 
 
 @step('User clicks Cancel button on authentication modal')

@@ -1,3 +1,9 @@
+### Rules
+# .rules-when-review                          ( works on pipelines: review A | nightly A | renovate A)
+# .rules-when-review-manual-allow-failure     ( works on pipelines: review M | nightly A | renovate M)
+# .rules-when-release                         ( works on pipelines: release A)
+
+
 ###################################### E2E Tests ######################################
 .e2e-tests-parallel:
   extends:
@@ -12,27 +18,26 @@
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 # Card Payments E2E Tests Headless
-card-payments-e2e-tests-review:
+e2e-card-payments-tests-review:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-review
     - .rules-when-review
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
-    FEATURE_FILES_NAMES_CONTAINS: 'e2e_'
-  parallel: 19
+  parallel: 20
 
-card-payments-e2e-tests-app-html-release:
+e2e-card-payments-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
     - .rules-when-release
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
-  parallel: 19
+  parallel: 20
 
 # Cardinal Commerce E2E Tests Headless
-cardinal-commerce-e2e-tests-app-html-review:
+e2e-cardinal-commerce-tests-review:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-review
@@ -41,7 +46,7 @@ cardinal-commerce-e2e-tests-app-html-review:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
   parallel: 8
 
-cardinal-commerce-e2e-tests-app-html-release:
+e2e-cardinal-commerce-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
@@ -51,7 +56,7 @@ cardinal-commerce-e2e-tests-app-html-release:
   parallel: 8
 
 # this is on purpose - STJS-1678
-cardinal-commerce-timeout-e2e-tests-app-html-release:
+e2e-cardinal-commerce-timeout-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
@@ -61,16 +66,16 @@ cardinal-commerce-timeout-e2e-tests-app-html-release:
   parallel: 8
 
 # Merchants features E2E Tests Headless
-merchants-features-e2e-tests-app-html-review:
+e2e-merchants-features-tests-nightly:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-review
-    - .rules-when-review
+    - .rules-when-review-manual-allow-failure
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_requests'
   parallel: 6
 
-merchants-features-e2e-tests-app-html-release:
+e2e-merchants-features-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
@@ -79,8 +84,8 @@ merchants-features-e2e-tests-app-html-release:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_requests'
   parallel: 6
 
-# Smoke E2E Tests Headless
-smoke-e2e-tests-app-html-review:
+# Smoke E2E Tests Headless -> exactly same scope which is used in extended tests as $SMOKE_E2E_TESTS_TAG
+e2e-smoke-tests-review:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-review
@@ -89,7 +94,7 @@ smoke-e2e-tests-app-html-review:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
   parallel: 3
 
-smoke-e2e-tests-app-html-release:
+.e2e-smoke-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
@@ -97,6 +102,16 @@ smoke-e2e-tests-app-html-release:
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
   parallel: 3
+
+# Additional coverage E2E Tests Headless
+.e2e-additional-coverage-tests-nightly:
+  extends:
+    - .e2e-tests-parallel
+    - .services-app-html-review
+    - .rules-when-review-manual-allow-failure
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_additional_coverage'
+  parallel: 14
 
 ################################### Component Tests ###################################
 .component-app-html-mock:
@@ -105,7 +120,7 @@ smoke-e2e-tests-app-html-release:
     - .services-app-html-mock
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
-card-payments-component-tests:
+.card-payments-component-tests:
   extends:
     - .component-app-html-mock
     - .parallel-component-tests
@@ -113,54 +128,29 @@ card-payments-component-tests:
     FEATURE_FILES_DIR: 'features/component_tests'
   parallel: 21
 
-visa-checkout-component-tests:
+component-card-payments-tests-review:
+  extends:
+    - .card-payments-component-tests
+    - .rules-when-review
+
+component-card-payments-tests-release:
+  extends:
+    - .card-payments-component-tests
+    - .rules-when-release
+
+.visa-checkout-component-tests:
   extends:
     - .component-app-html-mock
     - .sequentially-component-tests
   variables:
     FEATURE_FILE_NAME: 'visa_checkout.feature'
 
-################################### Security ZAP scan ###################################
-.zap-url-to-scan-merchant:
-  variables:
-    URL_TO_SCAN: "https://merchant.securetrading.net"
-
-.zap-url-to-scan-library:
-  variables:
-    URL_TO_SCAN: "https://library.securetrading.net:8443"
-
-merchant-securetrading-net-review-security-tests-zap-baseline-scan:
+component-visa-checkout-tests-review:
   extends:
-    - .zap-baseline-scan
-    - .services-app-html-review
-    - .zap-url-to-scan-merchant
+    - .visa-checkout-component-tests
     - .rules-when-review
-  variables:
-    ZAP_CONFIG_PATH: "baseline-scan.conf"
 
-library-securetrading-net-review-security-tests-zap-baseline-scan:
+component-visa-checkout-tests-release:
   extends:
-    - .zap-baseline-scan
-    - .services-app-html-review
-    - .zap-url-to-scan-library
-    - .rules-when-review
-  variables:
-    ZAP_CONFIG_PATH: "baseline-scan.conf"
-
-merchant-securetrading-net-release-security-tests-zap-baseline-scan:
-  extends:
-    - .zap-baseline-scan
-    - .service-app-html-release-merchant
-    - .zap-url-to-scan-merchant
+    - .visa-checkout-component-tests
     - .rules-when-release
-  variables:
-    ZAP_CONFIG_PATH: "baseline-scan.conf"
-
-scan-library-securetrading-net-release-security-tests-zap-baseline-scan:
-  extends:
-    - .zap-baseline-scan
-    - .service-app-html-release-library
-    - .zap-url-to-scan-library
-    - .rules-when-release
-  variables:
-    ZAP_CONFIG_PATH: "baseline-scan.conf"

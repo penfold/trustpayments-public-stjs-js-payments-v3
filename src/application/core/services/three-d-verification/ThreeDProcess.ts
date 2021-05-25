@@ -34,7 +34,7 @@ export class ThreeDProcess {
     const initialTokens = tokens ? of(tokens) : this.tokenProvider.getTokens();
     const updatedTokens = this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.UPDATE_JWT),
-      switchMap(_ => this.tokenProvider.getTokens())
+      switchMap(() => this.tokenProvider.getTokens())
     );
 
     this.threeDSTokens$ = merge(initialTokens, updatedTokens).pipe(shareReplay(1));

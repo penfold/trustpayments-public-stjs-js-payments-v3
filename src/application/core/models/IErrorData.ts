@@ -1,4 +1,4 @@
 export interface IErrorData {
-  errordata: [];
+  errordata: string[];
   errormessage: string;
 }

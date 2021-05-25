@@ -1,4 +1,5 @@
 import { takeUntil } from 'rxjs/operators';
+import { IAllowedStyles } from '../../models/IAllowedStyles';
 import { IFormFieldState } from '../../models/IFormFieldState';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { Utils } from '../utils/Utils';
@@ -71,11 +72,11 @@ export class Input {
     this._messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(destroy$)).subscribe(() => this.setLabelText());
   }
 
-  protected format(data: string) {
+  protected format(data: string): void {
     this._inputElement.value = data;
   }
 
-  protected getAllowedStyles() {
+  protected getAllowedStyles(): IAllowedStyles {
     let allowed = this._frame.getAllowedStyles();
     allowed = {
       ...allowed,
@@ -103,26 +104,29 @@ export class Input {
     };
   }
 
-  protected onBlur() {
+  protected onBlur(): void {
     this.blur();
     this.validation.validate(this._inputElement, this._messageElement);
   }
 
-  protected onClick(event: Event) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected onClick(event: Event): void {
     this.click();
   }
 
-  protected onFocus(event: Event) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected onFocus(event: Event): void {
     this.focus();
   }
 
-  protected onInput(event: Event) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected onInput(event: Event): void {
     this.validation.keepCursorsPosition(this._inputElement);
     Validation.setCustomValidationError('', this._inputElement);
     this.format(this._inputElement.value);
   }
 
-  protected onKeyPress(event: KeyboardEvent) {
+  protected onKeyPress(event: KeyboardEvent): void {
     if (Validation.isEnter(event)) {
       event.preventDefault();
       if (this._inputElement.id === CARD_NUMBER_INPUT) {
@@ -133,11 +137,11 @@ export class Input {
     }
   }
 
-  protected onKeydown(event: KeyboardEvent) {
+  protected onKeydown(event: KeyboardEvent): void {
     this.validation.setOnKeyDownProperties(this._inputElement, event);
   }
 
-  protected onPaste(event: ClipboardEvent) {
+  protected onPaste(event: ClipboardEvent): void {
     let { clipboardData } = event;
     event.preventDefault();
     if (this._inputElement === document.activeElement) {
@@ -158,13 +162,13 @@ export class Input {
     this.validation.validate(this._inputElement, this._messageElement);
   }
 
-  protected setAttributes(attributes: Record<string, any>) {
+  protected setAttributes(attributes: Record<string, any>): void {
     for (const attribute in attributes) {
       this._inputElement.setAttribute(attribute, attributes[attribute]);
     }
   }
 
-  protected setEventListener(event: string, validate: boolean = true) {
+  protected setEventListener(event: string, validate: boolean = true): void {
     this._messageBus.subscribeType(event, () => {
       if (validate) {
         this.validateInput();
@@ -172,7 +176,7 @@ export class Input {
     });
   }
 
-  protected setValue(value: string) {
+  protected setValue(value: string): void {
     this._inputElement.value = value;
   }
 
@@ -184,25 +188,25 @@ export class Input {
     };
   }
 
-  private addTabListener() {
+  private addTabListener(): void {
     window.addEventListener('focus', event => {
       this.onFocus(event);
     });
   }
 
-  private blur() {
+  private blur(): void {
     this._inputElement.blur();
   }
 
-  private click() {
+  private click(): void {
     this._inputElement.click();
   }
 
-  private focus() {
+  private focus(): void {
     this._inputElement.focus();
   }
 
-  private setInputListeners() {
+  private setInputListeners(): void {
     this._inputElement.addEventListener('paste', (event: ClipboardEvent) => {
       this.onPaste(event);
     });
@@ -239,11 +243,11 @@ export class Input {
     });
   }
 
-  private setLabelText() {
+  private setLabelText(): void {
     this._labelElement.textContent = this._translator.translate(this.getLabel());
   }
 
-  private setAsterisk() {
+  private setAsterisk(): void {
     const isRequiredField = this._labelElement.className.split(' ').some(name => name.includes('--required'));
 
     if (isRequiredField) {
@@ -254,7 +258,7 @@ export class Input {
     }
   }
 
-  private validateInput() {
+  private validateInput(): void {
     this.format(this._inputElement.value);
     if (this._inputElement.id === CARD_NUMBER_INPUT) {
       this.validation.luhnCheck(this._cardNumberInput, this._inputElement, this._messageElement);

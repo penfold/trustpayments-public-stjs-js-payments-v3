@@ -53,6 +53,7 @@ def before_scenario(context, scenario):
         context.configuration.BROWSER = context.configuration.REMOTE_BROWSER
     disable_headless_for_visa_checkout(context)
     context.browser = context.configuration.BROWSER
+    context.device = context.configuration.REMOTE_DEVICE
     context.driver_factory = DriverFactory(configuration=context.configuration)
     context.waits = Waits(driver_factory=context.driver_factory, configuration=context.configuration)
     actions = Actions(driver_factory=context.driver_factory, waits=context.waits)

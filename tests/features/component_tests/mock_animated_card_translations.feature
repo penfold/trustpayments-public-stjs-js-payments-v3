@@ -13,7 +13,7 @@ Feature:Animated card translations
     When User changes page language to "<language>"
     And User fills payment form with credit card number "340000000000611", expiration date "12/22" and cvv "123"
     Then User will see that labels displayed on animated card are translated into "<language>"
-    @extended_tests_part_3
+
     Examples:
       | language |
       | de_DE    |

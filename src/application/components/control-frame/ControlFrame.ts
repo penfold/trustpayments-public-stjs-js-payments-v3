@@ -34,7 +34,6 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
-import { Styler } from '../../core/shared/styler/Styler';
 import { IThreeDSTokens } from '../../core/services/three-d-verification/data/IThreeDSTokens';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
@@ -46,6 +45,7 @@ import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDPr
 import { PaymentController } from '../../core/services/payments/PaymentController';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import { ITranslator } from '../../core/shared/translator/ITranslator';
+import { GooglePay } from '../../../client/integrations/google-pay/GooglePay';
 
 @Service()
 export class ControlFrame {
@@ -85,14 +85,13 @@ export class ControlFrame {
     private _notification: NotificationService,
     private _cybertonica: Cybertonica,
     private _threeDProcess: ThreeDProcess,
-    private _configService: ConfigService,
     private _messageBus: IMessageBus,
     private _frame: Frame,
     private _jwtDecoder: JwtDecoder,
     private _visaCheckoutClient: VisaCheckoutClient,
     private _applePayClient: ApplePayClient,
     private paymentController: PaymentController,
-    private translator: ITranslator
+    private translator: ITranslator,
   ) {
     this.init();
     this._initVisaCheckout();
@@ -117,7 +116,6 @@ export class ControlFrame {
         StCodec.updateJwt(config.jwt);
       }
 
-      const styler: Styler = new Styler(this._frame.getAllowedStyles(), this._frame.parseUrl().styles);
       this._initCybertonica(config);
       this._updateMerchantFieldsEvent();
       this.paymentController.init();
@@ -290,7 +288,7 @@ export class ControlFrame {
         this._notification.success(PAYMENT_SUCCESS);
         this._validation.blockForm(FormState.COMPLETE);
       })
-      .catch((error: any) => {
+      .catch(() => {
         this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this._notification.error(PAYMENT_ERROR);
         this._validation.blockForm(FormState.AVAILABLE);

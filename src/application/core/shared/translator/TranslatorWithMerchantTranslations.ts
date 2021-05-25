@@ -23,7 +23,7 @@ export class TranslatorWithMerchantTranslations implements ITranslator {
     private configProvider: ConfigProvider
   ) {}
 
-  init() {
+  init(): void {
     this.translator.init();
 
     const destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));

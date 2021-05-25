@@ -4,7 +4,7 @@ Feature: Close ACS pop-up (3DS modal)
   I should be able to close the popup (from code))
   In the case when the st.js token expired
 
-  @e2e_smoke_test
+
   Scenario: Close 3ds pop up for NON_FRICTIONLESS card
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |

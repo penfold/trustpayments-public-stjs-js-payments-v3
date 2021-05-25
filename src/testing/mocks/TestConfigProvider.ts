@@ -17,6 +17,7 @@ export class TestConfigProvider implements ConfigProvider {
     return this.config$.getValue();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getConfig$(watchForChanges?: boolean): Observable<IConfig> {
     return this.config$.asObservable();
   }

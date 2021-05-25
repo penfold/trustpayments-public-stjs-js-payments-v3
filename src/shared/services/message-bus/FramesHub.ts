@@ -73,7 +73,7 @@ export class FramesHub {
     return window.parent;
   }
 
-  public reset() {
+  public reset(): void {
     this.activeFrame$.next([]);
   }
 

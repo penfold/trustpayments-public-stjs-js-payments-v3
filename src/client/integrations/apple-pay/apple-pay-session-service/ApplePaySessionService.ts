@@ -73,6 +73,7 @@ export class ApplePaySessionService {
   }
 
   private onPaymentMethodSelected(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethodSelectedEvent) => {
       this.applePaySession.completePaymentMethodSelection({
         newTotal: {
@@ -85,6 +86,7 @@ export class ApplePaySessionService {
   }
 
   private onShippingContactSelected(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.applePaySession.onshippingcontactselected = (event: IApplePayShippingContactSelectedEvent) => {
       this.applePaySession.completeShippingContactSelection({
         newTotal: {
@@ -97,6 +99,7 @@ export class ApplePaySessionService {
   }
 
   private onShippingMethodSelected(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.applePaySession.onshippingmethodselected = (event: IApplePayShippingMethodSelectedEvent) => {
       this.applePaySession.completeShippingMethodSelection({
         newTotal: {

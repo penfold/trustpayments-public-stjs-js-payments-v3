@@ -1,7 +1,4 @@
 {
-  "components": {
-    "startOnLoad": false
-  },
   "animatedCard": true,
   "panIcon": false,
   "submitOnSuccess": false,
