@@ -5,6 +5,8 @@ import { Observable, of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { TranslationProvider } from '../../../application/core/shared/translator/TranslationProvider';
+import { Translator } from '../../../application/core/shared/translator/Translator';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { ThreeDSecureClient } from './ThreeDSecureClient';
 import DoneCallback = jest.DoneCallback;
@@ -16,6 +18,8 @@ describe('ThreeDSecureClient', () => {
   let threeDSecureFactoryMock: ThreeDSecureFactory;
   let threeDSecureMock: ThreeDSecureInterface;
   let sut: ThreeDSecureClient;
+  let translator: Translator;
+  let translationProvider: TranslationProvider;
   let communicationCallbacks: Map<string, (event: IMessageBusEvent) => any>;
 
   const sendMessage = <T>(event: IMessageBusEvent): Observable<T> => {
@@ -25,6 +29,9 @@ describe('ThreeDSecureClient', () => {
   const configMock: ConfigInterface = {
     loggingLevel: LoggingLevel.ALL,
     challengeDisplayMode: ChallengeDisplayMode.POPUP,
+    translations: {
+      "Cancel": "Cancel",
+    }
   };
   const browserDataMock = {
     browserJavaEnabled: window.navigator.javaEnabled(),
@@ -52,6 +59,8 @@ describe('ThreeDSecureClient', () => {
     threeDSecureFactoryMock = mock(ThreeDSecureFactory);
     threeDSecureMock = mock<ThreeDSecureInterface>();
     communicationCallbacks = new Map();
+    translationProvider = new TranslationProvider();
+    translator = new Translator(translationProvider);
 
     when(interFrameCommunicatorMock.whenReceive(anything())).thenCall((eventType: string) => {
       return {
@@ -70,6 +79,7 @@ describe('ThreeDSecureClient', () => {
     sut = new ThreeDSecureClient(
       instance(interFrameCommunicatorMock),
       instance(threeDSecureFactoryMock),
+      translator
     );
 
     sut.init();
@@ -100,6 +110,24 @@ describe('ThreeDSecureClient', () => {
           methodUrlData.methodUrl,
         )).once();
         expect(result).toBe(methodUrlResultMock);
+        done();
+      });
+    });
+
+    it('should initialize the 3DS SDK with custom translation for the cancel button', (done: DoneCallback) => {
+      // @ts-ignore
+      const spy = jest.spyOn(sut.threeDSecure, 'init$');
+      const updatedConfig = {
+        ...configMock,
+        translations: {
+          "Cancel": "testcancel"
+        }
+      };
+      when(threeDSecureMock.init$(anything())).thenReturn(of(updatedConfig));
+
+      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_INIT, data: updatedConfig }).subscribe(() => {
+        expect(spy).toHaveBeenCalledWith(updatedConfig);
+
         done();
       });
     });

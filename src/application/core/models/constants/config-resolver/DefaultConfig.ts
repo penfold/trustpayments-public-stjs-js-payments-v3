@@ -42,5 +42,6 @@ export const DefaultConfig: IConfig = {
   threeDSecure: {
     loggingLevel: LoggingLevel.ERROR,
     challengeDisplayMode: ChallengeDisplayMode.POPUP,
+    translations: {},
   },
 };

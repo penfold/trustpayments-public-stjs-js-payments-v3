@@ -10,6 +10,7 @@ import {
   MethodURLResultInterface,
   ThreeDSecureFactory,
 } from '3ds-sdk-js';
+import { Translator } from '../../../application/core/shared/translator/Translator';
 import { IMethodUrlData } from './IMethodUrlData';
 import { IChallengeData } from './IChallengeData';
 
@@ -20,10 +21,12 @@ export class ThreeDSecureClient {
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
     private threeDSecureFactory: ThreeDSecureFactory,
+    private translator: Translator,
   ) {}
 
   init(): void {
     this.threeDSecure = this.threeDSecureFactory.create();
+    this.translator.init();
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_INIT)
@@ -43,7 +46,18 @@ export class ThreeDSecureClient {
   }
 
   private init$(config: ConfigInterface): Observable<ConfigInterface> {
-    return this.threeDSecure.init$(config);
+    if (config.translations && config.translations["Cancel"]) {
+      return this.threeDSecure.init$(config);
+    }
+
+    const updatedConfig = {
+      ...config,
+      translations: {
+        'Cancel': this.translator.translate('Cancel'),
+      },
+    };
+
+    return this.threeDSecure.init$(updatedConfig);
   }
 
   private run3DSMethod$({ methodUrl, notificationUrl, transactionId }: IMethodUrlData): Observable<MethodURLResultInterface> {
