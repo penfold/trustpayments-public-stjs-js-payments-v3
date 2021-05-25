@@ -45,7 +45,7 @@ Feature: Cancel payment with 3ds SDK library
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
 
-@MI
+
   Scenario Outline: Cancel - locale translation
     Given JS library configured by inline params THREE_DS_LIBRARY_POPUP_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
