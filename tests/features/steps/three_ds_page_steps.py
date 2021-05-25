@@ -26,16 +26,16 @@ def step_impl(context, code):
 @step('User clicks Cancel button on 3ds SDK challenge')
 def step_impl(context):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    three_ds_page.cancel_3ds_challenge()
+    three_ds_page.cancel_3ds_challenge(context.raw_e2e_config)
 
 
-@then('User see 3ds SDK challenge \'cancel\' button translated into (?P<locale_code>.+)')
+@then('User see 3ds SDK challenge "cancel" button translated into (?P<locale_code>.+)')
 def step_impl(context, locale_code):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    three_ds_page.validate_3ds_challenge_cancel_btn_translation_locale(locale_code)
+    three_ds_page.validate_3ds_challenge_cancel_btn_translation_locale(context.raw_e2e_config, locale_code)
 
 
-@then('User see 3ds SDK challenge \'cancel\' button translation is "(?P<config_translation>.+)"')
+@then('User see 3ds SDK challenge "cancel" button translation is "(?P<config_translation>.+)"')
 def step_impl(context, config_translation):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    three_ds_page.validate_3ds_challenge_cancel_btn_translation(config_translation)
+    three_ds_page.validate_3ds_challenge_cancel_btn_translation(context.raw_e2e_config, config_translation)

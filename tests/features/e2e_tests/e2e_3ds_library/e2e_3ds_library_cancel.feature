@@ -45,7 +45,7 @@ Feature: Cancel payment with 3ds SDK library
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
 
-
+@MI
   Scenario Outline: Cancel - locale translation
     Given JS library configured by inline params THREE_DS_LIBRARY_POPUP_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
@@ -55,7 +55,7 @@ Feature: Cancel payment with 3ds SDK library
     And User fills payment form with defined card MASTERCARD_FRICTIONLESS
     When User clicks Pay button
     And User see 3ds SDK challenge is displayed
-    Then User see 3ds SDK challenge 'cancel' button translated into <LOCALE_CODE>
+    Then User see 3ds SDK challenge "cancel" button translated into <LOCALE_CODE>
 
     Examples:
       | LOCALE_CODE |
@@ -79,7 +79,7 @@ Feature: Cancel payment with 3ds SDK library
     And User fills payment form with defined card MASTERCARD_FRICTIONLESS
     When User clicks Pay button
     And User see 3ds SDK challenge is displayed
-    Then User see 3ds SDK challenge 'cancel' button translation is "INTENTIONALLY_HARDCODED_VALUE"
+    Then User see 3ds SDK challenge "cancel" button translation is "INTENTIONALLY_HARDCODED_VALUE"
 
     Examples:
       | LOCALE_CODE |
