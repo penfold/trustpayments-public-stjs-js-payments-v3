@@ -106,16 +106,16 @@ def step_impl(context, example_page):
 
     # setting url specific params accordingly to example page
     if example_page is None:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.inline_e2e_config}'
     elif 'IN_IFRAME' in example_page:
-        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.inline_e2e_config}'
     elif 'WITH_UPDATE_JWT' in example_page:
         jwt = ''
         for row in context.table:
             jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}{context.inline_e2e_config}'
     else:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_e2e_config}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
     payment_page.open_page_with_not_private_connection_check(url)
@@ -134,9 +134,9 @@ def step_impl(context, example_page, jwt_config):
         jwt_payload_dict = JwtPayloadBuilder().map_payload_fields(context.table).build().__dict__
         # merge both dictionaries (old is overridden by additional attr)
         jwt = encode_jwt(merge_json_conf_with_additional_attr(jwt_config_from_json_dict, jwt_payload_dict))
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}{context.inline_e2e_config}'
     else:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_e2e_config}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
     payment_page.open_page_with_not_private_connection_check(url)
@@ -145,7 +145,7 @@ def step_impl(context, example_page, jwt_config):
 @step('User opens (?P<path>.+) page with inline param')
 def step_impl(context, path):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    url = f'{CONFIGURATION.URL.BASE_URL}/{path}?{context.inline_config}'
+    url = f'{CONFIGURATION.URL.BASE_URL}/{path}?{context.inline_e2e_config}'
     payment_page.open_page_with_not_private_connection_check(url)
 
 

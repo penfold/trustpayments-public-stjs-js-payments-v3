@@ -23,7 +23,7 @@ use_step_matcher('re')
 @given('JS library is configured with (?P<e2e_config>.+) and (?P<jwt_config>.+)')
 def step_impl(context, e2e_config, jwt_config):
     jwt = encode_jwt_for_json(JwtConfig[jwt_config])
-    context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
+    context.inline_e2e_config = create_inline_config(E2eConfig[e2e_config], jwt)
 
 
 @step(
@@ -35,9 +35,8 @@ def step_impl(context, e2e_config, jwt_config):
     jwt_payload_dict = JwtPayloadBuilder().map_payload_fields(context.table).build().__dict__
     # merge both dictionaries (old is overridden by additional attr)
     jwt = encode_jwt(merge_json_conf_with_additional_attr(jwt_config_from_json_dict, jwt_payload_dict))
-    context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
+    context.inline_e2e_config = create_inline_config(E2eConfig[e2e_config], jwt)
     context.raw_e2e_config = get_e2e_config_from_json(E2eConfig[e2e_config].value)
-    add_to_shared_dict(SharedDictKey.RAW_E2E_CONFIG.value, context.raw_e2e_config)
 
 
 @step('User fills payment form with defined card (?P<card>.+)')
@@ -85,7 +84,7 @@ def step_impl(context, how_many_seconds):
                         f'"expected/{expected_screenshot_filename}" and ' \
                         f'"actual/{actual_screenshot_filename}"\n' \
                         f'Check the result file "results/{actual_screenshot_filename}"'
-    add_to_shared_dict('assertion_message', assertion_message)
+    add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
     assert sm.compare_screenshots(expected_screenshot_filename, actual_screenshot_filename), assertion_message
 
 
@@ -123,4 +122,4 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     cachetoken_value = payment_page.get_cachetoken_value()
-    add_to_shared_dict('cachetoken', cachetoken_value)
+    add_to_shared_dict(SharedDictKey.CACHETOKEN.value, cachetoken_value)
