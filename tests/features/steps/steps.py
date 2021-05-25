@@ -38,7 +38,6 @@ def step_impl(context, e2e_config, jwt_config):
     context.inline_config = create_inline_config(E2eConfig[e2e_config], jwt)
     context.raw_e2e_config = get_e2e_config_from_json(E2eConfig[e2e_config].value)
     add_to_shared_dict(SharedDictKey.RAW_E2E_CONFIG.value, context.raw_e2e_config)
-    context.config_name = e2e_config
 
 
 @step('User fills payment form with defined card (?P<card>.+)')

@@ -26,10 +26,7 @@ def step_impl(context, code):
 @step('User clicks Cancel button on 3ds SDK challenge')
 def step_impl(context):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    if context.config_name == 'THREE_DS_LIBRARY_INLINE_CONFIG':
-        three_ds_page.cancel_3ds_inline_challenge()
-    else:
-        three_ds_page.cancel_3ds_popup_challenge()
+    three_ds_page.cancel_3ds_challenge()
 
 
 @then('User see 3ds SDK challenge \'cancel\' button translated into (?P<locale_code>.+)')
