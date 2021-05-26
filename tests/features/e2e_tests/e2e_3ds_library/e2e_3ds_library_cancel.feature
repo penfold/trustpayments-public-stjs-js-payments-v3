@@ -1,7 +1,9 @@
+@3ds_sdk
 Feature: Cancel payment with 3ds SDK library
   As a user
   I want to be able to cancel 3ds payment
-  So that I won't be charged with any money
+  So that I can interrupt payment process
+
 
   Scenario Outline: Cancel payment for INLINE modal
     Given JS library configured by inline params THREE_DS_LIBRARY_INLINE_CONFIG and jwt BASE_JWT with additional attributes
@@ -75,31 +77,31 @@ Feature: Cancel payment with 3ds SDK library
     And User see 3ds SDK challenge is displayed
     Then User see 3ds SDK challenge POPUP mode "cancel" button translated into <LOCALE_CODE>
 
+    @3ds_sdk_smoke
     Examples:
       | LOCALE_CODE |
       | en_GB       |
       | fr_FR       |
+
+    Examples:
+      | LOCALE_CODE |
       | en_US       |
       | cy_GB       |
       | da_DK       |
+      | de_DE       |
       | es_ES       |
       | nl_NL       |
       | no_NO       |
       | sv_SE       |
 
 
-  Scenario Outline: Cancel - locale translation override by config
+  @3ds_sdk_smoke
+  Scenario: Cancel - locale translation override by config
     Given JS library configured by inline params THREE_DS_LIBRARY_POPUP_TRANSLATIONS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-      | locale                  | <LOCALE_CODE>    |
     And User opens example page
     And User fills payment form with defined card MASTERCARD_FRICTIONLESS
     When User clicks Pay button
     And User see 3ds SDK challenge is displayed
     Then User see 3ds SDK challenge POPUP mode "cancel" button translation is "INTENTIONALLY_HARDCODED_VALUE"
-
-    Examples:
-      | LOCALE_CODE |
-      | en_GB       |
-      | fr_FR       |

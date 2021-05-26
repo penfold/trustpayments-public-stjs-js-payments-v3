@@ -5,7 +5,7 @@
     "loggingLevel": "ALL",
     "challengeDisplayMode": "POPUP",
     "translations": {
-      "Cancel": "INTENTIONALLY_HARDCODED_VALUE"
+      "cancel": "INTENTIONALLY_HARDCODED_VALUE"
     }
   }
 }
