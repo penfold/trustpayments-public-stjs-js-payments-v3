@@ -6,7 +6,7 @@ from behave import given, step, then, use_step_matcher
 
 from configuration import CONFIGURATION
 from pages.page_factory import Pages
-from utils.configurations.inline_config_generator import create_inline_config, get_e2e_config_from_json
+from utils.configurations.inline_config_generator import create_inline_config
 from utils.configurations.jwt_generator import encode_jwt_for_json, encode_jwt, get_jwt_config_from_json, \
     merge_json_conf_with_additional_attr
 from utils.enums.card import Card
@@ -36,7 +36,6 @@ def step_impl(context, e2e_config, jwt_config):
     # merge both dictionaries (old is overridden by additional attr)
     jwt = encode_jwt(merge_json_conf_with_additional_attr(jwt_config_from_json_dict, jwt_payload_dict))
     context.inline_e2e_config = create_inline_config(E2eConfig[e2e_config], jwt)
-    context.raw_e2e_config = get_e2e_config_from_json(E2eConfig[e2e_config].value)
 
 
 @step('User fills payment form with defined card (?P<card>.+)')

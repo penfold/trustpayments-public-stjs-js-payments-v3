@@ -4,6 +4,9 @@ from behave import use_step_matcher, step, then
 
 from pages.page_factory import Pages
 from utils.enums.auth_data import AuthData
+from utils.enums.shared_dict_keys import SharedDictKey
+from utils.helpers.request_executor import add_to_shared_dict
+from utils.helpers.resources_reader import get_translation_from_json
 
 use_step_matcher('re')
 
@@ -23,19 +26,33 @@ def step_impl(context, code):
         three_ds_page.fill_3ds_challenge_modal_and_submit(AuthData.THREE_DS_INCORRECT_CODE.value)
 
 
-@step('User clicks Cancel button on 3ds SDK challenge')
+@step('User clicks Cancel button on 3ds SDK challenge in INLINE mode')
 def step_impl(context):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    three_ds_page.cancel_3ds_challenge(context.raw_e2e_config)
+    three_ds_page.cancel_3ds_inline_challenge()
 
 
-@then('User see 3ds SDK challenge "cancel" button translated into (?P<locale_code>.+)')
+@step('User clicks Cancel button on 3ds SDK challenge in POPUP mode')
+def step_impl(context):
+    three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
+    three_ds_page.cancel_3ds_popup_challenge()
+
+
+@then('User see 3ds SDK challenge INLINE mode "cancel" button translated into (?P<locale_code>.+)')
 def step_impl(context, locale_code):
-    three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    three_ds_page.validate_3ds_challenge_cancel_btn_translation_locale(context.raw_e2e_config, locale_code)
+    expected_translation = get_translation_from_json(locale_code, 'Cancel')
+    validate_3ds_inline_challenge_cancel_btn_text(context, expected_translation)
 
 
-@then('User see 3ds SDK challenge "cancel" button translation is "(?P<config_translation>.+)"')
-def step_impl(context, config_translation):
+@then('User see 3ds SDK challenge INLINE mode "cancel" button translation is "(?P<expected_translation>.+)"')
+def step_impl(context, expected_translation):
+    validate_3ds_inline_challenge_cancel_btn_text(context, expected_translation)
+
+
+def validate_3ds_inline_challenge_cancel_btn_text(context, expected_translation):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    three_ds_page.validate_3ds_challenge_cancel_btn_translation(context.raw_e2e_config, config_translation)
+    actual_translation = three_ds_page.get_3ds_inline_challenge_cancel_btn_text()
+    assertion_message = f'Cancel button text is not correct: ' \
+                        f' should be {expected_translation} but is {actual_translation}'
+    add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+    assert actual_translation == expected_translation, assertion_message
