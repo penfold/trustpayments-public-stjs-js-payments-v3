@@ -30,7 +30,7 @@ describe('ThreeDSecureClient', () => {
     loggingLevel: LoggingLevel.ALL,
     challengeDisplayMode: ChallengeDisplayMode.POPUP,
     translations: {
-      "Cancel": "Cancel",
+      cancel: "Cancel",
     }
   };
   const browserDataMock = {
@@ -120,7 +120,7 @@ describe('ThreeDSecureClient', () => {
       const updatedConfig = {
         ...configMock,
         translations: {
-          "Cancel": "testcancel"
+          cancel: "testcancel"
         }
       };
       when(threeDSecureMock.init$(anything())).thenReturn(of(updatedConfig));
