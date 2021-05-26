@@ -46,14 +46,14 @@ export class ThreeDSecureClient {
   }
 
   private init$(config: ConfigInterface): Observable<ConfigInterface> {
-    if (config.translations && config.translations["Cancel"]) {
+    if (config.translations && config.translations.cancel) {
       return this.threeDSecure.init$(config);
     }
 
     const updatedConfig = {
       ...config,
       translations: {
-        'Cancel': this.translator.translate('Cancel'),
+        cancel: this.translator.translate('Cancel'),
       },
     };
 
