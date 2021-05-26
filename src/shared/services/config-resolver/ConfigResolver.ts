@@ -121,7 +121,7 @@ export class ConfigResolver {
 
   private _setThreeDSecureConfig(config: ConfigInterface): ConfigInterface {
     if (!config) {
-      return;
+      return DefaultConfig.threeDSecure;
     }
 
     return {
