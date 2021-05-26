@@ -73,7 +73,7 @@ Feature: Cancel payment with 3ds SDK library
     And User fills payment form with defined card MASTERCARD_FRICTIONLESS
     When User clicks Pay button
     And User see 3ds SDK challenge is displayed
-    Then User see 3ds SDK challenge INLINE mode "cancel" button translated into <LOCALE_CODE>
+    Then User see 3ds SDK challenge POPUP mode "cancel" button translated into <LOCALE_CODE>
 
     Examples:
       | LOCALE_CODE |
@@ -97,7 +97,7 @@ Feature: Cancel payment with 3ds SDK library
     And User fills payment form with defined card MASTERCARD_FRICTIONLESS
     When User clicks Pay button
     And User see 3ds SDK challenge is displayed
-    Then User see 3ds SDK challenge INLINE mode "cancel" button translation is "INTENTIONALLY_HARDCODED_VALUE"
+    Then User see 3ds SDK challenge POPUP mode "cancel" button translation is "INTENTIONALLY_HARDCODED_VALUE"
 
     Examples:
       | LOCALE_CODE |

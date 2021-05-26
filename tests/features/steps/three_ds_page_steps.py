@@ -38,20 +38,20 @@ def step_impl(context):
     three_ds_page.cancel_3ds_popup_challenge()
 
 
-@then('User see 3ds SDK challenge INLINE mode "cancel" button translated into (?P<locale_code>.+)')
+@then('User see 3ds SDK challenge POPUP mode "cancel" button translated into (?P<locale_code>.+)')
 def step_impl(context, locale_code):
     expected_translation = get_translation_from_json(locale_code, 'Cancel')
-    validate_3ds_inline_challenge_cancel_btn_text(context, expected_translation)
+    validate_3ds_popup_challenge_cancel_btn_text(context, expected_translation)
 
 
-@then('User see 3ds SDK challenge INLINE mode "cancel" button translation is "(?P<expected_translation>.+)"')
+@then('User see 3ds SDK challenge POPUP mode "cancel" button translation is "(?P<expected_translation>.+)"')
 def step_impl(context, expected_translation):
-    validate_3ds_inline_challenge_cancel_btn_text(context, expected_translation)
+    validate_3ds_popup_challenge_cancel_btn_text(context, expected_translation)
 
 
-def validate_3ds_inline_challenge_cancel_btn_text(context, expected_translation):
+def validate_3ds_popup_challenge_cancel_btn_text(context, expected_translation):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    actual_translation = three_ds_page.get_3ds_inline_challenge_cancel_btn_text()
+    actual_translation = three_ds_page.get_3ds_popup_challenge_cancel_btn_text()
     assertion_message = f'Cancel button text is not correct: ' \
                         f' should be {expected_translation} but is {actual_translation}'
     add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)

@@ -22,5 +22,5 @@ class ThreeDsPage(BasePage):
     def cancel_3ds_popup_challenge(self):
         self._actions.click(ThreeDSMethodsLocators.three_ds_challenge_popup_cancel_button)
 
-    def get_3ds_inline_challenge_cancel_btn_text(self):
-        return self._actions.get_text(ThreeDSMethodsLocators.three_ds_challenge_inline_cancel_button)
+    def get_3ds_popup_challenge_cancel_btn_text(self):
+        return self._actions.get_text(ThreeDSMethodsLocators.three_ds_challenge_popup_cancel_button)
