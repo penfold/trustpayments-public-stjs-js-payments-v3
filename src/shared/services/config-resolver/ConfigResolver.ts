@@ -120,7 +120,7 @@ export class ConfigResolver {
   }
 
   private _setThreeDSecureConfig(config: ConfigInterface): ConfigInterface {
-    if (!config || !Object.keys(config).length) {
+    if (!config) {
       return;
     }
 

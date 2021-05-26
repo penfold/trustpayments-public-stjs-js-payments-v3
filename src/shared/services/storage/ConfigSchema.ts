@@ -62,7 +62,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   submitOnSuccess: Joi.boolean(),
   translations: Joi.object(),
   visaCheckout: VisaCheckoutSchema,
-  [threeDSecureConfigName]: Joi.object().keys({
+  [threeDSecureConfigName]: Joi.object().allow({}).keys({
     loggingLevel: Joi.string().valid('ERROR', 'ALL').default('ALL'),
     challengeDisplayMode: Joi.string().valid('POPUP', 'INLINE').default('POPUP'),
     challengeDisplayInlineTargetElementId: Joi.any(),
