@@ -3,7 +3,6 @@ Feature: E2E for buttonID
   I want to use config with button id
   In order to check payment
 
-  @e2e_button_id_config
   Scenario: Successful Authentication
     Given JS library configured by inline params BUTTON_ID_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                         |

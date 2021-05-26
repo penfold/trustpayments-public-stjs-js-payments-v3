@@ -1,9 +1,10 @@
+@cardinal_commerce_v1
 Feature: Cardinal Commerce E2E tests v1
   As a user
   I want to use card payments method
   In order to check Cardinal Commerce integration
 
-  @e2e_smoke_test @e2e_cardinal_commerce_v1
+
   Scenario Outline: TC_1 - Successful Authentication, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -26,7 +27,6 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_2 - Failed Signature, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -47,7 +47,6 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success       | disabled |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_3 - Failed Authentication, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -70,7 +69,6 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_4 - Attempts/Non-Participating, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -90,7 +88,6 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_6 - Not Enrolled, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -110,7 +107,6 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_7 - Unavailable, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -130,7 +126,6 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_8 - Merchant Not Active, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -149,7 +144,6 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error         |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_9 - Cmpi lookup error, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -167,7 +161,6 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error         |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_10 - Cmpi authenticate error, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -188,7 +181,6 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_11 - Authentication Unavailable, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -209,7 +201,6 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_12 - Bypassed Authentication, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -229,7 +220,6 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: retry payment after failed transaction, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |

@@ -210,9 +210,9 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | threedresponse       | <threedresponse>                        |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status  | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | Y       | 02             | should be none     |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C       | should be none | should not be none |
+      | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | Y      | 02             | should be none     |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
 
 
   @cardinal_commerce_v2.0
@@ -265,9 +265,9 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | threedresponse       | <threedresponse>                        |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status  | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | U       | 00             | should be none     |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C       | should be none | should not be none |
+      | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | U      | 00             | should be none     |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
 
 
   @cardinal_commerce_v2.0
@@ -296,7 +296,6 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | ACCOUNTCHECK THREEDQUERY | should not be none |
 
 
-  @base_config @cardinal_commerce_v2.0
   Scenario Outline: TC_13 - Bypassed Authentication with submitOnSuccess - Card: MASTERCARD_BYPASSED_AUTH
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -344,13 +343,13 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | threedresponse       | <threedresponse>                        |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | status  | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | Y       | 02             | should be none     |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C       | should be none | should not be none |
+      | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | Y      | 02             | should be none     |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
 
 
 # ToDo - This test case is no longer supported by Cardinal - to clarify
-#  @base_config @cardinal_commerce_v2.0
+#
 #  Scenario: Pre-Whitelisted - Visabase_config
 #    When User fills payment form with defined card VISA_PRE_WHITELISTED_VISABASE_CONFIG
 #    And User clicks Pay button

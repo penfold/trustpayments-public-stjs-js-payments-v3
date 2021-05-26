@@ -1,10 +1,10 @@
+@cardinal_commerce_v1
 Feature: Cardinal Commerce E2E tests v1 with redirection after payment - Timeout
   As a user
   I want to use card payments method
   In order to check Cardinal Commerce integration
 
 
-  @e2e_cardinal_commerce_v1
   Scenario Outline: TC_5 - Timeout with submitOnSuccess and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |

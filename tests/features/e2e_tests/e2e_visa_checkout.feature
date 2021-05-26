@@ -5,7 +5,7 @@
 #  I want to use visa checkout
 #  To use defined card
 #
-#  @e2e_smoke_test
+#
 #  Scenario Outline: Successful Authentication by Visa checkout
 #    Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes
 #      | key                     | value                     |

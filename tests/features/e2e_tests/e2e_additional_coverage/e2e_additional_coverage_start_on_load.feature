@@ -2,7 +2,7 @@ Feature: request type + start on load - full test coverage
 
 
   Scenario Outline: successful payment with request types <request_types> and start on load - frictionless
-    Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_CONFIG and jwt JWT_WITH_FRICTIONLESS_CARD with additional attributes
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_FRICTIONLESS_CARD with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
@@ -36,7 +36,7 @@ Feature: request type + start on load - full test coverage
 
 
   Scenario Outline: successful payment request types <request_types> and start on load - frictionless
-    Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_WITH_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
@@ -62,7 +62,7 @@ Feature: request type + start on load - full test coverage
 
 
   Scenario Outline: successful payment with request types <request_types> and start on load - non-frictionless
-    Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
@@ -89,7 +89,7 @@ Feature: request type + start on load - full test coverage
 
 
   Scenario Outline: successful payment with request types <request_types> and start on load - non-frictionless
-    Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
@@ -112,7 +112,7 @@ Feature: request type + start on load - full test coverage
 
 
   Scenario Outline: successful payment with request types <request_types> and start on load - non-frictionless
-    Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_NON_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_NON_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
@@ -134,7 +134,7 @@ Feature: request type + start on load - full test coverage
 
 
   Scenario Outline: successful payment with request types <request_types> and start on load - non-frictionless
-    Given JS library configured by inline params START_ON_LOAD_REQUEST_TYPES_SUB_CONFIG and jwt JWT_NON_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_NON_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON

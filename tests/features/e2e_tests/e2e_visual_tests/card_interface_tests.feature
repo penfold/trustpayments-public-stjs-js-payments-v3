@@ -4,10 +4,9 @@ Feature: Visual regression - E2E Card Payments
   In order to check full payment functionality
 
   Background:
-    Given JS library configured by inline params BYPASS_MASTERCARD_CONFIG and jwt BASE_JWT with additional attributes
-      | key                      | value            |
-      | requesttypedescriptions  | THREEDQUERY AUTH |
-      | threedbypasspaymenttypes | MASTERCARD       |
+    Given JS library configured by inline params VISUAL_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
     And User opens minimal.html page with inline param
 
   @visual_regression @scrn_card_interface_after_successful_payment @STJS-1709_visual_regression_IE

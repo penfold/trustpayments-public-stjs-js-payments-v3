@@ -67,7 +67,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
     challengeDisplayMode: Joi.string().valid('POPUP', 'INLINE').default('POPUP'),
     challengeDisplayInlineTargetElementId: Joi.any(),
     translations: Joi.object().allow({}).keys({
-      "Cancel": Joi.string()
+      cancel : Joi.string()
     }),
   }),
 });
