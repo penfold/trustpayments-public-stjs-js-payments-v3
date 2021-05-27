@@ -134,6 +134,7 @@ describe('ThreeDSecureVerificationService', () => {
       threedmethodurl: 'https://methodurl',
       threednotificationurl: 'https://methodurlnotification',
       threedversion: '2.1.0',
+      paymenttypedescription: 'VISA',
     };
 
     const browserDataMock = {
@@ -164,7 +165,7 @@ describe('ThreeDSecureVerificationService', () => {
         transactionId: threedLookupResponse.threedstransactionid,
       }));
       when(browserDataProvider.getBrowserData$()).thenReturn(of(browserDataMock));
-      when(challengeService.doChallenge$(threeDQueryResponseMock)).thenReturn(of(updatedThreeDQueryResponseMock));
+      when(challengeService.doChallenge$(threeDQueryResponseMock, threedLookupResponse.paymenttypedescription)).thenReturn(of(updatedThreeDQueryResponseMock));
     });
 
     it('only sends gateway request and returns response if THREEDQUERY request type is not present', done => {
@@ -192,7 +193,7 @@ describe('ThreeDSecureVerificationService', () => {
 
     it('runs the challenge and returns its result if acsurl is not undefined', done => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(result => {
-        verify(challengeService.doChallenge$(threeDQueryResponseMock)).once();
+        verify(challengeService.doChallenge$(threeDQueryResponseMock, threedLookupResponse.paymenttypedescription)).once();
         expect(result).toBe(updatedThreeDQueryResponseMock);
         done();
       });
@@ -207,7 +208,7 @@ describe('ThreeDSecureVerificationService', () => {
       when(gatewayClient.threedQuery(deepEqual(tdqRequestWithBrowserData))).thenReturn(of(threeDQueryResponseWithoutAcsUrl));
 
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(result => {
-        verify(challengeService.doChallenge$(anything())).never();
+        verify(challengeService.doChallenge$(anything(), anything())).never();
         expect(result).toBe(threeDQueryResponseWithoutAcsUrl);
         done();
       });

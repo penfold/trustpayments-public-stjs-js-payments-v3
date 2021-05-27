@@ -7,7 +7,7 @@ import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IChallengeData } from '../../../../../../client/integrations/three-d-secure/IChallengeData';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
-import { ChallengeResultInterface, ResultActionCode, ThreeDSecureVersion } from '3ds-sdk-js';
+import { CardType, ChallengeResultInterface, ResultActionCode, ThreeDSecureVersion } from '3ds-sdk-js';
 import { of } from 'rxjs';
 import { Enrollment } from '../../../../models/constants/Enrollment';
 
@@ -45,6 +45,7 @@ describe('ThreeDSecureChallengeService', () => {
         version: threeDQueryResponseMock.threedversion as ThreeDSecureVersion,
         payload: threeDQueryResponseMock.threedpayload,
         challengeURL: threeDQueryResponseMock.acsurl,
+        cardType: CardType.VISA,
       },
     };
 
@@ -61,7 +62,7 @@ describe('ThreeDSecureChallengeService', () => {
     when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(challengeResultMock);
     when(challengeResultHandlerMock.handle$(threeDQueryResponseMock, challengeResultMock)).thenReturn(of(updatedThreeDQueryResponseMock));
 
-    sut.doChallenge$(threeDQueryResponseMock).subscribe(result => {
+    sut.doChallenge$(threeDQueryResponseMock, CardType.VISA).subscribe(result => {
       verify(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).once();
       verify(challengeResultHandlerMock.handle$(threeDQueryResponseMock, challengeResultMock)).once();
       expect(result).toBe(updatedThreeDQueryResponseMock);

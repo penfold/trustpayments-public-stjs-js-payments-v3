@@ -1,4 +1,5 @@
 import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
+import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { ConfigResolver } from './ConfigResolver';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigSchema } from '../storage/ConfigSchema';
@@ -34,6 +35,7 @@ describe('ConfigResolver', () => {
     expect(configResolverInstance.resolve(config).threeDSecure).toEqual({
       loggingLevel: LoggingLevel.ERROR,
       challengeDisplayMode: ChallengeDisplayMode.POPUP,
+      translations: {},
     });
   });
 });
@@ -261,9 +263,11 @@ function ConfigResolverFixture() {
         displayName: 'My Test Site',
       },
     },
+    [GooglePayConfigName]: undefined,
     [threeDSecureConfigName]: {
       loggingLevel: LoggingLevel.ERROR,
       challengeDisplayMode: ChallengeDisplayMode.POPUP,
+      translations: {},
     },
   };
   const minimalConfig: IConfig = {
@@ -331,7 +335,6 @@ function ConfigResolverFixture() {
     successCallback: null,
     translations: {},
     visaCheckout: undefined,
-    threeDSecure: undefined,
   };
   return {
     config,

@@ -1,4 +1,5 @@
-import { ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode,
+import {
+  CardType, ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode,
   ThreeDSecureFactory,
   ThreeDSecureInterface, ThreeDSecureVersion } from '3ds-sdk-js';
 import { Observable, of } from 'rxjs';
@@ -30,8 +31,8 @@ describe('ThreeDSecureClient', () => {
     loggingLevel: LoggingLevel.ALL,
     challengeDisplayMode: ChallengeDisplayMode.POPUP,
     translations: {
-      cancel: "Cancel",
-    }
+      cancel: 'Cancel',
+    },
   };
   const browserDataMock = {
     browserJavaEnabled: window.navigator.javaEnabled(),
@@ -73,7 +74,7 @@ describe('ThreeDSecureClient', () => {
     when(threeDSecureFactoryMock.create()).thenReturn(instance(threeDSecureMock));
     when(threeDSecureMock.init$(anything())).thenReturn(of(configMock));
     when(threeDSecureMock.run3DSMethod$(anything(), anything(), anything())).thenReturn(of(methodUrlResultMock));
-    when(threeDSecureMock.doChallenge$(anything(), anything(), anything())).thenReturn(of(challengeResultMock));
+    when(threeDSecureMock.doChallenge$(anything(), anything(), anything(), anything())).thenReturn(of(challengeResultMock));
     when(threeDSecureMock.getBrowserData()).thenReturn(browserDataMock);
 
     sut = new ThreeDSecureClient(
@@ -120,8 +121,8 @@ describe('ThreeDSecureClient', () => {
       const updatedConfig = {
         ...configMock,
         translations: {
-          cancel: "testcancel"
-        }
+          cancel: 'testcancel',
+        },
       };
       when(threeDSecureMock.init$(anything())).thenReturn(of(updatedConfig));
 
@@ -139,6 +140,7 @@ describe('ThreeDSecureClient', () => {
         challengeURL: 'https://acsurl',
         payload: '1234',
         version: ThreeDSecureVersion.v2_2,
+        cardType: CardType.VISA,
       };
 
       sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_CHALLENGE, data: challengeData }).subscribe(result => {
@@ -146,6 +148,7 @@ describe('ThreeDSecureClient', () => {
           challengeData.version,
           challengeData.payload,
           challengeData.challengeURL,
+          challengeData.cardType,
         )).once();
         expect(result).toBe(challengeResultMock);
         done();

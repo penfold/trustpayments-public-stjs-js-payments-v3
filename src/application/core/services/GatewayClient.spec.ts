@@ -117,6 +117,7 @@ describe('GatewayClient', () => {
         threedmethodurl: '',
         threednotificationurl: '',
         threedversion: '',
+        paymenttypedescription: 'VISA',
       };
 
       when(transportMock.sendRequest(deepEqual(request))).thenResolve({ response: expectedResponse });
@@ -128,7 +129,7 @@ describe('GatewayClient', () => {
     });
 
     it('sends ThreeDLookupRequest to the transport service and throws the error response if errorcode is not 0', done => {
-      const expectedResponse = {
+      const expectedResponse: IThreeDLookupResponse = {
         transactionstartedtimestamp: '',
         errormessage: '',
         errorcode: '50003',
@@ -138,6 +139,7 @@ describe('GatewayClient', () => {
         threedmethodurl: '',
         threednotificationurl: '',
         threedversion: '',
+        paymenttypedescription: 'VISA',
       };
 
       when(transportMock.sendRequest(deepEqual(request))).thenResolve({ response: expectedResponse });
