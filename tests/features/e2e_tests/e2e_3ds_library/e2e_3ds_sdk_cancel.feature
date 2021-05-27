@@ -6,7 +6,7 @@ Feature: Cancel payment with 3ds SDK library
 
 
   Scenario Outline: Cancel payment for INLINE modal
-    Given JS library configured by inline params THREE_DS_LIBRARY_INLINE_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params THREE_DS_SDK_INLINE_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
       | requesttypedescriptions | <request_types>                |
       | sitereference           | test_js_automated_tests_tp_3ds |
@@ -27,7 +27,7 @@ Feature: Cancel payment with 3ds SDK library
 
 
   Scenario Outline: Cancel payment for POPUP modal
-    Given JS library configured by inline params THREE_DS_LIBRARY_POPUP_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params THREE_DS_SDK_POPUP_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
       | requesttypedescriptions | <request_types>                |
       | sitereference           | test_js_automated_tests_tp_3ds |
@@ -48,7 +48,7 @@ Feature: Cancel payment with 3ds SDK library
 
 
   Scenario Outline: Cancel payment after filling and submitting 3ds challenge with INLINE configuration
-    Given JS library configured by inline params THREE_DS_LIBRARY_INLINE_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params THREE_DS_SDK_INLINE_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
       | requesttypedescriptions | <request_types>                |
       | sitereference           | test_js_automated_tests_tp_3ds |
@@ -70,7 +70,7 @@ Feature: Cancel payment with 3ds SDK library
 
 
   Scenario Outline: Cancel - locale translation
-    Given JS library configured by inline params THREE_DS_LIBRARY_POPUP_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params THREE_DS_SDK_POPUP_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
       | requesttypedescriptions | THREEDQUERY AUTH               |
       | locale                  | <LOCALE_CODE>                  |
@@ -101,7 +101,7 @@ Feature: Cancel payment with 3ds SDK library
 
   @3ds_sdk_smoke
   Scenario: Cancel - locale translation override by config
-    Given JS library configured by inline params THREE_DS_LIBRARY_POPUP_TRANSLATIONS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params THREE_DS_SDK_POPUP_TRANSLATIONS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
       | requesttypedescriptions | THREEDQUERY AUTH               |
       | sitereference           | test_js_automated_tests_tp_3ds |
