@@ -7,8 +7,9 @@ Feature: Cancel payment with 3ds SDK library
 
   Scenario Outline: Cancel payment for INLINE modal
     Given JS library configured by inline params THREE_DS_LIBRARY_INLINE_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_FRICTIONLESS
     And User clicks Pay button
@@ -27,8 +28,9 @@ Feature: Cancel payment with 3ds SDK library
 
   Scenario Outline: Cancel payment for POPUP modal
     Given JS library configured by inline params THREE_DS_LIBRARY_POPUP_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_FRICTIONLESS
     And User clicks Pay button
@@ -47,8 +49,9 @@ Feature: Cancel payment with 3ds SDK library
 
   Scenario Outline: Cancel payment after filling and submitting 3ds challenge with INLINE configuration
     Given JS library configured by inline params THREE_DS_LIBRARY_INLINE_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_FRICTIONLESS
     And User clicks Pay button
@@ -68,9 +71,10 @@ Feature: Cancel payment with 3ds SDK library
 
   Scenario Outline: Cancel - locale translation
     Given JS library configured by inline params THREE_DS_LIBRARY_POPUP_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
-      | locale                  | <LOCALE_CODE>    |
+      | key                     | value                          |
+      | requesttypedescriptions | THREEDQUERY AUTH               |
+      | locale                  | <LOCALE_CODE>                  |
+      | sitereference           | test_js_automated_tests_tp_3ds |
     And User opens example page
     And User fills payment form with defined card MASTERCARD_FRICTIONLESS
     When User clicks Pay button
@@ -98,8 +102,9 @@ Feature: Cancel payment with 3ds SDK library
   @3ds_sdk_smoke
   Scenario: Cancel - locale translation override by config
     Given JS library configured by inline params THREE_DS_LIBRARY_POPUP_TRANSLATIONS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
+      | key                     | value                          |
+      | requesttypedescriptions | THREEDQUERY AUTH               |
+      | sitereference           | test_js_automated_tests_tp_3ds |
     And User opens example page
     And User fills payment form with defined card MASTERCARD_FRICTIONLESS
     When User clicks Pay button
