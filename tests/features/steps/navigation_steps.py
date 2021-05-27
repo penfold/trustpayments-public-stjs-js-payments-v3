@@ -6,7 +6,7 @@ from behave import use_step_matcher, step, then
 
 from configuration import CONFIGURATION
 from features.steps.payment_page_mocks_stubs_steps import stub_jsinit_update_jwt_request
-from models.jwt_payload_builder import JwtPayloadBuilder
+from models.inline_config_builder import InlineConfigBuilder
 from pages.page_factory import Pages
 from utils.configurations.jwt_generator import encode_jwt_for_json, get_jwt_config_from_json, encode_jwt, \
     merge_json_conf_with_additional_attr, decode_jwt_from_jsinit
@@ -129,7 +129,7 @@ def step_impl(context, example_page, jwt_config):
     if '' in example_page:
         jwt_config_from_json_dict = get_jwt_config_from_json(JwtConfig[jwt_config].value)['payload']
         # build payload base on additional attributes and parse to dictionary
-        jwt_payload_dict = JwtPayloadBuilder().map_payload_fields(context.table).build().__dict__
+        jwt_payload_dict = InlineConfigBuilder().map_payload_fields(context.table).build().__dict__
         # merge both dictionaries (old is overridden by additional attr)
         jwt = encode_jwt(merge_json_conf_with_additional_attr(jwt_config_from_json_dict, jwt_payload_dict))
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}{context.inline_e2e_config}'

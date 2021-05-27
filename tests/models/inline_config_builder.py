@@ -3,7 +3,7 @@ from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import shared_dict
 
 
-class JwtPayloadBuilder:
+class InlineConfigBuilder:
 
     def __init__(self):
         self._jwt_payload = JwtPayload()
@@ -66,3 +66,42 @@ class JwtPayloadBuilder:
             else:
                 raise Exception(f'Property {key} not exists in object JwtPayload {JwtPayload().__dict__}')
         return self
+
+    def map_lib_config_additional_fields(self, lib_config, attributes):
+        # current implementation works only for not nested objects
+        config_keys_not_nested = ['analytics', 'animatedCard', 'buttonId', 'cancelCallback', 'cybertonicaApiKey',
+                                  'datacenterurl', 'disableNotification', 'errorCallback', 'formId', 'origin',
+                                  'panIcon', 'submitCallback', 'submitOnSuccess', 'submitOnError', 'submitOnCancel',
+                                  'successCallback']
+
+        for attr in attributes:
+            key = attr['key']
+            value = attr['value']
+            if key not in config_keys_not_nested:
+                raise Exception(
+                    f'Property {key} not valid js-payments lib config option '
+                    f'or not handled by "{self.map_lib_config_additional_fields.__name__}" method')
+            else:
+                if value in ['True', 'true', 'False', 'false']:
+                    lib_config[key] = (value.lower() == 'true')
+                else:
+                    lib_config[key] = value
+        return lib_config
+
+    def map_jwt_additional_fields(self, jwt, attributes):
+        # current implementation works only for not nested objects
+        payload_keys = ['accounttypedescription', 'baseamount', 'cachetoken', 'currencyiso3a', 'expirydate', 'locale',
+                        'mainamount', 'pan', 'requesttypedescriptions', 'securitycode', 'sitereference',
+                        'threedbypasspaymenttypes']
+        for attr in attributes:
+            key = attr['key']
+            value = attr['value']
+            if key not in payload_keys:
+                raise Exception(
+                    f'Property {key} not valid payload jwt option '
+                    f'or not handled by "{self.map_jwt_additional_fields.__name__}" method')
+            elif key in ['requesttypedescriptions', 'threedbypasspaymenttypes']:
+                jwt[key] = list(value.split(' '))
+            else:
+                jwt[key] = value
+        return jwt

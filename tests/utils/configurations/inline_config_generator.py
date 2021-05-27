@@ -28,3 +28,8 @@ def create_inline_config(e2e_config: E2eConfig, jwt):
     json_config = get_e2e_config_from_json(e2e_config.value)
     json_config['jwt'] = jwt
     return covert_json_to_string(json_config)
+
+
+def append_jwt_into_inline_config(inline_config, jwt):
+    inline_config['jwt'] = jwt
+    return covert_json_to_string(inline_config)
