@@ -5,7 +5,8 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.2
   I want to use card payments method
   In order to check 3ds SDK integration
 
-Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22_3DS_SDK_FRICTIONLESS_SUCCESS
+
+  Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22_3DS_SDK_FRICTIONLESS_SUCCESS
     Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
       | requesttypedescriptions | <request_types>                |
@@ -13,11 +14,11 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
     And User opens example page
     When User fills payment form with defined card VISA_V22_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see payment status information: "TODO"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
+      | TODO          |
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
@@ -45,8 +46,8 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
 
     Examples:
       | request_types            | payment_status | callback | state    |
-      | THREEDQUERY AUTH         | ???            | error    | enabled  |
-      | ACCOUNTCHECK THREEDQUERY | ???            | error    | disabled |
+      | THREEDQUERY AUTH         | TODO           | TODO     | enabled  |
+      | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     | disabled |
 
 
   Scenario Outline: TC_3 - Attempts Stand-In Frictionless Authentication - Card: VISA_V22_3DS_SDK_FRICTIONLESS_STAND_IN
@@ -59,11 +60,11 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see payment status information: "TODO"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
+      | TODO          |
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
@@ -83,11 +84,11 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see payment status information: "TODO"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
+      | TODO          |
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
@@ -113,8 +114,8 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
 
     Examples:
       | request_types            | payment_status | callback |
-      | THREEDQUERY AUTH         | ???            | error    |
-      | ACCOUNTCHECK THREEDQUERY | ???            | error    |
+      | THREEDQUERY AUTH         | TODO           | TODO     |
+      | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
 
 
   Scenario Outline: TC_6 - Authentication failed by DS unavailability - Card: VISA_V22_3DS_SDK_DS_UNAVAILABLE
@@ -125,11 +126,11 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
     And User opens example page
     When User fills payment form with defined card VISA_V22_3DS_SDK_DS_UNAVAILABLE
     And User clicks Pay button
-    Then User will see payment status information: "???"
+    Then User will see payment status information: "TODO"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | error         |
+      | TODO          |
 
     Examples:
       | request_types            |
@@ -153,8 +154,8 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
 
     Examples:
       | request_types            | payment_status | callback |
-      | THREEDQUERY AUTH         | ???            | error    |
-      | ACCOUNTCHECK THREEDQUERY | ???            | error    |
+      | THREEDQUERY AUTH         | TODO           | TODO     |
+      | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
 
 
   Scenario Outline: TC_8 - Error not completed threeDSMethod - Card: VISA_V22_3DS_SDK_ACS_UNAVAILABLE
@@ -173,8 +174,8 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
 
     Examples:
       | request_types            | payment_status | callback |
-      | THREEDQUERY AUTH         | ???            | error    |
-      | ACCOUNTCHECK THREEDQUERY | ???            | error    |
+      | THREEDQUERY AUTH         | TODO           | TODO     |
+      | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
 
 
   Scenario Outline: TC_9 -Successful Step Up Authentication - Card: VISA_V22_3DS_SDK_NON_FRICTIONLESS
@@ -187,11 +188,11 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see payment status information: "TODO"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
+      | TODO          |
 
     Examples:
       | request_types            |
@@ -209,11 +210,11 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "An error occurred"
+    Then User will see payment status information: "TODO"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | error         |
+      | TODO          |
 
     Examples:
       | request_types            |
@@ -231,11 +232,11 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "An error occurred"
+    Then User will see payment status information: "TODO"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
+      | TODO          |
 
     Examples:
       | request_types            |
@@ -251,11 +252,11 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
     And User opens example page
     When User fills payment form with defined card VISA_V22_3DS_SDK_FRICTIONLESS_SUCCESS_METHOD_URL
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see payment status information: "TODO"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
+      | TODO          |
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
@@ -275,11 +276,11 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see payment status information: "TODO"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
+      | TODO          |
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
@@ -305,5 +306,124 @@ Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: VISA_V22
 
     Examples:
       | request_types            | payment_status | callback |
-      | THREEDQUERY AUTH         | ???            | error    |
-      | ACCOUNTCHECK THREEDQUERY | ???            | error    |
+      | THREEDQUERY AUTH         | TODO           | TODO     |
+      | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+
+
+  Scenario Outline: TC_4a - successful frictionless with transaction timed out at athe ACS - Card: VISA_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_ACS
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card VISA_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_ACS
+    And User clicks Pay button
+    Then User will see payment status information: "<payment_status>"
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | <callback>    |
+
+    Examples:
+      | request_types            | payment_status | callback |
+      | THREEDQUERY AUTH         | TODO           | TODO     |
+      | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+
+
+  Scenario Outline: TC_4b - successful frictionless with suspected fraud - Card: VISA_V22_3DS_SDK_FRICTIONLESS_SUSPECTED_FRAUD
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card VISA_V22_3DS_SDK_FRICTIONLESS_SUSPECTED_FRAUD
+    And User clicks Pay button
+    Then User will see payment status information: "<payment_status>"
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | <callback>    |
+
+    Examples:
+      | request_types            | payment_status | callback |
+      | THREEDQUERY AUTH         | TODO           | TODO     |
+      | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+
+  Scenario Outline: TC_4c - successful frictionless with card holder not enrolled in service - Card: VISA_V22_3DS_SDK_FRICTIONLESS_NOT_ENROLLED
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card VISA_V22_3DS_SDK_FRICTIONLESS_NOT_ENROLLED
+    And User clicks Pay button
+    Then User will see payment status information: "<payment_status>"
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | <callback>    |
+
+    Examples:
+      | request_types            | payment_status | callback |
+      | THREEDQUERY AUTH         | TODO           | TODO     |
+      | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+
+
+  Scenario Outline: TC_4d - successful frictionless with transaction timed out at the ACS - Card: VISA_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_2_ACS
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card VISA_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_2_ACS
+    And User clicks Pay button
+    Then User will see payment status information: "<payment_status>"
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | <callback>    |
+
+    Examples:
+      | request_types            | payment_status | callback |
+      | THREEDQUERY AUTH         | TODO           | TODO     |
+      | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+
+
+  Scenario Outline: TC_4e - successful frictionless with non-payment transaction not supported - Card: VISA_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_NON_PAYMENT
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card VISA_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_NON_PAYMENT
+    And User clicks Pay button
+    Then User will see payment status information: "<payment_status>"
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | <callback>    |
+
+    Examples:
+      | request_types            | payment_status | callback |
+      | THREEDQUERY AUTH         | TODO           | TODO     |
+      | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+
+
+  Scenario Outline: TC_4f - successful frictionless with 3RI transaction not supported - Card: VISA_V22_3DS_SDK_FRICTIONLESS_3RI_TRANSACTION_NOT_SUPPORTED
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card VISA_V22_3DS_SDK_FRICTIONLESS_3RI_TRANSACTION_NOT_SUPPORTED
+    And User clicks Pay button
+    Then User will see payment status information: "<payment_status>"
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | <callback>    |
+
+    Examples:
+      | request_types            | payment_status | callback |
+      | THREEDQUERY AUTH         | TODO           | TODO     |
+      | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |

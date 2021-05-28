@@ -201,9 +201,6 @@ class Card(Enum):
     VISA_V21_3DS_SDK_FRICTIONLESS_3RI_TRANSACTION_NOT_SUPPORTED = '4900490000000220', '', CardType.VISA, 123
     VISA_V22_3DS_SDK_FRICTIONLESS_3RI_TRANSACTION_NOT_SUPPORTED = '4900490000000725', '', CardType.VISA, 123
 
-
-
-
     @property
     def number(self):
         # the same number as the formatted one but with 'normal' notation
