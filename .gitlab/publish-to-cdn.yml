@@ -3,8 +3,9 @@ publish-to-cdn:
   extends:
     - .trigger-publish-to-cdn-release
   before_script:
-    - . .cicd_scripts/gitlab/release/load_release_artifact.sh "${ARTIFACT_RELEASE_CICD_FILENAME}"
+    - export RELEASE_TAG=$(jq -r '.release_tag // empty' "${ARTIFACT_RELEASE_CICD_FILENAME}")
+    - export CDN_HASH=$(jq -r '.cdn_hash // empty' "${ARTIFACT_RELEASE_CICD_FILENAME}")
     - export PUBLISH_ARTIFACT_TARGET_RELATIVE_PATH="${RELEASE_TAG}-${CDN_HASH}"
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-release'
-    PUBLISH_ARTIFACT_SOURCE_PATH: ".dist-release"
+    PUBLISH_ARTIFACT_SOURCE_PATH: "${CI_PROJECT_DIR}/.release_sources/dist"
