@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 16.1.0
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 18.1.0
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -52,34 +52,28 @@ variables:
   # DISABLE_JOB_export_cleanup_artifacts: 'true'
   # DISABLE_JOB_docker_images_build: 'true'
   # DISABLE_JOB_docker_images_pull: 'true'
+  # Prepare-release
+  # DISABLE_JOB_generate_version_review: 'true'
+  # DISABLE_JOB_generate_version_release: 'true'
   # Build
   # utility-images-build - No need to disabling. Extends to enable.
   # Fast Tests
-  # DISABLE_JOB_unit_tests: 'true' #TODO turn off nightly tests
-  DISABLE_JOB_js_static_analysis: 'true' #TODO turn off nightly tests
-  # DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950 #TODO turn off nightly tests
-  # DISABLE_JOB_vuln_check: 'true' #TODO turn off nightly tests
+  # DISABLE_JOB_check_schedules: true'
+  # DISABLE_JOB_unit_tests: 'true'
+  DISABLE_JOB_js_static_analysis: 'true'
+  # DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
+  # DISABLE_JOB_vuln_check: 'true'
   # Extended Tests
   # DISABLE_JOB_extended_tests: 'true'
   # Validate merge request description
   # DISABLE_JOB_validate_merge_request_description: 'true'
   # Release
   # DISABLE_JOB_release: 'true'
-  # DISABLE_JOB_release_generate_version: "true"
-  # Post-Release
+  # Post Release
+  # DISABLE_JOB_configure_schedules: 'true'
   DISABLE_JOB_npm_publish_dry_run: 'true'
   DISABLE_JOB_npm_publish: 'true'
   ### Disabled Jobs : End
-
-  ### Disabled Activities
-  # DISABLE_ACTIVITY_docker_image_build_cache: 'true'
-  # DISABLE_ACTIVITY_generate_lerna_artifacts: 'true'
-  ### Disabled Activities : End
-
-  ##### Others - project specific #####
-  # BUILD_IMAGES: "true"
-  # CI_DEBUG_TRACE: "true" # For CI/CD extra logs (like actually using variables)
-  # LOG_LEVEL: DEBUG # For bash and python scripts
 
   ### Schedules configuration - If you want to use defaults, don't create SCHEDULES_CONFIGURATION variable
   SCHEDULES_CONFIGURATION: |
@@ -95,7 +89,16 @@ variables:
       enabled: true
     SCHEDULED_PACT_VERIFICATION:
       enabled: false
+    SCHEDULED_HOTFIX_BRANCH_TESTS_SUPERVISOR:
+      enabled: false
+    SCHEDULED_HOTFIX_BRANCH_TESTS_WORKER:
+      enabled: false
   ### Schedules configuration : End
+
+  ##### Others - project specific #####
+  # BUILD_IMAGES: "true"
+  # CI_DEBUG_TRACE: "true" # For CI/CD extra logs (like actually using variables)
+  # LOG_LEVEL: DEBUG # For bash and python scripts
 
 stages:
   - initialize
@@ -111,6 +114,8 @@ stages:
   # Scheduled tests supervisor
   - scheduled-supervisor-prepare
   - scheduled-supervisor-check
+  # Scheduled renovate trigger
+  - scheduled-renovate-trigger
   # Release package
   - release
   - post-release
