@@ -6,7 +6,6 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
   In order to check 3ds SDK integration
 
 
-
   Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUCCESS
     Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
@@ -27,6 +26,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_2 - Failed Frictionless Authentication - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_FAILED
@@ -49,6 +49,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            | payment_status | callback | state    |
       | THREEDQUERY AUTH         | TODO           | TODO     | enabled  |
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     | disabled |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     | disabled |
 
 
   Scenario Outline: TC_3 - Attempts Stand-In Frictionless Authentication - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_STAND_IN
@@ -73,6 +74,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_4 - Unavailable Frictionless Authentication from the Issuer - Card: MASTERCARD_V22_3DS_SDK_UNAVAILABLE_FRICTIONLESS_AUTH
@@ -97,6 +99,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_5 - Rejected Frictionless Authentication by the Issuer - Card: MASTERCARD_V22_3DS_SDK_REJECTED_FRICTIONLESS_AUTH
@@ -117,6 +120,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            | payment_status | callback |
       | THREEDQUERY AUTH         | TODO           | TODO     |
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
 
 
   Scenario Outline: TC_6 - Authentication failed by DS unavailability - Card: MASTERCARD_V22_3DS_SDK_DS_UNAVAILABLE
@@ -137,6 +141,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_7 - Authentication failed by improper data in ARes message - Card: MASTERCARD_V22_3DS_SDK_IMPROPER_ARES_DATA
@@ -157,6 +162,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            | payment_status | callback |
       | THREEDQUERY AUTH         | TODO           | TODO     |
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
 
 
   Scenario Outline: TC_8 - Error not completed threeDSMethod - Card: MASTERCARD_V22_3DS_SDK_ACS_UNAVAILABLE
@@ -177,6 +183,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            | payment_status | callback |
       | THREEDQUERY AUTH         | TODO           | TODO     |
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
 
 
   Scenario Outline: TC_9 -Successful Step Up Authentication - Card: MASTERCARD_V22_3DS_SDK_NON_FRICTIONLESS
@@ -199,6 +206,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_10 - Failed Step Up Authentication - Card: MASTERCARD_V22_3DS_SDK_STEP_UP_AUTH_FAILED
@@ -221,6 +229,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_11 - step up - Error on authentication - Card: MASTERCARD_V22_3DS_SDK_STEP_UP_AUTH_ERROR
@@ -243,6 +252,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_12 - successful frictionless with require methodUrl - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUCCESS_METHOD_URL
@@ -265,6 +275,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_13 - step up with require methodUrl - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUCCESS_METHOD_URL
@@ -289,6 +300,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_14 - successful frictionless with transaction timed out error for method url- Card: MASTERCARD_V22_3DS_SDK_TRANSACTION_TIMEOUT
@@ -309,6 +321,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            | payment_status | callback |
       | THREEDQUERY AUTH         | TODO           | TODO     |
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
 
 
   Scenario Outline: TC_4a - successful frictionless with transaction timed out at athe ACS - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_ACS
@@ -329,6 +342,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            | payment_status | callback |
       | THREEDQUERY AUTH         | TODO           | TODO     |
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
 
 
   Scenario Outline: TC_4b - successful frictionless with suspected fraud - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUSPECTED_FRAUD
@@ -349,6 +363,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            | payment_status | callback |
       | THREEDQUERY AUTH         | TODO           | TODO     |
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
 
   Scenario Outline: TC_4c - successful frictionless with card holder not enrolled in service - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_NOT_ENROLLED
     Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
@@ -368,6 +383,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            | payment_status | callback |
       | THREEDQUERY AUTH         | TODO           | TODO     |
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
 
 
   Scenario Outline: TC_4d - successful frictionless with transaction timed out at the ACS - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_2_ACS
@@ -388,6 +404,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            | payment_status | callback |
       | THREEDQUERY AUTH         | TODO           | TODO     |
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
 
 
   Scenario Outline: TC_4e - successful frictionless with non-payment transaction not supported - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_NON_PAYMENT
@@ -408,6 +425,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            | payment_status | callback |
       | THREEDQUERY AUTH         | TODO           | TODO     |
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
 
 
   Scenario Outline: TC_4f - successful frictionless with 3RI transaction not supported - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_3RI_TRANSACTION_NOT_SUPPORTED
@@ -428,3 +446,4 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | request_types            | payment_status | callback |
       | THREEDQUERY AUTH         | TODO           | TODO     |
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
