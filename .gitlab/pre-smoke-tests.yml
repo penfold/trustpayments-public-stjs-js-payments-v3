@@ -6,16 +6,14 @@ validate-cdn-latest:
   variables:
       SLEEP_BEFORE_VALIDATE: '0'
       REMOTE_FILE_URL: "https://cdn.eu.trustpayments.com/js-payments-v3/latest/st.js"
-      TARGET_FILE_PATH: ".releases_sources/dist/st.js"
+      TARGET_FILE_PATH: ".artifacts_sdk_release/dist/st.js"
 
-build-app-html-smoke:
-  variables:
-    UTILITY_NAME: 'app-html-smoke'
+build-app-image-html-smoke:
   extends:
-    - .build-app-html
+    - .build-app-image-html
     - .rules-when-release
   stage: pre-smoke-tests
-  before_script:
-    - cp -r "${CI_PROJECT_DIR}/.releases_sources/dist/" dist/
-    - export LIBRARY_ARG="--library_url=https://cdn.eu.trustpayments.com/js-payments-v3/latest"
-    - export BUILD_ARGS_EXTRA="--build-arg PIPELINE_WORKDIR=/pipeline --build-arg BUILD_TYPE=prod --build-arg LIBRARY_ARG=${LIBRARY_ARG}"
+  variables:
+    ARTIFACTS_BUILD_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_image"
+    BUILD_ARGS_EXTRA: "--build-arg SDK_DIST_PATH=.artifacts_sdk_release/dist --build-arg APP_DIST_PATH=.artifacts_app_html_smoke/dist"
+    UTILITY_NAME: 'app-html-smoke'
