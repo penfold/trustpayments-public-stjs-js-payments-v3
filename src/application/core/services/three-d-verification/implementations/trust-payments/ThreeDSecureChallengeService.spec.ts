@@ -7,7 +7,7 @@ import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IChallengeData } from '../../../../../../client/integrations/three-d-secure/IChallengeData';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
-import { CardType, ChallengeResultInterface, ResultActionCode, ThreeDSecureVersion } from '3ds-sdk-js';
+import { CardType, ChallengeResultInterface, ResultActionCode, ThreeDSecureVersion } from '@trustpayments/3ds-sdk-js';
 import { of } from 'rxjs';
 import { Enrollment } from '../../../../models/constants/Enrollment';
 

@@ -4,7 +4,7 @@ import { ConfigResolver } from './ConfigResolver';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigSchema } from '../storage/ConfigSchema';
 import { anything, spy, when } from 'ts-mockito';
-import { ChallengeDisplayMode, LoggingLevel } from '3ds-sdk-js';
+import { ChallengeDisplayMode, LoggingLevel } from '@trustpayments/3ds-sdk-js';
 
 describe('ConfigResolver', () => {
   const configResolverInstance: ConfigResolver = new ConfigResolver();

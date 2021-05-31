@@ -1,4 +1,4 @@
-import { ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode } from '3ds-sdk-js';
+import { ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode } from '@trustpayments/3ds-sdk-js';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { IConfig } from '../../../../../../shared/model/config/IConfig';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';

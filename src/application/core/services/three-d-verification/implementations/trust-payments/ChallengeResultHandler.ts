@@ -1,6 +1,6 @@
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { Observable, of, throwError } from 'rxjs';
-import { ChallengeResultInterface, ResultActionCode } from '3ds-sdk-js';
+import { ChallengeResultInterface, ResultActionCode } from '@trustpayments/3ds-sdk-js';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR } from '../../../../models/constants/Translations';
 import { Service } from 'typedi';
 

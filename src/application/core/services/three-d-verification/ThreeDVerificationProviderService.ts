@@ -1,4 +1,4 @@
-import { ConfigInterface } from '3ds-sdk-js';
+import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 import { ContainerInstance, Service } from 'typedi';
 import { CardinalCommerceVerificationService } from './implementations/cardinal-commerce/CardinalCommerceVerificationService';
 import { ThreeDSecureVerificationService } from './implementations/trust-payments/ThreeDSecureVerificationService';

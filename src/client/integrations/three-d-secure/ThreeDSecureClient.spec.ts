@@ -1,7 +1,7 @@
 import {
   CardType, ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode,
   ThreeDSecureFactory,
-  ThreeDSecureInterface, ThreeDSecureVersion } from '3ds-sdk-js';
+  ThreeDSecureInterface, ThreeDSecureVersion } from '@trustpayments/3ds-sdk-js';
 import { Observable, of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';

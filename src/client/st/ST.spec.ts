@@ -17,7 +17,7 @@ import { ApplePay } from '../integrations/apple-pay/ApplePay';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
 import { CardFrames } from '../card-frames/CardFrames';
 import { instance, mock } from 'ts-mockito';
-import { ThreeDSecureFactory } from '3ds-sdk-js';
+import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 
 window.alert = jest.fn();
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');

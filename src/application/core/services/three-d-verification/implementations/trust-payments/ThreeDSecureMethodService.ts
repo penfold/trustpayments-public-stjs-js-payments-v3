@@ -4,7 +4,7 @@ import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IMethodUrlData } from '../../../../../../client/integrations/three-d-secure/IMethodUrlData';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
-import { MethodURLResultInterface } from '3ds-sdk-js';
+import { MethodURLResultInterface } from '@trustpayments/3ds-sdk-js';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 
 @Service()

@@ -17,7 +17,7 @@ import { DefaultPlaceholders } from '../../../application/core/models/constants/
 import { environment } from '../../../environments/environment';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 import { IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
-import { ConfigInterface } from '3ds-sdk-js';
+import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 
 @Service()
 export class ConfigResolver {

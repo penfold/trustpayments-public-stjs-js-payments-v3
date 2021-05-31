@@ -5,7 +5,7 @@ import { IChallengeData } from '../../../../../../client/integrations/three-d-se
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { switchMap } from 'rxjs/operators';
-import { ChallengeResultInterface, ThreeDSecureVersion, CardType } from '3ds-sdk-js';
+import { ChallengeResultInterface, ThreeDSecureVersion, CardType } from '@trustpayments/3ds-sdk-js';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { ChallengeResultHandler } from './ChallengeResultHandler';
 import { Service } from 'typedi';

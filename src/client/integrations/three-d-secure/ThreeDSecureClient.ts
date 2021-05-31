@@ -10,7 +10,7 @@ import {
   MethodURLResultInterface,
   ThreeDSecureFactory,
   CardType,
-} from '3ds-sdk-js';
+} from '@trustpayments/3ds-sdk-js';
 import { Translator } from '../../../application/core/shared/translator/Translator';
 import { IMethodUrlData } from './IMethodUrlData';
 import { IChallengeData } from './IChallengeData';

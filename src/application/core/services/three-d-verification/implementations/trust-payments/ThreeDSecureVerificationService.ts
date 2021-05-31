@@ -6,7 +6,7 @@ import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { IThreeDVerificationService } from '../../IThreeDVerificationService';
-import { ConfigInterface } from '3ds-sdk-js';
+import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 import { RequestType } from '../../../../../../shared/types/RequestType';
 import { ICard } from '../../../../models/ICard';
 import { IMerchantData } from '../../../../models/IMerchantData';

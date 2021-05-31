@@ -6,7 +6,7 @@ import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { map } from 'rxjs/operators';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { Service } from 'typedi';
-import { BrowserDataInterface } from '3ds-sdk-js';
+import { BrowserDataInterface } from '@trustpayments/3ds-sdk-js';
 
 @Service()
 export class BrowserDataProvider {

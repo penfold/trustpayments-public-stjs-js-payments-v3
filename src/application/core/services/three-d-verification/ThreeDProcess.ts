@@ -13,7 +13,7 @@ import { IThreeDVerificationService } from './IThreeDVerificationService';
 import { ThreeDVerificationProviderService } from './ThreeDVerificationProviderService';
 import { GatewayClient } from '../GatewayClient';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { ConfigInterface } from '3ds-sdk-js';
+import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 
 @Service()
 export class ThreeDProcess {
