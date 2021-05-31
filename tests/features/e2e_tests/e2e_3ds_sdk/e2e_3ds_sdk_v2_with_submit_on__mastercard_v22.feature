@@ -5,411 +5,572 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - MasterCard v2.2
   I want to use card payments method
   In order to check 3ds SDK integration
 
-  @cardinal_commerce_v2.0
-  Scenario Outline: TC_1 - Successful Frictionless Authentication with submitOnSuccess - Card: MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
+
+  Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUCCESS
+    Given JS library configured by inline params THREE_DS_SDK_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
     And User opens example page
-    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | baseamount           | <baseamount>                            |
-      | currencyiso3a        | <currencyiso3a>                         |
-      | errorcode            | 0                                       |
-      | status               | Y                                       |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-      | enrolled             | Y                                       |
-      | settlestatus         | 0                                       |
-      | eci                  | <eci>                                   |
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            |
       | THREEDQUERY AUTH         | 1000           | GBP            | 02             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO           |
 
 
-  @cardinal_commerce_v2.0
-  Scenario Outline: TC_2 - Failed Frictionless Authentication with submitOnError - Card: MASTERCARD_FAILED_FRICTIONLESS_AUTH
-    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
+  Scenario Outline: TC_2 - Failed Frictionless Authentication - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_FAILED
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
     And User opens example page
-    When User fills payment form with defined card MASTERCARD_FAILED_FRICTIONLESS_AUTH
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_FAILED
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value              |
-      | errormessage         | <errormessage>     |
-      | errorcode            | <errorcode>        |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
       | transactionreference | should not be none |
       | jwt                  | should not be none |
-      | enrolled             | <enrolled>         |
-      | settlestatus         | <settlestatus>     |
-      | status               | <status>           |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
 
     Examples:
-      | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   | status         |
-      | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none | should be none |
-      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              | N              |
+      | request_types            | baseamount     | currencyiso3a  | eci            |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO           |
 
 
-  @cardinal_commerce_v2.0
-  Scenario Outline: TC_3 - Attempts Stand-In Frictionless Authenticatio with submitOnSuccess - Card: MASTERCARD_FRICTIONLESS
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
+  Scenario Outline: TC_3 - Attempts Stand-In Frictionless Authentication - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_STAND_IN
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
     And User opens example page
-    When User fills payment form with defined card MASTERCARD_FRICTIONLESS
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_STAND_IN
     And User clicks Pay button
+    And User see 3ds SDK challenge is displayed
+    And User fills 3ds SDK challenge with THREE_DS_CODE and submit
     Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | baseamount           | <baseamount>                            |
-      | currencyiso3a        | <currencyiso3a>                         |
-      | errorcode            | 0                                       |
-      | status               | A                                       |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-      | enrolled             | Y                                       |
-      | settlestatus         | 0                                       |
-      | eci                  | <eci>                                   |
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            |
       | THREEDQUERY AUTH         | 1000           | GBP            | 01             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO           |
 
 
-  @cardinal_commerce_v2.0
-  Scenario Outline: TC_4 - Unavailable Frictionless Authentication from the Issuer with submitOnSuccess - Card: MASTERCARD_UNAVAILABLE_FRICTIONLESS_AUTH
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
+  Scenario Outline: TC_4 - Unavailable Frictionless Authentication from the Issuer - Card: MASTERCARD_V22_3DS_SDK_UNAVAILABLE_FRICTIONLESS_AUTH
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
     And User opens example page
-    When User fills payment form with defined card MASTERCARD_UNAVAILABLE_FRICTIONLESS_AUTH
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_UNAVAILABLE_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | baseamount           | <baseamount>                            |
-      | currencyiso3a        | <currencyiso3a>                         |
-      | errorcode            | 0                                       |
-      | status               | U                                       |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-      | enrolled             | Y                                       |
-      | settlestatus         | 0                                       |
-      | eci                  | <eci>                                   |
-
-    Examples:
-      | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
-
-
-  @cardinal_commerce_v2.0
-  Scenario Outline: TC_5 - Rejected Frictionless Authentication by the Issuer with submitOnError - Card: MASTERCARD_REJECTED_FRICTIONLESS_AUTH
-    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
-    And User opens example page
-    When User fills payment form with defined card MASTERCARD_REJECTED_FRICTIONLESS_AUTH
-    And User clicks Pay button
+    And User see 3ds SDK challenge is displayed
+    And User fills 3ds SDK challenge with THREE_DS_CODE and submit
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value              |
-      | errormessage         | <errormessage>     |
-      | errorcode            | <errorcode>        |
-      | transactionreference | should not be none |
-      | jwt                  | should not be none |
-      | enrolled             | <enrolled>         |
-      | settlestatus         | <settlestatus>     |
-      | status               | <status>           |
-
-    Examples:
-      | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   | status         |
-      | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none | should be none |
-      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              | R              |
-
-
-  @cardinal_commerce_v2.0
-  Scenario Outline: TC_6 - Authentication Not Available on Lookup with submitOnSuccess - Card: MASTERCARD_AUTH_NOT_AVAILABLE_ON_LOOKUP
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
-    And User opens example page
-    When User fills payment form with defined card MASTERCARD_AUTH_NOT_AVAILABLE_ON_LOOKUP
-    And User clicks Pay button
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | baseamount           | <baseamount>                            |
-      | currencyiso3a        | <currencyiso3a>                         |
-      | errorcode            | 0                                       |
-      | status               | <status>                                |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-      | enrolled             | U                                       |
-      | settlestatus         | 0                                       |
-      | eci                  | <eci>                                   |
-
-    Examples:
-      | request_types            | baseamount     | currencyiso3a  | status         | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | should be none | 00             |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none |
-
-
-  @cardinal_commerce_v2.0
-  Scenario Outline: TC_7 - Error on Lookup with submitOn - Card: MASTERCARD_ERROR_ON_LOOKUP
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
-    And User opens example page
-    When User fills payment form with defined card MASTERCARD_ERROR_ON_LOOKUP
-    And User clicks Pay button
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value              |
-      | errormessage         | <errormessage>     |
+      | errormessage         | TODO               |
       | baseamount           | <baseamount>       |
       | currencyiso3a        | <currencyiso3a>    |
-      | errorcode            | <errorcode>        |
+      | errorcode            | 0                  |
+      | status               | TODO               |
       | transactionreference | should not be none |
       | jwt                  | should not be none |
-      | enrolled             | U                  |
-      | settlestatus         | <settlestatus>     |
-      | status               | should be none     |
-
-    Examples:
-      | request_types            | errormessage                            | baseamount     | currencyiso3a  | errorcode | settlestatus |
-      | THREEDQUERY AUTH         | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
-      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | should be none | should be none | 60010     | 0            |
-
-
-  @cardinal_commerce_v2.0
-  Scenario Outline: TC_9 -Successful Step Up Authentication with submitOnSuccess - Card: MASTERCARD_NON_FRICTIONLESS
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
-    And User opens example page
-    When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
-    And User clicks Pay button
-    And User fills V2 authentication modal
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | baseamount           | <baseamount>                            |
-      | currencyiso3a        | <currencyiso3a>                         |
-      | errorcode            | 0                                       |
-      | status               | <status>                                |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-      | enrolled             | Y                                       |
-      | settlestatus         | 0                                       |
-      | eci                  | <eci>                                   |
-      | threedresponse       | <threedresponse>                        |
-
-    Examples:
-      | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | Y      | 02             | should be none     |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
-
-
-  @cardinal_commerce_v2.0
-  Scenario Outline: TC_10 - Failed Step Up Authentication with submitOnError - Card: MASTERCARD_STEP_UP_AUTH_FAILED
-    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
-    And User opens example page
-    When User fills payment form with defined card MASTERCARD_STEP_UP_AUTH_FAILED
-    And User clicks Pay button
-    And User fills V2 authentication modal
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value              |
-      | errormessage         | An error occurred  |
-      | errorcode            | 50003              |
-      | transactionreference | should not be none |
-      | jwt                  | should not be none |
-      | threedresponse       | <threedresponse>   |
-      | enrolled             | Y                  |
-      | settlestatus         | 0                  |
-      | status               | C                  |
-
-    Examples:
-      | request_types            | threedresponse     |
-      | THREEDQUERY AUTH         | should not be none |
-      | ACCOUNTCHECK THREEDQUERY | should not be none |
-
-
-  @cardinal_commerce_v2.0
-  Scenario Outline: TC_11 - Step Up Authentication is Unavailable with submitOnSuccess - Card: MASTERCARD_STEP_UP_AUTH_UNAVAILABLE
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
-    And User opens example page
-    When User fills payment form with defined card MASTERCARD_STEP_UP_AUTH_UNAVAILABLE
-    And User clicks Pay button
-    And User fills V2 authentication modal
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | baseamount           | <baseamount>                            |
-      | currencyiso3a        | <currencyiso3a>                         |
-      | errorcode            | 0                                       |
-      | status               | <status>                                |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-      | enrolled             | Y                                       |
-      | settlestatus         | 0                                       |
-      | eci                  | <eci>                                   |
-      | threedresponse       | <threedresponse>                        |
-
-    Examples:
-      | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | U      | 00             | should be none     |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
-
-
-  @cardinal_commerce_v2.0
-  Scenario Outline: TC_12 - Error on Authentication with submitOnError - Card: MASTERCARD_ERROR_ON_AUTH
-    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
-    And User opens example page
-    When User fills payment form with defined card MASTERCARD_ERROR_ON_AUTH
-    And User clicks Pay button
-    And User fills V2 authentication modal
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value              |
-      | errormessage         | An error occurred  |
-      | errorcode            | 50003              |
-      | transactionreference | should not be none |
-      | jwt                  | should not be none |
-      | threedresponse       | <threedresponse>   |
-      | enrolled             | Y                  |
-      | settlestatus         | 0                  |
-      | status               | C                  |
-
-    Examples:
-      | request_types            | threedresponse     |
-      | THREEDQUERY AUTH         | should not be none |
-      | ACCOUNTCHECK THREEDQUERY | should not be none |
-
-
-  Scenario Outline: TC_13 - Bypassed Authentication with submitOnSuccess - Card: MASTERCARD_BYPASSED_AUTH
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
-    And User opens example page
-    When User fills payment form with defined card MASTERCARD_BYPASSED_AUTH
-    And User clicks Pay button
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | errorcode            | 0                                       |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-      | enrolled             | B                                       |
-      | settlestatus         | 0                                       |
-      | status               | should be none                          |
-
-    Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-
-
-  @cardinal_commerce_v2.0
-  Scenario Outline: Prompt for Whitelist with submitOnSuccess
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
-    And User opens example page
-    When User fills payment form with defined card MASTERCARD_PROMPT_FOR_WHITELIST
-    And User clicks Pay button
-    And User fills V2 authentication modal
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | baseamount           | <baseamount>                            |
-      | currencyiso3a        | <currencyiso3a>                         |
-      | errorcode            | 0                                       |
-      | status               | <status>                                |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-      | enrolled             | Y                                       |
-      | settlestatus         | 0                                       |
-      | eci                  | <eci>                                   |
-      | threedresponse       | <threedresponse>                        |
-
-    Examples:
-      | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
-      | THREEDQUERY AUTH         | 1000           | GBP            | Y      | 02             | should be none     |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
-
-
-# ToDo - This test case is no longer supported by Cardinal - to clarify
-#
-#  Scenario: Pre-Whitelisted - Visabase_config
-#    When User fills payment form with defined card VISA_PRE_WHITELISTED_VISABASE_CONFIG
-#    And User clicks Pay button
-#    And User fills V2 authentication modal
-#    Then User will see payment status information: "Payment has been successfully processed"
-#    And User will see that notification frame has "green" color
-
-
-  @cardinal_commerce_v2.0
-  Scenario Outline: Support TransStatus I with submitOnSuccess
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
-    And User opens example page
-    When User fills payment form with defined card MASTERCARD_SUPPORT_TRANS_STATUS_I
-    And User clicks Pay button
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | baseamount           | <baseamount>                            |
-      | currencyiso3a        | <currencyiso3a>                         |
-      | errorcode            | 0                                       |
-      | status               | U                                       |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-      | enrolled             | Y                                       |
-      | settlestatus         | 0                                       |
-      | eci                  | <eci>                                   |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            |
       | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO           |
 
-
-  @base_config @e2e_cardinal_commerce_v2.0
-  Scenario Outline: retry payment after failed transaction
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
+  Scenario Outline: TC_5 - Rejected Frictionless Authentication by the Issuer - Card: MASTERCARD_V22_3DS_SDK_REJECTED_FRICTIONLESS_AUTH
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
     And User opens example page
-    When User fills payment form with defined card MASTERCARD_ERROR_ON_AUTH
-    And User clicks Pay button
-    And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
-    And User waits for payment status to disappear
-    And User clears form
-    When User fills payment form with defined card MASTERCARD_BYPASSED_AUTH
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_REJECTED_FRICTIONLESS_AUTH
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | errorcode            | 0                                       |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-      | enrolled             | B                                       |
-      | settlestatus         | 0                                       |
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
+      | request_types            | baseamount     | currencyiso3a  | eci            |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO           |
+
+
+  Scenario Outline: TC_6 - Authentication failed by DS unavailability - Card: MASTERCARD_V22_3DS_SDK_DS_UNAVAILABLE
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_DS_UNAVAILABLE
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | 1000           | GBP            | TODO |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
+
+
+  Scenario Outline: TC_7 - Authentication failed by improper data in ARes message - Card: MASTERCARD_V22_3DS_SDK_IMPROPER_ARES_DATA
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_IMPROPER_ARES_DATA
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | 1000           | GBP            | TODO |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
+
+
+  Scenario Outline: TC_8 - Error not completed threeDSMethod - Card: MASTERCARD_V22_3DS_SDK_ACS_UNAVAILABLE
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_ACS_UNAVAILABLE
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | 1000           | GBP            | TODO |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
+
+
+  Scenario Outline: TC_9 -Successful Step Up Authentication - Card: MASTERCARD_V22_3DS_SDK_NON_FRICTIONLESS
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_NON_FRICTIONLESS
+    And User clicks Pay button
+    And User see 3ds SDK challenge is displayed
+    And User fills 3ds SDK challenge with THREE_DS_CODE and submit
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci            |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO           |
+
+  Scenario Outline: TC_10 - Failed Step Up Authentication - Card: MASTERCARD_V22_3DS_SDK_STEP_UP_AUTH_FAILED
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_STEP_UP_AUTH_FAILED
+    And User clicks Pay button
+    And User see 3ds SDK challenge is displayed
+    And User fills 3ds SDK challenge with THREE_DS_CODE and submit
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci            |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO           |
+
+
+  Scenario Outline: TC_11 - step up - Error on authentication - Card: MASTERCARD_V22_3DS_SDK_STEP_UP_AUTH_ERROR
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_STEP_UP_AUTH_ERROR
+    And User clicks Pay button
+    And User see 3ds SDK challenge is displayed
+    And User fills 3ds SDK challenge with THREE_DS_CODE and submit
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci            |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO           |
+
+
+  Scenario Outline: TC_12 - successful frictionless with require methodUrl - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUCCESS_METHOD_URL
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUCCESS_METHOD_URL
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | 1000           | GBP            | TODO |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
+
+
+  Scenario Outline: TC_13 - step up with require methodUrl - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUCCESS_METHOD_URL
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_NON_FRICTIONLESS_METHOD_URL
+    And User clicks Pay button
+    And User see 3ds SDK challenge is displayed
+    And User fills 3ds SDK challenge with THREE_DS_CODE and submit
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | 1000           | GBP            | TODO |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
+
+
+  Scenario Outline: TC_14 - successful frictionless with transaction timed out error for method url- Card: MASTERCARD_V22_3DS_SDK_TRANSACTION_TIMEOUT
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_TRANSACTION_TIMEOUT
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | 1000           | GBP            | TODO |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
+
+
+  Scenario Outline: TC_4a - successful frictionless with transaction timed out at athe ACS - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_ACS
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_ACS
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00   |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
+
+
+  Scenario Outline: TC_4b - successful frictionless with suspected fraud - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUSPECTED_FRAUD
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUSPECTED_FRAUD
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00   |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
+
+  Scenario Outline: TC_4c - successful frictionless with card holder not enrolled in service - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_NOT_ENROLLED
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_NOT_ENROLLED
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00   |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
+
+
+  Scenario Outline: TC_4d - successful frictionless with transaction timed out at the ACS - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_2_ACS
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_2_ACS
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00   |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
+
+
+  Scenario Outline: TC_4e - successful frictionless with non-payment transaction not supported - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_NON_PAYMENT
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_TRANSACTION_NON_PAYMENT
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00   |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
+
+
+  Scenario Outline: TC_4f - successful frictionless with 3RI transaction not supported - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_3RI_TRANSACTION_NOT_SUPPORTED
+    Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                          |
+      | requesttypedescriptions | <request_types>                |
+      | sitereference           | test_js_automated_tests_tp_3ds |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_3RI_TRANSACTION_NOT_SUPPORTED
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value              |
+      | errormessage         | TODO               |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 00   |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
+
