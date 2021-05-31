@@ -77,16 +77,23 @@ export class DomMethods {
     });
   }
 
-  public static insertStyle(contents: string[]): void {
+  public static insertStyle(contents: string[] | string): void {
     let style: HTMLStyleElement = document.getElementById('insertedStyles') as HTMLStyleElement;
 
-    if (!style) {
+    if (!style && contents.length > 0) {
       style = document.createElement(DomMethods.STYLE_MARKUP) as HTMLStyleElement;
       style.setAttribute('id', 'insertedStyles');
       style.setAttribute('type', 'text/css');
       document.head.appendChild(style);
     }
-    contents.forEach((item: string) => (style.sheet as CSSStyleSheet).insertRule(item, 0));
+
+    if (typeof contents === 'string') {
+      if (!style.innerHTML.includes(contents)) {
+        style.innerHTML =  style.innerHTML + contents;
+      }
+    } else {
+      contents.forEach((item: string) => (style.sheet as CSSStyleSheet).insertRule(item, 0));
+    }
   }
 
   public static parseForm(formId: string): Record<string, unknown> {
