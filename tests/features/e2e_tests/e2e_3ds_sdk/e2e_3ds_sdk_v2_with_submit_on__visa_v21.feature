@@ -121,6 +121,7 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - VISA v2.1
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
       | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO           |
 
+
   Scenario Outline: TC_5 - Rejected Frictionless Authentication by the Issuer - Card: VISA_V21_3DS_SDK_REJECTED_FRICTIONLESS_AUTH
     Given JS library configured by inline params THREE_DS_SDK_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
@@ -261,6 +262,7 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - VISA v2.1
       | THREEDQUERY AUTH         | 1000           | GBP            | 05             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
       | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO           |
+
 
   Scenario Outline: TC_10 - Failed Step Up Authentication - Card: VISA_V21_3DS_SDK_STEP_UP_AUTH_FAILED
     Given JS library configured by inline params THREE_DS_SDK_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
@@ -463,6 +465,7 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - VISA v2.1
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
       | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
 
+
   Scenario Outline: TC_4c - successful frictionless with card holder not enrolled in service - Card: VISA_V21_3DS_SDK_FRICTIONLESS_NOT_ENROLLED
     Given JS library configured by inline params THREE_DS_SDK_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
@@ -573,4 +576,3 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - VISA v2.1
       | THREEDQUERY AUTH         | 1000           | GBP            | 07   |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
       | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
-

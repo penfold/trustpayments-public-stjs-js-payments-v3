@@ -50,6 +50,7 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     | disabled |
       | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     | disabled |
 
+
   Scenario Outline: TC_3 - Attempts Stand-In Frictionless Authentication - Card: VISA_V21_3DS_SDK_FRICTIONLESS_STAND_IN
     Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
@@ -362,6 +363,7 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | THREEDQUERY AUTH         | TODO           | TODO     |
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
       | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
+
 
   Scenario Outline: TC_4c - successful frictionless with card holder not enrolled in service - Card: VISA_V21_3DS_SDK_FRICTIONLESS_NOT_ENROLLED
     Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes

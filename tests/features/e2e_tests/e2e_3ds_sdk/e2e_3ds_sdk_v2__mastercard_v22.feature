@@ -365,6 +365,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
       | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
 
+
   Scenario Outline: TC_4c - successful frictionless with card holder not enrolled in service - Card: MASTERCARD_V22_3DS_SDK_FRICTIONLESS_NOT_ENROLLED
     Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
