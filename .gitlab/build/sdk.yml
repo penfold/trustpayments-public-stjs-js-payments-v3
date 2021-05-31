@@ -1,31 +1,33 @@
-.build-sdk:
+# review and release
+
+.build-sdk-rr:
   extends:
     - .build-with-npm
   variables:
-    ARTIFACT_RELEASE_SOURCES: "${CI_PROJECT_DIR}/.releases_sources"
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_release"
     WEBPACK_CONFIG: 'webpack.prod.js'
 
-build-sdk-review:
+build-sdk-rr-review:
   extends:
-    - .build-sdk
+    - .build-sdk-rr
     - .rules-when-review
   variables:
     EXTRA_ARGS_TEMPLATE: '--frame_url=https://library.securetrading.net:8443'
 
-build-sdk-release:
+build-sdk-rr-release:
   extends:
-    - .build-sdk
+    - .build-sdk-rr
     - .rules-when-release
   variables:
     EXTRA_ARGS_TEMPLATE: '--frame_url=https://cdn.eu.trustpayments.com/js-payments-v3/{RELEASE_TAG}-{CDN_HASH}'
 
-### Other builds
+# local
 
 .build-sdk-local:
   extends:
     - .build-with-npm
   variables:
-    ARTIFACT_RELEASE_SOURCES: "${CI_PROJECT_DIR}/.local_sources"
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_local"
     WEBPACK_CONFIG: 'webpack.dev.js'
     EXTRA_ARGS_TEMPLATE: '--frame_url=https://library.securetrading.net:8443'
 
@@ -39,13 +41,13 @@ build-sdk-local-release:
     - .build-sdk-local
     - .rules-when-release
 
-#
+# mock
 
 .build-sdk-mock:
   extends:
     - .build-with-npm
   variables:
-    ARTIFACT_RELEASE_SOURCES: "${CI_PROJECT_DIR}/.mock_sources"
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_mock"
     WEBPACK_CONFIG: 'webpack.mock.js'
     EXTRA_ARGS_TEMPLATE: '--frame_url=https://library.securetrading.net:8443'
 
@@ -58,4 +60,3 @@ build-sdk-mock-release:
   extends:
     - .build-sdk-mock
     - .rules-when-release
-
