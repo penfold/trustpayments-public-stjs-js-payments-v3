@@ -27,7 +27,6 @@ export class ThreeDSecureClient {
 
   init(): void {
     this.threeDSecure = this.threeDSecureFactory.create();
-    this.translator.init();
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_INIT)

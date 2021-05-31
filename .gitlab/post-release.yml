@@ -5,5 +5,5 @@ publish-to-cdn-latest:
     - .rules-when-release-manual-required
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-release'
-    PUBLISH_ARTIFACT_SOURCE_PATH: ".dist-release/st.js"
+    PUBLISH_ARTIFACT_SOURCE_PATH: ".artifacts_sdk_release/dist/st.js"
     PUBLISH_ARTIFACT_TARGET_RELATIVE_PATH: "latest"
