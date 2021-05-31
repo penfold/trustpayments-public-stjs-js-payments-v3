@@ -1,0 +1,37 @@
+#### testing repo
+.build-payments-tests:
+  extends: .utility-images-build
+  stage: post-build
+  variables:
+    UTILITY_NAME: 'payments-tests'
+    DOCKERFILE_PATH: docker/payments_tests/Dockerfile
+    BUILD_ARGS_EXTRA: --build-arg COPY_FROM=./tests
+
+build-payments-tests-review:
+  extends:
+    - .build-payments-tests
+    - .rules-when-review
+
+build-payments-tests-release:
+  extends:
+    - .build-payments-tests
+    - .rules-when-release
+
+#### wiremock for testing repo
+.build-wiremock:
+  extends:
+    - .utility-images-build
+  stage: post-build
+  variables:
+    UTILITY_NAME: 'wiremock'
+    BUILD_ARGS_EXTRA: --build-arg COPY_FROM=./tests
+
+build-wiremock-review:
+  extends:
+    - .build-wiremock
+    - .rules-when-review
+
+build-wiremock-release:
+  extends:
+    - .build-wiremock
+    - .rules-when-release
