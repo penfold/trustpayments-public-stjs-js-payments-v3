@@ -1,4 +1,4 @@
-Feature: request type - 3ds SDK - full test coverage
+Feature: request type - 3ds SDK - full test coverage - VISA v2.1
 
   Scenario Outline: successful payment with only request types <request_types>  - frictionless
     Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
