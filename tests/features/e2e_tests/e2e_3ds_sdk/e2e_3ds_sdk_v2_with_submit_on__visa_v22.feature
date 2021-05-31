@@ -576,4 +576,3 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - VISA v2.2
       | THREEDQUERY AUTH         | 1000           | GBP            | 07   |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | TODO |
       | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO |
-
