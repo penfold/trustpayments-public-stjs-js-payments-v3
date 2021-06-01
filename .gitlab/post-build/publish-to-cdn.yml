@@ -1,5 +1,5 @@
-publish-to-cdn:
-  stage: publish-to-cdn
+publish-to-cdn-sdk:
+  stage: post-build
   extends:
     - .trigger-publish-to-cdn-release
   before_script:

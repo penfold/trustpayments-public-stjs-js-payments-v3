@@ -13,9 +13,9 @@ include:
   - local: '/.gitlab/build/example-app-html.yml'
   - local: '/.gitlab/post-build/image-html.yml'
   - local: '/.gitlab/post-build/image-other.yml'
+  - local: '/.gitlab/post-build/publish-to-cdn.yml'
   - local: '/.gitlab/fast-tests/functional.yml'
   - local: '/.gitlab/fast-tests/security.yml'
-  - local: '/.gitlab/publish-to-cdn.yml'
   - local: '/.gitlab/extended-tests.yml'
   - local: '/.gitlab/post-release.yml'
   - local: '/.gitlab/pre-smoke-tests.yml'
@@ -108,7 +108,6 @@ stages:
   - prepare-release
   - build
   - post-build
-  - publish-to-cdn
   # Tests
   - fast-tests
   - extended-tests
