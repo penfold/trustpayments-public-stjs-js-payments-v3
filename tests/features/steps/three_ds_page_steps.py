@@ -56,9 +56,3 @@ def validate_3ds_popup_challenge_cancel_btn_text(context, expected_translation):
                         f' should be {expected_translation} but is {actual_translation}'
     add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
     assert actual_translation == expected_translation, assertion_message
-
-
-@step('Invalid confirmation code label is visible')
-def step_impl(context):
-    three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    three_ds_page.check_is_invalid_confirmation_code_label_visible()

@@ -24,8 +24,3 @@ class ThreeDsPage(BasePage):
 
     def get_3ds_popup_challenge_cancel_btn_text(self):
         return self._actions.get_text(ThreeDSMethodsLocators.three_ds_challenge_popup_cancel_button)
-
-    def check_is_invalid_confirmation_code_label_visible(self):
-        self._actions.switch_to_iframe(ThreeDSMethodsLocators.three_ds_iframe[1])
-        assert self._waits.wait_and_check_is_element_displayed(ThreeDSMethodsLocators.three_ds_invalid_code_label)
-        self._actions.switch_to_default_content()
