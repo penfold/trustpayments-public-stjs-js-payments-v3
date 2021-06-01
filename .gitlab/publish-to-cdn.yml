@@ -8,4 +8,4 @@ publish-to-cdn:
     - export PUBLISH_ARTIFACT_TARGET_RELATIVE_PATH="${RELEASE_TAG}-${CDN_HASH}"
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-release'
-    PUBLISH_ARTIFACT_SOURCE_PATH: ".artifacts_app_html_release/dist"
+    PUBLISH_ARTIFACT_SOURCE_PATH: '.artifacts_sdk_release/dist'
