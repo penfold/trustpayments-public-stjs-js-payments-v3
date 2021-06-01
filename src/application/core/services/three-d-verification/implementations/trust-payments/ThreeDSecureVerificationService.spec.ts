@@ -1,4 +1,4 @@
-import { ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode } from '@trustpayments/3ds-sdk-js';
+import { CardType, ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode } from '@trustpayments/3ds-sdk-js';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { IConfig } from '../../../../../../shared/model/config/IConfig';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
@@ -150,6 +150,13 @@ describe('ThreeDSecureVerificationService', () => {
 
     const tdqRequestWithoutBrowserData = new ThreeDQueryRequest(card, merchantData);
     const tdqRequestWithBrowserData = new ThreeDQueryRequest(card, merchantData, browserDataMock);
+    const processingScreenShowEventMock: IMessageBusEvent<string> = {
+      type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_SHOW,
+      data: CardType.VISA,
+    };
+    const processingScreenHideEventMock: IMessageBusEvent<string> = {
+      type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE,
+    };
 
     beforeEach(() => {
       when(gatewayClient.threedQuery(deepEqual(tdqRequestWithoutBrowserData))).thenReturn(of(threeDQueryResponseMock));
@@ -166,6 +173,8 @@ describe('ThreeDSecureVerificationService', () => {
       }));
       when(browserDataProvider.getBrowserData$()).thenReturn(of(browserDataMock));
       when(challengeService.doChallenge$(threeDQueryResponseMock, threedLookupResponse.paymenttypedescription)).thenReturn(of(updatedThreeDQueryResponseMock));
+      when(interFrameCommunicatorMock.query(deepEqual(processingScreenShowEventMock), MERCHANT_PARENT_FRAME)).thenResolve(void 0);
+      when(interFrameCommunicatorMock.query(deepEqual(processingScreenHideEventMock), MERCHANT_PARENT_FRAME)).thenResolve(void 0);
     });
 
     it('only sends gateway request and returns response if THREEDQUERY request type is not present', done => {

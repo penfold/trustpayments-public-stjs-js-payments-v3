@@ -59,10 +59,10 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
       return this.performRequestWithoutThreedQuery$(card, merchantData);
     }
 
+    let cardType = '';
     const threeDSecureProcessingScreenTimer = timer(2000);
     threeDSecureProcessingScreenTimer.subscribe();
 
-    let cardType = '';
 
     return this.gatewayClient.threedLookup(card).pipe(
       switchMap((response: IThreeDLookupResponse) => {

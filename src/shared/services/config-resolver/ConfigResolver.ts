@@ -129,6 +129,7 @@ export class ConfigResolver {
       loggingLevel: this._getValueOrDefault(config.loggingLevel, DefaultConfig.threeDSecure.loggingLevel),
       challengeDisplayMode: this._getValueOrDefault(config.challengeDisplayMode, DefaultConfig.threeDSecure.challengeDisplayMode),
       translations: this._getValueOrDefault(config.translations, DefaultConfig.threeDSecure.translations),
+      processingScreenMode: this._getValueOrDefault(config.processingScreenMode, DefaultConfig.threeDSecure.processingScreenMode),
     };
   }
 
