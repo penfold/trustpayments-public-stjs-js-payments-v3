@@ -2,8 +2,6 @@ from dataclasses import dataclass
 
 from selenium.webdriver.common.by import By
 
-from utils.enums.field_type import FieldType
-
 
 @dataclass
 class ThreeDSMethodsLocators:

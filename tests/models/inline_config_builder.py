@@ -3,7 +3,7 @@ from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import shared_dict
 
 
-class JwtPayloadBuilder:
+class InlineConfigBuilder:
 
     def __init__(self):
         self._jwt_payload = JwtPayload()

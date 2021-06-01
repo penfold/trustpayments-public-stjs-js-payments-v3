@@ -4,11 +4,7 @@ from urllib.parse import quote
 from configuration import CONFIGURATION
 from utils.enums.e2e_config import E2eConfig
 
-
-def get_e2e_config_from_json(e2e_config):
-    with open('wiremock/__files/e2e_config' + f'/{e2e_config}', 'r') as file:
-        jwt_json = json.load(file)
-    return jwt_json
+from utils.helpers.resources_reader import get_e2e_config_from_json
 
 
 def covert_json_to_string(json_config):
