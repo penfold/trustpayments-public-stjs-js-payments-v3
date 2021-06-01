@@ -18,12 +18,11 @@ import { IPaymentResult } from '../../../application/core/services/payments/IPay
 export class GooglePayPaymentService {
   constructor(private messageBus: IMessageBus, private paymentResultHandler: PaymentResultHandler) {}
 
-  processPayment(requestTypes: RequestType[], formData: Record<string, unknown>, payment: IPaymentData): void {
+  processPayment(formData: Record<string, unknown>, payment: IPaymentData): void {
     this.messageBus.publish<IStartPaymentMethod<IGooglePayGatewayRequest>>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
         data: {
-          requestTypes,
           walletsource: GooglePaymentMethodwalletsource,
           wallettoken: JSON.stringify(payment),
           ...formData,
@@ -34,25 +33,27 @@ export class GooglePayPaymentService {
     });
   }
 
-  cancelPayment(requestTypes: RequestType[], formData: Record<string, unknown>): void {
+  cancelPayment(formData: Record<string, unknown>): void {
     const result: IPaymentResult<any> = {
       status: PaymentStatus.CANCEL,
       data: {
         ...formData,
-        requestTypes,
-        resultStatus: PaymentStatus.CANCEL,
+        errormessage: PaymentStatus.CANCEL,
+        errorcode: '1',
+        walletsource: GooglePaymentMethodwalletsource,
       },
     };
     this.paymentResultHandler.handle(result);
   }
 
-  errorPayment(requestTypes: RequestType[], formData: Record<string, unknown>): void {
+  errorPayment(formData: Record<string, unknown>): void {
     const result: IPaymentResult<any> = {
       status: PaymentStatus.ERROR,
       data: {
         ...formData,
-        requestTypes,
-        resultStatus: PaymentStatus.ERROR,
+        errormessage: PaymentStatus.ERROR,
+        errorcode: '1',
+        walletsource: GooglePaymentMethodwalletsource,
       },
     };
     this.paymentResultHandler.handle(result);
