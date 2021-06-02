@@ -1,4 +1,4 @@
-trigger-publish-to-cdn-prod-from-release:
+trigger-publish-to-cdn-prod-from-release-latest:
   extends:
     - .trigger-publish-to-cdn-prod-from-release
     - .rules-when-release-manual-required
