@@ -1,11 +1,29 @@
-publish-to-cdn-sdk:
+.trigger-publish-to-cdn-before-script:
   stage: post-build
-  extends:
-    - .trigger-publish-to-cdn-release
   before_script:
     - export RELEASE_TAG=$(jq -r '.release_tag // empty' "${ARTIFACT_RELEASE_CICD_FILENAME}")
     - export CDN_HASH=$(jq -r '.cdn_hash // empty' "${ARTIFACT_RELEASE_CICD_FILENAME}")
     - export PUBLISH_ARTIFACT_TARGET_RELATIVE_PATH="${RELEASE_TAG}-${CDN_HASH}"
   variables:
-    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-release'
     PUBLISH_ARTIFACT_SOURCE_PATH: '.artifacts_sdk_release/dist'
+
+trigger-publish-to-cdn-stage-from-review:
+  extends:
+    - .trigger-publish-to-cdn-stage-from-review
+    - .trigger-publish-to-cdn-before-script
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-review'
+
+trigger-publish-to-cdn-stage-from-release:
+  extends:
+    - .trigger-publish-to-cdn-stage-from-release
+    - .trigger-publish-to-cdn-before-script
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-release'
+
+trigger-publish-to-cdn-prod-from-release:
+  extends:
+    - .trigger-publish-to-cdn-prod-from-release
+    - .trigger-publish-to-cdn-before-script
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-release'
