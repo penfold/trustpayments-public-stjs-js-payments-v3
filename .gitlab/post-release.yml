@@ -1,8 +1,8 @@
-publish-to-cdn-latest:
-  stage: post-release
+trigger-publish-to-cdn-prod-from-release:
   extends:
-    - .trigger-publish-to-cdn-release
+    - .trigger-publish-to-cdn-prod-from-release
     - .rules-when-release-manual-required
+  stage: post-release
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-release'
     PUBLISH_ARTIFACT_SOURCE_PATH: ".artifacts_sdk_release/dist/st.js"
