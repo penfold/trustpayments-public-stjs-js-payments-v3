@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { EMPTY, Observable, throwError } from 'rxjs';
+import { catchError, filter, first, map, mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IApplePayClientStatus } from '../../../application/core/integrations/apple-pay/IApplePayClientStatus';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
@@ -44,7 +44,7 @@ export class ApplePay {
     private applePaySessionFactory: ApplePaySessionFactory,
     private applePaySessionService: ApplePaySessionService,
     private interFrameCommunicator: InterFrameCommunicator,
-    private messageBus: IMessageBus
+    private messageBus: IMessageBus,
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
@@ -60,7 +60,7 @@ export class ApplePay {
             walletrequestdomain: window.location.hostname,
             walletsource: 'APPLEPAY',
             walletvalidationurl: '',
-          })
+          }),
         ),
         tap((config: IApplePayConfigObject) => {
           const applePayConfigAction: IMessageBusEvent<IApplePayConfigObject> = {
@@ -75,7 +75,7 @@ export class ApplePay {
             APPLE_PAY_BUTTON_ID,
             config.applePayConfig.buttonText,
             config.applePayConfig.buttonStyle,
-            config.applePayConfig.paymentRequest.countryCode
+            config.applePayConfig.paymentRequest.countryCode,
           );
           this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
         }),
@@ -84,14 +84,14 @@ export class ApplePay {
             'event',
             'Apple Pay',
             `${ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD}`,
-            'Can make payment'
+            'Can make payment',
           );
         }),
         catchError((errorMessage: string) => {
           console.error(errorMessage);
           return EMPTY;
         }),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
       .subscribe();
   }
@@ -114,9 +114,7 @@ export class ApplePay {
     }
 
     return this.applePaySessionService.canMakePaymentsWithActiveCard(config.applePay.merchantId).pipe(
-      switchMap((canMakePayment: boolean) =>
-        canMakePayment ? of(config) : throwError('User has not an active card provisioned into Wallet')
-      ),
+      mapTo(config),
       catchError(errorMessage => {
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
@@ -133,11 +131,11 @@ export class ApplePay {
           'event',
           'Apple Pay',
           `${ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET}`,
-          errorMessage
+          errorMessage,
         );
 
         return throwError(errorMessage);
-      })
+      }),
     );
   }
 
@@ -177,7 +175,7 @@ export class ApplePay {
               'event',
               'Apple Pay',
               `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
-              'Apple Pay Merchant validation success'
+              'Apple Pay Merchant validation success',
             );
             return;
           }
@@ -194,7 +192,7 @@ export class ApplePay {
             'event',
             'Apple Pay',
             `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
-            'Apple Pay merchant validation error'
+            'Apple Pay merchant validation error',
           );
         });
     };
@@ -249,7 +247,7 @@ export class ApplePay {
         ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
         filter(event => event.data.requesttypedescription !== RequestType.WALLETVERIFY),
         first(),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
       .subscribe(() => {
         this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
@@ -289,7 +287,7 @@ export class ApplePay {
 
   private handlePaymentProcessResponse(
     errorCode: ApplePayClientErrorCode,
-    details: IApplePayProcessPaymentResponse
+    details: IApplePayProcessPaymentResponse,
   ): IApplePayPaymentAuthorizationResult {
     const completion: IApplePayPaymentAuthorizationResult = {
       errors: undefined,
