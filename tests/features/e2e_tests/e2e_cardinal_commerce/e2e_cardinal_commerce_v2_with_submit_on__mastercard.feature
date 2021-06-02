@@ -29,6 +29,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | baseamount     | currencyiso3a  | eci            |
       | THREEDQUERY AUTH         | 1000           | GBP            | 02             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 02             |
 
 
   @cardinal_commerce_v2.0
@@ -53,6 +54,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   | status         |
       | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none | should be none |
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              | N              |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | 60022     | should be none | should be none | should be none |
 
 
   @cardinal_commerce_v2.0
@@ -80,6 +82,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | baseamount     | currencyiso3a  | eci            |
       | THREEDQUERY AUTH         | 1000           | GBP            | 01             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 01             |
 
 
   @cardinal_commerce_v2.0
@@ -107,6 +110,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | baseamount     | currencyiso3a  | eci            |
       | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 00             |
 
 
   @cardinal_commerce_v2.0
@@ -131,6 +135,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   | status         |
       | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none | should be none |
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              | R              |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | 60022     | should be none | should be none | should be none |
 
 
   @cardinal_commerce_v2.0
@@ -158,6 +163,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | baseamount     | currencyiso3a  | status         | eci            |
       | THREEDQUERY AUTH         | 1000           | GBP            | should be none | 00             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | should be none | 00             |
 
 
   @cardinal_commerce_v2.0
@@ -184,6 +190,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | errormessage                            | baseamount     | currencyiso3a  | errorcode | settlestatus |
       | THREEDQUERY AUTH         | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | should be none | should be none | 60010     | 0            |
+      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
 
 
   @cardinal_commerce_v2.0
@@ -213,6 +220,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
       | THREEDQUERY AUTH         | 1000           | GBP            | Y      | 02             | should be none     |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | Y      | 02             | should be none     |
 
 
   @cardinal_commerce_v2.0
@@ -239,6 +247,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | threedresponse     |
       | THREEDQUERY AUTH         | should not be none |
       | ACCOUNTCHECK THREEDQUERY | should not be none |
+      | THREEDQUERY ACCOUNTCHECK | should not be none |
 
 
   @cardinal_commerce_v2.0
@@ -268,6 +277,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
       | THREEDQUERY AUTH         | 1000           | GBP            | U      | 00             | should be none     |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | U      | 00             | should be none     |
 
 
   @cardinal_commerce_v2.0
@@ -294,6 +304,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | threedresponse     |
       | THREEDQUERY AUTH         | should not be none |
       | ACCOUNTCHECK THREEDQUERY | should not be none |
+      | THREEDQUERY ACCOUNTCHECK | should not be none |
 
 
   Scenario Outline: TC_13 - Bypassed Authentication with submitOnSuccess - Card: MASTERCARD_BYPASSED_AUTH
@@ -317,6 +328,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   @cardinal_commerce_v2.0
@@ -346,6 +358,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
       | THREEDQUERY AUTH         | 1000           | GBP            | Y      | 02             | should be none     |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | Y      | 02             | should be none     |
 
 
 # ToDo - This test case is no longer supported by Cardinal - to clarify
@@ -383,6 +396,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            | baseamount     | currencyiso3a  | eci            |
       | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 00             |
 
 
   @base_config @e2e_cardinal_commerce_v2.0
@@ -412,3 +426,4 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
