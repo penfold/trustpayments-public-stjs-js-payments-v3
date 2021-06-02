@@ -4,7 +4,7 @@ import { deepEqual, instance, mock, when } from 'ts-mockito';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
-import { BrowserDataInterface } from '3ds-sdk-js';
+import { BrowserDataInterface } from '@trustpayments/3ds-sdk-js';
 
 describe('BrowserDataProvider', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;

@@ -17,7 +17,7 @@ import { DefaultPlaceholders } from '../../../application/core/models/constants/
 import { environment } from '../../../environments/environment';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 import { IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
-import { ConfigInterface } from '3ds-sdk-js';
+import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 
 @Service()
 export class ConfigResolver {
@@ -129,6 +129,7 @@ export class ConfigResolver {
       loggingLevel: this._getValueOrDefault(config.loggingLevel, DefaultConfig.threeDSecure.loggingLevel),
       challengeDisplayMode: this._getValueOrDefault(config.challengeDisplayMode, DefaultConfig.threeDSecure.challengeDisplayMode),
       translations: this._getValueOrDefault(config.translations, DefaultConfig.threeDSecure.translations),
+      processingScreenMode: this._getValueOrDefault(config.processingScreenMode, DefaultConfig.threeDSecure.processingScreenMode),
     };
   }
 

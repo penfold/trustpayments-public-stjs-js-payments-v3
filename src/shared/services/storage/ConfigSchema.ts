@@ -67,7 +67,9 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
     challengeDisplayMode: Joi.string().valid('POPUP', 'INLINE').default('POPUP'),
     challengeDisplayInlineTargetElementId: Joi.any(),
     translations: Joi.object().allow({}).keys({
-      cancel : Joi.string()
+      cancel : Joi.string(),
     }),
+    processingScreenMode: Joi.string().valid('OVERLAY', 'ATTACH_TO_ELEMENT').default('OVERLAY'),
+    processingScreenWrapperElementId: Joi.any(),
   }),
 });

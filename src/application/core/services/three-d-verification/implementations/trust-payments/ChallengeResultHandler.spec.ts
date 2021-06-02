@@ -1,4 +1,4 @@
-import { ResultActionCode, ChallengeResultInterface } from '3ds-sdk-js';
+import { ResultActionCode, ChallengeResultInterface } from '@trustpayments/3ds-sdk-js';
 import { ChallengeResultHandler } from './ChallengeResultHandler';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import DoneCallback = jest.DoneCallback;

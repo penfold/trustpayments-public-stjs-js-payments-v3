@@ -1,4 +1,4 @@
-import { EMPTY, from, Observable, of } from 'rxjs';
+import { EMPTY, from, Observable, timer } from 'rxjs';
 import { Service } from 'typedi';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
@@ -6,7 +6,7 @@ import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { IThreeDVerificationService } from '../../IThreeDVerificationService';
-import { ConfigInterface } from '3ds-sdk-js';
+import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 import { RequestType } from '../../../../../../shared/types/RequestType';
 import { ICard } from '../../../../models/ICard';
 import { IMerchantData } from '../../../../models/IMerchantData';
@@ -59,7 +59,24 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
       return this.performRequestWithoutThreedQuery$(card, merchantData);
     }
 
+    let cardType = '';
+    const threeDSecureProcessingScreenTimer = timer(2000);
+    threeDSecureProcessingScreenTimer.subscribe();
+
+
     return this.gatewayClient.threedLookup(card).pipe(
+      switchMap((response: IThreeDLookupResponse) => {
+        cardType = response.paymenttypedescription;
+
+        const queryEvent: IMessageBusEvent<string> = {
+          type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_SHOW,
+          data: cardType,
+        };
+
+        return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME)).pipe(
+          map(() => response),
+        );
+      }),
       switchMap((response: IThreeDLookupResponse) => this.threeDSMethodService.perform3DSMethod$(
         response.threedmethodurl,
         response.threednotificationurl,
@@ -69,11 +86,20 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
       map((browserData: IBrowserData) => new ThreeDQueryRequest(card, merchantData, browserData)),
       switchMap((requestData: ThreeDQueryRequest) => this.gatewayClient.threedQuery(requestData)),
       switchMap((response: IThreeDQueryResponse) => {
+        const queryEvent: IMessageBusEvent<undefined> = {
+          type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE,
+        };
+
         if (!response.acsurl) {
-          return of(response);
+          return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME)).pipe(
+            map(() => response),
+          );
         }
 
-        return this.challengeService.doChallenge$(response);
+        return threeDSecureProcessingScreenTimer.pipe(
+          switchMap(() => from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME))),
+          switchMap(() => this.challengeService.doChallenge$(response, cardType)),
+        );
       }),
     );
   }

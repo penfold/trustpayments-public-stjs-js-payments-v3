@@ -4,7 +4,7 @@ import { ConfigService } from '../../shared/services/config-service/ConfigServic
 import { GooglePayInitializeSubscriber } from '../integrations/google-pay/google-pay-initialize-subscriber/GooglePayInitializeSubscriber';
 import { PreventNavigationPopup } from '../message-subscribers/PreventNavigationPopup';
 import { PaymentResultSubmitterSubscriber } from '../common-frames/PaymentResultSubmitterSubscriber';
-import { ThreeDSecureFactory } from '3ds-sdk-js';
+import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import '../../shared/dependency-injection/ServiceDefinitions';
 
 Container.set({ id: ConfigProvider, factory: () => Container.get(ConfigService) });

@@ -9,7 +9,8 @@ import {
   ConfigInterface,
   MethodURLResultInterface,
   ThreeDSecureFactory,
-} from '3ds-sdk-js';
+  CardType,
+} from '@trustpayments/3ds-sdk-js';
 import { Translator } from '../../../application/core/shared/translator/Translator';
 import { IMethodUrlData } from './IMethodUrlData';
 import { IChallengeData } from './IChallengeData';
@@ -42,6 +43,16 @@ export class ThreeDSecureClient {
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA)
       .thenRespond(() => of(this.threeDSecure.getBrowserData()));
+
+    this.interFrameCommunicator
+      .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_SHOW)
+      .thenRespond((event: IMessageBusEvent<string>) => of(
+        this.threeDSecure.showProcessingScreen(event.data as CardType)),
+      );
+
+    this.interFrameCommunicator
+      .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE)
+      .thenRespond(() => of(this.threeDSecure.hideProcessingScreen()));
   }
 
   private init$(config: ConfigInterface): Observable<ConfigInterface> {
@@ -72,6 +83,7 @@ export class ThreeDSecureClient {
       data.version,
       data.payload,
       data.challengeURL,
+      data.cardType,
     );
   }
 }

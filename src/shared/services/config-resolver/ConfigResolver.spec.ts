@@ -1,9 +1,10 @@
 import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
+import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { ConfigResolver } from './ConfigResolver';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigSchema } from '../storage/ConfigSchema';
 import { anything, spy, when } from 'ts-mockito';
-import { ChallengeDisplayMode, LoggingLevel } from '3ds-sdk-js';
+import { ChallengeDisplayMode, LoggingLevel, ProcessingScreenMode } from '@trustpayments/3ds-sdk-js';
 
 describe('ConfigResolver', () => {
   const configResolverInstance: ConfigResolver = new ConfigResolver();
@@ -26,15 +27,6 @@ describe('ConfigResolver', () => {
   it('should set config-provider with given values if they are correct', () => {
     const { minimalDefaultConfigResolve } = ConfigResolverFixture();
     expect(configResolverInstance.resolve(minimalDefaultConfigResolve)).toEqual(minimalDefaultConfigResolve);
-  });
-
-  it(`should set default ${threeDSecureConfigName} properties when not present`, () => {
-    const { config } = ConfigResolverFixture();
-
-    expect(configResolverInstance.resolve(config).threeDSecure).toEqual({
-      loggingLevel: LoggingLevel.ERROR,
-      challengeDisplayMode: ChallengeDisplayMode.POPUP,
-    });
   });
 });
 
@@ -261,9 +253,12 @@ function ConfigResolverFixture() {
         displayName: 'My Test Site',
       },
     },
+    [GooglePayConfigName]: undefined,
     [threeDSecureConfigName]: {
       loggingLevel: LoggingLevel.ERROR,
       challengeDisplayMode: ChallengeDisplayMode.POPUP,
+      translations: {},
+      processingScreenMode: ProcessingScreenMode.OVERLAY,
     },
   };
   const minimalConfig: IConfig = {
@@ -296,7 +291,7 @@ function ConfigResolverFixture() {
     errorReporting: true,
     fieldsToSubmit: ['pan', 'expirydate', 'securitycode'],
     formId: 'st-form',
-    googlePay: undefined,
+    [GooglePayConfigName]: undefined,
     init: {
       cachetoken: '',
       threedinit: '',
@@ -331,8 +326,14 @@ function ConfigResolverFixture() {
     successCallback: null,
     translations: {},
     visaCheckout: undefined,
-    threeDSecure: undefined,
+    threeDSecure: {
+      challengeDisplayMode: ChallengeDisplayMode.POPUP,
+      loggingLevel: LoggingLevel.ERROR,
+      translations: {},
+      processingScreenMode: ProcessingScreenMode.OVERLAY,
+    },
   };
+
   return {
     config,
     configResolved,

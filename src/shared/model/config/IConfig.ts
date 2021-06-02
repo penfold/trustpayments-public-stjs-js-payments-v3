@@ -6,7 +6,7 @@ import { IPlaceholdersConfig } from '../../../application/core/models/IPlacehold
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 import { IGooglePayConfig, GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
-import { ConfigInterface } from '3ds-sdk-js';
+import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 
 export interface IConfig {
   analytics?: boolean;
