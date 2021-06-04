@@ -4,7 +4,7 @@ import { ICard } from '../../../../../models/ICard';
 import { TERM_URL } from '../../../../../models/constants/RequestData';
 
 export class ThreeDQueryRequest implements IStRequest {
-  readonly termurl = TERM_URL; // TODO this shouldn't be needed but currently the backend needs this
+  readonly termurl = TERM_URL; // @TODO: This is mocked value treated as a placeholder bacause backend requires it.
   readonly cachetoken: string;
 
   [index: string]: string | string[];
