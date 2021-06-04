@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 19.0.1
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 20.0.0
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -73,8 +73,6 @@ variables:
   # DISABLE_JOB_release: 'true'
   # Post Release
   # DISABLE_JOB_configure_schedules: 'true'
-  DISABLE_JOB_npm_publish_dry_run: 'true'
-  DISABLE_JOB_npm_publish: 'true'
   ### Disabled Jobs : End
 
   ### Schedules configuration - If you want to use defaults, don't create SCHEDULES_CONFIGURATION variable
