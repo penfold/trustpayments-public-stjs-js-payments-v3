@@ -5,7 +5,7 @@ import { ICard } from '../../../../../models/ICard';
 import { IBrowserData } from './IBrowserData';
 
 export class ThreeDQueryRequest implements IStRequest {
-  readonly termurl = TERM_URL; // @TODO: This is mocked value treated as a placeholder bacause backend requires it.
+  readonly termurl = TERM_URL; // @TODO: This is mocked value treated as a placeholder because backend requires it.
 
   [index: string]: string | string[];
 

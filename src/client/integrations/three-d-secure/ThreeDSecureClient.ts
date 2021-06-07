@@ -1,4 +1,5 @@
-import { Observable, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
@@ -10,6 +11,7 @@ import {
   MethodURLResultInterface,
   ThreeDSecureFactory,
   CardType,
+  ResultActionCode,
 } from '@trustpayments/3ds-sdk-js';
 import { Translator } from '../../../application/core/shared/translator/Translator';
 import { IMethodUrlData } from './IMethodUrlData';
@@ -55,7 +57,7 @@ export class ThreeDSecureClient {
       .thenRespond(() => of(this.threeDSecure.hideProcessingScreen()));
   }
 
-  private init$(config: ConfigInterface): Observable<ConfigInterface> {
+  private init$(config: ConfigInterface): Observable<ConfigInterface | never> {
     if (config.translations && config.translations.cancel) {
       return this.threeDSecure.init$(config);
     }
@@ -67,7 +69,13 @@ export class ThreeDSecureClient {
       },
     };
 
-    return this.threeDSecure.init$(updatedConfig);
+    return this.threeDSecure.init$(updatedConfig).pipe(
+      catchError((err: any) => {
+        console.error(err);
+
+        return EMPTY;
+      })
+    );
   }
 
   private run3DSMethod$({ methodUrl, notificationUrl, transactionId }: IMethodUrlData): Observable<MethodURLResultInterface> {
@@ -75,6 +83,14 @@ export class ThreeDSecureClient {
       transactionId,
       notificationUrl,
       methodUrl,
+    ).pipe(
+      tap((methodUrlResult: MethodURLResultInterface) => {
+        console.log('WHTRBIT Method URL success', methodUrlResult);
+
+        if (methodUrlResult.status === ResultActionCode.UNCOMPLETED) {
+          console.error(`3DS transaction with uncompleted 3DS Method`);
+        }
+      }),
     );
   }
 
@@ -84,6 +100,15 @@ export class ThreeDSecureClient {
       data.payload,
       data.challengeURL,
       data.cardType,
+    ).pipe(
+      tap((challengeResult: ChallengeResultInterface) => {
+        console.log('WHTRBIT Challenge success', challengeResult);
+
+        if (challengeResult.status === ResultActionCode.UNCOMPLETED) {
+          // @TODO: should throw an error or leave it go to call AUTH on Gateway?
+          console.error('WHTRBIT Challenge uncompleted');
+        }
+      }),
     );
   }
 }
