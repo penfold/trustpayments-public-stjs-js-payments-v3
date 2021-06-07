@@ -3,6 +3,17 @@ import { ApplePayButtonService } from './ApplePayButtonService';
 describe('ApplePayButtonService', () => {
   const applePayButtonService: ApplePayButtonService = new ApplePayButtonService();
 
+  const removeAllButtons = () => {
+    const buttons = document.getElementsByTagName('a');
+    for (let i = buttons.length - 1; i >= 0; i--) {
+      buttons[0].parentNode.removeChild(buttons[0]);
+    }
+  };
+
+  afterEach(() => {
+    removeAllButtons();
+  });
+
   it('should create correct markup and insert button into merchants page', () => {
     applePayButtonService.insertButton('some-id', 'apple pay button', 'normal', 'de_DE');
 
@@ -20,5 +31,14 @@ describe('ApplePayButtonService', () => {
     applePayButtonService.insertButton('some-id', 'apple pay button', 'normal', 'de_DE');
 
     expect(applePayButtonService.insertButton('some-id', 'apple pay button', 'normal', 'de_DE')).toEqual(null);
+  });
+
+  it('should set default button values of label and style if nothing has been specified', () => {
+    applePayButtonService.insertButton('some-id', null, null, 'en_GB');
+    expect(document.getElementsByTagName('a').length).toEqual(1);
+    expect(document.getElementsByTagName('a')[0].lang).toEqual('en_GB');
+    expect(document.getElementsByTagName('a')[0].getAttribute('style')).toEqual(`-webkit-appearance: -apple-pay-button;
+                -apple-pay-button-type: plain;
+                -apple-pay-button-style: black;pointer-events: auto;cursor: pointer;display: flex;role: button;`);
   });
 });
