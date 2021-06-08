@@ -3,7 +3,7 @@ import {
   ThreeDSecureFactory,
   ThreeDSecureInterface, ThreeDSecureVersion } from '@trustpayments/3ds-sdk-js';
 import { Observable, of } from 'rxjs';
-import { anything, instance, mock, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { TranslationProvider } from '../../../application/core/shared/translator/TranslationProvider';
@@ -74,7 +74,7 @@ describe('ThreeDSecureClient', () => {
     when(threeDSecureFactoryMock.create()).thenReturn(instance(threeDSecureMock));
     when(threeDSecureMock.init$(anything())).thenReturn(of(configMock));
     when(threeDSecureMock.run3DSMethod$(anything(), anything(), anything())).thenReturn(of(methodUrlResultMock));
-    when(threeDSecureMock.doChallenge$(anything(), anything(), anything(), anything())).thenReturn(of(challengeResultMock));
+    when(threeDSecureMock.doChallenge$(anything(), anything(), anything(), anything(), anything(), anything())).thenReturn(of(challengeResultMock));
     when(threeDSecureMock.getBrowserData()).thenReturn(browserDataMock);
 
     sut = new ThreeDSecureClient(
@@ -139,16 +139,20 @@ describe('ThreeDSecureClient', () => {
       const challengeData: IChallengeData = {
         challengeURL: 'https://acsurl',
         payload: '1234',
-        version: ThreeDSecureVersion.v2_2,
+        version: '2.2.0',
         cardType: CardType.VISA,
+        termURL: 'https://termurl',
+        merchantData: 'merchantdata',
       };
 
       sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_CHALLENGE, data: challengeData }).subscribe(result => {
         verify(threeDSecureMock.doChallenge$(
-          challengeData.version,
+          deepEqual(new ThreeDSecureVersion(challengeData.version)),
           challengeData.payload,
           challengeData.challengeURL,
           challengeData.cardType,
+          challengeData.termURL,
+          challengeData.merchantData,
         )).once();
         expect(result).toBe(challengeResultMock);
         done();

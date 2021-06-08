@@ -10,6 +10,7 @@ import {
   MethodURLResultInterface,
   ThreeDSecureFactory,
   CardType,
+  ThreeDSecureVersion,
 } from '@trustpayments/3ds-sdk-js';
 import { Translator } from '../../../application/core/shared/translator/Translator';
 import { IMethodUrlData } from './IMethodUrlData';
@@ -80,10 +81,12 @@ export class ThreeDSecureClient {
 
   private doChallenge$(data: IChallengeData): Observable<ChallengeResultInterface> {
     return this.threeDSecure.doChallenge$(
-      data.version,
+      new ThreeDSecureVersion(data.version),
       data.payload,
       data.challengeURL,
       data.cardType,
+      data.termURL,
+      data.merchantData,
     );
   }
 }

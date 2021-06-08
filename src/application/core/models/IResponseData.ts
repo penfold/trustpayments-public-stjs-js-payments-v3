@@ -7,6 +7,8 @@ export interface IResponseData {
   customeroutput?: any;
   requesttypedescription?: string;
   threedresponse?: string;
+  pares?: string;
+  md?: string;
   cachetoken?: string;
   billingContact?: IApplePayShippingBillingContact;
   shippingContact?: IApplePayShippingContact;

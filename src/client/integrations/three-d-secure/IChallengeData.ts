@@ -1,8 +1,10 @@
-import { ThreeDSecureVersion, CardType } from '@trustpayments/3ds-sdk-js';
+import { CardType } from '@trustpayments/3ds-sdk-js';
 
 export interface IChallengeData {
-  version: ThreeDSecureVersion,
+  version: string,
   payload: string,
   challengeURL: string,
   cardType: CardType,
+  termURL?: string,
+  merchantData?: string,
 }

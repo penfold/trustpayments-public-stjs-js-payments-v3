@@ -172,7 +172,7 @@ describe('ThreeDSecureVerificationService', () => {
         transactionId: threedLookupResponse.threedstransactionid,
       }));
       when(browserDataProvider.getBrowserData$()).thenReturn(of(browserDataMock));
-      when(challengeService.doChallenge$(threeDQueryResponseMock, threedLookupResponse.paymenttypedescription)).thenReturn(of(updatedThreeDQueryResponseMock));
+      when(challengeService.doChallenge$(threeDQueryResponseMock, threedLookupResponse.paymenttypedescription as CardType)).thenReturn(of(updatedThreeDQueryResponseMock));
       when(interFrameCommunicatorMock.query(deepEqual(processingScreenShowEventMock), MERCHANT_PARENT_FRAME)).thenResolve(void 0);
       when(interFrameCommunicatorMock.query(deepEqual(processingScreenHideEventMock), MERCHANT_PARENT_FRAME)).thenResolve(void 0);
     });
@@ -202,7 +202,7 @@ describe('ThreeDSecureVerificationService', () => {
 
     it('runs the challenge and returns its result if acsurl is not undefined', done => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(result => {
-        verify(challengeService.doChallenge$(threeDQueryResponseMock, threedLookupResponse.paymenttypedescription)).once();
+        verify(challengeService.doChallenge$(threeDQueryResponseMock, threedLookupResponse.paymenttypedescription as CardType)).once();
         expect(result).toBe(updatedThreeDQueryResponseMock);
         done();
       });

@@ -1,6 +1,6 @@
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { Observable, of, throwError } from 'rxjs';
-import { ChallengeResultInterface, ResultActionCode } from '@trustpayments/3ds-sdk-js';
+import { ChallengeResultInterface, ResultActionCode, ThreeDSecureVersion } from '@trustpayments/3ds-sdk-js';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR } from '../../../../models/constants/Translations';
 import { Service } from 'typedi';
 
@@ -10,13 +10,12 @@ export class ChallengeResultHandler {
     switch (result.status) {
       case ResultActionCode.FAILURE:
       case ResultActionCode.ERROR:
-        return throwError({
+        return throwError(this.appendChallengeResultToResponse({
           ...response,
           acquirerresponsemessage: result.description,
           errorcode: '50003',
           errormessage: PAYMENT_ERROR,
-          threedresponse: result.data,
-        });
+        }, result));
       case ResultActionCode.CANCELLED:
         return throwError({
           ...response,
@@ -25,7 +24,18 @@ export class ChallengeResultHandler {
           isCancelled: true,
         });
       default:
-        return of({ ...response, threedresponse: result.data });
+        return of(this.appendChallengeResultToResponse(response, result));
     }
+  }
+
+  private appendChallengeResultToResponse(response: IThreeDQueryResponse, challengeResult: ChallengeResultInterface): IThreeDQueryResponse {
+    const version = new ThreeDSecureVersion(response.threedversion);
+    const { cres: threedresponse, PaRes: pares, MD: md } = challengeResult.data;
+
+    if (version.isHigherOrEqual(ThreeDSecureVersion.V2)) {
+      return { ...response, threedresponse };
+    }
+
+    return { ...response, pares, md };
   }
 }

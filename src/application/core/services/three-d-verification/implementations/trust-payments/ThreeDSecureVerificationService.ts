@@ -6,7 +6,7 @@ import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { IThreeDVerificationService } from '../../IThreeDVerificationService';
-import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
+import { CardType, ConfigInterface } from '@trustpayments/3ds-sdk-js';
 import { RequestType } from '../../../../../../shared/types/RequestType';
 import { ICard } from '../../../../models/ICard';
 import { IMerchantData } from '../../../../models/IMerchantData';
@@ -63,7 +63,6 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
     const threeDSecureProcessingScreenTimer = timer(2000);
     threeDSecureProcessingScreenTimer.subscribe();
 
-
     return this.gatewayClient.threedLookup(card).pipe(
       switchMap((response: IThreeDLookupResponse) => {
         cardType = response.paymenttypedescription;
@@ -98,7 +97,7 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
 
         return threeDSecureProcessingScreenTimer.pipe(
           switchMap(() => from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME))),
-          switchMap(() => this.challengeService.doChallenge$(response, cardType)),
+          switchMap(() => this.challengeService.doChallenge$(response, cardType as CardType)),
         );
       }),
     );
