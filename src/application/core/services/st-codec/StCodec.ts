@@ -10,7 +10,7 @@ import {
 } from '../../models/constants/Translations';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Validation } from '../../shared/validation/Validation';
-import { version } from '../../../../../package.json';
+import packageInfo from '../../../../../package.json';
 import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { IStJwtObj } from '../../models/IStJwtObj';
@@ -25,7 +25,7 @@ import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 export class StCodec {
   public static CONTENT_TYPE = 'application/json';
   public static VERSION = '1.00';
-  public static VERSION_INFO = `STJS::N/A::${version}::N/A`;
+  public static VERSION_INFO = `STJS::N/A::${packageInfo.version}::N/A`;
   public static MINIMUM_REQUEST_FIELDS = 1;
   public static jwt: string;
   public static originalJwt: string;

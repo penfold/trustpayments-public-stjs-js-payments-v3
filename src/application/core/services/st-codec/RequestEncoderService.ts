@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { IStRequest } from '../../models/IStRequest';
 import { COMMUNICATION_ERROR_INVALID_REQUEST } from '../../models/constants/Translations';
-import { version } from '../../../../../package.json';
+import packageInfo from '../../../../../package.json';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { InvalidRequestError } from './InvalidRequestError';
 import { IRequestObject } from '../../models/IRequestObject';
@@ -23,7 +23,7 @@ export class RequestEncoderService {
   private buildRequestObject(requestData: IStRequest): IRequestObject {
     const ACCEPT_CONSUMER_OUTPUT = '2.00';
     const VERSION = '1.00';
-    const VERSION_INFO = `STJS::N/A::${version}::N/A`;
+    const VERSION_INFO = `STJS::N/A::${packageInfo.version}::N/A`;
     const jwt = this.store.getState().jwt;
     const jwtPayload = this.jwtDecoder.decode(jwt).payload;
 
