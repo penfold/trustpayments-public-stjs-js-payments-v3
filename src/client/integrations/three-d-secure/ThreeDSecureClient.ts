@@ -1,5 +1,4 @@
-import { EMPTY, Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 import { Service } from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
@@ -68,13 +67,7 @@ export class ThreeDSecureClient {
       },
     };
 
-    return this.threeDSecure.init$(updatedConfig).pipe(
-      catchError((err: any) => {
-        console.error(err);
-
-        return EMPTY;
-      })
-    );
+    return this.threeDSecure.init$(updatedConfig);
   }
 
   private run3DSMethod$({ methodUrl, notificationUrl, transactionId }: IMethodUrlData): Observable<MethodURLResultInterface> {
