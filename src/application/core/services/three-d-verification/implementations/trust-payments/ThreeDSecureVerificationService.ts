@@ -1,10 +1,12 @@
 import { EMPTY, from, Observable, timer } from 'rxjs';
 import { Service } from 'typedi';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
+import { ofType } from '../../../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
+import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
 import { IThreeDVerificationService } from '../../IThreeDVerificationService';
 import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 import { RequestType } from '../../../../../../shared/types/RequestType';
@@ -31,6 +33,7 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
     private threeDSMethodService: ThreeDSecureMethodService,
     private browserDataProvider: BrowserDataProvider,
     private challengeService: ThreeDSecureChallengeService,
+    private messageBus: IMessageBus,
   ) {}
 
   init$(): Observable<ConfigInterface> {
@@ -61,8 +64,17 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
 
     let cardType = '';
     const threeDSecureProcessingScreenTimer = timer(2000);
+    const hideProcessingScreenQueryEvent: IMessageBusEvent<undefined> = {
+      type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE,
+    };
+
+    // Start processing screen timeout
     threeDSecureProcessingScreenTimer.subscribe();
 
+    // Hide processing screen on every transaction complete event
+    this.messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).pipe(
+      switchMap(() => from(this.interFrameCommunicator.query<void>(hideProcessingScreenQueryEvent, MERCHANT_PARENT_FRAME))),
+    ).subscribe();
 
     return this.gatewayClient.threedLookup(card).pipe(
       switchMap((response: IThreeDLookupResponse) => {
@@ -86,18 +98,14 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
       map((browserData: IBrowserData) => new ThreeDQueryRequest(card, merchantData, browserData)),
       switchMap((requestData: ThreeDQueryRequest) => this.gatewayClient.threedQuery(requestData)),
       switchMap((response: IThreeDQueryResponse) => {
-        const queryEvent: IMessageBusEvent<undefined> = {
-          type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE,
-        };
-
         if (!response.acsurl) {
-          return from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME)).pipe(
+          return from(this.interFrameCommunicator.query<void>(hideProcessingScreenQueryEvent, MERCHANT_PARENT_FRAME)).pipe(
             map(() => response),
           );
         }
 
         return threeDSecureProcessingScreenTimer.pipe(
-          switchMap(() => from(this.interFrameCommunicator.query<void>(queryEvent, MERCHANT_PARENT_FRAME))),
+          switchMap(() => from(this.interFrameCommunicator.query<void>(hideProcessingScreenQueryEvent, MERCHANT_PARENT_FRAME))),
           switchMap(() => this.challengeService.doChallenge$(response, cardType)),
         );
       }),
