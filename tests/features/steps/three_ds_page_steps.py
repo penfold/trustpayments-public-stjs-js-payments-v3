@@ -93,3 +93,9 @@ def step_impl(context):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
     time.sleep(1.9)
     three_ds_page.processing_screen_is_displayed()
+
+
+@step('the processing screen appears')
+def step_impl(context):
+    three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
+    three_ds_page.wait_for_processing_screen()

@@ -79,7 +79,6 @@ config = {
     'form_id_config': 'configFormId.json',
     'form_id_config_visa_checkout': 'configFormIdVisaCheckout.json'
 }
-
 screenshots = {
     'scrn_card_interface_after_successful_payment': 'cardInterfaceAfterSuccessfulPayment.png',
     'scrn_card_interface_before_payment': 'cardInterfaceBeforePayment.png',
@@ -89,5 +88,10 @@ screenshots = {
     'scrn_card_interface_before_payment_styling': 'cardInterfaceBeforePaymentWithStyling.png',
     'scrn_card_interface_error_expiry_date_styling': 'cardInterfaceErrorExpiryDateWithStyling.png',
     'scrn_card_interface_error_invalid_patterns_styling': 'cardInterfaceErrorInvalidPatternsWithStyling.png',
-    'scrn_card_interface_with_validation_styling': 'cardInterfaceWithValidationStyling.png'
+    'scrn_card_interface_with_validation_styling': 'cardInterfaceWithValidationStyling.png',
+    'scrn_three_ds_processing_screen_inline_overlay': 'threeDsProcessingScreenInlineOverlay.png',
+    'scrn_three_ds_processing_screen_inline_attach_to_element': 'threeDsProcessingScreenInlineAttachToElement.png',
+    'scrn_three_ds_processing_screen_popup_overlay': 'threeDsProcessingScreenPopupOverlay.png',
+    'scrn_three_ds_processing_screen_popup_attach_to_element': 'threeDsProcessingScreenPopupAttachToElement.png'
 }
+

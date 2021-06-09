@@ -40,5 +40,8 @@ class ThreeDsPage(BasePage):
     def processing_screen_is_displayed(self):
         assert self._actions.is_element_displayed(ThreeDSMethodsLocators.processing_screen) is True
 
+    def wait_for_processing_screen(self):
+        self._waits.wait_for_element_to_be_displayed(ThreeDSMethodsLocators.processing_screen)
+
     def wait_for_processing_screen_element(self, element):
         self._waits.wait_for_element_to_be_displayed(element)
