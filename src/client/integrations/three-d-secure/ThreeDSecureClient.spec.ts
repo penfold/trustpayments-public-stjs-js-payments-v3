@@ -155,4 +155,40 @@ describe('ThreeDSecureClient', () => {
       });
     });
   });
+
+  describe('processingScreen', () => {
+    it('shows processing screen', (done: DoneCallback) => {
+      // @ts-ignore
+      const spy = jest.spyOn(sut.threeDSecure, 'showProcessingScreen');
+      const updatedConfig = {
+        ...configMock,
+        translations: {
+          cancel: 'testcancel',
+        },
+      };
+      when(threeDSecureMock.init$(anything())).thenReturn(of(updatedConfig));
+
+      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_SHOW, data: configMock }).subscribe(result => {
+        expect(spy).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    it('hides processing screen', (done: DoneCallback) => {
+      // @ts-ignore
+      const spy = jest.spyOn(sut.threeDSecure, 'hideProcessingScreen');
+      const updatedConfig = {
+        ...configMock,
+        translations: {
+          cancel: 'testcancel',
+        },
+      };
+      when(threeDSecureMock.init$(anything())).thenReturn(of(updatedConfig));
+
+      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE, data: configMock }).subscribe(result => {
+        expect(spy).toHaveBeenCalled();
+        done();
+      });
+    });
+  })
 });
