@@ -138,14 +138,15 @@ describe('ThreeDSecureVerificationService', () => {
     };
 
     const browserDataMock = {
+      accept: '',
       browserjavaenabled: '',
       browserjavascriptenabled: '',
       browserlanguage: '',
       browserscreenwidth: '',
       browserscreenheight: '',
       browsercolordepth: '',
-      browseruseragent: '',
       browsertz: '',
+      useragent: '',
     };
 
     const tdqRequestWithoutBrowserData = new ThreeDQueryRequest(card, merchantData);

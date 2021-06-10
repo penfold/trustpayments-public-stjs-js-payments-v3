@@ -38,8 +38,9 @@ describe('BrowserDataProvider', () => {
         browserscreenwidth: '800',
         browserscreenheight: '600',
         browsercolordepth: '24',
-        browseruseragent: 'chrome',
+        useragent: 'chrome',
         browsertz: '0',
+        accept: 'application/json',
       });
       done();
     });
