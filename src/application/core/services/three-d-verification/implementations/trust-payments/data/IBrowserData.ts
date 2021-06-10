@@ -5,6 +5,7 @@ export interface IBrowserData {
   browserscreenwidth: string;
   browserscreenheight: string;
   browsercolordepth: string;
-  browseruseragent: string;
+  useragent: string;
   browsertz: string;
+  accept: string;
 }
