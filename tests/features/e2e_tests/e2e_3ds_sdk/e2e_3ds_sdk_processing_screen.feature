@@ -8,7 +8,7 @@ Feature: 3ds SDK library - Processing Screen
     When User fills payment form with defined card VISA_V21_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
     Then <processing_screen> processing screen is visible
-    But the processing screen disappears before confirmation code appears
+    And the processing screen disappears before notification message appears
 
     Examples:
       | config                                                         | processing_screen |
@@ -25,7 +25,7 @@ Feature: 3ds SDK library - Processing Screen
     When User fills payment form with defined card VISA_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     Then <processing_screen> processing screen is visible
-    But the processing screen disappears before notification message appears
+    And the processing screen disappears before confirmation code appears
 
     Examples:
       | config                                                         | processing_screen |
@@ -58,7 +58,7 @@ Feature: 3ds SDK library - Processing Screen
     When User fills payment form with defined card VISA_V21_3DS_SDK_STEP_UP_AUTH_ERROR
     And User clicks Pay button
     Then <processing_screen> processing screen is visible
-    But the processing screen disappears before notification message appears
+    And the processing screen disappears before notification message appears
 
     Examples:
       | config                                                         | processing_screen |
