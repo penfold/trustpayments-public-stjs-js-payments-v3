@@ -5,9 +5,10 @@ from assertpy import assert_that
 from behave import given, step, then, use_step_matcher
 
 from configuration import CONFIGURATION
-from models.inline_config_builder import InlineConfigBuilder
+from models.inline_config_builder_old import InlineConfigBuilderOld
 from pages.page_factory import Pages
-from utils.configurations.inline_config_generator import create_inline_config
+from utils.configurations.inline_config_builder import InlineConfigBuilder
+from utils.configurations.inline_config_generator import create_inline_config, append_jwt_into_inline_config
 from utils.configurations.jwt_generator import encode_jwt_for_json, encode_jwt, get_jwt_config_from_json, \
     merge_json_conf_with_additional_attr
 from utils.enums.card import Card
@@ -16,6 +17,7 @@ from utils.enums.e2e_config import E2eConfig
 from utils.enums.jwt_config import JwtConfig
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import add_to_shared_dict
+from utils.helpers.resources_reader import get_e2e_config_from_json
 
 use_step_matcher('re')
 
@@ -32,10 +34,27 @@ def step_impl(context, e2e_config, jwt_config):
     # parse old jwt config (payload part) to dictionary object
     jwt_config_from_json_dict = get_jwt_config_from_json(JwtConfig[jwt_config].value)['payload']
     # build payload base on additional attributes and parse to dictionary
-    jwt_payload_dict = InlineConfigBuilder().map_payload_fields(context.table).build().__dict__
+    jwt_payload_dict = InlineConfigBuilderOld().map_payload_fields(context.table).build().__dict__
     # merge both dictionaries (old is overridden by additional attr)
     jwt = encode_jwt(merge_json_conf_with_additional_attr(jwt_config_from_json_dict, jwt_payload_dict))
     context.inline_e2e_config = create_inline_config(E2eConfig[e2e_config], jwt)
+
+
+@step('JS library configured by inline config (?P<e2e_config>.+)')
+def step_impl(context, e2e_config):
+    e2e_config_dict = get_e2e_config_from_json(E2eConfig[e2e_config].value)
+    context.inline_e2e_config = e2e_config_dict
+
+
+@step('JS library authenticated by jwt (?P<jwt_config>.+) with additional attributes')
+def step_impl(context, jwt_config):
+    # parse old jwt config (payload part) to dictionary object
+    jwt_payload_dict = get_jwt_config_from_json(JwtConfig[jwt_config].value)['payload']
+    # build payload base on additional attributes
+    jwt_payload_dict = InlineConfigBuilder().map_jwt_additional_fields(jwt_payload_dict, context.table)
+    # merge both dictionaries (old is overridden by additional attr)
+    jwt = encode_jwt(jwt_payload_dict)
+    context.inline_e2e_config = append_jwt_into_inline_config(context.inline_e2e_config, jwt)
 
 
 @step('User fills payment form with defined card (?P<card>.+)')
