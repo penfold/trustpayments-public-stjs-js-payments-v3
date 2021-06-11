@@ -1,5 +1,4 @@
 {
   "panIcon": true,
-  "submitOnSuccess": false,
-  "datacenterurl": "http://localhost:8890/"
+  "submitOnSuccess": false
 }

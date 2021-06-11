@@ -4,7 +4,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.2
     Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
       | requesttypedescriptions | <request_types>                |
-      | sitereference           | test_js_automated_tests_tp_3ds |
+      | sitereference           | jstrustthreed76424 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
@@ -37,7 +37,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.2
     Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value                          |
       | requesttypedescriptions | <request_types>                |
-      | sitereference           | test_js_automated_tests_tp_3ds |
+      | sitereference           | jstrustthreed76424 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
@@ -62,7 +62,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.2
     Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
       | requesttypedescriptions | <request_types>                |
-      | sitereference           | test_js_automated_tests_tp_3ds |
+      | sitereference           | jstrustthreed76424 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
@@ -89,7 +89,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.2
     Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value                          |
       | requesttypedescriptions | <request_types>                |
-      | sitereference           | test_js_automated_tests_tp_3ds |
+      | sitereference           | jstrustthreed76424 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_STEP_UP_AUTH_ERROR
     And User clicks Pay button

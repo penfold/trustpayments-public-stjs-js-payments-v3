@@ -1,5 +1,4 @@
 {
-  "datacenterurl": "http://localhost:8890/",
   "threeDSecure": {
     "challengeDisplayMode": "INLINE",
     "challengeDisplayInlineTargetElementId": "st-card-payment",

@@ -7,9 +7,9 @@ Feature: 3ds SDK library initialization
 
   Scenario: Initialize 3ds SDK with defaults
     Given JS library configured by inline params THREE_DS_SDK_BASIC_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value                          |
-      | requesttypedescriptions | THREEDQUERY AUTH               |
-      | sitereference           | test_js_automated_tests_tp_3ds |
+      | key                     | value              |
+      | requesttypedescriptions | THREEDQUERY AUTH   |
+      | sitereference           | jstrustthreed76424 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_FRICTIONLESS
     And User clicks Pay button
