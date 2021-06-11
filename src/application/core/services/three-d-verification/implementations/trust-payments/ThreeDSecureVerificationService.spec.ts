@@ -223,6 +223,7 @@ describe('ThreeDSecureVerificationService', () => {
       });
     });
 
+    // EMVCo Req 172
     it('opens processing screen', done => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
         verify(interFrameCommunicatorMock.query<ConfigInterface>(
@@ -233,6 +234,7 @@ describe('ThreeDSecureVerificationService', () => {
       });
     });
 
+    // EMVCo Req 172
     it('closes processing screen', done => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
         verify(interFrameCommunicatorMock.query<ConfigInterface>(

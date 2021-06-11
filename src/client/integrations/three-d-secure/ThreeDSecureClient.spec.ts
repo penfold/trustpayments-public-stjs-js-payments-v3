@@ -156,6 +156,7 @@ describe('ThreeDSecureClient', () => {
     });
   });
 
+  // EMVCo Req 172
   describe('processingScreen', () => {
     it('shows processing screen', (done: DoneCallback) => {
       // @ts-ignore
