@@ -55,7 +55,7 @@ export class ThreeDSecureClient {
       .thenRespond(() => of(this.threeDSecure.hideProcessingScreen()));
   }
 
-  private init$(config: ConfigInterface): Observable<ConfigInterface | never> {
+  private init$(config: ConfigInterface): Observable<ConfigInterface> {
     if (config.translations && config.translations.cancel) {
       return this.threeDSecure.init$(config);
     }
