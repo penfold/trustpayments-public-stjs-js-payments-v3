@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 20.1.0
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 20.2.12
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -62,8 +62,8 @@ variables:
   # Fast Tests
   # DISABLE_JOB_check_schedules: true'
   # DISABLE_JOB_unit_tests: 'true'
-  DISABLE_JOB_js_static_analysis: 'true'
-  DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
+  DISABLE_JOB_js_static_analysis: 'true' # TODO STJS-1776
+  DISABLE_JOB_py_static_analysis: 'true' # TODO STJS-950
   # DISABLE_JOB_vuln_check: 'true'
   # Extended Tests
   # DISABLE_JOB_extended_tests: 'true'
