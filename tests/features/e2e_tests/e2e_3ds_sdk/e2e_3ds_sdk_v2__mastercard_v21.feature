@@ -5,6 +5,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
   I want to use card payments method
   In order to check 3ds SDK integration
 
+
   Background:
     Given JS library configured by inline config BASIC_CONFIG
 
@@ -352,7 +353,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
       | THREEDQUERY ACCOUNTCHECK |
 
 
-  Scenario Outline: TC_4a - successful frictionless with transaction timed out at athe ACS - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_ACS
+  Scenario Outline: TC_4a - Failed Frictionless - transaction timed out at athe ACS - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_ACS
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
@@ -362,22 +363,22 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_ACS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see payment status information: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
-    And User will see that Submit button is "disabled" after payment
-    And User will see that ALL input fields are "disabled"
+      | <callback>    |
+    And User will see that Submit button is "<state>" after payment
+    And User will see that ALL input fields are "<state>"
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | payment_status                          | callback | state    |
+      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
+      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
 
 
-  Scenario Outline: TC_4b - successful frictionless with suspected fraud - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_SUSPECTED_FRAUD
+  Scenario Outline: TC_4b - Failed Frictionless - suspected fraud - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_SUSPECTED_FRAUD
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
@@ -387,22 +388,22 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_SUSPECTED_FRAUD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see payment status information: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
-    And User will see that Submit button is "disabled" after payment
-    And User will see that ALL input fields are "disabled"
+      | <callback>    |
+    And User will see that Submit button is "<state>" after payment
+    And User will see that ALL input fields are "<state>"
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | payment_status                          | callback | state    |
+      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
+      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
 
 
-  Scenario Outline: TC_4c - successful frictionless with card holder not enrolled in service - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_NOT_ENROLLED
+  Scenario Outline: TC_4c - Failed Frictionless - card holder not enrolled in service - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_NOT_ENROLLED
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
@@ -412,22 +413,22 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_NOT_ENROLLED
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see payment status information: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
-    And User will see that Submit button is "disabled" after payment
-    And User will see that ALL input fields are "disabled"
+      | <callback>    |
+    And User will see that Submit button is "<state>" after payment
+    And User will see that ALL input fields are "<state>"
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | payment_status                          | callback | state    |
+      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
+      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
 
 
-  Scenario Outline: TC_4d - successful frictionless with transaction timed out at the ACS - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_2_ACS
+  Scenario Outline: TC_4d - Failed Frictionless - transaction timed out at the ACS - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_2_ACS
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
@@ -437,22 +438,22 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_TRANSACTION_TIMEOUT_2_ACS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see payment status information: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
-    And User will see that Submit button is "disabled" after payment
-    And User will see that ALL input fields are "disabled"
+      | <callback>    |
+    And User will see that Submit button is "<state>" after payment
+    And User will see that ALL input fields are "<state>"
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | payment_status                          | callback | state    |
+      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
+      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
 
 
-  Scenario Outline: TC_4e - successful frictionless with non-payment transaction not supported - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_TRANSACTION_NON_PAYMENT
+  Scenario Outline: TC_4e - Failed Frictionless - non-payment transaction not supported - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_TRANSACTION_NON_PAYMENT
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
@@ -462,22 +463,22 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_TRANSACTION_NON_PAYMENT
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see payment status information: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
-    And User will see that Submit button is "disabled" after payment
-    And User will see that ALL input fields are "disabled"
+      | <callback>    |
+    And User will see that Submit button is "<state>" after payment
+    And User will see that ALL input fields are "<state>"
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | payment_status                          | callback | state    |
+      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
+      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
 
 
-  Scenario Outline: TC_4f - successful frictionless with 3RI transaction not supported - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_3RI_TRANSACTION_NOT_SUPPORTED
+  Scenario Outline: TC_4f - Failed Frictionless - 3RI transaction not supported - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_3RI_TRANSACTION_NOT_SUPPORTED
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
@@ -487,22 +488,16 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_3RI_TRANSACTION_NOT_SUPPORTED
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+     Then User will see payment status information: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
-    And User will see that Submit button is "disabled" after payment
-    And User will see that ALL input fields are "disabled"
+      | <callback>    |
+    And User will see that Submit button is "<state>" after payment
+    And User will see that ALL input fields are "<state>"
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
-
-    Examples:
-      | request_types            | payment_status | callback |
-      | THREEDQUERY AUTH         | TODO           | TODO     |
-      | ACCOUNTCHECK THREEDQUERY | TODO           | TODO     |
-      | THREEDQUERY ACCOUNTCHECK | TODO           | TODO     |
+      | request_types            | payment_status                          | callback | state    |
+      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
+      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
