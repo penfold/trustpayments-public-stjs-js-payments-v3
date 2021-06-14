@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine as app-html
+FROM registry.gitlab.com/trustpayments-public/public-docker-registry/nginx:5.0.0 as app-html
 
 ARG SDK_DIST_PATH
 ARG APP_DIST_PATH
