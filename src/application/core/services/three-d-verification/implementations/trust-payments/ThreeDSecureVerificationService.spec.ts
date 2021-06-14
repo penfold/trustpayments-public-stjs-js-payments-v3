@@ -7,6 +7,7 @@ import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../../../shared/message-bus/SimpleMessageBus';
 import { GatewayClient } from '../../../GatewayClient';
 import { ThreeDSecureVerificationService } from './ThreeDSecureVerificationService';
 import { ICard } from '../../../../models/ICard';
@@ -31,7 +32,7 @@ describe('ThreeDSecureVerificationService', () => {
   let threeDSMethodService: ThreeDSecureMethodService;
   let browserDataProvider: BrowserDataProvider;
   let challengeService: ThreeDSecureChallengeService;
-  let messageBusMock: IMessageBus;
+  let messageBus: IMessageBus;
   let sut: ThreeDSecureVerificationService;
 
   const threeDSecureConfigMock: ConfigInterface = {
@@ -50,7 +51,7 @@ describe('ThreeDSecureVerificationService', () => {
     browserDataProvider = mock(BrowserDataProvider);
     challengeService = mock(ThreeDSecureChallengeService);
     configProvider = new TestConfigProvider();
-    messageBusMock = mock<IMessageBus>();
+    messageBus = new SimpleMessageBus();
     sut = new ThreeDSecureVerificationService(
       instance(interFrameCommunicatorMock),
       instance(gatewayClient),
@@ -58,16 +59,10 @@ describe('ThreeDSecureVerificationService', () => {
       instance(threeDSMethodService),
       instance(browserDataProvider),
       instance(challengeService),
-      instance(messageBusMock),
+      messageBus,
     );
 
     configProvider.setConfig(configMock);
-    when(messageBusMock.pipe(anything())).thenReturn(
-      of({
-        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-        data: {},
-      })
-    );
   });
 
   describe('init()', () => {
@@ -228,6 +223,11 @@ describe('ThreeDSecureVerificationService', () => {
 
     it('sends processing screen hide event on TRANSACTION_COMPLETE',  () => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe();
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+        data: {},
+      });
 
       verify(interFrameCommunicatorMock.query(
         deepEqual({
