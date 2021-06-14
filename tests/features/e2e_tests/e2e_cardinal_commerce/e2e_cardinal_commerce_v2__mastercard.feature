@@ -148,9 +148,9 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
 
     Examples:
       | request_types            | payment_status                          | callback |
-      | THREEDQUERY AUTH         | Payment has been successfully processed | success  |
+# Todo STJS-1835      | THREEDQUERY AUTH         | Payment has been successfully processed | success  |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    |
-      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | success  |
+# Todo STJS-1835     | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | success  |
 
 
   Scenario Outline: TC_9 -Successful Step Up Authentication - Card: MASTERCARD_NON_FRICTIONLESS
@@ -211,9 +211,9 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
 
     Examples:
       | request_types            |
-      | THREEDQUERY AUTH         |
+# Todo STJS-1834      | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+# Todo STJS-1834      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_12 - Error on Authentication - Card: MASTERCARD_ERROR_ON_AUTH
