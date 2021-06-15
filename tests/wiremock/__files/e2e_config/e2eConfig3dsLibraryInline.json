@@ -1,0 +1,8 @@
+{
+  "submitOnSuccess": false,
+  "threeDSecure": {
+    "loggingLevel": "ALL",
+    "challengeDisplayMode": "INLINE",
+    "challengeDisplayInlineTargetElementId": "st-card-payment"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "submitOnSuccess": false,
+  "threeDSecure": {
+    "loggingLevel": "ALL",
+    "challengeDisplayMode": "POPUP",
+    "translations": {
+      "cancel": "INTENTIONALLY_HARDCODED_VALUE"
+    }
+  }
+}

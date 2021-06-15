@@ -1,8 +1,9 @@
 from models.jwt_payload import JwtPayload
+from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import shared_dict
 
 
-class JwtPayloadBuilder:
+class InlineConfigBuilderOld:
 
     def __init__(self):
         self._jwt_payload = JwtPayload()
@@ -36,7 +37,7 @@ class JwtPayloadBuilder:
         return self
 
     def with_cachetoken(self):
-        self._jwt_payload.cachetoken = shared_dict['cachetoken']
+        self._jwt_payload.cachetoken = shared_dict[SharedDictKey.CACHETOKEN.value]
         return self
 
     def build(self):

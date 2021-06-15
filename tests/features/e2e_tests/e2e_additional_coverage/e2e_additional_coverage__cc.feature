@@ -1,4 +1,4 @@
-Feature: request type - full test coverage
+Feature: request type - Cardinal Commerce - full test coverage
 
   Scenario Outline: successful payment with only request types <request_types>  - frictionless
     Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt BASE_JWT with additional attributes
