@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 18.1.3
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 20.2.12
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -13,9 +13,9 @@ include:
   - local: '/.gitlab/build/example-app-html.yml'
   - local: '/.gitlab/post-build/image-html.yml'
   - local: '/.gitlab/post-build/image-other.yml'
+  - local: '/.gitlab/post-build/publish-to-cdn.yml'
   - local: '/.gitlab/fast-tests/functional.yml'
   - local: '/.gitlab/fast-tests/security.yml'
-  - local: '/.gitlab/publish-to-cdn.yml'
   - local: '/.gitlab/extended-tests.yml'
   - local: '/.gitlab/post-release.yml'
   - local: '/.gitlab/pre-smoke-tests.yml'
@@ -62,8 +62,8 @@ variables:
   # Fast Tests
   # DISABLE_JOB_check_schedules: true'
   # DISABLE_JOB_unit_tests: 'true'
-  DISABLE_JOB_js_static_analysis: 'true'
-  # DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
+  DISABLE_JOB_js_static_analysis: 'true' # TODO STJS-1776
+  DISABLE_JOB_py_static_analysis: 'true' # TODO STJS-950
   # DISABLE_JOB_vuln_check: 'true'
   # Extended Tests
   # DISABLE_JOB_extended_tests: 'true'
@@ -73,8 +73,6 @@ variables:
   # DISABLE_JOB_release: 'true'
   # Post Release
   # DISABLE_JOB_configure_schedules: 'true'
-  DISABLE_JOB_npm_publish_dry_run: 'true'
-  DISABLE_JOB_npm_publish: 'true'
   ### Disabled Jobs : End
 
   ### Schedules configuration - If you want to use defaults, don't create SCHEDULES_CONFIGURATION variable
@@ -108,7 +106,6 @@ stages:
   - prepare-release
   - build
   - post-build
-  - publish-to-cdn
   # Tests
   - fast-tests
   - extended-tests

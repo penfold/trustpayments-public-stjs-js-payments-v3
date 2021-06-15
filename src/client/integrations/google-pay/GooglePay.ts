@@ -163,32 +163,16 @@ export class GooglePay {
 
   private onPaymentAuthorized(paymentData: IPaymentData): void {
     const formData = DomMethods.parseForm(this.config.formId);
-    const config = this.config;
-
-    return this.googlePayPaymentService.processPayment(
-      this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions,
-      formData,
-      paymentData
-    );
+    return this.googlePayPaymentService.processPayment(formData, paymentData);
   }
 
   private onPaymentCancel(): void {
     const formData = DomMethods.parseForm(this.config.formId);
-    const config = this.config;
-    
-    return this.googlePayPaymentService.cancelPayment(
-      this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions,
-      formData
-    );
+    return this.googlePayPaymentService.cancelPayment(formData);
   }
 
   private onPaymentError(): void {
     const formData = DomMethods.parseForm(this.config.formId);
-    const config = this.config;
-
-    return this.googlePayPaymentService.errorPayment(
-      this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions,
-      formData
-    );
+    return this.googlePayPaymentService.errorPayment(formData);
   }
 }

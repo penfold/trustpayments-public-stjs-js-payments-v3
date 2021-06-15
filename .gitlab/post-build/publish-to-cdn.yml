@@ -1,0 +1,67 @@
+.trigger-publish-to-cdn-before-script:
+  stage: post-build
+  before_script:
+    - export RELEASE_TAG=$(jq -r '.release_tag // empty' "${ARTIFACT_RELEASE_CICD_FILENAME}")
+    - export CDN_HASH=$(jq -r '.cdn_hash // empty' "${ARTIFACT_RELEASE_CICD_FILENAME}")
+    - export PUBLISH_ARTIFACT_TARGET_RELATIVE_PATH="${TARGET_PREFIX}${RELEASE_TAG}-${CDN_HASH}"
+
+# SDK
+
+.trigger-publish-to-cdn-before-script-sdk:
+  extends:
+    - .trigger-publish-to-cdn-before-script
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-review'
+    PUBLISH_ARTIFACT_SOURCE_PATH: '.artifacts_sdk_release/dist'
+    TARGET_PREFIX: ''
+
+trigger-publish-sdk-review-to-cdn-stage-from-review:
+  extends:
+    - .trigger-publish-to-cdn-stage-from-review
+    - .trigger-publish-to-cdn-before-script-sdk
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-review'
+
+trigger-publish-sdk-release-to-cdn-stage-from-release:
+  extends:
+    - .trigger-publish-to-cdn-stage-from-release
+    - .trigger-publish-to-cdn-before-script-sdk
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-release'
+
+trigger-publish-sdk-release-to-cdn-prod-from-release:
+  extends:
+    - .trigger-publish-to-cdn-prod-from-release
+    - .trigger-publish-to-cdn-before-script-sdk
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-sdk-rr-release'
+
+# app-html
+
+.trigger-publish-to-cdn-before-script-app-html:
+  extends:
+    - .trigger-publish-to-cdn-before-script
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_PATH: '.artifacts_app_html_release/dist'
+    TARGET_PREFIX: 'example/html/'
+
+trigger-publish-app-html-review-to-cdn-stage-from-review:
+  extends:
+    - .trigger-publish-to-cdn-stage-from-review
+    - .trigger-publish-to-cdn-before-script-app-html
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-app-html-rr-review'
+
+trigger-publish-app-html-release-to-cdn-stage-from-release:
+  extends:
+    - .trigger-publish-to-cdn-stage-from-release
+    - .trigger-publish-to-cdn-before-script-app-html
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-app-html-rr-release'
+
+trigger-publish-app-html-release-to-cdn-prod-from-release:
+  extends:
+    - .trigger-publish-to-cdn-prod-from-release
+    - .trigger-publish-to-cdn-before-script-app-html
+  variables:
+    PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-app-html-rr-release'

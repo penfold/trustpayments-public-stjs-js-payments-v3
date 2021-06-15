@@ -29,6 +29,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | request_types            | baseamount     | currencyiso3a  | eci            |
       | THREEDQUERY AUTH         | 1000           | GBP            | 05             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 05             |
 
 
   @cardinal_commerce_v2.0
@@ -53,6 +54,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   | status         |
       | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none | should be none |
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              | N              |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | 60022     | should be none | should be none | should be none |
 
 
   @cardinal_commerce_v2.0
@@ -80,6 +82,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | request_types            | baseamount     | currencyiso3a  | eci            |
       | THREEDQUERY AUTH         | 1000           | GBP            | 06             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 06             |
 
 
   @cardinal_commerce_v2.0
@@ -107,6 +110,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | request_types            | baseamount     | currencyiso3a  | eci            |
       | THREEDQUERY AUTH         | 1000           | GBP            | 07             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 07             |
 
 
   @cardinal_commerce_v2.0
@@ -131,6 +135,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   | status         |
       | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none | should be none |
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              | R              |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | 60022     | should be none | should be none | should be none |
 
 
   @cardinal_commerce_v2.0
@@ -158,6 +163,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | request_types            | baseamount     | currencyiso3a  | status         | eci            |
       | THREEDQUERY AUTH         | 1000           | GBP            | should be none | 07             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | should be none | 07             |
 
 
   @cardinal_commerce_v2.0
@@ -184,6 +190,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | request_types            | errormessage                            | baseamount     | currencyiso3a  | errorcode | settlestatus |
       | THREEDQUERY AUTH         | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | should be none | should be none | 60010     | 0            |
+      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
 
 
   @cardinal_commerce_v2.0
@@ -213,6 +220,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
       | THREEDQUERY AUTH         | 1000           | GBP            | Y      | 05             | should be none     |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | Y      | 05             | should be none     |
 
 
   @cardinal_commerce_v2.0
@@ -239,6 +247,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | request_types            | threedresponse     |
       | THREEDQUERY AUTH         | should not be none |
       | ACCOUNTCHECK THREEDQUERY | should not be none |
+      | THREEDQUERY ACCOUNTCHECK | should not be none |
 
 
   @cardinal_commerce_v2.0
@@ -268,6 +277,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
       | THREEDQUERY AUTH         | 1000           | GBP            | U      | 07             | should be none     |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | U      | 07             | should be none     |
 
 
   @cardinal_commerce_v2.0
@@ -294,6 +304,7 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | request_types            | threedresponse     |
       | THREEDQUERY AUTH         | should not be none |
       | ACCOUNTCHECK THREEDQUERY | should not be none |
+      | THREEDQUERY ACCOUNTCHECK | should not be none |
 
 
   Scenario Outline: TC_13 - Bypassed Authentication with submitOnSuccess - Card: VISA_V22_BYPASSED_AUTH
@@ -317,3 +328,4 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.2
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
