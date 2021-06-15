@@ -3,6 +3,7 @@ import json
 import requests
 from requests.auth import HTTPBasicAuth
 
+from utils.enums.shared_dict_keys import SharedDictKey
 from utils.read_configuration import get_from_env
 
 browserstack_username = get_from_env('BS_USERNAME')
@@ -28,7 +29,8 @@ def mark_test_as_failed(session_id):
     requests.put(BROWSERSTACK_API_URL + session_id + '.json',
                  auth=HTTPBasicAuth(browserstack_username, browserstack_access_key),
                  headers={'Content-Type': 'application/json'}, json={'status': 'failed',
-                                                                     'reason': shared_dict['assertion_message']})
+                                                                     'reason': shared_dict[
+                                                                         SharedDictKey.ASSERTION_MESSAGE.value]})
 
 
 def mark_test_as_passed(session_id):
