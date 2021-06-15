@@ -71,5 +71,6 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
     }),
     processingScreenMode: Joi.string().valid('OVERLAY', 'ATTACH_TO_ELEMENT').default('OVERLAY'),
     processingScreenWrapperElementId: Joi.any(),
+    threeDSMethodTimeout: Joi.number().min(1).max(10000).default(10000),
   }),
 });
