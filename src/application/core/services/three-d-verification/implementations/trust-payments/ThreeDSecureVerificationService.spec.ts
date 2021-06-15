@@ -6,6 +6,8 @@ import { TestConfigProvider } from '../../../../../../testing/mocks/TestConfigPr
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
+import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../../../shared/message-bus/SimpleMessageBus';
 import { GatewayClient } from '../../../GatewayClient';
 import { ThreeDSecureVerificationService } from './ThreeDSecureVerificationService';
 import { ICard } from '../../../../models/ICard';
@@ -30,6 +32,7 @@ describe('ThreeDSecureVerificationService', () => {
   let threeDSMethodService: ThreeDSecureMethodService;
   let browserDataProvider: BrowserDataProvider;
   let challengeService: ThreeDSecureChallengeService;
+  let messageBus: IMessageBus;
   let sut: ThreeDSecureVerificationService;
 
   const threeDSecureConfigMock: ConfigInterface = {
@@ -48,6 +51,7 @@ describe('ThreeDSecureVerificationService', () => {
     browserDataProvider = mock(BrowserDataProvider);
     challengeService = mock(ThreeDSecureChallengeService);
     configProvider = new TestConfigProvider();
+    messageBus = new SimpleMessageBus();
     sut = new ThreeDSecureVerificationService(
       instance(interFrameCommunicatorMock),
       instance(gatewayClient),
@@ -55,6 +59,7 @@ describe('ThreeDSecureVerificationService', () => {
       instance(threeDSMethodService),
       instance(browserDataProvider),
       instance(challengeService),
+      messageBus,
     );
 
     configProvider.setConfig(configMock);
@@ -93,11 +98,9 @@ describe('ThreeDSecureVerificationService', () => {
       expirydate: '12/23',
       securitycode: '123',
     };
-
     const merchantData: IMerchantData = {
       foo: 'bar',
     };
-
     const jsInitResponseMock: IThreeDInitResponse = {
       errorcode: '0',
       errormessage: 'Success',
@@ -105,7 +108,6 @@ describe('ThreeDSecureVerificationService', () => {
       transactionstartedtimestamp: 'transactionstartedtimestamp',
       threedsprovider: ThreeDVerificationProviderName.TP,
     };
-
     const threeDQueryResponseMock: IThreeDQueryResponse = {
       jwt: '',
       acquirertransactionreference: '',
@@ -118,12 +120,10 @@ describe('ThreeDSecureVerificationService', () => {
       requesttypescription: '',
       threedversion: '',
     };
-
     const updatedThreeDQueryResponseMock: IThreeDQueryResponse = {
       ...threeDQueryResponseMock,
       threedresponse: 'threedresponse',
     };
-
     const threedLookupResponse: IThreeDLookupResponse = {
       transactionstartedtimestamp: '',
       errormessage: '',
@@ -136,7 +136,6 @@ describe('ThreeDSecureVerificationService', () => {
       threedversion: '2.1.0',
       paymenttypedescription: 'VISA',
     };
-
     const browserDataMock = {
       accept: '',
       browserjavaenabled: '',
@@ -148,7 +147,6 @@ describe('ThreeDSecureVerificationService', () => {
       browsertz: '',
       useragent: '',
     };
-
     const tdqRequestWithoutBrowserData = new ThreeDQueryRequest(card, merchantData);
     const tdqRequestWithBrowserData = new ThreeDQueryRequest(card, merchantData, browserDataMock);
     const processingScreenShowEventMock: IMessageBusEvent<string> = {
@@ -222,6 +220,22 @@ describe('ThreeDSecureVerificationService', () => {
         expect(result).toBe(threeDQueryResponseWithoutAcsUrl);
         done();
       });
+    });
+
+    it('sends processing screen hide event on TRANSACTION_COMPLETE',  () => {
+      sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe();
+
+      messageBus.publish({
+        type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+        data: {},
+      });
+
+      verify(interFrameCommunicatorMock.query(
+        deepEqual({
+          type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE,
+        }),
+        MERCHANT_PARENT_FRAME,
+      )).once();
     });
   });
 });
