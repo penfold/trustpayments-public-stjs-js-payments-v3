@@ -41,8 +41,20 @@ function rebuild_sdk() {
     build_type="mock"
   fi
 
-  log_this INFO "Rebuild SDK build: npm run ${build_type} --frame_url=https://library.securetrading.net:8443"
+  log_this INFO "Rebuild SDK build: npm run build:${build_type} --frame_url=https://library.securetrading.net:8443"
   (cd "${BASH_SOURCE%/*}/.." ; npm run build:"${build_type}" --frame_url="https://library.securetrading.net:8443")
+}
+
+function rebuild_example_html() {
+  local mock="$1"
+  local build_type="prod"
+
+  if [[ "${mock}" == "true" ]]; then
+    build_type="mock"
+  fi
+
+  log_this INFO "Rebuild Example HTML app build: npm run build:${build_type}"
+  (cd "${BASH_SOURCE%/*}/../example/html" ; npm run build:"${build_type}")
 }
 
 function rebuild_images () {
@@ -144,6 +156,7 @@ function main() {
 
   if [[ "${no_docker_build}" != "true" ]]; then
     rebuild_sdk "${mock}"
+    rebuild_example_html "${mock}"
     rebuild_images "${mock}"
   fi
 
