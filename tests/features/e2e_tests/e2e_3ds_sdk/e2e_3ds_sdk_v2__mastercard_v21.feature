@@ -209,21 +209,23 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
       | THREEDQUERY ACCOUNTCHECK |
 
 
-  Scenario Outline: TC_9 -Successful Step Up Authentication - Card: MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
-    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+  Scenario Outline: TC_9 - Successful Step Up Authentication - Card: MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
       | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "TODO"
+    Then User will see payment status information: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | TODO          |
+      | success       |
 
     Examples:
       | request_types            |
@@ -233,20 +235,22 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
 
 
   Scenario Outline: TC_10 - Failed Step Up Authentication - Card: MASTERCARD_V21_3DS_SDK_STEP_UP_AUTH_FAILED
-    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
       | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_STEP_UP_AUTH_FAILED
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "TODO"
+    Then User will see payment status information: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | TODO          |
+      | error         |
 
     Examples:
       | request_types            |
@@ -256,20 +260,22 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
 
 
   Scenario Outline: TC_11 - step up - Error on authentication - Card: MASTERCARD_V21_3DS_SDK_STEP_UP_AUTH_ERROR
-    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
       | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_STEP_UP_AUTH_ERROR
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "TODO"
+    Then User will see payment status information: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | TODO          |
+      | error         |
 
     Examples:
       | request_types            |
@@ -304,20 +310,22 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
 
 
   Scenario Outline: TC_13 - step up with require methodUrl - Card: MASTERCARD_V21_3DS_SDK_FRICTIONLESS_SUCCESS_METHOD_URL
-    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
       | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS_METHOD_URL
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "TODO"
+    Then User will see payment status information: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | TODO          |
+      | success       |
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
@@ -488,7 +496,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_3RI_TRANSACTION_NOT_SUPPORTED
     And User clicks Pay button
-     Then User will see payment status information: "<payment_status>"
+    Then User will see payment status information: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
