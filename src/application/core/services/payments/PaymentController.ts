@@ -66,7 +66,10 @@ export class PaymentController {
         ),
         takeUntil(this.destroy$)
       )
-      .subscribe((result: IPaymentResult<any>) => this.paymentResultHandler.handle(result));
+      .subscribe((result: IPaymentResult<any>) => {
+        this.paymentResultHandler.handle(result)
+        this.messageBus.publish({ type: PUBLIC_EVENTS.JWT_RESET });
+      });
 
     this.destroy$.pipe(first()).subscribe(() => {
       this.paymentMethods.clear();
