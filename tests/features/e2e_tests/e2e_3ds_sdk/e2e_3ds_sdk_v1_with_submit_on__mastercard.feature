@@ -10,13 +10,14 @@ Feature: 3ds SDK v1 E2E tests with redirection after payment - MasterCard
 
 
   Scenario Outline: TC_1 - Successful Step Up Authentication - Card: MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
-    And JS library authenticated by jwt BASE_JWT with additional attributes
+    Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
       | sitereference           | jstrustthreed76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
@@ -42,13 +43,14 @@ Feature: 3ds SDK v1 E2E tests with redirection after payment - MasterCard
 
 
   Scenario Outline: TC_2 - attempted Step Up authentication - Card: MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
-    And JS library authenticated by jwt BASE_JWT with additional attributes
+    Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
       | sitereference           | jstrustthreed76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
@@ -74,13 +76,14 @@ Feature: 3ds SDK v1 E2E tests with redirection after payment - MasterCard
 
 
   Scenario Outline: TC_3 - unavailable Step Up authentication - Card: MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
-    And JS library authenticated by jwt BASE_JWT with additional attributes
+    Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
       | sitereference           | jstrustthreed76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
@@ -106,13 +109,14 @@ Feature: 3ds SDK v1 E2E tests with redirection after payment - MasterCard
 
 
   Scenario Outline: TC_4 - Failed Step Up Authentication - Card: MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
-    And JS library authenticated by jwt BASE_JWT with additional attributes
+    Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
       | sitereference           | jstrustthreed76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
@@ -138,13 +142,14 @@ Feature: 3ds SDK v1 E2E tests with redirection after payment - MasterCard
 
 
   Scenario Outline: TC_5 - Not enrolled - Card: MASTERCARD_V1_3DS_SDK_NOT_ENROLLED
-    And JS library authenticated by jwt BASE_JWT with additional attributes
+    Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
       | sitereference           | jstrustthreed76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V1_3DS_SDK_NOT_ENROLLED
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params

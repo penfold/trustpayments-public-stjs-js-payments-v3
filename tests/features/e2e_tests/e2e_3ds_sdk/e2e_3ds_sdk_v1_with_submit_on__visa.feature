@@ -17,6 +17,7 @@ Feature: 3ds SDK v1 E2E tests with redirection after payment - Visa
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
@@ -40,7 +41,6 @@ Feature: 3ds SDK v1 E2E tests with redirection after payment - Visa
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
       | THREEDQUERY ACCOUNTCHECK | TODO           | TODO           | TODO           |
 
-
   Scenario Outline: TC_2 - attempted Step Up authentication - Card: VISA_V1_3DS_SDK_NON_FRICTIONLESS
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
@@ -49,6 +49,7 @@ Feature: 3ds SDK v1 E2E tests with redirection after payment - Visa
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
@@ -81,6 +82,7 @@ Feature: 3ds SDK v1 E2E tests with redirection after payment - Visa
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
@@ -113,6 +115,7 @@ Feature: 3ds SDK v1 E2E tests with redirection after payment - Visa
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
@@ -145,6 +148,7 @@ Feature: 3ds SDK v1 E2E tests with redirection after payment - Visa
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NOT_ENROLLED
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
