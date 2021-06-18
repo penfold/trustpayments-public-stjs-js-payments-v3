@@ -142,10 +142,10 @@
   "dependencies": {
     "@babel/polyfill": "7.12.1",
     "@babel/runtime": "7.14.0",
-    "@securetrading/js-payments-card": "1.0.23",
     "@sentry/browser": "6.3.6",
     "@sheerun/mutationobserver-shim": "0.3.3",
     "@trustpayments/http-client": "0.1.58",
+    "@trustpayments/js-payments-card": "2.0.0",
     "@trustpayments/jwt-generator": "0.1.58",
     "@trustpayments/ts-iin-lookup": "0.1.58",
     "@trustpayments/ts-luhn-check": "0.1.58",
