@@ -12,8 +12,8 @@
   extends:
     - .build-app-html
   variables:
+    BUILD_TYPE: 'prod'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_release"
-    WEBPACK_CONFIG: 'webpack.prod.js'
 
 build-app-html-rr-review:
   extends:
@@ -37,8 +37,8 @@ build-app-html-rr-release:
   extends:
     - .build-app-html
   variables:
+    BUILD_TYPE: 'dev'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_local"
-    WEBPACK_CONFIG: 'webpack.dev.js'
 
 build-app-html-local-review:
   extends:
@@ -56,8 +56,8 @@ build-app-html-local-release:
   extends:
     - .build-app-html
   variables:
+    BUILD_TYPE: 'mock'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_mock"
-    WEBPACK_CONFIG: 'webpack.mock.js'
 
 build-app-html-mock-review:
   extends:
@@ -75,8 +75,8 @@ build-app-html-mock-release:
   extends:
     - .build-app-html
   variables:
+    BUILD_TYPE: 'prod'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke"
-    WEBPACK_CONFIG: 'webpack.prod.js'
 
 build-app-html-smoke-release:
   extends:

@@ -204,7 +204,11 @@ describe('ApplePay', () => {
       expect(consoleErrSpy).toHaveBeenCalledWith('Your device does not support making payments with Apple Pay');
     });
 
-    it('should throw an error `User has not an active card provisioned into Wallet` when canMakePaymentsWithActiveCard return false', () => {
+    /**
+     * This UT refers to an issue STJS-1784 (https://securetrading.atlassian.net/browse/STJS-1784).
+     * More info in tasks description
+     */
+    it('should not throw an error `User has not an active card provisioned into Wallet` when canMakePaymentsWithActiveCard return false', () => {
       when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
       when(applePaySessionServiceMock.canMakePayments()).thenReturn(true);
       when(applePaySessionServiceMock.canMakePaymentsWithActiveCard(configMock.applePay.merchantId)).thenReturn(
@@ -221,7 +225,7 @@ describe('ApplePay', () => {
 
       applePay.init();
 
-      expect(consoleErrSpy).toHaveBeenCalledWith('User has not an active card provisioned into Wallet');
+      expect(consoleErrSpy).not.toHaveBeenCalledWith('User has not an active card provisioned into Wallet');
     });
   });
 

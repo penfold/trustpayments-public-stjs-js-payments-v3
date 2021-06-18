@@ -27,7 +27,9 @@ export const googlePaySdkPaymentsClientMock: IGooglePaySessionPaymentsClient = {
   },
   createButton: (config: any) => {
     const button = document.createElement('button');
-    button.addEventListener('click', () => {
+    button.id = 'gp-mocked-button';
+    button.addEventListener('click', event => {
+      event.preventDefault();
       config.onClick();
     });
 

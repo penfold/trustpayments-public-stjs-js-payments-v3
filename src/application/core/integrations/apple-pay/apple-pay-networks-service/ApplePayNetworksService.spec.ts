@@ -1,3 +1,4 @@
+import each from 'jest-each';
 import { ApplePayNetworksService } from './ApplePayNetworksService';
 
 describe('ApplePayNetworksService', () => {
@@ -6,6 +7,11 @@ describe('ApplePayNetworksService', () => {
   beforeEach(() => {
     applePayNetworksService = new ApplePayNetworksService();
   });
+
+  each([1, 2, 3, 4, 5])
+    .it('setSupportedNetworks() should return default networks if none has been specified', (version: number) => {
+      expect(applePayNetworksService.setSupportedNetworks(version, [])).toEqual(['amex', 'chinaUnionPay', 'discover', 'interac', 'jcb', 'masterCard', 'privateLabel', 'visa']);
+    });
 
   it(`setSupportedNetworks() should check stage 1 network`, () => {
     expect(applePayNetworksService.setSupportedNetworks(1, ['amex', 'vPay', 'cartesBancaires'])).toEqual(['amex']);

@@ -236,6 +236,27 @@ describe('ThreeDSecureVerificationService', () => {
         }),
         MERCHANT_PARENT_FRAME,
       )).once();
+
+    // EMVCo Req 172
+    it('opens processing screen', done => {
+      sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
+        verify(interFrameCommunicatorMock.query<ConfigInterface>(
+          deepEqual(processingScreenShowEventMock),
+          MERCHANT_PARENT_FRAME,
+        )).once();
+        done();
+      });
+    });
+
+    // EMVCo Req 172
+    it('closes processing screen', done => {
+      sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
+        verify(interFrameCommunicatorMock.query<ConfigInterface>(
+          deepEqual(processingScreenHideEventMock),
+          MERCHANT_PARENT_FRAME,
+        )).once();
+        done();
+      });
     });
   });
 });
