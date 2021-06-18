@@ -1,5 +1,4 @@
 import { first } from 'rxjs/operators';
-import { ofType } from 'redux-observable';
 import { of, zip } from 'rxjs';
 import Container from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
@@ -20,11 +19,11 @@ import { googlePayConfigMock } from '../../../client/integrations/google-pay/Goo
 import { GooglePayInitializeSubscriber } from '../../../client/integrations/google-pay/google-pay-initialize-subscriber/GooglePayInitializeSubscriber';
 import { GooglePaySessionPaymentsClientMock } from './GooglePaySessionClientMock';
 import { IGooglePayGatewayRequest } from '../../../integrations/google-pay/models/IGooglePayRequest';
-import { RequestType } from '../../../shared/types/RequestType';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { IStRequest } from '../../../application/core/models/IStRequest';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 
 describe('GooglePay Payment', () => {
   let paymentController: PaymentController;
