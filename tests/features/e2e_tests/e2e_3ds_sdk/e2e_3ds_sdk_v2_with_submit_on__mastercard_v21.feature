@@ -212,23 +212,23 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - MasterCard v2.1
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_IMPROPER_ARES_DATA
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | <payment_status> |
-      | baseamount           | <baseamount>                            |
-      | currencyiso3a        | <currencyiso3a>                         |
-      | errorcode            | 0                                       |
-      | status               | TODO                                    |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-      | enrolled             | TODO                                    |
-      | settlestatus         | TODO                                    |
-      | eci                  | <eci>                                   |
+      | key                  | value              |
+      | errormessage         | <payment_status>   |
+      | baseamount           | <baseamount>       |
+      | currencyiso3a        | <currencyiso3a>    |
+      | errorcode            | 0                  |
+      | status               | TODO               |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | enrolled             | TODO               |
+      | settlestatus         | TODO               |
+      | eci                  | <eci>              |
 
     Examples:
-      | request_types            | payment_status                          | baseamount     | currencyiso3a | eci  |
-      | THREEDQUERY AUTH         | Payment has been successfully processed | 1000           | GBP           | TODO |
-      | ACCOUNTCHECK THREEDQUERY | Bank System Error should be none        | should be none | TODO          |      |
-      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | 1000           | GBP           | TODO |
+      | request_types            | payment_status                          | baseamount     | currencyiso3a  | eci  |
+      | THREEDQUERY AUTH         | Payment has been successfully processed | 1000           | GBP            | TODO |
+      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | should be none | should be none | TODO |
+      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | 1000           | GBP            | TODO |
 
 
   Scenario Outline: TC_8 - Error not completed threeDSMethod - Card: MASTERCARD_V21 Request types: <request_types>
