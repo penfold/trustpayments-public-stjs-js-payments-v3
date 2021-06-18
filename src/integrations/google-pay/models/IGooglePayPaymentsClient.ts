@@ -1,6 +1,6 @@
 import { IGooglePayPaymentRequest, IGooglePlayIsReadyToPayRequest } from './IGooglePayPaymentRequest';
 
-interface IGooglePayButtonOptions {
+export interface IGooglePayButtonOptions {
   buttonColor: string;
   buttonType: string;
   buttonLocale: string;

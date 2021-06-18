@@ -6,10 +6,8 @@ services:
       dockerfile: ./docker/app-html/Dockerfile
       target: app-html
       args:
-        BUILD_TYPE: "prod"
-        LIBRARY_ARG: "--library_url=https://library.securetrading.net:8443"
-        PIPELINE_WORKDIR: "/pipeline"
-        IMAGE_PIPELINE: "${CI_REGISTRY_IMAGE}/pipeline:master"
+        SDK_DIST_PATH: "dist"
+        APP_DIST_PATH: "example/html/dist"
     ports:
       - 80:80
       - 443:443

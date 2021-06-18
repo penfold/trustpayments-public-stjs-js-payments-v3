@@ -24,6 +24,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_2 - Failed Frictionless Authentication - Card: MASTERCARD_FAILED_FRICTIONLESS_AUTH
@@ -45,6 +46,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            | payment_status                          | callback | state    |
       | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
 
 
   Scenario Outline: TC_3 - Attempts Stand-In Frictionless Authentication - Card: MASTERCARD_FRICTIONLESS
@@ -66,6 +68,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_4 - Unavailable Frictionless Authentication from the Issuer - Card: MASTERCARD_UNAVAILABLE_FRICTIONLESS_AUTH
@@ -87,6 +90,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_5 - Rejected Frictionless Authentication by the Issuer - Card: MASTERCARD_REJECTED_FRICTIONLESS_AUTH
@@ -106,6 +110,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            | payment_status                          | callback |
       | THREEDQUERY AUTH         | Unauthenticated                         | error    |
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    |
 
 
   Scenario Outline: TC_6 - Authentication Not Available on Lookup - Card: MASTERCARD_AUTH_NOT_AVAILABLE_ON_LOOKUP
@@ -125,6 +130,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_7 - Error on Lookup - Card: MASTERCARD_ERROR_ON_LOOKUP
@@ -142,8 +148,9 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
 
     Examples:
       | request_types            | payment_status                          | callback |
-      | THREEDQUERY AUTH         | Payment has been successfully processed | success  |
+# Todo STJS-1835      | THREEDQUERY AUTH         | Payment has been successfully processed | success  |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    |
+# Todo STJS-1835     | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | success  |
 
 
   Scenario Outline: TC_9 -Successful Step Up Authentication - Card: MASTERCARD_NON_FRICTIONLESS
@@ -164,6 +171,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_10 - Failed Step Up Authentication - Card: MASTERCARD_STEP_UP_AUTH_FAILED
@@ -184,6 +192,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_11 - Step Up Authentication is Unavailable - Card: MASTERCARD_STEP_UP_AUTH_UNAVAILABLE
@@ -202,8 +211,9 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
 
     Examples:
       | request_types            |
-      | THREEDQUERY AUTH         |
+# Todo STJS-1834      | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+# Todo STJS-1834      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_12 - Error on Authentication - Card: MASTERCARD_ERROR_ON_AUTH
@@ -226,6 +236,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_13 - Bypassed Authentication - Card: MASTERCARD_BYPASSED_AUTH
@@ -245,6 +256,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: Prompt for Whitelist
@@ -265,6 +277,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 # ToDo - This test case is no longer supported by Cardinal - to clarify
 #
@@ -293,6 +306,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   @base_config @e2e_cardinal_commerce_v2.0
@@ -315,3 +329,4 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |

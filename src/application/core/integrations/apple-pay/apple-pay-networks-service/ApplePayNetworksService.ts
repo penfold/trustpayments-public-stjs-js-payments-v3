@@ -6,8 +6,22 @@ import { STAGE_ONE_NETWORKS, STAGE_THREE_NETWORKS, STAGE_TWO_NETWORKS } from './
 export class ApplePayNetworksService {
   setSupportedNetworks(
     version: number,
-    paymentRequestNetworks: IApplePaySupportedNetworks[]
+    paymentRequestNetworks: IApplePaySupportedNetworks[],
   ): IApplePaySupportedNetworks[] {
+
+    if (!paymentRequestNetworks.length) {
+      return [
+        'amex',
+        'chinaUnionPay',
+        'discover',
+        'interac',
+        'jcb',
+        'masterCard',
+        'privateLabel',
+        'visa',
+      ];
+    }
+
     let supportedNetworks: IApplePaySupportedNetworks[] = this.getSupportedNetworks(version);
 
     return (supportedNetworks = paymentRequestNetworks.filter((item: IApplePaySupportedNetworks) => {

@@ -25,6 +25,7 @@ Feature: Cardinal Commerce E2E tests v1
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_2 - Failed Signature, request type: <request_types>
@@ -45,6 +46,7 @@ Feature: Cardinal Commerce E2E tests v1
       | request_types            | payment_status                          | callback_type | state    |
       | THREEDQUERY AUTH         | Unauthenticated                         | error         | enabled  |
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success       | disabled |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error         | enabled  |
 
 
   Scenario Outline: TC_3 - Failed Authentication, request type: <request_types>
@@ -67,6 +69,7 @@ Feature: Cardinal Commerce E2E tests v1
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_4 - Attempts/Non-Participating, request type: <request_types>
@@ -86,6 +89,7 @@ Feature: Cardinal Commerce E2E tests v1
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_6 - Not Enrolled, request type: <request_types>
@@ -105,6 +109,7 @@ Feature: Cardinal Commerce E2E tests v1
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_7 - Unavailable, request type: <request_types>
@@ -124,6 +129,7 @@ Feature: Cardinal Commerce E2E tests v1
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_8 - Merchant Not Active, request type: <request_types>
@@ -142,6 +148,7 @@ Feature: Cardinal Commerce E2E tests v1
       | request_types            | payment_status                          | callback_type |
       | THREEDQUERY AUTH         | Payment has been successfully processed | success       |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error         |
+      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | success       |
 
 
   Scenario Outline: TC_9 - Cmpi lookup error, request type: <request_types>
@@ -159,6 +166,7 @@ Feature: Cardinal Commerce E2E tests v1
       | request_types            | payment_status                          | callback_type |
       | THREEDQUERY AUTH         | Payment has been successfully processed | success       |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error         |
+      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | success       |
 
 
   Scenario Outline: TC_10 - Cmpi authenticate error, request type: <request_types>
@@ -179,6 +187,7 @@ Feature: Cardinal Commerce E2E tests v1
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_11 - Authentication Unavailable, request type: <request_types>
@@ -199,6 +208,7 @@ Feature: Cardinal Commerce E2E tests v1
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: TC_12 - Bypassed Authentication, request type: <request_types>
@@ -218,6 +228,7 @@ Feature: Cardinal Commerce E2E tests v1
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: retry payment after failed transaction, request type: <request_types>
@@ -239,3 +250,4 @@ Feature: Cardinal Commerce E2E tests v1
       | request_types            |
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
