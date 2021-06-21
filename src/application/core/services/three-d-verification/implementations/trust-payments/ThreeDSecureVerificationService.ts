@@ -8,7 +8,7 @@ import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
 import { IThreeDVerificationService } from '../../IThreeDVerificationService';
-import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
+import { CardType, ConfigInterface } from '@trustpayments/3ds-sdk-js';
 import { RequestType } from '../../../../../../shared/types/RequestType';
 import { ICard } from '../../../../models/ICard';
 import { IMerchantData } from '../../../../models/IMerchantData';
@@ -113,7 +113,7 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
 
         return threeDSecureProcessingScreenTimer.pipe(
           switchMap(() => from(this.interFrameCommunicator.query<void>(hideProcessingScreenQueryEvent, MERCHANT_PARENT_FRAME))),
-          switchMap(() => this.challengeService.doChallenge$(response, cardType)),
+          switchMap(() => this.challengeService.doChallenge$(response, cardType as CardType)),
           tap(() => {
             isTransactionComplete$.next(true);
           }),

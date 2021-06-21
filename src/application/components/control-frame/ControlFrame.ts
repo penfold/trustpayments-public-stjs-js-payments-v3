@@ -266,7 +266,7 @@ export class ControlFrame {
 
     if (!(errorData instanceof Error)) {
       this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
-      StCodec.publishResponse(errorData, errorData.jwt, errorData.threedresponse);
+      StCodec.publishResponse(errorData, errorData.jwt);
     }
 
     this._resetJwt();
@@ -282,7 +282,7 @@ export class ControlFrame {
 
     if (!(errorData instanceof Error)) {
       this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, true);
-      StCodec.publishResponse(errorData, errorData.jwt, errorData.threedresponse);
+      StCodec.publishResponse(errorData, errorData.jwt);
     }
 
     this._resetJwt();

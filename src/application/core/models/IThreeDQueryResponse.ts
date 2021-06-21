@@ -8,7 +8,10 @@ export interface IThreeDQueryResponse extends IResponseData {
   acquirerresponsemessage: string;
   acsurl: string;
   enrolled: Enrollment | string;
-  threedpayload: string;
+  threedpayload?: string;
+  pareq?: string;
+  pares?: string;
+  md?: string;
   transactionreference: string;
   threedresponse?: string;
   cachetoken?: string;

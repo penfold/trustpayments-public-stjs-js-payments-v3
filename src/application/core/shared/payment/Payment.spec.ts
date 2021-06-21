@@ -217,7 +217,7 @@ describe('Payment', () => {
       const result = await instance.processPayment([], {} as ICard, {}, response);
 
       expect((result as any).response).toBe(response);
-      verify(stCodecSpy.publishResponse(response, 'jwt', 'foobar')).once();
+      verify(stCodecSpy.publishResponse(response, 'jwt')).once();
       verify(notificationService.success(PAYMENT_SUCCESS)).once();
     });
 
@@ -232,7 +232,7 @@ describe('Payment', () => {
       const result = await instance.processPayment([], {} as ICard, {}, response);
 
       expect((result as any).response).toBe(response);
-      verify(stCodecSpy.publishResponse(response, 'jwt', 'foobar')).never();
+      verify(stCodecSpy.publishResponse(response, 'jwt')).never();
       verify(notificationService.success(PAYMENT_SUCCESS)).never();
     });
 
@@ -247,7 +247,7 @@ describe('Payment', () => {
       const result = await instance.processPayment([], {} as ICard, {}, response);
 
       expect((result as any).response).toBe(response);
-      verify(stCodecSpy.publishResponse(response, 'jwt', 'foobar')).never();
+      verify(stCodecSpy.publishResponse(response, 'jwt')).never();
       verify(notificationService.success(PAYMENT_SUCCESS)).never();
     });
 

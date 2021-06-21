@@ -56,7 +56,7 @@ export class Payment {
       return this.processRequestTypes({ ...merchantData, ...payment }, responseData, merchantUrl);
     }
 
-    if (responseData && responseData.requesttypedescription === 'THREEDQUERY' && responseData.threedresponse) {
+    if (responseData && responseData.requesttypedescription === 'THREEDQUERY' && (responseData.threedresponse || responseData.pares)) {
       return this.publishThreedResponse(responseData);
     }
 
@@ -91,6 +91,8 @@ export class Payment {
     if (responseData) {
       processPaymentRequestBody.cachetoken = responseData.cachetoken;
       processPaymentRequestBody.threedresponse = responseData.threedresponse;
+      processPaymentRequestBody.pares = responseData.pares;
+      processPaymentRequestBody.md = responseData.md;
     }
 
     const cybertonicaTid = await this.cybertonica.getTransactionId();
@@ -104,7 +106,7 @@ export class Payment {
 
   private publishThreedResponse(responseData: IResponseData): Promise<Record<string, any>> {
     // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
-    StCodec.publishResponse(responseData, responseData.jwt, responseData.threedresponse);
+    StCodec.publishResponse(responseData, responseData.jwt);
     this.notificationService.success(PAYMENT_SUCCESS);
 
     return this.publishResponse(responseData);
