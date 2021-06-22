@@ -177,7 +177,7 @@ describe('InterFrameCommunicator', () => {
       window.postMessage(queryMessage, '*');
 
       setTimeout(() => {
-        const [responseMessage] = capture<ResponseMessage<any>, string | Window>(communicatorSpy.send).last();
+        const [responseMessage] = capture<ResponseMessage<unknown>, string | Window>(communicatorSpy.send).last();
 
         verify(communicatorSpy.send(responseMessage, 'foobar')).once();
         expect(fooResponder).toHaveBeenCalledWith({ type: 'FOO' });

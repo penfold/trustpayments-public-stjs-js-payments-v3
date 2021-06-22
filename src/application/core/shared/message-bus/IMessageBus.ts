@@ -7,8 +7,11 @@ export abstract class IMessageBus implements Subscribable<IMessageBusEvent> {
   abstract subscribe<T extends IMessageBusEvent>(observer?: PartialObserver<T>): Unsubscribable;
   abstract subscribe<T extends IMessageBusEvent>(
     next?: (value: T) => void,
-    error?: (error: any) => void,
+    error?: (error: unknown) => void,
     complete?: () => void
   ): Unsubscribable;
-  abstract pipe(...operations: OperatorFunction<any, any>[]): Observable<any>;
+  // @todo(typings) Replacing any here would require us to add a generic parameter to that function and use it in all
+  // places. Currently we at least in most cases type the arg that is passed to the next function, so it's not that bad.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  abstract pipe(...operations: OperatorFunction<any, unknown>[]): Observable<any>;
 }

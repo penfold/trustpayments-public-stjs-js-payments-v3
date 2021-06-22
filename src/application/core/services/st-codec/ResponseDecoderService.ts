@@ -6,7 +6,6 @@ import { IJwtResponse } from './interfaces/IJwtResponse';
 import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
 import { IResponsePayload } from './interfaces/IResponsePayload';
 import { IRequestTypeResponse } from './interfaces/IRequestTypeResponse';
-import { IStJwtObj } from '../../models/IStJwtObj';
 import { IDecodedResponse } from './interfaces/IDecodedResponse';
 
 @Service()
@@ -18,7 +17,7 @@ export class ResponseDecoderService {
   decode(response: IHttpClientResponse<IJwtResponse>): IDecodedResponse {
     try {
       const jwt: string = response.data.jwt;
-      const { payload } = this.jwtDecoder.decode<IStJwtObj<IResponsePayload>>(jwt);
+      const { payload } = this.jwtDecoder.decode<IResponsePayload>(jwt);
 
       if (!this.isResponsePayloadValid(payload)) {
         throw new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);

@@ -59,7 +59,7 @@ export class Utils {
 
   public static getLastElementOfArray = (array: number[]): number => array && array.slice(-1).pop();
 
-  public static setElementAttributes(attributes: Record<string, any>, element: HTMLInputElement): void {
+  public static setElementAttributes(attributes: Record<string, string | boolean>, element: HTMLInputElement): void {
     for (const attribute in attributes) {
       const value = attributes[attribute];
       if (Utils.inArray(['value'], attribute)) {
@@ -68,7 +68,7 @@ export class Utils {
       } else if (value === false) {
         element.removeAttribute(attribute);
       } else {
-        element.setAttribute(attribute, value);
+        element.setAttribute(attribute, value.toString());
       }
     }
   }

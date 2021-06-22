@@ -35,9 +35,12 @@ export class Payment {
     merchantData: IMerchantData,
     responseData?: IResponseData,
     merchantUrl?: string
+    // @todo(typings) Currently it's hard to find a type for response that comforts all the processPayment consumers.
+    // The response typings are not interchangeable, they differ in e.g. customeroutput declarations.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<Record<string, any>> {
     const customerOutput: CustomerOutput | undefined = responseData
-      ? (responseData.customeroutput as CustomerOutput)
+      ? responseData.customeroutput
       : undefined;
 
     if (customerOutput === CustomerOutput.RESULT) {
@@ -63,19 +66,21 @@ export class Payment {
     return this.publishResponse(responseData);
   }
 
+  // @todo(typings) Currently it's hard to find a type for response that comforts all the walletVerify consumers.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   walletVerify(walletVerify: IWalletVerify): Observable<Record<string, any>> {
     return from(
       this.stTransport.sendRequest(Object.assign({ requesttypedescriptions: ['WALLETVERIFY'] }, walletVerify)),
     );
   }
 
-  private publishResponse(responseData?: IResponseData): Promise<Record<string, any>> {
+  private publishResponse(responseData?: IResponseData): Promise<Record<string, unknown>> {
     return Promise.resolve({
       response: responseData || {},
     });
   }
 
-  private publishErrorResponse(responseData?: IResponseData): Promise<Record<string, any>> {
+  private publishErrorResponse(responseData?: IResponseData): Promise<Record<string, unknown>> {
     return Promise.reject({
       response: responseData || {},
     });
@@ -85,7 +90,7 @@ export class Payment {
     requestData: IStRequest,
     responseData?: IResponseData,
     merchantUrl?: string
-  ): Promise<Record<string, any>> {
+  ): Promise<Record<string, unknown>> {
     const processPaymentRequestBody = { ...requestData };
 
     if (responseData) {
@@ -102,7 +107,7 @@ export class Payment {
     return this.stTransport.sendRequest(processPaymentRequestBody, merchantUrl);
   }
 
-  private publishThreedResponse(responseData: IResponseData): Promise<Record<string, any>> {
+  private publishThreedResponse(responseData: IResponseData): Promise<Record<string, unknown>> {
     // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
     StCodec.publishResponse(responseData, responseData.jwt, responseData.threedresponse);
     this.notificationService.success(PAYMENT_SUCCESS);

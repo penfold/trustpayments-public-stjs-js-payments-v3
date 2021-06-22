@@ -176,7 +176,7 @@ describe('PaymentController', () => {
 
     it('starts given payment method with data and returns the result to result handler', () => {
       const data = { bbb: 'ccc' };
-      const result: IPaymentResult<any> = { status: PaymentStatus.SUCCESS };
+      const result: IPaymentResult<unknown> = { status: PaymentStatus.SUCCESS };
       spyOn(messageBus, 'publish');
 
       when(fooPaymentMethodMock.start(data)).thenReturn(of(result));
@@ -267,7 +267,7 @@ describe('PaymentController', () => {
     it('starts the second payment method even if the first one failed', () => {
       const data = { aaa: 'bbb' };
       const fooError: Error = new Error('foo failed');
-      const result: IPaymentResult<any> = { status: PaymentStatus.SUCCESS };
+      const result: IPaymentResult<unknown> = { status: PaymentStatus.SUCCESS };
       spyOn(messageBus, 'publish');
 
       when(fooPaymentMethodMock.start(data)).thenThrow(fooError);

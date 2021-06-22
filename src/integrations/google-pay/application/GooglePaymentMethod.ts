@@ -10,9 +10,10 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { IGooglePayGatewayRequest } from '../models/IGooglePayRequest';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { GetPaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
+import { IGooglePayConfig } from '../models/IGooglePayConfig';
 
 @Service({ id: PaymentMethodToken, multiple: true })
-export class GooglePaymentMethod implements IPaymentMethod {
+export class GooglePaymentMethod implements IPaymentMethod<IGooglePayConfig, IGooglePayGatewayRequest, IRequestTypeResponse> {
   constructor(private transportService: TransportService, private configProvider: ConfigProvider) {}
 
   getName(): string {

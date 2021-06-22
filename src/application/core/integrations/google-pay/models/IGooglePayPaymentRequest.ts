@@ -38,7 +38,7 @@ interface IGooglePayTransactionInfo {
   transactionId?: string;
 }
 
-interface IGooglePayMerchantInfo {
+export interface IGooglePayMerchantInfo {
   merchantId: string;
   merchantName?: string;
   merchantOrigin?: string;

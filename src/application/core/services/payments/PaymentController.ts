@@ -34,8 +34,8 @@ export class PaymentController {
     this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.INIT_PAYMENT_METHOD),
-        map((event: IMessageBusEvent<IInitPaymentMethod<any>>) => event.data),
-        mergeMap(({ name, config }: IInitPaymentMethod<any>) =>
+        map((event: IMessageBusEvent<IInitPaymentMethod<unknown>>) => event.data),
+        mergeMap(({ name, config }: IInitPaymentMethod<unknown>) =>
           of(true).pipe(
             switchMap(() => this.getPaymentMethod(name).init(config)),
             mapTo(name),
@@ -53,8 +53,8 @@ export class PaymentController {
     this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.START_PAYMENT_METHOD),
-        map((event: IMessageBusEvent<IStartPaymentMethod<any>>) => event.data),
-        switchMap(({ name, data }: IStartPaymentMethod<any>) =>
+        map((event: IMessageBusEvent<IStartPaymentMethod<unknown>>) => event.data),
+        switchMap(({ name, data }: IStartPaymentMethod<unknown>) =>
           of(true).pipe(
             switchMap(() => this.getPaymentMethod(name).start(data)),
             catchError((error: Error) => {
@@ -66,7 +66,7 @@ export class PaymentController {
         ),
         takeUntil(this.destroy$)
       )
-      .subscribe((result: IPaymentResult<any>) => {
+      .subscribe((result: IPaymentResult<unknown>) => {
         this.paymentResultHandler.handle(result)
         this.messageBus.publish({ type: PUBLIC_EVENTS.JWT_RESET });
       });

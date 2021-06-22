@@ -2,13 +2,14 @@ import { ICardinal, IOrderObject } from '../../client/integrations/cardinal-comm
 import { PaymentEvents } from '../../application/core/models/constants/PaymentEvents';
 import { ajax } from 'rxjs/ajax';
 import { environment } from '../../environments/environment';
+import { IValidationResult } from '../../client/integrations/cardinal-commerce/data/IValidationResult';
 
 export class CardinalMock implements ICardinal {
   private callbacks = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    [PaymentEvents.SETUP_COMPLETE]: (...args: any[]): any => void 0,
+    [PaymentEvents.SETUP_COMPLETE]: (...args: unknown[]): unknown => void 0,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    [PaymentEvents.VALIDATED]: (...args: any[]): any => void 0,
+    [PaymentEvents.VALIDATED]: (...args: unknown[]): unknown => void 0,
   };
 
   constructor(private manualCallbackTrigger: boolean = false) {
@@ -27,8 +28,8 @@ export class CardinalMock implements ICardinal {
     ajax({
       url: environment.CARDINAL_COMMERCE.MOCK.AUTHENTICATE_CARD_URL,
       method: 'GET',
-    }).subscribe((response: any) => {
-      const { data, jwt } = response.response;
+    }).subscribe((response) => {
+      const { data, jwt } = response.response as unknown as { data: IValidationResult, jwt: string };
       this.callbacks[PaymentEvents.VALIDATED](data, jwt);
     });
   }

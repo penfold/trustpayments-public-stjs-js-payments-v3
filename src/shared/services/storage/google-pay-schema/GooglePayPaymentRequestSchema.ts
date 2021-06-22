@@ -20,22 +20,6 @@ const GooglePayCardSchema: Joi.ObjectSchema = Joi.object().keys({
   billingAddressRequired: Joi.boolean(),
 });
 
-const GooglePayPaypalSchema: Joi.ObjectSchema = Joi.object().keys({
-  purchase_context: Joi.object()
-    .keys({
-      purchase_units: Joi.object()
-        .keys({
-          payee: Joi.object()
-            .keys({
-              merchant_id: Joi.string().required(),
-            })
-            .required(),
-        })
-        .required(),
-    })
-    .required(),
-});
-
 export const GooglePayPaymentRequestSchema: Joi.ObjectSchema = Joi.object().keys({
   allowedPaymentMethods: Joi.array()
   .items(Joi.object()

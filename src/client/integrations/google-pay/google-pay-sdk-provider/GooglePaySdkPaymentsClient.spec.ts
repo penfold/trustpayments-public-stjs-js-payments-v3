@@ -11,18 +11,18 @@ describe('GooglePaySdkProvider', () => {
     apiVersionMinor: 2,
     allowedPaymentMethods: [{
       parameters: {
-        allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-        allowedCardNetworks: ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"]
+        allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+        allowedCardNetworks: ['AMEX', 'DISCOVER', 'INTERAC', 'JCB', 'MASTERCARD', 'VISA'],
       },
       tokenizationSpecification: {
         parameters: {
-          gateway: "trustpayments",
-          gatewayMerchantId: "test_james38641"
+          gateway: 'trustpayments',
+          gatewayMerchantId: 'test_james38641',
         },
-        type: "PAYMENT_GATEWAY"
+        type: 'PAYMENT_GATEWAY',
       },
-      type: "CARD"
-    }]
+      type: 'CARD',
+    }],
   }
 
   beforeEach(() => {
@@ -31,7 +31,7 @@ describe('GooglePaySdkProvider', () => {
 
   it('returns correct value for isReadyToPay', done => {
     sut.isReadyToPay(requestMock).then(value => {
-      expect(value).toStrictEqual({result: true});
+      expect(value).toStrictEqual({ result: true });
       done();
     });
   });

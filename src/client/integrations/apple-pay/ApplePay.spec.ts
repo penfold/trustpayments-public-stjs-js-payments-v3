@@ -45,7 +45,7 @@ describe('ApplePay', () => {
       buttonStyle: 'white-outline',
       buttonText: 'donate',
       merchantId: 'merchant.net.securetrading.test',
-      merchantUrl: "https://example.com",
+      merchantUrl: 'https://example.com',
       paymentRequest: {
         countryCode: 'US',
         currencyCode: 'USD',
@@ -64,7 +64,7 @@ describe('ApplePay', () => {
       buttonStyle: 'white',
       buttonText: 'donate',
       merchantId: '',
-      merchantUrl: "",
+      merchantUrl: '',
       paymentRequest: {
         countryCode: 'GB',
         currencyCode: 'GBP',
@@ -376,7 +376,7 @@ describe('ApplePay', () => {
     });
 
     it('should authorize payment process', done => {
-      messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe((response: IMessageBusEvent) => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe((response: IMessageBusEvent<IApplePayClientStatus>) => {
         const { status, details }: IApplePayClientStatus = response.data;
 
         if (status !== ApplePayClientStatus.ON_PAYMENT_AUTHORIZED) {

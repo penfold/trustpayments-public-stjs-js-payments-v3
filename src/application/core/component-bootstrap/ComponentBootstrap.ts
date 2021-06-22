@@ -17,7 +17,7 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 export class ComponentBootstrap {
   constructor(private frameIdentifier: FrameIdentifier, private container: ContainerInstance) {}
 
-  run<T>(frameName: string, componentClass: new (...args: any[]) => T): T {
+  run<T>(frameName: string, componentClass: new (...args: unknown[]) => T): T {
     this.frameIdentifier.setFrameName(frameName);
 
     this.container.get(InterFrameCommunicator).init();

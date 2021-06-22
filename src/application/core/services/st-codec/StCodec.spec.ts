@@ -14,6 +14,10 @@ import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider
 import { ITranslator } from '../../shared/translator/ITranslator';
 import { anything, instance as instanceOf, mock, when } from 'ts-mockito';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { IResponseData } from '../../models/IResponseData';
+import { IDecodedJwt } from '../../models/IDecodedJwt';
+import Spy = jasmine.Spy;
+import { IResponsePayload } from './interfaces/IResponsePayload';
 
 jest.mock('./../../shared/message-bus/MessageBus');
 jest.mock('./../../shared/notification/Notification');
@@ -64,7 +68,7 @@ describe('StCodec class', () => {
       StCodec.isInvalidResponse.mockReturnValueOnce(false);
       // @ts-ignore
       StCodec.determineResponse.mockReturnValueOnce({ determined: 'response' });
-      expect(StCodec.verifyResponseObject({ 'a response': 'some data' }, 'ajwtstring')).toMatchObject({
+      expect(StCodec.verifyResponseObject({ 'a response': 'some data' } as unknown as IResponsePayload, 'ajwtstring')).toMatchObject({
         determined: 'response',
       });
       // @ts-ignore
@@ -80,7 +84,7 @@ describe('StCodec class', () => {
       StCodec.isInvalidResponse.mockReturnValueOnce(true);
       // @ts-ignore
       StCodec.handleInvalidResponse.mockReturnValue(new Error('Uh oh!'));
-      expect(() => StCodec.verifyResponseObject({ 'a response': 'some data' }, 'ajwtstring')).toThrow(
+      expect(() => StCodec.verifyResponseObject({ 'a response': 'some data' } as unknown as IResponsePayload, 'ajwtstring')).toThrow(
         new Error('Uh oh!')
       );
       // @ts-ignore
@@ -216,11 +220,11 @@ describe('StCodec class', () => {
   describe('StCodec.handleValidGatewayResponse()', () => {
     const originalPublishResponse = StCodec.publishResponse;
     const originalGetErrorData = StCodec.getErrorData;
-    let spy: any;
+    let spy: Spy;
 
     beforeEach(() => {
       StCodec.publishResponse = jest.fn();
-      StCodec.getErrorData = jest.fn((data: any) => originalGetErrorData(data));
+      StCodec.getErrorData = jest.fn((data: IResponseData) => originalGetErrorData(data));
       // @ts-ignore
       spy = jest.spyOn(StCodec.getNotification(), 'error');
     });
@@ -386,7 +390,7 @@ describe('StCodec class', () => {
           },
         })
       ).resolves.toEqual({ jwt: fullResponse.jwt, response: { verified: 'data' } });
-      const expectedResult = (JwtDecode(fullResponse.jwt) as any).payload;
+      const expectedResult = (JwtDecode(fullResponse.jwt) as unknown as IDecodedJwt).payload;
       expect(StCodec.verifyResponseObject).toHaveBeenCalledWith(expectedResult, fullResponse.jwt);
     });
 

@@ -27,7 +27,7 @@ describe('VerificationResultHandler', () => {
     verificationResultHandler = new VerificationResultHandler();
   });
 
-  it.each<any>([ActionCode.SUCCESS, ActionCode.NOACTION])(
+  it.each<ActionCode | DoneCallback>([ActionCode.SUCCESS, ActionCode.NOACTION])(
     'returns response on success and noaction',
     (actionCode: ActionCode, done: DoneCallback) => {
       const result: IVerificationResult = {
@@ -72,7 +72,7 @@ describe('VerificationResultHandler', () => {
     });
   });
 
-  it.each<any>([ActionCode.ERROR, ActionCode.FAILURE])(
+  it.each<ActionCode | DoneCallback>([ActionCode.ERROR, ActionCode.FAILURE])(
     'returns error response on error and failure',
     (actionCode: ActionCode, done: DoneCallback) => {
       const result: IVerificationResult = {

@@ -108,7 +108,7 @@ function ConfigResolverFixture() {
     submitFields: [],
     submitOnSuccess: false,
     submitOnError: false,
-    submitCallback: '',
+    submitCallback: null,
     translations: {
       'An error occurred': 'Wystąpił błąd',
     },

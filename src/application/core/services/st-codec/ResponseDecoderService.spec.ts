@@ -10,7 +10,7 @@ describe('ResponseDecoderService', () => {
   let jwtDecoder: JwtDecoder;
   let responseDecoderService: ResponseDecoderService;
 
-  const prepareResponse: (data: any) => IHttpClientResponse<IJwtResponse> = (data: any) => ({
+  const prepareResponse: <T extends IJwtResponse | null | string>(data: T) => IHttpClientResponse<T> = (data) => ({
     data,
     status: 200,
     statusText: 'OK',
@@ -28,10 +28,10 @@ describe('ResponseDecoderService', () => {
       expect(() => responseDecoderService.decode(prepareResponse(null))).toThrow(
         new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE)
       );
-      expect(() => responseDecoderService.decode(prepareResponse(''))).toThrow(
+      expect(() => responseDecoderService.decode(prepareResponse('' as unknown as IJwtResponse))).toThrow(
         new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE)
       );
-      expect(() => responseDecoderService.decode(prepareResponse({}))).toThrow(
+      expect(() => responseDecoderService.decode(prepareResponse({} as unknown as IJwtResponse))).toThrow(
         new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE)
       );
     });

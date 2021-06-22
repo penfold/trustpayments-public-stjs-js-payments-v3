@@ -8,7 +8,6 @@ import { ValidationError } from 'joi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { take, toArray } from 'rxjs/operators';
 import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
-import { IStJwtObj } from '../../../application/core/models/IStJwtObj';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 
@@ -43,12 +42,12 @@ describe('ConfigService', () => {
 
     when(resolverMock.resolve(config)).thenReturn(fullConfig);
     when(validatorMock.validate(config)).thenReturn(null);
-    when(jwtDecoderMock.decode<IStJwtObj>(JWT)).thenReturn({ payload: {} });
-    when(jwtDecoderMock.decode<IStJwtObj>(JWT_WITH_CONFIG)).thenReturn({
+    when(jwtDecoderMock.decode<Record<string, unknown>>(JWT)).thenReturn({ payload: {} });
+    when(jwtDecoderMock.decode<{ config: IConfig }>(JWT_WITH_CONFIG)).thenReturn({
       payload: {
         config: configFromJwt,
       },
-    } as IStJwtObj);
+    });
   });
 
   describe('setup', () => {
@@ -91,10 +90,10 @@ describe('ConfigService', () => {
       expect(() =>
         configService.setup({
           jwt: JWT_WITH_CONFIG,
-          successCallback: (): any => null,
-          submitCallback: (): any => null,
-          errorCallback: (): any => null,
-          cancelCallback: (): any => null,
+          successCallback: (): unknown => null,
+          submitCallback: (): unknown => null,
+          errorCallback: (): unknown => null,
+          cancelCallback: (): unknown => null,
         })
       ).not.toThrowError();
     });

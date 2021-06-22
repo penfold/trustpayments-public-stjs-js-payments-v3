@@ -1,8 +1,8 @@
 export interface IRequestTypeResponse {
-  [key: string]: any;
+  [key: string]: string | unknown;
   customeroutput?: string;
   errorcode: string;
-  errordata?: any;
+  errordata?: unknown;
   errormessage: string;
   requesttypedescription: string;
   transactionstartedtimestamp: string;

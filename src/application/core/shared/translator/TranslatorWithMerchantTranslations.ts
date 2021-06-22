@@ -12,6 +12,7 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { merge, Observable } from 'rxjs';
 import { IUpdateJwt } from '../../models/IUpdateJwt';
+import { IStJwtPayload } from '../../models/IStJwtPayload';
 
 @Service()
 export class TranslatorWithMerchantTranslations implements ITranslator {
@@ -36,7 +37,7 @@ export class TranslatorWithMerchantTranslations implements ITranslator {
     );
     jwt$
       .pipe(
-        map((jwt: string) => this.jwtDecoder.decode(jwt).payload.locale),
+        map((jwt: string) => this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.locale),
         filter(Boolean),
         takeUntil(destroy$)
       )
@@ -50,7 +51,7 @@ export class TranslatorWithMerchantTranslations implements ITranslator {
     let json: Record<string, string>;
 
     try {
-      const translations: string = this.storage.getItem('merchantTranslations');
+      const translations: string = this.storage.getItem('merchantTranslations') as string;
       json = translations ? JSON.parse(translations) : {};
     } catch (e) {
       json = {};

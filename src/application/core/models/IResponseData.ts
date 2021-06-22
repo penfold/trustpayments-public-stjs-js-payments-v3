@@ -1,10 +1,11 @@
 import { IApplePayShippingBillingContact } from '../../../client/integrations/apple-pay/apple-pay-shipping-data/IApplePayShippingBillingContact';
 import { IApplePayShippingContact } from '../../../client/integrations/apple-pay/apple-pay-shipping-data/IApplePayShippingContact';
+import { CustomerOutput } from './constants/CustomerOutput';
 
 export interface IResponseData {
   errorcode?: string;
   errormessage?: string;
-  customeroutput?: any;
+  customeroutput?: CustomerOutput;
   requesttypedescription?: string;
   threedresponse?: string;
   cachetoken?: string;

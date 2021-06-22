@@ -21,9 +21,11 @@ export class ApplePaySessionMock implements IApplePaySession {
 
   begin(): void {
     fetch(environment.APPLE_PAY_URLS.MOCK_DATA_URL)
-      .then((response: any) => {
+      .then((response) => {
         return response.json();
       })
+      // Intentionally left as `any` b/c it's a response from wiremock that doesn't really match any ApplePay types.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .then((data: any) => {
         if (data.status === 'SUCCESS') {
           this.onpaymentauthorized(data);

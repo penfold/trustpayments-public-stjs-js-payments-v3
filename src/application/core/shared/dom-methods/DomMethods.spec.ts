@@ -101,7 +101,7 @@ describe('DomMethods', () => {
   });
 });
 
-function addInput(form: any, name: string, value: string, stName?: string) {
+function addInput(form: HTMLFormElement, name: string, value: string, stName?: string) {
   const input = document.createElement('input');
   input.name = name;
   input.value = value;

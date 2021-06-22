@@ -32,7 +32,6 @@ import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IThreeDInitResponse } from '../../core/models/IThreeDInitResponse';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
-import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
 import { IThreeDSTokens } from '../../core/services/three-d-verification/data/IThreeDSTokens';
 import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
@@ -45,7 +44,7 @@ import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDPr
 import { PaymentController } from '../../core/services/payments/PaymentController';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import { ITranslator } from '../../core/shared/translator/ITranslator';
-import { GooglePay } from '../../../client/integrations/google-pay/GooglePay';
+import { IStJwtPayload } from '../../core/models/IStJwtPayload';
 
 @Service()
 export class ControlFrame {
@@ -199,7 +198,7 @@ export class ControlFrame {
   }
 
   private _setRequestTypes(jwt: string): void {
-    const { payload } = this._jwtDecoder.decode(jwt);
+    const { payload } = this._jwtDecoder.decode<IStJwtPayload>(jwt);
     this._remainingRequestTypes = payload.requesttypedescriptions;
   }
 
@@ -369,7 +368,7 @@ export class ControlFrame {
 
   private _getPanFromJwt(): string {
     const jwt: string = this._getJwt();
-    const decoded = this._jwtDecoder.decode(jwt);
+    const decoded = this._jwtDecoder.decode<IStJwtPayload>(jwt);
 
     return decoded.payload.pan || '';
   }
@@ -428,7 +427,7 @@ export class ControlFrame {
         if (config.components.startOnLoad) {
           this._messageBus.publish({
             type: PUBLIC_EVENTS.BIN_PROCESS,
-            data: this._jwtDecoder.decode(config.jwt).payload.pan,
+            data: this._jwtDecoder.decode<IStJwtPayload>(config.jwt).payload.pan,
           });
 
           this._messageBus.publish(

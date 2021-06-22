@@ -51,8 +51,6 @@
     "example:angular:start": "run-p start:bundle example:angular:dev",
     "lint": "npx eslint ./src",
     "lint:fix": "npx eslint --fix ./src",
-    "lint:strict": "npx eslint -c .eslintrc-strict.js ./src",
-    "lint:strict:fix": "npx eslint -c .eslintrc-strict.js --fix ./src",
     "prepare": "husky install",
     "postinstall": "npm run install --prefix ./node_modules/@sentry/cli"
   },
