@@ -72,28 +72,25 @@ describe('ThreeDSecureVerificationService', () => {
         data: threeDSecureConfigMock,
       };
 
-      when(interFrameCommunicatorMock.query(deepEqual(eventMock), MERCHANT_PARENT_FRAME))
-        .thenResolve(threeDSecureConfigMock);
+      when(interFrameCommunicatorMock.query(deepEqual(eventMock), MERCHANT_PARENT_FRAME)).thenResolve(threeDSecureConfigMock);
 
-      sut.init$()
-        .subscribe(result => {
-          expect(result)
-            .toBe(threeDSecureConfigMock);
-          verify(interFrameCommunicatorMock.query<ConfigInterface>(
-            deepEqual(eventMock),
-            MERCHANT_PARENT_FRAME,
-          ))
-            .once();
+      sut.init$().subscribe(result => {
+        expect(result)
+          .toBe(threeDSecureConfigMock);
+        verify(interFrameCommunicatorMock.query<ConfigInterface>(
+          deepEqual(eventMock),
+          MERCHANT_PARENT_FRAME,
+        ))
+          .once();
 
-          done();
-        });
+        done();
+      });
     });
   });
 
   describe('binLookup()', () => {
     it('should return empty observable', () => {
-      expect(sut.binLookup$())
-        .toEqual(EMPTY);
+      expect(sut.binLookup$()).toEqual(EMPTY);
     });
   });
 
@@ -223,8 +220,7 @@ describe('ThreeDSecureVerificationService', () => {
 
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(result => {
         verify(challengeService.doChallenge$(anything(), anything())).never();
-        expect(result)
-          .toBe(threeDQueryResponseWithoutAcsUrl);
+        expect(result).toBe(threeDQueryResponseWithoutAcsUrl);
         done();
       });
     });
