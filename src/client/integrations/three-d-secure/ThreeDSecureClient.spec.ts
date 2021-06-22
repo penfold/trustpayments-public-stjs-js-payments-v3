@@ -43,6 +43,8 @@ describe('ThreeDSecureClient', () => {
     browserColorDepth: 24,
     browserUserAgent: window.navigator.userAgent,
     browserTZ: new Date().getTimezoneOffset(),
+    browserAcceptHeader: 'acceptHeaderMock',
+    browserIP: 'ipMock',
   };
   const methodUrlResultMock = {
     status: ResultActionCode.SUCCESS,
@@ -75,7 +77,7 @@ describe('ThreeDSecureClient', () => {
     when(threeDSecureMock.init$(anything())).thenReturn(of(configMock));
     when(threeDSecureMock.run3DSMethod$(anything(), anything(), anything())).thenReturn(of(methodUrlResultMock));
     when(threeDSecureMock.doChallenge$(anything(), anything(), anything(), anything(), anything(), anything())).thenReturn(of(challengeResultMock));
-    when(threeDSecureMock.getBrowserData()).thenReturn(browserDataMock);
+    when(threeDSecureMock.getBrowserData$(anything())).thenReturn(of(browserDataMock));
 
     sut = new ThreeDSecureClient(
       instance(interFrameCommunicatorMock),

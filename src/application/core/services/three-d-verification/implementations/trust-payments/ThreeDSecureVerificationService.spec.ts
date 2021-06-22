@@ -72,23 +72,28 @@ describe('ThreeDSecureVerificationService', () => {
         data: threeDSecureConfigMock,
       };
 
-      when(interFrameCommunicatorMock.query(deepEqual(eventMock), MERCHANT_PARENT_FRAME)).thenResolve(threeDSecureConfigMock);
+      when(interFrameCommunicatorMock.query(deepEqual(eventMock), MERCHANT_PARENT_FRAME))
+        .thenResolve(threeDSecureConfigMock);
 
-      sut.init$().subscribe(result => {
-        expect(result).toBe(threeDSecureConfigMock);
-        verify(interFrameCommunicatorMock.query<ConfigInterface>(
-          deepEqual(eventMock),
-          MERCHANT_PARENT_FRAME,
-        )).once();
+      sut.init$()
+        .subscribe(result => {
+          expect(result)
+            .toBe(threeDSecureConfigMock);
+          verify(interFrameCommunicatorMock.query<ConfigInterface>(
+            deepEqual(eventMock),
+            MERCHANT_PARENT_FRAME,
+          ))
+            .once();
 
-        done();
-      });
+          done();
+        });
     });
   });
 
   describe('binLookup()', () => {
     it('should return empty observable', () => {
-      expect(sut.binLookup$()).toEqual(EMPTY);
+      expect(sut.binLookup$())
+        .toEqual(EMPTY);
     });
   });
 
@@ -146,6 +151,7 @@ describe('ThreeDSecureVerificationService', () => {
       browsercolordepth: '',
       browsertz: '',
       useragent: '',
+      customerip: '',
     };
     const tdqRequestWithoutBrowserData = new ThreeDQueryRequest(card, merchantData);
     const tdqRequestWithBrowserData = new ThreeDQueryRequest(card, merchantData, browserDataMock);
@@ -207,7 +213,7 @@ describe('ThreeDSecureVerificationService', () => {
       });
     });
 
-    it('does not run the challenge if acsurl is undefined',  done => {
+    it('does not run the challenge if acsurl is undefined', done => {
       const threeDQueryResponseWithoutAcsUrl: IThreeDQueryResponse = {
         ...threeDQueryResponseMock,
         acsurl: undefined,
@@ -217,12 +223,13 @@ describe('ThreeDSecureVerificationService', () => {
 
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(result => {
         verify(challengeService.doChallenge$(anything(), anything())).never();
-        expect(result).toBe(threeDQueryResponseWithoutAcsUrl);
+        expect(result)
+          .toBe(threeDQueryResponseWithoutAcsUrl);
         done();
       });
     });
 
-    it('sends processing screen hide event on TRANSACTION_COMPLETE',  () => {
+    it('sends processing screen hide event on TRANSACTION_COMPLETE', () => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe();
 
       messageBus.publish({
@@ -236,6 +243,7 @@ describe('ThreeDSecureVerificationService', () => {
         }),
         MERCHANT_PARENT_FRAME,
       )).once();
+    });
 
     // EMVCo Req 172
     it('opens processing screen', done => {
