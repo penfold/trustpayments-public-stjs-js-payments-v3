@@ -26,6 +26,7 @@ import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLoc
 import { Styler } from '../../core/shared/styler/Styler';
 import { Frame } from '../../core/shared/frame/Frame';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { IStJwtPayload } from '../../core/models/IStJwtPayload';
 
 @Service()
 export class SecurityCode extends Input {
@@ -151,12 +152,12 @@ export class SecurityCode extends Input {
     );
 
     const cardNumberFromJwt$: Observable<string> = merge(jwtFromConfig$, jwtFromUpdate$).pipe(
-      map(jwt => this.jwtDecoder.decode(jwt).payload.pan),
+      map(jwt => this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.pan),
     );
 
     const maskedPanFromJsInit$: Observable<string> = this.configProvider
       .getConfig$()
-      .pipe(switchMap(() => this.localStorage.select(store => store['app.maskedpan'])));
+      .pipe(switchMap(() => this.localStorage.select<string>(store => store['app.maskedpan'] as string)));
 
     return merge(cardNumberInput$, cardNumberFromJwt$, maskedPanFromJsInit$).pipe(
       filter(Boolean),
@@ -268,7 +269,7 @@ export class SecurityCode extends Input {
   private subscribeSecurityCodeChange(): void {
     this.messageBus
       .pipe(ofType(MessageBus.EVENTS.CHANGE_SECURITY_CODE_LENGTH))
-      .subscribe((response: IMessageBusEvent) => {
+      .subscribe((response: IMessageBusEvent<number>) => {
         const { data } = response;
         this.checkSecurityCodeLength(data);
         this.placeholder = this.getPlaceholder(data);

@@ -12,14 +12,14 @@ export interface IConfig {
   animatedCard?: boolean;
   applePay?: IApplePayConfig;
   buttonId?: string;
-  cancelCallback?: any;
+  cancelCallback?: (...args: unknown[]) => unknown | null;
   componentIds?: IComponentsIds;
   components?: IComponentsConfig;
   cybertonicaApiKey?: string;
   datacenterurl?: string;
   deferInit?: boolean;
   disableNotification?: boolean;
-  errorCallback?: any;
+  errorCallback?: (...args: unknown[]) => unknown | null;
   errorReporting?: boolean;
   fieldsToSubmit?: string[];
   formId?: string;
@@ -32,12 +32,12 @@ export interface IConfig {
   placeholders?: IPlaceholdersConfig;
   stopSubmitFormOnEnter?: boolean;
   styles?: IStyles;
-  submitCallback?: any;
+  submitCallback?: (...args: unknown[]) => unknown | null;
   submitFields?: string[];
   submitOnCancel?: boolean;
   submitOnError?: boolean;
   submitOnSuccess?: boolean;
-  successCallback?: any;
+  successCallback?: (...args: unknown[]) => unknown | null;
   translations?: Record<string, unknown>;
   visaCheckout?: IVisaCheckoutConfig;
 }

@@ -3,7 +3,7 @@ export class ArrayUtils {
     return Array.from(new Set(array).values());
   }
 
-  public static equals(a: any[], b: any[]): boolean {
+  public static equals(a: unknown[], b: unknown[]): boolean {
     return a.length === b.length && JSON.stringify(a) === JSON.stringify(b);
   }
 }

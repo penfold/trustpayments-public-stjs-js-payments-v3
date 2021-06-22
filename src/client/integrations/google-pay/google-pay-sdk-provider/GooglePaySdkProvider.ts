@@ -5,7 +5,7 @@ import { DomMethods } from '../../../../application/core/shared/dom-methods/DomM
 import { environment } from '../../../../environments/environment';
 import { GooglePayProductionEnvironment, GooglePayTestEnvironment } from '../../../../integrations/google-pay/models/IGooglePayConfig';
 import { IGooglePlayIsReadyToPayRequest } from '../../../../integrations/google-pay/models/IGooglePayPaymentRequest';
-import { IGooglePaySessionPaymentsClient } from '../../../../integrations/google-pay/models/IGooglePayPaymentsClient';
+import { IGooglePaySessionPaymentsClient, IIsReadyToPayResponse } from '../../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 
 @Service()
@@ -25,7 +25,7 @@ export class GooglePaySdkProvider {
       switchMap((googlePaySdk: IGooglePaySessionPaymentsClient) => {
         return from(googlePaySdk.isReadyToPay(this.getGoogleIsReadyToPayRequest(config)));
       }),
-      filter((isReadyToPayResponse: any) => isReadyToPayResponse.result),
+      filter((isReadyToPayResponse: IIsReadyToPayResponse) => isReadyToPayResponse.result),
       switchMap(() => of(googlePaySdkInstance)),
     );
   }
@@ -41,9 +41,9 @@ export class GooglePaySdkProvider {
   }
 
   private getGooglePaySdkInstance(config: IConfig): IGooglePaySessionPaymentsClient {
-    return (new (window as any).google.payments.api.PaymentsClient({
+    return new window.google.payments.api.PaymentsClient({
       environment: this.getGooglePayEnvironment(config),
-    }));
+    });
   }
 
   private getGoogleIsReadyToPayRequest(config: IConfig): IGooglePlayIsReadyToPayRequest {

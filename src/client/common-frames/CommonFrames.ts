@@ -97,6 +97,7 @@ export class CommonFrames {
       this.removeThreedQuerySubmitFields();
       DomMethods.addDataToForm(this.form, { errorcode: 'cancelled', errormessage: PAYMENT_CANCELLED });
     } else {
+      // @ts-expect-error TypeScript doesn't allow you to assign known interfaces to dictionaries
       DomMethods.addDataToForm(this.form, data, this.getSubmitFieldsFromPaymentResponse(data));
     }
 

@@ -29,7 +29,7 @@ describe('StTransport class', () => {
     retries: 3,
     retryTimeout: 20000,
   };
-  const timeoutError: any = null;
+  const timeoutError: Error | null = null;
   const resolvingPromise = (result: Record<string, unknown>) => {
     return new Promise(resolve => resolve(result));
   };
@@ -143,7 +143,7 @@ describe('StTransport class', () => {
       // @ts-ignore
       expect(instance._fetchRetry).toHaveBeenCalledTimes(1);
       // @ts-ignore
-      expect(instance._fetchRetry).toHaveBeenCalledWith("https://somemerchanturl.com", {
+      expect(instance._fetchRetry).toHaveBeenCalledWith('https://somemerchanturl.com', {
         // @ts-ignore
         ...instance._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions),
         body: JSON.stringify(requestObject),

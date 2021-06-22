@@ -20,7 +20,7 @@ export class BrowserLocalStorage implements IStorage {
     }
   }
 
-  getItem(name: string): any {
+  getItem(name: string): unknown {
     return this.storage.getItem(name);
   }
 
@@ -28,7 +28,7 @@ export class BrowserLocalStorage implements IStorage {
     this.storage.setItem(name, value);
   }
 
-  select<T>(selector: (storage: { [p: string]: any }) => T): Observable<T> {
+  select<T>(selector: (storage: { [p: string]: unknown }) => T): Observable<T> {
     return this.storage.select(selector);
   }
 }

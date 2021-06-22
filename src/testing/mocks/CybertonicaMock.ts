@@ -22,6 +22,6 @@ export class CybertonicaMock implements ICybertonica {
   }
 
   getTransactionId(): Promise<string> {
-    return Promise.resolve(this.storage.getItem(CybertonicaMock.TID_KEY));
+    return Promise.resolve(this.storage.getItem(CybertonicaMock.TID_KEY) as string);
   }
 }

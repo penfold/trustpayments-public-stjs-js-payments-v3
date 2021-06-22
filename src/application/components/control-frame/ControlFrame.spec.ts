@@ -12,7 +12,6 @@ import { NotificationService } from '../../../client/notification/NotificationSe
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IStyles } from '../../../shared/model/config/IStyles';
-import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
@@ -29,7 +28,6 @@ import spyOn = jest.spyOn;
 import { PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Translations';
 import { Translator } from '../../core/shared/translator/Translator';
 import { FormState } from '../../core/models/constants/FormState';
-import { GooglePay } from '../../../client/integrations/google-pay/GooglePay';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -225,7 +223,6 @@ function controlFrameFixture() {
   const notification: NotificationService = mock(NotificationService);
   const cybertonica: Cybertonica = mock(Cybertonica);
   const threeDProcess: ThreeDProcess = mock(ThreeDProcess);
-  const configService: ConfigService = mock(ConfigService);
   const messageBus: IMessageBus = new SimpleMessageBus();
   const frame: Frame = mock(Frame);
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
@@ -233,7 +230,6 @@ function controlFrameFixture() {
   const applePayClientMock: ApplePayClient = mock(ApplePayClient);
   const paymentControllerMock: PaymentController = mock(PaymentController);
   const translator: Translator = mock(Translator);
-  const googlePay: GooglePay = mock(GooglePay);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {

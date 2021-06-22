@@ -16,6 +16,7 @@ import { ITranslationProvider } from '../translator/ITranslationProvider';
 import { TranslationProvider } from '../translator/TranslationProvider';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
+import { IFormFieldsValidity } from '../../models/IFormFieldsValidity';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set({ id: TranslatorToken, type: Translator });
@@ -28,7 +29,7 @@ describe('Validation', () => {
   describe('isCharNumber()', () => {
     const { isCharNumberTestCases } = validationFixture();
 
-    each(isCharNumberTestCases).it('Validation.isCharNumber', (event: KeyboardEvent, expected: any) => {
+    each(isCharNumberTestCases).it('Validation.isCharNumber', (event: KeyboardEvent, expected: boolean) => {
       expect(Validation.isCharNumber(event)).toBe(expected);
     });
   });
@@ -242,7 +243,7 @@ describe('Validation', () => {
     beforeEach(() => {
       // @ts-ignore
       instance._messageBus.publish = jest.fn();
-      instance.setFormValidity({ testValue: 'test value' });
+      instance.setFormValidity({ testValue: 'test value' } as unknown as IFormFieldsValidity);
     });
 
     it('should call publish event', () => {

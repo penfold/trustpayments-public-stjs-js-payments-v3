@@ -40,7 +40,7 @@ type IGooglePayButtonSizeModes = 'static' | 'fill';
 export interface IGooglePayButtonOptions {
   buttonColor?: IGooglePayButtonColors;
   buttonLocale?: IGooglePayButtonLocales;
-  buttonRootNode?: any;
+  buttonRootNode?: string;
   buttonSizeMode?: IGooglePayButtonSizeModes;
   buttonType?: IGooglePayButtonType;
 }

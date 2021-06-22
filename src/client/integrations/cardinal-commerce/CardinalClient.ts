@@ -56,7 +56,7 @@ export class CardinalClient {
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.CARDINAL_TRIGGER)
-      .thenRespond((event: IMessageBusEvent<ITriggerData<any>>) => this.cardinalTrigger(event.data));
+      .thenRespond((event: IMessageBusEvent<ITriggerData<unknown>>) => this.cardinalTrigger(event.data));
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.CARDINAL_START)

@@ -105,7 +105,7 @@ export class ConfigService implements ConfigProvider {
       };
     }
 
-    const { payload } = this.jwtDecoder.decode(config.jwt);
+    const { payload } = this.jwtDecoder.decode<{ config: IConfig }>(config.jwt);
     if (!payload.config) {
       return {
         configFromJwt: false,
@@ -125,7 +125,7 @@ export class ConfigService implements ConfigProvider {
         submitCallback: config.submitCallback,
         successCallback: config.successCallback,
         errorCallback: config.errorCallback,
-        cancelCallback: config.cancelCallback
+        cancelCallback: config.cancelCallback,
       },
     };
   }

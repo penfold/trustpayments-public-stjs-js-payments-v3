@@ -14,8 +14,8 @@ import { DefaultHttpOptionsProvider } from '../application/core/services/st-tran
 
 const messageBus: IMessageBus = new SimpleMessageBus();
 const configProvider: ConfigProvider = new TestConfigProvider();
-const store: IStore<any> = new Store(
-  new BehaviorSubject<any>({}),
+const store: IStore<unknown> = new Store(
+  new BehaviorSubject<unknown>({}),
   messageBus,
 );
 
