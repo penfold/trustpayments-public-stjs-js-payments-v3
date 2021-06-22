@@ -10,6 +10,7 @@ import { BrowserDataInterface } from '@trustpayments/3ds-sdk-js';
 
 @Service()
 export class BrowserDataProvider {
+  // @TODO: this is the stage URL. For production use https://brw.3ds.trustpayments.com/3dss/brw/browser-data
   private readonly browserData3dsServerUrl = 'https://acs.3ds.trustpayments.dev/3dss/acs/browser-data';
 
   constructor(private interFrameCommunicator: InterFrameCommunicator) {}
