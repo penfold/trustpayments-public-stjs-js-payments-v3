@@ -1,5 +1,0 @@
-{
-  "extends": [
-    "gitlab>trustpayments-public/STJS/dependency-config"
-  ]
-}
