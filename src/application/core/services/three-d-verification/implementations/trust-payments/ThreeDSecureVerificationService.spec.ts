@@ -75,13 +75,11 @@ describe('ThreeDSecureVerificationService', () => {
       when(interFrameCommunicatorMock.query(deepEqual(eventMock), MERCHANT_PARENT_FRAME)).thenResolve(threeDSecureConfigMock);
 
       sut.init$().subscribe(result => {
-        expect(result)
-          .toBe(threeDSecureConfigMock);
+        expect(result).toBe(threeDSecureConfigMock);
         verify(interFrameCommunicatorMock.query<ConfigInterface>(
           deepEqual(eventMock),
           MERCHANT_PARENT_FRAME,
-        ))
-          .once();
+        )).once();
 
         done();
       });
