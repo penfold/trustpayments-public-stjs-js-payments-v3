@@ -22,6 +22,6 @@ export class ApplePayButtonService {
   }
 
   private isButtonInserted(targetId: string): boolean {
-    return document.getElementById(targetId) ? document.getElementById(targetId).hasChildNodes() : false;
+    return document.getElementById(targetId) ? !!document.getElementById(targetId).querySelector('a') : false;
   }
 }
