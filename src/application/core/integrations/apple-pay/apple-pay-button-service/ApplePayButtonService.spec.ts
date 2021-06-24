@@ -14,6 +14,17 @@ describe('ApplePayButtonService', () => {
     removeAllButtons();
   });
 
+  it('should add button if target element has a space', () => {
+    const element: HTMLElement = document.createElement('div');
+    const space: Node = document.createTextNode(' ');
+    element.setAttribute('id', 'some-id');
+    element.appendChild(space);
+    document.getElementsByTagName('body')[0].appendChild(element);
+    applePayButtonService.insertButton('some-id', 'apple pay button', 'normal', 'de_DE');
+
+    expect(document.getElementById('some-id').getElementsByTagName('a').length).toEqual(1);
+  });
+
   it('should create correct markup and insert button into merchants page', () => {
     applePayButtonService.insertButton('some-id', 'apple pay button', 'normal', 'de_DE');
 
