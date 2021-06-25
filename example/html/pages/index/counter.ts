@@ -1,5 +1,5 @@
 const popupStyles: string =
-  'display: flex; justify-content: center; position: fixed; left: 0; height: 70px; width: 280px;right:0;color: white;padding: 0 40px;align-items: center;border-radius: 10px;font-family: Verdana;font-size: 20px;z-index:2';
+  'display: flex; justify-content: center; position: fixed; left: 0; height: 50px; width: 220px;right:0;color: white;padding: 0 10px;align-items: center;border-radius: 10px;font-family: Verdana;font-size: 15px;z-index:2';
 const popup = document.getElementById('st-popup');
 let callbackCounter: number = 0;
 let submitCallbackCounter: number = 0;
@@ -31,13 +31,13 @@ window.displayCallbackCounter = (id: string, text: string, tp: string) => {
   div.style.backgroundColor = tp;
   switch (tp) {
     case 'blue':
-      div.style.top = '150px';
+      div.style.top = '200px';
       break;
     default:
-      div.style.top = '250px';
+      div.style.top = '260px';
   }
   popup.appendChild(div);
   setTimeout(() => {
     popup.removeChild(div);
-  }, 10000);
+  }, 15000);
 };

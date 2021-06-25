@@ -256,7 +256,7 @@
     }
 
     function buildPopup(id, text, bgColor) {
-      var popupStyling = 'display: flex; justify-content: center; position: fixed; height: 70px;right:0;color: white;padding: 0 50px;align-items: center;border-radius: 10px;font-family: Verdana;font-size: 20px;z-index:2';
+      var popupStyling = 'display: flex; justify-content: center; position: fixed; height: 50px;right:0;color: white;padding: 0 25px;align-items: center;border-radius: 10px;font-family: Verdana;font-size: 15px;z-index:2';
       var div = document.createElement('div');
       div.innerText = text;
       div.setAttribute('id', id);
@@ -267,11 +267,14 @@
           div.style.top = 0;
           break;
         case 'blue':
-          div.style.top = '100px';
+          div.style.top = '120px';
           break;
         default:
           div.style.bottom = 0;
       }
+      if (id === "data-popup-threedresponse") {
+        div.style.top = '60px';
+      };
 
       return div;
     }
@@ -282,7 +285,7 @@
       popup.appendChild(content);
       setTimeout(function() {
         popup.removeChild(content);
-      }, 8000);
+      }, 15000);
     }
 
     function setCallbacks(config) {
