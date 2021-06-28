@@ -1,19 +1,17 @@
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { ConfigResolver } from '../config-resolver/ConfigResolver';
-import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { ConfigService } from './ConfigService';
 import { IConfig } from '../../model/config/IConfig';
-import { ValidationError } from 'joi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { take, toArray } from 'rxjs/operators';
 import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
+import { ValidationError } from 'joi';
 
 describe('ConfigService', () => {
   let resolverMock: ConfigResolver;
-  let validatorMock: ConfigValidator;
   let configService: ConfigService;
   let messageBus: IMessageBus;
   let jwtDecoderMock: JwtDecoder;
@@ -30,24 +28,22 @@ describe('ConfigService', () => {
 
   beforeEach(() => {
     resolverMock = mock(ConfigResolver);
-    validatorMock = mock(ConfigValidator);
     jwtDecoderMock = mock(JwtDecoder);
     messageBus = new SimpleMessageBus();
-    configService = new ConfigService(
-      instance(resolverMock),
-      instance(validatorMock),
-      messageBus,
-      instance(jwtDecoderMock)
-    );
 
     when(resolverMock.resolve(config)).thenReturn(fullConfig);
-    when(validatorMock.validate(config)).thenReturn(null);
     when(jwtDecoderMock.decode<Record<string, unknown>>(JWT)).thenReturn({ payload: {} });
     when(jwtDecoderMock.decode<{ config: IConfig }>(JWT_WITH_CONFIG)).thenReturn({
       payload: {
         config: configFromJwt,
       },
     });
+
+    configService = new ConfigService(
+      instance(resolverMock),
+      messageBus,
+      instance(jwtDecoderMock),
+    );
   });
 
   describe('setup', () => {
@@ -61,8 +57,10 @@ describe('ConfigService', () => {
     });
 
     it('keeps the jwt and callbacks from config object when using jwt config', () => {
-      const submitCallback = () => {};
-      const errorCallback = () => {};
+      const submitCallback = () => {
+      };
+      const errorCallback = () => {
+      };
 
       configService.setup({ jwt: JWT_WITH_CONFIG, submitCallback, errorCallback });
 
@@ -74,8 +72,8 @@ describe('ConfigService', () => {
             errorCallback,
             successCallback: undefined,
             cancelCallback: undefined,
-          })
-        )
+          }),
+        ),
       ).once();
     });
 
@@ -84,7 +82,7 @@ describe('ConfigService', () => {
         configService.setup({
           jwt: JWT_WITH_CONFIG,
           buttonId: 'foobar',
-        })
+        }),
       ).toThrowError(CANNOT_OVERRIDE);
 
       expect(() =>
@@ -94,7 +92,7 @@ describe('ConfigService', () => {
           submitCallback: (): unknown => null,
           errorCallback: (): unknown => null,
           cancelCallback: (): unknown => null,
-        })
+        }),
       ).not.toThrowError();
     });
   });
@@ -111,11 +109,11 @@ describe('ConfigService', () => {
     });
 
     it('throws an error if config-provider validation fails', () => {
-      const validationError = instance(mock<ValidationError>());
+      const validationError: ValidationError = { message: 'error' } as ValidationError;
 
-      when(validatorMock.validate(fullConfig)).thenReturn(validationError);
+      when(resolverMock.resolve(config)).thenThrow(validationError);
 
-      expect(() => configService.update(config)).toThrow();
+      expect(() => configService.update(config)).toThrow(validationError);
     });
 
     it('throws an error if trying to update configuration set in jwt', () => {
