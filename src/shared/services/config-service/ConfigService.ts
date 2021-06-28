@@ -1,11 +1,10 @@
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Container, Service } from 'typedi';
+import { filter, first } from 'rxjs/operators';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigResolver } from '../config-resolver/ConfigResolver';
-import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
-import { filter, first } from 'rxjs/operators';
 import { CONFIG } from '../../dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
@@ -18,10 +17,10 @@ export class ConfigService implements ConfigProvider {
 
   constructor(
     private resolver: ConfigResolver,
-    private validator: ConfigValidator,
     private messageBus: IMessageBus,
-    private jwtDecoder: JwtDecoder
-  ) {}
+    private jwtDecoder: JwtDecoder,
+  ) {
+  }
 
   setup(configObj: IConfig): IConfig {
     const { config, configFromJwt } = this.getConfigurationFromConfigOrJwt(configObj);
@@ -42,10 +41,8 @@ export class ConfigService implements ConfigProvider {
     return this.updateConfig({ ...this.getConfig(), jwt });
   }
 
-  updateFragment<
-    K extends 'components' | 'visaCheckout' | 'applePay' | typeof GooglePayConfigName,
-    C extends IConfig[K]
-  >(key: K, config: C): IConfig {
+  updateFragment<K extends 'components' | 'visaCheckout' | 'applePay' | typeof GooglePayConfigName,
+    C extends IConfig[K]>(key: K, config: C): IConfig {
     if (this.configFromJwt) {
       this.cannotOverride();
     }
@@ -72,11 +69,6 @@ export class ConfigService implements ConfigProvider {
 
   private updateConfig(config: IConfig): IConfig {
     const fullConfig = this.resolver.resolve(config);
-    const validationError = this.validator.validate(fullConfig);
-
-    if (validationError) {
-      throw validationError;
-    }
 
     this.config$.next(fullConfig);
 
@@ -133,7 +125,7 @@ export class ConfigService implements ConfigProvider {
   private cannotOverride(): void {
     throw new Error(
       'Cannot override the configuration specified in the JWT. ' +
-        'The config object should contain only the JWT and callbacks (optionally).'
+      'The config object should contain only the JWT and callbacks (optionally).',
     );
   }
 }
