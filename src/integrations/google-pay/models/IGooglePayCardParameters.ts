@@ -1,4 +1,4 @@
-type IGooglePayAllowedCardAuthMethods = 'PAN_ONLY' | 'CRYPTOGRAM_3DS';
+type IGooglePayAllowedAuthMethods = 'PAN_ONLY' | 'CRYPTOGRAM_3DS';
 
 export type IGooglePaySupportedNetworks = 'AMEX' | 'DISCOVER' | 'INTERAC' | 'JCB' | 'MASTERCARD' | 'VISA';
 
@@ -11,8 +11,8 @@ interface IGooglePayBillingAddressParameters {
 
 export interface IGooglePayCardParameters {
   allowPrepaidCards?: boolean;
-  allowedCreditCards?: boolean;
-  allowedAuthMethods: IGooglePayAllowedCardAuthMethods[];
+  allowCreditCards?: boolean;
+  allowedAuthMethods: IGooglePayAllowedAuthMethods[];
   allowedCardNetworks: IGooglePaySupportedNetworks[];
   assuranceDetailsRequired?: boolean;
   billingAddressParameters?: IGooglePayBillingAddressParameters;

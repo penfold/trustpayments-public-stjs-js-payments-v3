@@ -1,4 +1,4 @@
-import { IGooglePayMerchantInfo } from '../../../application/core/integrations/google-pay/models/IGooglePayPaymentRequest';
+import { IGooglePayMerchantInfo } from './IGooglePayPaymentRequest';
 import { IGooglePaySessionPaymentsClient } from './IGooglePayPaymentsClient';
 
 interface IPaymentsClient {
