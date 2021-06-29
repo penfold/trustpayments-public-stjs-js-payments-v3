@@ -1,11 +1,11 @@
 import jwt_decode from 'jwt-decode';
-import { JwtGenerator } from './JwtGenerator';
+import { UnsignedJwtGenerator } from './UnsignedJwtGenerator';
 
 describe('JwtGenerator', () => {
-  let sut: JwtGenerator;
+  let sut: UnsignedJwtGenerator;
 
   beforeAll(() => {
-    sut = new JwtGenerator();
+    sut = new UnsignedJwtGenerator();
   });
 
   describe('generate()', () => {
