@@ -4,7 +4,9 @@ import { ChallengeResultInterface, ResultActionCode } from '@trustpayments/3ds-s
 import { Uuid } from '../../../../../../shared/uuid/Uuid';
 import { IThreeDResponseJwt } from '../../data/IThreeDResponseJwt';
 import { IThreeDQueryResponse } from '../../../../../../models/IThreeDQueryResponse';
+import { Service } from 'typedi';
 
+@Service()
 export abstract class AbstractThreeDResponseConverter implements IThreeDResponseConverter {
   private static readonly ERROR_NUMBER_SUCCESS = 0;
   private static readonly ERROR_NUMBER_FAILURE = 1000;
