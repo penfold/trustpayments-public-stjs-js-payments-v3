@@ -7,13 +7,13 @@ import { IThreeDQueryResponse } from '../../../../../../models/IThreeDQueryRespo
 
 @Service()
 export class CResToThreeDResponseConverter extends AbstractThreeDResponseConverter {
-  protected preparePayload(response:IThreeDQueryResponse, result: ChallengeResultInterface): IThreeDResponseJwt {
-    const payload = super.preparePayload(response, result);
-    const cResData: ICResData = JSON.parse(atob(result.data.cres));
+  protected preparePayload(response:IThreeDQueryResponse, challengeResult: ChallengeResultInterface): IThreeDResponseJwt {
+    const payload = super.preparePayload(response, challengeResult);
+    const cResData: ICResData = JSON.parse(atob(challengeResult.data.cres));
 
     payload.Payload.Payment.ExtendedData.ThreeDSVersion = cResData.messageVersion;
     payload.Payload.Payment.ExtendedData.PAResStatus = cResData.transStatus;
-    payload.Payload.CRes = result.data.cres;
+    payload.Payload.CRes = challengeResult.data.cres;
 
     return payload;
   }

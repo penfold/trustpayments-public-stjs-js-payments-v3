@@ -3,12 +3,18 @@ import { ChallengeResultHandler } from './ChallengeResultHandler';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import DoneCallback = jest.DoneCallback;
 import { PAYMENT_CANCELLED, PAYMENT_ERROR } from '../../../../models/constants/Translations';
+import { ThreeDResponseConverter } from './threedresponse-converter/ThreeDResponseConverter';
+import { anything, instance, mock, when } from 'ts-mockito';
 
 describe('ChallengeResultHandler', () => {
+  let threeDResponseConverterMock: ThreeDResponseConverter;
   let challengeResultHandler: ChallengeResultHandler;
 
   beforeEach(() => {
-    challengeResultHandler = new ChallengeResultHandler();
+    threeDResponseConverterMock = mock(ThreeDResponseConverter);
+    challengeResultHandler = new ChallengeResultHandler(instance(threeDResponseConverterMock));
+
+    when(threeDResponseConverterMock.convert(anything(), anything())).thenReturn('threedresponse');
   });
 
   describe('3DS V2', () => {
@@ -31,7 +37,6 @@ describe('ChallengeResultHandler', () => {
       data: { cres: 'cres' },
     };
 
-
     it.each<any>([ResultActionCode.FAILURE, ResultActionCode.ERROR])(
       'returns an error response on %s status',
       (resultActionCode: ResultActionCode, done: DoneCallback) => {
@@ -49,7 +54,7 @@ describe('ChallengeResultHandler', () => {
               acquirerresponsemessage: 'description',
               errorcode: '50003',
               errormessage: PAYMENT_ERROR,
-              threedresponse: 'cres',
+              threedresponse: 'threedresponse',
               acsurl: '',
               enrolled: '',
               threedpayload: 'threedpayload',
@@ -77,7 +82,7 @@ describe('ChallengeResultHandler', () => {
             acquirertransactionreference: '',
             acquirerresponsecode: '',
             acquirerresponsemessage: '',
-            threedresponse: 'cres',
+            threedresponse: 'threedresponse',
             acsurl: '',
             enrolled: '',
             threedpayload: 'threedpayload',
@@ -162,6 +167,7 @@ describe('ChallengeResultHandler', () => {
               errormessage: PAYMENT_ERROR,
               md: 'merchantdata',
               pares: 'pares',
+              threedresponse: 'threedresponse',
               acsurl: '',
               enrolled: '',
               pareq: 'pareq',
@@ -194,6 +200,7 @@ describe('ChallengeResultHandler', () => {
             enrolled: '',
             pareq: 'pareq',
             md: 'merchantdata',
+            threedresponse: 'threedresponse',
             transactionreference: '',
             requesttypescription: '',
             threedversion: '1.0.5',

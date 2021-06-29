@@ -236,6 +236,7 @@ describe('ThreeDSecureVerificationService', () => {
         }),
         MERCHANT_PARENT_FRAME,
       )).once();
+    });
 
     // EMVCo Req 172
     it('opens processing screen', done => {

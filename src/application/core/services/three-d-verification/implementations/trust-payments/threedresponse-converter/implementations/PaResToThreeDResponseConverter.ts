@@ -6,12 +6,12 @@ import { IThreeDQueryResponse } from '../../../../../../models/IThreeDQueryRespo
 
 @Service()
 export class PaResToThreeDResponseConverter extends AbstractThreeDResponseConverter {
-  protected preparePayload(response: IThreeDQueryResponse, result: ChallengeResultInterface): IThreeDResponseJwt {
-    const payload = super.preparePayload(response, result);
+  protected preparePayload(response: IThreeDQueryResponse, challengeResult: ChallengeResultInterface): IThreeDResponseJwt {
+    const payload = super.preparePayload(response, challengeResult);
 
     payload.Payload.Payment.ExtendedData.ThreeDSVersion = response.threedversion;
-    payload.Payload.MD = result.data.MD;
-    payload.Payload.PaRes = result.data.PaRes;
+    payload.Payload.MD = challengeResult.data.MD;
+    payload.Payload.PaRes = challengeResult.data.PaRes;
 
     return payload;
   }

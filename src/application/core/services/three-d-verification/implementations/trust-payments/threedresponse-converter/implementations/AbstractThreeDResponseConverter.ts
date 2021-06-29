@@ -12,16 +12,16 @@ export abstract class AbstractThreeDResponseConverter implements IThreeDResponse
   private static readonly ERROR_NUMBER_FAILURE = 1000;
   private static JWT_EXPIRATION = 2 * 60 * 60; // 2 hours
 
-  protected constructor(protected unsignedJwtGenerator: UnsignedJwtGenerator) {
+  constructor(protected unsignedJwtGenerator: UnsignedJwtGenerator) {
   }
 
-  convert(response: IThreeDQueryResponse, result: ChallengeResultInterface): string {
-    return this.unsignedJwtGenerator.generate(this.preparePayload(response, result));
+  convert(response: IThreeDQueryResponse, challengeResult: ChallengeResultInterface): string {
+    return this.unsignedJwtGenerator.generate(this.preparePayload(response, challengeResult));
   }
 
-  protected preparePayload(response: IThreeDQueryResponse, result: ChallengeResultInterface): IThreeDResponseJwt {
+  protected preparePayload(response: IThreeDQueryResponse, challengeResult: ChallengeResultInterface): IThreeDResponseJwt {
     const iat = Math.round(new Date().getTime() / 1000);
-    const verificationSucceeded = result.status === ResultActionCode.SUCCESS || result.status === ResultActionCode.COMPLETED;
+    const verificationSucceeded = challengeResult.status === ResultActionCode.SUCCESS || challengeResult.status === ResultActionCode.COMPLETED;
 
     return {
       iss: '',
@@ -46,11 +46,11 @@ export abstract class AbstractThreeDResponseConverter implements IThreeDResponse
             SignatureVerification: 'Y',
           },
         },
-        ActionCode: result.status,
+        ActionCode: challengeResult.status,
         ErrorNumber: verificationSucceeded
           ? AbstractThreeDResponseConverter.ERROR_NUMBER_SUCCESS
           : AbstractThreeDResponseConverter.ERROR_NUMBER_FAILURE,
-        ErrorDescription: result.description,
+        ErrorDescription: challengeResult.description,
       },
     };
   }
