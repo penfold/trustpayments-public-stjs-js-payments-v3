@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 const GooglePayCardSchema: Joi.ObjectSchema = Joi.object().keys({
   allowPrepaidCards: Joi.boolean(),
-  alloweCreditCards: Joi.boolean(),
+  allowCreditCards: Joi.boolean(),
   allowedAuthMethods: Joi.array()
     .items(Joi.string().required(), Joi.string().required())
     .has(Joi.string().valid('PAN_ONLY', 'CRYPTOGRAM_3DS'))
