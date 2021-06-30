@@ -10,6 +10,6 @@ export class UnsignedJwtGenerator {
   }
 
   private encode(data: Record<string, unknown>): string {
-    return btoa(JSON.stringify(data)).replace(/=$/, '');
+    return btoa(JSON.stringify(data)).replace(/=+$/, '');
   }
 }

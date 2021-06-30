@@ -9,13 +9,21 @@ describe('JwtGenerator', () => {
   });
 
   describe('generate()', () => {
-    it('should properly encode JWT from provided payload', () => {
-      const payload = {
-        field: 'fieldValue',
-        field2: 2,
-      };
-
-      expect(sut.generate(payload)).toBe('eyJhbGciOiJub25lIn0.eyJmaWVsZCI6ImZpZWxkVmFsdWUiLCJmaWVsZDIiOjJ9.');
+    it.each<any>([
+      {
+        payload: { field: 'fieldValue', field2: 2 },
+        jwt: 'eyJhbGciOiJub25lIn0.eyJmaWVsZCI6ImZpZWxkVmFsdWUiLCJmaWVsZDIiOjJ9.',
+      },
+      {
+        payload: { field: 'fieldValue', field2: 23 },
+        jwt: 'eyJhbGciOiJub25lIn0.eyJmaWVsZCI6ImZpZWxkVmFsdWUiLCJmaWVsZDIiOjIzfQ.',
+      },
+      {
+        payload: { field: 2 },
+        jwt: 'eyJhbGciOiJub25lIn0.eyJmaWVsZCI6Mn0.',
+      },
+    ])('should properly encode JWT from provided payload', ({ payload, jwt }) => {
+      expect(sut.generate(payload)).toBe(jwt);
       expect(jwt_decode(sut.generate(payload))).toEqual(payload);
     });
   });
