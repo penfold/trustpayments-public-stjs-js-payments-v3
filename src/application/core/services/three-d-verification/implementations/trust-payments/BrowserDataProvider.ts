@@ -7,11 +7,11 @@ import { map } from 'rxjs/operators';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { Service } from 'typedi';
 import { BrowserDataInterface } from '@trustpayments/3ds-sdk-js';
+import { environment } from '../../../../../../environments/environment';
 
 @Service()
 export class BrowserDataProvider {
-  // @TODO: this is the stage URL. For production use https://brw.3ds.trustpayments.com/3dss/brw/browser-data
-  private readonly browserData3dsServerUrl = 'https://acs.3ds.trustpayments.dev/3dss/acs/browser-data';
+  private readonly browserData3dsServerUrl = environment.BROWSER_DATA_URL;
 
   constructor(private interFrameCommunicator: InterFrameCommunicator) {}
 

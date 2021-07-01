@@ -37,4 +37,5 @@ export const environment = {
   SENTRY_DSN: 'https://6319b9ff1fb14ba48cd2c9025d67bd2d@o402164.ingest.sentry.io/5262818',
   SENTRY_WHITELIST_URLS: ['https://webservices.securetrading.net'],
   THREEDS_TERM_URL: 'https://localhost:8887/v1/three_ds_challenge_term',
+  BROWSER_DATA_URL: 'https://brw.3ds.trustpayments.dev/3dss/brw/browserData',
 };
