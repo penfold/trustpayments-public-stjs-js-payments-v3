@@ -299,9 +299,9 @@ def step_impl(context, request_type):
 def stub_jsinit_request(context):
     default_jsinit = True
     if 'config_skip_jsinit' not in context.scenario.tags:
-        for key in jsinit_response:
+        for key, value in jsinit_response.items():
             if key == context.scenario.tags[0]:
-                stub_jsinit(jsinit_response[key], RequestType.JSINIT.name)
+                stub_jsinit(value, RequestType.JSINIT.name)
                 default_jsinit = False
                 break
         if default_jsinit:
