@@ -9,6 +9,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
@@ -38,6 +39,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card VISA_FAILED_SIGNATURE_CARD
     And User clicks Pay button
@@ -64,6 +66,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card AMERICAN_EXPRESS_FAILED_AUTH_CARD
     And User clicks Pay button
@@ -90,8 +93,9 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
-    When User fills payment form with defined card DISCOVER_PASSIVE_AUTH_CARD
+    When User fills payment form with defined card VISA_PASSIVE_AUTH_CARD
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
@@ -118,6 +122,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_NOT_ENROLLED_CARD
     And User clicks Pay button
@@ -145,8 +150,9 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
-    When User fills payment form with defined card AMERICAN_EXPRESS_UNAVAILABLE_CARD
+    When User fills payment form with defined card <card>
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
@@ -162,16 +168,17 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | eci                  | <eci>                                   |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 07             |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 07             |
+      | request_types            | baseamount     | currencyiso3a  | eci            | card                              |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 07             | AMERICAN_EXPRESS_UNAVAILABLE_CARD |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | AMERICAN_EXPRESS_UNAVAILABLE_CARD |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 00             | MASTERCARD_UNAVAILABLE_CARD       |
 
 
   Scenario Outline: TC_8 - Merchant Not Active with submitOn and request type: <request_types>
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card VISA_MERCHANT_NOT_ACTIVE_CARD
     And User clicks Pay button
@@ -198,6 +205,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card VISA_CMPI_LOOKUP_ERROR_CARD
     And User clicks Pay button
@@ -224,6 +232,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CMPI_AUTH_ERROR_CARD
     And User clicks Pay button
@@ -250,6 +259,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_AUTH_UNAVAILABLE_CARD
     And User clicks Pay button
@@ -279,8 +289,9 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
-    When User fills payment form with defined card DISCOVER_BYPASSED_AUTH_CARD
+    When User fills payment form with defined card <card>
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
@@ -293,10 +304,10 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | status               | should be none                          |
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | card                        |
+      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
+      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
+      | THREEDQUERY ACCOUNTCHECK | MASTERCARD_BYPASSED_AUTH_V1 |
 
 
   Scenario Outline: retry payment after failed transaction with submitOnSuccess and request type: <request_types>
@@ -311,7 +322,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     And User will see that notification frame has "red" color
     And User waits for payment status to disappear
     And User clears form
-    When User fills payment form with defined card DISCOVER_BYPASSED_AUTH_CARD
+    When User fills payment form with defined card <card>>
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
@@ -324,7 +335,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | status               | should be none                          |
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | card                        |
+      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
+      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
+      | THREEDQUERY ACCOUNTCHECK | MASTERCARD_BYPASSED_AUTH_V1 |

@@ -9,6 +9,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay button
@@ -31,6 +32,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_FAILED_FRICTIONLESS_AUTH
     And User clicks Pay button
@@ -53,6 +55,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_FRICTIONLESS
     And User clicks Pay button
@@ -75,6 +78,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_UNAVAILABLE_FRICTIONLESS_AUTH
     And User clicks Pay button
@@ -97,6 +101,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_REJECTED_FRICTIONLESS_AUTH
     And User clicks Pay button
@@ -117,6 +122,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_AUTH_NOT_AVAILABLE_ON_LOOKUP
     And User clicks Pay button
@@ -137,6 +143,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_ERROR_ON_LOOKUP
     And User clicks Pay button
@@ -157,6 +164,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
     And User clicks Pay button
@@ -178,6 +186,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_STEP_UP_AUTH_FAILED
     And User clicks Pay button
@@ -199,6 +208,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_STEP_UP_AUTH_UNAVAILABLE
     And User clicks Pay button
@@ -220,6 +230,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_ERROR_ON_AUTH
     And User clicks Pay button
@@ -243,6 +254,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_BYPASSED_AUTH
     And User clicks Pay button
@@ -263,6 +275,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_PROMPT_FOR_WHITELIST
     And User clicks Pay button
@@ -293,6 +306,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUPPORT_TRANS_STATUS_I
     And User clicks Pay button
@@ -314,6 +328,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_ERROR_ON_AUTH
     And User clicks Pay button

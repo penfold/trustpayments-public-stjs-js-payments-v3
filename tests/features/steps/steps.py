@@ -34,7 +34,7 @@ def step_impl(context, e2e_config, jwt_config):
     # parse old jwt config (payload part) to dictionary object
     jwt_config_from_json_dict = get_jwt_config_from_json(JwtConfig[jwt_config].value)['payload']
     # build payload base on additional attributes and parse to dictionary
-    jwt_payload_dict = InlineConfigBuilderOld().map_payload_fields(context.table).build().__dict__
+    jwt_payload_dict = InlineConfigBuilder().map_jwt_additional_fields(jwt_config_from_json_dict, context.table)
     # merge both dictionaries (old is overridden by additional attr)
     jwt = encode_jwt(merge_json_conf_with_additional_attr(jwt_config_from_json_dict, jwt_payload_dict))
     context.inline_e2e_config = create_inline_config(E2eConfig[e2e_config], jwt)

@@ -10,8 +10,10 @@ Feature: Cancel payment with 3ds SDK library
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
       | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
-    When User fills payment form with defined card MASTERCARD_FRICTIONLESS
+    When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User clicks Cancel button on 3ds SDK challenge in INLINE mode
@@ -31,8 +33,10 @@ Feature: Cancel payment with 3ds SDK library
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
       | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
-    When User fills payment form with defined card MASTERCARD_FRICTIONLESS
+    When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User clicks Cancel button on 3ds SDK challenge in POPUP mode
@@ -52,8 +56,10 @@ Feature: Cancel payment with 3ds SDK library
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
       | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
-    When User fills payment form with defined card MASTERCARD_FRICTIONLESS
+    When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_INCORRECT_CODE and submit
@@ -75,8 +81,10 @@ Feature: Cancel payment with 3ds SDK library
       | requesttypedescriptions | THREEDQUERY AUTH   |
       | locale                  | <LOCALE_CODE>      |
       | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
-    And User fills payment form with defined card MASTERCARD_FRICTIONLESS
+    And User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     When User clicks Pay button
     And User see 3ds SDK challenge is displayed
     Then User see 3ds SDK challenge POPUP mode "cancel" button translated into <LOCALE_CODE>
@@ -105,8 +113,10 @@ Feature: Cancel payment with 3ds SDK library
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
       | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
-    And User fills payment form with defined card MASTERCARD_FRICTIONLESS
+    And User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     When User clicks Pay button
     And User see 3ds SDK challenge is displayed
     Then User see 3ds SDK challenge POPUP mode "cancel" button translation is "INTENTIONALLY_HARDCODED_VALUE"

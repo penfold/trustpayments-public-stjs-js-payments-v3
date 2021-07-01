@@ -3,6 +3,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
   Background:
     Given JS library configured by inline config BASIC_CONFIG
 
+
   Scenario Outline: successful payment with only request types <request_types>  - frictionless
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
@@ -11,6 +12,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
@@ -46,6 +48,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
@@ -64,7 +67,6 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION |
       | RISKDEC THREEDQUERY ACCOUNTCHECK SUBSCRIPTION      |
 
-
   Scenario Outline: successful payment with only request types <request_types> - non-frictionless
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
@@ -73,6 +75,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
@@ -102,6 +105,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
@@ -123,6 +127,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
@@ -146,6 +151,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
+    And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_STEP_UP_AUTH_ERROR
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed

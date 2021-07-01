@@ -2,8 +2,11 @@ Feature: 3ds SDK library - Processing Screen
 
   Scenario Outline: The <processing_screen> processing screen is visible after payment with frictionless card
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
+      | key                     | value              |
+      | requesttypedescriptions | THREEDQUERY AUTH   |
+      | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
@@ -19,8 +22,11 @@ Feature: 3ds SDK library - Processing Screen
 
   Scenario Outline: The <processing_screen> processing screen is visible after payment with non-frictionless card
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
+      | key                     | value              |
+      | requesttypedescriptions | THREEDQUERY AUTH   |
+      | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
@@ -38,6 +44,9 @@ Feature: 3ds SDK library - Processing Screen
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
+      | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_FRICTIONLESS
     And User clicks Pay button
@@ -54,6 +63,9 @@ Feature: 3ds SDK library - Processing Screen
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
+      | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_3DS_SDK_STEP_UP_AUTH_ERROR
     And User clicks Pay button
