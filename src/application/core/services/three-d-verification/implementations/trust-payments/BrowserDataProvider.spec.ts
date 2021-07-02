@@ -6,6 +6,7 @@ import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { BrowserDataInterface } from '@trustpayments/3ds-sdk-js';
 import { IBrowserData } from './data/IBrowserData';
+import { environment } from '../../../../../../environments/environment';
 
 describe('BrowserDataProvider', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
@@ -19,7 +20,7 @@ describe('BrowserDataProvider', () => {
   it('gets the browser data from parent frame and maps keys to lowercase and values to strings', done => {
     const queryEvent: IMessageBusEvent = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA,
-      data: 'https://acs.3ds.trustpayments.dev/3dss/acs/browser-data',
+      data: environment.BROWSER_DATA_URL,
     };
     const browserData: BrowserDataInterface = {
       browserJavaEnabled: true,
