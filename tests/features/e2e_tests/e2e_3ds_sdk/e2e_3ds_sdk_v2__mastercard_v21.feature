@@ -9,6 +9,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
   Background:
     Given JS library configured by inline config BASIC_CONFIG
 
+
   Scenario Outline: TC_1 - Successful Frictionless Authentication - Card: MASTERCARD_V21 Request types: <request_types>
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
