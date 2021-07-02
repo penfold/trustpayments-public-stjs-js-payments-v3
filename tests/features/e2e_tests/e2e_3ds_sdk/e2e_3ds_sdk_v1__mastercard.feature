@@ -105,7 +105,7 @@ Feature: 3ds SDK v1 E2E tests - MasterCard
     And User clicks Pay button
     And User see 3ds SDK challenge for v1 is displayed
     And User fills 3ds SDK v1 challenge with THREE_DS_CODE_V1_FAILED and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see payment status information: "Unauthenticated"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
