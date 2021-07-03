@@ -63,10 +63,10 @@ function rebuild_images () {
   log_this INFO "Rebuild docker mock: ${mock}"
   if [[ "${mock}" == "true" ]]; then
     (cd "${BASH_SOURCE%/*}/.." ;
-     docker-compose -f docker/compose/docker-compose.yml -f docker/compose/docker-compose.mock.yml up --build -d)
+     sudo docker-compose -f docker/compose/docker-compose.yml -f docker/compose/docker-compose.mock.yml up --build -d)
   else
     (cd "${BASH_SOURCE%/*}/.." ;
-      docker-compose -f docker/compose/docker-compose.yml up --build -d)
+      sudo docker-compose -f docker/compose/docker-compose.yml up --build -d)
   fi
 }
 
@@ -81,7 +81,7 @@ function run_test_docker() {
     test_tags="--tags=${test_tags}"
   fi
 
-  docker-compose -f docker/compose/docker-compose.yml run payments-tests /bin/bash -c "\
+  sudo docker-compose -f docker/compose/docker-compose.yml run payments-tests /bin/bash -c "\
       . venv/bin/activate \
       && echo 'Python venv activated. Executing tests.' \
       && python3 -m behave --color --logging-level ${test_loglevel} ${test_tags} ${test_file}"
@@ -89,9 +89,9 @@ function run_test_docker() {
 
 function cleanup_docker() {
   log_this INFO "Cleanup docker."
-  docker-compose -f docker/compose/docker-compose.yml -f docker/compose/docker-compose.mock.yml down
-  docker stop $(docker ps -aq) || true # stop all containers
-  docker system prune -a -f # delete all docker containers, images, networking
+  sudo docker-compose -f docker/compose/docker-compose.yml -f docker/compose/docker-compose.mock.yml down
+  sudo docker stop $(docker ps -aq) || true # stop all containers
+  sudo docker system prune -a -f # delete all docker containers, images, networking
 }
 
 function main() {
