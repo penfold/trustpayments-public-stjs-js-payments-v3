@@ -7,3 +7,4 @@ COPY ${COPY_FROM}/wiremock/mappings /home/wiremock/mappings
 COPY ${COPY_FROM}/wiremock/keystore /home/wiremock/keystore
 
 EXPOSE 6443
+CMD java $JAVA_OPTS -cp /var/wiremock/lib/*:/var/wiremock/extensions/* com.github.tomakehurst.wiremock.standalone.WireMockServerRunner
