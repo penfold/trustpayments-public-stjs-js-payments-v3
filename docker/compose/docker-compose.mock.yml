@@ -16,7 +16,7 @@ services:
       - ../../tests/wiremock/__files:/home/wiremock/__files
       - ../../tests/wiremock/mappings:/home/wiremock/mappings
       - ../../tests/wiremock/keystore:/home/wiremock/keystore
-    --https-port 6443 --https-keystore /home/wiremock/keystore --verbose --enable-browser-proxying --trust-proxy-target library.securetrading.net
+    command: --https-port 6443 --https-keystore /home/wiremock/keystore --verbose --enable-browser-proxying --trust-proxy-target library.securetrading.net
     ports:
       - 6443:6443
     networks:
