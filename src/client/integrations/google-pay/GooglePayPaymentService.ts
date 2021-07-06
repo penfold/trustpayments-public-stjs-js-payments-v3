@@ -3,7 +3,6 @@ import { IStartPaymentMethod } from '../../../application/core/services/payments
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { IPaymentData } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
 import { IGooglePayGatewayRequest } from '../../../integrations/google-pay/models/IGooglePayRequest';
-import { RequestType } from '../../../shared/types/RequestType';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import {
