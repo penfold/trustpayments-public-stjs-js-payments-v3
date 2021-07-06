@@ -25,7 +25,7 @@ services:
       target: payments-tests
       args:
         COPY_FROM: "./tests"
-        IMAGE_PIPELINE: "${CI_REGISTRY_IMAGE}/pipeline:master"
+        IMAGE_PIPELINE: "registry.gitlab.com/trustpayments-public/stjs/js-payments-v3/pipeline:master"
     volumes:
       - ../../tests/features:/app/features
       - ../../tests/locators:/app/locators
