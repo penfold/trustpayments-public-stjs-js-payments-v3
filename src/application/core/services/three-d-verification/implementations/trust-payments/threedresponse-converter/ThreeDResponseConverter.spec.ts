@@ -23,7 +23,6 @@ describe('ThreeDResponseConverter', () => {
 
     when(cResToThreeDResponseConverterMock.convert(anything(), anything())).thenReturn('threedresponse2');
     when(paResToThreeDResponseConverterMock.convert(anything(), anything())).thenReturn('threedresponse1');
-
   });
 
   it('should use cRes converter if threedversion is 2 or higher', () => {

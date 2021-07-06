@@ -10,7 +10,7 @@ import { Service } from 'typedi';
 export abstract class AbstractThreeDResponseConverter implements IThreeDResponseConverter {
   private static readonly ERROR_NUMBER_SUCCESS = 0;
   private static readonly ERROR_NUMBER_FAILURE = 1000;
-  private static JWT_EXPIRATION = 2 * 60 * 60; // 2 hours
+  private static JWT_EXPIRATION = 7200; // 2 hours
 
   constructor(protected unsignedJwtGenerator: UnsignedJwtGenerator) {
   }
