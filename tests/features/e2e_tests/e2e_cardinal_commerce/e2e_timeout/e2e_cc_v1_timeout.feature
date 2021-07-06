@@ -9,6 +9,7 @@ Feature: Cardinal Commerce E2E tests v1 - Timeout
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card AMERICAN_EXPRESS_TIMEOUT_CARD
     And User clicks Pay button

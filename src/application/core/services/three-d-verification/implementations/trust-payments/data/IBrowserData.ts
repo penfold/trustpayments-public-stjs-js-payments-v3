@@ -8,4 +8,5 @@ export interface IBrowserData {
   useragent: string;
   browsertz: string;
   accept: string;
+  customerip: string;
 }

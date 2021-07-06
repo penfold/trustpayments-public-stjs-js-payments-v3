@@ -20,6 +20,18 @@ def step_impl(context):
     three_ds_page.verify_3ds_challenge_modal_appears()
 
 
+@step('User see 3ds SDK challenge for v1 is displayed')
+def step_impl(context):
+    three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
+    three_ds_page.verify_3ds_v1_challenge_modal_appears()
+
+
+@step('User fills 3ds SDK v1 challenge with (?P<code>.+) and submit')
+def step_impl(context, code):
+    three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
+    three_ds_page.fill_3ds_v1_challenge_modal_and_submit(AuthData[code].value)
+
+
 @step('User fills 3ds SDK challenge with (?P<code>.+) and submit')
 def step_impl(context, code):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)

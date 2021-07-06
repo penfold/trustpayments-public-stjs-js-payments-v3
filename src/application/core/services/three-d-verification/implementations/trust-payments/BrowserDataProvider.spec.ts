@@ -5,6 +5,8 @@ import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { BrowserDataInterface } from '@trustpayments/3ds-sdk-js';
+import { IBrowserData } from './data/IBrowserData';
+import { environment } from '../../../../../../environments/environment';
 
 describe('BrowserDataProvider', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
@@ -16,7 +18,10 @@ describe('BrowserDataProvider', () => {
   });
 
   it('gets the browser data from parent frame and maps keys to lowercase and values to strings', done => {
-    const queryEvent: IMessageBusEvent = { type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA };
+    const queryEvent: IMessageBusEvent = {
+      type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA,
+      data: environment.BROWSER_DATA_URL,
+    };
     const browserData: BrowserDataInterface = {
       browserJavaEnabled: true,
       browserJavascriptEnabled: true,
@@ -26,11 +31,13 @@ describe('BrowserDataProvider', () => {
       browserColorDepth: 24,
       browserUserAgent: 'chrome',
       browserTZ: 0,
+      browserAcceptHeader: 'acceptHeaderMock',
+      browserIP: 'ipMock',
     };
 
     when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(browserData);
 
-    sut.getBrowserData$().subscribe(result => {
+    sut.getBrowserData$().subscribe((result: IBrowserData) => {
       expect(result).toEqual({
         browserjavaenabled: 'true',
         browserjavascriptenabled: 'true',
@@ -40,7 +47,8 @@ describe('BrowserDataProvider', () => {
         browsercolordepth: '24',
         useragent: 'chrome',
         browsertz: '0',
-        accept: 'application/json',
+        accept: 'acceptHeaderMock',
+        customerip: 'ipMock',
       });
       done();
     });

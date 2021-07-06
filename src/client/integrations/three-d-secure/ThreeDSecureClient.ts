@@ -43,7 +43,7 @@ export class ThreeDSecureClient {
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA)
-      .thenRespond(() => of(this.threeDSecure.getBrowserData()));
+      .thenRespond((event: IMessageBusEvent<string>) => this.threeDSecure.getBrowserData$(event.data));
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_SHOW)

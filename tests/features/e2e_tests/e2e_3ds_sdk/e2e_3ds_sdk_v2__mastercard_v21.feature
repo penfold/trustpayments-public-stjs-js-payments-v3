@@ -151,19 +151,19 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_DS_UNAVAILABLE
     And User clicks Pay button
-    Then User will see payment status information: "Bank System Error"
+    Then User will see payment status information: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | error         |
-    And User will see that Submit button is "enabled" after payment
-    And User will see that ALL input fields are "enabled"
+      | <callback>         |
+    And User will see that Submit button is "<state>" after payment
+    And User will see that ALL input fields are "<state>"
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | payment_status                          | callback | state    |
+      | THREEDQUERY AUTH         | Payment has been successfully processed | success  | disabled |
+      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    | enabled  |
+      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | success  | disabled |
 
 
   Scenario Outline: TC_6b - Authentication success after retry when DS timeout in first call - Card: MASTERCARD_V21 Request types: <request_types>
@@ -177,8 +177,6 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_DS_UNAVAILABLE_RETRY
     And User clicks Pay button
-    And User see 3ds SDK challenge is displayed
-    And User fills 3ds SDK challenge with THREE_DS_CODE and submit
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
@@ -219,6 +217,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    | enabled  |
       | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | success  | disabled |
 
+
   Scenario Outline: TC_8 - Error not completed threeDSMethod - Card: MASTERCARD_V21 Request types: <request_types>
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
@@ -244,6 +243,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
       | ACCOUNTCHECK THREEDQUERY |
       | THREEDQUERY ACCOUNTCHECK |
 
+
   Scenario Outline: TC_9 - Successful Step Up Authentication - Card: MASTERCARD_V21 Request types: <request_types>
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
@@ -268,7 +268,6 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
       | THREEDQUERY ACCOUNTCHECK |
-
 
   Scenario Outline: TC_10 - Failed Step Up Authentication - Card: MASTERCARD_V21 Request types: <request_types>
     Given JS library authenticated by jwt BASE_JWT with additional attributes

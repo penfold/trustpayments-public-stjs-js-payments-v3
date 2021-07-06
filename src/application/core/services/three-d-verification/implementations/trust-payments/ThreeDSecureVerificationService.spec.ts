@@ -146,6 +146,7 @@ describe('ThreeDSecureVerificationService', () => {
       browsercolordepth: '',
       browsertz: '',
       useragent: '',
+      customerip: '',
     };
     const tdqRequestWithoutBrowserData = new ThreeDQueryRequest(card, merchantData);
     const tdqRequestWithBrowserData = new ThreeDQueryRequest(card, merchantData, browserDataMock);
@@ -207,7 +208,7 @@ describe('ThreeDSecureVerificationService', () => {
       });
     });
 
-    it('does not run the challenge if acsurl is undefined',  done => {
+    it('does not run the challenge if acsurl is undefined', done => {
       const threeDQueryResponseWithoutAcsUrl: IThreeDQueryResponse = {
         ...threeDQueryResponseMock,
         acsurl: undefined,
@@ -222,7 +223,7 @@ describe('ThreeDSecureVerificationService', () => {
       });
     });
 
-    it('sends processing screen hide event on TRANSACTION_COMPLETE',  () => {
+    it('sends processing screen hide event on TRANSACTION_COMPLETE', () => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe();
 
       messageBus.publish({
