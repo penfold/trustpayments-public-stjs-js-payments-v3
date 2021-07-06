@@ -6,10 +6,22 @@
       alias: merchant.securetrading.net
     - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
       alias: webservices.securetrading.net
-      command: [ "--https-port", "6443", "--https-keystore", "/home/wiremock/keystore", "--verbose" ]
+      command: [
+          "--https-port", "6443",
+          "--https-keystore", "/home/wiremock/keystore",
+          "--verbose",
+          "--enable-browser-proxying",
+          "--trust-proxy-target", "library.securetrading.net"
+      ]
     - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
       alias: thirdparty.example.com
-      command: [ "--https-port", "6443", "--https-keystore", "/home/wiremock/keystore", "--verbose" ]
+      command: [
+          "--https-port", "6443",
+          "--https-keystore", "/home/wiremock/keystore",
+          "--verbose",
+          "--enable-browser-proxying",
+          "--trust-proxy-target", "library.securetrading.net"
+      ]
 
 .service-app-html-review-library:
   services:
