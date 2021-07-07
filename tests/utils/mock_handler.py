@@ -62,8 +62,9 @@ def stub_config(config_json):
         ),
         response=MappingResponse(
             status=200,
-            headers={'Access-Control-Allow-Headers': 'Content-Type',
-                     'Access-Control-Allow-Methods': 'GET, POST'},
+            headers={'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization, st-request-types',
+                     'Access-Control-Allow-Methods': 'GET, POST',
+                     'Access-Control-Allow-Origin': '*'},
             json_body=get_mock_response_from_json(config_json)
         ),
         persistent=False)
@@ -82,8 +83,9 @@ def stub_st_request_type(mock_json, request_type):
         ),
         response=MappingResponse(
             status=200,
-            headers={'Access-Control-Allow-Headers': 'Content-Type',
-                     'Access-Control-Allow-Methods': 'GET, POST'},
+            headers={'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization, st-request-types',
+                     'Access-Control-Allow-Methods': 'GET, POST',
+                     'Access-Control-Allow-Origin': '*'},
             json_body=get_mock_response_from_json(mock_json)
         ),
         persistent=False)
@@ -102,8 +104,9 @@ def stub_jsinit(mock_json, request_type):
         ),
         response=MappingResponse(
             status=200,
-            headers={'Access-Control-Allow-Headers': 'Content-Type',
-                     'Access-Control-Allow-Methods': 'GET, POST'},
+            headers={'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization, st-request-types',
+                     'Access-Control-Allow-Methods': 'GET, POST',
+                     'Access-Control-Allow-Origin': '*'},
             json_body=get_mock_response_from_json(mock_json)
         ),
         persistent=False)
@@ -122,8 +125,10 @@ def stub_st_request_type_server_error(mock_json, request_type=None):
         ),
         response=MappingResponse(
             status=500,
-            headers={'Access-Control-Allow-Headers': 'Content-Type',
-                     'Access-Control-Allow-Methods': 'GET, POST'},
+            headers={'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization, st-request-types',
+                     'Access-Control-Allow-Methods': 'GET, POST',
+                     'Access-Control-Allow-Origin': '*'},
+
             json_body=get_mock_response_from_json(mock_json)
         ),
         persistent=False)
@@ -140,8 +145,9 @@ def stub_payment_status(mock_url, mock_json):
         ),
         response=MappingResponse(
             status=200,
-            headers={'Access-Control-Allow-Headers': 'Content-Type',
-                     'Access-Control-Allow-Methods': 'GET, POST'},
+            headers={'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization, st-request-types',
+                     'Access-Control-Allow-Methods': 'GET, POST',
+                     'Access-Control-Allow-Origin': '*'},
             json_body=get_mock_response_from_json(mock_json)
         ),
         persistent=False)
@@ -157,8 +163,9 @@ def stub_url_options_for_cors(mock_url):
         ),
         response=MappingResponse(
             status=200,
-            headers={'Access-Control-Allow-Headers': 'Content-Type',
-                     'Access-Control-Allow-Methods': 'GET, POST'},
+            headers={'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization, st-request-types',
+                     'Access-Control-Allow-Methods': 'GET, POST',
+                     'Access-Control-Allow-Origin': '*'},
             body=''
         ),
         persistent=False)
