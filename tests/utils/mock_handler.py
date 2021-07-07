@@ -72,8 +72,8 @@ def stub_config(config_json):
 
 
 def stub_st_request_type(mock_json, request_type):
-    stub_url_options_for_cors(MockUrl.GATEWAY_MOCK_URI.value)
     configure_for_local_host()
+    stub_url_options_for_cors(MockUrl.GATEWAY_MOCK_URI.value)
     mapping = Mapping(
         priority=100,
         request=MappingRequest(
@@ -93,8 +93,8 @@ def stub_st_request_type(mock_json, request_type):
 
 
 def stub_jsinit(mock_json, request_type):
-    stub_url_options_for_cors(MockUrl.GATEWAY_MOCK_URI.value)
     configure_for_local_host()
+    stub_url_options_for_cors(MockUrl.GATEWAY_MOCK_URI.value)
     mapping = Mapping(
         priority=100,
         request=MappingRequest(
@@ -114,8 +114,8 @@ def stub_jsinit(mock_json, request_type):
 
 
 def stub_st_request_type_server_error(mock_json, request_type=None):
-    stub_url_options_for_cors(MockUrl.GATEWAY_MOCK_URI.value)
     configure_for_local_host()
+    stub_url_options_for_cors(MockUrl.GATEWAY_MOCK_URI.value)
     mapping = Mapping(
         priority=100,
         request=MappingRequest(
@@ -136,8 +136,8 @@ def stub_st_request_type_server_error(mock_json, request_type=None):
 
 
 def stub_payment_status(mock_url, mock_json):
-    stub_url_options_for_cors(MockUrl.CC_MOCK_ACS_URI.value)
     configure_for_thirdparty_host()
+    stub_url_options_for_cors(MockUrl.CC_MOCK_ACS_URI.value)
     mapping = Mapping(
         priority=100,
         request=MappingRequest(
