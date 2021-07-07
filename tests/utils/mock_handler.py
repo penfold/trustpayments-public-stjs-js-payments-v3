@@ -136,6 +136,7 @@ def stub_st_request_type_server_error(mock_json, request_type=None):
 
 
 def stub_payment_status(mock_url, mock_json):
+    stub_url_options_for_cors(MockUrl.CC_MOCK_ACS_URI.value)
     configure_for_thirdparty_host()
     mapping = Mapping(
         priority=100,
