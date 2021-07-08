@@ -27,7 +27,7 @@ e2e-card-payments-tests-review:
     FEATURE_FILES_DIR: 'features/e2e_tests'
   parallel: 20
 
-e2e-card-payments-tests-release:
+.e2e-card-payments-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
@@ -37,7 +37,7 @@ e2e-card-payments-tests-release:
   parallel: 20
 
 # Cardinal Commerce E2E Tests Headless
-e2e-cardinal-commerce-tests-review:
+.e2e-cardinal-commerce-tests-review:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-review
@@ -46,7 +46,7 @@ e2e-cardinal-commerce-tests-review:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
   parallel: 8
 
-e2e-cardinal-commerce-tests-release:
+.e2e-cardinal-commerce-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
@@ -56,7 +56,7 @@ e2e-cardinal-commerce-tests-release:
   parallel: 8
 
 # this is on purpose - STJS-1678
-e2e-cardinal-commerce-timeout-tests-release:
+.e2e-cardinal-commerce-timeout-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
@@ -66,7 +66,7 @@ e2e-cardinal-commerce-timeout-tests-release:
   parallel: 8
 
 # Merchants features E2E Tests Headless
-e2e-merchants-features-tests-nightly:
+.e2e-merchants-features-tests-nightly:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-review
@@ -75,7 +75,7 @@ e2e-merchants-features-tests-nightly:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_requests'
   parallel: 6
 
-e2e-merchants-features-tests-release:
+.e2e-merchants-features-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
@@ -85,7 +85,7 @@ e2e-merchants-features-tests-release:
   parallel: 6
 
 # Smoke E2E Tests Headless -> exactly same scope which is used in extended tests as $SMOKE_E2E_TESTS_TAG
-e2e-smoke-tests-review:
+.e2e-smoke-tests-review:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-review
@@ -128,12 +128,12 @@ e2e-smoke-tests-review:
     FEATURE_FILES_DIR: 'features/component_tests'
   parallel: 21
 
-component-card-payments-tests-review:
+.component-card-payments-tests-review:
   extends:
     - .card-payments-component-tests
     - .rules-when-review
 
-component-card-payments-tests-release:
+.component-card-payments-tests-release:
   extends:
     - .card-payments-component-tests
     - .rules-when-release
@@ -145,12 +145,12 @@ component-card-payments-tests-release:
   variables:
     FEATURE_FILE_NAME: 'visa_checkout.feature'
 
-component-visa-checkout-tests-review:
+.component-visa-checkout-tests-review:
   extends:
     - .visa-checkout-component-tests
     - .rules-when-review
 
-component-visa-checkout-tests-release:
+.component-visa-checkout-tests-release:
   extends:
     - .visa-checkout-component-tests
     - .rules-when-release
