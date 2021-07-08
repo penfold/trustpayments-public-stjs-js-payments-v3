@@ -18,7 +18,7 @@
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 # Card Payments E2E Tests Headless
-e2e-card-payments-tests-review:
+.e2e-card-payments-tests-review:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-review
