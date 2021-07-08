@@ -21,7 +21,7 @@ describe('ThreeDSecureClient', () => {
   let sut: ThreeDSecureClient;
   let translator: Translator;
   let translationProvider: TranslationProvider;
-  let communicationCallbacks: Map<string, (event: IMessageBusEvent) => any>;
+  let communicationCallbacks: Map<string, <T>(event: IMessageBusEvent) => Observable<T>>;
 
   const sendMessage = <T>(event: IMessageBusEvent): Observable<T> => {
     return communicationCallbacks.get(event.type)(event);
@@ -67,7 +67,7 @@ describe('ThreeDSecureClient', () => {
 
     when(interFrameCommunicatorMock.whenReceive(anything())).thenCall((eventType: string) => {
       return {
-        thenRespond: (callback: (event: IMessageBusEvent) => Observable<any>) => {
+        thenRespond: (callback: <T>(event: IMessageBusEvent) => Observable<T>) => {
           communicationCallbacks.set(eventType, callback);
         },
       };
@@ -175,7 +175,7 @@ describe('ThreeDSecureClient', () => {
       };
       when(threeDSecureMock.init$(anything())).thenReturn(of(updatedConfig));
 
-      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_SHOW, data: configMock }).subscribe(result => {
+      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_SHOW, data: configMock }).subscribe(() => {
         expect(spy).toHaveBeenCalled();
         done();
       });
@@ -192,7 +192,7 @@ describe('ThreeDSecureClient', () => {
       };
       when(threeDSecureMock.init$(anything())).thenReturn(of(updatedConfig));
 
-      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE, data: configMock }).subscribe(result => {
+      sendMessage({ type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE, data: configMock }).subscribe(() => {
         expect(spy).toHaveBeenCalled();
         done();
       });

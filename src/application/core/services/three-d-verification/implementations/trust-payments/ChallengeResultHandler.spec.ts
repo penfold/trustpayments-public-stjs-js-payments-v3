@@ -32,7 +32,7 @@ describe('ChallengeResultHandler', () => {
     };
 
 
-    it.each<any>([ResultActionCode.FAILURE, ResultActionCode.ERROR])(
+    it.each<ResultActionCode | DoneCallback>([ResultActionCode.FAILURE, ResultActionCode.ERROR])(
       'returns an error response on %s status',
       (resultActionCode: ResultActionCode, done: DoneCallback) => {
         const challengeResult: ChallengeResultInterface = {
@@ -63,7 +63,7 @@ describe('ChallengeResultHandler', () => {
       }
     );
 
-    it.each<any>([ResultActionCode.SUCCESS, ResultActionCode.NOACTION, ResultActionCode.COMPLETED])(
+    it.each<ResultActionCode | DoneCallback>([ResultActionCode.SUCCESS, ResultActionCode.NOACTION, ResultActionCode.COMPLETED])(
       'returns an successful response on %s status',
       (resultActionCode: ResultActionCode, done: DoneCallback) => {
         const challengeResult: ChallengeResultInterface = {
@@ -143,7 +143,7 @@ describe('ChallengeResultHandler', () => {
       },
     };
 
-    it.each<any>([ResultActionCode.FAILURE, ResultActionCode.ERROR])(
+    it.each<ResultActionCode | DoneCallback>([ResultActionCode.FAILURE, ResultActionCode.ERROR])(
       'returns an error response on %s status',
       (resultActionCode: ResultActionCode, done: DoneCallback) => {
         const challengeResult: ChallengeResultInterface = {
@@ -175,7 +175,7 @@ describe('ChallengeResultHandler', () => {
       }
     );
 
-    it.each<any>([ResultActionCode.SUCCESS, ResultActionCode.NOACTION, ResultActionCode.COMPLETED])(
+    it.each<ResultActionCode | DoneCallback>([ResultActionCode.SUCCESS, ResultActionCode.NOACTION, ResultActionCode.COMPLETED])(
       'returns an successful response on %s status',
       (resultActionCode: ResultActionCode, done: DoneCallback) => {
         const challengeResult: ChallengeResultInterface = {
