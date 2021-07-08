@@ -47,6 +47,7 @@ import { IGooglePayConfig, GooglePayConfigName } from '../../integrations/google
 import { IInitPaymentMethod } from '../../application/core/services/payments/events/IInitPaymentMethod';
 import { GooglePaymentMethodName } from '../../integrations/google-pay/models/IGooglePaymentMethod';
 import { ITranslator } from '../../application/core/shared/translator/ITranslator';
+import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 
 @Service()
 export class ST {
@@ -345,7 +346,7 @@ export class ST {
 
   private Storage(): void {
     this.storage.setItem('merchantTranslations', JSON.stringify(this.config.translations));
-    this.storage.setItem('locale', this.jwtDecoder.decode(this.config.jwt).payload.locale || 'en_GB');
+    this.storage.setItem('locale', this.jwtDecoder.decode<IStJwtPayload>(this.config.jwt).payload.locale || 'en_GB');
   }
 
   private displayLiveStatus(liveStatus: boolean): void {

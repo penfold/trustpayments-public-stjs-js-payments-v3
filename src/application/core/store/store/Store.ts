@@ -31,7 +31,7 @@ export class Store<T> implements IStore<T> {
     return this.state$.pipe(map(selector), distinctUntilChanged());
   }
 
-  subscribe(observer: (state: T) => any): Unsubscribable {
+  subscribe(observer: (state: T) => unknown): Unsubscribable {
     return this.state$.subscribe(observer);
   }
 

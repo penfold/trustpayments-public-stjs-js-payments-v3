@@ -1,4 +1,4 @@
-import Card from '@securetrading/js-payments-card/stcard';
+import Card from '@trustpayments/js-payments-card';
 import { Service } from 'typedi';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
@@ -25,6 +25,7 @@ export class AnimatedCard {
           locale,
           animatedCardContainer: 'st-animated-card',
         });
+        
         this.card.onCardNumberChange(this.cardProperties.pan, true);
         this.card.onExpirationDateChange(this.cardProperties.expirationDate, true);
         this.card.onSecurityCodeChange(this.cardProperties.securityCode, true);

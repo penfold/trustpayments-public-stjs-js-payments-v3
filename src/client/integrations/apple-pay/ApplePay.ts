@@ -28,6 +28,7 @@ import { DomMethods } from '../../../application/core/shared/dom-methods/DomMeth
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { ApplePayStatus } from './apple-pay-session-service/ApplePayStatus';
+import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 
 @Service()
 export class ApplePay {
@@ -99,7 +100,7 @@ export class ApplePay {
   private updateJwtListener(): void {
     this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(this.destroy$))
-      .subscribe((event: IMessageBusEvent) => {
+      .subscribe((event: IMessageBusEvent<IUpdateJwt>) => {
         this.applePayConfigService.updateConfigWithJwtData(event.data.newJwt, this.config);
       });
   }
@@ -167,7 +168,7 @@ export class ApplePay {
 
       this.messageBus
         .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT), first(), takeUntil(this.destroy$))
-        .subscribe((response: IMessageBusEvent) => {
+        .subscribe((response: IMessageBusEvent<{ status: ApplePayClientErrorCode; details: IApplePayWalletVerifyResponseBody }>) => {
           if (Number(response.data.status) === ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS) {
             this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS, response.data.details);
             this.applePaySessionService.completeMerchantValidation(response.data.details.walletsession);
@@ -217,8 +218,8 @@ export class ApplePay {
 
       this.messageBus
         .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION), first(), takeUntil(this.destroy$))
-        .subscribe((response: IMessageBusEvent) => {
-          this.handlePaymentProcessResponse(response.data.details.errorcode, response.data.details);
+        .subscribe((response: IMessageBusEvent<{ details: IApplePayProcessPaymentResponse }>) => {
+          this.handlePaymentProcessResponse(response.data.details.errorcode as unknown as ApplePayClientErrorCode, response.data.details);
         });
     };
   }

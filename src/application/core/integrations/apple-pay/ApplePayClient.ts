@@ -20,6 +20,7 @@ import { BrowserLocalStorage } from '../../../../shared/services/storage/Browser
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { StCodec } from '../../services/st-codec/StCodec';
+import { IStJwtPayload } from '../../models/IStJwtPayload';
 
 @Service()
 export class ApplePayClient implements IApplePayClient {
@@ -124,7 +125,7 @@ export class ApplePayClient implements IApplePayClient {
 
     return this.applePayPaymentService
       .processPayment(
-        this.jwtDecoder.decode(config.jwtFromConfig).payload.requesttypedescriptions,
+        this.jwtDecoder.decode<IStJwtPayload>(config.jwtFromConfig).payload.requesttypedescriptions,
         config.validateMerchantRequest,
         formData,
         payment,

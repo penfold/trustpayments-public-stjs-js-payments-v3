@@ -43,6 +43,7 @@ import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDPr
 import { PaymentController } from '../../core/services/payments/PaymentController';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import { ITranslator } from '../../core/shared/translator/ITranslator';
+import { IStJwtPayload } from '../../core/models/IStJwtPayload';
 
 @Service()
 export class ControlFrame {
@@ -196,7 +197,7 @@ export class ControlFrame {
   }
 
   private _setRequestTypes(jwt: string): void {
-    const { payload } = this._jwtDecoder.decode(jwt);
+    const { payload } = this._jwtDecoder.decode<IStJwtPayload>(jwt);
     this._remainingRequestTypes = payload.requesttypedescriptions;
   }
 
@@ -388,7 +389,7 @@ export class ControlFrame {
 
   private _getPanFromJwt(): string {
     const jwt: string = this._getJwt();
-    const decoded = this._jwtDecoder.decode(jwt);
+    const decoded = this._jwtDecoder.decode<IStJwtPayload>(jwt);
 
     return decoded.payload.pan || '';
   }
@@ -436,7 +437,7 @@ export class ControlFrame {
         if (config.components.startOnLoad) {
           this._messageBus.publish({
             type: PUBLIC_EVENTS.BIN_PROCESS,
-            data: this._jwtDecoder.decode(config.jwt).payload.pan,
+            data: this._jwtDecoder.decode<IStJwtPayload>(config.jwt).payload.pan,
           });
 
           this._messageBus.publish(

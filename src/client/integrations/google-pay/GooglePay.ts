@@ -19,6 +19,7 @@ import { Observable } from 'rxjs';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { Money } from 'ts-money';
 import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
+import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 
 @Service()
 export class GooglePay {
@@ -88,7 +89,7 @@ export class GooglePay {
     this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.UPDATE_JWT),
-        tap((event: IMessageBusEvent) => {
+        tap((event: IMessageBusEvent<IUpdateJwt>) => {
           this.updateConfigWithJWT(event.data.newJwt);
         }),
         takeUntil(this.destroy$)
@@ -147,7 +148,7 @@ export class GooglePay {
       .then((paymentData: IPaymentData) => {
         this.onPaymentAuthorized(paymentData);
       })
-      .catch((err: any) => {
+      .catch((err: { statusCode: 'ERROR' | 'CANCELED' }) => {
         switch (err.statusCode) {
           case 'CANCELED': {
             this.onPaymentCancel();

@@ -1,7 +1,9 @@
-interface IRequestData {
+import { RequestType } from '../../../shared/types/RequestType';
+
+export interface IRequestData {
   requestid: string;
   sitereference: string;
-  [key: string]: any;
+  [key: string]: string | string[] | RequestType[];
 }
 
 export interface IRequestObject {

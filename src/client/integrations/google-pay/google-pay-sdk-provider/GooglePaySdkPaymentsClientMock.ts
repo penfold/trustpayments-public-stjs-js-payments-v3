@@ -1,5 +1,8 @@
 import { IPaymentResponse } from '../../../../integrations/google-pay/models/IGooglePayPaymentRequest';
-import { IGooglePaySessionPaymentsClient } from '../../../../integrations/google-pay/models/IGooglePayPaymentsClient';
+import {
+  IGooglePayButtonOptions,
+  IGooglePaySessionPaymentsClient,
+} from '../../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 
 export const paymentResponseMock: IPaymentResponse = {
   apiVersion: 2,
@@ -25,7 +28,7 @@ export const googlePaySdkPaymentsClientMock: IGooglePaySessionPaymentsClient = {
   loadPaymentData: () => {
     return Promise.resolve(paymentResponseMock);
   },
-  createButton: (config: any) => {
+  createButton: (config: IGooglePayButtonOptions) => {
     const button = document.createElement('button');
     button.id = 'gp-mocked-button';
     button.addEventListener('click', event => {

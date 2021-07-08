@@ -30,6 +30,9 @@ import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import Container from 'typedi';
 import { ITranslator } from '../../application/core/shared/translator/ITranslator';
 import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
+import { Locale } from '../../application/core/shared/translator/Locale';
+import { IComponentsIds } from '../../shared/model/config/IComponentsIds';
+import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 
 export class CardFrames {
   private static CARD_NUMBER_FIELD_NAME: string = 'pan';
@@ -51,7 +54,7 @@ export class CardFrames {
   private _securityCode: HTMLIFrameElement;
   private _validation: Validation;
   private _translator: ITranslator;
-  private _messageBusEvent: IMessageBusEvent = { data: { message: '' }, type: '' };
+  private _messageBusEvent: IMessageBusEvent<{ message: string; }> = { data: { message: '' }, type: '' };
   private _submitButton: HTMLInputElement | HTMLButtonElement;
   private _buttonId: string;
   private _defaultPaymentType: string;
@@ -66,13 +69,17 @@ export class CardFrames {
   private _loadAnimatedCard: boolean;
   private _config$: Observable<IConfig>;
   protected styles: IStyles;
-  protected params: any;
+  /* @todo(typings) The problem with paymentTypes here is that it should be a string[], but if you replace that you will
+     eventually find out that you need to pass string[] to URLSearchParams() in the IFrameFactory.create and apparently
+     that function doesn't handle array of strings - so either we have bad typings here or we use it incorrectly. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected params: { locale: Locale; origin: string; paymentTypes?: any; defaultPaymentType?: string; };
   protected elementsToRegister: HTMLElement[];
   protected elementsTargets: string[];
   protected jwt: string;
   protected origin: string;
-  protected componentIds: any;
-  protected submitCallback: any;
+  protected componentIds: IComponentsIds;
+  protected submitCallback: (...args: unknown[]) => unknown;
   protected fieldsToSubmit: string[];
   protected messageBus: IMessageBus;
   protected formId: string;
@@ -81,7 +88,7 @@ export class CardFrames {
   constructor(
     jwt: string,
     origin: string,
-    componentIds: Record<string, any>,
+    componentIds: IComponentsIds,
     styles: IStyles,
     paymentTypes: string[],
     defaultPaymentType: string,
@@ -103,7 +110,7 @@ export class CardFrames {
     this.origin = origin;
     this.styles = this._getStyles(styles);
     this._translator = Container.get(TranslatorToken);
-    this.params = { locale: this.jwtDecoder.decode(jwt).payload.locale || 'en_GB', origin: this.origin };
+    this.params = { locale: this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.locale || 'en_GB', origin: this.origin };
     this._config$ = this._configProvider.getConfig$();
     this._setInitValues(buttonId, defaultPaymentType, paymentTypes, animatedCard, jwt, formId);
     this.configureFormFieldsAmount(jwt);
@@ -120,6 +127,9 @@ export class CardFrames {
     this.registerElements(this.elementsToRegister, this.elementsTargets);
   }
 
+  /* @todo(typings) Looks like this fn can take either IStyle or IStyles, hence the `if` inside. All the calls here
+     are done with IStyles, but the tests for that class do not give enough confidence to assume so. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _getStyles(styles: any) {
     for (const key in styles) {
       if (styles[key] instanceof Object) {
@@ -232,7 +242,7 @@ export class CardFrames {
   }
 
   private _getCardType(jwt: string): string {
-    const cardDetails = this.jwtDecoder.decode(jwt) as any;
+    const cardDetails = this.jwtDecoder.decode<IStJwtPayload>(jwt);
     if (cardDetails.payload.pan) {
       return iinLookup.lookup(cardDetails.payload.pan).type;
     }
@@ -342,7 +352,7 @@ export class CardFrames {
   private _setInitValues(
     buttonId: string,
     defaultPaymentType: string,
-    paymentTypes: any,
+    paymentTypes: string[],
     loadAnimatedCard: boolean,
     jwt: string,
     formId: string
@@ -366,7 +376,7 @@ export class CardFrames {
       });
   }
 
-  private _setSubmitButtonProperties(element: any, state: FormState): HTMLElement {
+  private _setSubmitButtonProperties(element: HTMLInputElement | HTMLButtonElement, state: FormState): HTMLElement {
     let disabledState;
     if (state === FormState.BLOCKED) {
       element.textContent = this._processingMessage;

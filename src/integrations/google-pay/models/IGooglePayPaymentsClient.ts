@@ -1,4 +1,4 @@
-import { IGooglePayPaymentRequest, IGooglePlayIsReadyToPayRequest } from './IGooglePayPaymentRequest';
+import { IGooglePayPaymentRequest, IGooglePlayIsReadyToPayRequest, IPaymentResponse } from './IGooglePayPaymentRequest';
 
 export interface IGooglePayButtonOptions {
   buttonColor: string;
@@ -7,8 +7,12 @@ export interface IGooglePayButtonOptions {
   onClick: () => void;
 }
 
+export interface IIsReadyToPayResponse {
+  result: boolean;
+}
+
 export interface IGooglePaySessionPaymentsClient {
   createButton(options: IGooglePayButtonOptions): Node;
-  loadPaymentData(request: IGooglePayPaymentRequest): Promise<any>;
-  isReadyToPay(request: IGooglePlayIsReadyToPayRequest): Promise<any>;
+  loadPaymentData(request: IGooglePayPaymentRequest): Promise<IPaymentResponse>;
+  isReadyToPay(request: IGooglePlayIsReadyToPayRequest): Promise<IIsReadyToPayResponse>;
 }

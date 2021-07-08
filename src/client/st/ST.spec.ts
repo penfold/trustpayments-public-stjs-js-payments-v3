@@ -39,10 +39,9 @@ describe('ST', () => {
   const { cacheConfig, instance } = stFixture();
 
   describe('constructor()', () => {
-    let stObject: any;
+    let stObject: ReturnType<typeof ST>;
 
     beforeEach(() => {
-      instance.Init = jest.fn();
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       stObject = ST(cacheConfig);
     });
@@ -55,6 +54,7 @@ describe('ST', () => {
     });
 
     it('should assign new jwt value', () => {
+      // @ts-expect-error Legacy spec testing internal implementations
       expect(instance.config.jwt).toEqual('somenewjwtvalue');
     });
 
@@ -75,6 +75,7 @@ describe('ST', () => {
   describe('cbrt', () => {
     const key: string = 'some random key';
     beforeEach(() => {
+      // @ts-expect-error Legacy spec testing internal implementations
       instance.cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(key);
     });
 
@@ -259,6 +260,6 @@ function stFixture() {
     },
   };
   // @ts-ignore
-  const instance: any = ST(config);
+  const instance: ReturnType<typeof ST> = ST(config);
   return { cacheConfig, config, instance, applePayConfig, visaCheckoutConfig, googlePayConfig };
 }

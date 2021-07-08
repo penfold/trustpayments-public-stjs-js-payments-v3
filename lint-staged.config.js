@@ -1,6 +1,6 @@
 module.exports = {
   '*.ts': [
-    (filenames) => `npx eslint -c .eslintrc-strict.js ${filenames.join(' ')}`,
+    (filenames) => `npx eslint ${filenames.join(' ')}`,
     () => 'npm run typescript:check'
   ]
 };

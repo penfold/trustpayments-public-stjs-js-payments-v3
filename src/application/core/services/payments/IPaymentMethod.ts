@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
 import { IPaymentResult } from './IPaymentResult';
 
-export interface IPaymentMethod<C = any, D = any, T = any> {
+export interface IPaymentMethod<TConfig = unknown, TData = unknown, TResult = unknown> {
   getName(): string;
-  init(config: C): Observable<void>;
-  start(data: D): Observable<IPaymentResult<T>>;
+  init(config: TConfig): Observable<void>;
+  start(data: TData): Observable<IPaymentResult<TResult>>;
 }

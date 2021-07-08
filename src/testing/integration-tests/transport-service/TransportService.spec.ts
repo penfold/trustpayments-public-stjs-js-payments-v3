@@ -6,17 +6,18 @@ import { JwtReducer } from '../../../application/core/store/reducers/jwt/JwtRedu
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { IApplicationFrameState } from '../../../application/core/store/state/IApplicationFrameState';
 
 describe('TransportService', () => {
   let transportService: TransportService;
-  let store: Store<any>;
+  let store: Store<IApplicationFrameState>;
   let messageBus: IMessageBus;
   let jwtDecoder: JwtDecoder;
 
   beforeAll(() => {
     transportService = Container.get(TransportService);
     messageBus = Container.get(MessageBusToken);
-    store = Container.get(StoreToken) as Store<any>;
+    store = Container.get(StoreToken) as Store<IApplicationFrameState>;
     store.addReducer(Container.get(JwtReducer));
     jwtDecoder = Container.get(JwtDecoder);
   });
