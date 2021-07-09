@@ -1,4 +1,4 @@
-import { Observable, EMPTY } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
@@ -31,7 +31,7 @@ export class GooglePaymentMethod implements IPaymentMethod<IGooglePayConfig, IGo
       map((response: IRequestTypeResponse) => ({
         status: data.resultStatus || GetPaymentStatus(response.errorcode),
         data: response,
-      }))
+      })),
     );
   }
 }

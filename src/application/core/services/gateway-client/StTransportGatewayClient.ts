@@ -1,16 +1,17 @@
 import { Service } from 'typedi';
 import { from, Observable, of, throwError } from 'rxjs';
-import { IThreeDInitResponse } from '../models/IThreeDInitResponse';
+import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { IThreeDQueryResponse } from '../models/IThreeDQueryResponse';
-import { IStRequest } from '../models/IStRequest';
-import { StTransport } from './st-transport/StTransport';
-import { PUBLIC_EVENTS } from '../models/constants/EventTypes';
-import { ThreeDInitRequest } from './three-d-verification/data/ThreeDInitRequest';
-import { IMessageBus } from '../shared/message-bus/IMessageBus';
+import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
+import { IStRequest } from '../../models/IStRequest';
+import { StTransport } from '../st-transport/StTransport';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { ThreeDInitRequest } from '../three-d-verification/data/ThreeDInitRequest';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { IGatewayClient } from './IGatewayClient';
 
 @Service()
-export class GatewayClient {
+export class StTransportGatewayClient implements IGatewayClient {
   constructor(private stTransport: StTransport, private messageBus: IMessageBus) {}
 
   jsInit(): Observable<IThreeDInitResponse> {

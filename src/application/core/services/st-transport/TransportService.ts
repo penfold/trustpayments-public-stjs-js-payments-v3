@@ -15,6 +15,8 @@ import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IDecodedResponse } from '../st-codec/interfaces/IDecodedResponse';
 
+type IBaseResponseType = IRequestTypeResponse & IJwtResponse;
+
 @Service()
 export class TransportService {
   constructor(
@@ -26,7 +28,7 @@ export class TransportService {
     private messageBus: IMessageBus
   ) {}
 
-  sendRequest(request: IStRequest, gatewayUrl?: string): Observable<IRequestTypeResponse & IJwtResponse> {
+  sendRequest<T extends IBaseResponseType>(request: IStRequest, gatewayUrl?: string): Observable<T> {
     const gatewayUrl$: Observable<string> = gatewayUrl
       ? of(gatewayUrl)
       : this.configProvider.getConfig$().pipe(map(config => config.datacenterurl));
@@ -37,11 +39,11 @@ export class TransportService {
       switchMap(url => this.httpClient.post$(url, requestObject, httpOptions)),
       map((response: IHttpClientResponse<IJwtResponse>) => this.responseDecoder.decode(response)),
       tap((response: IDecodedResponse) => this.handleJwtUpdates(response)),
-      map((response: IDecodedResponse) => ({ ...response.customerOutput, jwt: response.responseJwt })),
+      map((response: IDecodedResponse) => ({ ...response.customerOutput, jwt: response.responseJwt } as T)),
       catchError((error: Error) => {
         this.resetJwt();
         return throwError(error);
-      })
+      }),
     );
   }
 

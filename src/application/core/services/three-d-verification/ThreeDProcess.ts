@@ -2,46 +2,35 @@ import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Service } from 'typedi';
-import { first, mapTo, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { iif, merge, Observable, of } from 'rxjs';
+import { first, mapTo, switchMap, tap } from 'rxjs/operators';
+import { iif, Observable, of } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
-import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IThreeDVerificationService } from './IThreeDVerificationService';
 import { IThreeDSTokens } from './data/IThreeDSTokens';
 import { ThreeDSTokensProvider } from './ThreeDSTokensProvider';
 import { IVerificationData } from './data/IVerificationData';
 import { VerificationResultHandler } from './VerificationResultHandler';
-import { GatewayClient } from '../GatewayClient';
 import { GoogleAnalytics } from '../../integrations/google-analytics/GoogleAnalytics';
 import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { IGatewayClient } from '../gateway-client/IGatewayClient';
 
 @Service()
 export class ThreeDProcess {
-  private threeDSTokens$: Observable<IThreeDSTokens>;
-
   constructor(
     private verificationService: IThreeDVerificationService,
     private messageBus: IMessageBus,
     private tokenProvider: ThreeDSTokensProvider,
-    private gatewayClient: GatewayClient,
+    private gatewayClient: IGatewayClient,
     private verificationResultHandler: VerificationResultHandler
   ) {}
 
-  init(tokens?: IThreeDSTokens): Observable<void> {
-    const initialTokens = tokens ? of(tokens) : this.tokenProvider.getTokens();
-    const updatedTokens = this.messageBus.pipe(
-      ofType(PUBLIC_EVENTS.UPDATE_JWT),
-      switchMap(() => this.tokenProvider.getTokens())
-    );
-
-    this.threeDSTokens$ = merge(initialTokens, updatedTokens).pipe(shareReplay(1));
-
-    return this.threeDSTokens$.pipe(
+  init(): Observable<void> {
+    return this.tokenProvider.getTokens().pipe(
       first(),
-      switchMap(threeDStokens => this.initVerificationService(threeDStokens))
+      switchMap(threeDStokens => this.initVerificationService(threeDStokens)),
     );
   }
 
@@ -50,7 +39,7 @@ export class ThreeDProcess {
     card: ICard,
     merchantData: IMerchantData
   ): Observable<IThreeDQueryResponse> {
-    return this.threeDSTokens$.pipe(
+    return this.tokenProvider.getTokens().pipe(
       first(),
       switchMap(tokens => {
         const includesThreedquery = () => requestTypes.includes('THREEDQUERY');
@@ -69,7 +58,7 @@ export class ThreeDProcess {
           }),
           tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed'))
         );
-      })
+      }),
     );
   }
 

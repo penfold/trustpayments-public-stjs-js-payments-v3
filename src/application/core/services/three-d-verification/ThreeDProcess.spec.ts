@@ -1,6 +1,5 @@
 import { IThreeDVerificationService } from './IThreeDVerificationService';
 import { ThreeDSTokensProvider } from './ThreeDSTokensProvider';
-import { GatewayClient } from '../GatewayClient';
 import { VerificationResultHandler } from './VerificationResultHandler';
 import { anything, deepEqual, instance, mock, reset, spy, verify, when } from 'ts-mockito';
 import { ThreeDProcess } from './ThreeDProcess';
@@ -17,12 +16,13 @@ import { ActionCode } from './data/ActionCode';
 import { IThreeDSTokens } from './data/IThreeDSTokens';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
+import { IGatewayClient } from '../gateway-client/IGatewayClient';
 
 describe('ThreeDProcess', () => {
   let verificationServiceMock: IThreeDVerificationService;
   let messageBusMock: IMessageBus;
   let tokenProviderMock: ThreeDSTokensProvider;
-  let gatewayClientMock: GatewayClient;
+  let gatewayClientMock: IGatewayClient;
   let verificationResultHandlerMock: VerificationResultHandler;
   let threeDProcess: ThreeDProcess;
 
@@ -30,7 +30,7 @@ describe('ThreeDProcess', () => {
     verificationServiceMock = mock<IThreeDVerificationService>();
     messageBusMock = new SimpleMessageBus();
     tokenProviderMock = mock(ThreeDSTokensProvider);
-    gatewayClientMock = mock(GatewayClient);
+    gatewayClientMock = mock<IGatewayClient>();
     verificationResultHandlerMock = mock(VerificationResultHandler);
     threeDProcess = new ThreeDProcess(
       instance(verificationServiceMock),
@@ -54,13 +54,6 @@ describe('ThreeDProcess', () => {
     it('initializes 3ds verification service using tokens from token provider', done => {
       threeDProcess.init().subscribe(() => {
         verify(verificationServiceMock.init('cardinal-jwt')).once();
-        done();
-      });
-    });
-
-    it('initializes 3ds verification service using tokens passed as argument', done => {
-      threeDProcess.init({ jwt: 'foo', cacheToken: 'bar' }).subscribe(() => {
-        verify(verificationServiceMock.init('foo')).once();
         done();
       });
     });
@@ -191,7 +184,7 @@ describe('ThreeDProcess', () => {
         errorcode: '0',
         errormessage: 'success',
         jwt: 'jwt',
-        requesttypescription: 'THREEDQUERY',
+        requesttypedescription: 'THREEDQUERY',
         enrolled: 'Y',
         acsurl: 'https://acs.url',
         acquirerresponsecode: '0',
@@ -199,6 +192,7 @@ describe('ThreeDProcess', () => {
         acquirertransactionreference: 'foobar-123',
         threedpayload: 'abc3dpayload',
         transactionreference: '',
+        transactionstartedtimestamp: '',
       };
 
       const verificationData: IVerificationData = {
