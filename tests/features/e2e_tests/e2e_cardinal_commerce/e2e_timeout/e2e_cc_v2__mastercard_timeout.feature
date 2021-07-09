@@ -9,6 +9,7 @@ Feature: Cardinal Commerce E2E tests v2 - Timeout - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
+      | sitereference           | jscardinal76426 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION
     And User clicks Pay button
@@ -22,3 +23,4 @@ Feature: Cardinal Commerce E2E tests v2 - Timeout - MasterCard
       | request_types            | payment_status                          | callback |
       | THREEDQUERY AUTH         | Payment has been successfully processed | success  |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    |
+      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | success  |
