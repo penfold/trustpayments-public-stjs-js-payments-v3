@@ -18,7 +18,7 @@ describe('VerificationResultHandler', () => {
     enrolled: 'Y',
     threedpayload: '3dpayload',
     transactionreference: 'ref',
-    requesttypescription: 'THREEDQUERY',
+    requesttypedescription: 'THREEDQUERY',
   };
 
   let verificationResultHandler: VerificationResultHandler;
@@ -96,7 +96,7 @@ describe('VerificationResultHandler', () => {
             enrolled: 'Y',
             threedpayload: '3dpayload',
             transactionreference: 'ref',
-            requesttypescription: 'THREEDQUERY',
+            requesttypedescription: 'THREEDQUERY',
             acquirerresponsecode: '1234',
             acquirerresponsemessage: 'error occured',
             errorcode: '50003',

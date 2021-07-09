@@ -99,7 +99,7 @@ describe('Payment', () => {
         card,
         { pan: 'overridden', merchant: 'data' },
         ({
-          requesttypescription: 'THREEDQUERY',
+          requesttypedescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.THREEDREDIRECT,
           cachetoken: 'foobar',
           errorcode: '0',
@@ -121,7 +121,7 @@ describe('Payment', () => {
         card,
         { pan: 'overridden', merchant: 'data' },
         ({
-          requesttypescription: 'THREEDQUERY',
+          requesttypedescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.RESULT,
           cachetoken: 'foobar',
           threedresponse: 'xyzzzz',
@@ -136,14 +136,14 @@ describe('Payment', () => {
     it('should not send remaining request types when previous response has TRYAGAIN customeroutput', async () => {
       await expect(instance
         .processPayment([RequestType.AUTH, RequestType.RISKDEC], card, { pan: 'overridden', merchant: 'data' }, ({
-          requesttypescription: 'THREEDQUERY',
+          requesttypedescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.TRYAGAIN,
           cachetoken: 'foobar',
           threedresponse: 'xyzzzz',
           errorcode: '0',
         } as unknown) as IThreeDQueryResponse)).rejects.toEqual({
         response: {
-          requesttypescription: 'THREEDQUERY',
+          requesttypedescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.TRYAGAIN,
           cachetoken: 'foobar',
           threedresponse: 'xyzzzz',
@@ -158,14 +158,14 @@ describe('Payment', () => {
     it('should not send remaining request types when previous response has no-zero errorcode', async () => {
       await expect(instance
         .processPayment([RequestType.AUTH, RequestType.RISKDEC], card, { pan: 'overridden', merchant: 'data' }, ({
-          requesttypescription: 'THREEDQUERY',
+          requesttypedescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.THREEDREDIRECT,
           cachetoken: 'foobar',
           threedresponse: 'xyzzzz',
           errorcode: '1234',
         } as unknown) as IThreeDQueryResponse)).rejects.toEqual({
         response: {
-          requesttypescription: 'THREEDQUERY',
+          requesttypedescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.THREEDREDIRECT,
           cachetoken: 'foobar',
           threedresponse: 'xyzzzz',

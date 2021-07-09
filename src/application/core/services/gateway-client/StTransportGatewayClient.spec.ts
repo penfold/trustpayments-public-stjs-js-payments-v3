@@ -1,27 +1,28 @@
-import { StTransport } from './st-transport/StTransport';
-import { IMessageBus } from '../shared/message-bus/IMessageBus';
+import { StTransport } from '../st-transport/StTransport';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { GatewayClient } from './GatewayClient';
-import { ThreeDInitRequest } from './three-d-verification/data/ThreeDInitRequest';
-import { IThreeDInitResponse } from '../models/IThreeDInitResponse';
-import { PUBLIC_EVENTS } from '../models/constants/EventTypes';
-import { IStRequest } from '../models/IStRequest';
-import { IThreeDQueryResponse } from '../models/IThreeDQueryResponse';
+import { StTransportGatewayClient } from './StTransportGatewayClient';
+import { ThreeDInitRequest } from '../three-d-verification/data/ThreeDInitRequest';
+import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { IStRequest } from '../../models/IStRequest';
+import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 
-describe('GatewayClient', () => {
+describe('StTransportGatewayClient', () => {
   let transportMock: StTransport;
   let messageBusMock: IMessageBus;
-  let gatewayClient: GatewayClient;
+  let gatewayClient: StTransportGatewayClient;
 
   beforeEach(() => {
     transportMock = mock(StTransport);
     messageBusMock = mock<IMessageBus>();
-    gatewayClient = new GatewayClient(instance(transportMock), instance(messageBusMock));
+    gatewayClient = new StTransportGatewayClient(instance(transportMock), instance(messageBusMock));
   });
 
   describe('jsInit', () => {
     const threeDInitRequest = new ThreeDInitRequest();
     const threeDInitResponse: IThreeDInitResponse = {
+      jwt: '',
       cachetoken: 'foo',
       errorcode: '0',
       errormessage: '',
@@ -77,9 +78,10 @@ describe('GatewayClient', () => {
       errorcode: '0',
       errormessage: '',
       jwt: '',
-      requesttypescription: 'THREEDQUERY',
+      requesttypedescription: 'THREEDQUERY',
       threedpayload: '',
       transactionreference: '',
+      transactionstartedtimestamp: '',
     };
 
     beforeEach(() => {

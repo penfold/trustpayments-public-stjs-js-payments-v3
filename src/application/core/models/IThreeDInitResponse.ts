@@ -1,9 +1,8 @@
-export interface IThreeDInitResponse {
+import { IRequestTypeResponse } from '../services/st-codec/interfaces/IRequestTypeResponse';
+
+export interface IThreeDInitResponse extends IRequestTypeResponse {
   cachetoken: string;
-  errorcode: string;
-  errormessage: string;
-  requesttypedescription: string;
   threedinit: string;
-  transactionstartedtimestamp: string;
   maskedpan?: string;
+  jwt: string;
 }
