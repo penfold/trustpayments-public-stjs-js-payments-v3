@@ -1,5 +1,3 @@
-import json
-
 from configuration import CONFIGURATION
 from pages.locators.animated_card_locators import AnimatedCardLocators
 from pages.locators.payment_methods_locators import PaymentMethodsLocators
