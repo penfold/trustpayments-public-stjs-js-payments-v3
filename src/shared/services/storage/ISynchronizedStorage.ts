@@ -5,5 +5,5 @@ export interface ISynchronizedStorage extends IStorage {
 }
 
 export function isSynchronized(storage: IStorage): storage is ISynchronizedStorage {
-  return typeof (storage as any).initSynchronization === 'function';
+  return typeof (storage as ISynchronizedStorage).initSynchronization === 'function';
 }

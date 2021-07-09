@@ -376,7 +376,7 @@ describe('ApplePay', () => {
     });
 
     it('should authorize payment process', done => {
-      messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe((response: IMessageBusEvent) => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS)).subscribe((response: IMessageBusEvent<IApplePayClientStatus>) => {
         const { status, details }: IApplePayClientStatus = response.data;
 
         if (status !== ApplePayClientStatus.ON_PAYMENT_AUTHORIZED) {

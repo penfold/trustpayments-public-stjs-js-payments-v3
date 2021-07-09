@@ -25,7 +25,7 @@ describe('Utils', () => {
       [[null, null, 4, 6], 4, 3], // this is more like what we do in _lookup
       [{ 0: 0, 1: 0, 2: 4, 3: 6 }, 4, 3], // behaves like return Object.values(iterable).some(callback)
     ]).it('should return desired value and call the callback', (iterable, expected, timesCalledBack) => {
-      const callback = jest.fn((item: any): any => {
+      const callback = jest.fn((item: unknown): unknown => {
         return item;
       });
       expect(Utils.forEachBreak(iterable, callback)).toBe(expected);

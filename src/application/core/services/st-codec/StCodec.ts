@@ -21,6 +21,9 @@ import { InvalidResponseError } from './InvalidResponseError';
 import { Locale } from '../../shared/translator/Locale';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { IResponsePayload } from './interfaces/IResponsePayload';
+import { IRequestTypeResponse } from './interfaces/IRequestTypeResponse';
+import { IStJwtPayload } from '../../models/IStJwtPayload';
 
 export class StCodec {
   public static CONTENT_TYPE = 'application/json';
@@ -50,7 +53,7 @@ export class StCodec {
     };
   }
 
-  public static verifyResponseObject(responseData: Record<string, string>, jwtResponse: string): IResponseData {
+  public static verifyResponseObject(responseData: IResponsePayload, jwtResponse: string): IResponseData {
     if (StCodec.isInvalidResponse(responseData)) {
       throw StCodec.handleInvalidResponse();
     }
@@ -141,24 +144,24 @@ export class StCodec {
     return new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
   }
 
-  private static isInvalidResponse(responseData: any) {
+  private static isInvalidResponse(responseData: IResponsePayload) {
     return !(
       responseData &&
       responseData.version === StCodec.VERSION &&
       responseData.response &&
-      responseData.response.length > 0
+      (responseData.response as IRequestTypeResponse[]).length > 0
     );
   }
 
-  private static determineResponse(responseData: any, jwtResponse: string) {
+  private static determineResponse(responseData: IResponsePayload, jwtResponse: string) {
     let responseContent: IResponseData;
-    responseData.response.forEach((r: any) => {
+    responseData.response.forEach((r) => {
       if (r.customeroutput) {
-        responseContent = r;
+        responseContent = r as IResponseData;
       }
     });
     if (!responseContent) {
-      responseContent = responseData.response[responseData.response.length - 1];
+      responseContent = responseData.response[responseData.response.length - 1] as IResponseData;
     }
 
     responseContent.jwt = jwtResponse;
@@ -208,9 +211,9 @@ export class StCodec {
   }
 
   private static decodeResponseJwt(jwt: string, reject: (error: Error) => void) {
-    let decoded: any;
+    let decoded: IStJwtObj<IResponsePayload>;
     try {
-      decoded = jwt_decode(jwt) as any;
+      decoded = jwt_decode<IStJwtObj<IResponsePayload>>(jwt);
     } catch (e) {
       reject(StCodec.handleInvalidResponse());
     }
@@ -226,10 +229,10 @@ export class StCodec {
     StCodec.notification = Container.get(NotificationService);
     StCodec.jwt = jwt;
     StCodec.originalJwt = jwt;
-    StCodec.locale = this.jwtDecoder.decode(StCodec.jwt).payload.locale || 'en_GB';
+    StCodec.locale = this.jwtDecoder.decode<IStJwtPayload>(StCodec.jwt).payload.locale || 'en_GB';
   }
 
-  public buildRequestObject(requestData: Record<string, any>): Record<string, any> {
+  public buildRequestObject(requestData: IStRequest): Record<string, unknown> {
     return {
       acceptcustomeroutput: '2.00',
       jwt: StCodec.jwt,
@@ -257,9 +260,9 @@ export class StCodec {
   public async decode(responseObject: Response | Record<string, unknown>): Promise<Record<string, unknown>> {
     return new Promise((resolve, reject) => {
       if (typeof responseObject.json === 'function') {
-        responseObject.json().then((responseData: any) => {
+        responseObject.json().then((responseData: IResponsePayload) => {
           try {
-            const decoded: IStJwtObj = StCodec.decodeResponseJwt(responseData.jwt, reject);
+            const decoded = StCodec.decodeResponseJwt(responseData.jwt, reject);
             const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
 
             if (Number(verifiedResponse.errorcode) === 0) {

@@ -1,11 +1,11 @@
-declare module '@securetrading/js-payments-card/stcard' {
+declare module '@trustpayments/js-payments-card' {
   class Card {
-    constructor(...args: any[]);
+    constructor(...args: unknown[]);
 
-    onCardNumberChange(...args: any[]): void;
-    onExpirationDateChange(...args: any[]): void;
-    onSecurityCodeChange(...args: any[]): void;
-    onFieldFocusOrBlur(...args: any[]): void;
+    onCardNumberChange(...args: unknown[]): void;
+    onExpirationDateChange(...args: unknown[]): void;
+    onSecurityCodeChange(...args: unknown[]): void;
+    onFieldFocusOrBlur(...args: unknown[]): void;
   }
   export = Card;
 }

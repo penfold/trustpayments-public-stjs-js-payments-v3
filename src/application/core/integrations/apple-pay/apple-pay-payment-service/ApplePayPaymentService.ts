@@ -45,8 +45,8 @@ export class ApplePayPaymentService {
 
     const walletVerifyError$ = this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
-      filter((event: IMessageBusEvent) => Number(event.data.errorcode) !== 0),
-      map((event: IMessageBusEvent) => ({
+      filter((event: IMessageBusEvent<IApplePayProcessPaymentResponse>) => Number(event.data.errorcode) !== 0),
+      map((event: IMessageBusEvent<IApplePayProcessPaymentResponse>) => ({
         status: ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR,
         data: {
           errorcode: event.data.errorcode,
@@ -82,9 +82,9 @@ export class ApplePayPaymentService {
   ): Observable<IApplePayProcessPaymentResponse> {
     const bypassError$ = this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
-      filter((event: IMessageBusEvent) => {
+      filter((event: IMessageBusEvent<IApplePayProcessPaymentResponse>) => {
         if (Number(event.data.errorcode) === 22000 || Number(event.data.errorcode) === 50003) {
-          return event.data;
+          return Boolean(event.data);
         }
       }),
       map((event: { data: IApplePayProcessPaymentResponse }) => event.data),

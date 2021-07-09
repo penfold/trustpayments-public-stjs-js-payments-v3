@@ -1,4 +1,10 @@
-import { CardType, ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode } from '@trustpayments/3ds-sdk-js';
+import {
+  CardType,
+  ChallengeDisplayMode,
+  ConfigInterface,
+  LoggingLevel,
+  ResultActionCode,
+} from '@trustpayments/3ds-sdk-js';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { IConfig } from '../../../../../../shared/model/config/IConfig';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
@@ -23,6 +29,7 @@ import { ThreeDSecureMethodService } from './ThreeDSecureMethodService';
 import { BrowserDataProvider } from './BrowserDataProvider';
 import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
 import { Enrollment } from '../../../../models/constants/Enrollment';
+import { CustomerOutput } from '../../../../models/constants/CustomerOutput';
 import DoneCallback = jest.DoneCallback;
 
 describe('ThreeDSecureVerificationService', () => {
@@ -129,7 +136,7 @@ describe('ThreeDSecureVerificationService', () => {
       errormessage: '',
       errorcode: '',
       requesttypedescription: 'THREEDLOOKUP',
-      customeroutput: '',
+      customeroutput: CustomerOutput.RESULT,
       threedstransactionid: '12345',
       threedmethodurl: 'https://methodurl',
       threednotificationurl: 'https://methodurlnotification',

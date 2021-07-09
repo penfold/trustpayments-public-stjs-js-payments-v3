@@ -10,7 +10,7 @@ type CommonState = IApplicationFrameState | IParentFrameState;
 
 @Service({ id: ReducerToken, multiple: true })
 export class StorageReducer implements IReducer<CommonState> {
-  reduce(state: CommonState, action: IMessageBusEvent): CommonState {
+  reduce(state: CommonState, action: IMessageBusEvent<{ key: string; value: unknown; }>): CommonState {
     if (action.type === PUBLIC_EVENTS.STORAGE_SET_ITEM) {
       const storage = { ...state.storage, [action.data.key]: action.data.value };
       return { ...state, storage };

@@ -1,5 +1,4 @@
 import { first } from 'rxjs/operators';
-import { ofType } from 'redux-observable';
 import { of, zip } from 'rxjs';
 import Container from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
@@ -20,18 +19,17 @@ import { googlePayConfigMock } from '../../../client/integrations/google-pay/Goo
 import { GooglePayInitializeSubscriber } from '../../../client/integrations/google-pay/google-pay-initialize-subscriber/GooglePayInitializeSubscriber';
 import { GooglePaySessionPaymentsClientMock } from './GooglePaySessionClientMock';
 import { IGooglePayGatewayRequest } from '../../../integrations/google-pay/models/IGooglePayRequest';
-import { RequestType } from '../../../shared/types/RequestType';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { IStRequest } from '../../../application/core/models/IStRequest';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 
 describe('GooglePay Payment', () => {
   let paymentController: PaymentController;
   let configProvider: TestConfigProvider;
   let messageBus: IMessageBus;
   let config: IConfig;
-  let form: HTMLFormElement;
   let paymentResultSubmitterSubscriber: PaymentResultSubmitterSubscriber;
   let googlePayInitializeSubscriber: GooglePayInitializeSubscriber;
   let googlePaySessionPaymentsClientMock: GooglePaySessionPaymentsClientMock;
@@ -46,7 +44,7 @@ describe('GooglePay Payment', () => {
         errorcode: '0',
         requesttypedescription: 'AUTH',
         customeroutput: 'RESULT',
-        jwt: 'jwt'
+        jwt: 'jwt',
       })
     );
     Container.set(TransportService, instance(transportServiceMock));
@@ -73,10 +71,10 @@ describe('GooglePay Payment', () => {
       livestatus: 0,
       datacenterurl: 'https://example.com',
       visaCheckout: null,
-      googlePay: googlePayConfigMock
+      googlePay: googlePayConfigMock,
     };
 
-    document.body.appendChild((form = DomMethods.createHtmlElement({ id: 'st-form' }, 'form') as HTMLFormElement));
+    document.body.appendChild((DomMethods.createHtmlElement({ id: 'st-form' }, 'form') as HTMLFormElement));
     const googlePayNode = document.createElement('div');
     googlePayNode.id = 'st-google-pay';
     document.getElementById('st-form').appendChild(googlePayNode);
@@ -89,14 +87,14 @@ describe('GooglePay Payment', () => {
   describe('GooglePay Success Payment', () => {
     beforeEach(() => {
       googlePaySessionPaymentsClientMock.mockPaymentData('success');
-      (window as any).google = {
+      window.google = {
         payments: {
           api: {
             PaymentsClient: jest.fn().mockImplementation(() => {
               return googlePaySessionPaymentsClientMock;
-            })
-          }
-        }
+            }),
+          },
+        },
       };
     });
 
@@ -113,24 +111,24 @@ describe('GooglePay Payment', () => {
             errorcode: '0',
             requesttypedescription: 'AUTH',
             customeroutput: 'RESULT',
-            jwt: 'jwt'
+            jwt: 'jwt',
           };
 
           expect(submitCallbackEvent).toEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
-            data: expectedResultData
+            data: expectedResultData,
           });
 
           expect(successCallbackEvent).toEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
-            data: expectedResultData
+            data: expectedResultData,
           });
 
           const requestData: IStRequest = {
             walletsource: 'GOOGLEPAY',
             wallettoken:
               '{"apiVersion":2,"apiVersionMinor":0,"paymentMethodData":{"description":"Mastercard •••• 4444","info":{"cardDetails":"4444","cardNetwork":"MASTERCARD"}},"tokenizationData":{"token":"sometoken","type":"PAYMENT_GATEWAY"},"type":"CARD"}',
-            termurl: 'https://termurl.com'
+            termurl: 'https://termurl.com',
           };
 
           verify(transportServiceMock.sendRequest(deepEqual(requestData), anything())).once();
@@ -140,7 +138,7 @@ describe('GooglePay Payment', () => {
 
       messageBus.publish<IInitPaymentMethod<IConfig>>({
         type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-        data: { name: GooglePaymentMethodName, config }
+        data: { name: GooglePaymentMethodName, config },
       });
 
       setTimeout(() => {
@@ -152,14 +150,14 @@ describe('GooglePay Payment', () => {
   describe('GooglePay Error Payment', () => {
     beforeEach(() => {
       googlePaySessionPaymentsClientMock.mockPaymentData('error');
-      (window as any).google = {
+      window.google = {
         payments: {
           api: {
             PaymentsClient: jest.fn().mockImplementation(() => {
               return googlePaySessionPaymentsClientMock;
-            })
-          }
-        }
+            }),
+          },
+        },
       };
     });
     it('runs a google pay payment method, causes an error and calls error callback', done => {
@@ -172,17 +170,17 @@ describe('GooglePay Payment', () => {
           const resultData: IGooglePayGatewayRequest = {
             errorcode: '1',
             walletsource: 'GOOGLEPAY',
-            errormessage: PaymentStatus.ERROR
+            errormessage: PaymentStatus.ERROR,
           };
 
           expect(submitCallbackEvent).toEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
-            data: resultData
+            data: resultData,
           });
 
           expect(errorCallbackEvent).toEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
-            data: resultData
+            data: resultData,
           });
 
           verify(transportServiceMock.sendRequest(anything(), anything())).never();
@@ -192,7 +190,7 @@ describe('GooglePay Payment', () => {
 
       messageBus.publish<IInitPaymentMethod<IConfig>>({
         type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-        data: { name: GooglePaymentMethodName, config }
+        data: { name: GooglePaymentMethodName, config },
       });
 
       setTimeout(() => {

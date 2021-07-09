@@ -11,7 +11,7 @@ export class DomMethods {
   private static STYLE_MARKUP: string = 'style';
   private static CREATED_FIELD_CLASSNAME: string = '-st-created-field';
 
-  public static addDataToForm(form: HTMLFormElement, data: Record<string, any>, fields?: string[]): void {
+  public static addDataToForm(form: HTMLFormElement, data: Record<string, unknown>, fields?: string[]): void {
     Object.entries(data).forEach(([field, value]) => {
       if (!fields || fields.includes(field)) {
         let inputElement: HTMLInputElement = form.querySelector(`${DomMethods.INPUT_MARKUP}[name="${field}"]`);
@@ -24,7 +24,7 @@ export class DomMethods {
               name: field,
               type: DomMethods.HIDDEN_ATTRIBUTE,
               class: DomMethods.CREATED_FIELD_CLASSNAME,
-              value,
+              value: value ? value.toString() : '',
             },
             DomMethods.INPUT_MARKUP
           ) as HTMLInputElement;
@@ -35,7 +35,7 @@ export class DomMethods {
     });
   }
 
-  public static addListener(targetId: string, listenerType: string, callback: (...args: any[]) => void): void {
+  public static addListener(targetId: string, listenerType: string, callback: (...args: unknown[]) => void): void {
     document.getElementById(targetId).addEventListener(listenerType, callback);
   }
 
@@ -53,9 +53,9 @@ export class DomMethods {
     return element;
   };
 
-  public static getAllFormElements = (form: HTMLElement): any[] => [
-    ...Array.from(form.querySelectorAll(DomMethods.SELECT_MARKUP)),
-    ...Array.from(form.querySelectorAll(DomMethods.INPUT_MARKUP)),
+  public static getAllFormElements = (form: HTMLElement): (HTMLSelectElement | HTMLInputElement)[] => [
+    ...Array.from(form.querySelectorAll<HTMLSelectElement>(DomMethods.SELECT_MARKUP)),
+    ...Array.from(form.querySelectorAll<HTMLInputElement>(DomMethods.INPUT_MARKUP)),
   ];
 
   public static insertScript(target: string, params: IScriptParams): Promise<Element> {
@@ -68,6 +68,7 @@ export class DomMethods {
         if (!targetElement) {
           targetElement = document.getElementById(target);
         }
+        // @ts-expect-error TypeScript doesn't allow you to assign known interfaces to dictionaries
         const script: Element = DomMethods.setMarkupAttributes(DomMethods.SCRIPT_MARKUP, params);
         targetElement.appendChild(script);
         script.addEventListener('load', () => {
@@ -137,7 +138,7 @@ export class DomMethods {
     }
   }
 
-  private static setMarkupAttributes(target: string, params: any): Element {
+  private static setMarkupAttributes(target: string, params: Record<string, string>): Element {
     const element: Element = document.createElement(target) as Element;
     Object.keys(params).forEach((param: string) => {
       element.setAttribute(param, params[param]);

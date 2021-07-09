@@ -4,7 +4,7 @@ import { COMMUNICATION_ERROR_INVALID_REQUEST } from '../../models/constants/Tran
 import { version } from '../../../../../package.json';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { InvalidRequestError } from './InvalidRequestError';
-import { IRequestObject } from '../../models/IRequestObject';
+import { IRequestData, IRequestObject } from '../../models/IRequestObject';
 import { IStore } from '../../store/IStore';
 import { IApplicationFrameState } from '../../store/state/IApplicationFrameState';
 
@@ -25,7 +25,7 @@ export class RequestEncoderService {
     const VERSION = '1.00';
     const VERSION_INFO = `STJS::N/A::${version}::N/A`;
     const jwt = this.store.getState().jwt;
-    const jwtPayload = this.jwtDecoder.decode(jwt).payload;
+    const jwtPayload = this.jwtDecoder.decode<IRequestData>(jwt).payload;
 
     return {
       acceptcustomeroutput: ACCEPT_CONSUMER_OUTPUT,

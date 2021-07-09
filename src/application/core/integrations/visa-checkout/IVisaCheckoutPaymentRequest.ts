@@ -11,5 +11,5 @@ export interface IVisaCheckoutPaymentRequest {
   orderId?: string;
   description?: string;
   promoCode?: string;
-  customData?: any;
+  customData?: unknown;
 }

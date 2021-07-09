@@ -27,4 +27,10 @@ describe('PreventNavigationPopup', () => {
 
     verify(windowMock.removeEventListener('beforeunload', anyFunction())).once();
   });
+
+  it('unregisters onbeforeunload listener on component destroy', () => {
+    messageBus.publish({ type: PUBLIC_EVENTS.DESTROY, data: {} });
+
+    verify(windowMock.removeEventListener('beforeunload', anyFunction())).once();
+  });
 });

@@ -23,7 +23,7 @@ describe('GooglePaySdkProvider', () => {
   beforeAll(() => {
     sut = new GooglePaySdkProvider();
 
-    (window as any).google = {
+    window.google = {
       payments: {
         api: {
           PaymentsClient: jest.fn().mockImplementation(() => {

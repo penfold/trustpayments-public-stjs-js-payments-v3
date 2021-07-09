@@ -27,7 +27,7 @@ export interface IApplePaySession {
 
   begin(): void;
 
-  completeMerchantValidation(merchantSession: any): void;
+  completeMerchantValidation(merchantSession: unknown): void;
 
   completePayment(status: IApplePayPaymentAuthorizationResult): void;
 

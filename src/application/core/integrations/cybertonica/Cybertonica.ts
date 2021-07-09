@@ -35,7 +35,7 @@ export class Cybertonica implements ICybertonica {
     const tid = this._insertCybertonicaLibrary().then(() =>
       AFCYBERTONICA.init(apiUserName, undefined, Cybertonica.getBasename())
     );
-    const timeout = new Promise(resolve => setTimeout(() => resolve(null), Cybertonica.TID_TIMEOUT));
+    const timeout = new Promise<null>(resolve => setTimeout(() => resolve(null), Cybertonica.TID_TIMEOUT));
 
     this.tid = Promise.race([tid, timeout]);
     this.tid.then(value => this.storage.setItem(Cybertonica.TID_KEY, value));
@@ -44,7 +44,7 @@ export class Cybertonica implements ICybertonica {
   }
 
   public getTransactionId(): Promise<string> {
-    const tid = this.storage.getItem(Cybertonica.TID_KEY);
+    const tid = this.storage.getItem(Cybertonica.TID_KEY) as string;
 
     if (tid !== null && tid !== '') {
       return Promise.resolve(tid);

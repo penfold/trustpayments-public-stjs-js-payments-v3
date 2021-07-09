@@ -38,12 +38,16 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   fieldsToSubmit: Joi.array().items(Joi.string().valid('pan', 'expirydate', 'securitycode')),
   [GooglePayConfigName]: GooglePaySchema,
   formId: Joi.string(),
-  init: Joi.object()
-    .keys({
-      cachetoken: Joi.string().allow(''),
-      threedinit: Joi.string().allow(''),
-    })
-    .allow(null),
+  init: Joi.object({
+    cachetoken: Joi.string()
+      .allow('')
+      .warning('deprecate.error', { reason: 'it is no longer supported' })
+      .messages({ 'deprecate.error': '{#label} is deprecated because {#reason}' }),
+    threedinit: Joi.string()
+      .allow('')
+      .warning('deprecate.error', { reason: 'it is no longer supported' })
+      .messages({ 'deprecate.error': '{#label} is deprecated because {#reason}' }),
+  }),
   jwt: Joi.string().allow(''),
   livestatus: Joi.number().valid(0, 1),
   origin: Joi.string().allow(''),

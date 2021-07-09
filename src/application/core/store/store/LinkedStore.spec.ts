@@ -30,7 +30,7 @@ describe('LinkedStore', () => {
 
   it('selects a piece of control frames store as observable', done => {
     linkedStore
-      .select(s => (s as any).foo)
+      .select(s => (s as unknown as { foo: string }).foo)
       .subscribe(result => {
         expect(result).toEqual('bar');
         done();
@@ -39,7 +39,7 @@ describe('LinkedStore', () => {
 
   it('allow subscribing for changes of control frames store', done => {
     linkedStore.subscribe(result => {
-      if ((result as any).foo === 'baz') {
+      if ((result as unknown as { foo: string }).foo === 'baz') {
         done();
       }
     });

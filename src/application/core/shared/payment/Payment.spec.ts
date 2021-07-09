@@ -133,38 +133,48 @@ describe('Payment', () => {
       expect(instance.stTransport.sendRequest).not.toHaveBeenCalled();
     });
 
-    it('should not send remaining request types when previous response has TRYAGAIN customeroutput', done => {
-      instance
+    it('should not send remaining request types when previous response has TRYAGAIN customeroutput', async () => {
+      await expect(instance
         .processPayment([RequestType.AUTH, RequestType.RISKDEC], card, { pan: 'overridden', merchant: 'data' }, ({
           requesttypescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.TRYAGAIN,
           cachetoken: 'foobar',
           threedresponse: 'xyzzzz',
           errorcode: '0',
-        } as unknown) as IThreeDQueryResponse)
-        .catch(() => {
-          // @ts-ignore
-          // eslint-disable-next-line jest/no-conditional-expect
-          expect(instance.stTransport.sendRequest).not.toHaveBeenCalled();
-          done();
-        });
+        } as unknown) as IThreeDQueryResponse)).rejects.toEqual({
+        response: {
+          requesttypescription: 'THREEDQUERY',
+          customeroutput: CustomerOutput.TRYAGAIN,
+          cachetoken: 'foobar',
+          threedresponse: 'xyzzzz',
+          errorcode: '0',
+        },
+      });
+
+      // @ts-ignore
+      expect(instance.stTransport.sendRequest).not.toHaveBeenCalled();
     });
 
-    it('should not send remaining request types when previous response has no-zero errorcode', done => {
-      instance
+    it('should not send remaining request types when previous response has no-zero errorcode', async () => {
+      await expect(instance
         .processPayment([RequestType.AUTH, RequestType.RISKDEC], card, { pan: 'overridden', merchant: 'data' }, ({
           requesttypescription: 'THREEDQUERY',
           customeroutput: CustomerOutput.THREEDREDIRECT,
           cachetoken: 'foobar',
           threedresponse: 'xyzzzz',
           errorcode: '1234',
-        } as unknown) as IThreeDQueryResponse)
-        .catch(() => {
-          // @ts-ignore
-          // eslint-disable-next-line jest/no-conditional-expect
-          expect(instance.stTransport.sendRequest).not.toHaveBeenCalled();
-          done();
-        });
+        } as unknown) as IThreeDQueryResponse)).rejects.toEqual({
+        response: {
+          requesttypescription: 'THREEDQUERY',
+          customeroutput: CustomerOutput.THREEDREDIRECT,
+          cachetoken: 'foobar',
+          threedresponse: 'xyzzzz',
+          errorcode: '1234',
+        },
+      });
+
+      // @ts-ignore
+      expect(instance.stTransport.sendRequest).not.toHaveBeenCalled();
     });
 
     it('should send AUTH request with wallet', async () => {
@@ -216,7 +226,7 @@ describe('Payment', () => {
 
       const result = await instance.processPayment([], {} as ICard, {}, response);
 
-      expect((result as any).response).toBe(response);
+      expect(result.response).toBe(response);
       verify(stCodecSpy.publishResponse(response, 'jwt')).once();
       verify(notificationService.success(PAYMENT_SUCCESS)).once();
     });
@@ -231,7 +241,7 @@ describe('Payment', () => {
 
       const result = await instance.processPayment([], {} as ICard, {}, response);
 
-      expect((result as any).response).toBe(response);
+      expect(result.response).toBe(response);
       verify(stCodecSpy.publishResponse(response, 'jwt')).never();
       verify(notificationService.success(PAYMENT_SUCCESS)).never();
     });
@@ -246,7 +256,7 @@ describe('Payment', () => {
 
       const result = await instance.processPayment([], {} as ICard, {}, response);
 
-      expect((result as any).response).toBe(response);
+      expect(result.response).toBe(response);
       verify(stCodecSpy.publishResponse(response, 'jwt')).never();
       verify(notificationService.success(PAYMENT_SUCCESS)).never();
     });

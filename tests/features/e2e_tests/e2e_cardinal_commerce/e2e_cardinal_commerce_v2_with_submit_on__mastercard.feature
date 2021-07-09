@@ -188,9 +188,9 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
 
     Examples:
       | request_types            | errormessage                            | baseamount     | currencyiso3a  | errorcode | settlestatus |
-# Todo STJS-1835      | THREEDQUERY AUTH         | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
+      | THREEDQUERY AUTH         | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | should be none | should be none | 60010     | 0            |
-# Todo STJS-1835      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
+      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
 
 
   @cardinal_commerce_v2.0
@@ -275,9 +275,9 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | status | eci            | threedresponse     |
-# Todo STJS-1834      | THREEDQUERY AUTH         | 1000           | GBP            | U      | 00             | should be none     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | U      | 00             | should be none     |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | C      | should be none | should not be none |
-# Todo STJS-1834     | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | U      | 00             | should be none     |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | U      | 00             | should be none     |
 
 
   @cardinal_commerce_v2.0
