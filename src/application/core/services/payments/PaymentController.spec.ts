@@ -176,7 +176,8 @@ describe('PaymentController', () => {
 
     it('starts given payment method with data and returns the result to result handler', () => {
       const data = { bbb: 'ccc' };
-      const result: IPaymentResult<any> = { status: PaymentStatus.SUCCESS };
+      const result: IPaymentResult<unknown> = { status: PaymentStatus.SUCCESS };
+      spyOn(messageBus, 'publish');
 
       when(fooPaymentMethodMock.start(data)).thenReturn(of(result));
 
@@ -190,10 +191,12 @@ describe('PaymentController', () => {
 
       verify(fooPaymentMethodMock.start(data)).once();
       verify(paymentResultHandlerMock.handle(result)).once();
+      expect(messageBus.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.JWT_RESET });
     });
 
     it('logs error message when trying to start not existing payment method', () => {
       const data = { bbb: 'ccc' };
+      spyOn(messageBus, 'publish');
 
       messageBus.publish<IStartPaymentMethod<typeof data>>({
         type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
@@ -204,6 +207,7 @@ describe('PaymentController', () => {
       });
 
       verify(paymentResultHandlerMock.handle(anything())).never();
+      expect(messageBus.publish).not.toHaveBeenCalledWith({ type: PUBLIC_EVENTS.JWT_RESET });
       expect(Debug.error).toHaveBeenCalledWith(
         'Running payment method failed: nonexisting',
         new Error('Payment method with name nonexisting not found.')
@@ -213,6 +217,7 @@ describe('PaymentController', () => {
     it('logs error message when payment method processing fails', () => {
       const data = { bbb: 'ccc' };
       const paymentError = new Error('payment failed');
+      spyOn(messageBus, 'publish');
 
       when(fooPaymentMethodMock.start(data)).thenThrow(paymentError);
 
@@ -225,6 +230,7 @@ describe('PaymentController', () => {
       });
 
       verify(paymentResultHandlerMock.handle(anything())).never();
+      expect(messageBus.publish).not.toHaveBeenCalledWith({ type: PUBLIC_EVENTS.JWT_RESET });
       expect(Debug.error).toHaveBeenCalledWith('Running payment method failed: foo', paymentError);
     });
 
@@ -261,7 +267,8 @@ describe('PaymentController', () => {
     it('starts the second payment method even if the first one failed', () => {
       const data = { aaa: 'bbb' };
       const fooError: Error = new Error('foo failed');
-      const result: IPaymentResult<any> = { status: PaymentStatus.SUCCESS };
+      const result: IPaymentResult<unknown> = { status: PaymentStatus.SUCCESS };
+      spyOn(messageBus, 'publish');
 
       when(fooPaymentMethodMock.start(data)).thenThrow(fooError);
       when(barPaymentMethodMock.start(data)).thenReturn(of(result));
@@ -285,6 +292,7 @@ describe('PaymentController', () => {
       verify(fooPaymentMethodMock.start(data)).once();
       verify(barPaymentMethodMock.start(data)).once();
       verify(paymentResultHandlerMock.handle(result)).once();
+      expect(messageBus.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.JWT_RESET });
       expect(Debug.error).toHaveBeenCalledWith('Running payment method failed: foo', fooError);
     });
   });

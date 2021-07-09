@@ -23,7 +23,7 @@ export class InterFrameCommunicator {
   private readonly close$ = new Subject<void>();
   private readonly frameOrigin: string;
   private parentOrigin: string;
-  private responders: Map<string, (queryEvent: IMessageBusEvent) => Observable<any>> = new Map();
+  private responders: Map<string, (queryEvent: IMessageBusEvent) => Observable<unknown>> = new Map();
 
   constructor(
     private identifier: FrameIdentifier,
@@ -59,7 +59,7 @@ export class InterFrameCommunicator {
         }),
         takeUntil(this.communicationClosed$)
       )
-      .subscribe((response: ResponseMessage<any>) => {
+      .subscribe((response: ResponseMessage<unknown>) => {
         this.send(response, response.queryFrame);
       });
   }

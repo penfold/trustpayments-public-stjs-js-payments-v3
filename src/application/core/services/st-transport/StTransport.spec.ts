@@ -29,7 +29,7 @@ describe('StTransport class', () => {
     retries: 3,
     retryTimeout: 20000,
   };
-  const timeoutError: any = null;
+  const timeoutError: Error | null = null;
   const resolvingPromise = (result: Record<string, unknown>) => {
     return new Promise(resolve => resolve(result));
   };

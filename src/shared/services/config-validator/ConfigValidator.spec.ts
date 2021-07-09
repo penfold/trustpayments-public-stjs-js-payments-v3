@@ -22,15 +22,15 @@ describe('ConfigValidator', () => {
       value: config,
     });
 
-    expect(validator.validate(config)).toBe(error);
+    expect(validator.validate(config)).toStrictEqual({ error: { foo: 'bar' }, value: {} });
   });
 
-  it('returns null when validation suceeds', () => {
+  it('returns null when validation succeeds', () => {
     (ConfigSchema.validate as jest.Mock).mockReturnValue({
       error: undefined,
       value: config,
     });
 
-    expect(validator.validate(config)).toBeNull();
+    expect(validator.validate(config)).toStrictEqual({ error: undefined, value: {} });
   });
 });

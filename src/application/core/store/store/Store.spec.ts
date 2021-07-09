@@ -4,6 +4,7 @@ import { Store } from './Store';
 import { BehaviorSubject } from 'rxjs';
 import { CallbackReducer } from '../CallbackReducer';
 import { toArray } from 'rxjs/operators';
+import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 
 describe('Store', () => {
   const state = { foo: 'bar' };
@@ -60,7 +61,7 @@ describe('Store', () => {
   });
 
   it('updates the state using reducers in response to events in message bus', () => {
-    const reducer = new CallbackReducer<{ foo: string }>((state, action) => {
+    const reducer = new CallbackReducer<{ foo: string }>((state, action: IMessageBusEvent<string>) => {
       return action.type === 'BAR' ? { ...state, foo: action.data } : state;
     });
 

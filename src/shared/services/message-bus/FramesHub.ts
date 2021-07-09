@@ -24,8 +24,8 @@ export class FramesHub {
 
     const fromEventFrame$ = this.communicator.incomingEvent$.pipe(
       ofType(FramesHub.FRAME_READY_EVENT),
-      filter((event: IMessageBusEvent) => Boolean(event.data)),
-      map((event: IMessageBusEvent) => event.data)
+      filter((event: IMessageBusEvent<string>) => Boolean(event.data)),
+      map((event: IMessageBusEvent<string>) => event.data)
     );
 
     fromEventFrame$

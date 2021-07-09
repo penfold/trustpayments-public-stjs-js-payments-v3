@@ -10,7 +10,7 @@ export class ApplePaySessionWrapper implements IApplePaySessionWrapper {
   private readonly applePaySession: IApplePaySessionConstructor | undefined;
 
   constructor(@Inject(WINDOW) private window: Window) {
-    this.applePaySession = (this.window as any).ApplePaySession;
+    this.applePaySession = this.window.ApplePaySession;
   }
 
   isApplePaySessionAvailable(): boolean {

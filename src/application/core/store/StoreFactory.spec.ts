@@ -7,9 +7,10 @@ import { CombinedReducer } from './CombinedReducer';
 import { ParentFrameStore } from './store/ParentFrameStore';
 import { ControlFrameStore } from './store/ControlFrameStore';
 import { LinkedStore } from './store/LinkedStore';
+import { IApplicationFrameState } from './state/IApplicationFrameState';
 
 describe('StoreFactory', () => {
-  const combinedReducer = new CombinedReducer<any>([]);
+  const combinedReducer = new CombinedReducer<IApplicationFrameState>([]);
   let frameIdentifierMock: FrameIdentifier;
   let containerMock: ContainerInstance;
   let combinedReducerFactoryMock: CombinedReducerFactory;

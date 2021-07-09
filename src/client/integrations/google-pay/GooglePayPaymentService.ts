@@ -33,7 +33,7 @@ export class GooglePayPaymentService {
   }
 
   cancelPayment(formData: Record<string, unknown>): void {
-    const result: IPaymentResult<any> = {
+    const result: IPaymentResult<unknown> = {
       status: PaymentStatus.CANCEL,
       data: {
         ...formData,
@@ -46,7 +46,7 @@ export class GooglePayPaymentService {
   }
 
   errorPayment(formData: Record<string, unknown>): void {
-    const result: IPaymentResult<any> = {
+    const result: IPaymentResult<unknown> = {
       status: PaymentStatus.ERROR,
       data: {
         ...formData,

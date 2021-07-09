@@ -110,9 +110,9 @@ Feature: 3ds SDK v1 E2E tests - Visa
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | success       |
-    And User will see that Submit button is "disabled" after payment
-    And User will see that ALL input fields are "disabled"
+      | error         |
+    And User will see that Submit button is "enabled" after payment
+    And User will see that ALL input fields are "enabled"
 
     Examples:
       | request_types            |

@@ -1,5 +1,4 @@
 import { first } from 'rxjs/operators';
-import { ofType } from 'redux-observable';
 import { of, zip } from 'rxjs';
 import Container from 'typedi';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
@@ -24,13 +23,13 @@ import { PaymentStatus } from '../../../application/core/services/payments/Payme
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { IStRequest } from '../../../application/core/models/IStRequest';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 
 describe('GooglePay Payment', () => {
   let paymentController: PaymentController;
   let configProvider: TestConfigProvider;
   let messageBus: IMessageBus;
   let config: IConfig;
-  let form: HTMLFormElement;
   let paymentResultSubmitterSubscriber: PaymentResultSubmitterSubscriber;
   let googlePayInitializeSubscriber: GooglePayInitializeSubscriber;
   let googlePaySessionPaymentsClientMock: GooglePaySessionPaymentsClientMock;
@@ -75,7 +74,7 @@ describe('GooglePay Payment', () => {
       googlePay: googlePayConfigMock,
     };
 
-    document.body.appendChild((form = DomMethods.createHtmlElement({ id: 'st-form' }, 'form') as HTMLFormElement));
+    document.body.appendChild((DomMethods.createHtmlElement({ id: 'st-form' }, 'form') as HTMLFormElement));
     const googlePayNode = document.createElement('div');
     googlePayNode.id = 'st-google-pay';
     document.getElementById('st-form').appendChild(googlePayNode);
@@ -88,7 +87,7 @@ describe('GooglePay Payment', () => {
   describe('GooglePay Success Payment', () => {
     beforeEach(() => {
       googlePaySessionPaymentsClientMock.mockPaymentData('success');
-      (window as any).google = {
+      window.google = {
         payments: {
           api: {
             PaymentsClient: jest.fn().mockImplementation(() => {
@@ -151,7 +150,7 @@ describe('GooglePay Payment', () => {
   describe('GooglePay Error Payment', () => {
     beforeEach(() => {
       googlePaySessionPaymentsClientMock.mockPaymentData('error');
-      (window as any).google = {
+      window.google = {
         payments: {
           api: {
             PaymentsClient: jest.fn().mockImplementation(() => {

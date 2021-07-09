@@ -5,6 +5,7 @@ import { IHttpClientConfig } from '@trustpayments/http-client';
 import { IRequestObject } from '../../../models/IRequestObject';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
+import { IStJwtPayload } from '../../../models/IStJwtPayload';
 
 @Service()
 export class TestHttpOptionsProvider implements IHttpOptionsProvider {
@@ -24,10 +25,10 @@ export class TestHttpOptionsProvider implements IHttpOptionsProvider {
   private extractRequestTypesFromRequest(requestObject: IRequestObject): RequestType[] {
     try {
       if (requestObject.request[0].requesttypedescriptions) {
-        return requestObject.request[0].requesttypedescriptions;
+        return requestObject.request[0].requesttypedescriptions as RequestType[];
       }
 
-      return this.jwtDecoder.decode(requestObject.jwt).payload.requesttypedescriptions;
+      return this.jwtDecoder.decode<IStJwtPayload>(requestObject.jwt).payload.requesttypedescriptions;
     } catch (e) {
       return [];
     }

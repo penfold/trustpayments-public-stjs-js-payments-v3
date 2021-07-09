@@ -3,9 +3,9 @@ interface ISingleTranslation {
 }
 
 type ResourceKey =
-  | string
+  string
   | {
-      [key: string]: any;
+      [key: string]: string;
     };
 
 export interface IResources {

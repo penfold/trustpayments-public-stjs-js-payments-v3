@@ -162,7 +162,7 @@ export class Input {
     this.validation.validate(this._inputElement, this._messageElement);
   }
 
-  protected setAttributes(attributes: Record<string, any>): void {
+  protected setAttributes(attributes: Record<string, string>): void {
     for (const attribute in attributes) {
       this._inputElement.setAttribute(attribute, attributes[attribute]);
     }

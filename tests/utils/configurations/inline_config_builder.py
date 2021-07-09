@@ -17,7 +17,7 @@ class InlineConfigBuilder:
                 raise Exception(
                     f'Property {key} not valid payload jwt option '
                     f'or yet not handled by "{self.map_jwt_additional_fields.__name__}" method')
-            elif key in ['requesttypedescriptions', 'threedbypasspaymenttypes']:
+            if key in ['requesttypedescriptions', 'threedbypasspaymenttypes']:
                 jwt[key] = list(value.split(' '))
             elif key in ['cachetoken']:
                 jwt[key] = shared_dict[SharedDictKey.CACHETOKEN.value]

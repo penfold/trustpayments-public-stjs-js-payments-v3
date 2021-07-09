@@ -11,6 +11,7 @@ import { ThreeDVerificationProviderName } from './three-d-verification/data/Thre
 import { ThreeDLookupRequest } from './three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
 import { ICard } from '../models/ICard';
 import { IThreeDLookupResponse } from '../models/IThreeDLookupResponse';
+import { CustomerOutput } from '../models/constants/CustomerOutput';
 
 describe('GatewayClient', () => {
   let transportMock: StTransport;
@@ -112,7 +113,7 @@ describe('GatewayClient', () => {
         errormessage: '',
         errorcode: '0',
         requesttypedescription: '',
-        customeroutput: '',
+        customeroutput: CustomerOutput.RESULT,
         threedstransactionid: '',
         threedmethodurl: '',
         threednotificationurl: '',
@@ -134,7 +135,7 @@ describe('GatewayClient', () => {
         errormessage: '',
         errorcode: '50003',
         requesttypedescription: '',
-        customeroutput: '',
+        customeroutput: CustomerOutput.RESULT,
         threedstransactionid: '',
         threedmethodurl: '',
         threednotificationurl: '',

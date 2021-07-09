@@ -22,6 +22,7 @@ import { Container, Service } from 'typedi';
 import { IMessageBus } from '../message-bus/IMessageBus';
 import { MessageBusToken, TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { ITranslator } from '../translator/ITranslator';
+import { IFormFieldsValidity } from '../../models/IFormFieldsValidity';
 
 @Service()
 export class Validation {
@@ -137,7 +138,7 @@ export class Validation {
     return isPanValid && isExpiryDateValid && isSecurityCodeValid;
   }
 
-  public cardDetails: any;
+  public cardDetails: BrandDetailsType;
   public cardNumberValue: string;
   public expirationDateValue: string;
   public securityCodeValue: string;
@@ -283,7 +284,7 @@ export class Validation {
     this._selectionRangeEnd = element.selectionEnd;
   }
 
-  public setFormValidity(state: Record<string, any>): void {
+  public setFormValidity(state: IFormFieldsValidity): void {
     const validationEvent: IMessageBusEvent = {
       data: { ...state },
       type: MessageBus.EVENTS.VALIDATE_FORM,

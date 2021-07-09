@@ -7,7 +7,7 @@ import { ReducerToken } from '../../../../../shared/dependency-injection/Injecti
 
 @Service({ id: ReducerToken, multiple: true })
 export class JwtReducer implements IReducer<IApplicationFrameState> {
-  reduce(state: IApplicationFrameState, action: IMessageBusEvent): IApplicationFrameState {
+  reduce(state: IApplicationFrameState, action: IMessageBusEvent<string>): IApplicationFrameState {
     switch (action.type) {
       case PUBLIC_EVENTS.JWT_UPDATED: {
         return {

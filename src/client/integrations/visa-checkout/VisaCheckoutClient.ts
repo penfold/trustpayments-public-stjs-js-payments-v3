@@ -24,6 +24,7 @@ import { IVisaCheckoutClient } from './IVisaCheckoutClient';
 import { IVisaCheckoutClientStatus } from './IVisaCheckoutClientStatus';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 import { InvalidResponseError } from '../../../application/core/services/st-codec/InvalidResponseError';
+import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
 
 @Service()
 export class VisaCheckoutClient implements IVisaCheckoutClient {
@@ -83,7 +84,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
     successData: IVisaCheckoutStatusDataSuccess,
     merchantData: IMerchantData,
   ): Observable<VisaCheckoutClientStatus> {
-    const requestTypeDescriptions = this.jwtDecoder.decode(config.jwt).payload.requesttypedescriptions;
+    const requestTypeDescriptions = this.jwtDecoder.decode<IStJwtPayload>(config.jwt).payload.requesttypedescriptions;
     const walletData: IWallet = {
       walletsource: 'VISACHECKOUT',
       wallettoken: JSON.stringify(successData),

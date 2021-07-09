@@ -14,7 +14,7 @@ RUN apt-get install -y --no-install-recommends openjdk-11-jdk-headless \
 ENV JAVA_HOME  /usr/lib/jvm/java-11-openjdk-amd64/
 
 # Latest versions of python tools via pip
-RUN pip install poetry
+RUN pip install --no-cache-dir poetry
 COPY ${COPY_FROM}/ /app/
 WORKDIR /app
 #hadolint ignore=SC1091

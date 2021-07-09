@@ -8,9 +8,10 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { ofType } from '../message-bus/operators/ofType';
 import { IStorage } from './IStorage';
 import { ISynchronizedStorage } from './ISynchronizedStorage';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 
 interface StorageData {
-  [index: string]: any;
+  [index: string]: unknown;
 }
 
 @Service()
@@ -19,7 +20,7 @@ export class ParentFrameStorage implements IStorage, ISynchronizedStorage {
 
   constructor(private interFrameCommunicator: InterFrameCommunicator, private framesHub: FramesHub) {}
 
-  getItem(name: string): any {
+  getItem(name: string): unknown {
     return this.storage$.getValue()[name];
   }
 
@@ -36,25 +37,25 @@ export class ParentFrameStorage implements IStorage, ISynchronizedStorage {
     });
   }
 
-  select<T>(selector: (storage: { [p: string]: any }) => T): Observable<T> {
+  select<T>(selector: (storage: { [p: string]: unknown }) => T): Observable<T> {
     return this.storage$.pipe(map(selector));
   }
 
   initSynchronization(): void {
     this.interFrameCommunicator.incomingEvent$
       .pipe(ofType(PUBLIC_EVENTS.STORAGE_SYNC), takeUntil(this.interFrameCommunicator.communicationClosed$))
-      .subscribe(event => {
+      .subscribe((event: IMessageBusEvent<{ key: string; value: string; }>) => {
         const { key, value } = event.data;
         this.setItemWithoutSync(key, this.parseEventData(value));
       });
   }
 
-  private setItemWithoutSync(name: string, value: any): void {
+  private setItemWithoutSync(name: string, value: unknown): void {
     const storage = this.storage$.getValue();
     this.storage$.next({ ...storage, [name]: value });
   }
 
-  private parseEventData(jsonData: string): any {
+  private parseEventData(jsonData: string): unknown {
     try {
       return JSON.parse(jsonData);
     } catch (e) {

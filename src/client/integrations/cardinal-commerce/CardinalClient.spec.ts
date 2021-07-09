@@ -28,12 +28,12 @@ describe('CardinalClient', () => {
   let interFrameCommunicator: InterFrameCommunicator;
   let cardinalClient: CardinalClient;
   let cardinalMock: ICardinal;
-  let communicationCallbacks: Map<string, (event: IMessageBusEvent) => any>;
+  let communicationCallbacks: Map<string, (event: IMessageBusEvent) => unknown>;
   let messageBusMock: IMessageBus;
 
   const config: IConfig = { livestatus: 0 } as IConfig;
-  const sendMessage = (event: IMessageBusEvent): Observable<any> => {
-    return (interFrameCommunicator.send(event, '') as unknown) as Observable<any>;
+  const sendMessage = (event: IMessageBusEvent): Observable<unknown> => {
+    return (interFrameCommunicator.send(event, '') as unknown) as Observable<unknown>;
   };
 
   beforeEach(() => {
@@ -49,7 +49,7 @@ describe('CardinalClient', () => {
     when(cardinalProviderMock.getCardinal$(false)).thenReturn(of(cardinalMock));
     when(interFrameCommunicatorMock.whenReceive(anyString())).thenCall((eventType: string) => {
       return {
-        thenRespond: (callback: (event: IMessageBusEvent) => Observable<any>) => {
+        thenRespond: (callback: (event: IMessageBusEvent) => Observable<unknown>) => {
           communicationCallbacks.set(eventType, callback);
         },
       };
@@ -263,7 +263,7 @@ describe('CardinalClient', () => {
 
     it('unsubscribes from the cancel event when validation completes', done => {
       // @ts-ignore
-      const popupCancelSpy: Subject<any> = spy(cardinalClient.threeDPopupCancel$);
+      const popupCancelSpy: Subject<void> = spy(cardinalClient.threeDPopupCancel$);
       const popupCancelSubscriptionMock: Subscription = mock<Subscription>();
       when(popupCancelSpy.subscribe(anything())).thenReturn(instance(popupCancelSubscriptionMock));
 

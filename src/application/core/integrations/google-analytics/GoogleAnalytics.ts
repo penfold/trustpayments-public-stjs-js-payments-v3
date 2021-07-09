@@ -60,7 +60,7 @@ export class GoogleAnalytics {
       });
   }
 
-  private _createGAScript(): Promise<any> {
+  private _createGAScript(): Promise<string> {
     return new Promise((resolve, reject) => {
       this._gaScript = document.createElement('script');
       this._gaScript.type = 'text/javascript';
@@ -76,7 +76,7 @@ export class GoogleAnalytics {
     DomMethods.insertScript('head', { async: 'async', src: GoogleAnalytics.GA_SCRIPT_SRC, id: 'googleAnalytics' });
   }
 
-  private _insertGAScript(): Promise<any> {
+  private _insertGAScript(): Promise<string> {
     return new Promise((resolve, reject) => {
       if (!document.getElementById('googleAnalytics')) {
         document.head.appendChild(this._gaScript);

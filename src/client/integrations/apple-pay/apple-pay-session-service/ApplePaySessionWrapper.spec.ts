@@ -2,6 +2,7 @@ import { instance, mock, verify, when } from 'ts-mockito';
 import { ApplePaySessionWrapper } from './ApplePaySessionWrapper';
 import { IApplePaySessionConstructor } from './IApplePaySessionConstructor';
 import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
+import { IApplePaySession } from './IApplePaySession';
 
 type WindowType = Window & { ApplePaySession: IApplePaySessionConstructor | undefined };
 
@@ -59,14 +60,14 @@ describe('ApplePaySessionWrapper', () => {
     });
 
     it('creates a new instance of ApplePaySession', () => {
-      function ApplePaySession(version: number, request: IApplePayPaymentRequest) {
-        this.version = version;
-        this.request = request;
+      class ApplePaySession {
+        constructor(public version: number, public request: IApplePayPaymentRequest) {
+        }
       }
 
       applePaySessionWrapper = new ApplePaySessionWrapper(({ ApplePaySession } as unknown) as WindowType);
 
-      const result = applePaySessionWrapper.createInstance(123, paymentRequest) as any;
+      const result = applePaySessionWrapper.createInstance(123, paymentRequest) as IApplePaySession & ApplePaySession;
 
       expect(result).toBeInstanceOf(ApplePaySession);
       expect(result.version).toBe(123);
