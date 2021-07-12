@@ -9,7 +9,7 @@ describe('JwtGenerator', () => {
   });
 
   describe('generate()', () => {
-    it.each<any>([
+    it.each<{ payload: Record<string, unknown>, jwt: string }>([
       {
         payload: { field: 'fieldValue', field2: 2 },
         jwt: 'eyJhbGciOiJub25lIn0.eyJmaWVsZCI6ImZpZWxkVmFsdWUiLCJmaWVsZDIiOjJ9.',
