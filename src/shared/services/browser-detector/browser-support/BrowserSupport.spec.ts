@@ -55,7 +55,7 @@ describe('BrowserSupport', () => {
     browserSupport = new BrowserSupport(instance(browserList));
   });
 
-  each([
+  it.each([
     ['88', 'Chrome', true],
     ['86', 'Chrome', false],
     ['85', 'Firefox', true],
@@ -67,7 +67,7 @@ describe('BrowserSupport', () => {
     ['10', 'Internet Explorer', false],
     ['11', 'Internet Explorer', true],
     ['1111', 'test', false],
-  ]).it(
+  ])(
     'should check if browser is supported in given version or not',
     (version: string, browser: string, isSupported: boolean) => {
       expect(browserSupport.isBrowserSupported(version, browser)).toEqual(isSupported);

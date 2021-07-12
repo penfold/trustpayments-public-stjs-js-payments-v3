@@ -189,7 +189,7 @@ describe('SecurityCode', () => {
     const { securityCodeInstance, messageBus } = securityCodeFixture();
     // @ts-ignore
     it('should publish method has been called', () => {
-      spyOn(messageBus, 'publish');
+      jest.spyOn(messageBus, 'publish');
 
       // @ts-ignore
       securityCodeInstance.sendState();

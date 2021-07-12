@@ -32,8 +32,8 @@ import { IStJwtPayload } from '../../core/models/IStJwtPayload';
 export class SecurityCode extends Input {
   static ifFieldExists = (): HTMLInputElement =>
     document.getElementById(SECURITY_CODE_INPUT) as HTMLInputElement;
-  private static BLOCK_CVV_ATTRIBUTE: string = 'block-cvv';
-  private static DISABLED_CLASS: string = 'st-input--disabled';
+  private static BLOCK_CVV_ATTRIBUTE = 'block-cvv';
+  private static DISABLED_CLASS = 'st-input--disabled';
 
   private securityCodeLength: number;
   private _validation: Validation;

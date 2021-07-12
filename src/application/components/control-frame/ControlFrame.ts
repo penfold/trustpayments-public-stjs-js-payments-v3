@@ -67,7 +67,7 @@ export class ControlFrame {
     expirydate: '',
     securitycode: '',
   };
-  private _isPaymentReady: boolean = false;
+  private _isPaymentReady = false;
   private _formFields: IFormFieldsDetails = FormFieldsDetails;
   private _formFieldsValidity: IFormFieldsValidity = FormFieldsValidity;
   private _merchantFormData: IMerchantData;
@@ -298,7 +298,7 @@ export class ControlFrame {
 
   private _isCardWithoutCVV(): boolean {
     const panFromJwt: string = this._getPanFromJwt();
-    let pan: string = '';
+    let pan = '';
     if (panFromJwt || this._formFields.cardNumber.value) {
       pan = panFromJwt ? panFromJwt : this._formFields.cardNumber.value;
     }

@@ -35,18 +35,18 @@ import { IComponentsIds } from '../../shared/model/config/IComponentsIds';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 
 export class CardFrames {
-  private static CARD_NUMBER_FIELD_NAME: string = 'pan';
-  private static CLICK_EVENT: string = 'click';
-  private static COMPLETE_FORM_NUMBER_OF_FIELDS: number = 3;
-  private static EXPIRY_DATE_FIELD_NAME: string = 'expirydate';
-  private static INPUT_EVENT: string = 'input';
+  private static CARD_NUMBER_FIELD_NAME = 'pan';
+  private static CLICK_EVENT = 'click';
+  private static COMPLETE_FORM_NUMBER_OF_FIELDS = 3;
+  private static EXPIRY_DATE_FIELD_NAME = 'expirydate';
+  private static INPUT_EVENT = 'input';
   private static NO_CVV_CARDS: string[] = ['PIBA'];
-  private static ONLY_CVV_NUMBER_OF_FIELDS: number = 1;
-  private static SUBMIT_EVENT: string = 'submit';
-  private static SECURITY_CODE_FIELD_NAME: string = 'securitycode';
-  private static SUBMIT_BUTTON_AS_BUTTON_MARKUP: string = 'button[type="submit"]';
-  private static SUBMIT_BUTTON_AS_INPUT_MARKUP: string = 'input[type="submit"]';
-  private static SUBMIT_BUTTON_DISABLED_CLASS: string = 'st-button-submit__disabled';
+  private static ONLY_CVV_NUMBER_OF_FIELDS = 1;
+  private static SUBMIT_EVENT = 'submit';
+  private static SECURITY_CODE_FIELD_NAME = 'securitycode';
+  private static SUBMIT_BUTTON_AS_BUTTON_MARKUP = 'button[type="submit"]';
+  private static SUBMIT_BUTTON_AS_INPUT_MARKUP = 'input[type="submit"]';
+  private static SUBMIT_BUTTON_DISABLED_CLASS = 'st-button-submit__disabled';
 
   private _animatedCard: HTMLIFrameElement;
   private _cardNumber: HTMLIFrameElement;

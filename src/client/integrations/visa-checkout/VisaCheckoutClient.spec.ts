@@ -187,7 +187,7 @@ describe('VisaCheckoutClient', () => {
       });
     });
 
-    it(`should throw an error when unknown status provided`, done => {
+    it('should throw an error when unknown status provided', done => {
       when(messageBusMock.pipe(anything())).thenReturn(
         of({
           type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,

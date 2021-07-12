@@ -10,9 +10,9 @@ declare const AFCYBERTONICA: IAFCybertonica;
 @Service()
 export class Cybertonica implements ICybertonica {
   private static readonly SDK_ADDRESS = environment.CYBERTONICA.CYBERTONICA_LIVE_URL;
-  private static LOCALE: string = 'locale';
-  private static SCRIPT_TARGET: string = 'head';
-  private static TID_KEY: string = 'app.tid';
+  private static LOCALE = 'locale';
+  private static SCRIPT_TARGET = 'head';
+  private static TID_KEY = 'app.tid';
   private static TID_TIMEOUT = 5000;
 
   private static getBasename(): string {

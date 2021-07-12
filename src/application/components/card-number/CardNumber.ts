@@ -30,11 +30,11 @@ import { takeUntil } from 'rxjs/operators';
 export class CardNumber extends Input {
   public static ifFieldExists = (): HTMLInputElement => document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
 
-  private static DISABLED_ATTRIBUTE: string = 'disabled';
-  private static DISABLED_CLASS: string = 'st-input--disabled';
+  private static DISABLED_ATTRIBUTE = 'disabled';
+  private static DISABLED_CLASS = 'st-input--disabled';
   private static NO_CVV_CARDS: string[] = ['PIBA'];
-  private static STANDARD_CARD_LENGTH: number = 19;
-  private static WHITESPACES_DECREASE_NUMBER: number = 2;
+  private static STANDARD_CARD_LENGTH = 19;
+  private static WHITESPACES_DECREASE_NUMBER = 2;
 
   private static _getCardNumberForBinProcess = (cardNumber: string) => cardNumber.slice(0, 6);
 

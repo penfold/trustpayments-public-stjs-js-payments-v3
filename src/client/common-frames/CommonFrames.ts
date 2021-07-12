@@ -136,7 +136,7 @@ export class CommonFrames {
     const submitFieldsFromResponse: string[] = [];
 
     submitFields.forEach((field: string) => {
-      if (data.hasOwnProperty(field)) {
+      if (Object.prototype.hasOwnProperty.call(data, field)) {
         submitFieldsFromResponse.push(field);
       }
     });

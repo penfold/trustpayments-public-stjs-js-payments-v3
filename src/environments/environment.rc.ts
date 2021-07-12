@@ -1,7 +1,7 @@
 declare const FRAME_URL: string | undefined;
 
-const GATEWAY_URL: string = 'https://webservices.securetrading.net/jwt/';
-const MOCK_GATEWAY_URL: string = 'https://merchant.example.com:8443';
+const GATEWAY_URL = 'https://webservices.securetrading.net/jwt/';
+const MOCK_GATEWAY_URL = 'https://merchant.example.com:8443';
 
 export const environment = {
   CARDINAL_COMMERCE: {

@@ -12,7 +12,7 @@ declare const V: IVisaCheckoutSdkLib;
 
 @Service()
 export class VisaCheckoutSdkProvider implements IVisaCheckoutSdkProvider {
-  private isSdkLoaded: boolean = false;
+  private isSdkLoaded = false;
 
   constructor(protected visaCheckoutButtonService: VisaCheckoutButtonService) {}
 

@@ -21,10 +21,10 @@ import { LABEL_EXPIRATION_DATE } from '../../core/models/constants/Translations'
 export class ExpirationDate extends Input {
   public static ifFieldExists = (): HTMLInputElement =>
     document.getElementById(EXPIRATION_DATE_INPUT) as HTMLInputElement;
-  private static DISABLED_ATTRIBUTE: string = 'disabled';
-  private static DISABLED_CLASS: string = 'st-input--disabled';
-  private static EXPIRATION_DATE_LENGTH: number = 5;
-  private static INPUT_PATTERN: string = '^(0[1-9]|1[0-2])\\/([0-9]{2})$';
+  private static DISABLED_ATTRIBUTE = 'disabled';
+  private static DISABLED_CLASS = 'st-input--disabled';
+  private static EXPIRATION_DATE_LENGTH = 5;
+  private static INPUT_PATTERN = '^(0[1-9]|1[0-2])\\/([0-9]{2})$';
 
   private _currentKeyCode: number;
   private _inputSelectionEnd: number;

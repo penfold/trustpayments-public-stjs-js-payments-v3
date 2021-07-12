@@ -58,7 +58,7 @@ export class Formatter {
   public date(value: string, id?: string): string {
     this._validation.expirationDate(value);
     const element: HTMLInputElement = document.getElementById(id) as HTMLInputElement;
-    let result: string = '';
+    let result = '';
 
     this._blocks.forEach(length => {
       if (this._validation.expirationDateValue && this._validation.expirationDateValue.length > 0) {

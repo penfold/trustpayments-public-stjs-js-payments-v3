@@ -83,8 +83,8 @@ describe('StTransport class', () => {
       expect(options.headers).not.toHaveProperty('ST-Request-Types');
     });
 
-    each(['JSINIT', 'WALLETVERIFY']).it(
-      `should return ST-Request-Type header when test env is set on true and requesttypedescriptions contains specific value`,
+    it.each(['JSINIT', 'WALLETVERIFY'])(
+      'should return ST-Request-Type header when test env is set on true and requesttypedescriptions contains specific value',
       req => {
         environment.testEnvironment = true;
         const requestBody = `{"jwt":"${config.jwt}"}`;
@@ -150,10 +150,10 @@ describe('StTransport class', () => {
       });
     });
 
-    each([
+    it.each([
       [resolvingPromise({}), resolvingPromise({})],
       [rejectingPromise(timeoutError), resolvingPromise({})],
-    ]).it('should reject invalid responses', async (mockFetch, expected) => {
+    ])('should reject invalid responses', async (mockFetch, expected) => {
       mockFT.mockReturnValue(mockFetch);
 
       async function testSendRequest() {
@@ -164,7 +164,7 @@ describe('StTransport class', () => {
       expect(response).toMatchObject(expected);
     });
 
-    each([
+    it.each([
       [
         resolvingPromise({
           json: () =>
@@ -179,7 +179,7 @@ describe('StTransport class', () => {
         }),
         { response: [{ errorcode: 0 }], version: '1.00' },
       ],
-    ]).it('should decode the json response', async (mockFetch, expected) => {
+    ])('should decode the json response', async (mockFetch, expected) => {
       mockFT.mockReturnValue(mockFetch);
       await expect(instance.sendRequest({ requesttypedescription: 'AUTH' })).resolves.toEqual(expected);
       expect(codec.decode).toHaveBeenCalledWith({

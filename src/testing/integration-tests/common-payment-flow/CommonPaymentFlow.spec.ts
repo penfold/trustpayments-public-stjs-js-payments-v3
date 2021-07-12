@@ -135,7 +135,7 @@ describe('Common Payment Flow', () => {
   });
 
   it('runs a test payment method and when failed submits the form', done => {
-    spyOn(form, 'submit').and.callFake(() => {
+    jest.spyOn(form, 'submit').mockImplementation(() => {
       const inputs: HTMLCollection = form.getElementsByTagName('input');
       const formData = Array.from(inputs).reduce((data, input: HTMLInputElement) => {
         const name = input.getAttribute('name');

@@ -1,6 +1,7 @@
 import { Service } from 'typedi';
 import { IStRequest } from '../../models/IStRequest';
 import { COMMUNICATION_ERROR_INVALID_REQUEST } from '../../models/constants/Translations';
+// @ts-ignore
 import { version } from '../../../../../package.json';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { InvalidRequestError } from './InvalidRequestError';
