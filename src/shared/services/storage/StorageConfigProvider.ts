@@ -15,7 +15,7 @@ export class StorageConfigProvider implements ConfigProvider {
     return this.storage.getItem(StorageConfigProvider.STORAGE_KEY);
   }
 
-  getConfig$(watchForChanges: boolean = false): Observable<IConfig> {
+  getConfig$(watchForChanges = false): Observable<IConfig> {
     const config$ = this.storage
       .select(storage => storage[StorageConfigProvider.STORAGE_KEY])
       .pipe(distinctUntilChanged(), filter<IConfig>(Boolean), shareReplay(1));

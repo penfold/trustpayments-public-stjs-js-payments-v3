@@ -296,8 +296,8 @@ describe('CardNumber', () => {
   });
 
   describe('_getMaxLengthOfCardNumber()', () => {
-    const panLengthWithoutSpaces: number = 15;
-    const numberOfWhitespaces: number = 3;
+    const panLengthWithoutSpaces = 15;
+    const numberOfWhitespaces = 3;
 
     beforeEach(() => {
       // @ts-ignore

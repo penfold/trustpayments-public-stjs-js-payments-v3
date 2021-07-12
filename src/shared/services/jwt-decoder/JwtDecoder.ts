@@ -6,7 +6,7 @@ import { Service } from 'typedi';
 export class JwtDecoder {
   decode<T>(jwt: string): IStJwtObj<T> {
     if (!jwt) {
-      throw new Error(`Invalid JWT, undefined or empty string.`);
+      throw new Error('Invalid JWT, undefined or empty string.');
     }
 
     try {

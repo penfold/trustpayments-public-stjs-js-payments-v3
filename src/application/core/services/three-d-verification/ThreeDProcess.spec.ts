@@ -59,7 +59,7 @@ describe('ThreeDProcess', () => {
     });
 
     it('unlocks the submit button', done => {
-      spyOn(messageBusMock, 'publish');
+      jest.spyOn(messageBusMock, 'publish');
 
       threeDProcess.init().subscribe(() => {
         expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.UNLOCK_BUTTON }, true);

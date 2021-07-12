@@ -47,7 +47,7 @@ describe('ST', () => {
 
   describe('updateJWT()', () => {
     beforeEach(() => {
-      spyOn(messageBusMock, 'publish');
+      jest.spyOn(messageBusMock, 'publish');
       instance.updateJWT('somenewjwtvalue');
     });
 
@@ -71,7 +71,7 @@ describe('ST', () => {
   });
 
   describe('cbrt', () => {
-    const key: string = 'some random key';
+    const key = 'some random key';
     beforeEach(() => {
       // @ts-expect-error Legacy spec testing internal implementations
       instance.cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(key);
@@ -88,7 +88,7 @@ describe('ST', () => {
     });
 
     it('should send THREED_CANCEL event on message bus', () => {
-      spyOn(messageBusMock, 'publish');
+      jest.spyOn(messageBusMock, 'publish');
       instance.cancelThreeDProcess();
 
       expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.THREED_CANCEL }, true);

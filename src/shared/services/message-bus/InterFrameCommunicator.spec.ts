@@ -155,7 +155,7 @@ describe('InterFrameCommunicator', () => {
 
   describe('whenReceive', () => {
     it('returns thenRespond object allowing to register a responder', () => {
-      expect(interFrameCommunicator.whenReceive('FOOBAR')).toMatchObject({ thenRespond: jasmine.any(Function) });
+      expect(interFrameCommunicator.whenReceive('FOOBAR')).toMatchObject({ thenRespond: expect.any(Function) });
     });
   });
 

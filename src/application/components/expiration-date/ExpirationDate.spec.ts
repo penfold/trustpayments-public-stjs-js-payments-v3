@@ -44,7 +44,7 @@ describe('ExpirationDate', () => {
 
   describe('_setDisableListener()', () => {
     const { expirationDateInstance } = expirationDateFixture();
-    const attributeName: string = 'disabled';
+    const attributeName = 'disabled';
 
     it('should have attribute disabled set', () => {
       // @ts-ignore
@@ -72,7 +72,7 @@ describe('ExpirationDate', () => {
   describe('format()', () => {
     const { expirationDateInstance } = expirationDateFixture();
     let spy: jest.SpyInstance;
-    const testValue: string = '232';
+    const testValue = '232';
 
     beforeEach(() => {
       // @ts-ignore

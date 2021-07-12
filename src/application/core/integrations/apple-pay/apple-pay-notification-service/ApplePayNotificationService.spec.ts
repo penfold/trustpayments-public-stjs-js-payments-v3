@@ -69,7 +69,7 @@ describe('ApplePayClient', () => {
       verify(notificationServiceMock.error(expectedErrorMessage)).once();
     });
 
-    it(`should call NotificationService with error on unknown status`, () => {
+    it('should call NotificationService with error on unknown status', () => {
       const expectedErrorMessage = 'Unknown';
 
       applePayNotificationService.notification(undefined, expectedErrorMessage);

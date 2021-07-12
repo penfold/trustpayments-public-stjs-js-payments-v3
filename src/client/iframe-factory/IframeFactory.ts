@@ -32,7 +32,7 @@ export class IframeFactory {
     const componentStyles = new URLSearchParams(styles).toString();
     const componentAddress = IframeFactory.URLS.get(name);
     const iframe = document.createElement('iframe');
-    const src: string = `${componentAddress}?${componentStyles}${componentParams ? '&' + componentParams : ''}`;
+    const src = `${componentAddress}?${componentStyles}${componentParams ? '&' + componentParams : ''}`;
 
     const attributes: IframeFactoryAttributes = {
       id,

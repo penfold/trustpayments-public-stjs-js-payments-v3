@@ -34,7 +34,7 @@ import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 export class ApplePay {
   private applePaySession: IApplePaySession;
   private config: IApplePayConfigObject;
-  private paymentCancelled: boolean = false;
+  private paymentCancelled = false;
   private destroy$: Observable<IMessageBusEvent>;
 
   constructor(

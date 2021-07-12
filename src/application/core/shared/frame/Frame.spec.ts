@@ -1,9 +1,8 @@
-import each from 'jest-each';
 import { Frame } from './Frame';
 
 describe('Frame', () => {
-  each([
-    ['/myframe.html', {}],
+  it.each([
+    ['/myframe.html', { styles: [] }],
     ['/myframe.html?mykey=some%20value', { styles: [{ mykey: 'some value' }] }],
     ['/myframe.html?mykey=some%20value&locale=fr_FR', { locale: 'fr_FR', styles: [{ mykey: 'some value' }] }],
     [
@@ -32,14 +31,14 @@ describe('Frame', () => {
         ],
       },
     ],
-  ]).it('Frame.parseUrl', (url, expected) => {
+  ])('Frame.parseUrl', (url, expected) => {
     const frame = new Frame();
     window.history.pushState({}, 'Test Title', url);
     // @ts-ignore
     frame.getAllowedParams = jest.fn().mockReturnValueOnce(['locale', 'origin']);
     // @ts-ignore
     const actual = frame.parseUrl();
-    expect(actual.length).toBe(expected.length);
+    expect(Object.entries(actual).length).toBe(Object.entries(expected).length);
     expect(actual).toMatchObject(expected);
   });
 });

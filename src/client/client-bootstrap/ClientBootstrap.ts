@@ -22,7 +22,7 @@ import { first } from 'rxjs/operators';
 
 @Service()
 export class ClientBootstrap {
-  private isAlreadyRunning: boolean = false;
+  private isAlreadyRunning = false;
 
   constructor(private frameIdentifier: FrameIdentifier, private container: ContainerInstance) {}
 

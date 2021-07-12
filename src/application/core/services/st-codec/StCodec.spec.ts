@@ -176,7 +176,7 @@ describe('StCodec class', () => {
   });
 
   describe('StCodec.determineResponse()', () => {
-    each([
+    it.each([
       [{ response: [{ requesttypedescription: 'AUTH' }] }, { requesttypedescription: 'AUTH' }],
       [
         { response: [{ requesttypedescription: 'AUTH' }, { requesttypedescription: 'CHARGEBACK' }] },
@@ -211,7 +211,7 @@ describe('StCodec class', () => {
         },
         { requesttypedescription: 'RISKDEC', customeroutput: 'RESULT' },
       ],
-    ]).it('should return a valid response ', (requestObject, expected) => {
+    ])('should return a valid response', (requestObject, expected) => {
       // @ts-ignore
       expect(StCodec.determineResponse(requestObject)).toEqual(expected);
     });
@@ -293,7 +293,7 @@ describe('StCodec class', () => {
       StCodec.publishResponse = jest.fn();
     });
 
-    each([
+    it.each([
       [
         { pan: '4111111111111111', expirydate: '12/12', securitycode: '321' },
         { pan: '4111111111111111', expirydate: '12/12', securitycode: '321', sitereference: 'live2' },
@@ -305,7 +305,7 @@ describe('StCodec class', () => {
         },
         { requesttypedescriptions: ['CACHETOKENISE'], sitereference: 'live2' },
       ],
-    ]).it('should build the request for a valid object', (requestObject, expected) => {
+    ])('should build the request for a valid object', (requestObject, expected) => {
       expect(instance.buildRequestObject(requestObject)).toEqual({
         acceptcustomeroutput: '2.00',
         jwt,
@@ -323,7 +323,7 @@ describe('StCodec class', () => {
       StCodec.publishResponse = jest.fn();
     });
 
-    each([
+    it.each([
       [
         { pan: '4111111111111111', requesttypedescriptions: ['AUTH'] },
         expect.stringMatching(
@@ -349,7 +349,7 @@ describe('StCodec class', () => {
           )
         ),
       ],
-    ]).it('should encode valid data', (request, expected) => {
+    ])('should encode valid data', (request, expected) => {
       instance.buildRequestObject = jest.fn(instance.buildRequestObject);
       expect(instance.encode(request)).toEqual(expected);
       expect(instance.buildRequestObject).toHaveBeenCalledWith(request);
@@ -362,14 +362,14 @@ describe('StCodec class', () => {
       StCodec.publishResponse = jest.fn();
     });
 
-    each([
+    it.each([
       [{}, true],
       [{ response: [{}] }, true],
       [{ version: '3.02' }, true],
       [{ version: '1.00', response: [] }, true],
       [{ version: '1.00', response: [{}] }, false],
       [{ version: '1.00', response: [{}, {}] }, false],
-    ]).it('should verify the version and number of responses', (responseData, expected) => {
+    ])('should verify the version and number of responses', (responseData, expected) => {
       // @ts-ignore
       expect(StCodec.isInvalidResponse(responseData)).toBe(expected);
     });

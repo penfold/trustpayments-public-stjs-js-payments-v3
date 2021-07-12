@@ -99,7 +99,7 @@ describe('ConfigService', () => {
 
   describe('update', () => {
     it('resolves the full config-provider and publishes it to message bus', () => {
-      spyOn(messageBus, 'publish');
+      jest.spyOn(messageBus, 'publish');
 
       const result = configService.update(config);
 
