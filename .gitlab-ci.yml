@@ -94,6 +94,13 @@ variables:
       enabled: false
     SCHEDULED_HOTFIX_BRANCH_TESTS_WORKER:
       enabled: false
+    SCHEDULED_RENOVATE_TRIGGER:
+      enabled: true
+      active: true
+      variables:
+        - variable_type: env_var
+          key: DEPENDENCY_UPDATE_AUTO_MERGE
+          value: 'true'
   ### Schedules configuration : End
 
   ##### Others - project specific #####
