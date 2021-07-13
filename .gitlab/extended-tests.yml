@@ -634,15 +634,13 @@ win10-Chrome-latest-visual-tests-styling-nightly:
     - .win10-IE-11.0-visual-tests
     - .rules-extended-tests-release
 
-#TODO @STJS-1909 turn on it after fix
-.win10-IE-11.0-visual-tests-review:
+win10-IE-11.0-visual-tests-review:
   extends:
     - .visual-regression-tests-review
     - .win10-IE-11.0-visual-tests
     - .rules-extended-tests-review
 
-#TODO @STJS-1909 turn off it after fix
-win10-IE-11.0-visual-tests-nightly:
+.win10-IE-11.0-visual-tests-nightly:
   extends:
     - .visual-regression-tests-review
     - .win10-IE-11.0-visual-tests
