@@ -106,19 +106,19 @@ Feature: 3ds SDK v1 E2E tests - Visa
     And User clicks Pay button
     And User see 3ds SDK challenge for v1 is displayed
     And User fills 3ds SDK v1 challenge with THREE_DS_CODE_V1_FAILED and submit
-    Then User will see payment status information: "Unauthenticated"
+    Then User will see payment status information: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | error         |
-    And User will see that Submit button is "enabled" after payment
-    And User will see that ALL input fields are "enabled"
+      | <callback>    |
+    And User will see that Submit button is "<state>" after payment
+    And User will see that ALL input fields are "<state>"
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | payment_status                          | callback | state    |
+      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
+      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
+      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
 
 
   Scenario Outline: TC_5 - Not enrolled - Card: VISA_V1_3DS_SDK_NOT_ENROLLED
