@@ -1,16 +1,26 @@
 import each from 'jest-each';
+import { IResponseData } from '../../models/IResponseData';
 import { StCodec } from '../../services/st-codec/StCodec';
 import { FormState } from '../../models/constants/FormState';
 import {
   VALIDATION_ERROR,
   VALIDATION_ERROR_FIELD_IS_REQUIRED,
-  VALIDATION_ERROR_PATTERN_MISMATCH
+  VALIDATION_ERROR_PATTERN_MISMATCH,
 } from '../../models/constants/Translations';
 import { MessageBus } from '../message-bus/MessageBus';
 import { Validation } from './Validation';
-import { Frame } from '../frame/Frame';
-import { mock } from 'ts-mockito';
-import { IMessageBus } from '../message-bus/IMessageBus';
+import Container from 'typedi';
+import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../translator/Translator';
+import { ITranslationProvider } from '../translator/ITranslationProvider';
+import { TranslationProvider } from '../translator/TranslationProvider';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
+import { IFormFieldsValidity } from '../../models/IFormFieldsValidity';
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 jest.mock('./../message-bus/MessageBus');
 jest.mock('./../notification/Notification');
@@ -19,7 +29,7 @@ describe('Validation', () => {
   describe('isCharNumber()', () => {
     const { isCharNumberTestCases } = validationFixture();
 
-    each(isCharNumberTestCases).test('Validation.isCharNumber', (event: KeyboardEvent, expected: any) => {
+    it.each(isCharNumberTestCases)('Validation.isCharNumber', (event: KeyboardEvent, expected: boolean) => {
       expect(Validation.isCharNumber(event)).toBe(expected);
     });
   });
@@ -27,8 +37,7 @@ describe('Validation', () => {
   describe('getValidationMessage()', () => {
     const { getValidationMessagesTestCases } = validationFixture();
 
-    each(getValidationMessagesTestCases).test('Validation.getValidationMessage', (validityState, expected) => {
-      // @ts-ignore
+    it.each(getValidationMessagesTestCases)('Validation.getValidationMessage', (validityState: ValidityState, expected: string) => {
       expect(Validation.getValidationMessage(validityState)).toBe(expected);
     });
   });
@@ -68,33 +77,33 @@ describe('Validation', () => {
       cardNumberErrorData,
       securityCodeErrorData,
       expirationDateErrorData,
-      merchantInputsErrorData
+      merchantInputsErrorData,
     } = validationFixture();
 
-    it('should pass error data with proper field equals pan ', () => {
+    it('should pass error data with proper field equals pan', () => {
       StCodec.getErrorData(cardNumberErrorData);
       // @ts-ignore
       expect(instance.getErrorData(cardNumberErrorData)).toEqual({
         field: cardNumberErrorData.errordata[0],
-        errormessage: cardNumberErrorData.errormessage
+        errormessage: cardNumberErrorData.errormessage,
       });
     });
 
-    it('should pass error data with proper field equals security code ', () => {
+    it('should pass error data with proper field equals security code', () => {
       StCodec.getErrorData(securityCodeErrorData);
       // @ts-ignore
       expect(instance.getErrorData(securityCodeErrorData)).toEqual({
         field: securityCodeErrorData.errordata[0],
-        errormessage: securityCodeErrorData.errormessage
+        errormessage: securityCodeErrorData.errormessage,
       });
     });
 
-    it('should pass error data with proper field equals expiration date ', () => {
+    it('should pass error data with proper field equals expiration date', () => {
       StCodec.getErrorData(expirationDateErrorData);
       // @ts-ignore
       expect(instance.getErrorData(expirationDateErrorData)).toEqual({
         field: expirationDateErrorData.errordata[0],
-        errormessage: expirationDateErrorData.errormessage
+        errormessage: expirationDateErrorData.errormessage,
       });
     });
 
@@ -103,7 +112,7 @@ describe('Validation', () => {
       // @ts-ignore
       expect(instance.getErrorData(merchantInputsErrorData)).toEqual({
         field: merchantInputsErrorData.errordata[0],
-        errormessage: merchantInputsErrorData.errormessage
+        errormessage: merchantInputsErrorData.errormessage,
       });
     });
   });
@@ -188,7 +197,7 @@ describe('Validation', () => {
     const formFields = {
       expirationDate: { value: 'expirydate', validity: true },
       cardNumber: { value: 'pan', validity: false },
-      securityCode: { value: 'securitycode', validity: true }
+      securityCode: { value: 'securitycode', validity: true },
     };
 
     beforeEach(() => {
@@ -218,7 +227,7 @@ describe('Validation', () => {
       expect(instance._card).toEqual({
         expirydate: 'expirydate',
         pan: 'pan',
-        securitycode: 'securitycode'
+        securitycode: 'securitycode',
       });
     });
   });
@@ -227,13 +236,13 @@ describe('Validation', () => {
     const { instance } = validationFixture();
     const validationEvent = {
       data: { testValue: 'test value' },
-      type: MessageBus.EVENTS.VALIDATE_FORM
+      type: MessageBus.EVENTS.VALIDATE_FORM,
     };
 
     beforeEach(() => {
       // @ts-ignore
       instance._messageBus.publish = jest.fn();
-      instance.setFormValidity({ testValue: 'test value' });
+      instance.setFormValidity({ testValue: 'test value' } as unknown as IFormFieldsValidity);
     });
 
     it('should call publish event', () => {
@@ -244,8 +253,6 @@ describe('Validation', () => {
 });
 
 function validationFixture() {
-  let frame: Frame;
-  let messageBus: IMessageBus;
   const instance: Validation = new Validation();
   const inputElement = document.createElement('input');
   const inputElementMerchant = document.createElement('input');
@@ -259,30 +266,32 @@ function validationFixture() {
   const divElement = document.createElement('div');
   const cardNumberErrorData = {
     errordata: ['pan'],
-    errormessage: 'Invalid field'
+    errormessage: 'Invalid field',
   };
   const expirationDateErrorData = {
     errordata: ['expirydate'],
-    errormessage: 'Invalid field'
+    errormessage: 'Invalid field',
   };
-  const securityCodeErrorData = {
+  const securityCodeErrorData: IResponseData = {
     errordata: ['securitycode'],
-    errormessage: 'Invalid field'
+    errormessage: 'Invalid field',
   };
   const backendValidityData = {
     field: 'pan',
-    message: 'some message'
+    message: 'some message',
   };
   const merchantInputsErrorData = {
     errordata: ['billingemail'],
-    errormessage: 'Invalid field'
+    errormessage: 'Invalid field',
   };
+
+  Container.get(TranslatorToken).init();
 
   const isCharNumberTestCases = [
     [new KeyboardEvent('keypress', { key: 'a' }), true],
     [new KeyboardEvent('keypress', { key: '0' }), false],
     [new KeyboardEvent('keypress', { key: '"' }), true],
-    [new KeyboardEvent('keypress', { key: 'Shift' }), true]
+    [new KeyboardEvent('keypress', { key: 'Shift' }), true],
   ];
 
   // @ts-ignore
@@ -295,7 +304,7 @@ function validationFixture() {
     [{ valid: false, valueMissing: true }, VALIDATION_ERROR_FIELD_IS_REQUIRED],
     [{ valid: false, patternMismatch: true }, VALIDATION_ERROR_PATTERN_MISMATCH],
     [{ valid: false, customError: true }, VALIDATION_ERROR],
-    [{ valid: false, tooShort: true }, VALIDATION_ERROR]
+    [{ valid: false, tooShort: true }, VALIDATION_ERROR],
   ];
   return {
     inputElement,
@@ -316,6 +325,6 @@ function validationFixture() {
     eventWithOther,
     luhnFailed,
     luhnPassed,
-    divElement
+    divElement,
   };
 }

@@ -1,12 +1,12 @@
 import { Service } from 'typedi';
-import { IHttpClientResponse } from '@trustpayments/http-client/lib/httpclient';
+import { IHttpClientResponse } from '@trustpayments/http-client';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { InvalidResponseError } from './InvalidResponseError';
 import { IJwtResponse } from './interfaces/IJwtResponse';
 import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
 import { IResponsePayload } from './interfaces/IResponsePayload';
 import { IRequestTypeResponse } from './interfaces/IRequestTypeResponse';
-import { IStJwtObj } from '../../models/IStJwtObj';
+import { IDecodedResponse } from './interfaces/IDecodedResponse';
 
 @Service()
 export class ResponseDecoderService {
@@ -14,33 +14,39 @@ export class ResponseDecoderService {
 
   constructor(private jwtDecoder: JwtDecoder) {}
 
-  decode(response: IHttpClientResponse<IJwtResponse>): IRequestTypeResponse & IJwtResponse {
+  decode(response: IHttpClientResponse<IJwtResponse>): IDecodedResponse {
     try {
       const jwt: string = response.data.jwt;
-      const { payload } = this.jwtDecoder.decode<IStJwtObj<IResponsePayload>>(jwt);
+      const { payload } = this.jwtDecoder.decode<IResponsePayload>(jwt);
 
       if (!this.isResponsePayloadValid(payload)) {
         throw new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
       }
 
-      return { ...this.extractResponseObject(payload), jwt };
+      return {
+        responseJwt: jwt,
+        customerOutput: this.extractResponseObject(payload),
+        updatedMerchantJwt: payload.jwt,
+      };
     } catch (e) {
       throw new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
     }
   }
 
   private isResponsePayloadValid(payload: IResponsePayload): boolean {
-    return payload &&
+    return (
+      payload &&
       payload.version === ResponseDecoderService.RESPONSE_VERSION &&
       payload.response &&
-      payload.response.length > 0;
+      payload.response.length > 0
+    );
   }
 
   private extractResponseObject(payload: IResponsePayload): IRequestTypeResponse {
     let responseObject: IRequestTypeResponse;
 
     for (responseObject of payload.response) {
-      if (Boolean(responseObject.customeroutput)) {
+      if (responseObject.customeroutput) {
         break;
       }
     }

@@ -14,7 +14,7 @@ import {
   EXPIRATION_DATE_IFRAME,
   EXPIRATION_DATE_INPUT_SELECTOR,
   SECURITY_CODE_IFRAME,
-  SECURITY_CODE_INPUT_SELECTOR
+  SECURITY_CODE_INPUT_SELECTOR,
 } from '../../application/core/models/constants/Selectors';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
@@ -22,14 +22,22 @@ import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import spyOn = jest.spyOn;
 import any = jasmine.any;
+import Container from 'typedi';
+import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../application/core/shared/translator/Translator';
+import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
+import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 
 jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/validation/Validation');
 
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
+
 describe('CardFrames', () => {
-  document.body.innerHTML =
-    '<form id="st-form" class="example-form" autocomplete="off" novalidate> <h1 class="example-form__title"> Secure Trading<span>AMOUNT: <strong>10.00 GBP</strong></span> </h1> <div class="example-form__section example-form__section--horizontal"> <div class="example-form__group"> <label for="example-form-name" class="example-form__label">AMOUNT</label> <input id="example-form-amount" class="example-form__input" type="number" placeholder="" name="myBillAmount" data-st-name="billingamount" /> </div> </div> <div class="example-form__section example-form__section--horizontal"> <div class="example-form__group"> <label for="example-form-name" class="example-form__label">NAME</label> <input id="example-form-name" class="example-form__input" type="text" placeholder="John Doe" autocomplete="name" name="myBillName" data-st-name="billingfirstname" /> </div> <div class="example-form__group"> <label for="example-form-email" class="example-form__label">E-MAIL</label> <input id="example-form-email" class="example-form__input" type="email" placeholder="test@mail.com" autocomplete="email" name="myBillEmail" data-st-name="billingemail" /> </div> <div class="example-form__group"> <label for="example-form-phone" class="example-form__label">PHONE</label> <input id="example-form-phone" class="example-form__input" type="tel" placeholder="+00 000 000 000" autocomplete="tel" name="myBillTel" /> <!-- no data-st-name attribute so this field will not be submitted to ST --> </div> </div> <div class="example-form__spacer"></div> <div class="example-form__section"> <div id="st-notification-frame" class="example-form__group"></div> <div id="st-card-number" class="example-form__group"></div> <div id="st-expiration-date" class="example-form__group"></div> <div id="st-security-code" class="example-form__group"></div> <div class="example-form__spacer"></div> </div> <div class="example-form__section"> <div class="example-form__group example-form__group--submit"> <button type="submit" class="example-form__button">Back</button> <button type="submit" class="example-form__button" id="merchant-submit-button">Submit</button> </div> </div> <div class="example-form__section"> <div id="st-control-frame" class="example-form__group"></div> <div id="st-visa-checkout" class="example-form__group"></div> <div id="st-apple-pay" class="example-form__group"></div> </div> <div id="st-animated-card" class="st-animated-card-wrapper"></div> </form>';
-  const configProvider: ConfigProvider = mock<ConfigProvider>();
+  let configProvider: ConfigProvider;
   let iframeFactory: IframeFactory;
   let frame: Frame;
   let instance: CardFrames;
@@ -37,10 +45,15 @@ describe('CardFrames', () => {
   let jwtDecoder: JwtDecoder;
 
   beforeEach(() => {
+    document.body.innerHTML =
+      '<form id="st-form" class="example-form" autocomplete="off" novalidate> <h1 class="example-form__title"> Secure Trading<span>AMOUNT: <strong>10.00 GBP</strong></span> </h1> <div class="example-form__section example-form__section--horizontal"> <div class="example-form__group"> <label for="example-form-name" class="example-form__label">AMOUNT</label> <input id="example-form-amount" class="example-form__input" type="number" placeholder="" name="myBillAmount" data-st-name="billingamount" /> </div> </div> <div class="example-form__section example-form__section--horizontal"> <div class="example-form__group"> <label for="example-form-name" class="example-form__label">NAME</label> <input id="example-form-name" class="example-form__input" type="text" placeholder="John Doe" autocomplete="name" name="myBillName" data-st-name="billingfirstname" /> </div> <div class="example-form__group"> <label for="example-form-email" class="example-form__label">E-MAIL</label> <input id="example-form-email" class="example-form__input" type="email" placeholder="test@mail.com" autocomplete="email" name="myBillEmail" data-st-name="billingemail" /> </div> <div class="example-form__group"> <label for="example-form-phone" class="example-form__label">PHONE</label> <input id="example-form-phone" class="example-form__input" type="tel" placeholder="+00 000 000 000" autocomplete="tel" name="myBillTel" /> <!-- no data-st-name attribute so this field will not be submitted to ST --> </div> </div> <div class="example-form__spacer"></div> <div class="example-form__section"> <div id="st-notification-frame" class="example-form__group"></div> <div id="st-card-number" class="example-form__group"></div> <div id="st-expiration-date" class="example-form__group"></div> <div id="st-security-code" class="example-form__group"></div> <div class="example-form__spacer"></div> </div> <div class="example-form__section"> <div class="example-form__group example-form__group--submit"> <button type="submit" class="example-form__button">Back</button> <button type="submit" class="example-form__button" id="merchant-submit-button">Submit</button> </div> </div> <div class="example-form__section"> <div id="st-control-frame" class="example-form__group"></div> <div id="st-visa-checkout" class="example-form__group"></div> <div id="st-apple-pay" class="example-form__group"></div> </div> <div id="st-animated-card" class="st-animated-card-wrapper"></div> </form>';
+
     iframeFactory = mock(IframeFactory);
     jwtDecoder = mock(JwtDecoder);
+    configProvider = mock<ConfigProvider>();
     messageBus = new SimpleMessageBus();
     frame = mock(Frame);
+    Container.get(TranslatorToken).init();
     const element = document.createElement('input');
     DomMethods.getAllFormElements = jest.fn().mockReturnValue([element]);
 
@@ -48,7 +61,8 @@ describe('CardFrames', () => {
       of({
         jwt: '',
         disableNotification: false,
-        placeholders: { pan: 'Card number', expirydate: 'MM/YY', securitycode: '***' }
+        placeholders: { pan: 'Card number', expirydate: 'MM/YY', securitycode: '***' },
+        components: {},
       })
     );
 
@@ -69,8 +83,8 @@ describe('CardFrames', () => {
         sitereference: 'test_james38641',
         locale: 'en_GB',
         pan: '3089500000000000021',
-        expirydate: '01/22'
-      }
+        expirydate: '01/22',
+      },
     });
 
     instance = new CardFrames(
@@ -79,7 +93,7 @@ describe('CardFrames', () => {
       {
         cardNumber: CARD_NUMBER_INPUT_SELECTOR,
         expirationDate: EXPIRATION_DATE_INPUT_SELECTOR,
-        securityCode: SECURITY_CODE_INPUT_SELECTOR
+        securityCode: SECURITY_CODE_INPUT_SELECTOR,
       },
       {},
       ['VISA,MASTERCARD,AMEX'],
@@ -102,7 +116,7 @@ describe('CardFrames', () => {
     const type = MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER;
     const messageBusEvent = {
       data,
-      type
+      type,
     };
 
     beforeEach(() => {
@@ -143,16 +157,16 @@ describe('CardFrames', () => {
       data: {
         billingamount: '',
         billingemail: '',
-        billingfirstname: ''
+        billingfirstname: '',
       },
-      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS
+      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS,
     };
 
     beforeEach(() => {
       DomMethods.parseForm = jest.fn().mockReturnValueOnce({
         billingamount: '',
         billingemail: '',
-        billingfirstname: ''
+        billingfirstname: '',
       });
       // @ts-ignore
       instance._messageBus.publish = jest.fn();
@@ -278,9 +292,9 @@ describe('CardFrames', () => {
     const submitFormEvent = {
       data: {
         // @ts-ignore
-        fieldsToSubmit: ['pan', 'expirydate', 'securitycode']
+        fieldsToSubmit: ['pan', 'expirydate', 'securitycode'],
       },
-      type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM
+      type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
     };
 
     beforeEach(() => {
@@ -288,7 +302,7 @@ describe('CardFrames', () => {
       instance._messageBus.subscribe = jest.fn().mockReturnValueOnce({
         cardNumber: '',
         expirationDate: '',
-        securityCode: ''
+        securityCode: '',
       });
       // @ts-ignore
       instance._messageBus.publish = jest.fn();
@@ -311,7 +325,7 @@ describe('CardFrames', () => {
       return {
         cardNumber: { message: 'card', state: stateCardNumber },
         expirationDate: { message: 'expiration', state: stateExpirationDate },
-        securityCode: { message: 'security', state: stateSecurityCode }
+        securityCode: { message: 'security', state: stateSecurityCode },
       };
     }
 
@@ -320,7 +334,7 @@ describe('CardFrames', () => {
       instance._publishValidatedFieldState = jest.fn();
     });
 
-    it(`should call _publishValidatedFieldState for cardNumber if it's state is false`, () => {
+    it('should call _publishValidatedFieldState for cardNumber if it\'s state is false', () => {
       const validationResult = validateFieldsAfterSubmitFixture(false, true, true);
 
       messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
@@ -333,7 +347,7 @@ describe('CardFrames', () => {
       );
     });
 
-    it(`should call _publishValidatedFieldState for expirationDate if it's state is false`, () => {
+    it('should call _publishValidatedFieldState for expirationDate if it\'s state is false', () => {
       const validationResult = validateFieldsAfterSubmitFixture(true, false, true);
 
       messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
@@ -346,7 +360,7 @@ describe('CardFrames', () => {
       );
     });
 
-    it(`should call _publishValidatedFieldState for securityCode if it's state is false`, () => {
+    it('should call _publishValidatedFieldState for securityCode if it\'s state is false', () => {
       const validationResult = validateFieldsAfterSubmitFixture(true, true, false);
 
       messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
@@ -387,11 +401,11 @@ describe('CardFrames', () => {
       expect(instance._messageBusEvent.data.message).toEqual(field.message);
     });
 
-    it('should set messageBusEvent properties', () => {
+    it('should call messageBus publish method', () => {
       // @ts-ignore
       expect(instance._messageBus.publish).toHaveBeenCalledWith({
         type: MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD,
-        data: { message: field.message }
+        data: { message: field.message },
       });
     });
   });
@@ -454,6 +468,21 @@ describe('CardFrames', () => {
       expect(instance._createSubmitButton().getAttribute('class')).toEqual('example-form__button');
       // @ts-ignore
       expect(instance._createSubmitButton().getAttribute('type')).toEqual('submit');
+    });
+  });
+
+  describe('init()', () => {
+    it('should create iframes for card fields and append them to DOM', () => {
+      expect(document.getElementById(CARD_NUMBER_IFRAME)).toBeInstanceOf(HTMLIFrameElement);
+      expect(document.getElementById(EXPIRATION_DATE_IFRAME)).toBeInstanceOf(HTMLIFrameElement);
+      expect(document.getElementById(SECURITY_CODE_IFRAME)).toBeInstanceOf(HTMLIFrameElement);
+    });
+
+    it('should remove card fields iframes from the DOM on destroy event', () => {
+      messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
+      expect(document.getElementById(CARD_NUMBER_IFRAME)).toBeNull();
+      expect(document.getElementById(EXPIRATION_DATE_IFRAME)).toBeNull();
+      expect(document.getElementById(SECURITY_CODE_IFRAME)).toBeNull();
     });
   });
 });

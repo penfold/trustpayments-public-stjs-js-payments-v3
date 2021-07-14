@@ -1,0 +1,72 @@
+### Example APP HTML
+
+.build-app-image-html:
+  extends:
+    - .utility-images-build
+  stage: post-build
+  variables:
+    DOCKER_TARGET: 'app-html'
+    DOCKERFILE_PATH: 'docker/app-html/Dockerfile'
+
+### review and release
+
+.build-app-image-html-rr:
+  extends:
+    - .build-app-image-html
+  variables:
+    ARTIFACTS_BUILD_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_release_image"
+    BUILD_ARGS_EXTRA: "--build-arg SDK_DIST_PATH=.artifacts_sdk_release/dist --build-arg APP_DIST_PATH=.artifacts_app_html_release/dist"
+
+build-app-image-html-rr-review:
+  extends:
+    - .build-app-image-html-rr
+    - .rules-when-review
+  variables:
+    UTILITY_NAME: 'app-html-review'
+
+build-app-image-html-rr-release:
+  extends:
+    - .build-app-image-html-rr
+    - .rules-when-release
+  variables:
+    UTILITY_NAME: 'app-html-release'
+
+### local
+
+.build-app-image-html-local:
+  extends:
+    - .build-app-image-html
+  variables:
+    ARTIFACTS_BUILD_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_local_image"
+    BUILD_ARGS_EXTRA: "--build-arg SDK_DIST_PATH=.artifacts_sdk_local/dist --build-arg APP_DIST_PATH=.artifacts_app_html_local/dist"
+    UTILITY_NAME: 'app-html-local'
+
+build-app-image-html-local-review:
+  extends:
+    - .build-app-image-html-local
+    - .rules-when-review
+
+build-app-image-html-local-release:
+  extends:
+    - .build-app-image-html-local
+    - .rules-when-release
+
+### mock
+
+.build-app-image-html-mock:
+  extends:
+    - .build-app-image-html
+  variables:
+    ARTIFACTS_BUILD_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_mock_image"
+    BUILD_ARGS_EXTRA: "--build-arg SDK_DIST_PATH=.artifacts_sdk_mock/dist --build-arg APP_DIST_PATH=.artifacts_app_html_mock/dist"
+    UTILITY_NAME: 'app-html-mock'
+
+build-app-image-html-mock-review:
+  extends:
+    - .build-app-image-html-mock
+    - .rules-when-review
+
+build-app-image-html-mock-release:
+  extends:
+    - .build-app-image-html-mock
+    - .rules-when-release

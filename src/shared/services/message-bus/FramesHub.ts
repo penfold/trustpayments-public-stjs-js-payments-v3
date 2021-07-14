@@ -24,8 +24,8 @@ export class FramesHub {
 
     const fromEventFrame$ = this.communicator.incomingEvent$.pipe(
       ofType(FramesHub.FRAME_READY_EVENT),
-      filter((event: IMessageBusEvent) => Boolean(event.data)),
-      map((event: IMessageBusEvent) => event.data)
+      filter((event: IMessageBusEvent<string>) => Boolean(event.data)),
+      map((event: IMessageBusEvent<string>) => event.data)
     );
 
     fromEventFrame$
@@ -73,7 +73,7 @@ export class FramesHub {
     return window.parent;
   }
 
-  public reset() {
+  public reset(): void {
     this.activeFrame$.next([]);
   }
 
@@ -92,7 +92,7 @@ export class FramesHub {
 
     const event: IMessageBusEvent = {
       type: FramesHub.FRAME_READY_EVENT,
-      data: newFrame
+      data: newFrame,
     };
 
     activeFrames.forEach(frame => this.communicator.send(event, frame));

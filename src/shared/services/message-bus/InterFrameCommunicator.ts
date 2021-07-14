@@ -1,7 +1,7 @@
 import { ContainerInstance, Inject, Service } from 'typedi';
 import { defer, EMPTY, fromEvent, Observable, Subject } from 'rxjs';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { filter, first, map, mergeMap, share, take, takeUntil, tap } from 'rxjs/operators';
+import { filter, first, map, mergeMap, share, take, takeUntil } from 'rxjs/operators';
 import { ofType } from './operators/ofType';
 import { QueryMessage } from './messages/QueryMessage';
 import { ResponseMessage } from './messages/ResponseMessage';
@@ -23,7 +23,7 @@ export class InterFrameCommunicator {
   private readonly close$ = new Subject<void>();
   private readonly frameOrigin: string;
   private parentOrigin: string;
-  private responders: Map<string, (queryEvent: IMessageBusEvent) => Observable<any>> = new Map();
+  private responders: Map<string, (queryEvent: IMessageBusEvent) => Observable<unknown>> = new Map();
 
   constructor(
     private identifier: FrameIdentifier,
@@ -59,7 +59,7 @@ export class InterFrameCommunicator {
         }),
         takeUntil(this.communicationClosed$)
       )
-      .subscribe((response: ResponseMessage<any>) => {
+      .subscribe((response: ResponseMessage<unknown>) => {
         this.send(response, response.queryFrame);
       });
   }
@@ -99,18 +99,18 @@ export class InterFrameCommunicator {
           },
           error(error) {
             reject(error);
-          }
+          },
         });
 
       this.send(query, target);
     });
   }
 
-  public whenReceive(eventType: string) {
+  public whenReceive(eventType: string): Record<string, <T>(responder: (queryEvent: IMessageBusEvent) => Observable<T>) => void> {
     return {
       thenRespond: <T>(responder: (queryEvent: IMessageBusEvent) => Observable<T>) => {
         this.responders.set(eventType, responder);
-      }
+      },
     };
   }
 

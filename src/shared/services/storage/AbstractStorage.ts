@@ -8,11 +8,11 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { FrameIdentifier } from '../message-bus/FrameIdentifier';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 
-export abstract class AbstractStorage implements IStorage, Subscribable<any> {
+export abstract class AbstractStorage implements IStorage, Subscribable<unknown> {
   private static readonly STORAGE_EVENT = 'storage';
-  public readonly pipe: Observable<any>['pipe'];
-  public readonly subscribe: Observable<any>['subscribe'];
-  private readonly observable$: Observable<any>;
+  public readonly pipe: Observable<unknown>['pipe'];
+  public readonly subscribe: Observable<unknown>['subscribe'];
+  private readonly observable$: Observable<Record<string, unknown>>;
 
   protected constructor(
     private nativeStorage: Storage,
@@ -31,7 +31,7 @@ export abstract class AbstractStorage implements IStorage, Subscribable<any> {
     this.pipe = this.observable$.pipe.bind(this.observable$);
     this.subscribe = this.observable$.subscribe.bind(this.observable$);
 
-    this.communicator.incomingEvent$.pipe(ofType(this.getSychronizationEventName())).subscribe(event => {
+    this.communicator.incomingEvent$.pipe(ofType(this.getSychronizationEventName())).subscribe((event: IMessageBusEvent<{ key: string; value: string; }>) => {
       const { key, value } = event.data;
       this.nativeStorage.setItem(key, value);
       this.emitStorageEvent();
@@ -42,7 +42,7 @@ export abstract class AbstractStorage implements IStorage, Subscribable<any> {
     return this.nativeStorage.getItem(name);
   }
 
-  public setItem(name: string, value: string, synchronize: boolean = true): void {
+  public setItem(name: string, value: string, synchronize = true): void {
     this.nativeStorage.setItem(name, value);
     this.emitStorageEvent();
 
@@ -51,7 +51,7 @@ export abstract class AbstractStorage implements IStorage, Subscribable<any> {
     }
   }
 
-  public select<T>(selector: (storage: { [key: string]: any }) => T): Observable<T> {
+  public select<T>(selector: (storage: { [key: string]: unknown }) => T): Observable<T> {
     return this.observable$.pipe(
       map(storage => selector(storage)),
       shareReplay(1)
@@ -76,7 +76,7 @@ export abstract class AbstractStorage implements IStorage, Subscribable<any> {
   private synchronizeStorage(key: string, value: string): void {
     const event: IMessageBusEvent = {
       type: this.getSychronizationEventName(),
-      data: { key, value }
+      data: { key, value },
     };
 
     if (!this.identifier.isParentFrame()) {

@@ -3,7 +3,6 @@ Feature: E2E Card Payments - redirection
   I want to be redirected to page matching my payment status
   So that my payment is handled appropriately
 
-  @e2e_smoke_test @e2e_config_submit_on_success
   Scenario Outline: Successful frictionless payment with submitOnSuccess enabled
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -29,7 +28,7 @@ Feature: E2E Card Payments - redirection
       | THREEDQUERY AUTH         | should be none | 1000           | GBP            |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
 
-  @e2e_config_submit_on_success
+
   Scenario Outline: Successful payment with submitOnSuccess enabled for non-frictionless card
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
@@ -56,7 +55,7 @@ Feature: E2E Card Payments - redirection
       | THREEDQUERY AUTH         | should be none     | 1000           | GBP            |
       | ACCOUNTCHECK THREEDQUERY | should not be none | should be none | should be none |
 
-  @e2e_config_request_types
+
   @bypass_property
   Scenario: Successful payment with requestTypes set and default submitOnSuccess
     Given JS library configured by inline params REQUEST_TYPES_CONFIG and jwt BASE_JWT with additional attributes
@@ -78,8 +77,6 @@ Feature: E2E Card Payments - redirection
       | jwt                  | should not be none                      |
 
 
-  @e2e_smoke_test
-  @e2e_config_submit_on_error
   @bypass_property
   Scenario: Unsuccessful payment with submitOnError enabled
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
@@ -100,9 +97,7 @@ Feature: E2E Card Payments - redirection
       | transactionreference | should not be none |
       | jwt                  | should not be none |
 
-  @e2e_smoke_test
-  @e2e_config_submit_on_error_invalid_jwt
-  @bypass_property
+
   Scenario: Unsuccessful payment with submitOnError enabled - invalid jwt
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt INVALID_JWT with additional attributes
       | key                      | value            |
@@ -116,7 +111,7 @@ Feature: E2E Card Payments - redirection
       | errorcode    | 30000         |
       | errordata    | locale        |
 
-  @e2e_config_submit_on_success_security_code
+
   @bypass_property
   Scenario: Successful payment with submitOnSuccess enabled with field to submit securitycode
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_SECURITY_CODE_CONFIG and jwt JWT_WITH_PARENT_TRANSACTION with additional attributes
@@ -139,7 +134,7 @@ Feature: E2E Card Payments - redirection
       | enrolled             | Y                                       |
       | eci                  | 05                                      |
 
-  @e2e_config_submit_on_success_callback
+
   Scenario: Successful payment with submitOnSuccess enabled and success callback set
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG_SUCCESS_CALLBACK and jwt BASE_JWT with additional attributes
       | key                     | value            |
@@ -161,7 +156,7 @@ Feature: E2E Card Payments - redirection
       | enrolled             | Y                                       |
       | settlestatus         | 0                                       |
 
-  @e2e_config_submit_on_success_callback_submit
+
   Scenario: Successful payment with submitOnSuccess enabled and submit callback set
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG_SUBMIT_CALLBACK and jwt BASE_JWT with additional attributes
       | key                     | value            |
@@ -183,7 +178,7 @@ Feature: E2E Card Payments - redirection
       | enrolled             | Y                                       |
       | settlestatus         | 0                                       |
 
-  @e2e_config_submit_on_error_callback
+
   @bypass_property
   Scenario: Unsuccessful payment with submitOnError enabled and error callback set
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG_ERROR_CALLBACK and jwt BASE_JWT with additional attributes
@@ -206,7 +201,7 @@ Feature: E2E Card Payments - redirection
       | eci                  | 07                 |
       | settlestatus         | 3                  |
 
-  @e2e_config_submit_on_error_callback
+
   Scenario: Unsuccessful payment with submitOnError enabled and submit callback set
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG_SUBMIT_CALLBACK and jwt BASE_JWT with additional attributes
       | key                     | value            |
@@ -227,7 +222,7 @@ Feature: E2E Card Payments - redirection
       | eci                  | 07                 |
       | settlestatus         | 3                  |
 
-#  @e2e_config_submit_on_cancel_callback
+
 #  Scenario: Unsuccessful payment with submitOnCancel enabled and cancel callback set
 #  Given JS library configured by inline params SUBMIT_ON_CANCEL_CONFIG_CANCEL_CALLBACK and jwt BASE_JWT with additional attributes
 #      | key                     | value                    |

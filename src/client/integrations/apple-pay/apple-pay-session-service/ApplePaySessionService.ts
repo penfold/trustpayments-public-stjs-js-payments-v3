@@ -4,7 +4,6 @@ import { IApplePayPaymentMethodSelectedEvent } from '../../../../application/cor
 import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePaySession } from './IApplePaySession';
 import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingMethodSelectedEvent';
-// tslint:disable-next-line:max-line-length
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
 import { IApplePayPaymentAuthorizationResult } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 import { IApplePaySessionWrapper } from './IApplePaySessionWrapper';
@@ -74,37 +73,40 @@ export class ApplePaySessionService {
   }
 
   private onPaymentMethodSelected(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.applePaySession.onpaymentmethodselected = (event: IApplePayPaymentMethodSelectedEvent) => {
       this.applePaySession.completePaymentMethodSelection({
         newTotal: {
           amount: this.paymentRequest.total.amount,
           label: this.paymentRequest.total.label,
-          type: this.paymentRequest.total.type
-        }
+          type: this.paymentRequest.total.type,
+        },
       });
     };
   }
 
   private onShippingContactSelected(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.applePaySession.onshippingcontactselected = (event: IApplePayShippingContactSelectedEvent) => {
       this.applePaySession.completeShippingContactSelection({
         newTotal: {
           amount: this.paymentRequest.total.amount,
           label: this.paymentRequest.total.label,
-          type: this.paymentRequest.total.type
-        }
+          type: this.paymentRequest.total.type,
+        },
       });
     };
   }
 
   private onShippingMethodSelected(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.applePaySession.onshippingmethodselected = (event: IApplePayShippingMethodSelectedEvent) => {
       this.applePaySession.completeShippingMethodSelection({
         newTotal: {
           amount: this.paymentRequest.total.amount,
           label: this.paymentRequest.total.label,
-          type: this.paymentRequest.total.type
-        }
+          type: this.paymentRequest.total.type,
+        },
       });
     };
   }

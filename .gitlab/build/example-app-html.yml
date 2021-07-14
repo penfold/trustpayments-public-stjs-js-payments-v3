@@ -1,0 +1,87 @@
+### Example APP HTML
+
+.build-app-html:
+  extends:
+    - .build-with-npm
+  variables:
+    PACKAGE_DIR: 'example/html'
+
+# review and release
+
+.build-app-html-rr:
+  extends:
+    - .build-app-html
+  variables:
+    BUILD_TYPE: 'prod'
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_release"
+
+build-app-html-rr-review:
+  extends:
+    - .build-app-html-rr
+    - .rules-when-review
+  variables:
+    SITE_DOMAIN_URL_TEMPLATE: 'https://library.securetrading.net:8443'
+    EXTRA_ARGS_TEMPLATE: '--library_url=https://library.securetrading.net:8443'
+
+build-app-html-rr-release:
+  extends:
+    - .build-app-html-rr
+    - .rules-when-release
+  variables:
+    SITE_DOMAIN_URL_TEMPLATE: 'https://cdn.eu.trustpayments.com/js-payments-v3/${RELEASE_TAG}-${CDN_HASH}'
+    EXTRA_ARGS_TEMPLATE: '--library_url=https://cdn.eu.trustpayments.com/js-payments-v3/{RELEASE_TAG}-{CDN_HASH}'
+
+# local
+
+.build-app-html-local:
+  extends:
+    - .build-app-html
+  variables:
+    BUILD_TYPE: 'dev'
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_local"
+
+build-app-html-local-review:
+  extends:
+    - .build-app-html-local
+    - .rules-when-review
+
+build-app-html-local-release:
+  extends:
+    - .build-app-html-local
+    - .rules-when-release
+
+# mock
+
+.build-app-html-mock:
+  extends:
+    - .build-app-html
+  variables:
+    BUILD_TYPE: 'mock'
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_mock"
+
+build-app-html-mock-review:
+  extends:
+    - .build-app-html-mock
+    - .rules-when-review
+
+build-app-html-mock-release:
+  extends:
+    - .build-app-html-mock
+    - .rules-when-release
+
+# smoke
+
+.build-app-html-smoke:
+  extends:
+    - .build-app-html
+  variables:
+    BUILD_TYPE: 'prod'
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke"
+
+build-app-html-smoke-release:
+  extends:
+    - .build-app-html-smoke
+    - .rules-when-release
+  variables:
+    SITE_DOMAIN_URL_TEMPLATE: 'https://cdn.eu.trustpayments.com/js-payments-v3/latest'
+    EXTRA_ARGS_TEMPLATE: '--library_url=https://cdn.eu.trustpayments.com/js-payments-v3/latest'

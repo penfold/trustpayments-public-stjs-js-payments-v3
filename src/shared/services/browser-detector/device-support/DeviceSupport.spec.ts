@@ -1,5 +1,4 @@
 import { DeviceSupport } from './DeviceSupport';
-import each from 'jest-each';
 
 describe('DeviceSupport', () => {
   let deviceSupport: DeviceSupport;
@@ -8,7 +7,7 @@ describe('DeviceSupport', () => {
     deviceSupport = new DeviceSupport();
   });
 
-  each([
+  it.each([
     ['12', 'Android', false],
     ['8', 'Android', true],
     ['9.1.5', 'Android', true],
@@ -19,8 +18,8 @@ describe('DeviceSupport', () => {
     ['15', 'iOS', false],
     ['NT 10.0', 'Windows', true],
     ['1111', 'test', true],
-    [undefined, 'test', false]
-  ]).it('should ', (version: string, name: string, isSupported: boolean) => {
+    [undefined, 'test', false],
+  ])('should', (version: string, name: string, isSupported: boolean) => {
     expect(deviceSupport.isDeviceSupported(version, name)).toEqual(isSupported);
   });
 });

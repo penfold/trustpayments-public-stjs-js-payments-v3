@@ -33,10 +33,14 @@ export class Payment {
     requestTypes: RequestType[],
     payment: ICard | IWallet,
     merchantData: IMerchantData,
-    responseData?: IResponseData
-  ): Promise<object> {
+    responseData?: IResponseData,
+    merchantUrl?: string
+    // @todo(typings) Currently it's hard to find a type for response that comforts all the processPayment consumers.
+    // The response typings are not interchangeable, they differ in e.g. customeroutput declarations.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): Promise<Record<string, any>> {
     const customerOutput: CustomerOutput | undefined = responseData
-      ? (responseData.customeroutput as CustomerOutput)
+      ? responseData.customeroutput
       : undefined;
 
     if (customerOutput === CustomerOutput.RESULT) {
@@ -52,7 +56,7 @@ export class Payment {
     }
 
     if (requestTypes.length) {
-      return this.processRequestTypes({ ...merchantData, ...payment }, responseData);
+      return this.processRequestTypes({ ...merchantData, ...payment }, responseData, merchantUrl);
     }
 
     if (responseData && responseData.requesttypedescription === 'THREEDQUERY' && responseData.threedresponse) {
@@ -62,25 +66,31 @@ export class Payment {
     return this.publishResponse(responseData);
   }
 
-  walletVerify(walletVerify: IWalletVerify): Observable<object> {
+  // @todo(typings) Currently it's hard to find a type for response that comforts all the walletVerify consumers.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  walletVerify(walletVerify: IWalletVerify): Observable<Record<string, any>> {
     return from(
-      this.stTransport.sendRequest(Object.assign({ requesttypedescriptions: ['WALLETVERIFY'] }, walletVerify))
+      this.stTransport.sendRequest(Object.assign({ requesttypedescriptions: ['WALLETVERIFY'] }, walletVerify)),
     );
   }
 
-  private publishResponse(responseData?: IResponseData): Promise<object> {
+  private publishResponse(responseData?: IResponseData): Promise<Record<string, unknown>> {
     return Promise.resolve({
-      response: responseData || {}
+      response: responseData || {},
     });
   }
 
-  private publishErrorResponse(responseData?: IResponseData): Promise<object> {
+  private publishErrorResponse(responseData?: IResponseData): Promise<Record<string, unknown>> {
     return Promise.reject({
-      response: responseData || {}
+      response: responseData || {},
     });
   }
 
-  private async processRequestTypes(requestData: IStRequest, responseData?: IResponseData): Promise<object> {
+  private async processRequestTypes(
+    requestData: IStRequest,
+    responseData?: IResponseData,
+    merchantUrl?: string
+  ): Promise<Record<string, unknown>> {
     const processPaymentRequestBody = { ...requestData };
 
     if (responseData) {
@@ -94,10 +104,10 @@ export class Payment {
       processPaymentRequestBody.fraudcontroltransactionid = cybertonicaTid;
     }
 
-    return this.stTransport.sendRequest(processPaymentRequestBody);
+    return this.stTransport.sendRequest(processPaymentRequestBody, merchantUrl);
   }
 
-  private publishThreedResponse(responseData: IResponseData): Promise<object> {
+  private publishThreedResponse(responseData: IResponseData): Promise<Record<string, unknown>> {
     // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
     StCodec.publishResponse(responseData, responseData.jwt, responseData.threedresponse);
     this.notificationService.success(PAYMENT_SUCCESS);

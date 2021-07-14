@@ -20,7 +20,6 @@ interface StylesAttributes {
 export class Styler {
   private static _getTagStyles(styles: ISubStyles): string {
     const results = [];
-    // tslint:disable-next-line:forin
     for (const style in styles) {
       results.push(`${style}: ${styles[style]};`);
     }
@@ -67,10 +66,9 @@ export class Styler {
 
   private _filter(styles: IStyles[]): IStyle {
     const filtered: IStyle = {};
-    // tslint:disable-next-line:forin
     styles.forEach((style: IStyle, index) => {
       const propName: string = Object.keys(style)[0];
-      if (this._allowed.hasOwnProperty(propName)) {
+      if (Object.prototype.hasOwnProperty.call(this._allowed, propName)) {
         // @ts-ignore
         filtered[propName] = styles[index][propName];
       }
@@ -80,7 +78,6 @@ export class Styler {
 
   private _sanitize(styles: IStyle): IStyle {
     const sanitized: IStyle = {};
-    // tslint:disable-next-line:forin
     for (const style in styles) {
       if (/^[A-Za-z0-9 _%#)(,.-]*[A-Za-z0-9][A-Za-z0-9 _%#)(,.-]*$/i.test(styles[style])) {
         sanitized[style] = styles[style];
@@ -91,10 +88,9 @@ export class Styler {
 
   private _group(styles: IStyle): IGroupedStyles {
     const grouped: IGroupedStyles = {};
-    // tslint:disable-next-line:forin
     for (const style in styles) {
       const allowed = this._allowed[style];
-      if (!grouped.hasOwnProperty(allowed.selector)) {
+      if (!Object.prototype.hasOwnProperty.call(grouped, allowed.selector)) {
         grouped[allowed.selector] = {};
       }
       grouped[allowed.selector][allowed.property] = styles[style];
@@ -103,14 +99,10 @@ export class Styler {
   }
 
   private _getStyleString(styles: IStyles[]): string[] {
-    let groupedStyles: IGroupedStyles;
-    let styled: IStyle;
+    const styled: IStyle = this._sanitize(this._filter(styles));
+    const groupedStyles: IGroupedStyles = this._group(styled);
     let tag: string;
-    const templates: string[] = [`body { display: block; }`];
-    styled = this._filter(styles);
-    styled = this._sanitize(styled);
-    groupedStyles = this._group(styled);
-    // tslint:disable-next-line:forin
+    const templates: string[] = ['body { display: block; }'];
     for (tag in groupedStyles) {
       const tagStyle = Styler._getTagStyles(groupedStyles[tag]);
       templates.push(`${tag} { ${tagStyle} }`);

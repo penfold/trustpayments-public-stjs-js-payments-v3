@@ -18,10 +18,10 @@ describe('RequestEncoderService', () => {
       storeMock = mock(Store);
       str = new RequestEncoderService(instance(jwtDecoderMock), instance(storeMock));
 
-      const payload = { payload: {}, sitereference: 'foo' };
+      const payload = { payload: { sitereference: 'foo' } };
       const statePayload = {
         jwt: 'somejwt',
-        storage: {}
+        storage: {},
       };
       when(jwtDecoderMock.decode(statePayload.jwt)).thenReturn(payload);
       when(storeMock.getState()).thenReturn(statePayload);
@@ -31,7 +31,7 @@ describe('RequestEncoderService', () => {
       const request = { pan: '4111111111111111', requesttypedescriptions: ['AUTH', 'SUBSCRIPTION'] };
       const result = str.encode(request);
 
-      expect(typeof result === 'string' && JSON.parse(result)).toEqual({
+      expect(result).toEqual({
         acceptcustomeroutput: '2.00',
         jwt: 'somejwt',
         request: [
@@ -39,11 +39,11 @@ describe('RequestEncoderService', () => {
             pan: '4111111111111111',
             requesttypedescriptions: ['AUTH', 'SUBSCRIPTION'],
             requestid: expect.any(String),
-            sitereference: 'foo'
-          }
+            sitereference: 'foo',
+          },
         ],
         version: '1.00',
-        versioninfo: 'STJS::N/A::0.0.0::N/A'
+        versioninfo: 'STJS::N/A::0.0.0::N/A',
       });
     });
 

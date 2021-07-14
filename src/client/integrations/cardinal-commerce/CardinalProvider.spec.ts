@@ -10,8 +10,8 @@ describe('CardinalProvider', () => {
   let cardinalProvider: CardinalProvider;
 
   beforeEach(() => {
-    DomMethods.insertScript = jest.fn().mockImplementation((target, options) => {
-      (window as any).Cardinal = cardinal;
+    DomMethods.insertScript = jest.fn().mockImplementation(() => {
+      window.Cardinal = cardinal;
 
       return Promise.resolve(document.createElement('script'));
     });
@@ -21,11 +21,11 @@ describe('CardinalProvider', () => {
 
   it('loads songbird live library when livestatus = 1', done => {
     cardinalProvider.getCardinal$(true).subscribe(result => {
-      expect((window as any).Cardinal).toBe(cardinal);
+      expect(window.Cardinal).toBe(cardinal);
       expect(result).toBe(cardinal);
       expect(DomMethods.insertScript).toHaveBeenCalledWith('head', {
         src: environment.CARDINAL_COMMERCE.SONGBIRD_LIVE_URL,
-        id: 'cardinalCommerce'
+        id: 'cardinalCommerce',
       });
       done();
     });
@@ -33,11 +33,11 @@ describe('CardinalProvider', () => {
 
   it('loads songbird stage library when livestatus = 0', done => {
     cardinalProvider.getCardinal$(false).subscribe(result => {
-      expect((window as any).Cardinal).toBe(cardinal);
+      expect(window.Cardinal).toBe(cardinal);
       expect(result).toBe(cardinal);
       expect(DomMethods.insertScript).toHaveBeenCalledWith('head', {
         src: environment.CARDINAL_COMMERCE.SONGBIRD_TEST_URL,
-        id: 'cardinalCommerce'
+        id: 'cardinalCommerce',
       });
       done();
     });

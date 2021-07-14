@@ -18,12 +18,12 @@ export class VisaCheckoutUpdateService {
         ...config.paymentRequest,
         currencyCode: stJwt.currencyiso3a,
         subtotal: stJwt.mainamount,
-        total: stJwt.mainamount
+        total: stJwt.mainamount,
       },
       settings: {
         ...config.settings,
-        locale: stJwt.locale
-      }
+        locale: stJwt.locale,
+      },
     };
   }
 
@@ -36,6 +36,7 @@ export class VisaCheckoutUpdateService {
     return {
       buttonUrl: config.livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_BUTTON_URL : VisaCheckoutButtonProps.src,
       sdkUrl: config.livestatus ? environment.VISA_CHECKOUT_URLS.LIVE_SDK : environment.VISA_CHECKOUT_URLS.TEST_SDK,
+      merchantUrl: config.visaCheckout.merchantUrl,
       visaInitConfig: {
         apikey: config.visaCheckout.merchantId,
         encryptionKey: config.visaCheckout.encryptionKey,
@@ -46,13 +47,13 @@ export class VisaCheckoutUpdateService {
           currencyCode: jwtPayload.currencyiso3a,
           subtotal: jwtPayload.mainamount,
           total: jwtPayload.mainamount,
-          ...config.visaCheckout.paymentRequest
+          ...config.visaCheckout.paymentRequest,
         },
         settings: {
           locale: jwtPayload.locale,
-          ...config.visaCheckout.settings
-        }
-      }
+          ...config.visaCheckout.settings,
+        },
+      },
     };
   }
 }

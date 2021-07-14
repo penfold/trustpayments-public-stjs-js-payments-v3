@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { ApplePaySchema } from './apple-pay-schema/ApplePaySchema';
 import { GooglePaySchema } from './google-pay-schema/GooglePaySchema';
 import { VisaCheckoutSchema } from './VisaCheckoutSchema';
@@ -16,7 +17,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
       cardNumber: Joi.string().allow('').default('st-card-number'),
       expirationDate: Joi.string().allow('').default('st-expiration-date'),
       notificationFrame: Joi.string().allow('').default('st-notification-frame'),
-      securityCode: Joi.string().allow('').default('st-security-code')
+      securityCode: Joi.string().allow('').default('st-security-code'),
     })
     .allow({})
     .default({}),
@@ -24,7 +25,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
     .keys({
       defaultPaymentType: Joi.string().allow(''),
       paymentTypes: Joi.array().items(Joi.string().allow('')),
-      startOnLoad: Joi.boolean().allow('')
+      startOnLoad: Joi.boolean().allow(''),
     })
     .default({}),
   cybertonicaApiKey: Joi.string().allow(''),
@@ -34,14 +35,18 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   errorCallback: Joi.any(),
   errorReporting: Joi.boolean(),
   fieldsToSubmit: Joi.array().items(Joi.string().valid('pan', 'expirydate', 'securitycode')),
-  googlePay: GooglePaySchema,
+  [GooglePayConfigName]: GooglePaySchema,
   formId: Joi.string(),
-  init: Joi.object()
-    .keys({
-      cachetoken: Joi.string().allow(''),
-      threedinit: Joi.string().allow('')
-    })
-    .allow(null),
+  init: Joi.object({
+    cachetoken: Joi.string()
+      .allow('')
+      .warning('deprecate.error', { reason: 'it is no longer supported' })
+      .messages({ 'deprecate.error': '{#label} is deprecated because {#reason}' }),
+    threedinit: Joi.string()
+      .allow('')
+      .warning('deprecate.error', { reason: 'it is no longer supported' })
+      .messages({ 'deprecate.error': '{#label} is deprecated because {#reason}' }),
+  }),
   jwt: Joi.string().allow(''),
   livestatus: Joi.number().valid(0, 1),
   origin: Joi.string().allow(''),
@@ -49,7 +54,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   placeholders: Joi.object().keys({
     pan: Joi.string().allow(''),
     securitycode: Joi.string().allow(''),
-    expirydate: Joi.string().allow('')
+    expirydate: Joi.string().allow(''),
   }),
   styles: Joi.object(),
   submitCallback: Joi.any(),
@@ -59,5 +64,5 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   submitOnError: Joi.boolean(),
   submitOnSuccess: Joi.boolean(),
   translations: Joi.object(),
-  visaCheckout: VisaCheckoutSchema
+  visaCheckout: VisaCheckoutSchema,
 });

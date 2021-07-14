@@ -1,32 +1,17 @@
 {
+  "extends": "./.cicd_scripts/execute/config/js/tsconfig.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "outDir": "./dist/",
-    "sourceMap": true,
-    "noImplicitAny": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "es5",
+    "lib": ["dom", "es2019.array"],
+    "strict": false,                           /* Enable all strict type-checking options. */
+    "noImplicitAny": false,                    /* Raise error on expressions and declarations with an implied 'any' type. */
+    "strictNullChecks": false,                 /* Enable strict null checks. */
+    "strictFunctionTypes": false,              /* Enable strict checking of function types. */
+    "strictBindCallApply": false,              /* Enable strict 'bind', 'call', and 'apply' methods on functions. */
+    "strictPropertyInitialization": false,     /* Enable strict checking of property initialization in classes. */
+    "noImplicitThis": false,                   /* Raise error on 'this' expressions with an implied 'any' type. */
+    "alwaysStrict": false,
     "resolveJsonModule": true,
-    "jsx": "react",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "lib": [
-      "DOM",
-      "ES2015",
-      "ES2015.Promise",
-      "ES2017.Object",
-      "ES2016.Array.Include",
-      "ES2019"
-    ]
-  },
-  "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "./src/**/*.spec.ts"
-    // exclude all that contain "spec.ts" in name
-  ]
+    "noUnusedLocals": false,
+    "skipLibCheck": true
+  }
 }

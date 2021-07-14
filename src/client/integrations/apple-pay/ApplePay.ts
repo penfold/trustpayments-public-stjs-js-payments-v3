@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { EMPTY, Observable, throwError } from 'rxjs';
+import { catchError, filter, first, map, mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IApplePayClientStatus } from '../../../application/core/integrations/apple-pay/IApplePayClientStatus';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
@@ -28,12 +28,13 @@ import { DomMethods } from '../../../application/core/shared/dom-methods/DomMeth
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { ApplePayStatus } from './apple-pay-session-service/ApplePayStatus';
+import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 
 @Service()
 export class ApplePay {
   private applePaySession: IApplePaySession;
   private config: IApplePayConfigObject;
-  private paymentCancelled: boolean = false;
+  private paymentCancelled = false;
   private destroy$: Observable<IMessageBusEvent>;
 
   constructor(
@@ -44,7 +45,7 @@ export class ApplePay {
     private applePaySessionFactory: ApplePaySessionFactory,
     private applePaySessionService: ApplePaySessionService,
     private interFrameCommunicator: InterFrameCommunicator,
-    private messageBus: IMessageBus
+    private messageBus: IMessageBus,
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
@@ -59,13 +60,13 @@ export class ApplePay {
             walletmerchantid: '',
             walletrequestdomain: window.location.hostname,
             walletsource: 'APPLEPAY',
-            walletvalidationurl: ''
-          })
+            walletvalidationurl: '',
+          }),
         ),
         tap((config: IApplePayConfigObject) => {
           const applePayConfigAction: IMessageBusEvent<IApplePayConfigObject> = {
             type: PUBLIC_EVENTS.APPLE_PAY_CONFIG_MOCK,
-            data: config
+            data: config,
           };
 
           this.config = config;
@@ -75,7 +76,7 @@ export class ApplePay {
             APPLE_PAY_BUTTON_ID,
             config.applePayConfig.buttonText,
             config.applePayConfig.buttonStyle,
-            config.applePayConfig.paymentRequest.countryCode
+            config.applePayConfig.paymentRequest.countryCode,
           );
           this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
         }),
@@ -84,14 +85,14 @@ export class ApplePay {
             'event',
             'Apple Pay',
             `${ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD}`,
-            'Can make payment'
+            'Can make payment',
           );
         }),
         catchError((errorMessage: string) => {
           console.error(errorMessage);
           return EMPTY;
         }),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
       .subscribe();
   }
@@ -99,7 +100,7 @@ export class ApplePay {
   private updateJwtListener(): void {
     this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(this.destroy$))
-      .subscribe((event: IMessageBusEvent) => {
+      .subscribe((event: IMessageBusEvent<IUpdateJwt>) => {
         this.applePayConfigService.updateConfigWithJwtData(event.data.newJwt, this.config);
       });
   }
@@ -114,9 +115,7 @@ export class ApplePay {
     }
 
     return this.applePaySessionService.canMakePaymentsWithActiveCard(config.applePay.merchantId).pipe(
-      switchMap((canMakePayment: boolean) =>
-        canMakePayment ? of(config) : throwError('User has not an active card provisioned into Wallet')
-      ),
+      mapTo(config),
       catchError(errorMessage => {
         this.messageBus.publish<IApplePayClientStatus>({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
@@ -124,20 +123,20 @@ export class ApplePay {
             status: ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET,
             details: {
               errorMessage,
-              errorCode: ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET
-            }
-          }
+              errorCode: ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET,
+            },
+          },
         });
 
         GoogleAnalytics.sendGaData(
           'event',
           'Apple Pay',
           `${ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET}`,
-          errorMessage
+          errorMessage,
         );
 
         return throwError(errorMessage);
-      })
+      }),
     );
   }
 
@@ -162,14 +161,14 @@ export class ApplePay {
             errorMessage: '',
             validateMerchantURL: event.validationURL,
             config: this.config,
-            paymentCancelled: this.paymentCancelled
-          }
-        }
+            paymentCancelled: this.paymentCancelled,
+          },
+        },
       });
 
       this.messageBus
         .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT), first(), takeUntil(this.destroy$))
-        .subscribe((response: IMessageBusEvent) => {
+        .subscribe((response: IMessageBusEvent<{ status: ApplePayClientErrorCode; details: IApplePayWalletVerifyResponseBody }>) => {
           if (Number(response.data.status) === ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS) {
             this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS, response.data.details);
             this.applePaySessionService.completeMerchantValidation(response.data.details.walletsession);
@@ -177,7 +176,7 @@ export class ApplePay {
               'event',
               'Apple Pay',
               `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
-              'Apple Pay Merchant validation success'
+              'Apple Pay Merchant validation success',
             );
             return;
           }
@@ -194,7 +193,7 @@ export class ApplePay {
             'event',
             'Apple Pay',
             `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
-            'Apple Pay merchant validation error'
+            'Apple Pay merchant validation error',
           );
         });
     };
@@ -212,21 +211,21 @@ export class ApplePay {
             formData,
             errorCode: ApplePayClientErrorCode.ON_PAYMENT_AUTHORIZED,
             errorMessage: '',
-            payment: event.payment
-          }
-        }
+            payment: event.payment,
+          },
+        },
       });
 
       this.messageBus
         .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION), first(), takeUntil(this.destroy$))
-        .subscribe((response: IMessageBusEvent) => {
-          this.handlePaymentProcessResponse(response.data.details.errorcode, response.data.details);
+        .subscribe((response: IMessageBusEvent<{ details: IApplePayProcessPaymentResponse }>) => {
+          this.handlePaymentProcessResponse(response.data.details.errorcode as unknown as ApplePayClientErrorCode, response.data.details);
         });
     };
   }
 
   private onCancel(): void {
-    this.applePaySession.oncancel = (event: Event) => {
+    this.applePaySession.oncancel = () => {
       this.paymentCancelled = true;
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
@@ -234,9 +233,9 @@ export class ApplePay {
           status: ApplePayClientStatus.CANCEL,
           details: {
             errorCode: ApplePayClientErrorCode.CANCEL,
-            errorMessage: 'Payment has been cancelled'
-          }
-        }
+            errorMessage: 'Payment has been cancelled',
+          },
+        },
       });
 
       GoogleAnalytics.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.CANCEL}`, 'Payment has been cancelled');
@@ -249,9 +248,9 @@ export class ApplePay {
         ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE),
         filter(event => event.data.requesttypedescription !== RequestType.WALLETVERIFY),
         first(),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
-      .subscribe((event: IMessageBusEvent) => {
+      .subscribe(() => {
         this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
       });
   }
@@ -266,9 +265,9 @@ export class ApplePay {
             status: ApplePayClientStatus.VALIDATE_MERCHANT_ERROR,
             details: {
               errorMessage: details.errormessage,
-              errorCode: Number(details.errorcode)
-            }
-          }
+              errorCode: Number(details.errorcode),
+            },
+          },
         });
         GoogleAnalytics.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify failure');
         break;
@@ -280,20 +279,20 @@ export class ApplePay {
             status,
             details: {
               errorMessage: details.errormessage,
-              errorCode: Number(details.errorcode)
-            }
-          }
+              errorCode: Number(details.errorcode),
+            },
+          },
         });
     }
   }
 
   private handlePaymentProcessResponse(
     errorCode: ApplePayClientErrorCode,
-    details: IApplePayProcessPaymentResponse
+    details: IApplePayProcessPaymentResponse,
   ): IApplePayPaymentAuthorizationResult {
     const completion: IApplePayPaymentAuthorizationResult = {
       errors: undefined,
-      status: undefined
+      status: undefined,
     };
 
     switch (Number(errorCode)) {
@@ -305,9 +304,9 @@ export class ApplePay {
             status: ApplePayClientStatus.SUCCESS,
             details: {
               errorMessage: details.errormessage,
-              errorCode: Number(details.errorcode)
-            }
-          }
+              errorCode: Number(details.errorcode),
+            },
+          },
         });
         this.applePaySession.completePayment(completion);
         GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
@@ -326,9 +325,9 @@ export class ApplePay {
             status: ApplePayClientStatus.EMPTY_JWT_ERROR,
             details: {
               errorMessage: details.errormessage,
-              errorCode: Number(details.errorcode)
-            }
-          }
+              errorCode: Number(details.errorcode),
+            },
+          },
         });
         return completion;
 
@@ -341,9 +340,9 @@ export class ApplePay {
             status: ApplePayClientStatus.ERROR,
             details: {
               errorMessage: details.errormessage,
-              errorCode: Number(details.errorcode)
-            }
-          }
+              errorCode: Number(details.errorcode),
+            },
+          },
         });
 
         return completion;

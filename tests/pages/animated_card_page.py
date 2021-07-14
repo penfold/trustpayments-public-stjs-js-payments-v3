@@ -12,7 +12,7 @@ class AnimatedCardPage(BasePage):
 
     def get_card_type_icon_from_animated_card(self):
         credit_card_icon = self._actions.get_element_attribute(AnimatedCardLocators.card_type_logo_from_animated_card,
-                                                              'alt')
+                                                               'alt')
         credit_card_icon = credit_card_icon.upper()
         return credit_card_icon
 

@@ -14,7 +14,7 @@ describe('PaymentResultSubmitter', () => {
 
     when(configProviderMock.getConfig()).thenReturn({
       formId: 'st-form',
-      submitFields: ['foo', 'bar', 'baz']
+      submitFields: ['foo', 'bar', 'baz'],
     });
 
     form = DomMethods.createHtmlElement({ id: 'st-form' }, 'form') as HTMLFormElement;
@@ -25,27 +25,27 @@ describe('PaymentResultSubmitter', () => {
 
   describe('submit', () => {
     it('removes all previously added fields', () => {
-      spyOn(DomMethods, 'removeAllCreatedFields');
+      jest.spyOn(DomMethods, 'removeAllCreatedFields');
       paymentResultSubmitter.submit({ foo: 'bar' });
       expect(DomMethods.removeAllCreatedFields).toHaveBeenCalledWith(form);
     });
 
     it('appends fields to form based on submitFields config param and some required fields', () => {
-      spyOn(DomMethods, 'addDataToForm');
+      jest.spyOn(DomMethods, 'addDataToForm');
 
       paymentResultSubmitter.submit({
         foo: 'foo',
         bar: 'bar',
         xyz: 'xyz',
         jwt: 'jwt',
-        threedresponse: 'threedresponse'
+        threedresponse: 'threedresponse',
       });
 
       expect(DomMethods.addDataToForm).toHaveBeenCalledWith(form, {
         foo: 'foo',
         bar: 'bar',
         jwt: 'jwt',
-        threedresponse: 'threedresponse'
+        threedresponse: 'threedresponse',
       });
     });
 

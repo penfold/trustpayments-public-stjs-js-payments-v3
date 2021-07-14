@@ -56,7 +56,7 @@ export class CardinalClient {
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.CARDINAL_TRIGGER)
-      .thenRespond((event: IMessageBusEvent<ITriggerData<any>>) => this.cardinalTrigger(event.data));
+      .thenRespond((event: IMessageBusEvent<ITriggerData<unknown>>) => this.cardinalTrigger(event.data));
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.CARDINAL_START)
@@ -79,7 +79,7 @@ export class CardinalClient {
             });
             cardinal.configure(environment.CARDINAL_COMMERCE.CONFIG);
             cardinal.setup(PaymentEvents.INIT, {
-              jwt: data.jwt
+              jwt: data.jwt,
             });
           })
       )
@@ -96,7 +96,7 @@ export class CardinalClient {
                 validated: false,
                 actionCode: ActionCode.FAILURE,
                 errorNumber: 4001,
-                errorDescription: '3DS process has been cancelled'
+                errorDescription: '3DS process has been cancelled',
               });
             });
 
@@ -107,7 +107,7 @@ export class CardinalClient {
                   actionCode: result.ActionCode,
                   errorNumber: result.ErrorNumber,
                   errorDescription: result.ErrorDescription,
-                  jwt: responseJwt
+                  jwt: responseJwt,
                 });
                 subscriber.complete();
                 cardinal.off(PaymentEvents.VALIDATED);
@@ -121,13 +121,13 @@ export class CardinalClient {
               PaymentBrand,
               {
                 AcsUrl: acsUrl,
-                Payload: payload
+                Payload: payload,
               },
               {
                 Cart: [],
                 OrderDetails: {
-                  TransactionId: transactionId
-                }
+                  TransactionId: transactionId,
+                },
               },
               jwt
             );

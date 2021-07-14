@@ -1,6 +1,7 @@
 import { ApplePayErrorContactField } from './ApplePayErrorContactField';
 import { ApplePayErrorService } from './ApplePayErrorService';
 import { ApplePaySessionErrorCode } from './ApplePaySessionErrorCode';
+import { IApplePayErrorConstructor } from '../../../../../global-extensions';
 
 class MockedApplePayError {
   constructor(strA: ApplePaySessionErrorCode, strB?: ApplePayErrorContactField, strC?: string) {
@@ -14,12 +15,12 @@ class MockedApplePayError {
   }
 }
 
-(window as any).ApplePayError = MockedApplePayError;
+window.ApplePayError = MockedApplePayError as unknown as IApplePayErrorConstructor;
 
 describe('ApplePayErrorService', () => {
   const applePayErrorService = new ApplePayErrorService();
 
-  it(`should create an error object with message`, () => {
+  it('should create an error object with message', () => {
     const error = applePayErrorService.create(
       ApplePaySessionErrorCode.SHIPPING_CONTACT_INVALID,
       ApplePayErrorContactField.POSTAL_CODE,
@@ -30,7 +31,7 @@ describe('ApplePayErrorService', () => {
     expect(error.message).toContain('ZIP Code is invalid');
   });
 
-  it(`should create an error object without contanctField and message`, () => {
+  it('should create an error object without contanctField and message', () => {
     const error = applePayErrorService.create(ApplePaySessionErrorCode.SHIPPING_CONTACT_INVALID);
     expect(error.code).toContain('shippingContactInvalid');
     expect(error).not.toHaveProperty('contactField');

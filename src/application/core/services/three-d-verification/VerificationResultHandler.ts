@@ -19,10 +19,10 @@ export class VerificationResultHandler {
         return of({
           ...response,
           threedresponse: result.jwt,
-          cachetoken: tokens.cacheToken
+          cachetoken: tokens.cacheToken,
         });
       case ActionCode.ERROR:
-      case ActionCode.FAILURE:
+      case ActionCode.FAILURE: {
         const errorResponse: IThreeDQueryResponse = {
           ...response,
           acquirerresponsecode: String(result.errorNumber),
@@ -30,10 +30,11 @@ export class VerificationResultHandler {
           errorcode: '50003',
           errormessage: PAYMENT_ERROR,
           threedresponse: result.jwt,
-          cachetoken: tokens.cacheToken
+          cachetoken: tokens.cacheToken,
         };
 
         return throwError(errorResponse);
+      }
     }
   }
 }

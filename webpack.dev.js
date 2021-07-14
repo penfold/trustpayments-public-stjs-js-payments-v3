@@ -2,7 +2,7 @@ const { merge } = require('webpack-merge');
 const path = require('path');
 const common = require('./webpack.common.js');
 const webpack = require('webpack');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const fs = require('fs');
 
 module.exports = merge(common, {
@@ -18,17 +18,17 @@ module.exports = merge(common, {
       cert: fs.readFileSync('./docker/app-html/nginx/cert/merchant.securetrading.net/cert.pem'),
       ca: fs.readFileSync('./docker/app-html/nginx/cert/minica.pem'),
     },
-    hot: true,
     host: '0.0.0.0',
     writeToDisk: true,
     index: 'index.html',
     disableHostCheck: true,
     watchOptions: {
       ignored: ['node_modules']
-    }
+    },
+    injectClient: false,
   },
   plugins: [
-    new ManifestPlugin(),
+    new WebpackManifestPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       FRAME_URL: JSON.stringify(process.env.npm_config_frame_url),

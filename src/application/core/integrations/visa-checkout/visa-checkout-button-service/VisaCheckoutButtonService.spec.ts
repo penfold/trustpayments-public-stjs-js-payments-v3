@@ -12,10 +12,10 @@ describe('VisaCheckoutButtonService', () => {
     color: 'neutral',
     cardBrands: 'MASTERCARD, VISA',
     acceptCanadianVisaDebit: 'true',
-    cobrand: 'true'
+    cobrand: 'true',
   };
-  const visaId: string = 'v-button';
-  const divId: string = 'visa-checkout-test-container';
+  const visaId = 'v-button';
+  const divId = 'visa-checkout-test-container';
 
   beforeEach(() => {
     instance = new VisaCheckoutButtonService();

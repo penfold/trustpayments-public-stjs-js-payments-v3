@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 0.0.370
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 25.0.0
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -9,10 +9,14 @@ include:
     <<: *project-infrastructure-cicd
 
   - local: '/.gitlab/others/services.yml'
-  - local: '/.gitlab/build.yml'
-  - local: '/.gitlab/post-build.yml'
-  - local: '/.gitlab/fast-tests.yml'
-  - local: '/.gitlab/publish-to-cdn.yml'
+  - local: '/.gitlab/build/sdk.yml'
+  - local: '/.gitlab/build/example-app-html.yml'
+  - local: '/.gitlab/post-build/image-html.yml'
+  - local: '/.gitlab/post-build/image-other.yml'
+  - local: '/.gitlab/post-build/publish-to-cdn.yml'
+  - local: '/.gitlab/fast-tests/functional.yml'
+  - local: '/.gitlab/fast-tests/security.yml'
+  - local: '/.gitlab/fast-tests/js-static-analysis.yml'
   - local: '/.gitlab/extended-tests.yml'
   - local: '/.gitlab/post-release.yml'
   - local: '/.gitlab/pre-smoke-tests.yml'
@@ -21,16 +25,25 @@ include:
 variables:
   PROJECT_INFRASTRUCTURE_CICD_REF: *project-infrastructure-cicd-ref
 
+  PROJECT_PYTHON_TESTS: 'tests'
+
   IMAGE_JS_PAYMENTS_APP_HTML_RELEASE: ${CI_REGISTRY_IMAGE}/app-html-release:${CI_PIPELINE_ID}
-  IMAGE_JS_PAYMENTS_APP_HTML_MOCK: ${CI_REGISTRY_IMAGE}/app-html-mock:${CI_PIPELINE_ID}
-  IMAGE_JS_PAYMENTS_APP_HTML_LOCAL: ${CI_REGISTRY_IMAGE}/app-html-local:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_REVIEW: ${CI_REGISTRY_IMAGE}/app-html-review:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_APP_HTML_SMOKE: ${CI_REGISTRY_IMAGE}/app-html-smoke:${CI_PIPELINE_ID}
+  IMAGE_JS_PAYMENTS_APP_HTML_MOCK: ${CI_REGISTRY_IMAGE}/app-html-mock:${CI_PIPELINE_ID}
 
   IMAGE_JS_PAYMENTS_TESTS: ${CI_REGISTRY_IMAGE}/payments-tests:${CI_PIPELINE_ID}
   IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_PIPELINE_ID}
 
-  SMOKE_TESTS_TAG: '@smoke_test'
-  SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_test,@apple_pay_smoke_test'
+  SMOKE_MOCK_TESTS_TAG: '@smoke_mock_test'
+  SMOKE_E2E_TESTS_TAG: '@smoke_e2e_test'
+  VISUAL_TESTS_TAG: '@visual_regression'
+  VISUAL_STYLING_TESTS_TAG: '@visual_regression_styling'
+  VISUAL_TESTS_TAG_STJS_1709: '@STJS-1709_visual_regression_IE'
+  VISUAL_STYLING_TESTS_TAG_STJS_1709: '@STJS-1709_visual_regression_styling_IE'
+  VISUAL_TESTS_SAFARI_TAG: '@visual_regression_safari'
+  VISUAL_STYLING_TESTS_SAFARI_TAG: '@visual_regression_styling_safari'
+  SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_component_test,@apple_pay_smoke_test'
   EXTENDED_TESTS_TAG: '@extended_tests_part_1,@extended_tests_part_2'
   ARTIFACT_RELEASE_DESCRIPTION_TYPE: "EXTENDED"
 
@@ -42,12 +55,16 @@ variables:
   # DISABLE_JOB_export_cleanup_artifacts: 'true'
   # DISABLE_JOB_docker_images_build: 'true'
   # DISABLE_JOB_docker_images_pull: 'true'
+  # Prepare-release
+  # DISABLE_JOB_generate_version_review: 'true'
+  # DISABLE_JOB_generate_version_release: 'true'
   # Build
   # utility-images-build - No need to disabling. Extends to enable.
   # Fast Tests
+  # DISABLE_JOB_check_schedules: true'
   # DISABLE_JOB_unit_tests: 'true'
-  # DISABLE_JOB_ts_static_analysis: 'true'
-  # DISABLE_JOB_py_static_analysis: 'true' # TODO https://securetrading.atlassian.net/browse/STJS-950
+  # DISABLE_JOB_js_static_analysis: 'true'
+  # DISABLE_JOB_py_static_analysis: 'true' # TODO STJS-950
   # DISABLE_JOB_vuln_check: 'true'
   # Extended Tests
   # DISABLE_JOB_extended_tests: 'true'
@@ -55,42 +72,60 @@ variables:
   # DISABLE_JOB_validate_merge_request_description: 'true'
   # Release
   # DISABLE_JOB_release: 'true'
-  # DISABLE_JOB_release_generate_version: "true"
-  # Post-Release
-  DISABLE_JOB_npm_publish: 'true'
+  # Post Release
+  # DISABLE_JOB_configure_schedules: 'true'
   ### Disabled Jobs : End
 
-  ### Disabled Activities
-  # DISABLE_ACTIVITY_docker_image_build_cache: 'true'
-  # DISABLE_ACTIVITY_generate_lerna_artifacts: 'true'
-  ### Disabled Activities : End
+  ### Schedules configuration - If you want to use defaults, don't create SCHEDULES_CONFIGURATION variable
+  SCHEDULES_CONFIGURATION: |
+    SCHEDULED_MASTER_BUILD:
+      enabled: false
+    SCHEDULED_SMOKE_TESTS:
+      enabled: false
+    SCHEDULED_NIGHTLY_TESTS_SUPERVISOR:
+      enabled: true
+      cron: 0 17 * * *
+      cron_random: 0
+    SCHEDULED_NIGHTLY_TESTS_WORKER:
+      enabled: true
+    SCHEDULED_PACT_VERIFICATION:
+      enabled: false
+    SCHEDULED_HOTFIX_BRANCH_TESTS_SUPERVISOR:
+      enabled: false
+    SCHEDULED_HOTFIX_BRANCH_TESTS_WORKER:
+      enabled: false
+    SCHEDULED_RENOVATE_TRIGGER:
+      enabled: true
+      active: true
+      variables:
+        - variable_type: env_var
+          key: DEPENDENCY_UPDATE_AUTO_MERGE
+          value: 'true'
+  ### Schedules configuration : End
 
   ##### Others - project specific #####
   # BUILD_IMAGES: "true"
   # CI_DEBUG_TRACE: "true" # For CI/CD extra logs (like actually using variables)
   # LOG_LEVEL: DEBUG # For bash and python scripts
 
-py-static-analysis:
-  variables:
-    PYTHONPATH: tests
-  before_script:
-    - touch src/skipy_mypy_analysis_for_src_directory.py
-    - cd tests && . ${PROJECT_VENV_DIR}/bin/activate && poetry install && cd ..
-
 stages:
   - initialize
   - pre-build
+  - prepare-release
   - build
   - post-build
-  - publish-to-cdn
-# Tests
+  # Tests
   - fast-tests
   - extended-tests
   - validate-merge-request-description
-# Release package
+  # Scheduled tests supervisor
+  - scheduled-supervisor-prepare
+  - scheduled-supervisor-check
+  # Scheduled renovate trigger
+  - scheduled-renovate-trigger
+  # Release package
   - release
   - post-release
-# Smoke tests
+  # Smoke tests
   - pre-smoke-tests
   - smoke-tests
-

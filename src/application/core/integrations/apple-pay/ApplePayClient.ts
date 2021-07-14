@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { EMPTY, Observable, of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { mapTo, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
@@ -20,6 +20,7 @@ import { BrowserLocalStorage } from '../../../../shared/services/storage/Browser
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { StCodec } from '../../services/st-codec/StCodec';
+import { IStJwtPayload } from '../../models/IStJwtPayload';
 
 @Service()
 export class ApplePayClient implements IApplePayClient {
@@ -39,7 +40,7 @@ export class ApplePayClient implements IApplePayClient {
         this.messageBus.publish<IConfig>(
           {
             type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
-            data: config
+            data: config,
           },
           true
         );
@@ -93,8 +94,8 @@ export class ApplePayClient implements IApplePayClient {
         type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
         data: {
           errorcode: String(details.errorCode),
-          ...details
-        }
+          ...details,
+        },
       },
       true
     );
@@ -110,8 +111,8 @@ export class ApplePayClient implements IApplePayClient {
       {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
         data: {
-          errorcode: 'cancelled'
-        }
+          errorcode: 'cancelled',
+        },
       },
       true
     );
@@ -124,10 +125,11 @@ export class ApplePayClient implements IApplePayClient {
 
     return this.applePayPaymentService
       .processPayment(
-        this.jwtDecoder.decode(config.jwtFromConfig).payload.requesttypedescriptions,
+        this.jwtDecoder.decode<IStJwtPayload>(config.jwtFromConfig).payload.requesttypedescriptions,
         config.validateMerchantRequest,
         formData,
-        payment
+        payment,
+        config.merchantUrl
       )
       .pipe(
         tap(() => this.localStorage.setItem('completePayment', 'true')),
@@ -137,8 +139,8 @@ export class ApplePayClient implements IApplePayClient {
               type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION,
               data: {
                 status: ApplePayClientStatus.ON_PAYMENT_AUTHORIZED,
-                details: response
-              }
+                details: response,
+              },
             },
             true
           );
@@ -169,8 +171,8 @@ export class ApplePayClient implements IApplePayClient {
               type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT,
               data: {
                 status: response.status,
-                details: response.data
-              }
+                details: response.data,
+              },
             },
             true
           );
@@ -197,8 +199,8 @@ export class ApplePayClient implements IApplePayClient {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data: {
             ...details,
-            errorcode: String(ApplePayClientErrorCode.ERROR)
-          }
+            errorcode: String(ApplePayClientErrorCode.ERROR),
+          },
         },
         true
       );

@@ -2,7 +2,7 @@ import { ContainerInstance, Service } from 'typedi';
 import { IPaymentMethod } from './IPaymentMethod';
 import { PaymentMethodToken } from '../../../dependency-injection/InjectionTokens';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { EMPTY, NEVER, Observable, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { catchError, first, map, mapTo, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
@@ -34,8 +34,8 @@ export class PaymentController {
     this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.INIT_PAYMENT_METHOD),
-        map((event: IMessageBusEvent<IInitPaymentMethod<any>>) => event.data),
-        mergeMap(({ name, config }: IInitPaymentMethod<any>) =>
+        map((event: IMessageBusEvent<IInitPaymentMethod<unknown>>) => event.data),
+        mergeMap(({ name, config }: IInitPaymentMethod<unknown>) =>
           of(true).pipe(
             switchMap(() => this.getPaymentMethod(name).init(config)),
             mapTo(name),
@@ -53,8 +53,8 @@ export class PaymentController {
     this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.START_PAYMENT_METHOD),
-        map((event: IMessageBusEvent<IStartPaymentMethod<any>>) => event.data),
-        switchMap(({ name, data }: IStartPaymentMethod<any>) =>
+        map((event: IMessageBusEvent<IStartPaymentMethod<unknown>>) => event.data),
+        switchMap(({ name, data }: IStartPaymentMethod<unknown>) =>
           of(true).pipe(
             switchMap(() => this.getPaymentMethod(name).start(data)),
             catchError((error: Error) => {
@@ -66,7 +66,10 @@ export class PaymentController {
         ),
         takeUntil(this.destroy$)
       )
-      .subscribe((result: IPaymentResult<any>) => this.paymentResultHandler.handle(result));
+      .subscribe((result: IPaymentResult<unknown>) => {
+        this.paymentResultHandler.handle(result)
+        this.messageBus.publish({ type: PUBLIC_EVENTS.JWT_RESET });
+      });
 
     this.destroy$.pipe(first()).subscribe(() => {
       this.paymentMethods.clear();

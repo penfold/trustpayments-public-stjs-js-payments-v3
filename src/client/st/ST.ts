@@ -9,7 +9,6 @@ import { VisaCheckout } from '../../application/core/integrations/visa-checkout/
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
-import { Translator } from '../../application/core/shared/translator/Translator';
 import { Service, Container } from 'typedi';
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
 import { ISubmitEvent } from '../../application/core/models/ISubmitEvent';
@@ -42,6 +41,11 @@ import { IStore } from '../../application/core/store/IStore';
 import { IParentFrameState } from '../../application/core/store/state/IParentFrameState';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IUpdateJwt } from '../../application/core/models/IUpdateJwt';
+import { IGooglePayConfig, GooglePayConfigName } from '../../integrations/google-pay/models/IGooglePayConfig';
+import { IInitPaymentMethod } from '../../application/core/services/payments/events/IInitPaymentMethod';
+import { GooglePaymentMethodName } from '../../integrations/google-pay/models/IGooglePaymentMethod';
+import { ITranslator } from '../../application/core/shared/translator/ITranslator';
+import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 
 @Service()
 export class ST {
@@ -52,7 +56,6 @@ export class ST {
   private destroy$: Subject<void> = new Subject();
   private googleAnalytics: GoogleAnalytics;
   private registeredCallbacks: { [eventName: string]: Subscription } = {};
-  private translation: Translator;
 
   set submitCallback(callback: (event: ISubmitEvent) => void) {
     if (callback) {
@@ -104,7 +107,8 @@ export class ST {
     private storage: BrowserLocalStorage,
     private store: IStore<IParentFrameState>,
     private visaCheckout: VisaCheckout,
-    private commonFrames: CommonFrames
+    private commonFrames: CommonFrames,
+    private translation: ITranslator
   ) {
     this.googleAnalytics = new GoogleAnalytics();
   }
@@ -114,7 +118,7 @@ export class ST {
       cancel: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK,
       success: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUCCESS_CALLBACK,
       error: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK,
-      submit: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK
+      submit: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK,
     };
 
     this.off(eventName);
@@ -146,7 +150,7 @@ export class ST {
       this.messageBus.publish<string>(
         {
           type: PUBLIC_EVENTS.CARD_PAYMENTS_INIT,
-          data: JSON.stringify(this.config)
+          data: JSON.stringify(this.config),
         },
         false
       );
@@ -165,9 +169,28 @@ export class ST {
       this.messageBus.publish<undefined>(
         {
           type: PUBLIC_EVENTS.APPLE_PAY_INIT,
-          data: undefined
+          data: undefined,
         },
         false
+      );
+    });
+  }
+
+  GooglePay(config: IGooglePayConfig): void {
+    if (config) {
+      this.config = this.configService.updateFragment(GooglePayConfigName, config);
+    }
+
+    this.initControlFrame$().subscribe(() => {
+      this.messageBus.publish<IInitPaymentMethod<IConfig>>(
+        {
+          type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
+          data: {
+            name: GooglePaymentMethodName,
+            config: this.config,
+          },
+        },
+        false,
       );
     });
   }
@@ -182,7 +205,7 @@ export class ST {
       this.messageBus.publish<undefined>(
         {
           type: PUBLIC_EVENTS.VISA_CHECKOUT_INIT,
-          data: undefined
+          data: undefined,
         },
         false
       );
@@ -203,7 +226,7 @@ export class ST {
       this.config = this.configService.updateJwt(jwt);
       this.messageBus.publish<IUpdateJwt>({
         type: PUBLIC_EVENTS.UPDATE_JWT,
-        data: { newJwt: jwt }
+        data: { newJwt: jwt },
       });
     } else {
       throw Error(this.translation.translate('Jwt has not been specified'));
@@ -213,7 +236,7 @@ export class ST {
   destroy(): void {
     this.messageBus.publish(
       {
-        type: MessageBus.EVENTS_PUBLIC.DESTROY
+        type: MessageBus.EVENTS_PUBLIC.DESTROY,
       },
       true
     );
@@ -228,17 +251,17 @@ export class ST {
     this.framesHub.reset();
     this.storage.init();
     this.config = this.configService.setup(config);
+
     if (this.config.jwt) {
       this.initCallbacks(config);
       this.Storage();
-      this.translation = new Translator(this.storage.getItem('locale'));
       this.googleAnalytics.init();
       this.commonFrames.init();
       this.displayLiveStatus(Boolean(this.config.livestatus));
       this.watchForFrameUnload();
       this.cardinalClient.init();
 
-      if (Boolean(this.config.stopSubmitFormOnEnter)) {
+      if (this.config.stopSubmitFormOnEnter) {
         this.stopSubmitFormOnEnter();
       }
     }
@@ -251,7 +274,7 @@ export class ST {
   cancelThreeDProcess(): void {
     this.messageBus.publish(
       {
-        type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL
+        type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL,
       },
       true
     );
@@ -280,7 +303,7 @@ export class ST {
       switchMap((controlFrame: string) => {
         const queryEvent: IMessageBusEvent<string> = {
           type: PUBLIC_EVENTS.INIT_CONTROL_FRAME,
-          data: JSON.stringify(this.config)
+          data: JSON.stringify(this.config),
         };
 
         return from(this.communicator.query(queryEvent, controlFrame));
@@ -314,12 +337,11 @@ export class ST {
 
   private Storage(): void {
     this.storage.setItem('merchantTranslations', JSON.stringify(this.config.translations));
-    this.storage.setItem('locale', this.jwtDecoder.decode(this.config.jwt).payload.locale || 'en_GB');
+    this.storage.setItem('locale', this.jwtDecoder.decode<IStJwtPayload>(this.config.jwt).payload.locale || 'en_GB');
   }
 
   private displayLiveStatus(liveStatus: boolean): void {
     if (!liveStatus) {
-      /* tslint:disable:no-console */
       console.log(
         '%cThe %csecure%c//%ctrading %cLibrary is currently working in test mode. Please check your configuration.',
         'margin: 100px 0; font-size: 2em; color: #e71b5a',
@@ -350,7 +372,7 @@ export class ST {
 
     observer.observe(document, {
       subtree: true,
-      childList: true
+      childList: true,
     });
   }
 
@@ -391,6 +413,6 @@ export class ST {
   }
 }
 
-export default (config: IConfig) => {
+export default (config: IConfig): ST => {
   return Container.get(ClientBootstrap).run(config);
 };

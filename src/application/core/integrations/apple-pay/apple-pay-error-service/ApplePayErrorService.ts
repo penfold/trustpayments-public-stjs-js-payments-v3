@@ -10,6 +10,6 @@ export class ApplePayErrorService {
     contactField?: ApplePayErrorContactField,
     message?: string
   ): IApplePayError {
-    return new (window as any).ApplePayError(content, contactField, message);
+    return new window.ApplePayError(content, contactField, message);
   }
 }

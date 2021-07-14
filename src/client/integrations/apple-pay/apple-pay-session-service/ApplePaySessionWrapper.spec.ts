@@ -1,8 +1,8 @@
 import { instance, mock, verify, when } from 'ts-mockito';
 import { ApplePaySessionWrapper } from './ApplePaySessionWrapper';
-import { IApplePaySession } from './IApplePaySession';
 import { IApplePaySessionConstructor } from './IApplePaySessionConstructor';
 import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
+import { IApplePaySession } from './IApplePaySession';
 
 type WindowType = Window & { ApplePaySession: IApplePaySessionConstructor | undefined };
 
@@ -12,17 +12,15 @@ describe('ApplePaySessionWrapper', () => {
     currencyCode: 'GBP',
     merchantCapabilities: [],
     supportedNetworks: [],
-    total: { amount: '123', label: '' }
+    total: { amount: '123', label: '' },
   };
 
   let windowMock: WindowType;
   let applePaySessionConstructorMock: IApplePaySessionConstructor;
-  let applePaySessionMock: IApplePaySession;
   let applePaySessionWrapper: ApplePaySessionWrapper;
 
   beforeEach(() => {
     windowMock = mock<WindowType>();
-    applePaySessionMock = mock<IApplePaySession>();
     applePaySessionConstructorMock = mock<IApplePaySessionConstructor>();
   });
 
@@ -62,14 +60,14 @@ describe('ApplePaySessionWrapper', () => {
     });
 
     it('creates a new instance of ApplePaySession', () => {
-      function ApplePaySession(version: number, request: IApplePayPaymentRequest) {
-        this.version = version;
-        this.request = request;
+      class ApplePaySession {
+        constructor(public version: number, public request: IApplePayPaymentRequest) {
+        }
       }
 
       applePaySessionWrapper = new ApplePaySessionWrapper(({ ApplePaySession } as unknown) as WindowType);
 
-      const result = applePaySessionWrapper.createInstance(123, paymentRequest) as any;
+      const result = applePaySessionWrapper.createInstance(123, paymentRequest) as IApplePaySession & ApplePaySession;
 
       expect(result).toBeInstanceOf(ApplePaySession);
       expect(result.version).toBe(123);

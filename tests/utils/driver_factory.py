@@ -110,9 +110,9 @@ def _get_local_options(headless):
 def _get_remote_capabilities(configuration):
     # pylint: disable=unused-variable
     network_logs = 'true'
-    # disabling network logs on Safari as they are not accessible for this browser and cause browser instability
     if 'Safari' in configuration.REMOTE_BROWSER:
-        network_logs = 'false'
+        if 'High Sierra' in configuration.REMOTE_OS_VERSION or 'Mojave' in configuration.REMOTE_OS_VERSION:
+            network_logs = 'false'
 
     possible_caps = {
         'os': configuration.REMOTE_OS,
@@ -134,9 +134,9 @@ def _get_remote_capabilities(configuration):
         'browserstack.safari.driver': configuration.BROWSERSTACK_SAFARI_DRIVER,
         'browserstack.firefox.driver': configuration.BROWSERSTACK_FIREFOX_DRIVER,
         'browserstack.networkLogs': network_logs,
-        'browserstack.acceptInsecureCerts': 'true',
         'browserstack.console': 'errors',
         'browserstack.autoWait': 0,
+        'browserstack.use_w3c': 'true',
         'ie.ensureCleanSession': 'true',
         'ie.forceCreateProcessApi': 'true',
         'resolution': '1920x1080'

@@ -6,9 +6,9 @@ export interface IApplePayClientStatusDetails {
   config?: IApplePayConfigObject;
   errorCode?: ApplePayClientErrorCode;
   errorMessage?: string;
-  formData?: object;
+  formData?: Record<string, unknown>;
   payment?: IApplePayPayment;
   paymentCancelled?: boolean;
   validateMerchantURL?: string;
-  walletverify?: object;
+  walletverify?: Record<string, unknown>;
 }

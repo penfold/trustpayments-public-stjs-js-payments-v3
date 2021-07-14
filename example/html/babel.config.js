@@ -7,7 +7,7 @@ module.exports = function (api) {
       '@babel/preset-env',
       {
         useBuiltIns: 'usage',
-        corejs: 2
+        corejs: 3
       }
     ]
   ];
@@ -16,8 +16,10 @@ module.exports = function (api) {
     '@babel/plugin-transform-typescript',
     ['@babel/plugin-proposal-decorators', { legacy: true }],
     ['@babel/plugin-proposal-class-properties', { loose: true }],
+    ['@babel/plugin-proposal-private-methods', { loose: true }],
     '@babel/plugin-transform-runtime',
-    '@babel/plugin-proposal-optional-catch-binding'
+    '@babel/plugin-proposal-optional-catch-binding',
+    '@babel/plugin-transform-exponentiation-operator',
   ];
 
   return {

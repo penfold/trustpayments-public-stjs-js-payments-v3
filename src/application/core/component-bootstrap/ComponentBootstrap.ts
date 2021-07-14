@@ -8,7 +8,8 @@ import { FrameIdentifier } from '../../../shared/services/message-bus/FrameIdent
 import {
   MessageBusToken,
   MessageSubscriberToken,
-  StoreToken
+  StoreToken,
+  TranslatorToken,
 } from '../../../shared/dependency-injection/InjectionTokens';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 
@@ -16,13 +17,14 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 export class ComponentBootstrap {
   constructor(private frameIdentifier: FrameIdentifier, private container: ContainerInstance) {}
 
-  run<T>(frameName: string, componentClass: new (...args: any[]) => T): T {
+  run<T>(frameName: string, componentClass: new (...args: unknown[]) => T): T {
     this.frameIdentifier.setFrameName(frameName);
 
     this.container.get(InterFrameCommunicator).init();
     this.container.get(MessageBusToken);
     this.container.get(StoreToken);
     this.container.get(BrowserLocalStorage).init();
+    this.container.get(TranslatorToken).init();
 
     const framesHub: FramesHub = this.container.get(FramesHub);
     framesHub.init();

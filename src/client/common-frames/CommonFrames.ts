@@ -96,6 +96,7 @@ export class CommonFrames {
       this.removeThreedQuerySubmitFields();
       DomMethods.addDataToForm(this.form, { errorcode: 'cancelled', errormessage: PAYMENT_CANCELLED });
     } else {
+      // @ts-expect-error TypeScript doesn't allow you to assign known interfaces to dictionaries
       DomMethods.addDataToForm(this.form, data, this.getSubmitFieldsFromPaymentResponse(data));
     }
 
@@ -134,7 +135,7 @@ export class CommonFrames {
     const submitFieldsFromResponse: string[] = [];
 
     submitFields.forEach((field: string) => {
-      if (data.hasOwnProperty(field)) {
+      if (Object.prototype.hasOwnProperty.call(data, field)) {
         submitFieldsFromResponse.push(field);
       }
     });
@@ -171,11 +172,17 @@ export class CommonFrames {
         {
           gatewayUrl: this.dataCenterUrl,
           jwt: this.jwt,
-          origin: this.origin
+          origin: this.origin,
         },
         -1
       )
     );
+
+    this.destroy$.pipe(
+      first(),
+      map(() => document.getElementById(CONTROL_FRAME_IFRAME)),
+      filter(Boolean),
+    ).subscribe((iframe: HTMLIFrameElement) => this.form.removeChild(iframe));
   }
 
   private getControlFrameStyles(styles: IStyles): IStyles {

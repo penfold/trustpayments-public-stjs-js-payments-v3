@@ -14,8 +14,19 @@ import { Frame } from '../../core/shared/frame/Frame';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import Container from 'typedi';
+import { TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../core/shared/translator/Translator';
+import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
+import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
+import { FormState } from '../../core/models/constants/FormState';
 
 jest.mock('./../../core/shared/notification/Notification');
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('SecurityCode', () => {
   const { securityCodeInstance } = securityCodeFixture();
@@ -55,23 +66,27 @@ describe('SecurityCode', () => {
     it('should set attribute disabled and add class to classList', () => {
       // @ts-ignore
       securityCodeInstance.messageBus.subscribeType = jest.fn().mockImplementation((event, callback) => {
-        callback(true);
+        callback(FormState.BLOCKED);
       });
       // @ts-ignore
-      securityCodeInstance._setDisableListener();
+      securityCodeInstance.setDisableListener();
+      // @ts-ignore
+      expect(securityCodeInstance._inputElement.hasAttribute('disabled')).toEqual(true);
+      // @ts-ignore
+      expect(securityCodeInstance._inputElement.classList.contains(SecurityCode.DISABLED_CLASS)).toEqual(true);
     });
 
     it('should remove attribute disabled and remove class from classList', () => {
       // @ts-ignore
       securityCodeInstance.messageBus.subscribeType = jest.fn().mockImplementation((event, callback) => {
-        callback(false);
+        callback(FormState.AVAILABLE);
       });
       // @ts-ignore
-      securityCodeInstance._setDisableListener();
+      securityCodeInstance.setDisableListener();
       // @ts-ignore
-      expect(securityCodeInstance._inputElement.hasAttribute(SecurityCode.DISABLED_ATTRIBUTE_NAME)).toEqual(false);
+      expect(securityCodeInstance._inputElement.hasAttribute('disabled')).toEqual(false);
       // @ts-ignore
-      expect(securityCodeInstance._inputElement.classList.contains(SecurityCode.DISABLED_ATTRIBUTE_CLASS)).toEqual(
+      expect(securityCodeInstance._inputElement.classList.contains(SecurityCode.DISABLED_CLASS)).toEqual(
         false
       );
     });
@@ -80,7 +95,7 @@ describe('SecurityCode', () => {
   describe('onBlur', () => {
     const { securityCodeInstance } = securityCodeFixture();
     // @ts-ignore
-    const spySendState = jest.spyOn(securityCodeInstance, '_sendState');
+    const spySendState = jest.spyOn(securityCodeInstance, 'sendState');
 
     beforeEach(() => {
       // @ts-ignore
@@ -109,7 +124,7 @@ describe('SecurityCode', () => {
   describe('onInput', () => {
     const { securityCodeInstance } = securityCodeFixture();
     // @ts-ignore
-    securityCodeInstance._sendState = jest.fn();
+    securityCodeInstance.sendState = jest.fn();
     const event = new Event('input');
 
     beforeEach(() => {
@@ -121,7 +136,7 @@ describe('SecurityCode', () => {
 
     it('should call sendState', () => {
       // @ts-ignore
-      expect(securityCodeInstance._sendState).toHaveBeenCalled();
+      expect(securityCodeInstance.sendState).toHaveBeenCalled();
     });
 
     it('should trim too long value', () => {
@@ -136,20 +151,20 @@ describe('SecurityCode', () => {
     beforeEach(() => {
       const event = {
         clipboardData: {
-          getData: jest.fn()
+          getData: jest.fn(),
         },
-        preventDefault: jest.fn()
+        preventDefault: jest.fn(),
       };
       Utils.stripChars = jest.fn().mockReturnValue('111');
       // @ts-ignore
-      securityCodeInstance._sendState = jest.fn();
+      securityCodeInstance.sendState = jest.fn();
       // @ts-ignore
       securityCodeInstance.onPaste(event);
     });
 
-    it('should call _sendState method', () => {
+    it('should call sendState method', () => {
       // @ts-ignore
-      expect(securityCodeInstance._sendState).toHaveBeenCalled();
+      expect(securityCodeInstance.sendState).toHaveBeenCalled();
     });
   });
 
@@ -170,14 +185,14 @@ describe('SecurityCode', () => {
     });
   });
 
-  describe('_sendState', () => {
+  describe('sendState', () => {
     const { securityCodeInstance, messageBus } = securityCodeFixture();
     // @ts-ignore
     it('should publish method has been called', () => {
-      spyOn(messageBus, 'publish');
+      jest.spyOn(messageBus, 'publish');
 
       // @ts-ignore
-      securityCodeInstance._sendState();
+      securityCodeInstance.sendState();
       // @ts-ignore
       expect(securityCodeInstance.messageBus.publish).toHaveBeenCalled();
     });
@@ -193,13 +208,13 @@ describe('SecurityCode', () => {
     });
   });
 
-  describe('_setSecurityCodePattern', () => {
+  describe('setSecurityCodePattern', () => {
     const pattern = 'some243pa%^tern';
     const { securityCodeInstance } = securityCodeFixture();
 
     it('should set pattern attribute on input field', () => {
       // @ts-ignore
-      securityCodeInstance._setSecurityCodePattern(pattern);
+      securityCodeInstance.setSecurityCodePattern(pattern);
       // @ts-ignore
       expect(securityCodeInstance._inputElement.getAttribute('pattern')).toEqual(pattern);
     });
@@ -225,19 +240,16 @@ function securityCodeFixture() {
   const config: IConfig = {
     jwt: 'test',
     disableNotification: false,
-    placeholders: { pan: '4154654', expirydate: '12/22', securitycode: '123' }
+    placeholders: { pan: '4154654', expirydate: '12/22', securitycode: '123' },
   };
 
   const communicatorMock: InterFrameCommunicator = mock(InterFrameCommunicator);
   when(communicatorMock.incomingEvent$).thenReturn(EMPTY);
 
   const configProvider: ConfigProvider = mock<ConfigProvider>();
-  let formatter: Formatter;
-  formatter = mock(Formatter);
-  let frame: Frame;
-  frame = mock(Frame);
-  let jwtDecoder: JwtDecoder;
-  jwtDecoder = mock(JwtDecoder);
+  const formatter: Formatter = mock(Formatter);
+  const frame: Frame = mock(Frame);
+  const jwtDecoder: JwtDecoder = mock(JwtDecoder);
   const localStorage: BrowserLocalStorage = mock(BrowserLocalStorage);
   when(localStorage.select(anyFunction())).thenReturn(of('34****4565'));
   when(configProvider.getConfig$()).thenReturn(of(config));

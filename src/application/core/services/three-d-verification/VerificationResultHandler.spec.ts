@@ -18,7 +18,7 @@ describe('VerificationResultHandler', () => {
     enrolled: 'Y',
     threedpayload: '3dpayload',
     transactionreference: 'ref',
-    requesttypescription: 'THREEDQUERY'
+    requesttypedescription: 'THREEDQUERY',
   };
 
   let verificationResultHandler: VerificationResultHandler;
@@ -27,7 +27,7 @@ describe('VerificationResultHandler', () => {
     verificationResultHandler = new VerificationResultHandler();
   });
 
-  it.each<any>([ActionCode.SUCCESS, ActionCode.NOACTION])(
+  it.each<ActionCode | DoneCallback>([ActionCode.SUCCESS, ActionCode.NOACTION])(
     'returns response on success and noaction',
     (actionCode: ActionCode, done: DoneCallback) => {
       const result: IVerificationResult = {
@@ -35,11 +35,11 @@ describe('VerificationResultHandler', () => {
         errorDescription: '',
         validated: true,
         actionCode: ActionCode.SUCCESS,
-        jwt: 'foobar'
+        jwt: 'foobar',
       };
       const tokens: IThreeDSTokens = {
         cacheToken: 'aaa',
-        jwt: 'bbb'
+        jwt: 'bbb',
       };
 
       verificationResultHandler.handle(threeDQueryResponse, result, tokens).subscribe(res => {
@@ -57,11 +57,11 @@ describe('VerificationResultHandler', () => {
       errorDescription: '',
       validated: true,
       actionCode: ActionCode.NOACTION,
-      jwt: 'foobar'
+      jwt: 'foobar',
     };
     const tokens: IThreeDSTokens = {
       cacheToken: 'aaa',
-      jwt: 'bbb'
+      jwt: 'bbb',
     };
 
     verificationResultHandler.handle(threeDQueryResponse, result, tokens).subscribe(res => {
@@ -72,7 +72,7 @@ describe('VerificationResultHandler', () => {
     });
   });
 
-  it.each<any>([ActionCode.ERROR, ActionCode.FAILURE])(
+  it.each<ActionCode | DoneCallback>([ActionCode.ERROR, ActionCode.FAILURE])(
     'returns error response on error and failure',
     (actionCode: ActionCode, done: DoneCallback) => {
       const result: IVerificationResult = {
@@ -80,11 +80,11 @@ describe('VerificationResultHandler', () => {
         errorDescription: 'error occured',
         validated: false,
         actionCode: actionCode,
-        jwt: 'foobar'
+        jwt: 'foobar',
       };
       const tokens: IThreeDSTokens = {
         cacheToken: 'aaa',
-        jwt: 'bbb'
+        jwt: 'bbb',
       };
 
       verificationResultHandler.handle(threeDQueryResponse, result, tokens).subscribe({
@@ -96,16 +96,16 @@ describe('VerificationResultHandler', () => {
             enrolled: 'Y',
             threedpayload: '3dpayload',
             transactionreference: 'ref',
-            requesttypescription: 'THREEDQUERY',
+            requesttypedescription: 'THREEDQUERY',
             acquirerresponsecode: '1234',
             acquirerresponsemessage: 'error occured',
             errorcode: '50003',
             errormessage: PAYMENT_ERROR,
             threedresponse: 'foobar',
-            cachetoken: 'aaa'
+            cachetoken: 'aaa',
           });
           done();
-        }
+        },
       });
     }
   );

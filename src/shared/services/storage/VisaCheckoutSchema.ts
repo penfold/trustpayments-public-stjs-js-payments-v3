@@ -2,6 +2,7 @@ import Joi from 'joi';
 
 export const VisaCheckoutSchema: Joi.ObjectSchema = Joi.object().keys({
   merchantId: Joi.string(),
+  merchantUrl: Joi.string(),
   livestatus: Joi.number().valid(0, 1),
   placement: Joi.string(),
   encryptionKey: Joi.string(),
@@ -16,7 +17,7 @@ export const VisaCheckoutSchema: Joi.ObjectSchema = Joi.object().keys({
     locale: Joi.string(),
     cardBrands: Joi.string(),
     acceptCanadianVisaDebit: Joi.string(),
-    cobrand: Joi.string()
+    cobrand: Joi.string(),
   }),
   settings: Joi.object().keys({
     locale: Joi.string(),
@@ -27,22 +28,22 @@ export const VisaCheckoutSchema: Joi.ObjectSchema = Joi.object().keys({
     enableUserDataPrefill: Joi.boolean(),
     shipping: Joi.object().keys({
       acceptedRegions: Joi.array(),
-      collectShipping: Joi.string().allow('true', 'false')
+      collectShipping: Joi.string().allow('true', 'false'),
     }),
     payment: Joi.object().keys({
       cardBrands: Joi.array().allow('VISA', 'MASTERCARD', 'AMEX', 'DISCOVER', 'ELECTRON', 'ELO'),
       acceptCanadianVisaDebit: Joi.string().allow('true', 'false'),
-      billingCountries: Joi.array()
+      billingCountries: Joi.array(),
     }),
     review: Joi.object().keys({
       message: Joi.string(),
-      buttonAction: Joi.string()
+      buttonAction: Joi.string(),
     }),
     threeDSSetup: Joi.object().keys({
       threeDSActive: Joi.string().allow('true', 'false'),
-      threeDSSuppressChallenge: Joi.string().allow('true', 'false')
+      threeDSSuppressChallenge: Joi.string().allow('true', 'false'),
     }),
-    dataLevel: Joi.string()
+    dataLevel: Joi.string(),
   }),
   paymentRequest: Joi.object().keys({
     merchantRequestId: Joi.string().allow(''),
@@ -57,6 +58,6 @@ export const VisaCheckoutSchema: Joi.ObjectSchema = Joi.object().keys({
     orderId: Joi.string().allow(''),
     description: Joi.string().allow(''),
     promoCode: Joi.string().allow(''),
-    customData: Joi.any()
-  })
+    customData: Joi.any(),
+  }),
 });

@@ -9,6 +9,7 @@ import { ICardinalProvider } from './ICardinalProvider';
 @Service()
 export class CardinalProvider implements ICardinalProvider {
   private static readonly SCRIPT_ID = 'cardinalCommerce';
+  private static readonly CONTAINER_ID = 'Cardinal-ElementContainer';
 
   getCardinal$(liveStatus: boolean): Observable<ICardinal> {
     const sdkAddress = liveStatus
@@ -17,8 +18,18 @@ export class CardinalProvider implements ICardinalProvider {
 
     const scriptOptions = {
       src: sdkAddress,
-      id: CardinalProvider.SCRIPT_ID
+      id: CardinalProvider.SCRIPT_ID,
     };
+
+    const mobileViewStyles = `
+      @media only screen and (max-width: 450px) {
+        #${CardinalProvider.CONTAINER_ID} iframe#Cardinal-CCA-IFrame {
+          width: 100vw;
+        }
+      }
+    `;
+
+    DomMethods.insertStyle(mobileViewStyles);
 
     return from(DomMethods.insertScript('head', scriptOptions)).pipe(
       switchMap(

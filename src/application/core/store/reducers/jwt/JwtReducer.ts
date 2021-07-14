@@ -7,13 +7,13 @@ import { ReducerToken } from '../../../../../shared/dependency-injection/Injecti
 
 @Service({ id: ReducerToken, multiple: true })
 export class JwtReducer implements IReducer<IApplicationFrameState> {
-  reduce(state: IApplicationFrameState, action: IMessageBusEvent): IApplicationFrameState {
+  reduce(state: IApplicationFrameState, action: IMessageBusEvent<string>): IApplicationFrameState {
     switch (action.type) {
       case PUBLIC_EVENTS.JWT_UPDATED: {
         return {
           ...state,
           jwt: action.data,
-          originalJwt: action.data
+          originalJwt: action.data,
         };
       }
       case PUBLIC_EVENTS.JWT_REPLACED: {
@@ -23,6 +23,7 @@ export class JwtReducer implements IReducer<IApplicationFrameState> {
         return { ...state, jwt: state.originalJwt };
       }
       case PUBLIC_EVENTS.DESTROY: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { jwt, originalJwt, ...newState } = state;
 
         return newState;

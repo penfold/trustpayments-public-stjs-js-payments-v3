@@ -13,8 +13,19 @@ import { of } from 'rxjs';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+import Container from 'typedi';
+import { TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../core/shared/translator/Translator';
+import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
+import { ITranslator } from '../../core/shared/translator/ITranslator';
+import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
 
 jest.mock('./../../core/shared/validation/Validation');
+
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('CardNumber', () => {
   const { inputElement, messageElement, cardNumberInstance, labelElement } = cardNumberFixture();
@@ -29,7 +40,7 @@ describe('CardNumber', () => {
     expect(cardNumberInstance).toBeInstanceOf(CardNumber);
   });
 
-  it('should create cardNumberInstance of class CardNumber', () => {
+  it('should create cardNumberInstance of class Input', () => {
     expect(cardNumberInstance).toBeInstanceOf(Input);
   });
 
@@ -46,10 +57,6 @@ describe('CardNumber', () => {
   });
 
   describe('CardNumber.ifFieldExists', () => {
-    it('should return input iframe-factory', () => {
-      expect(CardNumber.ifFieldExists()).toBeTruthy();
-    });
-
     it('should return input iframe-factory', () => {
       expect(CardNumber.ifFieldExists()).toBeInstanceOf(HTMLInputElement);
     });
@@ -267,9 +274,9 @@ describe('CardNumber', () => {
     beforeEach(() => {
       const event = {
         clipboardData: {
-          getData: jest.fn()
+          getData: jest.fn(),
         },
-        preventDefault: jest.fn()
+        preventDefault: jest.fn(),
       };
       Utils.stripChars = jest.fn().mockReturnValue('41111');
       // @ts-ignore
@@ -289,8 +296,8 @@ describe('CardNumber', () => {
   });
 
   describe('_getMaxLengthOfCardNumber()', () => {
-    const panLengthWithoutSpaces: number = 15;
-    const numberOfWhitespaces: number = 3;
+    const panLengthWithoutSpaces = 15;
+    const numberOfWhitespaces = 3;
 
     beforeEach(() => {
       // @ts-ignore
@@ -309,28 +316,26 @@ function cardNumberFixture() {
   const html =
     '<form id="st-card-number" class="card-number" novalidate=""><label id="st-card-number-label" for="st-card-number-input" class="card-number__label card-number__label--required">Card number</label><input id="st-card-number-input" class="card-number__input" type="text" autocomplete="off" required="" data-luhn-check="true" maxlength="NaN" minlength="19"><p id="st-card-number-message" class="card-number__message"></p></form>';
   document.body.innerHTML = html;
-  let configProvider: ConfigProvider;
-  let iconFactory: IconFactory;
-  let frame: Frame;
-  let formatter: Formatter;
-  iconFactory = mock(IconFactory);
-  configProvider = mock<ConfigProvider>();
+  const configProvider: ConfigProvider = mock<ConfigProvider>();
+  const iconFactory: IconFactory = mock(IconFactory);
+  const frame: Frame = mock(Frame);
+  const formatter: Formatter = mock(Formatter);
+  const translator: ITranslator = mock(Translator);
   const messageBus: IMessageBus = new SimpleMessageBus();
   when(configProvider.getConfig$()).thenReturn(of({} as IConfig));
-  frame = mock(Frame);
-  formatter = mock(Formatter);
   // @ts-ignore
   when(configProvider.getConfig()).thenReturn({
     jwt: '',
     disableNotification: false,
-    placeholders: { pan: 'Card number', expirydate: 'MM/YY', securitycode: '***' }
+    placeholders: { pan: 'Card number', expirydate: 'MM/YY', securitycode: '***' },
   });
   const cardNumberInstance: CardNumber = new CardNumber(
     instance(configProvider),
     instance(iconFactory),
     instance(formatter),
     instance(frame),
-    messageBus
+    messageBus,
+    instance(translator)
   );
 
   function createElement(markup: string) {
@@ -347,27 +352,15 @@ function cardNumberFixture() {
     format: '(\\d{1,4})(\\d{1,6})?(\\d+)?',
     length: [14, 15, 16, 17, 18, 19],
     luhn: true,
-    type: 'DINERS'
+    type: 'DINERS',
   };
   const testCardNumbers = [
     ['', 0],
     ['0000000000000000', 0],
     ['4111111111111111', true],
     ['79927398713', true],
-    ['6759555555555555', false]
+    ['6759555555555555', false],
   ];
-  const cards = [
-    { number: 340000000000611, expirationDate: '12/22', securityCode: 1234, brand: 'AMEX' },
-    { number: 1801000000000901, expirationDate: '12/22', securityCode: 123, brand: 'ASTROPAYCARD' },
-    { number: 3000000000000111, expirationDate: '12/22', securityCode: 123, brand: 'DINERS' },
-    { number: 6011000000000301, expirationDate: '12/22', securityCode: 123, brand: 'DISCOVER' },
-    { number: 3528000000000411, expirationDate: '12/22', securityCode: 123, brand: 'JCB' },
-    { number: 5000000000000611, expirationDate: '12/22', securityCode: 123, brand: 'MAESTRO' },
-    { number: 5100000000000511, expirationDate: '12/22', securityCode: 123, brand: 'MASTERCARD' },
-    { number: 3089500000000000021, expirationDate: '12/22', securityCode: 123, brand: 'PIBA' },
-    { number: 4111110000000211, expirationDate: '12/22', securityCode: 123, brand: 'VISA' }
-  ];
-
   const formattedCards = [
     ['340000000000611', '3400 000000 00611'],
     ['1801000000000901', '1801 0000 0000 0901'],
@@ -378,7 +371,7 @@ function cardNumberFixture() {
     ['5100000000000511', '5100 0000 0000 0511'],
     ['3089500000000000021', '3089 5000 0000 0000021'],
     ['4111110000000211', '4111 1100 0000 0211'],
-    ['123456789', '123456789']
+    ['123456789', '123456789'],
   ];
   labelElement.id = CARD_NUMBER_LABEL;
   inputElement.id = CARD_NUMBER_INPUT;
@@ -393,6 +386,6 @@ function cardNumberFixture() {
     formattedCards,
     unrecognizedCardNumber,
     cardNumberCorrect,
-    receivedObject
+    receivedObject,
   };
 }

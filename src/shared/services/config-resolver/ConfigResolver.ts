@@ -1,9 +1,8 @@
-import Joi from 'joi';
+import { ValidationErrorItem, ValidationResult } from 'joi';
 import { IConfig } from '../../model/config/IConfig';
 import { Service } from 'typedi';
 import { IComponentsIds } from '../../model/config/IComponentsIds';
 import { IComponentsConfig } from '../../model/config/IComponentsConfig';
-import { ConfigSchema } from '../storage/ConfigSchema';
 import { DefaultSubmitFields } from '../../../application/core/models/constants/config-resolver/DefaultSubmitFields';
 import { DefaultComponentsIds } from '../../../application/core/models/constants/config-resolver/DefaultComponentsIds';
 import { DefaultConfig } from '../../../application/core/models/constants/config-resolver/DefaultConfig';
@@ -13,43 +12,49 @@ import { IPlaceholdersConfig } from '../../../application/core/models/IPlacehold
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
 import { environment } from '../../../environments/environment';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
+import { IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
+import { ConfigValidator } from '../config-validator/ConfigValidator';
 
 @Service()
 export class ConfigResolver {
-  public resolve(config: IConfig): IConfig {
-    this._validate(config, ConfigSchema);
+  constructor(private configValidator: ConfigValidator) {
+  }
+
+  resolve(config: IConfig): IConfig {
+    this.validate(config);
     const validatedConfig: IConfig = {
-      analytics: this._getValueOrDefault(config.analytics, DefaultConfig.analytics),
-      animatedCard: this._getValueOrDefault(config.animatedCard, DefaultConfig.animatedCard),
-      applePay: this._setApplePayConfig(config.applePay),
-      buttonId: this._getValueOrDefault(config.buttonId, DefaultConfig.buttonId),
-      stopSubmitFormOnEnter: this._getValueOrDefault(config.stopSubmitFormOnEnter, DefaultConfig.stopSubmitFormOnEnter),
-      cancelCallback: this._getValueOrDefault(config.cancelCallback, DefaultConfig.cancelCallback),
-      componentIds: this._setComponentIds(config.componentIds),
-      components: this._setComponentsProperties(config.components),
-      cybertonicaApiKey: this._resolveCybertonicaApiKey(config.cybertonicaApiKey),
-      datacenterurl: this._getValueOrDefault(config.datacenterurl, DefaultConfig.datacenterurl),
-      deferInit: this._getValueOrDefault(config.deferInit, DefaultConfig.deferInit),
-      disableNotification: this._getValueOrDefault(config.disableNotification, DefaultConfig.disableNotification),
-      errorCallback: this._getValueOrDefault(config.errorCallback, DefaultConfig.errorCallback),
-      errorReporting: this._getValueOrDefault(config.errorReporting, DefaultConfig.errorReporting),
-      fieldsToSubmit: this._getValueOrDefault(config.fieldsToSubmit, DefaultConfig.fieldsToSubmit),
-      formId: this._getValueOrDefault(config.formId, DefaultConfig.formId),
-      init: this._getValueOrDefault(config.init, DefaultConfig.init),
-      jwt: this._getValueOrDefault(config.jwt, DefaultConfig.jwt),
-      livestatus: this._getValueOrDefault(config.livestatus, DefaultConfig.livestatus),
-      origin: this._getValueOrDefault(config.origin, DefaultConfig.origin),
-      panIcon: this._getValueOrDefault(config.panIcon, DefaultConfig.panIcon),
-      placeholders: this._setPlaceholders(config.placeholders),
-      styles: this._getValueOrDefault(config.styles, DefaultConfig.styles),
-      submitCallback: this._getValueOrDefault(config.submitCallback, DefaultConfig.submitCallback),
-      submitFields: this._getValueOrDefault(config.submitFields, DefaultSubmitFields),
-      submitOnCancel: this._getValueOrDefault(config.submitOnCancel, false),
-      submitOnError: this._getValueOrDefault(config.submitOnError, DefaultConfig.submitOnError),
-      submitOnSuccess: this._getValueOrDefault(config.submitOnSuccess, DefaultConfig.submitOnSuccess),
-      successCallback: this._getValueOrDefault(config.successCallback, DefaultConfig.successCallback),
-      translations: this._getValueOrDefault(config.translations, DefaultConfig.translations),
-      visaCheckout: this._setVisaCheckoutConfig(config.visaCheckout)
+      analytics: this.getValueOrDefault(config.analytics, DefaultConfig.analytics),
+      animatedCard: this.getValueOrDefault(config.animatedCard, DefaultConfig.animatedCard),
+      applePay: this.setApplePayConfig(config.applePay),
+      buttonId: this.getValueOrDefault(config.buttonId, DefaultConfig.buttonId),
+      stopSubmitFormOnEnter: this.getValueOrDefault(config.stopSubmitFormOnEnter, DefaultConfig.stopSubmitFormOnEnter),
+      cancelCallback: this.getValueOrDefault(config.cancelCallback, DefaultConfig.cancelCallback),
+      componentIds: this.setComponentIds(config.componentIds),
+      components: this.setComponentsProperties(config.components),
+      cybertonicaApiKey: this.resolveCybertonicaApiKey(config.cybertonicaApiKey),
+      datacenterurl: this.getValueOrDefault(config.datacenterurl, DefaultConfig.datacenterurl),
+      deferInit: this.getValueOrDefault(config.deferInit, DefaultConfig.deferInit),
+      disableNotification: this.getValueOrDefault(config.disableNotification, DefaultConfig.disableNotification),
+      errorCallback: this.getValueOrDefault(config.errorCallback, DefaultConfig.errorCallback),
+      errorReporting: this.getValueOrDefault(config.errorReporting, DefaultConfig.errorReporting),
+      fieldsToSubmit: this.getValueOrDefault(config.fieldsToSubmit, DefaultConfig.fieldsToSubmit),
+      formId: this.getValueOrDefault(config.formId, DefaultConfig.formId),
+      googlePay: this.setGooglePayConfig(config.googlePay),
+      init: this.getValueOrDefault(config.init, DefaultConfig.init),
+      jwt: this.getValueOrDefault(config.jwt, DefaultConfig.jwt),
+      livestatus: this.getValueOrDefault(config.livestatus, DefaultConfig.livestatus),
+      origin: this.getValueOrDefault(config.origin, DefaultConfig.origin),
+      panIcon: this.getValueOrDefault(config.panIcon, DefaultConfig.panIcon),
+      placeholders: this.setPlaceholders(config.placeholders),
+      styles: this.getValueOrDefault(config.styles, DefaultConfig.styles),
+      submitCallback: this.getValueOrDefault(config.submitCallback, DefaultConfig.submitCallback),
+      submitFields: this.getValueOrDefault(config.submitFields, DefaultSubmitFields),
+      submitOnCancel: this.getValueOrDefault(config.submitOnCancel, false),
+      submitOnError: this.getValueOrDefault(config.submitOnError, DefaultConfig.submitOnError),
+      submitOnSuccess: this.getValueOrDefault(config.submitOnSuccess, DefaultConfig.submitOnSuccess),
+      successCallback: this.getValueOrDefault(config.successCallback, DefaultConfig.successCallback),
+      translations: this.getValueOrDefault(config.translations, DefaultConfig.translations),
+      visaCheckout: this.setVisaCheckoutConfig(config.visaCheckout),
     };
     if (!environment.production) {
       console.error(validatedConfig);
@@ -57,18 +62,21 @@ export class ConfigResolver {
     return validatedConfig;
   }
 
-  private _validate(
-    config: IConfig | IComponentsConfig | IComponentsIds | IApplePayConfig | IVisaCheckoutConfig,
-    schema: Joi.ObjectSchema
-  ): void {
-    const { error } = schema.validate(config);
+  private validate(config: IConfig): void {
+    const validationResult: ValidationResult = this.configValidator.validate(config);
 
-    if (error) {
-      throw error;
+    if (validationResult.error) {
+      throw validationResult.error;
+    }
+
+    if (validationResult.warning) {
+      validationResult.warning.details.forEach((item: ValidationErrorItem) => {
+        console.warn(item.message);
+      });
     }
   }
 
-  private _getValueOrDefault<T>(value: T | undefined, defaultValue: T): T {
+  private getValueOrDefault<T>(value: T | undefined, defaultValue: T): T {
     switch (typeof value) {
       case 'undefined':
         return defaultValue;
@@ -87,64 +95,71 @@ export class ConfigResolver {
         }
         return Object.keys(value).length ? value : defaultValue;
       default:
-        return Boolean(value) ? value : defaultValue;
+        return value ? value : defaultValue;
     }
   }
 
-  private _setVisaCheckoutConfig(config: IVisaCheckoutConfig): IVisaCheckoutConfig {
+  private setVisaCheckoutConfig(config: IVisaCheckoutConfig): IVisaCheckoutConfig {
     if (!config || !Object.keys(config).length) {
       return;
     }
     return config;
   }
 
-  private _setApplePayConfig(config: IApplePayConfig): IApplePayConfig {
+  private setApplePayConfig(config: IApplePayConfig): IApplePayConfig {
     if (!config || !Object.keys(config).length) {
       return;
     }
     return config;
   }
 
-  private _setComponentIds(config: IComponentsIds): IComponentsIds {
+  private setGooglePayConfig(config: IGooglePayConfig): IGooglePayConfig {
+    if (!config || !Object.keys(config).length) {
+      return;
+    }
+    return config;
+  }
+
+  private setComponentIds(config: IComponentsIds): IComponentsIds {
     if (!config || !Object.keys(config).length) {
       return DefaultComponentsIds;
     }
     return {
-      animatedCard: this._getValueOrDefault(config.animatedCard, DefaultComponentsIds.animatedCard),
-      cardNumber: this._getValueOrDefault(config.cardNumber, DefaultComponentsIds.cardNumber),
-      expirationDate: this._getValueOrDefault(config.expirationDate, DefaultComponentsIds.expirationDate),
-      notificationFrame: this._getValueOrDefault(config.notificationFrame, DefaultComponentsIds.notificationFrame),
-      securityCode: this._getValueOrDefault(config.securityCode, DefaultComponentsIds.securityCode)
+      animatedCard: this.getValueOrDefault(config.animatedCard, DefaultComponentsIds.animatedCard),
+      cardNumber: this.getValueOrDefault(config.cardNumber, DefaultComponentsIds.cardNumber),
+      expirationDate: this.getValueOrDefault(config.expirationDate, DefaultComponentsIds.expirationDate),
+      notificationFrame: this.getValueOrDefault(config.notificationFrame, DefaultComponentsIds.notificationFrame),
+      securityCode: this.getValueOrDefault(config.securityCode, DefaultComponentsIds.securityCode),
     };
   }
 
-  private _setComponentsProperties(config: IComponentsConfig): IComponentsConfig {
+  private setComponentsProperties(config: IComponentsConfig): IComponentsConfig {
     if (!config || !Object.keys(config).length) {
       return DefaultComponents;
     }
     return {
-      defaultPaymentType: this._getValueOrDefault(config.defaultPaymentType, DefaultComponents.defaultPaymentType),
-      paymentTypes: this._getValueOrDefault(config.paymentTypes, DefaultComponents.paymentTypes),
-      startOnLoad: this._getValueOrDefault(config.startOnLoad, DefaultComponents.startOnLoad)
+      defaultPaymentType: this.getValueOrDefault(config.defaultPaymentType, DefaultComponents.defaultPaymentType),
+      paymentTypes: this.getValueOrDefault(config.paymentTypes, DefaultComponents.paymentTypes),
+      startOnLoad: this.getValueOrDefault(config.startOnLoad, DefaultComponents.startOnLoad),
     };
   }
 
-  private _setPlaceholders(config: IPlaceholdersConfig): IPlaceholdersConfig {
+  private setPlaceholders(config: IPlaceholdersConfig): IPlaceholdersConfig {
     if (!config || !Object.keys(config).length) {
       return DefaultPlaceholders;
     }
     return {
-      pan: this._getValueOrDefault(config.pan, DefaultPlaceholders.pan),
-      expirydate: this._getValueOrDefault(config.expirydate, DefaultPlaceholders.expirydate),
-      securitycode: this._getValueOrDefault(config.securitycode, DefaultPlaceholders.securitycode)
+      pan: this.getValueOrDefault(config.pan, DefaultPlaceholders.pan),
+      expirydate: this.getValueOrDefault(config.expirydate, DefaultPlaceholders.expirydate),
+      securitycode: this.getValueOrDefault(config.securitycode, DefaultPlaceholders.securitycode),
     };
   }
 
-  private _resolveCybertonicaApiKey(value: string): string {
+  private resolveCybertonicaApiKey(value: string): string {
     if (value === '') {
       return '';
     }
 
-    return this._getValueOrDefault(value, DefaultConfig.cybertonicaApiKey);
+    return this.getValueOrDefault(value, DefaultConfig.cybertonicaApiKey);
   }
 }

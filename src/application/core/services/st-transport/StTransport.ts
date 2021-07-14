@@ -8,6 +8,7 @@ import { IStRequest } from '../../models/IStRequest';
 import { environment } from '../../../../environments/environment';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { InvalidResponseError } from '../st-codec/InvalidResponseError';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 
 interface IFetchOptions {
   headers: {
@@ -37,23 +38,23 @@ export class StTransport {
   private static RETRY_LIMIT = 5;
   private static RETRY_TIMEOUT = 10000;
   private static TIMEOUT = 60000;
-  private _throttlingRequests = new Map<string, Promise<object>>();
+  private _throttlingRequests = new Map<string, Promise<Record<string, unknown>>>();
   private _config: IConfig;
   private _codec: StCodec;
 
-  constructor(private configProvider: ConfigProvider) {}
+  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder) {}
 
   /**
    * Perform a JSON API request with ST
    * @param requestObject A request object to send to ST
    * @return A Promise object that resolves the gateway response
    */
-  public async sendRequest(requestObject: IStRequest): Promise<object> {
+  public async sendRequest(requestObject: IStRequest, merchantUrl?: string): Promise<Record<string, unknown>> {
     const requestBody = this.getCodec().encode(requestObject);
     const fetchOptions = this._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
 
     if (!this._throttlingRequests.has(requestBody)) {
-      this._throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody, fetchOptions));
+      this._throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody, fetchOptions, merchantUrl));
       setTimeout(() => this._throttlingRequests.delete(requestBody), StTransport.THROTTLE_TIME);
     }
 
@@ -65,9 +66,9 @@ export class StTransport {
     const options: IFetchOptions = {
       headers: {
         Accept: StCodec.CONTENT_TYPE,
-        'Content-Type': StCodec.CONTENT_TYPE
+        'Content-Type': StCodec.CONTENT_TYPE,
       },
-      method: 'post'
+      method: 'post',
     };
     const hasRequestTypesToSkip =
       requesttypedescriptions &&
@@ -81,20 +82,20 @@ export class StTransport {
 
       options.headers = {
         ...options.headers,
-        'ST-Request-Types': requestTypes
+        'ST-Request-Types': requestTypes,
       };
     }
 
     return options;
   }
 
-  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions): Promise<object> {
+  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions, merchantUrl?: string): Promise<Record<string, unknown>> {
     const codec = this.getCodec();
-    const gatewayUrl = this.getConfig().datacenterurl;
+    const gatewayUrl = merchantUrl ? merchantUrl : this.getConfig().datacenterurl;
 
     return this._fetchRetry(gatewayUrl, {
       ...fetchOptions,
-      body: requestBody
+      body: requestBody,
     })
       .then(codec.decode)
       .catch((error: Error | unknown) => {
@@ -120,7 +121,7 @@ export class StTransport {
    */
   private _fetchRetry(
     url: string,
-    options: object,
+    options: Record<string, unknown>,
     connectTimeout = StTransport.TIMEOUT,
     delay = StTransport.DELAY,
     retries = StTransport.RETRY_LIMIT,
@@ -145,7 +146,7 @@ export class StTransport {
   private getCodec(): StCodec {
     if (!this._codec) {
       const { jwt } = this.getConfig();
-      this._codec = new StCodec(jwt);
+      this._codec = new StCodec(this.jwtDecoder, jwt);
     }
 
     return this._codec;

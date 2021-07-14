@@ -1,11 +1,11 @@
 const path = require('path');
+const webpack =  require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: {
@@ -60,11 +60,6 @@ module.exports = {
     libraryTarget: 'umd',
     publicPath: ''
   },
-  node: {
-    net: 'empty',
-    tls: 'empty',
-    dns: 'empty'
-  },
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
@@ -114,36 +109,35 @@ module.exports = {
     new CopyPlugin({
       patterns: [{
         from: 'src/application/core/services/icon/images/*.png',
-        to: 'images',
+        to: 'images/[name][ext]',
         force: true,
-        flatten: true
       }]
     }),
     new StyleLintPlugin({
       context: path.join(__dirname, 'src')
     }),
-    new FriendlyErrorsWebpackPlugin(),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
+    })
   ],
+  optimization: {
+    minimizer: [new TerserPlugin({ extractComments: false })],
+  },
   module: {
     rules: [
       {
-        test: /\.scss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1
-            }
-          },
-          'postcss-loader',
-          'sass-loader',
-          'source-map-loader'
-        ]
+        test: /\.(scss|css)$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        exclude: path.resolve(__dirname, './src/client/st/st.css'),
+      },
+      {
+        include: path.resolve(__dirname, './src/client/st/st.css'),
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
-        use: ['file-loader']
+        type: 'asset/resource',
       },
       {
         test: /\.tsx?|js$/,
@@ -156,7 +150,8 @@ module.exports = {
           path.join(__dirname, 'node_modules/hoek'),
           path.join(__dirname, 'node_modules/isemail'),
           path.join(__dirname, 'node_modules/joi'),
-          path.join(__dirname, 'node_modules/topo')
+          path.join(__dirname, 'node_modules/topo'),
+          path.join(__dirname, 'node_modules/caniuse-lite'),
         ]
       },
       {
@@ -164,23 +159,27 @@ module.exports = {
         enforce: 'pre',
         use: [
           {
-            loader: 'tslint-loader',
-            options: {
-              emitErrors: true
-            }
-          }, {
             loader: 'source-map-loader'
           }
         ],
         exclude: /node_modules/
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader']
       }
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
+    fallback: {
+      "fs": false,
+      "tls": false,
+      "net": false,
+      "path": false,
+      "zlib": false,
+      "http": false,
+      "https": false,
+      "crypto": require.resolve("crypto-browserify/"),
+      "util": require.resolve("util/"),
+      "stream": require.resolve("stream-browserify/"),
+      "buffer": require.resolve("buffer/")
+    },
   }
 };

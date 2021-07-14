@@ -7,11 +7,11 @@ export class ApplePayButtonService {
     return DomMethods.createHtmlElement.apply(this, [
       {
         style: `-webkit-appearance: -apple-pay-button;
-                -apple-pay-button-type: ${label};
-                -apple-pay-button-style: ${style};pointer-events: auto;cursor: pointer;display: flex;role: button;`,
-        lang: locale
+                -apple-pay-button-type: ${label ? label : 'plain'};
+                -apple-pay-button-style: ${style ? style : 'black'};pointer-events: auto;cursor: pointer;display: flex;role: button;`,
+        lang: locale,
       },
-      'a'
+      'a',
     ]);
   }
 
@@ -22,6 +22,6 @@ export class ApplePayButtonService {
   }
 
   private isButtonInserted(targetId: string): boolean {
-    return document.getElementById(targetId) ? document.getElementById(targetId).hasChildNodes() : false;
+    return document.getElementById(targetId) ? !!document.getElementById(targetId).querySelector('a') : false;
   }
 }

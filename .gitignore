@@ -68,3 +68,10 @@ dist/
 
 # cicd-os reusable scripts
 .cicd_scripts
+
+# .DS_Store
+.DS_Store
+
+# Python virtual env
+.venv
+test/.venv

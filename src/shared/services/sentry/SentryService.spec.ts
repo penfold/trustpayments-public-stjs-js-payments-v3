@@ -7,6 +7,7 @@ import { SentryService } from './SentryService';
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { IConfig } from '../../model/config/IConfig';
+import { ExceptionsToSkip } from './ExceptionsToSkip';
 
 describe('SentryService', () => {
   const DSN = 'https://123@456.ingest.sentry.io/7890';
@@ -65,11 +66,13 @@ describe('SentryService', () => {
     verify(
       sentryMock.init(
         deepEqual({
-          whitelistUrls,
+          allowUrls: whitelistUrls,
           dsn: DSN,
           environment: 'prod',
           release: '1.2.3',
-          beforeSend: anyFunction()
+          ignoreErrors: ExceptionsToSkip,
+          sampleRate: 0.1,
+          beforeSend: anyFunction(),
         })
       )
     ).once();

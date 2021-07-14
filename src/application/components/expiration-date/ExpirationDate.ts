@@ -8,7 +8,7 @@ import {
   EXPIRATION_DATE_INPUT,
   EXPIRATION_DATE_LABEL,
   EXPIRATION_DATE_MESSAGE,
-  EXPIRATION_DATE_WRAPPER
+  EXPIRATION_DATE_WRAPPER,
 } from '../../core/models/constants/Selectors';
 import { Service } from 'typedi';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -21,10 +21,10 @@ import { LABEL_EXPIRATION_DATE } from '../../core/models/constants/Translations'
 export class ExpirationDate extends Input {
   public static ifFieldExists = (): HTMLInputElement =>
     document.getElementById(EXPIRATION_DATE_INPUT) as HTMLInputElement;
-  private static DISABLED_ATTRIBUTE: string = 'disabled';
-  private static DISABLED_CLASS: string = 'st-input--disabled';
-  private static EXPIRATION_DATE_LENGTH: number = 5;
-  private static INPUT_PATTERN: string = '^(0[1-9]|1[0-2])\\/([0-9]{2})$';
+  private static DISABLED_ATTRIBUTE = 'disabled';
+  private static DISABLED_CLASS = 'st-input--disabled';
+  private static EXPIRATION_DATE_LENGTH = 5;
+  private static INPUT_PATTERN = '^(0[1-9]|1[0-2])\\/([0-9]{2})$';
 
   private _currentKeyCode: number;
   private _inputSelectionEnd: number;
@@ -54,12 +54,12 @@ export class ExpirationDate extends Input {
         styler.addStyles([
           {
             elementSelector: '#st-expiration-date',
-            classList: ['st-expiration-date--lined-up']
+            classList: ['st-expiration-date--lined-up'],
           },
           {
             elementSelector: '#st-expiration-date-label',
-            classList: ['expiration-date__label--required', 'lined-up']
-          }
+            classList: ['expiration-date__label--required', 'lined-up'],
+          },
         ]);
       }
 
@@ -73,10 +73,10 @@ export class ExpirationDate extends Input {
             inlineStyles: [
               {
                 property: 'padding',
-                value: `${outlineSize ? outlineSize : 3}px`
-              }
-            ]
-          }
+                value: `${outlineSize ? outlineSize : 3}px`,
+              },
+            ],
+          },
         ]);
       }
 
@@ -88,10 +88,10 @@ export class ExpirationDate extends Input {
             inlineStyles: [
               {
                 property: 'color',
-                value
-              }
-            ]
-          }
+                value,
+              },
+            ],
+          },
         ]);
       }
     });
@@ -101,28 +101,28 @@ export class ExpirationDate extends Input {
     return LABEL_EXPIRATION_DATE;
   }
 
-  public setDisableListener() {
+  public setDisableListener(): void {
     this.messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, (state: FormState) => {
       state !== FormState.AVAILABLE ? this._disableInputField() : this._enableInputField();
     });
   }
 
-  protected format(date: string) {
+  protected format(date: string): void {
     this.setValue(date);
   }
 
-  protected onBlur() {
+  protected onBlur(): void {
     super.onBlur();
     this._inputElement.value = this._formatter.date(this._inputElement.value, EXPIRATION_DATE_INPUT);
     this._sendState();
   }
 
-  protected onFocus(event: Event) {
+  protected onFocus(event: Event): void {
     super.onFocus(event);
     this._inputElement.value = this._formatter.date(this._inputElement.value, EXPIRATION_DATE_INPUT);
   }
 
-  protected onInput(event: Event) {
+  protected onInput(event: Event): void {
     super.onInput(event);
     this._inputElement.value = this.validation.limitLength(
       this._inputElement.value,
@@ -133,7 +133,7 @@ export class ExpirationDate extends Input {
     this._sendState();
   }
 
-  protected onKeydown(event: KeyboardEvent) {
+  protected onKeydown(event: KeyboardEvent): KeyboardEvent {
     super.onKeydown(event);
     this._currentKeyCode = event.keyCode;
     this._inputSelectionStart = this._inputElement.selectionStart;
@@ -141,12 +141,12 @@ export class ExpirationDate extends Input {
     return event;
   }
 
-  protected onKeyPress(event: KeyboardEvent) {
+  protected onKeyPress(event: KeyboardEvent): void {
     super.onKeyPress(event);
     this._inputElement.focus();
   }
 
-  protected onPaste(event: ClipboardEvent) {
+  protected onPaste(event: ClipboardEvent): void {
     super.onPaste(event);
     this._inputElement.value = this.validation.limitLength(
       this._inputElement.value,
@@ -156,7 +156,7 @@ export class ExpirationDate extends Input {
     this._sendState();
   }
 
-  private _init() {
+  private _init(): void {
     super.setEventListener(MessageBus.EVENTS.BLUR_EXPIRATION_DATE);
     super.setEventListener(MessageBus.EVENTS.FOCUS_EXPIRATION_DATE);
     this.setAttributes({ pattern: ExpirationDate.INPUT_PATTERN });
@@ -168,17 +168,17 @@ export class ExpirationDate extends Input {
     );
   }
 
-  private _sendState() {
+  private _sendState(): void {
     const messageBusEvent: IMessageBusEvent = this.setMessageBusEvent(MessageBus.EVENTS.CHANGE_EXPIRATION_DATE);
     this.messageBus.publish(messageBusEvent);
   }
 
-  private _disableInputField() {
+  private _disableInputField(): void {
     this._inputElement.setAttribute(ExpirationDate.DISABLED_ATTRIBUTE, 'true');
     this._inputElement.classList.add(ExpirationDate.DISABLED_CLASS);
   }
 
-  private _enableInputField() {
+  private _enableInputField(): void {
     this._inputElement.removeAttribute(ExpirationDate.DISABLED_ATTRIBUTE);
     this._inputElement.classList.remove(ExpirationDate.DISABLED_CLASS);
   }

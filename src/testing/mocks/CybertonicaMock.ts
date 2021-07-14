@@ -4,7 +4,7 @@ import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalS
 
 @Service()
 export class CybertonicaMock implements ICybertonica {
-  private static TID_KEY: string = 'app.tid';
+  private static TID_KEY = 'app.tid';
   private static readonly MOCKED_TID = '63d1d099-d635-41b6-bb82-96017f7da6bb';
 
   constructor(private storage: BrowserLocalStorage) {}
@@ -22,6 +22,6 @@ export class CybertonicaMock implements ICybertonica {
   }
 
   getTransactionId(): Promise<string> {
-    return Promise.resolve(this.storage.getItem(CybertonicaMock.TID_KEY));
+    return Promise.resolve(this.storage.getItem(CybertonicaMock.TID_KEY) as string);
   }
 }

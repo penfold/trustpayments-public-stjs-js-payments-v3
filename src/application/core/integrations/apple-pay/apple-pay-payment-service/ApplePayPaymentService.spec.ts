@@ -12,6 +12,7 @@ import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { SimpleMessageBus } from '../../../shared/message-bus/SimpleMessageBus';
 import { IApplePayProcessPaymentResponse } from './IApplePayProcessPaymentResponse';
+import { IApplePayWalletVerifyResponseBody } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 
 const formData = {};
 const validateMerchantURL = 'some-url';
@@ -21,8 +22,8 @@ const config = {
     walletmerchantid: 'id',
     walletrequestdomain: 'domain',
     walletsource: 'source',
-    walletvalidationurl: 'url'
-  }
+    walletvalidationurl: 'url',
+  },
 };
 
 const walletVerifyResponse = {
@@ -34,26 +35,26 @@ const walletVerifyResponse = {
     requesttypedescription: 'description',
     transactionstartedtimestamp: 'timestamp',
     walletsession: 'session',
-    walletsource: 'APPLEPAY'
-  }
+    walletsource: 'APPLEPAY',
+  },
 };
 
 const mockedPayment: IApplePayPayment = {
   token: {
     paymentMethod: {} as IApplePayPaymentMethod,
     transactionIdentifier: 'identiefier',
-    paymentData: ''
-  }
+    paymentData: '',
+  },
 };
 
 const bypassResponseErrorData = {
   errormessage: 'Bypass',
-  errorcode: '22000'
+  errorcode: '22000',
 };
 
 const invalidResponseErrorData = {
   errormessage: 'Invalid response',
-  errorcode: '50003'
+  errorcode: '50003',
 };
 
 describe('ApplePayPaymentService', () => {
@@ -88,7 +89,7 @@ describe('ApplePayPaymentService', () => {
 
       applePayPaymentService
         .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
-        .subscribe((response: { status: ApplePayClientErrorCode; data: {} }) => {
+        .subscribe((response: { status: ApplePayClientErrorCode; data: IApplePayWalletVerifyResponseBody }) => {
           expect(response.data).toMatchObject(walletVerifyResponse.response);
           expect(response.status).toBe(ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS);
           done();
@@ -102,7 +103,7 @@ describe('ApplePayPaymentService', () => {
 
       applePayPaymentService
         .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
-        .subscribe((response: { status: ApplePayClientErrorCode; data: {} }) => {
+        .subscribe((response: { status: ApplePayClientErrorCode; data: IApplePayWalletVerifyResponseBody }) => {
           expect(response.data).toMatchObject({});
           expect(response.status).toBe(ApplePayClientErrorCode.CANCEL);
           done();
@@ -114,13 +115,13 @@ describe('ApplePayPaymentService', () => {
 
       when(payment.walletVerify(anything())).thenReturn(
         of({
-          response: { ...walletVerifyResponse.response, walletsession: undefined }
+          response: { ...walletVerifyResponse.response, walletsession: undefined },
         })
       );
 
       applePayPaymentService
         .walletVerify(config.validateMerchantRequest, validateMerchantURL, paymentCancelled)
-        .subscribe((response: { status: ApplePayClientErrorCode; data: {} }) => {
+        .subscribe((response: { status: ApplePayClientErrorCode; data: IApplePayWalletVerifyResponseBody }) => {
           expect(response.data).toMatchObject({});
           expect(response.status).toBe(ApplePayClientErrorCode.VALIDATE_MERCHANT_ERROR);
           done();
@@ -146,8 +147,8 @@ describe('ApplePayPaymentService', () => {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data: {
             errormessage: 'An error occured',
-            errorcode: String(ApplePayClientErrorCode.ERROR)
-          }
+            errorcode: String(ApplePayClientErrorCode.ERROR),
+          },
         },
         true
       );
@@ -157,10 +158,10 @@ describe('ApplePayPaymentService', () => {
   describe('processPayment', () => {
     it('should proceed payment when error code is equal 0', done => {
       const data = {
-        response: { errorcode: '0' }
+        response: { errorcode: '0' },
       };
 
-      when(payment.processPayment(anything(), anything(), anything(), anything())).thenResolve(data);
+      when(payment.processPayment(anything(), anything(), anything(), anything(), anything())).thenResolve(data);
 
       applePayPaymentService
         .processPayment(
@@ -181,20 +182,20 @@ describe('ApplePayPaymentService', () => {
             status: ApplePayClientStatus.SUCCESS,
             details: {
               errorCode: ApplePayClientErrorCode.SUCCESS,
-              errorMessage: 'SUCCESS'
-            }
-          }
+              errorMessage: 'SUCCESS',
+            },
+          },
         },
         true
       );
     });
 
     it('should declined payment when errorcode is not received', done => {
-      when(payment.processPayment(anything(), anything(), anything(), anything())).thenResolve({
+      when(payment.processPayment(anything(), anything(), anything(), anything(), anything())).thenResolve({
         response: {
           errorcode: undefined,
-          errormessage: 'An error occured'
-        }
+          errormessage: 'An error occured',
+        },
       });
 
       applePayPaymentService
@@ -217,21 +218,21 @@ describe('ApplePayPaymentService', () => {
             status: ApplePayClientStatus.ERROR,
             details: {
               errorcode: undefined,
-              errormessage: 'An error occured'
-            }
-          }
+              errormessage: 'An error occured',
+            },
+          },
         },
         true
       );
     });
 
     it(`should return error data when TRANSACTION_COMPLETE event returns ${bypassResponseErrorData.errormessage} error number ${bypassResponseErrorData.errorcode}`, done => {
-      when(payment.processPayment(anything(), anything(), anything(), anything())).thenReturn(
-        new Promise((resolve, reject) => {})
+      when(payment.processPayment(anything(), anything(), anything(), anything(), anything())).thenReturn(
+        new Promise(() => {})
       );
 
       applePayPaymentService
-        .processPayment(anything(), anything(), anything(), anything())
+        .processPayment(anything(), anything(), anything(), anything(), anything())
         .subscribe((response: IApplePayProcessPaymentResponse) => {
           expect(response).toEqual(bypassResponseErrorData);
           done();
@@ -240,19 +241,19 @@ describe('ApplePayPaymentService', () => {
       messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data: bypassResponseErrorData
+          data: bypassResponseErrorData,
         },
         true
       );
     });
 
     it(`should return error data when TRANSACTION_COMPLETE event returns ${invalidResponseErrorData.errormessage} error number ${invalidResponseErrorData.errorcode}`, done => {
-      when(payment.processPayment(anything(), anything(), anything(), anything())).thenReturn(
-        new Promise((resolve, reject) => {})
+      when(payment.processPayment(anything(), anything(), anything(), anything(), anything())).thenReturn(
+        new Promise(() => {})
       );
 
       applePayPaymentService
-        .processPayment(anything(), anything(), anything(), anything())
+        .processPayment(anything(), anything(), anything(), anything(), anything())
         .subscribe((response: IApplePayProcessPaymentResponse) => {
           expect(response).toEqual(invalidResponseErrorData);
           done();
@@ -261,7 +262,7 @@ describe('ApplePayPaymentService', () => {
       messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
-          data: invalidResponseErrorData
+          data: invalidResponseErrorData,
         },
         true
       );

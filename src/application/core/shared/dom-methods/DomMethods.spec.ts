@@ -101,7 +101,7 @@ describe('DomMethods', () => {
   });
 });
 
-function addInput(form: any, name: string, value: string, stName?: string) {
+function addInput(form: HTMLFormElement, name: string, value: string, stName?: string) {
   const input = document.createElement('input');
   input.name = name;
   input.value = value;
@@ -136,7 +136,7 @@ function createFormFixture() {
     stFieldName: '',
     stFieldName2: 'some value',
     stDuplicate: 'value2',
-    stSelectName: 'B'
+    stSelectName: 'B',
   };
   opt1.value = 'A';
   opt2.value = 'B';

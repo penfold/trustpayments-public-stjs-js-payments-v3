@@ -10,6 +10,15 @@ import { of } from 'rxjs';
 import { Frame } from '../frame/Frame';
 import { SimpleMessageBus } from '../message-bus/SimpleMessageBus';
 import { IMessageBus } from '../message-bus/IMessageBus';
+import { ITranslator } from '../translator/ITranslator';
+import Container from 'typedi';
+import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../translator/Translator';
+import { ITranslationProvider } from '../translator/ITranslationProvider';
+import { TranslationProvider } from '../translator/TranslationProvider';
+
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('Notification', () => {
   let messageBus: IMessageBus;
@@ -18,6 +27,7 @@ describe('Notification', () => {
   let framesHub: FramesHub;
   let notification: Notification;
   let frame: Frame;
+  let translator: ITranslator;
 
   beforeEach(() => {
     messageBus = new SimpleMessageBus();
@@ -25,8 +35,10 @@ describe('Notification', () => {
     configProvider = mock<ConfigProvider>();
     framesHub = mock(FramesHub);
     frame = mock(Frame);
+    translator = mock(Translator);
+    when(translator.translate('Test')).thenReturn('Test');
 
-    document.body.innerHTML = `<div id="st-notification-frame"></div>`;
+    document.body.innerHTML = '<div id="st-notification-frame"></div>';
 
     const config = {
       jwt: '',
@@ -35,13 +47,13 @@ describe('Notification', () => {
         cardNumber: '',
         expirationDate: '',
         securityCode: '',
-        notificationFrame: 'st-notification-frame'
+        notificationFrame: 'st-notification-frame',
       },
       styles: {
         notificationFrame: {
-          'color-error': '#FFF333'
-        }
-      }
+          'color-error': '#FFF333',
+        },
+      },
     };
 
     when(configProvider.getConfig()).thenReturn(config);
@@ -49,12 +61,14 @@ describe('Notification', () => {
     when(browserLocalStorage.getItem('locale')).thenReturn('en');
     when(framesHub.waitForFrame(CONTROL_FRAME_IFRAME)).thenReturn(of(CONTROL_FRAME_IFRAME));
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     notification = new Notification(
       messageBus,
       instance(browserLocalStorage),
       instance(configProvider),
       instance(framesHub),
-      instance(frame)
+      instance(frame),
+      instance(translator)
     );
   });
 
@@ -63,7 +77,7 @@ describe('Notification', () => {
     messageBus.publish(
       {
         data: { content: 'Test', type: NotificationType.Error },
-        type: MessageBus.EVENTS_PUBLIC.NOTIFICATION
+        type: MessageBus.EVENTS_PUBLIC.NOTIFICATION,
       },
       true
     );

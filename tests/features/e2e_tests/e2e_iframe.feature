@@ -3,8 +3,8 @@ Feature: E2E tests for iframe
   I want to use iframe page
   To make payment
 
-  @e2e_smoke_test
-  @e2e_config_for_iframe @parent_iframe
+
+  @parent_iframe
   Scenario: Successful frictionless payment on iframe
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
@@ -17,7 +17,7 @@ Feature: E2E tests for iframe
     And User will see that Submit button is "disabled" after payment
     And User will see that ALL input fields are "disabled"
 
-  @e2e_config_for_iframe_start_on_load_true @parent_iframe @jwt_config_start_on_load_true
+  @parent_iframe
   Scenario: Successful non-frictionless payment with startOnLoad on iframe
     Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value            |

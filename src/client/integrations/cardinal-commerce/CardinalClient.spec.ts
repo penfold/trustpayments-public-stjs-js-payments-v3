@@ -28,12 +28,12 @@ describe('CardinalClient', () => {
   let interFrameCommunicator: InterFrameCommunicator;
   let cardinalClient: CardinalClient;
   let cardinalMock: ICardinal;
-  let communicationCallbacks: Map<string, (event: IMessageBusEvent) => any>;
+  let communicationCallbacks: Map<string, (event: IMessageBusEvent) => unknown>;
   let messageBusMock: IMessageBus;
 
   const config: IConfig = { livestatus: 0 } as IConfig;
-  const sendMessage = (event: IMessageBusEvent): Observable<any> => {
-    return (interFrameCommunicator.send(event, '') as unknown) as Observable<any>;
+  const sendMessage = (event: IMessageBusEvent): Observable<unknown> => {
+    return (interFrameCommunicator.send(event, '') as unknown) as Observable<unknown>;
   };
 
   beforeEach(() => {
@@ -49,9 +49,9 @@ describe('CardinalClient', () => {
     when(cardinalProviderMock.getCardinal$(false)).thenReturn(of(cardinalMock));
     when(interFrameCommunicatorMock.whenReceive(anyString())).thenCall((eventType: string) => {
       return {
-        thenRespond: (callback: (event: IMessageBusEvent) => Observable<any>) => {
+        thenRespond: (callback: (event: IMessageBusEvent) => Observable<unknown>) => {
           communicationCallbacks.set(eventType, callback);
-        }
+        },
       };
     });
 
@@ -73,15 +73,15 @@ describe('CardinalClient', () => {
     const initializationData: IInitializationData = { jwt: 'foobar' };
 
     it('configures cardinal library', () => {
-      spyOn(cardinalMock, 'configure');
+      jest.spyOn(cardinalMock, 'configure');
       sendMessage({ type: PUBLIC_EVENTS.CARDINAL_SETUP, data: initializationData }).subscribe();
       expect(cardinalMock.configure).toHaveBeenCalledWith(environment.CARDINAL_COMMERCE.CONFIG);
     });
 
     it('calls cardinal.setup and unbinds listener when setup completes', done => {
-      spyOn(cardinalMock, 'setup').and.callThrough();
-      spyOn(cardinalMock, 'on').and.callThrough();
-      spyOn(cardinalMock, 'off');
+      jest.spyOn(cardinalMock, 'setup');
+      jest.spyOn(cardinalMock, 'on');
+      jest.spyOn(cardinalMock, 'off');
 
       sendMessage({ type: PUBLIC_EVENTS.CARDINAL_SETUP, data: initializationData })
         .pipe(delay(0))
@@ -91,7 +91,7 @@ describe('CardinalClient', () => {
         });
 
       expect(cardinalMock.setup).toHaveBeenCalledWith('init', { jwt: 'foobar' });
-      expect(cardinalMock.on).toHaveBeenCalledWith(PaymentEvents.SETUP_COMPLETE, jasmine.anything());
+      expect(cardinalMock.on).toHaveBeenCalledWith(PaymentEvents.SETUP_COMPLETE, expect.anything());
 
       cardinalMock.trigger(PaymentEvents.SETUP_COMPLETE);
     });
@@ -101,8 +101,8 @@ describe('CardinalClient', () => {
     it('calls cardinal.start with given jwt', done => {
       const initializationData: IInitializationData = { jwt: 'foobar' };
 
-      spyOn(cardinalMock, 'start').and.callThrough();
-      spyOn(cardinalMock, 'on').and.callThrough();
+      jest.spyOn(cardinalMock, 'start');
+      jest.spyOn(cardinalMock, 'on');
 
       sendMessage({ type: PUBLIC_EVENTS.CARDINAL_START, data: initializationData }).subscribe(done);
 
@@ -116,10 +116,10 @@ describe('CardinalClient', () => {
     it('calls cardinal.trigger with given data', done => {
       const triggerData: ITriggerData<string> = {
         eventName: PaymentEvents.BIN_PROCESS,
-        data: '4111111111111111'
+        data: '4111111111111111',
       };
 
-      spyOn(cardinalMock, 'trigger');
+      jest.spyOn(cardinalMock, 'trigger');
 
       sendMessage({ type: PUBLIC_EVENTS.CARDINAL_TRIGGER, data: triggerData }).subscribe(done);
 
@@ -132,11 +132,11 @@ describe('CardinalClient', () => {
       transactionId: 'abc-123',
       payload: 'fooobar',
       jwt: 'xyz',
-      acsUrl: 'https://example.com/'
+      acsUrl: 'https://example.com/',
     };
 
     it('calls cardinal continue with given data', () => {
-      spyOn(cardinalMock, 'continue').and.callThrough();
+      jest.spyOn(cardinalMock, 'continue');
 
       sendMessage({ type: PUBLIC_EVENTS.CARDINAL_CONTINUE, data }).subscribe();
 
@@ -144,13 +144,13 @@ describe('CardinalClient', () => {
         PaymentBrand,
         {
           AcsUrl: 'https://example.com/',
-          Payload: 'fooobar'
+          Payload: 'fooobar',
         },
         {
           Cart: [],
           OrderDetails: {
-            TransactionId: 'abc-123'
-          }
+            TransactionId: 'abc-123',
+          },
         },
         'xyz'
       );
@@ -159,7 +159,7 @@ describe('CardinalClient', () => {
     it('returns validation result', done => {
       const RESPONSE_JWT = 'asdf';
 
-      spyOn(cardinalMock, 'off');
+      jest.spyOn(cardinalMock, 'off');
 
       sendMessage({ type: PUBLIC_EVENTS.CARDINAL_CONTINUE, data })
         .pipe(delay(0))
@@ -169,7 +169,7 @@ describe('CardinalClient', () => {
             actionCode: ActionCode.SUCCESS,
             errorNumber: 0,
             errorDescription: 'no error',
-            jwt: RESPONSE_JWT
+            jwt: RESPONSE_JWT,
           });
           expect(cardinalMock.off).toHaveBeenCalledWith(PaymentEvents.VALIDATED);
           done();
@@ -181,7 +181,7 @@ describe('CardinalClient', () => {
           Validated: true,
           ActionCode: ActionCode.SUCCESS,
           ErrorNumber: 0,
-          ErrorDescription: 'no error'
+          ErrorDescription: 'no error',
         },
         RESPONSE_JWT
       );
@@ -199,7 +199,7 @@ describe('CardinalClient', () => {
           Validated: false,
           ActionCode: ActionCode.ERROR,
           ErrorNumber: 4000,
-          ErrorDescription: 'error description'
+          ErrorDescription: 'error description',
         },
         'foobar1'
       );
@@ -210,7 +210,7 @@ describe('CardinalClient', () => {
           Validated: true,
           ActionCode: ActionCode.SUCCESS,
           ErrorNumber: 0,
-          ErrorDescription: 'no error'
+          ErrorDescription: 'no error',
         },
         'foobar2'
       );
@@ -222,7 +222,7 @@ describe('CardinalClient', () => {
       transactionId: 'abc-123',
       payload: 'fooobar',
       jwt: 'xyz',
-      acsUrl: 'https://example.com/'
+      acsUrl: 'https://example.com/',
     };
 
     it('creates subscription to threeDPopupCancel which, when invoked, fails payment validation', done => {
@@ -233,7 +233,7 @@ describe('CardinalClient', () => {
             validated: false,
             actionCode: ActionCode.FAILURE,
             errorNumber: 4001,
-            errorDescription: '3DS process has been cancelled'
+            errorDescription: '3DS process has been cancelled',
           });
           done();
         });
@@ -252,7 +252,7 @@ describe('CardinalClient', () => {
       expect(appendedContainer).toBeNull();
     });
 
-    it("should not remove the cardinal popup container from DOM if it doesn't exist", () => {
+    it('should not remove the cardinal popup container from DOM if it doesn\'t exist', () => {
       jest.spyOn(document, 'getElementById').mockReturnValue(null);
       jest.spyOn(HTMLElement.prototype, 'removeChild');
 
@@ -263,7 +263,7 @@ describe('CardinalClient', () => {
 
     it('unsubscribes from the cancel event when validation completes', done => {
       // @ts-ignore
-      const popupCancelSpy: Subject<any> = spy(cardinalClient.threeDPopupCancel$);
+      const popupCancelSpy: Subject<void> = spy(cardinalClient.threeDPopupCancel$);
       const popupCancelSubscriptionMock: Subscription = mock<Subscription>();
       when(popupCancelSpy.subscribe(anything())).thenReturn(instance(popupCancelSubscriptionMock));
 
@@ -281,7 +281,7 @@ describe('CardinalClient', () => {
           Validated: true,
           ActionCode: ActionCode.SUCCESS,
           ErrorNumber: 0,
-          ErrorDescription: 'no error'
+          ErrorDescription: 'no error',
         },
         'somejwt'
       );

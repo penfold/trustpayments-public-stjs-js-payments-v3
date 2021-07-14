@@ -1,1 +1,1 @@
-export const PaymentBrand: string = 'cca';
+export const PaymentBrand = 'cca';

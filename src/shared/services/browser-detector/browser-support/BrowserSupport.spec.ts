@@ -20,7 +20,7 @@ describe('BrowserSupport', () => {
     'safari 13.1',
     'safari 13',
     'safari 12.1',
-    'safari 12'
+    'safari 12',
   ];
 
   const supportedBrowsers = {
@@ -39,10 +39,10 @@ describe('BrowserSupport', () => {
       '11.3-11.4',
       '11.0-11.2',
       '10.3',
-      '10.0-10.2'
+      '10.0-10.2',
     ],
     opera: ['73'],
-    safari: ['14', '13.1', '13', '12.1', '12']
+    safari: ['14', '13.1', '13', '12.1', '12'],
   };
 
   let browserList: BrowsersList;
@@ -55,7 +55,7 @@ describe('BrowserSupport', () => {
     browserSupport = new BrowserSupport(instance(browserList));
   });
 
-  each([
+  it.each([
     ['88', 'Chrome', true],
     ['86', 'Chrome', false],
     ['85', 'Firefox', true],
@@ -66,8 +66,8 @@ describe('BrowserSupport', () => {
     ['13.1', 'Safari', true],
     ['10', 'Internet Explorer', false],
     ['11', 'Internet Explorer', true],
-    ['1111', 'test', false]
-  ]).it(
+    ['1111', 'test', false],
+  ])(
     'should check if browser is supported in given version or not',
     (version: string, browser: string, isSupported: boolean) => {
       expect(browserSupport.isBrowserSupported(version, browser)).toEqual(isSupported);

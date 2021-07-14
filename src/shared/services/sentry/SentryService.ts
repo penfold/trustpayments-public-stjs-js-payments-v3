@@ -7,6 +7,7 @@ import { Sentry } from './Sentry';
 import { Observable } from 'rxjs';
 import { IConfig } from '../../model/config/IConfig';
 import { filter, first, switchMap, tap } from 'rxjs/operators';
+import { ExceptionsToSkip } from './ExceptionsToSkip';
 
 @Service()
 export class SentryService {
@@ -42,10 +43,12 @@ export class SentryService {
 
     this.sentry.init({
       dsn,
-      whitelistUrls,
+      allowUrls: whitelistUrls,
       environment: this.sentryContext.getEnvironmentName(),
       release: this.sentryContext.getReleaseVersion(),
-      beforeSend: (event: Event, hint?: EventHint) => this.eventScrubber.scrub(event, hint)
+      ignoreErrors: ExceptionsToSkip,
+      sampleRate: 0.1,
+      beforeSend: (event: Event, hint?: EventHint) => this.eventScrubber.scrub(event, hint),
     });
   }
 }

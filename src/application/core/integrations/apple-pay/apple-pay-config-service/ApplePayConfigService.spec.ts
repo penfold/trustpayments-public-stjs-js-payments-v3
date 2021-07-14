@@ -17,8 +17,8 @@ describe('ApplePayConfigService', () => {
     supportedNetworks: ['visa', 'discover'],
     total: {
       amount: '20.00',
-      label: 'test'
-    }
+      label: 'test',
+    },
   };
   let config: IConfig;
   const payload = {
@@ -26,23 +26,24 @@ describe('ApplePayConfigService', () => {
       currencyiso3a: 'EUR',
       locale: 'en_GB',
       baseamount: '1000',
-      mainamount: '10.00'
-    }
+      mainamount: '10.00',
+    },
   };
 
   const validateMerchantRequest: IApplePayValidateMerchantRequest = {
     walletmerchantid: '',
     walletrequestdomain: '',
     walletsource: '',
-    walletvalidationurl: ''
+    walletvalidationurl: '',
   };
 
   const applePayConfig: IApplePayConfig = {
     buttonStyle: 'white',
     buttonText: 'donate',
     merchantId: 'test-id',
+    merchantUrl: 'https://example.com',
     paymentRequest: paymentRequest,
-    placement: ''
+    placement: '',
   };
 
   const applePayConfigObject: IApplePayConfigObject = {
@@ -52,13 +53,17 @@ describe('ApplePayConfigService', () => {
     formId: 'st-form',
     jwtFromConfig: 'somerandomjwt',
     validateMerchantRequest,
-    paymentRequest
+    paymentRequest,
+  };
+  const applePayConfigObjectWithMerchantUrl: IApplePayConfigObject = {
+    ...applePayConfigObject,
+    merchantUrl: 'https://somemerchanturl.com',
   };
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const applePayNetworkService: ApplePayNetworksService = mock(ApplePayNetworksService);
   const applePaySessionService: ApplePaySessionService = mock(ApplePaySessionService);
-  const jwt: string = 'somerandomjwt';
-  let applePayConfigService: ApplePayConfigService = new ApplePayConfigService(
+  const jwt = 'somerandomjwt';
+  const applePayConfigService: ApplePayConfigService = new ApplePayConfigService(
     instance(jwtDecoderMock),
     instance(applePayNetworkService),
     instance(applePaySessionService)
@@ -66,34 +71,34 @@ describe('ApplePayConfigService', () => {
   when(applePaySessionService.getLatestSupportedApplePayVersion()).thenReturn(5);
 
   describe('update paymentRequest object', () => {
-    const currencyCode: string = 'PLN';
-    const amount: string = '22.00';
+    const currencyCode = 'PLN';
+    const amount = '22.00';
     let paymentRequestUpdated: IApplePayPaymentRequest = paymentRequest;
 
-    it(`should update paymentRequest object with indicated currency code`, () => {
+    it('should update paymentRequest object with indicated currency code', () => {
       paymentRequestUpdated = {
         ...paymentRequest,
-        currencyCode
+        currencyCode,
       };
       // @ts-ignore
       expect(applePayConfigService.updateCurrencyCode(paymentRequest, currencyCode)).toEqual(paymentRequestUpdated);
     });
 
-    it(`should update paymentRequest object with indicated amount`, () => {
+    it('should update paymentRequest object with indicated amount', () => {
       paymentRequestUpdated = {
         ...paymentRequest,
         total: {
           ...paymentRequest.total,
-          amount
-        }
+          amount,
+        },
       };
       // @ts-ignore
       expect(applePayConfigService.updateAmount(paymentRequest, amount)).toEqual(paymentRequestUpdated);
     });
 
-    it(`should update paymentRequest object with indicated requestTypes`, () => {
+    it('should update paymentRequest object with indicated requestTypes', () => {
       paymentRequestUpdated = {
-        ...paymentRequest
+        ...paymentRequest,
       };
       // @ts-ignore
       expect(applePayConfigService.updateRequestTypes(paymentRequest)).toEqual(paymentRequestUpdated);
@@ -105,16 +110,16 @@ describe('ApplePayConfigService', () => {
       walletmerchantid: 'some id',
       walletrequestdomain: 'some domain',
       walletsource: 'some source',
-      walletvalidationurl: 'some url'
+      walletvalidationurl: 'some url',
     };
-    const walletMerchantId: string = 'new id';
-    const walletValidationUrl: string = 'new url';
+    const walletMerchantId = 'new id';
+    const walletValidationUrl = 'new url';
     let validateMerchantRequestUpdated: IApplePayValidateMerchantRequest = validateMerchantRequest;
 
-    it(`should update paymentRequest object with indicated currency code`, () => {
+    it('should update paymentRequest object with indicated currency code', () => {
       validateMerchantRequestUpdated = {
         ...validateMerchantRequest,
-        walletmerchantid: walletMerchantId
+        walletmerchantid: walletMerchantId,
       };
       // @ts-ignore
       expect(applePayConfigService.updateWalletMerchantId(validateMerchantRequest, walletMerchantId)).toEqual(
@@ -122,10 +127,10 @@ describe('ApplePayConfigService', () => {
       );
     });
 
-    it(`should update paymentRequest object with indicated currency code`, () => {
+    it('should update paymentRequest object with indicated validation url', () => {
       validateMerchantRequestUpdated = {
         ...validateMerchantRequest,
-        walletvalidationurl: walletValidationUrl
+        walletvalidationurl: walletValidationUrl,
       };
       expect(applePayConfigService.updateWalletValidationUrl(validateMerchantRequest, walletValidationUrl)).toEqual(
         validateMerchantRequestUpdated
@@ -136,68 +141,60 @@ describe('ApplePayConfigService', () => {
   describe('get properties from StJwt object', () => {
     it('should return currencyiso3a, locale and mainamount parameter when baseamount is provided', () => {
       const payload = {
-        payload: {
-          currencyiso3a: 'EUR',
-          locale: 'en_GB',
-          baseamount: '1000',
-        }
+        currencyiso3a: 'EUR',
+        locale: 'en_GB',
+        baseamount: '1000',
       };
 
-      when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn(payload);
+      when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn({ payload });
 
       expect(applePayConfigService.getStJwtData(jwt)).toEqual({
-        currencyiso3a: payload.payload.currencyiso3a,
-        locale: payload.payload.locale,
+        currencyiso3a: payload.currencyiso3a,
+        locale: payload.locale,
         mainamount: '10.00',
       });
     });
 
     it('should return currencyiso3a, locale and mainamount parameter when mainamount is provided', () => {
       const payload = {
-        payload: {
-          currencyiso3a: 'EUR',
-          locale: 'en_GB',
-          mainamount: '10.00',
-        }
+        currencyiso3a: 'EUR',
+        locale: 'en_GB',
+        mainamount: '10.00',
       };
 
-      when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn(payload);
+      when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn({ payload });
 
       expect(applePayConfigService.getStJwtData(jwt)).toEqual({
-        currencyiso3a: payload.payload.currencyiso3a,
-        locale: payload.payload.locale,
+        currencyiso3a: payload.currencyiso3a,
+        locale: payload.locale,
         mainamount: '10.00',
       });
     });
 
     it('should throw an error when neither baseamount or mainamount are provided', () => {
       const payload = {
-        payload: {
-          currencyiso3a: 'EUR',
-          locale: 'en_GB',
-        }
-      };
+        currencyiso3a: 'EUR',
+        locale: 'en_GB',
+      }
 
-      when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn(payload);
+      when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn({ payload });
 
       expect(() => applePayConfigService.getStJwtData(jwt)).toThrowError();
     });
 
     it('should use mainamount when both mainamount and baseamount are provided', () => {
       const payload = {
-        payload: {
-          currencyiso3a: 'EUR',
-          locale: 'en_GB',
-          baseamount: '1000',
-          mainamount: '20.00',
-        }
+        currencyiso3a: 'EUR',
+        locale: 'en_GB',
+        baseamount: '1000',
+        mainamount: '20.00',
       };
 
-      when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn(payload);
+      when(jwtDecoderMock.decode<typeof payload>(jwt)).thenReturn({ payload });
 
       expect(applePayConfigService.getStJwtData(jwt)).toEqual({
-        currencyiso3a: payload.payload.currencyiso3a,
-        locale: payload.payload.locale,
+        currencyiso3a: payload.currencyiso3a,
+        locale: payload.locale,
         mainamount: '20.00',
       });
     });
@@ -213,13 +210,14 @@ describe('ApplePayConfigService', () => {
         formId: 'test id',
         applePay: {
           merchantId: 'test string',
+          merchantUrl: 'https://example.com',
           buttonStyle: 'white',
           buttonText: 'donate',
           paymentRequest,
-          placement: 'test place'
+          placement: 'test place',
         },
         panIcon: false,
-        submitFields: ['pan']
+        submitFields: ['pan'],
       };
     });
 
@@ -228,7 +226,8 @@ describe('ApplePayConfigService', () => {
       expect(applePayConfigService.getConfigData(config)).toEqual({
         jwt: config.jwt,
         formId: config.formId,
-        applePay: config.applePay
+        applePay: config.applePay,
+        merchantUrl: config.applePay.merchantUrl,
       });
     });
   });
@@ -246,7 +245,20 @@ describe('ApplePayConfigService', () => {
         formId: 'st-form',
         jwtFromConfig: 'somerandomjwt',
         validateMerchantRequest,
-        paymentRequest
+        paymentRequest,
+      });
+    });
+
+    it('should return updated config object with merchantUrl', () => {
+      expect(applePayConfigService.updateConfigWithJwtData('somerandomjwtUpdated', applePayConfigObjectWithMerchantUrl)).toEqual({
+        applePayConfig: applePayConfig,
+        applePayVersion: 5,
+        locale: payload.payload.locale,
+        formId: 'st-form',
+        jwtFromConfig: 'somerandomjwt',
+        merchantUrl: 'https://somemerchanturl.com',
+        validateMerchantRequest,
+        paymentRequest,
       });
     });
   });
@@ -258,7 +270,7 @@ describe('ApplePayConfigService', () => {
       formId: 'st-form',
       animatedCard: true,
       panIcon: true,
-      datacenterurl: ''
+      datacenterurl: '',
     };
 
     it('should return apple pay config object', () => {
@@ -266,15 +278,16 @@ describe('ApplePayConfigService', () => {
         applePayConfig,
         applePayVersion: 5,
         locale: 'en_GB',
+        merchantUrl: 'https://example.com',
         formId: 'st-form',
         jwtFromConfig: jwt,
         validateMerchantRequest: {
           walletmerchantid: 'test-id',
           walletrequestdomain: '',
           walletsource: '',
-          walletvalidationurl: ''
+          walletvalidationurl: '',
         },
-        paymentRequest
+        paymentRequest,
       });
     });
   });
