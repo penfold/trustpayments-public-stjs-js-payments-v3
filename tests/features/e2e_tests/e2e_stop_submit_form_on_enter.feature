@@ -18,12 +18,13 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     And User will see that ALL input fields are "enabled"
 
 
+  @STJS-1919
   Scenario: Submit payment form by 'Enter' button - 'stopSubmitFormOnEnter' option is disabled by default
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    When User fills payment form with defined card VISA_V21_FRICTIONLESS
+    When User fills payment form with defined card VISA_V22_FRICTIONLESS
     And User press ENTER button in input field
     Then User will see payment status information: "Payment has been successfully processed"
     And "submit" callback is called only once
