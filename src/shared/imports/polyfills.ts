@@ -5,6 +5,7 @@ import 'reflect-metadata';
 import 'core-js/es/array';
 import 'core-js/es/object';
 import 'core-js/es/function/name';
+import 'core-js/es/map';
 import 'fastestsmallesttextencoderdecoder';
 import '@sheerun/mutationobserver-shim';
 import 'element-remove';
