@@ -3,9 +3,13 @@ import { Observable, of, throwError } from 'rxjs';
 import { ChallengeResultInterface, ResultActionCode, ThreeDSecureVersion } from '@trustpayments/3ds-sdk-js';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR } from '../../../../models/constants/Translations';
 import { Service } from 'typedi';
+import { ThreeDResponseConverter } from './threedresponse-converter/ThreeDResponseConverter';
 
 @Service()
 export class ChallengeResultHandler {
+  constructor(private threeDResponseConverter: ThreeDResponseConverter) {
+  }
+
   handle$(response: IThreeDQueryResponse, result: ChallengeResultInterface): Observable<IThreeDQueryResponse> {
     switch (result.status) {
       case ResultActionCode.FAILURE:
@@ -30,12 +34,13 @@ export class ChallengeResultHandler {
 
   private appendChallengeResultToResponse(response: IThreeDQueryResponse, challengeResult: ChallengeResultInterface): IThreeDQueryResponse {
     const version = new ThreeDSecureVersion(response.threedversion);
-    const { cres: threedresponse, PaRes: pares, MD: md } = challengeResult.data;
+    const { PaRes: pares, MD: md } = challengeResult.data;
+    const threedresponse = this.threeDResponseConverter.convert(response, challengeResult);
 
     if (version.isHigherOrEqual(ThreeDSecureVersion.V2)) {
       return { ...response, threedresponse };
     }
 
-    return { ...response, pares, md };
+    return { ...response, threedresponse, pares, md };
   }
 }
