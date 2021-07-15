@@ -115,5 +115,49 @@ describe('CResToThreeDResponseConverter', () => {
         },
       }))).once();
     });
+
+    it('creates a jwt payload for failed verification with invalid cres data', () => {
+      const cres = 'invalid';
+      const challengeResult: ChallengeResultInterface = {
+        status: ResultActionCode.FAILURE,
+        description: 'verification failed',
+        transactionId: '12345',
+        data: {
+          cres,
+        },
+      };
+
+      expect(sut.convert(response, challengeResult)).toEqual('jwt');
+
+      verify(unsignedJwtGeneratorMock.generate(deepEqual({
+        iss: '',
+        iat: anyNumber(),
+        exp: anyNumber(),
+        jti: anyString(),
+        ConsumerSessionId: '',
+        ReferenceId: '',
+        aud: '',
+        Payload: {
+          Validated: false,
+          Payment: {
+            Type: 'CCA',
+            ProcessorTransactionId: '',
+            ExtendedData: {
+              Amount: '',
+              CAVV: '',
+              CurrencyCode: '',
+              ECIFlag: '',
+              ThreeDSVersion: undefined,
+              PAResStatus: undefined,
+              SignatureVerification: 'Y',
+            },
+          },
+          ActionCode: 'FAILURE',
+          ErrorNumber: 1000,
+          ErrorDescription: 'verification failed',
+          CRes: cres,
+        },
+      }))).once();
+    });
   });
 });
