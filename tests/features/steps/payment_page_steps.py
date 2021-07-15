@@ -411,6 +411,14 @@ def step_impl(context, threedresponse_defined):
     payment_page.validate_threedresponse_in_callback(threedresponse_defined)
 
 
+@step('THREEDRESPONSE contains paramaters')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    with soft_assertions():
+        for param in context.table:
+            payment_page.validate_threedresponse_values(param['key'], param['value'])
+
+
 @then('User will see that (?P<field_type>.+) field has (?P<rgb_color>.+) color')
 def step_impl(context, field_type, rgb_color):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)

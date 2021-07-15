@@ -553,6 +553,16 @@ class PaymentMethodsPage(BasePage):
             add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
             assert 'undefined' in response, assertion_message
 
+    def validate_threedresponse_values(self, key, value):
+        response = self.get_text_from_submit_callback_threedresponse()
+        decoded_jwt = jwt_generator.decode_jwt(response.split('THREEDRESPONSE: ')[-1]).get('Payload')
+        if 'should not be none' in value:
+            assert_that(decoded_jwt[key], f"{key} is none but shouldn't be").is_not_none()
+        elif 'should be none' in value:
+            assert_that(decoded_jwt[key], f'{key} is not none but should be').is_none()
+        else:
+            assert_that(str(decoded_jwt[key]), f'{key} param value: ').is_equal_to(value)
+
     def validate_number_in_callback_counter_popup(self, callback_popup, expected_callback_number):
         counter = ''
         assertion_message = f'Number of {callback_popup} callback is not correct - should be {expected_callback_number}'

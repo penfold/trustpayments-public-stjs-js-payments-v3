@@ -154,7 +154,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | <callback>         |
+      | <callback>    |
     And User will see that Submit button is "<state>" after payment
     And User will see that ALL input fields are "<state>"
 
@@ -214,7 +214,6 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | THREEDQUERY AUTH         | Payment has been successfully processed | success  | disabled |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    | enabled  |
       | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | success  | disabled |
-
 
 
   Scenario Outline: TC_8 - Error not completed threeDSMethod - Card: MASTERCARD_V22 Request types: <request_types>
@@ -555,3 +554,35 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
       | THREEDQUERY ACCOUNTCHECK |
+
+  Scenario Outline: TC_5 - Sending threedresponse JWT to merchants with Request types: <request_types>
+    Given JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value              |
+      | requesttypedescriptions | <request_types>    |
+      | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_NON_FRICTIONLESS
+    And User clicks Pay button
+    And User see 3ds SDK challenge is displayed
+    And User fills 3ds SDK challenge with THREE_DS_CODE and submit
+    Then User will see payment status information: "Payment has been successfully processed"
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
+    And submit callback contains JWT response
+    And submit callback contains THREEDRESPONSE: True
+    And THREEDRESPONSE contains paramaters
+      | key              | value   |
+      | ActionCode       | SUCCESS |
+      | ErrorNumber      | 0       |
+      | ErrorDescription | Success |
+    Examples:
+      | request_types                     |
+      | ACCOUNTCHECK THREEDQUERY          |
+      | RISKDEC  ACCOUNTCHECK THREEDQUERY |
+      | RISKDEC THREEDQUERY               |
+
+
