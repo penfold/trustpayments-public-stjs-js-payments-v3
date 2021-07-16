@@ -239,6 +239,8 @@ class PaymentMethodsPage(BasePage):
             self.select_apple_pay_payment()
         elif payment_type == PaymentType.CARDINAL_COMMERCE.name:
             self.select_cardinal_commerce_payment()
+        elif payment_type == PaymentType.GOOGLE_PAY.name:
+            self.select_google_pay_payment()
 
     def select_cardinal_commerce_payment(self):
         if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION or 'High Sierra' in CONFIGURATION.REMOTE_OS_VERSION or \
@@ -267,6 +269,15 @@ class PaymentMethodsPage(BasePage):
             self._actions.click_by_javascript(PaymentMethodsLocators.visa_checkout_mock_button)
         else:
             self._actions.click(PaymentMethodsLocators.visa_checkout_mock_button)
+
+    def select_google_pay_payment(self):
+        self._waits.wait_for_javascript()
+        self.scroll_to_bottom()
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.google_pay_mock_button)
+        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
+            self._actions.click_by_javascript(PaymentMethodsLocators.google_pay_mock_button)
+        else:
+            self._actions.click(PaymentMethodsLocators.google_pay_mock_button)
 
     def get_element_attribute(self, field_type, attribute):
         attribute_value = ''

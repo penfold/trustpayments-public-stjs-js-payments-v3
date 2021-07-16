@@ -77,7 +77,20 @@ config = {
     'config_tokenisation_visa_request_types': 'configTokenisationVisaRequestTypes.json',
     'config_mainamount': 'configMainamount.json',
     'form_id_config': 'configFormId.json',
-    'form_id_config_visa_checkout': 'configFormIdVisaCheckout.json'
+    'form_id_config_visa_checkout': 'configFormIdVisaCheckout.json',
+    'config_google_base': 'configGoogleBase.json',
+    'config_google_submit_on_success_true': 'configGoogleSubmitOnSuccessTrue.json',
+    'config_google_submit_on_error_true': 'configGoogleSubmitOnErrorTrue.json',
+    'config_google_submit_on_cancel_true': 'configGoogleSubmitOnCancelTrue.json',
+    'config_google_update_jwt': 'configGoogleUpdateJwt.json',
+    'config_google_auth': 'configGoogleAuth.json',
+    'config_google_acheck_auth': 'configGoogleAccountcheckAuth.json',
+    'config_google_acheck': 'configGoogleAccountcheck.json',
+    'config_google_riskdec_auth': 'configGoogleRiskdecAuth.json',
+    'config_google_riskdec_acheck_auth': 'configGoogleRiskdecAcheckAuth.json',
+    'config_google_auth_subscription' : 'configGoogleAuthSubscription.json',
+    'config_google_acheck_subscription' : 'configGoogleAcheckSubscription.json'
+
 }
 
 screenshots = {

@@ -55,6 +55,17 @@ request_type_visa = {
     'ACCOUNTCHECK, SUBSCRIPTION': 'visaAcheckSubscription.json'
 }
 
+request_type_google = {
+    'AUTH': 'googleAuth.json',
+    'ACCOUNTCHECK': 'googleAccountcheck.json',
+    'ACCOUNTCHECK, AUTH': 'googleAccountcheckAuth.json',
+    'RISKDEC, AUTH': 'googleRiskdecAuth.json',
+    'RISKDEC, ACCOUNTCHECK, AUTH': 'googleRiskdecAccountcheckAuth.json',
+    'AUTH, SUBSCRIPTION': 'googleAuthSubscription.json',
+    'ACCOUNTCHECK, SUBSCRIPTION': 'googleAccountcheckSubscription.json',
+    'THREEDQUERY, AUTH, SUBSCRIPTION': 'googleThreedqueryAuthSubscription.json'
+}
+
 
 class RequestType(Enum):
     THREEDQUERY = 1
