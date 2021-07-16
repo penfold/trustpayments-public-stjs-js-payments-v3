@@ -21,7 +21,7 @@
   },
   "engines": {
     "node": "14.17.3",
-    "npm": "7.19.1"
+    "npm": "7.20.0"
   },
   "scripts": {
     "build": "webpack --config webpack.prod.js",
@@ -143,7 +143,7 @@
     "@sentry/browser": "6.3.6",
     "@sheerun/mutationobserver-shim": "0.3.3",
     "@trustpayments/http-client": "0.3.6",
-    "@trustpayments/js-payments-card": "2.0.59",
+    "@trustpayments/js-payments-card": "2.0.64",
     "@trustpayments/jwt-generator": "0.3.6",
     "@trustpayments/ts-iin-lookup": "0.3.6",
     "@trustpayments/ts-luhn-check": "0.3.6",
