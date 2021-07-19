@@ -12,6 +12,7 @@ class Waits:
 
     MAX_TRY_USED_WITH_DEFAULT_TIMEOUT = 2
     MAX_TRY_WITHOUT_TIMEOUT = 30
+    OVER_GATEWAY_TIMEOUT = 35
 
     def __init__(self, driver_factory, configuration):
         self._driver_factory = driver_factory

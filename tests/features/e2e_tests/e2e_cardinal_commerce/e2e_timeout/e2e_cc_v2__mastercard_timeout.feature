@@ -22,3 +22,4 @@ Feature: Cardinal Commerce E2E tests v2 - Timeout - MasterCard
       | request_types            | payment_status                          | callback |
       | THREEDQUERY AUTH         | Payment has been successfully processed | success  |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    |
+      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | success  |

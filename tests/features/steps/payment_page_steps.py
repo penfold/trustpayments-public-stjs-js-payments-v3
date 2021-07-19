@@ -9,6 +9,7 @@ from utils.enums.field_type import FieldType
 from utils.enums.payment_type import PaymentType
 from utils.enums.responses.invalid_field_response import InvalidFieldResponse
 from utils.mock_handler import stub_st_request_type
+from utils.waits import Waits
 
 use_step_matcher('re')
 
@@ -28,7 +29,14 @@ def step_impl(context, payment_status_message):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'switch_to_parent_iframe' in context.scenario.tags:
         payment_page.switch_to_example_page_parent_iframe()
+    payment_page.wait_for_notification_frame()
     payment_page.validate_payment_status_message(payment_status_message)
+
+
+@step('User waits for timeout payment')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_notification_frame_with_timeout(Waits.OVER_GATEWAY_TIMEOUT)
 
 
 @step('User waits for payment status to disappear')
@@ -61,6 +69,12 @@ def step_impl(context, color):
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.wait_for_pay_button_to_be_active()
+
+
+@step('User waits to be sent into page with url "(?P<url>.+)" after gateway timeout')
+def step_impl(context, url):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_url_with_timeout(url, Waits.OVER_GATEWAY_TIMEOUT)
 
 
 @step('User clicks Pay button')
@@ -139,12 +153,6 @@ def step_impl(context, field):
 @step('InvalidField response set for "(?P<field>.+)"')
 def step_impl(context, field):
     stub_st_request_type(InvalidFieldResponse[field].value, 'THREEDQUERY, AUTH')
-
-
-@then('User will see notification frame with message: "(?P<expected_message>.+)"')
-def step_impl(context, expected_message):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_payment_status_message(expected_message)
 
 
 @when('User chooses (?P<payment_method>.+) as payment method')

@@ -205,7 +205,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When User changes page language to "<language>"
     And User chooses Visa Checkout as payment method - visa response is set to "ERROR"
-    Then User will see notification frame with message: "Wystąpił błąd"
+    Then User will see payment status information: "Wystąpił błąd"
     And User will see that notification frame has "red" color
     Examples:
       | language |

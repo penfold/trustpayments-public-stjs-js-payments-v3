@@ -28,3 +28,4 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Timeout - 
       | request_types            | errormessage                            | baseamount     | currencyiso3a  | errorcode | settlestatus |
       | THREEDQUERY AUTH         | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | should be none | should be none | 60010     | 0            |
+      | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
