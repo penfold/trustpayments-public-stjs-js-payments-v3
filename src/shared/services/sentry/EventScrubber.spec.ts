@@ -1,12 +1,19 @@
-import { Event, EventHint } from '@sentry/types';
+import { Event, EventHint, QueryParams } from '@sentry/types';
 import { EventScrubber } from './EventScrubber';
 import { GatewayError } from '../../../application/core/services/st-codec/GatewayError';
+import { JwtMasker } from './JwtMasker';
+import { anything, instance, mock, spy, verify, when } from 'ts-mockito';
+import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 
 describe('EventScrubber', () => {
   let eventScrubber: EventScrubber;
+  let jwtMaskerMock: JwtMasker;
 
   beforeEach(() => {
-    eventScrubber = new EventScrubber();
+    jwtMaskerMock = mock(JwtMasker);
+
+    when(jwtMaskerMock.mask(anything())).thenReturn('jwt=*****' as any);
+    eventScrubber = new EventScrubber(instance(jwtMaskerMock));
   });
 
   it('masks the jtw in the config-provider in extras', () => {
@@ -27,20 +34,6 @@ describe('EventScrubber', () => {
     });
   });
 
-  it('masks the jwt in requests url and query_string', () => {
-    const urlWithJwt = (jwt: string) => `https://webservices.securetrading.net?foo=bar&jwt=${jwt}&xyz=abc`;
-    const event: Event = {
-      request: {
-        url: urlWithJwt('some-long-jwt'),
-        query_string: 'jwt=some-long-jwt',
-      },
-    };
-
-    const result = eventScrubber.scrub(event);
-
-    expect(result.request.url).toBe(urlWithJwt('*****'));
-    expect(result.request.query_string).toBe('jwt=*****');
-  });
 
   it('filters out gateway errors', () => {
     const event: Event = {};

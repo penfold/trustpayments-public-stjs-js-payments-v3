@@ -1,9 +1,13 @@
 import { Service } from 'typedi';
 import { Event, EventHint } from '@sentry/types';
 import { GatewayError } from '../../../application/core/services/st-codec/GatewayError';
+import { JwtMasker } from './JwtMasker';
 
 @Service()
 export class EventScrubber {
+  constructor(private jwtMasker: JwtMasker) {
+  }
+
   scrub(event: Event, hint?: EventHint): Event | null {
     const { originalException } = hint || {};
 
@@ -16,17 +20,13 @@ export class EventScrubber {
     }
 
     if (event.request && event.request.url) {
-      event.request.url = this.maskJwt(event.request.url);
+      event.request.url = this.jwtMasker.mask(event.request.url);
     }
 
     if (event.request && event.request.query_string) {
-      event.request.query_string = this.maskJwt(event.request.query_string);
+      event.request.query_string = this.jwtMasker.mask(event.request.query_string);
     }
 
     return event;
-  }
-
-  private maskJwt(queryString: string): string {
-    return queryString.replace(/(^|\?|&)jwt=.*?(&|$)/, '$1jwt=*****$2');
   }
 }
