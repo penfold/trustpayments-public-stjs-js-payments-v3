@@ -41,7 +41,7 @@
     "tslint-loader": "3.5.4",
     "typescript": "4.3.5",
     "url-polyfill": "1.1.12",
-    "webpack": "5.44.0",
+    "webpack": "5.45.1",
     "webpack-cli": "4.7.2",
     "webpack-dev-server": "3.11.2",
     "webpack-manifest-plugin": "3.1.1",
