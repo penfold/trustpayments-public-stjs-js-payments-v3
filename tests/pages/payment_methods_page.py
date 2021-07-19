@@ -382,9 +382,6 @@ class PaymentMethodsPage(BasePage):
         assert expected_message in input_value, assertion_message
 
     def validate_payment_status_message(self, expected_message):
-        if CONFIGURATION.REMOTE_DEVICE:
-            self.scroll_to_top()
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
         actual_message = self.get_payment_status_message()
         assertion_message = f'Payment status is not correct, should be: "{expected_message}" but is: "{actual_message}"'
         add_to_shared_dict('assertion_message', assertion_message)
@@ -698,10 +695,20 @@ class PaymentMethodsPage(BasePage):
                                                                processing_text)
 
     def wait_for_notification_frame(self):
+        if CONFIGURATION.REMOTE_DEVICE:
+            self.scroll_to_top()
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
+
+    def wait_for_notification_frame_with_timeout(self, timeout):
+        if CONFIGURATION.REMOTE_DEVICE:
+            self.scroll_to_top()
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame, timeout)
 
     def wait_for_popups_to_disappear(self):
         self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.popups)
 
     def wait_for_notification_frame_to_disappear(self):
         self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.notification_frame)
+
+    def wait_for_url_with_timeout(self, url, timeout):
+        self._waits.wait_until_url_starts_with(url, timeout)

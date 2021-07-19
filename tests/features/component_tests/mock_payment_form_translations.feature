@@ -62,7 +62,7 @@ Feature: Payment form translations
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
-    Then User will see notification frame with message: "Victory"
+    Then User will see payment status information: "Victory"
 
   @config_translations
   Scenario: Check translation overwriting mechanism for Pay button and validation message
