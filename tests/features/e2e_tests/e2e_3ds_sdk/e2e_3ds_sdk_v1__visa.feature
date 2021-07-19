@@ -119,30 +119,31 @@ Feature: 3ds SDK v1 E2E tests - Visa
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
       | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
 
-
-  Scenario Outline: TC_5 - Not enrolled - Card: VISA_V1_3DS_SDK_NOT_ENROLLED
-    Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
-    And User opens example page
-    And User waits for whole form to be loaded
-    When User fills payment form with defined card VISA_V1_3DS_SDK_NOT_ENROLLED
-    And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
-    And User will see following callback type called only once
-      | callback_type |
-      | submit        |
-      | success       |
-    And User will see that Submit button is "disabled" after payment
-    And User will see that ALL input fields are "disabled"
-
-    Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+#VISA not supported:
+#This is because the mock doesnt support VPAY as a payment type.
+#  Scenario Outline: TC_5 - Not enrolled - Card: VISA_V1_3DS_SDK_NOT_ENROLLED
+#    Given JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value              |
+#      | requesttypedescriptions | <request_types>    |
+#      | sitereference           | jstrustthreed76424 |
+#      | customercountryiso2a    | GB                 |
+#      | billingcountryiso2a     | GB                 |
+#    And User opens example page
+#    And User waits for whole form to be loaded
+#    When User fills payment form with defined card VISA_V1_3DS_SDK_NOT_ENROLLED
+#    And User clicks Pay button
+#    Then User will see payment status information: "Payment has been successfully processed"
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | submit        |
+#      | success       |
+#    And User will see that Submit button is "disabled" after payment
+#    And User will see that ALL input fields are "disabled"
+#
+#    Examples:
+#      | request_types            |
+#      | THREEDQUERY AUTH         |
+#      | ACCOUNTCHECK THREEDQUERY |
+#      | THREEDQUERY ACCOUNTCHECK |
 
 
