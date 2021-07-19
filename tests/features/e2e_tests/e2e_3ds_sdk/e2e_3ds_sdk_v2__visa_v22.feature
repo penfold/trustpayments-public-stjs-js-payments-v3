@@ -154,7 +154,7 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.2
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | <callback>         |
+      | <callback>    |
     And User will see that Submit button is "<state>" after payment
     And User will see that ALL input fields are "<state>"
 
@@ -553,4 +553,6 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.2
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
       | THREEDQUERY ACCOUNTCHECK |
+
+
 

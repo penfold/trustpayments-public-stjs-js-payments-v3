@@ -144,3 +144,4 @@ Feature: 3ds SDK v1 E2E tests - MasterCard
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
       | THREEDQUERY ACCOUNTCHECK |
+

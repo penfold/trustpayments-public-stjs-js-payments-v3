@@ -154,7 +154,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
     And User will see following callback type called only once
       | callback_type |
       | submit        |
-      | <callback>         |
+      | <callback>    |
     And User will see that Submit button is "<state>" after payment
     And User will see that ALL input fields are "<state>"
 
@@ -214,7 +214,6 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | THREEDQUERY AUTH         | Payment has been successfully processed | success  | disabled |
       | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    | enabled  |
       | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | success  | disabled |
-
 
 
   Scenario Outline: TC_8 - Error not completed threeDSMethod - Card: MASTERCARD_V22 Request types: <request_types>
@@ -555,3 +554,6 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
       | THREEDQUERY ACCOUNTCHECK |
+
+
+

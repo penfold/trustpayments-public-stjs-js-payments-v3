@@ -92,7 +92,6 @@ Feature: 3ds SDK v1 E2E tests - Visa
       | ACCOUNTCHECK THREEDQUERY |
       | THREEDQUERY ACCOUNTCHECK |
 
-
   Scenario Outline: TC_4 - Failed Step Up Authentication - Card: VISA_V1_3DS_SDK_NON_FRICTIONLESS
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
@@ -145,3 +144,5 @@ Feature: 3ds SDK v1 E2E tests - Visa
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
       | THREEDQUERY ACCOUNTCHECK |
+
+
