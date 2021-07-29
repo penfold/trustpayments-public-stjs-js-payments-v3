@@ -63,7 +63,7 @@ Feature: Cancel payment with 3ds SDK library
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_INCORRECT_CODE and submit
-    Then User see challenge modal error message "The code entered was incorrect. Please try again.22"
+    Then User see challenge modal error message "The code entered was incorrect. Please try again."
 
 
   Scenario Outline: Cancel payment after filling and submitting 3ds challenge with INLINE configuration
