@@ -8,6 +8,8 @@ import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { TransportService } from '../st-transport/TransportService';
 import { TransportServiceGatewayClient } from './TransportServiceGatewayClient';
 import { of } from 'rxjs';
+import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
+import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
 
 describe('TransportServiceGatewayClient', () => {
   let transportServiceMock: TransportService;
@@ -80,12 +82,52 @@ describe('TransportServiceGatewayClient', () => {
     };
 
     beforeEach(() => {
-      when(transportServiceMock.sendRequest(deepEqual(threeDQueryRequest))).thenReturn(of(threeDQueryResponse));
+      when(transportServiceMock.sendRequest(anything(), anything())).thenReturn(of(threeDQueryResponse));
     });
 
     it('sends threeDQueryRequest and returns the response', () => {
       gatewayClient.threedQuery(threeDQueryRequest).subscribe(response => {
+        verify(transportServiceMock.sendRequest(deepEqual(threeDQueryRequest), undefined)).once();
         expect(response).toBe(threeDQueryResponse);
+      });
+    });
+
+    it('sends threeDQueryRequest to given merchantUrl', () => {
+      const merchantUrl = 'https://merchant.url';
+
+      gatewayClient.threedQuery(threeDQueryRequest, merchantUrl).subscribe(response => {
+        verify(transportServiceMock.sendRequest(deepEqual(threeDQueryRequest), merchantUrl)).once();
+        expect(response).toBe(threeDQueryResponse);
+      });
+    });
+  });
+
+  describe('auth', () => {
+    const authRequest: IStRequest = { pan: '1234 1234 1234 1234' };
+    const authResponse: IRequestTypeResponse & IJwtResponse = {
+      errorcode: '0',
+      errormessage: '',
+      jwt: '',
+      requesttypedescription: 'AUTH',
+    };
+
+    beforeEach(() => {
+      when(transportServiceMock.sendRequest(anything(), anything())).thenReturn(of(authResponse));
+    });
+
+    it('sends auth request and returns the response', () => {
+      gatewayClient.threedQuery(authRequest).subscribe(response => {
+        verify(transportServiceMock.sendRequest(deepEqual(authRequest), undefined)).once();
+        expect(response).toBe(authResponse);
+      });
+    });
+
+    it('sends auth request to given merchantUrl', () => {
+      const merchantUrl = 'https://merchant.url';
+
+      gatewayClient.auth(authRequest, merchantUrl).subscribe(response => {
+        verify(transportServiceMock.sendRequest(deepEqual(authRequest), merchantUrl)).once();
+        expect(response).toBe(authResponse);
       });
     });
   });

@@ -5,4 +5,5 @@ export interface IGooglePayGatewayRequest {
   resultStatus?: PaymentStatus;
   walletsource?: string;
   wallettoken?: string;
+  fraudcontroltransactionid?: string;
 }

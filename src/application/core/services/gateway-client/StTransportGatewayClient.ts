@@ -9,6 +9,7 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { ThreeDInitRequest } from '../three-d-verification/data/ThreeDInitRequest';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IGatewayClient } from './IGatewayClient';
+import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 
 @Service()
 export class StTransportGatewayClient implements IGatewayClient {
@@ -25,9 +26,15 @@ export class StTransportGatewayClient implements IGatewayClient {
     );
   }
 
-  threedQuery(request: IStRequest): Observable<IThreeDQueryResponse> {
-    return from(this.stTransport.sendRequest(request)).pipe(
+  threedQuery(request: IStRequest, merchantUrl?: string): Observable<IThreeDQueryResponse> {
+    return from(this.stTransport.sendRequest(request, merchantUrl)).pipe(
       map((response: { response: IThreeDQueryResponse }) => response.response)
+    );
+  }
+
+  auth(request: IStRequest, merchantUrl?: string): Observable<IRequestTypeResponse> {
+    return from(this.stTransport.sendRequest(request, merchantUrl)).pipe(
+      map((response: { response: IRequestTypeResponse }) => response.response)
     );
   }
 }

@@ -98,7 +98,7 @@ describe('ThreeDProcess', () => {
       threeDProcess.init().subscribe();
 
       when(verificationServiceMock.start(anything())).thenReturn(of(undefined));
-      when(gatewayClientMock.threedQuery(anything())).thenReturn(of({ enrolled: 'U' } as IThreeDQueryResponse));
+      when(gatewayClientMock.threedQuery(anything(), anything())).thenReturn(of({ enrolled: 'U' } as IThreeDQueryResponse));
     });
 
     it('starts a 3ds verification session', done => {
@@ -129,7 +129,7 @@ describe('ThreeDProcess', () => {
       const request = new ThreeDQueryRequest('cardinal-cache-token', card, merchantData);
 
       threeDProcess.performThreeDQuery(requestTypes, card, merchantData).subscribe(() => {
-        verify(gatewayClientMock.threedQuery(deepEqual(request))).once();
+        verify(gatewayClientMock.threedQuery(deepEqual(request), undefined)).once();
         done();
       });
     });
@@ -145,7 +145,7 @@ describe('ThreeDProcess', () => {
 
     it('skips the 3ds verification if card enrolled status is not Y', done => {
       reset(gatewayClientMock);
-      when(gatewayClientMock.threedQuery(anything())).thenReturn(
+      when(gatewayClientMock.threedQuery(anything(), anything())).thenReturn(
         of({
           enrolled: 'U',
           acsurl: undefined,
@@ -162,7 +162,7 @@ describe('ThreeDProcess', () => {
 
     it('skips the 3ds verification if acsurl is undefined', done => {
       reset(gatewayClientMock);
-      when(gatewayClientMock.threedQuery(anything())).thenReturn(
+      when(gatewayClientMock.threedQuery(anything(), anything())).thenReturn(
         of({
           enrolled: 'Y',
           acsurl: undefined,
@@ -224,7 +224,7 @@ describe('ThreeDProcess', () => {
       reset(gatewayClientMock);
       reset(verificationServiceMock);
 
-      when(gatewayClientMock.threedQuery(anything())).thenReturn(of(threedqueryResponse));
+      when(gatewayClientMock.threedQuery(anything(), anything())).thenReturn(of(threedqueryResponse));
       when(verificationServiceMock.start(anything())).thenReturn(of(undefined));
       when(verificationServiceMock.verify(deepEqual(verificationData))).thenReturn(of(verificationResult));
       when(verificationResultHandlerMock.handle(anything(), anything(), anything())).thenReturn(of(finalResult));
@@ -241,6 +241,15 @@ describe('ThreeDProcess', () => {
         verify(googleAnalyticsSpy.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')).once();
         expect(result.threedresponse).toBe('validation-result-jwt');
         expect(result.cachetoken).toBe('cardinal-cache-token');
+        done();
+      });
+    });
+
+    it('sends threeDQuery request to a configured merchantUrl', done => {
+      const merchantUrl = 'https://merchant.url';
+
+      threeDProcess.performThreeDQuery(requestTypes, card, merchantData, merchantUrl).subscribe(() => {
+        verify(gatewayClientMock.threedQuery(anything(), merchantUrl)).once();
         done();
       });
     });

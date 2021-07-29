@@ -37,7 +37,8 @@ export class ThreeDProcess {
   performThreeDQuery(
     requestTypes: string[],
     card: ICard,
-    merchantData: IMerchantData
+    merchantData: IMerchantData,
+    merchantUrl?: string,
   ): Observable<IThreeDQueryResponse> {
     return this.tokenProvider.getTokens().pipe(
       first(),
@@ -46,7 +47,7 @@ export class ThreeDProcess {
 
         return iif(includesThreedquery, this.verificationService.start(tokens.jwt), of(null)).pipe(
           mapTo(new ThreeDQueryRequest(tokens.cacheToken, card, merchantData)),
-          switchMap(request => this.gatewayClient.threedQuery(request)),
+          switchMap(request => this.gatewayClient.threedQuery(request, merchantUrl)),
           switchMap(response => {
             if (this.isThreeDAuthorisationRequired(response)) {
               return this.authenticateCard(response, tokens);
