@@ -1,7 +1,7 @@
 import { FrameIdentifier } from './FrameIdentifier';
 import { FrameAccessor } from './FrameAccessor';
 import { InterFrameCommunicator } from './InterFrameCommunicator';
-import { anything, capture, instance, mock, spy, verify, when } from 'ts-mockito';
+import { anything, capture, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { environment } from '../../../environments/environment';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
@@ -13,6 +13,7 @@ import { CONFIG } from '../../dependency-injection/InjectionTokens';
 import { QueryMessage } from './messages/QueryMessage';
 import { ResponseMessage } from './messages/ResponseMessage';
 import { of, Subject, timer } from 'rxjs';
+import { EventDataSanitizer } from './EventDataSanitizer';
 
 describe('InterFrameCommunicator', () => {
   const PARENT_FRAME_ORIGIN = 'https://foobar.com';
@@ -26,6 +27,7 @@ describe('InterFrameCommunicator', () => {
   let parentFrame: Window;
   let foobarFrameMock: Window;
   let foobarFrame: Window;
+  let eventDataSanitizerMock: EventDataSanitizer;
 
   beforeEach(() => {
     frameIdentifierMock = mock(FrameIdentifier);
@@ -37,11 +39,13 @@ describe('InterFrameCommunicator', () => {
     foobarFrameMock = mock<Window>();
     foobarFrame = instance(foobarFrameMock);
     Object.setPrototypeOf(foobarFrame, Window.prototype);
+    eventDataSanitizerMock = mock(EventDataSanitizer);
 
     interFrameCommunicator = new InterFrameCommunicator(
       instance(frameIdentifierMock),
       instance(frameAccessorMock),
       instance(containerMock),
+      instance(eventDataSanitizerMock),
       window
     );
 
@@ -51,6 +55,7 @@ describe('InterFrameCommunicator', () => {
     when(containerMock.get(CONFIG)).thenReturn({
       origin: PARENT_FRAME_ORIGIN,
     });
+    when(eventDataSanitizerMock.sanitize(anything())).thenCall((data) => data);
   });
 
   describe('send', () => {
@@ -59,20 +64,20 @@ describe('InterFrameCommunicator', () => {
     it('should send message to target frame', () => {
       interFrameCommunicator.send(message, foobarFrame);
 
-      verify(foobarFrameMock.postMessage(message, APP_FRAME_ORIGIN)).once();
+      verify(foobarFrameMock.postMessage(deepEqual(message), APP_FRAME_ORIGIN)).once();
     });
 
     it('should send message to parent frame with parent frame origin', () => {
       interFrameCommunicator.send(message, parentFrame);
       interFrameCommunicator.send(message, MERCHANT_PARENT_FRAME);
 
-      verify(parentFrameMock.postMessage(message, PARENT_FRAME_ORIGIN)).twice();
+      verify(parentFrameMock.postMessage(deepEqual(message), PARENT_FRAME_ORIGIN)).twice();
     });
 
     it('should send message to other frame with current frame origin', () => {
       interFrameCommunicator.send(message, 'foobar');
 
-      verify(foobarFrameMock.postMessage(message, APP_FRAME_ORIGIN)).once();
+      verify(foobarFrameMock.postMessage(deepEqual(message), APP_FRAME_ORIGIN)).once();
     });
 
     it('should log warning when target frame is not found', () => {
@@ -107,7 +112,7 @@ describe('InterFrameCommunicator', () => {
 
       interFrameCommunicator.sendToParentFrame(message);
 
-      verify(parentFrameMock.postMessage(message, PARENT_FRAME_ORIGIN)).once();
+      verify(parentFrameMock.postMessage(deepEqual(message), PARENT_FRAME_ORIGIN)).once();
     });
   });
 
@@ -120,7 +125,7 @@ describe('InterFrameCommunicator', () => {
 
       interFrameCommunicator.sendToControlFrame(message);
 
-      verify(controlFrameMock.postMessage(message, APP_FRAME_ORIGIN)).once();
+      verify(controlFrameMock.postMessage(deepEqual(message), APP_FRAME_ORIGIN)).once();
     });
   });
 

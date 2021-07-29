@@ -10,6 +10,6 @@ export const GetPaymentStatus = (errorCode: string): PaymentStatus => {
     case '0':
       return PaymentStatus.SUCCESS;
     default:
-      PaymentStatus.ERROR;
+      return PaymentStatus.ERROR;
   }
 };

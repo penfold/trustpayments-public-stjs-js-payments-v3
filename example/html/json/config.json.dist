@@ -69,9 +69,9 @@
       "buttonLocale": "en"
     },
     "paymentRequest": {
-      "allowedPaymentMethods": {
+      "allowedPaymentMethods": [{
         "parameters": {
-          "allowedCardAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+          "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
           "allowedCardNetworks": ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"]
         },
         "tokenizationSpecification": {
@@ -82,7 +82,7 @@
           "type": "PAYMENT_GATEWAY"
         },
         "type": "CARD"
-      },
+      }],
       "apiVersion": 2,
       "apiVersionMinor": 0,
       "merchantInfo": {
