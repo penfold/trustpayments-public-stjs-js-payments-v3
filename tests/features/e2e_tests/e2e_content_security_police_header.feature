@@ -14,7 +14,7 @@ Feature: E2E Card Payments with content-security-police header set
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And User will see that Submit button is "disabled" after payment
+    And User will see that Submit button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -33,7 +33,7 @@ Feature: E2E Card Payments with content-security-police header set
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And User will see that Submit button is "disabled" after payment
+    And User will see that Submit button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -105,7 +105,7 @@ Feature: E2E Card Payments with content-security-police header set
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And User will see that Submit button is "disabled" after payment
+    And User will see that Submit button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:

@@ -21,5 +21,5 @@ Feature: Close ACS pop-up (3DS modal)
     And "error" callback is called only once
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
-    And User will see that Submit button is "enabled" after payment
+    And User will see that Submit button is "enabled"
     And User will see that ALL input fields are "enabled"
