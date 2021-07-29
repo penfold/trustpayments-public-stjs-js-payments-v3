@@ -51,6 +51,21 @@ Feature: Cancel payment with 3ds SDK library
       | ACCOUNTCHECK THREEDQUERY |
 
 
+  Scenario: Filling and submitting 3ds challenge with incorrect secure code
+    Given JS library configured by inline params THREE_DS_SDK_INLINE_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value              |
+      | requesttypedescriptions | THREEDQUERY AUTH    |
+      | sitereference           | jstrustthreed76424 |
+      | customercountryiso2a    | GB                 |
+      | billingcountryiso2a     | GB                 |
+    And User opens example page
+    When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
+    And User clicks Pay button
+    And User see 3ds SDK challenge is displayed
+    And User fills 3ds SDK challenge with THREE_DS_INCORRECT_CODE and submit
+    Then User see challenge modal error message "The code entered was incorrect. Please try again.22"
+
+
   Scenario Outline: Cancel payment after filling and submitting 3ds challenge with INLINE configuration
     Given JS library configured by inline params THREE_DS_SDK_INLINE_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value              |

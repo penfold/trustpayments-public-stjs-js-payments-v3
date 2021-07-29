@@ -64,13 +64,14 @@ def step_impl(context, expected_translation):
     validate_3ds_popup_challenge_cancel_btn_text(context, expected_translation)
 
 
-def validate_3ds_popup_challenge_cancel_btn_text(context, expected_translation):
+@then('User see challenge modal error message "(?P<expected_alert_text>.+)"')
+def step_impl(context, expected_alert_text):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    actual_translation = three_ds_page.get_3ds_popup_challenge_cancel_btn_text()
-    assertion_message = f'Cancel button text is not correct: ' \
-                        f' should be {expected_translation} but is {actual_translation}'
+    actual_alert_text = three_ds_page.get_3ds_challenge_modal_alert_text()
+    assertion_message = f'Challenge modal alert text is not correct: ' \
+                        f' should be "{expected_alert_text}" but is "{actual_alert_text}"'
     add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
-    assert actual_translation == expected_translation, assertion_message
+    assert actual_alert_text == expected_alert_text, assertion_message
 
 
 @step('(?P<processing_screen>.+) processing screen is visible')
@@ -105,3 +106,12 @@ def step_impl(context):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
     time.sleep(1.9)
     three_ds_page.processing_screen_is_displayed()
+
+
+def validate_3ds_popup_challenge_cancel_btn_text(context, expected_translation):
+    three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
+    actual_translation = three_ds_page.get_3ds_popup_challenge_cancel_btn_text()
+    assertion_message = f'Cancel button text is not correct: ' \
+                        f' should be "{expected_translation}" but is "{actual_translation}"'
+    add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+    assert actual_translation == expected_translation, assertion_message

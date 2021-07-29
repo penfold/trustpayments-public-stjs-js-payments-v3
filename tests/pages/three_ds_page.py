@@ -38,6 +38,12 @@ class ThreeDsPage(BasePage):
     def get_3ds_popup_challenge_cancel_btn_text(self):
         return self._actions.get_text(ThreeDSMethodsLocators.three_ds_challenge_popup_cancel_button)
 
+    def get_3ds_challenge_modal_alert_text(self):
+        self._actions.switch_to_iframe(ThreeDSMethodsLocators.three_ds_iframe)
+        alert_text = self._actions.get_text(ThreeDSMethodsLocators.three_ds_challenge_alert)
+        self._actions.switch_to_default_iframe()
+        return alert_text
+
     def check_if_processing_screen_disappears_before_element_appears(self, element):
         self._waits.wait_for_element_to_be_not_displayed(ThreeDSMethodsLocators.processing_screen)
         item = None
