@@ -38,7 +38,7 @@ Feature: payment flow with callbacks
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled" after payment
+    And User will see that Submit button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:

@@ -14,7 +14,7 @@ Feature: E2E tests for iframe
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And User will see that Submit button is "disabled" after payment
+    And User will see that Submit button is "disabled"
     And User will see that ALL input fields are "disabled"
 
   @parent_iframe
@@ -26,5 +26,5 @@ Feature: E2E tests for iframe
     When User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And User will see that Submit button is "disabled" after payment
+    And User will see that Submit button is "disabled"
     And User will see that ALL input fields are "disabled"
