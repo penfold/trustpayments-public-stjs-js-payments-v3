@@ -58,4 +58,4 @@ Feature: Card Payments
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "DECLINE"
     Then User will see payment status information: "Decline"
-    And User will see that "SECURITY_CODE" field is disabled
+    And User will see that SECURITY_CODE input field is "disabled"
