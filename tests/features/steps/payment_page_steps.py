@@ -167,7 +167,7 @@ def step_impl(context, form_status):
     payment_page.validate_form_status(FieldType.SUBMIT_BUTTON.name, form_status)
 
 
-@step('User will see that (?P<field>.+) input fields are "(?P<form_status>.+)"')
+@step('User will see that (?P<field>.+) input (?:field is|fields are) "(?P<form_status>.+)"')
 def step_impl(context, field: FieldType, form_status):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     field = FieldType.__members__[field]  # pylint: disable=unsubscriptable-object
@@ -265,18 +265,6 @@ def step_impl(context, card_number, exp_date):
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.fill_amount_field('1')
-
-
-@then('User will see that "(?P<field_type>.+)" field is disabled')
-def step_impl(context, field_type):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_field_accessibility(field_type, should_be_enabled=False)
-
-
-@then('User will see that "(?P<field_type>.+)" field is enabled')
-def step_impl(context, field_type):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_field_accessibility(field_type, should_be_enabled=True)
 
 
 @step('User will see "(?P<callback_popup>.+)" popup')

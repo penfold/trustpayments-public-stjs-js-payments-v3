@@ -37,5 +37,5 @@ Feature: Payments Card recognition
   Scenario: Disabled CVV field for PIBA card type and card recognition
     And User waits for whole form to be loaded
     When User fills payment form with credit card number "3089500000000000021", expiration date "12/23"
-    Then User will see that "SECURITY_CODE" field is disabled
+    Then User will see that SECURITY_CODE input field is "disabled"
     And User will see "PIBA" icon in card number input field

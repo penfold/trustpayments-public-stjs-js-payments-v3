@@ -405,12 +405,6 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict('assertion_message', assertion_message)
         assert 'error' in attribute_value, assertion_message
 
-    def validate_field_accessibility(self, field_type, should_be_enabled):
-        is_enabled = self.is_field_enabled(field_type)
-        assertion_message = f'{FieldType[field_type].name} field enabled state should be: {should_be_enabled} but was: {is_enabled}'
-        add_to_shared_dict('assertion_message', assertion_message)
-        assert is_enabled is should_be_enabled, assertion_message
-
     def validate_if_field_is_not_displayed(self, field_type):
         is_displayed = self.is_field_displayed(field_type)
         assertion_message = f'{FieldType[field_type].name} field is displayed but should not be'
@@ -525,10 +519,11 @@ class PaymentMethodsPage(BasePage):
             assert_that(parsed_query_from_url[key][0], f'{key} param value: ').is_equal_to(value)
 
     def validate_form_status(self, field_type, form_status):
-        if 'enabled' in form_status:
-            self.validate_field_accessibility(field_type, should_be_enabled=True)
-        else:
-            self.validate_field_accessibility(field_type, should_be_enabled=False)
+        should_be_enabled = bool('enabled' in form_status)
+        is_enabled = self.is_field_enabled(field_type)
+        assertion_message = f'{FieldType[field_type].name} field enabled state should be: {should_be_enabled} but was: {is_enabled}'
+        add_to_shared_dict('assertion_message', assertion_message)
+        assert is_enabled is should_be_enabled, assertion_message
 
     def validate_if_callback_popup_is_displayed(self, callback_popup):
         is_displayed = False
