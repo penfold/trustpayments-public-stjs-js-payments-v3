@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 20.2.13
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 26.0.6
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -16,6 +16,7 @@ include:
   - local: '/.gitlab/post-build/publish-to-cdn.yml'
   - local: '/.gitlab/fast-tests/functional.yml'
   - local: '/.gitlab/fast-tests/security.yml'
+  - local: '/.gitlab/fast-tests/js-static-analysis.yml'
   - local: '/.gitlab/extended-tests.yml'
   - local: '/.gitlab/post-release.yml'
   - local: '/.gitlab/pre-smoke-tests.yml'
@@ -93,6 +94,13 @@ variables:
       enabled: false
     SCHEDULED_HOTFIX_BRANCH_TESTS_WORKER:
       enabled: false
+    SCHEDULED_RENOVATE_TRIGGER:
+      enabled: true
+      active: true
+      variables:
+        - variable_type: env_var
+          key: DEPENDENCY_UPDATE_AUTO_MERGE
+          value: 'true'
   ### Schedules configuration : End
 
   ##### Others - project specific #####

@@ -8,7 +8,6 @@ import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { PaymentEvents } from '../../../../models/constants/PaymentEvents';
-import { GatewayClient } from '../../../GatewayClient';
 import { ICard } from '../../../../models/ICard';
 import { RequestType } from '../../../../../../shared/types/RequestType';
 import { of } from 'rxjs';
@@ -19,10 +18,11 @@ import { CardinalChallengeService } from './CardinalChallengeService';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { Enrollment } from '../../../../models/constants/Enrollment';
 import spyOn = jest.spyOn;
+import { IGatewayClient } from '../../../gateway-client/IGatewayClient';
 
 describe('CardinalCommerceVerificationService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
-  let gatewayClient: GatewayClient;
+  let gatewayClient: IGatewayClient;
   let challengeService: CardinalChallengeService;
   let verificationService: CardinalCommerceVerificationService;
 
@@ -34,6 +34,7 @@ describe('CardinalCommerceVerificationService', () => {
     transactionstartedtimestamp: 'transactionstartedtimestamp',
     threedsprovider: ThreeDVerificationProviderName.CARDINAL,
     cachetoken: 'cachetoken',
+    jwt: '',
   };
 
   const threeDQueryResponseMock: IThreeDQueryResponse = {
@@ -45,7 +46,7 @@ describe('CardinalCommerceVerificationService', () => {
     enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
     threedpayload: '',
     transactionreference: '',
-    requesttypescription: '',
+    requesttypedescription: '',
     threedversion: '',
   };
 
@@ -61,7 +62,7 @@ describe('CardinalCommerceVerificationService', () => {
 
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
-    gatewayClient = mock(GatewayClient);
+    gatewayClient = mock<IGatewayClient>();
     challengeService = mock(CardinalChallengeService);
     verificationService = new CardinalCommerceVerificationService(
       instance(interFrameCommunicatorMock),

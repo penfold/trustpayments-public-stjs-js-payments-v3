@@ -4,7 +4,7 @@ import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../applicatio
 @Service()
 export class FrameIdentifier {
   private frameName: string;
-  private parentFrame: boolean = false;
+  private parentFrame = false;
 
   getFrameName(): string {
     return this.frameName;

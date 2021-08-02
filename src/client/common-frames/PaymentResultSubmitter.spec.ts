@@ -25,13 +25,13 @@ describe('PaymentResultSubmitter', () => {
 
   describe('submit', () => {
     it('removes all previously added fields', () => {
-      spyOn(DomMethods, 'removeAllCreatedFields');
+      jest.spyOn(DomMethods, 'removeAllCreatedFields');
       paymentResultSubmitter.submit({ foo: 'bar' });
       expect(DomMethods.removeAllCreatedFields).toHaveBeenCalledWith(form);
     });
 
     it('appends fields to form based on submitFields config param and some required fields', () => {
-      spyOn(DomMethods, 'addDataToForm');
+      jest.spyOn(DomMethods, 'addDataToForm');
 
       paymentResultSubmitter.submit({
         foo: 'foo',

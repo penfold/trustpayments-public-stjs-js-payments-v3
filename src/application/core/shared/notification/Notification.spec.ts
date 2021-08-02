@@ -38,7 +38,7 @@ describe('Notification', () => {
     translator = mock(Translator);
     when(translator.translate('Test')).thenReturn('Test');
 
-    document.body.innerHTML = `<div id="st-notification-frame"></div>`;
+    document.body.innerHTML = '<div id="st-notification-frame"></div>';
 
     const config = {
       jwt: '',

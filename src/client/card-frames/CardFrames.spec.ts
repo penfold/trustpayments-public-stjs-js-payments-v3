@@ -334,7 +334,7 @@ describe('CardFrames', () => {
       instance._publishValidatedFieldState = jest.fn();
     });
 
-    it(`should call _publishValidatedFieldState for cardNumber if it's state is false`, () => {
+    it('should call _publishValidatedFieldState for cardNumber if it\'s state is false', () => {
       const validationResult = validateFieldsAfterSubmitFixture(false, true, true);
 
       messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
@@ -347,7 +347,7 @@ describe('CardFrames', () => {
       );
     });
 
-    it(`should call _publishValidatedFieldState for expirationDate if it's state is false`, () => {
+    it('should call _publishValidatedFieldState for expirationDate if it\'s state is false', () => {
       const validationResult = validateFieldsAfterSubmitFixture(true, false, true);
 
       messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
@@ -360,7 +360,7 @@ describe('CardFrames', () => {
       );
     });
 
-    it(`should call _publishValidatedFieldState for securityCode if it's state is false`, () => {
+    it('should call _publishValidatedFieldState for securityCode if it\'s state is false', () => {
       const validationResult = validateFieldsAfterSubmitFixture(true, true, false);
 
       messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });

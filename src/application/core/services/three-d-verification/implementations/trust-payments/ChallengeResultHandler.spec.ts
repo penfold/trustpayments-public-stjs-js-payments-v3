@@ -27,7 +27,7 @@ describe('ChallengeResultHandler', () => {
       enrolled: '',
       threedpayload: 'threedpayload',
       transactionreference: '',
-      requesttypescription: '',
+      requesttypedescription: '',
       threedversion: '2.1.0',
     };
 
@@ -59,7 +59,7 @@ describe('ChallengeResultHandler', () => {
               enrolled: '',
               threedpayload: 'threedpayload',
               transactionreference: '',
-              requesttypescription: '',
+              requesttypedescription: '',
               threedversion: '2.1.0',
             });
             done();
@@ -87,7 +87,7 @@ describe('ChallengeResultHandler', () => {
             enrolled: '',
             threedpayload: 'threedpayload',
             transactionreference: '',
-            requesttypescription: '',
+            requesttypedescription: '',
             threedversion: '2.1.0',
           });
           done();
@@ -114,7 +114,7 @@ describe('ChallengeResultHandler', () => {
             enrolled: '',
             threedpayload: 'threedpayload',
             transactionreference: '',
-            requesttypescription: '',
+            requesttypedescription: '',
             threedversion: '2.1.0',
             isCancelled: true,
           });
@@ -135,7 +135,7 @@ describe('ChallengeResultHandler', () => {
       md: 'merchantdata',
       pareq: 'pareq',
       transactionreference: '',
-      requesttypescription: '',
+      requesttypedescription: '',
       threedversion: '1.0.5',
     };
 
@@ -172,7 +172,7 @@ describe('ChallengeResultHandler', () => {
               enrolled: '',
               pareq: 'pareq',
               transactionreference: '',
-              requesttypescription: '',
+              requesttypedescription: '',
               threedversion: '1.0.5',
             });
             done();
@@ -202,7 +202,7 @@ describe('ChallengeResultHandler', () => {
             md: 'merchantdata',
             threedresponse: 'threedresponse',
             transactionreference: '',
-            requesttypescription: '',
+            requesttypedescription: '',
             threedversion: '1.0.5',
           });
           done();
@@ -230,7 +230,7 @@ describe('ChallengeResultHandler', () => {
             md: 'merchantdata',
             pareq: 'pareq',
             transactionreference: '',
-            requesttypescription: '',
+            requesttypedescription: '',
             threedversion: '1.0.5',
             isCancelled: true,
           });

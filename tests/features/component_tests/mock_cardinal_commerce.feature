@@ -82,7 +82,7 @@ Feature: Cardinal commerce
     Then User will see payment status information: "An error occurred"
     And User will see that notification frame has "red" color
     And THREEDQUERY request was sent only once with correct data
-    And User will see that Submit button is "enabled" after payment
+    And User will see that Submit button is "enabled"
     And submit callback contains THREEDRESPONSE: True
     And submit callback contains JWT response
 

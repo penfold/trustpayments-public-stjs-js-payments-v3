@@ -1,9 +1,9 @@
 declare const FRAME_URL: string | undefined;
 
 // TODO should be webservices.securetrading.net but messageBus is blocking something
-const MOCK_GATEWAY_URL: string = 'https://webservices.securetrading.net:6443';
-const GATEWAY_URL: string = `${MOCK_GATEWAY_URL}/jwt/`;
-const MOCK_THIRD_PARTY_URL: string = 'https://thirdparty.example.com:6443';
+const MOCK_GATEWAY_URL = 'https://webservices.securetrading.net:6443';
+const GATEWAY_URL = `${MOCK_GATEWAY_URL}/jwt/`;
+const MOCK_THIRD_PARTY_URL = 'https://thirdparty.example.com:6443';
 
 export const environment = {
   APPLE_PAY_URLS: {

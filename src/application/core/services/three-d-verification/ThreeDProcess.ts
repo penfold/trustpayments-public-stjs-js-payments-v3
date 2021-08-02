@@ -8,12 +8,12 @@ import { combineLatest, Observable } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
-import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IThreeDVerificationService } from './IThreeDVerificationService';
 import { ThreeDVerificationProviderService } from './ThreeDVerificationProviderService';
-import { GatewayClient } from '../GatewayClient';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
+import { IGatewayClient } from '../gateway-client/IGatewayClient';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 
 @Service()
 export class ThreeDProcess {
@@ -22,7 +22,7 @@ export class ThreeDProcess {
 
   constructor(
     private messageBus: IMessageBus,
-    private gatewayClient: GatewayClient,
+    private gatewayClient: IGatewayClient,
     private threeDVerificationServiceProvider: ThreeDVerificationProviderService,
   ) {}
 
@@ -46,7 +46,7 @@ export class ThreeDProcess {
   performThreeDQuery$(
     requestTypes: string[],
     card: ICard,
-    merchantData: IMerchantData
+    merchantData: IMerchantData,
   ): Observable<IThreeDQueryResponse> {
     return combineLatest([this.verificationService$, this.jsInitResponse$]).pipe(
       first(),

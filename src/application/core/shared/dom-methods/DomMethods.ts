@@ -1,15 +1,15 @@
 import { IScriptParams } from '../../models/IScriptParams';
 
 export class DomMethods {
-  private static BODY_MARKUP: string = 'body';
-  private static HIDDEN_ATTRIBUTE: string = 'hidden';
-  private static INPUT_MARKUP: string = 'input';
-  private static SCRIPT_MARKUP: string = 'script';
-  private static SELECT_MARKUP: string = 'select';
-  private static SRC_ATTRIBUTE: string = 'src';
-  private static ST_NAME_ATTRIBUTE: string = 'data-st-name';
-  private static STYLE_MARKUP: string = 'style';
-  private static CREATED_FIELD_CLASSNAME: string = '-st-created-field';
+  private static BODY_MARKUP = 'body';
+  private static HIDDEN_ATTRIBUTE = 'hidden';
+  private static INPUT_MARKUP = 'input';
+  private static SCRIPT_MARKUP = 'script';
+  private static SELECT_MARKUP = 'select';
+  private static SRC_ATTRIBUTE = 'src';
+  private static ST_NAME_ATTRIBUTE = 'data-st-name';
+  private static STYLE_MARKUP = 'style';
+  private static CREATED_FIELD_CLASSNAME = '-st-created-field';
 
   public static addDataToForm(form: HTMLFormElement, data: Record<string, unknown>, fields?: string[]): void {
     Object.entries(data).forEach(([field, value]) => {

@@ -4,7 +4,6 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
-import { GatewayClient } from '../GatewayClient';
 import { ThreeDVerificationProviderService } from './ThreeDVerificationProviderService';
 import { ThreeDProcess } from './ThreeDProcess';
 import { ThreeDVerificationProviderName } from './data/ThreeDVerificationProviderName';
@@ -14,10 +13,11 @@ import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { Enrollment } from '../../models/constants/Enrollment';
+import { IGatewayClient } from '../gateway-client/IGatewayClient';
 
 describe('ThreeDProcess', () => {
   let messageBusMock: IMessageBus;
-  let gatewayClientMock: GatewayClient;
+  let gatewayClientMock: IGatewayClient;
   let threeDVerificationServiceProviderMock: ThreeDVerificationProviderService;
   let threeDVerificationServiceMock: IThreeDVerificationService<unknown>;
   let threeDProcess: ThreeDProcess;
@@ -30,11 +30,12 @@ describe('ThreeDProcess', () => {
     transactionstartedtimestamp: 'transactionstartedtimestamp',
     threedsprovider: ThreeDVerificationProviderName.CARDINAL,
     cachetoken: 'cachetoken',
+    jwt: '',
   };
 
   beforeEach(() => {
     messageBusMock = new SimpleMessageBus();
-    gatewayClientMock = mock(GatewayClient);
+    gatewayClientMock = mock<IGatewayClient>();
     threeDVerificationServiceProviderMock = mock(ThreeDVerificationProviderService);
     threeDVerificationServiceMock = mock<IThreeDVerificationService<unknown>>();
     threeDProcess = new ThreeDProcess(
@@ -61,7 +62,7 @@ describe('ThreeDProcess', () => {
     });
 
     it('unlocks the submit button', done => {
-      spyOn(messageBusMock, 'publish');
+      jest.spyOn(messageBusMock, 'publish');
 
       threeDProcess.init$().subscribe(() => {
         expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.UNLOCK_BUTTON }, true);
@@ -101,12 +102,15 @@ describe('ThreeDProcess', () => {
       enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       threedpayload: '',
       transactionreference: '',
-      requesttypescription: '',
+      requesttypedescription: '',
       threedversion: '',
     };
     const newJsInitResponse: IThreeDInitResponse = {
+      jwt: '',
       errorcode: '0',
       errormessage: '',
+      cachetoken: '',
+      threedinit: '',
       requesttypedescription: RequestType.JSINIT,
       transactionstartedtimestamp: '',
       threedsprovider: ThreeDVerificationProviderName.TP,

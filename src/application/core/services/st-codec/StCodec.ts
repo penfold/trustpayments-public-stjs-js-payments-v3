@@ -10,6 +10,7 @@ import {
 } from '../../models/constants/Translations';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Validation } from '../../shared/validation/Validation';
+// @ts-ignore
 import { version } from '../../../../../package.json';
 import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';

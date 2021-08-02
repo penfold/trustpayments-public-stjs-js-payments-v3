@@ -68,7 +68,7 @@ export class Styler {
     const filtered: IStyle = {};
     styles.forEach((style: IStyle, index) => {
       const propName: string = Object.keys(style)[0];
-      if (this._allowed.hasOwnProperty(propName)) {
+      if (Object.prototype.hasOwnProperty.call(this._allowed, propName)) {
         // @ts-ignore
         filtered[propName] = styles[index][propName];
       }
@@ -90,7 +90,7 @@ export class Styler {
     const grouped: IGroupedStyles = {};
     for (const style in styles) {
       const allowed = this._allowed[style];
-      if (!grouped.hasOwnProperty(allowed.selector)) {
+      if (!Object.prototype.hasOwnProperty.call(grouped, allowed.selector)) {
         grouped[allowed.selector] = {};
       }
       grouped[allowed.selector][allowed.property] = styles[style];
@@ -102,7 +102,7 @@ export class Styler {
     const styled: IStyle = this._sanitize(this._filter(styles));
     const groupedStyles: IGroupedStyles = this._group(styled);
     let tag: string;
-    const templates: string[] = [`body { display: block; }`];
+    const templates: string[] = ['body { display: block; }'];
     for (tag in groupedStyles) {
       const tagStyle = Styler._getTagStyles(groupedStyles[tag]);
       templates.push(`${tag} { ${tagStyle} }`);

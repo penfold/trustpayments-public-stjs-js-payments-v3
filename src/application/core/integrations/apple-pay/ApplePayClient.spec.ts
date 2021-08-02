@@ -297,7 +297,7 @@ describe('ApplePayClient', () => {
       });
     });
 
-    it(`should throw UNKNOWN error when unknown parameter passed`, done => {
+    it('should throw UNKNOWN error when unknown parameter passed', done => {
       when(messageBusMock.pipe(anything())).thenReturn(
         of({
           type: PUBLIC_EVENTS.APPLE_PAY_STATUS,

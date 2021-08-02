@@ -13,7 +13,6 @@ import { RequestType } from '../../../../../../shared/types/RequestType';
 import { ICard } from '../../../../models/ICard';
 import { IMerchantData } from '../../../../models/IMerchantData';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
-import { GatewayClient } from '../../../GatewayClient';
 import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ConfigProvider } from '../../../../../../shared/services/config-provider/ConfigProvider';
 import { threeDSecureConfigName } from './IThreeDSecure';
@@ -23,12 +22,14 @@ import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
 import { ThreeDSecureMethodService } from './ThreeDSecureMethodService';
 import { IThreeDLookupResponse } from '../../../../models/IThreeDLookupResponse';
 import { IBrowserData } from './data/IBrowserData';
+import { IGatewayClient } from '../../../gateway-client/IGatewayClient';
+import { ThreeDLookupRequest } from './data/ThreeDLookupRequest';
 
 @Service()
 export class ThreeDSecureVerificationService implements IThreeDVerificationService<ConfigInterface> {
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
-    private gatewayClient: GatewayClient,
+    private gatewayClient: IGatewayClient,
     private configProvider: ConfigProvider,
     private threeDSMethodService: ThreeDSecureMethodService,
     private browserDataProvider: BrowserDataProvider,
@@ -80,7 +81,9 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
       isTransactionComplete$.next(true);
     });
 
-    return this.gatewayClient.threedLookup(card).pipe(
+    const lookupRequest = new ThreeDLookupRequest(card.expirydate, card.securitycode, card.pan);
+
+    return this.gatewayClient.threedLookup(lookupRequest).pipe(
       switchMap((response: IThreeDLookupResponse) => {
         cardType = response.paymenttypedescription;
 

@@ -22,7 +22,7 @@ class E2eConfig(Enum):
     SUBMIT_ON_ERROR_REQUEST_TYPES_CONFIG = 'e2eConfigSubmitOnErrorRequestTypes.json'
     SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD = 'e2eConfigSubmitOnSuccessCachetokenField.json'
     SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD_START_ON_LOAD = 'e2eConfigSubmitOnSuccessCachetokenStartOnLoad.json'
-    SUBMIT_ON_SUCCESS_ERROR_CONFIG = 'e2eConfigSubmitOnSuccessErrorRequestTypes.json'
+    SUBMIT_ON_SUCCESS_ERROR_CONFIG = 'e2eConfigSubmitOnSuccessError.json'
     TOKENISATION_CONFIG = 'e2eForTokenisation.json'
     TOKENISATION_AND_SUBMIT_ON_SUCCESS_CONFIG = 'e2eConfigTokenisationAndSubmitOnSuccess.json'
     REQUEST_TYPES_CONFIG = 'e2eConfigRequestTypes.json'

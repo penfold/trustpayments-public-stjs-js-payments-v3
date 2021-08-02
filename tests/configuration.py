@@ -22,7 +22,7 @@ def load_config():
         'SCREENSHOTS_PATH': get_path_from_env('AUTOMATION_SCREENSHOTS', 'screenshots'),
         'BROWSER': get_from_env('AUTOMATION_BROWSER', 'chrome'),
         'HEADLESS': get_from_env('HEADLESS', True),
-        'TIMEOUT': get_from_env('AUTOMATION_TIMEOUT', 30),
+        'TIMEOUT': get_from_env('AUTOMATION_TIMEOUT', 40),
         'REMOTE': strtobool(get_from_env('REMOTE', 'false')),
         'COMMAND_EXECUTOR': get_from_env('AUTOMATION_COMMAND_EXECUTOR',
                                          'https://' + str(get_from_env('BS_USERNAME')) + ':' +

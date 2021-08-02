@@ -11,7 +11,7 @@ describe('ThreeDResponseConverter', () => {
   let sut: ThreeDResponseConverter;
 
   const result: ChallengeResultInterface = { status: ResultActionCode.SUCCESS } as ChallengeResultInterface;
-  const response: IThreeDQueryResponse = { requesttypescription: 'THREEDQUERY' } as IThreeDQueryResponse;
+  const response: IThreeDQueryResponse = { requesttypedescription: 'THREEDQUERY' } as IThreeDQueryResponse;
 
   beforeEach(() => {
     cResToThreeDResponseConverterMock = mock(CResToThreeDResponseConverter);

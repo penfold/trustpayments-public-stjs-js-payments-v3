@@ -20,4 +20,4 @@ Feature: Retests for bugs
     And User opens example page
     When User fills payment form with credit card number "3089500000000000021", expiration date "12/23"
     And User replaces value of the card number field to "340000000000611"
-    Then User will see that "SECURITY_CODE" field is enabled
+    Then User will see that SECURITY_CODE input field is "enabled"

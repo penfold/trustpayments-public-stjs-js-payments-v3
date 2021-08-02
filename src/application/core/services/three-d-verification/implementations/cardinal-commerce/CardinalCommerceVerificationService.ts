@@ -16,14 +16,14 @@ import { mapTo, switchMap, tap } from 'rxjs/operators';
 import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { RequestType } from '../../../../../../shared/types/RequestType';
-import { GatewayClient } from '../../../GatewayClient';
 import { CardinalChallengeService } from './CardinalChallengeService';
+import { IGatewayClient } from '../../../gateway-client/IGatewayClient';
 
 @Service()
 export class CardinalCommerceVerificationService implements IThreeDVerificationService<void> {
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
-    private gatewayClient: GatewayClient,
+    private gatewayClient: IGatewayClient,
     private challengeService: CardinalChallengeService,
   ) {}
 

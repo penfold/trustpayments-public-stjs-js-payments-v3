@@ -18,7 +18,7 @@ import { ofType } from '../../../../shared/services/message-bus/operators/ofType
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 
 export class Input {
-  protected static PLACEHOLDER_ATTRIBUTE: string = 'placeholder';
+  protected static PLACEHOLDER_ATTRIBUTE = 'placeholder';
   public validation: Validation;
   protected _inputSelector: string;
   protected _labelSelector: string;
@@ -168,7 +168,7 @@ export class Input {
     }
   }
 
-  protected setEventListener(event: string, validate: boolean = true): void {
+  protected setEventListener(event: string, validate = true): void {
     this._messageBus.subscribeType(event, () => {
       if (validate) {
         this.validateInput();

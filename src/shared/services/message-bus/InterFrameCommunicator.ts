@@ -13,6 +13,7 @@ import { FrameNotFound } from './errors/FrameNotFound';
 import { Debug } from '../../Debug';
 import { CONFIG, WINDOW } from '../../dependency-injection/InjectionTokens';
 import { IConfig } from '../../model/config/IConfig';
+import { EventDataSanitizer } from './EventDataSanitizer';
 
 @Service()
 export class InterFrameCommunicator {
@@ -29,6 +30,7 @@ export class InterFrameCommunicator {
     private identifier: FrameIdentifier,
     private frameAccessor: FrameAccessor,
     private container: ContainerInstance,
+    private eventDataSanitizer: EventDataSanitizer,
     @Inject(WINDOW) private window: Window
   ) {
     this.incomingEvent$ = fromEvent<MessageEvent>(this.window, InterFrameCommunicator.MESSAGE_EVENT).pipe(
@@ -69,8 +71,9 @@ export class InterFrameCommunicator {
       const parentFrame = this.frameAccessor.getParentFrame();
       const targetFrame = this.resolveTargetFrame(target);
       const frameOrigin = targetFrame === parentFrame ? this.getParentOrigin() : this.frameOrigin;
+      const sanitizedMessage: IMessageBusEvent = { ...message, data: this.eventDataSanitizer.sanitize(message.data) };
 
-      targetFrame.postMessage(message, frameOrigin);
+      targetFrame.postMessage(sanitizedMessage, frameOrigin);
     } catch (e) {
       if (e instanceof FrameNotFound) {
         return Debug.warn(e.message);

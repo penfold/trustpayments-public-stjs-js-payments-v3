@@ -7,5 +7,5 @@ export const ExceptionsToSkip = [
   'NS_ERROR_NOT_INITIALIZED',
   'Non-Error promise rejection captured with keys: message',
   'postMessage is not a function',
-  `Cannot read property 'frames' of null`,
+  'Cannot read property \'frames\' of null',
 ];

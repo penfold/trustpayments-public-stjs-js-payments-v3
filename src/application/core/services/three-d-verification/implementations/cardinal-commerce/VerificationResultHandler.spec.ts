@@ -20,7 +20,7 @@ describe('VerificationResultHandler', () => {
     enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
     threedpayload: '3dpayload',
     transactionreference: 'ref',
-    requesttypescription: 'THREEDQUERY',
+    requesttypedescription: 'THREEDQUERY',
     threedversion: '',
   };
   const jsInitResponseMock: IThreeDInitResponse = {
@@ -31,6 +31,7 @@ describe('VerificationResultHandler', () => {
     transactionstartedtimestamp: 'transactionstartedtimestamp',
     threedsprovider: ThreeDVerificationProviderName.CARDINAL,
     cachetoken: 'aaa',
+    jwt: '',
   };
 
   let verificationResultHandler: VerificationResultHandler;
@@ -96,7 +97,7 @@ describe('VerificationResultHandler', () => {
             enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
             threedpayload: '3dpayload',
             transactionreference: 'ref',
-            requesttypescription: 'THREEDQUERY',
+            requesttypedescription: 'THREEDQUERY',
             acquirerresponsecode: '1234',
             acquirerresponsemessage: 'error occured',
             errorcode: '50003',

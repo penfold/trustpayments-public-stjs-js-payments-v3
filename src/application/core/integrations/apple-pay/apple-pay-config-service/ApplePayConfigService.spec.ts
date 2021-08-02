@@ -62,7 +62,7 @@ describe('ApplePayConfigService', () => {
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
   const applePayNetworkService: ApplePayNetworksService = mock(ApplePayNetworksService);
   const applePaySessionService: ApplePaySessionService = mock(ApplePaySessionService);
-  const jwt: string = 'somerandomjwt';
+  const jwt = 'somerandomjwt';
   const applePayConfigService: ApplePayConfigService = new ApplePayConfigService(
     instance(jwtDecoderMock),
     instance(applePayNetworkService),
@@ -71,11 +71,11 @@ describe('ApplePayConfigService', () => {
   when(applePaySessionService.getLatestSupportedApplePayVersion()).thenReturn(5);
 
   describe('update paymentRequest object', () => {
-    const currencyCode: string = 'PLN';
-    const amount: string = '22.00';
+    const currencyCode = 'PLN';
+    const amount = '22.00';
     let paymentRequestUpdated: IApplePayPaymentRequest = paymentRequest;
 
-    it(`should update paymentRequest object with indicated currency code`, () => {
+    it('should update paymentRequest object with indicated currency code', () => {
       paymentRequestUpdated = {
         ...paymentRequest,
         currencyCode,
@@ -84,7 +84,7 @@ describe('ApplePayConfigService', () => {
       expect(applePayConfigService.updateCurrencyCode(paymentRequest, currencyCode)).toEqual(paymentRequestUpdated);
     });
 
-    it(`should update paymentRequest object with indicated amount`, () => {
+    it('should update paymentRequest object with indicated amount', () => {
       paymentRequestUpdated = {
         ...paymentRequest,
         total: {
@@ -96,7 +96,7 @@ describe('ApplePayConfigService', () => {
       expect(applePayConfigService.updateAmount(paymentRequest, amount)).toEqual(paymentRequestUpdated);
     });
 
-    it(`should update paymentRequest object with indicated requestTypes`, () => {
+    it('should update paymentRequest object with indicated requestTypes', () => {
       paymentRequestUpdated = {
         ...paymentRequest,
       };
@@ -112,11 +112,11 @@ describe('ApplePayConfigService', () => {
       walletsource: 'some source',
       walletvalidationurl: 'some url',
     };
-    const walletMerchantId: string = 'new id';
-    const walletValidationUrl: string = 'new url';
+    const walletMerchantId = 'new id';
+    const walletValidationUrl = 'new url';
     let validateMerchantRequestUpdated: IApplePayValidateMerchantRequest = validateMerchantRequest;
 
-    it(`should update paymentRequest object with indicated currency code`, () => {
+    it('should update paymentRequest object with indicated currency code', () => {
       validateMerchantRequestUpdated = {
         ...validateMerchantRequest,
         walletmerchantid: walletMerchantId,
@@ -127,7 +127,7 @@ describe('ApplePayConfigService', () => {
       );
     });
 
-    it(`should update paymentRequest object with indicated validation url`, () => {
+    it('should update paymentRequest object with indicated validation url', () => {
       validateMerchantRequestUpdated = {
         ...validateMerchantRequest,
         walletvalidationurl: walletValidationUrl,

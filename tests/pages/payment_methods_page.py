@@ -241,6 +241,8 @@ class PaymentMethodsPage(BasePage):
             self.select_apple_pay_payment()
         elif payment_type == PaymentType.CARDINAL_COMMERCE.name:
             self.select_cardinal_commerce_payment()
+        elif payment_type == PaymentType.GOOGLE_PAY.name:
+            self.select_google_pay_payment()
 
     def select_cardinal_commerce_payment(self):
         if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION or 'High Sierra' in CONFIGURATION.REMOTE_OS_VERSION or \
@@ -269,6 +271,15 @@ class PaymentMethodsPage(BasePage):
             self._actions.click_by_javascript(PaymentMethodsLocators.visa_checkout_mock_button)
         else:
             self._actions.click(PaymentMethodsLocators.visa_checkout_mock_button)
+
+    def select_google_pay_payment(self):
+        self._waits.wait_for_javascript()
+        self.scroll_to_bottom()
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.google_pay_mock_button)
+        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
+            self._actions.click_by_javascript(PaymentMethodsLocators.google_pay_mock_button)
+        else:
+            self._actions.click(PaymentMethodsLocators.google_pay_mock_button)
 
     def get_element_attribute(self, field_type, attribute):
         attribute_value = ''
@@ -373,9 +384,6 @@ class PaymentMethodsPage(BasePage):
         assert expected_message in input_value, assertion_message
 
     def validate_payment_status_message(self, expected_message):
-        if CONFIGURATION.REMOTE_DEVICE:
-            self.scroll_to_top()
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
         actual_message = self.get_payment_status_message()
         assertion_message = f'Payment status is not correct, should be: "{expected_message}" but is: "{actual_message}"'
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
@@ -512,10 +520,11 @@ class PaymentMethodsPage(BasePage):
             assert_that(parsed_query_from_url[key][0], f'{key} param value: ').is_equal_to(value)
 
     def validate_form_status(self, field_type, form_status):
-        if 'enabled' in form_status:
-            self.validate_field_accessibility(field_type, should_be_enabled=True)
-        else:
-            self.validate_field_accessibility(field_type, should_be_enabled=False)
+        should_be_enabled = bool('enabled' in form_status)
+        is_enabled = self.is_field_enabled(field_type)
+        assertion_message = f'{FieldType[field_type].name} field enabled state should be: {should_be_enabled} but was: {is_enabled}'
+        add_to_shared_dict('assertion_message', assertion_message)
+        assert is_enabled is should_be_enabled, assertion_message
 
     def validate_if_callback_popup_is_displayed(self, callback_popup):
         is_displayed = False

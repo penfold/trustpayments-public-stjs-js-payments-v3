@@ -30,7 +30,7 @@ describe('CardinalChallengeService', () => {
     enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
     threedpayload: 'threedpayload',
     transactionreference: '',
-    requesttypescription: '',
+    requesttypedescription: '',
     threedversion: '',
   };
 
@@ -42,6 +42,7 @@ describe('CardinalChallengeService', () => {
     transactionstartedtimestamp: 'transactionstartedtimestamp',
     threedsprovider: ThreeDVerificationProviderName.CARDINAL,
     cachetoken: 'cachetoken',
+    jwt: '',
   };
 
   beforeEach(() => {

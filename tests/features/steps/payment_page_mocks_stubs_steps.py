@@ -7,10 +7,11 @@ from pages.page_factory import Pages
 from utils.enums.config import config
 from utils.enums.payment_type import PaymentType
 from utils.enums.request_type import RequestType, request_type_response, request_type_applepay, request_type_visa, \
-    request_type_tokenisation_response, frictionless_request_type, step_up_request_type
+    request_type_tokenisation_response, frictionless_request_type, step_up_request_type, request_type_google
 from utils.enums.responses.acs_response import ACSresponse
 from utils.enums.responses.apple_pay_response import ApplePayResponse
 from utils.enums.responses.auth_response import AUTHresponse
+from utils.enums.responses.google_pay_response import GooglePayResponse
 from utils.enums.responses.jsinit_response import jsinit_response
 from utils.enums.responses.tdq_response import TDQresponse
 from utils.enums.responses.visa_response import VisaResponse
@@ -61,6 +62,11 @@ def step_impl(context, request_type):
     stub_payment_status(MockUrl.VISA_MOCK_URI.value, VisaResponse.SUCCESS.value)
     stub_st_request_type(request_type_visa[request_type], request_type)
 
+@step('(?P<request_type>.+) GooglePay mock response is set to SUCCESS')
+def step_impl(context, request_type):
+    stub_payment_status(MockUrl.GATEWAY_MOCK_URI.value, GooglePayResponse.SUCCESS.value)
+    stub_st_request_type(request_type_google[request_type], request_type)
+
 
 @step('ACS mock response is set to "(?P<acs_response>.+)"')
 def step_impl(context, acs_response):
@@ -102,6 +108,21 @@ def step_impl(context, action_code):
         stub_payment_status(MockUrl.VISA_MOCK_URI.value, VisaResponse[action_code].value)
         stub_st_request_type(VisaResponse.VISA_AUTH_SUCCESS.value, 'THREEDQUERY, AUTH')
     page.choose_payment_methods(PaymentType.VISA_CHECKOUT.name)
+
+
+@when('User chooses GooglePay as payment method - response is set to "(?P<action_code>.+)"')
+def step_impl(context, action_code):
+    context.action_code = action_code
+    page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    if action_code == 'SUCCESS':
+        stub_payment_status(MockUrl.GATEWAY_MOCK_URI.value, GooglePayResponse[action_code].value)
+        stub_st_request_type(GooglePayResponse.GOOGLE_AUTH_SUCCESS.value, 'THREEDQUERY, AUTH')
+    elif action_code == 'ERROR':
+        stub_payment_status(MockUrl.GATEWAY_MOCK_URI.value, GooglePayResponse.SUCCESS.value)
+        stub_st_request_type(GooglePayResponse.ERROR.value, 'THREEDQUERY, AUTH')
+    elif action_code == 'CANCEL':
+        stub_payment_status(MockUrl.GATEWAY_MOCK_URI.value, GooglePayResponse[action_code].value)
+    page.choose_payment_methods(PaymentType.GOOGLE_PAY.name)
 
 
 @when('User chooses ApplePay as payment method - response is set to "(?P<action_code>.+)"')
@@ -149,7 +170,7 @@ def validate_number_of_requests_without_data(context, request_types, multiple):
 def validate_number_of_requests_with_pan_expirydate_cvv(context, request_types, multiple):
     page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE_MOCK)
     page.validate_number_of_requests_with_data(request_types, context.pan, context.exp_date, context.cvv,
-                                                       multiple)
+                                               multiple)
 
 
 def validate_number_of_requests_with_pan_expirydate(context, request_types, multiple):
@@ -225,7 +246,7 @@ def step_impl(context):
 def step_impl(context):
     page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE_MOCK)
     page.validate_number_of_requests_with_data('THREEDQUERY, AUTH', context.pan, context.exp_date,
-                                                       context.cvv, 1)
+                                               context.cvv, 1)
 
 
 @step('THREEDQUERY request was sent only once with correct data')
@@ -247,6 +268,8 @@ def step_impl(context, thirdparty):
         page.validate_number_of_wallet_verify_requests(MockUrl.VISA_MOCK_URI.value, 1)
     elif 'APPLE_PAY' in thirdparty:
         page.validate_number_of_wallet_verify_requests(MockUrl.APPLEPAY_MOCK_URI.value, 1)
+    elif 'GOOGLE_PAY' in thirdparty:
+        page.validate_number_of_wallet_verify_requests(MockUrl.GATEWAY_MOCK_URI.value, 1)
 
     if 'SUCCESS' in context.action_code or 'DECLINE' in context.action_code or 'ERROR' in context.action_code:
         page.validate_number_of_thirdparty_requests('THREEDQUERY, AUTH', PaymentType[thirdparty].value, 1)
@@ -264,16 +287,16 @@ def step_impl(context, request_type, scenario):
             page.validate_number_of_requests_with_fraudcontroltransactionid_flag(request_type, 1)
         else:
             page.validate_number_of_requests_with_data_and_fraudcontroltransactionid_flag(request_type,
-                                                                                                  context.pan,
-                                                                                                  context.exp_date,
-                                                                                                  context.cvv, 1)
+                                                                                          context.pan,
+                                                                                          context.exp_date,
+                                                                                          context.cvv, 1)
     elif 'Visa Checkout - Cybertonica' in context.scenario.name or 'ApplePay - Cybertonica' in context.scenario.name:
         page.validate_number_of_requests_with_fraudcontroltransactionid_flag(request_type, 0)
     else:
         page.validate_number_of_requests_with_data_and_fraudcontroltransactionid_flag(request_type,
-                                                                                              context.pan,
-                                                                                              context.exp_date,
-                                                                                              context.cvv, 0)
+                                                                                      context.pan,
+                                                                                      context.exp_date,
+                                                                                      context.cvv, 0)
 
 
 @step('(?P<request_type>.+) request for (?P<thirdparty>.+) is sent only once with correct data')
@@ -287,13 +310,13 @@ def step_impl(context, request_type):
     page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE_MOCK)
     if 'WALLETVERIFY' in request_type and 'APPLE_PAY' in context.thirdparty:
         page.validate_updated_jwt_in_request(request_type, MockUrl.APPLEPAY_MOCK_URI.value,
-                                                     context.update_jwt, 1)
+                                             context.update_jwt, 1)
     elif 'VISA_CHECKOUT' in request_type:
         page.validate_updated_jwt_in_request_for_visa(PaymentType.VISA_CHECKOUT.value,
-                                                              context.update_jwt_from_jsinit, 1)
+                                                      context.update_jwt_from_jsinit, 1)
     else:
         page.validate_updated_jwt_in_request(request_type, MockUrl.GATEWAY_MOCK_URI.value,
-                                                     context.update_jwt, 1)
+                                             context.update_jwt, 1)
 
 
 def stub_jsinit_request(context):

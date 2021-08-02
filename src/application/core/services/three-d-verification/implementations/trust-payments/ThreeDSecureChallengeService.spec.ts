@@ -36,7 +36,7 @@ describe('ThreeDSecureChallengeService', () => {
       enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       threedpayload: '',
       transactionreference: '',
-      requesttypescription: '',
+      requesttypedescription: '',
       threedversion: '2.2.0',
     };
 
@@ -83,7 +83,7 @@ describe('ThreeDSecureChallengeService', () => {
       acsurl: 'https://acsurl',
       enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       transactionreference: '',
-      requesttypescription: '',
+      requesttypedescription: '',
       threedversion: '1.0.5',
       pareq: 'pareq',
       md: 'merchantdata',

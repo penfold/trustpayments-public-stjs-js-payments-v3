@@ -26,7 +26,7 @@ import { IFormFieldsValidity } from '../../models/IFormFieldsValidity';
 
 @Service()
 export class Validation {
-  public static ERROR_FIELD_CLASS: string = 'error-field';
+  public static ERROR_FIELD_CLASS = 'error-field';
 
   public static clearNonDigitsChars(value: string): string {
     return value.replace(Validation.ESCAPE_DIGITS_REGEXP, Validation.CLEAR_VALUE);
@@ -81,20 +81,20 @@ export class Validation {
     };
   }
 
-  private static BACKSPACE_KEY_CODE: number = 8;
-  private static CARD_NUMBER_DEFAULT_LENGTH: number = 16;
-  private static CARD_NUMBER_FIELD_NAME: string = 'pan';
-  private static CLEAR_VALUE: string = '';
-  private static DELETE_KEY_CODE: number = 46;
+  private static BACKSPACE_KEY_CODE = 8;
+  private static CARD_NUMBER_DEFAULT_LENGTH = 16;
+  private static CARD_NUMBER_FIELD_NAME = 'pan';
+  private static CLEAR_VALUE = '';
+  private static DELETE_KEY_CODE = 46;
   private static ENTER_KEY_CODE = 13;
-  private static ERROR_CLASS: string = 'error';
+  private static ERROR_CLASS = 'error';
   private static ESCAPE_DIGITS_REGEXP = /[^\d]/g;
-  private static EXPIRY_DATE_FIELD_NAME: string = 'expirydate';
-  private static ID_PARAM_NAME: string = 'id';
+  private static EXPIRY_DATE_FIELD_NAME = 'expirydate';
+  private static ID_PARAM_NAME = 'id';
   private static MATCH_CHARS = /[^\d]/g;
   private static MATCH_DIGITS = /^[0-9]*$/;
   private static MERCHANT_EXTRA_FIELDS_PREFIX = 'billing';
-  private static SECURITY_CODE_FIELD_NAME: string = 'securitycode';
+  private static SECURITY_CODE_FIELD_NAME = 'securitycode';
   private static BACKEND_ERROR_FIELDS_NAMES = {
     cardNumber: 'pan',
     expirationDate: 'expirydate',
@@ -221,14 +221,14 @@ export class Validation {
   }
 
   public keepCursorsPosition(element: HTMLInputElement): void {
-    const cursorSingleSkip: number = 1;
-    const cursorDoubleSkip: number = 2;
-    const dateSlash: string = '/';
+    const cursorSingleSkip = 1;
+    const cursorDoubleSkip = 2;
+    const dateSlash = '/';
     const end: number = this._selectionRangeEnd;
     const start: number = this._selectionRangeStart;
-    const noSelection: number = 0;
+    const noSelection = 0;
     const selectionLength: number = start - end;
-    const spaceInPan: string = ' ';
+    const spaceInPan = ' ';
     const lengthFormatted: number = element.value.length;
     const isLastCharSlash: boolean = element.value.charAt(lengthFormatted - cursorDoubleSkip) === dateSlash;
 

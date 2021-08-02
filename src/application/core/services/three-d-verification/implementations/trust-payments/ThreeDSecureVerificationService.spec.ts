@@ -14,7 +14,6 @@ import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../../shared/message-bus/SimpleMessageBus';
-import { GatewayClient } from '../../../GatewayClient';
 import { ThreeDSecureVerificationService } from './ThreeDSecureVerificationService';
 import { ICard } from '../../../../models/ICard';
 import { IMerchantData } from '../../../../models/IMerchantData';
@@ -31,10 +30,12 @@ import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
 import { Enrollment } from '../../../../models/constants/Enrollment';
 import { CustomerOutput } from '../../../../models/constants/CustomerOutput';
 import DoneCallback = jest.DoneCallback;
+import { IGatewayClient } from '../../../gateway-client/IGatewayClient';
+import { ThreeDLookupRequest } from './data/ThreeDLookupRequest';
 
 describe('ThreeDSecureVerificationService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
-  let gatewayClient: GatewayClient;
+  let gatewayClient: IGatewayClient;
   let configProvider: TestConfigProvider;
   let threeDSMethodService: ThreeDSecureMethodService;
   let browserDataProvider: BrowserDataProvider;
@@ -53,7 +54,7 @@ describe('ThreeDSecureVerificationService', () => {
 
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
-    gatewayClient = mock(GatewayClient);
+    gatewayClient = mock<IGatewayClient>();
     threeDSMethodService = mock(ThreeDSecureMethodService);
     browserDataProvider = mock(BrowserDataProvider);
     challengeService = mock(ThreeDSecureChallengeService);
@@ -114,6 +115,7 @@ describe('ThreeDSecureVerificationService', () => {
       requesttypedescription: 'JSINIT',
       transactionstartedtimestamp: 'transactionstartedtimestamp',
       threedsprovider: ThreeDVerificationProviderName.TP,
+      jwt: '',
     };
     const threeDQueryResponseMock: IThreeDQueryResponse = {
       jwt: '',
@@ -124,7 +126,7 @@ describe('ThreeDSecureVerificationService', () => {
       enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       threedpayload: '',
       transactionreference: '',
-      requesttypescription: '',
+      requesttypedescription: '',
       threedversion: '',
     };
     const updatedThreeDQueryResponseMock: IThreeDQueryResponse = {
@@ -168,7 +170,7 @@ describe('ThreeDSecureVerificationService', () => {
     beforeEach(() => {
       when(gatewayClient.threedQuery(deepEqual(tdqRequestWithoutBrowserData))).thenReturn(of(threeDQueryResponseMock));
       when(gatewayClient.threedQuery(deepEqual(tdqRequestWithBrowserData))).thenReturn(of(threeDQueryResponseMock));
-      when(gatewayClient.threedLookup(card)).thenReturn(of(threedLookupResponse));
+      when(gatewayClient.threedLookup(anything())).thenReturn(of(threedLookupResponse));
       when(threeDSMethodService.perform3DSMethod$(
         threedLookupResponse.threedmethodurl,
         threedLookupResponse.threednotificationurl,
@@ -195,7 +197,7 @@ describe('ThreeDSecureVerificationService', () => {
 
     it('runs THREEDLOOKUP request on the gateway', done => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
-        verify(gatewayClient.threedLookup(card)).once();
+        verify(gatewayClient.threedLookup(deepEqual(new ThreeDLookupRequest(card.expirydate, card.securitycode, card.pan)))).once();
         done();
       });
     });
