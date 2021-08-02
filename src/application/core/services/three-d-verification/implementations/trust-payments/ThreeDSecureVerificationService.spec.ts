@@ -197,7 +197,7 @@ describe('ThreeDSecureVerificationService', () => {
 
     it('runs THREEDLOOKUP request on the gateway', done => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
-        verify(gatewayClient.threedLookup(deepEqual(new ThreeDLookupRequest(card.expirydate, card.securitycode, card.pan)))).once();
+        verify(gatewayClient.threedLookup(deepEqual(new ThreeDLookupRequest(card.expirydate, card.pan, card.securitycode)))).once();
         done();
       });
     });

@@ -81,7 +81,7 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
       isTransactionComplete$.next(true);
     });
 
-    const lookupRequest = new ThreeDLookupRequest(card.expirydate, card.securitycode, card.pan);
+    const lookupRequest = new ThreeDLookupRequest(card.expirydate, card.pan, card.securitycode);
 
     return this.gatewayClient.threedLookup(lookupRequest).pipe(
       switchMap((response: IThreeDLookupResponse) => {
