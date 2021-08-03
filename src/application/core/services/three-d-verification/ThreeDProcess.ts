@@ -3,7 +3,7 @@ import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Service } from 'typedi';
-import { first, mapTo, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { first, mapTo, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { combineLatest, Observable } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ICard } from '../../models/ICard';
@@ -19,12 +19,15 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 export class ThreeDProcess {
   private jsInitResponse$: Observable<IThreeDInitResponse>;
   private verificationService$: Observable<IThreeDVerificationService<ConfigInterface | void>>;
+  private destroy$: Observable<IMessageBusEvent<unknown>>;
 
   constructor(
     private messageBus: IMessageBus,
     private gatewayClient: IGatewayClient,
     private threeDVerificationServiceProvider: ThreeDVerificationProviderService,
-  ) {}
+  ) {
+    this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+  }
 
   init$(): Observable<void> {
     this.jsInitResponse$ = this.messageBus.pipe(
@@ -39,6 +42,10 @@ export class ThreeDProcess {
       switchMap(jsInitResponse => this.initVerificationService$(jsInitResponse)),
       shareReplay(1),
     );
+
+    this.messageBus
+      .pipe(ofType(PUBLIC_EVENTS.THREED_CANCEL), takeUntil(this.destroy$))
+      .subscribe(() => this.cancelThreeDProcess());
 
     return this.verificationService$.pipe(mapTo(undefined));
   }
@@ -57,6 +64,10 @@ export class ThreeDProcess {
         merchantData,
       )),
     );
+  }
+
+  cancelThreeDProcess(): void {
+    console.error('Cancel should be called');
   }
 
   private initVerificationService$(jsInitResponse: IThreeDInitResponse): Observable<IThreeDVerificationService<ConfigInterface | void>> {
