@@ -12,6 +12,7 @@ import { IStartPaymentMethod } from './events/IStartPaymentMethod';
 import { Debug } from '../../../../shared/Debug';
 import { IPaymentResult } from './IPaymentResult';
 import { PaymentResultHandler } from './PaymentResultHandler';
+import { ErrorResultFactory } from './ErrorResultFactory';
 
 @Service()
 export class PaymentController {
@@ -21,7 +22,8 @@ export class PaymentController {
   constructor(
     private container: ContainerInstance,
     private messageBus: IMessageBus,
-    private paymentResultHandler: PaymentResultHandler
+    private paymentResultHandler: PaymentResultHandler,
+    private errorResultFactory: ErrorResultFactory,
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
@@ -57,11 +59,11 @@ export class PaymentController {
         switchMap(({ name, data }: IStartPaymentMethod<unknown>) =>
           of(true).pipe(
             switchMap(() => this.getPaymentMethod(name).start(data)),
-            catchError((error: Error) => {
+            catchError((error: unknown) => {
               Debug.error(`Running payment method failed: ${name}`, error);
 
-              return EMPTY;
-            })
+              return of(this.errorResultFactory.createResultFromError(error));
+            }),
           )
         ),
         takeUntil(this.destroy$)
