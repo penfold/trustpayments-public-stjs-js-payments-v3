@@ -9,7 +9,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_jsautotpthreeds91801 |
+      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay button
