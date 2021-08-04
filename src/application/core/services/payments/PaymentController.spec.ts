@@ -1,7 +1,7 @@
 import { ContainerInstance } from 'typedi';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { PaymentController } from './PaymentController';
-import { anything, instance, mock, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
 import { IPaymentMethod } from './IPaymentMethod';
 import { PaymentMethodToken } from '../../../dependency-injection/InjectionTokens';
@@ -14,6 +14,7 @@ import { IPaymentResult } from './IPaymentResult';
 import { PaymentStatus } from './PaymentStatus';
 import { IStartPaymentMethod } from './events/IStartPaymentMethod';
 import { delay } from 'rxjs/operators';
+import { ErrorResultFactory } from './ErrorResultFactory';
 import spyOn = jest.spyOn;
 
 describe('PaymentController', () => {
@@ -21,6 +22,7 @@ describe('PaymentController', () => {
   let messageBus: IMessageBus;
   let paymentController: PaymentController;
   let paymentResultHandlerMock: PaymentResultHandler;
+  let errorResultFactoryMock: ErrorResultFactory;
   let fooPaymentMethodMock: IPaymentMethod;
   let fooPaymentMethod: IPaymentMethod;
   let barPaymentMethodMock: IPaymentMethod;
@@ -29,13 +31,19 @@ describe('PaymentController', () => {
   beforeEach(() => {
     containerMock = mock(ContainerInstance);
     paymentResultHandlerMock = mock(PaymentResultHandler);
+    errorResultFactoryMock = mock(ErrorResultFactory);
     fooPaymentMethodMock = mock<IPaymentMethod>();
     fooPaymentMethod = instance(fooPaymentMethodMock);
     barPaymentMethodMock = mock<IPaymentMethod>();
     barPaymentMethod = instance(barPaymentMethodMock);
 
     messageBus = new SimpleMessageBus();
-    paymentController = new PaymentController(instance(containerMock), messageBus, instance(paymentResultHandlerMock));
+    paymentController = new PaymentController(
+      instance(containerMock),
+      messageBus,
+      instance(paymentResultHandlerMock),
+      instance(errorResultFactoryMock),
+    );
 
     when(containerMock.getMany(PaymentMethodToken)).thenReturn([fooPaymentMethod, barPaymentMethod]);
     when(fooPaymentMethodMock.getName()).thenReturn('foo');
@@ -196,6 +204,18 @@ describe('PaymentController', () => {
 
     it('logs error message when trying to start not existing payment method', () => {
       const data = { bbb: 'ccc' };
+      const error = new Error('Payment method with name nonexisting not found.');
+      const errorResult: IPaymentResult<Error> = {
+        status: PaymentStatus.ERROR,
+        data: error,
+        error: {
+          code: 123,
+          message: 'error',
+        },
+      };
+
+      when(errorResultFactoryMock.createResultFromError(deepEqual(error))).thenReturn(errorResult);
+
       spyOn(messageBus, 'publish');
 
       messageBus.publish<IStartPaymentMethod<typeof data>>({
@@ -206,19 +226,29 @@ describe('PaymentController', () => {
         },
       });
 
-      verify(paymentResultHandlerMock.handle(anything())).never();
-      expect(messageBus.publish).not.toHaveBeenCalledWith({ type: PUBLIC_EVENTS.JWT_RESET });
+      verify(paymentResultHandlerMock.handle(errorResult)).once();
+      expect(messageBus.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.JWT_RESET });
       expect(Debug.error).toHaveBeenCalledWith(
         'Running payment method failed: nonexisting',
-        new Error('Payment method with name nonexisting not found.')
+        error,
       );
     });
 
-    it('logs error message when payment method processing fails', () => {
+    it('logs error message and returns error result when payment method processing fails', () => {
       const data = { bbb: 'ccc' };
       const paymentError = new Error('payment failed');
+      const errorResult: IPaymentResult<Error> = {
+        status: PaymentStatus.ERROR,
+        data: paymentError,
+        error: {
+          code: 123,
+          message: 'error',
+        },
+      };
+
       spyOn(messageBus, 'publish');
 
+      when(errorResultFactoryMock.createResultFromError(paymentError)).thenReturn(errorResult);
       when(fooPaymentMethodMock.start(data)).thenThrow(paymentError);
 
       messageBus.publish<IStartPaymentMethod<typeof data>>({
@@ -229,8 +259,8 @@ describe('PaymentController', () => {
         },
       });
 
-      verify(paymentResultHandlerMock.handle(anything())).never();
-      expect(messageBus.publish).not.toHaveBeenCalledWith({ type: PUBLIC_EVENTS.JWT_RESET });
+      verify(paymentResultHandlerMock.handle(errorResult)).once();
+      expect(messageBus.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.JWT_RESET });
       expect(Debug.error).toHaveBeenCalledWith('Running payment method failed: foo', paymentError);
     });
 
