@@ -54,6 +54,10 @@ export class ThreeDSecureClient {
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE)
       .thenRespond(() => of(this.threeDSecure.hideProcessingScreen()));
+
+    this.interFrameCommunicator
+      .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_CANCEL)
+      .thenRespond(() => this.cancel$());
   }
 
   private init$(config: ConfigInterface): Observable<ConfigInterface> {
@@ -88,5 +92,9 @@ export class ThreeDSecureClient {
       data.termURL,
       data.merchantData,
     );
+  }
+
+  private cancel$(): Observable<ChallengeResultInterface>  {
+    return this.threeDSecure.cancel$();
   }
 }

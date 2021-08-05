@@ -153,6 +153,7 @@
   <input type="button" id="st-action-destroy" value="Destroy ST">
   <input type="button" id="st-action-start" value="Start ST">
   <input type="button" id="st-action-cancel-3ds" value="Cancel 3DS">
+  <input type="button" id="st-action-cancel-3ds-threedprocess" value="Cancel 3DS from 3DS library">
   <a href="#" id="st-actions-toggler" class="st-helper-actions__toggler"></a>
 </div>
 <script type="text/javascript" src="/counter.js"></script>
@@ -190,6 +191,7 @@
           document.getElementById('st-apple-pay').innerHTML = '';
         });
         addClickHandler('st-action-cancel-3ds', function() { st.cancelThreeDProcess(); });
+        addClickHandler('st-action-cancel-3ds-threedprocess', function() { st.cancel3dsLibraryThreedProcess(); });
         addClickHandler('st-actions-toggler', function() {
           document.getElementById('st-helper-actions').classList.toggle('st-helper-actions--unfold');
         });
