@@ -11,6 +11,7 @@ from configuration import CONFIGURATION
 from pages.page_factory import PageFactory
 from utils.actions import Actions
 from utils.browser_executor import BrowserExecutor
+from utils.configurations.jwt_generator import replace_jwt_in_logs
 from utils.driver_factory import DriverFactory
 from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed, \
     clear_shared_dict, add_to_shared_dict
@@ -78,6 +79,8 @@ def after_scenario(context, scenario):
         LOGGER.info('Printing console logs:')
         try:
             for entry in context.driver_factory.get_driver().get_log('browser'):
+                if 'jwt' in entry['message']:
+                    entry = replace_jwt_in_logs(entry)
                 LOGGER.info(entry)
         except:
             LOGGER.info('Error was thrown while printing console logs')
