@@ -26,7 +26,7 @@ Feature: 3ds SDK v1 E2E tests - MasterCard
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled" after payment
+    And User will see that Submit button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -54,7 +54,7 @@ Feature: 3ds SDK v1 E2E tests - MasterCard
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled" after payment
+    And User will see that Submit button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -82,7 +82,7 @@ Feature: 3ds SDK v1 E2E tests - MasterCard
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled" after payment
+    And User will see that Submit button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -110,7 +110,7 @@ Feature: 3ds SDK v1 E2E tests - MasterCard
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>" after payment
+    And User will see that Submit button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -136,7 +136,7 @@ Feature: 3ds SDK v1 E2E tests - MasterCard
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled" after payment
+    And User will see that Submit button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:

@@ -30,7 +30,6 @@
     OS_VERSION: Big Sur
     BROWSER: Safari
     BROWSER_VERSION: 'latest'
-    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
 
 .apple-pay-component-tests-part-1:
   extends: .apple-pay-component-tests-browserstack
@@ -448,7 +447,7 @@ SamsungGalaxyS6-5.0-browser-not-supported-e2e-tests-nightly:
     DEVICE: Samsung Galaxy S8
     OS_VERSION: '7.0'
     REAL_MOBILE: 'true'
-    BROWSERSTACK_APPIUM_VERSION: '1.14.0'
+    BROWSER: Chrome
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: browserstack_4
 
@@ -471,7 +470,7 @@ SamsungGalaxyS8-7.0-e2e-tests-smoke-nightly:
     DEVICE: Samsung Galaxy S9
     OS_VERSION: '8.0'
     REAL_MOBILE: 'true'
-    BROWSERSTACK_APPIUM_VERSION: '1.18.2'
+    BROWSER: Chrome
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: browserstack_1
 
@@ -494,7 +493,7 @@ SamsungGalaxyS9-8.0-e2e-tests-smoke-nightly:
     DEVICE: Samsung Galaxy S10 Plus
     OS_VERSION: '9.0'
     REAL_MOBILE: 'true'
-    BROWSERSTACK_APPIUM_VERSION: '1.18.0'
+    BROWSER: Chrome
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: browserstack_2
 
@@ -516,7 +515,7 @@ SamsungGalaxyS10Plus-9.0-e2e-tests-smoke-nightly:
     DEVICE: Samsung Galaxy S20
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
-    BROWSERSTACK_APPIUM_VERSION: '1.18.0'
+    BROWSER: Chrome
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: browserstack_master_9
 
@@ -539,7 +538,7 @@ SamsungGalaxyS20-10.0-e2e-tests-smoke-nightly:
     DEVICE: Google Pixel 4
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
-    BROWSERSTACK_APPIUM_VERSION: '1.18.0'
+    BROWSER: Chrome
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
   resource_group: browserstack_master_10
 
@@ -677,7 +676,6 @@ win10-IE-11.0-visual-tests-styling-nightly:
     OS_VERSION: Big Sur
     BROWSER: Safari
     BROWSER_VERSION: '14.0'
-    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: $VISUAL_TESTS_SAFARI_TAG
   resource_group: browserstack_2
 
@@ -701,7 +699,6 @@ OSXBigSur-Safari-14.0-visual-tests-nightly:
     OS_VERSION: Big Sur
     BROWSER: Safari
     BROWSER_VERSION: '14.0'
-    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
     POETRY_TAGS: $VISUAL_STYLING_TESTS_SAFARI_TAG
   resource_group: browserstack_3
 
@@ -726,7 +723,7 @@ OSXBigSur-Safari-14.0-visual-tests-styling-nightly:
     DEVICE: Samsung Galaxy S20
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
-    BROWSERSTACK_APPIUM_VERSION: '1.18.2'
+    BROWSER: Chrome
     POETRY_TAGS: $VISUAL_TESTS_TAG
   resource_group: browserstack_4
 
@@ -749,7 +746,7 @@ SamsungGalaxyS20-10.0-visual-tests-nightly:
     DEVICE: Samsung Galaxy S20
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
-    BROWSERSTACK_APPIUM_VERSION: '1.18.0'
+    BROWSER: Chrome
     POETRY_TAGS: $VISUAL_STYLING_TESTS_TAG
   resource_group: browserstack_1
 
