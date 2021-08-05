@@ -65,7 +65,7 @@ def delete_empty_from_json(dictionary):
 
 
 def replace_jwt(entry):
-    """Method to replace jwt from entry with random values"""
+    """Replace jwt from entry with random values"""
     if 'jwt' in entry:
         start_index = entry.rfind('%3A%20%22')
         random_text = get_string(25, 1)
@@ -75,7 +75,7 @@ def replace_jwt(entry):
 
 
 def replace_jwt_in_logs(log_entry):
-    """Method to replace jwt from log entry with random values"""
+    """Replace jwt from log entry with random values"""
     log_with_replaced_jwt = replace_jwt(log_entry['message'])
     log_entry['message'] = log_with_replaced_jwt
     return log_entry
