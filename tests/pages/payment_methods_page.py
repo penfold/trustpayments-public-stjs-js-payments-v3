@@ -7,6 +7,7 @@ from configuration import CONFIGURATION
 from pages.base_page import BasePage
 from pages.locators.payment_methods_locators import PaymentMethodsLocators
 from utils.configurations import jwt_generator
+from utils.configurations.jwt_generator import replace_jwt
 from utils.enums.auth_data import AuthData
 from utils.enums.auth_type import AuthType
 from utils.enums.field_type import FieldType
@@ -497,7 +498,8 @@ class PaymentMethodsPage(BasePage):
     def validate_if_url_contains_info_about_payment(self, expected_url):
         self._waits.wait_until_url_contains(expected_url)
         actual_url = self._browser_executor.get_page_url()
-        assertion_message = f'Url is not correct, should be: "{expected_url}" but is: "{actual_url}"'
+        actual_url_for_logs = replace_jwt(actual_url)
+        assertion_message = f'Url is not correct, should be: "{expected_url}" but is: "{actual_url_for_logs}"'
         add_to_shared_dict('assertion_message', assertion_message)
         assert expected_url in actual_url, assertion_message
 
