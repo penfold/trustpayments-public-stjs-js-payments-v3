@@ -2,5 +2,8 @@
   "components": {
     "startOnLoad": true
   },
-  "submitOnSuccess": false
+  "submitOnSuccess": false,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
+  "errorCallback": "errorCallback"
 }
