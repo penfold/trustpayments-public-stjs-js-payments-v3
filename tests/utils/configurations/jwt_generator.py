@@ -75,7 +75,7 @@ def replace_jwt(entry):
 
 
 def replace_updated_jwt(entry):
-    if'updatedJwt' in entry:
+    if 'updatedJwt' in entry:
         start_index = entry.rfind('updatedJwt=')
         end_index = entry.rfind('&inline')
         random_text = get_string(25, 1)
