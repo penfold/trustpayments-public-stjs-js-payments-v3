@@ -1,5 +1,4 @@
 {
-  "analytics": true,
   "fieldsToSubmit": [
     "pan",
     "expirydate",
@@ -7,5 +6,7 @@
   ],
   "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJUSFJFRURRVUVSWSIsIkFVVEgiLCJSSVNLREVDIl0sInRocmVlZGJ5cGFzc3BheW1lbnR0eXBlcyI6WyJWSVNBIiwiQU1FWCIsIk1BU1RFUkNBUkQiLCJESVNDT1ZFUiIsIkpDQiIsIkRJTkVSUyIsIlBJQkEiXX19.axTbsWzNxUXQ0u3Tpp_M5fqUENvzmb4JfDNHl9bR6rE",
   "panIcon": true,
-  "submitOnSuccess": false
+  "submitOnSuccess": false,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback"
 }

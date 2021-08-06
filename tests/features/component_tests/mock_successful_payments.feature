@@ -28,7 +28,7 @@ Feature: Successful payments with various configurations
       | 5100000000000511 | 12/22           | 123  | MASTERCARD |
       | 340000000000611  | 12/22           | 1234 | AMEX       |
 
-  @config_update_jwt_true @smoke_mock_test @extended_tests_part_2
+  @base_config @smoke_mock_test @extended_tests_part_2
   Scenario: Successful payment with updated JWT
     Given User opens mock payment page WITH_UPDATE_JWT
       | jwtName          |

@@ -1,5 +1,4 @@
 {
-  "analytics": true,
   "animatedCard": false,
   "fieldsToSubmit": [
     "pan",
@@ -44,5 +43,7 @@
       "displayName": "My Test Site"
     }
   },
-  "cybertonicaApiKey": ""
+  "cybertonicaApiKey": "",
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback"
 }

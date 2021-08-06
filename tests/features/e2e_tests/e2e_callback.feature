@@ -59,6 +59,133 @@ Feature: E2E callbacks after payment
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
 
+
+  Scenario: Verify redirect on submit callback
+    Given JS library configured by inline params REDIRECT_ON_SUBMIT_CALLBACK_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    When User opens example page
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
+    And User clicks Pay button
+    Then User will not see notification frame
+    And User will be sent to page with url "example.org" having params
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | 1000                                    |
+      | currencyiso3a        | GBP                                     |
+      | errorcode            | 0                                       |
+      | status               | A                                       |
+      | eci                  | 06                                      |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
+      | enrolled             | Y                                       |
+      | settlestatus         | 0                                       |
+
+
+  Scenario: Verify redirect on success callback
+    Given JS library configured by inline params REDIRECT_ON_SUCCESS_CALLBACK_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    When User opens example page
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
+    And User clicks Pay button
+    Then User will not see notification frame
+    And User will be sent to page with url "example.org" having params
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | 1000                                    |
+      | currencyiso3a        | GBP                                     |
+      | errorcode            | 0                                       |
+      | status               | A                                       |
+      | eci                  | 06                                      |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
+      | enrolled             | Y                                       |
+      | settlestatus         | 0                                       |
+
+
+  Scenario: Verify redirect on error callback
+    Given JS library configured by inline params REDIRECT_ON_ERROR_CALLBACK_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    When User opens example page
+    When User fills payment form with defined card VISA_DECLINED_CARD
+    And User clicks Pay button
+    Then User will not see notification frame
+    And User will be sent to page with url "example.org" having params
+      | key                  | value              |
+      | errormessage         | Decline            |
+      | baseamount           | 1000               |
+      | currencyiso3a        | GBP                |
+      | errorcode            | 70000              |
+      | currencyiso3a        | GBP                |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | eci                  | 07                 |
+      | settlestatus         | 3                  |
+
+
+  Scenario: Verify redirect on submit callback - declined payment
+    Given JS library configured by inline params REDIRECT_ON_SUBMIT_CALLBACK_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    When User opens example page
+    When User fills payment form with defined card VISA_DECLINED_CARD
+    And User clicks Pay button
+    Then User will not see notification frame
+    And User will be sent to page with url "example.org" having params
+      | key                  | value              |
+      | errormessage         | Decline            |
+      | baseamount           | 1000               |
+      | currencyiso3a        | GBP                |
+      | errorcode            | 70000              |
+      | threedresponse       | should be none     |
+      | transactionreference | should not be none |
+      | jwt                  | should not be none |
+      | eci                  | 07                 |
+      | settlestatus         | 3                  |
+
+
+  Scenario: Verify redirect on submit callback with additional errorcode check
+    Given JS library configured by inline params REDIRECT_ON_SUBMIT_CALLBACK_WITH_ERRORCODE_CHECK_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    When User opens example page
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
+    And User clicks Pay button
+    Then User will not see notification frame
+    And User will be sent to page with url "example.org" having params
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | 1000                                    |
+      | currencyiso3a        | GBP                                     |
+      | errorcode            | 0                                       |
+      | status               | A                                       |
+      | eci                  | 06                                      |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
+      | enrolled             | Y                                       |
+      | settlestatus         | 0                                       |
+
+
+  Scenario Outline: Verify if <callback_type> callback is triggered before submitOn feature
+    Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    When User opens example page
+    When User fills payment form with defined card <card_type>
+    And User clicks Pay button
+    Then User will not see notification frame
+    And User will be sent to page with url "example.org" having params
+      | key       | value       |
+      | errorcode | <errorcode> |
+
+    Examples:
+      | callback_type | config                                                | card_type             | errorcode |
+      | submit        | SUBMIT_ON_WITH_REDIRECT_SUBMIT_CALLBACK_CONFIG        | VISA_V21_FRICTIONLESS | 0         |
+      | success       | SUBMIT_ON_SUCCESS_ERROR_WITH_REDIRECT_CALLBACK_CONFIG | VISA_V21_FRICTIONLESS | 0         |
+      | error         | SUBMIT_ON_SUCCESS_ERROR_WITH_REDIRECT_CALLBACK_CONFIG | VISA_DECLINED_CARD    | 70000     |
+
 #
 #  Scenario Outline: cancel and submit callback for cancelled payment
 #    Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes

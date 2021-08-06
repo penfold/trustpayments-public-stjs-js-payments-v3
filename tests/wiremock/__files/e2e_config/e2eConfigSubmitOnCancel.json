@@ -19,6 +19,5 @@
     "startOnLoad": false
   },
   "panIcon": true,
-  "submitOnCancel": true,
-  "cancelCallback": "callback"
+  "submitOnCancel": true
 }

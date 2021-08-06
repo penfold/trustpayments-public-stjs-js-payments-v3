@@ -4,6 +4,10 @@
   "submitOnSuccess": false,
   "submitOnError": false,
   "submitOnCancel": false,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
+  "errorCallback": "errorCallback",
+  "cancelCallback": "cancelCallback",
   "applePay": {
     "buttonStyle": "white-outline",
     "buttonText": "donate",
