@@ -7,6 +7,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
+from utils.configurations.jwt_generator import replace_jwt
+
 
 class Waits:
 
@@ -133,6 +135,7 @@ class Waits:
                 actual_url = self._driver.current_url
             time.sleep(1)
             max_try -= 1
+        actual_url = replace_jwt(actual_url)
         raise Exception(f'Url didnt contain expected phrase within timeout, current url: "{actual_url}"')
 
     def wait_until_url_starts_with(self, page_url, max_try: int = MAX_TRY_WITHOUT_TIMEOUT):
@@ -148,4 +151,5 @@ class Waits:
                 actual_url = self._driver.current_url
             time.sleep(1)
             max_try -= 1
+        actual_url = replace_jwt(actual_url)
         raise Exception(f'Url didnt start with expected phrase within timeout, current url: "{actual_url}"')
