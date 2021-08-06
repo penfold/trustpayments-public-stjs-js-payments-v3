@@ -95,6 +95,6 @@ export class ThreeDSecureClient {
   }
 
   private cancel$(): Observable<ChallengeResultInterface>  {
-    return this.threeDSecure.cancel$();
+    return this.threeDSecure.cancelChallenge();
   }
 }
