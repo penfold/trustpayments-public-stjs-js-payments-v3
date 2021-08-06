@@ -377,14 +377,6 @@ def step_impl(context, callback_popup):
     payment_page.validate_number_in_callback_counter_popup(callback_popup, '1')
 
 
-@step('"(?P<callback_popup>.+)" callback is called only once in second payment')
-def step_impl(context, callback_popup):
-    time.sleep(1)
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    # Expected callback number should be 1 but first callback is from previous payment so together is 2
-    payment_page.validate_number_in_callback_counter_popup(callback_popup, '2')
-
-
 @step('User will see following callback type called only once')
 def step_impl(context):
     time.sleep(1)
