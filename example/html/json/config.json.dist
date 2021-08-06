@@ -30,7 +30,6 @@
   "bypassCards": [
     "PIBA"
   ],
-  "cancelCallback": null,
   "componentIds": {
     "animatedCard": "",
     "cardNumber": "",
@@ -53,7 +52,6 @@
   "datacenterurl": "",
   "deferInit": false,
   "disableNotification": false,
-  "errorCallback": null,
   "errorReporting": false,
   "fieldsToSubmit": [
     "pan",
@@ -142,12 +140,14 @@
       "color-error": "#3358FF"
     }
   },
-  "submitCallback": null,
   "submitFields": [],
   "submitOnSuccess": false,
   "submitOnError": false,
   "submitOnCancel": false,
-  "successCallback": null,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
+  "errorCallback": "errorCallback",
+  "cancelCallback": "cancelCallback",
   "translations": {
     "An error occurred": "Wystąpił błąd"
   },
