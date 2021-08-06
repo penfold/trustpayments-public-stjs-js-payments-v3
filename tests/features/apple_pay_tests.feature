@@ -127,7 +127,7 @@ Feature: ApplePay
   @config_redirect_on_cancel_callback @apple_test_part1
   Scenario: ApplePay - redirect on cancel callback
     When User chooses ApplePay as payment method - response is set to "CANCEL"
-    And User will be sent to page with url "www.example.org" having params
+    And User will be sent to page with url "example.org" having params
       | key          | value                      |
       | errorcode    | cancelled                  |
       | errormessage | Payment has been cancelled |
