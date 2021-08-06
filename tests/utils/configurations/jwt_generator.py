@@ -5,6 +5,7 @@ import time
 import jwt
 
 from utils.enums.jwt_config import JwtConfig
+from utils.helpers.random_data_generator import get_string
 
 SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'you_will_never_guess'
 ISS_KEY = os.environ.get('JWT_ISS_KEY') or 'you_will_never_guess'
@@ -61,3 +62,20 @@ def delete_empty_from_json(dictionary):
         elif isinstance(value, dict):
             delete_empty_from_json(value)
     return dictionary
+
+
+def replace_jwt(entry):
+    """Replace jwt from entry with random values"""
+    if 'jwt' in entry:
+        start_index = entry.rfind('%3A%20%22')
+        random_text = get_string(25, 1)
+        jwt_from_log = entry[start_index:]
+        entry = entry.replace(jwt_from_log, random_text)
+    return entry
+
+
+def replace_jwt_in_logs(log_entry):
+    """Replace jwt from log entry with random values"""
+    log_with_replaced_jwt = replace_jwt(log_entry['message'])
+    log_entry['message'] = log_with_replaced_jwt
+    return log_entry
