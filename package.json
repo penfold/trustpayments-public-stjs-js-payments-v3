@@ -22,7 +22,7 @@
   },
   "engines": {
     "node": "14.17.4",
-    "npm": "7.20.3"
+    "npm": "7.20.5"
   },
   "scripts": {
     "build": "webpack --config webpack.prod.js && npm run build:declarations",
@@ -79,7 +79,7 @@
     "@babel/plugin-transform-typescript": "7.15.0",
     "@babel/preset-env": "7.15.0",
     "@babel/preset-typescript": "7.15.0",
-    "@sentry/webpack-plugin": "1.17.0",
+    "@sentry/webpack-plugin": "1.17.1",
     "@types/axios": "0.14.0",
     "@types/hapi__joi": "17.1.7",
     "@types/jest": "26.0.24",
@@ -145,7 +145,7 @@
     "@sentry/browser": "6.10.0",
     "@sheerun/mutationobserver-shim": "0.3.3",
     "@trustpayments/http-client": "0.3.6",
-    "@trustpayments/js-payments-card": "2.0.113",
+    "@trustpayments/js-payments-card": "2.0.117",
     "@trustpayments/jwt-generator": "0.3.6",
     "@trustpayments/ts-iin-lookup": "0.3.6",
     "@trustpayments/ts-luhn-check": "0.3.6",
