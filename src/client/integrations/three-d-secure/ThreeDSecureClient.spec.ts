@@ -198,4 +198,17 @@ describe('ThreeDSecureClient', () => {
       });
     });
   })
+
+  describe('threedCancel', () => {
+    it('should call cancel method which cancels challenge process', (done: DoneCallback) => {
+      // @ts-ignore
+      const spy = jest.spyOn(sut.threeDSecure, 'cancelChallenge$');
+      when(threeDSecureMock.init$(anything())).thenReturn(of(anything()));
+
+      sendMessage({ type: PUBLIC_EVENTS.THREED_CANCEL, data: configMock }).subscribe(() => {
+        expect(spy).toHaveBeenCalled();
+        done();
+      });
+    });
+  });
 });
