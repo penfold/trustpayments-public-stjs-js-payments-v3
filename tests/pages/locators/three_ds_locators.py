@@ -18,10 +18,14 @@ class ThreeDSMethodsLocators:
 
     # processing screen
 
-    processing_screen: By = (By.XPATH, '//*[@class="tp-3ds-processing-screen"]')
-    processing_screen_attach_to_element: By = (By.CSS_SELECTOR, 'div.tp-3ds-processing-screen')
-    processing_screen_attach_to_element_logo: By = (By.CSS_SELECTOR, 'div.tp-3ds-processing-screen div.tp-3ds-processing-screen-logo')
-    processing_screen_attach_to_element_loader: By = (By.CSS_SELECTOR, 'div.tp-3ds-processing-screen div.tp-3ds-processing-screen-loader')
+    processing_screen: By = (By.CSS_SELECTOR, '.tp-3ds-processing-screen')
+    processing_screen_attach_to_element: By = (By.CSS_SELECTOR, 'fieldset.tp-3ds-processing-screen')
+    processing_screen_attach_to_element_logo: By = (
+    By.CSS_SELECTOR, 'fieldset.tp-3ds-processing-screen div.tp-3ds-processing-screen-logo')
+    processing_screen_attach_to_element_loader: By = (
+    By.CSS_SELECTOR, 'fieldset.tp-3ds-processing-screen div.tp-3ds-processing-screen-loader')
     processing_screen_overlay: By = (By.CSS_SELECTOR, 'body.tp-3ds-processing-screen')
-    processing_screen_overlay_logo: By = (By.CSS_SELECTOR, 'body.tp-3ds-processing-screen div.tp-3ds-processing-screen-logo')
-    processing_screen_overlay_loader: By = (By.CSS_SELECTOR, 'body.tp-3ds-processing-screen div.tp-3ds-processing-screen-loader')
+    processing_screen_overlay_logo: By = (
+    By.CSS_SELECTOR, 'body.tp-3ds-processing-screen div.tp-3ds-processing-screen-logo')
+    processing_screen_overlay_loader: By = (
+    By.CSS_SELECTOR, 'body.tp-3ds-processing-screen div.tp-3ds-processing-screen-loader')

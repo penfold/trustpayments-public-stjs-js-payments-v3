@@ -1,10 +1,7 @@
 # type: ignore[no-redef]
 
-import time
-
 from behave import use_step_matcher, step, then
 
-from pages.locators.three_ds_locators import ThreeDSMethodsLocators
 from pages.page_factory import Pages
 from utils.enums.auth_data import AuthData
 from utils.enums.shared_dict_keys import SharedDictKey
@@ -74,38 +71,23 @@ def step_impl(context, expected_alert_text):
     assert actual_alert_text == expected_alert_text, assertion_message
 
 
-@step('(?P<processing_screen>.+) processing screen is visible')
-def step_impl(context, processing_screen):
+@step('(?P<processing_screen_mode>.+) processing screen is visible')
+def step_impl(context, processing_screen_mode):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-
-    processing_screen_elements = {
-        'ATTACH_TO_ELEMENT': {
-            'processing_screen': ThreeDSMethodsLocators.processing_screen_attach_to_element,
-            'logo': ThreeDSMethodsLocators.processing_screen_attach_to_element_logo,
-            'loader': ThreeDSMethodsLocators.processing_screen_attach_to_element_loader
-        },
-        'OVERLAY': {
-            'processing_screen': ThreeDSMethodsLocators.processing_screen_overlay,
-            'logo': ThreeDSMethodsLocators.processing_screen_overlay_logo,
-            'loader': ThreeDSMethodsLocators.processing_screen_overlay_loader,
-        }
-    }
-
-    for element in processing_screen_elements[processing_screen].values():
-        three_ds_page.wait_for_processing_screen_element(element)
+    three_ds_page.wait_for_processing_screen_elements(processing_screen_mode)
 
 
 @step('the processing screen disappears before (?P<element>.+) appears')
 def step_impl(context, element):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    three_ds_page.check_if_processing_screen_disappears_before_element_appears(element)
+    three_ds_page.verify_if_processing_screen_disappears_before_element_appears(element)
 
 
 @step('the processing screen will be display for at least 2 seconds')
 def step_impl(context):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    time.sleep(1.9)
-    three_ds_page.processing_screen_is_displayed()
+    three_ds_page.verify_if_processing_screen_is_displayed_at_least_2_seconds()
+
 
 
 def validate_3ds_popup_challenge_cancel_btn_text(context, expected_translation):

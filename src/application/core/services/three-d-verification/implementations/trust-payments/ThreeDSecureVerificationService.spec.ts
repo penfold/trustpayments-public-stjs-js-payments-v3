@@ -232,7 +232,7 @@ describe('ThreeDSecureVerificationService', () => {
       });
     });
 
-    it('sends processing screen hide event on TRANSACTION_COMPLETE', () => {
+    it('sends processing screen hide event on TRANSACTION_COMPLETE', done => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe();
 
       messageBus.publish({
@@ -240,12 +240,15 @@ describe('ThreeDSecureVerificationService', () => {
         data: {},
       });
 
-      verify(interFrameCommunicatorMock.query(
-        deepEqual({
-          type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE,
-        }),
-        MERCHANT_PARENT_FRAME,
-      )).once();
+      setTimeout(() => {
+        verify(interFrameCommunicatorMock.query(
+          deepEqual({
+            type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE,
+          }),
+          MERCHANT_PARENT_FRAME,
+        )).once();
+        done();
+      }, 2000);
     });
 
     // EMVCo Req 172
