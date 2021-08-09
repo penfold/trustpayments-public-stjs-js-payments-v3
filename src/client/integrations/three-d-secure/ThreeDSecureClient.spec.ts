@@ -1,7 +1,8 @@
 import {
   CardType, ChallengeDisplayMode, ConfigInterface, LoggingLevel, ResultActionCode,
   ThreeDSecureFactory,
-  ThreeDSecureInterface, ThreeDSecureVersion } from '@trustpayments/3ds-sdk-js';
+  ThreeDSecureInterface, ThreeDSecureVersion,
+} from '@trustpayments/3ds-sdk-js';
 import { Observable, of } from 'rxjs';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
@@ -24,7 +25,7 @@ describe('ThreeDSecureClient', () => {
   let translator: Translator;
   let translationProvider: TranslationProvider;
   let communicationCallbacks: Map<string, <T>(event: IMessageBusEvent) => Observable<T>>;
-  let messageBusMock: IMessageBus
+  let messageBusMock: IMessageBus;
 
   const sendMessage = <T>(event: IMessageBusEvent): Observable<T> => {
     return communicationCallbacks.get(event.type)(event);
@@ -87,7 +88,7 @@ describe('ThreeDSecureClient', () => {
       instance(interFrameCommunicatorMock),
       instance(threeDSecureFactoryMock),
       translator,
-      messageBusMock
+      messageBusMock,
     );
 
     sut.init();
@@ -202,18 +203,16 @@ describe('ThreeDSecureClient', () => {
         done();
       });
     });
-  })
+  });
 
   describe('threedCancel', () => {
-    it('should call cancel method which cancels challenge process', (done: DoneCallback) => {
+    it('should call cancel method which cancels challenge process', () => {
       // @ts-ignore
       const spy = jest.spyOn(sut.threeDSecure, 'cancelChallenge$');
       when(threeDSecureMock.init$(anything())).thenReturn(of(anything()));
 
-      sendMessage({ type: PUBLIC_EVENTS.THREED_CANCEL, data: configMock }).subscribe(() => {
-        expect(spy).toHaveBeenCalled();
-        done();
-      });
+      messageBusMock.publish({ type: PUBLIC_EVENTS.THREED_CANCEL });
+      expect(spy).toHaveBeenCalled();
     });
   });
 });

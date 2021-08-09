@@ -68,8 +68,9 @@ export class ThreeDSecureClient {
 
     this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.THREED_CANCEL),
-      switchMap(() => this.cancel$(), takeUntil(this.destroy$)))
-      .subscribe();
+      switchMap(() => this.cancel$()),
+      takeUntil(this.destroy$),
+    ).subscribe();
   }
 
   private init$(config: ConfigInterface): Observable<ConfigInterface> {
@@ -87,7 +88,11 @@ export class ThreeDSecureClient {
     return this.threeDSecure.init$(updatedConfig);
   }
 
-  private run3DSMethod$({ methodUrl, notificationUrl, transactionId }: IMethodUrlData): Observable<MethodURLResultInterface> {
+  private run3DSMethod$({
+                          methodUrl,
+                          notificationUrl,
+                          transactionId,
+                        }: IMethodUrlData): Observable<MethodURLResultInterface> {
     return this.threeDSecure.run3DSMethod$(
       transactionId,
       notificationUrl,
