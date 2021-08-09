@@ -15,16 +15,23 @@ import {
 import { Translator } from '../../../application/core/shared/translator/Translator';
 import { IMethodUrlData } from './IMethodUrlData';
 import { IChallengeData } from './IChallengeData';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 
 @Service()
 export class ThreeDSecureClient {
   private threeDSecure: ThreeDSecureInterface;
+  private destroy$: Observable<IMessageBusEvent<unknown>>;
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
     private threeDSecureFactory: ThreeDSecureFactory,
     private translator: Translator,
-  ) {}
+    private messageBus: IMessageBus,
+  ) {
+    this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+  }
 
   init(): void {
     this.threeDSecure = this.threeDSecureFactory.create();
@@ -55,9 +62,14 @@ export class ThreeDSecureClient {
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE)
       .thenRespond(() => of(this.threeDSecure.hideProcessingScreen()));
 
-    this.interFrameCommunicator
-      .whenReceive(PUBLIC_EVENTS.THREED_CANCEL)
-      .thenRespond(() => this.cancel$());
+    this.messageBus
+      .pipe(ofType(PUBLIC_EVENTS.THREED_CANCEL), takeUntil(this.destroy$))
+      .subscribe(() => this.cancel$());
+
+    this.messageBus.pipe(
+      ofType(PUBLIC_EVENTS.THREED_CANCEL),
+      switchMap(() => this.cancel$(), takeUntil(this.destroy$)))
+      .subscribe();
   }
 
   private init$(config: ConfigInterface): Observable<ConfigInterface> {
@@ -94,7 +106,7 @@ export class ThreeDSecureClient {
     );
   }
 
-  private cancel$(): Observable<ChallengeResultInterface>  {
+  private cancel$(): Observable<ChallengeResultInterface> {
     return this.threeDSecure.cancelChallenge$();
   }
 }

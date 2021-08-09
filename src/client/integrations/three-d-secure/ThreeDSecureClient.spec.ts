@@ -13,6 +13,8 @@ import { ThreeDSecureClient } from './ThreeDSecureClient';
 import DoneCallback = jest.DoneCallback;
 import { IMethodUrlData } from './IMethodUrlData';
 import { IChallengeData } from './IChallengeData';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 
 describe('ThreeDSecureClient', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
@@ -22,6 +24,7 @@ describe('ThreeDSecureClient', () => {
   let translator: Translator;
   let translationProvider: TranslationProvider;
   let communicationCallbacks: Map<string, <T>(event: IMessageBusEvent) => Observable<T>>;
+  let messageBusMock: IMessageBus
 
   const sendMessage = <T>(event: IMessageBusEvent): Observable<T> => {
     return communicationCallbacks.get(event.type)(event);
@@ -64,6 +67,7 @@ describe('ThreeDSecureClient', () => {
     communicationCallbacks = new Map();
     translationProvider = new TranslationProvider();
     translator = new Translator(translationProvider);
+    messageBusMock = new SimpleMessageBus();
 
     when(interFrameCommunicatorMock.whenReceive(anything())).thenCall((eventType: string) => {
       return {
@@ -82,7 +86,8 @@ describe('ThreeDSecureClient', () => {
     sut = new ThreeDSecureClient(
       instance(interFrameCommunicatorMock),
       instance(threeDSecureFactoryMock),
-      translator
+      translator,
+      messageBusMock
     );
 
     sut.init();

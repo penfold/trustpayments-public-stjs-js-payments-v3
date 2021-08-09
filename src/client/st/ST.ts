@@ -281,8 +281,7 @@ export class ST {
     this.messageBus.publish(
       {
         type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL,
-      },
-      true,
+      }, true,
     );
   }
 
