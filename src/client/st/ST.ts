@@ -286,14 +286,6 @@ export class ST {
     );
   }
 
-  cancel3dsLibraryThreedProcess(): void {
-    this.messageBus.publish(
-      {
-        type: MessageBus.EVENTS_PUBLIC.THREE_D_SECURE_CANCEL,
-      }, true,
-    );
-  }
-
   private stopSubmitFormOnEnter() {
     const form: HTMLFormElement = document.getElementById(this.config.formId) as HTMLFormElement;
 

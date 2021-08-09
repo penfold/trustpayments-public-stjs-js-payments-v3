@@ -56,7 +56,7 @@ export class ThreeDSecureClient {
       .thenRespond(() => of(this.threeDSecure.hideProcessingScreen()));
 
     this.interFrameCommunicator
-      .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_CANCEL)
+      .whenReceive(PUBLIC_EVENTS.THREED_CANCEL)
       .thenRespond(() => this.cancel$());
   }
 
@@ -95,6 +95,6 @@ export class ThreeDSecureClient {
   }
 
   private cancel$(): Observable<ChallengeResultInterface>  {
-    return this.threeDSecure.cancelChallenge();
+    return this.threeDSecure.cancelChallenge$();
   }
 }
