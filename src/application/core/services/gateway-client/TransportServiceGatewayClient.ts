@@ -10,8 +10,8 @@ import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IGatewayClient } from './IGatewayClient';
 import { TransportService } from '../st-transport/TransportService';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
-import { ThreeDLookupRequest } from '../three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
 import { IThreeDLookupResponse } from '../../models/IThreeDLookupResponse';
+import { ThreeDLookupRequest } from '../three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
 
 @Service()
 export class TransportServiceGatewayClient implements IGatewayClient {
@@ -30,8 +30,8 @@ export class TransportServiceGatewayClient implements IGatewayClient {
 
   threedLookup(request: ThreeDLookupRequest): Observable<IThreeDLookupResponse> {
     return this.transportService.sendRequest(request).pipe(
-      switchMap(response => {
-        return Number(response.errorcode) === 0 ? of(response as IThreeDLookupResponse) : throwError(response);
+      switchMap((response: IThreeDLookupResponse) => {
+        return Number(response.errorcode) === 0 ? of(response) : throwError(response);
       }),
     );
   }

@@ -17,8 +17,9 @@ import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { CardinalChallengeService } from './CardinalChallengeService';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { Enrollment } from '../../../../models/constants/Enrollment';
-import spyOn = jest.spyOn;
 import { IGatewayClient } from '../../../gateway-client/IGatewayClient';
+import { CardType } from '@trustpayments/3ds-sdk-js';
+import spyOn = jest.spyOn;
 
 describe('CardinalCommerceVerificationService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
@@ -48,6 +49,7 @@ describe('CardinalCommerceVerificationService', () => {
     transactionreference: '',
     requesttypedescription: '',
     threedversion: '',
+    paymenttypedescription: CardType.MASTER_CARD,
   };
 
   const cardMock: ICard = {

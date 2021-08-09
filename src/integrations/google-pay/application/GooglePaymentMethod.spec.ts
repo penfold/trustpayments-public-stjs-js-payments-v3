@@ -1,42 +1,25 @@
-import { ThreeDProcess } from '../../../application/core/services/three-d-verification/ThreeDProcess';
-import { Cybertonica } from '../../../application/core/integrations/cybertonica/Cybertonica';
 import { GooglePaymentMethod } from './GooglePaymentMethod';
-import { anything, capture, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { GooglePaymentMethodName } from '../models/IGooglePaymentMethod';
-import { of } from 'rxjs';
-import { RemainingRequestTypesProvider } from '../../../application/core/services/three-d-verification/RemainingRequestTypesProvider';
-import { RequestType } from '../../../shared/types/RequestType';
-import { IThreeDQueryResponse } from '../../../application/core/models/IThreeDQueryResponse';
+import { Observable, of, throwError } from 'rxjs';
 import { IGooglePayGatewayRequest } from '../models/IGooglePayRequest';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
-import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
-import { IJwtResponse } from '../../../application/core/services/st-codec/interfaces/IJwtResponse';
-import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { GooglePayConfigName, IGooglePayConfig } from '../models/IGooglePayConfig';
+import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
+import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
+import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 
 describe('GooglePaymentMethod', () => {
-  let threeDProcessMock: ThreeDProcess;
-  let remainigRequestTypesProviderMock: RemainingRequestTypesProvider;
-  let cybertonicaMock: Cybertonica;
-  let gatewayClientMock: IGatewayClient;
+  let requestProcessingServiceMock: IRequestProcessingService;
+  let requestProcessingInitializerMock: RequestProcessingInitializer;
   let configProviderMock: ConfigProvider;
   let googlePaymentMethod: GooglePaymentMethod;
 
-  const threeDQueryResponse: IThreeDQueryResponse = {
+  const paymentResponse: IRequestTypeResponse = {
     errorcode: '0',
-    acquirerresponsecode: '',
-    acquirerresponsemessage: '',
-    acquirertransactionreference: '',
-    acsurl: '',
-    enrolled: '',
-    jwt: '',
-    requesttypedescription: '',
-    threedpayload: '',
-    transactionreference: '',
-    cachetoken: 'cachetoken',
-    threedresponse: 'threedresponse',
-    threedversion: '2.1.0',
+    errormessage: 'payment succeeded',
+    requesttypedescription: 'AUTH',
   };
 
   const googlePayGatewayRequest: IGooglePayGatewayRequest = {
@@ -45,22 +28,19 @@ describe('GooglePaymentMethod', () => {
   };
 
   beforeEach(() => {
-    threeDProcessMock = mock(ThreeDProcess);
-    remainigRequestTypesProviderMock = mock(RemainingRequestTypesProvider);
-    cybertonicaMock = mock(Cybertonica);
-    gatewayClientMock = mock<IGatewayClient>();
+    requestProcessingInitializerMock = mock(RequestProcessingInitializer);
+    requestProcessingServiceMock = mock<IRequestProcessingService>();
     configProviderMock = mock<ConfigProvider>();
     googlePaymentMethod = new GooglePaymentMethod(
-      instance(threeDProcessMock),
-      instance(remainigRequestTypesProviderMock),
-      instance(cybertonicaMock),
-      instance(gatewayClientMock),
+      instance(requestProcessingInitializerMock),
       instance(configProviderMock),
     );
 
-    when(threeDProcessMock.init$()).thenReturn(of(undefined));
-    when(threeDProcessMock.performThreeDQuery$(anything(), anything(), anything())).thenReturn(of(threeDQueryResponse));
-    when(cybertonicaMock.getTransactionId()).thenResolve(undefined);
+    when(requestProcessingServiceMock.process(anything(), anything())).thenReturn(of(paymentResponse));
+    when(requestProcessingInitializerMock.initialize()).thenReturn(new Observable<IRequestProcessingService>(subscriber => {
+      // don't ask why, a simple of(...) just doesnt't work ¯\_(ツ)_/¯
+      subscriber.next(instance(requestProcessingServiceMock));
+    }));
     when(configProviderMock.getConfig()).thenReturn({ [GooglePayConfigName]: {} as IGooglePayConfig });
   });
 
@@ -71,192 +51,111 @@ describe('GooglePaymentMethod', () => {
   });
 
   describe('init()', () => {
-    it('initializes 3D process', done => {
+    it('should initialize request processing service', done => {
       googlePaymentMethod.init().subscribe(() => {
-        verify(threeDProcessMock.init$()).once();
+        verify(requestProcessingInitializerMock.initialize()).once();
         done();
       });
     });
   });
 
   describe('start()', () => {
-    describe('frictionless payments - with single request to gateway', () => {
-      beforeEach(() => {
-        when(remainigRequestTypesProviderMock.getRemainingRequestTypes()).thenReturn(
-          of([RequestType.THREEDQUERY, RequestType.AUTH]),
-          of([]),
-        );
-      });
+    beforeEach(() => {
+      googlePaymentMethod.init().subscribe();
+    });
 
-      it('performs TDQ process and returns the PaymentResult if there are no remaining request types', done => {
-        googlePaymentMethod.start(googlePayGatewayRequest).subscribe(result => {
-          expect(result).toEqual({
-            status: PaymentStatus.SUCCESS,
-            data: threeDQueryResponse,
-          });
-
-          verify(threeDProcessMock.performThreeDQuery$(
-            deepEqual([RequestType.THREEDQUERY, RequestType.AUTH]),
-            null,
-            deepEqual(googlePayGatewayRequest),
-          )).once();
-
-          done();
-        });
-      });
-
-      it('appends cybertonica TID to TDQ request', done => {
-        when(cybertonicaMock.getTransactionId()).thenResolve('cybertonicatid');
-
-        googlePaymentMethod.start(googlePayGatewayRequest).subscribe(() => {
-          const [requestTypes, card, merchantData] = capture(threeDProcessMock.performThreeDQuery$).last();
-
-          expect(merchantData).toEqual({
-            ...googlePayGatewayRequest,
-            fraudcontroltransactionid: 'cybertonicatid',
-          });
-
-          done();
-        });
-      });
-
-      it('returns payment result with error status if errorcode != 0', done => {
-        const errorResponse: IThreeDQueryResponse = { ...threeDQueryResponse, errorcode: '1234' };
-
-        when(threeDProcessMock.performThreeDQuery$(anything(), anything(), anything())).thenReturn(of(errorResponse));
-
-        googlePaymentMethod.start(googlePayGatewayRequest).subscribe(result => {
-          expect(result).toEqual({
-            status: PaymentStatus.ERROR,
-            data: errorResponse,
-          });
-          done();
-        });
-      });
-
-      it('returns payment result with predefined status', done => {
-        const request: IGooglePayGatewayRequest = {
-          ...googlePayGatewayRequest,
-          resultStatus: PaymentStatus.FAILURE,
-        };
-
-        googlePaymentMethod.start(request).subscribe(result => {
-          expect(result).toEqual({
-            status: PaymentStatus.FAILURE,
-            data: threeDQueryResponse,
-          });
-          done();
-        });
-      });
-
-      it.skip('starts the 3DS process with configured merchantUrl', () => {
-        when(configProviderMock.getConfig()).thenReturn({
-          [GooglePayConfigName]: {
-            merchantUrl: 'https://merchant.url',
-          } as IGooglePayConfig,
+    it('performs request processing and returns the PaymentResult', done => {
+      googlePaymentMethod.start(googlePayGatewayRequest).subscribe(result => {
+        expect(result).toEqual({
+          status: PaymentStatus.SUCCESS,
+          data: paymentResponse,
         });
 
-        googlePaymentMethod.start(googlePayGatewayRequest).subscribe(() => {
-          verify(threeDProcessMock.performThreeDQuery$(
-            anything(),
-            anything(),
-            anything(),
-          )).once();
-        });
+        verify(requestProcessingServiceMock.process(googlePayGatewayRequest, undefined)).once();
+
+        done();
       });
     });
 
-    describe('step-up payments - with second request to gateway', () => {
-      const authResponse: IRequestTypeResponse & IJwtResponse = {
-        jwt: '',
-        customeroutput: '',
-        errorcode: '0',
-        errordata: '',
-        errormessage: '',
-        requesttypedescription: 'AUTH',
-        transactionstartedtimestamp: '',
+    it('returns payment result with error status if errorcode != 0', done => {
+      const errorResponse: IRequestTypeResponse = { ...paymentResponse, errorcode: '1234' };
+
+      when(requestProcessingServiceMock.process(googlePayGatewayRequest, undefined)).thenReturn(of(errorResponse));
+
+      googlePaymentMethod.start(googlePayGatewayRequest).subscribe(result => {
+        expect(result).toEqual({
+          status: PaymentStatus.ERROR,
+          data: errorResponse,
+        });
+        done();
+      });
+    });
+
+    it('returns payment result with predefined status', done => {
+      const request: IGooglePayGatewayRequest = {
+        ...googlePayGatewayRequest,
+        resultStatus: PaymentStatus.FAILURE,
       };
 
-      beforeEach(() => {
-        when(remainigRequestTypesProviderMock.getRemainingRequestTypes()).thenReturn(
-          of([RequestType.THREEDQUERY, RequestType.AUTH]),
-          of([RequestType.AUTH]),
-        );
+      googlePaymentMethod.start(request).subscribe(result => {
+        expect(result).toEqual({
+          status: PaymentStatus.FAILURE,
+          data: paymentResponse,
+        });
+        done();
+      });
+    });
 
-        when(gatewayClientMock.auth(anything(), anything())).thenReturn(of(authResponse));
+    it('starts the 3DS process with configured merchantUrl', () => {
+      when(configProviderMock.getConfig()).thenReturn({
+        [GooglePayConfigName]: {
+          merchantUrl: 'https://merchant.url',
+        } as IGooglePayConfig,
       });
 
-      it('sends the AUTH request to the gateway and returns the PaymentResult', done => {
-        googlePaymentMethod.start(googlePayGatewayRequest).subscribe(result => {
-          expect(result).toEqual({
-            status: PaymentStatus.SUCCESS,
-            data: authResponse,
-          });
-
-          verify(gatewayClientMock.auth(deepEqual({
-            ...googlePayGatewayRequest,
-            cachetoken: 'cachetoken',
-            threedresponse: 'threedresponse',
-          }), undefined)).once();
-
-          done();
-        });
+      googlePaymentMethod.start(googlePayGatewayRequest).subscribe(() => {
+        verify(requestProcessingServiceMock.process(googlePayGatewayRequest, 'https://merchant.url')).once();
       });
+    });
 
-      it('sends the cybertonica TID with AUTH request', done => {
-        when(cybertonicaMock.getTransactionId()).thenResolve('cybertonicatid');
+    it('returns payment result with error status if processing service throws an error', done => {
+      const someError = new Error();
 
-        googlePaymentMethod.start(googlePayGatewayRequest).subscribe(() => {
-          verify(gatewayClientMock.auth(deepEqual({
-            ...googlePayGatewayRequest,
-            cachetoken: 'cachetoken',
-            threedresponse: 'threedresponse',
-            fraudcontroltransactionid: 'cybertonicatid',
-          }), anything())).once();
+      when(requestProcessingServiceMock.process(anything(), anything())).thenThrow(someError);
+
+      googlePaymentMethod.start(googlePayGatewayRequest).subscribe({
+        error: (error) => {
+          expect(error).toBe(someError);
           done();
-        });
+        },
       });
+    });
 
-      it('returns payment result with error status if errorcode != 0', done => {
-        const errorResponse: typeof authResponse = { ...authResponse, errorcode: '1234' };
+    it('returns payment result with error status if processing service throws a response with errorcode != 0', done => {
+      const errorResponse: IRequestTypeResponse = { ...paymentResponse, errorcode: '1234' };
 
-        when(gatewayClientMock.auth(anything(), anything())).thenReturn(of(errorResponse));
+      when(requestProcessingServiceMock.process(anything(), anything())).thenReturn(throwError(() => errorResponse));
 
-        googlePaymentMethod.start(googlePayGatewayRequest).subscribe(result => {
-          expect(result).toEqual({
-            status: PaymentStatus.ERROR,
-            data: errorResponse,
-          });
-          done();
+      googlePaymentMethod.start(googlePayGatewayRequest).subscribe(result => {
+        expect(result).toEqual({
+          status: PaymentStatus.ERROR,
+          data: errorResponse,
         });
+        done();
       });
+    });
 
-      it('returns payment result with predefined status', done => {
-        const request: IGooglePayGatewayRequest = {
-          ...googlePayGatewayRequest,
-          resultStatus: PaymentStatus.FAILURE,
-        };
+    it('returns payment result with cancel status if payment is cancelled', done => {
+      const cancelRsponse: IRequestTypeResponse = { ...paymentResponse, isCancelled: true };
 
-        googlePaymentMethod.start(request).subscribe(result => {
-          expect(result).toEqual({
-            status: PaymentStatus.FAILURE,
-            data: authResponse,
-          });
-          done();
+      when(requestProcessingServiceMock.process(anything(), anything())).thenReturn(throwError(() => cancelRsponse));
+
+      googlePaymentMethod.start(googlePayGatewayRequest).subscribe(result => {
+        expect(result).toEqual({
+          status: PaymentStatus.CANCEL,
+          data: cancelRsponse,
         });
-      });
-
-      it('runs the auth request with configured merchantUrl', done => {
-        when(configProviderMock.getConfig()).thenReturn({
-          [GooglePayConfigName]: {
-            merchantUrl: 'https://merchant.url',
-          } as IGooglePayConfig,
-        });
-
-        googlePaymentMethod.start(googlePayGatewayRequest).subscribe(() => {
-          verify(gatewayClientMock.auth(anything(), 'https://merchant.url')).once();
-          done();
-        });
+        done();
       });
     });
   });

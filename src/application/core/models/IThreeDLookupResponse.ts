@@ -2,6 +2,7 @@ import { IResponseData } from './IResponseData';
 import { CustomerOutput } from './constants/CustomerOutput';
 
 export interface IThreeDLookupResponse extends IResponseData {
+  jwt: string;
   transactionstartedtimestamp: string;
   errormessage: string;
   errorcode: string;

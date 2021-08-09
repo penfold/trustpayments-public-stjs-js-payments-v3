@@ -38,6 +38,7 @@ describe('ThreeDSecureChallengeService', () => {
       transactionreference: '',
       requesttypedescription: '',
       threedversion: '2.2.0',
+      paymenttypedescription: CardType.MASTER_CARD,
     };
 
     const queryEvent: IMessageBusEvent<IChallengeData> = {
@@ -87,6 +88,7 @@ describe('ThreeDSecureChallengeService', () => {
       threedversion: '1.0.5',
       pareq: 'pareq',
       md: 'merchantdata',
+      paymenttypedescription: CardType.MASTER_CARD,
     };
 
     const queryEvent: IMessageBusEvent<IChallengeData> = {

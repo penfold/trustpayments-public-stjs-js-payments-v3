@@ -11,6 +11,7 @@ import { of } from 'rxjs';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
 import { ThreeDVerificationProviderName } from '../three-d-verification/data/ThreeDVerificationProviderName';
+import { CardType } from '@trustpayments/3ds-sdk-js';
 
 describe('TransportServiceGatewayClient', () => {
   let transportServiceMock: TransportService;
@@ -82,6 +83,7 @@ describe('TransportServiceGatewayClient', () => {
       transactionreference: '',
       transactionstartedtimestamp: '',
       threedversion: '1.0.5',
+      paymenttypedescription: CardType.MASTER_CARD,
     };
 
     beforeEach(() => {

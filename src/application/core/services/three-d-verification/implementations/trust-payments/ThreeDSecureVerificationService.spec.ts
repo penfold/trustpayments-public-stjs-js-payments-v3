@@ -29,9 +29,9 @@ import { BrowserDataProvider } from './BrowserDataProvider';
 import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
 import { Enrollment } from '../../../../models/constants/Enrollment';
 import { CustomerOutput } from '../../../../models/constants/CustomerOutput';
-import DoneCallback = jest.DoneCallback;
 import { IGatewayClient } from '../../../gateway-client/IGatewayClient';
 import { ThreeDLookupRequest } from './data/ThreeDLookupRequest';
+import DoneCallback = jest.DoneCallback;
 
 describe('ThreeDSecureVerificationService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
@@ -128,12 +128,14 @@ describe('ThreeDSecureVerificationService', () => {
       transactionreference: '',
       requesttypedescription: '',
       threedversion: '',
+      paymenttypedescription: CardType.MASTER_CARD,
     };
     const updatedThreeDQueryResponseMock: IThreeDQueryResponse = {
       ...threeDQueryResponseMock,
       threedresponse: 'threedresponse',
     };
     const threedLookupResponse: IThreeDLookupResponse = {
+      jwt: '',
       transactionstartedtimestamp: '',
       errormessage: '',
       errorcode: '',
@@ -197,7 +199,7 @@ describe('ThreeDSecureVerificationService', () => {
 
     it('runs THREEDLOOKUP request on the gateway', done => {
       sut.start$(jsInitResponseMock, [RequestType.THREEDQUERY], card, merchantData).subscribe(() => {
-        verify(gatewayClient.threedLookup(deepEqual(new ThreeDLookupRequest(card.expirydate, card.pan, card.securitycode)))).once();
+        verify(gatewayClient.threedLookup(deepEqual(new ThreeDLookupRequest(card)))).once();
         done();
       });
     });

@@ -7,6 +7,7 @@ import { PAYMENT_ERROR } from '../../../../models/constants/Translations';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { Enrollment } from '../../../../models/constants/Enrollment';
 import DoneCallback = jest.DoneCallback;
+import { CardType } from '@trustpayments/3ds-sdk-js';
 
 describe('VerificationResultHandler', () => {
   const threeDQueryResponse: IThreeDQueryResponse = {
@@ -22,6 +23,7 @@ describe('VerificationResultHandler', () => {
     transactionreference: 'ref',
     requesttypedescription: 'THREEDQUERY',
     threedversion: '',
+    paymenttypedescription: CardType.MASTER_CARD,
   };
   const jsInitResponseMock: IThreeDInitResponse = {
     errorcode: '0',
@@ -105,6 +107,7 @@ describe('VerificationResultHandler', () => {
             threedresponse: 'foobar',
             cachetoken: 'aaa',
             threedversion: '',
+            paymenttypedescription: CardType.MASTER_CARD,
           });
           done();
         },

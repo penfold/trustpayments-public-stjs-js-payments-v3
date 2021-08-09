@@ -1,4 +1,4 @@
-import { ResultActionCode, ChallengeResultInterface } from '@trustpayments/3ds-sdk-js';
+import { ResultActionCode, ChallengeResultInterface, CardType } from '@trustpayments/3ds-sdk-js';
 import { ChallengeResultHandler } from './ChallengeResultHandler';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import DoneCallback = jest.DoneCallback;
@@ -29,6 +29,7 @@ describe('ChallengeResultHandler', () => {
       transactionreference: '',
       requesttypedescription: '',
       threedversion: '2.1.0',
+      paymenttypedescription: CardType.MASTER_CARD,
     };
 
     const challengeResultTemplate: ChallengeResultInterface = {
@@ -61,6 +62,7 @@ describe('ChallengeResultHandler', () => {
               transactionreference: '',
               requesttypedescription: '',
               threedversion: '2.1.0',
+              paymenttypedescription: CardType.MASTER_CARD,
             });
             done();
           },
@@ -89,6 +91,7 @@ describe('ChallengeResultHandler', () => {
             transactionreference: '',
             requesttypedescription: '',
             threedversion: '2.1.0',
+            paymenttypedescription: CardType.MASTER_CARD,
           });
           done();
         });
@@ -117,6 +120,7 @@ describe('ChallengeResultHandler', () => {
             requesttypedescription: '',
             threedversion: '2.1.0',
             isCancelled: true,
+            paymenttypedescription: CardType.MASTER_CARD,
           });
           done();
         },
@@ -137,6 +141,7 @@ describe('ChallengeResultHandler', () => {
       transactionreference: '',
       requesttypedescription: '',
       threedversion: '1.0.5',
+      paymenttypedescription: CardType.MASTER_CARD,
     };
 
     const challengeResultTemplate: ChallengeResultInterface = {
@@ -174,6 +179,7 @@ describe('ChallengeResultHandler', () => {
               transactionreference: '',
               requesttypedescription: '',
               threedversion: '1.0.5',
+              paymenttypedescription: CardType.MASTER_CARD,
             });
             done();
           },
@@ -204,6 +210,7 @@ describe('ChallengeResultHandler', () => {
             transactionreference: '',
             requesttypedescription: '',
             threedversion: '1.0.5',
+            paymenttypedescription: CardType.MASTER_CARD,
           });
           done();
         });
@@ -233,6 +240,7 @@ describe('ChallengeResultHandler', () => {
             requesttypedescription: '',
             threedversion: '1.0.5',
             isCancelled: true,
+            paymenttypedescription: CardType.MASTER_CARD,
           });
           done();
         },
