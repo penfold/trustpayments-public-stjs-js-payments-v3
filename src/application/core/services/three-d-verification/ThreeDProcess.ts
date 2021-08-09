@@ -3,8 +3,6 @@ import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Service } from 'typedi';
-import { first, mapTo, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { combineLatest, Observable } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
@@ -12,8 +10,9 @@ import { IThreeDVerificationService } from './IThreeDVerificationService';
 import { ThreeDVerificationProviderService } from './ThreeDVerificationProviderService';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
-import { IGatewayClient } from '../gateway-client/IGatewayClient';
-import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { combineLatest, Observable } from 'rxjs';
+import { first, mapTo, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { JsInitResponseService } from './JsInitResponseService';
 
 @Service()
 export class ThreeDProcess {
@@ -22,17 +21,12 @@ export class ThreeDProcess {
 
   constructor(
     private messageBus: IMessageBus,
-    private gatewayClient: IGatewayClient,
     private threeDVerificationServiceProvider: ThreeDVerificationProviderService,
+    private jsInitResponseService: JsInitResponseService,
   ) {}
 
   init$(): Observable<void> {
-    this.jsInitResponse$ = this.messageBus.pipe(
-      ofType(PUBLIC_EVENTS.UPDATE_JWT),
-      startWith({ type: PUBLIC_EVENTS.UPDATE_JWT }),
-      switchMap(() => this.gatewayClient.jsInit()),
-      shareReplay(1),
-    );
+    this.jsInitResponse$ = this.jsInitResponseService.getJsInitResponse();
 
     this.verificationService$ = this.jsInitResponse$.pipe(
       first(),

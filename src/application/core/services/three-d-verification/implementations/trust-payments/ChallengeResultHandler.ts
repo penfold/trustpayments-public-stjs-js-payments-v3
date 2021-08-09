@@ -4,6 +4,7 @@ import { ChallengeResultInterface, ResultActionCode, ThreeDSecureVersion } from 
 import { PAYMENT_CANCELLED, PAYMENT_ERROR } from '../../../../models/constants/Translations';
 import { Service } from 'typedi';
 import { ThreeDResponseConverter } from './threedresponse-converter/ThreeDResponseConverter';
+import { tap } from 'rxjs/operators';
 
 @Service()
 export class ChallengeResultHandler {

@@ -10,8 +10,8 @@ import { ThreeDInitRequest } from '../three-d-verification/data/ThreeDInitReques
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IGatewayClient } from './IGatewayClient';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
-import { ThreeDLookupRequest } from '../three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
 import { IThreeDLookupResponse } from '../../models/IThreeDLookupResponse';
+import { ThreeDLookupRequest } from '../three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
 
 @Service()
 export class StTransportGatewayClient implements IGatewayClient {

@@ -4,12 +4,3 @@ export enum PaymentStatus {
   FAILURE = 'failure',
   ERROR = 'error'
 }
-
-export const GetPaymentStatus = (errorCode: string): PaymentStatus => {
-  switch (errorCode) {
-    case '0':
-      return PaymentStatus.SUCCESS;
-    default:
-      return PaymentStatus.ERROR;
-  }
-};
