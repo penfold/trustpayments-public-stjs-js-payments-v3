@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "babel-plugin-styled-components": "1.13.2",
-    "gatsby": "3.11.0",
+    "gatsby": "3.11.1",
     "gatsby-image": "3.11.0",
     "gatsby-plugin-copy-files": "1.0.4",
     "gatsby-plugin-manifest": "3.11.0",
