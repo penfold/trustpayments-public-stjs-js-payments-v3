@@ -112,7 +112,7 @@ export class ST {
     private store: IStore<IParentFrameState>,
     private visaCheckout: VisaCheckout,
     private commonFrames: CommonFrames,
-    private translation: ITranslator
+    private translation: ITranslator,
   ) {
     this.googleAnalytics = new GoogleAnalytics();
     this.merchantFields = new MerchantFields();
@@ -133,7 +133,7 @@ export class ST {
         ofType(events[eventName]),
         map(event => event.data),
         delay(0),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
       .subscribe(callback);
   }
@@ -157,7 +157,7 @@ export class ST {
           type: PUBLIC_EVENTS.CARD_PAYMENTS_INIT,
           data: JSON.stringify(this.config),
         },
-        false
+        false,
       );
       this.CardFrames();
       this.cardFrames.init();
@@ -176,7 +176,7 @@ export class ST {
           type: PUBLIC_EVENTS.APPLE_PAY_INIT,
           data: undefined,
         },
-        false
+        false,
       );
     });
   }
@@ -212,7 +212,7 @@ export class ST {
           type: PUBLIC_EVENTS.VISA_CHECKOUT_INIT,
           data: undefined,
         },
-        false
+        false,
       );
     });
   }
@@ -243,7 +243,7 @@ export class ST {
       {
         type: MessageBus.EVENTS_PUBLIC.DESTROY,
       },
-      true
+      true,
     );
 
     this.destroy$.next();
@@ -281,8 +281,7 @@ export class ST {
     this.messageBus.publish(
       {
         type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL,
-      },
-      true
+      }, true,
     );
   }
 
@@ -318,7 +317,7 @@ export class ST {
         this.merchantFields.init();
       }),
       shareReplay(1),
-      takeUntil(this.destroy$)
+      takeUntil(this.destroy$),
     );
 
     return this.controlFrameLoader$;
@@ -340,7 +339,7 @@ export class ST {
       this.iframeFactory,
       this.frameService,
       this.messageBus,
-      this.jwtDecoder
+      this.jwtDecoder,
     );
   }
 
@@ -357,7 +356,7 @@ export class ST {
         'font-size: 2em; font-weight: bold',
         'font-size: 2em; font-weight: 1000; color: #e71b5a',
         'font-size: 2em; font-weight: bold',
-        'font-size: 2em; font-weight: regular; color: #e71b5a'
+        'font-size: 2em; font-weight: regular; color: #e71b5a',
       );
     }
   }
