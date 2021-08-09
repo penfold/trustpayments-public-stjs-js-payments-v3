@@ -48,7 +48,7 @@ export class ThreeDSecureClient {
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_SHOW)
       .thenRespond((event: IMessageBusEvent<string>) => of(
-        this.threeDSecure.showProcessingScreen(event.data as CardType)),
+        this.threeDSecure.showProcessingScreen(event.data as CardType, 0)),
       );
 
     this.interFrameCommunicator
