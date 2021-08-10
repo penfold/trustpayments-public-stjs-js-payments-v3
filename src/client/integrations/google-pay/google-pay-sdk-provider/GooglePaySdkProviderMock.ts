@@ -14,10 +14,12 @@ import {
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IGooglePaySdkProvider } from './IGooglePaySdkProvider';
 
-export class GooglePaySdkProviderMock implements IGooglePaySdkProvider {
+export class GooglePaySdkProviderMock extends IGooglePaySdkProvider {
   private mockPaymentUrl: string; // TODO update this when wiremock is implemented in STJS-1931
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) {
+    super();
+  }
 
   setupSdk$(config: IConfig): Observable<IGooglePaySessionPaymentsClient> {
     return scheduled([this.getClientMock()], asapScheduler);
