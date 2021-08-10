@@ -7,9 +7,10 @@ import { GooglePayProductionEnvironment, GooglePayTestEnvironment } from '../../
 import { IGooglePlayIsReadyToPayRequest } from '../../../../integrations/google-pay/models/IGooglePayPaymentRequest';
 import { IGooglePaySessionPaymentsClient, IIsReadyToPayResponse } from '../../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 import { IConfig } from '../../../../shared/model/config/IConfig';
+import { IGooglePaySdkProvider } from './IGooglePaySdkProvider';
 
 @Service()
-export class GooglePaySdkProvider {
+export class GooglePaySdkProvider implements IGooglePaySdkProvider{
   private readonly SCRIPT_ADDRESS = environment.GOOGLE_PAY.GOOGLE_PAY_URL;
   private readonly SCRIPT_TARGET: string = 'head';
 
