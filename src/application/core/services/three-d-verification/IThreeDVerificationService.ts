@@ -1,10 +1,16 @@
 import { Observable } from 'rxjs';
-import { IVerificationData } from './data/IVerificationData';
-import { IVerificationResult } from './data/IVerificationResult';
+import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
+import { ICard } from '../../models/ICard';
+import { IMerchantData } from '../../models/IMerchantData';
+import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 
-export abstract class IThreeDVerificationService {
-  abstract init(jwt: string): Observable<void>;
-  abstract binLookup(pan: string): Observable<void>;
-  abstract start(jwt: string): Observable<unknown>;
-  abstract verify(data: IVerificationData): Observable<IVerificationResult>;
+export abstract class IThreeDVerificationService<T> {
+  abstract init$(jsInitResponse: IThreeDInitResponse): Observable<T>;
+  abstract binLookup$(pan: string): Observable<void>;
+  abstract start$(
+    jsInitResponse: IThreeDInitResponse,
+    requestTypes: string[],
+    card: ICard,
+    merchantData: IMerchantData
+  ): Observable<IThreeDQueryResponse>;
 }

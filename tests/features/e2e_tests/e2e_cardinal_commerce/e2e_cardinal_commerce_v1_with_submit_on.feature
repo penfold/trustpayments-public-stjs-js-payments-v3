@@ -146,7 +146,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card AMERICAN_EXPRESS_UNAVAILABLE_CARD
+    When User fills payment form with defined card <card>
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
@@ -162,10 +162,10 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | eci                  | <eci>                                   |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 07             |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 07             |
+      | request_types            | baseamount     | currencyiso3a  | eci            | card                              |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 07             | AMERICAN_EXPRESS_UNAVAILABLE_CARD |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | AMERICAN_EXPRESS_UNAVAILABLE_CARD |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 00             | MASTERCARD_UNAVAILABLE_CARD       |
 
 
   Scenario Outline: TC_8 - Merchant Not Active with submitOn and request type: <request_types>
@@ -280,7 +280,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card DISCOVER_BYPASSED_AUTH_CARD
+    When User fills payment form with defined card <card>
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
@@ -293,10 +293,10 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | status               | should be none                          |
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | card                        |
+      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
+      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
+      | THREEDQUERY ACCOUNTCHECK | MASTERCARD_BYPASSED_AUTH_V1 |
 
 
   Scenario Outline: retry payment after failed transaction with submitOnSuccess and request type: <request_types>
@@ -311,7 +311,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     And User will see that notification frame has "red" color
     And User waits for payment status to disappear
     And User clears form
-    When User fills payment form with defined card DISCOVER_BYPASSED_AUTH_CARD
+    When User fills payment form with defined card <card>
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
@@ -324,7 +324,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | status               | should be none                          |
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | card                        |
+      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
+      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
+      | THREEDQUERY ACCOUNTCHECK | MASTERCARD_BYPASSED_AUTH_V1 |

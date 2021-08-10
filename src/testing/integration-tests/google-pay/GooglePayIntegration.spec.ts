@@ -37,11 +37,11 @@ describe.skip('GooglePay Payment', () => {
   let googlePayInitializeSubscriber: GooglePayInitializeSubscriber;
   let googlePaySessionPaymentsClientMock: GooglePaySessionPaymentsClientMock;
   let transportServiceMock: TransportService;
-  let threeDVerificationServiceMock: IThreeDVerificationService;
+  let threeDVerificationServiceMock: IThreeDVerificationService<unknown>;
 
   beforeEach(() => {
     transportServiceMock = mock(TransportService);
-    threeDVerificationServiceMock = mock<IThreeDVerificationService>();
+    threeDVerificationServiceMock = mock<IThreeDVerificationService<unknown>>();
     when(transportServiceMock.sendRequest(anything(), anything())).thenReturn(
       of({
         transactionstartedtimestamp: '123',
@@ -94,6 +94,7 @@ describe.skip('GooglePay Payment', () => {
   describe('GooglePay Success Payment', () => {
     beforeEach(() => {
       googlePaySessionPaymentsClientMock.mockPaymentData('success');
+      // @ts-ignore
       window.google = {
         payments: {
           api: {
@@ -157,6 +158,7 @@ describe.skip('GooglePay Payment', () => {
   describe('GooglePay Error Payment', () => {
     beforeEach(() => {
       googlePaySessionPaymentsClientMock.mockPaymentData('error');
+      // @ts-ignore
       window.google = {
         payments: {
           api: {

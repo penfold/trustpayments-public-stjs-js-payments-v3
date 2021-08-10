@@ -1,0 +1,7 @@
+{
+  "submitOnSuccess": false,
+  "threeDSecure": {
+    "loggingLevel": "ALL",
+    "challengeDisplayMode": "POPUP"
+  }
+}

@@ -67,17 +67,20 @@ export class StCodec {
    * to allow the page to submit to the merchant server
    * @param responseData The decoded response from the gateway
    * @param jwtResponse The raw JWT response from the gateway
-   * @param threedresponse the response from Cardinal commerce after call to ACS
    */
-  public static publishResponse(responseData: IResponseData, jwtResponse?: string, threedresponse?: string): void {
+  public static publishResponse(responseData: IResponseData, jwtResponse?: string): void {
     const translator = Container.get(TranslatorToken);
     responseData.errormessage = translator.translate(responseData.errormessage);
     const eventData = { ...responseData };
     if (jwtResponse !== undefined) {
       eventData.jwt = jwtResponse;
     }
-    if (threedresponse !== undefined) {
-      eventData.threedresponse = threedresponse;
+    if (responseData.threedresponse !== undefined) {
+      eventData.threedresponse = responseData.threedresponse;
+    }
+    if (responseData.pares !== undefined) {
+      eventData.pares = responseData.pares;
+      eventData.md = responseData.md;
     }
     const notificationEvent: IMessageBusEvent = {
       data: eventData,

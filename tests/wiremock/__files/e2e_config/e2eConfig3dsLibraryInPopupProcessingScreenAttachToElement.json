@@ -1,0 +1,9 @@
+{
+  "threeDSecure": {
+    "challengeDisplayMode": "POPUP",
+    "challengeDisplayInlineTargetElementId": "st-card-payment",
+    "processingScreenMode": "ATTACH_TO_ELEMENT",
+    "processingScreenWrapperElementId": "st-card-payment"
+  },
+  "submitOnSuccess": false
+}
