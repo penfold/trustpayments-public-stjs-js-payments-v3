@@ -8,6 +8,8 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IStRequest } from '../../models/IStRequest';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
+import { ThreeDVerificationProviderName } from '../three-d-verification/data/ThreeDVerificationProviderName';
+import { CardType } from '@trustpayments/3ds-sdk-js';
 
 describe('StTransportGatewayClient', () => {
   let transportMock: StTransport;
@@ -30,6 +32,7 @@ describe('StTransportGatewayClient', () => {
       requesttypedescription: 'JSINIT',
       threedinit: 'bar',
       transactionstartedtimestamp: '',
+      threedsprovider: ThreeDVerificationProviderName.CARDINAL,
     };
 
     beforeEach(() => {
@@ -83,6 +86,8 @@ describe('StTransportGatewayClient', () => {
       threedpayload: '',
       transactionreference: '',
       transactionstartedtimestamp: '',
+      threedversion: '2.1.0',
+      paymenttypedescription: CardType.MASTER_CARD,
     };
 
     beforeEach(() => {

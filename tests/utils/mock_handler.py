@@ -1,10 +1,11 @@
-import json
 from enum import Enum
 
 from wiremock.constants import Config
 from wiremock.resources.mappings import Mapping, MappingRequest, HttpMethods, MappingResponse
 from wiremock.resources.mappings.resource import Mappings
 from wiremock.server import WireMockServer
+
+from utils.helpers.resources_reader import get_mock_response_from_json
 
 
 class MockUrl(Enum):
@@ -20,13 +21,6 @@ class MockUrl(Enum):
     GATEWAY_MOCK_URI = '/jwt/'
     CONFIG_MOCK_URI = '/config.json'
     PORT = 8443
-
-
-def get_mock_response_from_json(mock):
-    # pylint: disable=invalid-name)
-    with open(f'wiremock/__files/{mock}', 'r') as f:
-        mock_json = json.load(f)
-    return mock_json
 
 
 class MockServer():

@@ -24,5 +24,6 @@
   "You are not logged to Apple account": "U bent niet aangemeld bij een Apple-account",
   "A target element for the input field with id could not be found. Please check your configuration": "Een doelelement voor het invoerveld met id kon niet worden gevonden. Controleer uw configuratie",
   "Jwt has not been specified": "Jwt is niet gespecificeerd",
-  "A target iframe-factory for the input field with id could not be found. Please check your configuration": "Een doel-iframe-factory voor het invoerveld met id is niet gevonden. Controleer uw configuratie"
+  "A target iframe-factory for the input field with id could not be found. Please check your configuration": "Een doel-iframe-factory voor het invoerveld met id is niet gevonden. Controleer uw configuratie",
+  "Cancel": "Annuleren"
 }

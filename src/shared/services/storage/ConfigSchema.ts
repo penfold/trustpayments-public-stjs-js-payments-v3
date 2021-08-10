@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
+import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
 import { ApplePaySchema } from './apple-pay-schema/ApplePaySchema';
 import { GooglePaySchema } from './google-pay-schema/GooglePaySchema';
 import { VisaCheckoutSchema } from './VisaCheckoutSchema';
@@ -65,4 +66,15 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   submitOnSuccess: Joi.boolean(),
   translations: Joi.object(),
   visaCheckout: VisaCheckoutSchema,
+  [threeDSecureConfigName]: Joi.object().allow({}).keys({
+    loggingLevel: Joi.string().valid('ERROR', 'ALL').default('ALL'),
+    challengeDisplayMode: Joi.string().valid('POPUP', 'INLINE').default('POPUP'),
+    challengeDisplayInlineTargetElementId: Joi.any(),
+    translations: Joi.object().allow({}).keys({
+      cancel : Joi.string(),
+    }),
+    processingScreenMode: Joi.string().valid('OVERLAY', 'ATTACH_TO_ELEMENT').default('OVERLAY'),
+    processingScreenWrapperElementId: Joi.any(),
+    threeDSMethodTimeout: Joi.number().min(1).max(10000).default(10000),
+  }),
 });

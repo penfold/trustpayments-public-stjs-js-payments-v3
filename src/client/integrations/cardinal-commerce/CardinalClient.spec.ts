@@ -15,9 +15,9 @@ import { PaymentEvents } from '../../../application/core/models/constants/Paymen
 import { delay } from 'rxjs/operators';
 import { PaymentBrand } from '../../../application/core/models/constants/PaymentBrand';
 import { ITriggerData } from './data/ITriggerData';
-import { IVerificationData } from '../../../application/core/services/three-d-verification/data/IVerificationData';
-import { IVerificationResult } from '../../../application/core/services/three-d-verification/data/IVerificationResult';
-import { ActionCode } from '../../../application/core/services/three-d-verification/data/ActionCode';
+import { IVerificationData } from '../../../application/core/services/three-d-verification/implementations/cardinal-commerce/data/IVerificationData';
+import { IVerificationResult } from '../../../application/core/services/three-d-verification/implementations/cardinal-commerce/data/IVerificationResult';
+import { ActionCode } from '../../../application/core/services/three-d-verification/implementations/cardinal-commerce/data/ActionCode';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 

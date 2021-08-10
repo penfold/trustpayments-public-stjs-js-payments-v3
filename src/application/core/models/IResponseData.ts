@@ -9,6 +9,8 @@ export interface IResponseData extends IRequestTypeResponse {
   customeroutput?: CustomerOutput;
   requesttypedescription?: string;
   threedresponse?: string;
+  pares?: string;
+  md?: string;
   cachetoken?: string;
   billingContact?: IApplePayShippingBillingContact;
   shippingContact?: IApplePayShippingContact;
@@ -16,4 +18,5 @@ export interface IResponseData extends IRequestTypeResponse {
   walletsource?: 'APPLEPAY' | 'VISACHECKOUT';
   errordata?: string[];
   merchantUrl?: string;
+  isCancelled?: boolean;
 }

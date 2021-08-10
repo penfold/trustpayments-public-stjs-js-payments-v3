@@ -14,7 +14,7 @@ import { ISubmitData } from '../../core/models/ISubmitData';
 import {
   PAYMENT_SUCCESS,
   PAYMENT_ERROR,
-  COMMUNICATION_ERROR_INVALID_RESPONSE,
+  COMMUNICATION_ERROR_INVALID_RESPONSE, PAYMENT_CANCELLED,
 } from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
@@ -231,7 +231,13 @@ export class ControlFrame {
             tap(config => this._setRequestTypes(config.jwt)),
             switchMap(() =>
               this._callThreeDQueryRequest().pipe(
-                catchError(errorData => this._onPaymentFailure(errorData)),
+                catchError(errorData => {
+                  if (errorData.isCancelled) {
+                    return this._onPaymentCancel(errorData);
+                  }
+
+                  return this._onPaymentFailure(errorData);
+                }),
                 catchError(() => EMPTY)
               )
             )
@@ -261,12 +267,28 @@ export class ControlFrame {
 
     if (!(errorData instanceof Error)) {
       this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
-      StCodec.publishResponse(errorData, errorData.jwt, errorData.threedresponse);
+      StCodec.publishResponse(errorData, errorData.jwt);
     }
 
     this._resetJwt();
     this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
     this._notification.error(translatedErrorMessage);
+
+    return throwError(errorData);
+  }
+
+  private _onPaymentCancel(errorData: IResponseData, errorMessage: string = PAYMENT_CANCELLED): Observable<never> {
+    const translatedErrorMessage = this.translator.translate(errorMessage);
+    errorData.errormessage = translatedErrorMessage;
+
+    if (!(errorData instanceof Error)) {
+      this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, true);
+      StCodec.publishResponse(errorData, errorData.jwt);
+    }
+
+    this._resetJwt();
+    this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+    this._notification.cancel(translatedErrorMessage);
 
     return throwError(errorData);
   }
@@ -281,7 +303,7 @@ export class ControlFrame {
           {
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
           },
-          true
+          true,
         );
         this._notification.success(PAYMENT_SUCCESS);
         this._validation.blockForm(FormState.COMPLETE);
@@ -325,7 +347,7 @@ export class ControlFrame {
     return of({ ...this._merchantFormData }).pipe(
       switchMap(applyCybertonicaTid),
       switchMap(merchantFormData =>
-        this._threeDProcess.performThreeDQuery(this._remainingRequestTypes, this._card, merchantFormData)
+        this._threeDProcess.performThreeDQuery$(this._remainingRequestTypes, this._card, merchantFormData)
       )
     );
   }
@@ -408,7 +430,7 @@ export class ControlFrame {
   }
 
   private _initThreeDProcess(config: IConfig): void {
-    this._threeDProcess.init().subscribe({
+    this._threeDProcess.init$().subscribe({
       next: () => {
         this._isPaymentReady = true;
 

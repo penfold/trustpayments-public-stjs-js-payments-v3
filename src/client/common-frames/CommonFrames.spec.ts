@@ -25,6 +25,7 @@ import { Translator } from '../../application/core/shared/translator/Translator'
 import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
+import { Enrollment } from '../../application/core/models/constants/Enrollment';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set({ id: TranslatorToken, type: Translator });
@@ -153,7 +154,7 @@ describe('CommonFrames', () => {
         threedresponse: 'threedresponse',
         baseamount: 'some amount',
         eci: 'test eci',
-        enrolled: 'Y',
+        enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
@@ -179,6 +180,26 @@ describe('CommonFrames', () => {
         true
       );
     });
+
+    it('should call submit callback when TP-3DS popup is cancelled - isCancelled flag', done => {
+      const data = {
+        errorcode: '0',
+        errormessage: PAYMENT_CANCELLED,
+        jwt: 'testjwt',
+        baseamount: '20',
+        eci: 'eci',
+        enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
+        requesttypedescription: RequestType.THREEDQUERY,
+        isCancelled: true,
+      };
+
+      messageBus.pipe(ofType(PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK)).subscribe(event => {
+        expect(event.data).toBe(data);
+        done();
+      });
+
+      messageBus.publish({ type: PUBLIC_EVENTS.TRANSACTION_COMPLETE, data });
+    });
   });
 
   describe('submit process when payment status is error', () => {
@@ -189,7 +210,7 @@ describe('CommonFrames', () => {
       threedresponse: 'some threedresponse',
       baseamount: 'some amount',
       eci: 'test eci',
-      enrolled: 'Y',
+      enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
     };
 
     it('should call submit process with 50003 error status and check if jwt and threedresponse fields were included', done => {
@@ -222,7 +243,7 @@ describe('CommonFrames', () => {
         threedresponse: 'some threedresponse',
         baseamount: 'some amount',
         eci: 'test eci',
-        enrolled: 'Y',
+        enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
@@ -256,7 +277,7 @@ describe('CommonFrames', () => {
         threedresponse: 'some threedresponse',
         baseamount: 'some amount',
         eci: 'test eci',
-        enrolled: 'Y',
+        enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
       };
 
       messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
@@ -288,7 +309,7 @@ describe('CommonFrames', () => {
         baseamount: 'some amount',
         acsurl: 'some acs url',
         eci: 'test eci',
-        enrolled: 'U',
+        enrolled: Enrollment.AUTHENTICATION_UNAVAILABLE,
         threedresponse: 'some threedresponse',
         customeroutput: CustomerOutput.THREEDREDIRECT,
       };

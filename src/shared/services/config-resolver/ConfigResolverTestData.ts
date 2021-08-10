@@ -1,4 +1,7 @@
 import { IConfig } from '../../model/config/IConfig';
+import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
+import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
+import { LoggingLevel, ChallengeDisplayMode, ProcessingScreenMode } from '@trustpayments/3ds-sdk-js';
 
 export const config: IConfig = {
   analytics: true,
@@ -99,6 +102,10 @@ export const config: IConfig = {
     settings: {
       displayName: 'My Test Site',
     },
+  },
+  [threeDSecureConfigName]: {
+    loggingLevel: undefined,
+    challengeDisplayMode: undefined,
   },
 };
 export const configResolved: IConfig = {
@@ -218,6 +225,13 @@ export const configResolved: IConfig = {
       displayName: 'My Test Site',
     },
   },
+  [GooglePayConfigName]: undefined,
+  [threeDSecureConfigName]: {
+    loggingLevel: LoggingLevel.ERROR,
+    challengeDisplayMode: ChallengeDisplayMode.POPUP,
+    translations: {},
+    processingScreenMode: ProcessingScreenMode.OVERLAY,
+  },
 };
 export const minimalConfig: IConfig = {
   jwt: 'randomjwt',
@@ -249,7 +263,7 @@ export const minimalDefaultConfigResolve: IConfig = {
   errorReporting: true,
   fieldsToSubmit: ['pan', 'expirydate', 'securitycode'],
   formId: 'st-form',
-  googlePay: undefined,
+  [GooglePayConfigName]: undefined,
   init: {
     cachetoken: '',
     threedinit: '',
@@ -284,6 +298,12 @@ export const minimalDefaultConfigResolve: IConfig = {
   successCallback: null,
   translations: {},
   visaCheckout: undefined,
+  threeDSecure: {
+    challengeDisplayMode: ChallengeDisplayMode.POPUP,
+    loggingLevel: LoggingLevel.ERROR,
+    translations: {},
+    processingScreenMode: ProcessingScreenMode.OVERLAY,
+  },
 };
 export const configWithWarning : IConfig = {
   jwt: 'randomjwt',

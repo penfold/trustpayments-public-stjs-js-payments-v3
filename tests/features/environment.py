@@ -13,6 +13,7 @@ from utils.actions import Actions
 from utils.browser_executor import BrowserExecutor
 from utils.configurations.jwt_generator import replace_jwt_in_logs
 from utils.driver_factory import DriverFactory
+from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed, \
     clear_shared_dict, add_to_shared_dict
 from utils.logger import get_logger
@@ -49,7 +50,7 @@ def before_scenario(context, scenario):
     """Run before each scenario"""
     LOGGER.info('BEFORE SCENARIO')
     clear_shared_dict()
-    add_to_shared_dict('assertion_message', 'Scenario execution error, for details check gitlab log')
+    add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, 'Scenario execution error, for details check gitlab log')
     if context.configuration.REMOTE:
         context.configuration.BROWSER = context.configuration.REMOTE_BROWSER
     disable_headless_for_visa_checkout(context)
@@ -60,7 +61,8 @@ def before_scenario(context, scenario):
     actions = Actions(driver_factory=context.driver_factory, waits=context.waits)
     context.browser_executor = BrowserExecutor(driver_factory=context.driver_factory, waits=context.waits)
     context.reporter = Reporter(driver_factory=context.driver_factory, configuration=context.configuration)
-    context.screenshot_manager = ScreenshotManager(driver_factory=context.driver_factory, configuration=context.configuration)
+    context.screenshot_manager = ScreenshotManager(driver_factory=context.driver_factory,
+                                                   configuration=context.configuration)
     context.page_factory = PageFactory(browser_executor=context.browser_executor, actions=actions,
                                        reporter=context.reporter, configuration=context.configuration,
                                        waits=context.waits)

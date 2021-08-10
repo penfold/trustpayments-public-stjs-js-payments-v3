@@ -1,11 +1,11 @@
-import json
-
 from configuration import CONFIGURATION
 from pages.locators.animated_card_locators import AnimatedCardLocators
 from pages.locators.payment_methods_locators import PaymentMethodsLocators
 from pages.base_page import BasePage
 from utils.enums.field_type import FieldType
+from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import add_to_shared_dict
+from utils.helpers.resources_reader import get_translation_from_json
 
 
 class AnimatedCardPage(BasePage):
@@ -22,7 +22,7 @@ class AnimatedCardPage(BasePage):
         actual_credit_card_icon = self.get_card_type_icon_from_animated_card()
         assertion_message = f'Credit card icon is not correct, ' \
                             f'should be: "{expected_card_icon}" but is: "{actual_credit_card_icon}"'
-        add_to_shared_dict('assertion_message', assertion_message)
+        add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert expected_card_icon in actual_credit_card_icon, assertion_message
 
     def get_data_from_animated_card(self, field_type, card_type):
@@ -42,7 +42,7 @@ class AnimatedCardPage(BasePage):
         actual_data_on_animated_card = self.get_data_from_animated_card(field_type, card_type)
         assertion_message = f'Data on animated card is not correct, should be: ' \
                             f'"{expected_data}" but is: "{actual_data_on_animated_card}"'
-        add_to_shared_dict('assertion_message', assertion_message)
+        add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert expected_data in actual_data_on_animated_card, assertion_message
 
     def validate_all_data_on_animated_card(self, card_number, exp_date, cvv, card_type, is_field_in_iframe):
@@ -60,11 +60,11 @@ class AnimatedCardPage(BasePage):
             animated_card_side = self._actions.get_element_attribute(AnimatedCardLocators.animated_card, 'class')
             if card_type == 'AMEX':
                 assertion_message = 'Animated card is flipped for AMEX but should not be'
-                add_to_shared_dict('assertion_message', assertion_message)
+                add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
                 assert 'flip-card' not in animated_card_side, assertion_message
             else:
                 assertion_message = 'Animated card is not flipped but should be'
-                add_to_shared_dict('assertion_message', assertion_message)
+                add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
                 assert 'flip-card' in animated_card_side, assertion_message
 
     def validate_animated_card_translation(self, language):
@@ -78,19 +78,13 @@ class AnimatedCardPage(BasePage):
 
     def validate_animated_card_element_translation(self, element, language, key):
         actual_translation = self.get_animated_card_label_translation(element)
-        expected_translation = self.get_translation_from_json(language, key)
+        expected_translation = get_translation_from_json(language, key)
         if 'Safari' not in CONFIGURATION.REMOTE_BROWSER:
             expected_translation = expected_translation.upper()
         assertion_message = f'Translation is not correct: should be {expected_translation} but is {actual_translation}'
-        add_to_shared_dict('assertion_message', assertion_message)
+        add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert actual_translation in expected_translation, assertion_message
 
     def get_animated_card_label_translation(self, locator):
         element_translation = self._actions.get_text(locator)
         return element_translation
-
-    def get_translation_from_json(self, language, key):
-        # pylint: disable=invalid-name
-        with open(f'resources/languages/{language}.json', 'r') as f:
-            translation = json.load(f)
-        return translation[key]

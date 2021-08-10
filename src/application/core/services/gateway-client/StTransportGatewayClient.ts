@@ -10,6 +10,8 @@ import { ThreeDInitRequest } from '../three-d-verification/data/ThreeDInitReques
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IGatewayClient } from './IGatewayClient';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
+import { IThreeDLookupResponse } from '../../models/IThreeDLookupResponse';
+import { ThreeDLookupRequest } from '../three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
 
 @Service()
 export class StTransportGatewayClient implements IGatewayClient {
@@ -22,6 +24,14 @@ export class StTransportGatewayClient implements IGatewayClient {
       }),
       tap((response: IThreeDInitResponse) => {
         this.messageBus.publish({ type: PUBLIC_EVENTS.JSINIT_RESPONSE, data: response });
+      })
+    );
+  }
+
+  threedLookup(request: ThreeDLookupRequest): Observable<IThreeDLookupResponse> {
+    return from(this.stTransport.sendRequest(request)).pipe(
+      switchMap(({ response }: { response: IThreeDLookupResponse }) => {
+        return Number(response.errorcode) === 0 ? of(response) : throwError(response);
       })
     );
   }
