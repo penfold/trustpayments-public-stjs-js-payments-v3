@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Container } from 'typedi';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
-import ST from './ST';
+import SecureTrading, { ST } from './ST';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
@@ -36,16 +36,7 @@ Container.set({ id: CardFrames, value: instance(mock(CardFrames)) });
 Container.set({ id: ThreeDSecureFactory, value: instance(mock(ThreeDSecureFactory)) });
 
 describe('ST', () => {
-  const { cacheConfig, instance } = stFixture();
-
-  describe('constructor()', () => {
-    let stObject: ReturnType<typeof ST>;
-
-    beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      stObject = ST(cacheConfig);
-    });
-  });
+  const { instance } = stFixture();
 
   describe('updateJWT()', () => {
     beforeEach(() => {
@@ -260,6 +251,6 @@ function stFixture() {
     },
   };
   // @ts-ignore
-  const instance: ReturnType<typeof ST> = ST(config);
+  const instance: ST = SecureTrading(config);
   return { cacheConfig, config, instance, applePayConfig, visaCheckoutConfig, googlePayConfig };
 }

@@ -293,10 +293,10 @@ export class ControlFrame {
     return throwError(errorData);
   }
 
-  private _processPayment(responseData: IResponseData): void {
+  private _processPayment(responseData: IResponseData): Promise<void> {
     this._setRequestTypes(StCodec.jwt);
 
-    this._payment
+    return this._payment
       .processPayment(this._remainingRequestTypes, this._card, this._merchantFormData, responseData)
       .then(() => {
         this._messageBus.publish(
