@@ -21,7 +21,6 @@ import { IMessageBus } from '../../application/core/shared/message-bus/IMessageB
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import spyOn = jest.spyOn;
-import any = jasmine.any;
 import Container from 'typedi';
 import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../../application/core/shared/translator/Translator';
@@ -215,7 +214,7 @@ describe('CardFrames', () => {
       instance._submitFormListener();
       messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
       // @ts-ignore
-      expect(instance._submitButton.removeEventListener).toHaveBeenCalledWith('click', any(Function));
+      expect(instance._submitButton.removeEventListener).toHaveBeenCalledWith('click', expect.any(Function));
     });
   });
 

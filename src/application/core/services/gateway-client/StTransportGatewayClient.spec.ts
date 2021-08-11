@@ -55,11 +55,9 @@ describe('StTransportGatewayClient', () => {
         errorcode: '123',
       };
 
-      beforeEach(() => {
-        when(transportMock.sendRequest(deepEqual(threeDInitRequest))).thenResolve({
-          jwt: 'jwt',
-          response: errorResponse,
-        });
+      when(transportMock.sendRequest(deepEqual(threeDInitRequest))).thenResolve({
+        jwt: 'jwt',
+        response: errorResponse,
       });
 
       gatewayClient.jsInit().subscribe({
