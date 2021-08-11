@@ -6,8 +6,8 @@ import { VisaCheckoutSdkProvider } from '../application/core/integrations/visa-c
 import { VisaCheckoutSdkProviderMock } from '../application/core/integrations/visa-checkout/visa-checkout-sdk-provider/VisaCheckoutSdkProviderMock';
 import { VisaCheckout } from '../application/core/integrations/visa-checkout/VisaCheckout';
 import { VisaCheckoutMock } from '../application/core/integrations/visa-checkout/VisaCheckoutMock';
-import { GooglePaySdkProvider } from '../client/integrations/google-pay/google-pay-sdk-provider/GooglePaySdkProvider';
 import { GooglePaySdkProviderMock } from '../client/integrations/google-pay/google-pay-sdk-provider/GooglePaySdkProviderMock';
+import { IGooglePaySdkProvider } from '../client/integrations/google-pay/google-pay-sdk-provider/IGooglePaySdkProvider';
 import { CybertonicaMock } from './mocks/CybertonicaMock';
 import { environment } from '../environments/environment';
 import { CardinalProvider } from '../client/integrations/cardinal-commerce/CardinalProvider';
@@ -26,7 +26,7 @@ if(environment.testEnvironment) {
   Container.set({ id: VisaCheckoutSdkProvider, type: VisaCheckoutSdkProviderMock });
   Container.set({ id: ApplePay, type: ApplePayMock });
   Container.set({ id: ApplePayButtonService, type: ApplePayButtonServiceMock });
-  Container.set({ id: GooglePaySdkProvider, type: GooglePaySdkProviderMock });
+  Container.set({ id: IGooglePaySdkProvider, type: GooglePaySdkProviderMock });
   Container.set({ id: IApplePaySessionWrapper, type: ApplePaySessionWrapperMock });
   Container.set({ id: IHttpOptionsProvider, type: TestHttpOptionsProvider });
 }
