@@ -133,16 +133,12 @@ describe('ControlFrame', () => {
     });
 
     it('should call notification success when promise is resolved', async () => {
-      // https://stackoverflow.com/a/51045733/2148667
-      const flushPromises = () => new Promise(setImmediate);
-
       // @ts-ignore
       instance._payment = {
         processPayment: jest.fn().mockResolvedValueOnce(undefined),
       };
       // @ts-ignore
-      instance._processPayment(data);
-      await flushPromises();
+      await instance._processPayment(data);
 
       // @ts-ignore
       expect(instance._notification.success).toHaveBeenCalledWith(PAYMENT_SUCCESS);
@@ -151,16 +147,12 @@ describe('ControlFrame', () => {
     });
 
     it('should call notification error when promise is rejected', async () => {
-      // https://stackoverflow.com/a/51045733/2148667
-      const flushPromises = () => new Promise(setImmediate);
-
       // @ts-ignore
       instance._payment = {
         processPayment: jest.fn().mockRejectedValueOnce(undefined),
       };
       // @ts-ignore
-      instance._processPayment(data);
-      await flushPromises();
+      await instance._processPayment(data);
 
       // @ts-ignore
       expect(instance._notification.error).toHaveBeenCalledWith(PAYMENT_ERROR);
