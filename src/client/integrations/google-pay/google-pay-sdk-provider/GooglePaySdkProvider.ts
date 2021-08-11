@@ -10,7 +10,7 @@ import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IGooglePaySdkProvider } from './IGooglePaySdkProvider';
 
 @Service()
-export class GooglePaySdkProvider extends IGooglePaySdkProvider{
+export class GooglePaySdkProvider implements IGooglePaySdkProvider{
   private readonly SCRIPT_ADDRESS = environment.GOOGLE_PAY.GOOGLE_PAY_URL;
   private readonly SCRIPT_TARGET: string = 'head';
 
