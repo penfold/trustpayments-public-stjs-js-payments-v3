@@ -23,6 +23,8 @@ target 'reactnative' do
   end
 end
 
+pod 'RNInAppBrowser', :path => '../node_modules/react-native-inappbrowser-reborn'
+
 target 'reactnative-tvOS' do
   # Pods for reactnative-tvOS
 
