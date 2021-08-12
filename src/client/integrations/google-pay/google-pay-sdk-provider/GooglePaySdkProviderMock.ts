@@ -1,6 +1,8 @@
 import HttpClient from '@trustpayments/http-client';
 import { asapScheduler, firstValueFrom, Observable, scheduled } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Container } from 'typedi';
+import { environment } from '../../../../environments/environment';
 import {
   IGooglePayPaymentRequest,
   IGooglePlayIsReadyToPayRequest,
@@ -15,9 +17,12 @@ import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IGooglePaySdkProvider } from './IGooglePaySdkProvider';
 
 export class GooglePaySdkProviderMock implements IGooglePaySdkProvider {
-  private mockPaymentUrl: string; // TODO update this when wiremock is implemented in STJS-1931
+  private mockPaymentUrl: string = environment.GOOGLE_PAY.MOCK_DATA_URL;
+  private httpClient: HttpClient;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor() {
+    this.httpClient = Container.get(HttpClient);
+  }
 
   setupSdk$(config: IConfig): Observable<IGooglePaySessionPaymentsClient> {
     return scheduled([this.getClientMock()], asapScheduler);
@@ -28,13 +33,12 @@ export class GooglePaySdkProviderMock implements IGooglePaySdkProvider {
       isReadyToPay(request: IGooglePlayIsReadyToPayRequest): Promise<IIsReadyToPayResponse> {
         return Promise.resolve({ result: true });
       },
-      loadPaymentData: this.loadPaymentData,
+      loadPaymentData: this.loadPaymentData.bind(this),
       createButton: this.createButton,
     };
   }
 
   private loadPaymentData(request: IGooglePayPaymentRequest): Promise<IPaymentResponse> {
-    // TODO update this when wiremock is implemented in STJS-1931
     return firstValueFrom<IPaymentResponse>(
       this.httpClient.get$(this.mockPaymentUrl).pipe(map(response => response.data as IPaymentResponse))
     );

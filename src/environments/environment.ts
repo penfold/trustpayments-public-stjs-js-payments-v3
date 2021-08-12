@@ -41,6 +41,7 @@ export const environment = {
   },
   GOOGLE_PAY: {
     GOOGLE_PAY_URL: 'https://pay.google.com/gp/p/js/pay.js',
+    MOCK_DATA_URL: '',
   },
   production: false,
   testEnvironment: false,
