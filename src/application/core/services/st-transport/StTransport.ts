@@ -64,6 +64,9 @@ export class StTransport {
   }
 
   private isRequestJsinit(requestTypes: string[]): boolean {
+    if (!requestTypes) {
+      return false;
+    }
     return requestTypes[0] === 'JSINIT';
   }
 
