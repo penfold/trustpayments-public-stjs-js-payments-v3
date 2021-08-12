@@ -64,6 +64,9 @@ export class StTransport {
   }
 
   private isRequestJsinit(requestTypes: string[]): boolean {
+    if (!requestTypes) {
+      return false;
+    }
     return requestTypes[0] === 'JSINIT';
   }
 
@@ -104,7 +107,7 @@ export class StTransport {
       body: requestBody,
     })
       .then((response: Response) => {
-        return codec.decode(response, isRequestJsinit)
+        return codec.decode(response, isRequestJsinit);
       })
       .catch((error: Error | unknown) => {
         if (error instanceof InvalidResponseError) {

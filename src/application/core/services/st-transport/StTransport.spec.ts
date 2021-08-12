@@ -129,6 +129,8 @@ describe('StTransport class', () => {
     it('should build the fetch options with merchantUrl is set', async () => {
       const requestBody = `{"jwt":"${config.jwt}"}`;
       const requestObject = { requesttypedescriptions: ['AUTH'] };
+      // @ts-ignore
+      instance.isRequestJsinit = jest.fn().mockReturnValue(false);
 
       mockFT.mockReturnValue(
         resolvingPromise({
@@ -179,6 +181,7 @@ describe('StTransport class', () => {
         { response: [{ errorcode: 0 }], version: '1.00' },
       ],
     ])('should decode the json response', async (mockFetch, expected) => {
+      // @ts-ignore
       mockFT.mockReturnValue(mockFetch);
       await expect(instance.sendRequest({ requesttypedescription: 'AUTH' })).resolves.toEqual(expected);
       expect(codec.decode).toHaveBeenCalledWith({
@@ -188,6 +191,8 @@ describe('StTransport class', () => {
 
     it('should throttle requests', async () => {
       const requestObject = { requesttypedescription: 'AUTH' };
+      // @ts-ignore
+      instance.isRequestJsinit = jest.fn().mockReturnValue(false);
 
       mockFT.mockReturnValue(
         resolvingPromise({
