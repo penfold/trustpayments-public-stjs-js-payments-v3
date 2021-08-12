@@ -42,7 +42,8 @@ export class StTransport {
   private _config: IConfig;
   private _codec: StCodec;
 
-  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder) {}
+  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder) {
+  }
 
   /**
    * Perform a JSON API request with ST
@@ -52,13 +53,18 @@ export class StTransport {
   public async sendRequest(requestObject: IStRequest, merchantUrl?: string): Promise<Record<string, unknown>> {
     const requestBody = this.getCodec().encode(requestObject);
     const fetchOptions = this._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
+    const isRequestJsinit = this.isRequestJsinit(requestObject.requesttypedescriptions);
 
     if (!this._throttlingRequests.has(requestBody)) {
-      this._throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody, fetchOptions, merchantUrl));
+      this._throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody, fetchOptions, merchantUrl, isRequestJsinit));
       setTimeout(() => this._throttlingRequests.delete(requestBody), StTransport.THROTTLE_TIME);
     }
 
     return this._throttlingRequests.get(requestBody);
+  }
+
+  private isRequestJsinit(requestTypes: string[]): boolean {
+    return requestTypes[0] === 'JSINIT';
   }
 
   private _getDefaultFetchOptions(requestBody: string, requesttypedescriptions: string[]): IFetchOptions {
@@ -89,7 +95,7 @@ export class StTransport {
     return options;
   }
 
-  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions, merchantUrl?: string): Promise<Record<string, unknown>> {
+  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions, merchantUrl?: string, isRequestJsinit?: boolean): Promise<Record<string, unknown>> {
     const codec = this.getCodec();
     const gatewayUrl = merchantUrl ? merchantUrl : this.getConfig().datacenterurl;
 
@@ -97,13 +103,15 @@ export class StTransport {
       ...fetchOptions,
       body: requestBody,
     })
-      .then(codec.decode)
+      .then((response: Response) => {
+        return codec.decode(response, isRequestJsinit)
+      })
       .catch((error: Error | unknown) => {
         if (error instanceof InvalidResponseError) {
           return Promise.reject(error);
         }
 
-        return codec.decode({});
+        return codec.decode({}, isRequestJsinit);
       });
   }
 
@@ -125,13 +133,13 @@ export class StTransport {
     connectTimeout = StTransport.TIMEOUT,
     delay = StTransport.DELAY,
     retries = StTransport.RETRY_LIMIT,
-    retryTimeout = StTransport.RETRY_TIMEOUT
+    retryTimeout = StTransport.RETRY_TIMEOUT,
   ) {
     return Utils.retryPromise(
       () => Utils.promiseWithTimeout<Response>(() => fetch(url, options), connectTimeout),
       delay,
       retries,
-      retryTimeout
+      retryTimeout,
     );
   }
 

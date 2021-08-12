@@ -54,12 +54,12 @@ export class StCodec {
     };
   }
 
-  public static verifyResponseObject(responseData: IResponsePayload, jwtResponse: string): IResponseData {
+  public static verifyResponseObject(responseData: IResponsePayload, jwtResponse: string, isRequestJsinit?: boolean): IResponseData {
     if (StCodec.isInvalidResponse(responseData)) {
       throw StCodec.handleInvalidResponse();
     }
     const responseContent: IResponseData = StCodec.determineResponse(responseData, jwtResponse);
-    StCodec.handleValidGatewayResponse(responseContent, jwtResponse);
+    StCodec.handleValidGatewayResponse(responseContent, jwtResponse, isRequestJsinit);
     return responseContent;
   }
 
@@ -173,14 +173,17 @@ export class StCodec {
   private static propagateStatus(
     errormessageTranslated: string,
     responseContent: IResponseData,
-    jwtResponse: string
+    jwtResponse: string,
+    isRequestJsinit?: boolean,
   ): void {
     StCodec.getNotification().error(errormessageTranslated);
-    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
-    StCodec.publishResponse(responseContent, jwtResponse);
+    if (!isRequestJsinit) {
+      StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+      StCodec.publishResponse(responseContent, jwtResponse);
+    }
   }
 
-  private static handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
+  private static handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string, isRequestJsinit?: boolean) {
     const translator = Container.get(TranslatorToken);
     const validation = new Validation();
 
@@ -207,7 +210,7 @@ export class StCodec {
     }
 
     validation.blockForm(FormState.AVAILABLE);
-    StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
+    StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse, isRequestJsinit);
     throw new GatewayError(errormessage);
   }
 
@@ -258,13 +261,13 @@ export class StCodec {
     return JSON.stringify(this.buildRequestObject(requestObject));
   }
 
-  public async decode(responseObject: Response | Record<string, unknown>): Promise<Record<string, unknown>> {
+  public async decode(responseObject: Response | Record<string, unknown>, isRequestJsinit: boolean): Promise<Record<string, unknown>> {
     return new Promise((resolve, reject) => {
       if (typeof responseObject.json === 'function') {
         responseObject.json().then((responseData: IResponsePayload) => {
           try {
             const decoded = StCodec.decodeResponseJwt(responseData.jwt, reject);
-            const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
+            const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt, isRequestJsinit);
 
             if (Number(verifiedResponse.errorcode) === 0) {
               StCodec.replaceJwt(decoded.payload.jwt);
