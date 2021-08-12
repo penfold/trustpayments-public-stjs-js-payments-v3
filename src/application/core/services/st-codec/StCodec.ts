@@ -27,12 +27,12 @@ import { IRequestTypeResponse } from './interfaces/IRequestTypeResponse';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 
 export class StCodec {
-  public static CONTENT_TYPE = 'application/json';
-  public static VERSION = '1.00';
-  public static VERSION_INFO = `STJS::N/A::${version}::N/A`;
-  public static MINIMUM_REQUEST_FIELDS = 1;
-  public static jwt: string;
-  public static originalJwt: string;
+  static CONTENT_TYPE = 'application/json';
+  static VERSION = '1.00';
+  static VERSION_INFO = `STJS::N/A::${version}::N/A`;
+  static MINIMUM_REQUEST_FIELDS = 1;
+  static jwt: string;
+  static originalJwt: string;
 
   /**
    * Generate a unique ID for a request
@@ -41,11 +41,11 @@ export class StCodec {
    *   (since we prepend 'J-' the random section will be 2 char shorter)
    * @return A newly generated random request ID
    */
-  public static createRequestId(length = 10): string {
+  static createRequestId(length = 10): string {
     return 'J-' + Math.random().toString(36).substring(2, length);
   }
 
-  public static getErrorData(data: IResponseData): unknown {
+  static getErrorData(data: IResponseData): unknown {
     const { errordata, errormessage, requesttypedescription } = data;
     return {
       errordata,
@@ -54,7 +54,7 @@ export class StCodec {
     };
   }
 
-  public static verifyResponseObject(responseData: IResponsePayload, jwtResponse: string, isRequestJsinit?: boolean): IResponseData {
+  static verifyResponseObject(responseData: IResponsePayload, jwtResponse: string, isRequestJsinit?: boolean): IResponseData {
     if (StCodec.isInvalidResponse(responseData)) {
       throw StCodec.handleInvalidResponse();
     }
@@ -68,7 +68,7 @@ export class StCodec {
    * @param responseData The decoded response from the gateway
    * @param jwtResponse The raw JWT response from the gateway
    */
-  public static publishResponse(responseData: IResponseData, jwtResponse?: string): void {
+  static publishResponse(responseData: IResponseData, jwtResponse?: string): void {
     const translator = Container.get(TranslatorToken);
     responseData.errormessage = translator.translate(responseData.errormessage);
     const eventData = { ...responseData };
@@ -89,18 +89,18 @@ export class StCodec {
     StCodec.getMessageBus().publish(notificationEvent, true);
   }
 
-  public static updateJwt(newJWT: string): void {
+  static updateJwt(newJWT: string): void {
     StCodec.jwt = newJWT ? newJWT : StCodec.jwt;
     StCodec.originalJwt = newJWT ? newJWT : StCodec.originalJwt;
     this.getMessageBus().publish({ type: PUBLIC_EVENTS.JWT_UPDATED, data: newJWT });
   }
 
-  public static resetJwt(): void {
+  static resetJwt(): void {
     StCodec.jwt = StCodec.originalJwt;
     this.getMessageBus().publish({ type: PUBLIC_EVENTS.JWT_RESET });
   }
 
-  public static replaceJwt(jwt: string): void {
+  static replaceJwt(jwt: string): void {
     StCodec.jwt = jwt;
     this.getMessageBus().publish({ type: PUBLIC_EVENTS.JWT_REPLACED, data: jwt });
   }
@@ -236,7 +236,7 @@ export class StCodec {
     StCodec.locale = this.jwtDecoder.decode<IStJwtPayload>(StCodec.jwt).payload.locale || 'en_GB';
   }
 
-  public buildRequestObject(requestData: IStRequest): Record<string, unknown> {
+  buildRequestObject(requestData: IStRequest): Record<string, unknown> {
     return {
       acceptcustomeroutput: '2.00',
       jwt: StCodec.jwt,
@@ -252,7 +252,7 @@ export class StCodec {
     };
   }
 
-  public encode(requestObject: IStRequest): string {
+  encode(requestObject: IStRequest): string {
     if (!Object.keys(requestObject).length) {
       StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
       StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_REQUEST);
@@ -261,7 +261,7 @@ export class StCodec {
     return JSON.stringify(this.buildRequestObject(requestObject));
   }
 
-  public async decode(responseObject: Response | Record<string, unknown>, isRequestJsinit: boolean): Promise<Record<string, unknown>> {
+  async decode(responseObject: Response | Record<string, unknown>, isRequestJsinit: boolean): Promise<Record<string, unknown>> {
     return new Promise((resolve, reject) => {
       if (typeof responseObject.json === 'function') {
         responseObject.json().then((responseData: IResponsePayload) => {

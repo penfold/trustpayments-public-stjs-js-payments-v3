@@ -1,4 +1,3 @@
-import each from 'jest-each';
 import JwtDecode from 'jwt-decode';
 import Container from 'typedi';
 import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
@@ -387,14 +386,14 @@ describe('StCodec class', () => {
           json: () => {
             return new Promise(resolve => resolve(fullResponse));
           },
-        })
+        }, undefined)
       ).resolves.toEqual({ jwt: fullResponse.jwt, response: { verified: 'data' } });
       const expectedResult = (JwtDecode(fullResponse.jwt) as unknown as IDecodedJwt).payload;
-      expect(StCodec.verifyResponseObject).toHaveBeenCalledWith(expectedResult, fullResponse.jwt);
+      expect(StCodec.verifyResponseObject).toHaveBeenCalledWith(expectedResult, fullResponse.jwt, undefined);
     });
 
     it('should error an invalid response', async () => {
-      await expect(instance.decode({})).rejects.toThrow(Error(COMMUNICATION_ERROR_INVALID_RESPONSE));
+      await expect(instance.decode({}, undefined)).rejects.toThrow(Error(COMMUNICATION_ERROR_INVALID_RESPONSE));
       // @ts-ignore
       expect(StCodec.handleInvalidResponse).toHaveBeenCalledTimes(1);
     });
@@ -411,7 +410,7 @@ describe('StCodec class', () => {
         json: () => {
           return new Promise(resolve => resolve(fullResponse));
         },
-      });
+      }, undefined);
 
       setTimeout(() => {
         expect(StCodec.jwt).toEqual('original_jwt');

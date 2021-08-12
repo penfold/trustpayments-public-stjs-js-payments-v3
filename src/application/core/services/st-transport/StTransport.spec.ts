@@ -1,4 +1,3 @@
-import each from 'jest-each';
 import { GlobalWithFetchMock } from 'jest-fetch-mock';
 import { StTransport } from './StTransport';
 import { Utils } from '../../shared/utils/Utils';
@@ -48,7 +47,7 @@ describe('StTransport class', () => {
     instance = new StTransport(mockInstance(configProviderMock), mockInstance(jwtDecoderMock));
     // This effectively creates a MVP codec so that we aren't testing all that here
     // @ts-ignore
-    instance._codec = codec = {
+    instance.codec = codec = {
       encode: jest.fn(x => JSON.stringify(x)),
       decode: jest.fn(
         x =>
@@ -72,14 +71,14 @@ describe('StTransport class', () => {
       environment.testEnvironment = true;
       const requestBody = `{"jwt":"${config.jwt}"}`;
       // @ts-ignore
-      const options = instance._getDefaultFetchOptions(requestBody);
+      const options = instance.getDefaultFetchOptions(requestBody);
       expect(options.headers).toHaveProperty('ST-Request-Types', 'ACCOUNTCHECK, THREEDQUERY, AUTH');
     });
 
     it('should not return ST-Request-Types header when test env is set on false', () => {
       const requestBody = `{"jwt":"${config.jwt}"}`;
       // @ts-ignore
-      const options = instance._getDefaultFetchOptions(requestBody);
+      const options = instance.getDefaultFetchOptions(requestBody);
       expect(options.headers).not.toHaveProperty('ST-Request-Types');
     });
 
@@ -90,7 +89,7 @@ describe('StTransport class', () => {
         const requestBody = `{"jwt":"${config.jwt}"}`;
         const requestObject = { requesttypedescriptions: [req] };
         // @ts-ignore
-        const options = instance._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
+        const options = instance.getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
         expect(options.headers).toHaveProperty('ST-Request-Types', req);
       }
     );
@@ -99,9 +98,9 @@ describe('StTransport class', () => {
   describe('Method sendRequest', () => {
     beforeEach(() => {
       // @ts-ignore
-      instance._fetchRetry = jest.fn();
+      instance.fetchRetry = jest.fn();
       // @ts-ignore
-      mockFT = instance._fetchRetry as jest.Mock;
+      mockFT = instance.fetchRetry as jest.Mock;
     });
 
     it('should build the fetch options', async () => {
@@ -118,11 +117,11 @@ describe('StTransport class', () => {
       );
       await instance.sendRequest(requestObject);
       // @ts-ignore
-      expect(instance._fetchRetry).toHaveBeenCalledTimes(1);
+      expect(instance.fetchRetry).toHaveBeenCalledTimes(1);
       // @ts-ignore
-      expect(instance._fetchRetry).toHaveBeenCalledWith(config.datacenterurl, {
+      expect(instance.fetchRetry).toHaveBeenCalledWith(config.datacenterurl, {
         // @ts-ignore
-        ...instance._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions),
+        ...instance.getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions),
         body: JSON.stringify(requestObject),
       });
     });
@@ -141,11 +140,11 @@ describe('StTransport class', () => {
       );
       await instance.sendRequest(requestObject, 'https://somemerchanturl.com');
       // @ts-ignore
-      expect(instance._fetchRetry).toHaveBeenCalledTimes(1);
+      expect(instance.fetchRetry).toHaveBeenCalledTimes(1);
       // @ts-ignore
-      expect(instance._fetchRetry).toHaveBeenCalledWith('https://somemerchanturl.com', {
+      expect(instance.fetchRetry).toHaveBeenCalledWith('https://somemerchanturl.com', {
         // @ts-ignore
-        ...instance._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions),
+        ...instance.getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions),
         body: JSON.stringify(requestObject),
       });
     });
@@ -204,7 +203,7 @@ describe('StTransport class', () => {
     });
   });
 
-  describe('_fetchRetry()', () => {
+  describe('fetchRetry()', () => {
     const { options, url, connectTimeout, delay, retries, retryTimeout } = fetchRetryObject;
 
     beforeEach(() => {
@@ -214,14 +213,14 @@ describe('StTransport class', () => {
     it('should call Utils.retryPromise with provided parameters', () => {
       Utils.retryPromise = jest.fn();
       // @ts-ignore
-      instance._fetchRetry(url, options, connectTimeout, delay, retries, retryTimeout);
+      instance.fetchRetry(url, options, connectTimeout, delay, retries, retryTimeout);
       expect(Utils.retryPromise).toHaveBeenCalled();
     });
 
     it('should call Utils.retryPromise with default parameters', () => {
       Utils.retryPromise = jest.fn();
       // @ts-ignore
-      instance._fetchRetry(url, options);
+      instance.fetchRetry(url, options);
       expect(Utils.retryPromise).toHaveBeenCalled();
     });
   });
