@@ -1,4 +1,6 @@
+import HttpClient from '@trustpayments/http-client';
 import { Container } from 'typedi';
+import { environment } from '../../environments/environment';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
 import { GooglePayInitializeSubscriber } from '../integrations/google-pay/google-pay-initialize-subscriber/GooglePayInitializeSubscriber';
@@ -17,3 +19,7 @@ Container.import([
   PaymentResultSubmitterSubscriber,
   GooglePayInitializeSubscriber,
 ]);
+
+if(environment.testEnvironment){
+  Container.set({ id: HttpClient, type: HttpClient });
+}

@@ -21,7 +21,6 @@ import { IHttpOptionsProvider } from '../application/core/services/st-transport/
 import { TestHttpOptionsProvider } from '../application/core/services/st-transport/http-options-provider/TestHttpOptionsProvider';
 
 if(environment.testEnvironment) {
-  Container.set({ id: HttpClient, type: HttpClient });
   Container.set({ id: Cybertonica, type: CybertonicaMock });
   Container.set({ id: CardinalProvider, type: MockCardinalProvider });
   Container.set({ id: VisaCheckout, type: VisaCheckoutMock });

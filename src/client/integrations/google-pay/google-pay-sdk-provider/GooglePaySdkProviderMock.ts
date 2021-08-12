@@ -1,7 +1,8 @@
 import HttpClient from '@trustpayments/http-client';
+import * as Http from 'http';
 import { asapScheduler, firstValueFrom, Observable, scheduled } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Container } from 'typedi';
+import { Container, Service } from 'typedi';
 import { environment } from '../../../../environments/environment';
 import {
   IGooglePayPaymentRequest,
@@ -16,13 +17,11 @@ import {
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IGooglePaySdkProvider } from './IGooglePaySdkProvider';
 
+@Service()
 export class GooglePaySdkProviderMock implements IGooglePaySdkProvider {
   private mockPaymentUrl: string = environment.GOOGLE_PAY.MOCK_DATA_URL;
-  private httpClient: HttpClient;
 
-  constructor() {
-    this.httpClient = Container.get(HttpClient);
-  }
+  constructor(private httpClient: HttpClient) {}
 
   setupSdk$(config: IConfig): Observable<IGooglePaySessionPaymentsClient> {
     return scheduled([this.getClientMock()], asapScheduler);
