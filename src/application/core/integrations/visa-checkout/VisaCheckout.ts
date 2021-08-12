@@ -1,279 +1,120 @@
-import { environment } from '../../../../environments/environment';
-import { IVisaConfig } from './IVisaConfig';
-import { IVisaSettings } from './IVisaSettings';
-import { IWalletConfig } from '../../../../shared/model/config/IWalletConfig';
-import { DomMethods } from '../../shared/dom-methods/DomMethods';
-import { MessageBus } from '../../shared/message-bus/MessageBus';
-import { Payment } from '../../shared/payment/Payment';
-import { StJwt } from '../../shared/stjwt/StJwt';
-import { GoogleAnalytics } from '../google-analytics/GoogleAnalytics';
-import { Container } from 'typedi';
-import { NotificationService } from '../../../../client/notification/NotificationService';
-import { Observable } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { Service } from 'typedi';
+import { IVisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/IVisaCheckoutClientStatus';
+import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { IConfig } from '../../../../shared/model/config/IConfig';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
+import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { IMerchantData } from '../../models/IMerchantData';
+import { IMessageBusEvent } from '../../models/IMessageBusEvent';
+import { DomMethods } from '../../shared/dom-methods/DomMethods';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { IVisaCheckoutSdk } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
+import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
+import { IVisaCheckoutStatusDataCancel } from './visa-checkout-status-data/IVisaCheckoutStatusDataCancel';
+import { IVisaCheckoutStatusDataError } from './visa-checkout-status-data/IVisaCheckoutStatusDataError';
+import { IVisaCheckoutStatusDataPrePayment } from './visa-checkout-status-data/IVisaCheckoutStatusDataPrePayment';
+import { IVisaCheckoutStatusDataSuccess } from './visa-checkout-status-data/IVisaCheckoutStatusDataSuccess';
+import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
+import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
+import { Observable } from 'rxjs';
+import { TERM_URL } from '../../models/constants/RequestData';
 
-declare const V: any;
-
+@Service()
 export class VisaCheckout {
-  get payment(): Payment {
-    return this._payment;
+  private destroy$: Observable<IMessageBusEvent<unknown>>;
+
+  constructor(
+    protected visaCheckoutSdkProvider: VisaCheckoutSdkProvider,
+    protected messageBus: IMessageBus,
+    protected visaCheckoutUpdateService: VisaCheckoutUpdateService
+  ) {
+    this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
-  set payment(value: Payment) {
-    this._payment = value;
-  }
+  init(): void {
+    this.messageBus
+      .pipe(ofType(PUBLIC_EVENTS.VISA_CHECKOUT_CONFIG))
+      .pipe(
+        map((event: IMessageBusEvent<IConfig>) => {
+          return {
+            config: event.data,
+            visaCheckoutUpdateConfig: this.visaCheckoutUpdateService.updateConfigObject(event.data),
+          };
+        }),
+        switchMap(({ config, visaCheckoutUpdateConfig }) => {
+          return this.visaCheckoutSdkProvider
+            .getSdk$(config, this.visaCheckoutUpdateService.updateConfigObject(config))
+            .pipe(
+              map((visaCheckoutSdk: IVisaCheckoutSdk) => {
+                visaCheckoutSdk.on(VisaCheckoutResponseType.cancel, (cancelData: IVisaCheckoutStatusDataCancel) => {
+                  this.onCancel(cancelData);
+                });
+                visaCheckoutSdk.on(VisaCheckoutResponseType.error, (errorData: IVisaCheckoutStatusDataError) => {
+                  this.onError(errorData);
+                });
+                visaCheckoutSdk.on(
+                  VisaCheckoutResponseType.prePayment,
+                  (prePaymentData: IVisaCheckoutStatusDataPrePayment) => {
+                    this.onPrePayment(prePaymentData);
+                  }
+                );
+                visaCheckoutSdk.on(VisaCheckoutResponseType.success, (successData: IVisaCheckoutStatusDataSuccess) => {
+                  this.onSuccess(config, successData);
+                });
 
-  set paymentDetails(value: string) {
-    this._paymentDetails = value;
-  }
-
-  get paymentDetails(): string {
-    return this._paymentDetails;
-  }
-
-  get paymentStatus(): string {
-    return this._paymentStatus;
-  }
-
-  set paymentStatus(value: string) {
-    this._paymentStatus = value;
-  }
-
-  get responseMessage(): string {
-    return this._responseMessage;
-  }
-
-  set responseMessage(value: string) {
-    this._responseMessage = value;
-  }
-
-  protected static VISA_PAYMENT_STATUS = {
-    ERROR: 'ERROR',
-    SUCCESS: 'SUCCESS',
-    CANCEL: 'WARNING' // Because VisaCheckout API has warnings instead of cancel :/
-  };
-
-  private static VISA_PAYMENT_RESPONSE_TYPES = {
-    CANCEL: 'payment.cancel',
-    ERROR: 'payment.error',
-    SUCCESS: 'payment.success'
-  };
-
-  protected requestTypes: string[];
-  protected visaCheckoutButtonProps: any = {
-    alt: 'Visa Checkout',
-    class: 'v-button',
-    id: 'v-button',
-    role: 'button',
-    src: environment.VISA_CHECKOUT_URLS.TEST_BUTTON_URL
-  };
-
-  private _buttonSettings: any;
-  private _messageBus: MessageBus;
-  private _payment: Payment;
-  private _paymentDetails: string;
-  private _paymentStatus: string;
-  private _responseMessage: string;
-  private _sdkAddress: string = environment.VISA_CHECKOUT_URLS.TEST_SDK;
-  private _walletSource: string = 'VISACHECKOUT';
-  private _notification: NotificationService;
-  private _stJwt: StJwt;
-  private _livestatus: number = 0;
-  private _datacenterurl: string;
-  private _placement: string = 'body';
-  private readonly _config$: Observable<IConfig>;
-  private _visaCheckoutConfig: IWalletConfig;
-  private _formId: string;
-
-  private _initConfiguration = {
-    apikey: '' as string,
-    paymentRequest: {
-      currencyCode: '' as string,
-      subtotal: '' as string,
-      total: '' as string
-    },
-    settings: {}
-  };
-
-  constructor(private _configProvider: ConfigProvider, private _communicator: InterFrameCommunicator) {
-    this._messageBus = Container.get(MessageBus);
-    this._notification = Container.get(NotificationService);
-    this._config$ = this._configProvider.getConfig$();
-
-    this._config$.subscribe(config => {
-      const { visaCheckout, jwt, datacenterurl, livestatus, formId } = config;
-      if (visaCheckout) {
-        this._visaCheckoutConfig = visaCheckout;
-      }
-      this._stJwt = new StJwt(jwt);
-      this._livestatus = livestatus;
-      this._formId = formId;
-      this._datacenterurl = datacenterurl;
-      this._configurePaymentProcess(jwt);
-      this._initVisaFlow();
-    });
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: { newJwt: string }) => {
-      const { newJwt } = data;
-      this._configurePaymentProcess(newJwt);
-    });
-  }
-
-  public setInitConfiguration(paymentRequest: any, settings: any, stJwt: StJwt, merchantId: string) {
-    this._initConfiguration.apikey = merchantId;
-    this._initConfiguration.paymentRequest = this.getInitPaymentRequest(paymentRequest, stJwt) as any;
-    this._initConfiguration.settings = this._setConfiguration({ locale: stJwt.locale }, settings);
-  }
-
-  public customizeVisaButton(properties: any) {
-    const { color, size } = properties;
-    const url = new URL(this.visaCheckoutButtonProps.src);
-    if (color) {
-      url.searchParams.append('color', color);
-    }
-    if (size) {
-      url.searchParams.append('size', size);
-    }
-    this.visaCheckoutButtonProps.src = url.href;
-    return this.visaCheckoutButtonProps.src;
-  }
-
-  public getInitPaymentRequest(paymentRequest: any, stJwt: StJwt) {
-    const config = this._initConfiguration.paymentRequest;
-    config.currencyCode = stJwt.currencyiso3a;
-    config.subtotal = stJwt.mainamount;
-    config.total = stJwt.mainamount;
-    return this._setConfiguration(config, paymentRequest);
-  }
-
-  public createVisaButton = () => DomMethods.createHtmlElement.apply(this, [this.visaCheckoutButtonProps, 'img']);
-
-  protected attachVisaButton = () => DomMethods.appendChildIntoDOM(this._placement, this.createVisaButton());
-
-  protected onSuccess(payment: object) {
-    this.paymentDetails = JSON.stringify(payment);
-    this.paymentStatus = VisaCheckout.VISA_PAYMENT_STATUS.SUCCESS;
-    this.payment
-      .processPayment(
-        this.requestTypes,
-        {
-          walletsource: this._walletSource,
-          wallettoken: this.paymentDetails
-        },
-        DomMethods.parseForm(this._formId)
+                visaCheckoutSdk.init(visaCheckoutUpdateConfig.visaInitConfig);
+              })
+            );
+        }),
+        takeUntil(this.destroy$)
       )
-      .then(() => {
-        this.paymentStatus = VisaCheckout.VISA_PAYMENT_STATUS.SUCCESS;
-        this._getResponseMessage(this.paymentStatus);
-        this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
-        this._notification.success(this.responseMessage);
-        GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment success');
-      })
-      .catch((error: any) => {
-        this.paymentStatus = VisaCheckout.VISA_PAYMENT_STATUS.ERROR;
-        this._getResponseMessage(this.paymentStatus);
-        this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
-        this._notification.error(this.responseMessage);
-      });
+      .subscribe();
   }
 
-  protected onError() {
-    this.paymentStatus = VisaCheckout.VISA_PAYMENT_STATUS.ERROR;
-    this._getResponseMessage(this.paymentStatus);
-    this._notification.error(this.responseMessage);
-    this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
-    GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
-  }
+  protected onSuccess(config: IConfig, successData: IVisaCheckoutStatusDataSuccess): void {
+    const merchantData: IMerchantData = {
+      ...DomMethods.parseForm(config.formId),
+      termurl: TERM_URL,
+    };
 
-  protected onCancel() {
-    this.paymentStatus = VisaCheckout.VISA_PAYMENT_STATUS.CANCEL;
-    this._getResponseMessage(this.paymentStatus);
-    this._notification.cancel(this.responseMessage);
-    this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK }, true);
-    this._messageBus.publish(
-      {
-        type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE,
-        data: {
-          errorcode: 'cancelled',
-          errormessage: this.responseMessage
-        }
+    this.messageBus.publish<IVisaCheckoutClientStatus>({
+      type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+      data: {
+        status: VisaCheckoutClientStatus.SUCCESS,
+        data: successData,
+        merchantData,
       },
-      true
-    );
-    GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment canceled');
-  }
-
-  protected initPaymentConfiguration() {
-    V.init(this._initConfiguration);
-  }
-
-  protected paymentStatusHandler() {
-    V.on(VisaCheckout.VISA_PAYMENT_RESPONSE_TYPES.SUCCESS, (payment: object) => {
-      this.onSuccess(payment);
-    });
-    V.on(VisaCheckout.VISA_PAYMENT_RESPONSE_TYPES.ERROR, () => {
-      this.onError();
-    });
-    V.on(VisaCheckout.VISA_PAYMENT_RESPONSE_TYPES.CANCEL, () => {
-      this.onCancel();
     });
   }
 
-  private _configurePaymentProcess(jwt: string) {
-    const {
-      merchantId,
-      livestatus,
-      placement,
-      settings,
-      paymentRequest,
-      buttonSettings,
-      requestTypes
-    } = this._visaCheckoutConfig;
-    this._stJwt = new StJwt(jwt);
-    this.payment = new Payment();
-    this._livestatus = livestatus;
-    this._placement = placement;
-    this.requestTypes = requestTypes;
-    this.setInitConfiguration(paymentRequest, settings, this._stJwt, merchantId);
-    this._buttonSettings = this._setConfiguration({ locale: this._stJwt.locale }, settings);
-    this.customizeVisaButton(buttonSettings);
-    this._setLiveStatus();
-  }
-
-  private _setConfiguration = (config: IVisaConfig, settings: IVisaSettings) =>
-    settings || config ? { ...config, ...settings } : {};
-
-  private _initVisaFlow() {
-    DomMethods.insertScript('body', { src: this._sdkAddress, id: 'visaCheckout' }).then(() => {
-      this.attachVisaButton();
-      this.initPaymentConfiguration();
-      this.paymentStatusHandler();
+  protected onCancel(cancelData?: IVisaCheckoutStatusDataCancel): void {
+    this.messageBus.publish<IVisaCheckoutClientStatus>({
+      type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+      data: {
+        status: VisaCheckoutClientStatus.CANCEL,
+        data: cancelData,
+      },
     });
   }
 
-  private _setLiveStatus() {
-    if (this._livestatus) {
-      this.visaCheckoutButtonProps.src = environment.VISA_CHECKOUT_URLS.LIVE_BUTTON_URL;
-      this._sdkAddress = environment.VISA_CHECKOUT_URLS.LIVE_SDK;
-    }
+  protected onError(errorData?: IVisaCheckoutStatusDataError): void {
+    this.messageBus.publish<IVisaCheckoutClientStatus>({
+      type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+      data: {
+        status: VisaCheckoutClientStatus.ERROR,
+        data: errorData,
+      },
+    });
   }
 
-  private _getResponseMessage(type: string) {
-    switch (type) {
-      case VisaCheckout.VISA_PAYMENT_STATUS.SUCCESS: {
-        this.responseMessage = PAYMENT_SUCCESS;
-        break;
-      }
-      case VisaCheckout.VISA_PAYMENT_STATUS.CANCEL: {
-        this.responseMessage = PAYMENT_CANCELLED;
-        break;
-      }
-      case VisaCheckout.VISA_PAYMENT_STATUS.ERROR: {
-        this.responseMessage = PAYMENT_ERROR;
-        break;
-      }
-    }
+  protected onPrePayment(prePaymentData: IVisaCheckoutStatusDataPrePayment): void {
+    this.messageBus.publish<IVisaCheckoutClientStatus>({
+      type: PUBLIC_EVENTS.VISA_CHECKOUT_STATUS,
+      data: {
+        status: VisaCheckoutClientStatus.PRE_PAYMENT,
+        data: prePaymentData,
+      },
+    });
   }
 }

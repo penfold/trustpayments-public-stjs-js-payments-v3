@@ -1,0 +1,44 @@
+{
+  "panIcon": true,
+  "submitOnSuccess": false,
+  "styles": {
+    "cardNumber": {
+      "isLinedUp": "false",
+      "font-family-input": "fantasy",
+      "outline-input": "5px dotted green",
+      "color-asterisk": "Blue"
+    },
+    "expirationDate": {
+      "isLinedUp": "false",
+      "font-family-input": "fantasy",
+      "box-shadow-input": "-157px -56px 96px 22px rgba(0,0,0,0.75)",
+      "color-asterisk": "Yellow"
+    },
+    "securityCode": {
+      "isLinedUp": "true",
+      "font-family-input": "fantasy",
+      "box-shadow-input": "9px -9px 5px 0px rgba(0,0,0,0.75)",
+      "color-asterisk": "Green"
+    }
+  },
+    "applePay": {
+    "buttonStyle": "white-outline",
+    "buttonText": "donate",
+    "merchantId": "merchant.net.securetrading",
+    "paymentRequest": {
+      "countryCode": "US",
+      "currencyCode": "USD",
+      "merchantCapabilities": [
+        "supports3DS",
+        "supportsCredit",
+        "supportsDebit"
+      ],
+      "supportedNetworks": ["masterCard"],
+      "total": {
+        "label": "Trust Payment",
+        "amount": "10.00"
+      }
+    },
+    "placement": "st-apple-pay"
+  }
+}

@@ -1,0 +1,3 @@
+js-static-analysis:
+  variables:
+    TYPESCRIPT_CHECK_CONFIG_PATH: './tsconfig.json'

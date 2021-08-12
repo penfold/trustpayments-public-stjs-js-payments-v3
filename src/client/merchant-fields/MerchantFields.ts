@@ -2,22 +2,24 @@ import { Container } from 'typedi';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { Validation } from '../../application/core/shared/validation/Validation';
 import { Frame } from '../../application/core/shared/frame/Frame';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { MessageBusToken } from '../../shared/dependency-injection/InjectionTokens';
 
 export class MerchantFields {
   private static readonly ADJACENT_HTML_PLACEMENT: InsertPosition = 'afterend';
   private static readonly DATA_ATTRIBUTE_NAME: string = 'data-st-name';
-  private static readonly ERROR_LABEL_MARKUP: string = `<div class="st-error-label"></div>`;
+  private static readonly ERROR_LABEL_MARKUP: string = '<div class="st-error-label"></div>';
   private static readonly INPUT_MARKUP: string = 'input';
   private static readonly KEYPRESS_EVENT: string = 'keypress';
 
   private readonly _inputs: HTMLCollection;
-  private _messageBus: MessageBus;
+  private _messageBus: IMessageBus;
   private _validation: Validation;
   private _frame: Frame;
 
   constructor() {
     this._inputs = document.getElementsByTagName(MerchantFields.INPUT_MARKUP);
-    this._messageBus = Container.get(MessageBus);
+    this._messageBus = Container.get(MessageBusToken);
     this._frame = Container.get(Frame);
     this._validation = new Validation();
   }
@@ -44,7 +46,7 @@ export class MerchantFields {
     return {
       inputs: Array.from(this._inputs).filter(item =>
         item.hasAttribute(MerchantFields.DATA_ATTRIBUTE_NAME)
-      ) as HTMLInputElement[]
+      ) as HTMLInputElement[],
     };
   }
 

@@ -2,7 +2,7 @@
  * This wrapper disables the "input" event being fired when placeholder changes on IE
  * @link https://stackoverflow.com/a/57607005
  */
-export function onInputWraper(cb: (event: InputEvent) => void) {
+export function onInputWraper(cb: (event: InputEvent) => void): (e: InputEvent) => void | boolean {
   if (!window.navigator.userAgent.match(/MSIE|Trident/)) return cb;
 
   return (e: InputEvent) => {

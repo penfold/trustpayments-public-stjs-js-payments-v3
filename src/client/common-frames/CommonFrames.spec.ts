@@ -1,246 +1,523 @@
-import { CommonFrames } from './CommonFrames.class';
-import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
-import {
-  ANIMATED_CARD_INPUT_SELECTOR,
-  CARD_NUMBER_INPUT_SELECTOR,
-  EXPIRATION_DATE_INPUT_SELECTOR,
-  SECURITY_CODE_INPUT_SELECTOR
-} from '../../application/core/models/constants/Selectors';
-import { MessageBusMock } from '../../testing/mocks/MessageBusMock';
-import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
-import { IframeFactory } from '../iframe-factory/IframeFactory';
-import { anyString, instance as instanceOf, mock, when } from 'ts-mockito';
+import { of } from 'rxjs';
+import { ofType } from '../../shared/services/message-bus/operators/ofType';
+import { anyFunction, anything, instance as mockInstance, mock, when } from 'ts-mockito';
+import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
+import { CommonFrames } from './CommonFrames';
+import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import { CustomerOutput } from '../../application/core/models/constants/CustomerOutput';
+import { DomMethods } from '../../application/core/shared/dom-methods/DomMethods';
 import { Frame } from '../../application/core/shared/frame/Frame';
+import { IConfig } from '../../shared/model/config/IConfig';
+import { IframeFactory } from '../iframe-factory/IframeFactory';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
+import { RequestType } from '../../shared/types/RequestType';
+import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
+import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import {
+  PAYMENT_CANCELLED,
+  PAYMENT_ERROR,
+  PAYMENT_SUCCESS,
+} from '../../application/core/models/constants/Translations';
+import Container from 'typedi';
+import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../application/core/shared/translator/Translator';
+import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
+import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
+import { Enrollment } from '../../application/core/models/constants/Enrollment';
 
-jest.mock('./../../application/core/shared/notification/Notification');
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
-// given
 describe('CommonFrames', () => {
-  // given
-  describe('_isThreedComplete()', () => {
-    // when
-    const { instance } = commonFramesFixture();
+  const jwt = 'some jwt';
+  let commonFrames: CommonFrames;
+  let configProvider: ConfigProvider;
+  let frame: Frame;
+  let iframeFactory: IframeFactory;
+  let jwtDecoder: JwtDecoder;
+  let localStorage: BrowserLocalStorage;
+  let messageBus: IMessageBus;
 
-    function isThreedComplete(requestTypes: string[], dataArg: {}) {
-      // @ts-ignore
-      instance._requestTypes = [...requestTypes];
-      // @ts-ignore
-      return instance._isThreedComplete({ ...dataArg });
-    }
+  beforeEach(() => {
+    document.body.innerHTML =
+      '<form id="st-form"><input type="text" name="test-field-1" id="test-field-1"/><input type="text" name="test-field-2" id="test-field-2"/><input type="hidden" name="somefield1" value="somefield1"/><input type="hidden" name="somefield2" value="somefield2"/><input type="hidden" name="eci" value="eci"/></form>';
+    configProvider = mock<ConfigProvider>();
+    frame = mock(Frame);
+    iframeFactory = mock(IframeFactory);
+    jwtDecoder = mock(JwtDecoder);
+    localStorage = mock(BrowserLocalStorage);
+    messageBus = new SimpleMessageBus();
 
-    // then
-    it('should be complete', () => {
-      expect(isThreedComplete(['THREEDQUERY'], { requesttypedescription: 'THREEDQUERY' })).toEqual(true);
-    });
+    window.HTMLFormElement.prototype.submit = () => {};
 
-    // then
-    it('should not be complete if not a THREEDQUERY', () => {
-      expect(isThreedComplete(['THREEDQUERY'], { requesttypedescription: 'RISKDEC' })).toEqual(false);
-    });
-
-    // then
-    it('should not be complete if THREEDQUERY not last request type', () => {
-      expect(isThreedComplete(['THREEDQUERY', 'AUTH'], { requesttypedescription: 'THREEDQUERY' })).toEqual(false);
-    });
-
-    // then
-    it('should not be complete if THREEDQUERY but enrolled and non-frictionless', () => {
-      expect(
-        isThreedComplete(['THREEDQUERY'], {
-          acsurl: 'https://example.com',
-          enrolled: 'Y',
-          requesttypedescription: 'THREEDQUERY'
-        })
-      ).toEqual(false);
-    });
-
-    // then
-    it('should not be complete if THREEDQUERY but enrolled unless threedresponse is available', () => {
-      expect(
-        isThreedComplete(['THREEDQUERY'], {
-          acsurl: 'https://example.com',
-          enrolled: 'Y',
-          requesttypedescription: 'THREEDQUERY',
-          threedresponse: 'somedata'
-        })
-      ).toEqual(true);
-    });
-  });
-
-  // given
-  describe('_isTransactionFinished()', () => {
-    // when
-    const { instance } = commonFramesFixture();
-
-    function isTransactionFinishedFixture(dataArg: {}) {
-      const data = { ...dataArg };
-      // @ts-ignore
-      return instance._isTransactionFinished(data);
-    }
-
-    // then
-    it('should be finished if AUTH', () => {
-      expect(isTransactionFinishedFixture({ requesttypedescription: 'AUTH' })).toEqual(true);
-    });
-
-    // then
-    it('should be finished if CACHETOKENISE', () => {
-      expect(isTransactionFinishedFixture({ requesttypedescription: 'CACHETOKENISE' })).toEqual(true);
-    });
-
-    // then
-    it('should be finished if _isThreedComplete is true', () => {
-      // @ts-ignore
-      instance._isThreedComplete = jest.fn().mockReturnValueOnce(true);
-      expect(isTransactionFinishedFixture({ requesttypedescription: 'THREEDQUERY' })).toEqual(true);
-    });
-
-    // then
-    it('should not be finished if _isThreedComplete is false', () => {
-      // @ts-ignore
-      instance._isThreedComplete = jest.fn().mockReturnValueOnce(false);
-      expect(isTransactionFinishedFixture({ requesttypedescription: 'THREEDQUERY' })).toEqual(false);
-    });
-  });
-
-  describe('_getSubmitFields()', () => {
-    // when
-    const { instance } = commonFramesFixture();
-
-    function getSubmitFieldsFixture(dataArg: {}, submitFields: string[]) {
-      const data = { ...dataArg };
-      // @ts-ignore
-      instance._submitFields = [...submitFields];
-      // @ts-ignore
-      return instance._getSubmitFields(data);
-    }
-
-    // then
-    it('should return submit fields', () => {
-      expect(getSubmitFieldsFixture({ something: 'a value' }, ['a', 'b', 'c'])).toEqual(['a', 'b', 'c']);
-    });
-    // then
-    it('should return submit fields plus jwt', () => {
-      expect(
-        getSubmitFieldsFixture(
-          {
-            something: 'a value',
-            jwt: 'a value'
+    when(configProvider.getConfig$()).thenReturn(
+      of({
+        jwt: jwt,
+        formId: 'st-form',
+        datacenterurl: 'test',
+        origin: 'testorigin',
+        styles: {
+          controlFrame: {
+            'background-color-input': 'AliceBlue',
           },
-          ['a', 'b', 'c']
-        )
-      ).toEqual(['a', 'b', 'c', 'jwt']);
-    });
-    // then
-    it('should return submit fields plus jwt and threedresponse', () => {
-      expect(
-        getSubmitFieldsFixture(
-          {
-            something: 'a value',
-            jwt: 'a value',
-            threedresponse: 'acs response'
-          },
-          ['a', 'b', 'c']
-        )
-      ).toEqual(['a', 'b', 'c', 'jwt', 'threedresponse']);
-    });
-  });
-  // given
-  describe('_onInput()', () => {
-    const { instance } = commonFramesFixture();
-    const event = new Event('input');
-    const messageBusEvent = {
-      data: {},
-      type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS
-    };
+        },
+        submitFields: ['baseamount', 'eci'],
+        submitOnSuccess: true,
+      } as IConfig)
+    );
 
-    // when
-    beforeEach(() => {
-      // @ts-ignore
-      instance._messageBus.publish = jest.fn();
-      // @ts-ignore
-      instance._onInput(event);
-    });
+    when(localStorage.select(anyFunction())).thenReturn(of('true'));
 
-    // then
-    it('should publish has been called', () => {
-      // @ts-ignore
-      expect(instance._messageBus.publish).toHaveBeenCalledWith(messageBusEvent);
-    });
+    when(iframeFactory.create(anything(), anything(), anything(), anything(), anything())).thenCall(
+      (name: string, id: string) => {
+        const iframe: HTMLIFrameElement = document.createElement('iframe');
+        iframe.setAttribute('name', name);
+        iframe.setAttribute('id', id);
+        return iframe;
+      }
+    );
+
+    when(frame.parseUrl()).thenReturn({ params: { locale: 'en_GB' } });
+
+    commonFrames = new CommonFrames(
+      mockInstance(configProvider),
+      mockInstance(frame),
+      mockInstance(iframeFactory),
+      mockInstance(jwtDecoder),
+      mockInstance(localStorage),
+      messageBus
+    );
+
+    commonFrames.init();
   });
 
-  // given
-  describe('_setTransactionCompleteListener()', () => {
-    const { instance } = commonFramesFixture();
+  afterEach(() => {
+    document.getElementsByTagName('form')[0].innerHTML = '';
+  });
+
+  describe('when control frame is initialized', () => {
+    it('should init control frame component and insert only one iframe into merchants form', () => {
+      const iframe = document.getElementsByTagName('iframe');
+      expect(iframe[0].getAttribute('id')).toEqual('st-control-frame-iframe');
+      expect(iframe.length).toEqual(1);
+    });
+
+    it('should remove the control frame iframe on destroy event', () => {
+      const iframeId = 'st-control-frame-iframe';
+      expect(document.getElementById(iframeId)).toBeTruthy();
+      messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
+      expect(document.getElementById(iframeId)).toBeFalsy();
+    });
+  });
+
+  describe('submit process when payment has been cancelled', () => {
     const data = {
-      errorcode: '0',
-      errormessage: 'Ok'
+      errorcode: 'cancelled',
+      errormessage: PAYMENT_CANCELLED,
+      jwt: 'testjwt',
+      threedresponse: 'threedresponse',
     };
-    const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
 
-    // when
-    beforeEach(() => {
-      // @ts-ignore
-      instance._messageBus = messageBus;
-      // @ts-ignore
-      instance._onTransactionComplete = jest.fn();
+    it('should call submit process with cancel status and check if jwt, thredresponse and additional fields were not included', done => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
+        expect(event).toEqual({
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        });
+
+        expect(document.getElementsByName('jwt')[0]).toEqual(undefined);
+        expect(document.getElementsByName('threedresponse')[0]).toEqual(undefined);
+        expect(document.getElementsByName('baseamount')[0]).toEqual(undefined);
+        expect(document.getElementsByName('eci')[0]).toEqual(undefined);
+        expect(document.getElementsByName('errorcode')[0].getAttribute('value')).toEqual(data.errorcode);
+        expect(document.getElementsByName('errormessage')[0].getAttribute('value')).toEqual(data.errormessage);
+        done();
+      });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        },
+        true
+      );
     });
 
-    // then
-    it('should call _merchantForm() method', () => {
-      // @ts-ignore
-      instance._setTransactionCompleteListener();
+    it('should call submit process with cancel status and check if jwt, thredresponse and other defined fields were not included', done => {
+      const data = {
+        errorcode: 'cancelled',
+        errormessage: PAYMENT_CANCELLED,
+        jwt: 'testjwt',
+        threedresponse: 'threedresponse',
+        baseamount: 'some amount',
+        eci: 'test eci',
+        enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
+      };
+
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
+        expect(event).toEqual({
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        });
+
+        expect(document.getElementsByName('jwt')[0]).toEqual(undefined);
+        expect(document.getElementsByName('threedresponse')[0]).toEqual(undefined);
+        expect(document.getElementsByName('baseamount')[0]).toEqual(undefined);
+        expect(document.getElementsByName('eci')[0]).toEqual(undefined);
+        expect(document.getElementsByName('errorcode')[0].getAttribute('value')).toEqual(data.errorcode);
+        expect(document.getElementsByName('errormessage')[0].getAttribute('value')).toEqual(data.errormessage);
+        done();
+      });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        },
+        true
+      );
+    });
+
+    it('should call submit callback when TP-3DS popup is cancelled - isCancelled flag', done => {
+      const data = {
+        errorcode: '0',
+        errormessage: PAYMENT_CANCELLED,
+        jwt: 'testjwt',
+        baseamount: '20',
+        eci: 'eci',
+        enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
+        requesttypedescription: RequestType.THREEDQUERY,
+        isCancelled: true,
+      };
+
+      messageBus.pipe(ofType(PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK)).subscribe(event => {
+        expect(event.data).toBe(data);
+        done();
+      });
 
       messageBus.publish({ type: PUBLIC_EVENTS.TRANSACTION_COMPLETE, data });
+    });
+  });
 
-      // @ts-ignore
-      expect(instance._onTransactionComplete).toHaveBeenCalled();
+  describe('submit process when payment status is error', () => {
+    const data = {
+      errorcode: '50003',
+      errormessage: PAYMENT_ERROR,
+      jwt: 'testjwt',
+      threedresponse: 'some threedresponse',
+      baseamount: 'some amount',
+      eci: 'test eci',
+      enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
+    };
+
+    it('should call submit process with 50003 error status and check if jwt and threedresponse fields were included', done => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
+        expect(event).toEqual({
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        });
+        expect(document.getElementsByName('jwt')[0].getAttribute('value')).toEqual(data.jwt);
+        expect(document.getElementsByName('threedresponse')[0].getAttribute('value')).toEqual(data.threedresponse);
+        expect(document.getElementsByName('baseamount')[0].getAttribute('value')).toEqual(data.baseamount);
+        expect(document.getElementsByName('eci')[0].getAttribute('value')).toEqual(data.eci);
+        done();
+      });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        },
+        true
+      );
+    });
+
+    it('should call submit process with 22000 error status and check if jwt and threedresponse fields were included', done => {
+      const data = {
+        errorcode: '22000',
+        errormessage: PAYMENT_ERROR,
+        jwt: 'testjwt',
+        threedresponse: 'some threedresponse',
+        baseamount: 'some amount',
+        eci: 'test eci',
+        enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
+      };
+
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
+        expect(event).toEqual({
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        });
+        expect(document.getElementsByName('jwt')[0].getAttribute('value')).toEqual('testjwt');
+        expect(document.getElementsByName('threedresponse')[0].getAttribute('value')).toEqual('some threedresponse');
+        expect(document.getElementsByName('baseamount')[0].getAttribute('value')).toEqual('some amount');
+        expect(document.getElementsByName('eci')[0].getAttribute('value')).toEqual('test eci');
+        done();
+      });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        },
+        true
+      );
+    });
+  });
+
+  describe('submit process when payment status is success', () => {
+    it('should call submit process with success status and check if jwt and thredresponse fields were included', done => {
+      const data = {
+        errorcode: '0',
+        errormessage: PAYMENT_SUCCESS,
+        jwt: 'testjwt',
+        threedresponse: 'some threedresponse',
+        baseamount: 'some amount',
+        eci: 'test eci',
+        enrolled: Enrollment.AUTHENTICATION_SUCCESSFUL,
+      };
+
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
+        expect(event).toEqual({
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        });
+        expect(document.getElementsByName('jwt')[0].getAttribute('value')).toEqual('testjwt');
+        expect(document.getElementsByName('threedresponse')[0].getAttribute('value')).toEqual('some threedresponse');
+        expect(document.getElementsByName('baseamount')[0].getAttribute('value')).toEqual('some amount');
+        expect(document.getElementsByName('eci')[0].getAttribute('value')).toEqual('test eci');
+        done();
+      });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        },
+        true
+      );
+    });
+
+    it('should call submit process TRANSACTION COMPLETE WITHOUT CALLING SUBMIT CALLBACK AND SUBKIT ING FORM (customeroutput + enrolled!==Y)', done => {
+      const data = {
+        errorcode: '0',
+        errormessage: PAYMENT_SUCCESS,
+        jwt: 'testjwt',
+        baseamount: 'some amount',
+        acsurl: 'some acs url',
+        eci: 'test eci',
+        enrolled: Enrollment.AUTHENTICATION_UNAVAILABLE,
+        threedresponse: 'some threedresponse',
+        customeroutput: CustomerOutput.THREEDREDIRECT,
+      };
+
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
+        expect(event).toEqual({
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        });
+        expect(document.getElementsByName('jwt')[0].getAttribute('value')).toEqual('testjwt');
+        expect(document.getElementsByName('threedresponse')[0].getAttribute('value')).toEqual('some threedresponse');
+        expect(document.getElementsByName('baseamount')[0].getAttribute('value')).toEqual('some amount');
+        expect(document.getElementsByName('eci')[0].getAttribute('value')).toEqual('test eci');
+        done();
+      });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        },
+        true
+      );
+    });
+  });
+
+  describe('when different requestypedscription have been set', () => {
+    beforeEach(() => {
+      when(configProvider.getConfig$()).thenReturn(
+        of({
+          jwt: jwt,
+          formId: 'st-form',
+          datacenterurl: 'test',
+          origin: 'testorigin',
+          styles: {
+            controlFrame: {
+              'background-color-input': 'AliceBlue',
+            },
+          },
+          submitFields: [],
+          submitOnSuccess: true,
+          submitOnCancel: true,
+          submitOnError: true,
+        } as IConfig)
+      );
+    });
+
+    it(`should not submit form if requesttypedescription is equal ${RequestType.WALLETVERIFY}`, done => {
+      const data = {
+        errorcode: '0',
+        errormessage: PAYMENT_SUCCESS,
+        jwt: 'testjwt',
+        requesttypedescription: RequestType.WALLETVERIFY,
+      };
+
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
+        expect(event).toEqual({
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        });
+        // @ts-ignore
+        expect(commonFrames.isFormSubmitted).toEqual(false);
+        done();
+      });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        },
+        true
+      );
+    });
+
+    it(`should not submit form if requesttypedescription is equal ${RequestType.JSINIT}`, done => {
+      const data = {
+        errorcode: '0',
+        errormessage: PAYMENT_SUCCESS,
+        jwt: 'testjwt',
+        requesttypedescription: RequestType.JSINIT,
+      };
+
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
+        expect(event).toEqual({
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        });
+        // @ts-ignore
+        expect(commonFrames.isFormSubmitted).toEqual(false);
+        done();
+      });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        },
+        true
+      );
+    });
+
+    it('should submit form if requesttypedescription is equal SOME_OTHER_DESC', done => {
+      const data = {
+        errorcode: '0',
+        errormessage: PAYMENT_SUCCESS,
+        jwt: 'testjwt',
+        requesttypedescription: 'SOME_OTHER_DESC',
+      };
+
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
+        expect(event).toEqual({
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        });
+        // @ts-ignore
+        expect(commonFrames.isFormSubmitted).toEqual(true);
+        done();
+      });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data,
+        },
+        true
+      );
+    });
+  });
+
+  describe('when TRANSACTION_COMPLETE event has been called and hidden fields were attached', () => {
+    it('should remove all existing hidden inputs except defined by merchant and replace with new ones based on submitFields', done => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(() => {
+        expect(document.getElementsByName('baseamount')[0].getAttribute('value')).toEqual('10.00');
+        expect(document.getElementsByName('somefield1')[0].getAttribute('value')).toEqual('somefield1');
+        expect(document.getElementsByName('somefield2')[0].getAttribute('value')).toEqual('somefield2');
+        expect(document.getElementsByName('test-field-1')[0].id).toEqual('test-field-1');
+        expect(document.getElementsByName('test-field-2')[0].id).toEqual('test-field-2');
+        expect(document.getElementsByName('eci')[0]).toEqual(undefined);
+
+        done();
+      });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data: {
+            errorcode: '60022',
+            errormessage: 'An error occured',
+            jwt: 'testjwt',
+            baseamount: '10.00',
+          },
+        },
+        true
+      );
+    });
+  });
+
+  describe('when event has been called on Merchant fields', () => {
+    const event: Event = new Event('input');
+
+    beforeEach(() => {
+      DomMethods.parseForm = jest.fn().mockReturnValueOnce({ test: 'testValue' });
+    });
+
+    it('should call message bus UPDATE_MERCHANT_FIELDS event on input', done => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_MERCHANT_FIELDS)).subscribe(event => {
+        expect(event.data).toEqual({ test: 'testValue' });
+        done();
+      });
+      document.getElementById('test-field-1').dispatchEvent(event);
+      document.getElementById('test-field-2').dispatchEvent(event);
+    });
+  });
+
+  describe('when walletsource property from PaymentRequest equals APPLEPAY', () => {
+    beforeEach(() => {
+      when(localStorage.select(anyFunction())).thenReturn(of('true'));
+    });
+
+    it('should call submit process with cancel status and check if jwt, thredresponse and other defined fields were not included', done => {
+      messageBus.pipe(ofType(PUBLIC_EVENTS.TRANSACTION_COMPLETE)).subscribe(event => {
+        expect(event).toEqual({
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data: {
+            errorcode: '0',
+            errormessage: PAYMENT_SUCCESS,
+            jwt: 'testjwt',
+            baseamount: 'some amount',
+            walletsource: 'APPLEPAY',
+          },
+        });
+        expect(document.getElementsByName('jwt')[0]).toEqual(undefined);
+        done();
+      });
+
+      messageBus.publish(
+        {
+          type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
+          data: {
+            errorcode: '0',
+            errormessage: PAYMENT_SUCCESS,
+            jwt: 'testjwt',
+            baseamount: 'some amount',
+            walletsource: 'APPLEPAY',
+          },
+        },
+        true
+      );
     });
   });
 });
-
-function commonFramesFixture() {
-  document.body.innerHTML =
-    '<form id="st-form" class="example-form"> <h1 class="example-form__title"> Secure Trading<span>AMOUNT: <strong>10.00 GBP</strong></span> </h1> <div class="example-form__section example-form__section--horizontal"> <div class="example-form__group"> <label for="example-form-name" class="example-form__label example-form__label--required">NAME</label> <input id="example-form-name" class="example-form__input" type="text" placeholder="John Doe" autocomplete="name" /> </div> <div class="example-form__group"> <label for="example-form-email" class="example-form__label example-form__label--required">E-MAIL</label> <input id="example-form-email" class="example-form__input" type="email" placeholder="test@mail.com" autocomplete="email" /> </div> <div class="example-form__group"> <label for="example-form-phone" class="example-form__label example-form__label--required">PHONE</label> <input id="example-form-phone" class="example-form__input" type="tel" placeholder="+00 000 000 000" autocomplete="tel" /> </div> </div> <div class="example-form__spacer"></div> <div class="example-form__section"> <div id="st-notification-frame" class="example-form__group"></div> <div id="st-card-number" class="example-form__group"></div> <div id="st-expiration-date" class="example-form__group"></div> <div id="st-security-code" class="example-form__group"></div> <div id="st-error-container" class="example-form__group"></div> <div class="example-form__spacer"></div> </div> <div class="example-form__section"> <div class="example-form__group"> <button type="submit" class="example-form__button">PAY</button> </div> </div> <div class="example-form__section"> <div id="st-control-frame" class="example-form__group"></div> <div id="st-visa-checkout" class="example-form__group"></div> <div id="st-apple-pay" class="example-form__group"></div> </div> <div id="st-animated-card" class="st-animated-card-wrapper"></div> </form>';
-  const jwt: string =
-    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU2MDk0NjM4Ny4yNDIzMzQ0LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwicGFuIjoiNDExMTExMTExMTExMTExMSIsImV4cGlyeWRhdGUiOiIwMS8yMCIsInNlY3VyaXR5Y29kZSI6IjEyMyJ9fQ.UssdRcocpaeAqd-jDXpxWeWiKIX-W7zlpy0UWrDE5vg';
-  const origin: string = 'https://example.com';
-  const componentsIds = {
-    animatedCard: ANIMATED_CARD_INPUT_SELECTOR,
-    cardNumber: CARD_NUMBER_INPUT_SELECTOR,
-    expirationDate: EXPIRATION_DATE_INPUT_SELECTOR,
-    securityCode: SECURITY_CODE_INPUT_SELECTOR
-  };
-  const animatedCard = true;
-  const gatewayUrl: string = 'https://webservices.securetrading.net/jwt/';
-  let iframeFactory: IframeFactory;
-  iframeFactory = mock(IframeFactory);
-  const frame: Frame = mock(Frame);
-  when(iframeFactory.create(anyString(), anyString())).thenCall((name: string, id: string) => {
-    const iframe: HTMLIFrameElement = document.createElement('iframe');
-    iframe.setAttribute('name', name);
-    iframe.setAttribute('id', id);
-    return iframe;
-  });
-
-  when(frame.parseUrl()).thenReturn({ params: { locale: 'en_GB' } });
-
-  const instance = new CommonFrames(
-    jwt,
-    origin,
-    componentsIds,
-    {},
-    false,
-    false,
-    false,
-    [],
-    gatewayUrl,
-    animatedCard,
-    ['AUTH'],
-    'st-form',
-    instanceOf(iframeFactory),
-    instanceOf(frame)
-  );
-
-  return { instance };
-}

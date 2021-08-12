@@ -9,8 +9,14 @@ request_type_response = {
     'ACCOUNTCHECK, AUTH, SUBSCRIPTION': 'ccAccountcheckAuthSub.json',
     'AUTH, SUBSCRIPTION': 'ccAuthSub.json',
     'RISKDEC, ACCOUNTCHECK, AUTH': 'ccRiskdecAccountcheckAuth.json',
+    'ACCOUNTCHECK, THREEDQUERY, AUTH': 'ccAcheckTdqAuth.json',
+    'THREEDQUERY, AUTH, RISKDEC': 'ccTdqAuthRiskdec.json',
+    'RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH': 'ccRiskdecAcheckTdqAuth.json',
+    'THREEDQUERY, AUTH': 'ccTdqAuth.json',
+    'THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH': 'ccInvalidField_requesttypedescriptions.json',
+    'THREEDQUERY': 'ccBypass_requesttypedescriptions.json',
     'ACCOUNTCHECK, RISKDEC, AUTH': 'ccAccountcheckRiskdecAuth.json',
-    'THREEDQUERY': 'ccTdq.json'
+    'ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION': 'ccAcheckTdqAuthSub.json'
 }
 
 request_type_tokenisation_response = {
@@ -27,6 +33,18 @@ request_type_applepay = {
     'ACCOUNTCHECK, SUBSCRIPTION': 'appleAcheckSubscription.json'
 }
 
+frictionless_request_type = {
+    'OK': 'frictionlessOk.json',
+    'DECLINE': 'frictionlessDecline.json',
+    'UNAUTHENTICATED': 'frictionlessUnauthenticated.json',
+    'TDQ_U_OK': 'frictionlessUOk.json',
+    'TDQ_U_DECLINE': 'frictionlessUDecline.json',
+}
+
+step_up_request_type = {
+    'ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION': 'stepUpAcheckTdqAuthSub.json'
+}
+
 request_type_visa = {
     'AUTH': 'visaAuthSuccess.json',
     'ACCOUNTCHECK': 'visaAccountcheck.json',
@@ -35,6 +53,17 @@ request_type_visa = {
     'RISKDEC, ACCOUNTCHECK, AUTH': 'visaRiskdecAccountcheckAuth.json',
     'AUTH, SUBSCRIPTION': 'visaAuthSubscription.json',
     'ACCOUNTCHECK, SUBSCRIPTION': 'visaAcheckSubscription.json'
+}
+
+request_type_google = {
+    'AUTH': 'googleAuth.json',
+    'ACCOUNTCHECK': 'googleAccountcheck.json',
+    'ACCOUNTCHECK, AUTH': 'googleAccountcheckAuth.json',
+    'RISKDEC, AUTH': 'googleRiskdecAuth.json',
+    'RISKDEC, ACCOUNTCHECK, AUTH': 'googleRiskdecAccountcheckAuth.json',
+    'AUTH, SUBSCRIPTION': 'googleAuthSubscription.json',
+    'ACCOUNTCHECK, SUBSCRIPTION': 'googleAccountcheckSubscription.json',
+    'THREEDQUERY, AUTH, SUBSCRIPTION': 'googleThreedqueryAuthSubscription.json'
 }
 
 

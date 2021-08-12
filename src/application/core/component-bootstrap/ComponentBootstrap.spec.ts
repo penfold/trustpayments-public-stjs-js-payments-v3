@@ -3,7 +3,6 @@ import { ContainerInstance } from 'typedi';
 import { ComponentBootstrap } from './ComponentBootstrap';
 import { instance, mock, verify, when } from 'ts-mockito';
 import { CardNumber } from '../../components/card-number/CardNumber';
-import { Store } from '../store/Store';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { FramesHub } from '../../../shared/services/message-bus/FramesHub';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
@@ -12,8 +11,15 @@ import { IMessageSubscriber } from '../../../shared/services/message-bus/interfa
 import { MessageSubscriberRegistry } from '../../../shared/services/message-bus/MessageSubscriberRegistry';
 import { ControlFrame } from '../../components/control-frame/ControlFrame';
 import { CARD_NUMBER_IFRAME, CONTROL_FRAME_IFRAME } from '../models/constants/Selectors';
-import { MessageBus } from '../shared/message-bus/MessageBus';
-import { MessageSubscriberToken } from '../../../shared/dependency-injection/InjectionTokens';
+import {
+  MessageBusToken,
+  MessageSubscriberToken,
+  StoreToken,
+  TranslatorToken,
+} from '../../../shared/dependency-injection/InjectionTokens';
+import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { TranslatorWithMerchantTranslations } from '../shared/translator/TranslatorWithMerchantTranslations';
+import { ITranslator } from '../shared/translator/ITranslator';
 
 describe('ComponentBootstrap', () => {
   let frameIdentifierMock: FrameIdentifier;
@@ -22,7 +28,9 @@ describe('ComponentBootstrap', () => {
   let framesHubMock: FramesHub;
   let sentryServiceMock: SentryService;
   let messageSubscriberRegistryMock: MessageSubscriberRegistry;
+  let interFrameCommunicatorMock: InterFrameCommunicator;
   let componentBootstrap: ComponentBootstrap;
+  let translatorToken: ITranslator;
 
   beforeEach(() => {
     frameIdentifierMock = mock(FrameIdentifier);
@@ -31,13 +39,17 @@ describe('ComponentBootstrap', () => {
     framesHubMock = mock(FramesHub);
     sentryServiceMock = mock(SentryService);
     messageSubscriberRegistryMock = mock(MessageSubscriberRegistry);
+    interFrameCommunicatorMock = mock(InterFrameCommunicator);
+    translatorToken = mock(TranslatorWithMerchantTranslations);
     componentBootstrap = new ComponentBootstrap(instance(frameIdentifierMock), instance(containerMock));
 
     when(frameIdentifierMock.isControlFrame()).thenReturn(false);
     when(containerMock.get(BrowserLocalStorage)).thenReturn(instance(browserLocalStorageMock));
+    when(containerMock.get(TranslatorToken)).thenReturn(instance(translatorToken));
     when(containerMock.get(FramesHub)).thenReturn(instance(framesHubMock));
     when(containerMock.get(SentryService)).thenReturn(instance(sentryServiceMock));
     when(containerMock.get(MessageSubscriberRegistry)).thenReturn(instance(messageSubscriberRegistryMock));
+    when(containerMock.get(InterFrameCommunicator)).thenReturn(instance(interFrameCommunicatorMock));
   });
 
   describe('run', () => {
@@ -50,13 +62,16 @@ describe('ComponentBootstrap', () => {
     it('initializes core services', () => {
       componentBootstrap.run(CARD_NUMBER_IFRAME, CardNumber);
 
-      verify(containerMock.get(MessageBus)).once();
-      verify(containerMock.get(Store)).once();
+      verify(containerMock.get(InterFrameCommunicator)).once();
+      verify(containerMock.get(MessageBusToken)).once();
+      verify(containerMock.get(StoreToken)).once();
       verify(containerMock.get(BrowserLocalStorage)).once();
       verify(containerMock.get(FramesHub)).once();
 
       verify(browserLocalStorageMock.init()).once();
+      verify(framesHubMock.init()).once();
       verify(framesHubMock.notifyReadyState()).once();
+      verify(interFrameCommunicatorMock.init()).once();
     });
 
     it('creates and returns the component instance', () => {

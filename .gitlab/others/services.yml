@@ -1,0 +1,63 @@
+.services-app-html-mock:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_MOCK}"
+      alias: library.securetrading.net
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_MOCK}"
+      alias: merchant.securetrading.net
+    - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
+      alias: webservices.securetrading.net
+      command: [
+          "--https-port", "6443",
+          "--https-keystore", "/home/wiremock/keystore",
+          "--verbose",
+          "--enable-browser-proxying",
+          "--trust-proxy-target", "library.securetrading.net"
+      ]
+    - name: "${IMAGE_JS_PAYMENTS_WIREMOCK}"
+      alias: thirdparty.example.com
+      command: [
+          "--https-port", "6443",
+          "--https-keystore", "/home/wiremock/keystore",
+          "--verbose",
+          "--enable-browser-proxying",
+          "--trust-proxy-target", "library.securetrading.net"
+      ]
+
+.service-app-html-review-library:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_REVIEW}"
+      alias: library.securetrading.net
+
+.service-app-html-review-merchant:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_REVIEW}"
+      alias: merchant.securetrading.net
+
+.services-app-html-review:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_REVIEW}"
+      alias: library.securetrading.net
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_REVIEW}"
+      alias: merchant.securetrading.net
+
+.service-app-html-release-merchant:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_RELEASE}"
+      alias: merchant.securetrading.net
+
+.service-app-html-release-library:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_RELEASE}"
+      alias: library.securetrading.net
+
+.services-app-html-release:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_RELEASE}"
+      alias: library.securetrading.net
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_RELEASE}"
+      alias: merchant.securetrading.net
+
+.services-app-html-smoke-merchant:
+  services:
+    - name: "${IMAGE_JS_PAYMENTS_APP_HTML_SMOKE}"
+      alias: merchant.securetrading.net

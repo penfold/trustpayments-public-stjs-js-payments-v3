@@ -22,5 +22,8 @@
   "Invalid field": "Ogiltigt fält",
   "Card number is invalid": "Ogiltigt kortnummer",
   "You are not logged to Apple account": "Du är inte inloggad på Apple-konto",
-  "A target element for the input field with id could not be found. Please check your configuration": "Ett målelement för inmatningsfältet med id kunde inte hittas. Kontrollera din konfiguration"
+  "A target element for the input field with id could not be found. Please check your configuration": "Ett målelement för inmatningsfältet med id kunde inte hittas. Kontrollera din konfiguration",
+  "Jwt has not been specified": "Jwt har inte specificerats",
+  "A target iframe-factory for the input field with id could not be found. Please check your configuration": "Ett mål iframe-fabrik för inmatningsfältet med id kunde inte hittas. Kontrollera din konfiguration",
+  "Cancel": "Annullera"
 }

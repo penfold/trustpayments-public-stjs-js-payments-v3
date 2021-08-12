@@ -1,26 +1,32 @@
 import { IConfig } from '../../../../../shared/model/config/IConfig';
-import { CLEAR_CONFIG, UPDATE_CONFIG } from './ConfigActions';
-import { configReducer } from './ConfigReducer';
-import { IConfigState } from './IConfigState';
+import { ConfigReducer } from './ConfigReducer';
+import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
+import { IApplicationFrameState } from '../../state/IApplicationFrameState';
 
 describe('ConfigReducer', () => {
-  let initialState: IConfigState;
+  const reducer = new ConfigReducer();
 
-  beforeEach(() => {
-    initialState = {} as IConfigState;
+  it('returns given state by default', () => {
+    const initialState: IApplicationFrameState = { config: null, storage: {} };
+
+    expect(reducer.reduce(initialState, { type: 'FOO' })).toBe(initialState);
   });
 
   it('handles UPDATE_CONFIG action', () => {
+    const initialState: IApplicationFrameState = { config: null, storage: {} };
     const config = ({ FOO: 'BAR' } as unknown) as IConfig;
-    const result = configReducer(initialState, { type: UPDATE_CONFIG, payload: config });
+    const result = reducer.reduce(initialState, { type: PUBLIC_EVENTS.CONFIG_CHANGED, data: config });
 
-    expect(result).toEqual({ config });
+    expect(result).toEqual({ config, storage: {} });
   });
 
   it('handles CLEAR_CONFIG action', () => {
-    const config = ({ FOO: 'BAR' } as unknown) as IConfig;
-    const result = configReducer({ config }, { type: CLEAR_CONFIG });
+    const initialState: IApplicationFrameState = {
+      config: ({ FOO: 'BAR' } as unknown) as IConfig,
+      storage: {},
+    };
+    const result = reducer.reduce(initialState, { type: PUBLIC_EVENTS.CONFIG_CLEARED });
 
-    expect(result).toEqual({ config: null });
+    expect(result).toEqual({ config: null, storage: {} });
   });
 });

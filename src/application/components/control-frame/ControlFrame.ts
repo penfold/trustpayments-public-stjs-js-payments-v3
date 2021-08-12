@@ -1,10 +1,9 @@
-import JwtDecode from 'jwt-decode';
-import { StCodec } from '../../core/services/st-codec/StCodec.class';
+import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
+import { StCodec } from '../../core/services/st-codec/StCodec';
 import { FormFieldsDetails } from '../../core/models/constants/FormFieldsDetails';
 import { FormFieldsValidity } from '../../core/models/constants/FormFieldsValidity';
 import { FormState } from '../../core/models/constants/FormState';
 import { ICard } from '../../core/models/ICard';
-import { IDecodedJwt } from '../../core/models/IDecodedJwt';
 import { IFormFieldsDetails } from '../../core/models/IFormFieldsDetails';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { IFormFieldsValidity } from '../../core/models/IFormFieldsValidity';
@@ -12,40 +11,44 @@ import { IMerchantData } from '../../core/models/IMerchantData';
 import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
 import { IResponseData } from '../../core/models/IResponseData';
 import { ISubmitData } from '../../core/models/ISubmitData';
-import { PAYMENT_SUCCESS, PAYMENT_ERROR } from '../../core/models/constants/Translations';
+import {
+  PAYMENT_SUCCESS,
+  PAYMENT_ERROR,
+  COMMUNICATION_ERROR_INVALID_RESPONSE, PAYMENT_CANCELLED,
+} from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
 import { Validation } from '../../core/shared/validation/Validation';
-import { iinLookup } from '@securetrading/ts-iin-lookup';
+import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
-import { Service } from 'typedi';
+import { Container, Service } from 'typedi';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
-import { ICardinalCommerceTokens } from '../../core/integrations/cardinal-commerce/ICardinalCommerceTokens';
-import { defer, EMPTY, from, iif, Observable, of } from 'rxjs';
-import { catchError, filter, map, mapTo, switchMap, tap } from 'rxjs/operators';
-import { IAuthorizePaymentResponse } from '../../core/models/IAuthorizePaymentResponse';
-import { StJwt } from '../../core/shared/stjwt/StJwt';
-import { Translator } from '../../core/shared/translator/Translator';
+import { EMPTY, from, Observable, of, throwError } from 'rxjs';
+import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
-import { IOnCardinalValidated } from '../../core/models/IOnCardinalValidated';
 import { IThreeDInitResponse } from '../../core/models/IThreeDInitResponse';
-import { Store } from '../../core/store/Store';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { UPDATE_CONFIG } from '../../core/store/reducers/config/ConfigActions';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
-import { ConfigService } from '../../../shared/services/config-service/ConfigService';
 import { Frame } from '../../core/shared/frame/Frame';
-import { Styler } from '../../core/shared/styler/Styler';
+import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { RequestType } from '../../../shared/types/RequestType';
+import { IThreeDQueryResponse } from '../../core/models/IThreeDQueryResponse';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
+import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
+import { PaymentController } from '../../core/services/payments/PaymentController';
+import { IUpdateJwt } from '../../core/models/IUpdateJwt';
+import { ITranslator } from '../../core/shared/translator/ITranslator';
+import { IStJwtPayload } from '../../core/models/IStJwtPayload';
 
 @Service()
 export class ControlFrame {
   private static ALLOWED_PARAMS: string[] = ['jwt', 'gatewayUrl'];
   private static NON_CVV_CARDS: string[] = ['PIBA'];
-  private static THREEDQUERY_EVENT: string = 'THREEDQUERY';
 
   private static _setFormFieldValidity(field: IFormFieldState, data: IFormFieldState): void {
     field.validity = data.validity;
@@ -55,27 +58,21 @@ export class ControlFrame {
     field.value = data.value;
   }
 
-  private static _resetJwt(): void {
-    StCodec.jwt = StCodec.originalJwt;
-  }
-
-  private static _updateJwt(jwt: string): void {
-    StCodec.jwt = jwt;
-    StCodec.originalJwt = jwt;
+  private _resetJwt(): void {
+    StCodec.resetJwt();
   }
 
   private _card: ICard = {
     pan: '',
     expirydate: '',
-    securitycode: ''
+    securitycode: '',
   };
-  private _isPaymentReady: boolean = false;
+  private _isPaymentReady = false;
   private _formFields: IFormFieldsDetails = FormFieldsDetails;
   private _formFieldsValidity: IFormFieldsValidity = FormFieldsValidity;
   private _merchantFormData: IMerchantData;
   private _payment: Payment;
-  private _postThreeDRequestTypes: string[];
-  private _preThreeDRequestTypes: string[];
+  private _remainingRequestTypes: RequestType[];
   private _validation: Validation;
   private _slicedPan: string;
 
@@ -85,26 +82,89 @@ export class ControlFrame {
     private _configProvider: ConfigProvider,
     private _notification: NotificationService,
     private _cybertonica: Cybertonica,
-    private _cardinalCommerce: CardinalCommerce,
-    private _store: Store,
-    private _configService: ConfigService,
-    private _messageBus: MessageBus,
-    private _frame: Frame
+    private _threeDProcess: ThreeDProcess,
+    private _messageBus: IMessageBus,
+    private _frame: Frame,
+    private _jwtDecoder: JwtDecoder,
+    private _visaCheckoutClient: VisaCheckoutClient,
+    private _applePayClient: ApplePayClient,
+    private paymentController: PaymentController,
+    private translator: ITranslator,
   ) {
-    this._communicator
-      .whenReceive(MessageBus.EVENTS_PUBLIC.INIT_CONTROL_FRAME)
-      .thenRespond((event: IMessageBusEvent<string>) => {
-        const config: IConfig = JSON.parse(event.data);
-        this._store.dispatch({ type: UPDATE_CONFIG, payload: config });
-        this._configService.update(config);
-        this.init(config);
+    this.init();
+    this._initVisaCheckout();
+    this._initApplePay();
+    this._initCardPayments();
+    this._initJsInit();
+    this._initConfigChange();
+  }
 
-        return of(config);
+  protected init(): void {
+    this._updateJwtEvent();
+
+    this._communicator.whenReceive(PUBLIC_EVENTS.INIT_CONTROL_FRAME).thenRespond((event: IMessageBusEvent<string>) => {
+      const config: IConfig = JSON.parse(event.data);
+
+      this._messageBus.publish({
+        type: PUBLIC_EVENTS.CONFIG_CHANGED,
+        data: config,
       });
 
+      if (config.jwt) {
+        StCodec.updateJwt(config.jwt);
+      }
+
+      this._initCybertonica(config);
+      this._updateMerchantFieldsEvent();
+      this.paymentController.init();
+
+      return of(config);
+    });
+  }
+
+  public _initCardPayments(): void {
+    this._messageBus
+      .pipe(ofType(PUBLIC_EVENTS.CARD_PAYMENTS_INIT))
+      .pipe(first())
+      .subscribe((event: IMessageBusEvent<string>) => {
+        this._setInstances();
+        this._setFormFieldsValidities();
+        this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_CARD_NUMBER, this._formFields.cardNumber);
+        this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_EXPIRATION_DATE, this._formFields.expirationDate);
+        this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_SECURITY_CODE, this._formFields.securityCode);
+        this._submitFormEvent();
+        this._initThreeDProcess(JSON.parse(event.data));
+      });
+  }
+
+  private _initVisaCheckout(): void {
+    this._messageBus
+      .pipe(ofType(PUBLIC_EVENTS.VISA_CHECKOUT_INIT))
+      .pipe(
+        first(),
+        switchMap(() => {
+          return this._visaCheckoutClient.init$();
+        })
+      )
+      .subscribe();
+  }
+
+  private _initApplePay(): void {
+    this._messageBus
+      .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_INIT))
+      .pipe(
+        first(),
+        switchMap(() => {
+          return this._applePayClient.init$();
+        })
+      )
+      .subscribe();
+  }
+
+  private _initJsInit(): void {
     this._messageBus
       .pipe(
-        ofType(MessageBus.EVENTS_PUBLIC.JSINIT_RESPONSE),
+        ofType(PUBLIC_EVENTS.JSINIT_RESPONSE),
         filter((event: IMessageBusEvent<IThreeDInitResponse>) => Boolean(event.data.maskedpan)),
         map((event: IMessageBusEvent<IThreeDInitResponse>) => event.data.maskedpan)
       )
@@ -113,91 +173,42 @@ export class ControlFrame {
         this._localStorage.setItem('app.maskedpan', this._slicedPan);
 
         this._messageBus.publish({
-          type: MessageBus.EVENTS_PUBLIC.BIN_PROCESS,
-          data: this._slicedPan
+          type: PUBLIC_EVENTS.BIN_PROCESS,
+          data: this._slicedPan,
         });
       });
+  }
 
+  private _initConfigChange(): void {
     this._messageBus.pipe(ofType(PUBLIC_EVENTS.CONFIG_CHANGED)).subscribe((event: IMessageBusEvent<IConfig>) => {
       if (event.data) {
-        this._store.dispatch({ type: UPDATE_CONFIG, payload: event.data });
+        Container.set(CONFIG, event.data);
         return;
       }
     });
   }
 
-  protected init(config: IConfig): void {
-    const styler: Styler = new Styler(this._frame.getAllowedStyles(), this._frame.parseUrl().styles);
-    this._setInstances();
-    this._setFormFieldsValidities();
-    this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_CARD_NUMBER, this._formFields.cardNumber);
-    this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_EXPIRATION_DATE, this._formFields.expirationDate);
-    this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_SECURITY_CODE, this._formFields.securityCode);
-    this._submitFormEvent();
-    this._updateMerchantFieldsEvent();
-    this._resetJwtEvent();
-    this._updateJwtEvent();
-    this._initCybertonica(config);
-
-    if (!config.deferInit) {
-      this._initCardinalCommerce(config);
-    } else if (config.components.startOnLoad) {
-      this._messageBus.publish({
-        type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
-        data: {
-          dataInJwt: true,
-          requestTypes: config.components.requestTypes
-        }
-      });
-    }
-
-    this._messageBus.subscribe(
-      MessageBus.EVENTS_PUBLIC.CARDINAL_COMMERCE_TOKENS_ACQUIRED,
-      (tokens: ICardinalCommerceTokens) => {
-        this._payment.setCardinalCommerceCacheToken(tokens.cacheToken);
-      }
-    );
-  }
-
   private _formFieldChangeEvent(event: string, field: IFormFieldState): void {
-    this._messageBus.subscribe(event, (data: IFormFieldState) => {
+    this._messageBus.subscribeType(event, (data: IFormFieldState) => {
       this._formFieldChange(event, data.value);
       ControlFrame._setFormFieldValidity(field, data);
       ControlFrame._setFormFieldValue(field, data);
     });
   }
 
-  private _resetJwtEvent(): void {
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.RESET_JWT, () => {
-      ControlFrame._resetJwt();
-    });
-  }
-
-  private _setRequestTypes(config: IConfig): void {
-    const skipThreeDQuery = this._isCardBypassed(this._getPan());
-    const filterThreeDQuery = (requestType: string) =>
-      !skipThreeDQuery || requestType !== ControlFrame.THREEDQUERY_EVENT;
-    const requestTypes = [...config.components.requestTypes].filter(filterThreeDQuery);
-    const threeDIndex = requestTypes.indexOf(ControlFrame.THREEDQUERY_EVENT);
-
-    if (threeDIndex === -1) {
-      this._preThreeDRequestTypes = [];
-      this._postThreeDRequestTypes = requestTypes;
-      return;
-    }
-
-    this._preThreeDRequestTypes = requestTypes.slice(0, threeDIndex + 1);
-    this._postThreeDRequestTypes = requestTypes.slice(threeDIndex + 1, requestTypes.length);
+  private _setRequestTypes(jwt: string): void {
+    const { payload } = this._jwtDecoder.decode<IStJwtPayload>(jwt);
+    this._remainingRequestTypes = payload.requesttypedescriptions;
   }
 
   private _updateJwtEvent(): void {
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_JWT, (data: any) => {
-      ControlFrame._updateJwt(data.newJwt);
+    this._messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_JWT, (data: IUpdateJwt) => {
+      StCodec.updateJwt(data.newJwt);
     });
   }
 
   private _updateMerchantFieldsEvent(): void {
-    this._messageBus.subscribe(MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
+    this._messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
       this._updateMerchantFields(data);
     });
   }
@@ -205,39 +216,35 @@ export class ControlFrame {
   private _submitFormEvent(): void {
     this._messageBus
       .pipe(
-        ofType(MessageBus.EVENTS_PUBLIC.SUBMIT_FORM),
+        ofType(PUBLIC_EVENTS.SUBMIT_FORM),
         map((event: IMessageBusEvent<ISubmitData>) => event.data || {}),
         switchMap((data: ISubmitData) => {
           this._isPaymentReady = true;
           if (!this._isDataValid(data)) {
-            this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
-            this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+            this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+            this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
             this._validateFormFields();
             return EMPTY;
           }
 
           return this._configProvider.getConfig$().pipe(
-            switchMap(config =>
-              iif(
-                () => config.deferInit,
-                defer(() => this._cardinalCommerce.init(config).pipe(mapTo(data))),
-                of(data)
-              ).pipe(mapTo(config))
-            ),
-            tap(config => this._setRequestTypes(config)),
+            tap(config => this._setRequestTypes(config.jwt)),
             switchMap(() =>
-              iif(
-                () => Boolean(this._preThreeDRequestTypes.length),
-                defer(() => this._callThreeDQueryRequest()).pipe(
-                  catchError(errorData => this._onPaymentFailure(errorData))
-                ),
-                of(data)
+              this._callThreeDQueryRequest().pipe(
+                catchError(errorData => {
+                  if (errorData.isCancelled) {
+                    return this._onPaymentCancel(errorData);
+                  }
+
+                  return this._onPaymentFailure(errorData);
+                }),
+                catchError(() => EMPTY)
               )
             )
           );
         })
       )
-      .subscribe(authorizationData => this._processPayment(authorizationData as any));
+      .subscribe(threeDQueryResponse => this._processPayment(threeDQueryResponse));
   }
 
   private _isDataValid(data: ISubmitData): boolean {
@@ -254,62 +261,66 @@ export class ControlFrame {
     return validity;
   }
 
-  private _onPaymentFailure(errorData: ISubmitData | IOnCardinalValidated): Observable<never> {
-    const { ErrorNumber, ErrorDescription } = errorData;
-    const translator = new Translator(this._localStorage.getItem('locale'));
-    const translatedErrorMessage = translator.translate(PAYMENT_ERROR);
+  private _onPaymentFailure(errorData: IResponseData, errorMessage: string = PAYMENT_ERROR): Observable<never> {
+    const translatedErrorMessage = this.translator.translate(errorMessage);
+    errorData.errormessage = translatedErrorMessage;
 
-    this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.RESET_JWT });
-    this._messageBus.publish(
-      {
-        type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE,
-        data: {
-          acquirerresponsecode: ErrorNumber ? ErrorNumber.toString() : ErrorNumber,
-          acquirerresponsemessage: ErrorDescription,
-          errorcode: '50003',
-          errormessage: translatedErrorMessage
-        }
-      },
-      true
-    );
-    this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+    if (!(errorData instanceof Error)) {
+      this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+      StCodec.publishResponse(errorData, errorData.jwt);
+    }
+
+    this._resetJwt();
+    this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
     this._notification.error(translatedErrorMessage);
 
-    return EMPTY;
+    return throwError(errorData);
   }
 
-  private _isCardBypassed(pan: string): boolean {
-    const bypassCards = this._configProvider.getConfig().bypassCards as string[];
+  private _onPaymentCancel(errorData: IResponseData, errorMessage: string = PAYMENT_CANCELLED): Observable<never> {
+    const translatedErrorMessage = this.translator.translate(errorMessage);
+    errorData.errormessage = translatedErrorMessage;
 
-    return bypassCards.includes(iinLookup.lookup(pan).type);
+    if (!(errorData instanceof Error)) {
+      this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, true);
+      StCodec.publishResponse(errorData, errorData.jwt);
+    }
+
+    this._resetJwt();
+    this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+    this._notification.cancel(translatedErrorMessage);
+
+    return throwError(errorData);
   }
 
-  private _processPayment(data: IResponseData): void {
-    this._payment
-      .processPayment(this._postThreeDRequestTypes, this._card, this._merchantFormData, data)
+  private _processPayment(responseData: IResponseData): Promise<void> {
+    this._setRequestTypes(StCodec.jwt);
+
+    return this._payment
+      .processPayment(this._remainingRequestTypes, this._card, this._merchantFormData, responseData)
       .then(() => {
         this._messageBus.publish(
           {
-            type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUCCESS_CALLBACK
+            type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
           },
-          true
+          true,
         );
         this._notification.success(PAYMENT_SUCCESS);
         this._validation.blockForm(FormState.COMPLETE);
       })
-      .catch((error: any) => {
-        this._messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+      .catch(() => {
+        this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
         this._notification.error(PAYMENT_ERROR);
         this._validation.blockForm(FormState.AVAILABLE);
       })
       .finally(() => {
-        ControlFrame._resetJwt();
+        this._resetJwt();
       });
   }
 
   private _isCardWithoutCVV(): boolean {
     const panFromJwt: string = this._getPanFromJwt();
-    let pan: string = '';
+    let pan = '';
     if (panFromJwt || this._formFields.cardNumber.value) {
       pan = panFromJwt ? panFromJwt : this._formFields.cardNumber.value;
     }
@@ -318,7 +329,7 @@ export class ControlFrame {
     return ControlFrame.NON_CVV_CARDS.includes(cardType);
   }
 
-  private _callThreeDQueryRequest(): Observable<IAuthorizePaymentResponse> {
+  private _callThreeDQueryRequest(): Observable<IThreeDQueryResponse> {
     const applyCybertonicaTid = (merchantFormData: IMerchantData) =>
       from(this._cybertonica.getTransactionId()).pipe(
         map(cybertonicaTid => {
@@ -328,7 +339,7 @@ export class ControlFrame {
 
           return {
             ...merchantFormData,
-            fraudcontroltransactionid: cybertonicaTid
+            fraudcontroltransactionid: cybertonicaTid,
           };
         })
       );
@@ -336,20 +347,20 @@ export class ControlFrame {
     return of({ ...this._merchantFormData }).pipe(
       switchMap(applyCybertonicaTid),
       switchMap(merchantFormData =>
-        this._cardinalCommerce.performThreeDQuery(this._preThreeDRequestTypes, this._card, merchantFormData)
+        this._threeDProcess.performThreeDQuery$(this._remainingRequestTypes, this._card, merchantFormData)
       )
     );
   }
 
   private _validateFormFields() {
     this._publishBlurEvent({
-      type: MessageBus.EVENTS.BLUR_CARD_NUMBER
+      type: MessageBus.EVENTS.BLUR_CARD_NUMBER,
     });
     this._publishBlurEvent({
-      type: MessageBus.EVENTS.BLUR_EXPIRATION_DATE
+      type: MessageBus.EVENTS.BLUR_EXPIRATION_DATE,
     });
     this._publishBlurEvent({
-      type: MessageBus.EVENTS.BLUR_SECURITY_CODE
+      type: MessageBus.EVENTS.BLUR_SECURITY_CODE,
     });
     this._validation.setFormValidity(this._formFieldsValidity);
   }
@@ -372,13 +383,15 @@ export class ControlFrame {
     }
   }
 
-  private _getPanFromJwt(): string {
-    const { jwt } = this._frame.parseUrl(ControlFrame.ALLOWED_PARAMS);
-    return JwtDecode<IDecodedJwt>(jwt).payload.pan ? JwtDecode<IDecodedJwt>(jwt).payload.pan : '';
+  private _getJwt(): string {
+    return this._frame.parseUrl(ControlFrame.ALLOWED_PARAMS).jwt;
   }
 
-  private _getPan(): string {
-    return this._card.pan || this._getPanFromJwt() || this._slicedPan;
+  private _getPanFromJwt(): string {
+    const jwt: string = this._getJwt();
+    const decoded = this._jwtDecoder.decode<IStJwtPayload>(jwt);
+
+    return decoded.payload.pan || '';
   }
 
   private _setCardExpiryDate(value: string): void {
@@ -413,34 +426,33 @@ export class ControlFrame {
 
     if (cybertonicaApiKey) {
       this._cybertonica.init(cybertonicaApiKey);
-
-      this._communicator
-        .whenReceive(MessageBus.EVENTS_PUBLIC.GET_CYBERTONICA_TID)
-        .thenRespond(() => from(this._cybertonica.getTransactionId()));
     }
   }
 
-  private _initCardinalCommerce(config: IConfig): void {
-    this._cardinalCommerce.init(config).subscribe(() => {
-      this._isPaymentReady = true;
+  private _initThreeDProcess(config: IConfig): void {
+    this._threeDProcess.init$().subscribe({
+      next: () => {
+        this._isPaymentReady = true;
 
-      if (config.components.startOnLoad) {
-        this._messageBus.publish({
-          type: MessageBus.EVENTS_PUBLIC.BIN_PROCESS,
-          data: new StJwt(config.jwt).payload.pan as string
-        });
+        if (config.components.startOnLoad) {
+          this._messageBus.publish({
+            type: PUBLIC_EVENTS.BIN_PROCESS,
+            data: this._jwtDecoder.decode<IStJwtPayload>(config.jwt).payload.pan,
+          });
 
-        this._messageBus.publish(
-          {
-            type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
-            data: {
-              dataInJwt: true,
-              requestTypes: config.components.requestTypes
-            }
-          },
-          true
-        );
-      }
+          this._messageBus.publish(
+            {
+              type: PUBLIC_EVENTS.SUBMIT_FORM,
+              data: {
+                dataInJwt: true,
+                requestTypes: this._remainingRequestTypes,
+              },
+            },
+            true
+          );
+        }
+      },
+      error: (errorData: IResponseData) => this._onPaymentFailure(errorData, COMMUNICATION_ERROR_INVALID_RESPONSE),
     });
   }
 }

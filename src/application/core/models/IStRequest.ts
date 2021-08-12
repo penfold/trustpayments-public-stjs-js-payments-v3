@@ -6,4 +6,10 @@ export interface IStRequest {
   securitycode?: string;
   termurl?: string;
   fraudcontroltransactionid?: string;
+  cachetoken?: string;
+  threedresponse?: string;
+  pares?: string;
+  md?: string;
+  walletsource?: string;
+  wallettoken?: string;
 }

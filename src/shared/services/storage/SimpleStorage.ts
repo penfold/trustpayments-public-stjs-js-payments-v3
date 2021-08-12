@@ -4,23 +4,23 @@ import { map } from 'rxjs/operators';
 import { IStorage } from './IStorage';
 
 interface StorageData {
-  [index: string]: any;
+  [index: string]: unknown;
 }
 
 @Service()
 export class SimpleStorage implements IStorage {
   private storage$: BehaviorSubject<StorageData> = new BehaviorSubject({});
 
-  getItem(name: string): any {
+  getItem(name: string): unknown {
     return this.storage$.getValue()[name];
   }
 
-  setItem(name: string, value: any): void {
+  setItem(name: string, value: unknown): void {
     const storage = this.storage$.getValue();
     this.storage$.next({ ...storage, [name]: value });
   }
 
-  select<T>(selector: (storage: { [p: string]: any }) => T): Observable<T> {
+  select<T>(selector: (storage: { [p: string]: unknown }) => T): Observable<T> {
     return this.storage$.pipe(map(selector));
   }
 }

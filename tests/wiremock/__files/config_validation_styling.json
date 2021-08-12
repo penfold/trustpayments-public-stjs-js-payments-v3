@@ -1,0 +1,95 @@
+{
+  "analytics": true,
+  "animatedCard": true,
+  "fieldsToSubmit": [
+    "pan",
+    "expirydate",
+    "securitycode"
+  ],
+  "buttonId": "merchant-submit-button",
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJUSFJFRURRVUVSWSIsIkFVVEgiXX19.H7b5j70Tele_XheS7wQuDdKGIPbf35KvyQyXYfNMl-g",
+  "panIcon": false,
+  "styles": {
+    "cardNumber": {
+      "isLinedUp": "true",
+      "background-color-input-error": "red",
+      "line-height-body": "11px",
+      "border-color-input": "#E2EAED",
+      "border-size-input": "6px 30px 6px 4px",
+      "border-radius-input": "5px",
+      "background-color-message": "#F7E1E1",
+      "color-input": "#000000",
+      "color-error": "#B10000",
+      "font-family-label": "Arial",
+      "font-size-label": "11px",
+      "font-size-input": "12px",
+      "font-size-input-error": "12px",
+      "space-inset-input": "2px 4px 2px 4px",
+      "space-outset-input-error": "0px",
+      "space-outset-message": "0px",
+      "space-inset-message": "3px 35px 10px 35px"
+    },
+    "expirationDate": {
+      "background-color-input-error": "red",
+      "line-height-body": "11px",
+      "border-color-input": "#E2EAED",
+      "border-size-input": "6px 30px 6px 4px",
+      "border-radius-input": "5px",
+      "background-color-message": "#F7E1E1",
+      "color-input": "#000000",
+      "color-error": "#B10000",
+      "font-family-label": "Arial",
+      "font-size-label": "11px",
+      "font-size-input": "12px",
+      "font-size-input-error": "12px",
+      "space-inset-input": "2px 4px 2px 4px",
+      "space-outset-input-error": "0px",
+      "space-outset-message": "0px",
+      "space-inset-message": "3px 35px 10px 35px"
+    },
+    "securityCode": {
+      "isLinedUp": "true",
+      "background-color-input-error": "red",
+      "line-height-body": "11px",
+      "border-color-input": "#E2EAED",
+      "border-size-input": "6px 30px 6px 4px",
+      "background-color-message": "#F7E1E1",
+      "border-radius-input": "5px",
+      "color-input": "#000000",
+      "color-error": "#B10000",
+      "font-family-label": "Arial",
+      "font-size-label": "11px",
+      "font-size-input": "12px",
+      "font-size-input-error": "12px",
+      "space-inset-input": "2px 4px 2px 4px",
+      "space-outset-input-error": "0px",
+      "space-outset-message": "0px",
+      "space-inset-message": "3px 35px 10px 35px"
+    }
+  },
+  "submitOnSuccess": false,
+  "submitCallback": "",
+  "components": {
+  },
+  "applePay": {
+    "buttonStyle": "white-outline",
+    "buttonText": "donate",
+    "merchantId": "merchant.net.securetrading.test",
+    "paymentRequest": {
+      "countryCode": "US",
+      "currencyCode": "USD",
+      "merchantCapabilities": [
+        "supports3DS",
+        "supportsCredit",
+        "supportsDebit"
+      ],
+      "supportedNetworks": [],
+      "total": {
+        "label": "Secure Trading Merchant",
+        "amount": "10.00"
+      }
+    },
+    "placement": "st-apple-pay"
+  },
+  "cybertonicaApiKey": ""
+}

@@ -1,0 +1,52 @@
+{
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJSSVNLREVDIiwiQUNDT1VOVENIRUNLIiwiQVVUSCJdfX0.CjdM9mL7IlbgxmmvuMSOScmy0hFLmzYFVsK2LMNQlMg",
+  "panIcon": true,
+  "submitOnSuccess": false,
+  "googlePay": {
+    "buttonOptions": {
+      "buttonRootNode": "st-google-pay",
+      "buttonColor": "default",
+      "buttonType": "buy",
+      "buttonLocale": "en"
+    },
+    "paymentRequest": {
+      "allowedPaymentMethods": [{
+        "parameters": {
+          "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+          "allowedCardNetworks": ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"],
+          "allowCreditCards" : true
+        },
+        "tokenizationSpecification": {
+          "parameters": {
+            "gateway": "trustpayments",
+            "gatewayMerchantId": "test_james38641"
+          },
+          "type": "PAYMENT_GATEWAY"
+        },
+        "type": "CARD"
+      }],
+      "apiVersion": 2,
+      "apiVersionMinor": 0,
+      "merchantInfo": {
+        "merchantId": "merchant.net.securetrading",
+        "merchantName": "merchang"
+      },
+      "transactionInfo": {
+        "countryCode": "US",
+        "currencyCode": "USD",
+        "checkoutOption": "COMPLETE_IMMEDIATE_PURCHASE",
+        "totalPriceStatus": "FINAL",
+        "totalPrice": "10.00",
+        "displayItems": [
+          {
+            "label": "Example item",
+            "price": "10.00",
+            "type": "LINE_ITEM",
+            "status": "FINAL"
+          }
+        ]
+      }
+    }
+}
+
+}

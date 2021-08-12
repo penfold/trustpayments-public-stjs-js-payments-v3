@@ -1,16 +1,13 @@
 import { IframeFactory } from './IframeFactory';
 
-// given
 describe('IframeFactory', () => {
   let instance: IframeFactory;
   let iframe: HTMLIFrameElement;
 
-  // when
   beforeEach(() => {
     instance = new IframeFactory();
   });
 
-  // then
   it('should create an iframe an provide all properties set by default', () => {
     iframe = instance.create(
       'someName',

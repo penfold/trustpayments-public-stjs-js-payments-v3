@@ -1,5 +1,5 @@
 export class Utils {
-  public static inArray<T>(array: ArrayLike<T>, item: T) {
+  public static inArray<T>(array: ArrayLike<T>, item: T): boolean {
     return Array.from(array).indexOf(item) >= 0;
   }
 
@@ -8,7 +8,6 @@ export class Utils {
     callback: (item: inputType) => returnType
   ): returnType {
     let result: returnType = null;
-    // tslint:disable-next-line:forin
     for (const i in iterable) {
       result = callback(iterable[i]);
       if (result) {
@@ -49,8 +48,8 @@ export class Utils {
     });
   }
 
-  public static stripChars(string: string, regex: any) {
-    if (typeof regex === 'undefined' || !Boolean(regex)) {
+  public static stripChars(string: string, regex?: RegExp | string): string {
+    if (typeof regex === 'undefined' || !regex) {
       regex = /[\D+]/g;
       return string.replace(regex, '');
     } else {
@@ -58,10 +57,9 @@ export class Utils {
     }
   }
 
-  public static getLastElementOfArray = (array: number[]) => array && array.slice(-1).pop();
+  public static getLastElementOfArray = (array: number[]): number => array && array.slice(-1).pop();
 
-  public static setElementAttributes(attributes: any, element: HTMLInputElement) {
-    // tslint:disable-next-line: forin
+  public static setElementAttributes(attributes: Record<string, string | boolean>, element: HTMLInputElement): void {
     for (const attribute in attributes) {
       const value = attributes[attribute];
       if (Utils.inArray(['value'], attribute)) {
@@ -70,7 +68,7 @@ export class Utils {
       } else if (value === false) {
         element.removeAttribute(attribute);
       } else {
-        element.setAttribute(attribute, value);
+        element.setAttribute(attribute, value.toString());
       }
     }
   }

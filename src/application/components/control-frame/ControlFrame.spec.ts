@@ -1,5 +1,7 @@
+import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
+import { VisaCheckoutClientStatus } from '../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { ControlFrame } from './ControlFrame';
-import { StCodec } from '../../core/services/st-codec/StCodec.class';
+import { StCodec } from '../../core/services/st-codec/StCodec';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
@@ -8,41 +10,47 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { mock, instance as mockInstance, when, anyString, anything } from 'ts-mockito';
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
-import { CardinalCommerce } from '../../core/integrations/cardinal-commerce/CardinalCommerce';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { EMPTY, of } from 'rxjs';
-import { Store } from '../../core/store/Store';
-import { ConfigService } from '../../../shared/services/config-service/ConfigService';
-import { Frame } from '../../core/shared/frame/Frame';
-import { MessageBusMock } from '../../../testing/mocks/MessageBusMock';
 import { IStyles } from '../../../shared/model/config/IStyles';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
+import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
+import { EMPTY, of } from 'rxjs';
+import { Frame } from '../../core/shared/frame/Frame';
+import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
+import { ApplePayClientStatus } from '../../core/integrations/apple-pay/ApplePayClientStatus';
+import { PaymentController } from '../../core/services/payments/PaymentController';
+import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
+import { IUpdateJwt } from '../../core/models/IUpdateJwt';
+import spyOn = jest.spyOn;
+import { PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Translations';
+import { Translator } from '../../core/shared/translator/Translator';
+import { FormState } from '../../core/models/constants/FormState';
 
 jest.mock('./../../core/shared/payment/Payment');
 
-// given
 describe('ControlFrame', () => {
-  const { data, instance, messageBusEvent } = controlFrameFixture();
+  const { data, instance, messageBusEvent, messageBus } = controlFrameFixture();
 
   beforeEach(() => {
     // @ts-ignore
-    instance._messageBus.subscribe = jest.fn().mockImplementationOnce((event, callback) => {
+    instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
       callback(data);
     });
   });
 
-  // given
   describe('ControlFrame._onFormFieldStateChange()', () => {
     const field: IFormFieldState = {
       validity: false,
-      value: ''
+      value: '',
     };
     const data: IFormFieldState = {
       validity: true,
-      value: '411111111'
+      value: '411111111',
     };
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       ControlFrame._setFormFieldValidity(field, data);
@@ -50,16 +58,13 @@ describe('ControlFrame', () => {
       ControlFrame._setFormFieldValue(field, data);
     });
 
-    // then
     it('should set field properties: validity and value', () => {
       expect(field.validity).toEqual(true);
       expect(field.value).toEqual('411111111');
     });
   });
 
-  // given
   describe('_initChangeCardNumberEvent()', () => {
-    // then
     it('should call _onCardNumberStateChange when CHANGE_CARD_NUMBER event has been called', () => {
       // @ts-ignore
       ControlFrame._setFormFieldValue = jest.fn();
@@ -71,9 +76,7 @@ describe('ControlFrame', () => {
     });
   });
 
-  // given
   describe('_onExpirationDateStateChange()', () => {
-    // then
     it('should call _onExpirationDateStateChange when CHANGE_EXPIRATION_DATE event has been called', () => {
       // @ts-ignore
       ControlFrame._setFormFieldValue = jest.fn();
@@ -85,9 +88,7 @@ describe('ControlFrame', () => {
     });
   });
 
-  // given
   describe('_onSecurityCodeStateChange()', () => {
-    // then
     it('should call _onSecurityCodeStateChange when CHANGE_SECURITY_CODE event has been called', () => {
       // @ts-ignore
       ControlFrame._setFormFieldValue = jest.fn();
@@ -99,9 +100,7 @@ describe('ControlFrame', () => {
     });
   });
 
-  // given
   describe('_initUpdateMerchantFieldsEvent()', () => {
-    // then
     it('should call _storeMerchantData when UPDATE_MERCHANT_FIELDS event has been called', () => {
       // @ts-ignore
       instance._updateMerchantFields = jest.fn();
@@ -113,71 +112,59 @@ describe('ControlFrame', () => {
     });
   });
 
-  // given
-  describe('_initResetJwtEvent()', () => {
-    const obj = { data: { newJwt: 'some jwt' } };
-
-    // then
-    it('should call _initResetJwtEvent when RESET_JWT event has been called', () => {
-      // @ts-ignore
-      instance._messageBus.subscribe = jest
-        .fn()
-        .mockImplementationOnce((even, callback) => {
-          callback();
-        })
-        .mockImplementationOnce((even, callback) => {
-          callback(obj);
-        });
-      // @ts-ignore
-      ControlFrame._resetJwt = jest.fn();
-
-      // @ts-ignore
-      instance._resetJwtEvent();
-      // @ts-ignore
-      expect(ControlFrame._resetJwt).toHaveBeenCalled();
-    });
-  });
-
-  // TODO: get know how handle this promise
-  // given
   describe('_processPayment', () => {
     const { instance } = controlFrameFixture();
     const data = {
       errorcode: '40005',
-      errormessage: 'some error message'
+      errormessage: 'some error message',
     };
-    // when
+
     beforeEach(() => {
       // @ts-ignore
       instance._notification.success = jest.fn();
       // @ts-ignore
       instance._notification.error = jest.fn();
       // @ts-ignore
-      instance._validation.blockForm = jest.fn();
-    });
-    // then
-    it('should call notification success when promise is resolved', async () => {
+      instance._notification.cancel = jest.fn();
       // @ts-ignore
-      instance._payment.processPayment = jest.fn().mockResolvedValueOnce(new Promise(resolve => resolve()));
-      // @ts-ignore
-      instance._processPayment(data);
+      instance._validation = {
+        blockForm: jest.fn(),
+      };
     });
 
-    // then
+    it('should call notification success when promise is resolved', async () => {
+      // @ts-ignore
+      instance._payment = {
+        processPayment: jest.fn().mockResolvedValueOnce(undefined),
+      };
+      // @ts-ignore
+      await instance._processPayment(data);
+
+      // @ts-ignore
+      expect(instance._notification.success).toHaveBeenCalledWith(PAYMENT_SUCCESS);
+      // @ts-ignore
+      expect(instance._validation.blockForm).toHaveBeenCalledWith(FormState.COMPLETE);
+    });
+
     it('should call notification error when promise is rejected', async () => {
       // @ts-ignore
-      instance._payment.processPayment = jest.fn().mockRejectedValueOnce(new Promise(rejected => rejected()));
+      instance._payment = {
+        processPayment: jest.fn().mockRejectedValueOnce(undefined),
+      };
       // @ts-ignore
-      instance._processPayment(data);
+      await instance._processPayment(data);
+
+      // @ts-ignore
+      expect(instance._notification.error).toHaveBeenCalledWith(PAYMENT_ERROR);
+      // @ts-ignore
+      expect(instance._validation.blockForm).toHaveBeenCalledWith(FormState.AVAILABLE);
     });
   });
 
-  // given
   describe('_storeMerchantData', () => {
     const { instance } = controlFrameFixture();
     const data = 'some data';
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._updateMerchantFields(data);
@@ -185,85 +172,91 @@ describe('ControlFrame', () => {
       instance._messageBus.publish = jest.fn();
     });
 
-    // then
     it('should set _merchantFormData', () => {
       // @ts-ignore
       expect(instance._merchantFormData).toEqual(data);
     });
   });
 
-  // given
-  describe('_onUpdateJWT', () => {
-    // when
-    beforeEach(() => {
-      StCodec.jwt = '1234';
-      StCodec.originalJwt = '56789';
-      // @ts-ignore
-      ControlFrame._updateJwt('997');
-    });
-
-    // then
-    it('should update jwt and originalJwt', () => {
-      expect(StCodec.jwt).toEqual('997');
-      expect(StCodec.originalJwt).toEqual('997');
-    });
-  });
-
-  // given
   describe('_getPan()', () => {
     // @ts-ignore
     instance.params = {
       jwt:
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw'
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw',
     };
 
     // @ts-ignore
     instance._frame.parseUrl = jest.fn().mockReturnValueOnce({
       jwt:
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw'
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw',
     });
 
-    // then
     it('should return pan from jwt', () => {
       // @ts-ignore
       expect(instance._getPanFromJwt(['jwt', 'gatewayUrl'])).toEqual('3089500000000000021');
     });
   });
+
+  describe('_updateJwtEvent', () => {
+    it('calls StCodec.updateJwt() on UPDATE_JWT event', () => {
+      const updateJwtSpy = spyOn(StCodec, 'updateJwt');
+
+      messageBus.publish<IUpdateJwt>({ type: PUBLIC_EVENTS.UPDATE_JWT, data: { newJwt: 'foobar' } });
+
+      expect(updateJwtSpy).toHaveBeenCalledWith('foobar');
+    });
+  });
 });
 
 function controlFrameFixture() {
+  const JWT =
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw';
   const localStorage: BrowserLocalStorage = mock(BrowserLocalStorage);
   const communicator: InterFrameCommunicator = mock(InterFrameCommunicator);
   const configProvider: ConfigProvider = mock<ConfigProvider>();
   const notification: NotificationService = mock(NotificationService);
   const cybertonica: Cybertonica = mock(Cybertonica);
-  const cardinalCommerce: CardinalCommerce = mock(CardinalCommerce);
-  const configService: ConfigService = mock(ConfigService);
-  const messageBus: MessageBus = (new MessageBusMock() as unknown) as MessageBus;
+  const threeDProcess: ThreeDProcess = mock(ThreeDProcess);
+  const messageBus: IMessageBus = new SimpleMessageBus();
   const frame: Frame = mock(Frame);
-  const storeMock: Store = mock(Store);
+  const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
+  const visaCheckoutClientMock: VisaCheckoutClient = mock(VisaCheckoutClient);
+  const applePayClientMock: ApplePayClient = mock(ApplePayClient);
+  const paymentControllerMock: PaymentController = mock(PaymentController);
+  const translator: Translator = mock(Translator);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
-        'color-body': '#fff'
-      }
-    }
+        'color-body': '#fff',
+      },
+    },
   ];
 
   when(communicator.whenReceive(anyString())).thenReturn({
-    thenRespond: () => undefined
+    thenRespond: () => undefined,
   });
-  when(configProvider.getConfig$()).thenReturn(of({} as IConfig));
-  when(cardinalCommerce.init(anything())).thenReturn(EMPTY);
+  when(configProvider.getConfig$()).thenReturn(of({ jwt: JWT } as IConfig));
+  when(threeDProcess.init$()).thenReturn(EMPTY);
   when(frame.parseUrl()).thenReturn({
     locale: 'en_GB',
-    jwt:
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw',
-
-    styles: controlFrame
+    jwt: JWT,
+    styles: controlFrame,
   });
   when(frame.getAllowedParams()).thenReturn(['locale', 'origin', 'styles']);
   when(frame.getAllowedStyles()).thenReturn(frameAllowedStyles);
+  when(jwtDecoderMock.decode(anything())).thenReturn({
+    payload: {
+      baseamount: '1000',
+      accounttypedescription: 'ECOM',
+      currencyiso3a: 'GBP',
+      sitereference: 'test_james38641',
+      locale: 'en_GB',
+      pan: '3089500000000000021',
+      expirydate: '01/22',
+    },
+  });
+  when(visaCheckoutClientMock.init$()).thenReturn(of(VisaCheckoutClientStatus.SUCCESS));
+  when(applePayClientMock.init$()).thenReturn(of(ApplePayClientStatus.SUCCESS));
 
   const instance = new ControlFrame(
     mockInstance(localStorage),
@@ -271,22 +264,24 @@ function controlFrameFixture() {
     mockInstance(configProvider),
     mockInstance(notification),
     mockInstance(cybertonica),
-    mockInstance(cardinalCommerce),
-    mockInstance(storeMock),
-    mockInstance(configService),
+    mockInstance(threeDProcess),
     messageBus,
-    mockInstance(frame)
+    mockInstance(frame),
+    mockInstance(jwtDecoderMock),
+    mockInstance(visaCheckoutClientMock),
+    mockInstance(applePayClientMock),
+    mockInstance(paymentControllerMock),
+    mockInstance(translator),
   );
   const messageBusEvent = {
-    type: ''
+    type: '',
   };
   const data = {
     validity: true,
-    value: 'test value'
+    value: 'test value',
   };
 
-  // @ts-ignore
-  instance.init({} as IConfig);
+  StCodec.jwt = JWT;
 
-  return { data, instance, messageBusEvent };
+  return { data, instance, messageBusEvent, messageBus };
 }

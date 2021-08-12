@@ -1,50 +1,43 @@
 import SpyInstance = jest.SpyInstance;
 import { DomMethods } from './DomMethods';
 
-// given
 describe('DomMethods', () => {
-  // when
   beforeEach(() => {
     document.head.innerHTML = '';
     document.body.innerHTML = '';
   });
 
-  // given
   describe('DomMethods.insertScript', () => {
     const { scriptUrl } = createFormFixture();
-    // then
+
     it('should inject script to head', () => {
       DomMethods.insertScript('head', scriptUrl);
       expect(document.head.innerHTML).toBe('<script src="http://example.com/test.js"></script>');
     });
   });
 
-  // given
   describe('DomMethods.insertStyle', () => {
-    // then
     it('should inject style to head', () => {
       DomMethods.insertStyle(['.st-iframe-factory: {color: #fff}']);
       expect(document.head.innerHTML).toBe('<style id="insertedStyles" type="text/css"></style>');
     });
   });
 
-  // given
   describe('DomMethods.addDataToForm', () => {
     const { parseFormObject } = createFormFixture();
 
-    // then
     it('should add all fields if not provided', () => {
       const form = document.createElement('form');
       DomMethods.addDataToForm(form, parseFormObject);
       expect(form.querySelector('[name="stFieldName"]').getAttribute('value')).toBe('');
       expect(form.querySelector('[name="stFieldName"]').tagName).toBe('INPUT');
       expect(form.querySelector('[name="stFieldName"]').getAttribute('type')).toBe('hidden');
+      expect(form.querySelector('[name="stFieldName"]').getAttribute('class')).toBe('-st-created-field');
       expect(form.querySelector('[name="stFieldName2"]').getAttribute('value')).toBe('some value');
       expect(form.querySelector('[name="stDuplicate"]').getAttribute('value')).toBe('value2');
       expect(form.querySelector('[name="stSelectName"]').getAttribute('value')).toBe('B');
     });
 
-    // then
     it('should only add specified fields if provided', () => {
       const form = document.createElement('form');
       DomMethods.addDataToForm(form, parseFormObject, ['stFieldName', 'stFieldName2']);
@@ -53,28 +46,34 @@ describe('DomMethods', () => {
       expect(form.querySelector('[name="stDuplicate"]')).toBe(null);
       expect(form.querySelector('[name="stSelectName"]')).toBe(null);
     });
+
+    it('should update fields value if it already exists', () => {
+      const form = document.createElement('form');
+
+      DomMethods.addDataToForm(form, { foo: 'bar' }, ['foo']);
+      DomMethods.addDataToForm(form, { foo: 'baz' }, ['foo']);
+
+      expect(form.querySelectorAll('[name=foo]').length).toBe(1);
+      expect(form.querySelector('[name=foo]').getAttribute('value')).toBe('baz');
+    });
   });
 
-  // given
   describe('DomMethods.parseMerchantForm', () => {
     let spy: SpyInstance;
     const { html } = createFormFixture();
-    // when
+
     beforeEach(() => {
       document.body.innerHTML = html;
       spy = jest.spyOn(DomMethods, 'parseForm');
     });
 
-    // then
     it('should call parseForm()', () => {
       DomMethods.parseForm('st-form');
       expect(spy).toHaveBeenCalled();
     });
   });
 
-  // given
   describe('DomMethods.removeAllChildren', () => {
-    // when
     beforeEach(() => {
       const element = document.createElement('div');
       const child1 = document.createElement('input');
@@ -84,14 +83,25 @@ describe('DomMethods', () => {
       document.body.appendChild(element);
       document.getElementById('some-id').appendChild(child1).appendChild(child2).appendChild(child3);
     });
-    // then
+
     it('should remove all children of specified iframe-factory', () => {
       expect(DomMethods.removeAllChildren('some-id').childNodes.length).toEqual(0);
     });
   });
+
+  describe('DomMethods.removeAllCreatedFields()', () => {
+    it('should remove all fields added to form', () => {
+      const { form } = createFormFixture();
+
+      DomMethods.addDataToForm(form, { foo: 'bar', bar: 'baz' });
+      expect(form.querySelectorAll('.-st-created-field').length).toBe(2);
+      DomMethods.removeAllCreatedFields(form);
+      expect(form.querySelectorAll('.-st-created-field').length).toBe(0);
+    });
+  });
 });
 
-function addInput(form: any, name: string, value: string, stName?: string) {
+function addInput(form: HTMLFormElement, name: string, value: string, stName?: string) {
   const input = document.createElement('input');
   input.name = name;
   input.value = value;
@@ -126,7 +136,7 @@ function createFormFixture() {
     stFieldName: '',
     stFieldName2: 'some value',
     stDuplicate: 'value2',
-    stSelectName: 'B'
+    stSelectName: 'B',
   };
   opt1.value = 'A';
   opt2.value = 'B';

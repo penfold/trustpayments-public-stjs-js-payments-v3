@@ -1,0 +1,119 @@
+<form [id]="pageOptions.formId"
+      role="form"
+      name="st-form"
+      action="https://www.example.com"
+      class="st-form"
+      autocomplete="off"
+      novalidate>
+
+  <div id="st-popup" class="st-popup"></div>
+
+  <div id="st-notification-frame" class="st-form__group notification-frame"></div>
+
+  <fieldset class="st-form-fieldset">
+    <legend>Payment details:</legend>
+    <div fxLayout="row" fxLayoutGap="10px">
+      <mat-form-field appearance="outline" color="accent" fxFlex>
+        <mat-label>Price</mat-label>
+        <input matInput
+               type="text"
+               name="myBillPrice"
+               id="st-form-price"
+               data-st-name="billingprice"
+               (change)="updateJwt()"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline" color="accent" fxFlex>
+        <mat-label>Amount</mat-label>
+        <input matInput
+               type="number"
+               name="myBillAmount"
+               id="example-form-amount"
+               placeholder="myBillAmount"
+               data-st-name="billingamount"
+               autocomplete="amount"
+               (change)="updateJwt()"
+        />
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="10px">
+      <mat-form-field appearance="outline" color="accent" fxFlex>
+        <mat-label>Name</mat-label>
+        <input matInput
+               type="text"
+               name="myBillName"
+               id="st-form-last-name"
+               placeholder="Doe"
+               data-st-name="billinglastname"
+               autocomplete="family-name"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline" color="accent" fxFlex>
+        <mat-label>Email</mat-label>
+        <input matInput
+               type="email"
+               name="myBillEmail"
+               id="st-form-email"
+               placeholder="test@mail.com"
+               data-st-name="billingemail"
+               autocomplete="email"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline" color="accent" fxFlex>
+        <mat-label>Phone</mat-label>
+        <input matInput
+               type="tel"
+               name="myBillTel"
+               id="st-form-phone"
+               placeholder="+00 000 000 000"
+               autocomplete="tel"
+        />
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field appearance="outline" color="accent" fxFlex>
+        <mat-label>Type of payment</mat-label>
+        <mat-select placeholder="myBillSubscribe" id="st-form-subscribe">
+          <mat-option value="one-off payment">one-off payment</mat-option>
+          <mat-option value="monthly payment">monthly payment</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </fieldset>
+
+
+  <fieldset class="st-form-fieldset">
+    <legend>APM's:</legend>
+    <div id="st-visa-checkout"></div>
+    <div id="st-apple-pay"></div>
+    <div id="st-google-pay"></div>
+  </fieldset>
+
+  <fieldset class="st-form-fieldset">
+    <legend>Credit card details:</legend>
+    <div fxLayout="row">
+      <div>
+        <div id="st-card-number"></div>
+        <div id="st-expiration-date"></div>
+        <div id="st-security-code"></div>
+      </div>
+      <div id="st-animated-card" fxLayoutAlign="center" fxFlex></div>
+    </div>
+  </fieldset>
+
+  <div id="st-control-frame"></div>
+
+  <div fxLayout="column" fxLayoutGap="10px">
+    <button mat-flat-button color="accent" type="submit"
+            *ngIf="!pageOptions.noSubmitButton"
+            [id]="pageOptions.submitButtonId">Pay
+    </button>
+    <button mat-flat-button color="accent" type="submit"
+            *ngIf="pageOptions.additionalButton"
+            [id]="pageOptions.additionalButtonId">Additional Button
+    </button>
+  </div>
+
+</form>

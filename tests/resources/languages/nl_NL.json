@@ -1,5 +1,5 @@
 {
-  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsaXZlMl9hdXRvand0IiwiaWF0IjoxNTYxOTY1NjkyLjIzOTkzMDQsInBheWxvYWQiOnsiYmFzZWFtb3VudCI6IjEwMDAiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJHQlAiLCJzaXRlcmVmZXJlbmNlIjoidGVzdDEiLCJsb2NhbGUiOiJubF9OTCJ9fQ.38MhaapYw9ce_9rQEShESxE9I6ZzAPTM_UBGHSMw7X8",
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoibmxfTkwiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJUSFJFRURRVUVSWSIsIkFVVEgiXX19.4o5i3_1JOtlU5f9ORZIespG6AA6I_8atnFgJi1EgHR4",
   "Timeout": "Timeout",
   "Field is required": "Dit is een verplicht veld",
   "An error occurred": "Er is iets misgegaan",
@@ -23,5 +23,8 @@
   "Invalid field": "Ongeldig veld",
   "Card number is invalid": "Het kaartnummer is ongeldig",
   "You are not logged to Apple account": "U bent niet aangemeld bij een Apple-account",
-  "A target element for the input field with id could not be found. Please check your configuration": "Een doelelement voor het invoerveld met id kon niet worden gevonden. Controleer uw configuratie"
+  "A target element for the input field with id could not be found. Please check your configuration": "Een doelelement voor het invoerveld met id kon niet worden gevonden. Controleer uw configuratie",
+  "Jwt has not been specified": "Jwt is niet gespecificeerd",
+  "A target iframe-factory for the input field with id could not be found. Please check your configuration": "Een doel-iframe-factory voor het invoerveld met id is niet gevonden. Controleer uw configuratie",
+  "Cancel": "Annuleren"
 }

@@ -1,12 +1,13 @@
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { Service } from 'typedi';
 import { SentryContext } from './SentryContext';
-import { Event } from '@sentry/types';
+import { Event, EventHint } from '@sentry/types';
 import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';
 import { Observable } from 'rxjs';
 import { IConfig } from '../../model/config/IConfig';
 import { filter, first, switchMap, tap } from 'rxjs/operators';
+import { ExceptionsToSkip } from './ExceptionsToSkip';
 
 @Service()
 export class SentryService {
@@ -42,10 +43,12 @@ export class SentryService {
 
     this.sentry.init({
       dsn,
-      whitelistUrls,
+      allowUrls: whitelistUrls,
       environment: this.sentryContext.getEnvironmentName(),
       release: this.sentryContext.getReleaseVersion(),
-      beforeSend: (event: Event) => this.eventScrubber.scrub(event)
+      ignoreErrors: ExceptionsToSkip,
+      sampleRate: 0.1,
+      beforeSend: (event: Event, hint?: EventHint) => this.eventScrubber.scrub(event, hint),
     });
   }
 }

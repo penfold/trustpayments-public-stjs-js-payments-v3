@@ -2,7 +2,7 @@ import { FrameIdentifier } from './FrameIdentifier';
 import {
   CARD_NUMBER_IFRAME,
   CONTROL_FRAME_IFRAME,
-  MERCHANT_PARENT_FRAME
+  MERCHANT_PARENT_FRAME,
 } from '../../../application/core/models/constants/Selectors';
 
 describe('FrameIdentifier', () => {

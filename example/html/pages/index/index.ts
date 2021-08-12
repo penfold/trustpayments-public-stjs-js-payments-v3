@@ -1,7 +1,8 @@
 import 'url-polyfill';
 import '../../styles/style.scss';
+import './index.scss';
 
-import { jwtgenerator } from '@securetrading/jwt-generator';
+import { jwtgenerator } from '@trustpayments/jwt-generator';
 
 // @ts-ignore
 window.configJWT = (url: string) =>

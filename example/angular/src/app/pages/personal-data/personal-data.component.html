@@ -1,0 +1,39 @@
+<app-page-title title="Personal Data"></app-page-title>
+
+<form role="form"
+      class="st-form"
+      autocomplete="off"
+      fxLayout="column"
+      novalidate>
+
+  <fieldset class="st-form-fieldset">
+    <legend>Personal data:</legend>
+    <div fxLayout="row" fxLayoutGap="10px">
+      <mat-form-field appearance="outline" color="accent">
+        <mat-label>Title</mat-label>
+        <mat-select placeholder="title">
+          <mat-option *ngFor="let title of titles" value="{{title}}">{{title}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" color="accent" fxFlex>
+        <mat-label>First name</mat-label>
+        <input matInput type="text"/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" color="accent" fxFlex>
+        <mat-label>Last name</mat-label>
+        <input matInput type="text"/>
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="10px">
+      <mat-form-field appearance="outline" color="accent" fxFlex>
+        <mat-label>Date of birth</mat-label>
+        <input matInput type="date"/>
+      </mat-form-field>
+    </div>
+  </fieldset>
+
+  <button mat-flat-button color="accent" type="submit" fxFlex routerLink="/contact-data">Continue</button>
+</form>

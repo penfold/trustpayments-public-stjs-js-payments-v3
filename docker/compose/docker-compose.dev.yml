@@ -1,7 +1,0 @@
-version: "3.6"
-services:
-
-  app-html:
-    build:
-      args:
-        BUILD_TYPE: dev

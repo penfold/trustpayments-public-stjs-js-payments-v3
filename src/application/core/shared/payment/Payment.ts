@@ -1,74 +1,119 @@
-import { IStRequest } from '../../models/IStRequest';
-import { StCodec } from '../../services/st-codec/StCodec.class';
-import { StTransport } from '../../services/st-transport/StTransport.class';
+import { Container, Service } from 'typedi';
+import { Observable, from } from 'rxjs';
+import { CustomerOutput } from '../../models/constants/CustomerOutput';
+import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
+import { RequestType } from '../../../../shared/types/RequestType';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
+import { IResponseData } from '../../models/IResponseData';
+import { IStRequest } from '../../models/IStRequest';
 import { IWallet } from '../../models/IWallet';
 import { IWalletVerify } from '../../models/IWalletVerify';
-import { Validation } from '../validation/Validation';
-import { Container } from 'typedi';
-import { NotificationService } from '../../../../client/notification/NotificationService';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
-import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
+import { NotificationService } from '../../../../client/notification/NotificationService';
+import { StCodec } from '../../services/st-codec/StCodec';
+import { StTransport } from '../../services/st-transport/StTransport';
+import { Validation } from '../validation/Validation';
 
+@Service()
 export class Payment {
-  private _cardinalCommerceCacheToken: string;
-  private _notification: NotificationService;
-  private _stTransport: StTransport;
-  private _validation: Validation;
-  private _cybertonica: Cybertonica;
-  private readonly _walletVerifyRequest: IStRequest;
+  private cybertonica: Cybertonica;
+  private notificationService: NotificationService;
+  private stTransport: StTransport;
+  private validation: Validation;
 
   constructor() {
-    this._notification = Container.get(NotificationService);
-    this._cybertonica = Container.get(Cybertonica);
-    this._stTransport = Container.get(StTransport);
-    this._validation = new Validation();
-    this._walletVerifyRequest = {
-      requesttypedescriptions: ['WALLETVERIFY']
-    };
+    this.cybertonica = Container.get(Cybertonica);
+    this.notificationService = Container.get(NotificationService);
+    this.stTransport = Container.get(StTransport);
+    this.validation = new Validation();
   }
 
-  public setCardinalCommerceCacheToken(cachetoken: string) {
-    this._cardinalCommerceCacheToken = cachetoken;
-  }
-
-  public async processPayment(
-    requestTypes: string[],
+  async processPayment(
+    requestTypes: RequestType[],
     payment: ICard | IWallet,
     merchantData: IMerchantData,
-    additionalData?: any
-  ): Promise<object> {
-    if (requestTypes.length === 0) {
-      // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
-      StCodec.publishResponse(
-        this._stTransport._threeDQueryResult.response,
-        this._stTransport._threeDQueryResult.jwt,
-        additionalData.threedresponse
-      );
-      this._notification.success(PAYMENT_SUCCESS);
-      return Promise.resolve({
-        response: {}
-      });
+    responseData?: IResponseData,
+    merchantUrl?: string
+    // @todo(typings) Currently it's hard to find a type for response that comforts all the processPayment consumers.
+    // The response typings are not interchangeable, they differ in e.g. customeroutput declarations.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): Promise<Record<string, any>> {
+    const customerOutput: CustomerOutput | undefined = responseData
+      ? responseData.customeroutput
+      : undefined;
+
+    if (customerOutput === CustomerOutput.RESULT) {
+      return this.publishResponse(responseData);
     }
 
-    const processPaymentRequestBody = {
-      requesttypedescriptions: requestTypes,
-      ...additionalData,
-      ...merchantData,
-      ...payment
-    };
-    const cybertonicaTid = await this._cybertonica.getTransactionId();
-
-    if (cybertonicaTid) {
-      (processPaymentRequestBody as any).fraudcontroltransactionid = cybertonicaTid;
+    if (customerOutput === CustomerOutput.TRYAGAIN) {
+      return this.publishErrorResponse(responseData);
     }
 
-    return this._stTransport.sendRequest(processPaymentRequestBody);
+    if (responseData && Number(responseData.errorcode)) {
+      return this.publishErrorResponse(responseData);
+    }
+
+    if (requestTypes.length) {
+      return this.processRequestTypes({ ...merchantData, ...payment }, responseData, merchantUrl);
+    }
+
+    if (responseData && responseData.requesttypedescription === 'THREEDQUERY' && (responseData.threedresponse || responseData.pares)) {
+      return this.publishThreedResponse(responseData);
+    }
+
+    return this.publishResponse(responseData);
   }
 
-  public walletVerify(walletVerify: IWalletVerify) {
-    Object.assign(this._walletVerifyRequest, walletVerify);
-    return this._stTransport.sendRequest(this._walletVerifyRequest);
+  // @todo(typings) Currently it's hard to find a type for response that comforts all the walletVerify consumers.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  walletVerify(walletVerify: IWalletVerify): Observable<Record<string, any>> {
+    return from(
+      this.stTransport.sendRequest(Object.assign({ requesttypedescriptions: ['WALLETVERIFY'] }, walletVerify)),
+    );
+  }
+
+  private publishResponse(responseData?: IResponseData): Promise<Record<string, unknown>> {
+    return Promise.resolve({
+      response: responseData || {},
+    });
+  }
+
+  private publishErrorResponse(responseData?: IResponseData): Promise<Record<string, unknown>> {
+    return Promise.reject({
+      response: responseData || {},
+    });
+  }
+
+  private async processRequestTypes(
+    requestData: IStRequest,
+    responseData?: IResponseData,
+    merchantUrl?: string
+  ): Promise<Record<string, unknown>> {
+    const processPaymentRequestBody = { ...requestData };
+
+    if (responseData) {
+      processPaymentRequestBody.cachetoken = responseData.cachetoken;
+      processPaymentRequestBody.threedresponse = responseData.threedresponse;
+      processPaymentRequestBody.pares = responseData.pares;
+      processPaymentRequestBody.md = responseData.md;
+    }
+
+    const cybertonicaTid = await this.cybertonica.getTransactionId();
+
+    if (cybertonicaTid) {
+      processPaymentRequestBody.fraudcontroltransactionid = cybertonicaTid;
+    }
+
+    return this.stTransport.sendRequest(processPaymentRequestBody, merchantUrl);
+  }
+
+  private publishThreedResponse(responseData: IResponseData): Promise<Record<string, unknown>> {
+    // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
+    StCodec.publishResponse(responseData, responseData.jwt);
+    this.notificationService.success(PAYMENT_SUCCESS);
+
+    return this.publishResponse(responseData);
   }
 }

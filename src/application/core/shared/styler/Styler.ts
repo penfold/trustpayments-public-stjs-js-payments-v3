@@ -7,11 +7,19 @@ import { Container, Service } from 'typedi';
 import { Frame } from '../frame/Frame';
 import { IStyles } from '../../../../shared/model/config/IStyles';
 
+interface StylesAttributes {
+  elementSelector: string;
+  classList?: string[];
+  inlineStyles?: {
+    property: string;
+    value: string;
+  }[];
+}
+
 @Service()
 export class Styler {
   private static _getTagStyles(styles: ISubStyles): string {
     const results = [];
-    // tslint:disable-next-line:forin
     for (const style in styles) {
       results.push(`${style}: ${styles[style]};`);
     }
@@ -31,31 +39,36 @@ export class Styler {
     DomMethods.insertStyle(this._getStyleString(styles));
   }
 
-  public isLinedUp(styles: IStyle): boolean {
-    // tslint:disable-next-line:forin
-    for (const style in styles) {
-      if (style === 'isLinedUp' && styles[style] === 'true') {
-        return true;
-      }
-    }
-    return false;
+  public hasSpecificStyle(selectedStyle: string, styles: IStyle = {}): boolean {
+    return Boolean(
+      Object.entries(styles).find(([key, value]) => {
+        return key === selectedStyle && value !== 'false';
+      })
+    );
   }
 
-  public lineUp(wrapperId: string, labelId: string, wrapperClassList: string[], labelClassList: string[]): void {
-    const wrapper = document.getElementById(wrapperId);
-    const label = document.getElementById(labelId);
-    wrapper.className = '';
-    label.className = '';
-    wrapper.classList.add(...wrapperClassList);
-    label.classList.add(...labelClassList);
+  public addStyles(styles: StylesAttributes[]): void {
+    styles.forEach(style => this.addStylesToElement(style));
+  }
+
+  private addStylesToElement(props: StylesAttributes) {
+    const { elementSelector, classList, inlineStyles } = props;
+    const element = document.querySelector(elementSelector) as HTMLElement;
+
+    if (classList) {
+      classList.forEach(className => element.classList.add(className));
+    }
+
+    if (inlineStyles && inlineStyles.length > 0) {
+      inlineStyles.forEach(({ property, value }) => element.style.setProperty(property, value));
+    }
   }
 
   private _filter(styles: IStyles[]): IStyle {
     const filtered: IStyle = {};
-    // tslint:disable-next-line:forin
     styles.forEach((style: IStyle, index) => {
       const propName: string = Object.keys(style)[0];
-      if (this._allowed.hasOwnProperty(propName)) {
+      if (Object.prototype.hasOwnProperty.call(this._allowed, propName)) {
         // @ts-ignore
         filtered[propName] = styles[index][propName];
       }
@@ -65,7 +78,6 @@ export class Styler {
 
   private _sanitize(styles: IStyle): IStyle {
     const sanitized: IStyle = {};
-    // tslint:disable-next-line:forin
     for (const style in styles) {
       if (/^[A-Za-z0-9 _%#)(,.-]*[A-Za-z0-9][A-Za-z0-9 _%#)(,.-]*$/i.test(styles[style])) {
         sanitized[style] = styles[style];
@@ -76,10 +88,9 @@ export class Styler {
 
   private _group(styles: IStyle): IGroupedStyles {
     const grouped: IGroupedStyles = {};
-    // tslint:disable-next-line:forin
     for (const style in styles) {
       const allowed = this._allowed[style];
-      if (!grouped.hasOwnProperty(allowed.selector)) {
+      if (!Object.prototype.hasOwnProperty.call(grouped, allowed.selector)) {
         grouped[allowed.selector] = {};
       }
       grouped[allowed.selector][allowed.property] = styles[style];
@@ -88,14 +99,10 @@ export class Styler {
   }
 
   private _getStyleString(styles: IStyles[]): string[] {
-    let groupedStyles: IGroupedStyles;
-    let styled: IStyle;
+    const styled: IStyle = this._sanitize(this._filter(styles));
+    const groupedStyles: IGroupedStyles = this._group(styled);
     let tag: string;
-    const templates: string[] = [`body { display: block; }`];
-    styled = this._filter(styles);
-    styled = this._sanitize(styled);
-    groupedStyles = this._group(styled);
-    // tslint:disable-next-line:forin
+    const templates: string[] = ['body { display: block; }'];
     for (tag in groupedStyles) {
       const tagStyle = Styler._getTagStyles(groupedStyles[tag]);
       templates.push(`${tag} { ${tagStyle} }`);

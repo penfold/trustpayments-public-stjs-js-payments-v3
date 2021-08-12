@@ -1,12 +1,13 @@
-import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { Service } from 'typedi';
+import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { NotificationType } from '../../application/core/models/constants/NotificationType';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 
 @Service()
 export class NotificationService {
-  constructor(private _messageBus: MessageBus, private _configProvider: ConfigProvider) {}
+  constructor(private _messageBus: IMessageBus, private _configProvider: ConfigProvider) {}
 
   private get disableNotification(): boolean {
     return this._configProvider.getConfig() ? this._configProvider.getConfig().disableNotification : false;
@@ -49,7 +50,7 @@ export class NotificationService {
   private _setNotification(type: string, content: string): void {
     const messageBusEvent: IMessageBusEvent = {
       data: { content, type },
-      type: MessageBus.EVENTS_PUBLIC.NOTIFICATION
+      type: PUBLIC_EVENTS.NOTIFICATION,
     };
     this._messageBus.publish(messageBusEvent, true);
   }

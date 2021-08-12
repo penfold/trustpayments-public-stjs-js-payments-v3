@@ -11,7 +11,7 @@ export class Sentry {
     setTag(key, value);
   }
 
-  setExtra(key: string, extra: any) {
+  setExtra(key: string, extra: unknown): void {
     setExtra(key, extra);
   }
 }

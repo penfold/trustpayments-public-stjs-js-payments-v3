@@ -10,7 +10,7 @@ export class AllowedStylesService {
     label: string,
     icon?: string,
     wrapper?: string
-  ) {
+  ): Record<string, { property: string, selector: string }> {
     return {
       'background-color-input': { property: 'background-color', selector: input },
       'background-color-input-error': { property: 'background-color', selector: inputError },
@@ -58,7 +58,7 @@ export class AllowedStylesService {
       'position-right-label': { property: 'right', selector: label },
       'position-left-label': { property: 'left', selector: label },
       'width-label': { property: 'width', selector: label },
-      'space-inset-wrapper': { property: 'padding', selector: wrapper }
+      'space-inset-wrapper': { property: 'padding', selector: wrapper },
     };
   }
 }

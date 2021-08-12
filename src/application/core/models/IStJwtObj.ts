@@ -1,5 +1,6 @@
-import { IStJwtPayload } from './IStJwtPayload';
-
-export interface IStJwtObj {
-  payload: IStJwtPayload;
+export interface IStJwtObj<T = unknown> {
+  iat?: number;
+  aud?: string;
+  payload: T;
+  sitereference?: string;
 }

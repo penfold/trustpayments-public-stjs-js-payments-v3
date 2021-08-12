@@ -1,5 +1,5 @@
 {
-  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsaXZlMl9hdXRvand0IiwiaWF0IjoxNTYxOTY1MzE4Ljc0NDA3NiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0MSIsImxvY2FsZSI6ImN5X0dCIn19.OmRdYbttcATeR3WP4f3A0OUv0SwbhfTnFVZYPWztfKA",
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiY3lfR0IiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJUSFJFRURRVUVSWSIsIkFVVEgiXX19.XXREl1LkH6PinY6NTVniPH5TkexCiZzQ3ZzaCsn210w",
   "Timeout": "Terfyn amser",
   "Field is required": "Mae'r maes yn ofynnol",
   "An error occurred": "Digwyddodd gwall",
@@ -23,5 +23,8 @@
   "Invalid field": "Maes annilys",
   "Card number is invalid": "Mae rhif y cerdyn yn annilys",
   "You are not logged to Apple account": "Nid ydych wedi mewngofnodi i gyfrif Apple",
-  "A target element for the input field with id could not be found. Please check your configuration": "Ni ellid dod o hyd i elfen darged ar gyfer y maes mewnbwn ag id. Gwiriwch eich cyfluniad"
+  "A target element for the input field with id could not be found. Please check your configuration": "Ni ellid dod o hyd i elfen darged ar gyfer y maes mewnbwn ag id. Gwiriwch eich cyfluniad",
+  "Jwt has not been specified": "Nid yw Jwt wedi'i nodi",
+  "A target iframe-factory for the input field with id could not be found. Please check your configuration": "Ni ellid dod o hyd i ffatri iframe-darged ar gyfer y maes mewnbwn ag id. Gwiriwch eich cyfluniad",
+  "Cancel": "Canslo"
 }

@@ -1,0 +1,58 @@
+{
+  "animatedCard": true,
+  "panIcon": false,
+  "submitOnSuccess": false,
+  "styles": {
+    "cardNumber": {
+      "isLinedUp": "true",
+      "background-color-input-error": "red",
+      "line-height-body": "11px",
+      "border-size-input": "6px 30px 6px 4px",
+      "border-radius-input": "5px",
+      "background-color-message": "red",
+      "color-error": "blue",
+      "font-family-label": "Arial",
+      "font-size-label": "11px",
+      "font-size-input": "12px",
+      "font-size-input-error": "12px",
+      "space-inset-input": "2px 4px 2px 4px",
+      "space-outset-input-error": "0px",
+      "space-outset-message": "0px",
+      "space-inset-message": "3px 35px 10px 35px"
+    },
+    "expirationDate": {
+      "isLinedUp": "true",
+      "background-color-input-error": "red",
+      "line-height-body": "11px",
+      "border-size-input": "6px 30px 6px 4px",
+      "border-radius-input": "5px",
+      "background-color-message": "red",
+      "color-error": "blue",
+      "font-family-label": "Arial",
+      "font-size-label": "11px",
+      "font-size-input": "12px",
+      "font-size-input-error": "12px",
+      "space-inset-input": "2px 4px 2px 4px",
+      "space-outset-input-error": "0px",
+      "space-outset-message": "0px",
+      "space-inset-message": "3px 35px 10px 35px"
+    },
+    "securityCode": {
+      "isLinedUp": "true",
+      "background-color-input-error": "red",
+      "line-height-body": "11px",
+      "border-size-input": "6px 30px 6px 4px",
+      "border-radius-input": "5px",
+      "background-color-message": "red",
+      "color-error": "blue",
+      "font-family-label": "Arial",
+      "font-size-label": "11px",
+      "font-size-input": "12px",
+      "font-size-input-error": "12px",
+      "space-inset-input": "2px 4px 2px 4px",
+      "space-outset-input-error": "0px",
+      "space-outset-message": "0px",
+      "space-inset-message": "3px 35px 10px 35px"
+    }
+  }
+}

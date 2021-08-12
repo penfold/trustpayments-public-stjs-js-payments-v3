@@ -6,7 +6,7 @@ import {
   CARD_NUMBER_COMPONENT,
   CONTROL_FRAME_COMPONENT,
   EXPIRATION_DATE_COMPONENT,
-  SECURITY_CODE_COMPONENT
+  SECURITY_CODE_COMPONENT,
 } from '../../application/core/models/constants/Selectors';
 
 @Service()
@@ -17,16 +17,22 @@ export class IframeFactory {
       expirationDate: EXPIRATION_DATE_COMPONENT,
       securityCode: SECURITY_CODE_COMPONENT,
       animatedCard: ANIMATED_CARD_COMPONENT,
-      controlFrame: CONTROL_FRAME_COMPONENT
+      controlFrame: CONTROL_FRAME_COMPONENT,
     })
   );
 
-  create(name: string, id: string, styles?: IStyle, params?: {}, tabIndex?: number): HTMLIFrameElement {
+  create(
+    name: string,
+    id: string,
+    styles?: IStyle,
+    params?: Record<string, string>,
+    tabIndex?: number
+  ): HTMLIFrameElement {
     const componentParams = new URLSearchParams(params).toString();
     const componentStyles = new URLSearchParams(styles).toString();
     const componentAddress = IframeFactory.URLS.get(name);
     const iframe = document.createElement('iframe');
-    const src: string = `${componentAddress}?${componentStyles}${componentParams ? '&' + componentParams : ''}`;
+    const src = `${componentAddress}?${componentStyles}${componentParams ? '&' + componentParams : ''}`;
 
     const attributes: IframeFactoryAttributes = {
       id,
@@ -36,7 +42,7 @@ export class IframeFactory {
       allowTransparency: true,
       scrolling: 'no',
       frameBorder: 0,
-      tabIndex
+      tabIndex,
     };
 
     // @ts-ignore

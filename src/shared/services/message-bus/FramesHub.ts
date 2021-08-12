@@ -15,15 +15,17 @@ export class FramesHub {
   private static readonly GET_FRAMES_EVENT = 'ST_GET_ACTIVE_FRAMES';
   private activeFrame$: Subject<string[]> = new BehaviorSubject([]);
 
-  constructor(private communicator: InterFrameCommunicator, private identifier: FrameIdentifier) {
+  constructor(private communicator: InterFrameCommunicator, private identifier: FrameIdentifier) {}
+
+  init(): void {
     this.communicator.whenReceive(FramesHub.GET_FRAMES_EVENT).thenRespond(() => this.activeFrame$);
 
     this.getInitialFrames().subscribe(value => this.activeFrame$.next(value));
 
     const fromEventFrame$ = this.communicator.incomingEvent$.pipe(
       ofType(FramesHub.FRAME_READY_EVENT),
-      filter((event: IMessageBusEvent) => Boolean(event.data)),
-      map((event: IMessageBusEvent) => event.data)
+      filter((event: IMessageBusEvent<string>) => Boolean(event.data)),
+      map((event: IMessageBusEvent<string>) => event.data)
     );
 
     fromEventFrame$
@@ -71,6 +73,10 @@ export class FramesHub {
     return window.parent;
   }
 
+  public reset(): void {
+    this.activeFrame$.next([]);
+  }
+
   private getInitialFrames(): Observable<string[]> {
     if (this.identifier.isParentFrame()) {
       return of([]);
@@ -86,7 +92,7 @@ export class FramesHub {
 
     const event: IMessageBusEvent = {
       type: FramesHub.FRAME_READY_EVENT,
-      data: newFrame
+      data: newFrame,
     };
 
     activeFrames.forEach(frame => this.communicator.send(event, frame));

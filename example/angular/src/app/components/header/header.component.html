@@ -1,0 +1,21 @@
+<mat-toolbar class="top-header">
+  <div class="container" fxLayout="row" fxLayoutAlign="start center">
+    <img src="/assets/tp-logo.jpg" class="logo" alt="Trust Payments logo">
+    <h1>Angular Example</h1>
+  </div>
+</mat-toolbar>
+<mat-toolbar>
+  <div class="container">
+    <nav mat-tab-nav-bar color="accent">
+      <a *ngFor="let link of links"
+         mat-tab-link
+         [routerLink]="link.route"
+         [id]="link.id"
+         routerLinkActive
+         #rla="routerLinkActive"
+         [active]="rla.isActive">
+        {{link.title}}
+      </a>
+    </nav>
+  </div>
+</mat-toolbar>

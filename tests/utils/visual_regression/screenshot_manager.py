@@ -1,27 +1,21 @@
 import os
-from time import sleep
 
 from PIL import Image, ImageDraw
 
-import ioc_config
 from utils.date_util import convert_to_string, get_current_time, date_formats
 
 
-def screenshot_manager():
-    return ioc_config.VISUAL_REGRESSION.resolve('screenshot_manager')
-
-
 class ScreenshotManager:
-    SENSITIVITY_DEFAULT: int = 400
+    SENSITIVITY_DEFAULT: int = 1000
     COMPARISON_AREA_PX_DEFAULT: int = 20
 
-    def __init__(self, driver__browser, config__executor):
-        self._browser = driver__browser.get_browser()
-        self._screenshots_path = config__executor.screenshots_path
-        self._mobile_device = config__executor.mobile_device
-        self._create_screenshot_dir()
+    def __init__(self, driver_factory, configuration):
+        self._driver = driver_factory.get_driver()
+        self._screenshots_path = configuration.SCREENSHOTS_PATH
+        self._mobile_device = configuration.REMOTE_DEVICE
+        self._create_screenshot_dir_for_visual_tests()
 
-    def _create_screenshot_dir(self):
+    def _create_screenshot_dir_for_visual_tests(self):
         os.makedirs(self._screenshots_path, exist_ok=True)
         os.makedirs(os.path.join(self._screenshots_path, 'actual'), exist_ok=True)
         os.makedirs(os.path.join(self._screenshots_path, 'results'), exist_ok=True)
@@ -32,25 +26,26 @@ class ScreenshotManager:
             name = name.replace('.png', convert_to_string(get_current_time(), date_formats.date_postfix) + '.png')
         return name
 
-    def make_screenshot(self, filename: str, date_postfix: bool = False):
+    def make_screenshot_for_visual_tests(self, filename: str, date_postfix: bool = False):
         filename = self._proper_name(filename, date_postfix)
-
-        if self._mobile_device:
-            return self.make_double_screenshot(filename)
-
         filepath: str = os.path.join(self._screenshots_path, 'actual', filename)
-        self._browser.save_screenshot(filepath)
+
+        self.make_screenshot(filepath)
         return filename
 
-    def make_double_screenshot(self, filename):
-        self._browser.execute_script('window.scrollTo(0, document.body.scrollHeight)')
-        sleep(2)
-        filepath_1: str = os.path.join(self._screenshots_path, 'actual', filename.replace('.png', '_1.png'))
-        self._browser.save_screenshot(filepath_1)
-        self._browser.execute_script('window.scrollTo(0, -document.body.scrollHeight)')
-        sleep(2)
-        filepath_2: str = os.path.join(self._screenshots_path, 'actual', filename.replace('.png', '_2.png'))
-        self._browser.save_screenshot(filepath_2)
+    def make_screenshot(self, filepath: str):
+        if self._mobile_device:
+            self.make_double_screenshot(filepath)
+        else:
+            self._driver.save_screenshot(filepath)
+
+    def make_double_screenshot(self, filepath):
+        self._driver.execute_script('window.scrollTo(0, document.body.scrollHeight)')
+        filepath_1: str = filepath.replace('.png', '_1.png')
+        self._driver.save_screenshot(filepath_1)
+        self._driver.execute_script('window.scrollTo(0, -document.body.scrollHeight)')
+        filepath_2: str = filepath.replace('.png', '_2.png')
+        self._driver.save_screenshot(filepath_2)
 
         image_bottom = Image.open(filepath_1)
         image_top = Image.open(filepath_2)
@@ -62,10 +57,7 @@ class ScreenshotManager:
         new_image.paste(image_top, (0, 0))
         new_image.paste(image_bottom, (width, 0))
 
-        filepath: str = os.path.join(self._screenshots_path, 'actual', filename)
         new_image.save(filepath)
-
-        return filename
 
     def compare_screenshots(self, filename_expected: str, filename_actual: str,
                             comparison_area_px: int = COMPARISON_AREA_PX_DEFAULT,

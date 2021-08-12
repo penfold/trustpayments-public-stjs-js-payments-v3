@@ -37,9 +37,7 @@ Not specified yet
 - [npm](https://www.npmjs.com/)
 - [Sass (SCSS + BEM)](https://sass-lang.com/)
 - [PostCSS](https://postcss.org/)
-- [Prettier](https://prettier.io/)
 - [Stylelint](https://stylelint.io/)
-- [TSLint](https://palantir.github.io/tslint/)
 - [ESLint](https://eslint.org/)
 
 ##### CI/CD:
@@ -72,3 +70,8 @@ Not specified yet
 ## License
 
 - [MIT](https://opensource.org/licenses/MIT)
+
+
+## Contact Support
+
+If you need assistance with your integration or are experiencing issues with our JS library, please contact our Technical Support Team at [support@trustpayments.com](mailto:support@trustpayments.com)

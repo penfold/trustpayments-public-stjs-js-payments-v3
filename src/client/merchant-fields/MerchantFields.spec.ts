@@ -1,34 +1,39 @@
 import { MerchantFields } from './MerchantFields';
+import Container from 'typedi';
+import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../application/core/shared/translator/Translator';
+import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
+import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 
 jest.mock('./../../application/core/shared/notification/Notification');
 
-// given
+Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
+
 describe('MerchantField', () => {
-  // given
   describe('init()', () => {
-    // when
     const { instance } = merchantFieldsFixture();
 
-    // when
     beforeEach(() => {
       // @ts-ignore
       instance._onKeyPress = jest.fn();
       instance.init();
     });
 
-    // then
     it('should call _onKeyPress', () => {
       // @ts-ignore
       expect(instance._onKeyPress).toHaveBeenCalled();
     });
 
-    // then
     it('should return collection of merchant inputs', () => {
       const firstName = document.getElementById('example-form-name');
       const email = document.getElementById('example-form-email');
       // @ts-ignore
       expect(instance._getMerchantInputs()).toEqual({
-        inputs: [firstName, email]
+        inputs: [firstName, email],
       });
     });
   });

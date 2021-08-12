@@ -1,0 +1,7 @@
+{
+  "components": {
+    "startOnLoad": true
+  },
+  "submitOnSuccess": true,
+  "submitFields": ["cachetoken"]
+}

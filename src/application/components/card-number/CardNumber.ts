@@ -3,10 +3,11 @@ import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
 import { Formatter } from '../../core/shared/formatter/Formatter';
 import { Input } from '../../core/shared/input/Input';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Utils } from '../../core/shared/utils/Utils';
 import { Validation } from '../../core/shared/validation/Validation';
-import { iinLookup } from '@securetrading/ts-iin-lookup';
+import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { Service } from 'typedi';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { IconFactory } from '../../core/services/icon/IconFactory';
@@ -18,18 +19,22 @@ import {
   CARD_NUMBER_INPUT,
   CARD_NUMBER_LABEL,
   CARD_NUMBER_MESSAGE,
-  CARD_NUMBER_WRAPPER
+  CARD_NUMBER_WRAPPER,
 } from '../../core/models/constants/Selectors';
+import { ITranslator } from '../../core/shared/translator/ITranslator';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
+import { takeUntil } from 'rxjs/operators';
 
 @Service()
 export class CardNumber extends Input {
   public static ifFieldExists = (): HTMLInputElement => document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
 
-  private static DISABLED_ATTRIBUTE: string = 'disabled';
-  private static DISABLED_CLASS: string = 'st-input--disabled';
+  private static DISABLED_ATTRIBUTE = 'disabled';
+  private static DISABLED_CLASS = 'st-input--disabled';
   private static NO_CVV_CARDS: string[] = ['PIBA'];
-  private static STANDARD_CARD_LENGTH: number = 19;
-  private static WHITESPACES_DECREASE_NUMBER: number = 2;
+  private static STANDARD_CARD_LENGTH = 19;
+  private static WHITESPACES_DECREASE_NUMBER = 2;
 
   private static _getCardNumberForBinProcess = (cardNumber: string) => cardNumber.slice(0, 6);
 
@@ -43,19 +48,18 @@ export class CardNumber extends Input {
   private readonly _cardNumberField: HTMLInputElement;
 
   constructor(
-    private configProvider: ConfigProvider,
+    configProvider: ConfigProvider,
     private _iconFactory: IconFactory,
     private _formatter: Formatter,
     private frame: Frame,
-    private messageBus: MessageBus
+    private messageBus: IMessageBus,
+    private translator: ITranslator
   ) {
-    super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER);
+    super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER, configProvider);
     this._cardNumberField = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
     this.validation = new Validation();
     this._isCardNumberValid = true;
     this._cardNumberLength = CardNumber.STANDARD_CARD_LENGTH;
-    this.placeholder = this.configProvider.getConfig().placeholders.pan || '';
-    this._panIcon = this.configProvider.getConfig().panIcon;
     this.setFocusListener();
     this.setBlurListener();
     this.setSubmitListener();
@@ -66,17 +70,61 @@ export class CardNumber extends Input {
       MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD
     );
     this._sendState();
-    this._inputElement.setAttribute(CardNumber.PLACEHOLDER_ATTRIBUTE, this.placeholder);
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
+      this.placeholder = this.translator.translate(config.placeholders.pan) || '';
+      this._inputElement.setAttribute(CardNumber.PLACEHOLDER_ATTRIBUTE, this.placeholder);
+      this._panIcon = config.panIcon;
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
-      if (styler.isLinedUp(config.styles.cardNumber)) {
-        styler.lineUp(
-          'st-card-number',
-          'st-card-number-label',
-          ['st-card-number', 'st-card-number--lined-up'],
-          ['card-number__label', 'card-number__label--required', 'lined-up']
-        );
+      if (styler.hasSpecificStyle('isLinedUp', config.styles.cardNumber)) {
+        styler.addStyles([
+          {
+            elementSelector: '#st-card-number',
+            classList: ['st-card-number--lined-up'],
+          },
+          {
+            elementSelector: '#st-card-number-label',
+            classList: ['card-number__label--required', 'lined-up'],
+          },
+        ]);
       }
+
+      if (styler.hasSpecificStyle('outline-input', config.styles.cardNumber)) {
+        const outlineValue = config.styles.cardNumber['outline-input'];
+        const outlineSize = Number(outlineValue.replace(/\D/g, ''));
+
+        styler.addStyles([
+          {
+            elementSelector: '#st-card-number-wrapper',
+            inlineStyles: [
+              {
+                property: 'padding',
+                value: `${outlineSize ? outlineSize : 3}px`,
+              },
+            ],
+          },
+        ]);
+      }
+
+      if (styler.hasSpecificStyle('color-asterisk', config.styles.cardNumber)) {
+        const value = config.styles.cardNumber['color-asterisk'];
+        styler.addStyles([
+          {
+            elementSelector: '#st-card-number-label .asterisk',
+            inlineStyles: [
+              {
+                property: 'color',
+                value,
+              },
+            ],
+          },
+        ]);
+      }
+
+      const destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+      this.messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(destroy$)).subscribe(() => {
+        this.placeholder = this.translator.translate(config.placeholders.pan) || '';
+        this._inputElement.setAttribute(CardNumber.PLACEHOLDER_ATTRIBUTE, this.placeholder);
+      });
     });
   }
 
@@ -84,34 +132,34 @@ export class CardNumber extends Input {
     return LABEL_CARD_NUMBER;
   }
 
-  protected onBlur() {
+  protected onBlur(): void {
     super.onBlur();
     this.validation.luhnCheck(this._fieldInstance, this._inputElement, this._messageElement);
     this._sendState();
   }
 
-  protected onFocus(event: Event) {
+  protected onFocus(event: Event): void {
     super.onFocus(event);
     this._disableSecurityCodeField(this._inputElement.value);
   }
 
-  protected onInput(event: Event) {
+  protected onInput(event: Event): void {
     super.onInput(event);
     this._setInputValue();
     this._sendState();
   }
 
-  protected onPaste(event: ClipboardEvent) {
+  protected onPaste(event: ClipboardEvent): void {
     super.onPaste(event);
     this._setInputValue();
     this._sendState();
   }
 
-  protected onKeyPress(event: KeyboardEvent) {
+  protected onKeyPress(event: KeyboardEvent): void {
     super.onKeyPress(event);
   }
 
-  protected onKeydown(event: KeyboardEvent) {
+  protected onKeydown(event: KeyboardEvent): void {
     super.onKeydown(event);
     if (Validation.isEnter(event)) {
       this.validation.luhnCheck(this._cardNumberInput, this._inputElement, this._messageElement);
@@ -119,23 +167,23 @@ export class CardNumber extends Input {
     }
   }
 
-  protected setFocusListener() {
+  protected setFocusListener(): void {
     super.setEventListener(MessageBus.EVENTS.FOCUS_CARD_NUMBER);
   }
 
-  protected setBlurListener() {
+  protected setBlurListener(): void {
     super.setEventListener(MessageBus.EVENTS.BLUR_CARD_NUMBER);
   }
 
-  protected setSubmitListener() {
+  protected setSubmitListener(): void {
     super.setEventListener(MessageBus.EVENTS_PUBLIC.SUBMIT_FORM);
   }
 
-  private _publishSecurityCodeLength() {
+  private _publishSecurityCodeLength(): void {
     const { value } = this.getState();
     const messageBusEvent: IMessageBusEvent = {
       data: this._getSecurityCodeLength(value),
-      type: MessageBus.EVENTS.CHANGE_SECURITY_CODE_LENGTH
+      type: MessageBus.EVENTS.CHANGE_SECURITY_CODE_LENGTH,
     };
     this.messageBus.publish(messageBusEvent);
   }
@@ -198,7 +246,7 @@ export class CardNumber extends Input {
     return {
       formattedValue: this._cardNumberFormatted,
       validity,
-      value: this._cardNumberValue
+      value: this._cardNumberValue,
     };
   }
 
@@ -220,12 +268,11 @@ export class CardNumber extends Input {
   }
 
   private _setDisableListener() {
-    this.messageBus.subscribe(MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER, (state: FormState) => {
+    this.messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER, (state: FormState) => {
       if (state !== FormState.AVAILABLE) {
         this._inputElement.setAttribute(CardNumber.DISABLED_ATTRIBUTE, 'true');
         this._inputElement.classList.add(CardNumber.DISABLED_CLASS);
       } else {
-        // @ts-ignore
         this._inputElement.removeAttribute(CardNumber.DISABLED_ATTRIBUTE);
         this._inputElement.classList.remove(CardNumber.DISABLED_CLASS);
       }
@@ -238,7 +285,7 @@ export class CardNumber extends Input {
     const formState = isCardPiba ? FormState.BLOCKED : FormState.AVAILABLE;
     const messageBusEventPiba: IMessageBusEvent = {
       data: { formState, isCardPiba },
-      type: MessageBus.EVENTS.IS_CARD_WITHOUT_CVV
+      type: MessageBus.EVENTS.IS_CARD_WITHOUT_CVV,
     };
     this.messageBus.publish(messageBusEventPiba);
   }
@@ -247,12 +294,12 @@ export class CardNumber extends Input {
     const { value, validity } = this._getCardNumberFieldState();
     const messageBusEvent: IMessageBusEvent = {
       data: this._getCardNumberFieldState(),
-      type: MessageBus.EVENTS.CHANGE_CARD_NUMBER
+      type: MessageBus.EVENTS.CHANGE_CARD_NUMBER,
     };
     if (validity) {
       const binProcessEvent: IMessageBusEvent = {
         data: CardNumber._getCardNumberForBinProcess(value),
-        type: MessageBus.EVENTS_PUBLIC.BIN_PROCESS
+        type: MessageBus.EVENTS_PUBLIC.BIN_PROCESS,
       };
       this.messageBus.publish(binProcessEvent, true);
     }

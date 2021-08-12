@@ -37,7 +37,14 @@ module.exports = {
   // ],
 
   // An object that configures minimum threshold enforcement for coverage results
-  // coverageThreshold: null,
+  coverageThreshold: {
+    'global': {
+      'branches': 51,
+      'functions': 74,
+      'lines': 80,
+      'statements': 79,
+    },
+  },
 
   // A path to a custom dependency extractor
   // dependencyExtractor: null,
@@ -57,7 +64,7 @@ module.exports = {
   // A set of global variables that need to be available in all test environments
   globals: {
     HOST: 'localhost',
-    WEBSERVICES_URL: 'https://localhost:8443'
+    FRAME_URL: 'https://localhost:8443',
   },
 
   // An array of directory names to be searched recursively up from the requiring module's location
@@ -72,7 +79,7 @@ module.exports = {
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
       '<rootDir>/__mocks__/fileMock.js',
-    '\\.(css|scss)$': '<rootDir>/__mocks__/styleMock.js'
+    '\\.(css|scss)$': '<rootDir>/__mocks__/styleMock.js',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -109,15 +116,20 @@ module.exports = {
   // rootDir: null,
 
   // A list of paths to directories that Jest should use to search for files in
-  // roots: [
-  //   "<rootDir>"
-  // ],
+  roots: [
+    '<rootDir>/src',
+  ],
 
   // Allows you to use a custom runner instead of Jest's default test runner
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: ['<rootDir>/__mocks__/libMock.js', '<rootDir>/src/bootstrap.ts'],
+  setupFiles: [
+    '<rootDir>/src/global-extensions.d.ts',
+    '<rootDir>/__mocks__/libMock.js',
+    '<rootDir>/src/bootstrap.ts',
+    '<rootDir>/src/testing/ServiceDefinitions.ts',
+  ],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],
@@ -126,7 +138,7 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  // testEnvironment: "jest-environment-jsdom",
+  testEnvironment: 'jest-environment-jsdom',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -141,10 +153,10 @@ module.exports = {
   // ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: ['node_modules', 'js-payments-testing', '.all_sources'],
+  // testPathIgnorePatterns: ['node_modules', 'js-payments-testing', '.all_sources'],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
-  testRegex: ['/src/.*\.spec\.ts$'],
+  testRegex: ['/.*\.spec\.ts$'],
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: null,
@@ -160,11 +172,11 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    '^.+\\.tsx?$': 'ts-jest'
+    '^.+\\.tsx?$': 'ts-jest',
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  transformIgnorePatterns: ['node_modules']
+  transformIgnorePatterns: ['node_modules'],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,

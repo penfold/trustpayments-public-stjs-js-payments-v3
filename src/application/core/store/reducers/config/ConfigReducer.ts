@@ -1,9 +1,23 @@
-import { IConfigState, INITIAL_STATE } from './IConfigState';
-import { CLEAR_CONFIG, UPDATE_CONFIG } from './ConfigActions';
-import { createReducer, on } from '../../createReducer';
+import { IReducer } from '../../IReducer';
+import { IApplicationFrameState } from '../../state/IApplicationFrameState';
+import { IParentFrameState } from '../../state/IParentFrameState';
+import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
+import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
+import { Service } from 'typedi';
+import { ReducerToken } from '../../../../../shared/dependency-injection/InjectionTokens';
 
-export const configReducer = createReducer<IConfigState>(
-  INITIAL_STATE,
-  on(UPDATE_CONFIG, (state, action) => ({ ...state, config: action.payload })),
-  on(CLEAR_CONFIG, state => ({ ...state, config: null }))
-);
+type CommonState = IApplicationFrameState | IParentFrameState;
+
+@Service({ id: ReducerToken, multiple: true })
+export class ConfigReducer implements IReducer<CommonState> {
+  reduce(state: CommonState, action: IMessageBusEvent): CommonState {
+    switch (action.type) {
+      case PUBLIC_EVENTS.CONFIG_CHANGED:
+        return { ...state, config: action.data };
+      case PUBLIC_EVENTS.CONFIG_CLEARED:
+        return { ...state, config: null };
+    }
+
+    return state;
+  }
+}

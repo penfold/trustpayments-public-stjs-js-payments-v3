@@ -1,5 +1,5 @@
 {
-  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJsaXZlMl9hdXRvand0IiwiaWF0IjoxNTYxOTY1NTcyLjgzNjE0MTMsInBheWxvYWQiOnsiYmFzZWFtb3VudCI6IjEwMDAiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJHQlAiLCJzaXRlcmVmZXJlbmNlIjoidGVzdDEiLCJsb2NhbGUiOiJlbl9VUyJ9fQ.wnCNbeBMqZnS-Cc2kZ73PKkTq_K7UH2S4BLb_BhGXCY",
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fVVMiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJUSFJFRURRVUVSWSIsIkFVVEgiXX19.hIR7jubznD2QgJ2BRRnqgPEf7UpE7vEqLYeciOTqCeg",
   "Timeout": "Timeout",
   "Field is required": "Field is required",
   "An error occurred": "An error occurred",
@@ -23,5 +23,8 @@
   "Invalid field": "Invalid field",
   "Card number is invalid": "Card number is invalid",
   "You are not logged to Apple account": "You are not logged to Apple account",
-  "A target element for the input field with id could not be found. Please check your configuration": "A target element for the input field with id could not be found. Please check your configuration"
+  "A target element for the input field with id could not be found. Please check your configuration": "A target element for the input field with id could not be found. Please check your configuration",
+  "Jwt has not been specified": "Jwt has not been specified",
+  "A target iframe-factory for the input field with id could not be found. Please check your configuration": "A target iframe-factory for the input field with id could not be found. Please check your configuration",
+  "Cancel": "Cancel"
 }

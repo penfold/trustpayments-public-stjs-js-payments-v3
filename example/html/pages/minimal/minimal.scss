@@ -1,0 +1,11 @@
+.tp-minimal-form-example {
+  display: flex;
+}
+
+.tp-minimal-form {
+  margin: auto;
+
+  &__button {
+    max-width: 100px;
+  }
+}

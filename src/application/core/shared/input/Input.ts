@@ -1,18 +1,24 @@
+import { takeUntil } from 'rxjs/operators';
+import { IAllowedStyles } from '../../models/IAllowedStyles';
 import { IFormFieldState } from '../../models/IFormFieldState';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
-import { Translator } from '../translator/Translator';
 import { Utils } from '../utils/Utils';
 import { Validation } from '../validation/Validation';
 import { onInputWraper } from '../on-input-wrapper/onInputWrapper';
 import { Frame } from '../frame/Frame';
-import { MessageBus } from '../message-bus/MessageBus';
 import { Container } from 'typedi';
 import { NOT_IMPLEMENTED_ERROR } from '../../models/constants/Translations';
 import { CARD_NUMBER_INPUT, CARD_NUMBER_WRAPPER } from '../../models/constants/Selectors';
 import { AllowedStylesService } from './AllowedStylesService';
+import { IMessageBus } from '../message-bus/IMessageBus';
+import { MessageBusToken, TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { ITranslator } from '../translator/ITranslator';
+import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
+import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 
 export class Input {
-  protected static PLACEHOLDER_ATTRIBUTE: string = 'placeholder';
+  protected static PLACEHOLDER_ATTRIBUTE = 'placeholder';
   public validation: Validation;
   protected _inputSelector: string;
   protected _labelSelector: string;
@@ -23,15 +29,23 @@ export class Input {
   protected _messageElement: HTMLDivElement;
   protected _cardNumberInput: HTMLInputElement;
   protected placeholder: string;
-  private _translator: Translator;
+  private _translator: ITranslator;
   private _frame: Frame;
-  private _messageBus: MessageBus;
+  private _messageBus: IMessageBus;
   private _allowedStyles: AllowedStylesService;
+  private stopSubmitFormOnEnter: boolean;
 
-  constructor(inputSelector: string, messageSelector: string, labelSelector: string, wrapperSelector: string) {
-    this._messageBus = Container.get(MessageBus);
+  constructor(
+    inputSelector: string,
+    messageSelector: string,
+    labelSelector: string,
+    wrapperSelector: string,
+    protected configProvider: ConfigProvider
+  ) {
+    this._messageBus = Container.get(MessageBusToken);
     this._allowedStyles = Container.get(AllowedStylesService);
     this._frame = Container.get(Frame);
+    this._translator = Container.get(TranslatorToken);
     this._cardNumberInput = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
     this._inputElement = document.getElementById(inputSelector) as HTMLInputElement;
     this._labelElement = document.getElementById(labelSelector) as HTMLLabelElement;
@@ -40,23 +54,29 @@ export class Input {
     this._labelSelector = labelSelector;
     this._messageSelector = messageSelector;
     this._wrapperSelector = wrapperSelector;
-    this._setInputListeners();
+    this.setInputListeners();
     this.init();
   }
 
   public init(): void {
-    this._translator = new Translator(this._frame.parseUrl().locale);
     this.validation = new Validation();
+    this.addTabListener();
 
-    this._setLabelText();
-    this._addTabListener();
+    this.configProvider.getConfig$().subscribe(config => {
+      this.stopSubmitFormOnEnter = Boolean(config.stopSubmitFormOnEnter);
+      this.setLabelText();
+      this.setAsterisk();
+    });
+
+    const destroy$ = this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+    this._messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(destroy$)).subscribe(() => this.setLabelText());
   }
 
-  protected format(data: string) {
+  protected format(data: string): void {
     this._inputElement.value = data;
   }
 
-  protected getAllowedStyles() {
+  protected getAllowedStyles(): IAllowedStyles {
     let allowed = this._frame.getAllowedStyles();
     allowed = {
       ...allowed,
@@ -68,7 +88,7 @@ export class Input {
         `label[for=${this._inputSelector}]`,
         `.${CARD_NUMBER_WRAPPER} #card-icon`,
         `.${this._wrapperSelector}`
-      )
+      ),
     };
     return allowed;
   }
@@ -80,45 +100,48 @@ export class Input {
   protected getState(): IFormFieldState {
     return {
       validity: this._inputElement.validity.valid,
-      value: this._inputElement.value
+      value: this._inputElement.value,
     };
   }
 
-  protected onBlur() {
-    this._blur();
+  protected onBlur(): void {
+    this.blur();
     this.validation.validate(this._inputElement, this._messageElement);
   }
 
-  protected onClick(event: Event) {
-    this._click();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected onClick(event: Event): void {
+    this.click();
   }
 
-  protected onFocus(event: Event) {
-    this._focus();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected onFocus(event: Event): void {
+    this.focus();
   }
 
-  protected onInput(event: Event) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected onInput(event: Event): void {
     this.validation.keepCursorsPosition(this._inputElement);
     Validation.setCustomValidationError('', this._inputElement);
     this.format(this._inputElement.value);
   }
 
-  protected onKeyPress(event: KeyboardEvent) {
+  protected onKeyPress(event: KeyboardEvent): void {
     if (Validation.isEnter(event)) {
       event.preventDefault();
       if (this._inputElement.id === CARD_NUMBER_INPUT) {
         this.validation.luhnCheck(this._cardNumberInput, this._inputElement, this._messageElement);
       }
-      this._validateInput();
+      this.validateInput();
       this.validation.callSubmitEvent();
     }
   }
 
-  protected onKeydown(event: KeyboardEvent) {
+  protected onKeydown(event: KeyboardEvent): void {
     this.validation.setOnKeyDownProperties(this._inputElement, event);
   }
 
-  protected onPaste(event: ClipboardEvent) {
+  protected onPaste(event: ClipboardEvent): void {
     let { clipboardData } = event;
     event.preventDefault();
     if (this._inputElement === document.activeElement) {
@@ -139,23 +162,21 @@ export class Input {
     this.validation.validate(this._inputElement, this._messageElement);
   }
 
-  protected setAttributes(attributes: object) {
-    // tslint:disable-next-line:forin
+  protected setAttributes(attributes: Record<string, string>): void {
     for (const attribute in attributes) {
-      // @ts-ignore
       this._inputElement.setAttribute(attribute, attributes[attribute]);
     }
   }
 
-  protected setEventListener(event: string, validate: boolean = true) {
-    this._messageBus.subscribe(event, () => {
+  protected setEventListener(event: string, validate = true): void {
+    this._messageBus.subscribeType(event, () => {
       if (validate) {
-        this._validateInput();
+        this.validateInput();
       }
     });
   }
 
-  protected setValue(value: string) {
+  protected setValue(value: string): void {
     this._inputElement.value = value;
   }
 
@@ -163,35 +184,39 @@ export class Input {
     const formFieldState: IFormFieldState = this.getState();
     return {
       data: formFieldState,
-      type: event
+      type: event,
     };
   }
 
-  private _addTabListener() {
+  private addTabListener(): void {
     window.addEventListener('focus', event => {
       this.onFocus(event);
     });
   }
 
-  private _blur() {
+  private blur(): void {
     this._inputElement.blur();
   }
 
-  private _click() {
+  private click(): void {
     this._inputElement.click();
   }
 
-  private _focus() {
+  private focus(): void {
     this._inputElement.focus();
   }
 
-  private _setInputListeners() {
+  private setInputListeners(): void {
     this._inputElement.addEventListener('paste', (event: ClipboardEvent) => {
       this.onPaste(event);
     });
 
     this._inputElement.addEventListener('keypress', (event: KeyboardEvent) => {
-      this.onKeyPress(event);
+      if (this.stopSubmitFormOnEnter && event.key === 'Enter') {
+        event.preventDefault();
+      } else {
+        this.onKeyPress(event);
+      }
     });
 
     this._inputElement.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -218,11 +243,22 @@ export class Input {
     });
   }
 
-  private _setLabelText() {
+  private setLabelText(): void {
     this._labelElement.textContent = this._translator.translate(this.getLabel());
   }
 
-  private _validateInput() {
+  private setAsterisk(): void {
+    const isRequiredField = this._labelElement.className.split(' ').some(name => name.includes('--required'));
+
+    if (isRequiredField) {
+      const span = document.createElement('span');
+      span.className = 'asterisk';
+      span.textContent = '*';
+      this._labelElement.appendChild(span);
+    }
+  }
+
+  private validateInput(): void {
     this.format(this._inputElement.value);
     if (this._inputElement.id === CARD_NUMBER_INPUT) {
       this.validation.luhnCheck(this._cardNumberInput, this._inputElement, this._messageElement);

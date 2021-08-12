@@ -1,24 +1,16 @@
 import './st.css';
-import JwtDecode from 'jwt-decode';
-import { debounce } from 'lodash';
+import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import '../../application/core/shared/override-domain/OverrideDomain';
-import { CardFrames } from '../card-frames/CardFrames.class';
-import { CommonFrames } from '../common-frames/CommonFrames.class';
+import { CardFrames } from '../card-frames/CardFrames';
+import { CommonFrames } from '../common-frames/CommonFrames';
+import { ThreeDSecureClient } from '../integrations/three-d-secure/ThreeDSecureClient';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
-import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
-import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
-import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
+import { ApplePay } from '../integrations/apple-pay/ApplePay';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
-import { VisaCheckoutMock } from '../../application/core/integrations/visa-checkout/VisaCheckoutMock';
-import { IApplePay } from '../../application/core/models/IApplePay';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
-import { IStJwtObj } from '../../application/core/models/IStJwtObj';
-import { IVisaConfig } from '../../application/core/integrations/visa-checkout/IVisaConfig';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
-import { Translator } from '../../application/core/shared/translator/Translator';
-import { environment } from '../../environments/environment';
 import { Service, Container } from 'typedi';
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
 import { ISubmitEvent } from '../../application/core/models/ISubmitEvent';
@@ -27,10 +19,9 @@ import { IErrorEvent } from '../../application/core/models/IErrorEvent';
 import { InterFrameCommunicator } from '../../shared/services/message-bus/InterFrameCommunicator';
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
-import { Notification } from '../../application/core/shared/notification/Notification';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
-import { Subject, Subscription } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { delay, map, shareReplay, takeUntil, tap } from 'rxjs/operators';
 import { switchMap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
@@ -39,26 +30,35 @@ import { IframeFactory } from '../iframe-factory/IframeFactory';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { Frame } from '../../application/core/shared/frame/Frame';
 import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
+import { CardinalClient } from '../integrations/cardinal-commerce/CardinalClient';
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
+import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
+import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
+import { Notification } from '../../application/core/shared/notification/Notification';
+import { NotificationService } from '../notification/NotificationService';
+import { IApplePayConfig } from '../../application/core/integrations/apple-pay/IApplePayConfig';
+import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { IStore } from '../../application/core/store/IStore';
+import { IParentFrameState } from '../../application/core/store/state/IParentFrameState';
+import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
+import { IUpdateJwt } from '../../application/core/models/IUpdateJwt';
+import { IGooglePayConfig, GooglePayConfigName } from '../../integrations/google-pay/models/IGooglePayConfig';
+import { IInitPaymentMethod } from '../../application/core/services/payments/events/IInitPaymentMethod';
+import { GooglePaymentMethodName } from '../../integrations/google-pay/models/IGooglePaymentMethod';
+import { ITranslator } from '../../application/core/shared/translator/ITranslator';
+import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 
 @Service()
 export class ST {
-  private static DEBOUNCE_JWT_VALUE: number = 900;
-  private static JWT_NOT_SPECIFIED_MESSAGE: string = 'Jwt has not been specified';
-  private static LOCALE_STORAGE: string = 'locale';
-  private static MERCHANT_TRANSLATIONS_STORAGE: string = 'merchantTranslations';
-  private static readonly MODAL_CONTROL_FRAME_CLASS = 'modal';
-  private static readonly BUTTON_SUBMIT_SELECTOR: string = 'button[type="submit"]';
-  private static readonly INPUT_SUBMIT_SELECTOR: string = 'input[type="submit"]';
-  private static readonly BUTTON_DISABLED_CLASS: string = 'st-button-submit__disabled';
-  private _config: IConfig;
-  private _cardFrames: CardFrames;
-  private _commonFrames: CommonFrames;
-  private _googleAnalytics: GoogleAnalytics;
-  private _merchantFields: MerchantFields;
-  private _translation: Translator;
-  private _destroy$: Subject<void> = new Subject();
-  private _registeredCallbacks: { [eventName: string]: Subscription } = {};
+  private cardFrames: CardFrames;
+  private config: IConfig;
+  private controlFrameLoader$: Observable<IConfig>;
+  private cybertonicaTid: Promise<string>;
+  private destroy$: Subject<void> = new Subject();
+  private googleAnalytics: GoogleAnalytics;
+  private merchantFields: MerchantFields;
+  private registeredCallbacks: { [eventName: string]: Subscription } = {};
 
   set submitCallback(callback: (event: ISubmitEvent) => void) {
     if (callback) {
@@ -93,220 +93,270 @@ export class ST {
   }
 
   constructor(
-    private _configService: ConfigService,
-    private _configProvider: ConfigProvider,
-    private _communicator: InterFrameCommunicator,
-    private _framesHub: FramesHub,
-    private _storage: BrowserLocalStorage,
-    private _messageBus: MessageBus,
-    private _notification: Notification,
-    private _iframeFactory: IframeFactory,
-    private _frameService: Frame
+    private applePay: ApplePay,
+    private browserDetector: BrowserDetector,
+    private cardinalClient: CardinalClient,
+    private threeDSecureClient: ThreeDSecureClient,
+    private communicator: InterFrameCommunicator,
+    private configProvider: ConfigProvider,
+    private configService: ConfigService,
+    private cybertonica: Cybertonica,
+    private frameService: Frame,
+    private framesHub: FramesHub,
+    private iframeFactory: IframeFactory,
+    private jwtDecoder: JwtDecoder,
+    private messageBus: IMessageBus,
+    private notification: Notification,
+    private notificationService: NotificationService,
+    private storage: BrowserLocalStorage,
+    private store: IStore<IParentFrameState>,
+    private visaCheckout: VisaCheckout,
+    private commonFrames: CommonFrames,
+    private translation: ITranslator,
   ) {
-    this._googleAnalytics = new GoogleAnalytics();
-    this._merchantFields = new MerchantFields();
+    this.googleAnalytics = new GoogleAnalytics();
+    this.merchantFields = new MerchantFields();
   }
 
-  public on(eventName: 'success' | 'error' | 'submit' | 'cancel', callback: (event: any) => void): void {
+  on(eventName: 'success' | 'error' | 'submit' | 'cancel', callback: (event: unknown) => void): void {
     const events = {
       cancel: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK,
       success: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUCCESS_CALLBACK,
       error: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK,
-      submit: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK
+      submit: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK,
     };
 
     this.off(eventName);
 
-    this._registeredCallbacks[eventName] = this._messageBus
+    this.registeredCallbacks[eventName] = this.messageBus
       .pipe(
         ofType(events[eventName]),
         map(event => event.data),
-        takeUntil(this._destroy$)
+        delay(0),
+        takeUntil(this.destroy$),
       )
       .subscribe(callback);
   }
 
-  public off(eventName: string): void {
-    if (this._registeredCallbacks[eventName]) {
-      this._registeredCallbacks[eventName].unsubscribe();
-      this._registeredCallbacks[eventName] = undefined;
+  off(eventName: string): void {
+    if (this.registeredCallbacks[eventName]) {
+      this.registeredCallbacks[eventName].unsubscribe();
+      this.registeredCallbacks[eventName] = undefined;
     }
   }
 
-  public Components(config: IComponentsConfig): void {
-    this._config = this._configService.update({
-      ...this._config,
-      components: {
-        ...this._config.components,
-        ...(config || {})
-      }
-    });
+  Components(config: IComponentsConfig | undefined): void {
+    if (config) {
+      this.config = this.configService.updateFragment('components', config);
+    }
+
     this.blockSubmitButton();
-    // @ts-ignore
-    this._commonFrames._requestTypes = this._config.components.requestTypes;
-    this._framesHub
-      .waitForFrame(CONTROL_FRAME_IFRAME)
-      .pipe(
-        switchMap(controlFrame => {
-          const queryEvent: IMessageBusEvent<string> = {
-            type: PUBLIC_EVENTS.INIT_CONTROL_FRAME,
-            data: JSON.stringify(this._config)
-          };
-
-          return from(this._communicator.query(queryEvent, controlFrame));
-        })
-      )
-      .subscribe(() => {
-        this.CardFrames();
-        this._cardFrames.init();
-        this._merchantFields.init();
-      });
-  }
-
-  public ApplePay(config: IApplePay): ApplePay {
-    const { applepay } = this.Environment();
-
-    this._config = this._configService.update({
-      ...this._config,
-      applePay: {
-        ...this._config.applePay,
-        ...(config || {})
-      }
+    this.initControlFrame$().subscribe(() => {
+      this.messageBus.publish<string>(
+        {
+          type: PUBLIC_EVENTS.CARD_PAYMENTS_INIT,
+          data: JSON.stringify(this.config),
+        },
+        false,
+      );
+      this.CardFrames();
+      this.cardFrames.init();
     });
-
-    return new applepay(this._configProvider, this._communicator);
   }
 
-  public VisaCheckout(config: IVisaConfig): VisaCheckout {
-    const { visa } = this.Environment();
+  ApplePay(config: IApplePayConfig): void {
+    if (config) {
+      this.config = this.configService.updateFragment('applePay', config);
+    }
 
-    this._config = this._configService.update({
-      ...this._config,
-      visaCheckout: {
-        ...this._config.visaCheckout,
-        ...(config || {})
-      }
+    this.initControlFrame$().subscribe(() => {
+      this.applePay.init();
+      this.messageBus.publish<undefined>(
+        {
+          type: PUBLIC_EVENTS.APPLE_PAY_INIT,
+          data: undefined,
+        },
+        false,
+      );
     });
-
-    return new visa(this._configProvider, this._communicator);
   }
 
-  public Cybertonica(): Promise<string> {
-    return new Promise(resolve =>
-      this._framesHub
-        .waitForFrame(CONTROL_FRAME_IFRAME)
-        .pipe(
-          switchMap((controlFrame: string) =>
-            from(this._communicator.query({ type: MessageBus.EVENTS_PUBLIC.GET_CYBERTONICA_TID }, controlFrame))
-          )
-        )
-        .subscribe((tid: string) => {
-          resolve(tid);
-        })
-    );
+  GooglePay(config: IGooglePayConfig): void {
+    if (config) {
+      this.config = this.configService.updateFragment(GooglePayConfigName, config);
+    }
+
+    this.initControlFrame$().subscribe(() => {
+      this.messageBus.publish<IInitPaymentMethod<IConfig>>(
+        {
+          type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
+          data: {
+            name: GooglePaymentMethodName,
+            config: this.config,
+          },
+        },
+        false,
+      );
+    });
   }
 
-  public updateJWT(jwt: string): void {
+  VisaCheckout(visaCheckoutConfig: IVisaCheckoutConfig | undefined): void {
+    if (visaCheckoutConfig) {
+      this.config = this.configService.updateFragment('visaCheckout', visaCheckoutConfig);
+    }
+
+    this.initControlFrame$().subscribe(() => {
+      this.visaCheckout.init();
+      this.messageBus.publish<undefined>(
+        {
+          type: PUBLIC_EVENTS.VISA_CHECKOUT_INIT,
+          data: undefined,
+        },
+        false,
+      );
+    });
+  }
+
+  Cybertonica(): Promise<string> {
+    if (!this.cybertonicaTid) {
+      this.cybertonica.init(this.config.cybertonicaApiKey);
+      this.cybertonicaTid = this.cybertonica.getTransactionId();
+    }
+
+    return this.cybertonicaTid;
+  }
+
+  updateJWT(jwt: string): void {
     if (jwt) {
-      this._config = { ...this._config, jwt };
-      this._configService.update(this._config);
-      (() => {
-        const a = StCodec.updateJWTValue(jwt);
-        debounce(() => a, ST.DEBOUNCE_JWT_VALUE);
-      })();
+      this.config = this.configService.updateJwt(jwt);
+      this.messageBus.publish<IUpdateJwt>({
+        type: PUBLIC_EVENTS.UPDATE_JWT,
+        data: { newJwt: jwt },
+      });
     } else {
-      throw Error(this._translation.translate(ST.JWT_NOT_SPECIFIED_MESSAGE));
+      throw Error(this.translation.translate('Jwt has not been specified'));
     }
   }
 
-  public destroy(): void {
-    this._messageBus.publish(
+  destroy(): void {
+    this.messageBus.publish(
       {
-        type: MessageBus.EVENTS_PUBLIC.DESTROY
+        type: MessageBus.EVENTS_PUBLIC.DESTROY,
       },
-      true
+      true,
     );
 
-    this._destroy$.next();
-    this._destroy$.complete();
-    this._communicator.close();
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.communicator.close();
+    this.controlFrameLoader$ = undefined;
   }
 
-  public init(config: IConfig): void {
-    this._storage.init();
-    this._config = this._configService.update(config);
-    StCodec.updateJWTValue(config.jwt);
-    this.initCallbacks(config);
-    this.Storage();
-    this._translation = new Translator(this._storage.getItem(ST.LOCALE_STORAGE));
-    this._googleAnalytics.init();
-    this.CommonFrames();
-    this._commonFrames.init();
-    this.displayLiveStatus(Boolean(this._config.livestatus));
-    this.watchForFrameUnload();
-    this.initControlFrameModal();
+  init(config: IConfig): void {
+    this.framesHub.reset();
+    this.storage.init();
+    this.config = this.configService.setup(config);
+
+    if (this.config.jwt) {
+      this.initCallbacks(config);
+      this.Storage();
+      this.googleAnalytics.init();
+      this.commonFrames.init();
+      this.displayLiveStatus(Boolean(this.config.livestatus));
+      this.watchForFrameUnload();
+      this.cardinalClient.init();
+      this.threeDSecureClient.init();
+
+      if (this.config.stopSubmitFormOnEnter) {
+        this.stopSubmitFormOnEnter();
+      }
+    }
+  }
+
+  getBrowserInfo(): IBrowserInfo {
+    return this.browserDetector.getBrowserInfo();
+  }
+
+  cancelThreeDProcess(): void {
+    this.messageBus.publish(
+      {
+        type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL,
+      }, true,
+    );
+  }
+
+  private stopSubmitFormOnEnter() {
+    const form: HTMLFormElement = document.getElementById(this.config.formId) as HTMLFormElement;
+
+    if (!form) {
+      return;
+    }
+
+    form.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+      }
+    });
+  }
+
+  private initControlFrame$(): Observable<IConfig> {
+    if (this.controlFrameLoader$) {
+      return this.controlFrameLoader$;
+    }
+
+    this.controlFrameLoader$ = this.framesHub.waitForFrame(CONTROL_FRAME_IFRAME).pipe(
+      switchMap((controlFrame: string) => {
+        const queryEvent: IMessageBusEvent<string> = {
+          type: PUBLIC_EVENTS.INIT_CONTROL_FRAME,
+          data: JSON.stringify(this.config),
+        };
+
+        return from(this.communicator.query(queryEvent, controlFrame));
+      }),
+      tap(() => {
+        this.merchantFields.init();
+      }),
+      shareReplay(1),
+      takeUntil(this.destroy$),
+    );
+
+    return this.controlFrameLoader$;
   }
 
   private CardFrames(): void {
-    this._cardFrames = new CardFrames(
-      this._config.jwt,
-      this._config.origin,
-      this._config.componentIds,
-      this._config.styles,
-      this._config.components.paymentTypes,
-      this._config.components.defaultPaymentType,
-      this._config.animatedCard,
-      this._config.buttonId,
-      this._config.fieldsToSubmit,
-      this._config.formId,
-      this._configProvider,
-      this._iframeFactory,
-      this._frameService,
-      this._messageBus
+    this.cardFrames = new CardFrames(
+      this.config.jwt,
+      this.config.origin,
+      this.config.componentIds,
+      this.config.styles,
+      this.config.components.paymentTypes,
+      this.config.components.defaultPaymentType,
+      this.config.animatedCard,
+      this.config.buttonId,
+      this.config.fieldsToSubmit,
+      this.config.formId,
+      this.configProvider,
+      this.iframeFactory,
+      this.frameService,
+      this.messageBus,
+      this.jwtDecoder,
     );
-  }
-
-  private CommonFrames(): void {
-    this._commonFrames = new CommonFrames(
-      this._config.jwt,
-      this._config.origin,
-      this._config.componentIds,
-      this._config.styles,
-      this._config.submitOnSuccess,
-      this._config.submitOnError,
-      this._config.submitOnCancel,
-      this._config.submitFields,
-      this._config.datacenterurl,
-      this._config.animatedCard,
-      this._config.components.requestTypes,
-      this._config.formId,
-      this._iframeFactory,
-      this._frameService
-    );
-  }
-
-  private Environment(): { applepay: any; visa: any } {
-    return {
-      applepay: environment.testEnvironment ? ApplePayMock : ApplePay,
-      visa: environment.testEnvironment ? VisaCheckoutMock : VisaCheckout
-    };
   }
 
   private Storage(): void {
-    this._storage.setItem(ST.MERCHANT_TRANSLATIONS_STORAGE, JSON.stringify(this._config.translations));
-    this._storage.setItem(ST.LOCALE_STORAGE, JwtDecode<IStJwtObj>(this._config.jwt).payload.locale);
+    this.storage.setItem('merchantTranslations', JSON.stringify(this.config.translations));
+    this.storage.setItem('locale', this.jwtDecoder.decode<IStJwtPayload>(this.config.jwt).payload.locale || 'en_GB');
   }
 
   private displayLiveStatus(liveStatus: boolean): void {
     if (!liveStatus) {
-      /* tslint:disable:no-console */
       console.log(
         '%cThe %csecure%c//%ctrading %cLibrary is currently working in test mode. Please check your configuration.',
         'margin: 100px 0; font-size: 2em; color: #e71b5a',
         'font-size: 2em; font-weight: bold',
         'font-size: 2em; font-weight: 1000; color: #e71b5a',
         'font-size: 2em; font-weight: bold',
-        'font-size: 2em; font-weight: regular; color: #e71b5a'
+        'font-size: 2em; font-weight: regular; color: #e71b5a',
       );
     }
   }
@@ -330,7 +380,7 @@ export class ST {
 
     observer.observe(document, {
       subtree: true,
-      childList: true
+      childList: true,
     });
   }
 
@@ -352,37 +402,25 @@ export class ST {
     }
   }
 
-  private initControlFrameModal(): void {
-    const className = ST.MODAL_CONTROL_FRAME_CLASS;
-
-    this._messageBus
-      .pipe(ofType(MessageBus.EVENTS_PUBLIC.CONTROL_FRAME_SHOW), takeUntil(this._destroy$))
-      .subscribe(() => document.getElementById(CONTROL_FRAME_IFRAME).classList.add(className));
-
-    this._messageBus
-      .pipe(ofType(MessageBus.EVENTS_PUBLIC.CONTROL_FRAME_HIDE), takeUntil(this._destroy$))
-      .subscribe(() => document.getElementById(CONTROL_FRAME_IFRAME).classList.remove(className));
-  }
-
   private blockSubmitButton(): void {
-    const form: HTMLFormElement = document.getElementById(this._config.formId) as HTMLFormElement;
+    const form: HTMLFormElement = document.getElementById(this.config.formId) as HTMLFormElement;
 
     if (!form) {
       return;
     }
 
     const submitButton: HTMLInputElement | HTMLButtonElement =
-      (document.getElementById(this._config.buttonId) as HTMLInputElement | HTMLButtonElement) ||
-      form.querySelector(ST.BUTTON_SUBMIT_SELECTOR) ||
-      form.querySelector(ST.INPUT_SUBMIT_SELECTOR);
+      (document.getElementById(this.config.buttonId) as HTMLInputElement | HTMLButtonElement) ||
+      form.querySelector('button[type="submit"]') ||
+      form.querySelector('input[type="submit"]');
 
     if (submitButton) {
-      submitButton.classList.add(ST.BUTTON_DISABLED_CLASS);
+      submitButton.classList.add('st-button-submit__disabled');
       submitButton.disabled = true;
     }
   }
 }
 
-export default (config: IConfig) => {
+export default (config: IConfig): ST => {
   return Container.get(ClientBootstrap).run(config);
 };

@@ -1,120 +1,90 @@
 import 'reflect-metadata';
-import { StCodec } from '../../application/core/services/st-codec/StCodec.class';
-import { ApplePay } from '../../application/core/integrations/apple-pay/ApplePay';
-import { ApplePayMock } from '../../application/core/integrations/apple-pay/ApplePayMock';
-import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
-import { VisaCheckoutMock } from '../../application/core/integrations/visa-checkout/VisaCheckoutMock';
-import { environment } from '../../environments/environment';
-import ST from './ST';
 import { Container } from 'typedi';
+import { IConfig } from '../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import SecureTrading, { ST } from './ST';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
+import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import { IGooglePayConfig } from '../../integrations/google-pay/models/IGooglePayConfig';
+import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../application/core/shared/translator/Translator';
+import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
+import { CommonFrames } from '../common-frames/CommonFrames';
+import { ApplePay } from '../integrations/apple-pay/ApplePay';
+import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
+import { CardFrames } from '../card-frames/CardFrames';
+import { instance, mock } from 'ts-mockito';
+import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 
 window.alert = jest.fn();
-jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
-jest.mock('./../../client/common-frames/CommonFrames.class');
-jest.mock('./../../client/card-frames/CardFrames.class');
-jest.mock('./../../application/core/integrations/visa-checkout/VisaCheckout');
-jest.mock('./../../application/core/integrations/visa-checkout/VisaCheckoutMock');
-jest.mock('./../../application/core/integrations/apple-pay/ApplePay');
-jest.mock('./../../application/core/integrations/apple-pay/ApplePayMock');
 jest.mock('./../../application/core/integrations/google-analytics/GoogleAnalytics');
 
+const messageBusMock = new SimpleMessageBus();
+
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
+Container.set(IMessageBus, messageBusMock);
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
+Container.set({ id: ApplePay, value: instance(mock(ApplePay)) });
+Container.set({ id: VisaCheckout, value: instance(mock(VisaCheckout)) });
+Container.set({ id: CommonFrames, value: instance(mock(CommonFrames)) });
+Container.set({ id: CardFrames, value: instance(mock(CardFrames)) });
+Container.set({ id: ThreeDSecureFactory, value: instance(mock(ThreeDSecureFactory)) });
 
-// given
 describe('ST', () => {
-  const { config, cacheConfig, instance } = stFixture();
-  // given
-  describe('constructor()', () => {
-    let stObject: any;
-    // when
-    beforeEach(() => {
-      instance.Init = jest.fn();
-      // @ts-ignore
-      stObject = ST(cacheConfig);
-    });
-  });
+  const { instance } = stFixture();
 
-  // given
-  describe('ST.AppapplePayConfiglePay()', () => {
-    const { applePayConfig } = stFixture();
-
-    // then
-    it('should return ApplePayMock object when environment.testEnvironment equals true', () => {
-      environment.testEnvironment = true;
-      expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePayMock);
-    });
-    // then
-    it('should return ApplePay object when environment.testEnvironment equals false', () => {
-      environment.testEnvironment = false;
-      expect(instance.ApplePay(applePayConfig, config.jwt)).toBeInstanceOf(ApplePay);
-    });
-  });
-
-  // given
-  describe('ST.VisaCheckout()', () => {
-    const { visaCheckoutConfig } = stFixture();
-    // then
-    it('should return VisaCheckoutMock object when environment.testEnvironment equals true', () => {
-      environment.testEnvironment = true;
-      expect(instance.VisaCheckout(visaCheckoutConfig, config.jwt)).toBeInstanceOf(VisaCheckoutMock);
-    });
-    // then
-    it('should return VisaCheckout object when environment.testEnvironment equals false', () => {
-      environment.testEnvironment = false;
-      expect(instance.VisaCheckout(visaCheckoutConfig, config.jwt)).toBeInstanceOf(VisaCheckout);
-    });
-  });
-
-  // given
-  describe('ST.CardinalCommerce()', () => {
-    // when
-    const {
-      config: { jwt }
-    } = stFixture();
-    // then
-    it('should return CardinalCommerceMock when environment.testEnvironment equals true', () => {
-      environment.testEnvironment = true;
-      // expect(instance.CardinalCommerce(false, jwt, ['AUTH', 'JSINIT'])).toBeInstanceOf(CardinalCommerceMock);
-    });
-
-    // then
-    it('should return CardinalCommerce when environment.testEnvironment equals false', () => {
-      environment.testEnvironment = false;
-      // expect(instance.CardinalCommerce(false, jwt, ['AUTH', 'JSINIT'])).toBeInstanceOf(CardinalCommerce);
-    });
-  });
-
-  // given
   describe('updateJWT()', () => {
-    const lodash = jest.requireActual('lodash');
-
-    // when
     beforeEach(() => {
-      StCodec.updateJWTValue = jest.fn();
+      jest.spyOn(messageBusMock, 'publish');
       instance.updateJWT('somenewjwtvalue');
-      lodash.debounce = jest.fn().mockImplementationOnce(() => {
-        StCodec.updateJWTValue('somenewjwtvalue');
+    });
+
+    it('should assign new jwt value', () => {
+      // @ts-expect-error Legacy spec testing internal implementations
+      expect(instance.config.jwt).toEqual('somenewjwtvalue');
+    });
+
+    it('should send UPDATE_JWT event to message bus', () => {
+      expect(messageBusMock.publish).toHaveBeenCalledWith({
+        type: PUBLIC_EVENTS.UPDATE_JWT,
+        data: { newJwt: 'somenewjwtvalue' },
       });
     });
 
-    // then
-    it('should assign new jwt value', () => {
-      expect(instance._config.jwt).toEqual('somenewjwtvalue');
-    });
-
-    // then
-    it('should call updateJWTValue', () => {
-      expect(StCodec.updateJWTValue).toHaveBeenCalled();
-    });
-
-    // then
     it('should throw an error if newJwt is not specified', () => {
       expect(() => {
         instance.updateJWT(null);
       }).toThrow();
+    });
+  });
+
+  describe('cbrt', () => {
+    const key = 'some random key';
+    beforeEach(() => {
+      // @ts-expect-error Legacy spec testing internal implementations
+      instance.cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(key);
+    });
+
+    it('should return transaction id when standalone cybertonica function has been called', async () => {
+      expect(await instance.Cybertonica()).toEqual(key);
+    });
+  });
+
+  describe('cancelThreeDProcess', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should send THREED_CANCEL event on message bus', () => {
+      jest.spyOn(messageBusMock, 'publish');
+      instance.cancelThreeDProcess();
+
+      expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.THREED_CANCEL }, true);
     });
   });
 });
@@ -144,20 +114,21 @@ function stFixture() {
     Pay: 'Zapłać',
     Processing: 'Przetwarzanie',
     'Invalid field': 'Nieprawidłowe pole',
-    'Card number is invalid': 'Numer karty jest nieprawidłowy'
+    'Card number is invalid': 'Numer karty jest nieprawidłowy',
   };
-  const config = {
+  const config: IConfig = {
     analytics: true,
     animatedCard: true,
-    components: { defaultPaymentType: 'test', paymentTypes: ['test'], requestTypes: ['AUTH'] },
+    components: { defaultPaymentType: 'test', paymentTypes: ['test'] },
     init: {
       threedinit: 'test',
-      cachetoken: 'test'
+      cachetoken: 'test',
     },
     jwt:
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU2MDk0NjM4Ny4yNDIzMzQ0LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImxvY2FsZSI6ImVuX0dCIiwicGFuIjoiNDExMTExMTExMTExMTExMSIsImV4cGlyeWRhdGUiOiIwMS8yMCIsInNlY3VyaXR5Y29kZSI6IjEyMyJ9fQ.UssdRcocpaeAqd-jDXpxWeWiKIX-W7zlpy0UWrDE5vg', // Can't use property shorthand because it isn't supported by IE
     livestatus: 0,
     disableNotification: false,
+    cybertonicaApiKey: 'stfs',
     origin: 'https://someorigin.com',
     styles: {
       cardNumber: {
@@ -165,37 +136,37 @@ function stFixture() {
         'background-color-input-error': '#f8d7da',
         'color-input-error': '#721c24',
         'font-size-input': '12px',
-        'line-height-input': '12px'
+        'line-height-input': '12px',
       },
       expirationDate: {
         'background-color-input': 'AliceBlue',
         'background-color-input-error': '#f8d7da',
         'color-input-error': '#721c24',
         'font-size-input': '12px',
-        'line-height-input': '12px'
+        'line-height-input': '12px',
       },
       securityCode: {
         'background-color-input': 'AliceBlue',
         'background-color-input-error': '#f8d7da',
         'color-input-error': '#721c24',
         'font-size-input': '12px',
-        'line-height-input': '12px'
-      }
+        'line-height-input': '12px',
+      },
     },
     submitOnError: false,
     submitOnSuccess: false,
     translations: { ...translations },
-    buttonId: 'merchant-submit-button'
+    buttonId: 'merchant-submit-button',
   };
 
-  const cacheConfig = {
+  const cacheConfig: IConfig = {
     animatedCard: true,
     jwt: config.jwt,
     init: {
       threedinit:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSZWZlcmVuY2VJZCI6IjQyLWYzYThjNDk0YWNkYzY2MDcyOTc4YzY0ODg4ZWY5Mjk4ZDE4YWE1ZDRkMzUwNjBmZTQzNmFmN2M1YzI1NDVhM2QiLCJpc3MiOiI1YzEyODg0NWMxMWI5MjIwZGMwNDZlOGUiLCJqdGkiOiI0Mi1mM2E4YzQ5NGFjZGM2NjA3Mjk3OGM2NDg4OGVmOTI5OGQxOGFhNWQ0ZDM1MDYwZmU0MzZhZjdjNWMyNTQ1YTNkIiwiaWF0IjoxNTYxNzI2ODA5LCJQYXlsb2FkIjp7Ik9yZGVyRGV0YWlscyI6eyJBbW91bnQiOjEwMDAsIkN1cnJlbmN5Q29kZSI6IjgyNiJ9fSwiT3JnVW5pdElkIjoiNWMxMTNlOGU2ZmUzZDEyNDYwMTQxODY4In0.GIpwP_MWbocwOkexF_AE1Bo0LuIYsXWFcKWog4EaygA',
       cachetoken:
-        'eyJkYXRhY2VudGVydXJsIjogbnVsbCwgImNhY2hldG9rZW4iOiAiNDItZjNhOGM0OTRhY2RjNjYwNzI5NzhjNjQ4ODhlZjkyOThkMThhYTVkNGQzNTA2MGZlNDM2YWY3YzVjMjU0NWEzZCJ9'
+        'eyJkYXRhY2VudGVydXJsIjogbnVsbCwgImNhY2hldG9rZW4iOiAiNDItZjNhOGM0OTRhY2RjNjYwNzI5NzhjNjQ4ODhlZjkyOThkMThhYTVkNGQzNTA2MGZlNDM2YWY3YzVjMjU0NWEzZCJ9',
     },
     disableNotification: false,
     livestatus: 0,
@@ -205,8 +176,9 @@ function stFixture() {
     submitOnSuccess: false,
     datacenterurl: 'https://example.com',
     formId: 'example-form',
-    translations: { ...translations }
+    translations: { ...translations },
   };
+
   const applePayConfig = {
     buttonStyle: 'white-outline',
     buttonText: 'donate',
@@ -217,27 +189,68 @@ function stFixture() {
       merchantCapabilities: ['supports3DS', 'supportsCredit', 'supportsDebit'],
       total: {
         label: 'Secure Trading Merchant',
-        amount: '10.00'
-      }
+        amount: '10.00',
+      },
     },
-    placement: 'st-apple-pay'
+    placement: 'st-apple-pay',
+  };
+
+  const googlePayConfig: IGooglePayConfig = {
+    buttonOptions: {
+      buttonRootNode: 'test',
+    },
+    paymentRequest: {
+      allowedPaymentMethods: [{
+        parameters: {
+          allowedAuthMethods: ['PAN_ONLY'],
+          allowedCardNetworks: ['VISA'],
+        },
+        tokenizationSpecification: {
+          parameters: {
+            gateway: 'https://someorigin.com',
+            gatewayMerchantId: 'merchant.net.securetrading',
+          },
+          type: 'test',
+        },
+        type: 'CARD',
+      }],
+      apiVersion: 2,
+      apiVersionMinor: 0,
+      merchantInfo: {
+        merchantId: 'merchant.net.securetrading',
+        merchantName: 'merchang',
+      },
+      transactionInfo: {
+        countryCode: 'pl',
+        currencyCode: 'pln',
+        checkoutOption: 'COMPLETE_IMMEDIATE_PURCHASE',
+        displayItems: [
+          {
+            label: 'Example item',
+            price: '10.00',
+            type: 'LINE_ITEM',
+            status: 'FINAL',
+          },
+        ],
+      },
+    },
   };
 
   const visaCheckoutConfig = {
     buttonSettings: {
       size: '154',
-      color: 'neutral'
+      color: 'neutral',
     },
     merchantId: 'SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4',
     paymentRequest: {
-      subtotal: '20.00'
+      subtotal: '20.00',
     },
     placement: 'st-visa-checkout',
     settings: {
-      displayName: 'My Test Site'
-    }
+      displayName: 'My Test Site',
+    },
   };
   // @ts-ignore
-  const instance: any = ST(config);
-  return { cacheConfig, config, instance, applePayConfig, visaCheckoutConfig };
+  const instance: ST = SecureTrading(config);
+  return { cacheConfig, config, instance, applePayConfig, visaCheckoutConfig, googlePayConfig };
 }

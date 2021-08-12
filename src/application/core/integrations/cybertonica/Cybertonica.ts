@@ -1,5 +1,4 @@
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
-import { Translator } from '../../shared/translator/Translator';
 import { Service } from 'typedi';
 import { IAFCybertonica } from './IAFCybertonica';
 import { environment } from '../../../../environments/environment';
@@ -11,9 +10,9 @@ declare const AFCYBERTONICA: IAFCybertonica;
 @Service()
 export class Cybertonica implements ICybertonica {
   private static readonly SDK_ADDRESS = environment.CYBERTONICA.CYBERTONICA_LIVE_URL;
-  private static LOCALE: string = 'locale';
-  private static SCRIPT_TARGET: string = 'head';
-  private static TID_KEY: string = 'app.tid';
+  private static LOCALE = 'locale';
+  private static SCRIPT_TARGET = 'head';
+  private static TID_KEY = 'app.tid';
   private static TID_TIMEOUT = 5000;
 
   private static getBasename(): string {
@@ -22,12 +21,10 @@ export class Cybertonica implements ICybertonica {
     return 'https://' + link.hostname;
   }
 
-  private translator: Translator;
   private tid: Promise<string> = Promise.resolve(undefined);
 
   constructor(private storage: BrowserLocalStorage) {
     this.storage.setItem(Cybertonica.TID_KEY, '');
-    this.translator = new Translator(this.storage.getItem(Cybertonica.LOCALE));
   }
 
   private _insertCybertonicaLibrary(): Promise<Element> {
@@ -38,7 +35,7 @@ export class Cybertonica implements ICybertonica {
     const tid = this._insertCybertonicaLibrary().then(() =>
       AFCYBERTONICA.init(apiUserName, undefined, Cybertonica.getBasename())
     );
-    const timeout = new Promise(resolve => setTimeout(() => resolve(null), Cybertonica.TID_TIMEOUT));
+    const timeout = new Promise<null>(resolve => setTimeout(() => resolve(null), Cybertonica.TID_TIMEOUT));
 
     this.tid = Promise.race([tid, timeout]);
     this.tid.then(value => this.storage.setItem(Cybertonica.TID_KEY, value));
@@ -47,7 +44,7 @@ export class Cybertonica implements ICybertonica {
   }
 
   public getTransactionId(): Promise<string> {
-    const tid = this.storage.getItem(Cybertonica.TID_KEY);
+    const tid = this.storage.getItem(Cybertonica.TID_KEY) as string;
 
     if (tid !== null && tid !== '') {
       return Promise.resolve(tid);

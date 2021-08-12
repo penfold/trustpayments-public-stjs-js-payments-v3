@@ -1,41 +1,69 @@
-import { Container, Service } from 'typedi';
-import { fromEventPattern, Observable, Subject } from 'rxjs';
+import { ContainerInstance, Inject, Service } from 'typedi';
+import { defer, EMPTY, fromEvent, Observable, Subject } from 'rxjs';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { filter, map, share, switchMap, take } from 'rxjs/operators';
+import { filter, first, map, mergeMap, share, take, takeUntil } from 'rxjs/operators';
 import { ofType } from './operators/ofType';
 import { QueryMessage } from './messages/QueryMessage';
 import { ResponseMessage } from './messages/ResponseMessage';
 import { environment } from '../../../environments/environment';
-import { FrameCollection } from './interfaces/FrameCollection';
-import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
+import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { FrameIdentifier } from './FrameIdentifier';
 import { FrameAccessor } from './FrameAccessor';
 import { FrameNotFound } from './errors/FrameNotFound';
 import { Debug } from '../../Debug';
-import { CONFIG } from '../../dependency-injection/InjectionTokens';
+import { CONFIG, WINDOW } from '../../dependency-injection/InjectionTokens';
+import { IConfig } from '../../model/config/IConfig';
+import { EventDataSanitizer } from './EventDataSanitizer';
 
 @Service()
 export class InterFrameCommunicator {
   private static readonly MESSAGE_EVENT = 'message';
   private static readonly DEFAULT_ORIGIN = '*';
   public readonly incomingEvent$: Observable<IMessageBusEvent>;
-  public readonly communicationClosed$: Observable<void>;
+  public readonly communicationClosed$: Observable<void> = defer(() => this.close$);
   private readonly close$ = new Subject<void>();
   private readonly frameOrigin: string;
   private parentOrigin: string;
+  private responders: Map<string, (queryEvent: IMessageBusEvent) => Observable<unknown>> = new Map();
 
-  constructor(private identifier: FrameIdentifier, private frameAccessor: FrameAccessor) {
-    this.incomingEvent$ = fromEventPattern<MessageEvent>(
-      handler => window.addEventListener(InterFrameCommunicator.MESSAGE_EVENT, handler, true),
-      handler => window.removeEventListener(InterFrameCommunicator.MESSAGE_EVENT, handler)
-    ).pipe(
-      filter(event => event.data.type),
+  constructor(
+    private identifier: FrameIdentifier,
+    private frameAccessor: FrameAccessor,
+    private container: ContainerInstance,
+    private eventDataSanitizer: EventDataSanitizer,
+    @Inject(WINDOW) private window: Window
+  ) {
+    this.incomingEvent$ = fromEvent<MessageEvent>(this.window, InterFrameCommunicator.MESSAGE_EVENT).pipe(
+      filter(event => event.data && event.data.type),
       map(event => event.data),
       share()
     );
 
-    this.communicationClosed$ = this.close$.asObservable();
     this.frameOrigin = new URL(environment.FRAME_URL).origin;
+    this.communicationClosed$.subscribe(() => this.responders.clear());
+  }
+
+  public init(): void {
+    this.incomingEvent$
+      .pipe(
+        filter(event => event.type === QueryMessage.MESSAGE_TYPE),
+        mergeMap((queryEvent: QueryMessage) => {
+          if (!this.responders.has(queryEvent.data.type)) {
+            return EMPTY;
+          }
+
+          return this.responders
+            .get(queryEvent.data.type)(queryEvent.data)
+            .pipe(
+              first(),
+              map(response => new ResponseMessage(response, queryEvent.queryId, queryEvent.sourceFrame))
+            );
+        }),
+        takeUntil(this.communicationClosed$)
+      )
+      .subscribe((response: ResponseMessage<unknown>) => {
+        this.send(response, response.queryFrame);
+      });
   }
 
   public send(message: IMessageBusEvent, target: Window | string): void {
@@ -43,8 +71,9 @@ export class InterFrameCommunicator {
       const parentFrame = this.frameAccessor.getParentFrame();
       const targetFrame = this.resolveTargetFrame(target);
       const frameOrigin = targetFrame === parentFrame ? this.getParentOrigin() : this.frameOrigin;
+      const sanitizedMessage: IMessageBusEvent = { ...message, data: this.eventDataSanitizer.sanitize(message.data) };
 
-      targetFrame.postMessage(message, frameOrigin);
+      targetFrame.postMessage(sanitizedMessage, frameOrigin);
     } catch (e) {
       if (e instanceof FrameNotFound) {
         return Debug.warn(e.message);
@@ -64,7 +93,8 @@ export class InterFrameCommunicator {
           ofType(ResponseMessage.MESSAGE_TYPE),
           filter((event: ResponseMessage<T>) => event.queryId === query.queryId),
           map((event: ResponseMessage<T>) => event.data),
-          take(1)
+          take(1),
+          takeUntil(this.communicationClosed$)
         )
         .subscribe({
           next(result) {
@@ -72,37 +102,31 @@ export class InterFrameCommunicator {
           },
           error(error) {
             reject(error);
-          }
+          },
         });
 
       this.send(query, target);
     });
   }
 
-  public whenReceive(eventType: string) {
+  public whenReceive(eventType: string): Record<string, <T>(responder: (queryEvent: IMessageBusEvent) => Observable<T>) => void> {
     return {
       thenRespond: <T>(responder: (queryEvent: IMessageBusEvent) => Observable<T>) => {
-        this.incomingEvent$
-          .pipe(
-            ofType(QueryMessage.MESSAGE_TYPE),
-            filter((queryEvent: QueryMessage) => queryEvent.data.type === eventType),
-            switchMap((queryEvent: QueryMessage) =>
-              responder(queryEvent.data).pipe(
-                take(1),
-                map((response: T) => new ResponseMessage(response, queryEvent.queryId, queryEvent.sourceFrame))
-              )
-            )
-          )
-          .subscribe((response: ResponseMessage<T>) => {
-            this.send(response, response.queryFrame);
-          });
-      }
+        this.responders.set(eventType, responder);
+      },
     };
   }
 
   public close(): void {
     this.close$.next();
-    this.close$.complete();
+  }
+
+  public sendToParentFrame(event: IMessageBusEvent): void {
+    this.send(event, MERCHANT_PARENT_FRAME);
+  }
+
+  public sendToControlFrame(event: IMessageBusEvent): void {
+    this.send(event, CONTROL_FRAME_IFRAME);
   }
 
   private resolveTargetFrame(target: Window | string): Window {
@@ -114,13 +138,7 @@ export class InterFrameCommunicator {
       return this.frameAccessor.getParentFrame();
     }
 
-    const frames: FrameCollection = this.frameAccessor.getFrameCollection();
-
-    if (target === '' || !frames[target]) {
-      throw new FrameNotFound(`Target frame "${target}" not found.`);
-    }
-
-    return frames[target];
+    return this.frameAccessor.getFrame(target);
   }
 
   private getParentOrigin(): string {
@@ -128,12 +146,14 @@ export class InterFrameCommunicator {
       return this.parentOrigin;
     }
 
-    if (Container.has(CONFIG)) {
-      this.parentOrigin = Container.get(CONFIG).origin || InterFrameCommunicator.DEFAULT_ORIGIN;
-
-      return this.parentOrigin;
+    if (!this.container.has(CONFIG)) {
+      return InterFrameCommunicator.DEFAULT_ORIGIN;
     }
 
-    return InterFrameCommunicator.DEFAULT_ORIGIN;
+    const config: IConfig = this.container.get(CONFIG);
+
+    this.parentOrigin = config.origin || InterFrameCommunicator.DEFAULT_ORIGIN;
+
+    return this.parentOrigin;
   }
 }

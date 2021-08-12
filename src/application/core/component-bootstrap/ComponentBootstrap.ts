@@ -2,24 +2,33 @@ import { FramesHub } from '../../../shared/services/message-bus/FramesHub';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
 import { ContainerInstance, Service } from 'typedi';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
-import { Store } from '../store/Store';
 import { environment } from '../../../environments/environment';
 import { MessageSubscriberRegistry } from '../../../shared/services/message-bus/MessageSubscriberRegistry';
 import { FrameIdentifier } from '../../../shared/services/message-bus/FrameIdentifier';
-import { MessageBus } from '../shared/message-bus/MessageBus';
-import { MessageSubscriberToken } from '../../../shared/dependency-injection/InjectionTokens';
+import {
+  MessageBusToken,
+  MessageSubscriberToken,
+  StoreToken,
+  TranslatorToken,
+} from '../../../shared/dependency-injection/InjectionTokens';
+import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 
 @Service()
 export class ComponentBootstrap {
   constructor(private frameIdentifier: FrameIdentifier, private container: ContainerInstance) {}
 
-  run<T>(frameName: string, componentClass: new (...args: any[]) => T): T {
+  run<T>(frameName: string, componentClass: new (...args: unknown[]) => T): T {
     this.frameIdentifier.setFrameName(frameName);
 
-    this.container.get(MessageBus);
-    this.container.get(Store);
+    this.container.get(InterFrameCommunicator).init();
+    this.container.get(MessageBusToken);
+    this.container.get(StoreToken);
     this.container.get(BrowserLocalStorage).init();
-    this.container.get(FramesHub).notifyReadyState();
+    this.container.get(TranslatorToken).init();
+
+    const framesHub: FramesHub = this.container.get(FramesHub);
+    framesHub.init();
+    framesHub.notifyReadyState();
 
     if (this.frameIdentifier.isControlFrame()) {
       this.container.get(MessageSubscriberRegistry).register(...this.container.getMany(MessageSubscriberToken));

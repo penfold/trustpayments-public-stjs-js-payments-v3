@@ -32,10 +32,12 @@
         ]
       }
     ],
-    "unit-whitelist": [
+    "unit-allowed-list": [
       "px",
       "rem",
       "em",
+      "vh",
+      "vw",
       "%",
       "s",
       "deg"
