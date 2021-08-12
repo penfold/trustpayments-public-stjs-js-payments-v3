@@ -1,0 +1,16 @@
+{
+  "iat": 1595513452,
+  "payload": {
+    "requesttypedescriptions": [
+      "THREEDQUERY",
+      "AUTH"
+    ],
+    "baseamount": "2000",
+    "accounttypedescription": "ECOM",
+    "currencyiso3a": "USD",
+    "customercountryiso2a": "GB",
+    "billingcountryiso2a": "GB",
+    "sitereference": "jstrustthreed76424",
+    "locale": "en_GB"
+  }
+}
