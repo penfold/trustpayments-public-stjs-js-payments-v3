@@ -10,10 +10,12 @@
     <title></title>
 </head>
 <body>
-<% var template = { creditCardNumber: require('html-loader!./card-number/card-number.html'), expirationDate:
-require('html-loader!./expiration-date/expiration-date.html'), securityCode:
-require('html-loader!./security-code/security-code.html'), animatedCard:
-require('html-loader!./animated-card/animated-card.html'), controlFrame:
-require('html-loader!./control-frame/control-frame.html') } %> <%= template[partial] %>
+<% var template = {
+  creditCardNumber: require('html-loader?{"esModule":false}!./card-number/card-number.html'),
+  expirationDate: require('html-loader?{"esModule":false}!./expiration-date/expiration-date.html'),
+  securityCode: require('html-loader?{"esModule":false}!./security-code/security-code.html'),
+  animatedCard: require('html-loader?{"esModule":false}!./animated-card/animated-card.html'),
+  controlFrame: require('html-loader?{"esModule":false}!./control-frame/control-frame.html')
+} %><%= template[partial] %>
 </body>
 </html>
