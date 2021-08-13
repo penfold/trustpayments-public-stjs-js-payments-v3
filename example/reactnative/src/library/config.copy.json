@@ -1,8 +1,6 @@
 {
   "buttonId": "merchant-submit-button",
-  "jwt": "",
   "panIcon": true,
   "submitOnSuccess": false,
-  "submitCallback": ""
+  "submitCallback":""
 }
-
