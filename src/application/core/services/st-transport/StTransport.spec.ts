@@ -1,4 +1,3 @@
-import each from 'jest-each';
 import { GlobalWithFetchMock } from 'jest-fetch-mock';
 import { StTransport } from './StTransport';
 import { Utils } from '../../shared/utils/Utils';
@@ -189,6 +188,8 @@ describe('StTransport class', () => {
 
     it('should throttle requests', async () => {
       const requestObject = { requesttypedescription: 'AUTH' };
+      // @ts-ignore
+      instance.ignoreJsInitErrors = jest.fn().mockReturnValue(false);
 
       mockFT.mockReturnValue(
         resolvingPromise({

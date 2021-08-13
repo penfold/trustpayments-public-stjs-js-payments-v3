@@ -38,6 +38,7 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   fieldsToSubmit: Joi.array().items(Joi.string().valid('pan', 'expirydate', 'securitycode')),
   [GooglePayConfigName]: GooglePaySchema,
   formId: Joi.string(),
+  ignoreJsInitErrors: Joi.boolean(),
   init: Joi.object({
     cachetoken: Joi.string()
       .allow('')

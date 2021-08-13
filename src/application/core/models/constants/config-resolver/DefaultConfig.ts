@@ -26,6 +26,7 @@ export const DefaultConfig: IConfig = {
   errorReporting: true,
   fieldsToSubmit: DefaultFieldsToSubmit,
   formId: MERCHANT_FORM_SELECTOR,
+  ignoreJsInitErrors: false,
   init: DefaultInit,
   jwt: '',
   livestatus: 0,

@@ -25,6 +25,7 @@ export interface IConfig {
   fieldsToSubmit?: string[];
   formId?: string;
   [GooglePayConfigName]?: IGooglePayConfig;
+  ignoreJsInitErrors?: boolean
   init?: IBypassInit;
   jwt?: string;
   livestatus?: 0 | 1;

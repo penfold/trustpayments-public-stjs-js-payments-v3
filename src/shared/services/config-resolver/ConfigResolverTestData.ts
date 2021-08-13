@@ -43,6 +43,7 @@ export const config: IConfig = {
   errorReporting: true,
   fieldsToSubmit: ['pan', 'expirydate', 'securitycode'],
   formId: 'st-form',
+  ignoreJsInitErrors: false,
   init: {
     cachetoken: '',
     threedinit: '',
@@ -151,6 +152,7 @@ export const configResolved: IConfig = {
   errorReporting: true,
   fieldsToSubmit: ['pan', 'expirydate', 'securitycode'],
   formId: 'st-form',
+  ignoreJsInitErrors: false,
   init: {
     cachetoken: '',
     threedinit: '',
@@ -268,6 +270,7 @@ export const minimalDefaultConfigResolve: IConfig = {
     cachetoken: '',
     threedinit: '',
   },
+  ignoreJsInitErrors: false,
   jwt: 'randomjwt',
   livestatus: 0,
   origin: 'http://localhost',
