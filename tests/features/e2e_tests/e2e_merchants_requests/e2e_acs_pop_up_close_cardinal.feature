@@ -167,9 +167,9 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens example page WITH_UPDATE_JWT
-      | jwtName          |
-      | BASE_UPDATED_JWT |
+    And User opens page WITH_UPDATE_JWT and jwt BASE_UPDATED_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User toggle action buttons bar
     And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
@@ -189,9 +189,9 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens example page WITH_UPDATE_JWT
-      | jwtName          |
-      | BASE_UPDATED_JWT |
+    And User opens page WITH_UPDATE_JWT and jwt BASE_UPDATED_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User toggle action buttons bar
     And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button

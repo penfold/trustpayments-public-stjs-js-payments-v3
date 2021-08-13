@@ -60,9 +60,9 @@ Feature: E2E second payment
     Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_FAILED_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    When User opens example page WITH_UPDATE_JWT
-      | jwtName          |
-      | BASE_UPDATED_JWT |
+    And User opens page WITH_UPDATE_JWT and jwt BASE_UPDATED_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     And User fills V2 authentication modal
     Then User will see payment status information: "An error occurred"
     And Wait for notification frame to disappear
