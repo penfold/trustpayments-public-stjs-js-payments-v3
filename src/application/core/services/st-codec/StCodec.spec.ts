@@ -85,7 +85,7 @@ describe('StCodec class', () => {
       // @ts-ignore
       StCodec.handleInvalidResponse.mockReturnValue(new Error('Uh oh!'));
       expect(() => StCodec.verifyResponseObject({ 'a response': 'some data' } as unknown as IResponsePayload, 'ajwtstring')).toThrow(
-        new Error('Uh oh!')
+        new Error('Uh oh!'),
       );
       // @ts-ignore
       expect(StCodec.isInvalidResponse).toHaveBeenCalledTimes(1);
@@ -121,7 +121,7 @@ describe('StCodec class', () => {
           },
           type: 'TRANSACTION_COMPLETE',
         },
-        true
+        true,
       );
     });
 
@@ -131,7 +131,7 @@ describe('StCodec class', () => {
           errorcode: '0',
           errormessage: 'Ok',
         },
-        'someJwtResponse'
+        'someJwtResponse',
       );
       // @ts-ignore
       expect(StCodec.getMessageBus().publish).toHaveBeenCalledTimes(1);
@@ -328,11 +328,11 @@ describe('StCodec class', () => {
         expect.stringMatching(
           new RegExp(
             '^{"acceptcustomeroutput":"2.00","jwt":"' +
-              jwt +
-              '","request":\\[{"pan":"4111111111111111","requesttypedescriptions":\\["AUTH"\\],"requestid":"' +
-              ridRegex +
-              '","sitereference":"live2"}\\],"version":"1.00","versioninfo":"STJS::N/A::2.0.0::N/A"}$'
-          )
+            jwt +
+            '","request":\\[{"pan":"4111111111111111","requesttypedescriptions":\\["AUTH"\\],"requestid":"' +
+            ridRegex +
+            '","sitereference":"live2"}\\],"version":"1.00","versioninfo":"STJS::N/A::2.0.0::N/A"}$',
+          ),
         ),
       ],
       [
@@ -340,12 +340,12 @@ describe('StCodec class', () => {
         expect.stringMatching(
           new RegExp(
             '^{"acceptcustomeroutput":"2.00","jwt":"' +
-              jwt +
-              '","request":\\[{"pan":"4111111111111111",' +
-              '"requesttypedescriptions":\\["AUTH","SUBSCRIPTION"\\],"requestid":"' +
-              ridRegex +
-              '","sitereference":"live2"}\\],"version":"1.00","versioninfo":"STJS::N/A::2.0.0::N/A"}$'
-          )
+            jwt +
+            '","request":\\[{"pan":"4111111111111111",' +
+            '"requesttypedescriptions":\\["AUTH","SUBSCRIPTION"\\],"requestid":"' +
+            ridRegex +
+            '","sitereference":"live2"}\\],"version":"1.00","versioninfo":"STJS::N/A::2.0.0::N/A"}$',
+          ),
         ),
       ],
     ])('should encode valid data', (request, expected) => {
@@ -387,14 +387,14 @@ describe('StCodec class', () => {
           json: () => {
             return new Promise(resolve => resolve(fullResponse));
           },
-        })
+        }, undefined),
       ).resolves.toEqual({ jwt: fullResponse.jwt, response: { verified: 'data' } });
       const expectedResult = (JwtDecode(fullResponse.jwt) as unknown as IDecodedJwt).payload;
-      expect(StCodec.verifyResponseObject).toHaveBeenCalledWith(expectedResult, fullResponse.jwt);
+      expect(StCodec.verifyResponseObject).toHaveBeenCalledWith(expectedResult, fullResponse.jwt, undefined);
     });
 
     it('should error an invalid response', async () => {
-      await expect(instance.decode({})).rejects.toThrow(Error(COMMUNICATION_ERROR_INVALID_RESPONSE));
+      await expect(instance.decode({}, undefined)).rejects.toThrow(Error(COMMUNICATION_ERROR_INVALID_RESPONSE));
       // @ts-ignore
       expect(StCodec.handleInvalidResponse).toHaveBeenCalledTimes(1);
     });
@@ -411,7 +411,7 @@ describe('StCodec class', () => {
         json: () => {
           return new Promise(resolve => resolve(fullResponse));
         },
-      });
+      }, undefined);
 
       setTimeout(() => {
         expect(StCodec.jwt).toEqual('original_jwt');

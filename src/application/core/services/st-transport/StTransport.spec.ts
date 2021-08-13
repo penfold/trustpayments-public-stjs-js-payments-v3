@@ -58,7 +58,7 @@ describe('StTransport class', () => {
               return;
             }
             reject(new Error('codec error'));
-          })
+          }),
       ),
     } as StCodec;
   });
@@ -92,7 +92,7 @@ describe('StTransport class', () => {
         // @ts-ignore
         const options = instance._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
         expect(options.headers).toHaveProperty('ST-Request-Types', req);
-      }
+      },
     );
   });
 
@@ -114,7 +114,7 @@ describe('StTransport class', () => {
             resolvingPromise({
               errorcode: 0,
             }),
-        })
+        }),
       );
       await instance.sendRequest(requestObject);
       // @ts-ignore
@@ -137,7 +137,7 @@ describe('StTransport class', () => {
             resolvingPromise({
               errorcode: 0,
             }),
-        })
+        }),
       );
       await instance.sendRequest(requestObject, 'https://somemerchanturl.com');
       // @ts-ignore
@@ -184,7 +184,7 @@ describe('StTransport class', () => {
       await expect(instance.sendRequest({ requesttypedescription: 'AUTH' })).resolves.toEqual(expected);
       expect(codec.decode).toHaveBeenCalledWith({
         json: expect.any(Function),
-      });
+      }, false);
     });
 
     it('should throttle requests', async () => {
@@ -193,7 +193,7 @@ describe('StTransport class', () => {
       mockFT.mockReturnValue(
         resolvingPromise({
           json: () => ({ errorcode: 0 }),
-        })
+        }),
       );
 
       await instance.sendRequest(requestObject);
