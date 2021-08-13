@@ -218,7 +218,7 @@ describe('CardFrames', () => {
     });
   });
 
-  describe('_subscribeBlockSubmit', () => {
+  describe('subscribeBlockSubmit', () => {
     beforeEach(() => {
       // @ts-ignore
       instance.disableSubmitButton = jest.fn();
@@ -312,7 +312,7 @@ describe('CardFrames', () => {
     });
   });
 
-  describe('_validateFieldsAfterSubmit', () => {
+  describe('validateFieldsAfterSubmit', () => {
     function validateFieldsAfterSubmitFixture(
       stateCardNumber: boolean,
       stateExpirationDate: boolean,
@@ -438,7 +438,7 @@ describe('CardFrames', () => {
     });
   });
 
-  describe('_setSubmitButton', () => {
+  describe('setSubmitButton', () => {
     it('should return button referred to id specified by merchant', () => {
       // @ts-ignore
       expect(instance.createSubmitButton()).toEqual(document.getElementById('merchant-submit-button'));

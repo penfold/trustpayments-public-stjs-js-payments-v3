@@ -41,7 +41,7 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('ControlFrame._onFormFieldStateChange()', () => {
+  describe('ControlFrame.onFormFieldStateChange()', () => {
     const field: IFormFieldState = {
       validity: false,
       value: '',
@@ -64,8 +64,8 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('_initChangeCardNumberEvent()', () => {
-    it('should call _onCardNumberStateChange when CHANGE_CARD_NUMBER event has been called', () => {
+  describe('initChangeCardNumberEvent()', () => {
+    it('should call onCardNumberStateChange when CHANGE_CARD_NUMBER event has been called', () => {
       // @ts-ignore
       ControlFrame.setFormFieldValue = jest.fn();
       messageBusEvent.type = MessageBus.EVENTS.CHANGE_CARD_NUMBER;
@@ -76,8 +76,8 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('_onExpirationDateStateChange()', () => {
-    it('should call _onExpirationDateStateChange when CHANGE_EXPIRATION_DATE event has been called', () => {
+  describe('onExpirationDateStateChange()', () => {
+    it('should call onExpirationDateStateChange when CHANGE_EXPIRATION_DATE event has been called', () => {
       // @ts-ignore
       ControlFrame.setFormFieldValue = jest.fn();
       messageBusEvent.type = MessageBus.EVENTS.CHANGE_EXPIRATION_DATE;
@@ -88,8 +88,8 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('_onSecurityCodeStateChange()', () => {
-    it('should call _onSecurityCodeStateChange when CHANGE_SECURITY_CODE event has been called', () => {
+  describe('onSecurityCodeStateChange()', () => {
+    it('should call onSecurityCodeStateChange when CHANGE_SECURITY_CODE event has been called', () => {
       // @ts-ignore
       ControlFrame.setFormFieldValue = jest.fn();
       messageBusEvent.type = MessageBus.EVENTS.CHANGE_SECURITY_CODE;
@@ -100,8 +100,8 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('_initUpdateMerchantFieldsEvent()', () => {
-    it('should call _storeMerchantData when UPDATE_MERCHANT_FIELDS event has been called', () => {
+  describe('initUpdateMerchantFieldsEvent()', () => {
+    it('should call storeMerchantData when UPDATE_MERCHANT_FIELDS event has been called', () => {
       // @ts-ignore
       instance.updateMerchantFields = jest.fn();
       messageBusEvent.type = MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS;
@@ -112,7 +112,7 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('_processPayment', () => {
+  describe('processPayment', () => {
     const { instance } = controlFrameFixture();
     const data = {
       errorcode: '40005',
@@ -161,7 +161,7 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('_storeMerchantData', () => {
+  describe('storeMerchantData', () => {
     const { instance } = controlFrameFixture();
     const data = 'some data';
 
@@ -172,13 +172,13 @@ describe('ControlFrame', () => {
       instance.messageBus.publish = jest.fn();
     });
 
-    it('should set _merchantFormData', () => {
+    it('should set merchantFormData', () => {
       // @ts-ignore
       expect(instance.merchantFormData).toEqual(data);
     });
   });
 
-  describe('_getPan()', () => {
+  describe('getPan()', () => {
     // @ts-ignore
     instance.params = {
       jwt:
@@ -197,7 +197,7 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('_updateJwtEvent', () => {
+  describe('updateJwtEvent', () => {
     it('calls StCodec.updateJwt() on UPDATE_JWT event', () => {
       const updateJwtSpy = spyOn(StCodec, 'updateJwt');
 
