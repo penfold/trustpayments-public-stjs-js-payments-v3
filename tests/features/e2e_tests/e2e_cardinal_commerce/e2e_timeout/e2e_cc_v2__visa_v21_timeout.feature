@@ -9,7 +9,6 @@ Feature: Cardinal Commerce E2E tests v2 - Timeout - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION
     And User clicks Pay button

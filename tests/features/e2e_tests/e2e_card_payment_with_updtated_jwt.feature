@@ -9,9 +9,9 @@ Feature: E2E Card Payments with updated jwt
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens example page WITH_UPDATE_JWT
-      | jwtName          |
-      | BASE_UPDATED_JWT |
+    And User opens page WITH_UPDATE_JWT and jwt BASE_UPDATED_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     When User calls updateJWT function by filling amount field
     And User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
@@ -22,9 +22,9 @@ Feature: E2E Card Payments with updated jwt
     Given JS library configured by inline params BASIC_CONFIG and jwt JWT_WITHOUT_LOCALE with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens example page WITH_UPDATE_JWT
-      | jwtName                                            |
-      | JWT_WITHOUT_LOCALE_AND_UPDATED_AMOUNT_AND_CURRENCY |
+    And User opens page WITH_UPDATE_JWT and jwt JWT_WITHOUT_LOCALE_AND_UPDATED_AMOUNT_AND_CURRENCY with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     When User calls updateJWT function by filling amount field
     And User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
@@ -38,9 +38,9 @@ Feature: E2E Card Payments with updated jwt
     Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITHOUT_LOCALE with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens example page WITH_UPDATE_JWT
-      | jwtName                                            |
-      | JWT_WITHOUT_LOCALE_AND_UPDATED_AMOUNT_AND_CURRENCY |
+    And User opens page WITH_UPDATE_JWT and jwt JWT_WITHOUT_LOCALE_AND_UPDATED_AMOUNT_AND_CURRENCY with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
     When User calls updateJWT function by filling amount field
     And User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
