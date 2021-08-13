@@ -63,6 +63,8 @@ def print_properties(config):
     logger = get_logger(INFO)
     config_to_print = config.copy()
     config_to_print.pop('COMMAND_EXECUTOR')
+    config_to_print.pop('ISS_KEY')
+    config_to_print.pop('SECRET_KEY')
     logger.info(f'CONFIGURATION: \n{pprint.pformat(config_to_print, indent=4)}')
 
 
