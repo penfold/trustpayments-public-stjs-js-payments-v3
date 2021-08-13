@@ -1,0 +1,6 @@
+{
+  "buttonId": "merchant-submit-button",
+  "panIcon": true,
+  "submitOnSuccess": false,
+  "submitCallback":""
+}

@@ -77,7 +77,7 @@ Feature: Cardinal Commerce E2E tests v1
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card DISCOVER_PASSIVE_AUTH_CARD
+    When User fills payment form with defined card <card>
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -86,10 +86,10 @@ Feature: Cardinal Commerce E2E tests v1
       | success       |
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | card                      |
+      | THREEDQUERY AUTH         | DISCOVER_PASSIVE_AUTH_CARD|
+      | ACCOUNTCHECK THREEDQUERY | DISCOVER_PASSIVE_AUTH_CARD|
+      | THREEDQUERY ACCOUNTCHECK | VISA_PASSIVE_AUTH_CARD    |
 
 
   Scenario Outline: TC_6 - Not Enrolled, request type: <request_types>
@@ -111,13 +111,12 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY |
       | THREEDQUERY ACCOUNTCHECK |
 
-
   Scenario Outline: TC_7 - Unavailable, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card AMERICAN_EXPRESS_UNAVAILABLE_CARD
+    When User fills payment form with defined card <card>
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -126,10 +125,10 @@ Feature: Cardinal Commerce E2E tests v1
       | success       |
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | card                             |
+      | THREEDQUERY AUTH         | AMERICAN_EXPRESS_UNAVAILABLE_CARD|
+      | ACCOUNTCHECK THREEDQUERY | AMERICAN_EXPRESS_UNAVAILABLE_CARD|
+      | THREEDQUERY ACCOUNTCHECK | MASTERCARD_UNAVAILABLE_CARD      |
 
 
   Scenario Outline: TC_8 - Merchant Not Active, request type: <request_types>
@@ -210,13 +209,12 @@ Feature: Cardinal Commerce E2E tests v1
       | ACCOUNTCHECK THREEDQUERY |
       | THREEDQUERY ACCOUNTCHECK |
 
-
   Scenario Outline: TC_12 - Bypassed Authentication, request type: <request_types>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card DISCOVER_BYPASSED_AUTH_CARD
+    When User fills payment form with defined card <card>
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -225,10 +223,10 @@ Feature: Cardinal Commerce E2E tests v1
       | success       |
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | card                        |
+      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
+      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
+      | THREEDQUERY ACCOUNTCHECK | MASTERCARD_BYPASSED_AUTH_V1 |
 
 
   Scenario Outline: retry payment after failed transaction, request type: <request_types>
@@ -242,12 +240,12 @@ Feature: Cardinal Commerce E2E tests v1
     Then User will see payment status information: "An error occurred"
     And User waits for payment status to disappear
     And User clears form
-    When User fills payment form with defined card DISCOVER_BYPASSED_AUTH_CARD
+    When User fills payment form with defined card <card>
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+      | request_types            | card                        |
+      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
+      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
+      | THREEDQUERY ACCOUNTCHECK | MASTERCARD_BYPASSED_AUTH_V1 |

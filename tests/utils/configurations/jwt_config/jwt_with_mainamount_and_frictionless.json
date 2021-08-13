@@ -1,0 +1,12 @@
+{
+  "iat": 1595513452,
+  "payload": {
+    "mainamount": "10.25",
+    "accounttypedescription": "ECOM",
+    "currencyiso3a": "GBP",
+    "pan": "4000000000001026",
+    "expirydate": "01/27",
+    "securitycode": "123",
+    "locale": "en_GB"
+  }
+}

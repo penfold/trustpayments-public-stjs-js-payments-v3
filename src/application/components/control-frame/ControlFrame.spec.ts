@@ -125,22 +125,20 @@ describe('ControlFrame', () => {
       // @ts-ignore
       instance._notification.error = jest.fn();
       // @ts-ignore
+      instance._notification.cancel = jest.fn();
+      // @ts-ignore
       instance._validation = {
         blockForm: jest.fn(),
       };
     });
 
     it('should call notification success when promise is resolved', async () => {
-      // https://stackoverflow.com/a/51045733/2148667
-      const flushPromises = () => new Promise(setImmediate);
-
       // @ts-ignore
       instance._payment = {
         processPayment: jest.fn().mockResolvedValueOnce(undefined),
       };
       // @ts-ignore
-      instance._processPayment(data);
-      await flushPromises();
+      await instance._processPayment(data);
 
       // @ts-ignore
       expect(instance._notification.success).toHaveBeenCalledWith(PAYMENT_SUCCESS);
@@ -149,16 +147,12 @@ describe('ControlFrame', () => {
     });
 
     it('should call notification error when promise is rejected', async () => {
-      // https://stackoverflow.com/a/51045733/2148667
-      const flushPromises = () => new Promise(setImmediate);
-
       // @ts-ignore
       instance._payment = {
         processPayment: jest.fn().mockRejectedValueOnce(undefined),
       };
       // @ts-ignore
-      instance._processPayment(data);
-      await flushPromises();
+      await instance._processPayment(data);
 
       // @ts-ignore
       expect(instance._notification.error).toHaveBeenCalledWith(PAYMENT_ERROR);
@@ -242,7 +236,7 @@ function controlFrameFixture() {
     thenRespond: () => undefined,
   });
   when(configProvider.getConfig$()).thenReturn(of({ jwt: JWT } as IConfig));
-  when(threeDProcess.init()).thenReturn(EMPTY);
+  when(threeDProcess.init$()).thenReturn(EMPTY);
   when(frame.parseUrl()).thenReturn({
     locale: 'en_GB',
     jwt: JWT,

@@ -1,4 +1,7 @@
 import { ValidationErrorItem, ValidationResult } from 'joi';
+import {
+  threeDSecureConfigName,
+} from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
 import { IConfig } from '../../model/config/IConfig';
 import { Service } from 'typedi';
 import { IComponentsIds } from '../../model/config/IComponentsIds';
@@ -14,6 +17,7 @@ import { environment } from '../../../environments/environment';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 import { IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
+import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 
 @Service()
 export class ConfigResolver {
@@ -55,6 +59,7 @@ export class ConfigResolver {
       successCallback: this.getValueOrDefault(config.successCallback, DefaultConfig.successCallback),
       translations: this.getValueOrDefault(config.translations, DefaultConfig.translations),
       visaCheckout: this.setVisaCheckoutConfig(config.visaCheckout),
+      [threeDSecureConfigName]: this.setThreeDSecureConfig(config[threeDSecureConfigName]),
     };
     if (!environment.production) {
       console.error(validatedConfig);
@@ -118,6 +123,20 @@ export class ConfigResolver {
       return;
     }
     return config;
+  }
+
+  private setThreeDSecureConfig(config: ConfigInterface): ConfigInterface {
+    if (!config) {
+      return DefaultConfig.threeDSecure;
+    }
+
+    return {
+      ...config,
+      loggingLevel: this.getValueOrDefault(config.loggingLevel, DefaultConfig.threeDSecure.loggingLevel),
+      challengeDisplayMode: this.getValueOrDefault(config.challengeDisplayMode, DefaultConfig.threeDSecure.challengeDisplayMode),
+      translations: this.getValueOrDefault(config.translations, DefaultConfig.threeDSecure.translations),
+      processingScreenMode: this.getValueOrDefault(config.processingScreenMode, DefaultConfig.threeDSecure.processingScreenMode),
+    };
   }
 
   private setComponentIds(config: IComponentsIds): IComponentsIds {

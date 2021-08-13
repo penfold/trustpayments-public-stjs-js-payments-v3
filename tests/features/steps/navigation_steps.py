@@ -6,13 +6,14 @@ from behave import use_step_matcher, step, then
 
 from configuration import CONFIGURATION
 from features.steps.payment_page_mocks_stubs_steps import stub_jsinit_update_jwt_request
-from models.jwt_payload_builder import JwtPayloadBuilder
 from pages.page_factory import Pages
-from utils.configurations.jwt_generator import encode_jwt_for_json, get_data_from_json, encode_jwt, \
-    merge_json_conf_with_additional_attr, decode_jwt_from_jsinit
+from utils.configurations.inline_config_builder import InlineConfigBuilder
+from utils.configurations.jwt_generator import encode_jwt_for_json, get_jwt_config_from_json, encode_jwt, \
+     decode_jwt_from_jsinit
 from utils.enums.example_page_param import ExamplePageParam
 from utils.enums.jwt_config import JwtConfig
 from utils.enums.responses.jsinit_response import jsinit_response
+from utils.helpers.resources_reader import get_translation_from_json
 from utils.mock_handler import MockUrl
 
 use_step_matcher('re')
@@ -36,7 +37,7 @@ def step_impl(context):
 def step_impl(context, language):
     context.language = language
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    jwt = payment_page.get_translation_from_json(language, 'jwt')
+    jwt = get_translation_from_json(language, 'jwt')
     payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}?jwt={jwt}')
 
 
@@ -44,7 +45,7 @@ def step_impl(context, language):
 def step_impl(context, language):
     context.language = language
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    jwt = payment_page.get_translation_from_json(language, 'jwt')
+    jwt = get_translation_from_json(language, 'jwt')
     payment_page.open_page(f'{CONFIGURATION.URL.BASE_URL}/minimal.html?jwt={jwt}')
 
 
@@ -103,16 +104,11 @@ def step_impl(context, example_page):
         accept_untrusted_pages_on_safari_browsers(context)
     # setting url specific params accordingly to example page
     if example_page is None:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.inline_e2e_config}'
     elif 'IN_IFRAME' in example_page:
-        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.inline_config}'
-    elif 'WITH_UPDATE_JWT' in example_page:
-        jwt = ''
-        for row in context.table:
-            jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.inline_e2e_config}'
     else:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_e2e_config}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
     payment_page.open_page(url)
@@ -121,28 +117,26 @@ def step_impl(context, example_page):
         payment_page.switch_to_example_page_parent_iframe()
 
 
-@step('User opens page (?P<example_page>.+) and jwt (?P<jwt_config>.+) with additional attributes')
-def step_impl(context, example_page, jwt_config):
+@step('User opens page WITH_UPDATE_JWT and jwt (?P<jwt_config>.+) with additional attributes')
+def step_impl(context, jwt_config):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    # setting url specific params accordingly to example page
-    if '' in example_page:
-        jwt_config_from_json_dict = get_data_from_json(JwtConfig[jwt_config].value)['payload']
-        # build payload base on additional attributes and parse to dictionary
-        jwt_payload_dict = JwtPayloadBuilder().map_payload_fields(context.table).build().__dict__
-        # merge both dictionaries (old is overridden by additional attr)
-        jwt = encode_jwt(merge_json_conf_with_additional_attr(jwt_config_from_json_dict, jwt_payload_dict))
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}{context.inline_config}'
-    else:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_config}'
-    url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
+    # parse old jwt config (payload part) to dictionary object
+    jwt_payload_dict = get_jwt_config_from_json(JwtConfig[jwt_config].value)['payload']
+    # override/add default sitereference from config
+    jwt_payload_dict['sitereference'] = CONFIGURATION.SITE_REFERENCE_CARDINAL
+    # build payload base on additional attributes
+    jwt_payload_dict = InlineConfigBuilder().map_jwt_additional_fields(jwt_payload_dict, context.table)
+    jwt = encode_jwt(jwt_payload_dict)
 
+    url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam["WITH_UPDATE_JWT"].value % jwt}&{context.inline_e2e_config}'
+    url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
     payment_page.open_page(url)
 
 
 @step('User opens (?P<path>.+) page with inline param')
 def step_impl(context, path):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    url = f'{CONFIGURATION.URL.BASE_URL}/{path}?{context.inline_config}'
+    url = f'{CONFIGURATION.URL.BASE_URL}/{path}?{context.inline_e2e_config}'
     if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
     payment_page.open_page(url)

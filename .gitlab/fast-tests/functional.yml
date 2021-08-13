@@ -44,7 +44,7 @@ e2e-cardinal-commerce-tests-review:
     - .rules-when-review
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
-  parallel: 8
+  parallel: 9
 
 e2e-cardinal-commerce-tests-release:
   extends:
@@ -53,7 +53,7 @@ e2e-cardinal-commerce-tests-release:
     - .rules-when-release
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
-  parallel: 8
+  parallel: 9
 
 # this is on purpose - STJS-1678
 e2e-cardinal-commerce-timeout-tests-release:
@@ -72,8 +72,9 @@ e2e-merchants-features-tests-nightly:
     - .services-app-html-review
     - .rules-when-review-manual-allow-failure
   variables:
+    IGNORED_FILES: 'e2e_acs_pop_up_close_trust.feature'
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_requests'
-  parallel: 6
+  parallel: 3
 
 e2e-merchants-features-tests-release:
   extends:
@@ -81,8 +82,9 @@ e2e-merchants-features-tests-release:
     - .service-app-html-release-merchant
     - .rules-when-release
   variables:
+    IGNORED_FILES: 'e2e_acs_pop_up_close_trust.feature'
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_requests'
-  parallel: 6
+  parallel: 3
 
 # Smoke E2E Tests Headless -> exactly same scope which is used in extended tests as $SMOKE_E2E_TESTS_TAG
 e2e-smoke-tests-review:
@@ -111,7 +113,7 @@ e2e-smoke-tests-review:
     - .rules-when-review-manual-allow-failure
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_additional_coverage'
-  parallel: 14
+  parallel: 18
 
 ################################### Component Tests ###################################
 .component-app-html-mock:

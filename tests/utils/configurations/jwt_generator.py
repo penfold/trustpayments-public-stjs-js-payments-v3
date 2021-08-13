@@ -1,53 +1,37 @@
-import json
-import os
 import time
-
 import jwt
 
+from configuration import CONFIGURATION
 from utils.enums.jwt_config import JwtConfig
 from utils.helpers.random_data_generator import get_string
+from utils.helpers.resources_reader import get_jwt_config_from_json, get_mock_from_json
 
-SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'you_will_never_guess'
-ISS_KEY = os.environ.get('JWT_ISS_KEY') or 'you_will_never_guess'
-
-
-def get_data_from_json(jwt_config):
-    with open('utils/configurations/jwt_config_files' + f'/{jwt_config}', 'r') as file:
-        jwt_json = json.load(file)
-    return jwt_json
-
-
-def get_data_from_jsinit_file(jsinit_filename):
-    with open(f'wiremock/__files/{jsinit_filename}', 'r') as file:
-        loaded_json = json.load(file)
-    return loaded_json
-
-
-def encode_jwt_for_json(jwt_config: JwtConfig):
-    data = get_data_from_json(jwt_config.value)
-    jwt_token = jwt.encode({'iat': int(time.time()), 'iss': ISS_KEY, 'payload': data['payload']}, SECRET_KEY)
-    return jwt_token
-
-
-def decode_jwt_from_jsinit(jsinit_filename):
-    jwt_value = get_data_from_jsinit_file(jsinit_filename)
-    jwt_json = jwt.decode(jwt_value['jwt'], SECRET_KEY, audience=ISS_KEY, algorithms='HS256', options={'verify_signature': False})
-    return jwt_json['payload']['jwt']
-
-
-def decode_jwt(encoded_jwt):
-    jwt_json = jwt.decode(encoded_jwt, SECRET_KEY, audience=ISS_KEY, algorithms='HS256', options={'verify_signature': False})
-    return jwt_json
-
-
-def merge_json_conf_with_additional_attr(old_config_jwt_dict, jwt_payload_dict):
-    payload_without_null = delete_empty_from_json(jwt_payload_dict)
-    return {**old_config_jwt_dict, **payload_without_null}
+SECRET_KEY = CONFIGURATION.SECRET_KEY
+ISS_KEY = CONFIGURATION.ISS_KEY
 
 
 def encode_jwt(jwt_payload):
     jwt_token = jwt.encode({'iat': int(time.time()), 'iss': ISS_KEY, 'payload': jwt_payload}, SECRET_KEY)
     return jwt_token
+
+
+def decode_jwt(encoded_jwt):
+    jwt_json = jwt.decode(encoded_jwt, SECRET_KEY, audience=ISS_KEY, algorithms='HS256',
+                          options={'verify_signature': False})
+    return jwt_json
+
+
+def encode_jwt_for_json(jwt_config: JwtConfig):
+    data = get_jwt_config_from_json(jwt_config.value)
+    jwt_token = jwt.encode({'iat': int(time.time()), 'iss': ISS_KEY, 'payload': data['payload']}, SECRET_KEY)
+    return jwt_token
+
+
+def decode_jwt_from_jsinit(jsinit_filename):
+    jwt_value = get_mock_from_json(jsinit_filename)
+    jwt_json = jwt.decode(jwt_value['jwt'], SECRET_KEY, audience=ISS_KEY, algorithms='HS256',
+                          options={'verify_signature': False})
+    return jwt_json['payload']['jwt']
 
 
 def delete_empty_from_json(dictionary):
@@ -85,7 +69,7 @@ def replace_jwt(entry):
 def replace_updated_jwt(entry):
     if 'updatedJwt' in entry:
         start_index = entry.rfind('updatedJwt=')
-        end_index = len(entry)-entry.rfind('&inline')
+        end_index = len(entry) - entry.rfind('&inline')
         random_text = get_string(25, 1)
         jwt_from_log = entry[start_index:-end_index]
         entry = entry.replace(jwt_from_log, 'updatedJwt=' + random_text)

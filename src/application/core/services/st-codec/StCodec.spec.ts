@@ -144,7 +144,6 @@ describe('StCodec class', () => {
           errormessage: 'Ok',
         },
         'someJwtResponse',
-        'someThreedresponse'
       );
       // @ts-ignore
       expect(StCodec.getMessageBus().publish).toHaveBeenCalledTimes(1);
