@@ -44,6 +44,7 @@ export class ConfigResolver {
       fieldsToSubmit: this.getValueOrDefault(config.fieldsToSubmit, DefaultConfig.fieldsToSubmit),
       formId: this.getValueOrDefault(config.formId, DefaultConfig.formId),
       googlePay: this.setGooglePayConfig(config.googlePay),
+      ignoreJsInitErrors: this.getValueOrDefault(config.ignoreJsInitErrors, DefaultConfig.ignoreJsInitErrors),
       init: this.getValueOrDefault(config.init, DefaultConfig.init),
       jwt: this.getValueOrDefault(config.jwt, DefaultConfig.jwt),
       livestatus: this.getValueOrDefault(config.livestatus, DefaultConfig.livestatus),

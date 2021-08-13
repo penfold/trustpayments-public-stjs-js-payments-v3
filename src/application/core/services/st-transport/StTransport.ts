@@ -53,10 +53,10 @@ export class StTransport {
   async sendRequest(requestObject: IStRequest, merchantUrl?: string): Promise<Record<string, unknown>> {
     const requestBody = this.getCodec().encode(requestObject);
     const fetchOptions = this.getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
-    const isRequestJsinit = this.isRequestJsinit(requestObject.requesttypedescriptions);
+    const ignoreJsInitErrors = this.isRequestJsinit(requestObject.requesttypedescriptions) && this.getConfig().ignoreJsInitErrors;
 
     if (!this.throttlingRequests.has(requestBody)) {
-      this.throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody, fetchOptions, merchantUrl, isRequestJsinit));
+      this.throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody, fetchOptions, merchantUrl, ignoreJsInitErrors));
       setTimeout(() => this.throttlingRequests.delete(requestBody), StTransport.THROTTLE_TIME);
     }
 
@@ -98,7 +98,7 @@ export class StTransport {
     return options;
   }
 
-  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions, merchantUrl?: string, isRequestJsinit?: boolean): Promise<Record<string, unknown>> {
+  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions, merchantUrl?: string, ignoreJsInitErrors?: boolean): Promise<Record<string, unknown>> {
     const codec = this.getCodec();
     const gatewayUrl = merchantUrl ? merchantUrl : this.getConfig().datacenterurl;
 
@@ -107,14 +107,14 @@ export class StTransport {
       body: requestBody,
     })
       .then((response: Response) => {
-        return codec.decode(response, isRequestJsinit);
+        return codec.decode(response, ignoreJsInitErrors);
       })
       .catch((error: Error | unknown) => {
         if (error instanceof InvalidResponseError) {
           return Promise.reject(error);
         }
 
-        return codec.decode({}, isRequestJsinit);
+        return codec.decode({}, ignoreJsInitErrors);
       });
   }
 

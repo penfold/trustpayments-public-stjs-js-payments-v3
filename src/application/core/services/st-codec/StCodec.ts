@@ -54,12 +54,12 @@ export class StCodec {
     };
   }
 
-  static verifyResponseObject(responseData: IResponsePayload, jwtResponse: string, isRequestJsinit?: boolean): IResponseData {
+  static verifyResponseObject(responseData: IResponsePayload, jwtResponse: string, ignoreJsInitErrors?: boolean): IResponseData {
     if (StCodec.isInvalidResponse(responseData)) {
       throw StCodec.handleInvalidResponse();
     }
     const responseContent: IResponseData = StCodec.determineResponse(responseData, jwtResponse);
-    StCodec.handleValidGatewayResponse(responseContent, jwtResponse, isRequestJsinit);
+    StCodec.handleValidGatewayResponse(responseContent, jwtResponse, ignoreJsInitErrors);
     return responseContent;
   }
 
@@ -174,16 +174,16 @@ export class StCodec {
     errormessageTranslated: string,
     responseContent: IResponseData,
     jwtResponse: string,
-    isRequestJsinit?: boolean,
+    ignoreJsInitErrors?: boolean,
   ): void {
     StCodec.getNotification().error(errormessageTranslated);
-    if (!isRequestJsinit) {
+    if (!ignoreJsInitErrors) {
       StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
       StCodec.publishResponse(responseContent, jwtResponse);
     }
   }
 
-  private static handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string, isRequestJsinit?: boolean) {
+  private static handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string, ignoreJsInitErrors?: boolean) {
     const translator = Container.get(TranslatorToken);
     const validation = new Validation();
 
@@ -210,7 +210,7 @@ export class StCodec {
     }
 
     validation.blockForm(FormState.AVAILABLE);
-    StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse, isRequestJsinit);
+    StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse, ignoreJsInitErrors);
     throw new GatewayError(errormessage);
   }
 
@@ -261,13 +261,13 @@ export class StCodec {
     return JSON.stringify(this.buildRequestObject(requestObject));
   }
 
-  async decode(responseObject: Response | Record<string, unknown>, isRequestJsinit: boolean): Promise<Record<string, unknown>> {
+  async decode(responseObject: Response | Record<string, unknown>, ignoreJsInitErrors: boolean): Promise<Record<string, unknown>> {
     return new Promise((resolve, reject) => {
       if (typeof responseObject.json === 'function') {
         responseObject.json().then((responseData: IResponsePayload) => {
           try {
             const decoded = StCodec.decodeResponseJwt(responseData.jwt, reject);
-            const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt, isRequestJsinit);
+            const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt, ignoreJsInitErrors);
 
             if (Number(verifiedResponse.errorcode) === 0) {
               StCodec.replaceJwt(decoded.payload.jwt);

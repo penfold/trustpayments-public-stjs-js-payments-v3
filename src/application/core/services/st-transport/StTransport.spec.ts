@@ -130,7 +130,7 @@ describe('StTransport class', () => {
       const requestBody = `{"jwt":"${config.jwt}"}`;
       const requestObject = { requesttypedescriptions: ['AUTH'] };
       // @ts-ignore
-      instance.isRequestJsinit = jest.fn().mockReturnValue(false);
+      instance.ignoreJsInitErrors = jest.fn().mockReturnValue(false);
 
       mockFT.mockReturnValue(
         resolvingPromise({
@@ -192,7 +192,7 @@ describe('StTransport class', () => {
     it('should throttle requests', async () => {
       const requestObject = { requesttypedescription: 'AUTH' };
       // @ts-ignore
-      instance.isRequestJsinit = jest.fn().mockReturnValue(false);
+      instance.ignoreJsInitErrors = jest.fn().mockReturnValue(false);
 
       mockFT.mockReturnValue(
         resolvingPromise({
