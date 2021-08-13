@@ -18,6 +18,7 @@ class MockUrl(Enum):
     VISA_MOCK_URI = '/visaPaymentStatus'
     CC_MOCK_ACS_URI = '/cardinalAuthenticateCard'
     APPLEPAY_MOCK_URI = '/applePaymentStatus'
+    GOOGLE_PAY_MOCK_URI = '/googlePaymentStatus'
     GATEWAY_MOCK_URI = '/jwt/'
     CONFIG_MOCK_URI = '/config.json'
     PORT = 8443
