@@ -214,9 +214,10 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
       | sitereference           | jstrustthreed76424 |
-    And User opens example page WITH_UPDATE_JWT
-      | jwtName                |
-      | BASE_TRUST_UPDATED_JWT |
+    And User opens page WITH_UPDATE_JWT and jwt BASE_TRUST_UPDATED_JWT with additional attributes
+      | key                     | value              |
+      | requesttypedescriptions | THREEDQUERY AUTH   |
+      | sitereference           | jstrustthreed76424 |
     And User toggle action buttons bar
     And User fills payment form with defined card VISA_V22_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
@@ -238,9 +239,10 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
       | sitereference           | jstrustthreed76424 |
-    And User opens example page WITH_UPDATE_JWT
-      | jwtName                |
-      | BASE_TRUST_UPDATED_JWT |
+    And User opens page WITH_UPDATE_JWT and jwt BASE_TRUST_UPDATED_JWT with additional attributes
+      | key                     | value              |
+      | requesttypedescriptions | THREEDQUERY AUTH   |
+      | sitereference           | jstrustthreed76424 |
     And User toggle action buttons bar
     And User fills payment form with defined card VISA_V22_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button

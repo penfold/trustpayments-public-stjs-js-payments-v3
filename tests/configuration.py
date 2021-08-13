@@ -20,6 +20,10 @@ def load_config():
                          'REACT_APP': get_from_env('REACT_APP', 'https://localhost:3000')}),
         'REPORTS_PATH': get_path_from_env('AUTOMATION_REPORTS', 'reports'),
         'SCREENSHOTS_PATH': get_path_from_env('AUTOMATION_SCREENSHOTS', 'screenshots'),
+        'SECRET_KEY': get_from_env('JWT_SECRET_KEY', 'you_will_never_guess'),
+        'ISS_KEY': get_from_env('JWT_ISS_KEY', 'you_will_never_guess'),
+        'SITE_REFERENCE_CARDINAL': get_from_env('SITE_REFERENCE_CARDINAL', 'test_james38641'),
+        'SITE_REFERENCE_TRUST': get_from_env('SITE_REFERENCE_TRUST', 'you_will_never_guess'),
         'BROWSER': get_from_env('AUTOMATION_BROWSER', 'chrome'),
         'HEADLESS': get_from_env('HEADLESS', True),
         'TIMEOUT': get_from_env('AUTOMATION_TIMEOUT', 40),
@@ -44,7 +48,7 @@ def load_config():
         'ACCEPT_SSL_CERTS': get_from_env('ACCEPT_SSL_CERTS', True),
         'PROJECT_NAME': get_from_env('PROJECT_NAME', 'JS Payments Interface'),
         'BUILD_NAME': get_from_env('BUILD_NAME', 'Behavioral test: ' + str(date.today())),
-        'BROWSERSTACK_DEBUG': get_from_env('BROWSERSTACK_DEBUG', 'true'),
+        'BROWSERSTACK_DEBUG': get_from_env('BROWSERSTACK_DEBUG', 'true')
     }
 
     return AttrDict(config)
@@ -59,6 +63,8 @@ def print_properties(config):
     logger = get_logger(INFO)
     config_to_print = config.copy()
     config_to_print.pop('COMMAND_EXECUTOR')
+    config_to_print.pop('ISS_KEY')
+    config_to_print.pop('SECRET_KEY')
     logger.info(f'CONFIGURATION: \n{pprint.pformat(config_to_print, indent=4)}')
 
 

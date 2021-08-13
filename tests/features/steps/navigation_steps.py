@@ -107,11 +107,6 @@ def step_impl(context, example_page):
         url = f'{CONFIGURATION.URL.BASE_URL}/?{context.inline_e2e_config}'
     elif 'IN_IFRAME' in example_page:
         url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.inline_e2e_config}'
-    elif 'WITH_UPDATE_JWT' in example_page:
-        jwt = ''
-        for row in context.table:
-            jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}{context.inline_e2e_config}'
     else:
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_e2e_config}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
@@ -122,17 +117,18 @@ def step_impl(context, example_page):
         payment_page.switch_to_example_page_parent_iframe()
 
 
-@step('User opens page (?P<example_page>.+) and jwt (?P<jwt_config>.+) with additional attributes')
-def step_impl(context, example_page, jwt_config):
+@step('User opens page WITH_UPDATE_JWT and jwt (?P<jwt_config>.+) with additional attributes')
+def step_impl(context, jwt_config):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     # parse old jwt config (payload part) to dictionary object
     jwt_payload_dict = get_jwt_config_from_json(JwtConfig[jwt_config].value)['payload']
+    # override/add default sitereference from config
+    jwt_payload_dict['sitereference'] = CONFIGURATION.SITE_REFERENCE_CARDINAL
     # build payload base on additional attributes
     jwt_payload_dict = InlineConfigBuilder().map_jwt_additional_fields(jwt_payload_dict, context.table)
-    # merge both dictionaries (old is overridden by additional attr)
     jwt = encode_jwt(jwt_payload_dict)
 
-    url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}&{context.inline_e2e_config}'
+    url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam["WITH_UPDATE_JWT"].value % jwt}&{context.inline_e2e_config}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
     payment_page.open_page(url)
 

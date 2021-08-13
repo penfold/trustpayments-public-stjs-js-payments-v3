@@ -5,7 +5,7 @@ from wiremock.resources.mappings import Mapping, MappingRequest, HttpMethods, Ma
 from wiremock.resources.mappings.resource import Mappings
 from wiremock.server import WireMockServer
 
-from utils.helpers.resources_reader import get_mock_response_from_json
+from utils.helpers.resources_reader import get_mock_from_json
 
 
 class MockUrl(Enum):
@@ -60,7 +60,7 @@ def stub_config(config_json):
             headers={'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization, st-request-types',
                      'Access-Control-Allow-Methods': 'GET, POST',
                      'Access-Control-Allow-Origin': '*'},
-            json_body=get_mock_response_from_json(config_json)
+            json_body=get_mock_from_json(config_json)
         ),
         persistent=False)
     Mappings.create_mapping(mapping)
@@ -81,7 +81,7 @@ def stub_st_request_type(mock_json, request_type):
             headers={'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization, st-request-types',
                      'Access-Control-Allow-Methods': 'GET, POST',
                      'Access-Control-Allow-Origin': '*'},
-            json_body=get_mock_response_from_json(mock_json)
+            json_body=get_mock_from_json(mock_json)
         ),
         persistent=False)
     Mappings.create_mapping(mapping)
@@ -102,7 +102,7 @@ def stub_jsinit(mock_json, request_type):
             headers={'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization, st-request-types',
                      'Access-Control-Allow-Methods': 'GET, POST',
                      'Access-Control-Allow-Origin': '*'},
-            json_body=get_mock_response_from_json(mock_json)
+            json_body=get_mock_from_json(mock_json)
         ),
         persistent=False)
     Mappings.create_mapping(mapping)
@@ -124,7 +124,7 @@ def stub_st_request_type_server_error(mock_json, request_type=None):
                      'Access-Control-Allow-Methods': 'GET, POST',
                      'Access-Control-Allow-Origin': '*'},
 
-            json_body=get_mock_response_from_json(mock_json)
+            json_body=get_mock_from_json(mock_json)
         ),
         persistent=False)
     Mappings.create_mapping(mapping)
@@ -144,7 +144,7 @@ def stub_payment_status(mock_url, mock_json):
             headers={'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization, st-request-types',
                      'Access-Control-Allow-Methods': 'GET, POST',
                      'Access-Control-Allow-Origin': '*'},
-            json_body=get_mock_response_from_json(mock_json)
+            json_body=get_mock_from_json(mock_json)
         ),
         persistent=False)
     Mappings.create_mapping(mapping)
