@@ -7,7 +7,7 @@
     ],
     "baseamount": "2000",
     "accounttypedescription": "ECOM",
-    "currencyiso3a": "EUR",
-    "sitereference": "test_james38641"
+    "currencyiso3a": "USD",
+    "locale": "en_GB"
   }
 }

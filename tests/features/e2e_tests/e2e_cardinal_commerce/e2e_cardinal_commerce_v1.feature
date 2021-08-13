@@ -9,7 +9,6 @@ Feature: Cardinal Commerce E2E tests v1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
@@ -33,7 +32,6 @@ Feature: Cardinal Commerce E2E tests v1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_FAILED_SIGNATURE_CARD
     And User clicks Pay button
@@ -55,7 +53,6 @@ Feature: Cardinal Commerce E2E tests v1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card AMERICAN_EXPRESS_FAILED_AUTH_CARD
     And User clicks Pay button
@@ -79,7 +76,6 @@ Feature: Cardinal Commerce E2E tests v1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card <card>
     And User clicks Pay button
@@ -100,7 +96,6 @@ Feature: Cardinal Commerce E2E tests v1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_NOT_ENROLLED_CARD
     And User clicks Pay button
@@ -120,7 +115,6 @@ Feature: Cardinal Commerce E2E tests v1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card <card>
     And User clicks Pay button
@@ -141,7 +135,6 @@ Feature: Cardinal Commerce E2E tests v1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_MERCHANT_NOT_ACTIVE_CARD
     And User clicks Pay button
@@ -161,7 +154,6 @@ Feature: Cardinal Commerce E2E tests v1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_CMPI_LOOKUP_ERROR_CARD
     And User clicks Pay button
@@ -180,7 +172,6 @@ Feature: Cardinal Commerce E2E tests v1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CMPI_AUTH_ERROR_CARD
     And User clicks Pay button
@@ -202,7 +193,6 @@ Feature: Cardinal Commerce E2E tests v1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_AUTH_UNAVAILABLE_CARD
     And User clicks Pay button
@@ -223,7 +213,6 @@ Feature: Cardinal Commerce E2E tests v1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card <card>
     And User clicks Pay button
@@ -244,7 +233,6 @@ Feature: Cardinal Commerce E2E tests v1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CMPI_AUTH_ERROR_CARD
     And User clicks Pay button

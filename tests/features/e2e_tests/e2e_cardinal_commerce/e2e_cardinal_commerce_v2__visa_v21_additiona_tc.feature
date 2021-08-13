@@ -9,7 +9,6 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_TRANSACTION_TIMEOUT_ACS
     And User clicks Pay button
@@ -32,7 +31,6 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_SUSPECTED_FRAUD
     And User clicks Pay button
@@ -55,7 +53,6 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_NOT_ENROLLED
     And User clicks Pay button
@@ -78,7 +75,6 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_TIMEOUT_2_ACS
     And User clicks Pay button
@@ -101,7 +97,6 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_TRANSACTION_NON_PAYMENT
     And User clicks Pay button
@@ -124,7 +119,6 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_3RI_TRANSACTION_NOT_SUPPORTED
     And User clicks Pay button
