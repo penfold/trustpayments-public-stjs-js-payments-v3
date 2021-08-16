@@ -1,6 +1,6 @@
 import HttpClient from '@trustpayments/http-client';
 import * as Http from 'http';
-import { asapScheduler, firstValueFrom, Observable, scheduled } from 'rxjs';
+import { asapScheduler, firstValueFrom, Observable, scheduled, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Container, Service } from 'typedi';
 import { environment } from '../../../../environments/environment';
@@ -37,18 +37,23 @@ export class GooglePaySdkProviderMock implements IGooglePaySdkProvider {
     };
   }
 
-  private loadPaymentData(request: IGooglePayPaymentRequest): Promise<IPaymentResponse> {
-
-    return firstValueFrom<IPaymentResponse>(
-      this.httpClient.get$(this.mockPaymentUrl).pipe(map(response => response.data as IPaymentResponse))
-    );
+  private loadPaymentData(request: IGooglePayPaymentRequest):Promise<IPaymentResponse>{
+    return firstValueFrom(this.httpClient.get$<IPaymentResponse>(this.mockPaymentUrl)
+      .pipe(
+        map((response) => {
+          if(Object.prototype.hasOwnProperty.call(response, 'error')) {
+            return Promise.reject(response) as unknown as IPaymentResponse;
+          }
+          return response.data;
+        })
+      ));
   }
 
   private createButton(config: IGooglePayButtonOptions) {
     const button = document.createElement('button');
     button.id = 'gp-mocked-button';
     button.innerHTML = '<img src="./img/google-pay-button.svg" alt="Buy with Google Pay" style="max-width:100%;">';
-    button.setAttribute('style',`
+    button.setAttribute('style', `
       appearance: none;
       background: transparent;
       padding: 0;
@@ -56,7 +61,7 @@ export class GooglePaySdkProviderMock implements IGooglePaySdkProvider {
       outline: none;
       cursor: pointer;
     `);
-    button.setAttribute('type','button');
+    button.setAttribute('type', 'button');
     button.addEventListener('click', event => {
       event.preventDefault();
       config.onClick();
