@@ -43,6 +43,7 @@ export const config: IConfig = {
   errorReporting: true,
   fieldsToSubmit: ['pan', 'expirydate', 'securitycode'],
   formId: 'st-form',
+  ignoreJsInitErrors: false,
   init: {
     cachetoken: '',
     threedinit: '',
