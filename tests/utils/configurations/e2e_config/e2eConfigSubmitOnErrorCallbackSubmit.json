@@ -1,9 +1,0 @@
-{
-  "components": {
-    "paymentTypes": [],
-    "startOnLoad": false
-  },
-  "panIcon": true,
-  "submitOnError": true,
-  "submitCallback": "callback"
-}
