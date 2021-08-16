@@ -1,4 +1,5 @@
 # type: ignore[no-redef]
+import time
 
 from behave import use_step_matcher, given, step, when, then
 
@@ -123,6 +124,7 @@ def step_impl(context, action_code):
         stub_st_request_type(GooglePayResponse.ERROR.value, 'THREEDQUERY, AUTH')
     elif action_code == 'CANCEL':
         stub_payment_status(MockUrl.GOOGLE_PAY_MOCK_URI.value, GooglePayResponse[action_code].value)
+        time.sleep(300)
     page.choose_payment_methods(PaymentType.GOOGLE_PAY.name)
 
 
@@ -317,8 +319,8 @@ def step_impl(context, request_type):
         page.validate_updated_jwt_in_request_for_visa(PaymentType.VISA_CHECKOUT.value,
                                                       context.update_jwt_from_jsinit, 1)
     elif 'GOOGLE_PAY' in request_type:
-        page.validate_updated_jwt_in_request_for_visa(MockUrl.GOOGLE_PAY_MOCK_URI.value,
-                                                      context.update_jwt, 1)
+        page.validate_updated_jwt_in_request(request_type, MockUrl.GOOGLE_PAY_MOCK_URI.value,
+                                             context.update_jwt, 1)
     else:
         page.validate_updated_jwt_in_request(request_type, MockUrl.GATEWAY_MOCK_URI.value,
                                              context.update_jwt, 1)

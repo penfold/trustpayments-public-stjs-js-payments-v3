@@ -5,10 +5,11 @@ Feature: GooglePay
 
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens mock payment page
+
 
   @config_google_base
   Scenario Outline: GooglePay - checking payment status for <action_code> response code
+    Given User opens mock payment page
     When User chooses GooglePay as payment method - response is set to "<action_code>"
     Then User will see payment status information: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
@@ -25,6 +26,7 @@ Feature: GooglePay
 
   @config_google_base
   Scenario Outline: GooglePay - checking translation for "Payment has been cancelled" status for <language>
+    Given User opens mock payment page
     When User changes page language to "<language>"
     And User chooses GooglePay as payment method - response is set to "CANCEL"
     Then User will see "Payment has been cancelled" payment status translated into "<language>"
@@ -34,7 +36,8 @@ Feature: GooglePay
 
   @config_google_submit_on_success_true
   Scenario: GooglePay - successful payment with enabled 'submit on success' process
-    Given User waits for whole form to be loaded
+    Given User opens mock payment page
+    And User waits for whole form to be loaded
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User chooses GooglePay as payment method - response is set to "SUCCESS"
     Then User will be sent to page with url "www.example.com" having params
@@ -46,7 +49,6 @@ Feature: GooglePay
       | myBillName           | John Test                               |
       | myBillEmail          | test@example                            |
       | myBillTel            | 44422224444                             |
-      | eci                  | 07                                      |
       | jwt                  | should not be none                      |
       | transactionreference | should not be none                      |
       | settlestatus         | 0                                       |
@@ -55,16 +57,18 @@ Feature: GooglePay
 
   @config_google_submit_on_error_true
   Scenario: GooglePay - error payment with enabled 'submit on error' process
-    Given User waits for whole form to be loaded
+    Given User opens mock payment page
+    And User waits for whole form to be loaded
     When User chooses GooglePay as payment method - response is set to "ERROR"
     Then User will be sent to page with url "www.example.com" having params
-      | key          | value   |
-      | errormessage | Decline |
-      | errorcode    | 70000   |
+      | key          | value             |
+      | errormessage | An error occurred |
+      | errorcode    | 30000             |
     And GOOGLE_PAY or AUTH requests were sent only once with correct data
 
   @config_google_base
   Scenario: GooglePay - error payment with disabled 'submit on error' process
+    Given User opens mock payment page
     When User chooses GooglePay as payment method - response is set to "ERROR"
     Then User remains on checkout page
     And User will see payment status information: "An error occurred"
@@ -95,7 +99,10 @@ Feature: GooglePay
 
   @config_google_update_jwt
   Scenario: GooglePay - Successful payment with updated JWT
-    Given User waits for whole form to be loaded
+    Given User opens mock payment page WITH_UPDATE_JWT
+      | jwtName          |
+      | BASE_UPDATED_JWT |
+    And User waits for whole form to be loaded
     When User calls updateJWT function by filling amount field
     And User chooses GooglePay as payment method - response is set to "SUCCESS"
     Then User will see payment status information: "Payment has been successfully processed"
@@ -108,9 +115,12 @@ Feature: GooglePay
     And GOOGLE_PAY or AUTH requests were sent only once with correct data
     And GOOGLE_PAY requests contains updated jwt
 
-  @config_google_submit_on_success_true
+  @config_google_submit_on_success_true @tobefixed
   Scenario: GooglePay - update JWT and submitOnSuccess
-    Given User waits for whole form to be loaded
+    Given User opens mock payment page WITH_UPDATE_JWT
+      | jwtName          |
+      | BASE_UPDATED_JWT |
+    And User waits for whole form to be loaded
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User calls updateJWT function by filling amount field
     And User chooses GooglePay as payment method - response is set to "SUCCESS"
@@ -123,7 +133,6 @@ Feature: GooglePay
       | myBillName    | John Test                               |
       | myBillEmail   | test@example                            |
       | myBillTel     | 44422224444                             |
-      | eci           | 07                                      |
       | jwt           | should not be none                      |
     And GOOGLE_PAY or AUTH requests were sent only once with correct data
     And GOOGLE_PAY requests contains updated jwt
@@ -219,8 +228,9 @@ Feature: GooglePay
       | submit        |
       | success       |
 
-    @config_cybertonica
+  @config_cybertonica
   Scenario: GooglePay - Cybertonica - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
+    Given User opens mock payment page
     When User chooses GooglePay as payment method - response is set to "SUCCESS"
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -232,6 +242,7 @@ Feature: GooglePay
 
   @config_cybertonica
   Scenario: GooglePay - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
+    Given User opens mock payment page
     When User chooses GooglePay as payment method - response is set to "SUCCESS"
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see following callback type called only once
