@@ -1,0 +1,6 @@
+{
+  "submitOnSuccess": false,
+  "stopSubmitFormOnEnter": true,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback"
+}

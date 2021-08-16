@@ -1,0 +1,9 @@
+{
+  "iat": 1595513452,
+  "payload": {
+    "baseamount": "1000",
+    "accounttypedescription": "ECOM",
+    "currencyiso3a": "GBP",
+    "parenttransactionreference": "55-9-164089"
+  }
+}

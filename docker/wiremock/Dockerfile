@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/trustpayments-public/public-docker-registry/wiremock:7.0.60 as wiremock
+FROM registry.gitlab.com/trustpayments-public/public-docker-registry/wiremock:7.1.3 as wiremock
 
 ARG COPY_FROM
 

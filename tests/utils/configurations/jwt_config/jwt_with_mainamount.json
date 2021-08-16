@@ -1,0 +1,9 @@
+{
+  "iat": 1595513452,
+  "payload": {
+    "mainamount": "10.25",
+    "accounttypedescription": "ECOM",
+    "currencyiso3a": "GBP",
+    "locale": "en_GB"
+  }
+}

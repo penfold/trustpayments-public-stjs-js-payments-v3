@@ -1,11 +1,11 @@
 Feature: request type with submit on cancel and bypasscard - full test coverage
 
   Scenario Outline: cancelled visa checkout payment with request types <request_types>, bypass and submit on cancel
-    Given JS library configured by inline params SUBMIT_ON_CANCEL_CONFIG_CANCEL_CALLBACK and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params SUBMIT_ON_CANCEL_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
       | threedbypasspaymenttypes| VISA MASTERCARD |
-    When User opens example page CANCEL_CALLBACK
+    When User opens example page
     And User clicks on Visa Checkout button
     And User closes the visa checkout popup
     Then User will not see notification frame
@@ -37,11 +37,11 @@ Feature: request type with submit on cancel and bypasscard - full test coverage
     | AUTH RISKDEC                                       |
 
   Scenario Outline: cancelled visa checkout payment with request types <request_types>, bypass and submit on cancel
-    Given JS library configured by inline params SUBMIT_ON_CANCEL_CONFIG_CANCEL_CALLBACK and jwt JWT_WITH_SUBSCRIPTION with additional attributes
+    Given JS library configured by inline params SUBMIT_ON_CANCEL_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
       | threedbypasspaymenttypes| VISA MASTERCARD |
-    When User opens example page CANCEL_CALLBACK
+    When User opens example page
     And User clicks on Visa Checkout button
     And User closes the visa checkout popup
     Then User will not see notification frame

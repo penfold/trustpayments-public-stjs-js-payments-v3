@@ -8,7 +8,6 @@ Feature: Cardinal Commerce E2E tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay button
@@ -31,7 +30,6 @@ Feature: Cardinal Commerce E2E tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_FAILED_FRICTIONLESS_AUTH
     And User clicks Pay button
@@ -54,7 +52,6 @@ Feature: Cardinal Commerce E2E tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
@@ -77,7 +74,6 @@ Feature: Cardinal Commerce E2E tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_UNAVAILABLE_FRICTIONLESS_AUTH
     And User clicks Pay button
@@ -100,7 +96,6 @@ Feature: Cardinal Commerce E2E tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_REJECTED_FRICTIONLESS_AUTH
     And User clicks Pay button
@@ -121,7 +116,6 @@ Feature: Cardinal Commerce E2E tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_AUTH_NOT_AVAILABLE_ON_LOOKUP
     And User clicks Pay button
@@ -142,7 +136,6 @@ Feature: Cardinal Commerce E2E tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_ERROR_ON_LOOKUP
     And User clicks Pay button
@@ -163,7 +156,6 @@ Feature: Cardinal Commerce E2E tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
@@ -185,7 +177,6 @@ Feature: Cardinal Commerce E2E tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_STEP_UP_AUTH_FAILED
     And User clicks Pay button
@@ -207,7 +198,6 @@ Feature: Cardinal Commerce E2E tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_STEP_UP_AUTH_UNAVAILABLE
     And User clicks Pay button
@@ -229,7 +219,6 @@ Feature: Cardinal Commerce E2E tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_ERROR_ON_AUTH
     And User clicks Pay button
@@ -253,7 +242,6 @@ Feature: Cardinal Commerce E2E tests v2 - Visa v2.1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
-      | sitereference           | test_james38641 |
     And User opens example page
     When User fills payment form with defined card VISA_V21_BYPASSED_AUTH
     And User clicks Pay button

@@ -16,7 +16,8 @@ module.exports = {
     iframe: ['./pages/iframe/iframe.ts'],
     minimal: ['./pages/minimal/minimal.ts'],
     inlineConfig: ['./pages/index/inline-config.ts'],
-    counter: ['./pages/index/counter.ts']
+    counter: ['./pages/index/counter.ts'],
+    predefinedCallbacks: ['./pages/index/predefined-callbacks.ts'],
   },
   output: {
     filename: '[name].js',

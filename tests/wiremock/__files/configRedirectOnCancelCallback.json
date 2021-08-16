@@ -1,0 +1,24 @@
+{
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJBQ0NPVU5UQ0hFQ0siXX19.PoxvDjRV4Nzl8_VjswSAGBk_gIhjyYNrb85U6BJlQFo",
+  "cancelCallback": "redirectionCallback",
+  "applePay": {
+    "buttonStyle": "white-outline",
+    "buttonText": "donate",
+    "merchantId": "merchant.net.securetrading.test",
+    "paymentRequest": {
+      "countryCode": "US",
+      "currencyCode": "USD",
+      "merchantCapabilities": [
+        "supports3DS",
+        "supportsCredit",
+        "supportsDebit"
+      ],
+      "supportedNetworks": [],
+      "total": {
+        "label": "Secure Trading Merchant",
+        "amount": "10.00"
+      }
+    },
+    "placement": "st-apple-pay"
+  }
+}
