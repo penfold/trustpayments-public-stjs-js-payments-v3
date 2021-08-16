@@ -72,6 +72,15 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {
+          from: 'img/*.svg',
+          to: '',
+          force: true,
+        }
+      ]
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
           from: 'json/*.json',
           to: '',
           force: true,

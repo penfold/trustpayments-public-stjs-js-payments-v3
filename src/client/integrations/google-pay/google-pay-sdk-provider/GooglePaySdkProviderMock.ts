@@ -38,6 +38,7 @@ export class GooglePaySdkProviderMock implements IGooglePaySdkProvider {
   }
 
   private loadPaymentData(request: IGooglePayPaymentRequest): Promise<IPaymentResponse> {
+
     return firstValueFrom<IPaymentResponse>(
       this.httpClient.get$(this.mockPaymentUrl).pipe(map(response => response.data as IPaymentResponse))
     );
@@ -46,6 +47,16 @@ export class GooglePaySdkProviderMock implements IGooglePaySdkProvider {
   private createButton(config: IGooglePayButtonOptions) {
     const button = document.createElement('button');
     button.id = 'gp-mocked-button';
+    button.innerHTML = '<img src="./img/google-pay-button.svg" alt="Buy with Google Pay" style="max-width:100%;">';
+    button.setAttribute('style',`
+      appearance: none;
+      background: transparent;
+      padding: 0;
+      border: 0;
+      outline: none;
+      cursor: pointer;
+    `);
+    button.setAttribute('type','button');
     button.addEventListener('click', event => {
       event.preventDefault();
       config.onClick();
