@@ -1,0 +1,5 @@
+{
+  "panIcon": true,
+  "submitOnError": false,
+  "errorCallback": "redirectionCallback"
+}

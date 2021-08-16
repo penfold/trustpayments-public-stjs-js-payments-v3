@@ -2,6 +2,8 @@
   "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IiLCJzdWJzY3JpcHRpb250eXBlIjoiUkVDVVJSSU5HIiwic3Vic2NyaXB0aW9udW5pdCI6Ik1PTlRIIiwic3Vic2NyaXB0aW9uZnJlcXVlbmN5IjoiMSIsInN1YnNjcmlwdGlvbm51bWJlciI6IjEiLCJzdWJzY3JpcHRpb25maW5hbG51bWJlciI6IjEyIiwic3Vic2NyaXB0aW9uYmVnaW5kYXRlIjoiMjAyOC0wMS0wMSIsImNyZWRlbnRpYWxzb25maWxlIjoiMSIsInJlcXVlc3R0eXBlZGVzY3JpcHRpb25zIjpbIkFVVEgiLCJTVUJTQ1JJUFRJT04iXX19.wjqWCLfhzrwu_iIPo4rRH6rF4zM-K8hOwigZIgGwa6s",
   "panIcon": true,
   "submitOnSuccess": false,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
   "applePay": {
     "buttonStyle": "white-outline",
     "buttonText": "donate",
