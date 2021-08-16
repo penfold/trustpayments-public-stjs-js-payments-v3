@@ -48,6 +48,10 @@
   &::placeholder {
     color: $color-input-placeholder; // @param
   }
+
+  &:-ms-input-placeholder {
+    color: $color-input-placeholder;
+  }
 }
 
 %input--readonly {
