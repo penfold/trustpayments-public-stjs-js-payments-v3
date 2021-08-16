@@ -1,0 +1,6 @@
+{
+  "panIcon": true,
+  "submitOnSuccess": true,
+  "submitOnError": true,
+  "submitCallback": "redirectionCallback"
+}

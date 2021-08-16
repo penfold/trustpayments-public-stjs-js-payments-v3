@@ -1,5 +1,4 @@
 {
-  "analytics": true,
   "fieldsToSubmit": [
     "pan",
     "expirydate",
@@ -7,5 +6,7 @@
   ],
   "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3RfdXNlciIsImlhdCI6MTYwNTg3OTg0OCwicGF5bG9hZCI6eyJ0aHJlZWRieXBhc3NwYXltZW50dHlwZXMiOlsiVklTQSIsIkFNRVgiLCJNQVNURVJDQVJEIiwiRElTQ09WRVIiLCJKQ0IiLCJESU5FUlMiLCJQSUJBIl0sInN1YnNjcmlwdGlvbmJlZ2luZGF0ZSI6IjIwMjgtMDEtMDEiLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic3Vic2NyaXB0aW9udW5pdCI6Ik1PTlRIIiwibG9jYWxlIjoiZW5fR0IiLCJiYXNlYW1vdW50IjoiMTAwMCIsInN1YnNjcmlwdGlvbnR5cGUiOiJSRUNVUlJJTkciLCJzaXRlcmVmZXJlbmNlIjoidGVzdF9qc2xpYnJhcnk3NjQyMyIsInN1YnNjcmlwdGlvbm51bWJlciI6IjEiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsInN1YnNjcmlwdGlvbmZyZXF1ZW5jeSI6IjEiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJBQ0NPVU5UQ0hFQ0siLCJUSFJFRURRVUVSWSIsIkFVVEgiLCJTVUJTQ1JJUFRJT04iXSwic3Vic2NyaXB0aW9uZmluYWxudW1iZXIiOiIxMiIsImNyZWRlbnRpYWxzb25maWxlIjoiMSJ9fQ.rcrEwypHkHSCu4YbZeZ4-LQVbFmXx3bT_2ui1qIQKZ0",
   "panIcon": true,
-  "submitOnSuccess": false
+  "submitOnSuccess": false,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback"
 }

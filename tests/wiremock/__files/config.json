@@ -1,5 +1,4 @@
 {
-  "analytics": true,
   "animatedCard": false,
   "fieldsToSubmit": [
     "pan",
@@ -21,9 +20,10 @@
     }
   },
   "submitOnSuccess": false,
-  "submitCallback": "",
-  "components": {
-  },
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
+  "errorCallback": "errorCallback",
+  "cancelCallback": "cancelCallback",
   "applePay": {
     "buttonStyle": "white-outline",
     "buttonText": "donate",
