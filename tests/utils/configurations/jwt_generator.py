@@ -53,16 +53,20 @@ def replace_jwt(entry):
     if 'jwt' in entry:
         start_index = entry.rfind('jwt%22%3A%20%22')
         random_text = get_string(25, 1)
-        jwt_from_log = entry[start_index:]
         log_part_2 = ''
         if 'This is what' in entry:
             end_index = entry.rfind('This is what')
             log_part_2 = entry[end_index:]
             start_index_2 = log_part_2.rfind('"jwt\\": \\"')
-            end_index_2 = len(log_part_2) - log_part_2.rfind('}"')
+            if '\\",\\n  \\"threedresponse\\"' in log_part_2:
+                end_index_2 = len(log_part_2) - log_part_2.rfind('\\",\\n  \\"threedresponse\\"')
+            else:
+                end_index_2 = len(log_part_2) - log_part_2.rfind('}"')
             second_jwt = log_part_2[start_index_2:-end_index_2]
-            log_part_2 = log_part_2.replace(second_jwt, '"jwt\\": \\"' + random_text)
-        entry = entry.replace(jwt_from_log, 'jwt%22%3A%20%22' + random_text + ' ' + log_part_2)
+            log_part_2 = log_part_2.replace(second_jwt, f'"jwt\\": \\"{random_text}')
+        sanitized_entry = f'jwt%22%3A%20%22{random_text} {log_part_2}'
+        jwt_from_url = entry[start_index:]
+        entry = entry.replace(jwt_from_url, sanitized_entry)
     return entry
 
 
