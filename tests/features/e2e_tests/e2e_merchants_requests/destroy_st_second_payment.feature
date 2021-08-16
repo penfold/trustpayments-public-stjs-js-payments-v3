@@ -20,8 +20,8 @@ Feature: Destroy ST instance
     When User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
-    And "submit" callback is called only once in second payment
-    And "success" callback is called only once in second payment
+    And "submit" callback is called only once
+    And "success" callback is called only once
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
@@ -47,8 +47,8 @@ Feature: Destroy ST instance
     When User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "An error occurred"
-    And "submit" callback is called only once in second payment
-    And "error" callback is called only once in second payment
+    And "submit" callback is called only once
+    And "error" callback is called only once
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: True
 
@@ -104,8 +104,8 @@ Feature: Destroy ST instance
     When User clicks Start ST action button
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
-    And "submit" callback is called only once in second payment
-    And "success" callback is called only once in second payment
+    And "submit" callback is called only once
+    And "success" callback is called only once
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 

@@ -155,6 +155,7 @@
   <input type="button" id="st-action-cancel-3ds" value="Cancel 3DS">
   <a href="#" id="st-actions-toggler" class="st-helper-actions__toggler"></a>
 </div>
+<script type="text/javascript" src="./predefinedCallbacks.js"></script>
 <script type="text/javascript" src="/counter.js"></script>
 <script type="text/javascript" src="/inlineConfig.js"></script>
 <script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
@@ -165,10 +166,6 @@
     var inlineConfig = params.get('inlineConfig') ? JSON.parse(params.get('inlineConfig')) : '';
     var jwt = params.get('jwt') || '';
     var updatedJwt = params.get('updatedJwt') || '';
-    var extraSubmitFunction = params.get('extraSubmitFunction');
-    var extraErrorFunction = params.get('extraErrorFunction');
-    var extraSuccessFunction = params.get('extraSuccessFunction');
-    var extraCancelFunction = params.get('extraCancelFunction');
     var browserInfo = params.get('browserInfo');
 
     getConfig()
@@ -255,74 +252,16 @@
       );
     }
 
-    function buildPopup(id, text, bgColor) {
-      var popupStyling = 'display: flex; justify-content: center; position: fixed; height: 50px;right:0;color: white;padding: 0 25px;align-items: center;border-radius: 10px;font-family: Verdana;font-size: 15px;z-index:2';
-      var div = document.createElement('div');
-      div.innerText = text;
-      div.setAttribute('id', id);
-      div.setAttribute('style', popupStyling);
-      div.style.backgroundColor = bgColor;
-      switch (bgColor) {
-        case 'green':
-          div.style.top = 0;
-          break;
-        case 'blue':
-          div.style.top = '120px';
-          break;
-        default:
-          div.style.bottom = 0;
-      }
-      if (id === "data-popup-threedresponse") {
-        div.style.top = '60px';
-      };
-
-      return div;
-    }
-
-    function displayPopup(id, text, bgColor) {
-      var popup = document.getElementById('st-popup');
-      var content = buildPopup(id, text, bgColor);
-      popup.appendChild(content);
-      setTimeout(function() {
-        popup.removeChild(content);
-      }, 15000);
-    }
-
     function setCallbacks(config) {
-      config.submitCallback = function(data) {
-        var stringified = JSON.stringify(data, null, 2);
-        var testVariable = 'This is what we have got after submit' + "\n" + stringified;
-        displayPopup('data-popup', 'Error code: ' + (!data || data.errorcode != '0' ? 'Error' : 'OK'), 'blue');
-        displayPopup('data-popup-jwt', 'JWT: ' + data.jwt, 'blue');
-        displayPopup('data-popup-threedresponse', 'THREEDRESPONSE: ' + data.threedresponse, 'blue');
-
-        if (extraSubmitFunction) {
-          eval('(' + extraSubmitFunction + ')');
+      var configCallbackKeys = ['submitCallback','successCallback','cancelCallback','errorCallback'];
+      configCallbackKeys.forEach(function(callbackKey){
+        var callbackFunctionName = config[callbackKey] || null;
+        if (callbackFunctionName && typeof window.predefinedCallbacks[callbackFunctionName] === "function") {
+          config[callbackKey] = window.predefinedCallbacks[callbackFunctionName];
+        } else {
+          config[callbackKey] = null;
         }
-        window.displayCallbackCounter('submit-callback-counter', 'submit', 'blue');
-        console.error(testVariable);
-      };
-      config.successCallback = function() {
-        displayPopup('success-popup', 'This is success message', 'green');
-        if (extraSuccessFunction) {
-          eval('(' + extraSuccessFunction + ')');
-        }
-        window.displayCallbackCounter('success-callback-counter', 'success', 'green');
-      };
-      config.errorCallback = function() {
-        displayPopup('error-popup', 'This is error message', 'red');
-        if (extraErrorFunction) {
-          eval('(' + extraErrorFunction + ')');
-        }
-        window.displayCallbackCounter('error-callback-counter', 'error', 'red');
-      };
-      config.cancelCallback = function() {
-        displayPopup('cancel-popup', 'This is cancel message', '#ffc23a');
-        if (extraCancelFunction) {
-          eval('(' + extraCancelFunction + ')');
-        }
-        window.displayCallbackCounter('cancel-callback-counter', 'cancel', '#ffc23a');
-      };
+      });
     }
   });
 </script>
