@@ -1,4 +1,3 @@
-import each from 'jest-each';
 import JwtDecode from 'jwt-decode';
 import Container from 'typedi';
 import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';

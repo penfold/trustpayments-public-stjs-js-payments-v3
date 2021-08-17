@@ -36,12 +36,12 @@ describe('ControlFrame', () => {
 
   beforeEach(() => {
     // @ts-ignore
-    instance._messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
+    instance.messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
       callback(data);
     });
   });
 
-  describe('ControlFrame._onFormFieldStateChange()', () => {
+  describe('ControlFrame.onFormFieldStateChange()', () => {
     const field: IFormFieldState = {
       validity: false,
       value: '',
@@ -53,9 +53,9 @@ describe('ControlFrame', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      ControlFrame._setFormFieldValidity(field, data);
+      ControlFrame.setFormFieldValidity(field, data);
       // @ts-ignore
-      ControlFrame._setFormFieldValue(field, data);
+      ControlFrame.setFormFieldValue(field, data);
     });
 
     it('should set field properties: validity and value', () => {
@@ -64,55 +64,55 @@ describe('ControlFrame', () => {
     });
   });
 
-  describe('_initChangeCardNumberEvent()', () => {
-    it('should call _onCardNumberStateChange when CHANGE_CARD_NUMBER event has been called', () => {
+  describe('initChangeCardNumberEvent()', () => {
+    it('should call onCardNumberStateChange when CHANGE_CARD_NUMBER event has been called', () => {
       // @ts-ignore
-      ControlFrame._setFormFieldValue = jest.fn();
+      ControlFrame.setFormFieldValue = jest.fn();
       messageBusEvent.type = MessageBus.EVENTS.CHANGE_CARD_NUMBER;
       // @ts-ignore
-      instance._formFieldChangeEvent(messageBusEvent.type, instance._formFields.cardNumber);
+      instance.formFieldChangeEvent(messageBusEvent.type, instance.formFields.cardNumber);
       // @ts-ignore
-      expect(ControlFrame._setFormFieldValue).toHaveBeenCalled();
+      expect(ControlFrame.setFormFieldValue).toHaveBeenCalled();
     });
   });
 
-  describe('_onExpirationDateStateChange()', () => {
-    it('should call _onExpirationDateStateChange when CHANGE_EXPIRATION_DATE event has been called', () => {
+  describe('onExpirationDateStateChange()', () => {
+    it('should call onExpirationDateStateChange when CHANGE_EXPIRATION_DATE event has been called', () => {
       // @ts-ignore
-      ControlFrame._setFormFieldValue = jest.fn();
+      ControlFrame.setFormFieldValue = jest.fn();
       messageBusEvent.type = MessageBus.EVENTS.CHANGE_EXPIRATION_DATE;
       // @ts-ignore
-      instance._formFieldChangeEvent(messageBusEvent.type, instance._formFields.expirationDate);
+      instance.formFieldChangeEvent(messageBusEvent.type, instance.formFields.expirationDate);
       // @ts-ignore
-      expect(ControlFrame._setFormFieldValue).toHaveBeenCalled();
+      expect(ControlFrame.setFormFieldValue).toHaveBeenCalled();
     });
   });
 
-  describe('_onSecurityCodeStateChange()', () => {
-    it('should call _onSecurityCodeStateChange when CHANGE_SECURITY_CODE event has been called', () => {
+  describe('onSecurityCodeStateChange()', () => {
+    it('should call onSecurityCodeStateChange when CHANGE_SECURITY_CODE event has been called', () => {
       // @ts-ignore
-      ControlFrame._setFormFieldValue = jest.fn();
+      ControlFrame.setFormFieldValue = jest.fn();
       messageBusEvent.type = MessageBus.EVENTS.CHANGE_SECURITY_CODE;
       // @ts-ignore
-      instance._formFieldChangeEvent(messageBusEvent.type, instance._formFields.securityCode);
+      instance.formFieldChangeEvent(messageBusEvent.type, instance.formFields.securityCode);
       // @ts-ignore
-      expect(ControlFrame._setFormFieldValue).toHaveBeenCalled();
+      expect(ControlFrame.setFormFieldValue).toHaveBeenCalled();
     });
   });
 
-  describe('_initUpdateMerchantFieldsEvent()', () => {
-    it('should call _storeMerchantData when UPDATE_MERCHANT_FIELDS event has been called', () => {
+  describe('initUpdateMerchantFieldsEvent()', () => {
+    it('should call storeMerchantData when UPDATE_MERCHANT_FIELDS event has been called', () => {
       // @ts-ignore
-      instance._updateMerchantFields = jest.fn();
+      instance.updateMerchantFields = jest.fn();
       messageBusEvent.type = MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS;
       // @ts-ignore
-      instance._updateMerchantFieldsEvent();
+      instance.updateMerchantFieldsEvent();
       // @ts-ignore
-      expect(instance._updateMerchantFields).toHaveBeenCalled();
+      expect(instance.updateMerchantFields).toHaveBeenCalled();
     });
   });
 
-  describe('_processPayment', () => {
+  describe('processPayment', () => {
     const { instance } = controlFrameFixture();
     const data = {
       errorcode: '40005',
@@ -121,64 +121,64 @@ describe('ControlFrame', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      instance._notification.success = jest.fn();
+      instance.notification.success = jest.fn();
       // @ts-ignore
-      instance._notification.error = jest.fn();
+      instance.notification.error = jest.fn();
       // @ts-ignore
-      instance._notification.cancel = jest.fn();
+      instance.notification.cancel = jest.fn();
       // @ts-ignore
-      instance._validation = {
+      instance.validation = {
         blockForm: jest.fn(),
       };
     });
 
     it('should call notification success when promise is resolved', async () => {
       // @ts-ignore
-      instance._payment = {
+      instance.payment = {
         processPayment: jest.fn().mockResolvedValueOnce(undefined),
       };
       // @ts-ignore
-      await instance._processPayment(data);
+      await instance.processPayment(data);
 
       // @ts-ignore
-      expect(instance._notification.success).toHaveBeenCalledWith(PAYMENT_SUCCESS);
+      expect(instance.notification.success).toHaveBeenCalledWith(PAYMENT_SUCCESS);
       // @ts-ignore
-      expect(instance._validation.blockForm).toHaveBeenCalledWith(FormState.COMPLETE);
+      expect(instance.validation.blockForm).toHaveBeenCalledWith(FormState.COMPLETE);
     });
 
     it('should call notification error when promise is rejected', async () => {
       // @ts-ignore
-      instance._payment = {
+      instance.payment = {
         processPayment: jest.fn().mockRejectedValueOnce(undefined),
       };
       // @ts-ignore
-      await instance._processPayment(data);
+      await instance.processPayment(data);
 
       // @ts-ignore
-      expect(instance._notification.error).toHaveBeenCalledWith(PAYMENT_ERROR);
+      expect(instance.notification.error).toHaveBeenCalledWith(PAYMENT_ERROR);
       // @ts-ignore
-      expect(instance._validation.blockForm).toHaveBeenCalledWith(FormState.AVAILABLE);
+      expect(instance.validation.blockForm).toHaveBeenCalledWith(FormState.AVAILABLE);
     });
   });
 
-  describe('_storeMerchantData', () => {
+  describe('storeMerchantData', () => {
     const { instance } = controlFrameFixture();
     const data = 'some data';
 
     beforeEach(() => {
       // @ts-ignore
-      instance._updateMerchantFields(data);
+      instance.updateMerchantFields(data);
       // @ts-ignore
-      instance._messageBus.publish = jest.fn();
+      instance.messageBus.publish = jest.fn();
     });
 
-    it('should set _merchantFormData', () => {
+    it('should set merchantFormData', () => {
       // @ts-ignore
-      expect(instance._merchantFormData).toEqual(data);
+      expect(instance.merchantFormData).toEqual(data);
     });
   });
 
-  describe('_getPan()', () => {
+  describe('getPan()', () => {
     // @ts-ignore
     instance.params = {
       jwt:
@@ -186,18 +186,18 @@ describe('ControlFrame', () => {
     };
 
     // @ts-ignore
-    instance._frame.parseUrl = jest.fn().mockReturnValueOnce({
+    instance.frame.parseUrl = jest.fn().mockReturnValueOnce({
       jwt:
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw',
     });
 
     it('should return pan from jwt', () => {
       // @ts-ignore
-      expect(instance._getPanFromJwt(['jwt', 'gatewayUrl'])).toEqual('3089500000000000021');
+      expect(instance.getPanFromJwt(['jwt', 'gatewayUrl'])).toEqual('3089500000000000021');
     });
   });
 
-  describe('_updateJwtEvent', () => {
+  describe('updateJwtEvent', () => {
     it('calls StCodec.updateJwt() on UPDATE_JWT event', () => {
       const updateJwtSpy = spyOn(StCodec, 'updateJwt');
 

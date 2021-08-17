@@ -33,14 +33,14 @@ interface IFetchOptions {
  */
 @Service()
 export class StTransport {
-  public static readonly THROTTLE_TIME = 250;
+  static readonly THROTTLE_TIME = 250;
   private static DELAY = 1000;
   private static RETRY_LIMIT = 5;
   private static RETRY_TIMEOUT = 10000;
   private static TIMEOUT = 60000;
-  private _throttlingRequests = new Map<string, Promise<Record<string, unknown>>>();
-  private _config: IConfig;
-  private _codec: StCodec;
+  private throttlingRequests = new Map<string, Promise<Record<string, unknown>>>();
+  private config: IConfig;
+  private codec: StCodec;
 
   constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder) {
   }
@@ -50,17 +50,17 @@ export class StTransport {
    * @param requestObject A request object to send to ST
    * @return A Promise object that resolves the gateway response
    */
-  public async sendRequest(requestObject: IStRequest, merchantUrl?: string): Promise<Record<string, unknown>> {
+  async sendRequest(requestObject: IStRequest, merchantUrl?: string): Promise<Record<string, unknown>> {
     const requestBody = this.getCodec().encode(requestObject);
-    const fetchOptions = this._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
-    const isRequestJsinit = this.isRequestJsinit(requestObject.requesttypedescriptions);
+    const fetchOptions = this.getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
+    const ignoreJsInitErrors = this.isRequestJsinit(requestObject.requesttypedescriptions) && this.getConfig().ignoreJsInitErrors;
 
-    if (!this._throttlingRequests.has(requestBody)) {
-      this._throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody, fetchOptions, merchantUrl, isRequestJsinit));
-      setTimeout(() => this._throttlingRequests.delete(requestBody), StTransport.THROTTLE_TIME);
+    if (!this.throttlingRequests.has(requestBody)) {
+      this.throttlingRequests.set(requestBody, this.sendRequestInternal(requestBody, fetchOptions, merchantUrl, ignoreJsInitErrors));
+      setTimeout(() => this.throttlingRequests.delete(requestBody), StTransport.THROTTLE_TIME);
     }
 
-    return this._throttlingRequests.get(requestBody);
+    return this.throttlingRequests.get(requestBody);
   }
 
   private isRequestJsinit(requestTypes: string[]): boolean {
@@ -70,7 +70,7 @@ export class StTransport {
     return requestTypes[0] === 'JSINIT';
   }
 
-  private _getDefaultFetchOptions(requestBody: string, requesttypedescriptions: string[]): IFetchOptions {
+  private getDefaultFetchOptions(requestBody: string, requesttypedescriptions: string[]): IFetchOptions {
     const { jwt } = JSON.parse(requestBody);
     const options: IFetchOptions = {
       headers: {
@@ -98,23 +98,23 @@ export class StTransport {
     return options;
   }
 
-  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions, merchantUrl?: string, isRequestJsinit?: boolean): Promise<Record<string, unknown>> {
+  private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions, merchantUrl?: string, ignoreJsInitErrors?: boolean): Promise<Record<string, unknown>> {
     const codec = this.getCodec();
     const gatewayUrl = merchantUrl ? merchantUrl : this.getConfig().datacenterurl;
 
-    return this._fetchRetry(gatewayUrl, {
+    return this.fetchRetry(gatewayUrl, {
       ...fetchOptions,
       body: requestBody,
     })
       .then((response: Response) => {
-        return codec.decode(response, isRequestJsinit)
+        return codec.decode(response, ignoreJsInitErrors);
       })
       .catch((error: Error | unknown) => {
         if (error instanceof InvalidResponseError) {
           return Promise.reject(error);
         }
 
-        return codec.decode({}, isRequestJsinit);
+        return codec.decode({}, ignoreJsInitErrors);
       });
   }
 
@@ -130,7 +130,7 @@ export class StTransport {
    * @return A Promise that resolves to a fetch response or rejects with an error
    * @private
    */
-  private _fetchRetry(
+  private fetchRetry(
     url: string,
     options: Record<string, unknown>,
     connectTimeout = StTransport.TIMEOUT,
@@ -147,19 +147,19 @@ export class StTransport {
   }
 
   private getConfig(): IConfig {
-    if (!this._config) {
-      this._config = this.configProvider.getConfig();
+    if (!this.config) {
+      this.config = this.configProvider.getConfig();
     }
 
-    return this._config;
+    return this.config;
   }
 
   private getCodec(): StCodec {
-    if (!this._codec) {
+    if (!this.codec) {
       const { jwt } = this.getConfig();
-      this._codec = new StCodec(this.jwtDecoder, jwt);
+      this.codec = new StCodec(this.jwtDecoder, jwt);
     }
 
-    return this._codec;
+    return this.codec;
   }
 }
