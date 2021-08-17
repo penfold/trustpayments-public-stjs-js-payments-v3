@@ -11,148 +11,148 @@
     - .parallel-e2e-tests
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
-#.e2e-tests-sequentially:
-#  extends:
-#    - .fast-tests
-#    - .sequentially-tests
-#  image: ${IMAGE_JS_PAYMENTS_TESTS}
-#
-## Card Payments E2E Tests Headless
-#e2e-card-payments-tests-review:
-#  extends:
-#    - .e2e-tests-parallel
-#    - .services-app-html-review
-#    - .rules-when-review
-#  variables:
-#    FEATURE_FILES_DIR: 'features/e2e_tests'
-#  parallel: 20
-#
-#e2e-card-payments-tests-release:
-#  extends:
-#    - .e2e-tests-parallel
-#    - .service-app-html-release-merchant
-#    - .rules-when-release
-#  variables:
-#    FEATURE_FILES_DIR: 'features/e2e_tests'
-#  parallel: 20
-#
-## Cardinal Commerce E2E Tests Headless
-#e2e-cardinal-commerce-tests-review:
-#  extends:
-#    - .e2e-tests-parallel
-#    - .services-app-html-review
-#    - .rules-when-review
-#  variables:
-#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
-#  parallel: 9
-#
-#e2e-cardinal-commerce-tests-release:
-#  extends:
-#    - .e2e-tests-parallel
-#    - .service-app-html-release-merchant
-#    - .rules-when-release
-#  variables:
-#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
-#  parallel: 9
-#
-## this is on purpose - STJS-1678
-#e2e-cardinal-commerce-timeout-tests-release:
-#  extends:
-#    - .e2e-tests-parallel
-#    - .service-app-html-release-merchant
-#    - .rules-when-release
-#  variables:
-#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce/e2e_timeout'
-#  parallel: 8
-#
-## Merchants features E2E Tests Headless
-#e2e-merchants-features-tests-nightly:
-#  extends:
-#    - .e2e-tests-parallel
-#    - .services-app-html-review
-#    - .rules-when-review-manual-allow-failure
-#  variables:
-#    IGNORED_FILES: 'e2e_acs_pop_up_close_trust.feature'
-#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_requests'
-#  parallel: 3
-#
-#e2e-merchants-features-tests-release:
-#  extends:
-#    - .e2e-tests-parallel
-#    - .service-app-html-release-merchant
-#    - .rules-when-release
-#  variables:
-#    IGNORED_FILES: 'e2e_acs_pop_up_close_trust.feature'
-#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_requests'
-#  parallel: 3
-#
-## Smoke E2E Tests Headless -> exactly same scope which is used in extended tests as $SMOKE_E2E_TESTS_TAG
-#e2e-smoke-tests-review:
-#  extends:
-#    - .e2e-tests-parallel
-#    - .services-app-html-review
-#    - .rules-when-review
-#  variables:
-#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
-#  parallel: 3
-#
-#.e2e-smoke-tests-release:
-#  extends:
-#    - .e2e-tests-parallel
-#    - .service-app-html-release-merchant
-#    - .rules-when-release
-#  variables:
-#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
-#  parallel: 3
-#
-## Additional coverage E2E Tests Headless
-#.e2e-additional-coverage-tests-nightly:
-#  extends:
-#    - .e2e-tests-parallel
-#    - .services-app-html-review
-#    - .rules-when-review-manual-allow-failure
-#  variables:
-#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_additional_coverage'
-#  parallel: 18
-#
-#################################### Component Tests ###################################
-#.component-app-html-mock:
-#  extends:
-#    - .fast-tests
-#    - .services-app-html-mock
-#  image: ${IMAGE_JS_PAYMENTS_TESTS}
-#
-#.card-payments-component-tests:
-#  extends:
-#    - .component-app-html-mock
-#    - .parallel-component-tests
-#  variables:
-#    FEATURE_FILES_DIR: 'features/component_tests'
-#  parallel: 21
-#
-#component-card-payments-tests-review:
-#  extends:
-#    - .card-payments-component-tests
-#    - .rules-when-review
-#
-#component-card-payments-tests-release:
-#  extends:
-#    - .card-payments-component-tests
-#    - .rules-when-release
-#
-#.visa-checkout-component-tests:
-#  extends:
-#    - .component-app-html-mock
-#    - .sequentially-component-tests
-#  variables:
-#    FEATURE_FILE_NAME: 'visa_checkout.feature'
-#
-#component-visa-checkout-tests-review:
-#  extends:
-#    - .visa-checkout-component-tests
-#    - .rules-when-review
-#
-#component-visa-checkout-tests-release:
-#  extends:
-#    - .visa-checkout-component-tests
-#    - .rules-when-release
+.e2e-tests-sequentially:
+  extends:
+    - .fast-tests
+    - .sequentially-tests
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
+
+# Card Payments E2E Tests Headless
+e2e-card-payments-tests-review:
+  extends:
+    - .e2e-tests-parallel
+    - .services-app-html-review
+    - .rules-when-review
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests'
+  parallel: 20
+
+e2e-card-payments-tests-release:
+  extends:
+    - .e2e-tests-parallel
+    - .service-app-html-release-merchant
+    - .rules-when-release
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests'
+  parallel: 20
+
+# Cardinal Commerce E2E Tests Headless
+e2e-cardinal-commerce-tests-review:
+  extends:
+    - .e2e-tests-parallel
+    - .services-app-html-review
+    - .rules-when-review
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
+  parallel: 9
+
+e2e-cardinal-commerce-tests-release:
+  extends:
+    - .e2e-tests-parallel
+    - .service-app-html-release-merchant
+    - .rules-when-release
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
+  parallel: 9
+
+# this is on purpose - STJS-1678
+e2e-cardinal-commerce-timeout-tests-release:
+  extends:
+    - .e2e-tests-parallel
+    - .service-app-html-release-merchant
+    - .rules-when-release
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce/e2e_timeout'
+  parallel: 8
+
+# Merchants features E2E Tests Headless
+e2e-merchants-features-tests-nightly:
+  extends:
+    - .e2e-tests-parallel
+    - .services-app-html-review
+    - .rules-when-review-manual-allow-failure
+  variables:
+    IGNORED_FILES: 'e2e_acs_pop_up_close_trust.feature'
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_requests'
+  parallel: 3
+
+e2e-merchants-features-tests-release:
+  extends:
+    - .e2e-tests-parallel
+    - .service-app-html-release-merchant
+    - .rules-when-release
+  variables:
+    IGNORED_FILES: 'e2e_acs_pop_up_close_trust.feature'
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_merchants_requests'
+  parallel: 3
+
+# Smoke E2E Tests Headless -> exactly same scope which is used in extended tests as $SMOKE_E2E_TESTS_TAG
+e2e-smoke-tests-review:
+  extends:
+    - .e2e-tests-parallel
+    - .services-app-html-review
+    - .rules-when-review
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
+  parallel: 3
+
+.e2e-smoke-tests-release:
+  extends:
+    - .e2e-tests-parallel
+    - .service-app-html-release-merchant
+    - .rules-when-release
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
+  parallel: 3
+
+# Additional coverage E2E Tests Headless
+.e2e-additional-coverage-tests-nightly:
+  extends:
+    - .e2e-tests-parallel
+    - .services-app-html-review
+    - .rules-when-review-manual-allow-failure
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_additional_coverage'
+  parallel: 18
+
+################################### Component Tests ###################################
+.component-app-html-mock:
+  extends:
+    - .fast-tests
+    - .services-app-html-mock
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
+
+.card-payments-component-tests:
+  extends:
+    - .component-app-html-mock
+    - .parallel-component-tests
+  variables:
+    FEATURE_FILES_DIR: 'features/component_tests'
+  parallel: 21
+
+component-card-payments-tests-review:
+  extends:
+    - .card-payments-component-tests
+    - .rules-when-review
+
+component-card-payments-tests-release:
+  extends:
+    - .card-payments-component-tests
+    - .rules-when-release
+
+.visa-checkout-component-tests:
+  extends:
+    - .component-app-html-mock
+    - .sequentially-component-tests
+  variables:
+    FEATURE_FILE_NAME: 'visa_checkout.feature'
+
+component-visa-checkout-tests-review:
+  extends:
+    - .visa-checkout-component-tests
+    - .rules-when-review
+
+component-visa-checkout-tests-release:
+  extends:
+    - .visa-checkout-component-tests
+    - .rules-when-release

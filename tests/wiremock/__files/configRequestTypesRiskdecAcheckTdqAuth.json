@@ -21,6 +21,8 @@
     }
   },
   "submitOnSuccess": false,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
   "applePay": {
     "buttonStyle": "white-outline",
     "buttonText": "donate",

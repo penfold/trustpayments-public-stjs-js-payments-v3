@@ -120,8 +120,18 @@ Feature: ApplePay
   Scenario: ApplePay - canceled payment with enabled 'submit on cancel' process
     When User chooses ApplePay as payment method - response is set to "CANCEL"
     And User will be sent to page with url "www.example.com" having params
-      | key       | value     |
-      | errorcode | cancelled |
+      | key          | value                      |
+      | errorcode    | cancelled                  |
+      | errormessage | Payment has been cancelled |
+
+  @config_redirect_on_cancel_callback @apple_test_part1
+  Scenario: ApplePay - redirect on cancel callback
+    When User chooses ApplePay as payment method - response is set to "CANCEL"
+    And User will be sent to page with url "example.org" having params
+      | key          | value                      |
+      | errorcode    | cancelled                  |
+      | errormessage | Payment has been cancelled |
+
 
   @config_default @apple_test_part1
   Scenario: ApplePay - canceled payment - checking that 'submitOnCancel' is disabled by default
@@ -142,7 +152,7 @@ Feature: ApplePay
     And "submit" callback is called only once
 
 #    ToDo - Last step is blocked by STJS-800
-  @config_update_jwt_true @apple_pay_smoke_test @apple_test_part2
+  @base_config  @apple_pay_smoke_test @apple_test_part2
   Scenario: ApplePay - Successful payment with updated JWT
     Given User waits for whole form to be loaded
     When User calls updateJWT function by filling amount field
