@@ -176,11 +176,13 @@ export class StCodec {
     jwtResponse: string,
     ignoreJsInitErrors?: boolean,
   ): void {
-    StCodec.getNotification().error(errormessageTranslated);
-    if (!ignoreJsInitErrors) {
-      StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
-      StCodec.publishResponse(responseContent, jwtResponse);
+    if (ignoreJsInitErrors) {
+      return;
     }
+
+    StCodec.getNotification().error(errormessageTranslated);
+    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+    StCodec.publishResponse(responseContent, jwtResponse);
   }
 
   private static handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string, ignoreJsInitErrors?: boolean) {
