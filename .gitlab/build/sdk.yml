@@ -6,6 +6,8 @@
   variables:
     BUILD_TYPE: 'prod'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_release"
+  tags:
+    - esnb-t3small
 
 build-sdk-rr-review:
   extends:
@@ -30,6 +32,8 @@ build-sdk-rr-release:
     BUILD_TYPE: 'dev'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_local"
     EXTRA_ARGS_TEMPLATE: '--frame_url=https://library.securetrading.net:8443'
+  tags:
+    - esnb-t3small
 
 build-sdk-local-review:
   extends:
@@ -50,6 +54,8 @@ build-sdk-local-release:
     BUILD_TYPE: 'mock'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_sdk_mock"
     EXTRA_ARGS_TEMPLATE: '--frame_url=https://library.securetrading.net:8443'
+  tags:
+    - esnb-t3small
 
 build-sdk-mock-review:
   extends:
