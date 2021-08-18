@@ -221,7 +221,7 @@ describe('PaymentResultHandler', () => {
       verify(notificationServiceMock.error(errorMessage)).once();
     });
 
-    it('handles ERROR result with submitOnError set to true', () => {
+    it('handles ERROR result with submitOnError set on false and ignoreJsInitErrors set on false', () => {
       const errorMessage = 'payment failed';
       const result: IPaymentResult<typeof resultData> = {
         status: PaymentStatus.ERROR,
@@ -231,9 +231,154 @@ describe('PaymentResultHandler', () => {
           code: 123,
         },
       };
-      when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: true }));
+      when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: false, ignoreJsInitErrors: false }));
 
       paymentResultHandler.handle(result);
+
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
+            data: resultData,
+          }),
+          true
+        )
+      ).once();
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
+            data: resultData,
+          }),
+          true
+        )
+      ).once();
+      verify(notificationServiceMock.error(errorMessage)).once();
+    });
+
+    it('handles ERROR result with submitOnError set on false and ignoreJsInitErrors set on true', () => {
+      const errorMessage = 'payment failed';
+      const result: IPaymentResult<typeof resultData> = {
+        status: PaymentStatus.ERROR,
+        data: resultData,
+        error: {
+          message: errorMessage,
+          code: 123,
+        },
+      };
+      when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: false, ignoreJsInitErrors: true }));
+
+      paymentResultHandler.handle(result);
+
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
+            data: resultData,
+          }),
+          true
+        )
+      ).never();
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
+            data: resultData,
+          }),
+          true
+        )
+      ).never();
+      verify(notificationServiceMock.error(errorMessage)).never();
+
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
+            data: resultData,
+          }),
+          true
+        )
+      ).never();
+    });
+
+    it('handles ERROR result with submitOnError set on true and ignoreJsInitErrors set on true', () => {
+      const errorMessage = 'payment failed';
+      const result: IPaymentResult<typeof resultData> = {
+        status: PaymentStatus.ERROR,
+        data: resultData,
+        error: {
+          message: errorMessage,
+          code: 123,
+        },
+      };
+      when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: true, ignoreJsInitErrors: true }));
+
+      paymentResultHandler.handle(result);
+
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
+            data: resultData,
+          }),
+          true
+        )
+      ).never();
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
+            data: resultData,
+          }),
+          true
+        )
+      ).never();
+      verify(notificationServiceMock.error(errorMessage)).never();
+
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
+            data: resultData,
+          }),
+          true
+        )
+      ).never();
+    });
+
+    it('handles ERROR result with submitOnError set on true and ignoreJsInitErrors set on false', () => {
+      const errorMessage = 'payment failed';
+      const result: IPaymentResult<typeof resultData> = {
+        status: PaymentStatus.ERROR,
+        data: resultData,
+        error: {
+          message: errorMessage,
+          code: 123,
+        },
+      };
+      when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: true, ignoreJsInitErrors: false }));
+
+      paymentResultHandler.handle(result);
+
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
+            data: resultData,
+          }),
+          true
+        )
+      ).never();
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
+            data: resultData,
+          }),
+          true
+        )
+      ).never();
+      verify(notificationServiceMock.error(errorMessage)).never();
 
       verify(
         messageBusSpy.publish(
@@ -244,7 +389,6 @@ describe('PaymentResultHandler', () => {
           true
         )
       ).once();
-      verify(notificationServiceMock.error(anything())).never();
     });
 
     it('displays default error notification if ERROR result has empty error property', () => {

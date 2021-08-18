@@ -56,6 +56,10 @@ export class PaymentResultHandler {
     const errorMessage = result.error ? result.error.message : PAYMENT_ERROR;
 
     this.configProvider.getConfig$().subscribe(config => {
+      if (config.ignoreJsInitErrors) {
+        return;
+      }
+
       if (config.submitOnError) {
         this.messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT, data: result.data }, true);
         return;
