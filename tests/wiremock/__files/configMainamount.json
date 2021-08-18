@@ -1,6 +1,10 @@
 {
   "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7Im1haW5hbW91bnQiOiIxMC4wMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0MSIsImxvY2FsZSI6ImVuX0dCIiwicmVxdWVzdHR5cGVkZXNjcmlwdGlvbnMiOlsiVEhSRUVEUVVFUlkiLCJBVVRIIl19fQ.PN3krLEFowfAkQ2QHiGnSNcrCZnxzZ6ZwzfIfI0xR-s",
   "submitOnSuccess": false,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
+  "errorCallback": "errorCallback",
+  "cancelCallback": "cancelCallback",
   "applePay": {
     "buttonStyle": "white-outline",
     "buttonText": "donate",

@@ -141,7 +141,7 @@ Feature: Visa Checkout
     Then User will see correct error code displayed in popup
     And "submit" callback is called only once
 
-  @config_update_jwt_true @extended_tests_part_2 @visa_test
+  @base_config  @extended_tests_part_2 @visa_test
   Scenario: Visa Checkout - successful payment with updated JWT
     Given User opens mock payment page WITH_UPDATE_JWT
       | jwtName          |

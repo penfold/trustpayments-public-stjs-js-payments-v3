@@ -12,15 +12,3 @@ class ExamplePageParam(Enum):
     WITH_CHANGED_FORM_ID = 'formId=testForm&'
     WITH_BROWSER_INFO = 'browserInfo=true'
     WITH_SPECIFIC_IFRAME = 'iframe.html?iframeName=testFrame'
-    SUCCESS_CALLBACK = 'extraSuccessFunction=(function callback()' \
-                       '{const form=document.getElementById(\'st-form\');' \
-                       'form.action=\'https://example.org\';form.submit();})()'
-    ERROR_CALLBACK = 'extraErrorFunction=(function callback()' \
-                     '{const form=document.getElementById(\'st-form\');' \
-                     'form.action=\'https://example.org\';form.submit();})()'
-    CANCEL_CALLBACK = 'extraCancelFunction=(function callback()' \
-                      '{const form=document.getElementById(\'st-form\');' \
-                      'form.action=\'https://example.org\';form.submit();})()'
-    SUBMIT_CALLBACK = 'extraSubmitFunction=(function callback()' \
-                      '{const form=document.getElementById(\'st-form\');' \
-                      'form.action=\'https://example.org\';form.submit();})()'
