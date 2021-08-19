@@ -7,7 +7,7 @@ import { anyString, anything, instance as instanceOf, mock, when } from 'ts-mock
 import { of } from 'rxjs';
 import { IframeFactory } from '../iframe-factory/IframeFactory';
 import { Frame } from '../../application/core/shared/frame/Frame';
-import { PAY, PROCESSING } from '../../application/core/models/constants/Translations';
+import { PAY, PLEASE_WAIT, PROCESSING } from '../../application/core/models/constants/Translations';
 import {
   CARD_NUMBER_IFRAME,
   CARD_NUMBER_INPUT_SELECTOR,
@@ -422,6 +422,15 @@ describe('CardFrames', () => {
       expect(button.disabled).toEqual(true);
     });
 
+    it('should mark button as disabled when form state is loading and text should be \'Please wait\'', () => {
+      // @ts-ignore
+      instance._setSubmitButtonProperties(button, FormState.LOADING);
+      expect(button.textContent).toEqual(PLEASE_WAIT);
+      // @ts-ignore
+      expect(button.classList.contains(CardFrames.SUBMIT_BUTTON_DISABLED_CLASS)).toEqual(true);
+      expect(button.disabled).toEqual(true);
+    });
+
     it('should mark button as disabled when form state is complete but text should be pay', () => {
       // @ts-ignore
       instance._setSubmitButtonProperties(button, FormState.COMPLETE);
@@ -445,6 +454,11 @@ describe('CardFrames', () => {
     it('should return button referred to id specified by merchant', () => {
       // @ts-ignore
       expect(instance._createSubmitButton()).toEqual(document.getElementById('merchant-submit-button'));
+    });
+
+    it('should set button value on \'Please wait\' until form is not loaded', () => {
+      // @ts-ignore
+      expect(instance._createSubmitButton().textContent).toEqual(PLEASE_WAIT);
     });
 
     it('should return first given submit button which has been specified in form', () => {
