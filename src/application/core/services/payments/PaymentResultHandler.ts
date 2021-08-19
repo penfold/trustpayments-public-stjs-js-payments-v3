@@ -12,8 +12,9 @@ export class PaymentResultHandler {
   constructor(
     private messageBus: IMessageBus,
     private notificationService: NotificationService,
-    private configProvider: ConfigProvider
-  ) {}
+    private configProvider: ConfigProvider,
+  ) {
+  }
 
   handle<T>(result: IPaymentResult<T>): void {
     switch (result.status) {

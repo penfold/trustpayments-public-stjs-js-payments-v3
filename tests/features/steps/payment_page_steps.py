@@ -315,6 +315,14 @@ def step_impl(context, new_card_number: str):
     payment_page.fill_credit_card_field(FieldType.CARD_NUMBER.name, new_card_number)
 
 
+@then('User will not see following callback types')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    with soft_assertions():
+        for row in context.table:
+            payment_page.validate_if_callback_popup_is_not_displayed(row['callback_type'])
+
+
 @then('User will not see notification frame')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)

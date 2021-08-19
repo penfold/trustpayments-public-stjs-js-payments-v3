@@ -3,6 +3,7 @@ from enum import Enum
 
 class E2eConfig(Enum):
     BASIC_CONFIG = 'e2eBasicConfig.json'
+    BASIC_CONFIG_WITH_IGNORE_JS_INIT_ERRORS = 'e2eBasicConfigIgnoreJsInitErrors.json'
     VISUAL_BASIC_CONFIG = 'visualBaseConfig.json'
     VISUAL_BASIC_WITH_STYLES_CONFIG = 'visualBaseConfigWithStyling.json'
     CYBERTONICA_CONFIG = 'e2eConfigCybertonica.json'
@@ -11,6 +12,7 @@ class E2eConfig(Enum):
     START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG = 'e2eConfigStartOnLoadSubmitOnSuccess.json'
     START_ON_LOAD_SUBMIT_ON_ERROR_CONFIG = 'e2eConfigStartOnLoadSubmitOnError.json'
     SUBMIT_ON_ERROR_CONFIG = 'e2eConfigSubmitOnError.json'
+    SUBMIT_ON_ERROR_CONFIG_WITH_IGNORE_JS_INIT_ERRORS = 'e2eConfigSubmitOnErrorIgnoreJsInitErrors.json'
     SUBMIT_ON_ERROR_ONLY_CONFIG = 'e2eConfigSubmitOnErrorOnly.json'
     SUBMIT_ON_CANCEL_CONFIG = 'e2eConfigSubmitOnCancel.json'
     SUBMIT_ON_SUCCESS_CONFIG = 'e2eConfigSubmitOnSuccess.json'
