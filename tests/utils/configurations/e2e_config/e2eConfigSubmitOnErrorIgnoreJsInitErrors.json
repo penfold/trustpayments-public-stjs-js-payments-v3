@@ -1,0 +1,10 @@
+{
+  "components": {
+    "defaultPaymentType": "",
+    "paymentTypes": [],
+    "startOnLoad": false
+  },
+  "panIcon": true,
+  "submitOnError": true,
+  "ignoreJsInitErrors" : true
+}

@@ -543,6 +543,17 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert is_displayed is True, assertion_message
 
+    def validate_if_callback_popup_is_not_displayed(self, callback_popup):
+        assertion_message = f"{callback_popup} callback popup is displayed but shouldn't be"
+        callback_types = {
+            'success': PaymentMethodsLocators.callback_success_popup,
+            'error': PaymentMethodsLocators.callback_error_popup,
+            'cancel': PaymentMethodsLocators.callback_cancel_popup,
+            'submit': PaymentMethodsLocators.callback_data_popup
+        }
+        assert_that(self._waits.wait_and_check_is_element_displayed(callback_types[callback_popup], max_try=5
+                                                                    ), assertion_message).is_false()
+
     def validate_jwt_response_in_callback(self):
         response = self.get_text_from_submit_callback_jwt()
         assertion_message = 'Submit callback data doesnt contain JWT response'
