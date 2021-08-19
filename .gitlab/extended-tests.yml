@@ -111,6 +111,7 @@ iPhoneXS-12-component-tests-smoke-nightly:
   variables:
     DEVICE: iPhone 11
     OS_VERSION: 13
+    BROWSER: Safari
     REAL_MOBILE: 'true'
     POETRY_TAGS: $SMOKE_TESTS_WITH_APPLE_PAY
 
@@ -411,6 +412,7 @@ OSXBigSur-Chrome-latest-e2e-tests-smoke-nightly:
     DEVICE: Samsung Galaxy S6
     OS_VERSION: '5.0'
     REAL_MOBILE: 'true'
+    BROWSER: Chrome
     POETRY_TAGS: browser_info_not_supported
 
 SamsungGalaxyS6-5.0-browser-not-supported-e2e-tests-nightly:
