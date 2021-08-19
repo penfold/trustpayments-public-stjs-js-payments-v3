@@ -24,7 +24,7 @@ import { IConfig } from '../../shared/model/config/IConfig';
 import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { Frame } from '../../application/core/shared/frame/Frame';
-import { PAY, PROCESSING } from '../../application/core/models/constants/Translations';
+import { PAY, PLEASE_WAIT, PROCESSING } from '../../application/core/models/constants/Translations';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import Container from 'typedi';
@@ -60,6 +60,7 @@ export class CardFrames {
   private defaultPaymentType: string;
   private paymentTypes: string[];
   private payMessage: string;
+  private pleaseWaitMessage: string;
   private processingMessage: string;
   private fieldsToSubmitLength: number;
   private isCardWithNoCvv: boolean;
@@ -214,7 +215,7 @@ export class CardFrames {
       const { components } = response;
 
       if (this.submitButton) {
-        this.submitButton.textContent = this.payMessage;
+        this.submitButton.textContent = this.pleaseWaitMessage;
       }
 
       if (components.startOnLoad) {
@@ -362,6 +363,7 @@ export class CardFrames {
     this.paymentTypes = paymentTypes;
     this.jwt = jwt;
     this.payMessage = this.translator.translate(PAY);
+    this.pleaseWaitMessage = this.translator.translate(PLEASE_WAIT);
     this.processingMessage = `${this.translator.translate(PROCESSING)} ...`;
     this.loadAnimatedCard = loadAnimatedCard !== undefined ? loadAnimatedCard : true;
 
@@ -385,7 +387,7 @@ export class CardFrames {
       element.classList.add(CardFrames.SUBMIT_BUTTON_DISABLED_CLASS); // Keep it locked but return it to original text
       disabledState = true;
     } else if (state === FormState.LOADING) {
-      element.textContent = this.payMessage;
+      element.textContent = this.pleaseWaitMessage;
       disabledState = true;
     } else {
       element.textContent = this.payMessage;
