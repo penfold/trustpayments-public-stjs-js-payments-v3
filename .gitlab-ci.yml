@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 30.0.5
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 30.1.2
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -17,7 +17,6 @@ include:
   - local: '/.gitlab/fast-tests/functional.yml'
   - local: '/.gitlab/fast-tests/security.yml'
   - local: '/.gitlab/fast-tests/js-static-analysis.yml'
-  - local: '/.gitlab/fast-tests/unit-tests.yml'
   - local: '/.gitlab/extended-tests.yml'
   - local: '/.gitlab/post-release.yml'
   - local: '/.gitlab/pre-smoke-tests.yml'
