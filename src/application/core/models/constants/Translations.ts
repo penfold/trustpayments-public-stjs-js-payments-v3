@@ -10,6 +10,7 @@ export const LABEL_SECURITY_CODE = 'Security code';
 export const MERCHANT_VALIDATION_FAILURE = 'Merchant validation failure';
 export const NOT_IMPLEMENTED_ERROR = 'Method not implemented';
 export const PAY = 'Pay';
+export const PLEASE_WAIT = 'Please wait';
 export const PAYMENT_CANCELLED = 'Payment has been cancelled';
 export const PAYMENT_ERROR = 'An error occurred';
 export const PAYMENT_SUCCESS = 'Payment has been successfully processed';
