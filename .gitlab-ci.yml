@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 30.0.3
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 30.1.0
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -25,6 +25,9 @@ include:
 
 variables:
   PROJECT_INFRASTRUCTURE_CICD_REF: *project-infrastructure-cicd-ref
+
+  AUTO_SEMVER: 'false'
+  VERSION_LOCK: 4.0.0
 
   PROJECT_PYTHON_TESTS: 'tests'
 
