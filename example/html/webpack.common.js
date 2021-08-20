@@ -29,27 +29,32 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: './pages/index/index.html',
-      chunks: ['example']
+      chunks: ['example'],
+      publicPath: './',
     }),
     new HtmlWebpackPlugin({
       filename: 'receipt.html',
       template: './pages/receipt/receipt.html',
-      chunks: ['receipt']
+      chunks: ['receipt'],
+      publicPath: './',
     }),
     new HtmlWebpackPlugin({
       filename: 'iframe.html',
       template: './pages/iframe/iframe.html',
-      chunks: ['iframe']
+      chunks: ['iframe'],
+      publicPath: './',
     }),
     new HtmlWebpackPlugin({
       filename: 'minimal.html',
       template: './pages/minimal/minimal.html',
-      chunks: ['minimal']
+      chunks: ['minimal'],
+      publicPath: './',
     }),
     new HtmlWebpackPlugin({
       filename: 'minimal-content-security-header.html',
       template: './pages/minimal/minimal-content-security-header.html',
-      chunks: ['minimal']
+      chunks: ['minimal'],
+      publicPath: './',
     }),
     new CopyPlugin({
       patterns: [

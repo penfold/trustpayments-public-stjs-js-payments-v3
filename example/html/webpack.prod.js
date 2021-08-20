@@ -7,7 +7,7 @@ module.exports = merge(common, {
   plugins: [
     new webpack.DefinePlugin({
       LIBRARY_URL: JSON.stringify(process.env.npm_config_library_url),
-      CONFIG_URL: null,
+      CONFIG_URL: JSON.stringify('.'),
     }),
   ],
 });
