@@ -38,7 +38,7 @@ Feature: Visual regression - E2E Card Payments
     And User clicks Pay button
     Then Screenshot is taken after 6 seconds and checked
 
-  @visual_regression @scrn_card_interface_acs_popup
+  @visual_regression @scrn_card_interface_acs_popup @STJS-1709_visual_regression_IE
   Scenario: ACS pop-up display
     And User waits for whole form to be displayed
     When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
