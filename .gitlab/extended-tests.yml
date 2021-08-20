@@ -237,6 +237,7 @@ win10-IE-11.0-e2e-tests-smoke-nightly:
     BROWSER: Edge
     BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
 
 win8.1-Edge-latest-e2e-tests-smoke-release:
   extends:
@@ -259,6 +260,7 @@ win8.1-Edge-latest-e2e-tests-smoke-nightly:
     BROWSER: Edge
     BROWSER_VERSION: 'latest-1'
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+    BROWSERSTACK_SELENIUM_VERSION: '3.141.59'
 
 .win8.1-Edge-almost-latest-e2e-tests-smoke-release:
   extends:
