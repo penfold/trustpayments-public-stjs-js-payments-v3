@@ -36,3 +36,9 @@ Feature: Visual regression - E2E Card Payments
     When User fills payment form with defined card MASTERCARD_INVALID_PATTERN_CARD
     And User clicks Pay button
     Then Make screenshot after 6 seconds
+
+  @visual_regression_generation @visual_regression_generation_safari @scrn_card_interface_acs_popup
+  Scenario: ACS pop-up display
+    When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
+    And User clicks Pay button
+    Then Make screenshot after 6 seconds

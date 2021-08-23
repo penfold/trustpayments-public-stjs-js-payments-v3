@@ -43,4 +43,4 @@ Feature: Visual regression - E2E Card Payments
     And User waits for whole form to be displayed
     When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
     And User clicks Pay button
-    Then Screenshot is taken after 20 seconds and checked
+    Then Screenshot is taken after 6 seconds and checked
