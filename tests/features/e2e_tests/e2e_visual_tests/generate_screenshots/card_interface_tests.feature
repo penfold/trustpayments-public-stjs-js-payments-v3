@@ -39,6 +39,6 @@ Feature: Visual regression - E2E Card Payments
 
   @visual_regression_generation @visual_regression_generation_safari @scrn_card_interface_acs_popup
   Scenario: ACS pop-up display
-    When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
     Then Make screenshot after 6 seconds
