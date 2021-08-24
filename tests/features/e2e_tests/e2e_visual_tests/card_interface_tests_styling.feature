@@ -66,6 +66,6 @@ Feature: Visual regression - E2E Card Payments
       | requesttypedescriptions | AUTH  |
     And User opens minimal.html page with inline param
     And User waits for whole form to be displayed
-    When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
+    When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
     Then Screenshot is taken after 6 seconds and checked
