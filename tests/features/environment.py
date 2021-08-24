@@ -38,7 +38,7 @@ def setup_debug_on_error(userdata):
 def before_all(context):
     """Run before the whole shooting match"""
     context.configuration = CONFIGURATION
-    MockServer.start_mock_server()
+    # MockServer.start_mock_server()
 
 
 def disable_headless_for_visa_checkout(context):
@@ -89,7 +89,7 @@ def after_scenario(context, scenario):
     browser_name = context.browser
     context.browser_executor.clear_cookies()
     context.browser_executor.close_browser()
-    MockServer.stop_mock_server()
+    # MockServer.stop_mock_server()
     if context.configuration.REMOTE:
         set_scenario_name(context.session_id, scenario.name)
     scenario.name = f'{scenario.name}_{browser_name.upper()}'
