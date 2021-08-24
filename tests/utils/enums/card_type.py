@@ -12,7 +12,3 @@ class CardType(Enum):
     MASTERCARD = auto()
     PIBA = auto()
     AMERICANEXPRESS = auto()
-
-    @property
-    def value(self) -> str:
-        return self.name

@@ -225,10 +225,6 @@ class Card(Enum):
         return int(self.formatted_number.replace(' ', ''))
 
     @property
-    def value(self) -> str:
-        return self.name
-
-    @property
     def expiration_date(self) -> str:
         expiration_date: str = self.__expiration_date
         if not expiration_date or expiration_date.__eq__('FUTURE'):
