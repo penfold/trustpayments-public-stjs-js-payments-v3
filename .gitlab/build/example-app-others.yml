@@ -1,0 +1,29 @@
+### Example App Angular
+
+build-app-angular:
+  extends:
+    - .build-with-npm
+  variables:
+    PACKAGE_DIR: 'example/angular'
+  before_script:
+    - cd example/angular
+    - npm ci
+
+### Example App ReactJS
+
+build-app-reactjs:
+  extends:
+    - .build-with-npm
+  variables:
+    PACKAGE_DIR: 'example/reactjs'
+  before_script:
+    - cd example/reactjs
+    - npm ci
+
+### Example App ReactNative
+
+#build-app-reactnative:
+#  extends:
+#    - .build-with-npm
+#  variables:
+#    PACKAGE_DIR: 'example/reactnative'
