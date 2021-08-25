@@ -1,5 +1,4 @@
 # type: ignore[no-redef]
-import time
 
 from behave import use_step_matcher, given, step, when, then
 
