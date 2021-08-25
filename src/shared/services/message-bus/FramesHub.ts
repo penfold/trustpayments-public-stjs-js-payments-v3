@@ -44,18 +44,18 @@ export class FramesHub {
       .subscribe(value => this.activeFrame$.next(value));
   }
 
-  public isFrameActive(name: string): Observable<boolean> {
+  isFrameActive(name: string): Observable<boolean> {
     return this.activeFrame$.pipe(
       map(frames => frames.indexOf(name) !== -1),
       distinctUntilChanged()
     );
   }
 
-  public waitForFrame(name: string): Observable<string> {
+  waitForFrame(name: string): Observable<string> {
     return this.isFrameActive(name).pipe(filter(Boolean), first(), mapTo(name));
   }
 
-  public notifyReadyState(): void {
+  notifyReadyState(): void {
     const frameName = this.identifier.getFrameName();
 
     if (frameName === MERCHANT_PARENT_FRAME) {
@@ -65,7 +65,7 @@ export class FramesHub {
     this.communicator.send({ type: FramesHub.FRAME_READY_EVENT, data: frameName }, MERCHANT_PARENT_FRAME);
   }
 
-  public getParentFrame(): Window {
+  getParentFrame(): Window {
     if (this.identifier.isParentFrame()) {
       return window;
     }
@@ -73,7 +73,7 @@ export class FramesHub {
     return window.parent;
   }
 
-  public reset(): void {
+  reset(): void {
     this.activeFrame$.next([]);
   }
 

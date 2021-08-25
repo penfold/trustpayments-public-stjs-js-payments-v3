@@ -119,7 +119,7 @@ export class CardFrames {
     this.destroy$ = this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
-  public init(): void {
+  init(): void {
     this._preventFormSubmit();
     this._createSubmitButton();
     this._initSubscribes();

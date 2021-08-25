@@ -33,7 +33,7 @@ interface IFetchOptions {
  */
 @Service()
 export class StTransport {
-  public static readonly THROTTLE_TIME = 250;
+  static readonly THROTTLE_TIME = 250;
   private static DELAY = 1000;
   private static RETRY_LIMIT = 5;
   private static RETRY_TIMEOUT = 10000;
@@ -49,7 +49,7 @@ export class StTransport {
    * @param requestObject A request object to send to ST
    * @return A Promise object that resolves the gateway response
    */
-  public async sendRequest(requestObject: IStRequest, merchantUrl?: string): Promise<Record<string, unknown>> {
+  async sendRequest(requestObject: IStRequest, merchantUrl?: string): Promise<Record<string, unknown>> {
     const requestBody = this.getCodec().encode(requestObject);
     const fetchOptions = this._getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
 
