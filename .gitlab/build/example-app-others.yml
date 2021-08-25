@@ -5,6 +5,7 @@ build-app-angular:
     - .build-with-npm
   variables:
     PACKAGE_DIR: 'example/angular'
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_angular"
 
 ### Example App ReactJS
 
@@ -13,6 +14,7 @@ build-app-reactjs:
     - .build-with-npm
   variables:
     PACKAGE_DIR: 'example/reactjs'
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_reactjs"
 
 ### Example App ReactNative
 
