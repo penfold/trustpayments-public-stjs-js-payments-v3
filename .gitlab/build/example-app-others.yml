@@ -5,9 +5,6 @@ build-app-angular:
     - .build-with-npm
   variables:
     PACKAGE_DIR: 'example/angular'
-  before_script:
-    - cd example/angular
-    - npm ci
 
 ### Example App ReactJS
 
@@ -16,9 +13,6 @@ build-app-reactjs:
     - .build-with-npm
   variables:
     PACKAGE_DIR: 'example/reactjs'
-  before_script:
-    - cd example/reactjs
-    - npm ci
 
 ### Example App ReactNative
 
