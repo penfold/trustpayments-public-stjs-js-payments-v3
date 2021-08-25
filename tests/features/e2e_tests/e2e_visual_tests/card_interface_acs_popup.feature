@@ -6,8 +6,8 @@ Feature: Visual regression - acs pop up
   @visual_regression @visual_regression_safari @STJS-1709_visual_regression_IE @scrn_card_interface_acs_popup
   Scenario: ACS pop-up display
     Given JS library configured by inline params VISUAL_BASIC_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value                      |
-      | requesttypedescriptions | THREEDQUERY AUTH           |
+      | key                     | value       |
+      | requesttypedescriptions | THREEDQUERY |
     And User opens minimal.html page with inline param
     And User waits for whole form to be displayed
     When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
