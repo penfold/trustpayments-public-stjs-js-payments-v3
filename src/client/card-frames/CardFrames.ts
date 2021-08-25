@@ -82,7 +82,6 @@ export class CardFrames {
   protected componentIds: IComponentsIds;
   protected submitCallback: (...args: unknown[]) => unknown;
   protected fieldsToSubmit: string[];
-  protected messageBus: IMessageBus;
   protected formId: string;
   private destroy$: Observable<void>;
 
@@ -119,7 +118,7 @@ export class CardFrames {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
-  public init(): void {
+  init(): void {
     this.preventFormSubmit();
     this.createSubmitButton();
     this.initSubscribes();

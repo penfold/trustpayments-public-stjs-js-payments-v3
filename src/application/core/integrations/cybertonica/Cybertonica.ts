@@ -30,7 +30,7 @@ export class Cybertonica implements ICybertonica {
     return DomMethods.insertScript(Cybertonica.SCRIPT_TARGET, { src: Cybertonica.SDK_ADDRESS });
   }
 
-  public init(apiUserName: string): Promise<string> {
+  init(apiUserName: string): Promise<string> {
     const tid = this.insertCybertonicaLibrary().then(() =>
       AFCYBERTONICA.init(apiUserName, undefined, Cybertonica.getBasename())
     );
@@ -42,7 +42,7 @@ export class Cybertonica implements ICybertonica {
     return this.tid;
   }
 
-  public getTransactionId(): Promise<string> {
+  getTransactionId(): Promise<string> {
     const tid = this.storage.getItem(Cybertonica.TID_KEY) as string;
 
     if (tid !== null && tid !== '') {

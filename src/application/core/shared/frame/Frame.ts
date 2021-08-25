@@ -5,15 +5,15 @@ import { frameAllowedStyles } from './frame-const';
 
 @Service()
 export class Frame {
-  public getAllowedParams(): string[] {
+  getAllowedParams(): string[] {
     return ['locale', 'origin'];
   }
 
-  public getAllowedStyles(): IAllowedStyles {
+  getAllowedStyles(): IAllowedStyles {
     return frameAllowedStyles;
   }
 
-  public parseUrl(additionalParams?: string[]): IParams {
+  parseUrl(additionalParams?: string[]): IParams {
     const parsedUrl = new URL(window.location.href);
     const allowedParams = this.getAllowedParams().concat(additionalParams);
     const params: IParams = { styles: [] };

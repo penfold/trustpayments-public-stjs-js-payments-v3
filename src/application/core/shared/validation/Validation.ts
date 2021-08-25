@@ -26,13 +26,13 @@ import { IFormFieldsValidity } from '../../models/IFormFieldsValidity';
 
 @Service()
 export class Validation {
-  public static ERROR_FIELD_CLASS = 'error-field';
+  static ERROR_FIELD_CLASS = 'error-field';
 
-  public static clearNonDigitsChars(value: string): string {
+  static clearNonDigitsChars(value: string): string {
     return value.replace(Validation.ESCAPE_DIGITS_REGEXP, Validation.CLEAR_VALUE);
   }
 
-  public static getValidationMessage(state: ValidityState): string {
+  static getValidationMessage(state: ValidityState): string {
     const { patternMismatch, valid, valueMissing } = state;
     if (!valid) {
       if (valueMissing) {
@@ -45,13 +45,13 @@ export class Validation {
     }
   }
 
-  public static isCharNumber(event: KeyboardEvent): boolean {
+  static isCharNumber(event: KeyboardEvent): boolean {
     const key: string = event.key;
     const regex = new RegExp(Validation.ESCAPE_DIGITS_REGEXP);
     return regex.test(key);
   }
 
-  public static isEnter(event: KeyboardEvent): boolean {
+  static isEnter(event: KeyboardEvent): boolean {
     if (event) {
       const keyCode: number = event.keyCode;
       return keyCode === Validation.ENTER_KEY_CODE;
@@ -60,21 +60,21 @@ export class Validation {
     }
   }
 
-  public static setCustomValidationError(errorContent: string, inputElement: HTMLInputElement): void {
+  static setCustomValidationError(errorContent: string, inputElement: HTMLInputElement): void {
     inputElement.setCustomValidity(errorContent);
   }
 
-  public static addErrorContainer(inputElement: HTMLInputElement, inputTarget: InsertPosition, errorContent: string): void {
+  static addErrorContainer(inputElement: HTMLInputElement, inputTarget: InsertPosition, errorContent: string): void {
     inputElement.insertAdjacentHTML(inputTarget, errorContent);
   }
 
-  public static resetValidationProperties(input: HTMLInputElement): void {
+  static resetValidationProperties(input: HTMLInputElement): void {
     input.setCustomValidity(Validation.CLEAR_VALUE);
     input.classList.remove(Validation.ERROR_FIELD_CLASS);
     input.nextSibling.textContent = Validation.CLEAR_VALUE;
   }
 
-  public static returnInputAndErrorContainerPair(item: HTMLInputElement): { inputElement: HTMLInputElement, messageElement: HTMLElement } {
+  static returnInputAndErrorContainerPair(item: HTMLInputElement): { inputElement: HTMLInputElement, messageElement: HTMLElement } {
     return {
       inputElement: document.getElementById(item.id) as HTMLInputElement,
       messageElement: document.getElementById(item.id).nextSibling as HTMLElement,
@@ -138,11 +138,11 @@ export class Validation {
     return isPanValid && isExpiryDateValid && isSecurityCodeValid;
   }
 
-  public cardDetails: BrandDetailsType;
-  public cardNumberValue: string;
-  public expirationDateValue: string;
-  public securityCodeValue: string;
-  public validation: IValidation;
+  cardDetails: BrandDetailsType;
+  cardNumberValue: string;
+  expirationDateValue: string;
+  securityCodeValue: string;
+  validation: IValidation;
   private card: ICard;
   private currentKeyCode: number;
   private formValidity: boolean;
@@ -159,13 +159,13 @@ export class Validation {
     this.init();
   }
 
-  public backendValidation(inputElement: HTMLInputElement, messageElement: HTMLElement, event: string): void {
+  backendValidation(inputElement: HTMLInputElement, messageElement: HTMLElement, event: string): void {
     this.messageBus.subscribeType(event, (data: IMessageBusValidateField) => {
       this.setError(inputElement, messageElement, data);
     });
   }
 
-  public blockForm(state: FormState): void {
+  blockForm(state: FormState): void {
     const messageBusEvent: IMessageBusEvent = {
       data: state,
       type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
@@ -173,14 +173,14 @@ export class Validation {
     this.messageBus.publish(messageBusEvent, true);
   }
 
-  public callSubmitEvent(): void {
+  callSubmitEvent(): void {
     const messageBusEvent: IMessageBusEvent = {
       type: MessageBus.EVENTS_PUBLIC.CALL_SUBMIT_EVENT,
     };
     this.messageBus.publish(messageBusEvent, true);
   }
 
-  public formValidation(
+  formValidation(
     dataInJwt: boolean,
     fieldsToSubmit: string[],
     formFields: {
@@ -202,7 +202,7 @@ export class Validation {
     };
   }
 
-  public getErrorData(errorData: IErrorData): { field: unknown, errormessage: unknown } {
+  getErrorData(errorData: IErrorData): { field: unknown, errormessage: unknown } {
     // @ts-ignore
     const { errordata, errormessage } = StCodec.getErrorData(errorData);
     const validationEvent: IMessageBusEvent = {
@@ -220,7 +220,7 @@ export class Validation {
     return { field: errordata[0], errormessage };
   }
 
-  public keepCursorsPosition(element: HTMLInputElement): void {
+  keepCursorsPosition(element: HTMLInputElement): void {
     const cursorSingleSkip = 1;
     const cursorDoubleSkip = 2;
     const dateSlash = '/';
@@ -245,7 +245,7 @@ export class Validation {
     }
   }
 
-  public luhnCheck(field: HTMLInputElement, input: HTMLInputElement, message: HTMLDivElement): void {
+  luhnCheck(field: HTMLInputElement, input: HTMLInputElement, message: HTMLDivElement): void {
     const { value } = input;
     if (!luhnCheck(value)) {
       Validation.setCustomValidationError(VALIDATION_ERROR_PATTERN_MISMATCH, field);
@@ -255,16 +255,16 @@ export class Validation {
     }
   }
 
-  public limitLength(value: string, length: number): string {
+  limitLength(value: string, length: number): string {
     return value ? value.substring(0, length) : Validation.CLEAR_VALUE;
   }
 
-  public removeError(element: HTMLInputElement, errorContainer: HTMLElement): void {
+  removeError(element: HTMLInputElement, errorContainer: HTMLElement): void {
     element.classList.remove(Validation.ERROR_CLASS);
     errorContainer.textContent = Validation.CLEAR_VALUE;
   }
 
-  public setError(inputElement: HTMLInputElement, messageElement: HTMLElement, data: IMessageBusValidateField): void {
+  setError(inputElement: HTMLInputElement, messageElement: HTMLElement, data: IMessageBusValidateField): void {
     const { message } = data;
     if (message && messageElement && messageElement.innerText !== VALIDATION_ERROR_PATTERN_MISMATCH) {
       messageElement.innerText = this.translator.translate(message);
@@ -278,13 +278,13 @@ export class Validation {
     }
   }
 
-  public setOnKeyDownProperties(element: HTMLInputElement, event: KeyboardEvent): void {
+  setOnKeyDownProperties(element: HTMLInputElement, event: KeyboardEvent): void {
     this.currentKeyCode = event.keyCode;
     this.selectionRangeStart = element.selectionStart;
     this.selectionRangeEnd = element.selectionEnd;
   }
 
-  public setFormValidity(state: IFormFieldsValidity): void {
+  setFormValidity(state: IFormFieldsValidity): void {
     const validationEvent: IMessageBusEvent = {
       data: { ...state },
       type: MessageBus.EVENTS.VALIDATE_FORM,
@@ -292,27 +292,27 @@ export class Validation {
     this.messageBus.publish(validationEvent);
   }
 
-  public validate(inputElement: HTMLInputElement, messageElement: HTMLElement, customErrorMessage?: string): void {
+  validate(inputElement: HTMLInputElement, messageElement: HTMLElement, customErrorMessage?: string): void {
     this.toggleErrorClass(inputElement);
     this.toggleErrorContainer(inputElement, messageElement);
     this.setMessage(inputElement, messageElement, customErrorMessage);
   }
 
-  public init(): void {
+  init(): void {
     this.matchDigitsRegexp = new RegExp(Validation.MATCH_DIGITS);
   }
 
-  public removeNonDigits(value: string): string {
+  removeNonDigits(value: string): string {
     if (value) {
       return value.replace(Validation.MATCH_CHARS, Validation.CLEAR_VALUE);
     }
   }
 
-  public getCardDetails(cardNumber: string = Validation.CLEAR_VALUE): BrandDetailsType {
+  getCardDetails(cardNumber: string = Validation.CLEAR_VALUE): BrandDetailsType {
     return iinLookup.lookup(cardNumber);
   }
 
-  public cardNumber(value: string): void {
+  cardNumber(value: string): void {
     this.cardNumberValue = this.removeNonDigits(value);
     this.cardDetails = this.getCardDetails(this.cardNumberValue);
     const length = this.cardDetails.type
@@ -321,11 +321,11 @@ export class Validation {
     this.cardNumberValue = this.limitLength(this.cardNumberValue, length);
   }
 
-  public expirationDate(value: string): void {
+  expirationDate(value: string): void {
     this.expirationDateValue = value ? this.removeNonDigits(value) : Validation.CLEAR_VALUE;
   }
 
-  public securityCode(value: string, length: number): void {
+  securityCode(value: string, length: number): void {
     this.securityCodeValue = value ? this.limitLength(this.removeNonDigits(value), length) : Validation.CLEAR_VALUE;
   }
 

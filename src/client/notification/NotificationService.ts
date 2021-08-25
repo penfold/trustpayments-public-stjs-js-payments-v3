@@ -25,23 +25,23 @@ export class NotificationService {
     return this.configProvider.getConfig() ? this.configProvider.getConfig().submitOnCancel : false;
   }
 
-  public error(message: string): void {
+  error(message: string): void {
     if (!this.disableNotification && !this.submitOnError) {
       this.setNotification(NotificationType.Error, message);
     }
   }
 
-  public info(message: string): void {
+  info(message: string): void {
     this.setNotification(NotificationType.Info, message);
   }
 
-  public success(message: string): void {
+  success(message: string): void {
     if (!this.disableNotification && !this.submitOnSuccess) {
       this.setNotification(NotificationType.Success, message);
     }
   }
 
-  public cancel(message: string): void {
+  cancel(message: string): void {
     if (!this.disableNotification && !this.submitOnCancel) {
       this.setNotification(NotificationType.Cancel, message);
     }

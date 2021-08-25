@@ -120,16 +120,16 @@ describe('CardFrames', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      instance._broadcastSecurityCodeProperties = jest.fn();
+      instance.broadcastSecurityCodeProperties = jest.fn();
       // @ts-ignore
-      instance._messageBus.publish = jest.fn();
+      instance.messageBus.publish = jest.fn();
       // @ts-ignore
-      instance._disableFormField(data, type, CARD_NUMBER_IFRAME);
+      instance.disableFormField(data, type, CARD_NUMBER_IFRAME);
     });
 
     it('should call publish method', () => {
       // @ts-ignore
-      expect(instance._messageBus.publish).toHaveBeenCalledWith(messageBusEvent);
+      expect(instance.messageBus.publish).toHaveBeenCalledWith(messageBusEvent);
     });
   });
 
@@ -138,16 +138,16 @@ describe('CardFrames', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      instance._getSubmitButton = jest.fn().mockReturnValueOnce(element);
+      instance.getSubmitButton = jest.fn().mockReturnValueOnce(element);
       // @ts-ignore
-      instance._setSubmitButtonProperties = jest.fn();
+      instance.setSubmitButtonProperties = jest.fn();
       // @ts-ignore
-      instance._disableSubmitButton(true);
+      instance.disableSubmitButton(true);
     });
 
     it('should call _setSubmitButtonProperties', () => {
       // @ts-ignore
-      expect(instance._setSubmitButtonProperties).toHaveBeenCalled();
+      expect(instance.setSubmitButtonProperties).toHaveBeenCalled();
     });
   });
 
@@ -168,21 +168,21 @@ describe('CardFrames', () => {
         billingfirstname: '',
       });
       // @ts-ignore
-      instance._messageBus.publish = jest.fn();
+      instance.messageBus.publish = jest.fn();
     });
 
     it('should call publish method', () => {
       // @ts-ignore
-      instance._onInput();
+      instance.onInput();
       // @ts-ignore
-      expect(instance._messageBus.publish).toHaveBeenCalledWith(messageBusEvent);
+      expect(instance.messageBus.publish).toHaveBeenCalledWith(messageBusEvent);
     });
   });
 
   describe('_setMerchantInputListeners', () => {
     beforeEach(() => {
       // @ts-ignore
-      instance._setMerchantInputListeners();
+      instance.setMerchantInputListeners();
     });
 
     it('should add event listener to each input', () => {
@@ -193,51 +193,51 @@ describe('CardFrames', () => {
   describe('_submitFormListener', () => {
     beforeEach(() => {
       // @ts-ignore
-      instance._publishSubmitEvent = jest.fn();
+      instance.publishSubmitEvent = jest.fn();
     });
 
     it('should call preventDefault and publishSubmitEvent method', () => {
       // @ts-ignore
-      instance._submitButton.addEventListener = jest.fn().mockImplementationOnce((event, callback) => {
+      instance.submitButton.addEventListener = jest.fn().mockImplementationOnce((event, callback) => {
         callback();
       });
       // @ts-ignore
-      instance._submitFormListener();
+      instance.submitFormListener();
       // @ts-ignore
-      expect(instance._publishSubmitEvent).toHaveBeenCalled();
+      expect(instance.publishSubmitEvent).toHaveBeenCalled();
     });
 
     it('should remove the click listener on destroy event', () => {
       // @ts-ignore
-      spyOn(instance._submitButton, 'removeEventListener');
+      spyOn(instance.submitButton, 'removeEventListener');
       // @ts-ignore
-      instance._submitFormListener();
+      instance.submitFormListener();
       messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
       // @ts-ignore
-      expect(instance._submitButton.removeEventListener).toHaveBeenCalledWith('click', expect.any(Function));
+      expect(instance.submitButton.removeEventListener).toHaveBeenCalledWith('click', expect.any(Function));
     });
   });
 
   describe('_subscribeBlockSubmit', () => {
     beforeEach(() => {
       // @ts-ignore
-      instance._disableSubmitButton = jest.fn();
+      instance.disableSubmitButton = jest.fn();
       // @ts-ignore
-      instance._disableFormField = jest.fn();
+      instance.disableFormField = jest.fn();
     });
 
     it('should block submit button on SUBMIT_FORM event', () => {
       messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_FORM });
 
       // @ts-ignore
-      expect(instance._disableSubmitButton).toHaveBeenCalledWith(FormState.BLOCKED);
+      expect(instance.disableSubmitButton).toHaveBeenCalledWith(FormState.BLOCKED);
     });
 
     it('should unlock submit button on UNLOCK_BUTTON event', () => {
       messageBus.publish({ type: PUBLIC_EVENTS.UNLOCK_BUTTON });
 
       // @ts-ignore
-      expect(instance._disableSubmitButton).toHaveBeenCalledWith(FormState.AVAILABLE);
+      expect(instance.disableSubmitButton).toHaveBeenCalledWith(FormState.AVAILABLE);
     });
 
     it('should set the state of submit button on BLOCK_FORM event', () => {
@@ -246,7 +246,7 @@ describe('CardFrames', () => {
       messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: state });
 
       // @ts-ignore
-      expect(instance._disableSubmitButton).toHaveBeenCalledWith(state);
+      expect(instance.disableSubmitButton).toHaveBeenCalledWith(state);
     });
 
     it('should set the state of form fields on BLOCK_FORM event', () => {
@@ -255,19 +255,19 @@ describe('CardFrames', () => {
       messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: state });
 
       // @ts-ignore
-      expect(instance._disableFormField).toHaveBeenCalledWith(
+      expect(instance.disableFormField).toHaveBeenCalledWith(
         state,
         PUBLIC_EVENTS.BLOCK_CARD_NUMBER,
         CARD_NUMBER_IFRAME
       );
       // @ts-ignore
-      expect(instance._disableFormField).toHaveBeenCalledWith(
+      expect(instance.disableFormField).toHaveBeenCalledWith(
         state,
         PUBLIC_EVENTS.BLOCK_EXPIRATION_DATE,
         EXPIRATION_DATE_IFRAME
       );
       // @ts-ignore
-      expect(instance._disableFormField).toHaveBeenCalledWith(
+      expect(instance.disableFormField).toHaveBeenCalledWith(
         state,
         PUBLIC_EVENTS.BLOCK_SECURITY_CODE,
         SECURITY_CODE_IFRAME
@@ -281,9 +281,9 @@ describe('CardFrames', () => {
       messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE });
 
       // @ts-ignore
-      expect(instance._disableSubmitButton).not.toHaveBeenCalled();
+      expect(instance.disableSubmitButton).not.toHaveBeenCalled();
       // @ts-ignore
-      expect(instance._disableFormField).not.toHaveBeenCalled();
+      expect(instance.disableFormField).not.toHaveBeenCalled();
     });
   });
 
@@ -298,20 +298,20 @@ describe('CardFrames', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      instance._messageBus.subscribe = jest.fn().mockReturnValueOnce({
+      instance.messageBus.subscribe = jest.fn().mockReturnValueOnce({
         cardNumber: '',
         expirationDate: '',
         securityCode: '',
       });
       // @ts-ignore
-      instance._messageBus.publish = jest.fn();
+      instance.messageBus.publish = jest.fn();
       // @ts-ignore
-      instance._publishSubmitEvent();
+      instance.publishSubmitEvent();
     });
 
     it('should call publish method', () => {
       // @ts-ignore
-      expect(instance._messageBus.publish).toHaveBeenCalledWith(submitFormEvent, true);
+      expect(instance.messageBus.publish).toHaveBeenCalledWith(submitFormEvent, true);
     });
   });
 
@@ -330,7 +330,7 @@ describe('CardFrames', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      instance._publishValidatedFieldState = jest.fn();
+      instance.publishValidatedFieldState = jest.fn();
     });
 
     it('should call _publishValidatedFieldState for cardNumber if it\'s state is false', () => {
@@ -339,9 +339,9 @@ describe('CardFrames', () => {
       messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
 
       // @ts-ignore
-      expect(instance._publishValidatedFieldState.mock.calls[0][0]).toEqual({ message: 'card', state: false });
+      expect(instance.publishValidatedFieldState.mock.calls[0][0]).toEqual({ message: 'card', state: false });
       // @ts-ignore
-      expect(instance._publishValidatedFieldState.mock.calls[0][1]).toEqual(
+      expect(instance.publishValidatedFieldState.mock.calls[0][1]).toEqual(
         MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD
       );
     });
@@ -352,9 +352,9 @@ describe('CardFrames', () => {
       messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
 
       // @ts-ignore
-      expect(instance._publishValidatedFieldState.mock.calls[0][0]).toEqual({ message: 'expiration', state: false });
+      expect(instance.publishValidatedFieldState.mock.calls[0][0]).toEqual({ message: 'expiration', state: false });
       // @ts-ignore
-      expect(instance._publishValidatedFieldState.mock.calls[0][1]).toEqual(
+      expect(instance.publishValidatedFieldState.mock.calls[0][1]).toEqual(
         MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD
       );
     });
@@ -365,9 +365,9 @@ describe('CardFrames', () => {
       messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
 
       // @ts-ignore
-      expect(instance._publishValidatedFieldState.mock.calls[0][0]).toEqual({ message: 'security', state: false });
+      expect(instance.publishValidatedFieldState.mock.calls[0][0]).toEqual({ message: 'security', state: false });
       // @ts-ignore
-      expect(instance._publishValidatedFieldState.mock.calls[0][1]).toEqual(
+      expect(instance.publishValidatedFieldState.mock.calls[0][1]).toEqual(
         MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD
       );
     });
@@ -378,7 +378,7 @@ describe('CardFrames', () => {
       messageBus.publish({ type: PRIVATE_EVENTS.VALIDATE_FORM, data: validationResult });
 
       // @ts-ignore
-      expect(instance._publishValidatedFieldState).not.toHaveBeenCalled();
+      expect(instance.publishValidatedFieldState).not.toHaveBeenCalled();
     });
   });
 
@@ -388,21 +388,21 @@ describe('CardFrames', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      instance._messageBus.publish = jest.fn();
+      instance.messageBus.publish = jest.fn();
       // @ts-ignore
-      instance._publishValidatedFieldState(field, eventType);
+      instance.publishValidatedFieldState(field, eventType);
     });
 
     it('should set messageBusEvent properties', () => {
       // @ts-ignore
-      expect(instance._messageBusEvent.type).toEqual(MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD);
+      expect(instance.messageBusEvent.type).toEqual(MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD);
       // @ts-ignore
-      expect(instance._messageBusEvent.data.message).toEqual(field.message);
+      expect(instance.messageBusEvent.data.message).toEqual(field.message);
     });
 
     it('should call messageBus publish method', () => {
       // @ts-ignore
-      expect(instance._messageBus.publish).toHaveBeenCalledWith({
+      expect(instance.messageBus.publish).toHaveBeenCalledWith({
         type: MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD,
         data: { message: field.message },
       });
@@ -415,7 +415,7 @@ describe('CardFrames', () => {
 
     it('should mark button as disabled when form state is blocked', () => {
       // @ts-ignore
-      instance._setSubmitButtonProperties(button, FormState.BLOCKED);
+      instance.setSubmitButtonProperties(button, FormState.BLOCKED);
       expect(button.textContent).toEqual(`${PROCESSING} ...`);
       // @ts-ignore
       expect(button.classList.contains(CardFrames.SUBMIT_BUTTON_DISABLED_CLASS)).toEqual(true);
@@ -424,7 +424,7 @@ describe('CardFrames', () => {
 
     it('should mark button as disabled when form state is loading and text should be \'Please wait\'', () => {
       // @ts-ignore
-      instance._setSubmitButtonProperties(button, FormState.LOADING);
+      instance.setSubmitButtonProperties(button, FormState.LOADING);
       expect(button.textContent).toEqual(PLEASE_WAIT);
       // @ts-ignore
       expect(button.classList.contains(CardFrames.SUBMIT_BUTTON_DISABLED_CLASS)).toEqual(true);
@@ -433,7 +433,7 @@ describe('CardFrames', () => {
 
     it('should mark button as disabled when form state is complete but text should be pay', () => {
       // @ts-ignore
-      instance._setSubmitButtonProperties(button, FormState.COMPLETE);
+      instance.setSubmitButtonProperties(button, FormState.COMPLETE);
       expect(button.textContent).toEqual(PAY);
       // @ts-ignore
       expect(button.classList.contains(CardFrames.SUBMIT_BUTTON_DISABLED_CLASS)).toEqual(true);
@@ -442,7 +442,7 @@ describe('CardFrames', () => {
 
     it('should remove disabled attributes from button when form state is available', () => {
       // @ts-ignore
-      instance._setSubmitButtonProperties(button, FormState.AVAILABLE);
+      instance.setSubmitButtonProperties(button, FormState.AVAILABLE);
       expect(button.textContent).toEqual(PAY);
       // @ts-ignore
       expect(button.classList.contains(CardFrames.SUBMIT_BUTTON_DISABLED_CLASS)).toEqual(false);
@@ -453,34 +453,34 @@ describe('CardFrames', () => {
   describe('_setSubmitButton', () => {
     it('should return button referred to id specified by merchant', () => {
       // @ts-ignore
-      expect(instance._createSubmitButton()).toEqual(document.getElementById('merchant-submit-button'));
+      expect(instance.createSubmitButton()).toEqual(document.getElementById('merchant-submit-button'));
     });
 
     it('should set button value on \'Please wait\' until form is not loaded', () => {
       // @ts-ignore
-      expect(instance._createSubmitButton().textContent).toEqual(PLEASE_WAIT);
+      expect(instance.createSubmitButton().textContent).toEqual(PLEASE_WAIT);
     });
 
     it('should return first given submit button which has been specified in form', () => {
       // @ts-ignore
-      instance._buttonId = 'blah';
+      instance.buttonId = 'blah';
       // @ts-ignore
-      expect(instance._createSubmitButton().nodeName).toEqual('BUTTON');
+      expect(instance.createSubmitButton().nodeName).toEqual('BUTTON');
       // @ts-ignore
-      expect(instance._createSubmitButton().getAttribute('class')).toEqual('example-form__button');
+      expect(instance.createSubmitButton().getAttribute('class')).toEqual('example-form__button');
       // @ts-ignore
-      expect(instance._createSubmitButton().getAttribute('type')).toEqual('submit');
+      expect(instance.createSubmitButton().getAttribute('type')).toEqual('submit');
     });
 
     it('should return first given submit input when buttonID is not specified', () => {
       // @ts-ignore
-      instance._buttonId = undefined;
+      instance.buttonId = undefined;
       // @ts-ignore
-      expect(instance._createSubmitButton().nodeName).toEqual('BUTTON');
+      expect(instance.createSubmitButton().nodeName).toEqual('BUTTON');
       // @ts-ignore
-      expect(instance._createSubmitButton().getAttribute('class')).toEqual('example-form__button');
+      expect(instance.createSubmitButton().getAttribute('class')).toEqual('example-form__button');
       // @ts-ignore
-      expect(instance._createSubmitButton().getAttribute('type')).toEqual('submit');
+      expect(instance.createSubmitButton().getAttribute('type')).toEqual('submit');
     });
   });
 

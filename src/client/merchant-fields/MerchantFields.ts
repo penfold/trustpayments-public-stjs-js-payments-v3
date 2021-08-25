@@ -24,7 +24,7 @@ export class MerchantFields {
     this.validation = new Validation();
   }
 
-  public init(): void {
+  init(): void {
     this.setMerchantFieldsProperties();
   }
 

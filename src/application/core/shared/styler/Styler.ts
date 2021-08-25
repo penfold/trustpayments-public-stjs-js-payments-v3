@@ -35,11 +35,11 @@ export class Styler {
     this.inject(styles);
   }
 
-  public inject(styles: IStyles[]): void {
+  inject(styles: IStyles[]): void {
     DomMethods.insertStyle(this.getStyleString(styles));
   }
 
-  public hasSpecificStyle(selectedStyle: string, styles: IStyle = {}): boolean {
+  hasSpecificStyle(selectedStyle: string, styles: IStyle = {}): boolean {
     return Boolean(
       Object.entries(styles).find(([key, value]) => {
         return key === selectedStyle && value !== 'false';
@@ -47,7 +47,7 @@ export class Styler {
     );
   }
 
-  public addStyles(styles: StylesAttributes[]): void {
+  addStyles(styles: StylesAttributes[]): void {
     styles.forEach(style => this.addStylesToElement(style));
   }
 
