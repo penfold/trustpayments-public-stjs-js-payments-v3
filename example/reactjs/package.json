@@ -17,7 +17,7 @@
     "react-helmet": "6.1.0",
     "react-i18next": "11.11.4",
     "react-load-script": "0.0.6",
-    "styled-components": "5.3.0"
+    "styled-components": "5.3.1"
   },
   "devDependencies": {
     "gatsby-plugin-eslint": "4.0.0",
