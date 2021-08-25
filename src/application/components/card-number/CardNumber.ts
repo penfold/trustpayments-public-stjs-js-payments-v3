@@ -28,7 +28,7 @@ import { takeUntil } from 'rxjs/operators';
 
 @Service()
 export class CardNumber extends Input {
-  public static ifFieldExists = (): HTMLInputElement => document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
+  static ifFieldExists = (): HTMLInputElement => document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
 
   private static DISABLED_ATTRIBUTE = 'disabled';
   private static DISABLED_CLASS = 'st-input--disabled';
@@ -38,7 +38,7 @@ export class CardNumber extends Input {
 
   private static _getCardNumberForBinProcess = (cardNumber: string) => cardNumber.slice(0, 6);
 
-  public validation: Validation;
+  validation: Validation;
   private _panIcon: boolean;
   private _cardNumberFormatted: string;
   private _cardNumberLength: number;

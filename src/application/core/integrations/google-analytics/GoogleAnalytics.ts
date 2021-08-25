@@ -2,7 +2,7 @@ import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 
 export class GoogleAnalytics {
-  public static sendGaData(hitType: string, eventCategory: string, eventAction: string, eventLabel: string): void | boolean {
+  static sendGaData(hitType: string, eventCategory: string, eventAction: string, eventLabel: string): void | boolean {
     // @ts-ignore
     if (window.ga) {
       // @ts-ignore
@@ -43,7 +43,7 @@ export class GoogleAnalytics {
   private _gaScript: HTMLScriptElement;
   private _gaScriptContent: Text;
 
-  public init(): void {
+  init(): void {
     this._insertGALibrary();
     this._createGAScript()
       .then(() => {

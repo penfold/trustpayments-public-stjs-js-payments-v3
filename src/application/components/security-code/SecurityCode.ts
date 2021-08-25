@@ -174,7 +174,7 @@ export class SecurityCode extends Input {
     );
   }
 
-  public getLabel(): string {
+  getLabel(): string {
     return LABEL_SECURITY_CODE;
   }
 

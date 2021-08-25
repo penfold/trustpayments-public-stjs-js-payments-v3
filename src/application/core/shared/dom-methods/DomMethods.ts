@@ -11,7 +11,7 @@ export class DomMethods {
   private static STYLE_MARKUP = 'style';
   private static CREATED_FIELD_CLASSNAME = '-st-created-field';
 
-  public static addDataToForm(form: HTMLFormElement, data: Record<string, unknown>, fields?: string[]): void {
+  static addDataToForm(form: HTMLFormElement, data: Record<string, unknown>, fields?: string[]): void {
     Object.entries(data).forEach(([field, value]) => {
       if (!fields || fields.includes(field)) {
         let inputElement: HTMLInputElement = form.querySelector(`${DomMethods.INPUT_MARKUP}[name="${field}"]`);
@@ -35,11 +35,11 @@ export class DomMethods {
     });
   }
 
-  public static addListener(targetId: string, listenerType: string, callback: (...args: unknown[]) => void): void {
+  static addListener(targetId: string, listenerType: string, callback: (...args: unknown[]) => void): void {
     document.getElementById(targetId).addEventListener(listenerType, callback);
   }
 
-  public static appendChildIntoDOM(target: string, child: HTMLElement): Element {
+  static appendChildIntoDOM(target: string, child: HTMLElement): Element {
     const element: Element = document.getElementById(target)
       ? document.getElementById(target)
       : document.getElementsByTagName(DomMethods.BODY_MARKUP)[0];
@@ -47,18 +47,18 @@ export class DomMethods {
     return element;
   }
 
-  public static createHtmlElement = (attributes: Record<string, string>, markup: string): HTMLElement => {
+  static createHtmlElement = (attributes: Record<string, string>, markup: string): HTMLElement => {
     const element: HTMLElement = document.createElement(markup);
     Object.keys(attributes).map(item => element.setAttribute(item, attributes[item]));
     return element;
   };
 
-  public static getAllFormElements = (form: HTMLElement): (HTMLSelectElement | HTMLInputElement)[] => [
+  static getAllFormElements = (form: HTMLElement): (HTMLSelectElement | HTMLInputElement)[] => [
     ...Array.from(form.querySelectorAll<HTMLSelectElement>(DomMethods.SELECT_MARKUP)),
     ...Array.from(form.querySelectorAll<HTMLInputElement>(DomMethods.INPUT_MARKUP)),
   ];
 
-  public static insertScript(target: string, params: IScriptParams): Promise<Element> {
+  static insertScript(target: string, params: IScriptParams): Promise<Element> {
     return new Promise((resolve) => {
       const loaded: Element = DomMethods.isScriptLoaded(params);
       if (loaded) {
@@ -78,7 +78,7 @@ export class DomMethods {
     });
   }
 
-  public static insertStyle(contents: string[] | string): void {
+  static insertStyle(contents: string[] | string): void {
     let style: HTMLStyleElement = document.getElementById('insertedStyles') as HTMLStyleElement;
 
     if (!style && contents.length > 0) {
@@ -97,7 +97,7 @@ export class DomMethods {
     }
   }
 
-  public static parseForm(formId: string): Record<string, unknown> {
+  static parseForm(formId: string): Record<string, unknown> {
     const form: HTMLElement = document.getElementById(formId);
     const els = DomMethods.getAllFormElements(form);
     const result: Record<string, unknown> = {};
@@ -109,7 +109,7 @@ export class DomMethods {
     return result;
   }
 
-  public static removeAllChildren(placement: string): HTMLElement {
+  static removeAllChildren(placement: string): HTMLElement {
     const element: HTMLElement = document.getElementById(placement);
     if (!element) {
       return element;
@@ -120,7 +120,7 @@ export class DomMethods {
     return element;
   }
 
-  public static removeAllCreatedFields(form: HTMLFormElement): void {
+  static removeAllCreatedFields(form: HTMLFormElement): void {
     form.querySelectorAll(`.${DomMethods.CREATED_FIELD_CLASSNAME}`).forEach(element => element.remove());
   }
 

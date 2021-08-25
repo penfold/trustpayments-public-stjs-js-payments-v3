@@ -5,8 +5,8 @@ import { IRequestObject } from '../../../models/IRequestObject';
 
 @Service()
 export class DefaultHttpOptionsProvider implements IHttpOptionsProvider {
-  public static readonly REQUEST_TIMEOUT = 60 * 1000; // 60000
-  public static readonly CONTENT_TYPE = 'application/json';
+  static readonly REQUEST_TIMEOUT = 60 * 1000; // 60000
+  static readonly CONTENT_TYPE = 'application/json';
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getOptions(requestObject: IRequestObject): IHttpClientConfig {

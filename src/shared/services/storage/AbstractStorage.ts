@@ -10,8 +10,8 @@ import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../applicatio
 
 export abstract class AbstractStorage implements IStorage, Subscribable<unknown> {
   private static readonly STORAGE_EVENT = 'storage';
-  public readonly pipe: Observable<unknown>['pipe'];
-  public readonly subscribe: Observable<unknown>['subscribe'];
+  readonly pipe: Observable<unknown>['pipe'];
+  readonly subscribe: Observable<unknown>['subscribe'];
   private readonly observable$: Observable<Record<string, unknown>>;
 
   protected constructor(
@@ -38,11 +38,11 @@ export abstract class AbstractStorage implements IStorage, Subscribable<unknown>
     });
   }
 
-  public getItem(name: string): string {
+  getItem(name: string): string {
     return this.nativeStorage.getItem(name);
   }
 
-  public setItem(name: string, value: string, synchronize = true): void {
+  setItem(name: string, value: string, synchronize = true): void {
     this.nativeStorage.setItem(name, value);
     this.emitStorageEvent();
 
@@ -51,7 +51,7 @@ export abstract class AbstractStorage implements IStorage, Subscribable<unknown>
     }
   }
 
-  public select<T>(selector: (storage: { [key: string]: unknown }) => T): Observable<T> {
+  select<T>(selector: (storage: { [key: string]: unknown }) => T): Observable<T> {
     return this.observable$.pipe(
       map(storage => selector(storage)),
       shareReplay(1)

@@ -11,7 +11,7 @@ declare const SecureTrading: SecureTradingFactory;
 export class SecureTradingLoader {
   private script$: Observable<SecureTradingFactory>;
 
-  public load(): Observable<SecureTradingFactory> {
+  load(): Observable<SecureTradingFactory> {
     if (!this.script$) {
       this.script$ = new Observable<SecureTradingFactory>(observer => {
         const script = document.createElement('script');

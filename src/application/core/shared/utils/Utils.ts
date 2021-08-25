@@ -1,9 +1,9 @@
 export class Utils {
-  public static inArray<T>(array: ArrayLike<T>, item: T): boolean {
+  static inArray<T>(array: ArrayLike<T>, item: T): boolean {
     return Array.from(array).indexOf(item) >= 0;
   }
 
-  public static forEachBreak<inputType, returnType>(
+  static forEachBreak<inputType, returnType>(
     iterable: ArrayLike<inputType>,
     callback: (item: inputType) => returnType
   ): returnType {
@@ -17,15 +17,15 @@ export class Utils {
     return result || null;
   }
 
-  public static timeoutPromise(timeout: number, err = new Error()): Promise<never> {
+  static timeoutPromise(timeout: number, err = new Error()): Promise<never> {
     return new Promise((_, reject) => setTimeout(() => reject(err), timeout));
   }
 
-  public static promiseWithTimeout<T>(promissory: () => Promise<T>, timeout = 10, err = new Error()): Promise<T> {
+  static promiseWithTimeout<T>(promissory: () => Promise<T>, timeout = 10, err = new Error()): Promise<T> {
     return Promise.race([promissory(), Utils.timeoutPromise(timeout, err)]);
   }
 
-  public static retryPromise<T>(promissory: () => Promise<T>, delay = 0, retries = 5, retryTimeout = 100): Promise<T> {
+  static retryPromise<T>(promissory: () => Promise<T>, delay = 0, retries = 5, retryTimeout = 100): Promise<T> {
     return new Promise((resolve, reject) => {
       const endtime = Date.now() + retryTimeout;
       let error: Error;
@@ -48,7 +48,7 @@ export class Utils {
     });
   }
 
-  public static stripChars(string: string, regex?: RegExp | string): string {
+  static stripChars(string: string, regex?: RegExp | string): string {
     if (typeof regex === 'undefined' || !regex) {
       regex = /[\D+]/g;
       return string.replace(regex, '');
@@ -57,9 +57,9 @@ export class Utils {
     }
   }
 
-  public static getLastElementOfArray = (array: number[]): number => array && array.slice(-1).pop();
+  static getLastElementOfArray = (array: number[]): number => array && array.slice(-1).pop();
 
-  public static setElementAttributes(attributes: Record<string, string | boolean>, element: HTMLInputElement): void {
+  static setElementAttributes(attributes: Record<string, string | boolean>, element: HTMLInputElement): void {
     for (const attribute in attributes) {
       const value = attributes[attribute];
       if (Utils.inArray(['value'], attribute)) {

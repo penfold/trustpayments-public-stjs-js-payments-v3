@@ -37,7 +37,7 @@ export class GooglePay {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
-  public init(config: IConfig): void {
+  init(config: IConfig): void {
     this.config = config;
 
     this.googlePaySdkProvider

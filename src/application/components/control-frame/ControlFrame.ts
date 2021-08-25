@@ -122,7 +122,7 @@ export class ControlFrame {
     });
   }
 
-  public _initCardPayments(): void {
+  _initCardPayments(): void {
     this._messageBus
       .pipe(ofType(PUBLIC_EVENTS.CARD_PAYMENTS_INIT))
       .pipe(first())
