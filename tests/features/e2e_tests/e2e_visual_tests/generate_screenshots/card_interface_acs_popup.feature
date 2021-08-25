@@ -1,8 +1,11 @@
 Feature: Visual regression - acs pop up
+  As a user
+  I want to see ACS pop-up
+  If I use non-frictionless card
 
   #feature just for screenshot creation purposes (e.g. when you need to create them again)
 
-  @visual_regression_generation @scrn_card_interface_acs_popup @STJS-1709_visual_regression_styling_IE
+  @visual_regression_generation @scrn_card_interface_acs_popup
   Scenario: ACS pop-up display
     Given JS library configured by inline params VISUAL_BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
