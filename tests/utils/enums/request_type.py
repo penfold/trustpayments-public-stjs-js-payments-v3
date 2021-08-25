@@ -56,7 +56,7 @@ request_type_visa = {
 }
 
 request_type_google = {
-    'AUTH': 'googleAuthSuccess.json',
+    'AUTH': 'googleAuth.json',
     'ACCOUNTCHECK': 'googleAccountcheck.json',
     'ACCOUNTCHECK, AUTH': 'googleAccountcheckAuth.json',
     'RISKDEC, AUTH': 'googleRiskdecAuth.json',

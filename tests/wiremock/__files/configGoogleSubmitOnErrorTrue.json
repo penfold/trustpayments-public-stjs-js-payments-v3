@@ -1,7 +1,10 @@
 {
-  "jwt" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDYzMTA1MTcsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInJlcXVlc3R0eXBlZGVzY3JpcHRpb25zIjpbIkFVVEgiXX19.lwO9ngMjTCMOOEVMoxkldu4BDrzpBLMgF2aruqFuSo0",
+  "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDYzMTA1MTcsImlzcyI6ImFtMDMxMC5hdXRvYXBpIiwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInJlcXVlc3R0eXBlZGVzY3JpcHRpb25zIjpbIkFVVEgiXX19.lwO9ngMjTCMOOEVMoxkldu4BDrzpBLMgF2aruqFuSo0",
   "submitOnError": true,
-
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
+  "errorCallback": "errorCallback",
+  "cancelCallback": "cancelCallback",
   "googlePay": {
     "buttonOptions": {
       "buttonRootNode": "st-google-pay",
@@ -10,21 +13,33 @@
       "buttonLocale": "en"
     },
     "paymentRequest": {
-      "allowedPaymentMethods": [{
-        "parameters": {
-          "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-          "allowedCardNetworks": ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"],
-          "allowCreditCards" : true
-        },
-        "tokenizationSpecification": {
+      "allowedPaymentMethods": [
+        {
           "parameters": {
-            "gateway": "trustpayments",
-            "gatewayMerchantId": "test_james38641"
+            "allowedAuthMethods": [
+              "PAN_ONLY",
+              "CRYPTOGRAM_3DS"
+            ],
+            "allowedCardNetworks": [
+              "AMEX",
+              "DISCOVER",
+              "INTERAC",
+              "JCB",
+              "MASTERCARD",
+              "VISA"
+            ],
+            "allowCreditCards": true
           },
-          "type": "PAYMENT_GATEWAY"
-        },
-        "type": "CARD"
-      }],
+          "tokenizationSpecification": {
+            "parameters": {
+              "gateway": "trustpayments",
+              "gatewayMerchantId": "test_james38641"
+            },
+            "type": "PAYMENT_GATEWAY"
+          },
+          "type": "CARD"
+        }
+      ],
       "apiVersion": 2,
       "apiVersionMinor": 0,
       "merchantInfo": {
@@ -47,6 +62,5 @@
         ]
       }
     }
-}
-
+  }
 }

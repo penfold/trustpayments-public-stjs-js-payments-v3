@@ -1,3 +1,5 @@
+import time
+
 from pages.base_page import BasePage
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import add_to_shared_dict, get_number_of_requests_with_data, \

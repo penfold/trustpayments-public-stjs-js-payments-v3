@@ -113,9 +113,9 @@ Feature: GooglePay
       | success       |
     And submit callback contains JWT response
     And GOOGLE_PAY or AUTH requests were sent only once with correct data
-    And GOOGLE_PAY requests contains updated jwt
 
-  @config_google_submit_on_success_true @tobefixed
+
+  @config_google_submit_on_success_true
   Scenario: GooglePay - update JWT and submitOnSuccess
     Given User opens mock payment page WITH_UPDATE_JWT
       | jwtName          |
@@ -135,13 +135,14 @@ Feature: GooglePay
       | myBillTel     | 44422224444                             |
       | jwt           | should not be none                      |
     And GOOGLE_PAY or AUTH requests were sent only once with correct data
-    And GOOGLE_PAY requests contains updated jwt
+
 
   @config_google_auth
   Scenario: GooglePay - successful payment with additional request types: AUTH
     Given User opens mock payment page
+    And User waits for whole form to be loaded
     When AUTH GooglePay mock response is set to SUCCESS
-    And User chooses GooglePay as payment method - response is set to "SUCCESS"
+    And User chooses GOOGLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH request for GOOGLE_PAY is sent only once with correct data
@@ -150,11 +151,12 @@ Feature: GooglePay
       | submit        |
       | success       |
 
+
   @config_google_acheck_auth
   Scenario: GooglePay - successful payment with additional request types: ACCOUNTCHECK, AUTH
     Given User opens mock payment page
     When ACCOUNTCHECK, AUTH GooglePay mock response is set to SUCCESS
-    And User chooses GooglePay as payment method - response is set to "SUCCESS"
+    And User chooses GooglePay as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK, AUTH request for GOOGLE_PAY is sent only once with correct data
@@ -240,7 +242,7 @@ Feature: GooglePay
     And submit callback contains JWT response
     And THREEDQUERY, AUTH request was sent only once with 'fraudcontroltransactionid' flag
 
-  @config_cybertonica
+  @config_google_base
   Scenario: GooglePay - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
     Given User opens mock payment page
     When User chooses GooglePay as payment method - response is set to "SUCCESS"

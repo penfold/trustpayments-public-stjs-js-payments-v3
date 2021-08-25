@@ -45,5 +45,13 @@ jsinit_response = {
     'config_auth_subscription': 'jsinitAuthSubscription.json',
     'config_acheck_subscription': 'jsinitAcheckSubscription.json',
     'config_mainamount': 'jsinitMainamount.json',
-    'BASE_UPDATED_JWT': 'jsinitBaseUpdatedJwt.json'
+    'BASE_UPDATED_JWT': 'jsinitBaseUpdatedJwt.json',
+    'config_google_auth': 'jsinitAuth.json',
+    'config_google_acheck': 'jsinitAcheck.json',
+    'config_google_acheck_auth': 'jsinitAcheckAuth.json',
+    'config_google_riskdec_auth': 'jsinitRiskdecAuth.json',
+    'config_google_riskdec_acheck_auth': 'jsinitRiskdecAcheckAuth.json',
+    'config_google_subscription': 'jsinitAuthSubscription.json',
+    'config_google_subscription': 'jsinitAcheckSubscription.json',
+
 }
