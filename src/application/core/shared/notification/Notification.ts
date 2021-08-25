@@ -20,35 +20,35 @@ import { ITranslator } from '../translator/ITranslator';
 
 @Service()
 export class Notification {
-  private _messageMap: Map<string, string>;
-  private _timeoutId: number;
+  private messageMap: Map<string, string>;
+  private timeoutId: number;
 
   constructor(
-    private _messageBus: IMessageBus,
-    private _browserLocalStorage: BrowserLocalStorage,
-    private _configProvider: ConfigProvider,
-    private _framesHub: FramesHub,
-    private _frame: Frame,
-    private _translator: ITranslator
+    private messageBus: IMessageBus,
+    private browserLocalStorage: BrowserLocalStorage,
+    private configProvider: ConfigProvider,
+    private framesHub: FramesHub,
+    private frame: Frame,
+    private translator: ITranslator
   ) {
-    this._applyStyles();
-    this._messageMap = new Map(Object.entries(NotificationsClasses));
-    this._messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.NOTIFICATION, (event: INotificationEvent) => {
-      this._displayNotification(event);
+    this.applyStyles();
+    this.messageMap = new Map(Object.entries(NotificationsClasses));
+    this.messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.NOTIFICATION, (event: INotificationEvent) => {
+      this.displayNotification(event);
     });
   }
 
-  private _applyStyles(): void {
-    this._configProvider.getConfig$().subscribe((config: IConfig) => {
+  private applyStyles(): void {
+    this.configProvider.getConfig$().subscribe((config: IConfig) => {
       const definedStyles = config.styles.notificationFrame || {};
       const styles = Object.keys(definedStyles).map((item: string) => {
         return { [item]: definedStyles[item] };
       });
-      new Styler(this._getAllowedStyles(), styles);
+      new Styler(this.getAllowedStyles(), styles);
     });
   }
 
-  private _getAllowedStyles(): IAllowedStyles {
+  private getAllowedStyles(): IAllowedStyles {
     let allowed: IAllowedStyles = {
       'background-color-body': { property: 'background-color', selector: 'body' },
       'color-body': { property: 'color', selector: 'body' },
@@ -132,13 +132,13 @@ export class Notification {
     return allowed;
   }
 
-  private _insertContent(notificationFrameElement: HTMLElement, content: string): void {
-    notificationFrameElement.textContent = this._translator.translate(content);
+  private insertContent(notificationFrameElement: HTMLElement, content: string): void {
+    notificationFrameElement.textContent = this.translator.translate(content);
   }
 
-  private _getMessageClass = (messageType: string): string => this._messageMap.get(messageType.toLowerCase());
+  private getMessageClass = (messageType: string): string => this.messageMap.get(messageType.toLowerCase());
 
-  private _setDataNotificationColorAttribute(notificationFrameElement: HTMLElement, messageType: string): void {
+  private setDataNotificationColorAttribute(notificationFrameElement: HTMLElement, messageType: string): void {
     switch (messageType) {
       case NotificationsMessageTypes.error:
         notificationFrameElement.setAttribute('data-notification-color', 'red');
@@ -157,36 +157,36 @@ export class Notification {
     }
   }
 
-  private _setAttributeClass(notificationFrameElement: HTMLElement, type: string): void {
-    const notificationElementClass = this._getMessageClass(type);
+  private setAttributeClass(notificationFrameElement: HTMLElement, type: string): void {
+    const notificationElementClass = this.getMessageClass(type);
     notificationFrameElement.classList.add(NOTIFICATION_FRAME_CORE_CLASS);
     if (notificationElementClass) {
       notificationFrameElement.classList.remove(...Object.values(NotificationsClasses));
       notificationFrameElement.classList.add(notificationElementClass);
-      this._setDataNotificationColorAttribute(notificationFrameElement, type);
+      this.setDataNotificationColorAttribute(notificationFrameElement, type);
       if (type === NotificationsMessageTypes.success) {
-        window.clearTimeout(this._timeoutId);
+        window.clearTimeout(this.timeoutId);
         return;
       }
-      this._timeoutId = window.setTimeout(() => {
+      this.timeoutId = window.setTimeout(() => {
         notificationFrameElement.classList.remove(notificationElementClass);
         notificationFrameElement.classList.remove(NOTIFICATION_FRAME_CORE_CLASS);
-        this._insertContent(notificationFrameElement, '');
+        this.insertContent(notificationFrameElement, '');
       }, environment.NOTIFICATION_TTL);
     }
   }
 
-  private _displayNotification(data: INotificationEvent): void {
+  private displayNotification(data: INotificationEvent): void {
     const { content, type } = data;
     const notificationFrameElement = document.getElementById(
-      this._configProvider.getConfig().componentIds.notificationFrame
+      this.configProvider.getConfig().componentIds.notificationFrame
     );
 
     if (!notificationFrameElement) {
       return;
     }
 
-    this._insertContent(notificationFrameElement, content);
-    this._setAttributeClass(notificationFrameElement, type);
+    this.insertContent(notificationFrameElement, content);
+    this.setAttributeClass(notificationFrameElement, type);
   }
 }

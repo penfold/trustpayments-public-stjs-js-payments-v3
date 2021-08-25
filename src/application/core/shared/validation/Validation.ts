@@ -101,7 +101,7 @@ export class Validation {
     securityCode: 'securitycode',
   };
 
-  private static _setValidateEvent(errordata: string, event: IMessageBusEvent): IMessageBusEvent {
+  private static setValidateEvent(errordata: string, event: IMessageBusEvent): IMessageBusEvent {
     switch (errordata) {
       case Validation.BACKEND_ERROR_FIELDS_NAMES.cardNumber:
         event.type = MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD;
@@ -116,7 +116,7 @@ export class Validation {
     return event;
   }
 
-  private static _isFormValid(
+  private static isFormValid(
     formFields: {
       cardNumber: IFormFieldState;
       expirationDate: IFormFieldState;
@@ -143,24 +143,24 @@ export class Validation {
   public expirationDateValue: string;
   public securityCodeValue: string;
   public validation: IValidation;
-  private _card: ICard;
-  private _currentKeyCode: number;
-  private _formValidity: boolean;
-  private _isPaymentReady: boolean;
-  private _matchDigitsRegexp: RegExp;
-  private _selectionRangeEnd: number;
-  private _selectionRangeStart: number;
-  private _messageBus: IMessageBus;
-  private _frame: Frame;
+  private card: ICard;
+  private currentKeyCode: number;
+  private formValidity: boolean;
+  private isPaymentReady: boolean;
+  private matchDigitsRegexp: RegExp;
+  private selectionRangeEnd: number;
+  private selectionRangeStart: number;
+  private messageBus: IMessageBus;
+  private frame: Frame;
 
   constructor(private translator: ITranslator = Container.get(TranslatorToken)) {
-    this._messageBus = Container.get(MessageBusToken);
-    this._frame = Container.get(Frame);
+    this.messageBus = Container.get(MessageBusToken);
+    this.frame = Container.get(Frame);
     this.init();
   }
 
   public backendValidation(inputElement: HTMLInputElement, messageElement: HTMLElement, event: string): void {
-    this._messageBus.subscribeType(event, (data: IMessageBusValidateField) => {
+    this.messageBus.subscribeType(event, (data: IMessageBusValidateField) => {
       this.setError(inputElement, messageElement, data);
     });
   }
@@ -170,14 +170,14 @@ export class Validation {
       data: state,
       type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
     };
-    this._messageBus.publish(messageBusEvent, true);
+    this.messageBus.publish(messageBusEvent, true);
   }
 
   public callSubmitEvent(): void {
     const messageBusEvent: IMessageBusEvent = {
       type: MessageBus.EVENTS_PUBLIC.CALL_SUBMIT_EVENT,
     };
-    this._messageBus.publish(messageBusEvent, true);
+    this.messageBus.publish(messageBusEvent, true);
   }
 
   public formValidation(
@@ -191,13 +191,13 @@ export class Validation {
     isPanPiba: boolean,
     paymentReady: boolean
   ): { card: ICard; validity: boolean } {
-    this._setValidationResult(dataInJwt, fieldsToSubmit, formFields, isPanPiba, paymentReady);
-    const isFormReadyToSubmit: boolean = this._isFormReadyToSubmit();
+    this.setValidationResult(dataInJwt, fieldsToSubmit, formFields, isPanPiba, paymentReady);
+    const isFormReadyToSubmit: boolean = this.isFormReadyToSubmit();
     if (isFormReadyToSubmit) {
       this.blockForm(FormState.BLOCKED);
     }
     return {
-      card: this._card,
+      card: this.card,
       validity: isFormReadyToSubmit,
     };
   }
@@ -210,11 +210,11 @@ export class Validation {
       type: Validation.CLEAR_VALUE,
     };
 
-    this._broadcastFormFieldError(errordata[0], validationEvent);
+    this.broadcastFormFieldError(errordata[0], validationEvent);
 
     if (errordata.find((element: string) => element.includes(Validation.MERCHANT_EXTRA_FIELDS_PREFIX))) {
       validationEvent.type = MessageBus.EVENTS.VALIDATE_MERCHANT_FIELD;
-      this._messageBus.publish(validationEvent);
+      this.messageBus.publish(validationEvent);
     }
 
     return { field: errordata[0], errormessage };
@@ -224,17 +224,17 @@ export class Validation {
     const cursorSingleSkip = 1;
     const cursorDoubleSkip = 2;
     const dateSlash = '/';
-    const end: number = this._selectionRangeEnd;
-    const start: number = this._selectionRangeStart;
+    const end: number = this.selectionRangeEnd;
+    const start: number = this.selectionRangeStart;
     const noSelection = 0;
     const selectionLength: number = start - end;
     const spaceInPan = ' ';
     const lengthFormatted: number = element.value.length;
     const isLastCharSlash: boolean = element.value.charAt(lengthFormatted - cursorDoubleSkip) === dateSlash;
 
-    if (this._isPressedKeyDelete()) {
+    if (this.isPressedKeyDelete()) {
       element.setSelectionRange(start, end);
-    } else if (this._isPressedKeyBackspace()) {
+    } else if (this.isPressedKeyBackspace()) {
       element.setSelectionRange(start - cursorSingleSkip, end - cursorSingleSkip);
     } else if (isLastCharSlash || (element.value.charAt(end) === spaceInPan && selectionLength === noSelection)) {
       element.setSelectionRange(start + cursorDoubleSkip, end + cursorDoubleSkip);
@@ -279,9 +279,9 @@ export class Validation {
   }
 
   public setOnKeyDownProperties(element: HTMLInputElement, event: KeyboardEvent): void {
-    this._currentKeyCode = event.keyCode;
-    this._selectionRangeStart = element.selectionStart;
-    this._selectionRangeEnd = element.selectionEnd;
+    this.currentKeyCode = event.keyCode;
+    this.selectionRangeStart = element.selectionStart;
+    this.selectionRangeEnd = element.selectionEnd;
   }
 
   public setFormValidity(state: IFormFieldsValidity): void {
@@ -289,17 +289,17 @@ export class Validation {
       data: { ...state },
       type: MessageBus.EVENTS.VALIDATE_FORM,
     };
-    this._messageBus.publish(validationEvent);
+    this.messageBus.publish(validationEvent);
   }
 
   public validate(inputElement: HTMLInputElement, messageElement: HTMLElement, customErrorMessage?: string): void {
-    this._toggleErrorClass(inputElement);
-    this._toggleErrorContainer(inputElement, messageElement);
-    this._setMessage(inputElement, messageElement, customErrorMessage);
+    this.toggleErrorClass(inputElement);
+    this.toggleErrorContainer(inputElement, messageElement);
+    this.setMessage(inputElement, messageElement, customErrorMessage);
   }
 
   public init(): void {
-    this._matchDigitsRegexp = new RegExp(Validation.MATCH_DIGITS);
+    this.matchDigitsRegexp = new RegExp(Validation.MATCH_DIGITS);
   }
 
   public removeNonDigits(value: string): string {
@@ -329,11 +329,11 @@ export class Validation {
     this.securityCodeValue = value ? this.limitLength(this.removeNonDigits(value), length) : Validation.CLEAR_VALUE;
   }
 
-  private _broadcastFormFieldError(errordata: string, event: IMessageBusEvent): void {
-    this._messageBus.publish(Validation._setValidateEvent(errordata, event));
+  private broadcastFormFieldError(errordata: string, event: IMessageBusEvent): void {
+    this.messageBus.publish(Validation.setValidateEvent(errordata, event));
   }
 
-  private _getTranslation(
+  private getTranslation(
     inputElement: HTMLInputElement,
     isCardNumberInput: boolean,
     validityState: string,
@@ -349,22 +349,22 @@ export class Validation {
     }
   }
 
-  private _isFormReadyToSubmit(): boolean {
-    return this._isPaymentReady && this._formValidity;
+  private isFormReadyToSubmit(): boolean {
+    return this.isPaymentReady && this.formValidity;
   }
 
-  private _isPressedKeyBackspace(): boolean {
-    return this._currentKeyCode === Validation.BACKSPACE_KEY_CODE;
+  private isPressedKeyBackspace(): boolean {
+    return this.currentKeyCode === Validation.BACKSPACE_KEY_CODE;
   }
 
-  private _isPressedKeyDelete(): boolean {
-    return this._currentKeyCode === Validation.DELETE_KEY_CODE;
+  private isPressedKeyDelete(): boolean {
+    return this.currentKeyCode === Validation.DELETE_KEY_CODE;
   }
 
-  private _setMessage(inputElement: HTMLInputElement, messageElement: HTMLElement, customErrorMessage?: string): void {
+  private setMessage(inputElement: HTMLInputElement, messageElement: HTMLElement, customErrorMessage?: string): void {
     const isCardNumberInput: boolean = inputElement.getAttribute(Validation.ID_PARAM_NAME) === CARD_NUMBER_INPUT;
     const validityState = Validation.getValidationMessage(inputElement.validity);
-    messageElement.innerText = this._getTranslation(
+    messageElement.innerText = this.getTranslation(
       inputElement,
       isCardNumberInput,
       validityState,
@@ -373,19 +373,19 @@ export class Validation {
     );
   }
 
-  private _toggleErrorContainer(inputElement: HTMLInputElement, messageElement: HTMLElement): void {
+  private toggleErrorContainer(inputElement: HTMLInputElement, messageElement: HTMLElement): void {
     inputElement.validity.valid
       ? (messageElement.style.visibility = 'hidden')
       : (messageElement.style.visibility = 'visible');
   }
 
-  private _toggleErrorClass(inputElement: HTMLInputElement): void {
+  private toggleErrorClass(inputElement: HTMLInputElement): void {
     inputElement.validity.valid
       ? inputElement.classList.remove(Validation.ERROR_FIELD_CLASS)
       : inputElement.classList.add(Validation.ERROR_FIELD_CLASS);
   }
 
-  private _setValidationResult(
+  private setValidationResult(
     dataInJwt: boolean,
     fieldsToSubmit: string[],
     formFields: {
@@ -397,12 +397,12 @@ export class Validation {
     paymentReady: boolean
   ): void {
     if (dataInJwt) {
-      this._formValidity = true;
-      this._isPaymentReady = true;
+      this.formValidity = true;
+      this.isPaymentReady = true;
     } else {
-      this._formValidity = Validation._isFormValid(formFields, fieldsToSubmit, isPanPiba);
-      this._isPaymentReady = paymentReady;
-      this._card = {
+      this.formValidity = Validation.isFormValid(formFields, fieldsToSubmit, isPanPiba);
+      this.isPaymentReady = paymentReady;
+      this.card = {
         expirydate: formFields.expirationDate.value,
         pan: formFields.cardNumber.value,
         securitycode: formFields.securityCode.value,

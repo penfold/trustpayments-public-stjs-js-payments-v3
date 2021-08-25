@@ -10,7 +10,6 @@ declare const AFCYBERTONICA: IAFCybertonica;
 @Service()
 export class Cybertonica implements ICybertonica {
   private static readonly SDK_ADDRESS = environment.CYBERTONICA.CYBERTONICA_LIVE_URL;
-  private static LOCALE = 'locale';
   private static SCRIPT_TARGET = 'head';
   private static TID_KEY = 'app.tid';
   private static TID_TIMEOUT = 5000;
@@ -27,12 +26,12 @@ export class Cybertonica implements ICybertonica {
     this.storage.setItem(Cybertonica.TID_KEY, '');
   }
 
-  private _insertCybertonicaLibrary(): Promise<Element> {
+  private insertCybertonicaLibrary(): Promise<Element> {
     return DomMethods.insertScript(Cybertonica.SCRIPT_TARGET, { src: Cybertonica.SDK_ADDRESS });
   }
 
   public init(apiUserName: string): Promise<string> {
-    const tid = this._insertCybertonicaLibrary().then(() =>
+    const tid = this.insertCybertonicaLibrary().then(() =>
       AFCYBERTONICA.init(apiUserName, undefined, Cybertonica.getBasename())
     );
     const timeout = new Promise<null>(resolve => setTimeout(() => resolve(null), Cybertonica.TID_TIMEOUT));

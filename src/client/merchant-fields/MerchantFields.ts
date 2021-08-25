@@ -12,24 +12,24 @@ export class MerchantFields {
   private static readonly INPUT_MARKUP: string = 'input';
   private static readonly KEYPRESS_EVENT: string = 'keypress';
 
-  private readonly _inputs: HTMLCollection;
-  private _messageBus: IMessageBus;
-  private _validation: Validation;
-  private _frame: Frame;
+  private readonly inputs: HTMLCollection;
+  private messageBus: IMessageBus;
+  private validation: Validation;
+  private frame: Frame;
 
   constructor() {
-    this._inputs = document.getElementsByTagName(MerchantFields.INPUT_MARKUP);
-    this._messageBus = Container.get(MessageBusToken);
-    this._frame = Container.get(Frame);
-    this._validation = new Validation();
+    this.inputs = document.getElementsByTagName(MerchantFields.INPUT_MARKUP);
+    this.messageBus = Container.get(MessageBusToken);
+    this.frame = Container.get(Frame);
+    this.validation = new Validation();
   }
 
   public init(): void {
-    this._setMerchantFieldsProperties();
+    this.setMerchantFieldsProperties();
   }
 
-  private _setMerchantFieldsProperties(): void {
-    const { inputs } = this._getMerchantInputs();
+  private setMerchantFieldsProperties(): void {
+    const { inputs } = this.getMerchantInputs();
     for (const item of inputs) {
       const { inputElement, messageElement } = Validation.returnInputAndErrorContainerPair(item);
       Validation.addErrorContainer(
@@ -37,20 +37,20 @@ export class MerchantFields {
         MerchantFields.ADJACENT_HTML_PLACEMENT,
         MerchantFields.ERROR_LABEL_MARKUP
       );
-      this._onKeyPress(inputElement);
-      this._validation.backendValidation(inputElement, messageElement, MessageBus.EVENTS.VALIDATE_MERCHANT_FIELD);
+      this.onKeyPress(inputElement);
+      this.validation.backendValidation(inputElement, messageElement, MessageBus.EVENTS.VALIDATE_MERCHANT_FIELD);
     }
   }
 
-  private _getMerchantInputs(): { inputs: HTMLInputElement[] } {
+  private getMerchantInputs(): { inputs: HTMLInputElement[] } {
     return {
-      inputs: Array.from(this._inputs).filter(item =>
+      inputs: Array.from(this.inputs).filter(item =>
         item.hasAttribute(MerchantFields.DATA_ATTRIBUTE_NAME)
       ) as HTMLInputElement[],
     };
   }
 
-  private _onKeyPress(input: HTMLInputElement): void {
+  private onKeyPress(input: HTMLInputElement): void {
     input.addEventListener(MerchantFields.KEYPRESS_EVENT, () => {
       Validation.resetValidationProperties(input);
     });
