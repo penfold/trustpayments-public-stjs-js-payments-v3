@@ -47,7 +47,7 @@ export class SecurityCode extends Input {
     private jwtDecoder: JwtDecoder,
   ) {
     super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider);
-    this._validation = new Validation();
+    this._validation = new Validation(this.utils);
     this.securityCodeLength = UNKNOWN_CVC;
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
       this.placeholder = this.getPlaceholder(this.securityCodeLength);
@@ -174,7 +174,7 @@ export class SecurityCode extends Input {
     );
   }
 
-  public getLabel(): string {
+  getLabel(): string {
     return LABEL_SECURITY_CODE;
   }
 

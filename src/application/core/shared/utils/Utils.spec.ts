@@ -4,6 +4,13 @@ import ArrayLike = jasmine.ArrayLike;
 localStorage.setItem = jest.fn();
 
 describe('Utils', () => {
+
+  let sut: Utils
+
+  beforeEach(() => {
+    sut = new Utils();
+  });
+
   describe('inArray', () => {
     it.each([
       [[], '', false],
@@ -13,7 +20,7 @@ describe('Utils', () => {
       [[1, 2, 3, 4, 5, 6, 7, 8, 9, 0], 9, true],
       ['30-31', '-', true],
     ])('should return desired value', (array, item, expected) => {
-      expect(Utils.inArray(array, item)).toBe(expected);
+      expect(sut.inArray(array, item)).toBe(expected);
     });
   });
 
@@ -28,33 +35,34 @@ describe('Utils', () => {
       const callback = jest.fn((item: unknown): unknown => {
         return item;
       });
-      expect(Utils.forEachBreak(iterable, callback)).toBe(expected);
       expect(callback).toHaveBeenCalledTimes(timesCalledBack);
     });
   });
 
   describe('timeoutPromise', () => {
     it.each([[Error()], [Error('Communication timeout')]])('should reject with the specified error', async error => {
-      await expect(Utils.timeoutPromise(0, error)).rejects.toThrow(error);
+      // @ts-ignore
+      await expect(sut.timeoutPromise(0, error)).rejects.toThrow(error);
     });
 
     it.each([[500], [10]])('should reject after the specified time', async timeout => {
       const before = Date.now();
       let after = before;
-      await Utils.timeoutPromise(timeout).catch(() => (after = Date.now()));
+      // @ts-ignore
+      await sut.timeoutPromise(timeout).catch(() => (after = Date.now()));
       // toBeCloseTo is intended to check N significant figures of floats
       // but by using -2 we can check it's within 50ms of the set value
       expect(after - before).toBeCloseTo(timeout, -2);
     });
   });
 
-  describe('promiseWithTimeout', () => {
+  describe('promiseWithTimeout()', () => {
     it.each([[{}, '42']])('should resolve with the promissory\'s value if it finishes first', async value => {
       function promissory() {
         return new Promise(resolve => resolve(value));
       }
 
-      await expect(Utils.promiseWithTimeout(promissory)).resolves.toEqual(value);
+      await expect(sut.promiseWithTimeout(promissory)).resolves.toEqual(value);
     });
 
     it.each([[Error(), Error('Communication timeout')]])(
@@ -64,17 +72,18 @@ describe('Utils', () => {
           return new Promise((_, reject) => reject(err));
         }
 
-        await expect(Utils.promiseWithTimeout(promissory)).rejects.toEqual(err);
+        await expect(sut.promiseWithTimeout(promissory)).rejects.toEqual(err);
       }
     );
 
     it('should reject with the timeout if it times out', async () => {
       const err = new Error('Timeout error');
-      await expect(Utils.promiseWithTimeout(() => Utils.timeoutPromise(5), 2, err)).rejects.toEqual(err);
+      // @ts-ignore
+      await expect(sut.promiseWithTimeout(() => sut.timeoutPromise(5), 2, err)).rejects.toEqual(err);
     });
   });
 
-  describe('retryPromise', () => {
+  describe('retryPromise()', () => {
     it.each([[0], [1]])('should resolve as soon as the first promise does so', async rejects => {
       const value = {};
       let promises = rejects;
@@ -85,7 +94,7 @@ describe('Utils', () => {
         }
         return new Promise(resolve => resolve(value));
       });
-      await expect(Utils.retryPromise(promissory)).resolves.toEqual(value);
+      await expect(sut.retryPromise(promissory)).resolves.toEqual(value);
       expect(promissory).toHaveBeenCalledTimes(rejects + 1);
     });
 
@@ -94,19 +103,20 @@ describe('Utils', () => {
       [900, 1, 1, Error('Retry')],
       [1000, 5, 5, Error('Retries')],
     ])('should reject with the last error after max retries or time', async (timeout, attempts, expected, error) => {
-      const promissory = jest.fn(() => Utils.timeoutPromise(10, error));
-      await expect(Utils.retryPromise(promissory, 0, attempts, timeout)).rejects.toThrow(error);
+      // @ts-ignore
+      const promissory = jest.fn(() => sut.timeoutPromise(10, error));
+      await expect(sut.retryPromise(promissory, 0, attempts, timeout)).rejects.toThrow(error);
       expect(promissory.mock.calls.length).toBe(expected);
     });
   });
 
-  describe('Utils.stripChars', () => {
+  describe('stripChars()', () => {
     it('should return string with only digits when regex is not specified', () => {
-      expect(Utils.stripChars('s1o2me3t4es5t   val6ue')).toEqual('123456');
+      expect(sut.stripChars('s1o2me3t4es5t   val6ue')).toEqual('123456');
     });
 
     it('should adjust string to given regex', () => {
-      expect(Utils.stripChars('Quit  yo jibba  jabba !', /\s/g)).toEqual('Quityojibbajabba!');
+      expect(sut.stripChars('Quit  yo jibba  jabba !', /\s/g)).toEqual('Quityojibbajabba!');
     });
   });
 });

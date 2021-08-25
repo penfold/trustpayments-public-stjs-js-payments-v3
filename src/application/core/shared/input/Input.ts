@@ -6,7 +6,7 @@ import { Utils } from '../utils/Utils';
 import { Validation } from '../validation/Validation';
 import { onInputWraper } from '../on-input-wrapper/onInputWrapper';
 import { Frame } from '../frame/Frame';
-import { Container } from 'typedi';
+import { Container, Service } from 'typedi';
 import { NOT_IMPLEMENTED_ERROR } from '../../models/constants/Translations';
 import { CARD_NUMBER_INPUT, CARD_NUMBER_WRAPPER } from '../../models/constants/Selectors';
 import { AllowedStylesService } from './AllowedStylesService';
@@ -17,9 +17,10 @@ import { ITranslator } from '../translator/ITranslator';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 
+@Service()
 export class Input {
   protected static PLACEHOLDER_ATTRIBUTE = 'placeholder';
-  public validation: Validation;
+  validation: Validation;
   protected _inputSelector: string;
   protected _labelSelector: string;
   protected _messageSelector: string;
@@ -34,14 +35,16 @@ export class Input {
   private _messageBus: IMessageBus;
   private _allowedStyles: AllowedStylesService;
   private stopSubmitFormOnEnter: boolean;
+  protected utils: Utils;
 
   constructor(
     inputSelector: string,
     messageSelector: string,
     labelSelector: string,
     wrapperSelector: string,
-    protected configProvider: ConfigProvider
+    protected configProvider: ConfigProvider,
   ) {
+    this.utils = Container.get(Utils);
     this._messageBus = Container.get(MessageBusToken);
     this._allowedStyles = Container.get(AllowedStylesService);
     this._frame = Container.get(Frame);
@@ -58,8 +61,8 @@ export class Input {
     this.init();
   }
 
-  public init(): void {
-    this.validation = new Validation();
+  init(): void {
+    this.validation = new Validation(this.utils);
     this.addTabListener();
 
     this.configProvider.getConfig$().subscribe(config => {

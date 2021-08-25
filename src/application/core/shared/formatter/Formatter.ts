@@ -14,7 +14,7 @@ export class Formatter {
   private _date: string[] = ['', ''];
   private _validation: Validation;
 
-  constructor() {
+  constructor(private utils: Utils) {
     this._validation = Container.get(Validation);
   }
 
@@ -30,9 +30,9 @@ export class Formatter {
     let selectEnd = element.selectionEnd;
     let selectStart = element.selectionStart;
     if (format && value.length > 0) {
-      value = Utils.stripChars(value, undefined);
+      value = this.utils.stripChars(value, undefined);
       let matches = value.match(new RegExp(format, '')).slice(1);
-      if (Utils.inArray(matches, undefined)) {
+      if (this.utils.inArray(matches, undefined)) {
         matches = matches.slice(0, matches.indexOf(undefined));
       }
       const matched = matches.length;
@@ -45,7 +45,7 @@ export class Formatter {
     }
 
     if (value !== previousValue) {
-      Utils.setElementAttributes({ value }, element);
+      this.utils.setElementAttributes({ value }, element);
       element.setSelectionRange(selectStart, selectEnd);
     }
     this._cardNumberFormatted = value ? value : '';

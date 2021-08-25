@@ -5,7 +5,6 @@ import { Formatter } from '../../core/shared/formatter/Formatter';
 import { Input } from '../../core/shared/input/Input';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
-import { Utils } from '../../core/shared/utils/Utils';
 import { Validation } from '../../core/shared/validation/Validation';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { Service } from 'typedi';
@@ -53,11 +52,11 @@ export class CardNumber extends Input {
     private _formatter: Formatter,
     private frame: Frame,
     private messageBus: IMessageBus,
-    private translator: ITranslator
+    private translator: ITranslator,
   ) {
     super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER, configProvider);
     this._cardNumberField = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
-    this.validation = new Validation();
+    this.validation = new Validation(this.utils);
     this._isCardNumberValid = true;
     this._cardNumberLength = CardNumber.STANDARD_CARD_LENGTH;
     this.setFocusListener();
@@ -236,7 +235,7 @@ export class CardNumber extends Input {
       numberOfWhitespaces = 0;
     }
     this._cardNumberLength =
-      Utils.getLastElementOfArray(cardLengthFromBin) + numberOfWhitespaces || CardNumber.STANDARD_CARD_LENGTH;
+      this.utils.getLastElementOfArray(cardLengthFromBin) + numberOfWhitespaces || CardNumber.STANDARD_CARD_LENGTH;
     return this._cardNumberLength;
   }
 

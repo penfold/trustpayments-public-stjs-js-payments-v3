@@ -19,7 +19,7 @@ import { LABEL_EXPIRATION_DATE } from '../../core/models/constants/Translations'
 
 @Service()
 export class ExpirationDate extends Input {
-  public static ifFieldExists = (): HTMLInputElement =>
+  static ifFieldExists = (): HTMLInputElement =>
     document.getElementById(EXPIRATION_DATE_INPUT) as HTMLInputElement;
   private static DISABLED_ATTRIBUTE = 'disabled';
   private static DISABLED_CLASS = 'st-input--disabled';
@@ -34,14 +34,14 @@ export class ExpirationDate extends Input {
     configProvider: ConfigProvider,
     private _formatter: Formatter,
     private messageBus: IMessageBus,
-    private frame: Frame
+    private frame: Frame,
   ) {
     super(
       EXPIRATION_DATE_INPUT,
       EXPIRATION_DATE_MESSAGE,
       EXPIRATION_DATE_LABEL,
       EXPIRATION_DATE_WRAPPER,
-      configProvider
+      configProvider,
     );
     this._init();
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
@@ -97,11 +97,11 @@ export class ExpirationDate extends Input {
     });
   }
 
-  public getLabel(): string {
+  getLabel(): string {
     return LABEL_EXPIRATION_DATE;
   }
 
-  public setDisableListener(): void {
+  setDisableListener(): void {
     this.messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, (state: FormState) => {
       state !== FormState.AVAILABLE ? this._disableInputField() : this._enableInputField();
     });
@@ -126,7 +126,7 @@ export class ExpirationDate extends Input {
     super.onInput(event);
     this._inputElement.value = this.validation.limitLength(
       this._inputElement.value,
-      ExpirationDate.EXPIRATION_DATE_LENGTH
+      ExpirationDate.EXPIRATION_DATE_LENGTH,
     );
     this._inputElement.value = this._formatter.date(this._inputElement.value, EXPIRATION_DATE_INPUT);
     this.validation.keepCursorsPosition(this._inputElement);
@@ -150,7 +150,7 @@ export class ExpirationDate extends Input {
     super.onPaste(event);
     this._inputElement.value = this.validation.limitLength(
       this._inputElement.value,
-      ExpirationDate.EXPIRATION_DATE_LENGTH
+      ExpirationDate.EXPIRATION_DATE_LENGTH,
     );
     this._inputElement.value = this._formatter.date(this._inputElement.value, EXPIRATION_DATE_INPUT);
     this._sendState();
@@ -164,7 +164,7 @@ export class ExpirationDate extends Input {
     this.validation.backendValidation(
       this._inputElement,
       this._messageElement,
-      MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD
+      MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD,
     );
   }
 
