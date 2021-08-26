@@ -23,18 +23,6 @@ Feature: GooglePay
       | SUCCESS     | Payment has been successfully processed | green | success       |
       | ERROR       | An error occurred                       | red   | error         |
 
-  @config_google_base
-  Scenario: GooglePay - canceling payment with disabled 'submit on cancel' process
-    Given User opens mock payment page
-    When User chooses GooglePay as payment method - response is set to "CANCEL"
-    Then User will see payment status information: "Payment has been cancelled"
-    And User will see that notification frame has "yellow" color
-    And User will see following callback type called only once
-      | callback_type |
-      | submit        |
-      | cancel        |
-    And GOOGLE_PAY or AUTH requests were sent only once with correct data
-
 
   @config_google_base
   Scenario Outline: GooglePay - checking translation for "Payment has been cancelled" status for <language>
@@ -108,6 +96,11 @@ Feature: GooglePay
     Then User remains on checkout page
     And User will see payment status information: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | cancel        |
+    And GOOGLE_PAY or AUTH requests were sent only once with correct data
 
   @config_google_update_jwt
   Scenario: GooglePay - Successful payment with updated JWT
