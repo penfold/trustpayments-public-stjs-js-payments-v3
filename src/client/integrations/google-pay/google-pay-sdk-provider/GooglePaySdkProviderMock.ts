@@ -1,8 +1,7 @@
 import HttpClient from '@trustpayments/http-client';
-import * as Http from 'http';
-import { asapScheduler, firstValueFrom, Observable, scheduled, throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Container, Service } from 'typedi';
+import { asapScheduler, firstValueFrom, Observable, of, scheduled, throwError } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { Service } from 'typedi';
 import { environment } from '../../../../environments/environment';
 import {
   IGooglePayPaymentRequest,
@@ -16,6 +15,12 @@ import {
 } from '../../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IGooglePaySdkProvider } from './IGooglePaySdkProvider';
+
+interface IErrorResponse {
+  error: {
+    statusCode: 'ERROR' | 'CANCELED';
+  };
+}
 
 @Service()
 export class GooglePaySdkProviderMock implements IGooglePaySdkProvider {
@@ -38,14 +43,19 @@ export class GooglePaySdkProviderMock implements IGooglePaySdkProvider {
   }
 
   private loadPaymentData(request: IGooglePayPaymentRequest):Promise<IPaymentResponse>{
-    return firstValueFrom(this.httpClient.get$<IPaymentResponse>(this.mockPaymentUrl)
+    return firstValueFrom(this.httpClient.get$<IPaymentResponse | IErrorResponse>(this.mockPaymentUrl)
       .pipe(
-        map((response) => {
-          if(Object.prototype.hasOwnProperty.call(response, 'error')) {
-            return Promise.reject(response) as unknown as IPaymentResponse;
+        switchMap(({ data }) => {
+          const isErrorResponse = (response: typeof data): response is IErrorResponse => {
+            return Object.prototype.hasOwnProperty.call(response, 'error');
           }
-          return response.data;
-        })
+
+          if (isErrorResponse(data)) {
+            return throwError(() => data.error);
+          }
+
+          return of(data);
+        }),
       ));
   }
 
