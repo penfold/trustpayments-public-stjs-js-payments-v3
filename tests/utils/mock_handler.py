@@ -3,8 +3,6 @@ from enum import Enum
 from wiremock.constants import Config
 from wiremock.resources.mappings import Mapping, MappingRequest, HttpMethods, MappingResponse
 from wiremock.resources.mappings.resource import Mappings
-from wiremock.server import WireMockServer
-
 from utils.helpers.resources_reader import get_mock_from_json
 
 
@@ -21,20 +19,6 @@ class MockUrl(Enum):
     GATEWAY_MOCK_URI = '/jwt/'
     CONFIG_MOCK_URI = '/config.json'
     PORT = 8443
-
-
-class MockServer():
-    wiremock_server = WireMockServer()
-
-    @classmethod
-    def start_mock_server(cls):
-        cls.wiremock_server.port = MockUrl.PORT.value
-        cls.wiremock_server.start()
-        configure_for_local_host()
-
-    @classmethod
-    def stop_mock_server(cls):
-        cls.wiremock_server.stop()
 
 
 def configure_for_local_host():
