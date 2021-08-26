@@ -156,7 +156,7 @@ Feature: GooglePay
   Scenario: GooglePay - successful payment with additional request types: ACCOUNTCHECK, AUTH
     Given User opens mock payment page
     When ACCOUNTCHECK, AUTH GooglePay mock response is set to SUCCESS
-    And User chooses GooglePay as payment method
+    And User chooses GOOGLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK, AUTH request for GOOGLE_PAY is sent only once with correct data
@@ -169,7 +169,7 @@ Feature: GooglePay
   Scenario: GooglePay - successful payment with additional request types: ACCOUNTCHECK
     Given User opens mock payment page
     When ACCOUNTCHECK GooglePay mock response is set to SUCCESS
-    And User chooses GooglePay as payment method
+    And User chooses GOOGLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK request for GOOGLE_PAY is sent only once with correct data
@@ -182,7 +182,7 @@ Feature: GooglePay
   Scenario: GooglePay - successful payment with additional request types: RISKDEC, AUTH
     Given User opens mock payment page
     When RISKDEC, AUTH GooglePay mock response is set to SUCCESS
-    And User chooses GooglePay as payment method
+    And User chooses GOOGLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And RISKDEC, AUTH request for GOOGLE_PAY is sent only once with correct data
@@ -195,7 +195,7 @@ Feature: GooglePay
   Scenario: GooglePay - successful payment with additional request types: RISKDEC, ACCOUNTCHECK, AUTH
     Given User opens mock payment page
     When RISKDEC, ACCOUNTCHECK, AUTH GooglePay mock response is set to SUCCESS
-    And User chooses GooglePay as payment method
+    And User chooses GOOGLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And RISKDEC, ACCOUNTCHECK, AUTH request for GOOGLE_PAY is sent only once with correct data
@@ -208,7 +208,7 @@ Feature: GooglePay
   Scenario: GooglePay - successful payment with additional request types: AUTH, SUBSCRIPTION
     Given User opens mock payment page
     When AUTH, SUBSCRIPTION GooglePay mock response is set to SUCCESS
-    And User chooses GooglePay as payment method
+    And User chooses GOOGLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH, SUBSCRIPTION request for GOOGLE_PAY is sent only once with correct data
@@ -221,7 +221,7 @@ Feature: GooglePay
   Scenario: GooglePay - successful payment with additional request types: ACCOUNTCHECK, SUBSCRIPTION
     Given User opens mock payment page
     When ACCOUNTCHECK, SUBSCRIPTION GooglePay mock response is set to SUCCESS
-    And User chooses GooglePay as payment method
+    And User chooses GOOGLE_PAY as payment method
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK, SUBSCRIPTION request for GOOGLE_PAY is sent only once with correct data
