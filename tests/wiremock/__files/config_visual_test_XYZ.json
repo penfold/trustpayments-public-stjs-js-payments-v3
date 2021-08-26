@@ -1,0 +1,48 @@
+{
+  "analytics": true,
+  "animatedCard": false,
+  "fieldsToSubmit": [
+    "pan",
+    "expirydate",
+    "securitycode"
+  ],
+  "buttonId": "merchant-submit-button",
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqc2xpYnJhcnlqd3QiLCJpYXQiOjE2Mjk5NjAyMTEuMzk0NjM3LCJwYXlsb2FkIjp7InBheWxvYWQiOnsiYmFzZWFtb3VudCI6IjEwMDAiLCJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImN1cnJlbmN5aXNvM2EiOiJHQlAiLCJzaXRlcmVmZXJlbmNlIjoidGVzdDEiLCJsb2NhbGUiOiJlbl9HQiIsInJlcXVlc3R0eXBlZGVzY3JpcHRpb25zIjpbIlRIUkVFRFFVRVJZIl19fX0.Zeg9ICliIsYB1Y-zR9IVO0PlJzc4VvOdvaT2-4q6mo0",
+  "panIcon": true,
+  "styles": {
+    "defaultStyles": {
+      "background-color-input": "AliceBlue"
+    },
+    "notificationFrame": {
+      "color-error": "#FFF333"
+    },
+    "controlFrame": {
+      "color-error": "#3358FF"
+    }
+  },
+  "submitOnSuccess": false,
+  "submitCallback": "",
+  "components": {
+  },
+  "applePay": {
+    "buttonStyle": "white-outline",
+    "buttonText": "donate",
+    "merchantId": "merchant.net.securetrading.test",
+    "paymentRequest": {
+      "countryCode": "US",
+      "currencyCode": "USD",
+      "merchantCapabilities": [
+        "supports3DS",
+        "supportsCredit",
+        "supportsDebit"
+      ],
+      "supportedNetworks": [],
+      "total": {
+        "label": "Secure Trading Merchant",
+        "amount": "10.00"
+      }
+    },
+    "placement": "st-apple-pay"
+  },
+  "cybertonicaApiKey": ""
+}

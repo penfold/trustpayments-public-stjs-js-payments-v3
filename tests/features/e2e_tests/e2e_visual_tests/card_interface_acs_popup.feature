@@ -15,11 +15,19 @@ Feature: Visual regression - acs pop up
     Then Make screenshot after 6 seconds
 
 
-  @visual_regression_safari @scrn_card_interface_acs_popup @12
+  @base_config_visual_XYZ @visual_regression_safari @scrn_card_interface_acs_popup
   Scenario: ACS pop-up display
-    Given JS library configured by inline params VISUAL_BASIC_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value       |
-      | requesttypedescriptions | THREEDQUERY |
+    Given JavaScript configuration is set for scenario based on scenario's @config tag
+    And User opens mock payment page MINIMAL_HTML
+    And User waits for whole form to be displayed
+    When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
+    And User clicks Pay button
+    Then Screenshot is taken after 6 seconds and checked
+
+
+  @base_config_visual_XYZ_2 @visual_regression_safari @scrn_card_interface_acs_popup
+  Scenario: ACS pop-up display
+    Given JavaScript configuration is set for scenario based on scenario's @config tag
     And User opens mock payment page MINIMAL_HTML
     And User waits for whole form to be displayed
     When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS

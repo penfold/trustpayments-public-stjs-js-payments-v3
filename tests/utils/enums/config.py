@@ -1,6 +1,8 @@
 config = {
     'base_config': 'config.json',
     'base_config_visual': 'config_visual.json',
+    'base_config_visual_XYZ': 'base_config_visual_XYZ.json',
+    'base_config_visual_XYZ_2': 'base_config_visual_XYZ_2.json',
     'base_config_visual_styling': 'config_visual_styling.json',
     'base_config_validation_styling': 'config_validation_styling.json',
     'config_default': 'configDefault.json',
