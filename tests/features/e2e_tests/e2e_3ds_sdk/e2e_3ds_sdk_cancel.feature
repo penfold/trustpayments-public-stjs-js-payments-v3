@@ -9,7 +9,7 @@ Feature: Cancel payment with 3ds SDK library
     Given JS library configured by inline params THREE_DS_SDK_INLINE_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -32,7 +32,7 @@ Feature: Cancel payment with 3ds SDK library
     Given JS library configured by inline params THREE_DS_SDK_POPUP_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -55,7 +55,7 @@ Feature: Cancel payment with 3ds SDK library
     Given JS library configured by inline params THREE_DS_SDK_INLINE_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -70,7 +70,7 @@ Feature: Cancel payment with 3ds SDK library
     Given JS library configured by inline params THREE_DS_SDK_INLINE_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -95,7 +95,7 @@ Feature: Cancel payment with 3ds SDK library
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
       | locale                  | <LOCALE_CODE>      |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -127,7 +127,7 @@ Feature: Cancel payment with 3ds SDK library
     Given JS library configured by inline params THREE_DS_SDK_POPUP_TRANSLATIONS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page

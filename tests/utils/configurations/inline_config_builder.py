@@ -17,6 +17,7 @@ class InlineConfigBuilder:
                 raise Exception(
                     f'Property {key} not valid payload jwt option '
                     f'or yet not handled by "{self.map_jwt_additional_fields.__name__}" method')
+
             if key in ['requesttypedescriptions', 'threedbypasspaymenttypes']:
                 jwt[key] = list(value.split(' '))
             elif key in ['cachetoken']:
@@ -24,3 +25,24 @@ class InlineConfigBuilder:
             else:
                 jwt[key] = value
         return jwt
+
+    def map_lib_config_additional_fields(self, lib_config, attributes):
+        # current implementation works only for not nested objects
+        config_keys_not_nested = ['analytics', 'animatedCard', 'buttonId', 'cancelCallback', 'cybertonicaApiKey',
+                                  'datacenterurl', 'disableNotification', 'errorCallback', 'formId', 'origin',
+                                  'panIcon', 'submitCallback', 'submitOnSuccess', 'submitOnError', 'submitOnCancel',
+                                  'successCallback']
+
+        for attr in attributes:
+            key = attr['key']
+            value = attr['value']
+            if key not in config_keys_not_nested:
+                raise Exception(
+                    f'Property {key} not valid js-payments lib config option '
+                    f'or not handled by "{self.map_lib_config_additional_fields.__name__}" method')
+
+            if value in ['True', 'true', 'False', 'false']:
+                lib_config[key] = (value.lower() == 'true')
+            else:
+                lib_config[key] = value
+        return lib_config

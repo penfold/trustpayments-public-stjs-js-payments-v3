@@ -89,7 +89,6 @@ def step_impl(context):
     three_ds_page.verify_if_processing_screen_is_displayed_at_least_2_seconds()
 
 
-
 def validate_3ds_popup_challenge_cancel_btn_text(context, expected_translation):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
     actual_translation = three_ds_page.get_3ds_popup_challenge_cancel_btn_text()

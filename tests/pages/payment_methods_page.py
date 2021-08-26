@@ -513,7 +513,8 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert_that(parsed_url.hostname).is_equal_to(url)
 
-    def validate_if_url_contains_param(self, parsed_query_from_url, key, value):
+    @staticmethod
+    def validate_if_url_contains_param(parsed_query_from_url, key, value):
         if 'should not be none' in value:
             assert_that(parsed_query_from_url[key][0]).is_not_none()
         elif 'should be none' in value:
