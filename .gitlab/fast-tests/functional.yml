@@ -27,7 +27,7 @@
     FEATURE_FILES_DIR: 'features/e2e_tests'
   parallel: 20
 
-e2e-card-payments-tests-release:
+.e2e-card-payments-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
@@ -46,7 +46,7 @@ e2e-card-payments-tests-release:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
   parallel: 9
 
-e2e-cardinal-commerce-tests-release:
+.e2e-cardinal-commerce-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
@@ -130,12 +130,12 @@ e2e-smoke-tests-review:
     FEATURE_FILES_DIR: 'features/component_tests'
   parallel: 21
 
-component-card-payments-tests-review:
+.component-card-payments-tests-review:
   extends:
     - .card-payments-component-tests
     - .rules-when-review
 
-component-card-payments-tests-release:
+.component-card-payments-tests-release:
   extends:
     - .card-payments-component-tests
     - .rules-when-release
