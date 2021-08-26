@@ -19,10 +19,22 @@ Feature: GooglePay
     And GOOGLE_PAY or AUTH requests were sent only once with correct data
 
     Examples:
-      | action_code | payment_status_message                  | color  | callback_type |
-      | SUCCESS     | Payment has been successfully processed | green  | success       |
-      | CANCEL      | Payment has been cancelled              | yellow | cancel        |
-      | ERROR       | An error occurred                       | red    | error         |
+      | action_code | payment_status_message                  | color | callback_type |
+      | SUCCESS     | Payment has been successfully processed | green | success       |
+      | ERROR       | An error occurred                       | red   | error         |
+
+  @config_google_base
+  Scenario: GooglePay - canceling payment with disabled 'submit on cancel' process
+    Given User opens mock payment page
+    When User chooses GooglePay as payment method - response is set to "CANCEL"
+    Then User will see payment status information: "Payment has been cancelled"
+    And User will see that notification frame has "yellow" color
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | cancel        |
+    And GOOGLE_PAY or AUTH requests were sent only once with correct data
+
 
   @config_google_base
   Scenario Outline: GooglePay - checking translation for "Payment has been cancelled" status for <language>
@@ -85,9 +97,9 @@ Feature: GooglePay
     Given User opens mock payment page
     When User chooses GooglePay as payment method - response is set to "CANCEL"
     Then User will be sent to page with url "www.example.com" having params
-      | key          | value                      |
-      | errormessage | Payment has been cancelled |
-      | errorcode    | cancelled                  |
+      | key          | value  |
+      | errormessage | cancel |
+      | errorcode    | 1      |
 
   @config_google_base
   Scenario: GooglePay - canceled payment with disabled 'submitOnCancel' process
