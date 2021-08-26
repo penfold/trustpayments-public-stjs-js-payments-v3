@@ -12,24 +12,4 @@ Feature: Visual regression - acs pop up
     And User waits for whole form to be displayed
     When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
     And User clicks Pay button
-    Then Make screenshot after 6 seconds
-
-
-  @base_config_visual_XYZ @visual_regression_safari @scrn_card_interface_acs_popup
-  Scenario: ACS pop-up display
-    Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens mock payment page MINIMAL_HTML
-    And User waits for whole form to be displayed
-    When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
-    And User clicks Pay button
-    Then Screenshot is taken after 6 seconds and checked
-
-
-  @base_config_visual_XYZ_2 @visual_regression_safari @scrn_card_interface_acs_popup
-  Scenario: ACS pop-up display
-    Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens mock payment page MINIMAL_HTML
-    And User waits for whole form to be displayed
-    When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
-    And User clicks Pay button
     Then Screenshot is taken after 6 seconds and checked
