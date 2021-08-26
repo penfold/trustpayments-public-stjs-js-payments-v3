@@ -26,9 +26,9 @@ class VisaCheckoutPage(BasePage, VisaCheckoutLocators):
         self._actions.switch_to_example_page_parent_iframe()
 
     def fill_selected_field(self, field):
-        if field == VisaCheckoutField.EMAIL_ADDRESS.value:
+        if field == VisaCheckoutField.EMAIL_ADDRESS.name:
             self.fill_email_address(EMAIL_LOGIN)
-        elif field == VisaCheckoutField.ONE_TIME_PASSWORD.value:
+        elif field == VisaCheckoutField.ONE_TIME_PASSWORD.name:
             self._waits.wait_for_element_to_be_displayed(VisaCheckoutLocators.visa_one_time_code)
             mail_ids = gmail_service.get_unseen_mail_ids_with_wait(5)
             self.fill_one_time_password_with_wait(mail_ids)

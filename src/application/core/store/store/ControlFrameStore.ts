@@ -4,7 +4,7 @@ import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { Inject, Service } from 'typedi';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
 import { BehaviorSubject } from 'rxjs';
-import { IControlFrameWindow } from '../../../../shared/interfaces/IControlFrameWindow';
+import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
 
 @Service()
 export class ControlFrameStore extends Store<IApplicationFrameState> {

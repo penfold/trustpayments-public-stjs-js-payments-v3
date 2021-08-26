@@ -18,7 +18,7 @@ export class Formatter {
     this._validation = Container.get(Validation);
   }
 
-  public number(cardNumber: string, id: string): { formatted: string, nonformatted: string } {
+  number(cardNumber: string, id: string): { formatted: string, nonformatted: string } {
     this._validation.cardNumber(cardNumber);
     const element: HTMLInputElement = document.getElementById(id) as HTMLInputElement;
     const cardNumberCleaned: string = this._validation.removeNonDigits(this._validation.cardNumberValue);
@@ -55,7 +55,7 @@ export class Formatter {
     return { formatted: this._cardNumberFormatted, nonformatted: this._validation.cardNumberValue };
   }
 
-  public date(value: string, id?: string): string {
+  date(value: string, id?: string): string {
     this._validation.expirationDate(value);
     const element: HTMLInputElement = document.getElementById(id) as HTMLInputElement;
     let result = '';
@@ -74,7 +74,7 @@ export class Formatter {
     return fixedDate;
   }
 
-  public code(value: string, length: number, id?: string): string {
+  code(value: string, length: number, id?: string): string {
     this._validation.securityCode(value, length);
     const element: HTMLInputElement = document.getElementById(id) as HTMLInputElement;
     element.value = this._validation.securityCodeValue ? this._validation.securityCodeValue : '';

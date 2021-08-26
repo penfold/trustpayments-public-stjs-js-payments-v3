@@ -19,7 +19,7 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 
 export class Input {
   protected static PLACEHOLDER_ATTRIBUTE = 'placeholder';
-  public validation: Validation;
+  validation: Validation;
   protected _inputSelector: string;
   protected _labelSelector: string;
   protected _messageSelector: string;
@@ -58,7 +58,7 @@ export class Input {
     this.init();
   }
 
-  public init(): void {
+  init(): void {
     this.validation = new Validation();
     this.addTabListener();
 

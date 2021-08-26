@@ -19,7 +19,7 @@ import { LABEL_EXPIRATION_DATE } from '../../core/models/constants/Translations'
 
 @Service()
 export class ExpirationDate extends Input {
-  public static ifFieldExists = (): HTMLInputElement =>
+  static ifFieldExists = (): HTMLInputElement =>
     document.getElementById(EXPIRATION_DATE_INPUT) as HTMLInputElement;
   private static DISABLED_ATTRIBUTE = 'disabled';
   private static DISABLED_CLASS = 'st-input--disabled';
@@ -97,11 +97,11 @@ export class ExpirationDate extends Input {
     });
   }
 
-  public getLabel(): string {
+  getLabel(): string {
     return LABEL_EXPIRATION_DATE;
   }
 
-  public setDisableListener(): void {
+  setDisableListener(): void {
     this.messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, (state: FormState) => {
       state !== FormState.AVAILABLE ? this._disableInputField() : this._enableInputField();
     });

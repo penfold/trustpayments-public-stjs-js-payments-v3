@@ -24,7 +24,7 @@ import { IConfig } from '../../shared/model/config/IConfig';
 import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { Frame } from '../../application/core/shared/frame/Frame';
-import { PAY, PROCESSING } from '../../application/core/models/constants/Translations';
+import { PAY, PLEASE_WAIT, PROCESSING } from '../../application/core/models/constants/Translations';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import Container from 'typedi';
@@ -60,6 +60,7 @@ export class CardFrames {
   private _defaultPaymentType: string;
   private _paymentTypes: string[];
   private _payMessage: string;
+  private _pleaseWaitMessage: string;
   private _processingMessage: string;
   private _fieldsToSubmitLength: number;
   private _isCardWithNoCvv: boolean;
@@ -118,7 +119,7 @@ export class CardFrames {
     this.destroy$ = this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
-  public init(): void {
+  init(): void {
     this._preventFormSubmit();
     this._createSubmitButton();
     this._initSubscribes();
@@ -215,7 +216,7 @@ export class CardFrames {
       const { components } = response;
 
       if (this._submitButton) {
-        this._submitButton.textContent = this._payMessage;
+        this._submitButton.textContent = this._pleaseWaitMessage;
       }
 
       if (components.startOnLoad) {
@@ -364,6 +365,7 @@ export class CardFrames {
     this._paymentTypes = paymentTypes;
     this.jwt = jwt;
     this._payMessage = this._translator.translate(PAY);
+    this._pleaseWaitMessage = this._translator.translate(PLEASE_WAIT);
     this._processingMessage = `${this._translator.translate(PROCESSING)} ...`;
     this._loadAnimatedCard = loadAnimatedCard !== undefined ? loadAnimatedCard : true;
 
@@ -387,7 +389,7 @@ export class CardFrames {
       element.classList.add(CardFrames.SUBMIT_BUTTON_DISABLED_CLASS); // Keep it locked but return it to original text
       disabledState = true;
     } else if (state === FormState.LOADING) {
-      element.textContent = this._payMessage;
+      element.textContent = this._pleaseWaitMessage;
       disabledState = true;
     } else {
       element.textContent = this._payMessage;

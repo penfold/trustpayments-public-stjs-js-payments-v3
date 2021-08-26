@@ -19,8 +19,8 @@ import { EventDataSanitizer } from './EventDataSanitizer';
 export class InterFrameCommunicator {
   private static readonly MESSAGE_EVENT = 'message';
   private static readonly DEFAULT_ORIGIN = '*';
-  public readonly incomingEvent$: Observable<IMessageBusEvent>;
-  public readonly communicationClosed$: Observable<void> = defer(() => this.close$);
+  readonly incomingEvent$: Observable<IMessageBusEvent>;
+  readonly communicationClosed$: Observable<void> = defer(() => this.close$);
   private readonly close$ = new Subject<void>();
   private readonly frameOrigin: string;
   private parentOrigin: string;
@@ -43,7 +43,7 @@ export class InterFrameCommunicator {
     this.communicationClosed$.subscribe(() => this.responders.clear());
   }
 
-  public init(): void {
+  init(): void {
     this.incomingEvent$
       .pipe(
         filter(event => event.type === QueryMessage.MESSAGE_TYPE),
@@ -66,7 +66,7 @@ export class InterFrameCommunicator {
       });
   }
 
-  public send(message: IMessageBusEvent, target: Window | string): void {
+  send(message: IMessageBusEvent, target: Window | string): void {
     try {
       const parentFrame = this.frameAccessor.getParentFrame();
       const targetFrame = this.resolveTargetFrame(target);
@@ -83,7 +83,7 @@ export class InterFrameCommunicator {
     }
   }
 
-  public query<T>(message: IMessageBusEvent, target: Window | string): Promise<T> {
+  query<T>(message: IMessageBusEvent, target: Window | string): Promise<T> {
     return new Promise((resolve, reject) => {
       const sourceFrame = this.identifier.getFrameName() || MERCHANT_PARENT_FRAME;
       const query = new QueryMessage(message, sourceFrame);
@@ -109,7 +109,7 @@ export class InterFrameCommunicator {
     });
   }
 
-  public whenReceive(eventType: string): Record<string, <T>(responder: (queryEvent: IMessageBusEvent) => Observable<T>) => void> {
+  whenReceive(eventType: string): Record<string, <T>(responder: (queryEvent: IMessageBusEvent) => Observable<T>) => void> {
     return {
       thenRespond: <T>(responder: (queryEvent: IMessageBusEvent) => Observable<T>) => {
         this.responders.set(eventType, responder);
@@ -117,15 +117,15 @@ export class InterFrameCommunicator {
     };
   }
 
-  public close(): void {
+  close(): void {
     this.close$.next();
   }
 
-  public sendToParentFrame(event: IMessageBusEvent): void {
+  sendToParentFrame(event: IMessageBusEvent): void {
     this.send(event, MERCHANT_PARENT_FRAME);
   }
 
-  public sendToControlFrame(event: IMessageBusEvent): void {
+  sendToControlFrame(event: IMessageBusEvent): void {
     this.send(event, CONTROL_FRAME_IFRAME);
   }
 
