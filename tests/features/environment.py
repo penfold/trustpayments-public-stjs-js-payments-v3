@@ -17,7 +17,6 @@ from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed, \
     clear_shared_dict, add_to_shared_dict
 from utils.logger import get_logger
-from utils.mock_handler import MockServer
 from utils.reporter import Reporter
 from utils.visual_regression.screenshot_manager import ScreenshotManager
 from utils.waits import Waits
@@ -38,7 +37,6 @@ def setup_debug_on_error(userdata):
 def before_all(context):
     """Run before the whole shooting match"""
     context.configuration = CONFIGURATION
-    MockServer.start_mock_server()
 
 
 def disable_headless_for_visa_checkout(context):
@@ -89,7 +87,6 @@ def after_scenario(context, scenario):
     browser_name = context.browser
     context.browser_executor.clear_cookies()
     context.browser_executor.close_browser()
-    MockServer.stop_mock_server()
     if context.configuration.REMOTE:
         set_scenario_name(context.session_id, scenario.name)
     scenario.name = f'{scenario.name}_{browser_name.upper()}'
