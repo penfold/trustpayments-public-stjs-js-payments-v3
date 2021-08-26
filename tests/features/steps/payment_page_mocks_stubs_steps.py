@@ -292,7 +292,8 @@ def step_impl(context, request_type, scenario):
                                                                                           context.pan,
                                                                                           context.exp_date,
                                                                                           context.cvv, 1)
-    elif 'Visa Checkout - Cybertonica' in context.scenario.name or 'ApplePay - Cybertonica' \
+    elif 'Visa Checkout - Cybertonica' in context.scenario.name \
+        or 'ApplePay - Cybertonica' in context.scenario.name \
         or 'GooglePay - Cybertonica' in context.scenario.name:
         page.validate_number_of_requests_with_fraudcontroltransactionid_flag(request_type, 0)
     else:

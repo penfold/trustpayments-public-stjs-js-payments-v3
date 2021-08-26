@@ -40,7 +40,7 @@ class PaymentMethodsLocators:
     pay_mock_button: By = (By.ID, 'merchant-submit-button')
     visa_checkout_mock_button: By = (By.ID, 'v-button')
     apple_pay_mock_button: By = (By.ID, 'st-apple-pay')
-    google_pay_mock_button: By = (By.ID, "gp-mocked-button")
+    google_pay_mock_button: By = (By.ID, 'gp-mocked-button')
 
     # labels
     page_title: By = (By.XPATH, '//*[@id=\'st-form\']/h1')
