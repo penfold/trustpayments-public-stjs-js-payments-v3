@@ -48,43 +48,41 @@ export class CardFrames {
   private static SUBMIT_BUTTON_AS_INPUT_MARKUP = 'input[type="submit"]';
   private static SUBMIT_BUTTON_DISABLED_CLASS = 'st-button-submit__disabled';
 
-  private _animatedCard: HTMLIFrameElement;
-  private _cardNumber: HTMLIFrameElement;
-  private _expirationDate: HTMLIFrameElement;
-  private _securityCode: HTMLIFrameElement;
-  private _validation: Validation;
-  private _translator: ITranslator;
-  private _messageBusEvent: IMessageBusEvent<{ message: string; }> = { data: { message: '' }, type: '' };
-  private _submitButton: HTMLInputElement | HTMLButtonElement;
-  private _buttonId: string;
-  private _defaultPaymentType: string;
-  private _paymentTypes: string[];
-  private _payMessage: string;
-  private _pleaseWaitMessage: string;
-  private _processingMessage: string;
-  private _fieldsToSubmitLength: number;
-  private _isCardWithNoCvv: boolean;
-  private _noFieldConfiguration: boolean;
-  private _onlyCvvConfiguration: boolean;
-  private _configurationForStandardCard: boolean;
-  private _loadAnimatedCard: boolean;
-  private _config$: Observable<IConfig>;
-  protected styles: IStyles;
+  private animatedCard: HTMLIFrameElement;
+  private cardNumber: HTMLIFrameElement;
+  private expirationDate: HTMLIFrameElement;
+  private securityCode: HTMLIFrameElement;
+  private validation: Validation;
+  private translator: ITranslator;
+  private messageBusEvent: IMessageBusEvent<{ message: string; }> = { data: { message: '' }, type: '' };
+  private submitButton: HTMLInputElement | HTMLButtonElement;
+  private buttonId: string;
+  private defaultPaymentType: string;
+  private paymentTypes: string[];
+  private payMessage: string;
+  private pleaseWaitMessage: string;
+  private processingMessage: string;
+  private fieldsToSubmitLength: number;
+  private isCardWithNoCvv: boolean;
+  private noFieldConfiguration: boolean;
+  private onlyCvvConfiguration: boolean;
+  private configurationForStandardCard: boolean;
+  private loadAnimatedCard: boolean;
+  private config$: Observable<IConfig>;
+  private elementsTargets: string[];
+  private jwt: string;
+  private componentIds: IComponentsIds;
+  private formId: string;
+  private destroy$: Observable<void>;
+  private readonly styles: IStyles;
   /* @todo(typings) The problem with paymentTypes here is that it should be a string[], but if you replace that you will
      eventually find out that you need to pass string[] to URLSearchParams() in the IFrameFactory.create and apparently
      that function doesn't handle array of strings - so either we have bad typings here or we use it incorrectly. */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected params: { locale: Locale; origin: string; paymentTypes?: any; defaultPaymentType?: string; };
-  protected elementsToRegister: HTMLElement[];
-  protected elementsTargets: string[];
-  protected jwt: string;
-  protected origin: string;
-  protected componentIds: IComponentsIds;
-  protected submitCallback: (...args: unknown[]) => unknown;
-  protected fieldsToSubmit: string[];
-  protected messageBus: IMessageBus;
-  protected formId: string;
-  private destroy$: Observable<void>;
+  private readonly params: { locale: Locale; origin: string; paymentTypes?: any; defaultPaymentType?: string; };
+  private readonly elementsToRegister: HTMLElement[];
+  private readonly origin: string;
+  private readonly fieldsToSubmit: string[];
 
   constructor(
     jwt: string,
@@ -97,10 +95,10 @@ export class CardFrames {
     buttonId: string,
     fieldsToSubmit: string[],
     formId: string,
-    private _configProvider: ConfigProvider,
-    private _iframeFactory: IframeFactory,
-    private _frame: Frame,
-    private _messageBus: IMessageBus,
+    private configProvider: ConfigProvider,
+    private iframeFactory: IframeFactory,
+    private frame: Frame,
+    private messageBus: IMessageBus,
     private jwtDecoder: JwtDecoder
   ) {
     this.fieldsToSubmit = fieldsToSubmit || ['pan', 'expirydate', 'securitycode'];
@@ -109,21 +107,21 @@ export class CardFrames {
     this.formId = formId;
     this.jwt = jwt;
     this.origin = origin;
-    this.styles = this._getStyles(styles);
-    this._translator = Container.get(TranslatorToken);
+    this.styles = this.getStyles(styles);
+    this.translator = Container.get(TranslatorToken);
     this.params = { locale: this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.locale || 'en_GB', origin: this.origin };
-    this._config$ = this._configProvider.getConfig$();
-    this._setInitValues(buttonId, defaultPaymentType, paymentTypes, animatedCard, jwt, formId);
+    this.config$ = this.configProvider.getConfig$();
+    this.setInitValues(buttonId, defaultPaymentType, paymentTypes, animatedCard, jwt, formId);
     this.configureFormFieldsAmount(jwt);
-    this.styles = this._getStyles(styles);
-    this.destroy$ = this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+    this.styles = this.getStyles(styles);
+    this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
   init(): void {
-    this._preventFormSubmit();
-    this._createSubmitButton();
-    this._initSubscribes();
-    this._initCardFrames();
+    this.preventFormSubmit();
+    this.createSubmitButton();
+    this.initSubscribes();
+    this.initCardFrames();
     this.elementsTargets = this.setElementsFields();
     this.registerElements(this.elementsToRegister, this.elementsTargets);
   }
@@ -131,7 +129,7 @@ export class CardFrames {
   /* @todo(typings) Looks like this fn can take either IStyle or IStyles, hence the `if` inside. All the calls here
      are done with IStyles, but the tests for that class do not give enough confidence to assume so. */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _getStyles(styles: any) {
+  private getStyles(styles: any) {
     for (const key in styles) {
       if (styles[key] instanceof Object) {
         return styles;
@@ -141,27 +139,27 @@ export class CardFrames {
     return styles;
   }
 
-  protected configureFormFieldsAmount(jwt: string): void {
-    this._fieldsToSubmitLength = this.fieldsToSubmit.length;
-    this._isCardWithNoCvv = jwt && CardFrames.NO_CVV_CARDS.includes(this._getCardType(jwt));
-    this._noFieldConfiguration =
-      this._fieldsToSubmitLength === CardFrames.ONLY_CVV_NUMBER_OF_FIELDS &&
-      this._isCardWithNoCvv &&
+  private configureFormFieldsAmount(jwt: string): void {
+    this.fieldsToSubmitLength = this.fieldsToSubmit.length;
+    this.isCardWithNoCvv = jwt && CardFrames.NO_CVV_CARDS.includes(this.getCardType(jwt));
+    this.noFieldConfiguration =
+      this.fieldsToSubmitLength === CardFrames.ONLY_CVV_NUMBER_OF_FIELDS &&
+      this.isCardWithNoCvv &&
       this.fieldsToSubmit.includes(CardFrames.SECURITY_CODE_FIELD_NAME);
-    this._onlyCvvConfiguration =
-      this._fieldsToSubmitLength === CardFrames.ONLY_CVV_NUMBER_OF_FIELDS &&
-      !this._isCardWithNoCvv &&
+    this.onlyCvvConfiguration =
+      this.fieldsToSubmitLength === CardFrames.ONLY_CVV_NUMBER_OF_FIELDS &&
+      !this.isCardWithNoCvv &&
       this.fieldsToSubmit.includes(CardFrames.SECURITY_CODE_FIELD_NAME);
-    this._configurationForStandardCard =
-      this._fieldsToSubmitLength === CardFrames.COMPLETE_FORM_NUMBER_OF_FIELDS &&
-      this._loadAnimatedCard &&
-      !this._isCardWithNoCvv &&
+    this.configurationForStandardCard =
+      this.fieldsToSubmitLength === CardFrames.COMPLETE_FORM_NUMBER_OF_FIELDS &&
+      this.loadAnimatedCard &&
+      !this.isCardWithNoCvv &&
       this.fieldsToSubmit.includes(CardFrames.CARD_NUMBER_FIELD_NAME) &&
       this.fieldsToSubmit.includes(CardFrames.EXPIRY_DATE_FIELD_NAME) &&
       this.fieldsToSubmit.includes(CardFrames.SECURITY_CODE_FIELD_NAME);
   }
 
-  protected registerElements(fields: HTMLElement[], targets: string[]): void {
+  private registerElements(fields: HTMLElement[], targets: string[]): void {
     if (fields.length === targets.length) {
       targets.forEach((item, index) => {
         const element: HTMLElement = document.getElementById(item);
@@ -182,17 +180,17 @@ export class CardFrames {
     }
   }
 
-  protected setElementsFields(): string[] {
-    if (this._configurationForStandardCard) {
+  private setElementsFields(): string[] {
+    if (this.configurationForStandardCard) {
       return [
         this.componentIds.cardNumber,
         this.componentIds.expirationDate,
         this.componentIds.securityCode,
         this.componentIds.animatedCard,
       ];
-    } else if (this._onlyCvvConfiguration) {
+    } else if (this.onlyCvvConfiguration) {
       return [this.componentIds.securityCode];
-    } else if (this._noFieldConfiguration) {
+    } else if (this.noFieldConfiguration) {
       return [];
     } else {
       return [
@@ -203,154 +201,154 @@ export class CardFrames {
     }
   }
 
-  private _createSubmitButton = (): HTMLInputElement | HTMLButtonElement => {
+  private createSubmitButton = (): HTMLInputElement | HTMLButtonElement => {
     const form = document.getElementById(this.formId);
 
-    this._submitButton =
-      (document.getElementById(this._buttonId) as HTMLInputElement | HTMLButtonElement) ||
+    this.submitButton =
+      (document.getElementById(this.buttonId) as HTMLInputElement | HTMLButtonElement) ||
       form.querySelector(CardFrames.SUBMIT_BUTTON_AS_BUTTON_MARKUP) ||
       form.querySelector(CardFrames.SUBMIT_BUTTON_AS_INPUT_MARKUP);
-    this._disableSubmitButton(FormState.LOADING);
+    this.disableSubmitButton(FormState.LOADING);
 
-    this._config$.subscribe(response => {
+    this.config$.subscribe(response => {
       const { components } = response;
 
-      if (this._submitButton) {
-        this._submitButton.textContent = this._pleaseWaitMessage;
+      if (this.submitButton) {
+        this.submitButton.textContent = this.pleaseWaitMessage;
       }
 
       if (components.startOnLoad) {
-        this._disableSubmitButton(FormState.AVAILABLE);
+        this.disableSubmitButton(FormState.AVAILABLE);
       }
     });
 
-    return this._submitButton;
+    return this.submitButton;
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private _disableFormField(state: FormState, eventName: string, target: string): void {
+  private disableFormField(state: FormState, eventName: string, target: string): void {
     const messageBusEvent: IMessageBusEvent = {
       data: state,
       type: eventName,
     };
-    this._messageBus.publish(messageBusEvent);
+    this.messageBus.publish(messageBusEvent);
   }
 
-  private _disableSubmitButton(state: FormState): void {
-    if (this._submitButton) {
-      this._setSubmitButtonProperties(this._submitButton, state);
+  private disableSubmitButton(state: FormState): void {
+    if (this.submitButton) {
+      this.setSubmitButtonProperties(this.submitButton, state);
     }
   }
 
-  private _getCardType(jwt: string): string {
+  private getCardType(jwt: string): string {
     const cardDetails = this.jwtDecoder.decode<IStJwtPayload>(jwt);
     if (cardDetails.payload.pan) {
       return iinLookup.lookup(cardDetails.payload.pan).type;
     }
   }
 
-  private _initCardNumberFrame(styles: Record<string, string>): void {
-    this._cardNumber = this._iframeFactory.create(CARD_NUMBER_COMPONENT_NAME, CARD_NUMBER_IFRAME, styles, this.params);
-    this.elementsToRegister.push(this._cardNumber);
+  private initCardNumberFrame(styles: Record<string, string>): void {
+    this.cardNumber = this.iframeFactory.create(CARD_NUMBER_COMPONENT_NAME, CARD_NUMBER_IFRAME, styles, this.params);
+    this.elementsToRegister.push(this.cardNumber);
   }
 
-  private _initExpiryDateFrame(styles: Record<string, string>): void {
-    this._expirationDate = this._iframeFactory.create(
+  private initExpiryDateFrame(styles: Record<string, string>): void {
+    this.expirationDate = this.iframeFactory.create(
       EXPIRATION_DATE_COMPONENT_NAME,
       EXPIRATION_DATE_IFRAME,
       styles,
       this.params
     );
-    this.elementsToRegister.push(this._expirationDate);
+    this.elementsToRegister.push(this.expirationDate);
   }
 
-  private _initSecurityCodeFrame(styles: Record<string, string>): void {
-    this._securityCode = this._iframeFactory.create(
+  private initSecurityCodeFrame(styles: Record<string, string>): void {
+    this.securityCode = this.iframeFactory.create(
       SECURITY_CODE_COMPONENT_NAME,
       SECURITY_CODE_IFRAME,
       styles,
       this.params
     );
-    this.elementsToRegister.push(this._securityCode);
+    this.elementsToRegister.push(this.securityCode);
   }
 
-  private _initAnimatedCardFrame(): void {
+  private initAnimatedCardFrame(): void {
     const animatedCardConfig = { ...this.params };
-    if (this._paymentTypes !== undefined) {
-      animatedCardConfig.paymentTypes = this._paymentTypes;
+    if (this.paymentTypes !== undefined) {
+      animatedCardConfig.paymentTypes = this.paymentTypes;
     }
-    if (this._defaultPaymentType !== undefined) {
-      animatedCardConfig.defaultPaymentType = this._defaultPaymentType;
+    if (this.defaultPaymentType !== undefined) {
+      animatedCardConfig.defaultPaymentType = this.defaultPaymentType;
     }
-    this._animatedCard = this._iframeFactory.create(
+    this.animatedCard = this.iframeFactory.create(
       ANIMATED_CARD_COMPONENT_NAME,
       ANIMATED_CARD_COMPONENT_IFRAME,
       {},
       animatedCardConfig,
       -1
     );
-    this.elementsToRegister.push(this._animatedCard);
+    this.elementsToRegister.push(this.animatedCard);
   }
 
-  private _initCardFrames(): void {
+  private initCardFrames(): void {
     const { defaultStyles } = this.styles;
     let { cardNumber, securityCode, expirationDate } = this.styles;
     cardNumber = Object.assign({}, defaultStyles, cardNumber);
     securityCode = Object.assign({}, defaultStyles, securityCode);
     expirationDate = Object.assign({}, defaultStyles, expirationDate);
-    if (this._onlyCvvConfiguration) {
-      this._initSecurityCodeFrame(securityCode);
-    } else if (this._configurationForStandardCard) {
-      this._initCardNumberFrame(cardNumber);
-      this._initExpiryDateFrame(expirationDate);
-      this._initSecurityCodeFrame(securityCode);
-      this._initAnimatedCardFrame();
+    if (this.onlyCvvConfiguration) {
+      this.initSecurityCodeFrame(securityCode);
+    } else if (this.configurationForStandardCard) {
+      this.initCardNumberFrame(cardNumber);
+      this.initExpiryDateFrame(expirationDate);
+      this.initSecurityCodeFrame(securityCode);
+      this.initAnimatedCardFrame();
     } else {
-      this._initCardNumberFrame(cardNumber);
-      this._initExpiryDateFrame(expirationDate);
-      this._initSecurityCodeFrame(securityCode);
+      this.initCardNumberFrame(cardNumber);
+      this.initExpiryDateFrame(expirationDate);
+      this.initSecurityCodeFrame(securityCode);
     }
   }
 
-  private _initSubscribes(): void {
-    this._submitFormListener();
-    this._subscribeBlockSubmit();
-    this._validateFieldsAfterSubmit();
-    this._setMerchantInputListeners();
+  private initSubscribes(): void {
+    this.submitFormListener();
+    this.subscribeBlockSubmit();
+    this.validateFieldsAfterSubmit();
+    this.setMerchantInputListeners();
   }
 
-  private _onInput(): void {
+  private onInput(): void {
     const messageBusEvent: IMessageBusEvent = {
       data: DomMethods.parseForm(this.formId),
       type: MessageBus.EVENTS_PUBLIC.UPDATE_MERCHANT_FIELDS,
     };
-    this._messageBus.publish(messageBusEvent);
+    this.messageBus.publish(messageBusEvent);
   }
 
-  private _publishSubmitEvent(): void {
+  private publishSubmitEvent(): void {
     const messageBusEvent: IMessageBusEvent = {
       data: {
         fieldsToSubmit: this.fieldsToSubmit,
       },
       type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
     };
-    this._messageBus.publish(messageBusEvent, true);
+    this.messageBus.publish(messageBusEvent, true);
   }
 
-  private _publishValidatedFieldState(field: { message: string; state: boolean }, eventType: string): void {
-    this._messageBusEvent.type = eventType;
-    this._messageBusEvent.data.message = field.message;
-    this._messageBus.publish(this._messageBusEvent);
+  private publishValidatedFieldState(field: { message: string; state: boolean }, eventType: string): void {
+    this.messageBusEvent.type = eventType;
+    this.messageBusEvent.data.message = field.message;
+    this.messageBus.publish(this.messageBusEvent);
   }
 
-  private _setMerchantInputListeners(): void {
+  private setMerchantInputListeners(): void {
     const els = DomMethods.getAllFormElements(document.getElementById(this.formId));
     for (const el of els) {
-      el.addEventListener(CardFrames.INPUT_EVENT, this._onInput.bind(this));
+      el.addEventListener(CardFrames.INPUT_EVENT, this.onInput.bind(this));
     }
   }
 
-  private _setInitValues(
+  private setInitValues(
     buttonId: string,
     defaultPaymentType: string,
     paymentTypes: string[],
@@ -358,41 +356,41 @@ export class CardFrames {
     jwt: string,
     formId: string
   ): void {
-    this._validation = new Validation();
-    this._buttonId = buttonId;
+    this.validation = new Validation();
+    this.buttonId = buttonId;
     this.formId = formId;
-    this._defaultPaymentType = defaultPaymentType;
-    this._paymentTypes = paymentTypes;
+    this.defaultPaymentType = defaultPaymentType;
+    this.paymentTypes = paymentTypes;
     this.jwt = jwt;
-    this._payMessage = this._translator.translate(PAY);
-    this._pleaseWaitMessage = this._translator.translate(PLEASE_WAIT);
-    this._processingMessage = `${this._translator.translate(PROCESSING)} ...`;
-    this._loadAnimatedCard = loadAnimatedCard !== undefined ? loadAnimatedCard : true;
+    this.payMessage = this.translator.translate(PAY);
+    this.pleaseWaitMessage = this.translator.translate(PLEASE_WAIT);
+    this.processingMessage = `${this.translator.translate(PROCESSING)} ...`;
+    this.loadAnimatedCard = loadAnimatedCard !== undefined ? loadAnimatedCard : true;
 
-    this._messageBus
-      .pipe(ofType(PUBLIC_EVENTS.LOCALE_CHANGED), takeUntil(this._messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY))))
+    this.messageBus
+      .pipe(ofType(PUBLIC_EVENTS.LOCALE_CHANGED), takeUntil(this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY))))
       .subscribe(() => {
-        this._payMessage = this._translator.translate(PAY);
-        this._processingMessage = `${this._translator.translate(PROCESSING)} ...`;
-        this._submitButton.textContent = this._submitButton.disabled ? this._processingMessage : this._payMessage;
+        this.payMessage = this.translator.translate(PAY);
+        this.processingMessage = `${this.translator.translate(PROCESSING)} ...`;
+        this.submitButton.textContent = this.submitButton.disabled ? this.processingMessage : this.payMessage;
       });
   }
 
-  private _setSubmitButtonProperties(element: HTMLInputElement | HTMLButtonElement, state: FormState): HTMLElement {
+  private setSubmitButtonProperties(element: HTMLInputElement | HTMLButtonElement, state: FormState): HTMLElement {
     let disabledState;
     if (state === FormState.BLOCKED) {
-      element.textContent = this._processingMessage;
+      element.textContent = this.processingMessage;
       element.classList.add(CardFrames.SUBMIT_BUTTON_DISABLED_CLASS);
       disabledState = true;
     } else if (state === FormState.COMPLETE) {
-      element.textContent = this._payMessage;
+      element.textContent = this.payMessage;
       element.classList.add(CardFrames.SUBMIT_BUTTON_DISABLED_CLASS); // Keep it locked but return it to original text
       disabledState = true;
     } else if (state === FormState.LOADING) {
-      element.textContent = this._pleaseWaitMessage;
+      element.textContent = this.pleaseWaitMessage;
       disabledState = true;
     } else {
-      element.textContent = this._payMessage;
+      element.textContent = this.payMessage;
       element.classList.remove(CardFrames.SUBMIT_BUTTON_DISABLED_CLASS);
       disabledState = false;
     }
@@ -400,46 +398,46 @@ export class CardFrames {
     return element;
   }
 
-  private _submitFormListener(): void {
-    if (this._submitButton) {
-      const clickHandler = () => this._publishSubmitEvent();
-      this._submitButton.addEventListener(CardFrames.CLICK_EVENT, clickHandler);
+  private submitFormListener(): void {
+    if (this.submitButton) {
+      const clickHandler = () => this.publishSubmitEvent();
+      this.submitButton.addEventListener(CardFrames.CLICK_EVENT, clickHandler);
 
       this.destroy$.pipe(first()).subscribe(() => {
-        this._submitButton.removeEventListener(CardFrames.CLICK_EVENT, clickHandler);
+        this.submitButton.removeEventListener(CardFrames.CLICK_EVENT, clickHandler);
       });
     }
 
-    this._messageBus
+    this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.CALL_SUBMIT_EVENT), takeUntil(this.destroy$))
-      .subscribe(() => this._publishSubmitEvent());
+      .subscribe(() => this.publishSubmitEvent());
   }
 
-  private _subscribeBlockSubmit(): void {
-    this._messageBus
+  private subscribeBlockSubmit(): void {
+    this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.SUBMIT_FORM), takeUntil(this.destroy$))
-      .subscribe(() => this._disableSubmitButton(FormState.BLOCKED));
+      .subscribe(() => this.disableSubmitButton(FormState.BLOCKED));
 
-    this._messageBus
+    this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.UNLOCK_BUTTON), takeUntil(this.destroy$))
-      .subscribe(() => this._disableSubmitButton(FormState.AVAILABLE));
+      .subscribe(() => this.disableSubmitButton(FormState.AVAILABLE));
 
-    this._messageBus
+    this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.BLOCK_FORM),
         map(event => event.data),
         takeUntil(this.destroy$)
       )
       .subscribe((state: FormState) => {
-        this._disableSubmitButton(state);
-        this._disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER, CARD_NUMBER_IFRAME);
-        this._disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, EXPIRATION_DATE_IFRAME);
-        this._disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_SECURITY_CODE, SECURITY_CODE_IFRAME);
+        this.disableSubmitButton(state);
+        this.disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_CARD_NUMBER, CARD_NUMBER_IFRAME);
+        this.disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, EXPIRATION_DATE_IFRAME);
+        this.disableFormField(state, MessageBus.EVENTS_PUBLIC.BLOCK_SECURITY_CODE, SECURITY_CODE_IFRAME);
       });
   }
 
-  private _validateFieldsAfterSubmit(): void {
-    this._messageBus
+  private validateFieldsAfterSubmit(): void {
+    this.messageBus
       .pipe(
         ofType(PRIVATE_EVENTS.VALIDATE_FORM),
         map(event => event.data),
@@ -448,18 +446,18 @@ export class CardFrames {
       .subscribe((data: IValidationMessageBus) => {
         const { cardNumber, expirationDate, securityCode } = data;
         if (!cardNumber.state) {
-          this._publishValidatedFieldState(cardNumber, MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD);
+          this.publishValidatedFieldState(cardNumber, MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD);
         }
         if (!expirationDate.state) {
-          this._publishValidatedFieldState(expirationDate, MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD);
+          this.publishValidatedFieldState(expirationDate, MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD);
         }
         if (!securityCode.state) {
-          this._publishValidatedFieldState(securityCode, MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD);
+          this.publishValidatedFieldState(securityCode, MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD);
         }
       });
   }
 
-  private _preventFormSubmit(): void {
+  private preventFormSubmit(): void {
     const preventFunction = (event: Event) => event.preventDefault();
     const paymentForm = document.getElementById(this.formId);
 
