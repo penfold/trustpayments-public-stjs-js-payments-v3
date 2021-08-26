@@ -11,7 +11,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | requesttypedescriptions | THREEDQUERY AUTH   |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
     And User opens example page
     And User toggle action buttons bar
     And User fills payment form with defined card MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
@@ -34,7 +34,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | requesttypedescriptions | THREEDQUERY AUTH   |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
     And User opens example page
     And User toggle action buttons bar
     And User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
@@ -58,7 +58,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | baseamount              | 1500                      |
       | customercountryiso2a    | GB                        |
       | billingcountryiso2a     | GB                        |
-      | sitereference           | jstrustthreed76424        |
+      | sitereference           | trustthreeds76424        |
     And User opens example page
     And User toggle action buttons bar
     And User fills payment form with defined card VISA_V21_3DS_SDK_NON_FRICTIONLESS
@@ -87,7 +87,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | requesttypedescriptions | <request_types>    |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
     And User opens example page
     And User toggle action buttons bar
     And User fills payment form with defined card VISA_V22_3DS_SDK_NON_FRICTIONLESS
@@ -126,7 +126,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | baseamount              | 1500                      |
       | customercountryiso2a    | GB                        |
       | billingcountryiso2a     | GB                        |
-      | sitereference           | jstrustthreed76424        |
+      | sitereference           | trustthreeds76424        |
     And User opens example page
     And User toggle action buttons bar
     And User fills payment form with defined card MASTERCARD_V22_3DS_SDK_NON_FRICTIONLESS
@@ -155,7 +155,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | requesttypedescriptions | <request_types>    |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
     And User opens example page
     And User toggle action buttons bar
     And User fills payment form with defined card VISA_V21_3DS_SDK_NON_FRICTIONLESS
@@ -193,7 +193,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | requesttypedescriptions | THREEDQUERY AUTH   |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | pan                     | 5591390000000173   |
     And User opens example page WITHOUT_SUBMIT_BUTTON
     And User toggle action buttons bar
@@ -213,11 +213,11 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | requesttypedescriptions | THREEDQUERY AUTH   |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
     And User opens page WITH_UPDATE_JWT and jwt BASE_TRUST_UPDATED_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
     And User toggle action buttons bar
     And User fills payment form with defined card VISA_V22_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
@@ -238,11 +238,11 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | requesttypedescriptions | THREEDQUERY AUTH   |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
     And User opens page WITH_UPDATE_JWT and jwt BASE_TRUST_UPDATED_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
     And User toggle action buttons bar
     And User fills payment form with defined card VISA_V22_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button

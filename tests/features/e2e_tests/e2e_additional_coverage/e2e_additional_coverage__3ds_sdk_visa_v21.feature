@@ -7,7 +7,7 @@ Feature: request type - 3ds SDK - full test coverage - VISA v2.1
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -42,7 +42,7 @@ Feature: request type - 3ds SDK - full test coverage - VISA v2.1
     And JS library authenticated by jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -69,7 +69,7 @@ Feature: request type - 3ds SDK - full test coverage - VISA v2.1
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -98,7 +98,7 @@ Feature: request type - 3ds SDK - full test coverage - VISA v2.1
     And JS library authenticated by jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -119,7 +119,7 @@ Feature: request type - 3ds SDK - full test coverage - VISA v2.1
     And JS library authenticated by jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -142,7 +142,7 @@ Feature: request type - 3ds SDK - full test coverage - VISA v2.1
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page

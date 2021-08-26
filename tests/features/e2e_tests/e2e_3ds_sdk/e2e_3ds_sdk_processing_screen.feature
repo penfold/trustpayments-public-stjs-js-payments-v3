@@ -5,7 +5,7 @@ Feature: 3ds SDK library - Processing Screen
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -26,7 +26,7 @@ Feature: 3ds SDK library - Processing Screen
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -47,7 +47,7 @@ Feature: 3ds SDK library - Processing Screen
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -68,7 +68,7 @@ Feature: 3ds SDK library - Processing Screen
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -89,7 +89,7 @@ Feature: 3ds SDK library - Processing Screen
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -109,7 +109,7 @@ Feature: 3ds SDK library - Processing Screen
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -129,7 +129,7 @@ Feature: 3ds SDK library - Processing Screen
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -149,7 +149,7 @@ Feature: 3ds SDK library - Processing Screen
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | THREEDQUERY AUTH   |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page

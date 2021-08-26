@@ -39,6 +39,24 @@ def step_impl(context):
     payment_page.wait_for_notification_frame_with_timeout(Waits.OVER_GATEWAY_TIMEOUT)
 
 
+@step('User waits for ACS mock timeout')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_notification_frame_with_timeout(Waits.OVER_ACS_MOCK_TIMEOUT)
+
+
+@step('User waits to be sent into page with url "(?P<url>.+)" after gateway timeout')
+def step_impl(context, url):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_url_with_timeout(url, Waits.OVER_GATEWAY_TIMEOUT)
+
+
+@step('User waits to be sent into page with url "(?P<url>.+)" after ACS mock timeout')
+def step_impl(context, url):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_url_with_timeout(url, Waits.OVER_ACS_MOCK_TIMEOUT)
+
+
 @step('User waits for payment status to disappear')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -69,12 +87,6 @@ def step_impl(context, color):
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.wait_for_pay_button_to_be_active()
-
-
-@step('User waits to be sent into page with url "(?P<url>.+)" after gateway timeout')
-def step_impl(context, url):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.wait_for_url_with_timeout(url, Waits.OVER_GATEWAY_TIMEOUT)
 
 
 @step('User clicks Pay button')

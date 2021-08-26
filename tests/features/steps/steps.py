@@ -46,6 +46,13 @@ def step_impl(context, e2e_config):
     context.INLINE_E2E_CONFIG_DICT = e2e_config_dict
 
 
+@step('JS library configured with (?P<e2e_config>.+) and additional attributes')
+def step_impl(context, e2e_config):
+    e2e_config_dict = get_e2e_config_from_json(E2eConfig[e2e_config].value)
+    e2e_config_dict = InlineConfigBuilder().map_lib_config_additional_fields(e2e_config_dict, context.table)
+    context.INLINE_E2E_CONFIG_DICT = e2e_config_dict
+
+
 @step('JS library authenticated by jwt (?P<jwt_config>.+) with additional attributes')
 def step_impl(context, jwt_config):
     # map jwt config file (payload part) to dictionary object
