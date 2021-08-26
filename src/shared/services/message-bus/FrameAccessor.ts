@@ -2,7 +2,7 @@ import { Inject, Service } from 'typedi';
 import { FrameIdentifier } from './FrameIdentifier';
 import { FrameCollection } from './interfaces/FrameCollection';
 import { WINDOW } from '../../dependency-injection/InjectionTokens';
-import { IControlFrameWindow } from '../../interfaces/IControlFrameWindow';
+import IControlFrameWindow from '../../interfaces/IControlFrameWindow';
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { FrameNotFound } from './errors/FrameNotFound';
 

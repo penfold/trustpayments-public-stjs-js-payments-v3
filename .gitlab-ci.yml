@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 28.0.0
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 31.0.0
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -11,6 +11,7 @@ include:
   - local: '/.gitlab/others/services.yml'
   - local: '/.gitlab/build/sdk.yml'
   - local: '/.gitlab/build/example-app-html.yml'
+  - local: '/.gitlab/build/example-app-others.yml'
   - local: '/.gitlab/post-build/image-html.yml'
   - local: '/.gitlab/post-build/image-other.yml'
   - local: '/.gitlab/post-build/publish-to-cdn.yml'

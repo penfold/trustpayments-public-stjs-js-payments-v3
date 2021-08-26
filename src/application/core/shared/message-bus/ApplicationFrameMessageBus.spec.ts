@@ -4,7 +4,7 @@ import { ApplicationFrameMessageBus } from './ApplicationFrameMessageBus';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { Subject } from 'rxjs';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
-import { IControlFrameWindow } from '../../../../shared/interfaces/IControlFrameWindow';
+import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 
 describe('ApplicationFrameMessageBus', () => {

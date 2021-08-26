@@ -1,4 +1,4 @@
-import { IControlFrameWindow } from '../../../../shared/interfaces/IControlFrameWindow';
+import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { ControlFrameMessageBus } from './ControlFrameMessageBus';
 import { instance, mock, verify, when } from 'ts-mockito';

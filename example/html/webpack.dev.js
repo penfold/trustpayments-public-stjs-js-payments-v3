@@ -30,10 +30,10 @@ module.exports = merge(common, {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       LIBRARY_URL: JSON.stringify(`https://${process.env.npm_package_config_host}:8443`),
-      CONFIG_URL: JSON.stringify('/json'),
+      CONFIG_URL: JSON.stringify('./json'),
     }),
   ],
   output: {
-    publicPath: '/'
+    publicPath: './'
   }
 });

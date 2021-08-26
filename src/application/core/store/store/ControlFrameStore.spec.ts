@@ -1,6 +1,6 @@
 import { ControlFrameStore } from './ControlFrameStore';
 import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
-import { IControlFrameWindow } from '../../../../shared/interfaces/IControlFrameWindow';
+import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
 import { BehaviorSubject } from 'rxjs';
 import { IApplicationFrameState } from '../state/IApplicationFrameState';
 

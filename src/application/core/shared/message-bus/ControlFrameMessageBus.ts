@@ -1,7 +1,7 @@
 import { SimpleMessageBus } from './SimpleMessageBus';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { IControlFrameWindow } from '../../../../shared/interfaces/IControlFrameWindow';
+import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
 import { Inject, Service } from 'typedi';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
 

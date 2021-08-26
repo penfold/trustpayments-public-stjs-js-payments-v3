@@ -152,7 +152,7 @@ class PaymentMethodsPage(BasePage):
 
     def validate_cardinal_authentication_modal_appears(self, auth):
         self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
-        if auth == AuthType.V1.value:
+        if auth == AuthType.V1.name:
             self._actions.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
             self._waits.wait_for_element_to_be_displayed(
                 PaymentMethodsLocators.cardinal_v1_authentication_code_field)
@@ -164,7 +164,7 @@ class PaymentMethodsPage(BasePage):
     def select_proper_cardinal_authentication(self, auth):
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_modal)
         self._actions.switch_to_iframe(PaymentMethodsLocators.cardinal_iframe)
-        if auth == AuthType.V1.value:
+        if auth == AuthType.V1.name:
             self.fill_cardinal_v1_popup()
         else:
             self.fill_cardinal_v2_popup()
@@ -513,7 +513,8 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert_that(parsed_url.hostname).is_equal_to(url)
 
-    def validate_if_url_contains_param(self, parsed_query_from_url, key, value):
+    @staticmethod
+    def validate_if_url_contains_param(parsed_query_from_url, key, value):
         if 'should not be none' in value:
             assert_that(parsed_query_from_url[key][0]).is_not_none()
         elif 'should be none' in value:
@@ -694,7 +695,7 @@ class PaymentMethodsPage(BasePage):
         # pylint: disable=invalid-name
         processing_text: str = 'Processing'
         if language not in ('en_US', 'en_GB'):
-            with open(f'resources/languages/{language}.json', 'r') as f:
+            with open(f'resources/languages/{language}.json', 'r', encoding='utf-8') as f:
                 translation = json.load(f)
             processing_text = translation[processing_text]
         processing_text = f'{processing_text} ...'

@@ -13,7 +13,7 @@ Feature: 3ds SDK v1 E2E tests - Visa
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -41,7 +41,7 @@ Feature: 3ds SDK v1 E2E tests - Visa
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -69,7 +69,7 @@ Feature: 3ds SDK v1 E2E tests - Visa
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -96,7 +96,7 @@ Feature: 3ds SDK v1 E2E tests - Visa
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -125,7 +125,7 @@ Feature: 3ds SDK v1 E2E tests - Visa
 #    Given JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value              |
 #      | requesttypedescriptions | <request_types>    |
-#      | sitereference           | jstrustthreed76424 |
+#      | sitereference           | trustthreeds76424 |
 #      | customercountryiso2a    | GB                 |
 #      | billingcountryiso2a     | GB                 |
 #    And User opens example page
@@ -139,11 +139,11 @@ Feature: 3ds SDK v1 E2E tests - Visa
 #      | success       |
 #    And User will see that Submit button is "disabled"
 #    And User will see that ALL input fields are "disabled"
-#
-#    Examples:
-#      | request_types            |
-#      | THREEDQUERY AUTH         |
-#      | ACCOUNTCHECK THREEDQUERY |
-#      | THREEDQUERY ACCOUNTCHECK |
+
+    Examples:
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 

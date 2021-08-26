@@ -228,7 +228,7 @@ export class ST {
 
   updateJWT(jwt: string): void {
     if (jwt) {
-      this.config = this.configService.updateJwt(jwt);
+      this.config = this.configService.updateProp('jwt', jwt);
       this.messageBus.publish<IUpdateJwt>({
         type: PUBLIC_EVENTS.UPDATE_JWT,
         data: { newJwt: jwt },

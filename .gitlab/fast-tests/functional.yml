@@ -65,6 +65,36 @@ e2e-cardinal-commerce-timeout-tests-release:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce/e2e_timeout'
   parallel: 8
 
+# Should be uncommented when gateway on prod will be ready
+## 3DS SDK (Trust provider) E2E Tests Headless
+#e2e-3ds-sdk-tests-review:
+#  extends:
+#    - .e2e-tests-parallel
+#    - .services-app-html-review
+#    - .rules-when-review
+#  variables:
+#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_3ds_sdk'
+#  parallel: 17
+#
+#e2e-3ds-sdk-tests-release:
+#  extends:
+#    - .e2e-tests-parallel
+#    - .service-app-html-release-merchant
+#    - .rules-when-release
+#  variables:
+#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_3ds_sdk'
+#  parallel: 17
+#
+## this is on purpose - STJS-1678
+#e2e-3ds-sdk-timeout-tests-release:
+#  extends:
+#    - .e2e-tests-parallel
+#    - .service-app-html-release-merchant
+#    - .rules-when-release
+#  variables:
+#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_3ds_sdk/e2e_timeout'
+#  parallel: 8
+
 # Merchants features E2E Tests Headless
 e2e-merchants-features-tests-nightly:
   extends:
