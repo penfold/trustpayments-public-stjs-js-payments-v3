@@ -50,62 +50,62 @@ export class ControlFrame {
   private static ALLOWED_PARAMS: string[] = ['jwt', 'gatewayUrl'];
   private static NON_CVV_CARDS: string[] = ['PIBA'];
 
-  private static _setFormFieldValidity(field: IFormFieldState, data: IFormFieldState): void {
+  private static setFormFieldValidity(field: IFormFieldState, data: IFormFieldState): void {
     field.validity = data.validity;
   }
 
-  private static _setFormFieldValue(field: IFormFieldState, data: IFormFieldState): void {
+  private static setFormFieldValue(field: IFormFieldState, data: IFormFieldState): void {
     field.value = data.value;
   }
 
-  private _resetJwt(): void {
+  private resetJwt(): void {
     StCodec.resetJwt();
   }
 
-  private _card: ICard = {
+  private card: ICard = {
     pan: '',
     expirydate: '',
     securitycode: '',
   };
-  private _isPaymentReady = false;
-  private _formFields: IFormFieldsDetails = FormFieldsDetails;
-  private _formFieldsValidity: IFormFieldsValidity = FormFieldsValidity;
-  private _merchantFormData: IMerchantData;
-  private _payment: Payment;
-  private _remainingRequestTypes: RequestType[];
-  private _validation: Validation;
-  private _slicedPan: string;
+  private isPaymentReady = false;
+  private formFields: IFormFieldsDetails = FormFieldsDetails;
+  private formFieldsValidity: IFormFieldsValidity = FormFieldsValidity;
+  private merchantFormData: IMerchantData;
+  private payment: Payment;
+  private remainingRequestTypes: RequestType[];
+  private validation: Validation;
+  private slicedPan: string;
 
   constructor(
-    private _localStorage: BrowserLocalStorage,
-    private _communicator: InterFrameCommunicator,
-    private _configProvider: ConfigProvider,
-    private _notification: NotificationService,
-    private _cybertonica: Cybertonica,
-    private _threeDProcess: ThreeDProcess,
-    private _messageBus: IMessageBus,
-    private _frame: Frame,
-    private _jwtDecoder: JwtDecoder,
-    private _visaCheckoutClient: VisaCheckoutClient,
-    private _applePayClient: ApplePayClient,
+    private localStorage: BrowserLocalStorage,
+    private communicator: InterFrameCommunicator,
+    private configProvider: ConfigProvider,
+    private notification: NotificationService,
+    private cybertonica: Cybertonica,
+    private threeDProcess: ThreeDProcess,
+    private messageBus: IMessageBus,
+    private frame: Frame,
+    private jwtDecoder: JwtDecoder,
+    private visaCheckoutClient: VisaCheckoutClient,
+    private applePayClient: ApplePayClient,
     private paymentController: PaymentController,
     private translator: ITranslator,
   ) {
     this.init();
-    this._initVisaCheckout();
-    this._initApplePay();
-    this._initCardPayments();
-    this._initJsInit();
-    this._initConfigChange();
+    this.initVisaCheckout();
+    this.initApplePay();
+    this.initCardPayments();
+    this.initJsInit();
+    this.initConfigChange();
   }
 
-  protected init(): void {
-    this._updateJwtEvent();
+  private init(): void {
+    this.updateJwtEvent();
 
-    this._communicator.whenReceive(PUBLIC_EVENTS.INIT_CONTROL_FRAME).thenRespond((event: IMessageBusEvent<string>) => {
+    this.communicator.whenReceive(PUBLIC_EVENTS.INIT_CONTROL_FRAME).thenRespond((event: IMessageBusEvent<string>) => {
       const config: IConfig = JSON.parse(event.data);
 
-      this._messageBus.publish({
+      this.messageBus.publish({
         type: PUBLIC_EVENTS.CONFIG_CHANGED,
         data: config,
       });
@@ -114,73 +114,72 @@ export class ControlFrame {
         StCodec.updateJwt(config.jwt);
       }
 
-      this._initCybertonica(config);
-      this._updateMerchantFieldsEvent();
+      this.initCybertonica(config);
+      this.updateMerchantFieldsEvent();
       this.paymentController.init();
 
       return of(config);
     });
   }
-
-  _initCardPayments(): void {
-    this._messageBus
+  initCardPayments(): void {
+    this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.CARD_PAYMENTS_INIT))
       .pipe(first())
       .subscribe((event: IMessageBusEvent<string>) => {
-        this._setInstances();
-        this._setFormFieldsValidities();
-        this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_CARD_NUMBER, this._formFields.cardNumber);
-        this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_EXPIRATION_DATE, this._formFields.expirationDate);
-        this._formFieldChangeEvent(MessageBus.EVENTS.CHANGE_SECURITY_CODE, this._formFields.securityCode);
-        this._submitFormEvent();
-        this._initThreeDProcess(JSON.parse(event.data));
+        this.setInstances();
+        this.setFormFieldsValidities();
+        this.formFieldChangeEvent(MessageBus.EVENTS.CHANGE_CARD_NUMBER, this.formFields.cardNumber);
+        this.formFieldChangeEvent(MessageBus.EVENTS.CHANGE_EXPIRATION_DATE, this.formFields.expirationDate);
+        this.formFieldChangeEvent(MessageBus.EVENTS.CHANGE_SECURITY_CODE, this.formFields.securityCode);
+        this.submitFormEvent();
+        this.initThreeDProcess(JSON.parse(event.data));
       });
   }
 
-  private _initVisaCheckout(): void {
-    this._messageBus
+  private initVisaCheckout(): void {
+    this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.VISA_CHECKOUT_INIT))
       .pipe(
         first(),
         switchMap(() => {
-          return this._visaCheckoutClient.init$();
+          return this.visaCheckoutClient.init$();
         })
       )
       .subscribe();
   }
 
-  private _initApplePay(): void {
-    this._messageBus
+  private initApplePay(): void {
+    this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_INIT))
       .pipe(
         first(),
         switchMap(() => {
-          return this._applePayClient.init$();
+          return this.applePayClient.init$();
         })
       )
       .subscribe();
   }
 
-  private _initJsInit(): void {
-    this._messageBus
+  private initJsInit(): void {
+    this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.JSINIT_RESPONSE),
         filter((event: IMessageBusEvent<IThreeDInitResponse>) => Boolean(event.data.maskedpan)),
         map((event: IMessageBusEvent<IThreeDInitResponse>) => event.data.maskedpan)
       )
       .subscribe((maskedpan: string) => {
-        this._slicedPan = maskedpan.slice(0, 6);
-        this._localStorage.setItem('app.maskedpan', this._slicedPan);
+        this.slicedPan = maskedpan.slice(0, 6);
+        this.localStorage.setItem('app.maskedpan', this.slicedPan);
 
-        this._messageBus.publish({
+        this.messageBus.publish({
           type: PUBLIC_EVENTS.BIN_PROCESS,
-          data: this._slicedPan,
+          data: this.slicedPan,
         });
       });
   }
 
-  private _initConfigChange(): void {
-    this._messageBus.pipe(ofType(PUBLIC_EVENTS.CONFIG_CHANGED)).subscribe((event: IMessageBusEvent<IConfig>) => {
+  private initConfigChange(): void {
+    this.messageBus.pipe(ofType(PUBLIC_EVENTS.CONFIG_CHANGED)).subscribe((event: IMessageBusEvent<IConfig>) => {
       if (event.data) {
         Container.set(CONFIG, event.data);
         return;
@@ -188,55 +187,55 @@ export class ControlFrame {
     });
   }
 
-  private _formFieldChangeEvent(event: string, field: IFormFieldState): void {
-    this._messageBus.subscribeType(event, (data: IFormFieldState) => {
-      this._formFieldChange(event, data.value);
-      ControlFrame._setFormFieldValidity(field, data);
-      ControlFrame._setFormFieldValue(field, data);
+  private formFieldChangeEvent(event: string, field: IFormFieldState): void {
+    this.messageBus.subscribeType(event, (data: IFormFieldState) => {
+      this.formFieldChange(event, data.value);
+      ControlFrame.setFormFieldValidity(field, data);
+      ControlFrame.setFormFieldValue(field, data);
     });
   }
 
-  private _setRequestTypes(jwt: string): void {
-    const { payload } = this._jwtDecoder.decode<IStJwtPayload>(jwt);
-    this._remainingRequestTypes = payload.requesttypedescriptions;
+  private setRequestTypes(jwt: string): void {
+    const { payload } = this.jwtDecoder.decode<IStJwtPayload>(jwt);
+    this.remainingRequestTypes = payload.requesttypedescriptions;
   }
 
-  private _updateJwtEvent(): void {
-    this._messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_JWT, (data: IUpdateJwt) => {
+  private updateJwtEvent(): void {
+    this.messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_JWT, (data: IUpdateJwt) => {
       StCodec.updateJwt(data.newJwt);
     });
   }
 
-  private _updateMerchantFieldsEvent(): void {
-    this._messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
-      this._updateMerchantFields(data);
+  private updateMerchantFieldsEvent(): void {
+    this.messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
+      this.updateMerchantFields(data);
     });
   }
 
-  private _submitFormEvent(): void {
-    this._messageBus
+  private submitFormEvent(): void {
+    this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.SUBMIT_FORM),
         map((event: IMessageBusEvent<ISubmitData>) => event.data || {}),
         switchMap((data: ISubmitData) => {
-          this._isPaymentReady = true;
-          if (!this._isDataValid(data)) {
-            this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
-            this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
-            this._validateFormFields();
+          this.isPaymentReady = true;
+          if (!this.isDataValid(data)) {
+            this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+            this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+            this.validateFormFields();
             return EMPTY;
           }
 
-          return this._configProvider.getConfig$().pipe(
-            tap(config => this._setRequestTypes(config.jwt)),
+          return this.configProvider.getConfig$().pipe(
+            tap(config => this.setRequestTypes(config.jwt)),
             switchMap(() =>
-              this._callThreeDQueryRequest().pipe(
+              this.callThreeDQueryRequest().pipe(
                 catchError(errorData => {
                   if (errorData.isCancelled) {
-                    return this._onPaymentCancel(errorData);
+                    return this.onPaymentCancel(errorData);
                   }
 
-                  return this._onPaymentFailure(errorData);
+                  return this.onPaymentFailure(errorData);
                 }),
                 catchError(() => EMPTY)
               )
@@ -244,94 +243,94 @@ export class ControlFrame {
           );
         })
       )
-      .subscribe(threeDQueryResponse => this._processPayment(threeDQueryResponse));
+      .subscribe(threeDQueryResponse => this.processPayment(threeDQueryResponse));
   }
 
-  private _isDataValid(data: ISubmitData): boolean {
-    const isPanPiba: boolean = this._isCardWithoutCVV();
+  private isDataValid(data: ISubmitData): boolean {
+    const isPanPiba: boolean = this.isCardWithoutCVV();
     const dataInJwt = data ? data.dataInJwt : false;
-    const { validity } = this._validation.formValidation(
+    const { validity } = this.validation.formValidation(
       dataInJwt,
       data.fieldsToSubmit,
-      this._formFields,
+      this.formFields,
       isPanPiba,
-      this._isPaymentReady
+      this.isPaymentReady
     );
 
     return validity;
   }
 
-  private _onPaymentFailure(errorData: IResponseData, errorMessage: string = PAYMENT_ERROR): Observable<never> {
+  private onPaymentFailure(errorData: IResponseData, errorMessage: string = PAYMENT_ERROR): Observable<never> {
     const translatedErrorMessage = this.translator.translate(errorMessage);
     errorData.errormessage = translatedErrorMessage;
 
     if (!(errorData instanceof Error)) {
-      this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
       StCodec.publishResponse(errorData, errorData.jwt);
     }
 
-    this._resetJwt();
-    this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
-    this._notification.error(translatedErrorMessage);
+    this.resetJwt();
+    this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+    this.notification.error(translatedErrorMessage);
 
     return throwError(errorData);
   }
 
-  private _onPaymentCancel(errorData: IResponseData, errorMessage: string = PAYMENT_CANCELLED): Observable<never> {
+  private onPaymentCancel(errorData: IResponseData, errorMessage: string = PAYMENT_CANCELLED): Observable<never> {
     const translatedErrorMessage = this.translator.translate(errorMessage);
     errorData.errormessage = translatedErrorMessage;
 
     if (!(errorData instanceof Error)) {
-      this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, true);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, true);
       StCodec.publishResponse(errorData, errorData.jwt);
     }
 
-    this._resetJwt();
-    this._messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
-    this._notification.cancel(translatedErrorMessage);
+    this.resetJwt();
+    this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+    this.notification.cancel(translatedErrorMessage);
 
     return throwError(errorData);
   }
 
-  private _processPayment(responseData: IResponseData): Promise<void> {
-    this._setRequestTypes(StCodec.jwt);
+  private processPayment(responseData: IResponseData): Promise<void> {
+    this.setRequestTypes(StCodec.jwt);
 
-    return this._payment
-      .processPayment(this._remainingRequestTypes, this._card, this._merchantFormData, responseData)
+    return this.payment
+      .processPayment(this.remainingRequestTypes, this.card, this.merchantFormData, responseData)
       .then(() => {
-        this._messageBus.publish(
+        this.messageBus.publish(
           {
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
           },
           true,
         );
-        this._notification.success(PAYMENT_SUCCESS);
-        this._validation.blockForm(FormState.COMPLETE);
+        this.notification.success(PAYMENT_SUCCESS);
+        this.validation.blockForm(FormState.COMPLETE);
       })
       .catch(() => {
-        this._messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
-        this._notification.error(PAYMENT_ERROR);
-        this._validation.blockForm(FormState.AVAILABLE);
+        this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+        this.notification.error(PAYMENT_ERROR);
+        this.validation.blockForm(FormState.AVAILABLE);
       })
       .finally(() => {
-        this._resetJwt();
+        this.resetJwt();
       });
   }
 
-  private _isCardWithoutCVV(): boolean {
-    const panFromJwt: string = this._getPanFromJwt();
+  private isCardWithoutCVV(): boolean {
+    const panFromJwt: string = this.getPanFromJwt();
     let pan = '';
-    if (panFromJwt || this._formFields.cardNumber.value) {
-      pan = panFromJwt ? panFromJwt : this._formFields.cardNumber.value;
+    if (panFromJwt || this.formFields.cardNumber.value) {
+      pan = panFromJwt ? panFromJwt : this.formFields.cardNumber.value;
     }
 
     const cardType: string = iinLookup.lookup(pan).type;
     return ControlFrame.NON_CVV_CARDS.includes(cardType);
   }
 
-  private _callThreeDQueryRequest(): Observable<IThreeDQueryResponse> {
+  private callThreeDQueryRequest(): Observable<IThreeDQueryResponse> {
     const applyCybertonicaTid = (merchantFormData: IMerchantData) =>
-      from(this._cybertonica.getTransactionId()).pipe(
+      from(this.cybertonica.getTransactionId()).pipe(
         map(cybertonicaTid => {
           if (!cybertonicaTid) {
             return merchantFormData;
@@ -344,115 +343,115 @@ export class ControlFrame {
         })
       );
 
-    return of({ ...this._merchantFormData }).pipe(
+    return of({ ...this.merchantFormData }).pipe(
       switchMap(applyCybertonicaTid),
       switchMap(merchantFormData =>
-        this._threeDProcess.performThreeDQuery$(this._remainingRequestTypes, this._card, merchantFormData)
+        this.threeDProcess.performThreeDQuery$(this.remainingRequestTypes, this.card, merchantFormData)
       )
     );
   }
 
-  private _validateFormFields() {
-    this._publishBlurEvent({
+  private validateFormFields() {
+    this.publishBlurEvent({
       type: MessageBus.EVENTS.BLUR_CARD_NUMBER,
     });
-    this._publishBlurEvent({
+    this.publishBlurEvent({
       type: MessageBus.EVENTS.BLUR_EXPIRATION_DATE,
     });
-    this._publishBlurEvent({
+    this.publishBlurEvent({
       type: MessageBus.EVENTS.BLUR_SECURITY_CODE,
     });
-    this._validation.setFormValidity(this._formFieldsValidity);
+    this.validation.setFormValidity(this.formFieldsValidity);
   }
 
-  private _publishBlurEvent(event: IMessageBusEvent): void {
-    this._messageBus.publish(event);
+  private publishBlurEvent(event: IMessageBusEvent): void {
+    this.messageBus.publish(event);
   }
 
-  private _formFieldChange(event: string, value: string) {
+  private formFieldChange(event: string, value: string) {
     switch (event) {
       case MessageBus.EVENTS.CHANGE_CARD_NUMBER:
-        this._setCardPan(value);
+        this.setCardPan(value);
         break;
       case MessageBus.EVENTS.CHANGE_EXPIRATION_DATE:
-        this._setCardExpiryDate(value);
+        this.setCardExpiryDate(value);
         break;
       case MessageBus.EVENTS.CHANGE_SECURITY_CODE:
-        this._setCardSecurityCode(value);
+        this.setCardSecurityCode(value);
         break;
     }
   }
 
-  private _getJwt(): string {
-    return this._frame.parseUrl(ControlFrame.ALLOWED_PARAMS).jwt;
+  private getJwt(): string {
+    return this.frame.parseUrl(ControlFrame.ALLOWED_PARAMS).jwt;
   }
 
-  private _getPanFromJwt(): string {
-    const jwt: string = this._getJwt();
-    const decoded = this._jwtDecoder.decode<IStJwtPayload>(jwt);
+  private getPanFromJwt(): string {
+    const jwt: string = this.getJwt();
+    const decoded = this.jwtDecoder.decode<IStJwtPayload>(jwt);
 
     return decoded.payload.pan || '';
   }
 
-  private _setCardExpiryDate(value: string): void {
-    this._card.expirydate = value;
+  private setCardExpiryDate(value: string): void {
+    this.card.expirydate = value;
   }
 
-  private _setCardPan(value: string): void {
-    this._card.pan = value;
+  private setCardPan(value: string): void {
+    this.card.pan = value;
   }
 
-  private _setCardSecurityCode(value: string): void {
-    this._card.securitycode = value;
+  private setCardSecurityCode(value: string): void {
+    this.card.securitycode = value;
   }
 
-  private _setFormFieldsValidities(): void {
-    this._formFieldsValidity.cardNumber.state = this._formFields.cardNumber.validity;
-    this._formFieldsValidity.expirationDate.state = this._formFields.expirationDate.validity;
-    this._formFieldsValidity.securityCode.state = this._formFields.securityCode.validity;
+  private setFormFieldsValidities(): void {
+    this.formFieldsValidity.cardNumber.state = this.formFields.cardNumber.validity;
+    this.formFieldsValidity.expirationDate.state = this.formFields.expirationDate.validity;
+    this.formFieldsValidity.securityCode.state = this.formFields.securityCode.validity;
   }
 
-  private _setInstances(): void {
-    this._payment = new Payment();
-    this._validation = new Validation();
+  private setInstances(): void {
+    this.payment = new Payment();
+    this.validation = new Validation();
   }
 
-  private _updateMerchantFields(data: IMerchantData): void {
-    this._merchantFormData = data;
+  private updateMerchantFields(data: IMerchantData): void {
+    this.merchantFormData = data;
   }
 
-  private _initCybertonica(config: IConfig): void {
+  private initCybertonica(config: IConfig): void {
     const { cybertonicaApiKey } = config;
 
     if (cybertonicaApiKey) {
-      this._cybertonica.init(cybertonicaApiKey);
+      this.cybertonica.init(cybertonicaApiKey);
     }
   }
 
-  private _initThreeDProcess(config: IConfig): void {
-    this._threeDProcess.init$().subscribe({
+  private initThreeDProcess(config: IConfig): void {
+    this.threeDProcess.init$().subscribe({
       next: () => {
-        this._isPaymentReady = true;
+        this.isPaymentReady = true;
 
         if (config.components.startOnLoad) {
-          this._messageBus.publish({
+          this.messageBus.publish({
             type: PUBLIC_EVENTS.BIN_PROCESS,
-            data: this._jwtDecoder.decode<IStJwtPayload>(config.jwt).payload.pan,
+            data: this.jwtDecoder.decode<IStJwtPayload>(config.jwt).payload.pan,
           });
 
-          this._messageBus.publish(
+          this.messageBus.publish(
             {
               type: PUBLIC_EVENTS.SUBMIT_FORM,
               data: {
                 dataInJwt: true,
-                requestTypes: this._remainingRequestTypes,
+                requestTypes: this.remainingRequestTypes,
               },
             },
             true
           );
         }
       },
-      error: (errorData: IResponseData) => this._onPaymentFailure(errorData, COMMUNICATION_ERROR_INVALID_RESPONSE),
+      error: (errorData: IResponseData) => this.onPaymentFailure(errorData, COMMUNICATION_ERROR_INVALID_RESPONSE),
     });
   }
 }
