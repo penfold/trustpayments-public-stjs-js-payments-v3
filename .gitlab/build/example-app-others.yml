@@ -1,0 +1,25 @@
+### Example App Angular
+
+build-app-angular:
+  extends:
+    - .build-with-npm
+  variables:
+    PACKAGE_DIR: 'example/angular'
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_angular"
+
+### Example App ReactJS
+
+build-app-reactjs:
+  extends:
+    - .build-with-npm
+  variables:
+    PACKAGE_DIR: 'example/reactjs'
+    RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_reactjs"
+
+### Example App ReactNative
+
+#build-app-reactnative:
+#  extends:
+#    - .build-with-npm
+#  variables:
+#    PACKAGE_DIR: 'example/reactnative'
