@@ -1,4 +1,3 @@
-import each from 'jest-each';
 import { ApplePayNetworksService } from './ApplePayNetworksService';
 
 describe('ApplePayNetworksService', () => {
