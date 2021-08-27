@@ -13,7 +13,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -44,7 +44,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -76,7 +76,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -107,7 +107,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -139,7 +139,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -169,7 +169,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -201,7 +201,7 @@ Scenario Outline: Sending threedresponse JWT to merchants with Request types: <r
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
@@ -232,7 +232,7 @@ Scenario Outline: Sending threedresponse JWT to merchants with Request types: <r
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value              |
       | requesttypedescriptions | <request_types>    |
-      | sitereference           | jstrustthreed76424 |
+      | sitereference           | trustthreeds76424 |
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
