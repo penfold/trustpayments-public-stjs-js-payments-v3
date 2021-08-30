@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { GooglePaySdkProvider } from './google-pay-sdk-provider/GooglePaySdkProvider';
+import { IGooglePaySdkProvider } from './google-pay-sdk-provider/IGooglePaySdkProvider';
 import { GooglePayPaymentService } from './GooglePayPaymentService';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import {
@@ -32,7 +32,7 @@ export class GooglePay {
     private googlePayPaymentService: GooglePayPaymentService,
     private jwtDecoder: JwtDecoder,
     private messageBus: IMessageBus,
-    private googlePaySdkProvider: GooglePaySdkProvider
+    private googlePaySdkProvider: IGooglePaySdkProvider
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }

@@ -62,9 +62,10 @@ def step_impl(context, request_type):
     stub_payment_status(MockUrl.VISA_MOCK_URI.value, VisaResponse.SUCCESS.value)
     stub_st_request_type(request_type_visa[request_type], request_type)
 
+
 @step('(?P<request_type>.+) GooglePay mock response is set to SUCCESS')
 def step_impl(context, request_type):
-    stub_payment_status(MockUrl.GATEWAY_MOCK_URI.value, GooglePayResponse.SUCCESS.value)
+    stub_payment_status(MockUrl.GOOGLE_PAY_MOCK_URI.value, GooglePayResponse.SUCCESS.value)
     stub_st_request_type(request_type_google[request_type], request_type)
 
 
@@ -115,13 +116,13 @@ def step_impl(context, action_code):
     context.action_code = action_code
     page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if action_code == 'SUCCESS':
-        stub_payment_status(MockUrl.GATEWAY_MOCK_URI.value, GooglePayResponse[action_code].value)
+        stub_payment_status(MockUrl.GOOGLE_PAY_MOCK_URI.value, GooglePayResponse[action_code].value)
         stub_st_request_type(GooglePayResponse.GOOGLE_AUTH_SUCCESS.value, 'THREEDQUERY, AUTH')
     elif action_code == 'ERROR':
-        stub_payment_status(MockUrl.GATEWAY_MOCK_URI.value, GooglePayResponse.SUCCESS.value)
+        stub_payment_status(MockUrl.GOOGLE_PAY_MOCK_URI.value, GooglePayResponse.SUCCESS.value)
         stub_st_request_type(GooglePayResponse.ERROR.value, 'THREEDQUERY, AUTH')
     elif action_code == 'CANCEL':
-        stub_payment_status(MockUrl.GATEWAY_MOCK_URI.value, GooglePayResponse[action_code].value)
+        stub_payment_status(MockUrl.GOOGLE_PAY_MOCK_URI.value, GooglePayResponse[action_code].value)
     page.choose_payment_methods(PaymentType.GOOGLE_PAY.name)
 
 
@@ -269,7 +270,7 @@ def step_impl(context, thirdparty):
     elif 'APPLE_PAY' in thirdparty:
         page.validate_number_of_wallet_verify_requests(MockUrl.APPLEPAY_MOCK_URI.value, 1)
     elif 'GOOGLE_PAY' in thirdparty:
-        page.validate_number_of_wallet_verify_requests(MockUrl.GATEWAY_MOCK_URI.value, 1)
+        page.validate_number_of_wallet_verify_requests(MockUrl.GOOGLE_PAY_MOCK_URI.value, 1)
 
     if 'SUCCESS' in context.action_code or 'DECLINE' in context.action_code or 'ERROR' in context.action_code:
         page.validate_number_of_thirdparty_requests('THREEDQUERY, AUTH', PaymentType[thirdparty].value, 1)
@@ -283,14 +284,17 @@ def step_impl(context, request_type, scenario):
     if scenario == 'with':
         if 'config_cybertonica_immediate_payment' in context.scenario.tags \
             or 'Visa Checkout - Cybertonica' in context.scenario.name \
-            or 'ApplePay - Cybertonica' in context.scenario.name:
+            or 'ApplePay - Cybertonica' in context.scenario.name \
+            or 'GooglePay - Cybertonica' in context.scenario.name:
             page.validate_number_of_requests_with_fraudcontroltransactionid_flag(request_type, 1)
         else:
             page.validate_number_of_requests_with_data_and_fraudcontroltransactionid_flag(request_type,
                                                                                           context.pan,
                                                                                           context.exp_date,
                                                                                           context.cvv, 1)
-    elif 'Visa Checkout - Cybertonica' in context.scenario.name or 'ApplePay - Cybertonica' in context.scenario.name:
+    elif 'Visa Checkout - Cybertonica' in context.scenario.name \
+        or 'ApplePay - Cybertonica' in context.scenario.name \
+        or 'GooglePay - Cybertonica' in context.scenario.name:
         page.validate_number_of_requests_with_fraudcontroltransactionid_flag(request_type, 0)
     else:
         page.validate_number_of_requests_with_data_and_fraudcontroltransactionid_flag(request_type,
@@ -314,6 +318,7 @@ def step_impl(context, request_type):
     elif 'VISA_CHECKOUT' in request_type:
         page.validate_updated_jwt_in_request_for_visa(PaymentType.VISA_CHECKOUT.value,
                                                       context.update_jwt_from_jsinit, 1)
+
     else:
         page.validate_updated_jwt_in_request(request_type, MockUrl.GATEWAY_MOCK_URI.value,
                                              context.update_jwt, 1)

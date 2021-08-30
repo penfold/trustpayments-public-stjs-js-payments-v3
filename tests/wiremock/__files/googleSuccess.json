@@ -1,40 +1,16 @@
 {
-  "iat": 1626168005,
-  "payload": {
-    "requestreference": "W60-bhc5e6ev",
-    "version": "1.00",
-    "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqc2xpYnJhcnlqd3QiLCJpYXQiOjE2MjYxNjgwMDUsInBheWxvYWQiOnsiY3VycmVuY3lpc28zYSI6IkdCUCIsImxvY2FsZSI6ImVuX0diIiwiYmFzZWFtb3VudCI6IjcwMDAwIiwic2l0ZXJlZmVyZW5jZSI6InRlc3RfamFtZXMzODY0MSIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwicGFyZW50dHJhbnNhY3Rpb25yZWZlcmVuY2UiOiI2MC05LTExMjA3MjAiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJBVVRIIl19fQ.ugra1sBNJXWc5hEgLGP2llZxgU8FdEetSez3HHVlcZo",
-    "response": [
-      {
-        "transactionstartedtimestamp": "2021-07-13 09:20:04",
-        "customeroutput": "THREEDREDIRECT",
-        "livestatus": "0",
-        "merchantname": "James Simpson (Test Account)",
-        "dccenabled": "0",
-        "settleduedate": "2021-07-13",
-        "errorcode": "0",
-        "acquirertransactionreference": "6QkFHjJu430tP0APRoX1",
-        "tid": "27882788",
-        "threedpayload": "P.49847fd7a39dcbcdfc8d5ded0f6ce4e3c9c50f04e8e4acbd02794a553437e9dd6d36b730e5a64985b849d7e8c0cd293c3204d408909e8589ec950ac36952cca9c8db7f71911a89c702dfc709f2b9c5d4",
-        "merchantnumber": "00000000",
-        "merchantcountryiso2a": "GB",
-        "transactionreference": "60-9-1120720",
-        "threedversion": "1.0.2",
-        "paymenttypedescription": "VISA",
-        "acsurl": "https://1eafstag.cardinalcommerce.com/EAFService/jsp/v1/redirect",
-        "accounttypedescription": "ECOM",
-        "acquirerresponsecode": "0",
-        "requesttypedescription": "THREEDQUERY",
-        "issuer": "SecureTrading Test Issuer1",
-        "maskedpan": "411111######1111",
-        "errormessage": "Ok",
-        "operatorname": "jslibraryjwt",
-        "enrolled": "Y",
-        "issuercountryiso2a": "US",
-        "settlestatus": "0"
-      }
-    ],
-    "secrand": "siUi6X"
-  },
-  "aud": "jslibraryjwt"
+  "apiVersionMinor": 0,
+  "apiVersion": 2,
+  "paymentMethodData": {
+    "description": "Visa •••• 1111",
+    "tokenizationData": {
+      "type": "PAYMENT_GATEWAY",
+      "token": "{\"signature\":\"MEYCIQDWFGsZWbBNvI7eE5E5Mb0QuYb6qDcz+OBaVMiH1cJh4gIhAJ9GJoVXoZs3Gt+LPg1wbu/GcQmkcoOwBGYP5ylKrqZh\",\"intermediateSigningKey\":{\"signedKey\":\"{\\\"keyValue\\\":\\\"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEt0TTD9v6NG1gif7G0cEE4Ys4UtaturN5khnyGKq02eAvINoxAbmyov8gSYgO48fMSMpWsQOdqC5tFVUNjFh4Ig\\\\u003d\\\\u003d\\\",\\\"keyExpiration\\\":\\\"1629460805859\\\"}\",\"signatures\":[\"MEQCIA2KQ9AitkN/w693XZWUnT7FMUtvSerJ1TPYd1DVBsWDAiAr/tjhu866D5/J/iZCDT/ahOlGsfoCWTJJsmpUf2yS1g\\u003d\\u003d\"]},\"protocolVersion\":\"ECv2\",\"signedMessage\":\"{\\\"encryptedMessage\\\":\\\"rZhzIa3kVIiHvaFSIERHZYKyglEu+JhnLogkbmeBWRMDG+AMeoUFBpS3oYcdvQYRO7ceMwZIC5z48zW68G2g6TZjNfbVSUJihdKMeYLIfa4QamVhzsRSOCNQ0uVob8+XJXRgnPIIiH8r1517+dIXywtKGslfiDRCs2asrBFAzekgWNHPMiupzt41D9wrivleog+irt5RP1EExmJA6NCKEKkcu+/WIIR7DGRC7hAR1gcbCfRXJpz7sqQ7FRgMDdJxj0T1PMWoX64wwLACM4ZFFAH66Iy5MDH23HYhJQdMHQRbNHmMd7oCRCWv4pr/5XKqaq5Fb52mTkIeRqW6SvR6Bm++e80iziESjHzG/7wJHnww8B712X0f/VUXig4eBPewqt2/A+1FrBqP0kx5mIQb2PzmyyKStGoZyJFh8g30q6nPkvZw0naZLmhOd+XNn5Q7b0dcXWwRaiNoGkLXsz3RmcD5AwaXpqQFeoynkdwNh7aZdg\\\\u003d\\\\u003d\\\",\\\"ephemeralPublicKey\\\":\\\"BGLn3B1ZsbCPqIOICds7txEGFjiKZ+fE+U3u89ljgjzmjHalsMYzh0TX3WcqPmGEu6y77uB6FhHPJxPDdub0Oco\\\\u003d\\\",\\\"tag\\\":\\\"pdeqaiQ5OmPOYzw74S0xTsbCR8rjgCdw+3eBTioOq7U\\\\u003d\\\"}\"}"
+    },
+    "type": "CARD",
+    "info": {
+      "cardNetwork": "VISA",
+      "cardDetails": "1111"
+    }
+  }
 }
