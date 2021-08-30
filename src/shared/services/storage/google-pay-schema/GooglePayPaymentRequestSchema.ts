@@ -4,9 +4,11 @@ const GooglePayCardSchema: Joi.ObjectSchema = Joi.object().keys({
   allowPrepaidCards: Joi.boolean(),
   allowCreditCards: Joi.boolean(),
   allowedAuthMethods: Joi.array()
-    .items(Joi.string().required(), Joi.string().required())
+    .items(Joi.string(), Joi.string())
     .has(Joi.string().valid('PAN_ONLY', 'CRYPTOGRAM_3DS'))
-    .min(2)
+    .min(1)
+    .max(2)
+    .unique()
     .required(),
   allowedCardNetworks: Joi.array()
     .items(Joi.string())
