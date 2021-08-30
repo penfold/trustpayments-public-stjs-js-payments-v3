@@ -1,4 +1,3 @@
-import each from 'jest-each';
 import { BrowsersList } from '../BrowsersList';
 import { BrowserSupport } from './BrowserSupport';
 import { anything, instance, mock, when } from 'ts-mockito';

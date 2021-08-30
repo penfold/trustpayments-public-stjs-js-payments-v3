@@ -1,4 +1,3 @@
-import each from 'jest-each';
 import { GlobalWithFetchMock } from 'jest-fetch-mock';
 import { StTransport } from './StTransport';
 import { Utils } from '../../shared/utils/Utils';
