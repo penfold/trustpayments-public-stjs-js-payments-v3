@@ -14,10 +14,12 @@ Feature: Visual regression - E2E Card Payments
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
     And User clicks Pay button - AUTH response is set to "OK"
     And Wait for notification frame
+    And User focuses on the page title
     Then Screenshot is taken after 0 seconds and checked
 
   @base_config_visual @visual_regression_safari @scrn_card_interface_before_payment
   Scenario: Card interface before payment
+    When User focuses on the page title
     Then Screenshot is taken after 1 seconds and checked
 
   @base_config_visual @visual_regression_safari @scrn_card_interface_error_expiry_date
@@ -26,10 +28,12 @@ Feature: Visual regression - E2E Card Payments
     And InvalidField response set for "EXPIRATION_DATE"
     And User clicks Pay button
     And Wait for notification frame
+    And User focuses on the page title
     Then Screenshot is taken after 0 seconds and checked
 
   @base_config_visual @visual_regression_safari @scrn_card_interface_error_invalid_patterns
   Scenario: Card interface before payment - invalid pattern data
     When User fills payment form with defined card MASTERCARD_INVALID_PATTERN_CARD
     And User clicks Pay button
+    And User focuses on the page title
     Then Screenshot is taken after 6 seconds and checked
