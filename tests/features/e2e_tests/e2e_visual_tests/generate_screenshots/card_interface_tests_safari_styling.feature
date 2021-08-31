@@ -14,6 +14,6 @@ Feature: Visual regression - E2E Card Payments
   @base_config_validation_styling @visual_regression_styling_generation_safari @scrn_card_interface_with_validation_styling
   Scenario: scanriusz testowy 2
     When User fills payment form with defined card MASTERCARD_INVALID_EXP_DATE_CARD
-    And User focuses on "ANIMATED_CARD" field
+    And User focuses on "EXPIRATION_DATE" field
     Then Make screenshot after 6 seconds
 
