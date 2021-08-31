@@ -126,6 +126,17 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
+name = "msedge-selenium-tools"
+version = "3.141.3"
+description = "An updated EdgeDriver implementation for Selenium 3 with newly-added support for Microsoft Edge (Chromium)."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+selenium = "3.141"
+
+[[package]]
 name = "parse"
 version = "1.19.0"
 description = "parse() is the opposite of format()"
@@ -333,7 +344,7 @@ docs = ["Sphinx (>=2.4.3)", "sphinx-rtd-theme (>=0.4.3)", "watchdog (>=0.10.2)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "f7aeb26f9808380126fcd2a7c7fe58adc126966ea46e21abb635d3da10c3780e"
+content-hash = "565a4c51b47f5f1ca2303608162242ad1c5c172c77c6edf508441d2d981e9898"
 
 [metadata.files]
 assertpy = [
@@ -386,6 +397,10 @@ future = [
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
     {file = "idna-2.10.tar.gz", hash = "sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6"},
+]
+msedge-selenium-tools = [
+    {file = "msedge-selenium-tools-3.141.3.tar.gz", hash = "sha256:b6d4adce03770211de9a927edce41672baa6b2f582a969d564e5176631cc8d2b"},
+    {file = "msedge_selenium_tools-3.141.3-py3-none-any.whl", hash = "sha256:63e2966d48094239e4d40bdaf9fd1c723698541c90362cf8d810d934cd7334f9"},
 ]
 parse = [
     {file = "parse-1.19.0.tar.gz", hash = "sha256:9ff82852bcb65d139813e2a5197627a94966245c897796760a3a2a8eb66f020b"},
