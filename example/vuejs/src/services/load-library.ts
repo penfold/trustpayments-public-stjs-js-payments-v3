@@ -18,7 +18,6 @@ export default function loadLibrary(): Promise<SecureTradingFactory> {
       secureTradingFactory = SecureTrading;
       resolve(secureTradingFactory);
       script.removeEventListener('load', onLoadHandler);
-      alert('zaladowanas');
     };
 
     script.type = 'text/javascript';
