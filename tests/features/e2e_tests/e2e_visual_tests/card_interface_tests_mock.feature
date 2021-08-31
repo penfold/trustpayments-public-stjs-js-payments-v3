@@ -11,8 +11,21 @@ Feature: Visual regression - E2E Card Payments
 
   @base_config_visual @visual_regression_safari @scrn_card_interface_after_successful_payment
   Scenario: scenariusz testowy
-    When User fills payment form with defined card MASTERCARD_FIXED_EXP_DATE_CARD
+    When User fills payment form with defined card MASTERCARD_INVALID_EXP_DATE_CARD
     And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
+    And User focuses on "EXPIRATION_DATE" field
+    And User focuses on "SECURITY_CODE" field
+    And User clicks Pay button - AUTH response is set to "OK"
+    And Wait for notification frame
+    And User focuses on the page title
+    Then Screenshot is taken after 0 seconds and checked
+
+    @base_config_visual @visual_regression_safari @scrn_card_interface_after_successful_payment
+  Scenario: scenariusz testowy 2
+    When User fills payment form with defined card MASTERCARD_INVALID_CVV_CARD
+    And THREEDQUERY mock response is set to "NOT_ENROLLED_N"
+    And User focuses on "EXPIRATION_DATE" field
+    And User focuses on "SECURITY_CODE" field
     And User clicks Pay button - AUTH response is set to "OK"
     And Wait for notification frame
     And User focuses on the page title
