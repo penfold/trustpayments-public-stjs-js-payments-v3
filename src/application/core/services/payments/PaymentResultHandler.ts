@@ -6,6 +6,7 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { EventScope } from '../../models/constants/EventScope';
 
 @Service()
 export class PaymentResultHandler {
@@ -29,26 +30,26 @@ export class PaymentResultHandler {
   private handleSuccess<T>(result: IPaymentResult<T>): void {
     this.configProvider.getConfig$().subscribe(config => {
       if (config.submitOnSuccess) {
-        this.messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT, data: result.data }, true);
+        this.messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT, data: result.data },  EventScope.ALL_FRAMES);
         return;
       }
 
       this.notificationService.success(PAYMENT_SUCCESS);
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data }, true);
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK, data: result.data }, true);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
     });
   }
 
   private handleCancel<T>(result: IPaymentResult<T>): void {
     this.configProvider.getConfig$().subscribe(config => {
       if (config.submitOnCancel) {
-        this.messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT, data: result.data }, true);
+        this.messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT, data: result.data },  EventScope.ALL_FRAMES);
         return;
       }
 
       this.notificationService.cancel(PAYMENT_CANCELLED);
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data }, true);
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK, data: result.data }, true);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
     });
   }
 
@@ -57,13 +58,13 @@ export class PaymentResultHandler {
 
     this.configProvider.getConfig$().subscribe(config => {
       if (config.submitOnError) {
-        this.messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT, data: result.data }, true);
+        this.messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT, data: result.data },  EventScope.ALL_FRAMES);
         return;
       }
 
       this.notificationService.error(errorMessage);
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data }, true);
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK, data: result.data }, true);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
     });
   }
 }

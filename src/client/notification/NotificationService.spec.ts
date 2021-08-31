@@ -5,6 +5,7 @@ import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { EventScope } from '../../application/core/models/constants/EventScope';
 
 describe('NotificationService', () => {
   let messageBus: IMessageBus;
@@ -35,7 +36,7 @@ describe('NotificationService', () => {
             data: { type: NotificationType.Error, content: 'Test value' },
             type: MessageBus.EVENTS_PUBLIC.NOTIFICATION,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
     });
@@ -59,7 +60,7 @@ describe('NotificationService', () => {
             data: { type: NotificationType.Success, content: 'Test value' },
             type: MessageBus.EVENTS_PUBLIC.NOTIFICATION,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
     });
@@ -83,7 +84,7 @@ describe('NotificationService', () => {
             data: { type: NotificationType.Cancel, content: 'Test value' },
             type: MessageBus.EVENTS_PUBLIC.NOTIFICATION,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
     });
@@ -107,7 +108,7 @@ describe('NotificationService', () => {
             data: { type: NotificationType.Info, content: 'Test value' },
             type: MessageBus.EVENTS_PUBLIC.NOTIFICATION,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
     });

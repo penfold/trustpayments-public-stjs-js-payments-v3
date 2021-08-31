@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { IMessageBus } from './IMessageBus';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { EventScope } from '../../models/constants/EventScope';
 
 @Service()
 export class SimpleMessageBus extends Subject<IMessageBusEvent> implements IMessageBus, Observable<IMessageBusEvent> {
@@ -16,7 +17,7 @@ export class SimpleMessageBus extends Subject<IMessageBusEvent> implements IMess
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  publish<T>(event: IMessageBusEvent<T>, publishToParent?: boolean): void {
+  publish<T>(event: IMessageBusEvent<T>, eventScope: EventScope = EventScope.THIS_FRAME): void {
     this.next(event);
   }
 

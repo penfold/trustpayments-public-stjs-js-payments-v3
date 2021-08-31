@@ -44,6 +44,7 @@ import { PaymentController } from '../../core/services/payments/PaymentControlle
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import { ITranslator } from '../../core/shared/translator/ITranslator';
 import { IStJwtPayload } from '../../core/models/IStJwtPayload';
+import { EventScope } from '../../core/models/constants/EventScope';
 
 @Service()
 export class ControlFrame {
@@ -220,8 +221,8 @@ export class ControlFrame {
         switchMap((data: ISubmitData) => {
           this.isPaymentReady = true;
           if (!this.isDataValid(data)) {
-            this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
-            this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+            this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
+            this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE },  EventScope.ALL_FRAMES);
             this.validateFormFields();
             return EMPTY;
           }
@@ -265,12 +266,12 @@ export class ControlFrame {
     errorData.errormessage = translatedErrorMessage;
 
     if (!(errorData instanceof Error)) {
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
       StCodec.publishResponse(errorData, errorData.jwt);
     }
 
     this.resetJwt();
-    this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+    this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE },  EventScope.ALL_FRAMES);
     this.notification.error(translatedErrorMessage);
 
     return throwError(errorData);
@@ -281,12 +282,12 @@ export class ControlFrame {
     errorData.errormessage = translatedErrorMessage;
 
     if (!(errorData instanceof Error)) {
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, true);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK },  EventScope.ALL_FRAMES);
       StCodec.publishResponse(errorData, errorData.jwt);
     }
 
     this.resetJwt();
-    this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, true);
+    this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE },  EventScope.ALL_FRAMES);
     this.notification.cancel(translatedErrorMessage);
 
     return throwError(errorData);
@@ -302,13 +303,13 @@ export class ControlFrame {
           {
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
           },
-          true,
+          EventScope.ALL_FRAMES,
         );
         this.notification.success(PAYMENT_SUCCESS);
         this.validation.blockForm(FormState.COMPLETE);
       })
       .catch(() => {
-        this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+        this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
         this.notification.error(PAYMENT_ERROR);
         this.validation.blockForm(FormState.AVAILABLE);
       })
@@ -447,7 +448,7 @@ export class ControlFrame {
                 requestTypes: this.remainingRequestTypes,
               },
             },
-            true
+            EventScope.ALL_FRAMES
           );
         }
       },

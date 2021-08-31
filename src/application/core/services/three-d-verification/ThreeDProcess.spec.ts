@@ -15,6 +15,7 @@ import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { Enrollment } from '../../models/constants/Enrollment';
 import { JsInitResponseService } from './JsInitResponseService';
 import { CardType } from '@trustpayments/3ds-sdk-js';
+import { EventScope } from '../../models/constants/EventScope';
 
 describe('ThreeDProcess', () => {
   let messageBusMock: IMessageBus;
@@ -67,7 +68,7 @@ describe('ThreeDProcess', () => {
       jest.spyOn(messageBusMock, 'publish');
 
       threeDProcess.init$().subscribe(() => {
-        expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.UNLOCK_BUTTON }, true);
+        expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.UNLOCK_BUTTON }, EventScope.ALL_FRAMES);
         done();
       });
     });

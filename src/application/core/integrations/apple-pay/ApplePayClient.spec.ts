@@ -13,6 +13,7 @@ import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { IApplePayClientStatus } from './IApplePayClientStatus';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { EventScope } from '../../models/constants/EventScope';
 
 describe('ApplePayClient', () => {
   let applePayClient: ApplePayClient;
@@ -146,7 +147,7 @@ describe('ApplePayClient', () => {
             deepEqual({
               type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
             }),
-            true
+            EventScope.ALL_FRAMES
           )
         ).once();
 
@@ -176,7 +177,7 @@ describe('ApplePayClient', () => {
             deepEqual({
               type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK,
             }),
-            true
+            EventScope.ALL_FRAMES
           )
         ).once();
         verify(
@@ -187,7 +188,7 @@ describe('ApplePayClient', () => {
                 errorcode: 'cancelled',
               },
             }),
-            true
+            EventScope.ALL_FRAMES
           )
         ).once();
 

@@ -16,6 +16,7 @@ import { TranslatorToken } from '../../../../shared/dependency-injection/Injecti
 import { Translator } from '../translator/Translator';
 import { ITranslationProvider } from '../translator/ITranslationProvider';
 import { TranslationProvider } from '../translator/TranslationProvider';
+import { EventScope } from '../../models/constants/EventScope';
 
 Container.set({ id: TranslatorToken, type: Translator });
 Container.set({ id: ITranslationProvider, type: TranslationProvider });
@@ -79,7 +80,7 @@ describe('Notification', () => {
         data: { content: 'Test', type: NotificationType.Error },
         type: MessageBus.EVENTS_PUBLIC.NOTIFICATION,
       },
-      true
+      EventScope.ALL_FRAMES
     );
 
     expect(document.getElementById('st-notification-frame').textContent).toEqual('Test');

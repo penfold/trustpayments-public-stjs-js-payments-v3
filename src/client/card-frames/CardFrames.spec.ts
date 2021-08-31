@@ -27,6 +27,7 @@ import { Translator } from '../../application/core/shared/translator/Translator'
 import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
+import { EventScope } from '../../application/core/models/constants/EventScope';
 
 jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/validation/Validation');
@@ -311,7 +312,7 @@ describe('CardFrames', () => {
 
     it('should call publish method', () => {
       // @ts-ignore
-      expect(instance.messageBus.publish).toHaveBeenCalledWith(submitFormEvent, true);
+      expect(instance.messageBus.publish).toHaveBeenCalledWith(submitFormEvent, EventScope.ALL_FRAMES);
     });
   });
 

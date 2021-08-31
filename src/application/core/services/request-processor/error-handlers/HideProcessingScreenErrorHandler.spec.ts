@@ -6,6 +6,7 @@ import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { ThreeDVerificationProviderName } from '../../three-d-verification/data/ThreeDVerificationProviderName';
 import { of } from 'rxjs';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
+import { EventScope } from '../../../models/constants/EventScope';
 
 describe('HideProcessingScreenErrorHandler', () => {
   const sampleError = new Error();
@@ -30,7 +31,7 @@ describe('HideProcessingScreenErrorHandler', () => {
 
     hideProcessingScreenErrorHandler.handle(sampleError, {}, options).subscribe({
       error: error => {
-        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE }), true)).once();
+        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE }),  EventScope.ALL_FRAMES)).once();
         expect(error).toBe(sampleError);
         done();
       },
@@ -44,7 +45,7 @@ describe('HideProcessingScreenErrorHandler', () => {
 
     hideProcessingScreenErrorHandler.handle(sampleError, {}, options).subscribe({
       error: error => {
-        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE }), true)).once();
+        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE }),  EventScope.ALL_FRAMES)).once();
         expect(error).toBe(sampleError);
         done();
       },

@@ -5,6 +5,7 @@ import { instance, mock, verify, when } from 'ts-mockito';
 import { Observable, Subject } from 'rxjs';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { EventScope } from '../../models/constants/EventScope';
 
 describe('ControlFrameMessageBus', () => {
   let windowMock: IControlFrameWindow;
@@ -49,12 +50,12 @@ describe('ControlFrameMessageBus', () => {
   });
 
   it('send published event to parent frame', () => {
-    messageBus.publish(publicSampleEvent, true);
+    messageBus.publish(publicSampleEvent,  EventScope.ALL_FRAMES);
 
     verify(interFrameCommunicatorMock.sendToParentFrame(publicSampleEvent)).once();
   });
 
   it('throws error when sending published private message to parent frame', () => {
-    expect(() => messageBus.publish(sampleEvent, true)).toThrow('Cannot publish private event "FOO" to parent frame.');
+    expect(() => messageBus.publish(sampleEvent,  EventScope.ALL_FRAMES)).toThrow('Cannot publish private event "FOO" to parent frame.');
   });
 });

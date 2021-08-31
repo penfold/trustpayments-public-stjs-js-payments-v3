@@ -6,6 +6,7 @@ import { switchMap, tap } from 'rxjs/operators';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { Observable, of, throwError } from 'rxjs';
 import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
+import { EventScope } from '../../../models/constants/EventScope';
 
 @Service()
 export class HideProcessingScreenErrorHandler implements IErrorHandler {
@@ -18,7 +19,7 @@ export class HideProcessingScreenErrorHandler implements IErrorHandler {
     return timer.pipe(
       tap(() => this.messageBus.publish({
         type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE,
-      }, true)),
+      },  EventScope.ALL_FRAMES)),
       switchMap(() => throwError(() => error)),
     );
   }
