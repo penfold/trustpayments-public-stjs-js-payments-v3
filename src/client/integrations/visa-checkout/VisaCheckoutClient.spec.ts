@@ -15,6 +15,7 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { NotificationService } from '../../notification/NotificationService';
 import { VisaCheckoutClient } from './VisaCheckoutClient';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
+import { EventScope } from '../../../application/core/models/constants/EventScope';
 
 describe('VisaCheckoutClient', () => {
   let visaCheckoutClient: VisaCheckoutClient;
@@ -89,7 +90,7 @@ describe('VisaCheckoutClient', () => {
       visaCheckoutClient.init$().subscribe(status => {
         expect(status).toBe(VisaCheckoutClientStatus.SUCCESS);
         verify(notificationServiceMock.success(PAYMENT_SUCCESS)).once();
-        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }), true)).once();
+        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }),  EventScope.ALL_FRAMES)).once();
 
         done();
       });
@@ -111,7 +112,7 @@ describe('VisaCheckoutClient', () => {
       visaCheckoutClient.init$().subscribe(status => {
         expect(status).toBe(VisaCheckoutClientStatus.SUCCESS_FAILED);
         verify(notificationServiceMock.error(PAYMENT_ERROR)).once();
-        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }), true)).once();
+        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }),  EventScope.ALL_FRAMES)).once();
 
         done();
       });
@@ -131,7 +132,7 @@ describe('VisaCheckoutClient', () => {
       visaCheckoutClient.init$().subscribe(status => {
         expect(status).toBe(VisaCheckoutClientStatus.ERROR);
         verify(notificationServiceMock.error(PAYMENT_ERROR)).once();
-        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }), true)).once();
+        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }),  EventScope.ALL_FRAMES)).once();
 
         done();
       });
@@ -151,7 +152,7 @@ describe('VisaCheckoutClient', () => {
       visaCheckoutClient.init$().subscribe(status => {
         expect(status).toBe(VisaCheckoutClientStatus.CANCEL);
         verify(notificationServiceMock.cancel(PAYMENT_CANCELLED)).once();
-        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }), true)).once();
+        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }),  EventScope.ALL_FRAMES)).once();
         verify(
           messageBusMock.publish(
             deepEqual({
@@ -161,7 +162,7 @@ describe('VisaCheckoutClient', () => {
                 errormessage: PAYMENT_CANCELLED,
               },
             }),
-            true
+            EventScope.ALL_FRAMES
           )
         ).once();
 

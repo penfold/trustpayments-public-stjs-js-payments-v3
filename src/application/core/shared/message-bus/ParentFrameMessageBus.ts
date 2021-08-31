@@ -4,6 +4,7 @@ import { InterFrameCommunicator } from '../../../../shared/services/message-bus/
 import { CONTROL_FRAME_IFRAME } from '../../models/constants/Selectors';
 import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
 import { SimpleMessageBus } from './SimpleMessageBus';
+import { EventScope } from '../../models/constants/EventScope';
 
 @Service()
 export class ParentFrameMessageBus extends SimpleMessageBus {
@@ -11,8 +12,8 @@ export class ParentFrameMessageBus extends SimpleMessageBus {
     super(interFrameCommunicator.incomingEvent$);
   }
 
-  publish<T>(event: IMessageBusEvent<T>, publishToParent?: boolean): void {
-    super.publish(event, publishToParent);
+  publish<T>(event: IMessageBusEvent<T>, eventScope: EventScope = EventScope.THIS_FRAME): void {
+    super.publish(event, eventScope);
 
     this.framesHub.waitForFrame(CONTROL_FRAME_IFRAME).subscribe(controlFrame => {
       try {

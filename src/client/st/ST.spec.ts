@@ -18,6 +18,7 @@ import { VisaCheckout } from '../../application/core/integrations/visa-checkout/
 import { CardFrames } from '../card-frames/CardFrames';
 import { instance, mock } from 'ts-mockito';
 import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
+import { EventScope } from '../../application/core/models/constants/EventScope';
 
 window.alert = jest.fn();
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
@@ -84,7 +85,7 @@ describe('ST', () => {
       jest.spyOn(messageBusMock, 'publish');
       instance.cancelThreeDProcess();
 
-      expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.THREED_CANCEL }, true);
+      expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.THREED_CANCEL }, EventScope.ALL_FRAMES);
     });
   });
 });

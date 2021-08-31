@@ -13,6 +13,7 @@ import { RequestType } from '../../../../../shared/types/RequestType';
 import { SimpleMessageBus } from '../../../shared/message-bus/SimpleMessageBus';
 import { IApplePayProcessPaymentResponse } from './IApplePayProcessPaymentResponse';
 import { IApplePayWalletVerifyResponseBody } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
+import { EventScope } from '../../../models/constants/EventScope';
 
 const formData = {};
 const validateMerchantURL = 'some-url';
@@ -150,7 +151,7 @@ describe('ApplePayPaymentService', () => {
             errorcode: String(ApplePayClientErrorCode.ERROR),
           },
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
   });
@@ -186,7 +187,7 @@ describe('ApplePayPaymentService', () => {
             },
           },
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
 
@@ -222,7 +223,7 @@ describe('ApplePayPaymentService', () => {
             },
           },
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
 
@@ -243,7 +244,7 @@ describe('ApplePayPaymentService', () => {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data: bypassResponseErrorData,
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
 
@@ -264,7 +265,7 @@ describe('ApplePayPaymentService', () => {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data: invalidResponseErrorData,
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
   });

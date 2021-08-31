@@ -1,8 +1,9 @@
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { Observable, OperatorFunction, Subscribable, PartialObserver, Unsubscribable } from 'rxjs';
+import { EventScope } from '../../models/constants/EventScope';
 
 export abstract class IMessageBus implements Subscribable<IMessageBusEvent> {
-  abstract publish<T>(event: IMessageBusEvent<T>, publishToParent?: boolean): void;
+  abstract publish<T>(event: IMessageBusEvent<T>, eventScope?: EventScope): void;
   abstract subscribeType<T>(eventType: string, callback: (data: T) => void): Unsubscribable;
   abstract subscribe<T extends IMessageBusEvent>(observer?: PartialObserver<T>): Unsubscribable;
   abstract subscribe<T extends IMessageBusEvent>(

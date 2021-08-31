@@ -26,6 +26,7 @@ import { ITranslationProvider } from '../../application/core/shared/translator/I
 import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { Enrollment } from '../../application/core/models/constants/Enrollment';
+import { EventScope } from '../../application/core/models/constants/EventScope';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set({ id: TranslatorToken, type: Translator });
@@ -142,7 +143,7 @@ describe('CommonFrames', () => {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data,
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
 
@@ -177,7 +178,7 @@ describe('CommonFrames', () => {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data,
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
 
@@ -231,7 +232,7 @@ describe('CommonFrames', () => {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data,
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
 
@@ -263,7 +264,7 @@ describe('CommonFrames', () => {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data,
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
   });
@@ -297,7 +298,7 @@ describe('CommonFrames', () => {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data,
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
 
@@ -331,7 +332,7 @@ describe('CommonFrames', () => {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data,
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
   });
@@ -380,7 +381,7 @@ describe('CommonFrames', () => {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data,
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
 
@@ -407,7 +408,7 @@ describe('CommonFrames', () => {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data,
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
 
@@ -434,7 +435,7 @@ describe('CommonFrames', () => {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
           data,
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
   });
@@ -462,7 +463,7 @@ describe('CommonFrames', () => {
             baseamount: '10.00',
           },
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
   });
@@ -516,7 +517,7 @@ describe('CommonFrames', () => {
             walletsource: 'APPLEPAY',
           },
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
   });

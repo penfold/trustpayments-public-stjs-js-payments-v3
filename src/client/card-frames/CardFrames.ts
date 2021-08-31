@@ -33,6 +33,7 @@ import { TranslatorToken } from '../../shared/dependency-injection/InjectionToke
 import { Locale } from '../../application/core/shared/translator/Locale';
 import { IComponentsIds } from '../../shared/model/config/IComponentsIds';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
+import { EventScope } from '../../application/core/models/constants/EventScope';
 
 export class CardFrames {
   private static CARD_NUMBER_FIELD_NAME = 'pan';
@@ -332,7 +333,7 @@ export class CardFrames {
       },
       type: MessageBus.EVENTS_PUBLIC.SUBMIT_FORM,
     };
-    this.messageBus.publish(messageBusEvent, true);
+    this.messageBus.publish(messageBusEvent,  EventScope.ALL_FRAMES);
   }
 
   private publishValidatedFieldState(field: { message: string; state: boolean }, eventType: string): void {

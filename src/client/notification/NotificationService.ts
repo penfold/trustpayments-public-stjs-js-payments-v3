@@ -4,6 +4,7 @@ import { NotificationType } from '../../application/core/models/constants/Notifi
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { EventScope } from '../../application/core/models/constants/EventScope';
 
 @Service()
 export class NotificationService {
@@ -52,6 +53,6 @@ export class NotificationService {
       data: { content, type },
       type: PUBLIC_EVENTS.NOTIFICATION,
     };
-    this._messageBus.publish(messageBusEvent, true);
+    this._messageBus.publish(messageBusEvent,  EventScope.ALL_FRAMES);
   }
 }

@@ -11,7 +11,7 @@ import { VisaCheckout } from '../../application/core/integrations/visa-checkout/
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
-import { Service, Container } from 'typedi';
+import { Container, Service } from 'typedi';
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
 import { ISubmitEvent } from '../../application/core/models/ISubmitEvent';
 import { ISuccessEvent } from '../../application/core/models/ISuccessEvent';
@@ -20,10 +20,8 @@ import { InterFrameCommunicator } from '../../shared/services/message-bus/InterF
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { delay, map, shareReplay, takeUntil, tap } from 'rxjs/operators';
-import { switchMap } from 'rxjs/operators';
-import { from } from 'rxjs';
+import { from, Observable, Subject, Subscription } from 'rxjs';
+import { delay, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { IframeFactory } from '../iframe-factory/IframeFactory';
@@ -43,11 +41,13 @@ import { IStore } from '../../application/core/store/IStore';
 import { IParentFrameState } from '../../application/core/store/state/IParentFrameState';
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IUpdateJwt } from '../../application/core/models/IUpdateJwt';
-import { IGooglePayConfig, GooglePayConfigName } from '../../integrations/google-pay/models/IGooglePayConfig';
+import { GooglePayConfigName, IGooglePayConfig } from '../../integrations/google-pay/models/IGooglePayConfig';
 import { IInitPaymentMethod } from '../../application/core/services/payments/events/IInitPaymentMethod';
 import { GooglePaymentMethodName } from '../../integrations/google-pay/models/IGooglePaymentMethod';
 import { ITranslator } from '../../application/core/shared/translator/ITranslator';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
+import { ExposedEvents, ExposedEventsName } from '../../application/core/models/constants/ExposedEvents';
+import { EventScope } from '../../application/core/models/constants/EventScope';
 
 @Service()
 export class ST {
@@ -58,37 +58,37 @@ export class ST {
   private destroy$: Subject<void> = new Subject();
   private googleAnalytics: GoogleAnalytics;
   private merchantFields: MerchantFields;
-  private registeredCallbacks: { [eventName: string]: Subscription } = {};
+  private registeredCallbacks: Map<keyof typeof ExposedEvents, Subscription> = new Map();
 
   set submitCallback(callback: (event: ISubmitEvent) => void) {
     if (callback) {
-      this.on('submit', callback);
+      this.on(ExposedEventsName.SUBMIT, callback);
     } else {
-      this.off('submit');
+      this.off(ExposedEventsName.SUBMIT);
     }
   }
 
   set successCallback(callback: (event: ISuccessEvent) => void) {
     if (callback) {
-      this.on('success', callback);
+      this.on(ExposedEventsName.SUCCESS, callback);
     } else {
-      this.off('success');
+      this.off(ExposedEventsName.SUCCESS);
     }
   }
 
   set errorCallback(callback: (event: IErrorEvent) => void) {
     if (callback) {
-      this.on('error', callback);
+      this.on(ExposedEventsName.ERROR, callback);
     } else {
-      this.off('error');
+      this.off(ExposedEventsName.ERROR);
     }
   }
 
   set cancelCallback(callback: (event: IErrorEvent) => void) {
     if (callback) {
-      this.on('cancel', callback);
+      this.on(ExposedEventsName.CANCEL, callback);
     } else {
-      this.off('cancel');
+      this.off(ExposedEventsName.CANCEL);
     }
   }
 
@@ -118,19 +118,11 @@ export class ST {
     this.merchantFields = new MerchantFields();
   }
 
-  on(eventName: 'success' | 'error' | 'submit' | 'cancel', callback: (event: unknown) => void): void {
-    const events = {
-      cancel: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_CANCEL_CALLBACK,
-      success: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUCCESS_CALLBACK,
-      error: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK,
-      submit: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_SUBMIT_CALLBACK,
-    };
-
+  on(eventName: keyof typeof ExposedEvents, callback: (event: unknown) => void): void {
     this.off(eventName);
-
     this.registeredCallbacks[eventName] = this.messageBus
       .pipe(
-        ofType(events[eventName]),
+        ofType(ExposedEvents[eventName]),
         map(event => event.data),
         delay(0),
         takeUntil(this.destroy$),
@@ -138,7 +130,7 @@ export class ST {
       .subscribe(callback);
   }
 
-  off(eventName: string): void {
+  off(eventName: keyof typeof ExposedEvents): void {
     if (this.registeredCallbacks[eventName]) {
       this.registeredCallbacks[eventName].unsubscribe();
       this.registeredCallbacks[eventName] = undefined;
@@ -157,7 +149,7 @@ export class ST {
           type: PUBLIC_EVENTS.CARD_PAYMENTS_INIT,
           data: JSON.stringify(this.config),
         },
-        false,
+        EventScope.THIS_FRAME,
       );
       this.CardFrames();
       this.cardFrames.init();
@@ -176,7 +168,7 @@ export class ST {
           type: PUBLIC_EVENTS.APPLE_PAY_INIT,
           data: undefined,
         },
-        false,
+        EventScope.THIS_FRAME,
       );
     });
   }
@@ -195,7 +187,7 @@ export class ST {
             config: this.config,
           },
         },
-        false,
+        EventScope.THIS_FRAME,
       );
     });
   }
@@ -212,7 +204,7 @@ export class ST {
           type: PUBLIC_EVENTS.VISA_CHECKOUT_INIT,
           data: undefined,
         },
-        false,
+        EventScope.THIS_FRAME,
       );
     });
   }
@@ -243,7 +235,7 @@ export class ST {
       {
         type: MessageBus.EVENTS_PUBLIC.DESTROY,
       },
-      true,
+      EventScope.ALL_FRAMES,
     );
 
     this.destroy$.next();
@@ -281,7 +273,7 @@ export class ST {
     this.messageBus.publish(
       {
         type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL,
-      }, true,
+      },  EventScope.ALL_FRAMES,
     );
   }
 

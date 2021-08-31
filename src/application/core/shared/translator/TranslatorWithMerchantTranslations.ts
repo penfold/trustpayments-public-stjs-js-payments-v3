@@ -13,6 +13,7 @@ import { ConfigProvider } from '../../../../shared/services/config-provider/Conf
 import { merge, Observable } from 'rxjs';
 import { IUpdateJwt } from '../../models/IUpdateJwt';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
+import { EventScope } from '../../models/constants/EventScope';
 
 @Service()
 export class TranslatorWithMerchantTranslations implements ITranslator {
@@ -43,7 +44,7 @@ export class TranslatorWithMerchantTranslations implements ITranslator {
       )
       .subscribe((locale: Locale) => {
         this.translator.changeLanguage(locale);
-        this.messageBus.publish({ type: PUBLIC_EVENTS.LOCALE_CHANGED, data: locale }, true);
+        this.messageBus.publish({ type: PUBLIC_EVENTS.LOCALE_CHANGED, data: locale },  EventScope.ALL_FRAMES);
       });
   }
 

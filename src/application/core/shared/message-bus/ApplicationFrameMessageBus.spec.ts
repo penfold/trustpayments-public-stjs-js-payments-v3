@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { EventScope } from '../../models/constants/EventScope';
 
 describe('ApplicationFrameMessageBus', () => {
   let frameAccessorMock: FrameAccessor;
@@ -38,20 +39,20 @@ describe('ApplicationFrameMessageBus', () => {
   });
 
   it('sends published messages to control frame', () => {
-    messageBus.publish(sampleEvent, false);
+    messageBus.publish(sampleEvent,  EventScope.THIS_FRAME);
 
     verify(interFrameCommunicatorMock.sendToControlFrame(sampleEvent)).once();
     verify(interFrameCommunicatorMock.sendToParentFrame(anything())).never();
   });
 
   it('sends published messages to parent frame when specified', () => {
-    messageBus.publish(publicSampleEvent, true);
+    messageBus.publish(publicSampleEvent,  EventScope.ALL_FRAMES);
 
     verify(interFrameCommunicatorMock.sendToControlFrame(publicSampleEvent)).once();
     verify(interFrameCommunicatorMock.sendToParentFrame(publicSampleEvent)).once();
   });
 
   it('throws error when sending published private message to parent frame', () => {
-    expect(() => messageBus.publish(sampleEvent, true)).toThrow('Cannot publish private event "FOO" to parent frame.');
+    expect(() => messageBus.publish(sampleEvent,  EventScope.ALL_FRAMES)).toThrow('Cannot publish private event "FOO" to parent frame.');
   });
 });

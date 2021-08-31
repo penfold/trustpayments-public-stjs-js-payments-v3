@@ -21,6 +21,7 @@ import { ConfigProvider } from '../../../../shared/services/config-provider/Conf
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { StCodec } from '../../services/st-codec/StCodec';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
+import { EventScope } from '../../models/constants/EventScope';
 
 @Service()
 export class ApplePayClient implements IApplePayClient {
@@ -42,7 +43,7 @@ export class ApplePayClient implements IApplePayClient {
             type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
             data: config,
           },
-          true
+          EventScope.ALL_FRAMES
         );
       }),
       tap(() => this.localStorage.setItem('completePayment', 'false')),
@@ -97,7 +98,7 @@ export class ApplePayClient implements IApplePayClient {
           ...details,
         },
       },
-      true
+      EventScope.ALL_FRAMES
     );
 
     return of(ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET);
@@ -106,7 +107,7 @@ export class ApplePayClient implements IApplePayClient {
   private onCancel$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.CANCEL> {
     const { errorCode, errorMessage } = details;
     this.applePayNotificationService.notification(errorCode, errorMessage);
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, true);
+    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK },  EventScope.ALL_FRAMES);
     this.messageBus.publish(
       {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
@@ -114,7 +115,7 @@ export class ApplePayClient implements IApplePayClient {
           errorcode: 'cancelled',
         },
       },
-      true
+      EventScope.ALL_FRAMES
     );
 
     return of(ApplePayClientStatus.CANCEL);
@@ -142,7 +143,7 @@ export class ApplePayClient implements IApplePayClient {
                 details: response,
               },
             },
-            true
+            EventScope.ALL_FRAMES
           );
         }),
         mapTo(ApplePayClientStatus.SUCCESS)
@@ -151,7 +152,7 @@ export class ApplePayClient implements IApplePayClient {
 
   private onSuccess$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
+    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK },  EventScope.ALL_FRAMES);
     StCodec.resetJwt();
 
     return of(ApplePayClientStatus.SUCCESS);
@@ -174,7 +175,7 @@ export class ApplePayClient implements IApplePayClient {
                 details: response.data,
               },
             },
-            true
+            EventScope.ALL_FRAMES
           );
         }),
         mapTo(ApplePayClientStatus.ON_VALIDATE_MERCHANT)
@@ -193,7 +194,7 @@ export class ApplePayClient implements IApplePayClient {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
 
     if (callTransactionComplete) {
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
       this.messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
@@ -202,7 +203,7 @@ export class ApplePayClient implements IApplePayClient {
             errorcode: String(ApplePayClientErrorCode.ERROR),
           },
         },
-        true
+        EventScope.ALL_FRAMES
       );
     }
 

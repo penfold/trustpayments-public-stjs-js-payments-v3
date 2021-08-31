@@ -13,6 +13,7 @@ import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 import { combineLatest, Observable } from 'rxjs';
 import { first, mapTo, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { JsInitResponseService } from './JsInitResponseService';
+import { EventScope } from '../../models/constants/EventScope';
 
 @Service()
 export class ThreeDProcess {
@@ -57,7 +58,7 @@ export class ThreeDProcess {
     const verificationService = this.threeDVerificationServiceProvider.getProvider(jsInitResponse.threedsprovider);
 
     return verificationService.init$(jsInitResponse).pipe(
-      tap(() => this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.UNLOCK_BUTTON }, true)),
+      tap(() => this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.UNLOCK_BUTTON },  EventScope.ALL_FRAMES)),
       tap(() => {
         this.messageBus
           .pipe(ofType(MessageBus.EVENTS_PUBLIC.BIN_PROCESS))

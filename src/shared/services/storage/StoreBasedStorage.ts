@@ -11,6 +11,7 @@ import { IApplicationFrameState } from '../../../application/core/store/state/IA
 import { IParentFrameState } from '../../../application/core/store/state/IParentFrameState';
 import { IStore } from '../../../application/core/store/IStore';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { EventScope } from '../../../application/core/models/constants/EventScope';
 
 type CommonState = IApplicationFrameState | IParentFrameState;
 
@@ -19,8 +20,9 @@ export class StoreBasedStorage implements IStorage, ISynchronizedStorage {
   constructor(
     private store: IStore<CommonState>,
     private messageBus: IMessageBus,
-    private interFrameCommunicator: InterFrameCommunicator
-  ) {}
+    private interFrameCommunicator: InterFrameCommunicator,
+  ) {
+  }
 
   getItem(name: string): unknown {
     const { storage } = this.store.getState();
@@ -35,7 +37,7 @@ export class StoreBasedStorage implements IStorage, ISynchronizedStorage {
         type: PUBLIC_EVENTS.STORAGE_SYNC,
         data: { key: name, value: JSON.stringify(value) },
       },
-      MERCHANT_PARENT_FRAME
+      MERCHANT_PARENT_FRAME,
     );
   }
 
@@ -54,7 +56,7 @@ export class StoreBasedStorage implements IStorage, ISynchronizedStorage {
     this.messageBus.publish({
       type: PUBLIC_EVENTS.STORAGE_SET_ITEM,
       data: { key: name, value },
-    });
+    }, EventScope.THIS_FRAME);
   }
 
   private parseEventData(jsonData: string): unknown {

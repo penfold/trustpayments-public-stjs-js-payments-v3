@@ -20,6 +20,7 @@ import { MessageBus } from '../../application/core/shared/message-bus/MessageBus
 import { Validation } from '../../application/core/shared/validation/Validation';
 import { Enrollment } from '../../application/core/models/constants/Enrollment';
 import { RequestType } from '../../shared/types/RequestType';
+import { EventScope } from '../../application/core/models/constants/EventScope';
 
 @Service()
 export class CommonFrames {
@@ -107,7 +108,7 @@ export class CommonFrames {
       return;
     }
 
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data }, true);
+    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data },  EventScope.ALL_FRAMES);
 
     if (this.shouldSubmitForm(this.getTransactionStatus(data.errorcode)) && !this.isFormSubmitted) {
       this.isFormSubmitted = true;

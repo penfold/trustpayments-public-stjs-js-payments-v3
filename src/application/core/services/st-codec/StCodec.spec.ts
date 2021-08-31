@@ -17,6 +17,7 @@ import { IResponseData } from '../../models/IResponseData';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import Spy = jasmine.Spy;
 import { IResponsePayload } from './interfaces/IResponsePayload';
+import { EventScope } from '../../models/constants/EventScope';
 
 jest.mock('./../../shared/message-bus/MessageBus');
 jest.mock('./../../shared/notification/Notification');
@@ -120,7 +121,7 @@ describe('StCodec class', () => {
           },
           type: 'TRANSACTION_COMPLETE',
         },
-        true
+        EventScope.ALL_FRAMES
       );
     });
 

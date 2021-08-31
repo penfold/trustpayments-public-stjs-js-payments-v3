@@ -25,6 +25,7 @@ import { ITranslator } from '../../core/shared/translator/ITranslator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { takeUntil } from 'rxjs/operators';
+import { EventScope } from '../../core/models/constants/EventScope';
 
 @Service()
 export class CardNumber extends Input {
@@ -301,7 +302,7 @@ export class CardNumber extends Input {
         data: CardNumber._getCardNumberForBinProcess(value),
         type: MessageBus.EVENTS_PUBLIC.BIN_PROCESS,
       };
-      this.messageBus.publish(binProcessEvent, true);
+      this.messageBus.publish(binProcessEvent,  EventScope.ALL_FRAMES);
     }
     this.messageBus.publish(messageBusEvent);
   }

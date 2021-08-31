@@ -25,6 +25,7 @@ import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IResponsePayload } from './interfaces/IResponsePayload';
 import { IRequestTypeResponse } from './interfaces/IRequestTypeResponse';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
+import { EventScope } from '../../models/constants/EventScope';
 
 export class StCodec {
   static CONTENT_TYPE = 'application/json';
@@ -86,7 +87,7 @@ export class StCodec {
       data: eventData,
       type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE,
     };
-    StCodec.getMessageBus().publish(notificationEvent, true);
+    StCodec.getMessageBus().publish(notificationEvent,  EventScope.ALL_FRAMES);
   }
 
   static updateJwt(newJWT: string): void {
@@ -140,7 +141,7 @@ export class StCodec {
     StCodec.publishResponse(StCodec.createCommunicationError());
     StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_RESPONSE);
     validation.blockForm(FormState.AVAILABLE);
-    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
 
     return new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
   }
@@ -176,7 +177,7 @@ export class StCodec {
     jwtResponse: string
   ): void {
     StCodec.getNotification().error(errormessageTranslated);
-    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
     StCodec.publishResponse(responseContent, jwtResponse);
   }
 
@@ -251,7 +252,7 @@ export class StCodec {
 
   encode(requestObject: IStRequest): string {
     if (!Object.keys(requestObject).length) {
-      StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, true);
+      StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
       StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_REQUEST);
       throw new Error(COMMUNICATION_ERROR_INVALID_REQUEST);
     }

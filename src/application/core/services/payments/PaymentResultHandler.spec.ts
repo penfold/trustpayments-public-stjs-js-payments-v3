@@ -9,6 +9,7 @@ import { PaymentStatus } from './PaymentStatus';
 import { of } from 'rxjs';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
+import { EventScope } from '../../models/constants/EventScope';
 
 describe('PaymentResultHandler', () => {
   let messageBus: IMessageBus;
@@ -47,7 +48,7 @@ describe('PaymentResultHandler', () => {
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
             data: resultData,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
       verify(
@@ -56,7 +57,7 @@ describe('PaymentResultHandler', () => {
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
             data: resultData,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
       verify(notificationServiceMock.success(PAYMENT_SUCCESS)).once();
@@ -74,7 +75,7 @@ describe('PaymentResultHandler', () => {
             type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
             data: resultData,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
       verify(notificationServiceMock.success(anything())).never();
@@ -92,7 +93,7 @@ describe('PaymentResultHandler', () => {
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
             data: resultData,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
       verify(
@@ -101,7 +102,7 @@ describe('PaymentResultHandler', () => {
             type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK,
             data: resultData,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
       verify(notificationServiceMock.cancel(PAYMENT_CANCELLED)).once();
@@ -119,7 +120,7 @@ describe('PaymentResultHandler', () => {
             type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
             data: resultData,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
       verify(notificationServiceMock.cancel(anything())).never();
@@ -145,7 +146,7 @@ describe('PaymentResultHandler', () => {
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
             data: resultData,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
       verify(
@@ -154,7 +155,7 @@ describe('PaymentResultHandler', () => {
             type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
             data: resultData,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
       verify(notificationServiceMock.error(errorMessage)).once();
@@ -180,7 +181,7 @@ describe('PaymentResultHandler', () => {
             type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
             data: resultData,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
       verify(notificationServiceMock.error(anything())).never();
@@ -206,7 +207,7 @@ describe('PaymentResultHandler', () => {
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
             data: resultData,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
       verify(
@@ -215,7 +216,7 @@ describe('PaymentResultHandler', () => {
             type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
             data: resultData,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
       verify(notificationServiceMock.error(errorMessage)).once();
@@ -241,7 +242,7 @@ describe('PaymentResultHandler', () => {
             type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
             data: resultData,
           }),
-          true
+          EventScope.ALL_FRAMES
         )
       ).once();
       verify(notificationServiceMock.error(anything())).never();

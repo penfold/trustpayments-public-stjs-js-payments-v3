@@ -4,6 +4,7 @@ import { InterFrameCommunicator } from '../../../../shared/services/message-bus/
 import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
 import { Inject, Service } from 'typedi';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
+import { EventScope } from '../../models/constants/EventScope';
 
 @Service()
 export class ControlFrameMessageBus extends SimpleMessageBus {
@@ -16,10 +17,10 @@ export class ControlFrameMessageBus extends SimpleMessageBus {
     window.stMessages = this.asObservable();
   }
 
-  publish<T>(event: IMessageBusEvent<T>, publishToParent?: boolean): void {
+  publish<T>(event: IMessageBusEvent<T>, eventScope: EventScope = EventScope.THIS_FRAME): void {
     this.next(event);
 
-    if (publishToParent) {
+    if (eventScope === EventScope.EXPOSED || eventScope === EventScope.ALL_FRAMES) {
       if (!this.isPublic(event)) {
         throw new Error(`Cannot publish private event "${event.type}" to parent frame.`);
       }

@@ -23,6 +23,7 @@ import { IMessageBus } from '../message-bus/IMessageBus';
 import { MessageBusToken, TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { ITranslator } from '../translator/ITranslator';
 import { IFormFieldsValidity } from '../../models/IFormFieldsValidity';
+import { EventScope } from '../../models/constants/EventScope';
 
 @Service()
 export class Validation {
@@ -170,14 +171,14 @@ export class Validation {
       data: state,
       type: MessageBus.EVENTS_PUBLIC.BLOCK_FORM,
     };
-    this._messageBus.publish(messageBusEvent, true);
+    this._messageBus.publish(messageBusEvent,  EventScope.ALL_FRAMES);
   }
 
   callSubmitEvent(): void {
     const messageBusEvent: IMessageBusEvent = {
       type: MessageBus.EVENTS_PUBLIC.CALL_SUBMIT_EVENT,
     };
-    this._messageBus.publish(messageBusEvent, true);
+    this._messageBus.publish(messageBusEvent,  EventScope.ALL_FRAMES);
   }
 
   formValidation(

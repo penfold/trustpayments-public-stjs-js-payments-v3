@@ -25,6 +25,7 @@ import { IVisaCheckoutClientStatus } from './IVisaCheckoutClientStatus';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 import { InvalidResponseError } from '../../../application/core/services/st-codec/InvalidResponseError';
 import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
+import { EventScope } from '../../../application/core/models/constants/EventScope';
 
 @Service()
 export class VisaCheckoutClient implements IVisaCheckoutClient {
@@ -47,7 +48,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
             type: PUBLIC_EVENTS.VISA_CHECKOUT_CONFIG,
             data: config,
           },
-          true,
+          EventScope.ALL_FRAMES,
         );
       }),
       switchMap((config: IConfig) => {
@@ -93,7 +94,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
     return from(this.payment.processPayment(requestTypeDescriptions, walletData, merchantData, undefined, config.visaCheckout.merchantUrl)).pipe(
       switchMap(() => {
         this.notificationService.success(PAYMENT_SUCCESS);
-        this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }, true);
+        this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK },  EventScope.ALL_FRAMES);
         GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment success');
 
         return of(VisaCheckoutClientStatus.SUCCESS);
@@ -102,7 +103,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
         this.notificationService.error(PAYMENT_ERROR);
 
         if (!(error instanceof InvalidResponseError)) {
-          this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, true);
+          this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
         }
 
         return of(VisaCheckoutClientStatus.SUCCESS_FAILED);
@@ -116,7 +117,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
       {
         type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK,
       },
-      true,
+      EventScope.ALL_FRAMES,
     );
     this.messageBus.publish(
       {
@@ -126,7 +127,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
           errormessage: PAYMENT_CANCELLED,
         },
       },
-      true,
+      EventScope.ALL_FRAMES,
     );
     GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment canceled');
 
@@ -139,7 +140,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
       {
         type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
       },
-      true,
+      EventScope.ALL_FRAMES,
     );
     GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
 
