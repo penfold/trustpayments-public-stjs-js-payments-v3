@@ -48,7 +48,9 @@ def load_config():
         'ACCEPT_SSL_CERTS': get_from_env('ACCEPT_SSL_CERTS', True),
         'PROJECT_NAME': get_from_env('PROJECT_NAME', 'JS Payments Interface'),
         'BUILD_NAME': get_from_env('BUILD_NAME', 'Behavioral test: ' + str(date.today())),
-        'BROWSERSTACK_DEBUG': get_from_env('BROWSERSTACK_DEBUG', 'true')
+        'BROWSERSTACK_DEBUG': get_from_env('BROWSERSTACK_DEBUG', 'true'),
+        'EXECUTABLE_PATH_EDGE_DRIVER': get_from_env('EXECUTABLE_PATH_EDGE_DRIVER', ''),
+        'EXECUTABLE_PATH_IE_DRIVER': get_from_env('EXECUTABLE_PATH_IE_DRIVER', '')
     }
 
     return AttrDict(config)

@@ -7,16 +7,21 @@ It is based on singleton pattern to operate on a single instance of a driver.
 """
 from logging import INFO
 
+from configuration import CONFIGURATION
 from utils.logger import get_logger
 from retry import retry
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver import DesiredCapabilities
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.opera.options import Options as OperaOptions
+from selenium.webdriver.ie.options import Options as IEOptions
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from msedge.selenium_tools import Edge
+from msedge.selenium_tools import EdgeOptions
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
-from webdriver_manager.microsoft import EdgeChromiumDriverManager, IEDriverManager
 from webdriver_manager.opera import OperaDriverManager
 
 LOGGER = get_logger(INFO)
@@ -62,21 +67,22 @@ def _create_ie_web_driver(**args) -> RemoteWebDriver:
     options = args['options']
     desired_capabilities = args['capabilities']
     desired_capabilities.update(DesiredCapabilities.INTERNETEXPLORER)
-    executable_path = IEDriverManager().install()
+    executable_path = CONFIGURATION.EXECUTABLE_PATH_IE_DRIVER
     return webdriver.Ie(
         executable_path=executable_path,
-        ie_options=options,
-        desired_capabilities=desired_capabilities
+        ie_options=options
     )
 
 
 def _create_edge_web_driver(**args) -> RemoteWebDriver:
+    options = args['options']
+    options.use_chromium = True
     desired_capabilities = args['capabilities']
     desired_capabilities.update(DesiredCapabilities.EDGE)
-    executable_path = EdgeChromiumDriverManager().install()
-    return webdriver.Edge(
+    executable_path = CONFIGURATION.EXECUTABLE_PATH_EDGE_DRIVER
+    return Edge(
         executable_path=executable_path,
-        capabilities=desired_capabilities
+        options=options
     )
 
 
@@ -86,14 +92,8 @@ def _create_safari_web_driver(**args) -> RemoteWebDriver:
     return webdriver.Safari(desired_capabilities=desired_capabilities)
 
 
-def _create_phantom_web_driver(**args) -> RemoteWebDriver:
-    desired_capabilities = args['capabilities']
-    desired_capabilities.update(DesiredCapabilities.PHANTOMJS)
-    return webdriver.PhantomJS(desired_capabilities=desired_capabilities)
-
-
-def _get_local_options(headless):
-    options = Options()
+def _get_local_options(browser, headless):
+    options = _set_browser_options(browser)
     options.headless = headless
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
@@ -105,6 +105,19 @@ def _get_local_options(headless):
     options.add_argument('--disable-gpu')
 
     return options
+
+
+def _set_browser_options(browser):
+    browser_options = {
+        'chrome': ChromeOptions(),
+        'firefox': FirefoxOptions(),
+        'opera': OperaOptions(),
+        'ie': IEOptions(),
+        'edge': EdgeOptions(),
+        'safari': ChromeOptions()  # no Options for Safari driver
+    }
+
+    return browser_options[browser]
 
 
 def _get_remote_capabilities(configuration):
@@ -154,9 +167,8 @@ class WebDriverFactory:
         'firefox': _create_firefox_web_driver,
         'opera': _create_opera_web_driver,
         'ie': _create_ie_web_driver,
-        'edge': _create_chrome_web_driver,
-        'safari': _create_chrome_web_driver,
-        'phantom': _create_chrome_web_driver
+        'edge': _create_edge_web_driver,
+        'safari': _create_safari_web_driver
     }
 
     @classmethod
@@ -178,7 +190,7 @@ class WebDriverFactory:
             raise RuntimeError(f'Unknown browser name: {browser}')
 
         return cls.WEB_DRIVERS[browser](
-            options=_get_local_options(headless),
+            options=_get_local_options(browser, headless),
             capabilities={'goog:loggingPrefs': {'browser': 'SEVERE'}}
         )
 
