@@ -18,12 +18,13 @@ export default function loadLibrary(): Promise<SecureTradingFactory> {
       secureTradingFactory = SecureTrading;
       resolve(secureTradingFactory);
       script.removeEventListener('load', onLoadHandler);
+      alert('zaladowanas');
     };
 
     script.type = 'text/javascript';
     script.src = environment.libraryUrl;
     script.addEventListener('load', onLoadHandler);
 
-    document.getElementsByTagName('head')[0].appendChild(script);
+    document.body.appendChild(script);
   });
 }
