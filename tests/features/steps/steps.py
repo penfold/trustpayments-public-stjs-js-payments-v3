@@ -100,7 +100,8 @@ def step_impl(context, how_many_seconds):
 def step_impl(context, how_many_seconds):
     # pylint: disable=invalid-name)
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.change_focus_to_page_title()
+    if 'scrn_card_interface_acs_popup' not in context.scenario.tags:
+        payment_page.change_focus_to_page_title()
     time.sleep(float(how_many_seconds))
     sm = context.screenshot_manager
 

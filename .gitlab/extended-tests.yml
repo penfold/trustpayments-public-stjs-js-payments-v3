@@ -648,17 +648,17 @@ win10-IE-11.0-visual-tests-styling-nightly:
     OS_VERSION: Big Sur
     BROWSER: Safari
     BROWSER_VERSION: '14.0'
-    POETRY_TAGS: $VISUAL_TESTS_SAFARI_TAG
+    POETRY_TAGS: $VISUAL_TESTS_TAG
 
 .OSXBigSur-Safari-14.0-visual-tests-release:
   extends:
-    - .component-tests-browserstack
+    - .visual-regression-tests-release
     - .OSXBigSur-Safari-14.0-visual-tests
     - .rules-extended-tests-release
 
 OSXBigSur-Safari-14.0-visual-tests-nightly:
   extends:
-    - .component-tests-browserstack
+    - .visual-regression-tests-review
     - .OSXBigSur-Safari-14.0-visual-tests
     - .rules-extended-tests-review-manual-allow-failure
 

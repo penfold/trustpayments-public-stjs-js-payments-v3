@@ -94,6 +94,7 @@ config = {
 }
 
 screenshots = {
+    'scrn_card_interface_acs_popup': 'cardInterfaceAcsPopup.png',
     'scrn_card_interface_after_successful_payment': 'cardInterfaceAfterSuccessfulPayment.png',
     'scrn_card_interface_before_payment': 'cardInterfaceBeforePayment.png',
     'scrn_card_interface_error_expiry_date': 'cardInterfaceErrorExpiryDate.png',

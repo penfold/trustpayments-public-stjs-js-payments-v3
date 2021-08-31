@@ -48,6 +48,8 @@ class PaymentMethodsLocators:
     expiration_date_label: By = (By.XPATH, '//label[@for=\'st-expiration-date-input\']')
     security_code_label: By = (By.XPATH, '//label[@for=\'st-security-code-input\']')
     pay_button_label: By = (By.XPATH, '//button[@type=\'submit\']')
+    purchase_authentication_label: By = (By.XPATH, '//*[text()="Purchase Authentication"]')
+    please_submit_label: By = (By.XPATH, '//*[contains(text(),"Please submit")]')
 
     popups: By = (By.CSS_SELECTOR, '.st-popup div')
     callback_success_popup: By = (By.ID, 'success-popup')

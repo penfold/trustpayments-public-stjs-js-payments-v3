@@ -357,6 +357,12 @@ def step_impl(context, auth_type):
     payment_page.validate_cardinal_authentication_modal_appears(auth_type)
 
 
+@step('User focus on the acs popup element')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.focus_on_authentication_label()
+
+
 @step('User fills (?P<auth_type>.+) authentication modal')
 def step_impl(context, auth_type):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
