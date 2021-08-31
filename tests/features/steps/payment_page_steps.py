@@ -478,6 +478,12 @@ def step_impl(context, field_type):
     payment_page.change_field_focus(FieldType[field_type].name)
 
 
+@step('User focuses on the page title')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.change_focus_to_page_title()
+
+
 @step('User clicks Cancel button on authentication modal')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
