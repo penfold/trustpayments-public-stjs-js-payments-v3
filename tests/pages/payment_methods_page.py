@@ -150,6 +150,15 @@ class PaymentMethodsPage(BasePage):
         else:
             self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
 
+    def focus_on_authentication_label(self):
+        self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
+        try:
+            self._actions.click(PaymentMethodsLocators.purchase_authentication_label)
+        except Exception:
+            self._actions.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
+            self._actions.click(PaymentMethodsLocators.please_submit_label)
+        self._actions.switch_to_default_iframe()
+
     def validate_cardinal_authentication_modal_appears(self, auth):
         self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
         if auth == AuthType.V1.name:
