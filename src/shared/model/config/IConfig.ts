@@ -6,14 +6,12 @@ import { IPlaceholdersConfig } from '../../../application/core/models/IPlacehold
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 import { IGooglePayConfig, GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
-import { IApplePay2Config, ApplePayConfigName } from '../../../integrations/apple-pay/models/IApplePayConfig';
 import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 
 export interface IConfig {
   analytics?: boolean;
   animatedCard?: boolean;
   applePay?: IApplePayConfig;
-  [ApplePayConfigName]?: IApplePay2Config;
   buttonId?: string;
   cancelCallback?: (...args: unknown[]) => unknown | null;
   componentIds?: IComponentsIds;
