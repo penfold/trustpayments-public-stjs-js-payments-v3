@@ -28,7 +28,7 @@ export class ConfigService implements ConfigProvider {
     return this.broadcast(this.resolveAndValidate({ ...this.getConfig(), [key]: value }));
   }
 
-  updateFragment<K extends 'components' | 'visaCheckout' | 'applePay' | typeof GooglePayConfigName | typeof ApplePayConfigName,
+  updateFragment<K extends 'components' | 'visaCheckout' | 'applePay' | typeof GooglePayConfigName,
     C extends IConfig[K]>(key: K, config: C): IConfig {
 
     const currentConfig = this.getConfig();
