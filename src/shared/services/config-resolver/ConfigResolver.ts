@@ -15,6 +15,7 @@ import { IPlaceholdersConfig } from '../../../application/core/models/IPlacehold
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
 import { environment } from '../../../environments/environment';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
+import { IApplePay2Config } from '../../../integrations/apple-pay/models/IApplePayConfig';
 import { IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
@@ -30,6 +31,7 @@ export class ConfigResolver {
       analytics: this.getValueOrDefault(config.analytics, DefaultConfig.analytics),
       animatedCard: this.getValueOrDefault(config.animatedCard, DefaultConfig.animatedCard),
       applePay: this.setApplePayConfig(config.applePay),
+      applePay2: this.setApplePay2Config(config.applePay2),
       buttonId: this.getValueOrDefault(config.buttonId, DefaultConfig.buttonId),
       stopSubmitFormOnEnter: this.getValueOrDefault(config.stopSubmitFormOnEnter, DefaultConfig.stopSubmitFormOnEnter),
       cancelCallback: this.getValueOrDefault(config.cancelCallback, DefaultConfig.cancelCallback),
@@ -112,6 +114,13 @@ export class ConfigResolver {
   }
 
   private setApplePayConfig(config: IApplePayConfig): IApplePayConfig {
+    if (!config || !Object.keys(config).length) {
+      return;
+    }
+    return config;
+  }
+
+  private setApplePay2Config(config: IApplePay2Config): IApplePay2Config {
     if (!config || !Object.keys(config).length) {
       return;
     }

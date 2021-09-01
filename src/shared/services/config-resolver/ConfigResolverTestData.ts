@@ -2,6 +2,7 @@ import { IConfig } from '../../model/config/IConfig';
 import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
 import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { LoggingLevel, ChallengeDisplayMode, ProcessingScreenMode } from '@trustpayments/3ds-sdk-js';
+import { ApplePayConfigName } from '../../../integrations/apple-pay/models/IApplePayConfig';
 
 export const config: IConfig = {
   analytics: true,
@@ -129,6 +130,7 @@ export const configResolved: IConfig = {
     },
     placement: 'st-apple-pay',
   },
+  [ApplePayConfigName]: undefined,
   buttonId: 'merchant-submit-button',
   cancelCallback: null,
   componentIds: {
@@ -240,6 +242,7 @@ export const minimalDefaultConfigResolve: IConfig = {
   analytics: false,
   animatedCard: false,
   applePay: undefined,
+  [ApplePayConfigName]: undefined,
   buttonId: '',
   stopSubmitFormOnEnter: false,
   cancelCallback: null,

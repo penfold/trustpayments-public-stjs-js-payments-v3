@@ -42,8 +42,10 @@ import { IParentFrameState } from '../../application/core/store/state/IParentFra
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IUpdateJwt } from '../../application/core/models/IUpdateJwt';
 import { GooglePayConfigName, IGooglePayConfig } from '../../integrations/google-pay/models/IGooglePayConfig';
+import { ApplePayConfigName, IApplePay2Config } from '../../integrations/apple-pay/models/IApplePayConfig';
 import { IInitPaymentMethod } from '../../application/core/services/payments/events/IInitPaymentMethod';
 import { GooglePaymentMethodName } from '../../integrations/google-pay/models/IGooglePaymentMethod';
+import { ApplePayPaymentMethodName } from '../../integrations/apple-pay/models/IApplePayPaymentMethod';
 import { ITranslator } from '../../application/core/shared/translator/ITranslator';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { ExposedEvents, ExposedEventsName } from '../../application/core/models/constants/ExposedEvents';
@@ -167,6 +169,25 @@ export class ST {
         {
           type: PUBLIC_EVENTS.APPLE_PAY_INIT,
           data: undefined,
+        },
+        EventScope.THIS_FRAME,
+      );
+    });
+  }
+
+  ApplePay2(config: IApplePay2Config): void {
+    if (config) {
+      this.config = this.configService.updateFragment(ApplePayConfigName, config);
+    }
+
+    this.initControlFrame$().subscribe(() => {
+      this.messageBus.publish<IInitPaymentMethod<IConfig>>(
+        {
+          type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
+          data: {
+            name: ApplePayPaymentMethodName,
+            config: this.config,
+          },
         },
         EventScope.THIS_FRAME,
       );

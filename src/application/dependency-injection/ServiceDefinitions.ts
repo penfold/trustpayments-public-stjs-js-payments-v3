@@ -6,6 +6,7 @@ import { IHttpOptionsProvider } from '../core/services/st-transport/http-options
 import { DefaultHttpOptionsProvider } from '../core/services/st-transport/http-options-provider/DefaultHttpOptionsProvider';
 import { HttpClient } from '@trustpayments/http-client';
 import { GooglePaymentMethod } from '../../integrations/google-pay/application/GooglePaymentMethod';
+import { ApplePayPaymentMethod } from '../../integrations/apple-pay/application/ApplePayPaymentMethod';
 import { IGatewayClient } from '../core/services/gateway-client/IGatewayClient';
 import { StTransportGatewayClient } from '../core/services/gateway-client/StTransportGatewayClient';
 import '../../shared/dependency-injection/ServiceDefinitions';
@@ -14,4 +15,4 @@ Container.set({ id: ConfigProvider, type: StoreConfigProvider });
 Container.set({ id: IHttpOptionsProvider, type: DefaultHttpOptionsProvider });
 Container.set({ id: HttpClient, type: HttpClient });
 Container.set({ id: IGatewayClient, type: StTransportGatewayClient });
-Container.import([JwtReducer, GooglePaymentMethod]);
+Container.import([JwtReducer, GooglePaymentMethod, ApplePayPaymentMethod]);

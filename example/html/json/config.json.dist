@@ -25,6 +25,32 @@
     },
     "placement": "st-apple-pay"
   },
+  "applePay2": {
+    "buttonStyle": "white-outline",
+    "buttonText": "buy",
+    "buttonPlacement": "st-apple-pay",
+    "merchantId": "",
+    "paymentRequest": {
+      "countryCode": "US",
+      "currencyCode": "USD",
+      "merchantCapabilities": [
+        "supports3DS",
+        "supportsCredit",
+        "supportsDebit"
+      ],
+      "requestTypes": [
+        "RISKDEC",
+        "ACCOUNTCHECK",
+        "AUTH"
+      ],
+      "supportedNetworks": [],
+      "total": {
+        "label": "Trust Payments Merchant",
+        "amount": "10.00"
+      }
+    },
+    "placement": "st-apple-pay"
+  },
   "animatedCard": true,
   "buttonId": "merchant-submit-button",
   "bypassCards": [
