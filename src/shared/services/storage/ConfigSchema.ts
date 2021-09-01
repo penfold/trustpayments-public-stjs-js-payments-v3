@@ -4,13 +4,11 @@ import { threeDSecureConfigName } from '../../../application/core/services/three
 import { ApplePaySchema } from './apple-pay-schema/ApplePaySchema';
 import { GooglePaySchema } from './google-pay-schema/GooglePaySchema';
 import { VisaCheckoutSchema } from './VisaCheckoutSchema';
-import { ApplePayConfigName } from '../../../integrations/apple-pay/models/IApplePayConfig';
 
 export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   analytics: Joi.boolean(),
   animatedCard: Joi.boolean(),
   applePay: ApplePaySchema,
-  [ApplePayConfigName]: ApplePaySchema,
   buttonId: Joi.string().allow(''),
   stopSubmitFormOnEnter: Joi.boolean(),
   cancelCallback: Joi.any(),
