@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { forkJoin, from, Observable } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
@@ -11,13 +11,20 @@ import { PaymentStatus } from '../../../application/core/services/payments/Payme
 import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
+import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ApplePayPaymentMethod implements IPaymentMethod<IApplePayConfig, IApplePayGatewayRequest, IRequestTypeResponse> {
   private requestProcessingService: Observable<IRequestProcessingService>;
 
   constructor(
-    private requestProcessingInitializer: RequestProcessingInitializer
+    private requestProcessingInitializer: RequestProcessingInitializer,
+    private interFrameCommunicator: InterFrameCommunicator,
+    private configProvider: ConfigProvider,
   ) {}
 
   getName(): string {
@@ -27,7 +34,17 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IApplePayConfig, IA
   init(): Observable<void> {
     this.requestProcessingService = this.requestProcessingInitializer.initialize();
 
-    return this.requestProcessingService.pipe(mapTo(undefined));
+    const initClientQueryEvent: IMessageBusEvent = {
+      type: PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT,
+      data: this.configProvider.getConfig(),
+    };
+
+    return forkJoin([
+      this.requestProcessingService,
+      from(this.interFrameCommunicator.query(initClientQueryEvent, MERCHANT_PARENT_FRAME)),
+    ]).pipe(
+      mapTo(undefined),
+    );
   }
 
   start(): IPaymentResult<Error> {
