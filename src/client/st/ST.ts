@@ -42,7 +42,7 @@ import { IParentFrameState } from '../../application/core/store/state/IParentFra
 import { IVisaCheckoutConfig } from '../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { IUpdateJwt } from '../../application/core/models/IUpdateJwt';
 import { GooglePayConfigName, IGooglePayConfig } from '../../integrations/google-pay/models/IGooglePayConfig';
-import { ApplePayConfigName, IApplePay2Config } from '../../integrations/apple-pay/models/IApplePayConfig';
+import { ApplePayConfigName } from '../../integrations/apple-pay/models/IApplePayConfig';
 import { IInitPaymentMethod } from '../../application/core/services/payments/events/IInitPaymentMethod';
 import { GooglePaymentMethodName } from '../../integrations/google-pay/models/IGooglePaymentMethod';
 import { ApplePayPaymentMethodName } from '../../integrations/apple-pay/models/IApplePayPaymentMethod';
@@ -175,7 +175,7 @@ export class ST {
     });
   }
 
-  ApplePay2(config: IApplePay2Config): void {
+  ApplePay2(config: IApplePayConfig): void {
     if (config) {
       this.config = this.configService.updateFragment(ApplePayConfigName, config);
     }
