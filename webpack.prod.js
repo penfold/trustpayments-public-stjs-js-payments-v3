@@ -8,6 +8,7 @@ const releaseVersion = require('./package.json').version;
 const plugins = [
   new webpack.DefinePlugin({
     FRAME_URL: JSON.stringify(process.env.npm_config_frame_url),
+    SONGBIRD_URL: JSON.stringify(process.env.npm_config_songbird_url),
   }),
 ];
 
@@ -28,7 +29,7 @@ module.exports = merge(common, {
   resolve: {
     alias: {
       [path.resolve(__dirname, 'src/environments/environment')]:
-        path.resolve(__dirname, 'src/environments/environment.prod.ts')
-    }
-  }
+        path.resolve(__dirname, 'src/environments/environment.prod.ts'),
+    },
+  },
 });
