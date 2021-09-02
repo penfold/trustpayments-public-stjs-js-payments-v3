@@ -13,7 +13,6 @@ import { IMessageBus } from '../../../application/core/shared/message-bus/IMessa
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 import { ApplePayClientErrorCode } from '../../../application/core/integrations/apple-pay/ApplePayClientErrorCode';
-import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
@@ -29,6 +28,7 @@ import { IApplePayProcessPaymentResponse } from '../../../application/core/integ
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { ApplePayStatus } from './apple-pay-session-service/ApplePayStatus';
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
+import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 
 @Service()
 export class ApplePay {
@@ -73,12 +73,12 @@ export class ApplePay {
           this.messageBus.publish(applePayConfigAction);
           this.updateJwtListener();
           this.applePayButtonService.insertButton(
-            APPLE_PAY_BUTTON_ID,
+            config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID,
             config.applePayConfig.buttonText,
             config.applePayConfig.buttonStyle,
             config.applePayConfig.paymentRequest.countryCode,
           );
-          this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
+          this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this), config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
         }),
         tap(() => {
           GoogleAnalytics.sendGaData(
@@ -251,7 +251,7 @@ export class ApplePay {
         takeUntil(this.destroy$),
       )
       .subscribe(() => {
-        this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this));
+        this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this), this.config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
       });
   }
 

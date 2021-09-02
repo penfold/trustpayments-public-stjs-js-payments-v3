@@ -71,6 +71,7 @@ config = {
     'config_auth_subscription': 'configAppleAuthSubscription.json',
     'config_acheck_subscription': 'configAppleAcheckSubscription.json',
     'config_apple_network_amex': 'configAppleNetworkAmex.json',
+    'config_apple_buttonPlacement': 'configAppleButtonPlacement.json',
     'config_tokenisation_visa': 'configTokenisationVisa.json',
     'config_tokenisation_amex': 'configTokenisationAmex.json',
     'config_tokenisation_bypass_cards_visa': 'configTokenisationBypassCardVisa.json',

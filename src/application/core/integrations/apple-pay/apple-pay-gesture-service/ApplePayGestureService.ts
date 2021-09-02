@@ -1,5 +1,4 @@
 import { Service } from 'typedi';
-import { APPLE_PAY_BUTTON_ID } from '../apple-pay-button-service/ApplePayButtonProperties';
 import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { ofType } from '../../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
@@ -10,8 +9,8 @@ export class ApplePayGestureService {
   constructor(private messageBus: IMessageBus) {
   }
 
-  gestureHandle(callback: () => void): void {
-    const button = document.getElementById(APPLE_PAY_BUTTON_ID);
+  gestureHandle(callback: () => void, appleButtonPlacement: string): void {
+    const button = document.getElementById(appleButtonPlacement);
 
     if (!button) {
       throw new Error('There is no Apple Pay container in form');
