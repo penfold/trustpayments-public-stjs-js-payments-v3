@@ -5,8 +5,9 @@ import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/appl
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePaySessionService } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 import { Observable, of, throwError } from 'rxjs';
-import { map, mapTo, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
+import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 
 @Service()
 export class ApplePayClient {
@@ -17,18 +18,16 @@ export class ApplePayClient {
   ) {
   }
 
-  init(config: IConfig): Observable<boolean | never> {
+  init(config: IConfig): Observable<void> {
     return this.isApplePayAvailable(config).pipe(
       map(config => this.resolveApplePayConfig(config)),
       map(applePayConfig => this.insertApplePayButton(applePayConfig)),
-      mapTo(true),
     );
-    // todo: inform the application side about the status so it would emit payment init result
   }
 
-  private isApplePayAvailable(config: IConfig): Observable<IConfig | never> {
+  private isApplePayAvailable(config: IConfig): Observable<IConfig> {
     const notAvailable = (reason: string): Observable<never> => {
-      return throwError(() => `ApplePay not available: ${reason}`);
+      return throwError(() => new ApplePayInitError(`ApplePay not available: ${reason}`));
     }
 
     if (!this.applePaySessionService.hasApplePaySessionObject()) {
