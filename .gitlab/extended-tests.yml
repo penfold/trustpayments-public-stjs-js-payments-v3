@@ -598,7 +598,7 @@ win10-Chrome-latest-visual-tests-styling-nightly:
     OS_VERSION: 10
     BROWSER: IE
     BROWSER_VERSION: '11.0'
-    POETRY_TAGS: $VISUAL_TESTS_TAG_STJS_1709
+    POETRY_TAGS: $VISUAL_TESTS_TAG, $VISUAL_ACS_POPUP_TESTS_TAG
 
 .win10-IE-11.0-visual-tests-release:
   extends:
@@ -626,7 +626,7 @@ win10-IE-11.0-visual-tests-review:
     OS_VERSION: 10
     BROWSER: IE
     BROWSER_VERSION: '11.0'
-    POETRY_TAGS: $VISUAL_STYLING_TESTS_TAG_STJS_1709
+    POETRY_TAGS: VISUAL_STYLING_TESTS_TAG
 
 .win10-IE-11.0-visual-tests-styling-release:
   extends:
@@ -648,7 +648,7 @@ win10-IE-11.0-visual-tests-styling-nightly:
     OS_VERSION: Big Sur
     BROWSER: Safari
     BROWSER_VERSION: '14.0'
-    POETRY_TAGS: $VISUAL_TESTS_TAG
+    POETRY_TAGS: $VISUAL_TESTS_TAG, $VISUAL_ACS_POPUP_TESTS_TAG
 
 .OSXBigSur-Safari-14.0-visual-tests-release:
   extends:
@@ -694,7 +694,7 @@ OSXBigSur-Safari-14.0-visual-tests-styling-nightly:
     OS_VERSION: '10.0'
     REAL_MOBILE: 'true'
     BROWSER: Chrome
-    POETRY_TAGS: $VISUAL_TESTS_TAG
+    POETRY_TAGS: $VISUAL_TESTS_TAG, $VISUAL_ACS_POPUP_TESTS_TAG
 
 .SamsungGalaxyS20-10.0-visual-tests-release:
   extends:
