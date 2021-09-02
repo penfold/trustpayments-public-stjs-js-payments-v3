@@ -18,7 +18,6 @@
         "label": "Secure Trading Merchant",
         "amount": "10.00"
       }
-    },
-    "placement": "st-apple-pay"
+    }
   }
 }

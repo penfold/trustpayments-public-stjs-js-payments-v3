@@ -47,6 +47,17 @@ export class DomMethods {
     return element;
   }
 
+  static appendChildStrictIntoDOM(target: string, child: HTMLElement): Element {
+    const element: Element = document.getElementById(target);
+    try {
+      element.appendChild(child);
+      return element;
+    } catch (e) {
+      console.error(`Cannot find target element ${target}.`);
+      throw e;
+    }
+  }
+
   static createHtmlElement = (attributes: Record<string, string>, markup: string): HTMLElement => {
     const element: HTMLElement = document.createElement(markup);
     Object.keys(attributes).map(item => element.setAttribute(item, attributes[item]));

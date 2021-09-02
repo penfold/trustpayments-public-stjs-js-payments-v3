@@ -14,7 +14,7 @@ describe('ApplePayGestureService', () => {
     messageBus = new SimpleMessageBus();
     applePayGestureService = new ApplePayGestureService(messageBus);
     document.body.innerHTML = '<form><fieldset><div id="st-apple-pay" class="st-form__group"></div></fieldset></form>';
-    applePayGestureService.gestureHandle(someCallback);
+    applePayGestureService.gestureHandle(someCallback, APPLE_PAY_BUTTON_ID);
   });
 
   it('should call callback from parameter', () => {
@@ -25,7 +25,7 @@ describe('ApplePayGestureService', () => {
 
   it('should throw an error when there is no ApplePay button', () => {
     document.getElementById('st-apple-pay').id = 'st-apple-pay-2';
-    expect(() => applePayGestureService.gestureHandle(someCallback)).toThrowError(
+    expect(() => applePayGestureService.gestureHandle(someCallback, APPLE_PAY_BUTTON_ID)).toThrowError(
       'There is no Apple Pay container in form'
     );
   });

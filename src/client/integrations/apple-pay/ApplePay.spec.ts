@@ -1,6 +1,5 @@
 import { of, throwError } from 'rxjs';
 import { anything, deepEqual, instance as mockInstance, mock, spy, verify, when } from 'ts-mockito';
-import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
@@ -21,6 +20,7 @@ import { IApplePayClientStatus } from '../../../application/core/integrations/ap
 import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { RequestType } from '../../../shared/types/RequestType';
+import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 
 describe('ApplePay', () => {
   let applePay: ApplePay;
@@ -44,6 +44,7 @@ describe('ApplePay', () => {
     applePay: {
       buttonStyle: 'white-outline',
       buttonText: 'donate',
+      buttonPlacement: 'st-apple-pay',
       merchantId: 'merchant.net.securetrading.test',
       merchantUrl: 'https://example.com',
       paymentRequest: {
@@ -63,6 +64,7 @@ describe('ApplePay', () => {
     applePayConfig: {
       buttonStyle: 'white',
       buttonText: 'donate',
+      buttonPlacement: 'st-apple-pay',
       merchantId: '',
       merchantUrl: '',
       paymentRequest: {
@@ -75,7 +77,7 @@ describe('ApplePay', () => {
           label: '',
         },
       },
-      placement: '',
+      placement: 'st-apple-pay',
     },
     applePayVersion: 5,
     locale: 'en_GB',
@@ -154,7 +156,7 @@ describe('ApplePay', () => {
       ).once();
       verify(
         applePayButtonServiceMock.insertButton(
-          APPLE_PAY_BUTTON_ID,
+          applePayConfigMock.applePayConfig.buttonPlacement,
           applePayConfigMock.applePayConfig.buttonText,
           applePayConfigMock.applePayConfig.buttonStyle,
           applePayConfigMock.applePayConfig.paymentRequest.countryCode
@@ -226,6 +228,53 @@ describe('ApplePay', () => {
       applePay.init();
 
       expect(consoleErrSpy).not.toHaveBeenCalledWith('User has not an active card provisioned into Wallet');
+    });
+  });
+
+  describe('init() with empty buttonPlacement property', () => {
+    it('init() should get config and insert button in default place', () => {
+      configMock.applePay.buttonPlacement = '';
+      applePayConfigMock.applePayConfig.buttonPlacement = '';
+      when(messageBusSpy.pipe(anything())).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
+          data: configMock,
+        })
+      );
+      when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
+      when(applePaySessionServiceMock.canMakePayments()).thenReturn(true);
+      when(applePaySessionServiceMock.canMakePaymentsWithActiveCard(configMock.applePay.merchantId)).thenReturn(
+        of(true)
+      );
+      when(messageBusSpy.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT))).thenReturn(
+        of({
+          type: PUBLIC_EVENTS.UPDATE_JWT,
+          data: {
+            newJwt: '',
+          },
+        })
+      );
+      when(applePayConfigServiceMock.getConfig(anything(), anything())).thenReturn(applePayConfigMock);
+      // @ts-ignore
+      applePay.updateJwtListener = jest.fn().mockImplementationOnce(() => {});
+
+      applePay.init();
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.APPLE_PAY_CONFIG_MOCK,
+            data: applePayConfigMock,
+          })
+        )
+      ).atLeast(1);
+      verify(
+        applePayButtonServiceMock.insertButton(
+          APPLE_PAY_BUTTON_ID,
+          applePayConfigMock.applePayConfig.buttonText,
+          applePayConfigMock.applePayConfig.buttonStyle,
+          applePayConfigMock.applePayConfig.paymentRequest.countryCode
+        )
+      ).atLeast(1);
     });
   });
 
