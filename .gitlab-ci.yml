@@ -38,10 +38,9 @@ variables:
 
   SMOKE_MOCK_TESTS_TAG: '@smoke_mock_test'
   SMOKE_E2E_TESTS_TAG: '@smoke_e2e_test'
+  VISUAL_ACS_POPUP_TESTS_TAG: '@visual_acs_popup_regression'
   VISUAL_TESTS_TAG: '@visual_regression'
   VISUAL_STYLING_TESTS_TAG: '@visual_regression_styling'
-  VISUAL_TESTS_TAG_STJS_1709: '@STJS-1709_visual_regression_IE'
-  VISUAL_STYLING_TESTS_TAG_STJS_1709: '@STJS-1709_visual_regression_styling_IE'
   VISUAL_TESTS_SAFARI_TAG: '@visual_regression_safari'
   VISUAL_STYLING_TESTS_SAFARI_TAG: '@visual_regression_styling_safari'
   SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_component_test,@apple_pay_smoke_test'
