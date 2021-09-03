@@ -21,7 +21,7 @@ describe('ApplePayClientInitializer', () => {
   });
 
   describe('register()', () => {
-    it('checks if applePayClient service has been called', () => {
+    it(`checks if applePayClient service has been called when ${PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT} recevied`, () => {
       when(interFrameCommunicatorMock.whenReceive(PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT)).thenCall((eventType = { data: null }) => {
         return {
           thenRespond: (callback: (event) => void) => {
