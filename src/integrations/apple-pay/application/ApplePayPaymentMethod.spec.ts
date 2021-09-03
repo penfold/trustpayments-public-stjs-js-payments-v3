@@ -1,8 +1,6 @@
-import { EMPTY, from, of } from 'rxjs';
+import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
-import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
