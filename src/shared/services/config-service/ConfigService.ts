@@ -8,6 +8,7 @@ import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { CONFIG } from '../../dependency-injection/InjectionTokens';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
+import { ApplePayConfigName } from '../../../integrations/apple-pay/models/IApplePayConfig';
 
 @Service()
 export class ConfigService implements ConfigProvider {

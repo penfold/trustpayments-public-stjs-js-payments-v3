@@ -1,7 +1,7 @@
+import { LoggingLevel, ChallengeDisplayMode, ProcessingScreenMode } from '@trustpayments/3ds-sdk-js';
 import { IConfig } from '../../model/config/IConfig';
 import { threeDSecureConfigName } from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
 import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
-import { LoggingLevel, ChallengeDisplayMode, ProcessingScreenMode } from '@trustpayments/3ds-sdk-js';
 
 export const config: IConfig = {
   analytics: true,
