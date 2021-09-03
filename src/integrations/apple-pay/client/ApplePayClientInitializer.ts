@@ -16,7 +16,7 @@ export class ApplePayClientInitializer implements IMessageSubscriber {
   ) {
   }
 
-  register(messageBus: IMessageBus): void {
+  register(): void {
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT)
       .thenRespond((event: IMessageBusEvent<IConfig>) => this.applePayClient.init(event.data));
