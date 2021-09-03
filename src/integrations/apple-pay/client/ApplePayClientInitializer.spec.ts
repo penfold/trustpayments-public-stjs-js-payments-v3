@@ -6,9 +6,6 @@ import { ApplePayClient } from './ApplePayClient';
 import { ApplePayClientInitializer } from './ApplePayClientInitializer';
 
 describe('ApplePayClientInitializer', () => {
-  const respondMock = jest.fn().mockImplementation((f, obj, cb) => {
-    cb();
-  });
   let applePayClientInitializer: ApplePayClientInitializer;
   let applePayClientMock: ApplePayClient;
   let interFrameCommunicatorMock: InterFrameCommunicator;
