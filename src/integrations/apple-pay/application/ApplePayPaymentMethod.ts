@@ -15,6 +15,7 @@ import { IApplePayConfig } from '../../../application/core/integrations/apple-pa
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ApplePayPaymentMethod implements IPaymentMethod<IApplePayConfig, IApplePayGatewayRequest, IRequestTypeResponse> {
   private requestProcessingService: Observable<IRequestProcessingService>;
+  private applePayVerifyService: any;
 
   constructor(
     private requestProcessingInitializer: RequestProcessingInitializer
@@ -26,7 +27,7 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IApplePayConfig, IA
 
   init(): Observable<void> {
     this.requestProcessingService = this.requestProcessingInitializer.initialize();
-
+    this.onValidateMerchant();
     return this.requestProcessingService.pipe(mapTo(undefined));
   }
 
@@ -34,5 +35,9 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IApplePayConfig, IA
     return of({
       status: PaymentStatus.SUCCESS,
     });
+  }
+
+  onValidateMerchant(): any {
+    this.applePayVerifyService.validateMerchant();
   }
 }
