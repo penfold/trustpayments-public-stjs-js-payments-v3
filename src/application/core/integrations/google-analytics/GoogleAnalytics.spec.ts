@@ -8,16 +8,16 @@ describe('GoogleAnalytics', () => {
   describe('_onInit', () => {
     beforeEach(() => {
       // @ts-ignore
-      instance._insertGALibrary = jest.fn();
+      instance.insertGALibrary = jest.fn();
       // @ts-ignore
-      instance._createGAScript = jest.fn().mockResolvedValueOnce({});
+      instance.createGAScript = jest.fn().mockResolvedValueOnce({});
     });
 
-    it('should call _insertGALibrary and GoogleAnalytics._disableUserIDTracking', () => {
+    it('should call _insertGALibrary and GoogleAnalytics.disableUserIDTracking', () => {
       // @ts-ignore
       instance.init();
       // @ts-ignore
-      expect(instance._insertGALibrary).toHaveBeenCalled();
+      expect(instance.insertGALibrary).toHaveBeenCalled();
     });
   });
 
@@ -38,7 +38,7 @@ describe('GoogleAnalytics', () => {
   describe('_createGAScript', () => {
     beforeEach(() => {
       // @ts-ignore
-      instance._createGAScript = jest.fn().mockResolvedValueOnce(GoogleAnalytics.TRANSLATION_SCRIPT_SUCCEEDED);
+      instance.createGAScript = jest.fn().mockResolvedValueOnce(GoogleAnalytics.TRANSLATION_SCRIPT_SUCCEEDED);
       // @ts-ignore
       instance.init();
     });
@@ -46,7 +46,7 @@ describe('GoogleAnalytics', () => {
     it('should call _createGAScript function', () => {
       // dummy test
       // @ts-ignore
-      expect(instance._createGAScript).toHaveBeenCalledTimes(1);
+      expect(instance.createGAScript).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -59,7 +59,7 @@ describe('GoogleAnalytics', () => {
 
     it('should append script', async () => {
       // @ts-ignore
-      const data = await instance._insertGAScript();
+      const data = await instance.insertGAScript();
       // @ts-ignore
       expect(data).toEqual(GoogleAnalytics.TRANSLATION_SCRIPT_APPENDED);
     });
@@ -67,7 +67,7 @@ describe('GoogleAnalytics', () => {
     //
     it('should call document.head.appendChild', async () => {
       // @ts-ignore
-      await instance._insertGAScript();
+      await instance.insertGAScript();
       // @ts-ignore
       expect(document.head.appendChild).toHaveBeenCalled();
     });

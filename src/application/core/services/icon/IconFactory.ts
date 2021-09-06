@@ -4,7 +4,7 @@ import { IIconAttributes } from '../../models/IIconAttributes';
 
 @Service()
 export class IconFactory {
-  private _attributes: IIconAttributes = {
+  private attributes: IIconAttributes = {
     alt: '',
     ariaLabel: 'Credit card icon',
     class: 'st-card-icon',
@@ -12,17 +12,17 @@ export class IconFactory {
     src: '',
   };
 
-  constructor(private _url: IconMap) {}
+  constructor(private url: IconMap) {}
 
   getIcon(name: string): HTMLImageElement {
     const icon = document.createElement('img');
-    Object.keys(this._attributes).map((key: string) => {
-      if (this._attributes[key]) {
-        icon.setAttribute(key, this._attributes[key]);
+    Object.keys(this.attributes).map((key: string) => {
+      if (this.attributes[key]) {
+        icon.setAttribute(key, this.attributes[key]);
       }
     });
-    icon.setAttribute('src', this._url.getUrl(name));
-    icon.setAttribute('alt', this._url.getUrl(name));
+    icon.setAttribute('src', this.url.getUrl(name));
+    icon.setAttribute('alt', this.url.getUrl(name));
     return icon;
   }
 }

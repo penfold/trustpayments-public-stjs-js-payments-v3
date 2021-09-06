@@ -4,26 +4,25 @@ import { Validation } from '../validation/Validation';
 
 @Service()
 export class Formatter {
-  private _blocks: number[] = [2, 2];
-  private _cardNumberFormatted: string;
-  private _dateBlocks = {
+  private blocks: number[] = [2, 2];
+  private cardNumberFormatted: string;
+  private dateBlocks = {
     currentDateMonth: '',
     currentDateYear: '',
     previousDateYear: '',
   };
-  private _date: string[] = ['', ''];
-  private _validation: Validation;
+  private validation: Validation;
 
   constructor() {
-    this._validation = Container.get(Validation);
+    this.validation = Container.get(Validation);
   }
 
   number(cardNumber: string, id: string): { formatted: string, nonformatted: string } {
-    this._validation.cardNumber(cardNumber);
+    this.validation.cardNumber(cardNumber);
     const element: HTMLInputElement = document.getElementById(id) as HTMLInputElement;
-    const cardNumberCleaned: string = this._validation.removeNonDigits(this._validation.cardNumberValue);
+    const cardNumberCleaned: string = this.validation.removeNonDigits(this.validation.cardNumberValue);
     element.value = cardNumberCleaned;
-    const cardDetails = this._validation.getCardDetails(cardNumberCleaned);
+    const cardDetails = this.validation.getCardDetails(cardNumberCleaned);
     const format = cardDetails ? cardDetails.format : '(\\d{1,4})(\\d{1,4})?(\\d{1,4})?(\\d+)?';
     const previousValue = cardNumberCleaned;
     let value = previousValue;
@@ -48,68 +47,68 @@ export class Formatter {
       Utils.setElementAttributes({ value }, element);
       element.setSelectionRange(selectStart, selectEnd);
     }
-    this._cardNumberFormatted = value ? value : '';
+    this.cardNumberFormatted = value ? value : '';
     if (value) {
-      this._validation.cardNumberValue = value.replace(/\s/g, '');
+      this.validation.cardNumberValue = value.replace(/\s/g, '');
     }
-    return { formatted: this._cardNumberFormatted, nonformatted: this._validation.cardNumberValue };
+    return { formatted: this.cardNumberFormatted, nonformatted: this.validation.cardNumberValue };
   }
 
   date(value: string, id?: string): string {
-    this._validation.expirationDate(value);
+    this.validation.expirationDate(value);
     const element: HTMLInputElement = document.getElementById(id) as HTMLInputElement;
     let result = '';
 
-    this._blocks.forEach(length => {
-      if (this._validation.expirationDateValue && this._validation.expirationDateValue.length > 0) {
-        const sub = this._validation.expirationDateValue.slice(0, length);
-        const rest = this._validation.expirationDateValue.slice(length);
+    this.blocks.forEach(length => {
+      if (this.validation.expirationDateValue && this.validation.expirationDateValue.length > 0) {
+        const sub = this.validation.expirationDateValue.slice(0, length);
+        const rest = this.validation.expirationDateValue.slice(length);
         result += sub;
-        this._validation.expirationDateValue = rest;
+        this.validation.expirationDateValue = rest;
       }
     });
-    let fixedDate = this._dateFixed(result);
+    let fixedDate = this.dateFixed(result);
     element.value = fixedDate;
     fixedDate = fixedDate ? fixedDate : '';
     return fixedDate;
   }
 
   code(value: string, length: number, id?: string): string {
-    this._validation.securityCode(value, length);
+    this.validation.securityCode(value, length);
     const element: HTMLInputElement = document.getElementById(id) as HTMLInputElement;
-    element.value = this._validation.securityCodeValue ? this._validation.securityCodeValue : '';
-    return this._validation.securityCodeValue;
+    element.value = this.validation.securityCodeValue ? this.validation.securityCodeValue : '';
+    return this.validation.securityCodeValue;
   }
 
-  private _dateISO(previousDate: string[], currentDate: string[]) {
-    this._dateBlocks.currentDateMonth = currentDate[0];
-    this._dateBlocks.currentDateYear = currentDate[1];
-    this._dateBlocks.previousDateYear = previousDate[1];
+  private dateISO(previousDate: string[], currentDate: string[]) {
+    this.dateBlocks.currentDateMonth = currentDate[0];
+    this.dateBlocks.currentDateYear = currentDate[1];
+    this.dateBlocks.previousDateYear = previousDate[1];
 
-    if (!this._dateBlocks.currentDateMonth.length) {
+    if (!this.dateBlocks.currentDateMonth.length) {
       return '';
-    } else if (this._dateBlocks.currentDateMonth.length && this._dateBlocks.currentDateYear.length === 0) {
-      return this._dateBlocks.currentDateMonth;
+    } else if (this.dateBlocks.currentDateMonth.length && this.dateBlocks.currentDateYear.length === 0) {
+      return this.dateBlocks.currentDateMonth;
     } else if (
-      this._dateBlocks.currentDateMonth.length === 2 &&
-      this._dateBlocks.currentDateYear.length === 1 &&
-      this._dateBlocks.previousDateYear.length === 0
+      this.dateBlocks.currentDateMonth.length === 2 &&
+      this.dateBlocks.currentDateYear.length === 1 &&
+      this.dateBlocks.previousDateYear.length === 0
     ) {
-      return this._dateBlocks.currentDateMonth + '/' + this._dateBlocks.currentDateYear;
+      return this.dateBlocks.currentDateMonth + '/' + this.dateBlocks.currentDateYear;
     } else if (
-      (this._dateBlocks.currentDateMonth.length === 2 &&
-        this._dateBlocks.currentDateYear.length === 1 &&
-        (this._dateBlocks.previousDateYear.length === 1 || this._dateBlocks.previousDateYear.length === 2)) ||
-      (this._dateBlocks.currentDateMonth.length === 2 && this._dateBlocks.currentDateYear.length === 2)
+      (this.dateBlocks.currentDateMonth.length === 2 &&
+        this.dateBlocks.currentDateYear.length === 1 &&
+        (this.dateBlocks.previousDateYear.length === 1 || this.dateBlocks.previousDateYear.length === 2)) ||
+      (this.dateBlocks.currentDateMonth.length === 2 && this.dateBlocks.currentDateYear.length === 2)
     ) {
-      return this._dateBlocks.currentDateMonth + '/' + this._dateBlocks.currentDateYear;
+      return this.dateBlocks.currentDateMonth + '/' + this.dateBlocks.currentDateYear;
     }
   }
 
-  private _dateFixed(value: string) {
+  private dateFixed(value: string) {
     const month: string = value.slice(0, 2);
     const year: string = value.slice(2, 4);
     const date: string[] = [month, year];
-    return this._dateISO(this._date, date);
+    return this.dateISO(['', ''], date);
   }
 }

@@ -5,19 +5,19 @@ import { Cybertonica } from './Cybertonica';
 describe('Cybertonica', () => {
   const { instance } = cybertonicaFixture();
 
-  describe('_onInit', () => {
+  describe( 'onInit', () => {
     beforeEach(() => {
       // @ts-ignore
-      instance._insertCybertonicaLibrary = jest.fn();
+      instance.insertCybertonicaLibrary = jest.fn();
       // @ts-ignore
-      instance._insertCybertonicaLibrary = jest.fn().mockResolvedValueOnce('TID VALUE');
+      instance.insertCybertonicaLibrary = jest.fn().mockResolvedValueOnce('TID VALUE');
     });
 
     it('should call _insertCybertonicaLibrary', async () => {
       // @ts-ignore
       instance.init();
       // @ts-ignore
-      expect(instance._insertCybertonicaLibrary).toHaveBeenCalled();
+      expect(instance.insertCybertonicaLibrary).toHaveBeenCalled();
     });
   });
 

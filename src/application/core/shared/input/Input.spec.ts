@@ -54,7 +54,7 @@ describe('FormField', () => {
 
     it('should focus on input iframe-factory', () => {
       // @ts-ignore
-      const mockFocus = (instance._inputElement.focus = jest.fn());
+      const mockFocus = (instance.inputElement.focus = jest.fn());
       // @ts-ignore
       instance.onFocus();
       expect(mockFocus).toBeCalledTimes(1);
@@ -84,11 +84,11 @@ describe('FormField', () => {
     };
 
     // @ts-ignore
-    instance._inputElement = document.createElement('input');
+    instance.inputElement = document.createElement('input');
     // @ts-ignore
-    instance._inputElement.value = '44';
+    instance.inputElement.value = '44';
     // @ts-ignore
-    instance._messageElement = document.createElement('div');
+    instance.messageElement = document.createElement('div');
 
     beforeEach(() => {
       Validation.setCustomValidationError = jest.fn();
@@ -110,12 +110,12 @@ describe('FormField', () => {
 
     it('should format method has been called', () => {
       // @ts-ignore
-      expect(instance.format).toHaveBeenCalledWith(instance._inputElement.value);
+      expect(instance.format).toHaveBeenCalledWith(instance.inputElement.value);
     });
 
     it('should validate method has been called with inputElement and messageElement', () => {
       // @ts-ignore
-      expect(instance.validation.validate).toHaveBeenCalledWith(instance._inputElement, instance._messageElement);
+      expect(instance.validation.validate).toHaveBeenCalledWith(instance.inputElement, instance.messageElement);
     });
   });
 
@@ -143,7 +143,7 @@ describe('FormField', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      instance._inputElement.addEventListener = jest.fn().mockImplementation((event, callback) => {
+      instance.inputElement.addEventListener = jest.fn().mockImplementation((event, callback) => {
         callback();
       });
     });
@@ -227,6 +227,7 @@ function formFieldFixture() {
   const labelElement: HTMLLabelElement = document.createElement('label');
   const messageElement: HTMLParagraphElement = document.createElement('p');
   const configProviderMock: ConfigProvider = mock<ConfigProvider>();
+  const validation: Validation = mock(Validation);
   labelElement.id = 'st-form-field-label';
   inputElement.id = 'st-form-field-input';
   messageElement.id = 'st-form-field-message';
@@ -248,7 +249,8 @@ function formFieldFixture() {
     'st-form-field-message',
     'st-form-field-label',
     'st-form-field__wrapper',
-    mockInstance(configProviderMock)
+    mockInstance(configProviderMock),
+    mockInstance(validation)
   );
   return { instance, inputElement, messageElement, labelElement };
 }

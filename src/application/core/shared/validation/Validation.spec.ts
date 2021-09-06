@@ -136,14 +136,14 @@ describe('Validation', () => {
     it('should remove error class if field is valid', () => {
       inputElement.setCustomValidity('');
       // @ts-ignore
-      instance._toggleErrorClass(inputElement, messageElement, Validation.ERROR_FIELD_CLASS, 'hidden');
+      instance.toggleErrorClass(inputElement, messageElement, Validation.ERROR_FIELD_CLASS, 'hidden');
       expect(inputElement.classList.contains(Validation.ERROR_FIELD_CLASS)).toEqual(false);
     });
 
     it('should add error class if field is invalid', () => {
       inputElement.setCustomValidity('some error');
       // @ts-ignore
-      instance._toggleErrorClass(inputElement, messageElement, Validation.ERROR_FIELD_CLASS, 'visible');
+      instance.toggleErrorClass(inputElement, messageElement, Validation.ERROR_FIELD_CLASS, 'visible');
       expect(inputElement.classList.contains(Validation.ERROR_FIELD_CLASS)).toEqual(true);
     });
   });
@@ -157,7 +157,7 @@ describe('Validation', () => {
     it(`should return '${customErrorMessage}' when it's not card number input and has messageElement and customErrorMessage defined`, () => {
       expect(
         // @ts-ignore
-        instance._getTranslation(
+        instance.getTranslation(
           inputElement,
           isNotCardNumberInput,
           someRandomMessage,
@@ -171,14 +171,14 @@ describe('Validation', () => {
       inputElement.value = '123';
       expect(
         // @ts-ignore
-        instance._getTranslation(inputElement, isCardNumberInput, someRandomMessage, messageElement, customErrorMessage)
+        instance.getTranslation(inputElement, isCardNumberInput, someRandomMessage, messageElement, customErrorMessage)
       ).toEqual(someRandomMessage);
     });
 
     it(`should return '${someRandomMessage}' when it's card number input and has messageElement and customErrorMessage is not defined`, () => {
       expect(
         // @ts-ignore
-        instance._getTranslation(inputElement, isNotCardNumberInput, someRandomMessage, messageElement)
+        instance.getTranslation(inputElement, isNotCardNumberInput, someRandomMessage, messageElement)
       ).toEqual(someRandomMessage);
     });
 
@@ -186,7 +186,7 @@ describe('Validation', () => {
       inputElement.setCustomValidity('test');
       expect(
         // @ts-ignore
-        instance._getTranslation(inputElement, isCardNumberInput, someRandomMessage, messageElement)
+        instance.getTranslation(inputElement, isCardNumberInput, someRandomMessage, messageElement)
       ).toEqual(VALIDATION_ERROR_PATTERN_MISMATCH);
     });
   });
@@ -203,27 +203,27 @@ describe('Validation', () => {
       instance.blockForm = jest.fn();
     });
 
-    it('should set _isFormValid and _isPaymentReady to true', () => {
+    it('should set isFormValid and isPaymentReady to true', () => {
       // @ts-ignore
       instance.formValidation(true, ['pan', 'expirydate', 'securitycode'], formFields, false, false);
       // @ts-ignore
-      expect(instance._formValidity).toEqual(true);
+      expect(instance.formValidity).toEqual(true);
       // @ts-ignore
-      expect(instance._isPaymentReady).toEqual(true);
+      expect(instance.isPaymentReady).toEqual(true);
     });
 
-    it('should call blockForm method if _isFormValid and _isPaymentReady are true', () => {
+    it('should call blockForm method if isFormValid and isPaymentReady are true', () => {
       instance.formValidation(true, ['pan', 'expirydate', 'securitycode'], formFields, false, false);
       // @ts-ignore
       expect(instance.blockForm).toHaveBeenCalled();
     });
 
-    it('should set _isFormValid and _card variables if dataInJwt is false', () => {
+    it('should set isFormValid and card variables if dataInJwt is false', () => {
       instance.formValidation(false, ['pan', 'expirydate', 'securitycode'], formFields, false, false);
       // @ts-ignore
-      expect(instance._formValidity).toEqual(false);
+      expect(instance.formValidity).toEqual(false);
       // @ts-ignore
-      expect(instance._card).toEqual({
+      expect(instance.card).toEqual({
         expirydate: 'expirydate',
         pan: 'pan',
         securitycode: 'securitycode',
@@ -240,13 +240,13 @@ describe('Validation', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      instance._messageBus.publish = jest.fn();
+      instance.messageBus.publish = jest.fn();
       instance.setFormValidity({ testValue: 'test value' } as unknown as IFormFieldsValidity);
     });
 
     it('should call publish event', () => {
       // @ts-ignore
-      expect(instance._messageBus.publish).toHaveBeenCalledWith(validationEvent);
+      expect(instance.messageBus.publish).toHaveBeenCalledWith(validationEvent);
     });
   });
 });
