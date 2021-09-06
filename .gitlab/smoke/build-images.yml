@@ -2,7 +2,7 @@ validate-cdn-latest:
   extends:
     - .validate-file-in-cdn-with-target
     - .rules-when-release
-  stage: pre-smoke-tests
+  stage: smoke-build-images
   variables:
       SLEEP_BEFORE_VALIDATE: '0'
       REMOTE_FILE_URL: "https://cdn.eu.trustpayments.com/js-payments-v3/latest/st.js"
@@ -12,7 +12,7 @@ build-app-image-html-smoke:
   extends:
     - .build-app-image-html
     - .rules-when-release
-  stage: pre-smoke-tests
+  stage: smoke-build-images
   variables:
     ARTIFACTS_BUILD_PATH: "${CI_PROJECT_DIR}/.artifacts_app_html_smoke_image"
     BUILD_ARGS_EXTRA: "--build-arg SDK_DIST_PATH=.artifacts_sdk_release/dist --build-arg APP_DIST_PATH=.artifacts_app_html_smoke/dist"
