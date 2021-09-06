@@ -223,11 +223,11 @@ win10-IE-11.0-e2e-tests-smoke-release:
     - .win10-IE-11.0-e2e-tests-smoke
     - .rules-extended-tests-release
 
-win10-IE-11.0-e2e-tests-smoke-nightly:
+win10-IE-11.0-e2e-tests-smoke-review:
   extends:
     - .e2e-tests-browserstack-review
     - .win10-IE-11.0-e2e-tests-smoke
-    - .rules-extended-tests-review-manual-allow-failure
+    - .rules-extended-tests-review
 
 #
 
@@ -333,11 +333,11 @@ OSXBigSur-Safari-14.0-e2e-tests-smoke-release:
     - .OSXBigSur-Safari-14.0-e2e-tests-smoke
     - .rules-extended-tests-release
 
-OSXBigSur-Safari-14.0-e2e-tests-smoke-nightly:
+OSXBigSur-Safari-14.0-e2e-tests-smoke-review:
   extends:
     - .e2e-tests-browserstack-review
     - .OSXBigSur-Safari-14.0-e2e-tests-smoke
-    - .rules-extended-tests-review-manual-allow-failure
+    - .rules-extended-tests-review
 
 #
 
