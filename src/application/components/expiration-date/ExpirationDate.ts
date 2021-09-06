@@ -3,7 +3,6 @@ import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
 import { Formatter } from '../../core/shared/formatter/Formatter';
 import { Input } from '../../core/shared/input/Input';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
-import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import {
   EXPIRATION_DATE_INPUT,
   EXPIRATION_DATE_LABEL,
@@ -14,8 +13,8 @@ import { Service } from 'typedi';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { Styler } from '../../core/shared/styler/Styler';
-import { Frame } from '../../core/shared/frame/Frame';
 import { LABEL_EXPIRATION_DATE } from '../../core/models/constants/Translations';
+import { Validation } from '../../core/shared/validation/Validation';
 
 @Service()
 export class ExpirationDate extends Input {
@@ -26,27 +25,35 @@ export class ExpirationDate extends Input {
   private static EXPIRATION_DATE_LENGTH = 5;
   private static INPUT_PATTERN = '^(0[1-9]|1[0-2])\\/([0-9]{2})$';
 
-  private _currentKeyCode: number;
-  private _inputSelectionEnd: number;
-  private _inputSelectionStart: number;
+  private currentKeyCode: number;
+  private inputSelectionEnd: number;
+  private inputSelectionStart: number;
 
   constructor(
     configProvider: ConfigProvider,
-    private _formatter: Formatter,
-    private messageBus: IMessageBus,
-    private frame: Frame
+    private formatter: Formatter,
+    protected validation: Validation,
   ) {
     super(
       EXPIRATION_DATE_INPUT,
       EXPIRATION_DATE_MESSAGE,
       EXPIRATION_DATE_LABEL,
       EXPIRATION_DATE_WRAPPER,
-      configProvider
+      configProvider,
+      validation
     );
-    this._init();
+    super.setEventListener(MessageBus.EVENTS.BLUR_EXPIRATION_DATE);
+    super.setEventListener(MessageBus.EVENTS.FOCUS_EXPIRATION_DATE);
+    this.setAttributes({ pattern: ExpirationDate.INPUT_PATTERN });
+    this.setDisableListener();
+    this.validation.backendValidation(
+      this.inputElement,
+      this.messageElement,
+      MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD
+    );
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
       this.placeholder = config.placeholders.expirydate || '';
-      this._inputElement.setAttribute(ExpirationDate.PLACEHOLDER_ATTRIBUTE, this.placeholder);
+      this.inputElement.setAttribute(ExpirationDate.PLACEHOLDER_ATTRIBUTE, this.placeholder);
 
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
 
@@ -103,7 +110,7 @@ export class ExpirationDate extends Input {
 
   setDisableListener(): void {
     this.messageBus.subscribeType(MessageBus.EVENTS_PUBLIC.BLOCK_EXPIRATION_DATE, (state: FormState) => {
-      state !== FormState.AVAILABLE ? this._disableInputField() : this._enableInputField();
+      state !== FormState.AVAILABLE ? this.disableInputField() : this.enableInputField();
     });
   }
 
@@ -113,73 +120,61 @@ export class ExpirationDate extends Input {
 
   protected onBlur(): void {
     super.onBlur();
-    this._inputElement.value = this._formatter.date(this._inputElement.value, EXPIRATION_DATE_INPUT);
-    this._sendState();
+    this.inputElement.value = this.formatter.date(this.inputElement.value, EXPIRATION_DATE_INPUT);
+    this.sendState();
   }
 
   protected onFocus(event: Event): void {
     super.onFocus(event);
-    this._inputElement.value = this._formatter.date(this._inputElement.value, EXPIRATION_DATE_INPUT);
+    this.inputElement.value = this.formatter.date(this.inputElement.value, EXPIRATION_DATE_INPUT);
   }
 
   protected onInput(event: Event): void {
     super.onInput(event);
-    this._inputElement.value = this.validation.limitLength(
-      this._inputElement.value,
+    this.inputElement.value = this.validation.limitLength(
+      this.inputElement.value,
       ExpirationDate.EXPIRATION_DATE_LENGTH
     );
-    this._inputElement.value = this._formatter.date(this._inputElement.value, EXPIRATION_DATE_INPUT);
-    this.validation.keepCursorsPosition(this._inputElement);
-    this._sendState();
+    this.inputElement.value = this.formatter.date(this.inputElement.value, EXPIRATION_DATE_INPUT);
+    this.validation.keepCursorsPosition(this.inputElement);
+    this.sendState();
   }
 
   protected onKeydown(event: KeyboardEvent): KeyboardEvent {
     super.onKeydown(event);
-    this._currentKeyCode = event.keyCode;
-    this._inputSelectionStart = this._inputElement.selectionStart;
-    this._inputSelectionEnd = this._inputElement.selectionEnd;
+    this.currentKeyCode = event.keyCode;
+    this.inputSelectionStart = this.inputElement.selectionStart;
+    this.inputSelectionEnd = this.inputElement.selectionEnd;
     return event;
   }
 
   protected onKeyPress(event: KeyboardEvent): void {
     super.onKeyPress(event);
-    this._inputElement.focus();
+    this.inputElement.focus();
   }
 
   protected onPaste(event: ClipboardEvent): void {
     super.onPaste(event);
-    this._inputElement.value = this.validation.limitLength(
-      this._inputElement.value,
+    this.inputElement.value = this.validation.limitLength(
+      this.inputElement.value,
       ExpirationDate.EXPIRATION_DATE_LENGTH
     );
-    this._inputElement.value = this._formatter.date(this._inputElement.value, EXPIRATION_DATE_INPUT);
-    this._sendState();
+    this.inputElement.value = this.formatter.date(this.inputElement.value, EXPIRATION_DATE_INPUT);
+    this.sendState();
   }
 
-  private _init(): void {
-    super.setEventListener(MessageBus.EVENTS.BLUR_EXPIRATION_DATE);
-    super.setEventListener(MessageBus.EVENTS.FOCUS_EXPIRATION_DATE);
-    this.setAttributes({ pattern: ExpirationDate.INPUT_PATTERN });
-    this.setDisableListener();
-    this.validation.backendValidation(
-      this._inputElement,
-      this._messageElement,
-      MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD
-    );
-  }
-
-  private _sendState(): void {
+  private sendState(): void {
     const messageBusEvent: IMessageBusEvent = this.setMessageBusEvent(MessageBus.EVENTS.CHANGE_EXPIRATION_DATE);
     this.messageBus.publish(messageBusEvent);
   }
 
-  private _disableInputField(): void {
-    this._inputElement.setAttribute(ExpirationDate.DISABLED_ATTRIBUTE, 'true');
-    this._inputElement.classList.add(ExpirationDate.DISABLED_CLASS);
+  private disableInputField(): void {
+    this.inputElement.setAttribute(ExpirationDate.DISABLED_ATTRIBUTE, 'true');
+    this.inputElement.classList.add(ExpirationDate.DISABLED_CLASS);
   }
 
-  private _enableInputField(): void {
-    this._inputElement.removeAttribute(ExpirationDate.DISABLED_ATTRIBUTE);
-    this._inputElement.classList.remove(ExpirationDate.DISABLED_CLASS);
+  private enableInputField(): void {
+    this.inputElement.removeAttribute(ExpirationDate.DISABLED_ATTRIBUTE);
+    this.inputElement.classList.remove(ExpirationDate.DISABLED_CLASS);
   }
 }

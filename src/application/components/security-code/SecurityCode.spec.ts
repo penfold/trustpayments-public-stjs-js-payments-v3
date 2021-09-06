@@ -10,7 +10,6 @@ import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { Formatter } from '../../core/shared/formatter/Formatter';
-import { Frame } from '../../core/shared/frame/Frame';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
@@ -21,6 +20,7 @@ import { ITranslationProvider } from '../../core/shared/translator/ITranslationP
 import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
 import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
 import { FormState } from '../../core/models/constants/FormState';
+import { Validation } from '../../core/shared/validation/Validation';
 
 jest.mock('./../../core/shared/notification/Notification');
 
@@ -71,9 +71,9 @@ describe('SecurityCode', () => {
       // @ts-ignore
       securityCodeInstance.setDisableListener();
       // @ts-ignore
-      expect(securityCodeInstance._inputElement.hasAttribute('disabled')).toEqual(true);
+      expect(securityCodeInstance.inputElement.hasAttribute('disabled')).toEqual(true);
       // @ts-ignore
-      expect(securityCodeInstance._inputElement.classList.contains(SecurityCode.DISABLED_CLASS)).toEqual(true);
+      expect(securityCodeInstance.inputElement.classList.contains(SecurityCode.DISABLED_CLASS)).toEqual(true);
     });
 
     it('should remove attribute disabled and remove class from classList', () => {
@@ -84,9 +84,9 @@ describe('SecurityCode', () => {
       // @ts-ignore
       securityCodeInstance.setDisableListener();
       // @ts-ignore
-      expect(securityCodeInstance._inputElement.hasAttribute('disabled')).toEqual(false);
+      expect(securityCodeInstance.inputElement.hasAttribute('disabled')).toEqual(false);
       // @ts-ignore
-      expect(securityCodeInstance._inputElement.classList.contains(SecurityCode.DISABLED_CLASS)).toEqual(
+      expect(securityCodeInstance.inputElement.classList.contains(SecurityCode.DISABLED_CLASS)).toEqual(
         false
       );
     });
@@ -111,13 +111,13 @@ describe('SecurityCode', () => {
     const { securityCodeInstance } = securityCodeFixture();
     const event: Event = new Event('focus');
     // @ts-ignore
-    securityCodeInstance._inputElement.focus = jest.fn();
+    securityCodeInstance.inputElement.focus = jest.fn();
 
     it('should call super function', () => {
       // @ts-ignore
       securityCodeInstance.onFocus(event);
       // @ts-ignore
-      expect(securityCodeInstance._inputElement.focus).toHaveBeenCalled();
+      expect(securityCodeInstance.inputElement.focus).toHaveBeenCalled();
     });
   });
 
@@ -129,7 +129,7 @@ describe('SecurityCode', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      securityCodeInstance._inputElement.value = '1234';
+      securityCodeInstance.inputElement.value = '1234';
       // @ts-ignore
       securityCodeInstance.onInput(event);
     });
@@ -141,7 +141,7 @@ describe('SecurityCode', () => {
 
     it('should trim too long value', () => {
       // @ts-ignore
-      expect(securityCodeInstance._inputElement.value).toEqual('');
+      expect(securityCodeInstance.inputElement.value).toEqual('');
     });
   });
 
@@ -186,11 +186,11 @@ describe('SecurityCode', () => {
   });
 
   describe('sendState', () => {
-    const { securityCodeInstance, messageBus } = securityCodeFixture();
+    const { securityCodeInstance } = securityCodeFixture();
     // @ts-ignore
     it('should publish method has been called', () => {
-      jest.spyOn(messageBus, 'publish');
-
+      // @ts-ignore
+      jest.spyOn(securityCodeInstance.messageBus, 'publish');
       // @ts-ignore
       securityCodeInstance.sendState();
       // @ts-ignore
@@ -199,10 +199,11 @@ describe('SecurityCode', () => {
   });
 
   describe('_subscribeSecurityCodeChange', () => {
-    const { securityCodeInstance, messageBus, configProvider } = securityCodeFixture();
+    const { securityCodeInstance, configProvider } = securityCodeFixture();
     when(configProvider.getConfig()).thenReturn({ placeholders: { securitycode: '***' } } as IConfig);
     it('should return standard security code pattern', () => {
-      messageBus.publish({ type: MessageBus.EVENTS.CHANGE_SECURITY_CODE_LENGTH, data: 3 });
+      // @ts-ignore
+      securityCodeInstance.messageBus.publish({ type: MessageBus.EVENTS.CHANGE_SECURITY_CODE_LENGTH, data: 3 });
       // @ts-ignore
       expect(securityCodeInstance.placeholder).toEqual('***');
     });
@@ -216,7 +217,7 @@ describe('SecurityCode', () => {
       // @ts-ignore
       securityCodeInstance.setSecurityCodePattern(pattern);
       // @ts-ignore
-      expect(securityCodeInstance._inputElement.getAttribute('pattern')).toEqual(pattern);
+      expect(securityCodeInstance.inputElement.getAttribute('pattern')).toEqual(pattern);
     });
   });
 });
@@ -248,22 +249,20 @@ function securityCodeFixture() {
 
   const configProvider: ConfigProvider = mock<ConfigProvider>();
   const formatter: Formatter = mock(Formatter);
-  const frame: Frame = mock(Frame);
+  const validation: Validation = mock(Validation);
   const jwtDecoder: JwtDecoder = mock(JwtDecoder);
   const localStorage: BrowserLocalStorage = mock(BrowserLocalStorage);
   when(localStorage.select(anyFunction())).thenReturn(of('34****4565'));
   when(configProvider.getConfig$()).thenReturn(of(config));
   when(configProvider.getConfig()).thenReturn(config);
-  const messageBus: IMessageBus = new SimpleMessageBus();
   const securityCodeInstance = new SecurityCode(
     instance(configProvider),
     instance(localStorage),
     instance(formatter),
-    messageBus,
-    instance(frame),
-    instance(jwtDecoder)
+    instance(jwtDecoder),
+    instance(validation),
   );
-  // @ts-ignore
 
-  return { securityCodeInstance, configProvider, communicatorMock, messageBus };
+
+  return { securityCodeInstance, configProvider, communicatorMock };
 }
