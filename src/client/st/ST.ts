@@ -59,7 +59,6 @@ export class ST {
   private cybertonicaTid: Promise<string>;
   private destroy$: Subject<void> = new Subject();
   private googleAnalytics: GoogleAnalytics;
-  private merchantFields: MerchantFields;
   private registeredCallbacks: Map<keyof typeof ExposedEvents, Subscription> = new Map();
 
   set submitCallback(callback: (event: ISubmitEvent) => void) {
@@ -115,9 +114,9 @@ export class ST {
     private visaCheckout: VisaCheckout,
     private commonFrames: CommonFrames,
     private translation: ITranslator,
+    private merchantFields: MerchantFields,
   ) {
     this.googleAnalytics = new GoogleAnalytics();
-    this.merchantFields = new MerchantFields();
   }
 
   on(eventName: keyof typeof ExposedEvents, callback: (event: unknown) => void): void {
