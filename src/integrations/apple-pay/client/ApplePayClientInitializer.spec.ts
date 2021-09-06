@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';

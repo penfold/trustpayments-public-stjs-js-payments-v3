@@ -1,7 +1,6 @@
 import { IMessageSubscriber } from '../../../shared/services/message-bus/interfaces/IMessageSubscriber';
 import { Service } from 'typedi';
 import { MessageSubscriberToken } from '../../../shared/dependency-injection/InjectionTokens';
-import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { ApplePayClient } from './ApplePayClient';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';

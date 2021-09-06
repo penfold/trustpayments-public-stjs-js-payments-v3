@@ -8,8 +8,8 @@ import { IApplePayConfig } from '../../../application/core/integrations/apple-pa
 import { Locale } from '../../../application/core/shared/translator/Locale';
 import { ApplePaySessionService } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 import { ApplePayClient } from './ApplePayClient';
+import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 
 describe('ApplePayClient', () => {
   const configMock: IConfig = {
@@ -23,27 +23,27 @@ describe('ApplePayClient', () => {
         merchantCapabilities: [
           'supports3DS',
           'supportsCredit',
-          'supportsDebit'
+          'supportsDebit',
         ],
         supportedNetworks: ['visa', 'amex'],
         total: {
-        label: 'Secure Trading Merchant',
-        amount: '10.00'
-      }
+          label: 'Secure Trading Merchant',
+          amount: '10.00',
+        },
+      },
+      placement: 'st-apple-pay',
     },
-    placement: 'st-apple-pay'
-    }
   };
 
   const paymentRequestMock: IApplePayPaymentRequest = {
     countryCode: 'countryCode',
     currencyCode: 'currencyCode',
-    merchantCapabilities: ["supports3DS"],
+    merchantCapabilities: ['supports3DS'],
     supportedNetworks: ['amex'],
     total: {
       amount: 'amount',
-      label: 'label'
-    }
+      label: 'label',
+    },
   };
 
   const applePayConfigMock = {
@@ -51,14 +51,14 @@ describe('ApplePayClient', () => {
     buttonText: 'plain',
     merchantId: 'merchantId',
     paymentRequest: paymentRequestMock,
-    placement: 'placement'
+    placement: 'placement',
   };
 
   const validateMerchantRequestMock = {
     walletmerchantid: 'walletmerchantid',
     walletrequestdomain: window.location.hostname,
     walletsource: 'walletsource',
-    walletvalidationurl: 'walletvalidationurl'
+    walletvalidationurl: 'walletvalidationurl',
   };
 
   let applePayClient: ApplePayClient;
@@ -90,7 +90,7 @@ describe('ApplePayClient', () => {
         formId: 'formId',
         jwtFromConfig: 'jwtFromConfig',
         validateMerchantRequest: validateMerchantRequestMock,
-        paymentRequest: paymentRequestMock
+        paymentRequest: paymentRequestMock,
       });
 
       applePayClient.init(configMock).subscribe(() => {
@@ -108,27 +108,26 @@ describe('ApplePayClient', () => {
     it('throws an error when ApplePaySessionObject returns false', (done) => {
       when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(false);
 
-
-      applePayClient.init(configMock).subscribe(
-        res => undefined,
-        err => {
+      applePayClient.init(configMock).subscribe({
+        error: err => {
+          expect(err).toBeInstanceOf(ApplePayInitError);
           expect(err.toString()).toBe('Error: ApplePay not available: Works only on Safari');
           done();
         },
-      );
+      });
     });
 
     it('throws error when canMakePayments function returns false', (done) => {
       when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
       when(applePaySessionServiceMock.canMakePayments()).thenReturn(false);
 
-      applePayClient.init(configMock).subscribe(
-        res => undefined,
-        err => {
+      applePayClient.init(configMock).subscribe({
+        error: err => {
+          expect(err).toBeInstanceOf(ApplePayInitError);
           expect(err.toString()).toBe('Error: ApplePay not available: Your device does not support making payments with Apple Pay');
           done();
         },
-      );
+      });
     });
 
     it('throws error when canMakePaymentsWithActiveCard function returns false', (done) => {
@@ -136,13 +135,13 @@ describe('ApplePayClient', () => {
       when(applePaySessionServiceMock.canMakePayments()).thenReturn(true);
       when(applePaySessionServiceMock.canMakePaymentsWithActiveCard(anyString())).thenReturn(of(false));
 
-      applePayClient.init(configMock).subscribe(
-        res => undefined,
-        err => {
+      applePayClient.init(configMock).subscribe({
+        error: err => {
+          expect(err).toBeInstanceOf(ApplePayInitError);
           expect(err.toString()).toBe('Error: ApplePay not available: No active cards in the wallet.');
           done();
         },
-      );
+      });
     });
   });
 });
