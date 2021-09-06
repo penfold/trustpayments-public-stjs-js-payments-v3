@@ -150,39 +150,38 @@ class PaymentMethodsPage(BasePage):
         else:
             self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
 
-    def focus_on_authentication_label(self):
-        self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
-        try:
+    def focus_on_authentication_label(self, auth):
+        if auth == AuthType.V2.name:
+            self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
             self._actions.click(PaymentMethodsLocators.purchase_authentication_label)
-        except Exception:
+        else:
             self._actions.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
             self._actions.click(PaymentMethodsLocators.please_submit_label)
         self._actions.switch_to_default_iframe()
 
     def validate_cardinal_authentication_modal_appears(self, auth):
         self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
-        if auth == AuthType.V1.name:
+        if auth == AuthType.V2.name:
+            self._waits.wait_for_element_to_be_displayed(
+                PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+        else:
             self._actions.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
             self._waits.wait_for_element_to_be_displayed(
                 PaymentMethodsLocators.cardinal_v1_authentication_code_field)
-        else:
-            self._waits.wait_for_element_to_be_displayed(
-                PaymentMethodsLocators.cardinal_v2_authentication_code_field)
         self._actions.switch_to_default_iframe()
 
     def select_proper_cardinal_authentication(self, auth):
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_modal)
         self._actions.switch_to_iframe(PaymentMethodsLocators.cardinal_iframe)
-        if auth == AuthType.V1.name:
-            self.fill_cardinal_v1_popup()
-        else:
+        if auth == AuthType.V2.name:
             self.fill_cardinal_v2_popup()
+        else:
+            self.fill_cardinal_v1_popup()
         self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.cardinal_modal)
         self._actions.switch_to_default_content()
 
     def press_enter_button_on_security_code_field(self):
         self._actions.switch_to_iframe_and_press_enter(FieldType.SECURITY_CODE.value,
-
                                                        PaymentMethodsLocators.security_code_input_field)
 
     def clear_security_code_field(self):
