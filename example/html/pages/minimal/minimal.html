@@ -18,20 +18,19 @@
     <form id="st-form" class="tp-minimal-form">
         <h1>Trust Payments Minimal Example Form</h1>
         <div id="st-notification-frame"></div>
-        <div id="st-visa-checkout" class="st-form__group"></div>
-        <div id="st-apple-pay" class="st-form__group"></div>
         <div id="st-card-number"></div>
         <div id="st-expiration-date"></div>
         <div id="st-security-code"></div>
-        <div id="st-animated-card" class="st-form__st-animated-card"></div>
         <div id="st-control-frame"></div>
+        <div id="st-animated-card" class="st-form__st-animated-card"></div>
+        <div id="st-apple-pay" class="st-form__group"></div>
+        <div id="st-visa-checkout" class="st-form__group"></div>
         <button type="button" id="update-button" class="tp-minimal-form__button">Update JWT</button>
         <button type="submit" id="merchant-submit-button" class="tp-minimal-form__button">Pay</button>
     </form>
 </main>
 <script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
 <script type="text/javascript" src="./inlineConfig.js"></script>
-<script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
 <script type="text/javascript">
   (function (ST) {
     window.addEventListener('load', function () {

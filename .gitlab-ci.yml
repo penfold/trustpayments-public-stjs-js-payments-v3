@@ -20,8 +20,8 @@ include:
   - local: '/.gitlab/fast-tests/js-static-analysis.yml'
   - local: '/.gitlab/extended-tests.yml'
   - local: '/.gitlab/post-release.yml'
-  - local: '/.gitlab/pre-smoke-tests.yml'
-  - local: '/.gitlab/smoke-tests.yml'
+  - local: '/.gitlab/smoke/build-images.yml'
+  - local: '/.gitlab/smoke/tests.yml'
 
 variables:
   PROJECT_INFRASTRUCTURE_CICD_REF: *project-infrastructure-cicd-ref
@@ -127,5 +127,6 @@ stages:
   - release
   - post-release
   # Smoke tests
-  - pre-smoke-tests
+  - smoke-build-app
+  - smoke-build-images
   - smoke-tests
