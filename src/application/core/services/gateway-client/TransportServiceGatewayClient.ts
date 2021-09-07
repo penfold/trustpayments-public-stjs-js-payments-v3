@@ -12,6 +12,8 @@ import { TransportService } from '../st-transport/TransportService';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 import { IThreeDLookupResponse } from '../../models/IThreeDLookupResponse';
 import { ThreeDLookupRequest } from '../three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
+import { IApplePayValidateMerchantRequest } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
+import { IApplePayWalletVerifyResponseBody } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 
 @Service()
 export class TransportServiceGatewayClient implements IGatewayClient {
@@ -46,5 +48,9 @@ export class TransportServiceGatewayClient implements IGatewayClient {
 
   sendRequest(request: IStRequest, merchantUrl?: string): Observable<IRequestTypeResponse> {
     return this.transportService.sendRequest(request, merchantUrl);
+  }
+
+  walletVerify(request: IApplePayValidateMerchantRequest): Observable<IApplePayWalletVerifyResponseBody> {
+    return this.transportService.sendRequest(request);
   }
 }
