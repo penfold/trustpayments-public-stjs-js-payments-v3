@@ -7,6 +7,7 @@
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=no      (to disable debug-on-error)
 from logging import INFO
 
+from behave.contrib.scenario_autoretry import patch_scenario_with_autoretry
 from configuration import CONFIGURATION
 from pages.page_factory import PageFactory
 from utils.actions import Actions
@@ -42,6 +43,11 @@ def before_all(context):
 def disable_headless_for_visa_checkout(context):
     if 'visa_checkout' in context.scenario.tags:
         context.configuration.HEADLESS = False
+
+
+def before_feature(context, feature):
+    for scenario in feature.scenarios:
+        patch_scenario_with_autoretry(scenario, max_attempts=3)
 
 
 def before_scenario(context, scenario):
