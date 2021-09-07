@@ -11,7 +11,9 @@ import { IMessageBus } from '../../../application/core/shared/message-bus/IMessa
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IApplePayClientStatusDetails } from '../../../application/core/integrations/apple-pay/IApplePayClientStatusDetails';
-
+import { Service } from 'typedi';
+import { ApplePayPaymentService } from './ApplePayPaymentService';
+@Service()
 export class ApplePayVerifyService {
   applePaySession: any;
   config: any;
@@ -20,11 +22,8 @@ export class ApplePayVerifyService {
   configProvider: any;
   localStorage: any;
   applePayNotificationService: any;
-  applePayPaymentService: any;
 
-  constructor(private messageBus: IMessageBus) {
-    this.init$();
-  }
+  constructor(private messageBus: IMessageBus, private applePayPaymentService: ApplePayPaymentService) {}
 
   init$(): Observable<ApplePayClientStatus> {
     return this.configProvider.getConfig$().pipe(
@@ -38,7 +37,7 @@ export class ApplePayVerifyService {
         );
       }),
       tap(() => this.localStorage.setItem('completePayment', 'false')),
-      // 3. handle the query - send request to the gateway (should be application side) part1
+      // 3. handle the query - send request to the gateway part1
       switchMap(() => this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_STATUS))),
       switchMap((event: IMessageBusEvent<IApplePayClientStatus>) => {
         const { status, details } = event.data;
@@ -80,7 +79,7 @@ export class ApplePayVerifyService {
   validateMerchant() {
     // 1. handle callback from apple pay session
     this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => {
-      // 2. send query do application side
+      // 2. send query to application side
       this.messageBus.publish<IApplePayClientStatus>({
         type: PUBLIC_EVENTS.APPLE_PAY_STATUS,
         data: {

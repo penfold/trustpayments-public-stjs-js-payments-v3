@@ -43,4 +43,8 @@ export class TransportServiceGatewayClient implements IGatewayClient {
   auth(request: IStRequest, merchantUrl?: string): Observable<IRequestTypeResponse> {
     return this.transportService.sendRequest(request, merchantUrl);
   }
+
+  sendRequest(request: IStRequest, merchantUrl?: string): Observable<IRequestTypeResponse> {
+    return this.transportService.sendRequest(request, merchantUrl);
+  }
 }

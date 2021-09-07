@@ -11,11 +11,12 @@ import { PaymentStatus } from '../../../application/core/services/payments/Payme
 import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
+import { ApplePayVerifyService } from './ApplePayVerifyService';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ApplePayPaymentMethod implements IPaymentMethod<IApplePayConfig, IApplePayGatewayRequest, IRequestTypeResponse> {
   private requestProcessingService: Observable<IRequestProcessingService>;
-  private applePayVerifyService: any;
+  private applePayVerifyService: ApplePayVerifyService;
 
   constructor(
     private requestProcessingInitializer: RequestProcessingInitializer
@@ -27,7 +28,7 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IApplePayConfig, IA
 
   init(): Observable<void> {
     this.requestProcessingService = this.requestProcessingInitializer.initialize();
-    this.onValidateMerchant();
+    this.applePayVerifyService.validateMerchant();
     return this.requestProcessingService.pipe(mapTo(undefined));
   }
 
@@ -35,9 +36,5 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IApplePayConfig, IA
     return of({
       status: PaymentStatus.SUCCESS,
     });
-  }
-
-  onValidateMerchant(): any {
-    this.applePayVerifyService.validateMerchant();
   }
 }
