@@ -19,16 +19,16 @@ describe('ApplePayPaymentMethod', () => {
         merchantCapabilities: [
           'supports3DS',
           'supportsCredit',
-          'supportsDebit'
+          'supportsDebit',
         ],
         supportedNetworks: ['visa', 'amex'],
         total: {
-        label: 'Secure Trading Merchant',
-        amount: '10.00'
-      }
+          label: 'Secure Trading Merchant',
+          amount: '10.00',
+        },
+      },
+      placement: 'st-apple-pay',
     },
-    placement: 'st-apple-pay'
-    }
   };
 
   let applePayPaymentMethod: ApplePayPaymentMethod;
@@ -50,7 +50,7 @@ describe('ApplePayPaymentMethod', () => {
 
   describe('getName()', () => {
     it('returns main name of ApplePay service', () => {
-      expect(applePayPaymentMethod.getName()).toBe('ApplePay2');
+      expect(applePayPaymentMethod.getName()).toBe('ApplePay');
     });
   });
 

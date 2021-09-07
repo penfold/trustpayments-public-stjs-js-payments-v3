@@ -1,19 +1,15 @@
 import { ContainerInstance, Inject, Service } from 'typedi';
-import { defer, EMPTY, fromEvent, Observable, Subject } from 'rxjs';
+import { filter, map, share, defer, fromEvent, Observable, Subject } from 'rxjs';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { filter, first, map, mergeMap, share, take, takeUntil } from 'rxjs/operators';
-import { ofType } from './operators/ofType';
-import { QueryMessage } from './messages/QueryMessage';
-import { ResponseMessage } from './messages/ResponseMessage';
 import { environment } from '../../../environments/environment';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
-import { FrameIdentifier } from './FrameIdentifier';
 import { FrameAccessor } from './FrameAccessor';
 import { FrameNotFound } from './errors/FrameNotFound';
 import { Debug } from '../../Debug';
 import { CONFIG, WINDOW } from '../../dependency-injection/InjectionTokens';
 import { IConfig } from '../../model/config/IConfig';
 import { EventDataSanitizer } from './EventDataSanitizer';
+import { FrameQueryingService, WhenReceive } from './FrameQueryingService';
 
 @Service()
 export class InterFrameCommunicator {
@@ -24,46 +20,25 @@ export class InterFrameCommunicator {
   private readonly close$ = new Subject<void>();
   private readonly frameOrigin: string;
   private parentOrigin: string;
-  private responders: Map<string, (queryEvent: IMessageBusEvent) => Observable<unknown>> = new Map();
 
   constructor(
-    private identifier: FrameIdentifier,
     private frameAccessor: FrameAccessor,
     private container: ContainerInstance,
     private eventDataSanitizer: EventDataSanitizer,
+    private frameQueryingService: FrameQueryingService,
     @Inject(WINDOW) private window: Window
   ) {
     this.incomingEvent$ = fromEvent<MessageEvent>(this.window, InterFrameCommunicator.MESSAGE_EVENT).pipe(
       filter(event => event.data && event.data.type),
       map(event => event.data),
-      share()
+      share(),
     );
 
     this.frameOrigin = new URL(environment.FRAME_URL).origin;
-    this.communicationClosed$.subscribe(() => this.responders.clear());
   }
 
   init(): void {
-    this.incomingEvent$
-      .pipe(
-        filter(event => event.type === QueryMessage.MESSAGE_TYPE),
-        mergeMap((queryEvent: QueryMessage) => {
-          if (!this.responders.has(queryEvent.data.type)) {
-            return EMPTY;
-          }
-
-          return this.responders
-            .get(queryEvent.data.type)(queryEvent.data)
-            .pipe(
-              first(),
-              map(response => new ResponseMessage(response, queryEvent.queryId, queryEvent.sourceFrame))
-            );
-        }),
-        takeUntil(this.communicationClosed$)
-      )
-      .subscribe((response: ResponseMessage<unknown>) => {
-        this.send(response, response.queryFrame);
-      });
+    this.frameQueryingService.attach(this);
   }
 
   send(message: IMessageBusEvent, target: Window | string): void {
@@ -84,41 +59,16 @@ export class InterFrameCommunicator {
   }
 
   query<T>(message: IMessageBusEvent, target: Window | string): Promise<T> {
-    return new Promise((resolve, reject) => {
-      const sourceFrame = this.identifier.getFrameName() || MERCHANT_PARENT_FRAME;
-      const query = new QueryMessage(message, sourceFrame);
-
-      this.incomingEvent$
-        .pipe(
-          ofType(ResponseMessage.MESSAGE_TYPE),
-          filter((event: ResponseMessage<T>) => event.queryId === query.queryId),
-          map((event: ResponseMessage<T>) => event.data),
-          take(1),
-          takeUntil(this.communicationClosed$)
-        )
-        .subscribe({
-          next(result) {
-            resolve(result);
-          },
-          error(error) {
-            reject(error);
-          },
-        });
-
-      this.send(query, target);
-    });
+    return this.frameQueryingService.query(message, target);
   }
 
-  whenReceive(eventType: string): Record<string, <T>(responder: (queryEvent: IMessageBusEvent) => Observable<T>) => void> {
-    return {
-      thenRespond: <T>(responder: (queryEvent: IMessageBusEvent) => Observable<T>) => {
-        this.responders.set(eventType, responder);
-      },
-    };
+  whenReceive<T>(eventType: string): WhenReceive<T> {
+    return this.frameQueryingService.whenReceive<T>(eventType);
   }
 
   close(): void {
     this.close$.next();
+    this.frameQueryingService.detach();
   }
 
   sendToParentFrame(event: IMessageBusEvent): void {

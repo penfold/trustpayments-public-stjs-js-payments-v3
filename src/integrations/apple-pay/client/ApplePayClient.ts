@@ -4,8 +4,7 @@ import { IApplePayConfigObject } from '../../../application/core/integrations/ap
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePaySessionService } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
-import { Observable, of, throwError } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, of, throwError, map, switchMap } from 'rxjs';
 import { Service } from 'typedi';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 
@@ -38,11 +37,9 @@ export class ApplePayClient {
       return notAvailable('Your device does not support making payments with Apple Pay');
     }
 
-    return of(config);
-
-    // return this.applePaySessionService.canMakePaymentsWithActiveCard(config.applePay.merchantId).pipe(
-    //   switchMap(canMakePayments => canMakePayments ? of(config) : notAvailable('No active cards in the wallet.')),
-    // );
+    return this.applePaySessionService.canMakePaymentsWithActiveCard(config.applePay.merchantId).pipe(
+      switchMap(canMakePayments => canMakePayments ? of(config) : notAvailable('No active cards in the wallet.')),
+    );
   }
 
   private resolveApplePayConfig(config: IConfig): IApplePayConfigObject {
