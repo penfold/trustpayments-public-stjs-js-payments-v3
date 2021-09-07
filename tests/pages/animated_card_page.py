@@ -43,7 +43,7 @@ class AnimatedCardPage(BasePage):
         assertion_message = f'Data on animated card is not correct, should be: ' \
                             f'"{expected_data}" but is: "{actual_data_on_animated_card}"'
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
-        assert expected_data in actual_data_on_animated_card, assertion_message
+        assert expected_data == actual_data_on_animated_card, assertion_message
 
     def validate_all_data_on_animated_card(self, card_number, exp_date, cvv, card_type, is_field_in_iframe):
         self.validate_data_on_animated_card(card_number, FieldType.CARD_NUMBER.name, card_type)
@@ -83,7 +83,7 @@ class AnimatedCardPage(BasePage):
             expected_translation = expected_translation.upper()
         assertion_message = f'Translation is not correct: should be {expected_translation} but is {actual_translation}'
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
-        assert actual_translation in expected_translation, assertion_message
+        assert actual_translation == expected_translation, assertion_message
 
     def get_animated_card_label_translation(self, locator):
         element_translation = self._actions.get_text(locator)
