@@ -38,9 +38,11 @@ export class ApplePayClient {
       return notAvailable('Your device does not support making payments with Apple Pay');
     }
 
-    return this.applePaySessionService.canMakePaymentsWithActiveCard(config.applePay.merchantId).pipe(
-      switchMap(canMakePayments => canMakePayments ? of(config) : notAvailable('No active cards in the wallet.')),
-    );
+    return of(config);
+
+    // return this.applePaySessionService.canMakePaymentsWithActiveCard(config.applePay.merchantId).pipe(
+    //   switchMap(canMakePayments => canMakePayments ? of(config) : notAvailable('No active cards in the wallet.')),
+    // );
   }
 
   private resolveApplePayConfig(config: IConfig): IApplePayConfigObject {
