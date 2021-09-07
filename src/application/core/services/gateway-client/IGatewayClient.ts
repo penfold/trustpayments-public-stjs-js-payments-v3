@@ -11,4 +11,5 @@ export abstract class IGatewayClient {
   abstract threedLookup(request: ThreeDLookupRequest): Observable<IThreeDLookupResponse>;
   abstract threedQuery(request: IStRequest, merchantUrl?: string): Observable<IThreeDQueryResponse>;
   abstract auth(request: IStRequest, merchantUrl?: string): Observable<IRequestTypeResponse>;
+  abstract sendRequest(request: IStRequest, merchantUrl?: string): Observable<IRequestTypeResponse>;
 }
