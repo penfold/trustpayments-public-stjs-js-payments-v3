@@ -4,7 +4,7 @@ Feature: 3ds SDK library initialization
   I want to be able to integrate with 3ds SDK
   So that I can configure it by own config file
 
-@MI
+
   Scenario: Initialize 3ds SDK with defaults
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value              |

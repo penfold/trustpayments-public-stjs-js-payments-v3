@@ -22,93 +22,97 @@
         <div id="st-expiration-date"></div>
         <div id="st-security-code"></div>
         <div id="st-control-frame"></div>
-        <div id="st-animated-card"></div>
-        <div id="st-apple-pay"></div>
+        <div id="st-animated-card" class="st-form__st-animated-card"></div>
+        <div id="st-apple-pay" class="st-form__group"></div>
+        <div id="st-visa-checkout" class="st-form__group"></div>
         <button type="button" id="update-button" class="tp-minimal-form__button">Update JWT</button>
         <button type="submit" id="merchant-submit-button" class="tp-minimal-form__button">Pay</button>
     </form>
 </main>
 <script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
 <script type="text/javascript" src="./inlineConfig.js"></script>
-<script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
 <script type="text/javascript">
+  (function (ST) {
+    window.addEventListener('load', function () {
+      var params = new URLSearchParams(window.location.search.substring(1));
+      var inlineConfig = params.get('inlineConfig') ? JSON.parse(params.get('inlineConfig')) : '';
+      var jwt = params.get('jwt') || '';
+      var updatedJwt = params.get('updatedJwt') || '';
 
-  function callback() {
-    console.error('This is callback function');
-  }
-
-  var ST = SecureTrading;
-
-  window.addEventListener('load', function() {
-    var params = new URLSearchParams(window.location.search.substring(1));
-    var inlineConfig = params.get('inlineConfig') ? JSON.parse(params.get('inlineConfig')) : '';
-    var jwt = params.get('jwt') || '';
-    var browserInfo = params.get('browserInfo');
-    var updatedJwt = params.get('updatedJwt') || '';
-
-     getConfig()
-      .then(function(config) {
-        init(config);
-      });
-
-
-    function getConfig() {
-      if (inlineConfig) {
-        return Promise.resolve(inlineConfig);
-      }
-
-      return window
-        .fetch('<%= CONFIG_URL %>/config.json')
-        .then(function(response) {
-          if (response.status !== 200) {
-            return Promise.reject('Failed to load configuration file!');
-          }
-
-          return response.json();
-        })
+      getConfig()
         .then(function(config) {
-          return getJwt(config).then(function(jwt) {
-            return Object.assign(config, { jwt: jwt });
-          });
-        })
-        .catch(function(error) {
-          console.error(error);
+          init(config);
         });
-    }
 
-     function getJwt(config) {
-      var presetJwt = jwt || config.jwt;
-
-      if (presetJwt) {
-        return Promise.resolve(presetJwt);
-      }
-
-      return window.configJWT('<%= CONFIG_URL %>/jwtdata.json');
-    }
-
-    function init(config) {
-      var st = ST(config);
-      st.Components(config.components);
-      st.VisaCheckout(config.visaCheckout);
-      st.ApplePay(config.applePay);
-      st.Cybertonica().then(function(response) {
-        console.error(response);
-      });
-      if (browserInfo === "true") {
-        document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
-      }
-      updateJwtListener(st, updatedJwt);
-    }
-
-    function updateJwtListener(st, updatedJwt) {
-      document.getElementById('update-button').addEventListener('click', function() {
-          st.updateJWT(updatedJwt);
+      function getConfig() {
+        if (inlineConfig) {
+          return Promise.resolve(inlineConfig);
         }
-      );
-    }
-  });
 
+        return window
+          .fetch('<%= CONFIG_URL %>/config.json')
+          .then(function (response) {
+            if (response.status !== 200) {
+              return Promise.reject('Failed to load configuration file!');
+            }
+
+            return response.json();
+          })
+          .then(function (config) {
+            return getJwt(config).then(function (jwt) {
+              return Object.assign(config, { jwt: jwt });
+            });
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
+      }
+
+      function getJwt(config) {
+        var presetJwt = jwt || config.jwt;
+
+        if (presetJwt) {
+          return Promise.resolve(presetJwt);
+        }
+
+        return window.configJWT('<%= CONFIG_URL %>/jwtdata.json');
+      }
+
+      function init(config) {
+        setCallbacks(config);
+        var st = ST(config);
+        st.Components(config.components);
+        st.VisaCheckout(config.visaCheckout);
+        st.ApplePay(config.applePay);
+        st.Cybertonica().then(function(response) {
+          console.error(response);
+        });
+        updateJwtListener(st, updatedJwt);
+      }
+
+      function updateJwtListener(st, updatedJwt) {
+        document.getElementById('update-button').addEventListener('click', function () {
+            st.updateJWT(updatedJwt);
+          }
+        );
+      }
+
+      function setCallbacks(config) {
+        config.submitCallback = function () {
+          console.error('This is submitCallback function');
+        };
+        config.successCallback = function () {
+          console.error('This is successCallback function');
+        };
+        config.errorCallback = function () {
+          console.error('This is errorCallback function');
+        };
+        config.cancelCallback = function () {
+          console.error('This is cancelCallback function');
+        };
+      }
+    });
+  })(SecureTrading);
 </script>
-
 </body>
 </html>

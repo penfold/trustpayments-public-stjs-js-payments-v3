@@ -1,20 +1,40 @@
 ### Example App Angular
 
-build-app-angular:
+.build-app-angular:
   extends:
     - .build-with-npm
   variables:
     PACKAGE_DIR: 'example/angular'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_angular"
 
+build-app-angular-review:
+  extends:
+    - .build-app-angular
+    - .rules-when-review
+
+build-app-angular-release:
+  extends:
+    - .build-app-angular
+    - .rules-when-release
+
 ### Example App ReactJS
 
-build-app-reactjs:
+.build-app-reactjs:
   extends:
     - .build-with-npm
   variables:
     PACKAGE_DIR: 'example/reactjs'
     RESULT_PATH: "${CI_PROJECT_DIR}/.artifacts_app_reactjs"
+
+build-app-reactjs-review:
+  extends:
+    - .build-app-reactjs
+    - .rules-when-review
+
+build-app-reactjs-release:
+  extends:
+    - .build-app-reactjs
+    - .rules-when-release
 
 ### Example App ReactNative
 

@@ -1,1 +1,1 @@
-export const ApplePayPaymentMethodName = 'ApplePay2';
+export const ApplePayPaymentMethodName = 'ApplePay';

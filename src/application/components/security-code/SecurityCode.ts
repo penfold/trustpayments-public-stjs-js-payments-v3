@@ -4,7 +4,6 @@ import { Formatter } from '../../core/shared/formatter/Formatter';
 import { Input } from '../../core/shared/input/Input';
 import { LABEL_SECURITY_CODE } from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
-import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import {
   SECURITY_CODE_INPUT,
   SECURITY_CODE_LABEL,
@@ -24,7 +23,6 @@ import { LONG_CVC, SHORT_CVC, UNKNOWN_CVC } from '../../core/models/constants/Se
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { Styler } from '../../core/shared/styler/Styler';
-import { Frame } from '../../core/shared/frame/Frame';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { IStJwtPayload } from '../../core/models/IStJwtPayload';
 
@@ -36,22 +34,19 @@ export class SecurityCode extends Input {
   private static DISABLED_CLASS = 'st-input--disabled';
 
   private securityCodeLength: number;
-  private _validation: Validation;
 
   constructor(
     configProvider: ConfigProvider,
     private localStorage: BrowserLocalStorage,
     private formatter: Formatter,
-    private messageBus: IMessageBus,
-    private frame: Frame,
     private jwtDecoder: JwtDecoder,
+    protected validation: Validation,
   ) {
-    super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider);
-    this._validation = new Validation();
+    super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider, validation);
     this.securityCodeLength = UNKNOWN_CVC;
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
       this.placeholder = this.getPlaceholder(this.securityCodeLength);
-      this._inputElement.setAttribute(SecurityCode.PLACEHOLDER_ATTRIBUTE, this.placeholder);
+      this.inputElement.setAttribute(SecurityCode.PLACEHOLDER_ATTRIBUTE, this.placeholder);
 
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);
       if (styler.hasSpecificStyle('isLinedUp', config.styles.securityCode)) {
@@ -111,7 +106,15 @@ export class SecurityCode extends Input {
         });
       });
 
-    this._init();
+    super.setEventListener(MessageBus.EVENTS.FOCUS_SECURITY_CODE, false);
+    super.setEventListener(MessageBus.EVENTS.BLUR_SECURITY_CODE);
+    this.subscribeSecurityCodeChange();
+    this.setDisableListener();
+    this.validation.backendValidation(
+      this.inputElement,
+      this.messageElement,
+      MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD,
+    );
   }
 
   private getPlaceholder(securityCodeLength: number): string {
@@ -193,7 +196,7 @@ export class SecurityCode extends Input {
   protected onInput(event: Event): void {
     super.onInput(event);
     this.setInputValue();
-    this.validation.keepCursorsPosition(this._inputElement);
+    this.validation.keepCursorsPosition(this.inputElement);
     this.sendState();
   }
 
@@ -208,23 +211,11 @@ export class SecurityCode extends Input {
   }
 
   private setInputValue(): void {
-    this._inputElement.value = this.validation.limitLength(this._inputElement.value, this.getMaxSecurityCodeLength());
-    this._inputElement.value = this.formatter.code(
-      this._inputElement.value,
+    this.inputElement.value = this.validation.limitLength(this.inputElement.value, this.getMaxSecurityCodeLength());
+    this.inputElement.value = this.formatter.code(
+      this.inputElement.value,
       this.getMaxSecurityCodeLength(),
       SECURITY_CODE_INPUT,
-    );
-  }
-
-  private _init(): void {
-    super.setEventListener(MessageBus.EVENTS.FOCUS_SECURITY_CODE, false);
-    super.setEventListener(MessageBus.EVENTS.BLUR_SECURITY_CODE);
-    this.subscribeSecurityCodeChange();
-    this.setDisableListener();
-    this.validation.backendValidation(
-      this._inputElement,
-      this._messageElement,
-      MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD,
     );
   }
 
@@ -250,7 +241,7 @@ export class SecurityCode extends Input {
   private setSecurityCodeProperties(length: number, pattern: string): void {
     this.securityCodeLength = length;
     this.setSecurityCodePattern(pattern);
-    this._inputElement.value = this.validation.limitLength(this._inputElement.value, this.getMaxSecurityCodeLength());
+    this.inputElement.value = this.validation.limitLength(this.inputElement.value, this.getMaxSecurityCodeLength());
   }
 
   private checkSecurityCodeLength(length: number): void {
@@ -273,7 +264,7 @@ export class SecurityCode extends Input {
         const { data } = response;
         this.checkSecurityCodeLength(data);
         this.placeholder = this.getPlaceholder(data);
-        this._inputElement.setAttribute(SecurityCode.PLACEHOLDER_ATTRIBUTE, this.placeholder);
+        this.inputElement.setAttribute(SecurityCode.PLACEHOLDER_ATTRIBUTE, this.placeholder);
         this.sendState();
       });
 
@@ -283,32 +274,32 @@ export class SecurityCode extends Input {
       }
 
       if (iinLookup.lookup(data.value).type === 'PIBA') {
-        this._inputElement.setAttribute(SecurityCode.BLOCK_CVV_ATTRIBUTE, 'true');
-        this._inputElement.value = '';
+        this.inputElement.setAttribute(SecurityCode.BLOCK_CVV_ATTRIBUTE, 'true');
+        this.inputElement.value = '';
         this.disableSecurityCode();
         this.toggleSecurityCodeValidation();
 
         return;
       }
-      this._inputElement.removeAttribute(SecurityCode.BLOCK_CVV_ATTRIBUTE);
+      this.inputElement.removeAttribute(SecurityCode.BLOCK_CVV_ATTRIBUTE);
       this.enableSecurityCode();
-      this._inputElement.classList.remove(SecurityCode.DISABLED_CLASS);
+      this.inputElement.classList.remove(SecurityCode.DISABLED_CLASS);
     });
   }
 
   private toggleSecurityCodeValidation(): void {
-    this.validation.removeError(this._inputElement, this._messageElement);
-    this._inputElement.setCustomValidity('');
+    this.validation.removeError(this.inputElement, this.messageElement);
+    this.inputElement.setCustomValidity('');
   }
 
   private disableSecurityCode(): void {
-    this._inputElement.setAttribute('disabled', 'disabled');
-    this._inputElement.classList.add(SecurityCode.DISABLED_CLASS);
+    this.inputElement.setAttribute('disabled', 'disabled');
+    this.inputElement.classList.add(SecurityCode.DISABLED_CLASS);
   }
 
   private enableSecurityCode(): void {
-    this._inputElement.removeAttribute('disabled');
-    this._inputElement.classList.remove(SecurityCode.DISABLED_CLASS);
+    this.inputElement.removeAttribute('disabled');
+    this.inputElement.classList.remove(SecurityCode.DISABLED_CLASS);
   }
 
   private setSecurityCodePattern(securityCodePattern: string): void {
@@ -316,7 +307,7 @@ export class SecurityCode extends Input {
   }
 
   private shouldDisableSecurityCode(state: FormState): boolean {
-    return state !== FormState.AVAILABLE || this._inputElement.hasAttribute(SecurityCode.BLOCK_CVV_ATTRIBUTE);
+    return state !== FormState.AVAILABLE || this.inputElement.hasAttribute(SecurityCode.BLOCK_CVV_ATTRIBUTE);
   }
 
   private toggleSecurityCode(state: FormState): void {
@@ -327,7 +318,7 @@ export class SecurityCode extends Input {
       return;
     }
     this.enableSecurityCode();
-    this._inputElement.classList.remove(SecurityCode.DISABLED_CLASS);
+    this.inputElement.classList.remove(SecurityCode.DISABLED_CLASS);
   }
 
   private getMaxSecurityCodeLength(): number {

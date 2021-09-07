@@ -8,6 +8,7 @@ import { DefaultPlaceholders } from './DefaultPlaceholders';
 import { DefaultInit } from './DefaultInit';
 import { MERCHANT_FORM_SELECTOR } from '../Selectors';
 import { ChallengeDisplayMode, LoggingLevel, ProcessingScreenMode } from '@trustpayments/3ds-sdk-js';
+import { APPLE_PAY_BUTTON_ID } from '../../../integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 
 export const DefaultConfig: IConfig = {
   analytics: false,

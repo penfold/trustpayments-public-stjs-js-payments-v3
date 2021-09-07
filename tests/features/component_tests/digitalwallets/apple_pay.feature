@@ -308,6 +308,14 @@ Feature: ApplePay
       | SUCCESS     | Payment has been successfully processed | green | success  |
       | DECLINE     | Decline                                 | red   | error    |
 
+  @config_apple_buttonPlacement @apple_test_part2
+  Scenario: ApplePay - successful payment with 'buttonPlacement' property in config
+    When User chooses ApplePay as payment method - response is set to "SUCCESS"
+    Then User will see payment status information: "Payment has been successfully processed"
+    And "success" callback is called only once
+    And "submit" callback is called only once
+    And submit callback contains JWT response
+    And APPLE_PAY or AUTH requests were sent only once with correct data
 
 
 

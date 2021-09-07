@@ -17,7 +17,7 @@ export class ApplePayButtonService {
 
   insertButton(targetId: string, label: string, style: string, locale: string): Element {
     return !this.isButtonInserted(targetId)
-      ? DomMethods.appendChildIntoDOM(targetId, this.createButton(label, style, locale))
+      ? DomMethods.appendChildStrictIntoDOM(targetId, this.createButton(label, style, locale))
       : null;
   }
 

@@ -1,4 +1,4 @@
-import { forkJoin, from, Observable } from 'rxjs';
+import { forkJoin, from, Observable, of } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
@@ -47,15 +47,14 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IApplePayConfig, IA
     );
   }
 
-  start(): IPaymentResult<Error> {
-    const error = new Error('Payment fails.');
-    return {
+  start(): Observable<IPaymentResult<IRequestTypeResponse>> {
+    return of({
       status: PaymentStatus.ERROR,
-      data: error,
+      data: {},
       error: {
         code: 123,
         message: 'error',
       },
-    };
+    });
   }
 }

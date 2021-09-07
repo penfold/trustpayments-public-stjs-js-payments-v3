@@ -19,20 +19,20 @@ describe('MerchantField', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      instance._onKeyPress = jest.fn();
+      instance.onKeyPress = jest.fn();
       instance.init();
     });
 
-    it('should call _onKeyPress', () => {
+    it('should call onKeyPress', () => {
       // @ts-ignore
-      expect(instance._onKeyPress).toHaveBeenCalled();
+      expect(instance.onKeyPress).toHaveBeenCalled();
     });
 
     it('should return collection of merchant inputs', () => {
       const firstName = document.getElementById('example-form-name');
       const email = document.getElementById('example-form-email');
       // @ts-ignore
-      expect(instance._getMerchantInputs()).toEqual({
+      expect(instance.getMerchantInputs()).toEqual({
         inputs: [firstName, email],
       });
     });

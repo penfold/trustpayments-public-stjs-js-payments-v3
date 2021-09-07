@@ -26,12 +26,12 @@ export class GoogleAnalytics {
   private static TRANSLATION_SCRIPT_FAILED = 'Google Analytics: an error occurred loading script';
   private static TRANSLATION_SCRIPT_APPENDED = 'Google Analytics: script has been appended';
   private static TRANSLATION_SCRIPT_APPENDED_FAILURE = 'Google Analytics: an error occurred appending script';
-  private static _disableUserIDTracking(): boolean {
+  private static disableUserIDTracking(): boolean {
     // @ts-ignore
     return (window[`ga-disable-UA-${GoogleAnalytics.GA_MEASUREMENT_ID}-Y`] = true);
   }
 
-  private static _returnScriptWithFeatures(): string {
+  private static returnScriptWithFeatures(): string {
     return `${GoogleAnalytics.GA_INIT_SCRIPT_CONTENT}
     ${GoogleAnalytics.GA_DISABLE_COOKIES}
     ${GoogleAnalytics.GA_IP_ANONYMIZATION}
@@ -39,17 +39,17 @@ export class GoogleAnalytics {
     ${GoogleAnalytics.GA_PAGE_VIEW}`;
   }
 
-  private _communicate: string;
-  private _gaScript: HTMLScriptElement;
-  private _gaScriptContent: Text;
+  private communicate: string;
+  private gaScript: HTMLScriptElement;
+  private gaScriptContent: Text;
 
   init(): void {
-    this._insertGALibrary();
-    this._createGAScript()
+    this.insertGALibrary();
+    this.createGAScript()
       .then(() => {
-        this._insertGAScript()
+        this.insertGAScript()
           .then(() => {
-            GoogleAnalytics._disableUserIDTracking();
+            GoogleAnalytics.disableUserIDTracking();
           })
           .catch(error => {
             throw new Error(error);
@@ -60,28 +60,28 @@ export class GoogleAnalytics {
       });
   }
 
-  private _createGAScript(): Promise<string> {
+  private createGAScript(): Promise<string> {
     return new Promise((resolve, reject) => {
-      this._gaScript = document.createElement('script');
-      this._gaScript.type = 'text/javascript';
-      this._gaScript.id = 'googleAnalytics';
-      this._gaScriptContent = document.createTextNode(GoogleAnalytics._returnScriptWithFeatures());
-      this._gaScript.appendChild(this._gaScriptContent);
-      resolve((this._communicate = GoogleAnalytics.TRANSLATION_SCRIPT_SUCCEEDED));
-      reject((this._communicate = GoogleAnalytics.TRANSLATION_SCRIPT_FAILED));
+      this.gaScript = document.createElement('script');
+      this.gaScript.type = 'text/javascript';
+      this.gaScript.id = 'googleAnalytics';
+      this.gaScriptContent = document.createTextNode(GoogleAnalytics.returnScriptWithFeatures());
+      this.gaScript.appendChild(this.gaScriptContent);
+      resolve((this.communicate = GoogleAnalytics.TRANSLATION_SCRIPT_SUCCEEDED));
+      reject((this.communicate = GoogleAnalytics.TRANSLATION_SCRIPT_FAILED));
     });
   }
 
-  private _insertGALibrary(): void {
+  private insertGALibrary(): void {
     DomMethods.insertScript('head', { async: 'async', src: GoogleAnalytics.GA_SCRIPT_SRC, id: 'googleAnalytics' });
   }
 
-  private _insertGAScript(): Promise<string> {
+  private insertGAScript(): Promise<string> {
     return new Promise((resolve, reject) => {
       if (!document.getElementById('googleAnalytics')) {
-        document.head.appendChild(this._gaScript);
-        resolve((this._communicate = GoogleAnalytics.TRANSLATION_SCRIPT_APPENDED));
-        reject((this._communicate = GoogleAnalytics.TRANSLATION_SCRIPT_APPENDED_FAILURE));
+        document.head.appendChild(this.gaScript);
+        resolve((this.communicate = GoogleAnalytics.TRANSLATION_SCRIPT_APPENDED));
+        reject((this.communicate = GoogleAnalytics.TRANSLATION_SCRIPT_APPENDED_FAILURE));
       }
     });
   }
