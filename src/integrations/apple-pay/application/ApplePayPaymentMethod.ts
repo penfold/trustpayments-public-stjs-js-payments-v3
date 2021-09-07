@@ -1,5 +1,4 @@
-import { forkJoin, from, Observable, of } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { forkJoin, from, Observable, of, mapTo } from 'rxjs';
 import { Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
@@ -42,12 +41,10 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IApplePayConfig, IA
     return forkJoin([
       this.requestProcessingService,
       from(this.interFrameCommunicator.query(initClientQueryEvent, MERCHANT_PARENT_FRAME)),
-    ]).pipe(
-      mapTo(undefined),
-    );
+    ]).pipe(mapTo(undefined));
   }
 
-  start(): Observable<IPaymentResult<IRequestTypeResponse>> {
+  start(request: IApplePayGatewayRequest): Observable<IPaymentResult<IRequestTypeResponse>> {
     return of({
       status: PaymentStatus.ERROR,
       data: {},

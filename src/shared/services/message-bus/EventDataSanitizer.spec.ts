@@ -74,5 +74,15 @@ describe('EventDataSanitizer', () => {
         },
       });
     });
+
+    it('should serialize Error objects', () => {
+      const result = sanitizer.sanitize(new Error('foobar'));
+
+      expect(result).toEqual({
+        name: 'Error',
+        message: 'foobar',
+        stack: expect.any(String),
+      });
+    });
   });
 });
