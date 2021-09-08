@@ -10,6 +10,8 @@ import { ApplePaySessionService } from '../../../client/integrations/apple-pay/a
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ApplePayClient } from './ApplePayClient';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
+import { ApplePayGestureService } from '../../../application/core/integrations/apple-pay/apple-pay-gesture-service/ApplePayGestureService';
+import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 
 describe('ApplePayClient', () => {
   const configMock: IConfig = {
@@ -65,17 +67,23 @@ describe('ApplePayClient', () => {
   let applePayConfigServiceMock: ApplePayConfigService;
   let applePayButtonServiceMock: ApplePayButtonService;
   let applePaySessionServiceMock: ApplePaySessionService;
+  let applePayGestureServiceMock: ApplePayGestureService;
+  let interFrameCommunicatorMock: InterFrameCommunicator;
 
   describe('init()', () => {
     beforeEach(() => {
       applePayConfigServiceMock = mock(ApplePayConfigService);
       applePayButtonServiceMock = mock(ApplePayButtonService);
       applePaySessionServiceMock = mock(ApplePaySessionService);
+      applePayGestureServiceMock = mock(ApplePayGestureService);
+      interFrameCommunicatorMock = mock(InterFrameCommunicator);
 
       applePayClient = new ApplePayClient(
         instance(applePayConfigServiceMock),
         instance(applePayButtonServiceMock),
         instance(applePaySessionServiceMock),
+        instance(applePayGestureServiceMock),
+        instance(interFrameCommunicatorMock),
       );
     });
 
