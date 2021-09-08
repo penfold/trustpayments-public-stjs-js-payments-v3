@@ -6,9 +6,9 @@ Feature: E2E Card Payments with bypass
   @bypass_property
   Scenario Outline: Bypass Cards - Successful payment by <card_type>
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
-      | key                      | value                                            |
-      | requesttypedescriptions  | THREEDQUERY AUTH                                 |
-      | threedbypasspaymenttypes | VISA AMEX MASTERCARD DISCOVER JCB DINERS MAESTRO |
+      | key                      | value                                    |
+      | requesttypedescriptions  | THREEDQUERY AUTH                         |
+      | threedbypasspaymenttypes | VISA AMEX MASTERCARD DISCOVER JCB DINERS |
     And User opens example page
     When User fills payment form with defined card <card>
     And User clicks Pay button
@@ -25,7 +25,6 @@ Feature: E2E Card Payments with bypass
       | AMEX_CARD       |
       | DISCOVER_CARD   |
       | JCB_CARD        |
-      | MAESTRO_CARD    |
       | MASTERCARD_CARD |
       | DINERS_CARD     |
 
@@ -82,6 +81,10 @@ Feature: E2E Card Payments with bypass
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
 
   @bypass_property
@@ -95,6 +98,10 @@ Feature: E2E Card Payments with bypass
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
 
   @bypass_property
@@ -109,6 +116,10 @@ Feature: E2E Card Payments with bypass
     And User fills V1 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
 
   @bypass_property
