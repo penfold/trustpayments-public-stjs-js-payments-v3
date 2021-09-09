@@ -148,7 +148,6 @@ export class ApplePay {
     this.onPaymentAuthorized();
     this.onCancel();
     this.onTransactionComplete();
-    //empty line test
   }
 
   private onValidateMerchant(): void {
