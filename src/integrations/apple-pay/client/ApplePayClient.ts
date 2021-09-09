@@ -72,18 +72,6 @@ export class ApplePayClient {
     });
   }
 
-  private processPayment(paymentRequest: IApplePayPaymentRequest): void {
-    this.messageBus.publish<IStartPaymentMethod<IApplePayPaymentRequest>>({
-      type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
-      data: {
-        data: {
-          ...paymentRequest,
-        },
-        name: ApplePayPaymentMethodName,
-      },
-    });
-  }
-
   private insertApplePayButton(config: IApplePayConfigObject): void {
     this.applePayButtonService.insertButton(
       APPLE_PAY_BUTTON_ID,
@@ -94,7 +82,7 @@ export class ApplePayClient {
 
     this.applePayGestureService.gestureHandle(() => {
       this.initApplePaySession(config);
-      this.processPayment(config.paymentRequest)
+      this.startPaymentProcess(config.paymentRequest)
     }, APPLE_PAY_BUTTON_ID);
   }
 
@@ -107,6 +95,18 @@ export class ApplePayClient {
     // this.onPaymentAuthorized();
     // this.onCancel();
     // this.onTransactionComplete();
+  }
+
+  private startPaymentProcess(paymentRequest: IApplePayPaymentRequest): void {
+    this.messageBus.publish<IStartPaymentMethod<IApplePayPaymentRequest>>({
+      type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+      data: {
+        data: {
+          ...paymentRequest,
+        },
+        name: ApplePayPaymentMethodName,
+      },
+    });
   }
 
   private onValidateMerchant(event: IApplePayValidateMerchantEvent, config: IApplePayConfigObject): void {
@@ -128,7 +128,7 @@ export class ApplePayClient {
   }
 
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent, config: IApplePayConfigObject): void {
-    console.log('YOLO', event);
+    console.log(event);
   }
 
   private onCancel(): void {
