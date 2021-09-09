@@ -24,7 +24,9 @@ Feature: Card Payments
       | key                     | value                  |
       | requesttypedescriptions | INCORRECT_REQUEST_TYPE |
     And User opens example page
-    Then User will see that application is not fully loaded
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+    And User clicks Pay button
+    Then User will see payment status information: "An error occurred"
 
   Scenario: Security code disabled if server error on PIBA
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
