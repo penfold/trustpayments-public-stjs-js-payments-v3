@@ -21,6 +21,7 @@ import { ApplePayClientStatus } from '../../../application/core/integrations/app
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { RequestType } from '../../../shared/types/RequestType';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 
 describe('ApplePay', () => {
   let applePay: ApplePay;
@@ -33,6 +34,7 @@ describe('ApplePay', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
   let messageBus: IMessageBus;
   let messageBusSpy: IMessageBus;
+  let googleAnalyticsMock: GoogleAnalytics;
 
   const configMock: IConfig = {
     jwt: '',
@@ -107,6 +109,7 @@ describe('ApplePay', () => {
     applePayConfigServiceMock.updateConfigWithJwtData = jest.fn();
     messageBus = new SimpleMessageBus();
     messageBusSpy = spy(messageBus);
+    googleAnalyticsMock = mock(GoogleAnalytics);
 
     applePay = new ApplePay(
       mockInstance(applePayButtonServiceMock),
@@ -116,7 +119,8 @@ describe('ApplePay', () => {
       mockInstance(applePaySessionFactoryMock),
       mockInstance(applePaySessionServiceMock),
       mockInstance(interFrameCommunicatorMock),
-      messageBus
+      messageBus,
+      mockInstance(googleAnalyticsMock),
     );
   });
 
@@ -289,7 +293,8 @@ describe('ApplePay', () => {
         mockInstance(applePaySessionFactoryMock),
         mockInstance(applePaySessionServiceMock),
         mockInstance(interFrameCommunicatorMock),
-        messageBus
+        messageBus,
+        mockInstance(googleAnalyticsMock),
       );
 
       when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);

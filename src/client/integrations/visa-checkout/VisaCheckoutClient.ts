@@ -36,6 +36,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
     private jwtDecoder: JwtDecoder,
     private notificationService: NotificationService,
     private payment: Payment,
+    private googleAnalytics: GoogleAnalytics,
   ) {
   }
 
@@ -95,7 +96,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
       switchMap(() => {
         this.notificationService.success(PAYMENT_SUCCESS);
         this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK },  EventScope.ALL_FRAMES);
-        GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment success');
+        this.googleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment success');
 
         return of(VisaCheckoutClientStatus.SUCCESS);
       }),
@@ -129,7 +130,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
       },
       EventScope.ALL_FRAMES,
     );
-    GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment canceled');
+    this.googleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment canceled');
 
     return of(VisaCheckoutClientStatus.CANCEL);
   }
@@ -142,7 +143,7 @@ export class VisaCheckoutClient implements IVisaCheckoutClient {
       },
       EventScope.ALL_FRAMES,
     );
-    GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
+    this.googleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
 
     return of(VisaCheckoutClientStatus.ERROR);
   }
