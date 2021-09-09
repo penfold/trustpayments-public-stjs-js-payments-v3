@@ -1,5 +1,5 @@
-import { forkJoin, from, Observable, of, mapTo, merge } from 'rxjs';
-import { Service } from 'typedi';
+import { forkJoin, from, Observable, of, mapTo, merge, Subject, throwError, NEVER } from 'rxjs';
+import { Inject, Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
@@ -9,36 +9,38 @@ import { IRequestTypeResponse } from '../../../application/core/services/st-code
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
-import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
+import { IConfig } from '../../../shared/model/config/IConfig';
+import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
+import { TransportServiceGatewayClient } from '../../../application/core/services/gateway-client/TransportServiceGatewayClient';
+import { catchError, tap } from 'rxjs/operators';
 
 @Service({ id: PaymentMethodToken, multiple: true })
-export class ApplePayPaymentMethod implements IPaymentMethod<IApplePayConfig, IApplePayGatewayRequest, IRequestTypeResponse> {
+export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayGatewayRequest, IRequestTypeResponse> {
   private requestProcessingService: Observable<IRequestProcessingService>;
-  private paymentErrors: Subject<IPaymentResult<IRequestTypeResponse>>;
+  private paymentErrors: Subject<IPaymentResult<IRequestTypeResponse>> = new Subject();
 
   constructor(
     private requestProcessingInitializer: RequestProcessingInitializer,
     private interFrameCommunicator: InterFrameCommunicator,
-    private configProvider: ConfigProvider,
+    @Inject(() => TransportServiceGatewayClient) private gatewayClient: IGatewayClient,
   ) {}
 
   getName(): string {
     return ApplePayPaymentMethodName;
   }
 
-  init(): Observable<void> {
+  init(config: IConfig): Observable<void> {
     this.requestProcessingService = this.requestProcessingInitializer.initialize();
 
     const initClientQueryEvent: IMessageBusEvent = {
       type: PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT,
-      data: this.configProvider.getConfig(),
+      data: config,
     };
 
     return forkJoin([
@@ -54,36 +56,35 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IApplePayConfig, IA
 
     const success = of({ status: PaymentStatus.SUCCESS });
 
-    return merge(success, this.paymentErrors);
+    return merge(NEVER, this.paymentErrors);
   }
 
   private validateMerchant(request: IApplePayValidateMerchantRequest): Observable<IApplePayWalletVerifyResponseBody> {
-    console.log('walidacja ok');
-    // return this.gatewayClient.walletVerify(request).pipe(
-    //   tap(response => {
-    //     if (Number(response.errorcode) !== 0) {
-    //       this.paymentErrors.next({
-    //         status: PaymentStatus.FAILURE,
-    //         data: response,
-    //         error: {
-    //           code: Number(response.errorcode),
-    //           message: response.errormessage,
-    //         },
-    //       });
-    //     }
-    //   }),
-    //   catchError((error: Error) => {
-    //     this.paymentErrors.error({
-    //       status: PaymentStatus.ERROR,
-    //       data: error,
-    //       error: {
-    //         code: 50003,
-    //         message: error.message,
-    //       },
-    //     });
+    return this.gatewayClient.walletVerify(request).pipe(
+      tap(response => {
+        if (Number(response.errorcode) !== 0) {
+          this.paymentErrors.next({
+            status: PaymentStatus.FAILURE,
+            data: response,
+            error: {
+              code: Number(response.errorcode),
+              message: response.errormessage,
+            },
+          });
+        }
+      }),
+      catchError((error: Error) => {
+        this.paymentErrors.error({
+          status: PaymentStatus.ERROR,
+          data: error,
+          error: {
+            code: 50003,
+            message: error.message,
+          },
+        });
 
-    //     return throwError(() => error);
-    //   }),
-    // );
+        return throwError(() => error);
+      }),
+    );
   }
 }
