@@ -4,25 +4,39 @@ import { IApplePayConfigObject } from '../../../application/core/integrations/ap
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePaySessionService } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
-import { Observable, of, throwError, map, switchMap } from 'rxjs';
+import { Observable, of, throwError, map } from 'rxjs';
 import { Service } from 'typedi';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 import { ApplePayGestureService } from '../../../application/core/integrations/apple-pay/apple-pay-gesture-service/ApplePayGestureService';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
 import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { IApplePayPaymentRequest } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
+import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
+import { IApplePayValidateMerchantEvent } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
+import { ApplePayPaymentService } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/ApplePayPaymentService';
+import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
+import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
+import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
+import { IApplePayPaymentAuthorizedEvent } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 
 @Service()
 export class ApplePayClient {
+  private applePaySession: IApplePaySession;
+
   constructor(
     private applePayConfigService: ApplePayConfigService,
     private applePayButtonService: ApplePayButtonService,
     private applePaySessionService: ApplePaySessionService,
     private applePayGestureService: ApplePayGestureService,
-    private messageBus: IMessageBus
+    private messageBus: IMessageBus,
+    private applePaySessionFactory: ApplePaySessionFactory,
+    private applePayPaymentService: ApplePayPaymentService,
+    private interFrameCommunicator: InterFrameCommunicator,
   ) {
   }
 
@@ -46,10 +60,6 @@ export class ApplePayClient {
       return notAvailable('Your device does not support making payments with Apple Pay');
     }
 
-    // return this.applePaySessionService.canMakePaymentsWithActiveCard(config.applePay.merchantId).pipe(
-    //   switchMap(canMakePayments => canMakePayments ? of(config) : notAvailable('No active cards in the wallet.')),
-    // );
-
     return of(config);
   }
 
@@ -62,7 +72,32 @@ export class ApplePayClient {
     });
   }
 
-  private processPayment(paymentRequest: IApplePayPaymentRequest): void {
+  private insertApplePayButton(config: IApplePayConfigObject): void {
+    this.applePayButtonService.insertButton(
+      APPLE_PAY_BUTTON_ID,
+      config.applePayConfig.buttonText,
+      config.applePayConfig.buttonStyle,
+      config.applePayConfig.paymentRequest.countryCode,
+    );
+
+    this.applePayGestureService.gestureHandle(() => {
+      this.initApplePaySession(config);
+      this.startPaymentProcess(config.paymentRequest)
+    }, APPLE_PAY_BUTTON_ID);
+  }
+
+  private initApplePaySession(config: IApplePayConfigObject): void {
+    this.applePaySession = this.applePaySessionFactory.create(config.applePayVersion, config.paymentRequest);
+    this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => this.onValidateMerchant(event, config);
+    this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => this.onPaymentAuthorized(event, config);
+    this.applePaySession.begin();
+
+    // this.onPaymentAuthorized();
+    // this.onCancel();
+    // this.onTransactionComplete();
+  }
+
+  private startPaymentProcess(paymentRequest: IApplePayPaymentRequest): void {
     this.messageBus.publish<IStartPaymentMethod<IApplePayPaymentRequest>>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
@@ -74,14 +109,33 @@ export class ApplePayClient {
     });
   }
 
-  private insertApplePayButton(config: IApplePayConfigObject): void {
-    this.applePayButtonService.insertButton(
-      APPLE_PAY_BUTTON_ID,
-      config.applePayConfig.buttonText,
-      config.applePayConfig.buttonStyle,
-      config.applePayConfig.paymentRequest.countryCode,
-    );
+  private onValidateMerchant(event: IApplePayValidateMerchantEvent, config: IApplePayConfigObject): void {
+    const validateMerchantQueryEvent: IMessageBusEvent<IApplePayValidateMerchantRequest> = {
+      type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT_2,
+      data: {
+        ...config.validateMerchantRequest,
+        walletvalidationurl: event.validationURL,
+      },
+    };
 
-    this.applePayGestureService.gestureHandle(() => this.processPayment(config.paymentRequest), APPLE_PAY_BUTTON_ID);
+    this.interFrameCommunicator.query(validateMerchantQueryEvent, CONTROL_FRAME_IFRAME)
+      .then((response: IApplePayWalletVerifyResponseBody) => {
+        this.applePaySession.completeMerchantValidation(JSON.parse(response.walletsession));
+      })
+      .catch(() => {
+        this.applePaySession.abort();
+      });
+  }
+
+  private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent, config: IApplePayConfigObject): void {
+    console.log(event);
+  }
+
+  private onCancel(): void {
+    console.log('onCancel');
+  }
+
+  private onTransactionComplete(): void {
+    console.log('onTransactionComplete');
   }
 }
