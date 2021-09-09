@@ -14,6 +14,7 @@ import { QueryMessage } from './messages/QueryMessage';
 import { ResponseMessage } from './messages/ResponseMessage';
 import { of, Subject, timer } from 'rxjs';
 import { EventDataSanitizer } from './EventDataSanitizer';
+import { Uuid } from '../../../application/core/shared/uuid/Uuid';
 
 describe('InterFrameCommunicator', () => {
   const PARENT_FRAME_ORIGIN = 'https://foobar.com';
@@ -28,6 +29,7 @@ describe('InterFrameCommunicator', () => {
   let foobarFrameMock: Window;
   let foobarFrame: Window;
   let eventDataSanitizerMock: EventDataSanitizer;
+  let uuidMock: Uuid
 
   beforeEach(() => {
     frameIdentifierMock = mock(FrameIdentifier);
@@ -40,13 +42,15 @@ describe('InterFrameCommunicator', () => {
     foobarFrame = instance(foobarFrameMock);
     Object.setPrototypeOf(foobarFrame, Window.prototype);
     eventDataSanitizerMock = mock(EventDataSanitizer);
+    uuidMock = mock(Uuid);
 
     interFrameCommunicator = new InterFrameCommunicator(
       instance(frameIdentifierMock),
       instance(frameAccessorMock),
       instance(containerMock),
       instance(eventDataSanitizerMock),
-      window
+      uuidMock,
+      window,
     );
 
     when(frameAccessorMock.getParentFrame()).thenReturn(parentFrame);
@@ -175,7 +179,7 @@ describe('InterFrameCommunicator', () => {
     it('listens to query messages and pass them to responders', done => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const fooResponder = jest.fn().mockImplementationOnce((event: IMessageBusEvent) => of({ type: 'BAR' }));
-      const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
+      const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar', uuidMock);
 
       interFrameCommunicator.whenReceive('FOO').thenRespond(fooResponder);
 
@@ -197,8 +201,8 @@ describe('InterFrameCommunicator', () => {
       const fooResponder = (event: IMessageBusEvent) => timer(100).pipe(mapTo({ type: 'FOO_RESPONSE' }));
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const barResponder = (event: IMessageBusEvent) => of({ type: 'BAR_RESPONSE' });
-      const fooQueryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
-      const barQueryMessage = new QueryMessage({ type: 'BAR' }, 'foobar');
+      const fooQueryMessage = new QueryMessage({ type: 'FOO' }, 'foobar', uuidMock);
+      const barQueryMessage = new QueryMessage({ type: 'BAR' }, 'foobar', uuidMock);
 
       interFrameCommunicator.whenReceive('FOO').thenRespond(fooResponder);
       interFrameCommunicator.whenReceive('BAR').thenRespond(barResponder);
@@ -223,7 +227,7 @@ describe('InterFrameCommunicator', () => {
     it('processes each responder only once even if it was assigned multiple times', done => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const responder = (event: IMessageBusEvent) => of({ type: 'FOO_RESPONSE' });
-      const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
+      const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar', uuidMock);
 
       interFrameCommunicator.whenReceive('FOO').thenRespond(responder);
       interFrameCommunicator.whenReceive('FOO').thenRespond(responder);
@@ -240,7 +244,7 @@ describe('InterFrameCommunicator', () => {
     it('doesnt process queries after communication closed event', done => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const fooResponder = jest.fn().mockImplementationOnce((event: IMessageBusEvent) => of({ type: 'BAR' }));
-      const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
+      const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar', uuidMock);
 
       interFrameCommunicator.whenReceive('FOO').thenRespond(fooResponder);
       interFrameCommunicator.close();

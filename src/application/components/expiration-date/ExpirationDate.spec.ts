@@ -18,6 +18,7 @@ import { ITranslationProvider } from '../../core/shared/translator/ITranslationP
 import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
 import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
 import { Validation } from '../../core/shared/validation/Validation';
+import { Utils } from '../../core/shared/utils/Utils';
 
 jest.mock('./../../core/shared/notification/Notification');
 
@@ -213,6 +214,7 @@ function expirationDateFixture() {
   const configProvider: ConfigProvider = mock<ConfigProvider>();
   const formatter: Formatter = mock(Formatter);
   const validation: Validation = mock(Validation);
+  const utils: Utils = mock(Utils);
   // @ts-ignore
   when(configProvider.getConfig()).thenReturn({
     jwt: '',
@@ -224,6 +226,7 @@ function expirationDateFixture() {
     instance(configProvider),
     instance(formatter),
     instance(validation),
+    instance(utils),
   );
 
   const labelElement = document.createElement('label');

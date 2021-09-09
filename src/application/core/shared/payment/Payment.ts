@@ -20,13 +20,12 @@ export class Payment {
   private cybertonica: Cybertonica;
   private notificationService: NotificationService;
   private stTransport: StTransport;
-  private validation: Validation;
+
 
   constructor() {
     this.cybertonica = Container.get(Cybertonica);
     this.notificationService = Container.get(NotificationService);
     this.stTransport = Container.get(StTransport);
-    this.validation = new Validation();
   }
 
   async processPayment(

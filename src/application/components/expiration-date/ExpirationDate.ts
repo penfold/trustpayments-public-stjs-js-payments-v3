@@ -15,6 +15,7 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { Styler } from '../../core/shared/styler/Styler';
 import { LABEL_EXPIRATION_DATE } from '../../core/models/constants/Translations';
 import { Validation } from '../../core/shared/validation/Validation';
+import { Utils } from '../../core/shared/utils/Utils';
 
 @Service()
 export class ExpirationDate extends Input {
@@ -33,6 +34,7 @@ export class ExpirationDate extends Input {
     configProvider: ConfigProvider,
     private formatter: Formatter,
     protected validation: Validation,
+    protected utils: Utils,
   ) {
     super(
       EXPIRATION_DATE_INPUT,
@@ -40,7 +42,8 @@ export class ExpirationDate extends Input {
       EXPIRATION_DATE_LABEL,
       EXPIRATION_DATE_WRAPPER,
       configProvider,
-      validation
+      validation,
+      utils
     );
     super.setEventListener(MessageBus.EVENTS.BLUR_EXPIRATION_DATE);
     super.setEventListener(MessageBus.EVENTS.FOCUS_EXPIRATION_DATE);

@@ -17,6 +17,7 @@ export class Formatter {
 
   number(cardNumber: string, id: string): { formatted: string, nonformatted: string } {
     this.validation.cardNumber(cardNumber);
+    this.validation.cardNumber(cardNumber);
     const element: HTMLInputElement = document.getElementById(id) as HTMLInputElement;
     const cardNumberCleaned: string = this.validation.removeNonDigits(this.validation.cardNumberValue);
     element.value = cardNumberCleaned;

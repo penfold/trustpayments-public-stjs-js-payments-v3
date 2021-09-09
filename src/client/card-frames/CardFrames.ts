@@ -15,7 +15,6 @@ import {
   SECURITY_CODE_COMPONENT_NAME,
   SECURITY_CODE_IFRAME,
 } from '../../application/core/models/constants/Selectors';
-import { Validation } from '../../application/core/shared/validation/Validation';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Observable } from 'rxjs';
@@ -53,7 +52,6 @@ export class CardFrames {
   private cardNumber: HTMLIFrameElement;
   private expirationDate: HTMLIFrameElement;
   private securityCode: HTMLIFrameElement;
-  private validation: Validation;
   private translator: ITranslator;
   private messageBusEvent: IMessageBusEvent<{ message: string; }> = { data: { message: '' }, type: '' };
   private submitButton: HTMLInputElement | HTMLButtonElement;
@@ -100,7 +98,7 @@ export class CardFrames {
     private iframeFactory: IframeFactory,
     private frame: Frame,
     private messageBus: IMessageBus,
-    private jwtDecoder: JwtDecoder
+    private jwtDecoder: JwtDecoder,
   ) {
     this.fieldsToSubmit = fieldsToSubmit || ['pan', 'expirydate', 'securitycode'];
     this.elementsToRegister = [];
@@ -357,7 +355,6 @@ export class CardFrames {
     jwt: string,
     formId: string
   ): void {
-    this.validation = new Validation();
     this.buttonId = buttonId;
     this.formId = formId;
     this.defaultPaymentType = defaultPaymentType;

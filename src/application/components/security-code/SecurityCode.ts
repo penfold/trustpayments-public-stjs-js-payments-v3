@@ -25,6 +25,7 @@ import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLoc
 import { Styler } from '../../core/shared/styler/Styler';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { IStJwtPayload } from '../../core/models/IStJwtPayload';
+import { Utils } from '../../core/shared/utils/Utils';
 
 @Service()
 export class SecurityCode extends Input {
@@ -41,8 +42,9 @@ export class SecurityCode extends Input {
     private formatter: Formatter,
     private jwtDecoder: JwtDecoder,
     protected validation: Validation,
+    protected utils: Utils,
   ) {
-    super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider, validation);
+    super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider, validation, utils);
     this.securityCodeLength = UNKNOWN_CVC;
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
       this.placeholder = this.getPlaceholder(this.securityCodeLength);

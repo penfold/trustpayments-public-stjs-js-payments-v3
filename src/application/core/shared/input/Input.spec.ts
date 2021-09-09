@@ -94,7 +94,8 @@ describe('FormField', () => {
       Validation.setCustomValidationError = jest.fn();
       // @ts-ignore
       instance.format = jest.fn();
-      Utils.stripChars = jest.fn();
+      // @ts-ignore
+      instance.utils.stripChars = jest.fn();
 
       // @ts-ignore
       instance.onPaste(event);
@@ -228,6 +229,7 @@ function formFieldFixture() {
   const messageElement: HTMLParagraphElement = document.createElement('p');
   const configProviderMock: ConfigProvider = mock<ConfigProvider>();
   const validation: Validation = mock(Validation);
+  const utils: Utils = mock(Utils);
   labelElement.id = 'st-form-field-label';
   inputElement.id = 'st-form-field-input';
   messageElement.id = 'st-form-field-message';
@@ -242,7 +244,7 @@ function formFieldFixture() {
   when(configProviderMock.getConfig$()).thenReturn(
     of({
       stopSubmitFormOnEnter: false,
-    })
+    }),
   );
   const instance: Input = new Input(
     'st-form-field-input',
@@ -250,7 +252,8 @@ function formFieldFixture() {
     'st-form-field-label',
     'st-form-field__wrapper',
     mockInstance(configProviderMock),
-    mockInstance(validation)
+    mockInstance(validation),
+    mockInstance(utils),
   );
   return { instance, inputElement, messageElement, labelElement };
 }

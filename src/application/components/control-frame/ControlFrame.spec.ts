@@ -28,6 +28,8 @@ import spyOn = jest.spyOn;
 import { PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Translations';
 import { Translator } from '../../core/shared/translator/Translator';
 import { FormState } from '../../core/models/constants/FormState';
+import { Payment } from '../../core/shared/payment/Payment';
+import { Validation } from '../../core/shared/validation/Validation';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -224,6 +226,8 @@ function controlFrameFixture() {
   const applePayClientMock: ApplePayClient = mock(ApplePayClient);
   const paymentControllerMock: PaymentController = mock(PaymentController);
   const translator: Translator = mock(Translator);
+  const payment: Payment = mock(Payment);
+  const validation: Validation = mock(Validation);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -272,6 +276,8 @@ function controlFrameFixture() {
     mockInstance(applePayClientMock),
     mockInstance(paymentControllerMock),
     mockInstance(translator),
+    mockInstance(validation),
+    mockInstance(payment),
   );
   const messageBusEvent = {
     type: '',

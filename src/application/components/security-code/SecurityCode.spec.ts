@@ -155,7 +155,8 @@ describe('SecurityCode', () => {
         },
         preventDefault: jest.fn(),
       };
-      Utils.stripChars = jest.fn().mockReturnValue('111');
+      // @ts-ignore
+      securityCodeInstance.utils.stripChars = jest.fn().mockReturnValue('111');
       // @ts-ignore
       securityCodeInstance.sendState = jest.fn();
       // @ts-ignore
@@ -251,6 +252,7 @@ function securityCodeFixture() {
   const formatter: Formatter = mock(Formatter);
   const validation: Validation = mock(Validation);
   const jwtDecoder: JwtDecoder = mock(JwtDecoder);
+  const utils: Utils = mock(Utils);
   const localStorage: BrowserLocalStorage = mock(BrowserLocalStorage);
   when(localStorage.select(anyFunction())).thenReturn(of('34****4565'));
   when(configProvider.getConfig$()).thenReturn(of(config));
@@ -261,6 +263,7 @@ function securityCodeFixture() {
     instance(formatter),
     instance(jwtDecoder),
     instance(validation),
+    instance(utils),
   );
 
 

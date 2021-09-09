@@ -39,12 +39,13 @@ describe('StTransport class', () => {
   let instance: StTransport;
   const configProviderMock = mock<ConfigProvider>();
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
+  const utilsMock: Utils = mock(Utils);
   let mockFT: jest.Mock;
   let codec: StCodec;
 
   beforeEach(() => {
     when(configProviderMock.getConfig()).thenReturn(config);
-    instance = new StTransport(mockInstance(configProviderMock), mockInstance(jwtDecoderMock));
+    instance = new StTransport(mockInstance(configProviderMock), mockInstance(jwtDecoderMock), mockInstance(utilsMock));
     // This effectively creates a MVP codec so that we aren't testing all that here
     // @ts-ignore
     instance.codec = codec = {
@@ -203,25 +204,30 @@ describe('StTransport class', () => {
     });
   });
 
-  describe('_fetchRetry()', () => {
+  describe('fetchRetry()', () => {
     const { options, url, connectTimeout, delay, retries, retryTimeout } = fetchRetryObject;
 
     beforeEach(() => {
-      Utils.promiseWithTimeout = jest.fn();
+      // @ts-ignore
+      instance.utils.promiseWithTimeout = jest.fn();
     });
 
-    it('should call Utils.retryPromise with provided parameters', () => {
-      Utils.retryPromise = jest.fn();
+    it('should call instance.utils.retryPromise with provided parameters', () => {
+      // @ts-ignore
+      instance.utils.retryPromise = jest.fn();
       // @ts-ignore
       instance.fetchRetry(url, options, connectTimeout, delay, retries, retryTimeout);
-      expect(Utils.retryPromise).toHaveBeenCalled();
+      // @ts-ignore
+      expect(instance.utils.retryPromise).toHaveBeenCalled();
     });
 
-    it('should call Utils.retryPromise with default parameters', () => {
-      Utils.retryPromise = jest.fn();
+    it('should call instance.utils.retryPromise with default parameters', () => {
+      // @ts-ignore
+      instance.utils.retryPromise = jest.fn();
       // @ts-ignore
       instance.fetchRetry(url, options);
-      expect(Utils.retryPromise).toHaveBeenCalled();
+      // @ts-ignore
+      expect(instance.utils.retryPromise).toHaveBeenCalled();
     });
   });
 });

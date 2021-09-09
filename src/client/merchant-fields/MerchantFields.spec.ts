@@ -6,6 +6,8 @@ import { ITranslationProvider } from '../../application/core/shared/translator/I
 import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
+import { Validation } from '../../application/core/shared/validation/Validation';
+import { instance as instanceOf, mock } from 'ts-mockito';
 
 jest.mock('./../../application/core/shared/notification/Notification');
 
@@ -42,7 +44,8 @@ describe('MerchantField', () => {
 function merchantFieldsFixture() {
   document.body.innerHTML =
     '<div class="example-form__section example-form__section--horizontal"><div class="example-form__group"><label for="example-form-name" class="example-form__label">NAME</label><input id="example-form-name" class="example-form__input" type="text" placeholder="John Doe" autocomplete="name" name="myBillName" data-st-name="billingfirstname"></div> <div class="example-form__group"> <label for="example-form-email" class="example-form__label">E-MAIL</label> <input id="example-form-email" class="example-form__input" type="email" placeholder="test@mail.com" autocomplete="email" name="myBillEmail" data-st-name="billingemail"> </div> <div class="example-form__group"> <label for="example-form-phone" class="example-form__label">PHONE</label> <input id="example-form-phone" class="example-form__input" type="tel" placeholder="+00 000 000 000" autocomplete="tel" name="myBillTel"></div></div>';
-  const instance = new MerchantFields();
+  const validation: Validation = mock(Validation);
+  const instance = new MerchantFields(instanceOf(validation));
   const receivedMerchantFieldsArray = { merchantFieldsNamesArray: ['billingfirstname', 'billingemail'] };
   return { instance, receivedMerchantFieldsArray };
 }

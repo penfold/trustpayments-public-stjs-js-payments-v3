@@ -72,9 +72,7 @@ export class ControlFrame {
   private formFields: IFormFieldsDetails = FormFieldsDetails;
   private formFieldsValidity: IFormFieldsValidity = FormFieldsValidity;
   private merchantFormData: IMerchantData;
-  private payment: Payment;
   private remainingRequestTypes: RequestType[];
-  private validation: Validation;
   private slicedPan: string;
 
   constructor(
@@ -91,6 +89,8 @@ export class ControlFrame {
     private applePayClient: ApplePayClient,
     private paymentController: PaymentController,
     private translator: ITranslator,
+    private validation: Validation,
+    private payment: Payment,
   ) {
     this.init();
     this.initVisaCheckout();
@@ -127,7 +127,6 @@ export class ControlFrame {
       .pipe(ofType(PUBLIC_EVENTS.CARD_PAYMENTS_INIT))
       .pipe(first())
       .subscribe((event: IMessageBusEvent<string>) => {
-        this.setInstances();
         this.setFormFieldsValidities();
         this.formFieldChangeEvent(MessageBus.EVENTS.CHANGE_CARD_NUMBER, this.formFields.cardNumber);
         this.formFieldChangeEvent(MessageBus.EVENTS.CHANGE_EXPIRATION_DATE, this.formFields.expirationDate);
@@ -410,11 +409,6 @@ export class ControlFrame {
     this.formFieldsValidity.cardNumber.state = this.formFields.cardNumber.validity;
     this.formFieldsValidity.expirationDate.state = this.formFields.expirationDate.validity;
     this.formFieldsValidity.securityCode.state = this.formFields.securityCode.validity;
-  }
-
-  private setInstances(): void {
-    this.payment = new Payment();
-    this.validation = new Validation();
   }
 
   private updateMerchantFields(data: IMerchantData): void {

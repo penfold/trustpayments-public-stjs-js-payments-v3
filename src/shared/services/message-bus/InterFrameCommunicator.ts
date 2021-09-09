@@ -14,6 +14,7 @@ import { Debug } from '../../Debug';
 import { CONFIG, WINDOW } from '../../dependency-injection/InjectionTokens';
 import { IConfig } from '../../model/config/IConfig';
 import { EventDataSanitizer } from './EventDataSanitizer';
+import { Uuid } from '../../../application/core/shared/uuid/Uuid';
 
 @Service()
 export class InterFrameCommunicator {
@@ -31,6 +32,7 @@ export class InterFrameCommunicator {
     private frameAccessor: FrameAccessor,
     private container: ContainerInstance,
     private eventDataSanitizer: EventDataSanitizer,
+    private uuid: Uuid,
     @Inject(WINDOW) private window: Window
   ) {
     this.incomingEvent$ = fromEvent<MessageEvent>(this.window, InterFrameCommunicator.MESSAGE_EVENT).pipe(
@@ -86,7 +88,7 @@ export class InterFrameCommunicator {
   query<T>(message: IMessageBusEvent, target: Window | string): Promise<T> {
     return new Promise((resolve, reject) => {
       const sourceFrame = this.identifier.getFrameName() || MERCHANT_PARENT_FRAME;
-      const query = new QueryMessage(message, sourceFrame);
+      const query = new QueryMessage(message, sourceFrame, this.uuid);
 
       this.incomingEvent$
         .pipe(

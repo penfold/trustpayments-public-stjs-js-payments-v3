@@ -1,5 +1,8 @@
 import { Formatter } from './Formatter';
 import { EXPIRATION_DATE_INPUT } from '../../models/constants/Selectors';
+import { Validation } from '../validation/Validation';
+import { instance, mock } from 'ts-mockito';
+import { Utils } from '../utils/Utils';
 
 jest.mock('./../notification/Notification');
 
@@ -42,7 +45,9 @@ function formatterFixture() {
         </form>
   `;
   document.body.innerHTML = html;
-  const instance = new Formatter();
+  const validation: Validation = mock(Validation);
+  const utils: Utils = mock(Utils);
+  const formatterInstance = new Formatter(instance(utils), instance(validation));
   const trimNonNumeric = [
     ['123', '123'],
     ['  1  2  3  ', '123'],
@@ -76,7 +81,7 @@ function formatterFixture() {
     ['aa3', '3'],
   ];
   return {
-    instance,
+    instance: formatterInstance,
     maskExpirationDate,
     maskExpirationDateOnPaste,
     trimNonNumeric,

@@ -4,14 +4,17 @@ import { anyNumber, anyString, anything, deepEqual, instance, mock, verify, when
 import { IThreeDQueryResponse } from '../../../../../../models/IThreeDQueryResponse';
 import { ChallengeResultInterface, ResultActionCode } from '@trustpayments/3ds-sdk-js';
 import { ICResData } from '../../data/ICResData';
+import { Uuid } from '../../../../../../shared/uuid/Uuid';
 
 describe('CResToThreeDResponseConverter', () => {
   let unsignedJwtGeneratorMock: UnsignedJwtGenerator;
+  let uuidMock: Uuid;
   let sut: CResToThreeDResponseConverter;
 
   beforeEach(() => {
     unsignedJwtGeneratorMock = mock(UnsignedJwtGenerator);
-    sut = new CResToThreeDResponseConverter(instance(unsignedJwtGeneratorMock));
+    uuidMock = mock(Uuid);
+    sut = new CResToThreeDResponseConverter(instance(unsignedJwtGeneratorMock), instance(uuidMock));
 
     when(unsignedJwtGeneratorMock.generate(anything())).thenReturn('jwt');
   });

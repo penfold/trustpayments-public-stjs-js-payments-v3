@@ -276,7 +276,8 @@ describe('CardNumber', () => {
         },
         preventDefault: jest.fn(),
       };
-      Utils.stripChars = jest.fn().mockReturnValue('41111');
+      // @ts-ignore
+      cardNumberInstance.utils.stripChars = jest.fn().mockReturnValue('41111');
       // @ts-ignore
       cardNumberInstance.sendState = jest.fn();
       // @ts-ignore
@@ -303,7 +304,8 @@ describe('CardNumber', () => {
     });
 
     it('should return max length of card number including whitespaces', () => {
-      Utils.getLastElementOfArray = jest.fn().mockReturnValueOnce(panLengthWithoutSpaces);
+      // @ts-ignore
+      cardNumberInstance.utils.getLastElementOfArray = jest.fn().mockReturnValueOnce(panLengthWithoutSpaces);
       // @ts-ignore
       expect(cardNumberInstance.getMaxLengthOfCardNumber()).toEqual(panLengthWithoutSpaces + numberOfWhitespaces);
     });
@@ -318,6 +320,7 @@ function cardNumberFixture() {
   const iconFactory: IconFactory = mock(IconFactory);
   const formatter: Formatter = mock(Formatter);
   const validation: Validation = mock(Validation);
+  const utils: Utils = mock(Utils);
   when(configProvider.getConfig$()).thenReturn(of({} as IConfig));
   // @ts-ignore
   when(configProvider.getConfig()).thenReturn({
@@ -330,6 +333,7 @@ function cardNumberFixture() {
     instance(iconFactory),
     instance(formatter),
     instance(validation),
+    instance(utils),
   );
 
   function createElement(markup: string) {

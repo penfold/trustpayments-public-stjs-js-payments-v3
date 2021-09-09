@@ -137,7 +137,7 @@ export class StCodec {
   }
 
   private static handleInvalidResponse() {
-    const validation = new Validation();
+    const validation = Container.get(Validation);
     StCodec.publishResponse(StCodec.createCommunicationError());
     StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_RESPONSE);
     validation.blockForm(FormState.AVAILABLE);
@@ -183,7 +183,7 @@ export class StCodec {
 
   private static handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
     const translator = Container.get(TranslatorToken);
-    const validation = new Validation();
+    const validation = Container.get(Validation);
 
     const { errorcode, errormessage, requesttypedescription } = responseContent;
 

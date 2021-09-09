@@ -154,7 +154,7 @@ export class Validation {
   private messageBus: IMessageBus;
   private frame: Frame;
 
-  constructor(private translator: ITranslator = Container.get(TranslatorToken), private utils: Utils) {
+  constructor(private utils: Utils, private translator: ITranslator = Container.get(TranslatorToken)) {
     this.messageBus = Container.get(MessageBusToken);
     this.frame = Container.get(Frame);
     this.init();

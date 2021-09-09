@@ -16,6 +16,8 @@ import { TranslationProvider } from '../translator/TranslationProvider';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
 import { IFormFieldsValidity } from '../../models/IFormFieldsValidity';
+import { instance, mock } from 'ts-mockito';
+import { Utils } from '../utils/Utils';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set({ id: TranslatorToken, type: Translator });
@@ -252,7 +254,8 @@ describe('Validation', () => {
 });
 
 function validationFixture() {
-  const instance: Validation = new Validation();
+  const utils: Utils = mock(Utils);
+  const sut: Validation = new Validation(instance(utils));
   const inputElement = document.createElement('input');
   const inputElementMerchant = document.createElement('input');
   inputElementMerchant.setAttribute('data-st-name', 'billingemail');
@@ -308,7 +311,7 @@ function validationFixture() {
   return {
     inputElement,
     inputElementMerchant,
-    instance,
+    instance: sut,
     messageElement,
     someRandomMessage,
     keyCodeForOther,
