@@ -25,6 +25,7 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
     private interFrameCommunicator: InterFrameCommunicator,
     private gatewayClient: IGatewayClient,
     private challengeService: CardinalChallengeService,
+    private googleAnalytics: GoogleAnalytics,
   ) {}
 
   init$(jsInitResponse: IThreeDInitResponse): Observable<void> {
@@ -69,7 +70,7 @@ export class CardinalCommerceVerificationService implements IThreeDVerificationS
           cachetoken: jsInitResponse.cachetoken,
         });
       }),
-      tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed'))
+      tap(() => this.googleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed'))
     );
   }
 

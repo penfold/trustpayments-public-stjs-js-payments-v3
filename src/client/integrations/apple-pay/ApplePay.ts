@@ -46,6 +46,7 @@ export class ApplePay {
     private applePaySessionService: ApplePaySessionService,
     private interFrameCommunicator: InterFrameCommunicator,
     private messageBus: IMessageBus,
+    private googleAnalytics: GoogleAnalytics,
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
@@ -81,7 +82,7 @@ export class ApplePay {
           this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this), config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
         }),
         tap(() => {
-          GoogleAnalytics.sendGaData(
+          this.googleAnalytics.sendGaData(
             'event',
             'Apple Pay',
             `${ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD}`,
@@ -128,7 +129,7 @@ export class ApplePay {
           },
         });
 
-        GoogleAnalytics.sendGaData(
+        this.googleAnalytics.sendGaData(
           'event',
           'Apple Pay',
           `${ApplePayClientErrorCode.NO_ACTIVE_CARDS_IN_WALLET}`,
@@ -172,7 +173,7 @@ export class ApplePay {
           if (Number(response.data.status) === ApplePayClientErrorCode.VALIDATE_MERCHANT_SUCCESS) {
             this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS, response.data.details);
             this.applePaySessionService.completeMerchantValidation(response.data.details.walletsession);
-            GoogleAnalytics.sendGaData(
+            this.googleAnalytics.sendGaData(
               'event',
               'Apple Pay',
               `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
@@ -189,7 +190,7 @@ export class ApplePay {
           }
 
           this.handleWalletVerifyResponse(ApplePayClientStatus.VALIDATE_MERCHANT_ERROR, response.data.details);
-          GoogleAnalytics.sendGaData(
+          this.googleAnalytics.sendGaData(
             'event',
             'Apple Pay',
             `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
@@ -238,7 +239,7 @@ export class ApplePay {
         },
       });
 
-      GoogleAnalytics.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.CANCEL}`, 'Payment has been cancelled');
+      this.googleAnalytics.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.CANCEL}`, 'Payment has been cancelled');
     };
   }
 
@@ -269,7 +270,7 @@ export class ApplePay {
             },
           },
         });
-        GoogleAnalytics.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify failure');
+        this.googleAnalytics.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify failure');
         break;
 
       default:
@@ -309,7 +310,7 @@ export class ApplePay {
           },
         });
         this.applePaySession.completePayment(completion);
-        GoogleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
+        this.googleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
 
         return completion;
 
