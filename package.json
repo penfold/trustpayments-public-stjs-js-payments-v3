@@ -31,7 +31,7 @@
     "build:dev": "webpack --config webpack.dev.js && npm run build:declarations",
     "build:rc": "webpack --config webpack.rc.js && npm run build:declarations",
     "prod": "npm run build",
-    "test": "jest --watchAll",
+    "test": "jest",
     "coverage": "jest --coverage",
     "typescript:check": "npx tsc --noEmit -p tsconfig.json",
     "build:declarations": "npx dts-bundle-generator ./src/declarations.ts -o ./dist/index.d.ts --project tsconfig.json --no-banner",

@@ -16,7 +16,6 @@ import { IMessageBus } from '../../../application/core/shared/message-bus/IMessa
 import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
 import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
 import { IApplePayValidateMerchantEvent } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
-import { ApplePayPaymentService } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/ApplePayPaymentService';
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
@@ -33,10 +32,9 @@ export class ApplePayClient {
     private applePayButtonService: ApplePayButtonService,
     private applePaySessionService: ApplePaySessionService,
     private applePayGestureService: ApplePayGestureService,
-    private messageBus: IMessageBus,
     private applePaySessionFactory: ApplePaySessionFactory,
-    private applePayPaymentService: ApplePayPaymentService,
     private interFrameCommunicator: InterFrameCommunicator,
+    private messageBus: IMessageBus,
   ) {
   }
 
