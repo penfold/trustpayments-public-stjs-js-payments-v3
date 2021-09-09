@@ -231,10 +231,10 @@
       setCallbacks(config);
       var st = ST(config);
       st.Components(config.components);
-      st.VisaCheckout(config.visaCheckout);
-      st.ApplePay(config.applePay);
-      st.GooglePay(config.googlePay);
-      // st.ApplePay2(config.applePay);
+      // st.VisaCheckout(config.visaCheckout);
+      // st.ApplePay(config.applePay);
+      // st.GooglePay(config.googlePay);
+      st.ApplePay2(config.applePay);
       st.Cybertonica().then(function(response) {
         console.error(response);
       });

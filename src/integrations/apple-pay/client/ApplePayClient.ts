@@ -11,10 +11,9 @@ import { ApplePayGestureService } from '../../../application/core/integrations/a
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
 import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
-import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
-import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { IApplePayPaymentRequest } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 
 @Service()
 export class ApplePayClient {
@@ -23,7 +22,7 @@ export class ApplePayClient {
     private applePayButtonService: ApplePayButtonService,
     private applePaySessionService: ApplePaySessionService,
     private applePayGestureService: ApplePayGestureService,
-    private interFrameCommunicator: InterFrameCommunicator
+    private messageBus: IMessageBus
   ) {
   }
 
@@ -64,18 +63,15 @@ export class ApplePayClient {
   }
 
   private processPayment(paymentRequest: IApplePayPaymentRequest): void {
-    const queryEvent = {
+    this.messageBus.publish<IStartPaymentMethod<IApplePayPaymentRequest>>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
         data: {
-          walletsource: 'APPLEPAY',
           ...paymentRequest,
         },
         name: ApplePayPaymentMethodName,
       },
-    };
-
-    this.interFrameCommunicator.query<IStartPaymentMethod<IApplePayGatewayRequest>>(queryEvent, MERCHANT_PARENT_FRAME);
+    });
   }
 
   private insertApplePayButton(config: IApplePayConfigObject): void {
@@ -86,6 +82,6 @@ export class ApplePayClient {
       config.applePayConfig.paymentRequest.countryCode,
     );
 
-    this.applePayGestureService.gestureHandle(this.processPayment.bind(config.paymentRequest), APPLE_PAY_BUTTON_ID);
+    this.applePayGestureService.gestureHandle(() => this.processPayment(config.paymentRequest), APPLE_PAY_BUTTON_ID);
   }
 }
