@@ -1,7 +1,9 @@
 {
+  "submitOnSuccess": false,
   "translations": {
+    "Card number": "Kartennummer",
     "An error occurred": "Wystąpił błąd",
-    "Pay": "KupTeraz!",
+    "Pay": "Kup teraz!",
     "Payment has been successfully processed": "Victory",
     "Field is required": "Incorrect"
   }
