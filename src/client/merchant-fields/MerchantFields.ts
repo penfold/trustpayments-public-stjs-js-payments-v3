@@ -9,14 +9,12 @@ import { MessageBusToken } from '../../shared/dependency-injection/InjectionToke
 export class MerchantFields {
   private readonly inputs: HTMLCollection;
   private messageBus: IMessageBus;
-  private validation: Validation;
   private frame: Frame;
 
-  constructor() {
+  constructor(private validation: Validation) {
     this.inputs = document.getElementsByTagName('input');
     this.messageBus = Container.get(MessageBusToken);
     this.frame = Container.get(Frame);
-    this.validation = new Validation();
   }
 
   init(): void {

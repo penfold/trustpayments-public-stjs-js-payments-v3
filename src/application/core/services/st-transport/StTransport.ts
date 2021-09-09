@@ -42,7 +42,7 @@ export class StTransport {
   private config: IConfig;
   private codec: StCodec;
 
-  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder) {}
+  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder, private utils: Utils) {}
 
   /**
    * Perform a JSON API request with ST
@@ -127,8 +127,8 @@ export class StTransport {
     retries = StTransport.RETRY_LIMIT,
     retryTimeout = StTransport.RETRY_TIMEOUT
   ) {
-    return Utils.retryPromise(
-      () => Utils.promiseWithTimeout<Response>(() => fetch(url, options), connectTimeout),
+    return this.utils.retryPromise(
+      () => this.utils.promiseWithTimeout<Response>(() => fetch(url, options), connectTimeout),
       delay,
       retries,
       retryTimeout

@@ -1,31 +1,16 @@
+import { Service } from 'typedi';
+
+@Service()
 export class Utils {
-  static inArray<T>(array: ArrayLike<T>, item: T): boolean {
+  inArray<T>(array: ArrayLike<T>, item: T): boolean {
     return Array.from(array).indexOf(item) >= 0;
   }
 
-  static forEachBreak<inputType, returnType>(
-    iterable: ArrayLike<inputType>,
-    callback: (item: inputType) => returnType
-  ): returnType {
-    let result: returnType = null;
-    for (const i in iterable) {
-      result = callback(iterable[i]);
-      if (result) {
-        break;
-      }
-    }
-    return result || null;
+  promiseWithTimeout<T>(promissory: () => Promise<T>, timeout = 10, err = new Error()): Promise<T> {
+    return Promise.race([promissory(), this.timeoutPromise(timeout, err)]);
   }
 
-  static timeoutPromise(timeout: number, err = new Error()): Promise<never> {
-    return new Promise((_, reject) => setTimeout(() => reject(err), timeout));
-  }
-
-  static promiseWithTimeout<T>(promissory: () => Promise<T>, timeout = 10, err = new Error()): Promise<T> {
-    return Promise.race([promissory(), Utils.timeoutPromise(timeout, err)]);
-  }
-
-  static retryPromise<T>(promissory: () => Promise<T>, delay = 0, retries = 5, retryTimeout = 100): Promise<T> {
+  retryPromise<T>(promissory: () => Promise<T>, delay = 0, retries = 5, retryTimeout = 100): Promise<T> {
     return new Promise((resolve, reject) => {
       const endtime = Date.now() + retryTimeout;
       let error: Error;
@@ -48,7 +33,7 @@ export class Utils {
     });
   }
 
-  static stripChars(string: string, regex?: RegExp | string): string {
+  stripChars(string: string, regex?: RegExp | string): string {
     if (typeof regex === 'undefined' || !regex) {
       regex = /[\D+]/g;
       return string.replace(regex, '');
@@ -57,12 +42,12 @@ export class Utils {
     }
   }
 
-  static getLastElementOfArray = (array: number[]): number => array && array.slice(-1).pop();
+  getLastElementOfArray = (array: number[]): number => array && array.slice(-1).pop();
 
-  static setElementAttributes(attributes: Record<string, string | boolean>, element: HTMLInputElement): void {
+  setElementAttributes(attributes: Record<string, string | boolean>, element: HTMLInputElement): void {
     for (const attribute in attributes) {
       const value = attributes[attribute];
-      if (Utils.inArray(['value'], attribute)) {
+      if (this.inArray(['value'], attribute)) {
         // @ts-ignore
         element[attribute] = value;
       } else if (value === false) {
@@ -71,5 +56,9 @@ export class Utils {
         element.setAttribute(attribute, value.toString());
       }
     }
+  }
+
+  private timeoutPromise(timeout: number, err = new Error()): Promise<never> {
+    return new Promise((_, reject) => setTimeout(() => reject(err), timeout));
   }
 }

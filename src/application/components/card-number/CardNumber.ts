@@ -47,10 +47,10 @@ export class CardNumber extends Input {
     private iconFactory: IconFactory,
     private formatter: Formatter,
     protected validation: Validation,
+    protected utils: Utils,
   ) {
-    super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER, configProvider, validation);
+    super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER, configProvider, validation, utils);
     this.cardNumberField = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
-    this.validation = new Validation();
     this.isCardNumberValid = true;
     this.cardNumberLength = CardNumber.STANDARD_CARD_LENGTH;
     this.setFocusListener();
@@ -229,7 +229,7 @@ export class CardNumber extends Input {
       numberOfWhitespaces = 0;
     }
     this.cardNumberLength =
-      Utils.getLastElementOfArray(cardLengthFromBin) + numberOfWhitespaces || CardNumber.STANDARD_CARD_LENGTH;
+      this.utils.getLastElementOfArray(cardLengthFromBin) + numberOfWhitespaces || CardNumber.STANDARD_CARD_LENGTH;
     return this.cardNumberLength;
   }
 

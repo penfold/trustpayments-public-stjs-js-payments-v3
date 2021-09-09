@@ -12,7 +12,7 @@ export abstract class AbstractThreeDResponseConverter implements IThreeDResponse
   private static readonly ERROR_NUMBER_FAILURE = 1000;
   private static JWT_EXPIRATION = 7200; // 2 hours
 
-  constructor(protected unsignedJwtGenerator: UnsignedJwtGenerator) {
+  constructor(protected unsignedJwtGenerator: UnsignedJwtGenerator, private uuid: Uuid) {
   }
 
   convert(response: IThreeDQueryResponse, challengeResult: ChallengeResultInterface): string {
@@ -27,7 +27,7 @@ export abstract class AbstractThreeDResponseConverter implements IThreeDResponse
       iss: '',
       iat,
       exp: iat + AbstractThreeDResponseConverter.JWT_EXPIRATION,
-      jti: Uuid.uuidv4(),
+      jti: this.uuid.uuidv4(),
       ConsumerSessionId: '',
       ReferenceId: '',
       aud: '',

@@ -154,7 +154,7 @@ export class Validation {
   private messageBus: IMessageBus;
   private frame: Frame;
 
-  constructor(private translator: ITranslator = Container.get(TranslatorToken)) {
+  constructor(private translator: ITranslator = Container.get(TranslatorToken), private utils: Utils) {
     this.messageBus = Container.get(MessageBusToken);
     this.frame = Container.get(Frame);
     this.init();
@@ -317,7 +317,7 @@ export class Validation {
     this.cardNumberValue = this.removeNonDigits(value);
     this.cardDetails = this.getCardDetails(this.cardNumberValue);
     const length = this.cardDetails.type
-      ? Utils.getLastElementOfArray(this.cardDetails.length)
+      ? this.utils.getLastElementOfArray(this.cardDetails.length)
       : Validation.CARD_NUMBER_DEFAULT_LENGTH;
     this.cardNumberValue = this.limitLength(this.cardNumberValue, length);
   }

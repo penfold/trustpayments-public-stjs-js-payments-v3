@@ -41,6 +41,7 @@ export class Input {
     wrapperSelector: string,
     protected configProvider: ConfigProvider,
     protected validation: Validation,
+    protected utils: Utils,
   ) {
     this.messageBus = Container.get(MessageBusToken);
     this.allowedStyles = Container.get(AllowedStylesService);
@@ -59,7 +60,6 @@ export class Input {
   }
 
   init(): void {
-    this.validation = new Validation();
     this.addTabListener();
 
     this.configProvider.getConfig$().subscribe(config => {
@@ -156,7 +156,7 @@ export class Input {
     }
 
     // @ts-ignore
-    this.inputElement.value = Utils.stripChars(clipboardData, undefined);
+    this.inputElement.value = this.utils.stripChars(clipboardData, undefined);
     Validation.setCustomValidationError('', this.inputElement);
     this.format(this.inputElement.value);
     this.validation.validate(this.inputElement, this.messageElement);

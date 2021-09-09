@@ -6,7 +6,7 @@ export class QueryMessage implements IMessageBusEvent {
   readonly type = QueryMessage.MESSAGE_TYPE;
   readonly queryId: string;
 
-  constructor(readonly data: IMessageBusEvent, readonly sourceFrame: string) {
-    this.queryId = Uuid.uuidv4();
+  constructor(readonly data: IMessageBusEvent, readonly sourceFrame: string, readonly uuid: Uuid) {
+    this.queryId = this.uuid.uuidv4();
   }
 }
