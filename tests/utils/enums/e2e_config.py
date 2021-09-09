@@ -30,7 +30,6 @@ class E2eConfig(Enum):
     REQUEST_TYPES_CONFIG = 'e2eConfigRequestTypes.json'
     REQUEST_TYPES_CONFIG_INVALID_ORDER = 'e2eConfigRequestTypesInvalidOrder.json'
     REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG = 'e2eConfigRequestTypesAccTdqAuthRisk.json'
-    INCORRECT_REQUEST_TYPE_CONFIG = 'e2eConfigIncorrectRequestTypes.json'
     SUBMIT_ON_SUCCESS_ONLY_CONFIG = 'e2eConfigSubmitOnSuccessOnly.json'
     REQUEST_TYPE_ACHECK_TDQ_AUTH_SUB_CONFIG = 'e2eConfigRequestTypesAcheckTdqAuthSub.json'
     VISA_CHECKOUT_CONFIG = 'e2eConfigVisaCheckout.json'
