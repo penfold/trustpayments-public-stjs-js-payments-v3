@@ -74,7 +74,7 @@ export class ApplePayClient {
 
   private insertApplePayButton(config: IApplePayConfigObject): void {
     this.applePayButtonService.insertButton(
-      APPLE_PAY_BUTTON_ID,
+      config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID,
       config.applePayConfig.buttonText,
       config.applePayConfig.buttonStyle,
       config.applePayConfig.paymentRequest.countryCode,
@@ -83,7 +83,7 @@ export class ApplePayClient {
     this.applePayGestureService.gestureHandle(() => {
       this.initApplePaySession(config);
       this.startPaymentProcess(config.paymentRequest)
-    }, APPLE_PAY_BUTTON_ID);
+    }, config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
   }
 
   private initApplePaySession(config: IApplePayConfigObject): void {
