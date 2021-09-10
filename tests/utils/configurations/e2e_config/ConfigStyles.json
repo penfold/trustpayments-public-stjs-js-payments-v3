@@ -1,4 +1,5 @@
 {
+  "submitOnSuccess": false,
   "styles": {
     "defaultStyles": {
       "background-color-input": "AliceBlue"
