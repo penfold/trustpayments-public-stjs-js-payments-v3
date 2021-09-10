@@ -5,7 +5,7 @@ Feature: E2E Cybertonica
   In order to check full payment functionality
 
 
-  Scenario: Cybertonica - successful payment with
+  Scenario: Cybertonica - successful payment with Mastercard non-frictionless
     Given JS library configured by inline params CYBERTONICA_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
@@ -19,7 +19,7 @@ Feature: E2E Cybertonica
       | submit        |
       | success       |
 
-  Scenario: Cybertonica - successful payment with non-frictionless card
+  Scenario: Cybertonica - successful payment with Visa non-frictionless
     Given JS library configured by inline params CYBERTONICA_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
