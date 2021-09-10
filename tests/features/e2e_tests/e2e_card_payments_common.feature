@@ -15,9 +15,9 @@ Feature: Card Payments
     And User will see that ALL input fields are "<form_status>"
 
     Examples:
-      | payment    | form_status | card_number        |
-      | successful | disabled    | VISA_CARD          |
-      | invalid    | enabled     | VISA_DECLINED_CARD |
+      | form_status | card_number        |
+      | disabled    | VISA_CARD          |
+      | enabled     | VISA_DECLINED_CARD |
 
   Scenario: Payment form with incorrect request type description
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
