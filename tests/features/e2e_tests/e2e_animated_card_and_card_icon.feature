@@ -47,7 +47,7 @@ Feature: Payments Card recognition
     Given JS library configured with BASIC_CONFIG and additional attributes
       | key          | value |
       | animatedCard | false |
-    Given JS library authenticated by jwt BASE_JWT with additional attributes
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page
@@ -57,7 +57,7 @@ Feature: Payments Card recognition
     Given JS library configured with BASIC_CONFIG and additional attributes
       | key     | value |
       | panIcon | false |
-    Given JS library authenticated by jwt BASE_JWT with additional attributes
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
