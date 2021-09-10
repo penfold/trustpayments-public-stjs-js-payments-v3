@@ -14,7 +14,7 @@ from utils.enums.field_type import FieldType
 from utils.enums.payment_type import PaymentType
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import add_to_shared_dict
-from utils.helpers.resources_reader import get_translation_from_json
+# from utils.helpers.resources_reader import get_translation_from_json
 
 
 class PaymentMethodsPage(BasePage):
@@ -456,10 +456,6 @@ class PaymentMethodsPage(BasePage):
                 PaymentMethodsLocators.security_code_field_validation_message)
 
         self.validate_field_text(field_type, actual_translation, expected_text)
-
-    def validate_field_validation_message_translation(self, field_type, language, translation_key):
-        expected_text = get_translation_from_json(language, translation_key)
-        self.validate_field_validation_message(field_type, expected_text)
 
     def validate_all_labels_translation(self, language):
         self.validate_card_number_iframe_element_text(get_translation_from_json(language, 'Card number'))

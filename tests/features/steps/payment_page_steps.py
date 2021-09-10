@@ -227,19 +227,21 @@ def step_impl(context, language):
     payment_page.validate_all_labels_translation(language)
 
 
-@step('User will see validation message "(?P<key>.+)" under all fields translated into "(?P<language>.+)"')
-def step_impl(context, key, language):
+@step('User will see validation message "(?P<translation_key>.+)" under all fields translated into "(?P<language>.+)"')
+def step_impl(context, translation_key, language):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_field_validation_message_translation(FieldType.CARD_NUMBER.name, language, key)
-    payment_page.validate_field_validation_message_translation(FieldType.EXPIRATION_DATE.name, language, key)
-    payment_page.validate_field_validation_message_translation(FieldType.SECURITY_CODE.name, language, key)
+    expected_text = get_translation_from_json(language, translation_key)
+    with soft_assertions():
+        payment_page.validate_field_validation_message(FieldType.CARD_NUMBER.name, expected_text)
+        payment_page.validate_field_validation_message(FieldType.EXPIRATION_DATE.name, expected_text)
+        payment_page.validate_field_validation_message(FieldType.SECURITY_CODE.name, expected_text)
 
 
-@then(
-    'User will see validation message "(?P<key>.+)" under "(?P<field>.+)" field translated into (?P<language>.+)')
+@then('User will see validation message "(?P<key>.+)" under "(?P<field>.+)" field translated into (?P<language>.+)')
 def step_validation_msg_translation(context, key, field, language):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_field_validation_message_translation(FieldType[field].name, language, key)
+    expected_text = get_translation_from_json(language, key)
+    payment_page.validate_field_validation_message(FieldType[field].name, expected_text)
 
 
 @then('User will see (?P<field_name>.+) label text is "(?P<text>.+)"')
