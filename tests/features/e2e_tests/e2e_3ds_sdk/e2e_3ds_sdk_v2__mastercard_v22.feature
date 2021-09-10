@@ -1,5 +1,6 @@
 @3ds_sdk_v2.0_MASTERCARD_V22
 @3ds_sdk_v2.0
+@3ds_sdk
 Feature: 3ds SDK v2 E2E tests - MasterCard v2.2
   As a user
   I want to use card payments method

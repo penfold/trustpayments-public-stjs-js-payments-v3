@@ -20,6 +20,7 @@ import { IVerificationResult } from '../../../application/core/services/three-d-
 import { ActionCode } from '../../../application/core/services/three-d-verification/implementations/cardinal-commerce/data/ActionCode';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 
 describe('CardinalClient', () => {
   let configProviderMock: ConfigProvider;
@@ -30,6 +31,7 @@ describe('CardinalClient', () => {
   let cardinalMock: ICardinal;
   let communicationCallbacks: Map<string, (event: IMessageBusEvent) => unknown>;
   let messageBusMock: IMessageBus;
+  let googleAnalytics: GoogleAnalytics;
 
   const config: IConfig = { livestatus: 0 } as IConfig;
   const sendMessage = (event: IMessageBusEvent): Observable<unknown> => {
@@ -44,6 +46,7 @@ describe('CardinalClient', () => {
     interFrameCommunicator = instance(interFrameCommunicatorMock);
     cardinalMock = new CardinalMock(true);
     messageBusMock = new SimpleMessageBus();
+    googleAnalytics = mock(GoogleAnalytics);
 
     when(configProviderMock.getConfig$()).thenReturn(of(config));
     when(cardinalProviderMock.getCardinal$(false)).thenReturn(of(cardinalMock));
@@ -63,7 +66,8 @@ describe('CardinalClient', () => {
       interFrameCommunicator,
       messageBusMock,
       instance(cardinalProviderMock),
-      instance(configProviderMock)
+      instance(configProviderMock),
+      instance(googleAnalytics),
     );
 
     cardinalClient.init();

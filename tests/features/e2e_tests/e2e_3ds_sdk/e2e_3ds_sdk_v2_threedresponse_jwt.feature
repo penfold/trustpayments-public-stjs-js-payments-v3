@@ -1,5 +1,5 @@
-
-Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
+@3ds_sdk
+Feature: 3ds SDK v2 E2E tests - Threedresponse
   As a user
   I want to use card payments method
   In order to check 3ds SDK integration
@@ -11,11 +11,11 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
 
   Scenario Outline: Sending threedresponse JWT to merchants with Request types: <request_types> for mastercard v2.1
     Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
       | sitereference           | trustthreeds76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
@@ -33,6 +33,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
       | ActionCode       | SUCCESS |
       | ErrorNumber      | 0       |
       | ErrorDescription | Success |
+
     Examples:
       | request_types            |
       | THREEDQUERY              |
@@ -42,11 +43,11 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
 
   Scenario Outline: Payement failed with sending threedresponse JWT to merchants with Request types: <request_types> for mastercard v2.1
     Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
       | sitereference           | trustthreeds76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_STEP_UP_AUTH_FAILED
     And User clicks Pay button
@@ -72,13 +73,13 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
       | RISKDEC THREEDQUERY      |
 
 
-    Scenario Outline: Successful payment with sending threedresponse JWT to merchants with Request types: <request_types> for mastercard v2.2
+  Scenario Outline: Successful payment with sending threedresponse JWT to merchants with Request types: <request_types> for mastercard v2.2
     Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
       | sitereference           | trustthreeds76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
@@ -96,6 +97,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
       | ActionCode       | SUCCESS |
       | ErrorNumber      | 0       |
       | ErrorDescription | Success |
+
     Examples:
       | request_types            |
       | THREEDQUERY              |
@@ -105,11 +107,11 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
 
   Scenario Outline: Payment failed with sending threedresponse JWT to merchants with Request types: <request_types> for mastercard v2.2
     Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
       | sitereference           | trustthreeds76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_STEP_UP_AUTH_FAILED
     And User clicks Pay button
@@ -135,13 +137,13 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
       | RISKDEC THREEDQUERY      |
 
 
-    Scenario Outline: Sending threedresponse JWT to merchants with Request types: <request_types> for visa v2.1
+  Scenario Outline: Sending threedresponse JWT to merchants with Request types: <request_types> for visa v2.1
     Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
       | sitereference           | trustthreeds76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
     And User opens example page
     When User fills payment form with defined card VISA_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
@@ -159,6 +161,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
       | ActionCode       | SUCCESS |
       | ErrorNumber      | 0       |
       | ErrorDescription | Success |
+
     Examples:
       | request_types            |
       | THREEDQUERY              |
@@ -167,11 +170,11 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
 
   Scenario Outline:Payment failed with sending threedresponse JWT to merchants with Request types: <request_types> for visa v2.1
     Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
       | sitereference           | trustthreeds76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
     And User opens example page
     When User fills payment form with defined card VISA_V21_3DS_SDK_STEP_UP_AUTH_FAILED
     And User clicks Pay button
@@ -197,13 +200,13 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1 Threedresponse
       | RISKDEC THREEDQUERY      |
 
 
-Scenario Outline: Sending threedresponse JWT to merchants with Request types: <request_types> for visa v2.2
+  Scenario Outline: Sending threedresponse JWT to merchants with Request types: <request_types> for visa v2.2
     Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
       | sitereference           | trustthreeds76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
     And User opens example page
     When User fills payment form with defined card VISA_V22_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
@@ -221,6 +224,7 @@ Scenario Outline: Sending threedresponse JWT to merchants with Request types: <r
       | ActionCode       | SUCCESS |
       | ErrorNumber      | 0       |
       | ErrorDescription | Success |
+
     Examples:
       | request_types            |
       | THREEDQUERY              |
@@ -230,11 +234,11 @@ Scenario Outline: Sending threedresponse JWT to merchants with Request types: <r
 
   Scenario Outline: Payment failed with sending threedresponse JWT to merchants with Request types: <request_types> for visa v2.2
     Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
       | sitereference           | trustthreeds76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
     And User opens example page
     When User fills payment form with defined card VISA_V22_3DS_SDK_STEP_UP_AUTH_FAILED
     And User clicks Pay button
