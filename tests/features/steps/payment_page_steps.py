@@ -270,7 +270,7 @@ def step_validation_msg_translation_expected(context, expected_message, field):
 @then('User will see that Pay button text is "(?P<expected_value>.+)"')
 def step_impl(context, expected_value):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_submit_btn_have_text(expected_value)
+    payment_page.validate_submit_btn_text(expected_value)
 
 
 @when('User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)"')

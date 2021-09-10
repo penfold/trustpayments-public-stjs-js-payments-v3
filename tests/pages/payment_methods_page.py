@@ -469,7 +469,7 @@ class PaymentMethodsPage(BasePage):
                                              PaymentMethodsLocators.pay_button_label,
                                              get_translation_from_json(language, 'Pay'))
 
-    def validate_submit_btn_have_text(self, expected_text):
+    def validate_submit_btn_text(self, expected_text):
         self.validate_no_iframe_element_text(FieldType.SUBMIT_BUTTON.name,
                                              PaymentMethodsLocators.pay_button_label,
                                              expected_text)
