@@ -263,12 +263,6 @@ def step_impl(context, expected_value):
     payment_page.validate_submit_btn_specific_translation(expected_value)
 
 
-@then('User will see "(?P<key>.+)" payment status translated into "(?P<language>.+)"')
-def step_impl(context, key, language):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_payment_status_translation(language, key)
-
-
 @when('User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)"')
 def step_impl(context, card_number, exp_date):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -507,3 +501,11 @@ def step_impl(context):
     payment_page.clear_security_code_field()
     payment_page.clear_card_number_field()
     payment_page.clear_expiry_date_field()
+
+
+@then('User will see payment notification "(?P<key>.+)" translated into "(?P<language>.+)"')
+def step_impl(context, key, language):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.validate_payment_status_translation(language, key)
+
+
