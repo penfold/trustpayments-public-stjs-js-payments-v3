@@ -56,7 +56,7 @@ def step_impl(context, expected_text):
     payment_page.validate_payment_status_message(expected_text)
 
 
-@then('User will see payment notification "(?P<translation_key>.+)" translated into "(?P<language>.+)"')
+@then('User will see payment notification text: "(?P<translation_key>.+)" translated into "(?P<language>.+)"')
 def step_impl(context, translation_key, language):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.wait_for_notification_frame()
@@ -68,6 +68,34 @@ def step_impl(context, translation_key, language):
 def step_impl(context, color):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_notification_frame_color(color)
+
+
+# Pay button
+
+
+@step('User waits for Pay button to be active')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_pay_button_to_be_active()
+
+
+@step('User clicks Pay button')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.choose_payment_methods(PaymentType.CARDINAL_COMMERCE.name)
+
+
+@then('User will see that Pay button text is "(?P<expected_value>.+)"')
+def step_impl(context, expected_value):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.validate_submit_btn_text(expected_value)
+
+
+@then('User will see that Pay button text translated into "(?P<language>.+)"')
+def step_impl(context, language):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    expected_text = get_translation_from_json(language, 'Pay')
+    payment_page.validate_submit_btn_text(expected_text)
 
 
 @step('User waits for timeout payment')
@@ -104,18 +132,6 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.wait_for_payment_form_inputs_to_display()
-
-
-@step('User waits for Pay button to be active')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.wait_for_pay_button_to_be_active()
-
-
-@step('User clicks Pay button')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.choose_payment_methods(PaymentType.CARDINAL_COMMERCE.name)
 
 
 @step('User clicks Additional button')
@@ -280,12 +296,6 @@ def step_impl(context, expected_message):
 def step_validation_msg_translation_expected(context, expected_message, field):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_field_validation_message(FieldType[field].name, expected_message)
-
-
-@then('User will see that Pay button text is "(?P<expected_value>.+)"')
-def step_impl(context, expected_value):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_submit_btn_text(expected_value)
 
 
 @when('User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)"')

@@ -5,13 +5,14 @@ Feature: Payment form translations from jwt locale
   In order to check full payment functionality in various languages
 
 
-  Scenario Outline: <locale> translations of fields labels and validation errors
+  Scenario Outline: <locale> translations of fields labels, pay button and fields validation message
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
       | locale                  | <locale>         |
     And User opens example page
     Then User will see all labels displayed on page translated into "<locale>"
+    Then User will see that Pay button text translated into "<locale>"
     When User clicks Pay button
     And User will see validation message "Field is required" under all fields translated into "<locale>"
 
@@ -37,7 +38,7 @@ Feature: Payment form translations from jwt locale
     And User opens example page
     When User fills payment form with defined card VISA_V21_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment notification "Payment has been successfully processed" translated into "<locale>"
+    Then User will see payment notification text: "Payment has been successfully processed" translated into "<locale>"
 
     Examples:
       | locale |
@@ -62,7 +63,7 @@ Feature: Payment form translations from jwt locale
     When User fills payment form with defined card MASTERCARD_ERROR_ON_AUTH
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment notification "An error occurred" translated into "<locale>"
+    Then User will see payment notification text: "An error occurred" translated into "<locale>"
 
     Examples:
       | locale |
