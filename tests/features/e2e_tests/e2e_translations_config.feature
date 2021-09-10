@@ -10,9 +10,9 @@ Feature: Payment form translations from config
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    Then User will see card number label displayed on page translated into "CARD_NO_TRANSLATION_OVERRIDE"
-    Then User will see expiration date label displayed on page translated into "EXP_DATE_TRANSLATION_OVERRIDE"
-    Then User will see security code label displayed on page translated into "CODE_TRANSLATION_OVERRIDE"
+    Then User will see card number label text is "CARD_NO_TRANSLATION_OVERRIDE"
+    Then User will see expiration date label text is "EXP_DATE_TRANSLATION_OVERRIDE"
+    Then User will see security code label text is "CODE_TRANSLATION_OVERRIDE"
     Then User will see that Pay button is translated into "PAY_TRANSLATION_OVERRIDE"
     When User clicks Pay button
     Then User will see validation message "REQUIRED_TRANSLATION_OVERRIDE" under all fields

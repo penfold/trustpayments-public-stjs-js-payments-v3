@@ -469,16 +469,10 @@ class PaymentMethodsPage(BasePage):
                                              PaymentMethodsLocators.pay_button_label,
                                              get_translation_from_json(language, 'Pay'))
 
-    def validate_submit_btn_specific_translation(self, expected_translation):
+    def validate_submit_btn_have_text(self, expected_text):
         self.validate_no_iframe_element_text(FieldType.SUBMIT_BUTTON.name,
                                              PaymentMethodsLocators.pay_button_label,
-                                             expected_translation)
-
-    def validate_payment_status_translation(self, language, translation_key):
-        expected_translation = get_translation_from_json(language, translation_key)
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.notification_frame)
-        self.validate_no_iframe_element_text(FieldType.NOTIFICATION_FRAME.name,
-                                             PaymentMethodsLocators.notification_frame, expected_translation)
+                                             expected_text)
 
     def validate_card_number_iframe_element_text(self, expected_text):
         actual_text = self.get_card_number_iframe_element_text(PaymentMethodsLocators.card_number_label)

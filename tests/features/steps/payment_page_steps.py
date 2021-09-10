@@ -11,6 +11,8 @@ from utils.enums.responses.invalid_field_response import InvalidFieldResponse
 from utils.mock_handler import stub_st_request_type
 from utils.waits import Waits
 
+from tests.utils.helpers.resources_reader import get_translation_from_json
+
 use_step_matcher('re')
 
 
@@ -24,13 +26,13 @@ def step_impl(context, card_number, exp_date, cvv):
     payment_page.fill_payment_form(card_number, exp_date, cvv)
 
 
-@step('User will see payment status information: "(?P<payment_status_message>.+)"')
-def step_impl(context, payment_status_message):
+@step('User will see payment status information: "(?P<expected_text>.+)"')
+def step_impl(context, expected_text):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'switch_to_parent_iframe' in context.scenario.tags:
         payment_page.switch_to_example_page_parent_iframe()
     payment_page.wait_for_notification_frame()
-    payment_page.validate_payment_status_message(payment_status_message)
+    payment_page.validate_payment_status_message(expected_text)
 
 
 @step('User waits for timeout payment')
@@ -211,21 +213,18 @@ def step_impl(context, field):
         payment_page.validate_css_style(FieldType.NOTIFICATION_FRAME.name, 'background-color', '100, 149, 237')
 
 
+@then('User will see payment notification "(?P<translation_key>.+)" translated into "(?P<language>.+)"')
+def step_impl(context, translation_key, language):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_notification_frame()
+    expected_text = get_translation_from_json(language, translation_key)
+    payment_page.validate_payment_status_message(expected_text)
+
+
 @then('User will see all labels displayed on page translated into "(?P<language>.+)"')
 def step_impl(context, language):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_all_labels_translation(language)
-
-
-@then('User will see (?P<field_name>.+) label displayed on page translated into "(?P<text>.+)"')
-def step_impl(context, field_name, text):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    fields = {
-        "card number": payment_page.validate_card_number_iframe_element_text,
-        "expiration date": payment_page.validate_expiration_date_iframe_element_text,
-        "security code": payment_page.validate_security_code_iframe_element_text
-    }
-    fields[field_name](text)
 
 
 @step('User will see validation message "(?P<key>.+)" under all fields translated into "(?P<language>.+)"')
@@ -243,6 +242,17 @@ def step_validation_msg_translation(context, key, field, language):
     payment_page.validate_field_validation_message_translation(FieldType[field].name, language, key)
 
 
+@then('User will see (?P<field_name>.+) label text is "(?P<text>.+)"')
+def step_impl(context, field_name, text):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    fields = {
+        "card number": payment_page.validate_card_number_iframe_element_text,
+        "expiration date": payment_page.validate_expiration_date_iframe_element_text,
+        "security code": payment_page.validate_security_code_iframe_element_text
+    }
+    fields[field_name](text)
+
+
 @then('User will see validation message "(?P<expected_message>.+)" under all fields')
 def step_impl(context, expected_message):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -257,10 +267,10 @@ def step_validation_msg_translation_expected(context, expected_message, field):
     payment_page.validate_field_validation_message(FieldType[field].name, expected_message)
 
 
-@then('User will see that Pay button is translated into "(?P<expected_value>.+)"')
+@then('User will see that Pay button text is "(?P<expected_value>.+)"')
 def step_impl(context, expected_value):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_submit_btn_specific_translation(expected_value)
+    payment_page.validate_submit_btn_have_text(expected_value)
 
 
 @when('User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)"')
@@ -501,11 +511,3 @@ def step_impl(context):
     payment_page.clear_security_code_field()
     payment_page.clear_card_number_field()
     payment_page.clear_expiry_date_field()
-
-
-@then('User will see payment notification "(?P<key>.+)" translated into "(?P<language>.+)"')
-def step_impl(context, key, language):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_payment_status_translation(language, key)
-
-
