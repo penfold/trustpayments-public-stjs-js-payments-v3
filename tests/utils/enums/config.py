@@ -14,7 +14,6 @@ config = {
     'config_animated_card_true': 'configAnimatedCardTrue.json',
     'config_animated_card_false': 'configAnimatedCardFalse.json',
     'config_pan_icon_false': 'configPanIconFalse.json',
-    'config_field_style': 'configFieldStyle.json',
     'config_translations': 'configTranslation.json',
     'config_immediate_payment': 'configImmediatePayment.json',
     'config_immediate_payment_and_submit_on_success': 'configImmediatePaymentAndSubmitOnSuccess.json',

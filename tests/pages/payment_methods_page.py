@@ -610,7 +610,7 @@ class PaymentMethodsPage(BasePage):
         assertion_message = f'Placeholder for {FieldType[field_type].name} field is not correct, ' \
                             f'should be "{expected_placeholder}" but is "{actual_placeholder}"'
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
-        assert expected_placeholder in actual_placeholder, assertion_message
+        assert expected_placeholder == actual_placeholder, assertion_message
 
     def validate_credit_card_icon_in_input_field(self, expected_card_icon):
         actual_credit_card_icon = self.get_card_type_icon_from_input_field()

@@ -17,21 +17,10 @@ Feature: Payment form styles check
     And User will see the same provided data on animated credit card "4111 1100 0000 0211", "12/22" and "123"
 
 
-  Scenario: Checking placeholders in input fields
-    Given JS library configured by inline params PLACEHOLDERS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens example page
-    Then User will see specific placeholders in input fields: Number, Expiration, CVV
 
 
-  Scenario: Checking style of individual fields
-    Given JS library configured by inline params STYLES_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
-    When User opens example page
-    Then User will see that CARD_NUMBER field has rgba(0, 0, 255, 1) color
-    And User will see that EXPIRATION_DATE field has rgba(255, 0, 0, 1) color
+
+
 
 
   Scenario: Check translation overwriting mechanism for Pay button and validation message

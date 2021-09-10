@@ -433,12 +433,6 @@ def step_impl(context):
             payment_page.validate_threedresponse_values(param['key'], param['value'])
 
 
-@then('User will see that (?P<field_type>.+) field has (?P<rgb_color>.+) color')
-def step_impl(context, field_type, rgb_color):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_css_style(FieldType[field_type].name, 'background-color', rgb_color)
-
-
 @step('Wait for notification frame')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)

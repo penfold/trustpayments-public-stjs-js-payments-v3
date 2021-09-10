@@ -7,14 +7,14 @@ Feature: Payment form styles check
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
 
-  @config_field_style
+  @config_field_style ok
   Scenario: Checking style of individual fields
     When User opens mock payment page
     And User waits for whole form to be loaded
     Then User will see that "CARD_NUMBER" field has correct style
     And User will see that "EXPIRATION_DATE" field has correct style
 
-  @config_field_style
+  @config_field_style ok
   Scenario: Checking style of notification frame
     Given User opens mock payment page
     And User waits for whole form to be loaded
@@ -23,18 +23,18 @@ Feature: Payment form styles check
     And User clicks Pay button
     Then User will see that "NOTIFICATION_FRAME" field has correct style
 
-  @config_placeholders
+  @config_placeholders ok
   Scenario: Checking placeholders in input fields
     When User opens mock payment page
     And User waits for whole form to be loaded
     Then User will see specific placeholders in input fields: Card number, Exp date, CVV
 
-  @base_config
+  @base_config ok
   Scenario: Checking default placeholders in input fields
     When User opens mock payment page
     Then User will see default placeholders in input fields: **** **** **** ****, MM/YY, ***
 
-  @base_config
+  @base_config ok
   Scenario: Checking default cvv placeholder for AMEX card
     Given User opens mock payment page
     When User fills payment form with credit card number "340000000000611", expiration date "12/23"
