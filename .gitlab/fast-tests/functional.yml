@@ -156,7 +156,7 @@ component-card-payments-tests-release:
     - .component-app-html-mock
     - .sequentially-component-tests
   variables:
-    FEATURE_FILE_NAME: 'component_tests/digitalwallets/visa_checkout.feature'
+    FEATURE_FILE_NAME: 'component_tests/digitalwallet_tests/visa_checkout.feature'
 
 component-visa-checkout-tests-review:
   extends:
@@ -173,7 +173,7 @@ component-visa-checkout-tests-release:
     - .component-app-html-mock
     - .sequentially-component-tests
   variables:
-    FEATURE_FILE_NAME: 'component_tests/digitalwallets/google_pay.feature'
+    FEATURE_FILE_NAME: 'component_tests/digitalwallet_tests/google_pay.feature'
 
 component-google-pay-tests-review:
   extends:
