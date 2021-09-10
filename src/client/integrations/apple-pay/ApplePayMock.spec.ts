@@ -8,6 +8,7 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { ApplePayMock } from './ApplePayMock';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 
 describe('ApplePayMock', () => {
   const applePayButtonService = mock(ApplePayButtonService);
@@ -18,6 +19,7 @@ describe('ApplePayMock', () => {
   const applePaySessionService = mock(ApplePaySessionService);
   const interFrameCommunicator = mock(InterFrameCommunicator);
   const messageBus = mock<IMessageBus>();
+  const googleAnalyticsMock = mock(GoogleAnalytics);
 
   const applePayMock = new ApplePayMock(
     mockInstance(applePayButtonService),
@@ -27,7 +29,8 @@ describe('ApplePayMock', () => {
     mockInstance(applePaySessionFactory),
     mockInstance(applePaySessionService),
     mockInstance(interFrameCommunicator),
-    mockInstance(messageBus)
+    mockInstance(messageBus),
+    mockInstance(googleAnalyticsMock)
   );
 
   describe('test functions to check expected results', () => {
