@@ -28,13 +28,14 @@ Feature: Card Payments
     And User clicks Pay button
     Then User will see payment status information: "An error occurred"
 
-  Scenario: Security code disabled if server error on PIBA
-    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
-      | baseamount              | 70000            |
-    And User opens example page
-    When User fills payment form with credit card number "3089500000000000021", expiration date "12/23"
-    And User clicks Pay button
-    Then User will see payment status information: "Decline"
-    And User will see that SECURITY_CODE input field is "disabled"
+#  STJS-2190
+#  Scenario: Security code disabled if server error on PIBA
+#    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value            |
+#      | requesttypedescriptions | THREEDQUERY AUTH |
+#      | baseamount              | 70000            |
+#    And User opens example page
+#    When User fills payment form with credit card number "3089500000000000021", expiration date "12/23"
+#    And User clicks Pay button
+#    Then User will see payment status information: "Decline"
+#    And User will see that SECURITY_CODE input field is "disabled"
