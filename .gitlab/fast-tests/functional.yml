@@ -124,7 +124,7 @@ e2e-smoke-tests-review:
     - .rules-when-review-manual-allow-failure
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_additional_coverage'
-  parallel: 17
+  parallel: 18
 
 ################################### Component Tests ###################################
 .component-app-html-mock:
@@ -139,7 +139,7 @@ e2e-smoke-tests-review:
     - .parallel-component-tests
   variables:
     FEATURE_FILES_DIR: 'features/component_tests'
-  parallel: 18
+  parallel: 17
 
 component-card-payments-tests-review:
   extends:
