@@ -33,3 +33,33 @@ Feature: Payments Card recognition
     When User fills payment form with credit card number "3089500000000000021", expiration date "12/23"
     Then User will see that SECURITY_CODE input field is "disabled"
     And User will see "PIBA" icon in card number input field
+
+  Scenario: Verify that animated card and card icon are not displayed by default
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
+    Then User will not see ANIMATED_CARD
+    And User will not see CARD_ICON
+
+  Scenario: Verify that animated card is not displayed if 'animatedCard' is false
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key          | value |
+      | animatedCard | false |
+    Given JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    When User opens example page
+    Then User will not see ANIMATED_CARD
+
+  Scenario: Verify that card icon is not displayed if 'panIcon' is false
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key     | value |
+      | panIcon | false |
+    Given JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page
+    When User fills payment form with defined card VISA_V21_FRICTIONLESS
+    Then User will not see CARD_ICON
