@@ -2,6 +2,8 @@
   "submitOnSuccess": false,
   "translations": {
     "Card number": "Kartennummer",
+    "Expiration date": "Ablaufdatum",
+    "Security code": "Sicherheitscode",
     "An error occurred": "Wystąpił błąd",
     "Pay": "Kup teraz!",
     "Payment has been successfully processed": "Victory",

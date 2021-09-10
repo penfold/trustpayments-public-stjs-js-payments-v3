@@ -217,10 +217,15 @@ def step_impl(context, language):
     payment_page.validate_all_labels_translation(language)
 
 
-@then('User will see card payment label displayed on page translated into "(?P<text>.+)"')
-def step_impl(context, text):
+@then('User will see (?P<field_name>.+) label displayed on page translated into "(?P<text>.+)"')
+def step_impl(context, field_name, text):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_card_number_iframe_element_text(text)
+    fields = {
+        "card number": payment_page.validate_card_number_iframe_element_text,
+        "expiration date": payment_page.validate_expiration_date_iframe_element_text,
+        "security code": payment_page.validate_security_code_iframe_element_text
+    }
+    fields[field_name](text)
 
 
 @step('User will see validation message "(?P<key>.+)" under all fields translated into "(?P<language>.+)"')

@@ -99,6 +99,52 @@ Feature: Payment form translations
       | no_NO  |
       | sv_SE  |
 
+  @translations @3ds_sdk
+  Scenario Outline: Cancel payment with 3ds SDK library - locale translation
+    Given JS library configured by inline params THREE_DS_SDK_POPUP_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value             |
+      | requesttypedescriptions | THREEDQUERY AUTH  |
+      | locale                  | <locale>          |
+      | sitereference           | trustthreeds76424 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
+    And User opens example page
+    And User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
+    When User clicks Pay button
+    And User see 3ds SDK challenge is displayed
+    Then User see 3ds SDK challenge POPUP mode "cancel" button translated into <locale>
+
+    @3ds_sdk_smoke
+    Examples:
+      | locale |
+      | en_GB  |
+      | fr_FR  |
+
+    Examples:
+      | locale |
+      | en_US  |
+      | cy_GB  |
+      | da_DK  |
+      | de_DE  |
+      | es_ES  |
+      | nl_NL  |
+      | no_NO  |
+      | sv_SE  |
+
+  @3ds_sdk_smoke @3ds_sdk
+  Scenario: Cancel payment with 3ds SDK library - locale translation override by config
+    Given JS library configured by inline params THREE_DS_SDK_POPUP_TRANSLATIONS_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value             |
+      | requesttypedescriptions | THREEDQUERY AUTH  |
+      | sitereference           | trustthreeds76424 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
+    And User opens example page
+    And User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
+    When User clicks Pay button
+    And User see 3ds SDK challenge is displayed
+    Then User see 3ds SDK challenge POPUP mode "cancel" button translation is "INTENTIONALLY_HARDCODED_VALUE"
+
   Scenario: Check translation overwriting mechanism for notification banner
     Given JS library configured by inline params CUSTOM_TRANSLATION_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
@@ -113,7 +159,9 @@ Feature: Payment form translations
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    Then User will see card payment label displayed on page translated into "Kartennummer"
+    Then User will see card number label displayed on page translated into "Kartennummer"
+    Then User will see expiration date label displayed on page translated into "Ablaufdatum"
+    Then User will see security code label displayed on page translated into "Sicherheitscode"
     And User clicks Pay button
     Then User will see that Pay button is translated into "Kup teraz!"
     And User will see validation message "Incorrect" under all fields
