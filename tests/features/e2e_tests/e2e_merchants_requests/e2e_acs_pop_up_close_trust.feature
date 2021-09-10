@@ -66,7 +66,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User see 3ds SDK challenge is displayed
     And User clicks cancel 3ds action button
     And User will see payment status information: "Payment has been cancelled"
-    And Wait for notification frame to disappear
+    And User waits for payment status to disappear
     When User clicks Pay button
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
     Then User will see payment status information: "Payment has been successfully processed"
@@ -95,7 +95,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User see 3ds SDK challenge is displayed
     And User clicks cancel 3ds action button
     And User will see payment status information: "Payment has been cancelled"
-    And Wait for notification frame to disappear
+    And User waits for payment status to disappear
     When User clicks Pay button
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
     Then User will not see notification frame
@@ -134,7 +134,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User see 3ds SDK challenge is displayed
     And User clicks cancel 3ds action button
     And User will see payment status information: "Payment has been cancelled"
-    And Wait for notification frame to disappear
+    And User waits for payment status to disappear
     And User re-fills payment form with defined card VISA_V22_3DS_SDK_FRICTIONLESS_SUCCESS
     When User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
@@ -163,7 +163,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User see 3ds SDK challenge is displayed
     And User clicks cancel 3ds action button
     And User will see payment status information: "Payment has been cancelled"
-    And Wait for notification frame to disappear
+    And User waits for payment status to disappear
     And User re-fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_SUCCESS
     When User clicks Pay button
     Then User will not see notification frame
@@ -224,7 +224,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User see 3ds SDK challenge is displayed
     And User clicks cancel 3ds action button
     And User will see payment status information: "Payment has been cancelled"
-    And Wait for notification frame to disappear
+    And User waits for payment status to disappear
     And User calls updateJWT function by filling amount field
     When User clicks Pay button
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
@@ -249,7 +249,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User see 3ds SDK challenge is displayed
     And User clicks cancel 3ds action button
     And User will see payment status information: "Payment has been cancelled"
-    And Wait for notification frame to disappear
+    And User waits for payment status to disappear
     And User calls updateJWT function by filling amount field
     And User re-fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUCCESS
     When User clicks Pay button

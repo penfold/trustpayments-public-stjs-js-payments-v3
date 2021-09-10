@@ -26,6 +26,27 @@ def step_impl(context, card_number, exp_date, cvv):
     payment_page.fill_payment_form(card_number, exp_date, cvv)
 
 
+# Payment notification
+
+
+@step('Wait for notification frame')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_notification_frame()
+
+
+@step('User waits for payment status to disappear')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_notification_frame_to_disappear()
+
+
+@then('User will not see notification frame')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.validate_if_field_is_not_displayed(FieldType.NOTIFICATION_FRAME.name)
+
+
 @step('User will see payment status information: "(?P<expected_text>.+)"')
 def step_impl(context, expected_text):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -33,6 +54,20 @@ def step_impl(context, expected_text):
         payment_page.switch_to_example_page_parent_iframe()
     payment_page.wait_for_notification_frame()
     payment_page.validate_payment_status_message(expected_text)
+
+
+@then('User will see payment notification "(?P<translation_key>.+)" translated into "(?P<language>.+)"')
+def step_impl(context, translation_key, language):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_notification_frame()
+    expected_text = get_translation_from_json(language, translation_key)
+    payment_page.validate_payment_status_message(expected_text)
+
+
+@step('User will see that notification frame has "(?P<color>.+)" color')
+def step_impl(context, color):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.validate_notification_frame_color(color)
 
 
 @step('User waits for timeout payment')
@@ -59,14 +94,6 @@ def step_impl(context, url):
     payment_page.wait_for_url_with_timeout(url, Waits.OVER_ACS_MOCK_TIMEOUT)
 
 
-@step('User waits for payment status to disappear')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    if 'switch_to_parent_iframe' in context.scenario.tags:
-        payment_page.switch_to_example_page_parent_iframe()
-    payment_page.wait_for_notification_frame_to_disappear()
-
-
 @step('User waits for whole form to be loaded')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -77,12 +104,6 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.wait_for_payment_form_inputs_to_display()
-
-
-@step('User will see that notification frame has "(?P<color>.+)" color')
-def step_impl(context, color):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_notification_frame_color(color)
 
 
 @step('User waits for Pay button to be active')
@@ -213,14 +234,6 @@ def step_impl(context, field):
         payment_page.validate_css_style(FieldType.NOTIFICATION_FRAME.name, 'background-color', '100, 149, 237')
 
 
-@then('User will see payment notification "(?P<translation_key>.+)" translated into "(?P<language>.+)"')
-def step_impl(context, translation_key, language):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.wait_for_notification_frame()
-    expected_text = get_translation_from_json(language, translation_key)
-    payment_page.validate_payment_status_message(expected_text)
-
-
 @then('User will see all labels displayed on page translated into "(?P<language>.+)"')
 def step_impl(context, language):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -338,12 +351,6 @@ def step_impl(context, new_card_number: str):
     payment_page.fill_credit_card_field(FieldType.CARD_NUMBER.name, new_card_number)
 
 
-@then('User will not see notification frame')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_if_field_is_not_displayed(FieldType.NOTIFICATION_FRAME.name)
-
-
 @step('User fills merchant data with name "(?P<name>.+)", email "(?P<email>.+)", phone "(?P<phone>.+)"')
 def step_impl(context, name, email, phone):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -450,12 +457,6 @@ def step_impl(context, field_type, rgb_color):
     payment_page.validate_css_style(FieldType[field_type].name, 'background-color', rgb_color)
 
 
-@step('Wait for notification frame')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.wait_for_notification_frame()
-
-
 @step('Wait for popups to disappear')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -475,12 +476,6 @@ def step_impl(context, is_supported):
 def step_impl(context, is_supported):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_if_os_is_supported_in_info_callback(is_supported)
-
-
-@step('Wait for notification frame to disappear')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.wait_for_notification_frame_to_disappear()
 
 
 @step('User focuses on "(?P<field_type>.+)" field')
