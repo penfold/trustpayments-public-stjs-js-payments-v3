@@ -277,9 +277,9 @@ def step_validation_msg_translation(context, key, field, language):
 def step_impl(context, field_name, text):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     fields = {
-        "card number": payment_page.validate_card_number_iframe_element_text,
-        "expiration date": payment_page.validate_expiration_date_iframe_element_text,
-        "security code": payment_page.validate_security_code_iframe_element_text
+        'card number': payment_page.validate_card_number_iframe_element_text,
+        'expiration date': payment_page.validate_expiration_date_iframe_element_text,
+        'security code': payment_page.validate_security_code_iframe_element_text
     }
     fields[field_name](text)
 
