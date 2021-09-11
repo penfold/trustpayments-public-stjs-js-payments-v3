@@ -142,19 +142,6 @@ def step_impl(context, path):
     payment_page.open_page(url)
 
 
-@step('User will be sent to page with url "(?P<url>.+)" having params')
-def step_impl(context, url: str):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    with soft_assertions():
-        payment_page.validate_base_url(url)
-        context.waits.wait_for_javascript()
-        actual_url = payment_page.get_page_url()
-        parsed_url = urlparse(actual_url)
-        parsed_query_from_url = parse_qs(parsed_url.query)
-        for param in context.table:
-            payment_page.validate_if_url_contains_param(parsed_query_from_url, param['key'], param['value'])
-
-
 def accept_untrusted_pages_on_safari_browsers(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.open_page_with_safari_issue_fix(MockUrl.LIBRARY_URL.value)

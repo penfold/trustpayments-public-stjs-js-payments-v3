@@ -11,6 +11,40 @@ from utils.helpers.resources_reader import get_translation_from_json
 use_step_matcher('re')
 
 
+# Cardinal Commerce
+
+
+@step('User see (?P<auth_type>.+) authentication modal is displayed')
+def step_impl(context, auth_type):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.validate_cardinal_authentication_modal_appears(auth_type)
+
+
+@step('User focus on the acs (?P<auth_type>.+) popup element')
+def step_impl(context, auth_type):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.focus_on_authentication_label(auth_type)
+
+
+@step('User fills (?P<auth_type>.+) authentication modal')
+def step_impl(context, auth_type):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    if 'parent_iframe' in context.scenario.tags:
+        payment_page._actions.switch_to_default_iframe()
+    payment_page.fill_cardinal_authentication_code(auth_type)
+    if 'parent_iframe' in context.scenario.tags:
+        payment_page.switch_to_example_page_parent_iframe()
+
+
+@step('User clicks Cancel button on authentication modal')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.click_cardinal_cancel_btn()
+
+
+# Trust payments
+
+
 @step('User see 3ds SDK challenge is displayed')
 def step_impl(context):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
