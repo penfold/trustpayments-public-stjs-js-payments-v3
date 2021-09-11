@@ -17,7 +17,7 @@ Feature: Cancel payment with 3ds SDK library
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User clicks Cancel button on 3ds SDK challenge in INLINE mode
-    Then User will see payment status information: "Payment has been cancelled"
+    Then User will see notification frame text: "Payment has been cancelled"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -40,7 +40,7 @@ Feature: Cancel payment with 3ds SDK library
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User clicks Cancel button on 3ds SDK challenge in POPUP mode
-    Then User will see payment status information: "Payment has been cancelled"
+    Then User will see notification frame text: "Payment has been cancelled"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -79,7 +79,7 @@ Feature: Cancel payment with 3ds SDK library
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_INCORRECT_CODE and submit
     And User clicks Cancel button on 3ds SDK challenge in INLINE mode
-    Then User will see payment status information: "Payment has been cancelled"
+    Then User will see notification frame text: "Payment has been cancelled"
     And User will see following callback type called only once
       | callback_type |
       | submit        |

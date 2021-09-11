@@ -25,7 +25,7 @@ Feature: Payment form translations from config
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "NOTIFICATION_SUCCESS_TRANSLATION_OVERRIDE"
+    Then User will see notification frame text: "NOTIFICATION_SUCCESS_TRANSLATION_OVERRIDE"
 
 
   Scenario: Locale translation override by config for "Error" payment notification
@@ -35,7 +35,7 @@ Feature: Payment form translations from config
     And User opens example page
     When User fills payment form with defined card MASTERCARD_ERROR_ON_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "NOTIFICATION_ERROR_TRANSLATION_OVERRIDE"
+    Then User will see notification frame text: "NOTIFICATION_ERROR_TRANSLATION_OVERRIDE"
 
 
   @3ds_sdk_smoke @3ds_sdk

@@ -21,6 +21,6 @@ Feature: Card Payments
     And THREEDQUERY, AUTH mock response is set to OK
     And User calls updateJWT function by filling amount field
     And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And JSINIT request was sent 2 time
     And JSINIT requests contains updated jwt

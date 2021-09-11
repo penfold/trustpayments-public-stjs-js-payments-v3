@@ -302,7 +302,7 @@ def step_impl(context, language):
     payment_page.validate_submit_btn_text(expected_text)
 
 
-@then('User will see that Submit button is "(?P<form_status>.+)"')
+@then('User will see that Pay button is "(?P<form_status>.+)"')
 def step_impl(context, form_status):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_form_status(FieldType.SUBMIT_BUTTON.name, form_status)
@@ -335,7 +335,7 @@ def step_impl(context):
     payment_page.wait_for_notification_frame()
 
 
-@step('User waits for payment status to disappear')
+@step('User waits for notification frame to disappear')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.wait_for_notification_frame_to_disappear()
@@ -347,7 +347,7 @@ def step_impl(context):
     payment_page.validate_if_field_is_not_displayed(FieldType.NOTIFICATION_FRAME.name)
 
 
-@step('User will see payment status information: "(?P<expected_text>.+)"')
+@step('User will see notification frame text: "(?P<expected_text>.+)"')
 def step_impl(context, expected_text):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     if 'switch_to_parent_iframe' in context.scenario.tags:

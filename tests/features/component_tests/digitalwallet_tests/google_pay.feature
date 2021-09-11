@@ -11,7 +11,7 @@ Feature: GooglePay
   Scenario Outline: GooglePay - checking payment status for <action_code> response code
     Given User opens mock payment page
     When User chooses GooglePay as payment method - response is set to "<action_code>"
-    Then User will see payment status information: "<payment_status_message>"
+    Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And User will see following callback type called only once
       | <callback_type> |
@@ -71,7 +71,7 @@ Feature: GooglePay
     Given User opens mock payment page
     When User chooses GooglePay as payment method - response is set to "ERROR"
     Then User remains on checkout page
-    And User will see payment status information: "An error occurred"
+    And User will see notification frame text: "An error occurred"
     And User will see that notification frame has "red" color
     And User will see following callback type called only once
       | callback_type |
@@ -94,7 +94,7 @@ Feature: GooglePay
     Given User opens mock payment page
     When User chooses GooglePay as payment method - response is set to "CANCEL"
     Then User remains on checkout page
-    And User will see payment status information: "Payment has been cancelled"
+    And User will see notification frame text: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
     And User will see following callback type called only once
       | callback_type |
@@ -110,7 +110,7 @@ Feature: GooglePay
     And User waits for whole form to be loaded
     When User calls updateJWT function by filling amount field
     And User chooses GooglePay as payment method - response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And User will see following callback type called only once
       | callback_type |
@@ -148,7 +148,7 @@ Feature: GooglePay
     And User waits for whole form to be loaded
     When AUTH GooglePay mock response is set to SUCCESS
     And User chooses GOOGLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
@@ -162,7 +162,7 @@ Feature: GooglePay
     Given User opens mock payment page
     When ACCOUNTCHECK, AUTH GooglePay mock response is set to SUCCESS
     And User chooses GOOGLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK, AUTH request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
@@ -175,7 +175,7 @@ Feature: GooglePay
     Given User opens mock payment page
     When ACCOUNTCHECK GooglePay mock response is set to SUCCESS
     And User chooses GOOGLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
@@ -188,7 +188,7 @@ Feature: GooglePay
     Given User opens mock payment page
     When RISKDEC, AUTH GooglePay mock response is set to SUCCESS
     And User chooses GOOGLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And RISKDEC, AUTH request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
@@ -201,7 +201,7 @@ Feature: GooglePay
     Given User opens mock payment page
     When RISKDEC, ACCOUNTCHECK, AUTH GooglePay mock response is set to SUCCESS
     And User chooses GOOGLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And RISKDEC, ACCOUNTCHECK, AUTH request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
@@ -214,7 +214,7 @@ Feature: GooglePay
     Given User opens mock payment page
     When AUTH, SUBSCRIPTION GooglePay mock response is set to SUCCESS
     And User chooses GOOGLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH, SUBSCRIPTION request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
@@ -227,7 +227,7 @@ Feature: GooglePay
     Given User opens mock payment page
     When ACCOUNTCHECK, SUBSCRIPTION GooglePay mock response is set to SUCCESS
     And User chooses GOOGLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK, SUBSCRIPTION request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
@@ -239,7 +239,7 @@ Feature: GooglePay
   Scenario: GooglePay - Cybertonica - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
     Given User opens mock payment page
     When User chooses GooglePay as payment method - response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -251,7 +251,7 @@ Feature: GooglePay
   Scenario: GooglePay - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
     Given User opens mock payment page
     When User chooses GooglePay as payment method - response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |

@@ -21,7 +21,7 @@ Feature: 3ds SDK v2 E2E tests - Threedresponse
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -53,7 +53,7 @@ Feature: 3ds SDK v2 E2E tests - Threedresponse
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -85,7 +85,7 @@ Feature: 3ds SDK v2 E2E tests - Threedresponse
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -117,7 +117,7 @@ Feature: 3ds SDK v2 E2E tests - Threedresponse
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -149,7 +149,7 @@ Feature: 3ds SDK v2 E2E tests - Threedresponse
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -180,7 +180,7 @@ Feature: 3ds SDK v2 E2E tests - Threedresponse
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -212,7 +212,7 @@ Feature: 3ds SDK v2 E2E tests - Threedresponse
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -244,7 +244,7 @@ Feature: 3ds SDK v2 E2E tests - Threedresponse
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |

@@ -11,7 +11,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     And User waits for whole form to be loaded
     When User chooses Visa Checkout as payment method - visa response is set to "<action_code>"
-    Then User will see payment status information: "<payment_status_message>"
+    Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
     And "submit" callback is called only once
@@ -78,7 +78,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When User chooses Visa Checkout as payment method - visa response is set to "ERROR"
     Then User remains on checkout page
-    And User will see payment status information: "An error occurred"
+    And User will see notification frame text: "An error occurred"
     And User will see that notification frame has "red" color
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
 
@@ -87,7 +87,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When User chooses Visa Checkout as payment method - visa response is set to "ERROR"
     Then User remains on checkout page
-    And User will see payment status information: "An error occurred"
+    And User will see notification frame text: "An error occurred"
     And User will see that notification frame has "red" color
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
 
@@ -105,7 +105,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When User chooses Visa Checkout as payment method - visa response is set to "CANCEL"
     Then User remains on checkout page
-    And User will see payment status information: "Payment has been cancelled"
+    And User will see notification frame text: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
 
   @config_visa_base @visa_test
@@ -113,7 +113,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When User chooses Visa Checkout as payment method - visa response is set to "CANCEL"
     Then User remains on checkout page
-    And User will see payment status information: "Payment has been cancelled"
+    And User will see notification frame text: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
 
   @config_visa_base @wallet_test @visa_test
@@ -148,7 +148,7 @@ Feature: Visa Checkout
       | BASE_UPDATED_JWT |
     When User calls updateJWT function by filling amount field
     And User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
     And VISA_CHECKOUT requests contains updated jwt
@@ -181,14 +181,14 @@ Feature: Visa Checkout
   Scenario: Visa Checkout - Cybertonica - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
     Given User opens mock payment page
     When User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And THREEDQUERY, AUTH request was sent only once with 'fraudcontroltransactionid' flag
 
   @config_visa_base @cybertonica @visa_test
   Scenario: Visa Checkout - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
     Given User opens mock payment page
     When User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And AUTH request was sent only once without 'fraudcontroltransactionid' flag
 
   @config_visa_base @parent_iframe @full_test @visa_test
@@ -196,7 +196,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When User opens mock payment page
     And User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
 
@@ -205,7 +205,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When User changes page language to "<language>"
     And User chooses Visa Checkout as payment method - visa response is set to "ERROR"
-    Then User will see payment status information: "Wystąpił błąd"
+    Then User will see notification frame text: "Wystąpił błąd"
     And User will see that notification frame has "red" color
     Examples:
       | language |
@@ -227,7 +227,7 @@ Feature: Visa Checkout
   Scenario: Visa Checkout - notification frame is displayed after payment if disableNotification is false
     Given User opens mock payment page
     When User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
 
   @config_visa_auth @visa_test
@@ -235,7 +235,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When AUTH Visa Checkout mock response is set to SUCCESS
     And User chooses VISA_CHECKOUT as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH request for VISA_CHECKOUT is sent only once with correct data
     And "submit" callback is called only once
@@ -246,7 +246,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When ACCOUNTCHECK, AUTH Visa Checkout mock response is set to SUCCESS
     And User chooses VISA_CHECKOUT as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK, AUTH request for VISA_CHECKOUT is sent only once with correct data
     And "submit" callback is called only once
@@ -257,7 +257,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When ACCOUNTCHECK Visa Checkout mock response is set to SUCCESS
     And User chooses VISA_CHECKOUT as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK request for VISA_CHECKOUT is sent only once with correct data
     And "submit" callback is called only once
@@ -268,7 +268,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When RISKDEC, AUTH Visa Checkout mock response is set to SUCCESS
     And User chooses VISA_CHECKOUT as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And RISKDEC, AUTH request for VISA_CHECKOUT is sent only once with correct data
     And "submit" callback is called only once
@@ -279,7 +279,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When RISKDEC, ACCOUNTCHECK, AUTH Visa Checkout mock response is set to SUCCESS
     And User chooses VISA_CHECKOUT as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And RISKDEC, ACCOUNTCHECK, AUTH request for VISA_CHECKOUT is sent only once with correct data
     And "submit" callback is called only once
@@ -290,7 +290,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When AUTH, SUBSCRIPTION Visa Checkout mock response is set to SUCCESS
     And User chooses VISA_CHECKOUT as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH, SUBSCRIPTION request for VISA_CHECKOUT is sent only once with correct data
     And "submit" callback is called only once
@@ -301,7 +301,7 @@ Feature: Visa Checkout
     Given User opens mock payment page
     When ACCOUNTCHECK, SUBSCRIPTION Visa Checkout mock response is set to SUCCESS
     And User chooses VISA_CHECKOUT as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And ACCOUNTCHECK, SUBSCRIPTION request for VISA_CHECKOUT is sent only once with correct data
     And "submit" callback is called only once
@@ -311,7 +311,7 @@ Feature: Visa Checkout
   Scenario Outline: Visa Checkout - <action_code> payment with mainamount field in jwt payload
     Given User opens mock payment page
     When User chooses Visa Checkout as payment method - visa response is set to "<action_code>"
-    Then User will see payment status information: "<payment_status_message>"
+    Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And VISA_CHECKOUT or AUTH requests were sent only once with correct data
     And "submit" callback is called only once

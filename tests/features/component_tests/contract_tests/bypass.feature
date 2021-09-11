@@ -12,7 +12,7 @@ Feature: Bypass Cards config
   Scenario Outline: Card payment with Bypass
     When User fills payment form with defined card VISA_CARD
     And User clicks Pay button - <request_types> response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And <request_types> ware sent only once in one request
 
     Examples:

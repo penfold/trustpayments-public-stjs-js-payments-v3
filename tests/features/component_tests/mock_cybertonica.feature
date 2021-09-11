@@ -14,7 +14,7 @@ Feature: Cybertonica
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And THREEDQUERY, AUTH request was sent only once with 'fraudcontroltransactionid' flag
     And AUTH request was sent only once with 'fraudcontroltransactionid' flag
 
@@ -23,7 +23,7 @@ Feature: Cybertonica
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And Frictionless THREEDQUERY, AUTH response is set to OK
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And THREEDQUERY, AUTH request was sent only once without 'fraudcontroltransactionid' flag
 
   #Todo - bypass_cards
@@ -31,7 +31,7 @@ Feature: Cybertonica
 #  Scenario: Cybertonica - 'fraudcontroltransactionid' flag is added to AUTH requests during payment with bypass_pass
 #    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
 #    And AUTH response is set to "OK"
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #    And AUTH request was sent only once with 'fraudcontroltransactionid' flag
 
@@ -42,6 +42,6 @@ Feature: Cybertonica
 #    And ACS mock response is set to "OK"
 #    And AUTH response is set to "OK"
 #    And User opens mock payment page
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And THREEDQUERY, AUTH request was sent only once with 'fraudcontroltransactionid' flag
 #    And AUTH request was sent only once with 'fraudcontroltransactionid' flag

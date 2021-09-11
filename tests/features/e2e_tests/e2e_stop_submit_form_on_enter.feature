@@ -14,7 +14,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     When User fills payment form with defined card VISA_V22_FRICTIONLESS
     And User press ENTER button in input field
     Then User will not see notification frame
-    And User will see that Submit button is "enabled"
+    And User will see that Pay button is "enabled"
     And User will see that ALL input fields are "enabled"
 
 
@@ -26,10 +26,10 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     And User opens example page
     When User fills payment form with defined card VISA_V22_FRICTIONLESS
     And User press ENTER button in input field
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
 
@@ -40,10 +40,10 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     And User opens example page
     When User fills payment form with defined card VISA_V22_FRICTIONLESS
     And User press ENTER button in input field
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
 
@@ -76,8 +76,8 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"

@@ -18,7 +18,7 @@
 #      | requesttypedescriptions | <request_types>  |
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And "submit" callback is called only once
 #    And "success" callback is called only once
 #
@@ -54,7 +54,7 @@
 #      | requesttypedescriptions | <request_types>  |
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And "submit" callback is called only once
 #    And "success" callback is called only once
 #
@@ -83,7 +83,7 @@
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
 #    And User fills V2 authentication modal
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And "submit" callback is called only once
 #    And "success" callback is called only once
 #
@@ -111,7 +111,7 @@
 #      | requesttypedescriptions | <request_types>  |
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And "submit" callback is called only once
 #    And "success" callback is called only once
 #

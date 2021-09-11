@@ -12,12 +12,12 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -34,12 +34,12 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User opens example page
     When User fills payment form with defined card MASTERCARD_FAILED_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -56,12 +56,12 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User opens example page
     When User fills payment form with defined card MASTERCARD_FRICTIONLESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -78,12 +78,12 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User opens example page
     When User fills payment form with defined card MASTERCARD_UNAVAILABLE_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -100,7 +100,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User opens example page
     When User fills payment form with defined card MASTERCARD_REJECTED_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -120,7 +120,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User opens example page
     When User fills payment form with defined card MASTERCARD_AUTH_NOT_AVAILABLE_ON_LOOKUP
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -140,7 +140,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User opens example page
     When User fills payment form with defined card MASTERCARD_ERROR_ON_LOOKUP
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -161,7 +161,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -182,7 +182,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_STEP_UP_AUTH_FAILED
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -203,7 +203,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_STEP_UP_AUTH_UNAVAILABLE
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -224,12 +224,12 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_ERROR_ON_AUTH
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | error         |
-    And User will see that Submit button is "enabled"
+    And User will see that Pay button is "enabled"
     And User will see that ALL input fields are "enabled"
 
     Examples:
@@ -246,7 +246,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User opens example page
     When User fills payment form with defined card MASTERCARD_BYPASSED_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -267,7 +267,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_PROMPT_FOR_WHITELIST
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -285,7 +285,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
 #    When User fills payment form with defined card VISA_PRE_WHITELISTED_VISABASE_CONFIG
 #    And User clicks Pay button
 #    And User fills V2 authentication modal
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 
 
@@ -296,7 +296,7 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUPPORT_TRANS_STATUS_I
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -318,12 +318,12 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     When User fills payment form with defined card MASTERCARD_ERROR_ON_AUTH
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
-    And User waits for payment status to disappear
+    Then User will see notification frame text: "An error occurred"
+    And User waits for notification frame to disappear
     And User clears form
     When User fills payment form with defined card MASTERCARD_BYPASSED_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
       | request_types            |

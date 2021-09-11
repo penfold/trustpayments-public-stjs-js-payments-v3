@@ -15,7 +15,7 @@ Feature: Tokenisation
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And THREEDQUERY, AUTH ware sent only once in one request
 
   @config_tokenisation_amex
@@ -24,7 +24,7 @@ Feature: Tokenisation
     When User fills "SECURITY_CODE" field "1234"
     And Frictionless THREEDQUERY, AUTH response is set to OK
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
   @config_tokenisation_amex
   @submit_cvv_only
@@ -33,7 +33,7 @@ Feature: Tokenisation
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And AUTH request was sent only once
 
   @config_tokenisation_bypass_cards_visa
@@ -43,7 +43,7 @@ Feature: Tokenisation
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And THREEDQUERY, AUTH ware sent only once in one request
 
   @config_tokenisation_visa_request_types
@@ -53,7 +53,7 @@ Feature: Tokenisation
     And RISKDEC, ACCOUNTCHECK, THREEDQUERY mock response is set to OK
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     #ToDo
 #    And RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH ware sent only once in one request
     And AUTH request was sent only once

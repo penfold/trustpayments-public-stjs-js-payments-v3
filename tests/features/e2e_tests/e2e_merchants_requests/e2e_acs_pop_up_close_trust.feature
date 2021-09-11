@@ -18,13 +18,13 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User clicks Pay button
     And User see 3ds SDK challenge for v1 is displayed
     When User clicks cancel 3ds action button
-    Then User will see payment status information: "Payment has been cancelled"
+    Then User will see notification frame text: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
     And "submit" callback is called only once
     And "cancel" callback is called only once
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
-    And User will see that Submit button is "enabled"
+    And User will see that Pay button is "enabled"
     And User will see that ALL input fields are "enabled"
 
 
@@ -41,13 +41,13 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     When User clicks cancel 3ds action button
-    Then User will see payment status information: "Payment has been cancelled"
+    Then User will see notification frame text: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
     And "submit" callback is called only once
     And "cancel" callback is called only once
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
-    And User will see that Submit button is "enabled"
+    And User will see that Pay button is "enabled"
     And User will see that ALL input fields are "enabled"
 
 
@@ -65,11 +65,11 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User clicks cancel 3ds action button
-    And User will see payment status information: "Payment has been cancelled"
-    And User waits for payment status to disappear
+    And User will see notification frame text: "Payment has been cancelled"
+    And User waits for notification frame to disappear
     When User clicks Pay button
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once in second payment
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -94,8 +94,8 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User clicks cancel 3ds action button
-    And User will see payment status information: "Payment has been cancelled"
-    And User waits for payment status to disappear
+    And User will see notification frame text: "Payment has been cancelled"
+    And User waits for notification frame to disappear
     When User clicks Pay button
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
     Then User will not see notification frame
@@ -133,11 +133,11 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User clicks cancel 3ds action button
-    And User will see payment status information: "Payment has been cancelled"
-    And User waits for payment status to disappear
+    And User will see notification frame text: "Payment has been cancelled"
+    And User waits for notification frame to disappear
     And User re-fills payment form with defined card VISA_V22_3DS_SDK_FRICTIONLESS_SUCCESS
     When User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once in second payment
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -162,8 +162,8 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User clicks cancel 3ds action button
-    And User will see payment status information: "Payment has been cancelled"
-    And User waits for payment status to disappear
+    And User will see notification frame text: "Payment has been cancelled"
+    And User waits for notification frame to disappear
     And User re-fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_SUCCESS
     When User clicks Pay button
     Then User will not see notification frame
@@ -199,7 +199,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User toggle action buttons bar
     And User see 3ds SDK challenge is displayed
     When User clicks cancel 3ds action button
-    Then User will see payment status information: "Payment has been cancelled"
+    Then User will see notification frame text: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
     And "submit" callback is called only once
     And "cancel" callback is called only once
@@ -223,12 +223,12 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User clicks cancel 3ds action button
-    And User will see payment status information: "Payment has been cancelled"
-    And User waits for payment status to disappear
+    And User will see notification frame text: "Payment has been cancelled"
+    And User waits for notification frame to disappear
     And User calls updateJWT function by filling amount field
     When User clicks Pay button
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
 
 
@@ -248,10 +248,10 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User clicks cancel 3ds action button
-    And User will see payment status information: "Payment has been cancelled"
-    And User waits for payment status to disappear
+    And User will see notification frame text: "Payment has been cancelled"
+    And User waits for notification frame to disappear
     And User calls updateJWT function by filling amount field
     And User re-fills payment form with defined card MASTERCARD_V22_3DS_SDK_FRICTIONLESS_SUCCESS
     When User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color

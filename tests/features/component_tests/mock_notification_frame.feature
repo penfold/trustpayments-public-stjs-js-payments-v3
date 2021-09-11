@@ -34,11 +34,11 @@ Feature: Notification frame
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "UNAUTHENTICATED"
-    Then User will see payment status information: "Unauthenticated"
+    Then User will see notification frame text: "Unauthenticated"
     And User will see that notification frame has "red" color
-    And User waits for payment status to disappear
+    And User waits for notification frame to disappear
     When User fills payment form with credit card number "4111110000000211", expiration date "01/22" and cvv "123"
     And User clicks Pay button - AUTH response is set to "OK"
     And User waits for payment to be processed
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
