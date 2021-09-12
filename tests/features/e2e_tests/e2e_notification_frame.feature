@@ -3,7 +3,7 @@ Feature: Notification frame
   I want to use card payments method
   In order to check notification frame after payment
 
-  Scenario: Notification frame is not displayed after payment
+  Scenario: Disabled Notification frame is not displayed after payment
     Given JS library configured by inline params DISABLE_NOTIFICATION_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
@@ -22,11 +22,11 @@ Feature: Notification frame
     Then User will not see notification frame
 
     Examples:
-      | submitOn | amount |
-      | Success  | 1000   |
-      | Error    | 70000  |
+      | amount |
+      | 1000   |
+      | 70000  |
 
-  Scenario: Notification frame is not displayed after payment
+  Scenario: Notification frame is displayed after payment
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
