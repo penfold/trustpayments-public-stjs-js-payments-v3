@@ -14,7 +14,6 @@ from utils.enums.field_type import FieldType
 from utils.enums.payment_type import PaymentType
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import add_to_shared_dict
-from utils.helpers.resources_reader import get_translation_from_json
 
 
 class PaymentMethodsPage(BasePage):

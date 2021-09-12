@@ -1,11 +1,7 @@
 # type: ignore[no-redef]
-from urllib.parse import parse_qs, urlparse
-
-from assertpy import soft_assertions
 from behave import use_step_matcher, step, then
-
 from configuration import CONFIGURATION
-from features.steps.payment_page_mocks_stubs_steps import stub_jsinit_update_jwt_request
+from features.steps.payment_page_steps_mock import stub_jsinit_update_jwt_request
 from pages.page_factory import Pages
 from utils.configurations.inline_config_builder import InlineConfigBuilder
 from utils.configurations.jwt_generator import encode_jwt_for_json, get_jwt_config_from_json, encode_jwt, \
