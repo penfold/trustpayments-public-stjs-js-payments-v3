@@ -49,7 +49,6 @@ class E2eConfig(Enum):
     SUBMIT_ON_SUCCESS_STOP_SUBMIT_FORM_ON_ENTER = 'e2eSubmitOnSuccessStopSubmitFormOnEnter.json'
     THREE_DS_SDK_INLINE_CONFIG = 'e2eConfig3dsLibraryInline.json'
     THREE_DS_SDK_POPUP_CONFIG = 'e2eConfig3dsLibraryPopup.json'
-    THREE_DS_SDK_POPUP_TRANSLATIONS_CONFIG = 'e2eConfig3dsLibraryPopupTranslations.json'
     THREE_DS_SDK_INLINE_PROCESSING_SCREEN_OVERLAY_CONFIG = 'e2eConfig3dsLibraryInlineProcessingScreenOverlay.json'
     THREE_DS_SDK_POPUP_PROCESSING_SCREEN_OVERLAY_CONFIG = 'e2eConfig3dsLibraryPopupProcessingScreenOverlay.json'
     THREE_DS_SDK_INLINE_PROCESSING_SCREEN_ATTACH_TO_ELEMENT_CONFIG = 'e2eConfig3dsLibraryInlineProcessingScreenAttachToElement.json'

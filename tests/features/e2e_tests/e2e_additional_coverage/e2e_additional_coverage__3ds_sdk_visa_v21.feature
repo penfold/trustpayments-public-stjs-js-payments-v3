@@ -13,7 +13,7 @@ Feature: request type - 3ds SDK - full test coverage - VISA v2.1
     And User opens example page
     When User fills payment form with defined card VISA_V21_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
       | request_types                         |
@@ -48,7 +48,7 @@ Feature: request type - 3ds SDK - full test coverage - VISA v2.1
     And User opens example page
     When User fills payment form with defined card VISA_V21_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
       | request_types                                      |
@@ -77,7 +77,7 @@ Feature: request type - 3ds SDK - full test coverage - VISA v2.1
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
       | request_types                         |
@@ -104,7 +104,7 @@ Feature: request type - 3ds SDK - full test coverage - VISA v2.1
     And User opens example page
     When User fills payment form with defined card VISA_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
       | request_types                                      |
@@ -127,7 +127,7 @@ Feature: request type - 3ds SDK - full test coverage - VISA v2.1
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
       | request_types                                      |
@@ -150,7 +150,7 @@ Feature: request type - 3ds SDK - full test coverage - VISA v2.1
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
 
     Examples:
       | request_types                         |

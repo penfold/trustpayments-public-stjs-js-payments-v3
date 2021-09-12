@@ -74,7 +74,7 @@ Feature: Payment form validations
     When User fills payment form with incorrect or missing data: card number "<card_number>", expiration date "<expiration>" and cvv "<cvv>"
     And InvalidField response set for "<field>"
     And User clicks Pay button
-    Then User will see payment status information: "Invalid field"
+    Then User will see notification frame text: "Invalid field"
     And User will see that notification frame has "red" color
     And User will see "Invalid field" message under field: "<field>"
     And User will see that "<field>" field is highlighted

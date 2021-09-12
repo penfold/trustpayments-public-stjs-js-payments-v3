@@ -13,7 +13,7 @@ Feature: Successful payments with various request types configurations
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And Single THREEDQUERY mock response is set to "ENROLLED_Y_WITHOUT_ACS_URL"
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And Single THREEDQUERY request was sent only once with correct data
     And "submit" callback is called only once
     And "success" callback is called only once
@@ -25,7 +25,7 @@ Feature: Successful payments with various request types configurations
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
     And "submit" callback is called only once
@@ -37,7 +37,7 @@ Feature: Successful payments with various request types configurations
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And ACCOUNTCHECK, THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And ACCOUNTCHECK, THREEDQUERY, AUTH ware sent only once in one request
     And "submit" callback is called only once
     And "success" callback is called only once
@@ -48,7 +48,7 @@ Feature: Successful payments with various request types configurations
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And THREEDQUERY, AUTH, RISKDEC mock response is set to OK
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And THREEDQUERY, AUTH, RISKDEC ware sent only once in one request
     And "submit" callback is called only once
     And "success" callback is called only once
@@ -59,7 +59,7 @@ Feature: Successful payments with various request types configurations
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH ware sent only once in one request
     And "submit" callback is called only once
     And "success" callback is called only once
@@ -71,7 +71,7 @@ Feature: Successful payments with various request types configurations
 #    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
 #    And ACCOUNTCHECK, THREEDQUERY mock response is set to OK
 #    And User clicks Pay button - AUTH, RISKDEC response is set to "OK"
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And ACCOUNTCHECK, THREEDQUERY ware sent only once in one request
 #    And AUTH, RISKDEC ware sent only once in one request
 #    And "submit" callback is called only once
@@ -104,7 +104,7 @@ Feature: Successful payments with various request types configurations
     And Step up ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION response is set to OK
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH, SUBSCRIPTION response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION ware sent only once in one request
     And AUTH, SUBSCRIPTION ware sent only once in one request
 
@@ -114,7 +114,7 @@ Feature: Successful payments with various request types configurations
 #    Given User opens mock payment page
 #    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
 #    And User clicks Pay button - THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH response is set to "Invalid"
-#    Then User will see payment status information: "Invalid field"
+#    Then User will see notification frame text: "Invalid field"
 #    And THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH ware sent only once in one request
 #    And "submit" callback is called only once
 #    And "error" callback is called only once

@@ -11,7 +11,7 @@ Feature: ApplePay
   @base_config @wallet_test @apple_test_part1
   Scenario Outline: ApplePay - checking payment status for <action_code> response code
     When User chooses ApplePay as payment method - response is set to "<action_code>"
-    Then User will see payment status information: "<payment_status_message>"
+    Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And "<callback>" callback is called only once
     And "submit" callback is called only once
@@ -98,7 +98,7 @@ Feature: ApplePay
   Scenario: ApplePay - error payment with disabled 'submit on error' process
     When User chooses ApplePay as payment method - response is set to "DECLINE"
     Then User remains on checkout page
-    And User will see payment status information: "Decline"
+    And User will see notification frame text: "Decline"
     And User will see that notification frame has "red" color
     And "error" callback is called only once
     And "submit" callback is called only once
@@ -109,7 +109,7 @@ Feature: ApplePay
   Scenario: ApplePay - error payment - checking that 'submitOnError' is disabled by default
     When User chooses ApplePay as payment method - response is set to "DECLINE"
     Then User remains on checkout page
-    And User will see payment status information: "Decline"
+    And User will see notification frame text: "Decline"
     And User will see that notification frame has "red" color
     And "error" callback is called only once
     And "submit" callback is called only once
@@ -137,7 +137,7 @@ Feature: ApplePay
   Scenario: ApplePay - canceled payment - checking that 'submitOnCancel' is disabled by default
     When User chooses ApplePay as payment method - response is set to "CANCEL"
     Then User remains on checkout page
-    And User will see payment status information: "Payment has been cancelled"
+    And User will see notification frame text: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
     And "cancel" callback is called only once
     And "submit" callback is called only once
@@ -146,7 +146,7 @@ Feature: ApplePay
   Scenario: ApplePay - canceled payment with disabled 'submit on cancel' process
     When User chooses ApplePay as payment method - response is set to "CANCEL"
     Then User remains on checkout page
-    And User will see payment status information: "Payment has been cancelled"
+    And User will see notification frame text: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
     And "cancel" callback is called only once
     And "submit" callback is called only once
@@ -157,7 +157,7 @@ Feature: ApplePay
     Given User waits for whole form to be loaded
     When User calls updateJWT function by filling amount field
     And User chooses ApplePay as payment method - response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "success" callback is called only once
     And "submit" callback is called only once
@@ -190,7 +190,7 @@ Feature: ApplePay
   Scenario: ApplePay - successful payment with additional request types: AUTH
     When AUTH ApplePay mock response is set to SUCCESS
     And User chooses APPLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "success" callback is called only once
     And "submit" callback is called only once
     And submit callback contains JWT response
@@ -200,7 +200,7 @@ Feature: ApplePay
   Scenario: ApplePay - successful payment with additional request types: ACCOUNTCHECK
     When ACCOUNTCHECK ApplePay mock response is set to SUCCESS
     And User chooses APPLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "success" callback is called only once
     And "submit" callback is called only once
     And submit callback contains JWT response
@@ -210,7 +210,7 @@ Feature: ApplePay
   Scenario: ApplePay - successful payment with additional request types: ACCOUNTCHECK, AUTH
     When ACCOUNTCHECK, AUTH ApplePay mock response is set to SUCCESS
     And User chooses APPLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "success" callback is called only once
     And "submit" callback is called only once
     And submit callback contains JWT response
@@ -220,7 +220,7 @@ Feature: ApplePay
   Scenario: ApplePay - successful payment with additional request types: RISKDEC, AUTH
     When RISKDEC, AUTH ApplePay mock response is set to SUCCESS
     And User chooses APPLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "success" callback is called only once
     And "submit" callback is called only once
     And submit callback contains JWT response
@@ -230,7 +230,7 @@ Feature: ApplePay
   Scenario: ApplePay - successful payment with additional request types: RISKDEC, ACCOUNTCHECK, AUTH
     When RISKDEC, ACCOUNTCHECK, AUTH ApplePay mock response is set to SUCCESS
     And User chooses APPLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "success" callback is called only once
     And "submit" callback is called only once
     And submit callback contains JWT response
@@ -240,7 +240,7 @@ Feature: ApplePay
   Scenario: ApplePay - successful payment with additional request types: AUTH, SUBSCRIPTION
     When AUTH, SUBSCRIPTION ApplePay mock response is set to SUCCESS
     And User chooses APPLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "success" callback is called only once
     And "submit" callback is called only once
     And submit callback contains JWT response
@@ -250,7 +250,7 @@ Feature: ApplePay
   Scenario: ApplePay - successful payment with additional request types: ACCOUNTCHECK, SUBSCRIPTION
     When ACCOUNTCHECK, SUBSCRIPTION ApplePay mock response is set to SUCCESS
     And User chooses APPLE_PAY as payment method
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "success" callback is called only once
     And "submit" callback is called only once
     And submit callback contains JWT response
@@ -259,7 +259,7 @@ Feature: ApplePay
   @config_cybertonica @apple_test_part2
   Scenario: ApplePay - Cybertonica - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
     When User chooses ApplePay as payment method - response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "success" callback is called only once
     And "submit" callback is called only once
     And submit callback contains JWT response
@@ -268,7 +268,7 @@ Feature: ApplePay
   @base_config @cybertonica @apple_test_part2
   Scenario: ApplePay - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
     When User chooses ApplePay as payment method - response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "success" callback is called only once
     And "submit" callback is called only once
     And submit callback contains JWT response
@@ -287,7 +287,7 @@ Feature: ApplePay
   @config_disable_notifications_false @apple_test_part2
   Scenario: ApplePay - notification frame is displayed after payment if disableNotification is false
     When User chooses ApplePay as payment method - response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "success" callback is called only once
     And "submit" callback is called only once
@@ -296,7 +296,7 @@ Feature: ApplePay
   @config_mainamount @apple_test_part2
   Scenario Outline: ApplePay - <action_code> payment with mainamount field in jwt payload
     When User chooses ApplePay as payment method - response is set to "<action_code>"
-    Then User will see payment status information: "<payment_status_message>"
+    Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And "<callback>" callback is called only once
     And "submit" callback is called only once
@@ -311,7 +311,7 @@ Feature: ApplePay
   @config_apple_buttonPlacement @apple_test_part2
   Scenario: ApplePay - successful payment with 'buttonPlacement' property in config
     When User chooses ApplePay as payment method - response is set to "SUCCESS"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "success" callback is called only once
     And "submit" callback is called only once
     And submit callback contains JWT response
@@ -323,7 +323,7 @@ Feature: ApplePay
 #  Scenario: ApplePay - successful payment when app is embedded in another iframe
 #    When User opens mock payment page
 #    When User chooses ApplePay as payment method - response is set to "SUCCESS"
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #    And APPLE_PAY or AUTH requests were sent only once with correct data
 #
@@ -331,6 +331,6 @@ Feature: ApplePay
 #  Scenario: ApplePay - successful payment when app is embedded in another iframe
 #    When User opens mock payment page
 #    When User chooses ApplePay as payment method - response is set to "SUCCESS"
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #    And APPLE_PAY or AUTH requests were sent only once with correct data
