@@ -307,9 +307,9 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
     When User fills payment form with defined card MASTERCARD_CMPI_AUTH_ERROR_CARD
     And User clicks Pay button
     And User fills V1 authentication modal
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see that notification frame has "red" color
-    And User waits for payment status to disappear
+    And User waits for notification frame to disappear
     And User clears form
     When User fills payment form with defined card <card>
     And User clicks Pay button

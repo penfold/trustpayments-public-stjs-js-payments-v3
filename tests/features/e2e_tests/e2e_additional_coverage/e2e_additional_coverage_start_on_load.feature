@@ -6,7 +6,7 @@ Feature: request type + start on load - full test coverage
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -40,7 +40,7 @@ Feature: request type + start on load - full test coverage
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -67,7 +67,7 @@ Feature: request type + start on load - full test coverage
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -93,7 +93,7 @@ Feature: request type + start on load - full test coverage
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -117,7 +117,7 @@ Feature: request type + start on load - full test coverage
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -138,7 +138,7 @@ Feature: request type + start on load - full test coverage
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -159,7 +159,7 @@ Feature: request type + start on load - full test coverage
       | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page WITHOUT_SUBMIT_BUTTON
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And "submit" callback is called only once
     And "error" callback is called only once
     And submit callback contains JWT response

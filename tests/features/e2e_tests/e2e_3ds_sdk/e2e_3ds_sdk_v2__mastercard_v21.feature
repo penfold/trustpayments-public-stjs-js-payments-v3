@@ -1,5 +1,6 @@
 @3ds_sdk_v2.0_MASTERCARD_V21
 @3ds_sdk_v2.0
+@3ds_sdk
 Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
   As a user
   I want to use card payments method
@@ -21,12 +22,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -47,12 +48,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_FAILED
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -73,12 +74,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_STAND_IN
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -99,12 +100,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_UNAVAILABLE_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -125,12 +126,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_REJECTED_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -151,12 +152,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_DS_UNAVAILABLE
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -177,12 +178,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_IMPROPER_ARES_DATA
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -203,12 +204,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_ACS_UNAVAILABLE
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -231,7 +232,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -257,7 +258,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -283,7 +284,7 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -307,12 +308,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_SUCCESS_METHOD_URL
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -335,12 +336,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -361,12 +362,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_TRANS_STATUS_SUSPECTED_FRAUD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -387,12 +388,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_TRANS_STATUS_NOT_ENROLLED
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -413,12 +414,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_TRANS_STATUS_TRANSACTION_NON_PAYMENT
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -439,12 +440,12 @@ Feature: 3ds SDK v2 E2E tests - MasterCard v2.1
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_TRANS_STATUS_3RI_TRANSACTION_NOT_SUPPORTED
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:

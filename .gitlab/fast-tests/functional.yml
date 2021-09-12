@@ -25,7 +25,7 @@ e2e-card-payments-tests-review:
     - .rules-when-review
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
-  parallel: 21
+  parallel: 25
 
 e2e-card-payments-tests-release:
   extends:
@@ -34,7 +34,7 @@ e2e-card-payments-tests-release:
     - .rules-when-release
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
-  parallel: 21
+  parallel: 25
 
 # Cardinal Commerce E2E Tests Headless
 e2e-cardinal-commerce-tests-review:
@@ -139,7 +139,7 @@ e2e-smoke-tests-review:
     - .parallel-component-tests
   variables:
     FEATURE_FILES_DIR: 'features/component_tests'
-  parallel: 18
+  parallel: 12
 
 component-card-payments-tests-review:
   extends:
@@ -156,7 +156,7 @@ component-card-payments-tests-release:
     - .component-app-html-mock
     - .sequentially-component-tests
   variables:
-    FEATURE_FILE_NAME: 'component_tests/digitalwallets/visa_checkout.feature'
+    FEATURE_FILE_NAME: 'component_tests/digitalwallet_tests/visa_checkout.feature'
 
 component-visa-checkout-tests-review:
   extends:
@@ -173,7 +173,7 @@ component-visa-checkout-tests-release:
     - .component-app-html-mock
     - .sequentially-component-tests
   variables:
-    FEATURE_FILE_NAME: 'component_tests/digitalwallets/google_pay.feature'
+    FEATURE_FILE_NAME: 'component_tests/digitalwallet_tests/google_pay.feature'
 
 component-google-pay-tests-review:
   extends:

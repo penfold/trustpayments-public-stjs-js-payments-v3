@@ -12,9 +12,9 @@ Feature: E2E tests for iframe
     And User opens example page IN_IFRAME
     When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
   @parent_iframe
@@ -24,7 +24,7 @@ Feature: E2E tests for iframe
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page IN_IFRAME
     When User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"

@@ -1,4 +1,6 @@
 @3ds_sdk_v1.0_MASTERCARD
+@3ds_sdk_v1.0
+@3ds_sdk
 Feature: 3ds SDK v1 E2E tests with redirection after payment - MasterCard
   As a user
   I want to use card payments method

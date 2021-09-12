@@ -15,7 +15,7 @@ Feature: Cardinal commerce
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "<action_code>"
-    Then User will see payment status information: "<payment_status_message>"
+    Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
@@ -36,7 +36,7 @@ Feature: Cardinal commerce
     When User fills payment form with credit card number "<card_number>", expiration date "01/22" and cvv "123"
     And Frictionless THREEDQUERY, AUTH response is set to <action_code>
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status_message>"
+    Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And Frictionless AUTH and THREEDQUERY requests were sent only once with correct data
 
@@ -54,7 +54,7 @@ Feature: Cardinal commerce
     When User fills payment form with credit card number "<card_number>", expiration date "01/22" and cvv "123"
     And Frictionless THREEDQUERY, AUTH response is set to <action_code>
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status_message>"
+    Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And Frictionless AUTH and THREEDQUERY requests were sent only once with correct data
 
@@ -69,7 +69,7 @@ Feature: Cardinal commerce
     When User fills payment form with credit card number "4111110000000211", expiration date "01/22" and cvv "123"
     And THREEDQUERY mock response is set to "INVALID_ACQUIRER"
     And User clicks Pay button
-    Then User will see payment status information: "Invalid acquirer for 3-D Secure"
+    Then User will see notification frame text: "Invalid acquirer for 3-D Secure"
     And User will see that notification frame has "red" color
     And THREEDQUERY request was sent only once with correct data
 
@@ -79,10 +79,10 @@ Feature: Cardinal commerce
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "FAILURE"
     And User clicks Pay button
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see that notification frame has "red" color
     And THREEDQUERY request was sent only once with correct data
-    And User will see that Submit button is "enabled"
+    And User will see that Pay button is "enabled"
     And submit callback contains THREEDRESPONSE: True
     And submit callback contains JWT response
 
@@ -92,7 +92,7 @@ Feature: Cardinal commerce
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "<action_code>"
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status_message>"
+    Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 

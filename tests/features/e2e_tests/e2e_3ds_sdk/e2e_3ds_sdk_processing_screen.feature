@@ -1,3 +1,4 @@
+@3ds_sdk
 Feature: 3ds SDK library - Processing Screen
 
 
