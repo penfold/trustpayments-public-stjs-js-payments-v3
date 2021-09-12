@@ -12,7 +12,7 @@ Feature: E2E Card Payments with request types in config
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
     And User waits for payment to be processed
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
@@ -25,7 +25,7 @@ Feature: E2E Card Payments with request types in config
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Invalid field"
+    Then User will see notification frame text: "Invalid field"
     And User will see that notification frame has "red" color
 
 
@@ -37,7 +37,7 @@ Feature: E2E Card Payments with request types in config
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
     And User waits for payment to be processed
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
@@ -89,7 +89,7 @@ Feature: E2E Card Payments with request types in config
     And User opens example page
     When User fills payment form with defined card <card_type>
     And User clicks Pay button
-    Then User will see payment status information: "Bypass"
+    Then User will see notification frame text: "Bypass"
 
     Examples:
       | card_type             |

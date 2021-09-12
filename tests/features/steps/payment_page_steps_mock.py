@@ -12,6 +12,7 @@ from utils.enums.responses.acs_response import ACSresponse
 from utils.enums.responses.apple_pay_response import ApplePayResponse
 from utils.enums.responses.auth_response import AUTHresponse
 from utils.enums.responses.google_pay_response import GooglePayResponse
+from utils.enums.responses.invalid_field_response import InvalidFieldResponse
 from utils.enums.responses.jsinit_response import jsinit_response
 from utils.enums.responses.tdq_response import TDQresponse
 from utils.enums.responses.visa_response import VisaResponse
@@ -28,6 +29,12 @@ def step_impl(context):
     remove_item_from_request_journal()
     stub_jsinit_request(context)
     stub_config(config[context.scenario.tags[0]])
+
+
+@when('User chooses (?P<payment_method>.+) as payment method')
+def step_impl(context, payment_method):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.choose_payment_methods(PaymentType[payment_method].name)
 
 
 @step('THREEDQUERY mock response is set to "(?P<tdq_response>.+)"')
@@ -158,6 +165,11 @@ def step_impl(context, action_code):
 @step('(?P<request_type>.+) mock response for tokenisation is set to OK')
 def step_impl(context, request_type):
     stub_st_request_type(request_type_tokenisation_response[request_type], request_type)
+
+
+@step('InvalidField response set for "(?P<field>.+)"')
+def step_impl(context, field):
+    stub_st_request_type(InvalidFieldResponse[field].value, 'THREEDQUERY, AUTH')
 
 
 # Number of request:

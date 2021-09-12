@@ -33,12 +33,12 @@ Feature: Notification frame
     And User opens example page
     When User fills payment form with defined card VISA_V21_FAILED_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "Unauthenticated"
+    Then User will see notification frame text: "Unauthenticated"
     And User will see that notification frame has "red" color
-    And User waits for payment status to disappear
+    And User waits for notification frame to disappear
     When User clears form
     And User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
     And User waits for payment to be processed
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color

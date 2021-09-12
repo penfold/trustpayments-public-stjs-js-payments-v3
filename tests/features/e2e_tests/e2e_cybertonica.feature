@@ -13,7 +13,7 @@ Feature: E2E Cybertonica
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
     And User fills V1 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
 
   @bypass_property
@@ -25,7 +25,7 @@ Feature: E2E Cybertonica
     And User opens example page
     When User fills payment form with defined card VISA_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
 
 
@@ -35,4 +35,4 @@ Feature: E2E Cybertonica
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page WITHOUT_SUBMIT_BUTTON
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"

@@ -15,7 +15,7 @@ Feature: Successful payments with various configurations
     When User fills payment form with credit card number "<card_number>", expiration date "<expiration_date>" and cvv "<cvv>"
     And Frictionless THREEDQUERY, AUTH response is set to OK
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And Frictionless AUTH and THREEDQUERY requests were sent only once with correct data
 
     @smoke_mock_test
@@ -40,7 +40,7 @@ Feature: Successful payments with various configurations
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
     And JSINIT requests contains updated jwt
@@ -52,7 +52,7 @@ Feature: Successful payments with various configurations
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     Then JSINIT request was sent only once
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
@@ -63,7 +63,7 @@ Feature: Successful payments with various configurations
     When User fills "SECURITY_CODE" field "123"
     And THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will not see CARD_NUMBER
     And User will not see EXPIRATION_DATE
     And THREEDQUERY, AUTH ware sent only once in one request
@@ -75,7 +75,7 @@ Feature: Successful payments with various configurations
     When User fills "SECURITY_CODE" field "1234"
     And THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will not see CARD_NUMBER
     And User will not see EXPIRATION_DATE
     And THREEDQUERY, AUTH ware sent only once in one request
@@ -103,7 +103,7 @@ Feature: Successful payments with various configurations
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
@@ -115,5 +115,5 @@ Feature: Successful payments with various configurations
     And ACS mock response is set to "OK"
     And AUTH response is set to "OK"
     And User press ENTER button in input field
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see the same provided data in inputs fields

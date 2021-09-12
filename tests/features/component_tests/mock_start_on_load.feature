@@ -11,7 +11,7 @@ Feature: Successful payments with start on load configuration
   Scenario: Successful payment with startOnLoad and request types THREEDQUERY
     And Single THREEDQUERY mock response is set to "ENROLLED_Y_WITHOUT_ACS_URL"
     And User opens mock payment page WITHOUT_SUBMIT_BUTTON
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And Single THREEDQUERY request was sent only once with correct data
 
   @config_start_on_load_acheck_tdq_auth_sub
@@ -20,7 +20,7 @@ Feature: Successful payments with start on load configuration
     And ACS mock response is set to "OK"
     And AUTH, SUBSCRIPTION mock response is set to OK
     And User opens mock payment page WITHOUT_SUBMIT_BUTTON
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION ware sent only once in one request
     And AUTH, SUBSCRIPTION ware sent only once in one request
 
@@ -30,7 +30,7 @@ Feature: Successful payments with start on load configuration
     And ACS mock response is set to "OK"
     And AUTH response is set to "OK"
     And User opens mock payment page WITHOUT_SUBMIT_BUTTON
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And THREEDQUERY, AUTH ware sent only once in one request
     And THREEDQUERY request was not sent
 
@@ -38,7 +38,7 @@ Feature: Successful payments with start on load configuration
   Scenario: Immediate payment (card enrolled N) - checking payment status for OK response code
     And Frictionless THREEDQUERY, AUTH response is set to OK
     And User opens mock payment page
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And JSINIT request was sent only once
     And THREEDQUERY, AUTH ware sent only once in one request
 
@@ -47,7 +47,7 @@ Feature: Successful payments with start on load configuration
     When THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "FAILURE"
     And User opens mock payment page
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And THREEDQUERY, AUTH ware sent only once in one request
 
   @config_immediate_payment_and_submit_on_success
@@ -77,7 +77,7 @@ Feature: Successful payments with start on load configuration
     And ACS mock response is set to "OK"
     And AUTH response is set to "<action_code>"
     And User opens mock payment page
-    Then User will see payment status information: "<payment_status_message>"
+    Then User will see notification frame text: "<payment_status_message>"
     And THREEDQUERY, AUTH ware sent only once in one request
 
     Examples:

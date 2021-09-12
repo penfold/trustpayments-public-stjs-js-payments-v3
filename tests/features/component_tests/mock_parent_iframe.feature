@@ -16,7 +16,7 @@ Feature: Payment form embeded into iframe
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "<action_code>"
-    Then User will see payment status information: "<payment_status_message>"
+    Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 

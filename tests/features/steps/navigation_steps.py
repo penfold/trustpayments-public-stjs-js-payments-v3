@@ -1,11 +1,7 @@
 # type: ignore[no-redef]
-from urllib.parse import parse_qs, urlparse
-
-from assertpy import soft_assertions
 from behave import use_step_matcher, step, then
-
 from configuration import CONFIGURATION
-from features.steps.payment_page_mocks_stubs_steps import stub_jsinit_update_jwt_request
+from features.steps.payment_page_steps_mock import stub_jsinit_update_jwt_request
 from pages.page_factory import Pages
 from utils.configurations.inline_config_builder import InlineConfigBuilder
 from utils.configurations.jwt_generator import encode_jwt_for_json, get_jwt_config_from_json, encode_jwt, \
@@ -140,19 +136,6 @@ def step_impl(context, path):
     if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
     payment_page.open_page(url)
-
-
-@step('User will be sent to page with url "(?P<url>.+)" having params')
-def step_impl(context, url: str):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    with soft_assertions():
-        payment_page.validate_base_url(url)
-        context.waits.wait_for_javascript()
-        actual_url = payment_page.get_page_url()
-        parsed_url = urlparse(actual_url)
-        parsed_query_from_url = parse_qs(parsed_url.query)
-        for param in context.table:
-            payment_page.validate_if_url_contains_param(parsed_query_from_url, param['key'], param['value'])
 
 
 def accept_untrusted_pages_on_safari_browsers(context):

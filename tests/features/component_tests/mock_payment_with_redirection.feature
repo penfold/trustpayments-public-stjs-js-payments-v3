@@ -82,7 +82,7 @@ Feature: payment flow with redirect
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "DECLINE"
     Then User remains on checkout page
-    And User will see payment status information: "Decline"
+    And User will see notification frame text: "Decline"
     And User will see that notification frame has "red" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 

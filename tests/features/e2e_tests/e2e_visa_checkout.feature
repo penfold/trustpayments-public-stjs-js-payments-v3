@@ -17,7 +17,7 @@
 #    When User selects VISA_V21_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 ##    And User confirms visa checkout security code
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #
 #    Examples:
@@ -53,7 +53,7 @@
 #    When User selects VISA_V21_NON_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 ##    And User confirms visa checkout security code
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #
 #    Examples:
@@ -89,7 +89,7 @@
 #    When User selects VISA_V21_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 ##    And User confirms visa checkout security code
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #
 #    Examples:
@@ -118,7 +118,7 @@
 #    When User selects VISA_V21_NON_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 ##    And User confirms visa checkout security code
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #
 #    Examples:
@@ -146,7 +146,7 @@
 #    When User selects VISA_DECLINED_CARD card on visa checkout popup
 #    And User confirms displayed card with data
 #    #And User confirms visa checkout security code
-#    Then User will see payment status information: "Decline"
+#    Then User will see notification frame text: "Decline"
 #    And User will see that notification frame has "red" color
 #
 #  Scenario: Successful Authentication by Visa checkout with submit on success config
@@ -178,7 +178,7 @@
 #    When User selects VISA_DECLINED_CARD card on visa checkout popup
 #    And User confirms displayed card with data
 #    #And User confirms visa checkout security code
-#    Then User will see payment status information: "Decline"
+#    Then User will see notification frame text: "Decline"
 #    And User will see "error" popup
 #
 #  Scenario: Successful Authentication by Visa checkout with cybertonica config
@@ -192,7 +192,7 @@
 #    When User selects VISA_CARD card on visa checkout popup
 #    And User confirms displayed card with data
 #    #And User confirms visa checkout security code
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #
 #  Scenario: Successful Authentication by Visa checkout with updateJwt
@@ -207,7 +207,7 @@
 #    When User selects VISA_CARD card on visa checkout popup
 #    And User confirms displayed card with data
 #    #And User confirms visa checkout security code
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #
 #  Scenario: Successful Authentication by Visa checkout with request types config
@@ -221,7 +221,7 @@
 #    When User selects VISA_CARD card on visa checkout popup
 #    And User confirms displayed card with data
 #    #And User confirms visa checkout security code
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 #
 #  @switch_to_parent_iframe
@@ -236,5 +236,5 @@
 #    When User selects VISA_V21_FRICTIONLESS card on visa checkout popup
 #    And User confirms displayed card with data
 #    #And User confirms visa checkout security code
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color

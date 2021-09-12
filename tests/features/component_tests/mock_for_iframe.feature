@@ -11,7 +11,7 @@ Feature: Mock for iframe
 #  Scenario: Check if start on load working on example page with defined iframe
 #    When THREEDQUERY mock response is set to "NOT_ENROLLED_N"
 #    When User opens mock payment page WITH_SPECIFIC_IFRAME
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And Single THREEDQUERY request was sent only once with correct data
 
   @base_config
@@ -21,7 +21,7 @@ Feature: Mock for iframe
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"
     And User clicks Pay button - AUTH response is set to "OK"
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And AUTH and THREEDQUERY requests were sent only once with correct data
 

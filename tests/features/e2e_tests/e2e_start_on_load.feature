@@ -11,7 +11,7 @@ Feature: E2E startOnLoad
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page WITHOUT_SUBMIT_BUTTON
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
@@ -24,7 +24,7 @@ Feature: E2E startOnLoad
       | key                     | value                         |
       | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY AUTH |
     And User opens example page WITHOUT_SUBMIT_BUTTON
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
@@ -38,7 +38,7 @@ Feature: E2E startOnLoad
       | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION |
     And User opens example page WITHOUT_SUBMIT_BUTTON
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
@@ -52,7 +52,7 @@ Feature: E2E startOnLoad
       | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page WITHOUT_SUBMIT_BUTTON
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And "submit" callback is called only once
     And "error" callback is called only once
     And submit callback contains JWT response
