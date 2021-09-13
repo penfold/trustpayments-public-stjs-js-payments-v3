@@ -64,8 +64,8 @@ Feature: Successful payments with various configurations
     And THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
-    And User will not see CARD_NUMBER
-    And User will not see EXPIRATION_DATE
+    And User will not see form field CARD_NUMBER
+    And User will not see form field EXPIRATION_DATE
     And THREEDQUERY, AUTH ware sent only once in one request
 
   @config_submit_cvv_for_amex
@@ -76,8 +76,8 @@ Feature: Successful payments with various configurations
     And THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
-    And User will not see CARD_NUMBER
-    And User will not see EXPIRATION_DATE
+    And User will not see form field CARD_NUMBER
+    And User will not see form field EXPIRATION_DATE
     And THREEDQUERY, AUTH ware sent only once in one request
 
   @config_cvvToSubmit_and_submitOnSuccess

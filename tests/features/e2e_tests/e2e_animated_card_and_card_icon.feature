@@ -40,8 +40,8 @@ Feature: Payments Card recognition
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card VISA_V21_FRICTIONLESS
-    Then User will not see ANIMATED_CARD
-    And User will not see CARD_ICON
+    Then User will not see form field ANIMATED_CARD
+    And User will not see form field CARD_ICON
 
   Scenario: Verify that animated card is not displayed if 'animatedCard' is false
     Given JS library configured with BASIC_CONFIG and additional attributes
@@ -51,7 +51,7 @@ Feature: Payments Card recognition
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page
-    Then User will not see ANIMATED_CARD
+    Then User will not see form field ANIMATED_CARD
 
   Scenario: Verify that card icon is not displayed if 'panIcon' is false
     Given JS library configured with BASIC_CONFIG and additional attributes
@@ -62,4 +62,4 @@ Feature: Payments Card recognition
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
     When User fills payment form with defined card VISA_V21_FRICTIONLESS
-    Then User will not see CARD_ICON
+    Then User will not see form field CARD_ICON

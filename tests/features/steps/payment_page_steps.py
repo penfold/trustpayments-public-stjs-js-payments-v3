@@ -228,7 +228,7 @@ def step_impl(context, card_type):
     payment_page.validate_credit_card_icon_in_input_field(card_type)
 
 
-@then('User will not see (?P<field_type>.+)')
+@then('User will not see form field (?P<field_type>.+)')
 def step_impl(context, field_type):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_if_field_is_not_displayed(FieldType[field_type].name)
