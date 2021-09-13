@@ -13,7 +13,7 @@ import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 import { ApplePayGestureService } from '../../../application/core/integrations/apple-pay/apple-pay-gesture-service/ApplePayGestureService';
 import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { FrameQueryingService } from '../../../shared/services/message-bus/FrameQueryingService';
+import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 
 describe('ApplePayClient', () => {
   const configMock: IConfig = {
@@ -71,7 +71,7 @@ describe('ApplePayClient', () => {
   let applePaySessionServiceMock: ApplePaySessionService;
   let applePayGestureServiceMock: ApplePayGestureService;
   let applePaySessionFactoryMock: ApplePaySessionFactory;
-  let frameQueryingService: FrameQueryingService;
+  let frameQueryingServiceMock: IFrameQueryingService;
   let messageBusMock: IMessageBus;
 
   describe('init()', () => {
@@ -81,7 +81,7 @@ describe('ApplePayClient', () => {
       applePaySessionServiceMock = mock(ApplePaySessionService);
       applePayGestureServiceMock = mock(ApplePayGestureService);
       applePaySessionFactoryMock = mock(ApplePaySessionFactory);
-      frameQueryingService = mock(FrameQueryingService);
+      frameQueryingServiceMock = mock<IFrameQueryingService>();
       messageBusMock = mock<IMessageBus>();
 
       applePayClient = new ApplePayClient(
@@ -90,7 +90,7 @@ describe('ApplePayClient', () => {
         instance(applePaySessionServiceMock),
         instance(applePayGestureServiceMock),
         instance(applePaySessionFactoryMock),
-        instance(frameQueryingService),
+        instance(frameQueryingServiceMock),
         instance(messageBusMock),
       );
     });

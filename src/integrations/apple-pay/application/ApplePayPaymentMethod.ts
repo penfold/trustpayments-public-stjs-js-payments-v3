@@ -4,7 +4,6 @@ import { IPaymentMethod } from '../../../application/core/services/payments/IPay
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
-import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
@@ -18,16 +17,16 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { TransportServiceGatewayClient } from '../../../application/core/services/gateway-client/TransportServiceGatewayClient';
 import { catchError, tap } from 'rxjs/operators';
-import { FrameQueryingService } from '../../../shared/services/message-bus/FrameQueryingService';
+import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 
 @Service({ id: PaymentMethodToken, multiple: true })
-export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayGatewayRequest, IRequestTypeResponse> {
+export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined, IRequestTypeResponse> {
   private requestProcessingService: Observable<IRequestProcessingService>;
   private paymentErrors: Subject<IPaymentResult<IRequestTypeResponse>> = new Subject();
 
   constructor(
     private requestProcessingInitializer: RequestProcessingInitializer,
-    private frameQueryingService: FrameQueryingService,
+    private frameQueryingService: IFrameQueryingService,
     @Inject(() => TransportServiceGatewayClient) private gatewayClient: IGatewayClient,
   ) {}
 
@@ -49,7 +48,7 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayG
     ]).pipe(mapTo(undefined));
   }
 
-  start(request: IApplePayGatewayRequest): Observable<IPaymentResult<IRequestTypeResponse>> {
+  start(): Observable<IPaymentResult<IRequestTypeResponse>> {
     this.frameQueryingService.whenReceive(
       PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT_2,
     (event: IMessageBusEvent<IApplePayValidateMerchantRequest>) => this.validateMerchant(event.data),

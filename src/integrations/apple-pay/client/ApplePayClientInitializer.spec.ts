@@ -2,16 +2,16 @@ import { anyFunction, anything, instance, mock, verify, when } from 'ts-mockito'
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { ApplePayClient } from './ApplePayClient';
 import { ApplePayClientInitializer } from './ApplePayClientInitializer';
-import { FrameQueryingService } from '../../../shared/services/message-bus/FrameQueryingService';
+import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 
 describe('ApplePayClientInitializer', () => {
   let applePayClientInitializer: ApplePayClientInitializer;
   let applePayClientMock: ApplePayClient;
-  let frameQueryingService: FrameQueryingService;
+  let frameQueryingService: IFrameQueryingService;
 
   beforeEach(() => {
     applePayClientMock = mock(ApplePayClient);
-    frameQueryingService = mock(FrameQueryingService);
+    frameQueryingService = mock<IFrameQueryingService>();
 
     applePayClientInitializer = new ApplePayClientInitializer(
       instance(applePayClientMock),

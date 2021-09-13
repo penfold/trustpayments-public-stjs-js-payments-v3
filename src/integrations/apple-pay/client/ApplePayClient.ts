@@ -21,7 +21,7 @@ import { IApplePayValidateMerchantRequest } from '../../../application/core/inte
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IApplePayPaymentAuthorizedEvent } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
-import { FrameQueryingService } from '../../../shared/services/message-bus/FrameQueryingService';
+import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 
 @Service()
 export class ApplePayClient {
@@ -33,7 +33,7 @@ export class ApplePayClient {
     private applePaySessionService: ApplePaySessionService,
     private applePayGestureService: ApplePayGestureService,
     private applePaySessionFactory: ApplePaySessionFactory,
-    private frameQueryingService: FrameQueryingService,
+    private frameQueryingService: IFrameQueryingService,
     private messageBus: IMessageBus,
   ) {
   }

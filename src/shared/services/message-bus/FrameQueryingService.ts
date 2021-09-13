@@ -6,27 +6,27 @@ import { ofType } from './operators/ofType';
 import { ResponseMessage } from './messages/ResponseMessage';
 import {
   catchError,
+  EMPTY,
   filter,
   first,
   map,
   mergeMap,
-  switchMap,
-  takeUntil,
-  EMPTY,
   Observable,
   of,
   Subject,
+  switchMap,
+  takeUntil,
   throwError,
 } from 'rxjs';
 import { Service } from 'typedi';
 import { FrameIdentifier } from './FrameIdentifier';
 import { ErrorReconstructor } from './ErrorReconstructor';
 import { take } from 'rxjs/operators';
-
-type QueryResponder<T = unknown> = (queryEvent: IMessageBusEvent) => Observable<T>;
+import { QueryResponder } from './types/QueryResponder';
+import { IFrameQueryingService } from './interfaces/IFrameQueryingService';
 
 @Service()
-export class FrameQueryingService {
+export class FrameQueryingService implements IFrameQueryingService {
   private interFrameCommunicator: InterFrameCommunicator;
   private responders: Map<string, QueryResponder> = new Map();
   private detach$: Subject<void> = new Subject();
