@@ -42,7 +42,8 @@ Feature: Payment form styles check
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    When User fills payment form with credit card number "340000000000611", expiration date "12/23"
+    When User fills "CARD_NUMBER" field "340000000000611"
+    And User fills "EXPIRATION_DATE" field "12/23"
     Then User will see "****" placeholder in security code field
 
   Scenario: Checking that animated card and card icon are displayed

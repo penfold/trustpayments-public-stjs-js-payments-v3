@@ -52,6 +52,7 @@ def step_impl(context, field_type, not_available):
 
 # Form inputs
 
+
 @when(
     'User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)" and cvv "(?P<cvv>.+)"')
 def step_impl(context, card_number, exp_date, cvv):
@@ -72,13 +73,6 @@ def fill_payment_form_with_defined_card(context, card: Card):
     payment_page.fill_payment_form(card.number, card.expiration_date, card.cvv)
 
 
-@step('User re-fills payment form with defined card (?P<card>.+)')
-def step_impl(context, card: Card):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.clear_card_number_field()
-    fill_payment_form_with_defined_card(context, card)
-
-
 @step('User fills only security code for saved (?P<card>.+) card')
 def step_impl(context, card: Card):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -86,24 +80,18 @@ def step_impl(context, card: Card):
     payment_page.fill_payment_form_with_only_cvv(card.cvv)
 
 
-@when(
-    'User fills payment form with incorrect or missing data: card number "(?P<card_number>.+)",'
-    ' expiration date "(?P<exp_date>.+)" and cvv "(?P<cvv>.+)"')
-def step_impl(context, card_number, exp_date, cvv):
-    context.pan = card_number
-    context.exp_date = exp_date
-    context.cvv = cvv
+@step('User re-fills payment form with defined card (?P<card>.+)')
+def step_impl(context, card: Card):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.fill_payment_form(card_number, exp_date, cvv)
+    payment_page.clear_card_number_field()
+    fill_payment_form_with_defined_card(context, card)
 
 
-@when('User fills payment form with credit card number "(?P<card_number>.+)", expiration date "(?P<exp_date>.+)"')
-def step_impl(context, card_number, exp_date):
+@step('User re-fill value of the card number field to "(?P<new_card_number>.+)"')
+def step_impl(context, new_card_number: str):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    context.pan = str(card_number)
-    context.exp_date = str(exp_date)
-    context.cvv = str('')
-    payment_page.fill_payment_form_without_cvv(card_number, exp_date)
+    payment_page.clear_card_number_field()
+    payment_page.fill_credit_card_field(FieldType.CARD_NUMBER.name, new_card_number)
 
 
 @when('User fills "(?P<field>.+)" field "(?P<value>.+)"')
@@ -113,19 +101,13 @@ def step_impl(context, field, value):
     payment_page.fill_credit_card_field(FieldType[field].name, value)
 
 
-@step('User replaces value of the card number field to "(?P<new_card_number>.+)"')
-def step_impl(context, new_card_number: str):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.clear_card_number_field()
-    payment_page.fill_credit_card_field(FieldType.CARD_NUMBER.name, new_card_number)
-
-
 @step('User will see that all fields are highlighted')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_if_field_is_highlighted(FieldType.CARD_NUMBER.name)
-    payment_page.validate_if_field_is_highlighted(FieldType.EXPIRATION_DATE.name)
-    payment_page.validate_if_field_is_highlighted(FieldType.SECURITY_CODE.name)
+    with soft_assertions():
+        payment_page.validate_if_field_is_highlighted(FieldType.CARD_NUMBER.name)
+        payment_page.validate_if_field_is_highlighted(FieldType.EXPIRATION_DATE.name)
+        payment_page.validate_if_field_is_highlighted(FieldType.SECURITY_CODE.name)
 
 
 @step('User will see that "(?P<field>.+)" field is highlighted')
@@ -175,16 +157,18 @@ def step_impl(context, language):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     with soft_assertions():
         payment_page.validate_card_number_iframe_element_text(get_translation_from_json(language, 'Card number'))
-        payment_page.validate_expiration_date_iframe_element_text(get_translation_from_json(language, 'Expiration date'))
+        payment_page.validate_expiration_date_iframe_element_text(
+            get_translation_from_json(language, 'Expiration date'))
         payment_page.validate_security_code_iframe_element_text(get_translation_from_json(language, 'Security code'))
 
 
 @then('User will see validation message "(?P<expected_message>.+)" under all fields')
 def step_impl(context, expected_message):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_field_validation_message(FieldType.CARD_NUMBER.name, expected_message)
-    payment_page.validate_field_validation_message(FieldType.EXPIRATION_DATE.name, expected_message)
-    payment_page.validate_field_validation_message(FieldType.SECURITY_CODE.name, expected_message)
+    with soft_assertions():
+        payment_page.validate_field_validation_message(FieldType.CARD_NUMBER.name, expected_message)
+        payment_page.validate_field_validation_message(FieldType.EXPIRATION_DATE.name, expected_message)
+        payment_page.validate_field_validation_message(FieldType.SECURITY_CODE.name, expected_message)
 
 
 @step('User will see "(?P<expected_message>.+)" message under field: "(?P<field>.+)"')
@@ -213,7 +197,10 @@ def step_validation_msg_translation(context, key, field, language):
 @then('User will see (?P<placeholders>.+) placeholders in input fields: (?P<card>.+), (?P<date>.+), (?P<cvv>.+)')
 def step_impl(context, placeholders, card, date, cvv):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_placeholders(card, date, cvv)
+    with soft_assertions():
+        payment_page.validate_placeholder(FieldType.CARD_NUMBER.name, card)
+        payment_page.validate_placeholder(FieldType.EXPIRATION_DATE.name, date)
+        payment_page.validate_placeholder(FieldType.SECURITY_CODE.name, cvv)
 
 
 @then('User will see "(?P<placeholder>.+)" placeholder in security code field')
@@ -243,9 +230,10 @@ def step_impl(context):
 @step('User will see the same provided data in inputs fields')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_value_of_input_field(FieldType.CARD_NUMBER.name, '4000 0000 0000 1091')
-    payment_page.validate_value_of_input_field(FieldType.EXPIRATION_DATE.name, context.exp_date)
-    payment_page.validate_value_of_input_field(FieldType.SECURITY_CODE.name, context.cvv)
+    with soft_assertions():
+        payment_page.validate_value_of_input_field(FieldType.CARD_NUMBER.name, '4000 0000 0000 1091')
+        payment_page.validate_value_of_input_field(FieldType.EXPIRATION_DATE.name, context.exp_date)
+        payment_page.validate_value_of_input_field(FieldType.SECURITY_CODE.name, context.cvv)
 
 
 @step('User focuses on "(?P<field_type>.+)" field')
