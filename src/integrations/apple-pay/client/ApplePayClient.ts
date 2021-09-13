@@ -118,7 +118,11 @@ export class ApplePayClient {
 
     this.frameQueryingService.query(validateMerchantQueryEvent, CONTROL_FRAME_IFRAME).subscribe({
       next: (response: IApplePayWalletVerifyResponseBody) => {
-        this.applePaySession.completeMerchantValidation(JSON.parse(response.walletsession));
+        if (Number(response.errorcode) === 0) {
+          this.applePaySession.completeMerchantValidation(JSON.parse(response.walletsession));
+        } else {
+          this.applePaySession.abort();
+        }
       },
       error: () => {
         this.applePaySession.abort();
