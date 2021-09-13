@@ -46,7 +46,7 @@ Feature: payment flow with callbacks
       | THREEDQUERY AUTH         |
       | ACCOUNTCHECK THREEDQUERY |
 
-#  TODO - STJS-1278
+#  STJS-1278
 #  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - non-frictionless card
 #    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
 #      | key                     | value         |
@@ -54,7 +54,7 @@ Feature: payment flow with callbacks
 #    And User opens example page
 #    And User waits for whole form to be displayed
 #    And User waits for Pay button to be active
-#    And User fills payment form with defined card VISA_NON_FRICTIONLESS
+#    And User fills payment form with defined card VISA_V22_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User waits for payment to be processed
 #    And User gets cachetoken value from url
@@ -65,5 +65,7 @@ Feature: payment flow with callbacks
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
 #    And User waits for whole form to be displayed
 #    Then User will see payment status information: "Payment has been successfully processed"
-#    And "submit" callback is called only once
-#    And "success" callback is called only once
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | submit        |
+#      | success       |

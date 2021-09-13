@@ -94,8 +94,6 @@ describe('FrameQueryingService', () => {
     });
 
     it('rejects with a received response error message data', done => {
-      expect.assertions(1);
-
       frameQueryingService.query(queryMessage, MERCHANT_PARENT_FRAME).subscribe({
         error: response => {
           expect(response).toBe(responseMessage);

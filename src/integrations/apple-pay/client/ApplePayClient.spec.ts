@@ -91,7 +91,7 @@ describe('ApplePayClient', () => {
         instance(applePayGestureServiceMock),
         instance(applePaySessionFactoryMock),
         instance(frameQueryingService),
-        instance(messageBusMock)
+        instance(messageBusMock),
       );
     });
 
