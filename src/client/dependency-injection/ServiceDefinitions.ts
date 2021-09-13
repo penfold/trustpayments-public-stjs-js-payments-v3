@@ -10,6 +10,7 @@ import { PreventNavigationPopup } from '../message-subscribers/PreventNavigation
 import { PaymentResultSubmitterSubscriber } from '../common-frames/PaymentResultSubmitterSubscriber';
 import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import '../../shared/dependency-injection/ServiceDefinitions';
+import { ApplePayClientInitializer } from '../../integrations/apple-pay/client/ApplePayClientInitializer';
 
 Container.set({ id: ConfigProvider, factory: () => Container.get(ConfigService) });
 Container.set({ id: ThreeDSecureFactory, type: ThreeDSecureFactory });
@@ -18,6 +19,7 @@ Container.import([
   PreventNavigationPopup,
   PaymentResultSubmitterSubscriber,
   GooglePayInitializeSubscriber,
+  ApplePayClientInitializer,
 ]);
 
 if(environment.testEnvironment){

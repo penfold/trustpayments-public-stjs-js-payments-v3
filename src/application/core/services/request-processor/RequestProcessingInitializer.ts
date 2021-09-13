@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { IRequestProcessingService } from './IRequestProcessingService';
 import { JsInitResponseService } from '../three-d-verification/JsInitResponseService';
 import { RequestProcessingServiceProvider } from './RequestProcessingServiceProvider';
-import { mapTo, switchMap } from 'rxjs/operators';
+import { first, mapTo, switchMap } from 'rxjs/operators';
 import { RemainingRequestTypesProvider } from '../three-d-verification/RemainingRequestTypesProvider';
 import { RequestType } from '../../../../shared/types/RequestType';
 
@@ -24,6 +24,7 @@ export class RequestProcessingInitializer {
 
         return this.initProcessingService(requestTypes);
       }),
+      first(),
     );
   }
 

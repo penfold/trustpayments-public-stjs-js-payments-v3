@@ -19,6 +19,12 @@ export class EventDataSanitizer {
       return data.map(this.sanitize.bind(this));
     }
 
+    if (data instanceof Error) {
+      return Object.getOwnPropertyNames(data).reduce((reduced, key) => {
+        return { ...reduced, [key]: this.sanitize(data[key]) };
+      }, { name: 'Error' });
+    }
+
     if (typeof data === 'object') {
       return Object.entries(data).reduce((reduced, [key, value]) => {
         return { ...reduced, [key]: this.sanitize(value) };

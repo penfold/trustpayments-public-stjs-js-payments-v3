@@ -1,25 +1,21 @@
-import { FrameIdentifier } from './FrameIdentifier';
 import { FrameAccessor } from './FrameAccessor';
 import { InterFrameCommunicator } from './InterFrameCommunicator';
-import { anything, capture, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { environment } from '../../../environments/environment';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { Debug } from '../../Debug';
 import { FrameNotFound } from './errors/FrameNotFound';
-import { first, mapTo, take, toArray } from 'rxjs/operators';
+import { first } from 'rxjs';
 import { ContainerInstance } from 'typedi';
 import { CONFIG } from '../../dependency-injection/InjectionTokens';
-import { QueryMessage } from './messages/QueryMessage';
-import { ResponseMessage } from './messages/ResponseMessage';
-import { of, Subject, timer } from 'rxjs';
 import { EventDataSanitizer } from './EventDataSanitizer';
+import { FrameQueryingService, WhenReceive } from './FrameQueryingService';
 
 describe('InterFrameCommunicator', () => {
   const PARENT_FRAME_ORIGIN = 'https://foobar.com';
   const APP_FRAME_ORIGIN = new URL(environment.FRAME_URL).origin;
 
-  let frameIdentifierMock: FrameIdentifier;
   let frameAccessorMock: FrameAccessor;
   let containerMock: ContainerInstance;
   let interFrameCommunicator: InterFrameCommunicator;
@@ -28,9 +24,9 @@ describe('InterFrameCommunicator', () => {
   let foobarFrameMock: Window;
   let foobarFrame: Window;
   let eventDataSanitizerMock: EventDataSanitizer;
+  let frameQueryingServiceMock: FrameQueryingService;
 
   beforeEach(() => {
-    frameIdentifierMock = mock(FrameIdentifier);
     frameAccessorMock = mock(FrameAccessor);
     containerMock = mock(ContainerInstance);
     parentFrameMock = mock<Window>();
@@ -40,12 +36,13 @@ describe('InterFrameCommunicator', () => {
     foobarFrame = instance(foobarFrameMock);
     Object.setPrototypeOf(foobarFrame, Window.prototype);
     eventDataSanitizerMock = mock(EventDataSanitizer);
+    frameQueryingServiceMock = mock(FrameQueryingService);
 
     interFrameCommunicator = new InterFrameCommunicator(
-      instance(frameIdentifierMock),
       instance(frameAccessorMock),
       instance(containerMock),
       instance(eventDataSanitizerMock),
+      instance(frameQueryingServiceMock),
       window
     );
 
@@ -56,6 +53,28 @@ describe('InterFrameCommunicator', () => {
       origin: PARENT_FRAME_ORIGIN,
     });
     when(eventDataSanitizerMock.sanitize(anything())).thenCall((data) => data);
+  });
+
+  describe('constructor()', () => {
+    it('ignores incoming messages without data or data.type properties', done => {
+      interFrameCommunicator.incomingEvent$.subscribe(event => {
+        expect(event.type).toEqual('foobar');
+        done();
+      });
+
+      window.postMessage(null, '*');
+      window.postMessage('somestring', '*');
+      window.postMessage({ foo: 'bar' }, '*');
+      window.postMessage({ type: 'foobar' }, '*');
+    });
+  });
+
+  describe('init', () => {
+    it('attaches itself to the frame querying service', () => {
+      interFrameCommunicator.init();
+
+      verify(frameQueryingServiceMock.attach(interFrameCommunicator)).once();
+    });
   });
 
   describe('send', () => {
@@ -104,6 +123,12 @@ describe('InterFrameCommunicator', () => {
       interFrameCommunicator.communicationClosed$.pipe(first()).subscribe(() => done());
       interFrameCommunicator.close();
     });
+
+    it('detaches itself from the frame querying service', () => {
+      interFrameCommunicator.close();
+
+      verify(frameQueryingServiceMock.detach()).once();
+    });
   });
 
   describe('sendToParentFrame', () => {
@@ -130,143 +155,25 @@ describe('InterFrameCommunicator', () => {
   });
 
   describe('query', () => {
-    const queryMessage: IMessageBusEvent = { type: 'FOO', data: 'foo' };
-    const responseMessage: IMessageBusEvent = { type: 'BAR', data: 'bar' };
+    it('sends query message to querying service', async () => {
+      const query = { type: 'FOOBAR' };
+      const response = { foo: 'bar' };
 
-    it('sends query message to target frame and returns cathced response payload', done => {
-      const communicatorSpy = spy(interFrameCommunicator);
-      const queryResultPromise = interFrameCommunicator.query(queryMessage, MERCHANT_PARENT_FRAME);
-      const [wrappedQueryMessage, targetFrame] = capture<QueryMessage, Window | string>(communicatorSpy.send).last();
+      when(frameQueryingServiceMock.query(anything(), anything())).thenResolve(response);
 
-      expect(queryResultPromise).toBeInstanceOf(Promise);
-      expect(targetFrame).toBe(MERCHANT_PARENT_FRAME);
-      expect(wrappedQueryMessage.type).toBe(QueryMessage.MESSAGE_TYPE);
-      expect(wrappedQueryMessage.data).toBe(queryMessage);
+      expect(await interFrameCommunicator.query(query, MERCHANT_PARENT_FRAME)).toBe(response);
 
-      const wrappedResponseMessage = new ResponseMessage(
-        responseMessage,
-        wrappedQueryMessage.queryId,
-        wrappedQueryMessage.sourceFrame
-      );
-
-      window.postMessage(wrappedResponseMessage, '*');
-
-      queryResultPromise.then(response => {
-        expect(response).toBe(responseMessage);
-        done();
-      });
+      verify(frameQueryingServiceMock.query(query, MERCHANT_PARENT_FRAME)).once();
     });
   });
 
   describe('whenReceive', () => {
     it('returns thenRespond object allowing to register a responder', () => {
-      expect(interFrameCommunicator.whenReceive('FOOBAR')).toMatchObject({ thenRespond: expect.any(Function) });
-    });
-  });
+      const whenReceiveReturn: WhenReceive = { thenRespond: () => {} };
 
-  describe('init', () => {
-    let communicatorSpy: InterFrameCommunicator;
+      when(frameQueryingServiceMock.whenReceive('FOOBAR')).thenReturn(whenReceiveReturn);
 
-    beforeEach(() => {
-      interFrameCommunicator.init();
-      communicatorSpy = spy(interFrameCommunicator);
-    });
-
-    it('listens to query messages and pass them to responders', done => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const fooResponder = jest.fn().mockImplementationOnce((event: IMessageBusEvent) => of({ type: 'BAR' }));
-      const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
-
-      interFrameCommunicator.whenReceive('FOO').thenRespond(fooResponder);
-
-      window.postMessage(queryMessage, '*');
-
-      setTimeout(() => {
-        const [responseMessage] = capture<ResponseMessage<unknown>, string | Window>(communicatorSpy.send).last();
-
-        verify(communicatorSpy.send(responseMessage, 'foobar')).once();
-        expect(fooResponder).toHaveBeenCalledWith({ type: 'FOO' });
-        expect(responseMessage).toBeInstanceOf(ResponseMessage);
-        expect(responseMessage.data).toEqual({ type: 'BAR' });
-        done();
-      });
-    });
-
-    it('processes all queries and doesnt cancel processing when new query arrives', done => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const fooResponder = (event: IMessageBusEvent) => timer(100).pipe(mapTo({ type: 'FOO_RESPONSE' }));
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const barResponder = (event: IMessageBusEvent) => of({ type: 'BAR_RESPONSE' });
-      const fooQueryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
-      const barQueryMessage = new QueryMessage({ type: 'BAR' }, 'foobar');
-
-      interFrameCommunicator.whenReceive('FOO').thenRespond(fooResponder);
-      interFrameCommunicator.whenReceive('BAR').thenRespond(barResponder);
-
-      const response$: Subject<IMessageBusEvent> = new Subject();
-
-      when(communicatorSpy.send(anything(), anything())).thenCall(response => {
-        response$.next(response);
-      });
-
-      window.postMessage(fooQueryMessage, '*');
-      window.postMessage(barQueryMessage, '*');
-
-      response$.pipe(take(2), toArray()).subscribe(responses => {
-        const [firstResponse, secondResponse] = responses;
-        expect(firstResponse.data).toEqual({ type: 'BAR_RESPONSE' });
-        expect(secondResponse.data).toEqual({ type: 'FOO_RESPONSE' });
-        done();
-      });
-    });
-
-    it('processes each responder only once even if it was assigned multiple times', done => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const responder = (event: IMessageBusEvent) => of({ type: 'FOO_RESPONSE' });
-      const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
-
-      interFrameCommunicator.whenReceive('FOO').thenRespond(responder);
-      interFrameCommunicator.whenReceive('FOO').thenRespond(responder);
-      interFrameCommunicator.whenReceive('FOO').thenRespond(responder);
-
-      window.postMessage(queryMessage, '*');
-
-      setTimeout(() => {
-        verify(communicatorSpy.send(anything(), anything())).once();
-        done();
-      });
-    });
-
-    it('doesnt process queries after communication closed event', done => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const fooResponder = jest.fn().mockImplementationOnce((event: IMessageBusEvent) => of({ type: 'BAR' }));
-      const queryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
-
-      interFrameCommunicator.whenReceive('FOO').thenRespond(fooResponder);
-      interFrameCommunicator.close();
-
-      window.postMessage(queryMessage, '*');
-
-      setTimeout(() => {
-        verify(communicatorSpy.send(anything(), anything())).never();
-        done();
-      });
-    });
-
-    it('ignores messages without data or data.type properties', done => {
-      interFrameCommunicator.incomingEvent$.subscribe(event => {
-        expect(event.type).toEqual('foobar');
-        done();
-      });
-
-      window.postMessage(null, '*');
-      window.postMessage('somestring', '*');
-      window.postMessage({ foo: 'bar' }, '*');
-      window.postMessage({ type: 'foobar' }, '*');
-    });
-
-    afterEach(() => {
-      interFrameCommunicator.close();
+      expect(interFrameCommunicator.whenReceive('FOOBAR')).toEqual(whenReceiveReturn);
     });
   });
 });
