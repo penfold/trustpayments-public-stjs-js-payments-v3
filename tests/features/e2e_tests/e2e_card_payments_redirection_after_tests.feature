@@ -97,6 +97,20 @@ Feature: E2E Card Payments - redirection
       | transactionreference | should not be none |
       | jwt                  | should not be none |
 
+  Scenario: Cardinal Commerce - error payment with disabled 'submit on error' process
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page
+    When User fills payment form with defined card VISA_DECLINED_CARD
+    And User clicks Pay button
+    Then User will see notification frame text: "Decline"
+    And User will see that notification frame has "red" color
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | error         |
+
 
   Scenario: Unsuccessful payment with submitOnError enabled - invalid jwt
     Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt INVALID_JWT with additional attributes
