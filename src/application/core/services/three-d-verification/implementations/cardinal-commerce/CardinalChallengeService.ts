@@ -18,6 +18,7 @@ export class CardinalChallengeService {
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
     private verificationResultHandler: VerificationResultHandler,
+    private googleAnalytics: GoogleAnalytics,
   ) {
   }
 
@@ -37,7 +38,7 @@ export class CardinalChallengeService {
     };
 
     return from(this.interFrameCommunicator.query<IVerificationResult>(verifyQueryEvent, MERCHANT_PARENT_FRAME)).pipe(
-      tap(() => GoogleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
+      tap(() => this.googleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
       switchMap((validationResult: IVerificationResult) => this.verificationResultHandler.handle$(threeDQueryResponse, validationResult, jsInitResponse)),
     );
   }

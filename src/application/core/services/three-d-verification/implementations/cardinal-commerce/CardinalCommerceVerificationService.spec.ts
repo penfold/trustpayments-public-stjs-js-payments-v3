@@ -26,6 +26,7 @@ describe('CardinalCommerceVerificationService', () => {
   let gatewayClient: IGatewayClient;
   let challengeService: CardinalChallengeService;
   let verificationService: CardinalCommerceVerificationService;
+  let googleAnalytics: GoogleAnalytics;
 
   const jsInitResponseMock: IThreeDInitResponse = {
     errorcode: '0',
@@ -66,10 +67,12 @@ describe('CardinalCommerceVerificationService', () => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
     gatewayClient = mock<IGatewayClient>();
     challengeService = mock(CardinalChallengeService);
+    googleAnalytics = mock(GoogleAnalytics);
     verificationService = new CardinalCommerceVerificationService(
       instance(interFrameCommunicatorMock),
       instance(gatewayClient),
-      instance(challengeService)
+      instance(challengeService),
+      instance(googleAnalytics),
     );
   });
 
@@ -120,6 +123,7 @@ describe('CardinalCommerceVerificationService', () => {
       when(interFrameCommunicatorMock.query(anything(), MERCHANT_PARENT_FRAME)).thenResolve(void 0);
       when(gatewayClient.threedQuery(deepEqual(threeDQueryRequest))).thenReturn(of(threeDQueryResponseMock));
       when(challengeService.isChallengeRequired(anything())).thenReturn(false);
+      when(googleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal auth completed')).thenReturn(anything());
     })
 
     it('calls start query if THREEDQUERY is present in requestTypes', done => {
@@ -207,7 +211,8 @@ describe('CardinalCommerceVerificationService', () => {
     });
 
     it('sends proper google analytics event', done => {
-      spyOn(GoogleAnalytics, 'sendGaData');
+      // @ts-ignore
+      spyOn(verificationService.googleAnalytics, 'sendGaData');
 
       verificationService.start$(
         jsInitResponseMock,
@@ -215,7 +220,8 @@ describe('CardinalCommerceVerificationService', () => {
         cardMock,
         merchantData,
       ).subscribe(() => {
-        expect(GoogleAnalytics.sendGaData).toHaveBeenCalledWith('event', 'Cardinal', 'auth', 'Cardinal auth completed');
+        // @ts-ignore
+        expect(verificationService.googleAnalytics.sendGaData).toHaveBeenCalledWith('event', 'Cardinal', 'auth', 'Cardinal auth completed');
         done();
       });
     });

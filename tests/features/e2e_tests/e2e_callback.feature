@@ -10,10 +10,12 @@ Feature: E2E callbacks after payment
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: <threedresponse_defined>
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
     Examples:
       | request_types            | threedresponse_defined |
@@ -29,10 +31,12 @@ Feature: E2E callbacks after payment
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay button
     Then User will see payment status information: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
 
     Examples:
       | request_types            |
@@ -40,7 +44,22 @@ Feature: E2E callbacks after payment
       | ACCOUNTCHECK THREEDQUERY |
 
 
-  Scenario Outline: error and submit callback for unsuccessful payment
+  Scenario: error and submit callback for unsuccessful payment - frictionless payment
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page
+    When User fills payment form with defined card VISA_V21_REJECTED_FRICTIONLESS_AUTH
+    And User clicks Pay button
+    And submit callback contains JWT response
+    And submit callback contains THREEDRESPONSE: False
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | error         |
+
+
+  Scenario Outline: error and submit callback for unsuccessful payment - challenge flow
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
@@ -49,10 +68,34 @@ Feature: E2E callbacks after payment
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see payment status information: "An error occurred"
-    And "submit" callback is called only once
-    And "error" callback is called only once
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: True
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | error         |
+
+    Examples:
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
+
+
+  Scenario Outline: error and submit callback after cancel acs popup
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value           |
+      | requesttypedescriptions | <request_types> |
+    And User opens example page
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
+    And User clicks Pay button
+    And User clicks Cancel button on authentication modal
+    Then User will see payment status information: "An error occurred"
+    And submit callback contains JWT response
+    And submit callback contains THREEDRESPONSE: True
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | error         |
 
     Examples:
       | request_types            |
@@ -64,7 +107,7 @@ Feature: E2E callbacks after payment
     Given JS library configured by inline params REDIRECT_ON_SUBMIT_CALLBACK_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    When User opens example page
+    And User opens example page
     When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
     Then User will not see notification frame
@@ -86,7 +129,7 @@ Feature: E2E callbacks after payment
     Given JS library configured by inline params REDIRECT_ON_SUCCESS_CALLBACK_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    When User opens example page
+    And User opens example page
     When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
     Then User will not see notification frame
@@ -108,7 +151,7 @@ Feature: E2E callbacks after payment
     Given JS library configured by inline params REDIRECT_ON_ERROR_CALLBACK_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    When User opens example page
+    And User opens example page
     When User fills payment form with defined card VISA_DECLINED_CARD
     And User clicks Pay button
     Then User will not see notification frame
@@ -129,7 +172,7 @@ Feature: E2E callbacks after payment
     Given JS library configured by inline params REDIRECT_ON_SUBMIT_CALLBACK_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    When User opens example page
+    And User opens example page
     When User fills payment form with defined card VISA_DECLINED_CARD
     And User clicks Pay button
     Then User will not see notification frame
@@ -150,7 +193,7 @@ Feature: E2E callbacks after payment
     Given JS library configured by inline params REDIRECT_ON_SUBMIT_CALLBACK_WITH_ERROR_CODE_CHECK_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    When User opens example page
+    And User opens example page
     When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
     Then User will not see notification frame
@@ -172,7 +215,7 @@ Feature: E2E callbacks after payment
     Given JS library configured by inline params <config> and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-    When User opens example page
+    And User opens example page
     When User fills payment form with defined card <card_type>
     And User clicks Pay button
     Then User will not see notification frame
@@ -187,21 +230,35 @@ Feature: E2E callbacks after payment
       | error         | SUBMIT_ON_SUCCESS_ERROR_WITH_REDIRECT_CALLBACK_CONFIG | VISA_DECLINED_CARD    | 70000     |
 
 
-#
-#  Scenario Outline: cancel and submit callback for cancelled payment
-#    Given JS library configured by inline params VISA_CHECKOUT_CONFIG and jwt BASE_JWT with additional attributes
-#      | key                     | value           |
-#      | requesttypedescriptions | <request_types> |
-#    When User opens example page CANCEL_CALLBACK
-#    And User clicks on Visa Checkout button
-#    And User closes the visa checkout popup
-#    And User waits for payment to be processed
-#    Then "cancel" callback is called only once
-#    And "submit" callback is called only once
-#    And submit callback contains JWT response
-#    And submit callback contains THREEDRESPONSE: <threedresponse_defined>
-#
-#    Examples:
-#      | request_types            | threedresponse_defined |
-#      | THREEDQUERY AUTH         | False                  |
-#      | ACCOUNTCHECK THREEDQUERY | True                   |
+  Scenario: Verify error callback for in-browser validation
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page
+    When User clicks Pay button
+    Then User will see "error" popup
+    And "error" callback is called only once
+
+
+  Scenario: Verify data type passing to callback function
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    When User opens example page
+    And User fills payment form with defined card VISA_V21_FRICTIONLESS
+    And User clicks Pay button
+    Then User will see correct error code displayed in popup
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
+
+
+  @ignore_on_headless
+  Scenario: Verify callback function about browser data
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    When User opens example page WITH_BROWSER_INFO
+    Then User will see that browser is marked as supported: "True"
+    And User will see that operating system is marked as supported: "True"

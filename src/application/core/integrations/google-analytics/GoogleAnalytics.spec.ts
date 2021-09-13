@@ -3,9 +3,9 @@ import { GoogleAnalytics } from './GoogleAnalytics';
 jest.mock('./../../shared/message-bus/MessageBus');
 
 describe('GoogleAnalytics', () => {
-  const { instance } = googleAnalyticsFixture();
+  const instance = new GoogleAnalytics();
 
-  describe('_onInit', () => {
+  describe('init()', () => {
     beforeEach(() => {
       // @ts-ignore
       instance.insertGALibrary = jest.fn();
@@ -13,8 +13,7 @@ describe('GoogleAnalytics', () => {
       instance.createGAScript = jest.fn().mockResolvedValueOnce({});
     });
 
-    it('should call _insertGALibrary and GoogleAnalytics.disableUserIDTracking', () => {
-      // @ts-ignore
+    it('should call insertGALibrary and GoogleAnalytics.disableUserIDTracking', () => {
       instance.init();
       // @ts-ignore
       expect(instance.insertGALibrary).toHaveBeenCalled();
@@ -25,8 +24,7 @@ describe('GoogleAnalytics', () => {
     beforeEach(() => {
       // @ts-ignore
       window.ga = jest.fn();
-      // @ts-ignore
-      GoogleAnalytics.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
+      instance.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
     });
 
     it('should call send method from google analytics', () => {
@@ -35,22 +33,20 @@ describe('GoogleAnalytics', () => {
     });
   });
 
-  describe('_createGAScript', () => {
+  describe('createGAScript', () => {
     beforeEach(() => {
       // @ts-ignore
-      instance.createGAScript = jest.fn().mockResolvedValueOnce(GoogleAnalytics.TRANSLATION_SCRIPT_SUCCEEDED);
-      // @ts-ignore
+      instance.createGAScript = jest.fn().mockResolvedValueOnce('Google Analytics: script has been appended');
       instance.init();
     });
 
-    it('should call _createGAScript function', () => {
-      // dummy test
+    it('should call createGAScript function', () => {
       // @ts-ignore
       expect(instance.createGAScript).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('_insertGALibrary', () => {
+  describe('insertGALibrary', () => {
     beforeEach(() => {
       // @ts-ignore
       document.head.appendChild = jest.fn();
@@ -61,7 +57,7 @@ describe('GoogleAnalytics', () => {
       // @ts-ignore
       const data = await instance.insertGAScript();
       // @ts-ignore
-      expect(data).toEqual(GoogleAnalytics.TRANSLATION_SCRIPT_APPENDED);
+      expect(data).toEqual('Google Analytics: script has been appended');
     });
 
     //
@@ -73,8 +69,3 @@ describe('GoogleAnalytics', () => {
     });
   });
 });
-
-function googleAnalyticsFixture() {
-  const instance = new GoogleAnalytics();
-  return { instance };
-}

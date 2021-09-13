@@ -1,7 +1,7 @@
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { VerificationResultHandler } from './VerificationResultHandler';
 import { CardinalChallengeService } from './CardinalChallengeService';
-import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { ThreeDVerificationProviderName } from '../../data/ThreeDVerificationProviderName';
@@ -14,13 +14,13 @@ import { of } from 'rxjs';
 import { IVerificationResult } from './data/IVerificationResult';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { Enrollment } from '../../../../models/constants/Enrollment';
-import spyOn = jest.spyOn;
 import { CardType } from '@trustpayments/3ds-sdk-js';
 
 describe('CardinalChallengeService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
   let verificationResultHandlerMock: VerificationResultHandler;
   let cardinalChallengeService: CardinalChallengeService;
+  let googleAnalyticsMock: GoogleAnalytics;
 
   const threeDQueryResponse: IThreeDQueryResponse = {
     jwt: '',
@@ -50,9 +50,11 @@ describe('CardinalChallengeService', () => {
   beforeEach(() => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
     verificationResultHandlerMock = mock(VerificationResultHandler);
+    googleAnalyticsMock = mock(GoogleAnalytics);
     cardinalChallengeService = new CardinalChallengeService(
       instance(interFrameCommunicatorMock),
       instance(verificationResultHandlerMock),
+      instance(googleAnalyticsMock),
     );
   });
 
@@ -117,10 +119,11 @@ describe('CardinalChallengeService', () => {
     });
 
     it('sends proper google analytics event', done => {
-      spyOn(GoogleAnalytics, 'sendGaData');
-
+      // @ts-ignore
+      jest.spyOn(cardinalChallengeService.googleAnalytics, 'sendGaData');
       cardinalChallengeService.runChallenge$(threeDQueryResponse, jsInitResponse).subscribe(() => {
-        expect(GoogleAnalytics.sendGaData).toBeCalledWith('event', 'Cardinal', 'auth', 'Cardinal card authenticated');
+        // @ts-ignore
+        expect(cardinalChallengeService.googleAnalytics.sendGaData).toBeCalledWith('event', 'Cardinal', 'auth', 'Cardinal card authenticated');
         done();
       });
     });

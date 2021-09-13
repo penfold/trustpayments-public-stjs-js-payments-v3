@@ -1,3 +1,4 @@
+import { IPaymentError } from '../../../application/core/services/payments/IPaymentError';
 import { GooglePaymentMethod } from './GooglePaymentMethod';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { GooglePaymentMethodName } from '../models/IGooglePaymentMethod';
@@ -83,9 +84,27 @@ describe('GooglePaymentMethod', () => {
       when(requestProcessingServiceMock.process(googlePayGatewayRequest, undefined)).thenReturn(of(errorResponse));
 
       googlePaymentMethod.start(googlePayGatewayRequest).subscribe(result => {
-        expect(result).toEqual({
+        expect(result).toMatchObject({
           status: PaymentStatus.ERROR,
           data: errorResponse,
+        });
+        done();
+      });
+    });
+
+    it('adds error object with errorcode and errormessage to payment result if errorcode != 0', done => {
+      const errorResponse: IRequestTypeResponse = {
+        ...paymentResponse,
+        errorcode: '70000',
+        errormessage: 'Payment declined',
+      };
+
+      when(requestProcessingServiceMock.process(googlePayGatewayRequest, undefined)).thenReturn(of(errorResponse));
+
+      googlePaymentMethod.start(googlePayGatewayRequest).subscribe(result => {
+        expect(result.error).toEqual(<IPaymentError>{
+          message: errorResponse.errormessage,
+          code: Number(errorResponse.errorcode),
         });
         done();
       });

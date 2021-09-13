@@ -595,9 +595,10 @@ class PaymentMethodsPage(BasePage):
             counter = self._actions.get_text_from_last_element(PaymentMethodsLocators.callback_cancel_counter)
         elif 'submit' in callback_popup:
             counter = self._actions.get_text_from_last_element(PaymentMethodsLocators.callback_submit_counter)
+        counter = counter.split(': ')[1]
         assertion_message += f' but is {counter}'
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
-        assert expected_callback_number in counter, assertion_message
+        assert expected_callback_number == counter, assertion_message
 
     def validate_placeholders(self, card_number, exp_date, cvv):
         self.validate_placeholder(FieldType.CARD_NUMBER.name, card_number)
