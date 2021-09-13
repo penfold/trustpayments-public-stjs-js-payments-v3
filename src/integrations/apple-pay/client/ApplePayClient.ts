@@ -18,10 +18,10 @@ import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/a
 import { IApplePayValidateMerchantEvent } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
-import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IApplePayPaymentAuthorizedEvent } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
+import { FrameQueryingService } from '../../../shared/services/message-bus/FrameQueryingService';
 
 @Service()
 export class ApplePayClient {
@@ -33,7 +33,7 @@ export class ApplePayClient {
     private applePaySessionService: ApplePaySessionService,
     private applePayGestureService: ApplePayGestureService,
     private applePaySessionFactory: ApplePaySessionFactory,
-    private interFrameCommunicator: InterFrameCommunicator,
+    private frameQueryingService: FrameQueryingService,
     private messageBus: IMessageBus,
   ) {
   }
@@ -116,13 +116,14 @@ export class ApplePayClient {
       },
     };
 
-    this.interFrameCommunicator.query(validateMerchantQueryEvent, CONTROL_FRAME_IFRAME)
-      .then((response: IApplePayWalletVerifyResponseBody) => {
+    this.frameQueryingService.query(validateMerchantQueryEvent, CONTROL_FRAME_IFRAME).subscribe({
+      next: (response: IApplePayWalletVerifyResponseBody) => {
         this.applePaySession.completeMerchantValidation(JSON.parse(response.walletsession));
-      })
-      .catch(() => {
+      },
+      error: () => {
         this.applePaySession.abort();
-      });
+      },
+    });
   }
 
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent, config: IApplePayConfigObject): void {

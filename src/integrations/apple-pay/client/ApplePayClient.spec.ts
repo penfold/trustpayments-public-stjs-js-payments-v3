@@ -11,9 +11,9 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { ApplePayClient } from './ApplePayClient';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 import { ApplePayGestureService } from '../../../application/core/integrations/apple-pay/apple-pay-gesture-service/ApplePayGestureService';
-import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { FrameQueryingService } from '../../../shared/services/message-bus/FrameQueryingService';
 
 describe('ApplePayClient', () => {
   const configMock: IConfig = {
@@ -71,7 +71,7 @@ describe('ApplePayClient', () => {
   let applePaySessionServiceMock: ApplePaySessionService;
   let applePayGestureServiceMock: ApplePayGestureService;
   let applePaySessionFactoryMock: ApplePaySessionFactory;
-  let interFrameCommunicatorMock: InterFrameCommunicator;
+  let frameQueryingService: FrameQueryingService;
   let messageBusMock: IMessageBus;
 
   describe('init()', () => {
@@ -81,7 +81,7 @@ describe('ApplePayClient', () => {
       applePaySessionServiceMock = mock(ApplePaySessionService);
       applePayGestureServiceMock = mock(ApplePayGestureService);
       applePaySessionFactoryMock = mock(ApplePaySessionFactory);
-      interFrameCommunicatorMock = mock(InterFrameCommunicator);
+      frameQueryingService = mock(FrameQueryingService);
       messageBusMock = mock<IMessageBus>();
 
       applePayClient = new ApplePayClient(
@@ -90,7 +90,7 @@ describe('ApplePayClient', () => {
         instance(applePaySessionServiceMock),
         instance(applePayGestureServiceMock),
         instance(applePaySessionFactoryMock),
-        instance(interFrameCommunicatorMock),
+        instance(frameQueryingService),
         instance(messageBusMock)
       );
     });
@@ -141,20 +141,6 @@ describe('ApplePayClient', () => {
         error: err => {
           expect(err).toBeInstanceOf(ApplePayInitError);
           expect(err.toString()).toBe('Error: ApplePay not available: Your device does not support making payments with Apple Pay');
-          done();
-        },
-      });
-    });
-
-    it.skip('throws error when canMakePaymentsWithActiveCard function returns false', (done) => {
-      when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
-      when(applePaySessionServiceMock.canMakePayments()).thenReturn(true);
-      when(applePaySessionServiceMock.canMakePaymentsWithActiveCard(anyString())).thenReturn(of(false));
-
-      applePayClient.init(configMock).subscribe({
-        error: err => {
-          expect(err).toBeInstanceOf(ApplePayInitError);
-          expect(err.toString()).toBe('Error: ApplePay not available: No active cards in the wallet.');
           done();
         },
       });

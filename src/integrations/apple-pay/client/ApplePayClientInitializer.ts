@@ -6,18 +6,20 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IConfig } from '../../../shared/model/config/IConfig';
+import { FrameQueryingService } from '../../../shared/services/message-bus/FrameQueryingService';
 
 @Service({ id: MessageSubscriberToken, multiple: true })
 export class ApplePayClientInitializer implements IMessageSubscriber {
   constructor(
     private applePayClient: ApplePayClient,
-    private interFrameCommunicator: InterFrameCommunicator,
+    private frameQueryingService: FrameQueryingService,
   ) {
   }
 
   register(): void {
-    this.interFrameCommunicator
-      .whenReceive(PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT)
-      .thenRespond((event: IMessageBusEvent<IConfig>) => this.applePayClient.init(event.data));
+    this.frameQueryingService.whenReceive(
+      PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT,
+      (event: IMessageBusEvent<IConfig>) => this.applePayClient.init(event.data),
+    );
   }
 }
