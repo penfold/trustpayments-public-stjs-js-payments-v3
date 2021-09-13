@@ -1,4 +1,6 @@
 @3ds_sdk_v1.0_VISA
+@3ds_sdk_v1.0
+@3ds_sdk
 Feature: 3ds SDK v1 E2E tests - Visa
   As a user
   I want to use card payments method
@@ -11,11 +13,11 @@ Feature: 3ds SDK v1 E2E tests - Visa
 
   Scenario Outline: TC_1 - Successful Step Up Authentication - Card: VISA_V1_3DS_SDK_NON_FRICTIONLESS
     Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
       | sitereference           | trustthreeds76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
     And User opens example page
     And User waits for whole form to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NON_FRICTIONLESS
@@ -39,11 +41,11 @@ Feature: 3ds SDK v1 E2E tests - Visa
 
   Scenario Outline: TC_2 - attempted Step Up authentication - Card: VISA_V1_3DS_SDK_NON_FRICTIONLESS
     Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
       | sitereference           | trustthreeds76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
     And User opens example page
     And User waits for whole form to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NON_FRICTIONLESS
@@ -67,11 +69,11 @@ Feature: 3ds SDK v1 E2E tests - Visa
 
   Scenario Outline: TC_3 - unavailable Step Up authentication - Card: VISA_V1_3DS_SDK_NON_FRICTIONLESS
     Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
       | sitereference           | trustthreeds76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
     And User opens example page
     And User waits for whole form to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NON_FRICTIONLESS
@@ -94,11 +96,11 @@ Feature: 3ds SDK v1 E2E tests - Visa
 
   Scenario Outline: TC_4 - Failed Step Up Authentication - Card: VISA_V1_3DS_SDK_NON_FRICTIONLESS
     Given JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
       | sitereference           | trustthreeds76424 |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
     And User opens example page
     And User waits for whole form to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NON_FRICTIONLESS

@@ -33,7 +33,8 @@ export class CardinalClient {
     private interFrameCommunicator: InterFrameCommunicator,
     private messageBus: IMessageBus,
     private cardinalProvider: CardinalProvider,
-    private configProvider: ConfigProvider
+    private configProvider: ConfigProvider,
+    private googleAnalytics: GoogleAnalytics
   ) {
     this.cardinal$ = defer(() =>
       this.configProvider.getConfig$().pipe(
@@ -85,7 +86,7 @@ export class CardinalClient {
           })
       ),
       tap(() => {
-        GoogleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed');
+        this.googleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed');
       }),
     );
   }

@@ -16,6 +16,7 @@ import { NotificationService } from '../../notification/NotificationService';
 import { VisaCheckoutClient } from './VisaCheckoutClient';
 import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 import { EventScope } from '../../../application/core/models/constants/EventScope';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 
 describe('VisaCheckoutClient', () => {
   let visaCheckoutClient: VisaCheckoutClient;
@@ -25,6 +26,7 @@ describe('VisaCheckoutClient', () => {
   let jwtDecoderMock: JwtDecoder;
   let notificationServiceMock: NotificationService;
   let paymentMock: Payment;
+  let googleAnalyticsMock: GoogleAnalytics;
 
   const configMock: IConfig = {
     jwt: '',
@@ -55,6 +57,7 @@ describe('VisaCheckoutClient', () => {
     jwtDecoderMock = mock(JwtDecoder);
     notificationServiceMock = mock(NotificationService);
     paymentMock = mock(Payment);
+    googleAnalyticsMock = mock(GoogleAnalytics);
 
     visaCheckoutClient = new VisaCheckoutClient(
       mockInstance(interFrameCommunicatorMock),
@@ -62,7 +65,8 @@ describe('VisaCheckoutClient', () => {
       mockInstance(configProviderMock),
       mockInstance(jwtDecoderMock),
       mockInstance(notificationServiceMock),
-      mockInstance(paymentMock)
+      mockInstance(paymentMock),
+      mockInstance(googleAnalyticsMock)
     );
 
     when(configProviderMock.getConfig$()).thenReturn(of(configMock));

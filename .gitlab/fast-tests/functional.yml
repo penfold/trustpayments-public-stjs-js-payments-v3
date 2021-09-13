@@ -25,7 +25,7 @@ e2e-card-payments-tests-review:
     - .rules-when-review
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
-  parallel: 20
+  parallel: 22
 
 e2e-card-payments-tests-release:
   extends:
@@ -34,7 +34,7 @@ e2e-card-payments-tests-release:
     - .rules-when-release
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
-  parallel: 20
+  parallel: 22
 
 # Cardinal Commerce E2E Tests Headless
 e2e-cardinal-commerce-tests-review:
@@ -139,7 +139,7 @@ e2e-smoke-tests-review:
     - .parallel-component-tests
   variables:
     FEATURE_FILES_DIR: 'features/component_tests'
-  parallel: 21
+  parallel: 18
 
 component-card-payments-tests-review:
   extends:
