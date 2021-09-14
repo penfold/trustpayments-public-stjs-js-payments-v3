@@ -139,7 +139,7 @@ e2e-smoke-tests-review:
     - .parallel-component-tests
   variables:
     FEATURE_FILES_DIR: 'features/component_tests'
-  parallel: 11
+  parallel: 10
 
 component-card-payments-tests-review:
   extends:
