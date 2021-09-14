@@ -25,8 +25,7 @@ Feature: E2E Card Payments with cachetoken
       | jwt        | should not be none |
       | cachetoken | should not be none |
 
-
-#  TODO - STJS-1278
+#  STJS-1278
 #  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - non-frictionless card
 #    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
 #      | key                     | value         |
@@ -41,9 +40,12 @@ Feature: E2E Card Payments with cachetoken
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
 #    Then User will see payment status information: "Payment has been successfully processed"
-#    And "submit" callback is called only once
-#    And "success" callback is called only once
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | submit        |
+#      | success       |
 #
+#  STJS-1278
 #  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - frictionless card
 #    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
 #      | key                     | value         |
@@ -58,9 +60,12 @@ Feature: E2E Card Payments with cachetoken
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
 #    Then User will see payment status information: "Payment has been successfully processed"
-#    And "submit" callback is called only once
-#    And "success" callback is called only once
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | submit        |
+#      | success       |
 #
+#  STJS-1278
 #  Scenario: Declined payment with cachetoken, startOnLoad and AUTH requestType - frictionless card
 #    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
 #      | key                     | value         |
@@ -76,9 +81,12 @@ Feature: E2E Card Payments with cachetoken
 #      | baseamount              | 70000            |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
 #    Then User will see payment status information: "Decline"
-#    And "submit" callback is called only once
-#    And "error" callback is called only once
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | submit        |
+#      | error         |
 #
+#  STJS-1278
 #  Scenario: Successful payment with cachetoken, submitOnSuccess, startOnLoad and AUTH requestType
 #    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
 #      | key                     | value         |
@@ -102,6 +110,7 @@ Feature: E2E Card Payments with cachetoken
 #      | transactionreference | should not be none                      |
 #      | jwt                  | should not be none                      |
 #
+#  STJS-1278
 #  Scenario: Declined payment with cachetoken, submitOnError, startOnLoad and AUTH requestType
 #    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
 #      | key                     | value         |
@@ -125,7 +134,8 @@ Feature: E2E Card Payments with cachetoken
 #      | settlestatus         | 3                  |
 #      | transactionreference | should not be none |
 #      | jwt                  | should not be none |
-
+#
+#  STJS-1278
 #  Scenario: Successful payment with cachetoken and bypassCard
 #    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
@@ -137,9 +147,12 @@ Feature: E2E Card Payments with cachetoken
 #      | threedbypasspaymenttypes | VISA             |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
 #    Then User will see payment status information: "Payment has been successfully processed"
-#    And "submit" callback is called only once
-#    And "success" callback is called only once
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | submit        |
+#      | success       |
 #
+#  STJS-1278
 #  Scenario Outline: Successful payment with cachetoken and requestTypes: <request_types>
 #    Given User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
@@ -150,14 +163,18 @@ Feature: E2E Card Payments with cachetoken
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
 #    Then User will see payment status information: "Payment has been successfully processed"
-#    And "submit" callback is called only once
-#    And "success" callback is called only once
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | submit        |
+#      | success       |
+#
 #    Examples:
 #      | request_types            |
 #      | THREEDQUERY              |
 #      | AUTH                     |
 #      | ACCOUNTCHECK THREEDQUERY |
 #
+#  STJS-1278
 #  Scenario: Successful payment with cachetoken, submitOnSuccess and request type: ACCOUNTCHECK THREEDQUERY
 #    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
@@ -178,6 +195,7 @@ Feature: E2E Card Payments with cachetoken
 #      | jwt                  | should not be none                      |
 #      | threedresponse       | should not be none                      |
 #
+#  STJS-1278
 #  Scenario Outline: Cancel Cardinal popup with cachetoken, submitOnError and request type: <request_types>
 #    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
@@ -202,6 +220,7 @@ Feature: E2E Card Payments with cachetoken
 #      | THREEDQUERY AUTH         | should be none     |
 #      | ACCOUNTCHECK THREEDQUERY | should not be none |
 #
+#  STJS-1278
 #  Scenario Outline: Invalid combination of request types: <request_types>
 #    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
 #      | key                     | value           |
@@ -210,8 +229,10 @@ Feature: E2E Card Payments with cachetoken
 #    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
 #    And User clicks Pay button
 #    Then User will see payment status information: "Invalid field"
-#    And "submit" callback is called only once
-#    And "error" callback is called only once
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | submit        |
+#      | error         |
 #
 #    Examples:
 #      | request_types              |

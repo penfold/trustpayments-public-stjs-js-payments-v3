@@ -1,11 +1,9 @@
-import { of } from 'rxjs';
-import { anyString, anything, instance, mock, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
 import { IApplePayPaymentRequest } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
-import { Locale } from '../../../application/core/shared/translator/Locale';
 import { ApplePaySessionService } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ApplePayClient } from './ApplePayClient';
@@ -13,7 +11,13 @@ import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 import { ApplePayGestureService } from '../../../application/core/integrations/apple-pay/apple-pay-gesture-service/ApplePayGestureService';
 import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { FrameQueryingService } from '../../../shared/services/message-bus/FrameQueryingService';
+import { MerchantValidationService } from './MerchantValidationService';
+import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
+import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
+import { Subject } from 'rxjs';
+import { first } from 'rxjs/operators';
+import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 
 describe('ApplePayClient', () => {
   const configMock: IConfig = {
@@ -50,7 +54,7 @@ describe('ApplePayClient', () => {
     },
   };
 
-  const applePayConfigMock = {
+  const applePayConfigMock: IApplePayConfig = {
     buttonStyle: 'black',
     buttonText: 'plain',
     merchantId: 'merchantId',
@@ -65,63 +69,63 @@ describe('ApplePayClient', () => {
     walletvalidationurl: 'walletvalidationurl',
   };
 
+  const applePayConfigObjectMock: IApplePayConfigObject = {
+    applePayConfig: applePayConfigMock,
+    applePayVersion: 0,
+    locale: 'en_GB',
+    formId: 'formId',
+    jwtFromConfig: 'jwtFromConfig',
+    validateMerchantRequest: validateMerchantRequestMock,
+    paymentRequest: paymentRequestMock,
+  };
+
+  const buttonClick = new Subject();
+
   let applePayClient: ApplePayClient;
   let applePayConfigServiceMock: ApplePayConfigService;
   let applePayButtonServiceMock: ApplePayButtonService;
   let applePaySessionServiceMock: ApplePaySessionService;
   let applePayGestureServiceMock: ApplePayGestureService;
   let applePaySessionFactoryMock: ApplePaySessionFactory;
-  let frameQueryingService: FrameQueryingService;
   let messageBusMock: IMessageBus;
+  let merchantValidationServiceMock: MerchantValidationService;
+  let applePaySessionMock: IApplePaySession;
+  let applePaySession: IApplePaySession;
+
+  beforeEach(() => {
+    applePayConfigServiceMock = mock(ApplePayConfigService);
+    applePayButtonServiceMock = mock(ApplePayButtonService);
+    applePaySessionServiceMock = mock(ApplePaySessionService);
+    applePayGestureServiceMock = mock(ApplePayGestureService);
+    applePaySessionFactoryMock = mock(ApplePaySessionFactory);
+    messageBusMock = mock<IMessageBus>();
+    merchantValidationServiceMock = mock(MerchantValidationService);
+    applePaySessionMock = mock<IApplePaySession>();
+    applePaySession = instance(applePaySessionMock);
+
+    applePayClient = new ApplePayClient(
+      instance(applePayConfigServiceMock),
+      instance(applePayButtonServiceMock),
+      instance(applePaySessionServiceMock),
+      instance(applePayGestureServiceMock),
+      instance(applePaySessionFactoryMock),
+      instance(messageBusMock),
+      instance(merchantValidationServiceMock),
+    );
+  });
 
   describe('init()', () => {
     beforeEach(() => {
-      applePayConfigServiceMock = mock(ApplePayConfigService);
-      applePayButtonServiceMock = mock(ApplePayButtonService);
-      applePaySessionServiceMock = mock(ApplePaySessionService);
-      applePayGestureServiceMock = mock(ApplePayGestureService);
-      applePaySessionFactoryMock = mock(ApplePaySessionFactory);
-      frameQueryingService = mock(FrameQueryingService);
-      messageBusMock = mock<IMessageBus>();
-
-      applePayClient = new ApplePayClient(
-        instance(applePayConfigServiceMock),
-        instance(applePayButtonServiceMock),
-        instance(applePaySessionServiceMock),
-        instance(applePayGestureServiceMock),
-        instance(applePaySessionFactoryMock),
-        instance(frameQueryingService),
-        instance(messageBusMock)
-      );
-    });
-
-    it('returns success flag when payment is available', (done) => {
       when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
       when(applePaySessionServiceMock.canMakePayments()).thenReturn(true);
-      when(applePaySessionServiceMock.canMakePaymentsWithActiveCard(anyString())).thenReturn(of(true));
-      when(applePayConfigServiceMock.getConfig(anything(), anything())).thenReturn({
-        applePayConfig: applePayConfigMock as IApplePayConfig,
-        applePayVersion: 0,
-        locale: 'locale' as Locale,
-        formId: 'formId',
-        jwtFromConfig: 'jwtFromConfig',
-        validateMerchantRequest: validateMerchantRequestMock,
-        paymentRequest: paymentRequestMock,
+      when(applePayConfigServiceMock.getConfig(configMock, anything())).thenReturn(applePayConfigObjectMock);
+      when(applePayGestureServiceMock.gestureHandle(anything(), anything())).thenCall(callback => {
+        buttonClick.pipe(first()).subscribe(() => callback());
       });
-
-      applePayClient.init(configMock).subscribe(() => {
-        verify(applePayConfigServiceMock.getConfig(configMock, anything())).once();
-        verify(applePayButtonServiceMock.insertButton(
-          APPLE_PAY_BUTTON_ID,
-          applePayConfigMock.buttonText,
-          applePayConfigMock.buttonStyle,
-          applePayConfigMock.paymentRequest.countryCode,
-        )).once();
-        done();
-      });
+      when(applePaySessionFactoryMock.create(anything(), anything())).thenReturn(applePaySession);
     });
 
-    it('throws an error when ApplePaySessionObject returns false', (done) => {
+    it('throws an error when hasApplePaySessionObject returns false', (done) => {
       when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(false);
 
       applePayClient.init(configMock).subscribe({
@@ -134,7 +138,6 @@ describe('ApplePayClient', () => {
     });
 
     it('throws error when canMakePayments function returns false', (done) => {
-      when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
       when(applePaySessionServiceMock.canMakePayments()).thenReturn(false);
 
       applePayClient.init(configMock).subscribe({
@@ -144,6 +147,67 @@ describe('ApplePayClient', () => {
           done();
         },
       });
+    });
+
+    it('resolves the AP config and inserts the pay button', done => {
+      applePayClient.init(configMock).subscribe(() => {
+        verify(applePayConfigServiceMock.getConfig(configMock, anything())).once();
+        verify(applePayButtonServiceMock.insertButton(
+          APPLE_PAY_BUTTON_ID,
+          applePayConfigMock.buttonText,
+          applePayConfigMock.buttonStyle,
+          applePayConfigMock.paymentRequest.countryCode,
+        )).once();
+        done();
+      });
+    });
+
+    it('inserts the button into a configured buttonPlacement', done => {
+      const configWithButtonPlacement: IApplePayConfigObject = JSON.parse(JSON.stringify(applePayConfigObjectMock));
+
+      configWithButtonPlacement.applePayConfig.buttonPlacement = 'foobar2';
+
+      when(applePayConfigServiceMock.getConfig(configMock, anything())).thenReturn(configWithButtonPlacement);
+
+      applePayClient.init(configMock).subscribe(() => {
+        verify(applePayButtonServiceMock.insertButton(
+          'foobar2',
+          applePayConfigMock.buttonText,
+          applePayConfigMock.buttonStyle,
+          applePayConfigMock.paymentRequest.countryCode,
+        )).once();
+        done();
+      });
+    });
+
+    it('returns success flag when payment is available', (done) => {
+      applePayClient.init(configMock).subscribe(() => done());
+    });
+
+    it('initializes ApplePaySession on button click', () => {
+      applePayClient.init(configMock).subscribe(() => {
+        verify(applePayGestureServiceMock.gestureHandle(anything(), APPLE_PAY_BUTTON_ID)).once();
+      });
+
+      buttonClick.next(undefined);
+
+      verify(applePaySessionFactoryMock.create(applePayConfigObjectMock.applePayVersion, applePayConfigObjectMock.paymentRequest)).once();
+      verify(merchantValidationServiceMock.init(applePaySession, applePayConfigObjectMock)).once();
+      verify(applePaySessionMock.begin()).once();
+    });
+
+    it('publishes START_PAYMENT_METHOD event', () => {
+      applePayClient.init(configMock).subscribe();
+
+      buttonClick.next(undefined);
+
+      verify(messageBusMock.publish(deepEqual({
+        type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+        data: {
+          name: ApplePayPaymentMethodName,
+          data: applePayConfigObjectMock.paymentRequest,
+        },
+      }))).once();
     });
   });
 });

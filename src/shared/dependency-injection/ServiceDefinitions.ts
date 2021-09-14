@@ -14,6 +14,8 @@ import { ITranslationProvider } from '../../application/core/shared/translator/I
 import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
 import { ITranslator } from '../../application/core/shared/translator/ITranslator';
 import { TranslatorWithMerchantTranslations } from '../../application/core/shared/translator/TranslatorWithMerchantTranslations';
+import { IFrameQueryingService } from '../services/message-bus/interfaces/IFrameQueryingService';
+import { FrameQueryingService } from '../services/message-bus/FrameQueryingService';
 
 Container.set({ id: IMessageBus, factory: [MessageBusFactory, 'create'] });
 Container.set({ id: MessageBusToken, factory: [MessageBusFactory, 'create'] });
@@ -23,4 +25,5 @@ Container.set({ id: IApplePaySessionWrapper, type: ApplePaySessionWrapper });
 Container.set({ id: ITranslationProvider, type: TranslationProvider });
 Container.set({ id: ITranslator, type: TranslatorWithMerchantTranslations });
 Container.set({ id: TranslatorToken, type: TranslatorWithMerchantTranslations });
+Container.set({ id: IFrameQueryingService, type: FrameQueryingService });
 Container.import([ConfigReducer, StorageReducer, ApplePayReducer, LocaleSubscriber]);

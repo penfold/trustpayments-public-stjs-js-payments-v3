@@ -9,6 +9,7 @@ import { Debug } from '../../Debug';
 import { CONFIG, WINDOW } from '../../dependency-injection/InjectionTokens';
 import { IConfig } from '../../model/config/IConfig';
 import { EventDataSanitizer } from './EventDataSanitizer';
+import { IFrameQueryingService } from './interfaces/IFrameQueryingService';
 import { FrameQueryingService } from './FrameQueryingService';
 
 @Service()
@@ -25,7 +26,7 @@ export class InterFrameCommunicator {
     private frameAccessor: FrameAccessor,
     private container: ContainerInstance,
     private eventDataSanitizer: EventDataSanitizer,
-    private frameQueryingService: FrameQueryingService,
+    private frameQueryingService: IFrameQueryingService,
     @Inject(WINDOW) private window: Window
   ) {
     this.incomingEvent$ = fromEvent<MessageEvent>(this.window, InterFrameCommunicator.MESSAGE_EVENT).pipe(
@@ -38,7 +39,7 @@ export class InterFrameCommunicator {
   }
 
   init(): void {
-    this.frameQueryingService.attach(this);
+    (this.frameQueryingService as FrameQueryingService).attach(this);
   }
 
   send(message: IMessageBusEvent, target: Window | string): void {
@@ -72,7 +73,7 @@ export class InterFrameCommunicator {
 
   close(): void {
     this.close$.next();
-    this.frameQueryingService.detach();
+    (this.frameQueryingService as FrameQueryingService).detach();
   }
 
   sendToParentFrame(event: IMessageBusEvent): void {

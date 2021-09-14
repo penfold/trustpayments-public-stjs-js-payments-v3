@@ -10,6 +10,8 @@ import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 import { ThreeDVerificationProviderName } from '../three-d-verification/data/ThreeDVerificationProviderName';
 import { CardType } from '@trustpayments/3ds-sdk-js';
+import { IApplePayValidateMerchantRequest } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
+import { IApplePayWalletVerifyResponseBody } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 
 describe('StTransportGatewayClient', () => {
   let transportMock: StTransport;
@@ -42,14 +44,15 @@ describe('StTransportGatewayClient', () => {
       });
     });
 
-    it('sends jsinit request and publishes response', () => {
+    it('sends jsinit request and publishes response', done => {
       gatewayClient.jsInit().subscribe(response => {
         expect(response).toBe(threeDInitResponse);
-        verify(messageBusMock.publish({ type: PUBLIC_EVENTS.JSINIT_RESPONSE, data: response })).once();
+        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.JSINIT_RESPONSE, data: response }))).once();
+        done();
       });
     });
 
-    it('throws error when jsinit response has error code != 0', () => {
+    it('throws error when jsinit response has error code != 0', done => {
       const errorResponse = {
         ...threeDInitResponse,
         errorcode: '123',
@@ -64,6 +67,7 @@ describe('StTransportGatewayClient', () => {
         error: response => {
           expect(response).toBe(errorResponse);
           verify(messageBusMock.publish(anything())).never();
+          done();
         },
       });
     });
@@ -95,19 +99,21 @@ describe('StTransportGatewayClient', () => {
       });
     });
 
-    it('sends threeDQueryRequest and returns the response', () => {
+    it('sends threeDQueryRequest and returns the response', done => {
       gatewayClient.threedQuery(threeDQueryRequest).subscribe(response => {
         verify(transportMock.sendRequest(deepEqual(threeDQueryRequest), undefined)).once();
         expect(response).toBe(threeDQueryResponse);
+        done();
       });
     });
 
-    it('sends threeDQueryRequest to given merchantUrl', () => {
+    it('sends threeDQueryRequest to given merchantUrl', done => {
       const merchantUrl = 'https://merchant.url';
 
       gatewayClient.threedQuery(threeDQueryRequest, merchantUrl).subscribe(response => {
         verify(transportMock.sendRequest(deepEqual(threeDQueryRequest), merchantUrl)).once();
         expect(response).toBe(threeDQueryResponse);
+        done();
       });
     });
   });
@@ -128,19 +134,60 @@ describe('StTransportGatewayClient', () => {
       });
     });
 
-    it('sends auth request and returns the response', () => {
-      gatewayClient.auth(authResponse).subscribe(response => {
+    it('sends auth request and returns the response', done => {
+      gatewayClient.auth(authRequest).subscribe(response => {
         verify(transportMock.sendRequest(deepEqual(authRequest), undefined)).once();
         expect(response).toBe(authResponse);
+        done();
       });
     });
 
-    it('sends auth request to given merchantUrl', () => {
+    it('sends auth request to given merchantUrl', done => {
       const merchantUrl = 'https://merchant.url';
 
       gatewayClient.auth(authRequest, merchantUrl).subscribe(response => {
         verify(transportMock.sendRequest(deepEqual(authRequest), merchantUrl)).once();
         expect(response).toBe(authResponse);
+        done();
+      });
+    });
+  });
+
+  describe('walletVerify()', () => {
+    const walletVerifyRequest: IApplePayValidateMerchantRequest = {
+      walletvalidationurl: 'walletvalidationurl',
+      walletsource: 'walletsource',
+      walletrequestdomain: 'walletrequestdomain',
+      walletmerchantid: 'walletmerchantid',
+    };
+
+    const walletVerifyResponse: IApplePayWalletVerifyResponseBody = {
+      errorcode: '0',
+      errormessage: '',
+      jwt: '',
+      requesttypedescription: 'WALLETVERIFY',
+      transactionstartedtimestamp: '',
+      requestid: '',
+      walletsession: '',
+      customeroutput: '',
+      walletsource: 'APPLEPAY',
+    };
+
+    beforeEach(() => {
+      when(transportMock.sendRequest(anything())).thenResolve({
+        jwt: 'jwt',
+        response: walletVerifyResponse,
+      });
+    });
+
+    it('sends WALLETVERIFY request and returns the response', done => {
+      gatewayClient.walletVerify(walletVerifyRequest).subscribe(response => {
+        verify(transportMock.sendRequest(deepEqual({
+          ...walletVerifyRequest,
+          requesttypedescriptions: ['WALLETVERIFY'],
+        }))).once();
+        expect(response).toBe(walletVerifyResponse);
+        done();
       });
     });
   });

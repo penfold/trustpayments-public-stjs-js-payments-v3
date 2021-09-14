@@ -15,13 +15,8 @@ import { IApplePayPaymentRequest } from '../../../application/core/integrations/
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
 import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
-import { IApplePayValidateMerchantEvent } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
-import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
-import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IApplePayPaymentAuthorizedEvent } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
-import { FrameQueryingService } from '../../../shared/services/message-bus/FrameQueryingService';
+import { MerchantValidationService } from './MerchantValidationService';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
 import { IApplePayPaymentAuthorizationResult } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
@@ -36,8 +31,8 @@ export class ApplePayClient {
     private applePaySessionService: ApplePaySessionService,
     private applePayGestureService: ApplePayGestureService,
     private applePaySessionFactory: ApplePaySessionFactory,
-    private frameQueryingService: FrameQueryingService,
     private messageBus: IMessageBus,
+    private merchantValidationService: MerchantValidationService,
   ) {
   }
 
@@ -89,7 +84,7 @@ export class ApplePayClient {
 
   private initApplePaySession(config: IApplePayConfigObject): void {
     this.applePaySession = this.applePaySessionFactory.create(config.applePayVersion, config.paymentRequest);
-    this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => this.onValidateMerchant(event, config);
+    this.merchantValidationService.init(this.applePaySession, config);
     this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => this.onPaymentAuthorized(event, config);
     this.applePaySession.begin();
 
@@ -101,34 +96,12 @@ export class ApplePayClient {
     this.messageBus.publish<IStartPaymentMethod<IApplePayPaymentRequest>>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
-        data: {
-          ...paymentRequest,
-        },
+        data: paymentRequest,
         name: ApplePayPaymentMethodName,
       },
     });
   }
 
-  private onValidateMerchant(event: IApplePayValidateMerchantEvent, config: IApplePayConfigObject): void {
-    const validateMerchantQueryEvent: IMessageBusEvent<IApplePayValidateMerchantRequest> = {
-      type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT_2,
-      data: {
-        ...config.validateMerchantRequest,
-        walletvalidationurl: event.validationURL,
-      },
-    };
-
-    this.frameQueryingService.query(validateMerchantQueryEvent, CONTROL_FRAME_IFRAME).subscribe({
-      next: (response: IApplePayWalletVerifyResponseBody) => {
-        this.applePaySession.completeMerchantValidation(JSON.parse(response.walletsession));
-      },
-      error: () => {
-        this.applePaySession.abort();
-      },
-    });
-  }
-
-  // handle callback from apple pay session
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent, config: IApplePayConfigObject): void {
     const formData = DomMethods.parseForm(config.formId);
     const { payment } = event;
