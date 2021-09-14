@@ -1,6 +1,5 @@
 Feature: Payment form embedded into iframe
 
-
   @base_config @parent_iframe
   Scenario: App is embedded in another iframe - Cardinal Commerce test
     Given JavaScript configuration is set for scenario based on scenario's @config tag

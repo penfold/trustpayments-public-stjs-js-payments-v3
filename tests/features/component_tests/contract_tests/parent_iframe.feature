@@ -1,10 +1,8 @@
 Feature: Payment form embedded into iframe - validation of requests send
 
-
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
     And User opens mock payment page
-
 
   @base_config @parent_iframe
   Scenario Outline: App is embedded in another iframe - Cardinal Commerce test
@@ -21,7 +19,6 @@ Feature: Payment form embedded into iframe - validation of requests send
       | action_code     | payment_status_message                  |
       | OK              | Payment has been successfully processed |
       | UNAUTHENTICATED | Unauthenticated                         |
-
 
   @base_config @parent_iframe
   Scenario: App is embedded in another iframe - fields validation test
