@@ -9,7 +9,7 @@ Feature: payment flow with redirect
     And User opens mock payment page
 
   @config_default @smoke_component_test
-  Scenario: Cardinal Commerce - successful payment - checking that 'submitOnSuccess' is enabled by default
+  Scenario: Successful payment - verify 'submitOnSuccess' is enabled by default
     And User waits for whole form to be loaded
     And User waits for Pay button to be active
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
@@ -32,11 +32,10 @@ Feature: payment flow with redirect
       | enrolled             | Y                                       |
       | settlestatus         | 0                                       |
       | jwt                  | should not be none                      |
-    And AUTH and THREEDQUERY requests were sent only once with correct data
 
 
   @config_submit_on_error_true @smoke_component_test
-  Scenario: Cardinal Commerce - error payment with enabled 'submit on error' process
+  Scenario: Unsuccessful payment with submitOnError enabled
     And User waits for whole form to be loaded
     And User waits for Pay button to be active
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
@@ -57,11 +56,10 @@ Feature: payment flow with redirect
       | enrolled             | Y                  |
       | settlestatus         | 3                  |
       | jwt                  | should not be none |
-    And AUTH and THREEDQUERY requests were sent only once with correct data
 
 
   @config_submit_on_success_true @smoke_component_test
-  Scenario: Cardinal Commerce - successful payment with enabled 'submit on success' process
+  Scenario: Successful payment with submitOnSuccess enabled
     And User waits for whole form to be loaded
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And THREEDQUERY, AUTH mock response is set to OK
@@ -78,4 +76,3 @@ Feature: payment flow with redirect
       | enrolled             | Y                                       |
       | settlestatus         | 0                                       |
       | jwt                  | should not be none                      |
-    And Frictionless AUTH and THREEDQUERY requests were sent only once with correct data

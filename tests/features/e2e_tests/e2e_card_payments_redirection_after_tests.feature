@@ -97,7 +97,7 @@ Feature: E2E Card Payments - redirection
       | transactionreference | should not be none |
       | jwt                  | should not be none |
 
-  Scenario: Cardinal Commerce - error payment with disabled 'submit on error' process
+  Scenario: Unsuccessful payment with submitOnError disabled
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
