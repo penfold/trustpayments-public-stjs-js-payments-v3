@@ -1,5 +1,4 @@
-Feature: Bypass Cards config
-
+Feature: Bypass Cards config - validation of requests send
   As a user
   I want to use card payments method with bypass config
   In order to check payment functionality
