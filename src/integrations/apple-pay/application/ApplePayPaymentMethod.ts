@@ -1,4 +1,4 @@
-import { forkJoin, Observable, of, mapTo, merge, Subject, throwError, NEVER } from 'rxjs';
+import { forkJoin, mapTo, Observable, Subject, throwError } from 'rxjs';
 import { Inject, Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
@@ -16,15 +16,15 @@ import { IApplePayWalletVerifyResponseBody } from '../../../application/core/int
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { TransportServiceGatewayClient } from '../../../application/core/services/gateway-client/TransportServiceGatewayClient';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
-import { IApplePayPaymentAuthorizationResult } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
-import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
+import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
+import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined, IRequestTypeResponse> {
   private requestProcessingService: Observable<IRequestProcessingService>;
-  private paymentErrors: Subject<IPaymentResult<IRequestTypeResponse>> = new Subject();
+  private paymentResult: Subject<IPaymentResult<IRequestTypeResponse>> = new Subject();
   private config: IConfig;
 
   constructor(
@@ -61,19 +61,17 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined,
     // handle the query - send request to the gateway
     this.frameQueryingService.whenReceive(
       PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION_2,
-    (event: IMessageBusEvent<IStartPaymentMethod<IApplePayGatewayRequest>>) => this.authorizePayment(event.data),
+    (event: IMessageBusEvent<IApplePayGatewayRequest>) => this.authorizePayment(event.data, this.config.applePay.merchantUrl),
     );
 
-    const success = of({ status: PaymentStatus.SUCCESS });
-
-    return merge(NEVER, this.paymentErrors);
+    return this.paymentResult.asObservable();
   }
 
   private validateMerchant(request: IApplePayValidateMerchantRequest): Observable<IApplePayWalletVerifyResponseBody> {
     return this.gatewayClient.walletVerify(request).pipe(
       tap(response => {
         if (Number(response.errorcode) !== 0) {
-          this.paymentErrors.next({
+          this.paymentResult.next({
             status: PaymentStatus.FAILURE,
             data: response,
             error: {
@@ -84,7 +82,7 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined,
         }
       }),
       catchError((error: Error) => {
-        this.paymentErrors.error({
+        this.paymentResult.error({
           status: PaymentStatus.ERROR,
           data: error,
           error: {
@@ -98,15 +96,44 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined,
     );
   }
 
-  private authorizePayment(request: IApplePayGatewayRequest): Observable<IPaymentResult<IRequestTypeResponse>> {
+  private authorizePayment(request: IApplePayGatewayRequest, merchantUrl: string): Observable<IApplePayProcessPaymentResponse> {
     return this.requestProcessingService.pipe(
       switchMap(requestProcessingService => {
-        const merchantUrl = this.config.applePay.merchantUrl;
-
-        return requestProcessingService.process(request, merchantUrl);
+        return requestProcessingService.process(request, merchantUrl) as Observable<IApplePayProcessPaymentResponse>;
       }),
-      map(response => console.log(response)),
-      catchError(response => of(console.log(response)))
+      tap(response => {
+        if (Number(response.errorcode) === 0) {
+          this.paymentResult.next({
+            status: PaymentStatus.SUCCESS,
+            data: response,
+            error: {
+              code: Number(response.errorcode),
+              message: response.errormessage,
+            },
+          });
+        } else {
+          this.paymentResult.next({
+            status: PaymentStatus.FAILURE,
+            data: response,
+            error: {
+              code: Number(response.errorcode),
+              message: response.errormessage,
+            },
+          });
+        }
+      }),
+      catchError((error: Error) => {
+        this.paymentResult.error({
+          status: PaymentStatus.ERROR,
+          data: error,
+          error: {
+            code: 50003,
+            message: error.message,
+          },
+        });
+
+        return throwError(() => error);
+      }),
     );
   }
 }

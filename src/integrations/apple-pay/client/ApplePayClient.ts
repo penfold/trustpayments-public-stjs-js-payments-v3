@@ -15,11 +15,8 @@ import { IApplePayPaymentRequest } from '../../../application/core/integrations/
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
 import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
-import { IApplePayPaymentAuthorizedEvent } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { MerchantValidationService } from './MerchantValidationService';
-import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
-import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
-import { IApplePayPaymentAuthorizationResult } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
+import { PaymentAuthorizationService } from './PaymentAuthorizationService';
 
 @Service()
 export class ApplePayClient {
@@ -33,6 +30,7 @@ export class ApplePayClient {
     private applePaySessionFactory: ApplePaySessionFactory,
     private messageBus: IMessageBus,
     private merchantValidationService: MerchantValidationService,
+    private paymentAuthorizationService: PaymentAuthorizationService,
   ) {
   }
 
@@ -85,7 +83,7 @@ export class ApplePayClient {
   private initApplePaySession(config: IApplePayConfigObject): void {
     this.applePaySession = this.applePaySessionFactory.create(config.applePayVersion, config.paymentRequest);
     this.merchantValidationService.init(this.applePaySession, config);
-    this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => this.onPaymentAuthorized(event, config);
+    this.paymentAuthorizationService.init(this.applePaySession, config);
     this.applePaySession.begin();
 
     // this.onCancel();
@@ -98,34 +96,6 @@ export class ApplePayClient {
       data: {
         data: paymentRequest,
         name: ApplePayPaymentMethodName,
-      },
-    });
-  }
-
-  private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent, config: IApplePayConfigObject): void {
-    const formData = DomMethods.parseForm(config.formId);
-    const { payment } = event;
-
-    const paymentAuthorizedQueryEvent: IMessageBusEvent<IStartPaymentMethod<IApplePayGatewayRequest>> = {
-      type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION_2,
-      data: {
-        data: {
-          walletsource: 'APPLEPAY',
-          wallettoken: JSON.stringify(payment),
-          ...formData,
-          termurl: 'TERM_URL'
-        },
-        name: ApplePayPaymentMethodName
-      }
-    };
-
-    // send query to application side
-    this.frameQueryingService.query(paymentAuthorizedQueryEvent, CONTROL_FRAME_IFRAME).subscribe({
-      next: (response: IApplePayPaymentAuthorizationResult) => {
-        this.applePaySession.completePayment(response);
-      },
-      error: () => {
-        this.applePaySession.abort();
       },
     });
   }
