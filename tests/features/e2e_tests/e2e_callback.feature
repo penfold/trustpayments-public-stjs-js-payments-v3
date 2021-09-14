@@ -39,9 +39,11 @@ Feature: E2E callbacks after payment
       | success       |
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
+      | request_types                 |
+      | THREEDQUERY AUTH              |
+      | ACCOUNTCHECK THREEDQUERY      |
+      | ACCOUNTCHECK THREEDQUERY AUTH |
+      | THREEDQUERY AUTH RISKDEC      |
 
 
   Scenario: error and submit callback for unsuccessful payment - frictionless payment
