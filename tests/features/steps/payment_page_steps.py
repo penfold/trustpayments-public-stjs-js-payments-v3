@@ -230,8 +230,9 @@ def step_impl(context):
 @step('User will see the same provided data in inputs fields')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    formatted_card_number = payment_page.format_card_number(context.pan)
     with soft_assertions():
-        payment_page.validate_value_of_input_field(FieldType.CARD_NUMBER.name, '4000 0000 0000 1091')
+        payment_page.validate_value_of_input_field(FieldType.CARD_NUMBER.name, formatted_card_number)
         payment_page.validate_value_of_input_field(FieldType.EXPIRATION_DATE.name, context.exp_date)
         payment_page.validate_value_of_input_field(FieldType.SECURITY_CODE.name, context.cvv)
 

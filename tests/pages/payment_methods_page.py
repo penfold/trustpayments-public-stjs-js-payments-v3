@@ -159,6 +159,9 @@ class PaymentMethodsPage(BasePage):
             self._actions.click(PaymentMethodsLocators.please_submit_label)
         self._actions.switch_to_default_iframe()
 
+    def format_card_number(self, card_number):
+        return ' '.join([card_number[i:i + 4] for i in range(0, len(card_number), 4)])
+
     def validate_cardinal_authentication_modal_appears(self, auth):
         self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
         if auth == AuthType.V2.name:

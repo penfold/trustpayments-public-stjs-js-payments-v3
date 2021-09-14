@@ -45,6 +45,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     And "success" callback is called only once
     And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
+    And User will see the same provided data in inputs fields
 
 
   Scenario: Submit payment form by 'Pay' button with enabled options: submitOnSuccess and 'stopSubmitFormOnEnter'
