@@ -1,4 +1,4 @@
-Feature: Card Payments
+Feature: Card Payments - validation of requests send
 
   As a user
   I want to use card payments method

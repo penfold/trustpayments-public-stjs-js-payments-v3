@@ -3,7 +3,7 @@ Feature: Payment form embeded into iframe
   I want to use card payments method embeded into iframe
   In order to check full payment functionality
 
-  @parent_iframe
+
   Scenario: App is embedded in another iframe - animated card test
     Given JS library configured by inline params ANIMATED_CARD_PAN_ICON_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
@@ -15,7 +15,7 @@ Feature: Payment form embeded into iframe
     And User will see the same provided data on animated credit card "4111 1100 0000 0211X", "12/22" and "123"
     And User will see that animated card is flipped, except for "AMEX"
 
-  @parent_iframe
+
   Scenario: App is embedded in another iframe - fields validation test
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
