@@ -15,13 +15,8 @@ import { IApplePayPaymentRequest } from '../../../application/core/integrations/
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
 import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
-import { IApplePayValidateMerchantEvent } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
-import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
-import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IApplePayPaymentAuthorizedEvent } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
-import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
+import { MerchantValidationService } from './MerchantValidationService';
 
 @Service()
 export class ApplePayClient {
@@ -33,8 +28,8 @@ export class ApplePayClient {
     private applePaySessionService: ApplePaySessionService,
     private applePayGestureService: ApplePayGestureService,
     private applePaySessionFactory: ApplePaySessionFactory,
-    private frameQueryingService: IFrameQueryingService,
     private messageBus: IMessageBus,
+    private merchantValidationService: MerchantValidationService,
   ) {
   }
 
@@ -86,7 +81,7 @@ export class ApplePayClient {
 
   private initApplePaySession(config: IApplePayConfigObject): void {
     this.applePaySession = this.applePaySessionFactory.create(config.applePayVersion, config.paymentRequest);
-    this.applePaySession.onvalidatemerchant = (event: IApplePayValidateMerchantEvent) => this.onValidateMerchant(event, config);
+    this.merchantValidationService.init(this.applePaySession, config);
     this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => this.onPaymentAuthorized(event, config);
     this.applePaySession.begin();
 
@@ -99,33 +94,8 @@ export class ApplePayClient {
     this.messageBus.publish<IStartPaymentMethod<IApplePayPaymentRequest>>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
-        data: {
-          ...paymentRequest,
-        },
+        data: paymentRequest,
         name: ApplePayPaymentMethodName,
-      },
-    });
-  }
-
-  private onValidateMerchant(event: IApplePayValidateMerchantEvent, config: IApplePayConfigObject): void {
-    const validateMerchantQueryEvent: IMessageBusEvent<IApplePayValidateMerchantRequest> = {
-      type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT_2,
-      data: {
-        ...config.validateMerchantRequest,
-        walletvalidationurl: event.validationURL,
-      },
-    };
-
-    this.frameQueryingService.query(validateMerchantQueryEvent, CONTROL_FRAME_IFRAME).subscribe({
-      next: (response: IApplePayWalletVerifyResponseBody) => {
-        if (Number(response.errorcode) === 0) {
-          this.applePaySession.completeMerchantValidation(JSON.parse(response.walletsession));
-        } else {
-          this.applePaySession.abort();
-        }
-      },
-      error: () => {
-        this.applePaySession.abort();
       },
     });
   }
