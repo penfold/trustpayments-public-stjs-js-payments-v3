@@ -22,6 +22,9 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IApplePayPaymentAuthorizedEvent } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { FrameQueryingService } from '../../../shared/services/message-bus/FrameQueryingService';
+import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
+import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
+import { IApplePayPaymentAuthorizationResult } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 
 @Service()
 export class ApplePayClient {
@@ -90,7 +93,6 @@ export class ApplePayClient {
     this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => this.onPaymentAuthorized(event, config);
     this.applePaySession.begin();
 
-    // this.onPaymentAuthorized();
     // this.onCancel();
     // this.onTransactionComplete();
   }
@@ -126,8 +128,33 @@ export class ApplePayClient {
     });
   }
 
+  // handle callback from apple pay session
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent, config: IApplePayConfigObject): void {
-    console.log(event);
+    const formData = DomMethods.parseForm(config.formId);
+    const { payment } = event;
+
+    const paymentAuthorizedQueryEvent: IMessageBusEvent<IStartPaymentMethod<IApplePayGatewayRequest>> = {
+      type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION_2,
+      data: {
+        data: {
+          walletsource: 'APPLEPAY',
+          wallettoken: JSON.stringify(payment),
+          ...formData,
+          termurl: 'TERM_URL'
+        },
+        name: ApplePayPaymentMethodName
+      }
+    };
+
+    // send query to application side
+    this.frameQueryingService.query(paymentAuthorizedQueryEvent, CONTROL_FRAME_IFRAME).subscribe({
+      next: (response: IApplePayPaymentAuthorizationResult) => {
+        this.applePaySession.completePayment(response);
+      },
+      error: () => {
+        this.applePaySession.abort();
+      },
+    });
   }
 
   private onCancel(): void {
