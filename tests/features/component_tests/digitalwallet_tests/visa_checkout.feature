@@ -321,3 +321,11 @@ Feature: Visa Checkout
       | action_code | payment_status_message                  | color | callback |
       | SUCCESS     | Payment has been successfully processed | green | success  |
       | ERROR       | An error occurred                       | red   | error    |
+
+  @form_id_config_visa_checkout
+  Scenario: Form id - cancel payment with Visa checkout
+    When User opens mock payment page WITH_SPECIFIC_FORM_ID
+    And User chooses Visa Checkout as payment method - visa response is set to "CANCEL"
+    Then User will see notification frame text: "Payment has been cancelled"
+    And User will see that notification frame has "yellow" color
+    And VISA_CHECKOUT or AUTH requests were sent only once with correct data
