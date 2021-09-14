@@ -6,7 +6,7 @@ Feature: Visa Checkout
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
 
-  @config_visa_base @extended_tests_part_2 @wallet_test @visa_test
+  @config_visa_base @wallet_test @visa_test
   Scenario Outline: Visa Checkout - checking payment status for <action_code> response code
     Given User opens mock payment page
     And User waits for whole form to be loaded
@@ -27,7 +27,7 @@ Feature: Visa Checkout
       | CANCEL      | Payment has been cancelled | yellow | cancel   |
       | ERROR       | An error occurred          | red    | error    |
 
-  @config_submit_on_success_true @extended_tests_part_2 @visa_test
+  @config_submit_on_success_true @visa_test
   Scenario: Visa Checkout - successful payment with enabled 'submitOnSuccess' process
     Given User opens mock payment page
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
@@ -124,7 +124,6 @@ Feature: Visa Checkout
     And "submit" callback is called only once
     And "<callback>" callback is called only once
 
-    @extended_tests_part_2
     Examples:
       | action_code | callback |
       | SUCCESS     | success  |
@@ -141,7 +140,7 @@ Feature: Visa Checkout
     Then User will see correct error code displayed in popup
     And "submit" callback is called only once
 
-  @base_config  @extended_tests_part_2 @visa_test
+  @base_config @visa_test
   Scenario: Visa Checkout - successful payment with updated JWT
     Given User opens mock payment page WITH_UPDATE_JWT
       | jwtName          |

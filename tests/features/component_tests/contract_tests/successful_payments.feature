@@ -7,7 +7,7 @@ Feature: Successful payments with various configurations
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
 
-  @base_config @cardinal_commerce @<tag>
+  @base_config @<tag>
   Scenario Outline: Successful payment using most popular Credit Cards: <card_type>
     Given User opens mock payment page
     And User waits for whole form to be loaded
@@ -24,7 +24,7 @@ Feature: Successful payments with various configurations
       | 5100000000000511 | 12/22           | 123  | MASTERCARD |                 |
       | 340000000000611  | 12/22           | 1234 | AMEX       |                 |
 
-  @base_config  @smoke_mock_test @extended_tests_part_2
+  @base_config
   Scenario: Successful payment with updated JWT
     Given User opens mock payment page WITH_UPDATE_JWT
       | jwtName          |
@@ -52,7 +52,7 @@ Feature: Successful payments with various configurations
     Then JSINIT request was sent only once
     And AUTH and THREEDQUERY requests were sent only once with correct data
 
-  @config_submit_cvv_only @extended_tests_part_2
+  @config_submit_cvv_only
   @submit_cvv_only
   Scenario: Successful payment when cvv field is selected to submit
     Given User opens mock payment page
@@ -92,7 +92,7 @@ Feature: Successful payments with various configurations
       | errorcode     | 0                                       |
     And THREEDQUERY, AUTH ware sent only once in one request
 
-  @config_skip_jsinit @cardinal_commerce
+  @config_skip_jsinit
   Scenario: Successful payment with skipped JSINIT process
     Given User opens mock payment page
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
