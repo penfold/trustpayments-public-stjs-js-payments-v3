@@ -599,11 +599,6 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert expected_callback_number in counter, assertion_message
 
-    def validate_placeholders(self, card_number, exp_date, cvv):
-        self.validate_placeholder(FieldType.CARD_NUMBER.name, card_number)
-        self.validate_placeholder(FieldType.EXPIRATION_DATE.name, exp_date)
-        self.validate_placeholder(FieldType.SECURITY_CODE.name, cvv)
-
     def validate_placeholder(self, field_type, expected_placeholder):
         actual_placeholder = self.get_element_attribute(field_type, 'placeholder')
         assertion_message = f'Placeholder for {FieldType[field_type].name} field is not correct, ' \

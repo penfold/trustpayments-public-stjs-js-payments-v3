@@ -24,15 +24,15 @@ Feature: Payments Card recognition
       | 3000000000000111 | 3000 000000 000111    | 12/23           | 123  | DINERS       |
       | 1801000000000901 | 1801 0000 0000 0901   | 12/23           | 123  | ASTROPAYCARD |
 
-
-  Scenario: Disabled CVV field for PIBA card type and card recognition
-    Given JS library configured by inline params ANIMATED_CARD_PAN_ICON_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens example page
-    When User fills payment form with credit card number "3089500000000000021", expiration date "12/23"
-    Then User will see that SECURITY_CODE input field is "disabled"
-    And User will see "PIBA" icon in card number input field
+#  STJS-2190
+#  Scenario: Disabled CVV field for PIBA card type and card recognition
+#    Given JS library configured by inline params ANIMATED_CARD_PAN_ICON_CONFIG and jwt BASE_JWT with additional attributes
+#      | key                     | value            |
+#      | requesttypedescriptions | THREEDQUERY AUTH |
+#    And User opens example page
+#    When User fills payment form with credit card number "3089500000000000021", expiration date "12/23" and cvv "None"
+#    Then User will see that SECURITY_CODE input field is "disabled"
+#    And User will see "PIBA" icon in card number input field
 
   Scenario: Verify that animated card and card icon are not displayed by default
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
