@@ -29,13 +29,12 @@ Feature: E2E for form id
     And User will see that ALL input fields are "disabled"
 
   Scenario: Decline payment with form id
-    And User opens mock payment page WITH_CHANGED_FORM_ID
+    And User opens example page WITH_CHANGED_FORM_ID
     When User fills payment form with defined card VISA_DECLINED_CARD
     And User clicks Pay button
     Then User will see notification frame text: "Decline"
     And User will see that notification frame has "red" color
 
-  @form_id_config
   Scenario: Payment for form using different formId in config
-    And User opens mock payment page WITH_SPECIFIC_FORM_ID
+    And User opens example page WITH_SPECIFIC_FORM_ID
     Then User will see that application is not fully loaded
