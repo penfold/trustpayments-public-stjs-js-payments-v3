@@ -22,7 +22,3 @@ const component = defineComponent({
 
 export default component;
 </script>
-
-<style scoped>
-
-</style>

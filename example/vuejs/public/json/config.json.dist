@@ -3,7 +3,8 @@
   "applePay": {
     "buttonStyle": "white-outline",
     "buttonText": "buy",
-    "merchantId": "",
+    "buttonPlacement": "st-apple-pay",
+    "merchantId": "merchantId",
     "paymentRequest": {
       "countryCode": "US",
       "currencyCode": "USD",
@@ -11,11 +12,6 @@
         "supports3DS",
         "supportsCredit",
         "supportsDebit"
-      ],
-      "requestTypes": [
-        "RISKDEC",
-        "ACCOUNTCHECK",
-        "AUTH"
       ],
       "supportedNetworks": [],
       "total": {
@@ -27,10 +23,6 @@
   },
   "animatedCard": true,
   "buttonId": "merchant-submit-button",
-  "bypassCards": [
-    "PIBA"
-  ],
-  "cancelCallback": null,
   "componentIds": {
     "animatedCard": "",
     "cardNumber": "",
@@ -40,12 +32,6 @@
   },
   "components": {
     "defaultPaymentType": "",
-    "requestTypes": [
-      "RISKDEC",
-      "ACCOUNTCHECK",
-      "THREEDQUERY",
-      "AUTH"
-    ],
     "paymentTypes": [],
     "startOnLoad": false
   },
@@ -53,7 +39,6 @@
   "datacenterurl": "",
   "deferInit": false,
   "disableNotification": false,
-  "errorCallback": null,
   "errorReporting": false,
   "fieldsToSubmit": [
     "pan",
@@ -142,12 +127,10 @@
       "color-error": "#3358FF"
     }
   },
-  "submitCallback": null,
   "submitFields": [],
   "submitOnSuccess": false,
   "submitOnError": false,
   "submitOnCancel": false,
-  "successCallback": null,
   "translations": {
     "An error occurred": "Wystąpił błąd"
   },
@@ -157,16 +140,11 @@
       "color": "neutral"
     },
     "livestatus": 0,
-    "merchantId": "",
+    "merchantId": "merchantId",
     "paymentRequest": {
       "subtotal": "20.00"
     },
     "placement": "st-visa-checkout",
-    "requestTypes": [
-      "RISKDEC",
-      "ACCOUNTCHECK",
-      "AUTH"
-    ],
     "settings": {
       "displayName": "My Test Site"
     }

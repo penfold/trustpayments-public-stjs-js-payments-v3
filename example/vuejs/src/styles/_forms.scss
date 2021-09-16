@@ -2,7 +2,7 @@
 
 .st-form {
   fieldset {
-    border: 1px solid #ddd;
+    border: 1px solid $color-gray;
     border-radius: 4px;
     margin: 10px 0;
 
@@ -20,7 +20,7 @@
     input.st-input,
     select.st-select {
       padding: 15px 10px;
-      border: 1px solid #ddd;
+      border: 1px solid $color-gray;
       border-radius: 4px;
       display: flex;
       flex-grow: 1;

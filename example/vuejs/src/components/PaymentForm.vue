@@ -25,6 +25,7 @@
       <legend>APM's</legend>
       <div id="st-visa-checkout"></div>
       <div id="st-apple-pay"></div>
+      <div id="st-google-pay"></div>
     </fieldset>
     <fieldset>
       <legend>Credit card details</legend>
@@ -79,7 +80,7 @@ export default defineComponent({
             st.Components(config.components);
             st.VisaCheckout(config.visaCheckout);
             st.ApplePay(config.applePay);
-
+            st.GooglePay(config.googlePay);
             if (!config.successCallback) {
               st.on('success', () => toast.success('Payment completed successfully'));
             }
