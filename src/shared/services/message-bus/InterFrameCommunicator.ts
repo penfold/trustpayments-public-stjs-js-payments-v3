@@ -1,5 +1,5 @@
 import { ContainerInstance, Inject, Service } from 'typedi';
-import { filter, map, share, defer, fromEvent, Observable, Subject } from 'rxjs';
+import { filter, map, share, defer, fromEvent, Observable, Subject, firstValueFrom } from 'rxjs';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { environment } from '../../../environments/environment';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
@@ -9,7 +9,8 @@ import { Debug } from '../../Debug';
 import { CONFIG, WINDOW } from '../../dependency-injection/InjectionTokens';
 import { IConfig } from '../../model/config/IConfig';
 import { EventDataSanitizer } from './EventDataSanitizer';
-import { FrameQueryingService, WhenReceive } from './FrameQueryingService';
+import { IFrameQueryingService } from './interfaces/IFrameQueryingService';
+import { FrameQueryingService } from './FrameQueryingService';
 
 @Service()
 export class InterFrameCommunicator {
@@ -25,7 +26,7 @@ export class InterFrameCommunicator {
     private frameAccessor: FrameAccessor,
     private container: ContainerInstance,
     private eventDataSanitizer: EventDataSanitizer,
-    private frameQueryingService: FrameQueryingService,
+    private frameQueryingService: IFrameQueryingService,
     @Inject(WINDOW) private window: Window
   ) {
     this.incomingEvent$ = fromEvent<MessageEvent>(this.window, InterFrameCommunicator.MESSAGE_EVENT).pipe(
@@ -38,7 +39,7 @@ export class InterFrameCommunicator {
   }
 
   init(): void {
-    this.frameQueryingService.attach(this);
+    (this.frameQueryingService as FrameQueryingService).attach(this);
   }
 
   send(message: IMessageBusEvent, target: Window | string): void {
@@ -58,17 +59,21 @@ export class InterFrameCommunicator {
     }
   }
 
+  /** @deprecated use FrameQueryingService.query() instead **/
   query<T>(message: IMessageBusEvent, target: Window | string): Promise<T> {
-    return this.frameQueryingService.query(message, target);
+    return firstValueFrom(this.frameQueryingService.query(message, target));
   }
 
-  whenReceive<T>(eventType: string): WhenReceive<T> {
-    return this.frameQueryingService.whenReceive<T>(eventType);
+  /** @deprecated use FrameQueryingService.whenReceive() instead **/
+  whenReceive<T>(eventType: string): { thenRespond: ((responder: (queryEvent: IMessageBusEvent) => Observable<T>) => void) } {
+    return {
+      thenRespond: (responder => this.frameQueryingService.whenReceive<T>(eventType, responder)),
+    };
   }
 
   close(): void {
     this.close$.next();
-    this.frameQueryingService.detach();
+    (this.frameQueryingService as FrameQueryingService).detach();
   }
 
   sendToParentFrame(event: IMessageBusEvent): void {

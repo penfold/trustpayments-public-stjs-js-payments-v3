@@ -1,4 +1,7 @@
-export interface IApplePayWalletVerifyResponseBody {
+import { IRequestTypeResponse } from '../../../services/st-codec/interfaces/IRequestTypeResponse';
+
+export interface IApplePayWalletVerifyResponseBody extends IRequestTypeResponse {
+  jwt: string;
   customeroutput: string;
   errorcode: string;
   errormessage: string;

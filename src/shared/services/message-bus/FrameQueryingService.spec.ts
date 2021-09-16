@@ -52,7 +52,7 @@ describe('FrameQueryingService', () => {
     });
 
     it('sends query message to target frame with current frame name as the source', () => {
-      frameQueryingService.query(queryMessage, MERCHANT_PARENT_FRAME);
+      frameQueryingService.query(queryMessage, MERCHANT_PARENT_FRAME).subscribe();
 
       const [message] = capture(interFrameCommunicatorMock.send).last();
 
@@ -65,7 +65,7 @@ describe('FrameQueryingService', () => {
     it('sends query message to target frame with default frame name as the source when not provided', () => {
       when(frameIdentifierMock.getFrameName()).thenReturn(undefined);
 
-      frameQueryingService.query(queryMessage, CONTROL_FRAME_IFRAME);
+      frameQueryingService.query(queryMessage, CONTROL_FRAME_IFRAME).subscribe();
 
       const [message] = capture(interFrameCommunicatorMock.send).last();
 
@@ -76,7 +76,7 @@ describe('FrameQueryingService', () => {
     });
 
     it('resolves with a received response message data', done => {
-      frameQueryingService.query(queryMessage, MERCHANT_PARENT_FRAME).then(result => {
+      frameQueryingService.query(queryMessage, MERCHANT_PARENT_FRAME).subscribe(result => {
         expect(result).toBe(responseMessage);
         done();
       });
@@ -93,10 +93,13 @@ describe('FrameQueryingService', () => {
       incomingEvents$.next(wrappedResponseMessage);
     });
 
-    it('rejects with a received response error message data', () => {
-      expect.assertions(1);
-
-      const result = frameQueryingService.query(queryMessage, MERCHANT_PARENT_FRAME);
+    it('rejects with a received response error message data', done => {
+      frameQueryingService.query(queryMessage, MERCHANT_PARENT_FRAME).subscribe({
+        error: response => {
+          expect(response).toBe(responseMessage);
+          done();
+        },
+      });
 
       const [wrappedQueryMessage] = capture(interFrameCommunicatorMock.send).last();
 
@@ -108,12 +111,10 @@ describe('FrameQueryingService', () => {
       );
 
       incomingEvents$.next(wrappedResponseMessage);
-
-      return expect(result).rejects.toBe(responseMessage);
     });
   });
 
-  describe('whenReceive().thenRespond()', () => {
+  describe('whenReceive()', () => {
     const queryMessage: IMessageBusEvent = { type: 'FOO', data: 'foo' };
     const responseMessage: IMessageBusEvent = { type: 'BAR', data: 'bar' };
 
@@ -121,7 +122,7 @@ describe('FrameQueryingService', () => {
       const fooResponder = jest.fn().mockImplementationOnce(() => of(responseMessage));
       const wrappedQueryMessage = new QueryMessage(queryMessage, MERCHANT_PARENT_FRAME);
 
-      frameQueryingService.whenReceive(queryMessage.type).thenRespond(fooResponder);
+      frameQueryingService.whenReceive(queryMessage.type, fooResponder);
 
       incomingEvents$.next(wrappedQueryMessage);
 
@@ -144,7 +145,7 @@ describe('FrameQueryingService', () => {
       const fooResponder = jest.fn().mockImplementationOnce(() => throwError(() => error));
       const wrappedQueryMessage = new QueryMessage(queryMessage, MERCHANT_PARENT_FRAME);
 
-      frameQueryingService.whenReceive(queryMessage.type).thenRespond(fooResponder);
+      frameQueryingService.whenReceive(queryMessage.type, fooResponder);
 
       incomingEvents$.next(wrappedQueryMessage);
 
@@ -168,8 +169,8 @@ describe('FrameQueryingService', () => {
       const fooQueryMessage = new QueryMessage({ type: 'FOO' }, 'foobar');
       const barQueryMessage = new QueryMessage({ type: 'BAR' }, 'foobar');
 
-      frameQueryingService.whenReceive('FOO').thenRespond(fooResponder);
-      frameQueryingService.whenReceive('BAR').thenRespond(barResponder);
+      frameQueryingService.whenReceive('FOO', fooResponder);
+      frameQueryingService.whenReceive('BAR', barResponder);
 
       const response$: Subject<IMessageBusEvent> = new Subject();
 
@@ -192,9 +193,9 @@ describe('FrameQueryingService', () => {
       const responder = () => of({ type: 'FOO_RESPONSE' });
       const wrappedQueryMessage = new QueryMessage(queryMessage, 'foobar');
 
-      frameQueryingService.whenReceive(queryMessage.type).thenRespond(responder);
-      frameQueryingService.whenReceive(queryMessage.type).thenRespond(responder);
-      frameQueryingService.whenReceive(queryMessage.type).thenRespond(responder);
+      frameQueryingService.whenReceive(queryMessage.type, responder);
+      frameQueryingService.whenReceive(queryMessage.type, responder);
+      frameQueryingService.whenReceive(queryMessage.type, responder);
 
       incomingEvents$.next(wrappedQueryMessage);
 
@@ -208,7 +209,7 @@ describe('FrameQueryingService', () => {
       const fooResponder = jest.fn().mockImplementationOnce(() => of(responseMessage));
       const wrappedQueryMessage = new QueryMessage(queryMessage, 'foobar');
 
-      frameQueryingService.whenReceive(queryMessage.type).thenRespond(fooResponder);
+      frameQueryingService.whenReceive(queryMessage.type, fooResponder);
       frameQueryingService.detach();
 
       incomingEvents$.next(wrappedQueryMessage);
