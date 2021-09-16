@@ -20,6 +20,8 @@ import { instance, mock } from 'ts-mockito';
 import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import { EventScope } from '../../application/core/models/constants/EventScope';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { IFrameQueryingService } from '../../shared/services/message-bus/interfaces/IFrameQueryingService';
+import { FrameQueryingService } from '../../shared/services/message-bus/FrameQueryingService';
 
 window.alert = jest.fn();
 jest.mock('./../../application/core/shared/dom-methods/DomMethods');
@@ -36,6 +38,7 @@ Container.set({ id: CommonFrames, value: instance(mock(CommonFrames)) });
 Container.set({ id: CardFrames, value: instance(mock(CardFrames)) });
 Container.set({ id: GoogleAnalytics, value: instance(mock(GoogleAnalytics)) });
 Container.set({ id: ThreeDSecureFactory, value: instance(mock(ThreeDSecureFactory)) });
+Container.set({ id: IFrameQueryingService, type: FrameQueryingService });
 
 describe('ST', () => {
   const { instance } = stFixture();

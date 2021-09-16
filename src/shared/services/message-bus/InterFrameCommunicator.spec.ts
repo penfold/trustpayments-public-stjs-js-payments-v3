@@ -6,11 +6,12 @@ import { environment } from '../../../environments/environment';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { Debug } from '../../Debug';
 import { FrameNotFound } from './errors/FrameNotFound';
-import { first } from 'rxjs';
+import { first, of } from 'rxjs';
 import { ContainerInstance } from 'typedi';
 import { CONFIG } from '../../dependency-injection/InjectionTokens';
 import { EventDataSanitizer } from './EventDataSanitizer';
-import { FrameQueryingService, WhenReceive } from './FrameQueryingService';
+import { IFrameQueryingService } from './interfaces/IFrameQueryingService';
+import { FrameQueryingService } from './FrameQueryingService';
 
 describe('InterFrameCommunicator', () => {
   const PARENT_FRAME_ORIGIN = 'https://foobar.com';
@@ -24,7 +25,7 @@ describe('InterFrameCommunicator', () => {
   let foobarFrameMock: Window;
   let foobarFrame: Window;
   let eventDataSanitizerMock: EventDataSanitizer;
-  let frameQueryingServiceMock: FrameQueryingService;
+  let frameQueryingServiceMock: IFrameQueryingService;
 
   beforeEach(() => {
     frameAccessorMock = mock(FrameAccessor);
@@ -36,7 +37,7 @@ describe('InterFrameCommunicator', () => {
     foobarFrame = instance(foobarFrameMock);
     Object.setPrototypeOf(foobarFrame, Window.prototype);
     eventDataSanitizerMock = mock(EventDataSanitizer);
-    frameQueryingServiceMock = mock(FrameQueryingService);
+    frameQueryingServiceMock = mock<IFrameQueryingService>();
 
     interFrameCommunicator = new InterFrameCommunicator(
       instance(frameAccessorMock),
@@ -73,7 +74,7 @@ describe('InterFrameCommunicator', () => {
     it('attaches itself to the frame querying service', () => {
       interFrameCommunicator.init();
 
-      verify(frameQueryingServiceMock.attach(interFrameCommunicator)).once();
+      verify((frameQueryingServiceMock as FrameQueryingService).attach(interFrameCommunicator)).once();
     });
   });
 
@@ -127,7 +128,7 @@ describe('InterFrameCommunicator', () => {
     it('detaches itself from the frame querying service', () => {
       interFrameCommunicator.close();
 
-      verify(frameQueryingServiceMock.detach()).once();
+      verify((frameQueryingServiceMock as FrameQueryingService).detach()).once();
     });
   });
 
@@ -159,7 +160,7 @@ describe('InterFrameCommunicator', () => {
       const query = { type: 'FOOBAR' };
       const response = { foo: 'bar' };
 
-      when(frameQueryingServiceMock.query(anything(), anything())).thenResolve(response);
+      when(frameQueryingServiceMock.query(anything(), anything())).thenReturn(of(response));
 
       expect(await interFrameCommunicator.query(query, MERCHANT_PARENT_FRAME)).toBe(response);
 
@@ -169,11 +170,11 @@ describe('InterFrameCommunicator', () => {
 
   describe('whenReceive', () => {
     it('returns thenRespond object allowing to register a responder', () => {
-      const whenReceiveReturn: WhenReceive = { thenRespond: () => {} };
+      const callback = () => undefined;
 
-      when(frameQueryingServiceMock.whenReceive('FOOBAR')).thenReturn(whenReceiveReturn);
+      interFrameCommunicator.whenReceive('FOOBAR').thenRespond(callback);
 
-      expect(interFrameCommunicator.whenReceive('FOOBAR')).toEqual(whenReceiveReturn);
+      verify(frameQueryingServiceMock.whenReceive('FOOBAR', callback)).once();
     });
   });
 });

@@ -12,6 +12,9 @@ import { IGatewayClient } from './IGatewayClient';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 import { IThreeDLookupResponse } from '../../models/IThreeDLookupResponse';
 import { ThreeDLookupRequest } from '../three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
+import { IApplePayValidateMerchantRequest } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
+import { IApplePayWalletVerifyResponseBody } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
+import { RequestType } from '../../../../shared/types/RequestType';
 
 @Service()
 export class StTransportGatewayClient implements IGatewayClient {
@@ -45,6 +48,17 @@ export class StTransportGatewayClient implements IGatewayClient {
   auth(request: IStRequest, merchantUrl?: string): Observable<IRequestTypeResponse> {
     return from(this.stTransport.sendRequest(request, merchantUrl)).pipe(
       map((response: { response: IRequestTypeResponse }) => response.response)
+    );
+  }
+
+  walletVerify(request: IApplePayValidateMerchantRequest): Observable<IApplePayWalletVerifyResponseBody> {
+    const requestData = {
+      ...request,
+      requesttypedescriptions: [RequestType.WALLETVERIFY],
+    };
+
+    return from(this.stTransport.sendRequest(requestData)).pipe(
+      map((response: { response: IApplePayWalletVerifyResponseBody }) => response.response)
     );
   }
 }

@@ -6,30 +6,27 @@ import { ofType } from './operators/ofType';
 import { ResponseMessage } from './messages/ResponseMessage';
 import {
   catchError,
+  EMPTY,
   filter,
   first,
   map,
   mergeMap,
-  switchMap,
-  takeUntil,
-  EMPTY,
   Observable,
   of,
   Subject,
+  switchMap,
+  takeUntil,
   throwError,
 } from 'rxjs';
 import { Service } from 'typedi';
 import { FrameIdentifier } from './FrameIdentifier';
 import { ErrorReconstructor } from './ErrorReconstructor';
-
-type QueryResponder<T = unknown> = (queryEvent: IMessageBusEvent) => Observable<T>;
-
-export interface WhenReceive<T = unknown> {
-  thenRespond: (responder: QueryResponder<T>) => void;
-}
+import { take } from 'rxjs/operators';
+import { QueryResponder } from './types/QueryResponder';
+import { IFrameQueryingService } from './interfaces/IFrameQueryingService';
 
 @Service()
-export class FrameQueryingService {
+export class FrameQueryingService implements IFrameQueryingService {
   private interFrameCommunicator: InterFrameCommunicator;
   private responders: Map<string, QueryResponder> = new Map();
   private detach$: Subject<void> = new Subject();
@@ -51,12 +48,12 @@ export class FrameQueryingService {
     this.responders.clear();
   }
 
-  query<T>(message: IMessageBusEvent, target: Window | string): Promise<T> {
+  query<T>(message: IMessageBusEvent, target: Window | string): Observable<T> {
     if (!this.interFrameCommunicator) {
       throw new Error('Frame querying is not available - service is in a detached state.');
     }
 
-    return new Promise((resolve, reject) => {
+    return new Observable<T>(observer => {
       const sourceFrame = this.frameIdentifier.getFrameName() || MERCHANT_PARENT_FRAME;
       const queryMessage = new QueryMessage(message, sourceFrame);
 
@@ -72,22 +69,16 @@ export class FrameQueryingService {
             return throwError(() => this.errorReconstructor.reconstruct(event.data));
           }),
           takeUntil(this.detach$),
+          take(1),
         )
-        .subscribe({
-          next: result => resolve(result),
-          error: error => reject(error),
-        });
+        .subscribe(observer);
 
       this.interFrameCommunicator.send(queryMessage, target);
     });
   }
 
-  whenReceive<T>(eventType: string): WhenReceive<T> {
-    return {
-      thenRespond: (responder: QueryResponder<T>) => {
-        this.responders.set(eventType, responder);
-      },
-    };
+  whenReceive<T>(eventType: string, thenRespond: QueryResponder<T>): void {
+    this.responders.set(eventType, thenRespond);
   }
 
   private beginListeningForQueries(): void {
