@@ -5,5 +5,9 @@
     "processingScreenMode": "ATTACH_TO_ELEMENT",
     "processingScreenWrapperElementId": "st-card-payment"
   },
-  "submitOnSuccess": false
+  "submitOnSuccess": false,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
+  "errorCallback": "errorCallback",
+  "cancelCallback": "cancelCallback"
 }

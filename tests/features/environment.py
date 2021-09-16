@@ -54,6 +54,8 @@ def before_scenario(context, scenario):
     disable_headless_for_visa_checkout(context)
     context.browser = context.configuration.BROWSER
     context.device = context.configuration.REMOTE_DEVICE
+    if 'logging_performance' in scenario.tags:
+        context.configuration['LOGGING_PREFS'] = {'performance': 'ALL'}
     context.driver_factory = DriverFactory(configuration=context.configuration)
     context.waits = Waits(driver_factory=context.driver_factory, configuration=context.configuration)
     actions = Actions(driver_factory=context.driver_factory, waits=context.waits)
