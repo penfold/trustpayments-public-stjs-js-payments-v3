@@ -30,7 +30,8 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
     })
     .default({}),
   cybertonicaApiKey: Joi.string().allow(''),
-  datacenterurl: Joi.string().allow(''),
+  datacenterurl:
+    Joi.string().valid('', 'https://webservices.securetrading.us/jwt/', 'https://webservices.securetrading.net/jwt/'),
   deferInit: Joi.boolean(),
   disableNotification: Joi.boolean().default(false),
   errorCallback: Joi.any(),
