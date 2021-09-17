@@ -1,4 +1,8 @@
 {
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
+  "errorCallback": "errorCallback",
+  "cancelCallback": "cancelCallback",
   "submitOnSuccess": false,
   "threeDSecure": {
     "loggingLevel": "ALL",

@@ -203,7 +203,7 @@ export class Input {
   }
 
   private focus(): void {
-    this.inputElement.focus();
+    this.inputElement.focus({ preventScroll: true });
   }
 
   private setInputListeners(): void {

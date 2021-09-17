@@ -152,7 +152,8 @@ def _get_remote_capabilities(configuration):
         'browserstack.use_w3c': 'true',
         'ie.ensureCleanSession': 'true',
         'ie.forceCreateProcessApi': 'true',
-        'resolution': '1920x1080'
+        'resolution': '1920x1080',
+        'goog:loggingPrefs': configuration.LOGGING_PREFS
     }
     capabilities = {}
     for key, value in possible_caps.items():
@@ -176,22 +177,21 @@ class WebDriverFactory:
     def create_web_driver(cls, remote, browser, command_executor, configuration, headless) -> RemoteWebDriver:
         if remote:
             return cls._create_remote_web_driver(command_executor, configuration)
-        return cls._create_local_web_driver(browser, headless)
+        return cls._create_local_web_driver(browser, headless, configuration.LOGGING_PREFS)
 
     @classmethod
     def _create_remote_web_driver(cls, command_executor, configuration) -> RemoteWebDriver:
         remote_capabilities = _get_remote_capabilities(configuration)
-        remote_capabilities['goog:loggingPrefs'] = {'browser': 'SEVERE'}
         return webdriver.Remote(command_executor=command_executor, desired_capabilities=remote_capabilities)
 
     @classmethod
-    def _create_local_web_driver(cls, browser, headless) -> RemoteWebDriver:
+    def _create_local_web_driver(cls, browser, headless, logging_preferences) -> RemoteWebDriver:
         if browser not in cls.WEB_DRIVERS:
             raise RuntimeError(f'Unknown browser name: {browser}')
 
         return cls.WEB_DRIVERS[browser](
             options=_get_local_options(browser, headless),
-            capabilities={'goog:loggingPrefs': {'browser': 'SEVERE'}}
+            capabilities={'goog:loggingPrefs': logging_preferences}
         )
 
 

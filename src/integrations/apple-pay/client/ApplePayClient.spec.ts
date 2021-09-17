@@ -1,4 +1,4 @@
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
@@ -8,16 +8,17 @@ import { ApplePaySessionService } from '../../../client/integrations/apple-pay/a
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ApplePayClient } from './ApplePayClient';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
-import { ApplePayGestureService } from '../../../application/core/integrations/apple-pay/apple-pay-gesture-service/ApplePayGestureService';
-import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { MerchantValidationService } from './MerchantValidationService';
-import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
+import { ApplePayClickHandlingService } from './ApplePayClickHandlingService';
 import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
-import { Subject } from 'rxjs';
-import { first } from 'rxjs/operators';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
+import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
+import { of, Subject } from 'rxjs';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
+import { MerchantValidationService } from './MerchantValidationService';
+import { PaymentAuthorizationService } from './PaymentAuthorizationService';
+import { first } from 'rxjs/operators';
 
 describe('ApplePayClient', () => {
   const configMock: IConfig = {
@@ -85,10 +86,11 @@ describe('ApplePayClient', () => {
   let applePayConfigServiceMock: ApplePayConfigService;
   let applePayButtonServiceMock: ApplePayButtonService;
   let applePaySessionServiceMock: ApplePaySessionService;
-  let applePayGestureServiceMock: ApplePayGestureService;
+  let applePayClickHandlingServiceMock: ApplePayClickHandlingService;
   let applePaySessionFactoryMock: ApplePaySessionFactory;
   let messageBusMock: IMessageBus;
   let merchantValidationServiceMock: MerchantValidationService;
+  let paymentAuthorizationServiceMock: PaymentAuthorizationService;
   let applePaySessionMock: IApplePaySession;
   let applePaySession: IApplePaySession;
 
@@ -96,10 +98,11 @@ describe('ApplePayClient', () => {
     applePayConfigServiceMock = mock(ApplePayConfigService);
     applePayButtonServiceMock = mock(ApplePayButtonService);
     applePaySessionServiceMock = mock(ApplePaySessionService);
-    applePayGestureServiceMock = mock(ApplePayGestureService);
+    applePayClickHandlingServiceMock = mock(ApplePayClickHandlingService);
     applePaySessionFactoryMock = mock(ApplePaySessionFactory);
     messageBusMock = mock<IMessageBus>();
     merchantValidationServiceMock = mock(MerchantValidationService);
+    paymentAuthorizationServiceMock = mock(PaymentAuthorizationService);
     applePaySessionMock = mock<IApplePaySession>();
     applePaySession = instance(applePaySessionMock);
 
@@ -107,10 +110,11 @@ describe('ApplePayClient', () => {
       instance(applePayConfigServiceMock),
       instance(applePayButtonServiceMock),
       instance(applePaySessionServiceMock),
-      instance(applePayGestureServiceMock),
+      instance(applePayClickHandlingServiceMock),
       instance(applePaySessionFactoryMock),
       instance(messageBusMock),
       instance(merchantValidationServiceMock),
+      instance(paymentAuthorizationServiceMock),
     );
   });
 
@@ -119,7 +123,7 @@ describe('ApplePayClient', () => {
       when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
       when(applePaySessionServiceMock.canMakePayments()).thenReturn(true);
       when(applePayConfigServiceMock.getConfig(configMock, anything())).thenReturn(applePayConfigObjectMock);
-      when(applePayGestureServiceMock.gestureHandle(anything(), anything())).thenCall(callback => {
+      when(applePayClickHandlingServiceMock.bindClickHandler(anything(), anything())).thenCall(callback => {
         buttonClick.pipe(first()).subscribe(() => callback());
       });
       when(applePaySessionFactoryMock.create(anything(), anything())).thenReturn(applePaySession);
@@ -186,7 +190,7 @@ describe('ApplePayClient', () => {
 
     it('initializes ApplePaySession on button click', () => {
       applePayClient.init(configMock).subscribe(() => {
-        verify(applePayGestureServiceMock.gestureHandle(anything(), APPLE_PAY_BUTTON_ID)).once();
+        verify(applePayClickHandlingServiceMock.bindClickHandler(anything(), APPLE_PAY_BUTTON_ID)).once();
       });
 
       buttonClick.next(undefined);
@@ -208,6 +212,21 @@ describe('ApplePayClient', () => {
           data: applePayConfigObjectMock.paymentRequest,
         },
       }))).once();
+    });
+
+    it('publishes APPLE_PAY_CANCELLED event on cancel', done => {
+      applePayClient.init(configMock).subscribe(() => {
+        buttonClick.next(undefined);
+        applePaySession.oncancel(new Event('cancel'));
+        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.APPLE_PAY_CANCELLED }))).once();
+        done();
+      });
+
+      buttonClick.next(undefined);
+
+      verify(applePaySessionFactoryMock.create(applePayConfigObjectMock.applePayVersion, applePayConfigObjectMock.paymentRequest)).once();
+      verify(merchantValidationServiceMock.init(applePaySession, applePayConfigObjectMock)).once();
+      verify(applePaySessionMock.begin()).once();
     });
   });
 });

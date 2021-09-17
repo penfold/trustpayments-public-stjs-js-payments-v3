@@ -12,6 +12,7 @@ import { FrameQueryingServiceMock } from '../../../shared/services/message-bus/F
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
+import { ApplePayResultHandlerService } from './ApplePayResultHandlerService';
 
 describe('ApplePayPaymentMethod', () => {
   const configMock: IConfig = {
@@ -41,16 +42,19 @@ describe('ApplePayPaymentMethod', () => {
   let requestProcessingInitializerMock: RequestProcessingInitializer;
   let frameQueryingServiceMock: IFrameQueryingService;
   let gatewayClientMock: IGatewayClient;
+  let applePayResultHandlerServiceMock: ApplePayResultHandlerService;
 
   beforeEach(() => {
     requestProcessingInitializerMock = mock(RequestProcessingInitializer);
     frameQueryingServiceMock = new FrameQueryingServiceMock();
     gatewayClientMock = mock<IGatewayClient>();
+    applePayResultHandlerServiceMock = mock(ApplePayResultHandlerService);
 
     applePayPaymentMethod = new ApplePayPaymentMethod(
       instance(requestProcessingInitializerMock),
       frameQueryingServiceMock,
       instance(gatewayClientMock),
+      instance(applePayResultHandlerServiceMock),
     );
 
     frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT, () => of(undefined));

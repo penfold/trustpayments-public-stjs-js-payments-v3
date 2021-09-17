@@ -1,7 +1,9 @@
 # type: ignore[no-redef]
+import base64
+import json
 import time
 
-from assertpy import assert_that
+from assertpy import assert_that, soft_assertions
 from behave import given, step, then, use_step_matcher
 
 from configuration import CONFIGURATION
@@ -147,3 +149,66 @@ def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     cachetoken_value = payment_page.get_cachetoken_value()
     add_to_shared_dict(SharedDictKey.CACHETOKEN.value, cachetoken_value)
+
+
+@step('User checks that methodUrl request is send')
+def step_impl(context):
+    if context.browser.upper() not in 'SAFARI':
+        extract_acs_method_traffic_from_driver_logs(context)
+        try:
+            for entry in context.three_ds_method_traffic_list:
+                if entry['message']['method'] == 'Network.requestWillBeSent':
+                    context.three_ds_method_data = entry['message']['params']['request'][
+                        'postData'].replace('threeDSMethodData=', '').replace('%3D', '=')
+        except BaseException as error:
+            assertion_message = 'An exception occurred: {}'.format(error)
+            add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+
+    assertion_message = 'ACS method Url not requested'
+    add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+    assert context.three_ds_method_data, assertion_message
+
+
+@step('User checks that threeDSMethodData contains required fields')
+def step_impl(context):
+    method_data_encoded_bytes = context.three_ds_method_data.encode('ascii')
+    method_data_base64_decoded = base64.b64decode(method_data_encoded_bytes)
+    three_ds_method_data_dict = json.loads(method_data_base64_decoded.decode('ascii'))
+
+    with soft_assertions():
+        for row in context.table:
+            field = row['field']
+            assertion_message = f'{field} is missing in threeDSMethodData'
+            add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+            assert three_ds_method_data_dict[field], assertion_message
+
+
+@step('User checks that methodUrl\'s request response is 200')
+def step_impl(context):
+    if context.browser.upper() not in 'SAFARI':
+        extract_acs_method_traffic_from_driver_logs(context)
+        try:
+            for entry in context.three_ds_method_traffic_list:
+                if entry['message']['method'] == 'Network.responseReceived':
+                    context.three_ds_method_response_status = entry['message']['params']['response'][
+                        'status']
+        except BaseException as error:
+            assertion_message = 'An exception occurred: {}'.format(error)
+            add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+
+    assertion_message = f'ACS method_Url\'s request response status is incorrect ({context.three_ds_method_response_status})'
+    add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+    assert context.three_ds_method_response_status == 200, assertion_message
+
+
+def extract_acs_method_traffic_from_driver_logs(context):
+    if not hasattr(context, 'three_ds_method_traffic_list'):
+        context.three_ds_method_traffic_list = []
+        try:
+            for entry in context.driver_factory.get_driver().get_log('performance'):
+                log_request_msg = entry['message']
+                if '/acs/method' in log_request_msg:
+                    context.three_ds_method_traffic_list.append(json.loads(log_request_msg))
+        except BaseException as error:
+            assertion_message = 'An exception occurred: {}'.format(error)
+            add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)

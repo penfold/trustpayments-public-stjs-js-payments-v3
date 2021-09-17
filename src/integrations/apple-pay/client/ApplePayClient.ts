@@ -7,16 +7,17 @@ import { ApplePaySessionService } from '../../../client/integrations/apple-pay/a
 import { Observable, of, throwError, map } from 'rxjs';
 import { Service } from 'typedi';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
-import { ApplePayGestureService } from '../../../application/core/integrations/apple-pay/apple-pay-gesture-service/ApplePayGestureService';
-import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
-import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
-import { IApplePayPaymentRequest } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
+import { ApplePayClickHandlingService } from './ApplePayClickHandlingService';
+import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
+import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { MerchantValidationService } from './MerchantValidationService';
+import { mapTo, tap } from 'rxjs/operators';
+import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
 import { PaymentAuthorizationService } from './PaymentAuthorizationService';
+import { IApplePayPaymentRequest } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 
 @Service()
 export class ApplePayClient {
@@ -26,7 +27,7 @@ export class ApplePayClient {
     private applePayConfigService: ApplePayConfigService,
     private applePayButtonService: ApplePayButtonService,
     private applePaySessionService: ApplePaySessionService,
-    private applePayGestureService: ApplePayGestureService,
+    private applePayButtonClickService: ApplePayClickHandlingService,
     private applePaySessionFactory: ApplePaySessionFactory,
     private messageBus: IMessageBus,
     private merchantValidationService: MerchantValidationService,
@@ -37,7 +38,9 @@ export class ApplePayClient {
   init(config: IConfig): Observable<void> {
     return this.isApplePayAvailable(config).pipe(
       map(config => this.resolveApplePayConfig(config)),
-      map(applePayConfig => this.insertApplePayButton(applePayConfig)),
+      tap(applePayConfig => this.insertApplePayButton(applePayConfig)),
+      tap(applePayConfig => this.initGestureHandler(applePayConfig)),
+      mapTo(undefined),
     );
   }
 
@@ -73,21 +76,14 @@ export class ApplePayClient {
       config.applePayConfig.buttonStyle,
       config.applePayConfig.paymentRequest.countryCode,
     );
-
-    this.applePayGestureService.gestureHandle(() => {
-      this.initApplePaySession(config);
-      this.startPaymentProcess(config.paymentRequest)
-    }, config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
   }
 
   private initApplePaySession(config: IApplePayConfigObject): void {
     this.applePaySession = this.applePaySessionFactory.create(config.applePayVersion, config.paymentRequest);
     this.merchantValidationService.init(this.applePaySession, config);
     this.paymentAuthorizationService.init(this.applePaySession, config);
+    this.applePaySession.oncancel = () => this.onCancel();
     this.applePaySession.begin();
-
-    // this.onCancel();
-    // this.onTransactionComplete();
   }
 
   private startPaymentProcess(paymentRequest: IApplePayPaymentRequest): void {
@@ -100,11 +96,14 @@ export class ApplePayClient {
     });
   }
 
-  private onCancel(): void {
-    console.log('onCancel');
+  private initGestureHandler(config: IApplePayConfigObject): void {
+    this.applePayButtonClickService.bindClickHandler(() => {
+      this.initApplePaySession(config);
+      this.startPaymentProcess(config.paymentRequest)
+    }, config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
   }
 
-  private onTransactionComplete(): void {
-    console.log('onTransactionComplete');
+  private onCancel(): void {
+    this.messageBus.publish({ type: PUBLIC_EVENTS.APPLE_PAY_CANCELLED });
   }
 }

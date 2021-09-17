@@ -351,6 +351,33 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | THREEDQUERY ACCOUNTCHECK |
 
 
+  @logging_performance
+  Scenario Outline: TC_13b - Verify that methodUrl is requested
+    Given JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
+      | sitereference           | trustthreeds76424 |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
+    And User opens example page
+    And User waits for whole form to be loaded
+    When User fills payment form with defined card VISA_V21_3DS_SDK_NON_FRICTIONLESS_METHOD_URL
+    And User clicks Pay button
+    And User see 3ds SDK challenge is displayed
+    And User checks that methodUrl request is send
+    And User checks that threeDSMethodData contains required fields
+      | field                        |
+      | threeDSServerTransID         |
+      | threeDSMethodNotificationURL |
+    And User checks that methodUrl's request response is 200
+
+    Examples:
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
+
+
   Scenario Outline: TC_4b - suspected fraud - Card: VISA_V21 Request types: <request_types>
     Given JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value             |
