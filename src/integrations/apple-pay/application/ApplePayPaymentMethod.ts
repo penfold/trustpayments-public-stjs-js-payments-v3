@@ -5,7 +5,6 @@ import { IPaymentResult } from '../../../application/core/services/payments/IPay
 import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
-import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
@@ -20,6 +19,7 @@ import { catchError, switchMap, tap } from 'rxjs/operators';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
+import { ApplePayResultHandlerService } from './ApplePayResultHandlerService';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined, IRequestTypeResponse> {
@@ -31,6 +31,7 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined,
     private requestProcessingInitializer: RequestProcessingInitializer,
     private frameQueryingService: IFrameQueryingService,
     @Inject(() => TransportServiceGatewayClient) private gatewayClient: IGatewayClient,
+    private applePayResultHandlerService: ApplePayResultHandlerService,
   ) {}
 
   getName(): string {
@@ -58,7 +59,6 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined,
     (event: IMessageBusEvent<IApplePayValidateMerchantRequest>) => this.validateMerchant(event.data),
     );
 
-    // handle the query - send request to the gateway
     this.frameQueryingService.whenReceive(
       PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION_2,
     (event: IMessageBusEvent<IApplePayGatewayRequest>) => this.authorizePayment(event.data, this.config.applePay.merchantUrl),
@@ -69,28 +69,9 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined,
 
   private validateMerchant(request: IApplePayValidateMerchantRequest): Observable<IApplePayWalletVerifyResponseBody> {
     return this.gatewayClient.walletVerify(request).pipe(
-      tap(response => {
-        if (Number(response.errorcode) !== 0) {
-          this.paymentResult.next({
-            status: PaymentStatus.FAILURE,
-            data: response,
-            error: {
-              code: Number(response.errorcode),
-              message: response.errormessage,
-            },
-          });
-        }
-      }),
+      tap((response: IRequestTypeResponse) => this.applePayResultHandlerService.handleWalletVerifyResult(response, this.paymentResult)),
       catchError((error: Error) => {
-        this.paymentResult.error({
-          status: PaymentStatus.ERROR,
-          data: error,
-          error: {
-            code: 50003,
-            message: error.message,
-          },
-        });
-
+        this.applePayResultHandlerService.handleWalletVerifyError(error, this.paymentResult);
         return throwError(() => error);
       }),
     );
@@ -101,37 +82,9 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined,
       switchMap(requestProcessingService => {
         return requestProcessingService.process(request, merchantUrl) as Observable<IApplePayProcessPaymentResponse>;
       }),
-      tap(response => {
-        if (Number(response.errorcode) === 0) {
-          this.paymentResult.next({
-            status: PaymentStatus.SUCCESS,
-            data: response,
-            error: {
-              code: Number(response.errorcode),
-              message: response.errormessage,
-            },
-          });
-        } else {
-          this.paymentResult.next({
-            status: PaymentStatus.FAILURE,
-            data: response,
-            error: {
-              code: Number(response.errorcode),
-              message: response.errormessage,
-            },
-          });
-        }
-      }),
+      tap((response: IRequestTypeResponse) => this.applePayResultHandlerService.handlePaymentResult(response, this.paymentResult)),
       catchError((error: Error) => {
-        this.paymentResult.error({
-          status: PaymentStatus.ERROR,
-          data: error,
-          error: {
-            code: 50003,
-            message: error.message,
-          },
-        });
-
+        this.applePayResultHandlerService.handlePaymentError(error, this.paymentResult)
         return throwError(() => error);
       }),
     );
