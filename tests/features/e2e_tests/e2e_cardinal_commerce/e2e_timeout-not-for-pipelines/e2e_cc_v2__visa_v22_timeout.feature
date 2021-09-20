@@ -12,7 +12,7 @@ Feature: Cardinal Commerce E2E tests - Timeout - Visa v2.2
     And User opens example page
     When User fills payment form with defined card VISA_V22_TIMEOUT_ON_CMPI_LOOKUP_TRANSACTION
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |

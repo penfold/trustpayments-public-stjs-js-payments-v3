@@ -10,7 +10,7 @@ Feature: E2E second payment
     And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once
@@ -27,11 +27,11 @@ Feature: E2E second payment
     When User fills payment form with defined card VISA_V22_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Invalid process"
-    And Wait for notification frame to disappear
+    Then User will see notification frame text: "Invalid process"
+    And User waits for notification frame to disappear
     When User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Invalid process"
+    Then User will see notification frame text: "Invalid process"
     And "submit" callback is called only once in second payment
     And "error" callback is called only once in second payment
     And submit callback contains JWT response
@@ -45,10 +45,10 @@ Feature: E2E second payment
     And User opens example page
     When User fills payment form with defined card VISA_V21_FAILED_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "Unauthenticated"
-    And Wait for notification frame to disappear
+    Then User will see notification frame text: "Unauthenticated"
+    And User waits for notification frame to disappear
     And User clicks Pay button
-    And User will see payment status information: "Unauthenticated"
+    And User will see notification frame text: "Unauthenticated"
     And User will see that notification frame has "red" color
     And "submit" callback is called only once in second payment
     And "error" callback is called only once in second payment
@@ -64,13 +64,13 @@ Feature: E2E second payment
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
-    And Wait for notification frame to disappear
+    Then User will see notification frame text: "An error occurred"
+    And User waits for notification frame to disappear
     When User calls updateJWT function by filling amount field
     And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once in second payment
     And "success" callback is called only once
     And submit callback contains JWT response

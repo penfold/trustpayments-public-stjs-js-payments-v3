@@ -68,7 +68,7 @@ def before_scenario(context, scenario):
                                        waits=context.waits)
     context.session_id = context.browser_executor.get_session_id()
     context.language = 'en_GB'
-    scenario.name = '%s executed on %s' % (scenario.name, context.browser.upper())
+    scenario.name = f'{scenario.name} executed on {context.browser.upper()}'
     LOGGER.info(scenario.name)
     validate_if_proper_browser_is_set_for_test(context, scenario)
 

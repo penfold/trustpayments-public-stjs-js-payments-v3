@@ -37,7 +37,7 @@ class PaymentMethodsLocators:
     parent_iframe: By = (By.ID, FieldType.PARENT_IFRAME.value)
 
     # payment methods
-    pay_mock_button: By = (By.ID, 'merchant-submit-button')
+    pay_button: By = (By.ID, 'merchant-submit-button')
     visa_checkout_mock_button: By = (By.ID, 'v-button')
     apple_pay_mock_button: By = (By.ID, 'st-apple-pay')
     google_pay_mock_button: By = (By.ID, 'gp-mocked-button')
