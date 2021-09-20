@@ -19,7 +19,7 @@ describe('PaymentAuthorizationService', () => {
   let applePaySessionMock: IApplePaySession;
   let applePaySession: IApplePaySession;
   let paymentAuthorizationService: PaymentAuthorizationService;
-  
+
   beforeEach(() => {
     frameQueryingServiceMock = mock<IFrameQueryingService>();
     applePaySessionMock = mock<IApplePaySession>();
@@ -44,7 +44,7 @@ describe('PaymentAuthorizationService', () => {
       walletsource: 'walletsource',
       walletmerchantid: 'walletmerchantid',
     };
-  
+
     const config: IApplePayConfigObject = {
       validateMerchantRequest,
       applePayConfig: null,
@@ -86,8 +86,8 @@ describe('PaymentAuthorizationService', () => {
           },
           transactionIdentifier: 'transactionIdentifier',
           paymentData: 'paymentData',
-        }
-      }
+        },
+      },
     };
 
     const processPaymentResponse: IApplePayProcessPaymentResponse = {
@@ -121,7 +121,7 @@ describe('PaymentAuthorizationService', () => {
       walletdisplayname: 'walletdisplayname',
       walletsource: 'walletsource',
     }
-  
+
     it('sends payment authorization query and complete payment', () => {
       when(frameQueryingServiceMock.query(anything(), CONTROL_FRAME_IFRAME)).thenReturn(of(processPaymentResponse));
 

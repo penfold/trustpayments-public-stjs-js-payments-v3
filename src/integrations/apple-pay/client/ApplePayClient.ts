@@ -86,11 +86,11 @@ export class ApplePayClient {
     this.applePaySession.begin();
   }
 
-  private startPaymentProcess(paymentRequest: IApplePayPaymentRequest): void {
-    this.messageBus.publish<IStartPaymentMethod<IApplePayPaymentRequest>>({
+  private startPaymentProcess(config: IApplePayConfigObject): void {
+    this.messageBus.publish<IStartPaymentMethod<IApplePayConfigObject>>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
-        data: paymentRequest,
+        data: config,
         name: ApplePayPaymentMethodName,
       },
     });
@@ -99,7 +99,7 @@ export class ApplePayClient {
   private initGestureHandler(config: IApplePayConfigObject): void {
     this.applePayButtonClickService.bindClickHandler(() => {
       this.initApplePaySession(config);
-      this.startPaymentProcess(config.paymentRequest)
+      this.startPaymentProcess(config)
     }, config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
   }
 

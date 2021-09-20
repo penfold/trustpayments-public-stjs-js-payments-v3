@@ -1,4 +1,4 @@
-import { anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
@@ -209,7 +209,7 @@ describe('ApplePayClient', () => {
         type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
         data: {
           name: ApplePayPaymentMethodName,
-          data: applePayConfigObjectMock.paymentRequest,
+          data: applePayConfigObjectMock,
         },
       }))).once();
     });
