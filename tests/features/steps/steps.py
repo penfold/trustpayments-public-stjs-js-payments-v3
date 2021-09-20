@@ -2,6 +2,7 @@
 import base64
 import json
 import time
+from urllib.parse import urlparse, parse_qs
 
 from assertpy import assert_that, soft_assertions
 from behave import given, step, then, use_step_matcher
@@ -11,13 +12,13 @@ from pages.page_factory import Pages
 from utils.configurations.inline_config_builder import InlineConfigBuilder
 from utils.configurations.inline_config_generator import create_inline_config
 from utils.configurations.jwt_generator import encode_jwt_for_json, encode_jwt
-from utils.enums.card import Card
 from utils.enums.config import screenshots
 from utils.enums.e2e_config import E2eConfig
 from utils.enums.jwt_config import JwtConfig
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import add_to_shared_dict
 from utils.helpers.resources_reader import get_e2e_config_from_json, get_jwt_config_from_json
+from utils.waits import Waits
 
 use_step_matcher('re')
 
@@ -67,28 +68,10 @@ def step_impl(context, jwt_config):
     context.inline_e2e_config = create_inline_config(context.INLINE_E2E_CONFIG_DICT, jwt)
 
 
-@step('User fills payment form with defined card (?P<card>.+)')
-def fill_payment_form_with_defined_card(context, card: Card):
+@step('User accept success alert')
+def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
-    context.pan = str(card.number)
-    context.exp_date = str(card.expiration_date)
-    context.cvv = str(card.cvv)
-    payment_page.fill_payment_form(card.number, card.expiration_date, card.cvv)
-
-
-@step('User re-fills payment form with defined card (?P<card>.+)')
-def step_impl(context, card: Card):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.clear_card_number_field()
-    fill_payment_form_with_defined_card(context, card)
-
-
-@step('User fills only security code for saved (?P<card>.+) card')
-def step_impl(context, card: Card):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
-    payment_page.fill_payment_form_with_only_cvv(card.cvv)
+    payment_page.accept_alert()
 
 
 @step('Make screenshot after (?P<how_many_seconds>.+) seconds')
@@ -138,10 +121,35 @@ def _browser_device(context):
     }[name]
 
 
-@step('User waits for payment to be processed')
+@step('User will be sent to page with url "(?P<url>.+)" having params')
+def step_impl(context, url: str):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    with soft_assertions():
+        payment_page.validate_base_url(url)
+        context.waits.wait_for_javascript()
+        actual_url = payment_page.get_page_url()
+        parsed_url = urlparse(actual_url)
+        parsed_query_from_url = parse_qs(parsed_url.query)
+        for param in context.table:
+            payment_page.validate_if_url_contains_param(parsed_query_from_url, param['key'], param['value'])
+
+
+@step('User waits to be sent into page with url "(?P<url>.+)" after gateway timeout')
+def step_impl(context, url):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_url_with_timeout(url, Waits.OVER_GATEWAY_TIMEOUT)
+
+
+@step('User waits to be sent into page with url "(?P<url>.+)" after ACS mock timeout')
+def step_impl(context, url):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_url_with_timeout(url, Waits.OVER_ACS_MOCK_TIMEOUT)
+
+
+@step('User waits for ACS mock timeout')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.wait_for_pay_processing_end('en_US')
+    payment_page.wait_for_notification_frame_with_timeout(Waits.OVER_ACS_MOCK_TIMEOUT)
 
 
 @step('User gets cachetoken value from url')
@@ -151,7 +159,7 @@ def step_impl(context):
     add_to_shared_dict(SharedDictKey.CACHETOKEN.value, cachetoken_value)
 
 
-@step('User checks that methodUrl request is send')
+@step('User see that methodUrl request is send')
 def step_impl(context):
     if context.browser.upper() not in 'SAFARI':
         extract_acs_method_traffic_from_driver_logs(context)
@@ -161,7 +169,7 @@ def step_impl(context):
                     context.three_ds_method_data = entry['message']['params']['request'][
                         'postData'].replace('threeDSMethodData=', '').replace('%3D', '=')
         except BaseException as error:
-            assertion_message = 'An exception occurred: {}'.format(error)
+            assertion_message = f'An exception occurred: {error}'
             add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
 
     assertion_message = 'ACS method Url not requested'
@@ -169,7 +177,7 @@ def step_impl(context):
     assert context.three_ds_method_data, assertion_message
 
 
-@step('User checks that threeDSMethodData contains required fields')
+@step('User see that threeDSMethodData contains required fields')
 def step_impl(context):
     method_data_encoded_bytes = context.three_ds_method_data.encode('ascii')
     method_data_base64_decoded = base64.b64decode(method_data_encoded_bytes)
@@ -193,7 +201,7 @@ def step_impl(context):
                     context.three_ds_method_response_status = entry['message']['params']['response'][
                         'status']
         except BaseException as error:
-            assertion_message = 'An exception occurred: {}'.format(error)
+            assertion_message = f'An exception occurred: {error}'
             add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
 
     assertion_message = f'ACS method_Url\'s request response status is incorrect ({context.three_ds_method_response_status})'
@@ -210,5 +218,5 @@ def extract_acs_method_traffic_from_driver_logs(context):
                 if '/acs/method' in log_request_msg:
                     context.three_ds_method_traffic_list.append(json.loads(log_request_msg))
         except BaseException as error:
-            assertion_message = 'An exception occurred: {}'.format(error)
+            assertion_message = f'An exception occurred: {error}'
             add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)

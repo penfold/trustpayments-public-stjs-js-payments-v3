@@ -15,13 +15,13 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     And User clicks Pay button
     And User see V2 authentication modal is displayed
     When User clicks cancel 3ds action button
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see that notification frame has "red" color
     And "submit" callback is called only once
     And "error" callback is called only once
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
-    And User will see that Submit button is "enabled"
+    And User will see that Pay button is "enabled"
     And User will see that ALL input fields are "enabled"
 
 
@@ -36,11 +36,11 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     And User clicks Pay button
     And User see V2 authentication modal is displayed
     And User clicks cancel 3ds action button
-    And User will see payment status information: "An error occurred"
-    And Wait for notification frame to disappear
+    And User will see notification frame text: "An error occurred"
+    And User waits for notification frame to disappear
     When User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once in second payment
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -62,8 +62,8 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     And User clicks Pay button
     And User see V2 authentication modal is displayed
     And User clicks cancel 3ds action button
-    And User will see payment status information: "An error occurred"
-    And Wait for notification frame to disappear
+    And User will see notification frame text: "An error occurred"
+    And User waits for notification frame to disappear
     When User clicks Pay button
     And User fills V2 authentication modal
     Then User will not see notification frame
@@ -98,11 +98,11 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     And User clicks Pay button
     And User see V2 authentication modal is displayed
     And User clicks cancel 3ds action button
-    And User will see payment status information: "An error occurred"
-    And Wait for notification frame to disappear
+    And User will see notification frame text: "An error occurred"
+    And User waits for notification frame to disappear
     And User re-fills payment form with defined card MASTERCARD_FRICTIONLESS
     When User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once in second payment
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -124,8 +124,8 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     And User clicks Pay button
     And User see V2 authentication modal is displayed
     And User clicks cancel 3ds action button
-    And User will see payment status information: "An error occurred"
-    And Wait for notification frame to disappear
+    And User will see notification frame text: "An error occurred"
+    And User waits for notification frame to disappear
     And User re-fills payment form with defined card MASTERCARD_FRICTIONLESS
     When User clicks Pay button
     Then User will not see notification frame
@@ -156,7 +156,7 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     And User toggle action buttons bar
     And User see V2 authentication modal is displayed
     When User clicks cancel 3ds action button
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see that notification frame has "red" color
     And "submit" callback is called only once
     And "error" callback is called only once
@@ -175,13 +175,13 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     And User clicks Pay button
     And User see V2 authentication modal is displayed
     And User clicks cancel 3ds action button
-    And User will see payment status information: "An error occurred"
-    And Wait for notification frame to disappear
+    And User will see notification frame text: "An error occurred"
+    And User waits for notification frame to disappear
     And User calls updateJWT function by filling amount field
     And User toggle action buttons bar
     When User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
 
 
@@ -197,11 +197,11 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     And User clicks Pay button
     And User see V2 authentication modal is displayed
     And User clicks cancel 3ds action button
-    And User will see payment status information: "An error occurred"
-    And Wait for notification frame to disappear
+    And User will see notification frame text: "An error occurred"
+    And User waits for notification frame to disappear
     And User calls updateJWT function by filling amount field
     And User re-fills payment form with defined card MASTERCARD_FRICTIONLESS
     And User toggle action buttons bar
     When User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color

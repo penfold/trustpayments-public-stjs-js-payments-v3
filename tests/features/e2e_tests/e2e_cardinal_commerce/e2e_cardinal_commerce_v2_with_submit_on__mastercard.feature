@@ -367,7 +367,7 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
 #    When User fills payment form with defined card VISA_PRE_WHITELISTED_VISABASE_CONFIG
 #    And User clicks Pay button
 #    And User fills V2 authentication modal
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 
 
@@ -408,8 +408,8 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
     When User fills payment form with defined card MASTERCARD_ERROR_ON_AUTH
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
-    And User waits for payment status to disappear
+    Then User will see notification frame text: "An error occurred"
+    And User waits for notification frame to disappear
     And User clears form
     When User fills payment form with defined card MASTERCARD_BYPASSED_AUTH
     And User clicks Pay button

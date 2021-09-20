@@ -11,7 +11,7 @@ Feature: Destroy ST instance
     And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    And User will see payment status information: "Payment has been successfully processed"
+    And User will see notification frame text: "Payment has been successfully processed"
     And User toggle action buttons bar
     And User clicks Remove frames action button
     And User clicks Destroy ST action button
@@ -19,7 +19,7 @@ Feature: Destroy ST instance
     And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     When User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -38,7 +38,7 @@ Feature: Destroy ST instance
     And User fills payment form with defined card VISA_V22_ERROR_ON_AUTH
     And User clicks Pay button
     And User fills V2 authentication modal
-    And User will see payment status information: "An error occurred"
+    And User will see notification frame text: "An error occurred"
     And User toggle action buttons bar
     And User clicks Remove frames action button
     And User clicks Destroy ST action button
@@ -46,7 +46,7 @@ Feature: Destroy ST instance
     And User fills payment form with defined card VISA_V22_STEP_UP_AUTH_FAILED
     When User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And "submit" callback is called only once
     And "error" callback is called only once
     And submit callback contains JWT response
@@ -65,7 +65,7 @@ Feature: Destroy ST instance
     And User fills payment form with defined card VISA_V22_STEP_UP_AUTH_FAILED
     And User clicks Pay button
     And User fills V2 authentication modal
-    And User will see payment status information: "An error occurred"
+    And User will see notification frame text: "An error occurred"
     And User toggle action buttons bar
     And User clicks Remove frames action button
     And User clicks Destroy ST action button
@@ -97,13 +97,13 @@ Feature: Destroy ST instance
       | requesttypedescriptions | <request_types> |
     And User opens example page
     And User fills V2 authentication modal
-    And User will see payment status information: "Payment has been successfully processed"
+    And User will see notification frame text: "Payment has been successfully processed"
     And User toggle action buttons bar
     And User clicks Remove frames action button
     And User clicks Destroy ST action button
     When User clicks Start ST action button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response

@@ -9,7 +9,7 @@ Feature: E2E callbacks after payment
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: <threedresponse_defined>
     And User will see following callback type called only once
@@ -30,7 +30,7 @@ Feature: E2E callbacks after payment
     And User opens example page
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
     And User will see following callback type called only once
@@ -39,9 +39,11 @@ Feature: E2E callbacks after payment
       | success       |
 
     Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
+      | request_types                 |
+      | THREEDQUERY AUTH              |
+      | ACCOUNTCHECK THREEDQUERY      |
+      | ACCOUNTCHECK THREEDQUERY AUTH |
+      | THREEDQUERY AUTH RISKDEC      |
 
 
   Scenario: error and submit callback for unsuccessful payment - frictionless payment
@@ -67,7 +69,7 @@ Feature: E2E callbacks after payment
     When User fills payment form with defined card MASTERCARD_ERROR_ON_AUTH
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: True
     And User will see following callback type called only once
@@ -89,7 +91,7 @@ Feature: E2E callbacks after payment
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User clicks Cancel button on authentication modal
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: True
     And User will see following callback type called only once

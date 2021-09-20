@@ -8,7 +8,7 @@ Feature: request type + bypass card - full test coverage
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
       | request_types                         |
@@ -39,7 +39,7 @@ Feature: request type + bypass card - full test coverage
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
       | request_types                                      |
@@ -63,7 +63,7 @@ Feature: request type + bypass card - full test coverage
     And User opens example page
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
       | request_types                         |
@@ -94,7 +94,7 @@ Feature: request type + bypass card - full test coverage
     And User opens example page
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
       | request_types                                      |
@@ -119,7 +119,7 @@ Feature: request type + bypass card - full test coverage
     And User opens example page
     When User fills payment form with defined card <card_type>
     And User clicks Pay button
-    Then User will see payment status information: "Bypass"
+    Then User will see notification frame text: "Bypass"
 
       Examples:
       |card_type            |

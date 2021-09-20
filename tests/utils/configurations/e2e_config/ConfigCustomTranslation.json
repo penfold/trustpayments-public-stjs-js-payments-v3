@@ -1,8 +1,20 @@
 {
+  "submitOnSuccess": false,
   "translations": {
-    "An error occurred": "Wystąpił błąd",
-    "Pay": "KupTeraz!",
-    "Payment has been successfully processed": "Victory",
-    "Field is required": "Incorrect"
+    "Card number": "CARD_NO_TRANSLATION_OVERRIDE",
+    "Expiration date": "EXP_DATE_TRANSLATION_OVERRIDE",
+    "Security code": "CODE_TRANSLATION_OVERRIDE",
+    "Field is required": "REQUIRED_TRANSLATION_OVERRIDE",
+    "Pay": "PAY_TRANSLATION_OVERRIDE",
+    "An error occurred": "NOTIFICATION_ERROR_TRANSLATION_OVERRIDE",
+    "Payment has been successfully processed": "NOTIFICATION_SUCCESS_TRANSLATION_OVERRIDE"
+  },
+  "threeDSecure": {
+    "loggingLevel": "ALL",
+    "challengeDisplayMode": "POPUP",
+    "translations": {
+      "cancel": "CANCEL_TRANSLATION_OVERRIDE"
+    }
   }
 }
+
