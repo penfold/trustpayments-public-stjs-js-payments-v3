@@ -103,7 +103,8 @@ def after_scenario(context, scenario):
         mark_test_as_failed(context.session_id)
     #TODO delay added to mitigate cardinal commerce issue
     if scenario.status == 'failed':
-        time.sleep(10)
+        LOGGER.info('Wait 20 seconds before next run')
+        time.sleep(20)
     elif context.configuration.REMOTE:
         mark_test_as_passed(context.session_id)
 
