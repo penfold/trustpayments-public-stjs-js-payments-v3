@@ -1,5 +1,5 @@
 import { of, throwError } from 'rxjs';
-import { deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
@@ -13,6 +13,7 @@ import { IApplePayWalletVerifyResponseBody } from '../../../application/core/int
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { ApplePayResultHandlerService } from './ApplePayResultHandlerService';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 
 describe('ApplePayPaymentMethod', () => {
   const configMock: IConfig = {
@@ -43,21 +44,25 @@ describe('ApplePayPaymentMethod', () => {
   let frameQueryingServiceMock: IFrameQueryingService;
   let gatewayClientMock: IGatewayClient;
   let applePayResultHandlerServiceMock: ApplePayResultHandlerService;
+  let googleAnalyticsMock: GoogleAnalytics;
 
   beforeEach(() => {
     requestProcessingInitializerMock = mock(RequestProcessingInitializer);
     frameQueryingServiceMock = new FrameQueryingServiceMock();
     gatewayClientMock = mock<IGatewayClient>();
     applePayResultHandlerServiceMock = mock(ApplePayResultHandlerService);
+    googleAnalyticsMock = mock(GoogleAnalytics);
 
     applePayPaymentMethod = new ApplePayPaymentMethod(
       instance(requestProcessingInitializerMock),
       frameQueryingServiceMock,
       instance(gatewayClientMock),
       instance(applePayResultHandlerServiceMock),
+      instance(googleAnalyticsMock),
     );
 
     frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT, () => of(undefined));
+    when(googleAnalyticsMock.sendGaData(anything(), anything(), anything(), anything())).thenReturn(anything());
   });
 
   describe('getName()', () => {
@@ -116,6 +121,7 @@ describe('ApplePayPaymentMethod', () => {
       }, null);
 
       verify(gatewayClientMock.walletVerify(validateMerchantRequest)).once();
+      verify(googleAnalyticsMock.sendGaData(anything(), anything(), anything(), anything())).once();
     });
 
     it('returns FAILURE result when WALLETVERIFY response errorcode!=0', done => {
@@ -136,6 +142,7 @@ describe('ApplePayPaymentMethod', () => {
             message: 'error',
           },
         });
+        verify(googleAnalyticsMock.sendGaData(anything(), anything(), anything(), anything())).once();
         done();
       });
 
@@ -160,6 +167,7 @@ describe('ApplePayPaymentMethod', () => {
               message: 'error',
             },
           });
+          verify(googleAnalyticsMock.sendGaData(anything(), anything(), anything(), anything())).once();
           done();
         },
       });

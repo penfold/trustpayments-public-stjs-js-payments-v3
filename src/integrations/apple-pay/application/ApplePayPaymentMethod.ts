@@ -20,6 +20,8 @@ import { IApplePayWalletVerifyResponseBody } from '../../../application/core/int
 import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
 import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined, IRequestTypeResponse> {
@@ -32,6 +34,7 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined,
     private frameQueryingService: IFrameQueryingService,
     @Inject(() => TransportServiceGatewayClient) private gatewayClient: IGatewayClient,
     private applePayResultHandlerService: ApplePayResultHandlerService,
+    private googleAnalytics: GoogleAnalytics,
   ) {}
 
   getName(): string {
@@ -70,8 +73,22 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined,
   private validateMerchant(request: IApplePayValidateMerchantRequest): Observable<IApplePayWalletVerifyResponseBody> {
     return this.gatewayClient.walletVerify(request).pipe(
       tap((response: IRequestTypeResponse) => this.applePayResultHandlerService.handleWalletVerifyResult(response, this.paymentResult)),
+      tap(() => {
+        this.googleAnalytics.sendGaData(
+          'event',
+          'Apple Pay',
+          `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
+          'Apple Pay Merchant validation success',
+        );
+      }),
       catchError((error: Error) => {
         this.applePayResultHandlerService.handleWalletVerifyError(error, this.paymentResult);
+        this.googleAnalytics.sendGaData(
+          'event',
+          'Apple Pay',
+          `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
+          'Apple Pay Merchant validation error',
+        );
         return throwError(() => error);
       }),
     );
