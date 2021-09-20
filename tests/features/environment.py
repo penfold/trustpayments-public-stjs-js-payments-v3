@@ -5,8 +5,10 @@
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR         (to enable  debug-on-error)
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=yes     (to enable  debug-on-error)
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=no      (to disable debug-on-error)
+import time
 from logging import INFO
 
+from behave.contrib.scenario_autoretry import patch_scenario_with_autoretry
 from configuration import CONFIGURATION
 from pages.page_factory import PageFactory
 from utils.actions import Actions
@@ -42,6 +44,11 @@ def before_all(context):
 def disable_headless_for_visa_checkout(context):
     if 'visa_checkout' in context.scenario.tags:
         context.configuration.HEADLESS = False
+
+
+def before_feature(context, feature):
+    for scenario in feature.scenarios:
+        patch_scenario_with_autoretry(scenario, max_attempts=3)
 
 
 def before_scenario(context, scenario):
@@ -94,6 +101,9 @@ def after_scenario(context, scenario):
     scenario.name = f'{scenario.name}_{browser_name.upper()}'
     if scenario.status == 'failed' and context.configuration.REMOTE:
         mark_test_as_failed(context.session_id)
+    #TODO delay added to mitigate cardinal commerce issue
+    if scenario.status == 'failed':
+        time.sleep(10)
     elif context.configuration.REMOTE:
         mark_test_as_passed(context.session_id)
 
