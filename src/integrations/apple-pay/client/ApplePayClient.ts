@@ -18,6 +18,7 @@ import { IApplePayPaymentAuthorizedEvent } from '../../../application/core/integ
 import { MerchantValidationService } from './MerchantValidationService';
 import { mapTo, tap } from 'rxjs/operators';
 import { ApplePayClickHandlingService } from './ApplePayClickHandlingService';
+import { ApplePayCancelPaymentService } from './ApplePayCancelPaymentService';
 
 @Service()
 export class ApplePayClient {
@@ -31,6 +32,7 @@ export class ApplePayClient {
     private applePaySessionFactory: ApplePaySessionFactory,
     private messageBus: IMessageBus,
     private merchantValidationService: MerchantValidationService,
+    private applePayCancelPaymentService: ApplePayCancelPaymentService
   ) {
   }
 
@@ -87,13 +89,9 @@ export class ApplePayClient {
   private initApplePaySession(config: IApplePayConfigObject): void {
     this.applePaySession = this.applePaySessionFactory.create(config.applePayVersion, config.paymentRequest);
     this.merchantValidationService.init(this.applePaySession, config);
+    this.applePayCancelPaymentService.init(this.applePaySession);
     this.applePaySession.onpaymentauthorized = (event: IApplePayPaymentAuthorizedEvent) => this.onPaymentAuthorized(event, config);
-    this.applePaySession.oncancel = () => this.onCancel();
     this.applePaySession.begin();
-
-    // this.onPaymentAuthorized();
-    // this.onCancel();
-    // this.onTransactionComplete();
   }
 
   private startPaymentProcess(paymentRequest: IApplePayPaymentRequest): void {
@@ -108,10 +106,6 @@ export class ApplePayClient {
 
   private onPaymentAuthorized(event: IApplePayPaymentAuthorizedEvent, config: IApplePayConfigObject): void {
     console.log(event);
-  }
-
-  private onCancel(): void {
-    this.messageBus.publish({ type: PUBLIC_EVENTS.APPLE_PAY_CANCELLED });
   }
 
   private onTransactionComplete(): void {

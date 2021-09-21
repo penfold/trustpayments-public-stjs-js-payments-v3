@@ -54,9 +54,26 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, undefined,
     (event: IMessageBusEvent<IApplePayValidateMerchantRequest>) => this.validateMerchant(event.data),
     );
 
+    this.frameQueryingService.whenReceive(PUBLIC_EVENTS.APPLE_PAY_CANCELLED, () => this.paymentCancelled());
+
     const success = of({ status: PaymentStatus.SUCCESS });
 
     return merge(NEVER, this.paymentErrors);
+  }
+
+  private paymentCancelled() {
+    const err = new Error('Payment has been cancelled');
+
+    this.paymentErrors.error({
+      status: PaymentStatus.CANCEL,
+      data: err,
+      error: {
+        code: 50003,
+        message: err.message,
+      },
+    });
+
+    return throwError(() => err);
   }
 
   private validateMerchant(request: IApplePayValidateMerchantRequest): Observable<IApplePayWalletVerifyResponseBody> {
