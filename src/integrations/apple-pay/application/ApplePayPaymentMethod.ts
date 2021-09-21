@@ -89,10 +89,8 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayC
   }
 
   private handlePaymentCancel(paymentResultSubscriber: Subscriber<IPaymentResult<IRequestTypeResponse>>): void {
-     this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_CANCELLED), first()).subscribe(() => {
-      paymentResultSubscriber.next({
-        status: PaymentStatus.CANCEL,
-      });
-    });
+     this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_CANCELLED), first(), mapTo({
+      status: PaymentStatus.CANCEL,
+    })).subscribe(paymentResultSubscriber);
   }
 }
