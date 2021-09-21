@@ -32,7 +32,7 @@ export class ApplePayClient implements IApplePayClient {
     private interFrameCommunicator: InterFrameCommunicator,
     private localStorage: BrowserLocalStorage,
     private messageBus: IMessageBus,
-    private jwtDecoder: JwtDecoder
+    private jwtDecoder: JwtDecoder,
   ) {}
 
   init$(): Observable<ApplePayClientStatus> {

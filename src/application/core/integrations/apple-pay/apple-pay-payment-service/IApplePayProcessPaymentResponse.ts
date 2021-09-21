@@ -1,4 +1,6 @@
-export interface IApplePayProcessPaymentResponse {
+import { IRequestTypeResponse } from '../../../services/st-codec/interfaces/IRequestTypeResponse';
+
+export interface IApplePayProcessPaymentResponse extends IRequestTypeResponse {
   accounttypedescription?: string;
   acquirerresponsecode: string;
   authcode: string;
