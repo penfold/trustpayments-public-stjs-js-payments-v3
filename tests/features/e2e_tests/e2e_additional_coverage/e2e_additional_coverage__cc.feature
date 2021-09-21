@@ -7,7 +7,7 @@ Feature: request type - Cardinal Commerce - full test coverage
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
    Examples:
     | request_types                                      |
@@ -38,7 +38,7 @@ Feature: request type - Cardinal Commerce - full test coverage
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
   Examples:
     | request_types                                      |
@@ -63,7 +63,7 @@ Feature: request type - Cardinal Commerce - full test coverage
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
     | request_types                                      |
@@ -87,7 +87,7 @@ Feature: request type - Cardinal Commerce - full test coverage
     When User fills payment form with defined card MASTERCARD_FAILED_STEP_UP_AUTH
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
 
     Examples:
     | request_types                                      |
@@ -110,7 +110,7 @@ Feature: request type - Cardinal Commerce - full test coverage
     And User opens example page
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
       Examples:
     | request_types                                      |
@@ -131,7 +131,7 @@ Feature: request type - Cardinal Commerce - full test coverage
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
     | request_types                                      |
@@ -149,7 +149,7 @@ Feature: request type - Cardinal Commerce - full test coverage
     And User opens example page
     When User fills payment form with defined card VISA_NON_FRICTIONLESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
     | request_types                                      |

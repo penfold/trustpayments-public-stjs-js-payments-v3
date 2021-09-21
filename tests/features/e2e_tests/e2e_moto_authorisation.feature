@@ -13,7 +13,7 @@ Feature: E2E MOTO Payments
     And User opens example page
     When User fills payment form with defined card <CARD>
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once

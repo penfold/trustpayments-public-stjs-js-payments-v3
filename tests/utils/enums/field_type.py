@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, auto
 
 
 class FieldType(Enum):
@@ -14,8 +14,9 @@ class FieldType(Enum):
     PARENT_IFRAME = 'st-parent-frame'
     V1_PARENT_IFRAME = 'authWindow'
     VISA_CHECKOUT = 'vcop-src-frame'
-    SUBMIT_BUTTON = 1
-    NAME = 2
-    EMAIL = 3
-    PHONE = 4
-    CARD_ICON = 5
+    SUBMIT_BUTTON = auto()
+    ADDITIONAL_SUBMIT_BUTTON = auto()
+    NAME = auto()
+    EMAIL = auto()
+    PHONE = auto()
+    CARD_ICON = auto()

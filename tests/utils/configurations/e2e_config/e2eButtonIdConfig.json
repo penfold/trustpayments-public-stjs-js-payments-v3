@@ -1,4 +1,8 @@
 {
-  "buttonId": "merchant-submit-button",
-  "submitOnSuccess": false
+  "buttonId": "additional-button",
+  "submitOnSuccess": false,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
+  "errorCallback": "errorCallback",
+  "cancelCallback": "cancelCallback"
 }

@@ -12,12 +12,12 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
     And User opens example page
     When User fills payment form with defined card VISA_TRANSACTION_TIMEOUT_ACS
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -34,12 +34,12 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
     And User opens example page
     When User fills payment form with defined card VISA_SUSPECTED_FRAUD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -56,12 +56,12 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
     And User opens example page
     When User fills payment form with defined card VISA_NOT_ENROLLED
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -78,12 +78,12 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
     And User opens example page
     When User fills payment form with defined card VISA_TIMEOUT_2_ACS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -100,12 +100,12 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
     And User opens example page
     When User fills payment form with defined card VISA_TRANSACTION_NON_PAYMENT
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -122,12 +122,12 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
     And User opens example page
     When User fills payment form with defined card VISA_3RI_TRANSACTION_NOT_SUPPORTED
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:

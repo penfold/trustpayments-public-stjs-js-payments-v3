@@ -39,11 +39,11 @@ Feature: E2E Card Payments with cachetoken
 #      | requesttypedescriptions | AUTH             |
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see following callback type called only once
 #      | callback_type |
 #      | submit        |
-#      | success       |
+#      | error         |
 #
 #  STJS-1278
 #  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - frictionless card
@@ -59,11 +59,11 @@ Feature: E2E Card Payments with cachetoken
 #      | requesttypedescriptions | AUTH             |
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see following callback type called only once
 #      | callback_type |
 #      | submit        |
-#      | success       |
+#      | error         |
 #
 #  STJS-1278
 #  Scenario: Declined payment with cachetoken, startOnLoad and AUTH requestType - frictionless card
@@ -80,7 +80,7 @@ Feature: E2E Card Payments with cachetoken
 #      | cachetoken              | cachetoken_value |
 #      | baseamount              | 70000            |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
-#    Then User will see payment status information: "Decline"
+#    Then User will see notification frame text: "Decline"
 #    And User will see following callback type called only once
 #      | callback_type |
 #      | submit        |
@@ -146,11 +146,11 @@ Feature: E2E Card Payments with cachetoken
 #      | cachetoken               | cachetoken_value |
 #      | threedbypasspaymenttypes | VISA             |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see following callback type called only once
 #      | callback_type |
 #      | submit        |
-#      | success       |
+#      | error         |
 #
 #  STJS-1278
 #  Scenario Outline: Successful payment with cachetoken and requestTypes: <request_types>
@@ -162,12 +162,11 @@ Feature: E2E Card Payments with cachetoken
 #      | requesttypedescriptions | <request_types>  |
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
-#    Then User will see payment status information: "Payment has been successfully processed"
+#    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see following callback type called only once
 #      | callback_type |
 #      | submit        |
-#      | success       |
-#
+#      | error         |
 #    Examples:
 #      | request_types            |
 #      | THREEDQUERY              |
@@ -228,7 +227,7 @@ Feature: E2E Card Payments with cachetoken
 #    And User opens example page
 #    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
 #    And User clicks Pay button
-#    Then User will see payment status information: "Invalid field"
+#    Then User will see notification frame text: "Invalid field"
 #    And User will see following callback type called only once
 #      | callback_type |
 #      | submit        |

@@ -15,12 +15,12 @@ Feature: E2E Successful payments on SPA app
     And User opens example page
     And User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
-    And User will see payment status information: "Payment has been successfully processed"
+    And User will see notification frame text: "Payment has been successfully processed"
     When User switch tab to 'Personal Data' in reactjs app
     And User switch tab to 'Home' in reactjs app
     And User fills payment form with defined card <Card>
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
     Examples:
       | Card            |
@@ -35,12 +35,12 @@ Feature: E2E Successful payments on SPA app
     And User calls updateJWT function by filling amount field
     And User fills payment form with defined card VISA_CARD
     And User clicks Pay button
-    And User will see payment status information: "Payment has been successfully processed"
+    And User will see notification frame text: "Payment has been successfully processed"
     When User switch tab to 'Personal Data' in reactjs app
     And User switch tab to 'Home' in reactjs app
     And User fills payment form with defined card VISA_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
   Scenario: SPA app - decline payment and then successful payment
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
@@ -49,12 +49,12 @@ Feature: E2E Successful payments on SPA app
     And User opens example page
     And User fills payment form with defined card MASTERCARD_DECLINED_CARD
     And User clicks Pay button
-    And User will see payment status information: "Decline"
+    And User will see notification frame text: "Decline"
     When User switch tab to 'Personal Data' in reactjs app
     And User switch tab to 'Home' in reactjs app
     And User fills payment form with defined card VISA_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
 
   Scenario: SPA app - successfully processed payment after change tabs
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
@@ -65,4 +65,4 @@ Feature: E2E Successful payments on SPA app
     And User switch tab to 'Payment' in reactjs app
     And User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
