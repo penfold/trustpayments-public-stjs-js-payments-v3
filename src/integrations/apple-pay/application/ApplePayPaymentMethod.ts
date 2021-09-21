@@ -1,4 +1,4 @@
-import { forkJoin, Observable, mapTo } from 'rxjs';
+import { forkJoin, Observable, mapTo, of, Subscriber } from 'rxjs';
 import { Inject, Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
@@ -14,12 +14,15 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { TransportServiceGatewayClient } from '../../../application/core/services/gateway-client/TransportServiceGatewayClient';
-import { switchMap, tap } from 'rxjs/operators';
+import { first, switchMap, tap } from 'rxjs/operators';
 import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
 import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
 import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayConfigObject, IRequestTypeResponse> {
@@ -30,6 +33,7 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayC
     private frameQueryingService: IFrameQueryingService,
     @Inject(() => TransportServiceGatewayClient) private gatewayClient: IGatewayClient,
     private applePayResponseHandlerService: ApplePayResponseHandlerService,
+    private messageBus: IMessageBus,
   ) {}
 
   getName(): string {
@@ -71,6 +75,8 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayC
           );
         },
       );
+      
+      this.handlePaymentCancel(subscriber);
     });
   }
 
@@ -80,5 +86,13 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayC
         return requestProcessingService.process(request, merchantUrl) as Observable<IApplePayProcessPaymentResponse>;
       }),
     );
+  }
+
+  private handlePaymentCancel(paymentResultSubscriber: Subscriber<IPaymentResult<IRequestTypeResponse>>): void {
+     this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_CANCELLED), first()).subscribe(() => {
+      paymentResultSubscriber.next({
+        status: PaymentStatus.CANCEL,
+      });
+    });
   }
 }

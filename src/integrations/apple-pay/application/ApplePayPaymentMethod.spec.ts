@@ -20,6 +20,7 @@ import { IRequestProcessingService } from '../../../application/core/services/re
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { tap } from 'rxjs/operators';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 
 describe('ApplePayPaymentMethod', () => {
   const configMock: IConfig = {
@@ -51,6 +52,7 @@ describe('ApplePayPaymentMethod', () => {
   let frameQueryingServiceMock: IFrameQueryingService;
   let gatewayClientMock: IGatewayClient;
   let applePayResponseHandlerServiceMock: ApplePayResponseHandlerService;
+  let messageBusMock: IMessageBus;
 
   beforeEach(() => {
     requestProcessingInitializerMock = mock(RequestProcessingInitializer);
@@ -58,12 +60,14 @@ describe('ApplePayPaymentMethod', () => {
     gatewayClientMock = mock<IGatewayClient>();
     requestProcessingServiceMock = mock<IRequestProcessingService>();
     applePayResponseHandlerServiceMock = mock(ApplePayResponseHandlerService);
+    messageBusMock = mock<IMessageBus>();
 
     applePayPaymentMethod = new ApplePayPaymentMethod(
       instance(requestProcessingInitializerMock),
       frameQueryingServiceMock,
       instance(gatewayClientMock),
       instance(applePayResponseHandlerServiceMock),
+      instance(messageBusMock),
     );
 
     when(requestProcessingInitializerMock.initialize()).thenReturn(new Observable<IRequestProcessingService>(subscriber => {
