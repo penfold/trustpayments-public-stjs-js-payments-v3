@@ -1,5 +1,5 @@
-import { of, throwError } from 'rxjs';
-import { deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
+import { firstValueFrom, Observable, of } from 'rxjs';
+import { anything, capture, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
@@ -10,8 +10,16 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { FrameQueryingServiceMock } from '../../../shared/services/message-bus/FrameQueryingServiceMock';
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
-import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
+import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
+import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
+import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
+import { CustomerOutput } from '../../../application/core/models/constants/CustomerOutput';
+import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
+import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
+import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
+import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
+import { tap } from 'rxjs/operators';
 
 describe('ApplePayPaymentMethod', () => {
   const configMock: IConfig = {
@@ -39,19 +47,29 @@ describe('ApplePayPaymentMethod', () => {
 
   let applePayPaymentMethod: ApplePayPaymentMethod;
   let requestProcessingInitializerMock: RequestProcessingInitializer;
+  let requestProcessingServiceMock: IRequestProcessingService;
   let frameQueryingServiceMock: IFrameQueryingService;
   let gatewayClientMock: IGatewayClient;
+  let applePayResponseHandlerServiceMock: ApplePayResponseHandlerService;
 
   beforeEach(() => {
     requestProcessingInitializerMock = mock(RequestProcessingInitializer);
     frameQueryingServiceMock = new FrameQueryingServiceMock();
     gatewayClientMock = mock<IGatewayClient>();
+    requestProcessingServiceMock = mock<IRequestProcessingService>();
+    applePayResponseHandlerServiceMock = mock(ApplePayResponseHandlerService);
 
     applePayPaymentMethod = new ApplePayPaymentMethod(
       instance(requestProcessingInitializerMock),
       frameQueryingServiceMock,
       instance(gatewayClientMock),
+      instance(applePayResponseHandlerServiceMock),
     );
+
+    when(requestProcessingInitializerMock.initialize()).thenReturn(new Observable<IRequestProcessingService>(subscriber => {
+      subscriber.next(instance(requestProcessingServiceMock));
+      subscriber.complete();
+    }));
 
     frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT, () => of(undefined));
   });
@@ -64,8 +82,6 @@ describe('ApplePayPaymentMethod', () => {
 
   describe('init()', () => {
     it('should send an event to initialize payment by the client side', (done) => {
-      when(requestProcessingInitializerMock.initialize()).thenReturn(of(null));
-
       const frameQueryingServiceSpy = spy(frameQueryingServiceMock);
 
       applePayPaymentMethod.init(configMock).subscribe(() => {
@@ -80,6 +96,17 @@ describe('ApplePayPaymentMethod', () => {
   });
 
   describe('start()', () => {
+    const applePayConfig: IApplePayConfigObject = {
+     applePayConfig: null,
+     paymentRequest: null,
+     merchantUrl: 'https://merchanturl',
+     validateMerchantRequest: null,
+     jwtFromConfig: '',
+     applePayVersion: 0,
+     locale: 'en_GB',
+     formId: '',
+    };
+
     const validateMerchantRequest: IApplePayValidateMerchantRequest = {
       walletmerchantid: '',
       walletrequestdomain: '',
@@ -99,12 +126,43 @@ describe('ApplePayPaymentMethod', () => {
       requesttypedescription: 'WALLETVERIFY',
     };
 
+    const authorizePaymentRequest: IApplePayGatewayRequest = {
+      walletsource: 'walletsource',
+      wallettoken: 'wallettoken',
+    };
+
+    const authorizePaymentResponse: IRequestTypeResponse = {
+      requesttypedescription: 'AUTH',
+      errorcode: '0',
+      errormessage: '',
+      customeroutput: CustomerOutput.RESULT,
+    };
+
+    const validateMerchantResponseObservable = of(validateMerchantResponse);
+    const authorizePaymentResponseObservable = of(authorizePaymentResponse);
+    const paymentResult: IPaymentResult<IRequestTypeResponse> = {
+      data: authorizePaymentResponse,
+      status: PaymentStatus.SUCCESS,
+    };
+
     beforeEach(() => {
-      when(gatewayClientMock.walletVerify(validateMerchantRequest)).thenReturn(of(validateMerchantResponse));
+      when(gatewayClientMock.walletVerify(validateMerchantRequest)).thenReturn(validateMerchantResponseObservable);
+      when(requestProcessingServiceMock.process(anything(), anything())).thenReturn(authorizePaymentResponseObservable);
+      when(applePayResponseHandlerServiceMock.handleWalletVerifyResponse(anything(), anything())).thenCall(response => response);
+      when(applePayResponseHandlerServiceMock.handlePaymentResponse(anything(), anything())).thenCall((response, subscriber) => {
+        return response.pipe(
+          tap(() => {
+            subscriber.next(paymentResult);
+            subscriber.complete();
+          }),
+        );
+      });
+
+      applePayPaymentMethod.init(configMock).subscribe();
     });
 
     it('runs wallet verification request on APPLE_PAY_VALIDATE_MERCHANT_2 event', () => {
-      applePayPaymentMethod.start().subscribe();
+      applePayPaymentMethod.start(applePayConfig).subscribe();
 
       frameQueryingServiceMock.query({
         type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT_2,
@@ -112,57 +170,22 @@ describe('ApplePayPaymentMethod', () => {
       }, null);
 
       verify(gatewayClientMock.walletVerify(validateMerchantRequest)).once();
+      verify(applePayResponseHandlerServiceMock.handleWalletVerifyResponse(validateMerchantResponseObservable, anything())).once();
     });
 
-    it('returns FAILURE result when WALLETVERIFY response errorcode!=0', done => {
-      const errorResponse = {
-        ...validateMerchantResponse,
-        errorcode: '123',
-        errormessage: 'error',
-      };
-
-      when(gatewayClientMock.walletVerify(validateMerchantRequest)).thenReturn(of(errorResponse));
-
-      applePayPaymentMethod.start().subscribe(result => {
-        expect(result).toEqual({
-          status: PaymentStatus.FAILURE,
-          data: errorResponse,
-          error: {
-            code: 123,
-            message: 'error',
-          },
-        });
+    it('runs payment authorization request on APPLE_PAY_AUTHORIZATION_2 event', done => {
+      applePayPaymentMethod.start(applePayConfig).subscribe(async result => {
+        verify(requestProcessingServiceMock.process(authorizePaymentRequest, 'https://merchanturl')).once();
+        verify(applePayResponseHandlerServiceMock.handlePaymentResponse(anything(), anything())).once();
+        const [responseObservable] = capture(applePayResponseHandlerServiceMock.handlePaymentResponse).first();
+        expect(await firstValueFrom(responseObservable)).toBe(authorizePaymentResponse);
+        expect(result).toBe(paymentResult);
         done();
       });
 
       frameQueryingServiceMock.query({
-        type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT_2,
-        data: validateMerchantRequest,
-      }, null);
-    });
-
-    it('returns ERROR result on WALLETVERIFY request error', done => {
-      const requestError = new Error('error');
-
-      when(gatewayClientMock.walletVerify(validateMerchantRequest)).thenReturn(throwError(() => requestError));
-
-      applePayPaymentMethod.start().subscribe({
-        error: errorResult => {
-          expect(errorResult).toEqual({
-            status: PaymentStatus.ERROR,
-            data: requestError,
-            error: {
-              code: 50003,
-              message: 'error',
-            },
-          });
-          done();
-        },
-      });
-
-      frameQueryingServiceMock.query({
-        type: PUBLIC_EVENTS.APPLE_PAY_VALIDATE_MERCHANT_2,
-        data: validateMerchantRequest,
+        type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION_2,
+        data: authorizePaymentRequest,
       }, null);
     });
   });

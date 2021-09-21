@@ -8,17 +8,17 @@ import { ApplePaySessionService } from '../../../client/integrations/apple-pay/a
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ApplePayClient } from './ApplePayClient';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
-import { ApplePayGestureService } from '../../../application/core/integrations/apple-pay/apple-pay-gesture-service/ApplePayGestureService';
-import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { MerchantValidationService } from './MerchantValidationService';
-import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
-import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
-import { Subject } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { ApplePayClickHandlingService } from './ApplePayClickHandlingService';
+import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
+import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
+import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
+import { of, Subject } from 'rxjs';
+import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
+import { MerchantValidationService } from './MerchantValidationService';
+import { PaymentAuthorizationService } from './PaymentAuthorizationService';
+import { first } from 'rxjs/operators';
 
 describe('ApplePayClient', () => {
   const configMock: IConfig = {
@@ -90,6 +90,7 @@ describe('ApplePayClient', () => {
   let applePaySessionFactoryMock: ApplePaySessionFactory;
   let messageBusMock: IMessageBus;
   let merchantValidationServiceMock: MerchantValidationService;
+  let paymentAuthorizationServiceMock: PaymentAuthorizationService;
   let applePaySessionMock: IApplePaySession;
   let applePaySession: IApplePaySession;
 
@@ -101,6 +102,7 @@ describe('ApplePayClient', () => {
     applePaySessionFactoryMock = mock(ApplePaySessionFactory);
     messageBusMock = mock<IMessageBus>();
     merchantValidationServiceMock = mock(MerchantValidationService);
+    paymentAuthorizationServiceMock = mock(PaymentAuthorizationService);
     applePaySessionMock = mock<IApplePaySession>();
     applePaySession = instance(applePaySessionMock);
 
@@ -112,6 +114,7 @@ describe('ApplePayClient', () => {
       instance(applePaySessionFactoryMock),
       instance(messageBusMock),
       instance(merchantValidationServiceMock),
+      instance(paymentAuthorizationServiceMock),
     );
   });
 
@@ -206,7 +209,7 @@ describe('ApplePayClient', () => {
         type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
         data: {
           name: ApplePayPaymentMethodName,
-          data: applePayConfigObjectMock.paymentRequest,
+          data: applePayConfigObjectMock,
         },
       }))).once();
     });
@@ -218,6 +221,12 @@ describe('ApplePayClient', () => {
         verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.APPLE_PAY_CANCELLED }))).once();
         done();
       });
+
+      buttonClick.next(undefined);
+
+      verify(applePaySessionFactoryMock.create(applePayConfigObjectMock.applePayVersion, applePayConfigObjectMock.paymentRequest)).once();
+      verify(merchantValidationServiceMock.init(applePaySession, applePayConfigObjectMock)).once();
+      verify(applePaySessionMock.begin()).once();
     });
   });
 });
