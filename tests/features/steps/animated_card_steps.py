@@ -29,13 +29,6 @@ def step_impl(context):
     animated_card_page.validate_if_animated_card_is_flipped(context.card_type, context.is_field_in_iframe)
 
 
-@step('User will see the same provided data on animated credit card "(?P<card_number>.+)", "(?P<expiration_date>.+)"')
-def step_impl(context, card_number, expiration_date):
-    animated_card_page = context.page_factory.get_page(Pages.ANIMATED_CARD_PAGE)
-    animated_card_page.validate_all_data_on_animated_card(card_number, expiration_date, None, 'PIBA',
-                                                          context.is_field_in_iframe)
-
-
 @then('User will see that labels displayed on animated card are translated into "(?P<language>.+)"')
 def step_impl(context, language):
     animated_card_page = context.page_factory.get_page(Pages.ANIMATED_CARD_PAGE)
