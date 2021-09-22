@@ -1,12 +1,12 @@
 {
-  "iat": 1234567891011,
-  "iss": "test",
-  "secret": "test",
+  "iat": 1592298893548,
+  "iss": "jsmanualjwt",
+  "secret": "58-bbe0c26553a301c75325e4be63cde49cc97024e0686de751b11957a5f7923b43",
   "payload": {
-    "baseamount": "1000",
+    "mainamount": "20.00",
     "accounttypedescription": "ECOM",
     "currencyiso3a": "GBP",
-    "sitereference": "",
-    "locale": "en_GB"
+    "sitereference": "test_jsmanualcardinal91921",
+    "requesttypedescriptions": ["THREEDQUERY", "AUTH"]
   }
 }
