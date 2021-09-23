@@ -28,7 +28,7 @@ import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 @Service()
 export class ApplePayClient {
   private applePaySession: IApplePaySession;
-  private updatedConfig: IConfig;
+  private config: IConfig;
 
   constructor(
     private applePayConfigService: ApplePayConfigService,
@@ -44,67 +44,49 @@ export class ApplePayClient {
   }
 
   init(config: IConfig): Observable<void> {
+    this.config = config;
     return this.isApplePayAvailable(config).pipe(
       map(config => this.resolveApplePayConfig(config)),
       tap(applePayConfig => this.insertApplePayButton(applePayConfig)),
       tap(applePayConfig => this.initGestureHandler(applePayConfig)),
-      tap(() => this.updateJwtListener(config)),
+      tap(() => this.updateJwtListener()),
       mapTo(undefined),
     );
   }
 
-  private updateJwtListener(config: IConfig): void {
+  private updateJwtListener(): void {
     this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.UPDATE_JWT),
         tap((event: IMessageBusEvent<IUpdateJwt>) => {
-          this.updateConfigWithJWT(event.data.newJwt, config);
+          this.updateConfigWithJWT(event.data.newJwt);
         }),
         takeUntil(this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY)))
       )
       .subscribe();
   }
 
-  private updateConfigWithJWT(jwt: string, config: IConfig): any {
+  private updateConfigWithJWT(jwt: string): any {
     const { payload }: { payload: IStJwtPayload } = this.jwtDecoder.decode(jwt);
-
     let totalPrice = payload.mainamount;
+    this.config.jwt = jwt;
 
-    if (totalPrice === undefined) {
-      totalPrice = Money.fromInteger({
-        amount: parseInt(payload.baseamount, 10),
-        currency: payload.currencyiso3a,
-      }).toString();
-    }
-
-    const transactionInfo: any = {
-      ...config.applePay.paymentRequest,
-      currencyCode: payload.currencyiso3a,
-      totalPrice,
-    };
-
-    console.log(1, transactionInfo);
-
-    console.log(2, config);
-
-    const a = {
-      ...config,
+    const updatedConfig: IConfig = {
+      ...this.config,
       applePay: {
-        ...config.applePay,
-        paymentRequest: { ...config.applePay.paymentRequest, ...transactionInfo },
+        ...this.config.applePay,
+        paymentRequest: { 
+          ...this.config.applePay.paymentRequest, 
+          currencyCode: payload.currencyiso3a,
+          total: {
+            ...this.config.applePay.paymentRequest.total,
+            amount: totalPrice,
+          }
+        },
       },
     };
 
-    console.log(3, a);
-
-    this.updatedConfig = a;
-    // return {
-    //   ...this.config,
-    //   applePay: {
-    //     ...this.config.applePay,
-    //     paymentRequest: { ...this.config.applePay.paymentRequest, transactionInfo },
-    //   },
-    // };
+    this.initGestureHandler(this.resolveApplePayConfig(updatedConfig));
   }
 
   private isApplePayAvailable(config: IConfig): Observable<IConfig> {
