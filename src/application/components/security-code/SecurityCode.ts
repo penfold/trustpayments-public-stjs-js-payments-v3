@@ -273,14 +273,6 @@ export class SecurityCode extends Input {
         return;
       }
 
-      if (iinLookup.lookup(data.value).type === 'PIBA') {
-        this.inputElement.setAttribute(SecurityCode.BLOCK_CVV_ATTRIBUTE, 'true');
-        this.inputElement.value = '';
-        this.disableSecurityCode();
-        this.toggleSecurityCodeValidation();
-
-        return;
-      }
       this.inputElement.removeAttribute(SecurityCode.BLOCK_CVV_ATTRIBUTE);
       this.enableSecurityCode();
       this.inputElement.classList.remove(SecurityCode.DISABLED_CLASS);
