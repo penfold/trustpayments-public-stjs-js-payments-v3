@@ -28,6 +28,7 @@ import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 @Service()
 export class ApplePayClient {
   private applePaySession: IApplePaySession;
+  private updatedConfig: IConfig;
 
   constructor(
     private applePayConfigService: ApplePayConfigService,
@@ -47,25 +48,24 @@ export class ApplePayClient {
       map(config => this.resolveApplePayConfig(config)),
       tap(applePayConfig => this.insertApplePayButton(applePayConfig)),
       tap(applePayConfig => this.initGestureHandler(applePayConfig)),
-      tap(() => this.updateJwtListener()),
+      tap(() => this.updateJwtListener(config)),
       mapTo(undefined),
     );
   }
 
-  private updateJwtListener(): void {
+  private updateJwtListener(config: IConfig): void {
     this.messageBus
       .pipe(
         ofType(PUBLIC_EVENTS.UPDATE_JWT),
         tap((event: IMessageBusEvent<IUpdateJwt>) => {
-          this.updateConfigWithJWT(event.data.newJwt);
+          this.updateConfigWithJWT(event.data.newJwt, config);
         }),
         takeUntil(this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY)))
       )
       .subscribe();
   }
 
-  private updateConfigWithJWT(jwt: string): void {
-    console.log(jwt);
+  private updateConfigWithJWT(jwt: string, config: IConfig): any {
     const { payload }: { payload: IStJwtPayload } = this.jwtDecoder.decode(jwt);
 
     let totalPrice = payload.mainamount;
@@ -77,7 +77,34 @@ export class ApplePayClient {
       }).toString();
     }
 
-    console.log(totalPrice);
+    const transactionInfo: any = {
+      ...config.applePay.paymentRequest,
+      currencyCode: payload.currencyiso3a,
+      totalPrice,
+    };
+
+    console.log(1, transactionInfo);
+
+    console.log(2, config);
+
+    const a = {
+      ...config,
+      applePay: {
+        ...config.applePay,
+        paymentRequest: { ...config.applePay.paymentRequest, ...transactionInfo },
+      },
+    };
+
+    console.log(3, a);
+
+    this.updatedConfig = a;
+    // return {
+    //   ...this.config,
+    //   applePay: {
+    //     ...this.config.applePay,
+    //     paymentRequest: { ...this.config.applePay.paymentRequest, transactionInfo },
+    //   },
+    // };
   }
 
   private isApplePayAvailable(config: IConfig): Observable<IConfig> {
@@ -135,7 +162,7 @@ export class ApplePayClient {
   private initGestureHandler(config: IApplePayConfigObject): void {
     this.applePayButtonClickService.bindClickHandler(() => {
       this.initApplePaySession(config);
-      this.startPaymentProcess(config)
+      this.startPaymentProcess(config);
     }, config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
   }
 
