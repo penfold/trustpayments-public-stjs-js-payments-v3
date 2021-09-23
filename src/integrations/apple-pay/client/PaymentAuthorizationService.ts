@@ -26,7 +26,7 @@ export class PaymentAuthorizationService {
           ...formData,
           walletsource: 'APPLEPAY',
           wallettoken: JSON.stringify(event.payment),
-          termurl: 'TERM_URL',
+          termurl: 'https://termurl.com',
         },
       };
 

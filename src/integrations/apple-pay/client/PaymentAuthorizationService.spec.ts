@@ -137,7 +137,7 @@ describe('PaymentAuthorizationService', () => {
           billingfirstname: '',
           walletsource: 'APPLEPAY',
           wallettoken: JSON.stringify(event.payment),
-          termurl: 'TERM_URL',
+          termurl: 'https://termurl.com',
         },
       }), CONTROL_FRAME_IFRAME)).once();
 
