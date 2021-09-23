@@ -16,7 +16,6 @@ import {
   SECURITY_CODE_IFRAME,
 } from '../../application/core/models/constants/Selectors';
 import { Validation } from '../../application/core/shared/validation/Validation';
-import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { Observable } from 'rxjs';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';

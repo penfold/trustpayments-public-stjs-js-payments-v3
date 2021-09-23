@@ -176,7 +176,7 @@ export class CardNumber extends Input {
   }
 
   private getIcon(type: string): HTMLImageElement {
-    if (!type) {
+    if (!type || type === 'PIBA') {
       return;
     }
     return this.iconFactory.getIcon(type.toLowerCase());
