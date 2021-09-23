@@ -214,11 +214,6 @@ describe('CardNumber', () => {
       // @ts-ignore
       expect(cardNumberInstance.inputElement.focus).toBeCalled();
     });
-
-    it('should call _disableSecurityCodeField with input value', () => {
-      // @ts-ignore
-      expect(cardNumberInstance.disableSecurityCodeField).toHaveBeenCalledWith('4111');
-    });
   });
 
   describe('onInput', () => {

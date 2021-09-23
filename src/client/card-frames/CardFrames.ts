@@ -41,7 +41,6 @@ export class CardFrames {
   private static COMPLETE_FORM_NUMBER_OF_FIELDS = 3;
   private static EXPIRY_DATE_FIELD_NAME = 'expirydate';
   private static INPUT_EVENT = 'input';
-  private static NO_CVV_CARDS: string[] = ['PIBA'];
   private static ONLY_CVV_NUMBER_OF_FIELDS = 1;
   private static SUBMIT_EVENT = 'submit';
   private static SECURITY_CODE_FIELD_NAME = 'securitycode';
@@ -64,7 +63,6 @@ export class CardFrames {
   private pleaseWaitMessage: string;
   private processingMessage: string;
   private fieldsToSubmitLength: number;
-  private isCardWithNoCvv: boolean;
   private noFieldConfiguration: boolean;
   private onlyCvvConfiguration: boolean;
   private configurationForStandardCard: boolean;
@@ -142,19 +140,15 @@ export class CardFrames {
 
   private configureFormFieldsAmount(jwt: string): void {
     this.fieldsToSubmitLength = this.fieldsToSubmit.length;
-    this.isCardWithNoCvv = jwt && CardFrames.NO_CVV_CARDS.includes(this.getCardType(jwt));
     this.noFieldConfiguration =
       this.fieldsToSubmitLength === CardFrames.ONLY_CVV_NUMBER_OF_FIELDS &&
-      this.isCardWithNoCvv &&
       this.fieldsToSubmit.includes(CardFrames.SECURITY_CODE_FIELD_NAME);
     this.onlyCvvConfiguration =
       this.fieldsToSubmitLength === CardFrames.ONLY_CVV_NUMBER_OF_FIELDS &&
-      !this.isCardWithNoCvv &&
       this.fieldsToSubmit.includes(CardFrames.SECURITY_CODE_FIELD_NAME);
     this.configurationForStandardCard =
       this.fieldsToSubmitLength === CardFrames.COMPLETE_FORM_NUMBER_OF_FIELDS &&
       this.loadAnimatedCard &&
-      !this.isCardWithNoCvv &&
       this.fieldsToSubmit.includes(CardFrames.CARD_NUMBER_FIELD_NAME) &&
       this.fieldsToSubmit.includes(CardFrames.EXPIRY_DATE_FIELD_NAME) &&
       this.fieldsToSubmit.includes(CardFrames.SECURITY_CODE_FIELD_NAME);
@@ -238,13 +232,6 @@ export class CardFrames {
   private disableSubmitButton(state: FormState): void {
     if (this.submitButton) {
       this.setSubmitButtonProperties(this.submitButton, state);
-    }
-  }
-
-  private getCardType(jwt: string): string {
-    const cardDetails = this.jwtDecoder.decode<IStJwtPayload>(jwt);
-    if (cardDetails.payload.pan) {
-      return iinLookup.lookup(cardDetails.payload.pan).type;
     }
   }
 
