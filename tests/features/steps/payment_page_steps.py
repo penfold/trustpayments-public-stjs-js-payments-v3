@@ -152,16 +152,6 @@ def step_impl(context, field_name, text):
     fields[field_name](text)
 
 
-@then('User will see all labels displayed on page translated into "(?P<language>.+)"')
-def step_impl(context, language):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    with soft_assertions():
-        payment_page.validate_card_number_iframe_element_text(get_translation_from_json(language, 'Card number'))
-        payment_page.validate_expiration_date_iframe_element_text(
-            get_translation_from_json(language, 'Expiration date'))
-        payment_page.validate_security_code_iframe_element_text(get_translation_from_json(language, 'Security code'))
-
-
 @then('User will see validation message "(?P<expected_message>.+)" under all fields')
 def step_impl(context, expected_message):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -284,11 +274,18 @@ def step_impl(context, expected_value):
     payment_page.validate_submit_btn_specific_translation(expected_value)
 
 
-@then('User will see that Pay button text translated into "(?P<language>.+)"')
+@then('User will see (?:label|labels) displayed on page translated into "(?P<language>.+)"')
 def step_impl(context, language):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    expected_text = get_translation_from_json(language, 'Pay')
-    payment_page.validate_submit_btn_specific_translation(expected_text)
+    labels = {
+        'Card number': payment_page.validate_card_number_iframe_element_text,
+        'Expiration date': payment_page.validate_expiration_date_iframe_element_text,
+        'Security code': payment_page.validate_security_code_iframe_element_text,
+        'Pay': payment_page.validate_submit_btn_specific_translation
+    }
+    with soft_assertions():
+        for row in context.table:
+            labels[row['fields']](get_translation_from_json(language, row['fields']))
 
 
 @then('User will see that Pay button is "(?P<form_status>.+)"')

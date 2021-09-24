@@ -12,8 +12,12 @@ Feature: Payment form translations from jwt locale
       | locale                  | <locale>         |
     And User opens example page
     And User waits for Pay button to be active
-    Then User will see all labels displayed on page translated into "<locale>"
-    And User will see that Pay button text translated into "<locale>"
+    Then User will see labels displayed on page translated into "<locale>"
+      | fields          |
+      | Card number     |
+      | Expiration date |
+      | Security code   |
+      | Pay             |
     When User clicks Pay button
     Then User will see validation message "Field is required" under all fields translated into "<locale>"
 
@@ -87,8 +91,13 @@ Feature: Payment form translations from jwt locale
       | requesttypedescriptions | THREEDQUERY AUTH |
       | locale                  | <locale>         |
     And User opens example page
+    And User waits for Pay button to be active
     When User fills payment form with defined card AMEX_CARD
-    Then User will see that labels displayed on animated card are translated into "<locale>"
+    Then User will see labels displayed on animated card translated into "<locale>"
+      | fields          |
+      | Card number     |
+      | Expiration date |
+      | Security code   |
 
     Examples:
       | locale |
@@ -102,4 +111,3 @@ Feature: Payment form translations from jwt locale
       | nl_NL  |
       | no_NO  |
       | sv_SE  |
-
