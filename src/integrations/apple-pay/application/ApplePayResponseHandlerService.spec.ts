@@ -4,6 +4,7 @@ import { IRequestTypeResponse } from '../../../application/core/services/st-code
 import { of, Subscriber, throwError } from 'rxjs';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
+import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 
 describe('ApplePayResponseHandlerService', () => {
   let applePayResponseHandlerService: ApplePayResponseHandlerService;
@@ -49,6 +50,7 @@ describe('ApplePayResponseHandlerService', () => {
           verify(subscriberMock.next(deepEqual({
             status: PaymentStatus.FAILURE,
             data: responseWithErrorCode,
+            paymentMethodName: ApplePayPaymentMethodName,
             error: {
               code: 123,
               message: 'failed',
@@ -96,6 +98,7 @@ describe('ApplePayResponseHandlerService', () => {
         .handlePaymentResponse(of(response), instance(subscriberMock))
         .subscribe(() => {
           verify(subscriberMock.next(deepEqual({
+            paymentMethodName: ApplePayPaymentMethodName,
             status: PaymentStatus.SUCCESS,
             data: response,
           }))).once();
@@ -117,6 +120,7 @@ describe('ApplePayResponseHandlerService', () => {
         .subscribe(() => {
           verify(subscriberMock.next(deepEqual({
             status: PaymentStatus.FAILURE,
+            paymentMethodName: ApplePayPaymentMethodName,
             data: responseWithErrorCode,
             error: {
               code: 123,

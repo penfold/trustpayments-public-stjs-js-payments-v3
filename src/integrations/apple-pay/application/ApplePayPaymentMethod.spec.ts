@@ -142,6 +142,7 @@ describe('ApplePayPaymentMethod', () => {
     const authorizePaymentResponseObservable = of(authorizePaymentResponse);
     const paymentResult: IPaymentResult<IRequestTypeResponse> = {
       data: authorizePaymentResponse,
+      paymentMethodName: ApplePayPaymentMethodName,
       status: PaymentStatus.SUCCESS,
     };
 
