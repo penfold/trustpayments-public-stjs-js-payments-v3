@@ -19,6 +19,7 @@ import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { MerchantValidationService } from './MerchantValidationService';
 import { PaymentAuthorizationService } from './PaymentAuthorizationService';
 import { first } from 'rxjs/operators';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 
 describe('ApplePayClient', () => {
   const configMock: IConfig = {
@@ -93,6 +94,7 @@ describe('ApplePayClient', () => {
   let paymentAuthorizationServiceMock: PaymentAuthorizationService;
   let applePaySessionMock: IApplePaySession;
   let applePaySession: IApplePaySession;
+  let jwtDecoderMock: JwtDecoder;
 
   beforeEach(() => {
     applePayConfigServiceMock = mock(ApplePayConfigService);
@@ -105,6 +107,7 @@ describe('ApplePayClient', () => {
     paymentAuthorizationServiceMock = mock(PaymentAuthorizationService);
     applePaySessionMock = mock<IApplePaySession>();
     applePaySession = instance(applePaySessionMock);
+    jwtDecoderMock = mock(JwtDecoder);
 
     applePayClient = new ApplePayClient(
       instance(applePayConfigServiceMock),
@@ -115,6 +118,7 @@ describe('ApplePayClient', () => {
       instance(messageBusMock),
       instance(merchantValidationServiceMock),
       instance(paymentAuthorizationServiceMock),
+      instance(jwtDecoderMock),
     );
   });
 

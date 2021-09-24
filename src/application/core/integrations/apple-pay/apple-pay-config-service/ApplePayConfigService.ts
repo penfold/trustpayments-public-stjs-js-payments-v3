@@ -23,7 +23,7 @@ export class ApplePayConfigService {
     const { applePay, jwt, formId, merchantUrl } = this.getConfigData(config);
     const applePayVersion: number = this.applePaySessionService.getLatestSupportedApplePayVersion();
     const { currencyiso3a, locale, mainamount } = this.getStJwtData(jwt);
-
+    console.log('asd222', {paymentRequest: this.updatePaymentRequest(applePay, currencyiso3a, mainamount, applePayVersion)})
     return {
       applePayConfig: applePay,
       applePayVersion,
@@ -32,7 +32,8 @@ export class ApplePayConfigService {
       jwtFromConfig: jwt,
       merchantUrl,
       validateMerchantRequest: this.updateWalletMerchantId(validateMerchantRequest, applePay.merchantId),
-      paymentRequest: this.updatePaymentRequest(applePay, currencyiso3a, mainamount, applePayVersion),
+      paymentRequest: ({ ...this.updatePaymentRequest(applePay, currencyiso3a, mainamount, applePayVersion), dupa: 0}) as any,
+      // paymentRequest: this.updatePaymentRequest(applePay, currencyiso3a, mainamount, applePayVersion),
     };
   }
 
@@ -123,6 +124,7 @@ export class ApplePayConfigService {
     mainamount: string,
     applePayVersion: number
   ): IApplePayPaymentRequest {
+    console.log({mainamount});
     let paymentRequest: IApplePayPaymentRequest = applePay.paymentRequest;
     paymentRequest.supportedNetworks = this.applePayNetworkService.setSupportedNetworks(
       applePayVersion,
@@ -130,7 +132,7 @@ export class ApplePayConfigService {
     );
     paymentRequest = this.updateAmount(paymentRequest, mainamount);
     paymentRequest = this.updateCurrencyCode(paymentRequest, currencyiso3a);
-
+    console.log({paymentRequest});
     return this.updateRequestTypes(paymentRequest);
   }
 }

@@ -22,13 +22,13 @@ import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
-import { Money } from 'ts-money';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 
 @Service()
 export class ApplePayClient {
   private applePaySession: IApplePaySession;
   private config: IConfig;
+  private destroy: Observable<IMessageBusEvent>;
 
   constructor(
     private applePayConfigService: ApplePayConfigService,
@@ -41,12 +41,17 @@ export class ApplePayClient {
     private paymentAuthorizationService: PaymentAuthorizationService,
     private jwtDecoder: JwtDecoder,
   ) {
+    this.destroy = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
   init(config: IConfig): Observable<void> {
-    this.config = config;
+    this.config = {...config};
     return this.isApplePayAvailable(config).pipe(
       map(config => this.resolveApplePayConfig(config)),
+      tap(applePayConfig => {
+        console.log({ applePayConfig });
+        return applePayConfig;
+      }),
       tap(applePayConfig => this.insertApplePayButton(applePayConfig)),
       tap(applePayConfig => this.initGestureHandler(applePayConfig)),
       tap(() => this.updateJwtListener()),
@@ -61,32 +66,35 @@ export class ApplePayClient {
         tap((event: IMessageBusEvent<IUpdateJwt>) => {
           this.updateConfigWithJWT(event.data.newJwt);
         }),
-        takeUntil(this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY)))
+        takeUntil(this.destroy)
       )
       .subscribe();
   }
 
-  private updateConfigWithJWT(jwt: string): any {
-    const { payload }: { payload: IStJwtPayload } = this.jwtDecoder.decode(jwt);
-    let totalPrice = payload.mainamount;
-    this.config.jwt = jwt;
+  private updateConfigWithJWT(jwt: string): void {
+    // const { payload }: { payload: IStJwtPayload } = this.jwtDecoder.decode(jwt);
+    // let totalPrice = payload.mainamount;
+    // this.config.jwt = jwt;
 
     const updatedConfig: IConfig = {
       ...this.config,
-      applePay: {
-        ...this.config.applePay,
-        paymentRequest: { 
-          ...this.config.applePay.paymentRequest, 
-          currencyCode: payload.currencyiso3a,
-          total: {
-            ...this.config.applePay.paymentRequest.total,
-            amount: totalPrice,
-          }
-        },
-      },
+      jwt,
+      // applePay: {
+      //   ...this.config.applePay,
+      //   paymentRequest: { 
+      //     ...this.config.applePay.paymentRequest, 
+      //     currencyCode: payload.currencyiso3a,
+      //     total: {
+      //       ...this.config.applePay.paymentRequest.total,
+      //       amount: totalPrice,
+      //     }
+      //   },
+      // },
     };
 
-    this.initGestureHandler(this.resolveApplePayConfig(updatedConfig));
+    console.log('asd', this.resolveApplePayConfig(updatedConfig));
+
+    // this.initGestureHandler(this.resolveApplePayConfig(updatedConfig));
   }
 
   private isApplePayAvailable(config: IConfig): Observable<IConfig> {
