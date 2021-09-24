@@ -30,6 +30,7 @@ export class TestPaymentMethod implements IPaymentMethod<IConfig, ITestStartData
             jwt: 'jwt',
             threedresponse: 'threedresponse',
           },
+          paymentMethodName: 'Test',
         });
       case PaymentStatus.CANCEL:
         return of({
@@ -38,6 +39,7 @@ export class TestPaymentMethod implements IPaymentMethod<IConfig, ITestStartData
             xyz: 'xyz',
             baz: 'baz',
           },
+          paymentMethodName: 'Test',
         });
       case PaymentStatus.FAILURE:
         return of({
@@ -50,6 +52,7 @@ export class TestPaymentMethod implements IPaymentMethod<IConfig, ITestStartData
             baz: 'baz',
             xyz: 'xyz',
           },
+          paymentMethodName: 'Test',
         });
       case PaymentStatus.ERROR:
         return of({
@@ -58,6 +61,7 @@ export class TestPaymentMethod implements IPaymentMethod<IConfig, ITestStartData
             baz: 'baz',
             xyz: 'xyz',
           },
+          paymentMethodName: 'Test',
         });
     }
   }

@@ -70,6 +70,7 @@ describe('GooglePaymentMethod', () => {
         expect(result).toEqual({
           status: PaymentStatus.SUCCESS,
           data: paymentResponse,
+          paymentMethodName: GooglePaymentMethodName,
         });
 
         verify(requestProcessingServiceMock.process(googlePayGatewayRequest, undefined)).once();
@@ -87,6 +88,7 @@ describe('GooglePaymentMethod', () => {
         expect(result).toMatchObject({
           status: PaymentStatus.ERROR,
           data: errorResponse,
+          paymentMethodName: GooglePaymentMethodName,
         });
         done();
       });
@@ -120,6 +122,7 @@ describe('GooglePaymentMethod', () => {
         expect(result).toEqual({
           status: PaymentStatus.FAILURE,
           data: paymentResponse,
+          paymentMethodName: GooglePaymentMethodName,
         });
         done();
       });
@@ -159,6 +162,7 @@ describe('GooglePaymentMethod', () => {
         expect(result).toEqual({
           status: PaymentStatus.ERROR,
           data: errorResponse,
+          paymentMethodName: GooglePaymentMethodName,
         });
         done();
       });
@@ -173,6 +177,7 @@ describe('GooglePaymentMethod', () => {
         expect(result).toEqual({
           status: PaymentStatus.CANCEL,
           data: cancelRsponse,
+          paymentMethodName: GooglePaymentMethodName,
         });
         done();
       });

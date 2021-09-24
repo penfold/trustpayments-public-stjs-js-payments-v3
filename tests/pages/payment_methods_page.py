@@ -1,4 +1,7 @@
 import json
+import re
+import time
+from collections import defaultdict
 from urllib.parse import urlparse, parse_qs
 
 from assertpy import assert_that
@@ -37,6 +40,26 @@ class PaymentMethodsPage(BasePage):
     def get_color_of_notification_frame(self):
         return self._actions.get_element_attribute(PaymentMethodsLocators.notification_frame,
                                                    'data-notification-color')
+
+    def get_logs(self):
+        logs = self._actions.get_value(PaymentMethodsLocators.logs_textarea)
+        result = re.findall('"name": "(.*)",\n  "step": "(.*)"', logs)
+        res = defaultdict(list)
+        for key, value in result:
+            res[key].append(value)
+        return res
+
+    def check_if_value_is_present_in_logs(self, expected_name, expected_step, max_try=5):
+        logs = []
+        while max_try:
+            logs = self.get_logs()
+            if expected_step in logs[expected_name]:
+                break
+            max_try -= 1
+            time.sleep(1)
+        assertion_message = f'{expected_step} step is not present in {expected_name} logs'
+        add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+        assert expected_step in logs[expected_name], assertion_message
 
     def get_text_from_status_callback(self):
         return self._actions.get_text_with_wait(PaymentMethodsLocators.callback_data_popup)

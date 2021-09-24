@@ -22,7 +22,7 @@ describe('ErrorResultFactory', () => {
         errordata: '',
       };
 
-      const result = errorResultFactory.createResultFromError(response);
+      const result = errorResultFactory.createResultFromError(response, 'Card',);
       const expectedResult: IPaymentResult<IRequestTypeResponse> = {
         status: PaymentStatus.ERROR,
         data: response,
@@ -30,6 +30,7 @@ describe('ErrorResultFactory', () => {
           code: 12345,
           message: 'some error message',
         },
+        paymentMethodName: 'Card',
       };
 
       expect(result).toEqual(expectedResult);
@@ -47,9 +48,10 @@ describe('ErrorResultFactory', () => {
           code: 50003,
           message: PAYMENT_ERROR,
         },
+        paymentMethodName: 'Card',
       };
 
-      expect(errorResultFactory.createResultFromError(errorData)).toEqual(expectedResult);
+      expect(errorResultFactory.createResultFromError(errorData, 'Card')).toEqual(expectedResult);
     });
   });
 });

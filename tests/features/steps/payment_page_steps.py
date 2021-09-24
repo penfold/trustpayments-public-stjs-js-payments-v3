@@ -419,6 +419,13 @@ def step_impl(context, callback_popup):
     payment_page.validate_if_callback_popup_is_displayed(callback_popup)
 
 
+@then('User will see following logs')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    for row in context.table:
+        payment_page.check_if_value_is_present_in_logs(row['name'], row['step'])
+
+
 @step('User will see correct error code displayed in popup')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)

@@ -4,6 +4,7 @@ import { PaymentStatus } from '../../../application/core/services/payments/Payme
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { Observable, Subscriber, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 
 @Service()
 export class ApplePayResponseHandlerService {
@@ -17,6 +18,7 @@ export class ApplePayResponseHandlerService {
           paymentResultSubscriber.next({
             status: PaymentStatus.FAILURE,
             data: responseData,
+            paymentMethodName: ApplePayPaymentMethodName,
             error: {
               code: Number(responseData.errorcode),
               message: responseData.errormessage,
@@ -50,12 +52,14 @@ export class ApplePayResponseHandlerService {
         if (Number(responseData.errorcode) === 0) {
           paymentResultSubscriber.next({
             status: PaymentStatus.SUCCESS,
+            paymentMethodName: ApplePayPaymentMethodName,
             data: responseData,
           });
         } else {
           paymentResultSubscriber.next({
             status: PaymentStatus.FAILURE,
             data: responseData,
+            paymentMethodName: ApplePayPaymentMethodName,
             error: {
               code: Number(responseData.errorcode),
               message: responseData.errormessage,

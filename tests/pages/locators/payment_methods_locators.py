@@ -51,6 +51,9 @@ class PaymentMethodsLocators:
     purchase_authentication_label: By = (By.XPATH, '//*[text()="Purchase Authentication"]')
     please_submit_label: By = (By.XPATH, '//*[contains(text(),"Please submit")]')
 
+    # logs
+    logs_textarea: By = (By.ID, 'st-log-area')
+
     popups: By = (By.CSS_SELECTOR, '.st-popup div')
     callback_success_popup: By = (By.ID, 'success-popup')
     callback_error_popup: By = (By.ID, 'error-popup')

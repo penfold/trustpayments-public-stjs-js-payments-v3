@@ -5,4 +5,5 @@ export interface IPaymentResult<T> {
   status: PaymentStatus;
   data?: T;
   error?: IPaymentError;
+  paymentMethodName: string;
 }

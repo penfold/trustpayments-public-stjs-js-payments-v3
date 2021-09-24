@@ -1,3 +1,3 @@
 export const GooglePaymentMethodName = 'GooglePay';
 
-export const GooglePaymentMethodwalletsource = 'GOOGLEPAY';
+export const GooglePaymentMethodWalletSource = 'GOOGLEPAY';

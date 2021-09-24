@@ -82,3 +82,8 @@
     background-color: $background-color-button-hover; // @param
   }
 }
+
+textarea#st-log-area {
+  font-family: monospace;
+  font-size: 8px;
+}

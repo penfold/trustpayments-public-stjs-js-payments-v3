@@ -34,6 +34,11 @@ export class PaymentResultHandler {
         return;
       }
 
+      this.messageBus.publish({
+        type: PUBLIC_EVENTS.PAYMENT_METHOD_COMPLETED,
+        data: { name: result.paymentMethodName },
+      }, EventScope.EXPOSED);
+
       this.notificationService.success(PAYMENT_SUCCESS);
       this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
       this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
@@ -46,6 +51,11 @@ export class PaymentResultHandler {
         this.messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT, data: result.data },  EventScope.ALL_FRAMES);
         return;
       }
+
+      this.messageBus.publish({
+        type: PUBLIC_EVENTS.PAYMENT_METHOD_CANCELED,
+        data: { name: result.paymentMethodName },
+      }, EventScope.EXPOSED);
 
       this.notificationService.cancel(PAYMENT_CANCELLED);
       this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
@@ -61,6 +71,11 @@ export class PaymentResultHandler {
         this.messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT, data: result.data },  EventScope.ALL_FRAMES);
         return;
       }
+
+      this.messageBus.publish({
+        type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
+        data: { name: result.paymentMethodName },
+      }, EventScope.EXPOSED);
 
       this.notificationService.error(errorMessage);
       this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);

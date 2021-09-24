@@ -53,6 +53,7 @@ export class GooglePaymentMethod implements IPaymentMethod<IGooglePayConfig, IGo
     return of({
       status: data.resultStatus || this.resolvePaymentStatus(responseOrError),
       data: responseOrError,
+      paymentMethodName: GooglePaymentMethodName,
     });
   }
 
@@ -63,6 +64,7 @@ export class GooglePaymentMethod implements IPaymentMethod<IGooglePayConfig, IGo
       const mappedResponse: IPaymentResult<IRequestTypeResponse> = {
         status: request.resultStatus || this.resolvePaymentStatus(response),
         data: response,
+        paymentMethodName: GooglePaymentMethodName,
       };
 
       if(mappedResponse.status === PaymentStatus.ERROR){
