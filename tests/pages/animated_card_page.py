@@ -67,14 +67,10 @@ class AnimatedCardPage(BasePage):
                 add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
                 assert 'flip-card' in animated_card_side, assertion_message
 
-    def validate_animated_card_translation(self, language):
+    def validate_animated_card_translation(self, element, language, label):
         self._actions.switch_to_iframe(FieldType.ANIMATED_CARD.value)
-        self.validate_animated_card_element_translation(AnimatedCardLocators.card_number_label,
-                                                        language, 'Card number')
-        self.validate_animated_card_element_translation(AnimatedCardLocators.expiration_date_label,
-                                                        language, 'Expiration date')
-        self.validate_animated_card_element_translation(AnimatedCardLocators.security_code_label,
-                                                        language, 'Security code')
+        self.validate_animated_card_element_translation(element, language, label)
+        self._actions.switch_to_default_iframe()
 
     def validate_animated_card_element_translation(self, element, language, key):
         actual_translation = self.get_animated_card_label_translation(element)
