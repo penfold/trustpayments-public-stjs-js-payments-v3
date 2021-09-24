@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 32.2.3
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref INFRA-1158-download-artifacts
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
