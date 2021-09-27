@@ -124,7 +124,6 @@ export class Validation {
       securityCode: IFormFieldState;
     },
     fieldsToSubmit: string[],
-    isPanPiba: boolean
   ): boolean {
     const isPanValid: boolean = fieldsToSubmit.includes(Validation.CARD_NUMBER_FIELD_NAME)
       ? formFields.cardNumber.validity
@@ -133,9 +132,7 @@ export class Validation {
       ? formFields.expirationDate.validity
       : true;
     const isSecurityCodeValid: boolean =
-      fieldsToSubmit.includes(Validation.SECURITY_CODE_FIELD_NAME) && !isPanPiba
-        ? formFields.securityCode.validity
-        : true;
+      fieldsToSubmit.includes(Validation.SECURITY_CODE_FIELD_NAME) ? formFields.securityCode.validity : true;
     return isPanValid && isExpiryDateValid && isSecurityCodeValid;
   }
 
@@ -189,10 +186,9 @@ export class Validation {
       expirationDate: IFormFieldState;
       securityCode: IFormFieldState;
     },
-    isPanPiba: boolean,
     paymentReady: boolean
   ): { card: ICard; validity: boolean } {
-    this.setValidationResult(dataInJwt, fieldsToSubmit, formFields, isPanPiba, paymentReady);
+    this.setValidationResult(dataInJwt, fieldsToSubmit, formFields, paymentReady);
     const isFormReadyToSubmit: boolean = this.isFormReadyToSubmit();
     if (isFormReadyToSubmit) {
       this.blockForm(FormState.BLOCKED);
@@ -394,14 +390,13 @@ export class Validation {
       expirationDate: IFormFieldState;
       securityCode: IFormFieldState;
     },
-    isPanPiba: boolean,
     paymentReady: boolean
   ): void {
     if (dataInJwt) {
       this.formValidity = true;
       this.isPaymentReady = true;
     } else {
-      this.formValidity = Validation.isFormValid(formFields, fieldsToSubmit, isPanPiba);
+      this.formValidity = Validation.isFormValid(formFields, fieldsToSubmit);
       this.isPaymentReady = paymentReady;
       this.card = {
         expirydate: formFields.expirationDate.value,

@@ -5,7 +5,7 @@ import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { EMPTY, Observable, of } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { catchError, first, map, mapTo, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, first, map, mapTo, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { IInitPaymentMethod } from './events/IInitPaymentMethod';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IStartPaymentMethod } from './events/IStartPaymentMethod';
@@ -13,6 +13,7 @@ import { Debug } from '../../../../shared/Debug';
 import { IPaymentResult } from './IPaymentResult';
 import { PaymentResultHandler } from './PaymentResultHandler';
 import { ErrorResultFactory } from './ErrorResultFactory';
+import { EventScope } from '../../models/constants/EventScope';
 
 @Service()
 export class PaymentController {
@@ -39,18 +40,34 @@ export class PaymentController {
         map((event: IMessageBusEvent<IInitPaymentMethod<unknown>>) => event.data),
         mergeMap(({ name, config }: IInitPaymentMethod<unknown>) =>
           of(true).pipe(
+            tap(() => {
+              this.messageBus.publish({
+                type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_STARTED,
+                data: { name },
+              }, EventScope.EXPOSED);
+            }),
             switchMap(() => this.getPaymentMethod(name).init(config)),
             mapTo(name),
             catchError((error: Error) => {
               Debug.error(`Payment method initialization failed: ${name}`, error);
+              this.messageBus.publish({
+                type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_FAILED,
+                data: { name },
+              }, EventScope.EXPOSED);
 
               return EMPTY;
-            })
-          )
+            }),
+          ),
         ),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
-      .subscribe(name => Debug.log(`Payment method initialized: ${name}`));
+      .subscribe(name => {
+        this.messageBus.publish({
+          type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_COMPLETED,
+          data: { name },
+        }, EventScope.EXPOSED);
+        Debug.log(`Payment method initialized: ${name}`);
+      });
 
     this.messageBus
       .pipe(
@@ -59,17 +76,27 @@ export class PaymentController {
         switchMap(({ name, data }: IStartPaymentMethod<unknown>) =>
           of(true).pipe(
             switchMap(() => this.getPaymentMethod(name).start(data)),
+            tap(() => {
+              this.messageBus.publish({
+                type: PUBLIC_EVENTS.PAYMENT_METHOD_STARTED,
+                data: { name },
+              }, EventScope.EXPOSED);
+            }),
             catchError((error: unknown) => {
               Debug.error(`Running payment method failed: ${name}`, error);
+              this.messageBus.publish({
+                type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_FAILED,
+                data: { name },
+              }, EventScope.EXPOSED);
 
-              return of(this.errorResultFactory.createResultFromError(error));
+              return of(this.errorResultFactory.createResultFromError(error, name));
             }),
-          )
+          ),
         ),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
       .subscribe((result: IPaymentResult<unknown>) => {
-        this.paymentResultHandler.handle(result)
+        this.paymentResultHandler.handle(result);
         this.messageBus.publish({ type: PUBLIC_EVENTS.JWT_RESET });
       });
 

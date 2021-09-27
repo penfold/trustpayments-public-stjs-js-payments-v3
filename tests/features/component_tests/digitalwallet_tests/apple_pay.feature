@@ -317,7 +317,31 @@ Feature: ApplePay
     And submit callback contains JWT response
     And APPLE_PAY or AUTH requests were sent only once with correct data
 
+  @base_config @wallet_test @apple_test_part2
+  Scenario Outline: ApplePay - <payment> payment logs
+    When User chooses ApplePay as payment method - response is set to "<action_code>"
+    Then User will see notification frame text: "<payment_status_message>"
+    And User will see following logs
+      | name     | step                   |
+      | ApplePay | PAYMENT INIT STARTED   |
+      | ApplePay | PAYMENT INIT COMPLETED |
+      | ApplePay | PAYMENT STARTED        |
+      | ApplePay | <payment_log>          |
 
+    Examples:
+      | payment    | action_code | payment_status_message                  | payment_log       |
+      | successful | SUCCESS     | Payment has been successfully processed | PAYMENT COMPLETED |
+      | error      | DECLINE     | Decline                                 | PAYMENT FAILED    |
+
+  @base_config @wallet_test @apple_test_part2
+  Scenario: ApplePay - canceled payment logs
+    When User chooses ApplePay as payment method - response is set to "CANCEL"
+    Then User will see notification frame text: "Payment has been cancelled"
+    And User will see following logs
+      | name     | step                   |
+      | ApplePay | PAYMENT INIT STARTED   |
+      | ApplePay | PAYMENT INIT COMPLETED |
+      | ApplePay | PAYMENT CANCELED       |
 
 #  @base_config @parent_iframe @full_test_part_2 @full_test
 #  Scenario: ApplePay - successful payment when app is embedded in another iframe

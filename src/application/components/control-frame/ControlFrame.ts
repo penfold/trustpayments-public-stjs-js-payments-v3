@@ -19,7 +19,6 @@ import {
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
 import { Validation } from '../../core/shared/validation/Validation';
-import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { Container, Service } from 'typedi';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
@@ -49,7 +48,6 @@ import { EventScope } from '../../core/models/constants/EventScope';
 @Service()
 export class ControlFrame {
   private static ALLOWED_PARAMS: string[] = ['jwt', 'gatewayUrl'];
-  private static NON_CVV_CARDS: string[] = ['PIBA'];
 
   private static setFormFieldValidity(field: IFormFieldState, data: IFormFieldState): void {
     field.validity = data.validity;
@@ -248,13 +246,11 @@ export class ControlFrame {
   }
 
   private isDataValid(data: ISubmitData): boolean {
-    const isPanPiba: boolean = this.isCardWithoutCVV();
     const dataInJwt = data ? data.dataInJwt : false;
     const { validity } = this.validation.formValidation(
       dataInJwt,
       data.fieldsToSubmit,
       this.formFields,
-      isPanPiba,
       this.isPaymentReady
     );
 
@@ -316,17 +312,6 @@ export class ControlFrame {
       .finally(() => {
         this.resetJwt();
       });
-  }
-
-  private isCardWithoutCVV(): boolean {
-    const panFromJwt: string = this.getPanFromJwt();
-    let pan = '';
-    if (panFromJwt || this.formFields.cardNumber.value) {
-      pan = panFromJwt ? panFromJwt : this.formFields.cardNumber.value;
-    }
-
-    const cardType: string = iinLookup.lookup(pan).type;
-    return ControlFrame.NON_CVV_CARDS.includes(cardType);
   }
 
   private callThreeDQueryRequest(): Observable<IThreeDQueryResponse> {

@@ -11,6 +11,7 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { EventScope } from '../../models/constants/EventScope';
 
+
 describe('PaymentResultHandler', () => {
   let messageBus: IMessageBus;
   let notificationServiceMock: NotificationService;
@@ -37,7 +38,7 @@ describe('PaymentResultHandler', () => {
     });
 
     it('handles SUCCESS result with submitOnSuccess set to false', () => {
-      const result: IPaymentResult<typeof resultData> = { status: PaymentStatus.SUCCESS, data: resultData };
+      const result: IPaymentResult<typeof resultData> = { status: PaymentStatus.SUCCESS, data: resultData, paymentMethodName: 'Card' };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnSuccess: false }));
 
       paymentResultHandler.handle(result);
@@ -64,7 +65,7 @@ describe('PaymentResultHandler', () => {
     });
 
     it('handles SUCCESS result with submitOnSuccess set to true', () => {
-      const result: IPaymentResult<typeof resultData> = { status: PaymentStatus.SUCCESS, data: resultData };
+      const result: IPaymentResult<typeof resultData> = { status: PaymentStatus.SUCCESS, data: resultData, paymentMethodName: 'Card' };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnSuccess: true }));
 
       paymentResultHandler.handle(result);
@@ -82,7 +83,7 @@ describe('PaymentResultHandler', () => {
     });
 
     it('handles CANCEL result with submitOnCancel set to false', () => {
-      const result: IPaymentResult<typeof resultData> = { status: PaymentStatus.CANCEL, data: resultData };
+      const result: IPaymentResult<typeof resultData> = { status: PaymentStatus.CANCEL, data: resultData, paymentMethodName: 'Card' };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnCancel: false }));
 
       paymentResultHandler.handle(result);
@@ -109,7 +110,7 @@ describe('PaymentResultHandler', () => {
     });
 
     it('handles CANCEL result with submitOnCancel set to true', () => {
-      const result: IPaymentResult<typeof resultData> = { status: PaymentStatus.CANCEL, data: resultData };
+      const result: IPaymentResult<typeof resultData> = { status: PaymentStatus.CANCEL, data: resultData, paymentMethodName: 'Card' };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnCancel: true }));
 
       paymentResultHandler.handle(result);
@@ -135,6 +136,7 @@ describe('PaymentResultHandler', () => {
           message: errorMessage,
           code: 123,
         },
+        paymentMethodName: 'Card',
       };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: false }));
 
@@ -170,6 +172,7 @@ describe('PaymentResultHandler', () => {
           message: errorMessage,
           code: 123,
         },
+        paymentMethodName: 'Card',
       };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: true }));
 
@@ -196,6 +199,7 @@ describe('PaymentResultHandler', () => {
           message: errorMessage,
           code: 123,
         },
+        paymentMethodName: 'Card',
       };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: false }));
 
@@ -231,6 +235,7 @@ describe('PaymentResultHandler', () => {
           message: errorMessage,
           code: 123,
         },
+        paymentMethodName: 'Card',
       };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: true }));
 
@@ -249,7 +254,7 @@ describe('PaymentResultHandler', () => {
     });
 
     it('displays default error notification if ERROR result has empty error property', () => {
-      const result: IPaymentResult<typeof resultData> = { status: PaymentStatus.ERROR, data: resultData };
+      const result: IPaymentResult<typeof resultData> = { status: PaymentStatus.ERROR, data: resultData, paymentMethodName: 'Card' };
       when(configProviderMock.getConfig$()).thenReturn(of({ submitOnError: false }));
 
       paymentResultHandler.handle(result);

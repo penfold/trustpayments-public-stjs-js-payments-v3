@@ -6,7 +6,6 @@ Feature: GooglePay
   Background:
     Given JavaScript configuration is set for scenario based on scenario's @config tag
 
-
   @config_google_base
   Scenario Outline: GooglePay - checking payment status for <action_code> response code
     Given User opens mock payment page
@@ -22,7 +21,6 @@ Feature: GooglePay
       | action_code | payment_status_message                  | color | callback_type |
       | SUCCESS     | Payment has been successfully processed | green | success       |
       | ERROR       | An error occurred                       | red   | error         |
-
 
   @config_google_base
   Scenario Outline: GooglePay - checking translation for "Payment has been cancelled" status for <language>
@@ -53,7 +51,6 @@ Feature: GooglePay
       | transactionreference | should not be none                      |
       | settlestatus         | 0                                       |
     And GOOGLE_PAY or AUTH requests were sent only once with correct data
-
 
   @config_google_submit_on_error_true
   Scenario: GooglePay - error payment with enabled 'submit on error' process
@@ -119,7 +116,6 @@ Feature: GooglePay
     And submit callback contains JWT response
     And GOOGLE_PAY or AUTH requests were sent only once with correct data
 
-
   @config_google_submit_on_success_true
   Scenario: GooglePay - update JWT and submitOnSuccess
     Given User opens mock payment page WITH_UPDATE_JWT
@@ -141,7 +137,6 @@ Feature: GooglePay
       | jwt           | should not be none                      |
     And GOOGLE_PAY or AUTH requests were sent only once with correct data
 
-
   @config_google_auth
   Scenario: GooglePay - successful payment with additional request types: AUTH
     Given User opens mock payment page
@@ -155,7 +150,6 @@ Feature: GooglePay
       | callback_type |
       | submit        |
       | success       |
-
 
   @config_google_acheck_auth
   Scenario: GooglePay - successful payment with additional request types: ACCOUNTCHECK, AUTH
@@ -258,3 +252,31 @@ Feature: GooglePay
       | success       |
     And submit callback contains JWT response
     And THREEDQUERY, AUTH request was sent only once without 'fraudcontroltransactionid' flag
+
+  @config_google_base
+  Scenario Outline: GooglePay - <payment> payment logs
+    Given User opens mock payment page
+    When User chooses GooglePay as payment method - response is set to "<action_code>"
+    Then User will see notification frame text: "<payment_status_message>"
+    And User will see following logs
+      | name      | step                   |
+      | GooglePay | PAYMENT INIT STARTED   |
+      | GooglePay | PAYMENT INIT COMPLETED |
+      | GooglePay | PAYMENT STARTED        |
+      | GooglePay | <payment_log>          |
+
+    Examples:
+      | payment    | action_code | payment_status_message                  | payment_log       |
+      | successful | SUCCESS     | Payment has been successfully processed | PAYMENT COMPLETED |
+      | error      | ERROR       | An error occurred                       | PAYMENT FAILED    |
+
+  @config_google_base
+  Scenario: GooglePay - canceled payment logs
+    Given User opens mock payment page
+    When User chooses GooglePay as payment method - response is set to "CANCEL"
+    Then User will see notification frame text: "Payment has been cancelled"
+    And User will see following logs
+      | name      | step                   |
+      | GooglePay | PAYMENT INIT STARTED   |
+      | GooglePay | PAYMENT INIT COMPLETED |
+      | GooglePay | PAYMENT CANCELED       |

@@ -17,6 +17,8 @@ import { DomMethods } from '../../../application/core/shared/dom-methods/DomMeth
 import { PaymentResultSubmitterSubscriber } from '../../../client/common-frames/PaymentResultSubmitterSubscriber';
 import { ITestStartData } from './interfaces/ITestStartData';
 
+const testPaymentMethodName = 'test';
+
 describe('Common Payment Flow', () => {
   let paymentController: PaymentController;
   let configProvider: TestConfigProvider;
@@ -75,13 +77,13 @@ describe('Common Payment Flow', () => {
 
     messageBus.publish<IInitPaymentMethod<IConfig>>({
       type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-      data: { name: 'test', config },
+      data: { name: testPaymentMethodName, config },
     });
 
     messageBus.publish<IStartPaymentMethod<ITestStartData>>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
-        name: 'test',
+        name: testPaymentMethodName,
         data: {
           resultStatus: PaymentStatus.SUCCESS,
           bar: 'bar',
@@ -118,13 +120,13 @@ describe('Common Payment Flow', () => {
 
     messageBus.publish<IInitPaymentMethod<IConfig>>({
       type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-      data: { name: 'test', config },
+      data: { name: testPaymentMethodName, config },
     });
 
     messageBus.publish<IStartPaymentMethod<ITestStartData>>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
-        name: 'test',
+        name: testPaymentMethodName,
         data: {
           resultStatus: PaymentStatus.CANCEL,
           bar: 'bar',
@@ -151,13 +153,13 @@ describe('Common Payment Flow', () => {
 
     messageBus.publish<IInitPaymentMethod<IConfig>>({
       type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-      data: { name: 'test', config },
+      data: { name: testPaymentMethodName, config },
     });
 
     messageBus.publish<IStartPaymentMethod<ITestStartData>>({
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
-        name: 'test',
+        name: testPaymentMethodName,
         data: {
           resultStatus: PaymentStatus.FAILURE,
           bar: 'bar',

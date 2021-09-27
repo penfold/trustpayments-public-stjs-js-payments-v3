@@ -213,13 +213,13 @@ describe('Validation', () => {
     });
 
     it('should call blockForm method if isFormValid and isPaymentReady are true', () => {
-      instance.formValidation(true, ['pan', 'expirydate', 'securitycode'], formFields, false, false);
+      instance.formValidation(true, ['pan', 'expirydate', 'securitycode'], formFields, false);
       // @ts-ignore
       expect(instance.blockForm).toHaveBeenCalled();
     });
 
     it('should set isFormValid and card variables if dataInJwt is false', () => {
-      instance.formValidation(false, ['pan', 'expirydate', 'securitycode'], formFields, false, false);
+      instance.formValidation(false, ['pan', 'expirydate', 'securitycode'], formFields, false);
       // @ts-ignore
       expect(instance.formValidity).toEqual(false);
       // @ts-ignore

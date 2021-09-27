@@ -7,7 +7,7 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import {
   GooglePaymentMethodName,
-  GooglePaymentMethodwalletsource,
+  GooglePaymentMethodWalletSource,
 } from '../../../integrations/google-pay/models/IGooglePaymentMethod';
 import { TERM_URL } from '../../../application/core/models/constants/RequestData';
 import { PaymentResultHandler } from '../../../application/core/services/payments/PaymentResultHandler';
@@ -22,7 +22,7 @@ export class GooglePayPaymentService {
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
         data: {
-          walletsource: GooglePaymentMethodwalletsource,
+          walletsource: GooglePaymentMethodWalletSource,
           wallettoken: JSON.stringify(payment),
           ...formData,
           termurl: TERM_URL,
@@ -39,8 +39,9 @@ export class GooglePayPaymentService {
         ...formData,
         errormessage: PaymentStatus.CANCEL,
         errorcode: '1',
-        walletsource: GooglePaymentMethodwalletsource,
+        walletsource: GooglePaymentMethodWalletSource,
       },
+      paymentMethodName: GooglePaymentMethodName,
     };
     this.paymentResultHandler.handle(result);
   }
@@ -52,8 +53,9 @@ export class GooglePayPaymentService {
         ...formData,
         errormessage: PaymentStatus.ERROR,
         errorcode: '1',
-        walletsource: GooglePaymentMethodwalletsource,
+        walletsource: GooglePaymentMethodWalletSource,
       },
+      paymentMethodName: GooglePaymentMethodName,
     };
     this.paymentResultHandler.handle(result);
   }

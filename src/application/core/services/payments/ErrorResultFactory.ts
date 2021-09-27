@@ -9,7 +9,7 @@ export class ErrorResultFactory {
   private static readonly UNKNOWN_ERROR_CODE = 50003;
   private static readonly UNKNOWN_ERROR_MESSAGE = PAYMENT_ERROR;
 
-  createResultFromError(error: unknown): IPaymentResult<typeof error> {
+  createResultFromError(error: unknown, paymentMethodName: string): IPaymentResult<typeof error> {
     return {
       status: PaymentStatus.ERROR,
       data: error,
@@ -17,6 +17,7 @@ export class ErrorResultFactory {
         code: this.resolveErrorCode(error),
         message: this.resolveErrorMessage(error),
       },
+      paymentMethodName,
     };
   }
 

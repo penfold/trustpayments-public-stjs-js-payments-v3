@@ -1,6 +1,5 @@
 import { mock, instance, when } from 'ts-mockito';
 import { RequestEncoderService } from './RequestEncoderService';
-import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { Store } from '../../store/store/Store';
 import { IStore } from '../../store/IStore';
 import { IApplicationFrameState } from '../../store/state/IApplicationFrameState';
@@ -10,20 +9,16 @@ import { InvalidRequestError } from './InvalidRequestError';
 describe('RequestEncoderService', () => {
   let str: RequestEncoderService;
   let storeMock: IStore<IApplicationFrameState>;
-  let jwtDecoderMock: JwtDecoder;
 
   describe('encode', () => {
     beforeEach(() => {
-      jwtDecoderMock = mock(JwtDecoder);
       storeMock = mock(Store);
-      str = new RequestEncoderService(instance(jwtDecoderMock), instance(storeMock));
+      str = new RequestEncoderService(instance(storeMock));
 
-      const payload = { payload: { sitereference: 'foo' } };
       const statePayload = {
         jwt: 'somejwt',
         storage: {},
       };
-      when(jwtDecoderMock.decode(statePayload.jwt)).thenReturn(payload);
       when(storeMock.getState()).thenReturn(statePayload);
     });
 
@@ -39,7 +34,6 @@ describe('RequestEncoderService', () => {
             pan: '4111111111111111',
             requesttypedescriptions: ['AUTH', 'SUBSCRIPTION'],
             requestid: expect.any(String),
-            sitereference: 'foo',
           },
         ],
         version: '1.00',

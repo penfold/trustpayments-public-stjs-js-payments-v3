@@ -95,7 +95,7 @@ body, html {
   padding: 1.5rem 2.5rem
 }
 
-.st-animated-card__amex, .st-animated-card__astropaycard, .st-animated-card__diners, .st-animated-card__discover, .st-animated-card__jcb, .st-animated-card__maestro, .st-animated-card__mastercard, .st-animated-card__piba, .st-animated-card__visa {
+.st-animated-card__amex, .st-animated-card__astropaycard, .st-animated-card__diners, .st-animated-card__discover, .st-animated-card__jcb, .st-animated-card__maestro, .st-animated-card__mastercard, .st-animated-card__visa {
   border-radius: 1.5rem 1.5rem 1.5rem 1.5rem
 }
 
@@ -139,10 +139,6 @@ body, html {
 
 .st-animated-card__mastercard .st-animated-card__signature {
   background-color: hsla(0, 0%, 67.5%, .25)
-}
-
-.st-animated-card__piba {
-  background: radial-gradient(circle, #461259 0, #6b2c6f 100%)
 }
 
 .st-animated-card__visa {

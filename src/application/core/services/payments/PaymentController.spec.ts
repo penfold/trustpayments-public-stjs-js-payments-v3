@@ -15,7 +15,9 @@ import { PaymentStatus } from './PaymentStatus';
 import { IStartPaymentMethod } from './events/IStartPaymentMethod';
 import { delay } from 'rxjs/operators';
 import { ErrorResultFactory } from './ErrorResultFactory';
+
 import spyOn = jest.spyOn;
+import { GooglePaymentMethodName } from '../../../../integrations/google-pay/models/IGooglePaymentMethod';
 
 describe('PaymentController', () => {
   let containerMock: ContainerInstance;
@@ -184,7 +186,7 @@ describe('PaymentController', () => {
 
     it('starts given payment method with data and returns the result to result handler', () => {
       const data = { bbb: 'ccc' };
-      const result: IPaymentResult<unknown> = { status: PaymentStatus.SUCCESS };
+      const result: IPaymentResult<unknown> = { status: PaymentStatus.SUCCESS, paymentMethodName: 'Card' };
       spyOn(messageBus, 'publish');
 
       when(fooPaymentMethodMock.start(data)).thenReturn(of(result));
@@ -212,9 +214,10 @@ describe('PaymentController', () => {
           code: 123,
           message: 'error',
         },
+        paymentMethodName: 'nonexisting',
       };
 
-      when(errorResultFactoryMock.createResultFromError(deepEqual(error))).thenReturn(errorResult);
+      when(errorResultFactoryMock.createResultFromError(deepEqual(error), 'nonexisting')).thenReturn(errorResult);
 
       spyOn(messageBus, 'publish');
 
@@ -244,11 +247,12 @@ describe('PaymentController', () => {
           code: 123,
           message: 'error',
         },
+        paymentMethodName: 'foo',
       };
 
       spyOn(messageBus, 'publish');
 
-      when(errorResultFactoryMock.createResultFromError(paymentError)).thenReturn(errorResult);
+      when(errorResultFactoryMock.createResultFromError(paymentError, 'foo')).thenReturn(errorResult);
       when(fooPaymentMethodMock.start(data)).thenThrow(paymentError);
 
       messageBus.publish<IStartPaymentMethod<typeof data>>({
@@ -297,7 +301,7 @@ describe('PaymentController', () => {
     it('starts the second payment method even if the first one failed', () => {
       const data = { aaa: 'bbb' };
       const fooError: Error = new Error('foo failed');
-      const result: IPaymentResult<unknown> = { status: PaymentStatus.SUCCESS };
+      const result: IPaymentResult<unknown> = { status: PaymentStatus.SUCCESS, paymentMethodName: GooglePaymentMethodName };
       spyOn(messageBus, 'publish');
 
       when(fooPaymentMethodMock.start(data)).thenThrow(fooError);

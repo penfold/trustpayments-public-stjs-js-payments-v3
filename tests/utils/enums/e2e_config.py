@@ -7,6 +7,8 @@ class E2eConfig(Enum):
     VISUAL_BASIC_WITH_STYLES_CONFIG = 'visualBaseConfigWithStyling.json'
     CYBERTONICA_CONFIG = 'e2eConfigCybertonica.json'
     CYBERTONICA_START_ON_LOAD_CONFIG = 'e2eConfigCybertonicaStartOnLoadTrue.json'
+    GOOGLE_PAY_CONFIG = 'e2eConfigGooglePay.json'
+    APPLE_PAY_CONFIG = 'e2eConfigApplePay.json'
     START_ON_LOAD_CONFIG = 'e2eConfigStartOnLoadTrue.json'
     START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG = 'e2eConfigStartOnLoadSubmitOnSuccess.json'
     START_ON_LOAD_SUBMIT_ON_ERROR_CONFIG = 'e2eConfigStartOnLoadSubmitOnError.json'
