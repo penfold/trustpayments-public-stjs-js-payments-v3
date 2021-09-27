@@ -54,7 +54,7 @@ def before_feature(context, feature):
 def before_scenario(context, scenario):
     """Run before each scenario"""
     LOGGER.info('BEFORE SCENARIO')
-    time.sleep(2)
+    time.sleep(5)
     clear_shared_dict()
     add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, 'Scenario execution error, for details check gitlab log')
     if context.configuration.REMOTE:
