@@ -54,6 +54,7 @@ def before_feature(context, feature):
 def before_scenario(context, scenario):
     """Run before each scenario"""
     LOGGER.info('BEFORE SCENARIO')
+    time.sleep(10)
     clear_shared_dict()
     add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, 'Scenario execution error, for details check gitlab log')
     if context.configuration.REMOTE:
@@ -102,9 +103,9 @@ def after_scenario(context, scenario):
     if scenario.status == 'failed' and context.configuration.REMOTE:
         mark_test_as_failed(context.session_id)
     #TODO delay added to mitigate cardinal commerce issue
-    if scenario.status == 'failed':
-        LOGGER.info('Wait 10 seconds before next run')
-        time.sleep(10)
+    # if scenario.status == 'failed':
+    #     LOGGER.info('Wait 10 seconds before next run')
+    #     time.sleep(10)
     elif context.configuration.REMOTE:
         mark_test_as_passed(context.session_id)
 
