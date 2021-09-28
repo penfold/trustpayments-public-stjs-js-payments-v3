@@ -280,6 +280,8 @@ export class ST {
         this.stopSubmitFormOnEnter();
       }
     }
+
+    return;
   }
 
   getBrowserInfo(): IBrowserInfo {
