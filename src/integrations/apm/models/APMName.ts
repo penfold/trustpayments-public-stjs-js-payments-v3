@@ -1,4 +1,4 @@
-export enum IAPMName {
+export enum APMName {
   alipayinapp = 'alipayinapp', // Alipay In-App Payments
   americanexp = 'americanexp', // American Express
   bancontact = 'bancontact', //

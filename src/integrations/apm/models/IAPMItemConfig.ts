@@ -1,7 +1,7 @@
-import { IAPMName } from './IAPMName';
+import { APMName } from './APMName';
 
 export interface IAPMItemConfig {
-  name: IAPMName;
+  name: APMName;
   successRedirectUrl?: string;
   errorRedirectUrl?: string;
   cancelRedirectUrl?: string;

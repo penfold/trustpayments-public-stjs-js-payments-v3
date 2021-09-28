@@ -1,4 +1,4 @@
-import { IAPMName } from './IAPMName';
+import { APMName } from './APMName';
 import { IAPMItemConfig } from './IAPMItemConfig';
 
 export const APMConfigName = 'APM';
@@ -8,5 +8,5 @@ export interface IAPMConfig {
   successRedirectUrl: string;
   errorRedirectUrl: string;
   cancelRedirectUrl: string;
-  apmList: Array<IAPMName | IAPMItemConfig>;
+  apmList: Array<APMName | IAPMItemConfig>;
 }
