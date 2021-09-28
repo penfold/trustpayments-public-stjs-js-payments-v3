@@ -1,1 +1,1 @@
-export const APMConfigName = 'zip';
+export const APMConfigName = 'apm';

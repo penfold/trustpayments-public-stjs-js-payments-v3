@@ -1,1 +1,1 @@
-export const APMPaymentMethodName = 'Zip';
+export const APMPaymentMethodName = 'APM';
