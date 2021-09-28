@@ -35,7 +35,7 @@ Feature: GooglePay
   @config_google_submit_on_success_true
   Scenario: GooglePay - successful payment with enabled 'submit on success' process
     Given User opens mock payment page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User chooses GooglePay as payment method - response is set to "SUCCESS"
     Then User will be sent to page with url "www.example.com" having params
@@ -55,7 +55,7 @@ Feature: GooglePay
   @config_google_submit_on_error_true
   Scenario: GooglePay - error payment with enabled 'submit on error' process
     Given User opens mock payment page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User chooses GooglePay as payment method - response is set to "ERROR"
     Then User will be sent to page with url "www.example.com" having params
       | key          | value             |
@@ -104,7 +104,7 @@ Feature: GooglePay
     Given User opens mock payment page WITH_UPDATE_JWT
       | jwtName          |
       | BASE_UPDATED_JWT |
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User calls updateJWT function by filling amount field
     And User chooses GooglePay as payment method - response is set to "SUCCESS"
     Then User will see notification frame text: "Payment has been successfully processed"
@@ -121,7 +121,7 @@ Feature: GooglePay
     Given User opens mock payment page WITH_UPDATE_JWT
       | jwtName          |
       | BASE_UPDATED_JWT |
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User calls updateJWT function by filling amount field
     And User chooses GooglePay as payment method - response is set to "SUCCESS"
@@ -140,7 +140,7 @@ Feature: GooglePay
   @config_google_auth
   Scenario: GooglePay - successful payment with additional request types: AUTH
     Given User opens mock payment page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When AUTH GooglePay mock response is set to SUCCESS
     And User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "Payment has been successfully processed"

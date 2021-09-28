@@ -9,7 +9,7 @@ Feature: Cardinal commerce
   Scenario Outline: Cardinal Commerce (step-up payment) - checking payment status for <action_code> response code
     Given JavaScript configuration is set for scenario based on scenario's @config tag
     And User opens mock payment page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card <card>
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"

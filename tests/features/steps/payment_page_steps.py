@@ -21,12 +21,6 @@ def step_impl(context):
     payment_page.change_focus_to_page_title()
 
 
-@step('User waits for whole form to be loaded')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.wait_for_payment_form_inputs_to_load_with_refresh_page()
-
-
 @step('User waits for whole form to be displayed')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
@@ -51,6 +45,12 @@ def step_impl(context, field_type, not_available):
 
 
 # Form inputs
+
+
+@step('User waits for form inputs to be loaded')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.wait_for_payment_form_inputs_to_load_with_refresh_page()
 
 
 @when(
@@ -288,22 +288,16 @@ def step_impl(context, language):
             labels[row['fields']](get_translation_from_json(language, row['fields']))
 
 
-@then('User will see that Pay button is "(?P<form_status>.+)"')
+@step('User will see that Pay button is "(?P<form_status>.+)"')
 def step_impl(context, form_status):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_form_status(FieldType.SUBMIT_BUTTON.name, form_status)
 
 
-@then('User will see that additional Submit button is "(?P<form_status>.+)"')
+@step('User will see that additional Submit button is "(?P<form_status>.+)"')
 def step_impl(context, form_status):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_form_status(FieldType.ADDITIONAL_SUBMIT_BUTTON.name, form_status)
-
-
-@step('User waits for payment to be processed')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.wait_for_pay_processing_end('en_US')
 
 
 @step('User waits for timeout payment')

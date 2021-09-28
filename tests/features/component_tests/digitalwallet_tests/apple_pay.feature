@@ -38,7 +38,7 @@ Feature: ApplePay
 
   @config_submit_on_success_true @apple_pay_smoke_test @apple_test_part1
   Scenario: ApplePay - successful payment with enabled 'submit on success' process
-    Given User waits for whole form to be loaded
+    Given User waits for form inputs to be loaded
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User chooses ApplePay as payment method - response is set to "SUCCESS"
     Then User will be sent to page with url "www.example.com" having params
@@ -76,7 +76,7 @@ Feature: ApplePay
 
   @config_submit_on_error_true @apple_test_part1
   Scenario: ApplePay - error payment with enabled 'submit on error' process
-    Given User waits for whole form to be loaded
+    Given User waits for form inputs to be loaded
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User chooses ApplePay as payment method - response is set to "DECLINE"
     Then User will be sent to page with url "www.example.com" having params
@@ -154,7 +154,7 @@ Feature: ApplePay
 #    ToDo - Last step is blocked by STJS-800
   @base_config  @apple_pay_smoke_test @apple_test_part2
   Scenario: ApplePay - Successful payment with updated JWT
-    Given User waits for whole form to be loaded
+    Given User waits for form inputs to be loaded
     When User calls updateJWT function by filling amount field
     And User chooses ApplePay as payment method - response is set to "SUCCESS"
     Then User will see notification frame text: "Payment has been successfully processed"
@@ -168,7 +168,7 @@ Feature: ApplePay
   #    ToDo - Last step is blocked by STJS-800
   @config_submit_on_success_true @apple_test_part2
   Scenario: ApplePay - update JWT and submitOnSuccess
-    Given User waits for whole form to be loaded
+    Given User waits for form inputs to be loaded
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User calls updateJWT function by filling amount field
     And User chooses ApplePay as payment method - response is set to "SUCCESS"

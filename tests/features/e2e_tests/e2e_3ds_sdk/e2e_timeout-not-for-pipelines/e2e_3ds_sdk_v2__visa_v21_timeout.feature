@@ -18,7 +18,7 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_DS_UNAVAILABLE_RETRY
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
@@ -44,7 +44,7 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_TRANSACTION_TIMEOUT
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
@@ -70,7 +70,7 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_TRANS_STATUS_AUTH_FAILED
     And User clicks Pay button
     And User waits for ACS mock timeout
@@ -97,7 +97,7 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_TRANS_STATUS_TRANSACTION_TIMEOUT_AT_ACS
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"

@@ -10,7 +10,7 @@ Feature: Callback functionality
   @base_config @smoke_component_test
   Scenario: Verify success callback functionality
     When User opens mock payment page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     And User fills payment form with credit card number "4111110000000211", expiration date "12/30" and cvv "123"
     And Frictionless THREEDQUERY, AUTH response is set to OK
     And User clicks Pay button

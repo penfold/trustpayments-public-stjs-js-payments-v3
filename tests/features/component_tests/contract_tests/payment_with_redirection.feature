@@ -10,7 +10,7 @@ Feature: payment flow with redirect
 
   @config_default
   Scenario: Successful payment - verify 'submitOnSuccess' is enabled by default
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     And User waits for Pay button to be active
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
@@ -25,7 +25,7 @@ Feature: payment flow with redirect
 
   @config_submit_on_error_true
   Scenario: Unsuccessful payment with submitOnError enabled
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     And User waits for Pay button to be active
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
@@ -40,7 +40,7 @@ Feature: payment flow with redirect
 
   @config_submit_on_success_true
   Scenario: Successful payment with submitOnSuccess enabled
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And THREEDQUERY, AUTH mock response is set to OK
     And User clicks Pay button

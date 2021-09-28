@@ -8,7 +8,7 @@ Feature: Payment form embeded into iframe
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page IN_IFRAME
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with credit card number "4111110000000211", expiration date "12/22" and cvv "123"
     Then User will see card icon connected to card type VISA
     And User will see the same provided data on animated credit card "4111 1100 0000 0211", "12/22" and "123"

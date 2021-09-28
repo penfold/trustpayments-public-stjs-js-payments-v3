@@ -7,7 +7,7 @@ Feature: Payment form embedded into iframe - validation of requests send
   @base_config @parent_iframe
   Scenario Outline: App is embedded in another iframe - Cardinal Commerce test
     When User opens mock payment page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And THREEDQUERY mock response is set to "ENROLLED_Y"
     And ACS mock response is set to "OK"

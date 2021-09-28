@@ -12,7 +12,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
@@ -48,7 +48,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
@@ -75,7 +75,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
@@ -105,7 +105,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
@@ -127,7 +127,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
@@ -151,7 +151,7 @@ Feature: request type - 3ds SDK - full test coverage - MasterCard v2.1
       | customercountryiso2a    | GB                 |
       | billingcountryiso2a     | GB                 |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V21_3DS_SDK_STEP_UP_AUTH_ERROR
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed

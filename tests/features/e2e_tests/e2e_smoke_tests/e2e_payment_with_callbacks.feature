@@ -6,7 +6,7 @@ Feature: payment flow with callbacks
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     And User waits for Pay button to be active
     When User fills payment form with defined card VISA_V22_NON_FRICTIONLESS
     And User clicks Pay button
@@ -28,7 +28,7 @@ Feature: payment flow with callbacks
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     And User waits for Pay button to be active
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
@@ -56,7 +56,7 @@ Feature: payment flow with callbacks
 #    And User waits for Pay button to be active
 #    And User fills payment form with defined card VISA_V22_NON_FRICTIONLESS
 #    And User clicks Pay button
-#    And User waits for payment to be processed
+#    And Wait for notification frame
 #    And User gets cachetoken value from url
 #    And JS library configured by inline params START_ON_LOAD_CONFIG and jwt BASE_JWT with additional attributes
 #      | key                     | value            |

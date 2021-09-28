@@ -17,7 +17,7 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - MasterCard v2.2
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_DS_UNAVAILABLE_RETRY
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
@@ -51,7 +51,7 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - MasterCard v2.2
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_TRANSACTION_TIMEOUT
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
@@ -85,7 +85,7 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - MasterCard v2.2
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_TRANS_STATUS_AUTH_FAILED
     And User clicks Pay button
     And User waits to be sent into page with url "www.example.com" after ACS mock timeout
@@ -120,7 +120,7 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - MasterCard v2.2
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V22_3DS_SDK_TRANS_STATUS_TRANSACTION_TIMEOUT_AT_ACS
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params

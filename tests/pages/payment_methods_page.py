@@ -689,18 +689,6 @@ class PaymentMethodsPage(BasePage):
     def wait_for_additional_submit_button_to_be_active(self):
         self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.additional_button)
 
-    def wait_for_pay_processing_end(self, language: str):
-        # pylint: disable=invalid-name
-        processing_text: str = 'Processing'
-        if language not in ('en_US', 'en_GB'):
-            with open(f'resources/languages/{language}.json', 'r', encoding='utf-8') as f:
-                translation = json.load(f)
-            processing_text = translation[processing_text]
-        processing_text = f'{processing_text} ...'
-
-        self._waits.wait_for_text_to_be_not_present_in_element(PaymentMethodsLocators.pay_button,
-                                                               processing_text)
-
     def wait_for_notification_frame(self):
         if CONFIGURATION.REMOTE_DEVICE:
             self.scroll_to_top()

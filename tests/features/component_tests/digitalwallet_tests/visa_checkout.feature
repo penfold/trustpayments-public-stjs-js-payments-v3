@@ -9,7 +9,7 @@ Feature: Visa Checkout
   @config_visa_base @wallet_test @visa_test
   Scenario Outline: Visa Checkout - checking payment status for <action_code> response code
     Given User opens mock payment page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User chooses Visa Checkout as payment method - visa response is set to "<action_code>"
     Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
@@ -157,7 +157,7 @@ Feature: Visa Checkout
     Given User opens mock payment page WITH_UPDATE_JWT
       | jwtName          |
       | BASE_UPDATED_JWT |
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User calls updateJWT function by filling amount field
     And User chooses Visa Checkout as payment method - visa response is set to "SUCCESS"

@@ -6,7 +6,7 @@ Feature: payment flow with redirect
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     And User waits for Pay button to be active
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
@@ -33,7 +33,7 @@ Feature: payment flow with redirect
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     And User waits for Pay button to be active
     When User fills payment form with defined card VISA_V22_NON_FRICTIONLESS
     And User clicks Pay button
