@@ -10,7 +10,7 @@ Feature: Successful payments with various configurations
   @base_config @<tag>
   Scenario Outline: Successful payment using most popular Credit Cards: <card_type>
     Given User opens mock payment page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     And User waits for Pay button to be active
     When User fills payment form with credit card number "<card_number>", expiration date "<expiration_date>" and cvv "<cvv>"
     And Frictionless THREEDQUERY, AUTH response is set to OK
@@ -29,7 +29,7 @@ Feature: Successful payments with various configurations
     Given User opens mock payment page WITH_UPDATE_JWT
       | jwtName          |
       | BASE_UPDATED_JWT |
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     And User waits for Pay button to be active
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User calls updateJWT function by filling amount field

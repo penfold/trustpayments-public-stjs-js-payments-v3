@@ -18,7 +18,7 @@ Feature: 3ds SDK v1 E2E tests - MasterCard
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge for v1 is displayed
@@ -46,7 +46,7 @@ Feature: 3ds SDK v1 E2E tests - MasterCard
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge for v1 is displayed
@@ -74,7 +74,7 @@ Feature: 3ds SDK v1 E2E tests - MasterCard
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge for v1 is displayed
@@ -102,7 +102,7 @@ Feature: 3ds SDK v1 E2E tests - MasterCard
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge for v1 is displayed
@@ -130,7 +130,7 @@ Feature: 3ds SDK v1 E2E tests - MasterCard
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card MASTERCARD_V1_3DS_SDK_NOT_ENROLLED
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"

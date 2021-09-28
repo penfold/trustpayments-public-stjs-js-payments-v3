@@ -10,7 +10,7 @@ Feature: Card Payments
     And User opens example page
     When User fills payment form with defined card <card_number>
     And User clicks Pay button
-    And User waits for payment to be processed
+    And Wait for notification frame
     Then User will see that Pay button is "<form_status>"
     And User will see that ALL input fields are "<form_status>"
 

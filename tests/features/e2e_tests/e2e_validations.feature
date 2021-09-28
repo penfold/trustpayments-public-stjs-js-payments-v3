@@ -11,7 +11,7 @@ Feature: Payment form validations
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User clicks Pay button
     Then User will see validation message "Field is required" under all fields
     And User will see that all fields are highlighted
@@ -32,7 +32,7 @@ Feature: Payment form validations
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with credit card number "<card_number>", expiration date "<expiration_date>" and cvv "<cvv>"
     And User clicks Pay button
     Then User will see "<validation_error>" message under field: "<field>"

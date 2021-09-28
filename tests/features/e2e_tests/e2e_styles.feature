@@ -10,7 +10,7 @@ Feature: Payment form styles check
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     Then User will see that "CARD_NUMBER" field has correct style
     And User will see that "EXPIRATION_DATE" field has correct style
 

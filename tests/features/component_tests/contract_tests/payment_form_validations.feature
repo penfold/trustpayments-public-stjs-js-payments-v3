@@ -10,7 +10,7 @@ Feature: Payment form validations
 
   @base_config
   Scenario: Submit payment form without data - fields validation
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     And User waits for Pay button to be active
     When User clicks Pay button
     Then User will see validation message "Field is required" under all fields

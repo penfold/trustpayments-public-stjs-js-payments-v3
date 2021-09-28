@@ -5,7 +5,7 @@ Feature: Logs
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     Then User will see following logs
       | name      | step                 |
       | ApplePay  | PAYMENT INIT STARTED |

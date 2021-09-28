@@ -19,7 +19,7 @@ Feature: 3ds SDK v1 E2E tests - Visa
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge for v1 is displayed
@@ -47,7 +47,7 @@ Feature: 3ds SDK v1 E2E tests - Visa
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge for v1 is displayed
@@ -75,7 +75,7 @@ Feature: 3ds SDK v1 E2E tests - Visa
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge for v1 is displayed
@@ -102,7 +102,7 @@ Feature: 3ds SDK v1 E2E tests - Visa
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V1_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge for v1 is displayed
@@ -131,7 +131,7 @@ Feature: 3ds SDK v1 E2E tests - Visa
 #      | customercountryiso2a    | GB                 |
 #      | billingcountryiso2a     | GB                 |
 #    And User opens example page
-#    And User waits for whole form to be loaded
+#    And User waits for form inputs to be loaded
 #    When User fills payment form with defined card VISA_V1_3DS_SDK_NOT_ENROLLED
 #    And User clicks Pay button
 #    Then User will see notification frame text: "Payment has been successfully processed"
@@ -141,11 +141,11 @@ Feature: 3ds SDK v1 E2E tests - Visa
 #      | success       |
 #    And User will see that Pay button is "disabled"
 #    And User will see that ALL input fields are "disabled"
-
-    Examples:
-      | request_types            |
-      | THREEDQUERY AUTH         |
-      | ACCOUNTCHECK THREEDQUERY |
-      | THREEDQUERY ACCOUNTCHECK |
+#
+#    Examples:
+#      | request_types            |
+#      | THREEDQUERY AUTH         |
+#      | ACCOUNTCHECK THREEDQUERY |
+#      | THREEDQUERY ACCOUNTCHECK |
 
 
