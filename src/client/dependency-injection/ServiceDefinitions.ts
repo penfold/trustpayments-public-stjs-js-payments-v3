@@ -11,6 +11,7 @@ import { PaymentResultSubmitterSubscriber } from '../common-frames/PaymentResult
 import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import '../../shared/dependency-injection/ServiceDefinitions';
 import { ApplePayClientInitializer } from '../../integrations/apple-pay/client/ApplePayClientInitializer';
+import { APMClientInitializer } from '../../integrations/apm/client/APMClientInitializer';
 
 Container.set({ id: ConfigProvider, factory: () => Container.get(ConfigService) });
 Container.set({ id: ThreeDSecureFactory, type: ThreeDSecureFactory });
@@ -20,6 +21,7 @@ Container.import([
   PaymentResultSubmitterSubscriber,
   GooglePayInitializeSubscriber,
   ApplePayClientInitializer,
+  APMClientInitializer,
 ]);
 
 if(environment.testEnvironment){
