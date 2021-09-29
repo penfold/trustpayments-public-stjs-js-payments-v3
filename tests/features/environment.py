@@ -50,7 +50,8 @@ def before_scenario(context, scenario):
     LOGGER.info('BEFORE SCENARIO')
     # TODO - STJS-2245 - Temporary fix for cardinal 429 issue
     if context.configuration.REMOTE == 0:
-        time.sleep(5)
+        LOGGER.info('WAIT 10 seconds')
+        time.sleep(10)
     clear_shared_dict()
     add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, 'Scenario execution error, for details check gitlab log')
     if context.configuration.REMOTE:
