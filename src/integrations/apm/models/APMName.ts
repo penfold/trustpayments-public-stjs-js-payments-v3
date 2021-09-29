@@ -1,3 +1,3 @@
 export enum APMName {
-  zip = 'zip',
+  ZIP = 'ZIP',
 }
