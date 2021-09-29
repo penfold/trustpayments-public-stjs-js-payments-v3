@@ -1,0 +1,33 @@
+{
+  "applePay": {
+    "buttonStyle": "white",
+    "buttonText": "check-out",
+    "merchantId": "merchant.net.securetrading",
+    "paymentRequest": {
+      "countryCode": "US",
+      "currencyCode": "GBP",
+      "merchantCapabilities": [
+        "supports3DS",
+        "supportsCredit",
+        "supportsDebit"
+      ],
+      "requiredBillingContactFields": [
+        "postalAddress"
+      ],
+      "requiredShippingContactFields": [
+        "postalAddress",
+        "name",
+        "phone",
+        "email"
+      ],
+      "supportedNetworks": [
+        "visa"
+      ],
+      "total": {
+        "label": "Test NOWY APPLE",
+        "amount": "1000",
+        "type": "final"
+      }
+    }
+  }
+}

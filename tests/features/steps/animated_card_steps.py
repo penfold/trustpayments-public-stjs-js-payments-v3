@@ -1,6 +1,8 @@
 # type: ignore[no-redef]
+from assertpy import soft_assertions
 from behave import step, then, use_step_matcher
 
+from pages.locators.animated_card_locators import AnimatedCardLocators
 from pages.page_factory import Pages
 
 use_step_matcher('re')
@@ -29,15 +31,15 @@ def step_impl(context):
     animated_card_page.validate_if_animated_card_is_flipped(context.card_type, context.is_field_in_iframe)
 
 
-@step('User will see the same provided data on animated credit card "(?P<card_number>.+)", "(?P<expiration_date>.+)"')
-def step_impl(context, card_number, expiration_date):
-    animated_card_page = context.page_factory.get_page(Pages.ANIMATED_CARD_PAGE)
-    animated_card_page.validate_all_data_on_animated_card(card_number, expiration_date, None, 'PIBA',
-                                                          context.is_field_in_iframe)
-
-
-@then('User will see that labels displayed on animated card are translated into "(?P<language>.+)"')
+@then('User will see (?:label|labels) displayed on animated card translated into "(?P<language>.+)"')
 def step_impl(context, language):
     animated_card_page = context.page_factory.get_page(Pages.ANIMATED_CARD_PAGE)
     animated_card_page.scroll_to_bottom()
-    animated_card_page.validate_animated_card_translation(language)
+    labels = {
+        'Card number': AnimatedCardLocators.card_number_label,
+        'Expiration date': AnimatedCardLocators.expiration_date_label,
+        'Security code': AnimatedCardLocators.security_code_label,
+    }
+    with soft_assertions():
+        for row in context.table:
+            animated_card_page.validate_animated_card_translation(labels[row['fields']], language, row['fields'])

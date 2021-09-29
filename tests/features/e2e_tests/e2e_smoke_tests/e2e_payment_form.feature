@@ -7,7 +7,7 @@ Feature: payment form
       | requesttypedescriptions  | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
       | threedbypasspaymenttypes | MASTERCARD                            |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     And User waits for Pay button to be active
     When User clicks Pay button
     Then User will see validation message "Field is required" under all fields
@@ -19,9 +19,9 @@ Feature: payment form
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     And User waits for Pay button to be active
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_AUTH_CARD
     And User clicks Pay button
     And User fills V1 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"

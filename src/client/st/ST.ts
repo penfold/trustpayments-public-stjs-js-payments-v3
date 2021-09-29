@@ -53,7 +53,6 @@ import { EventScope } from '../../application/core/models/constants/EventScope';
 
 @Service()
 export class ST {
-  private cardFrames: CardFrames;
   private config: IConfig;
   private controlFrameLoader$: Observable<IConfig>;
   private cybertonicaTid: Promise<string>;
@@ -115,6 +114,7 @@ export class ST {
     private translation: ITranslator,
     private googleAnalytics: GoogleAnalytics,
     private merchantFields: MerchantFields,
+    private cardFrames: CardFrames,
   ) {
   }
 
@@ -142,8 +142,8 @@ export class ST {
       this.config = this.configService.updateFragment('components', config);
     }
 
-    this.blockSubmitButton();
     this.initControlFrame$().subscribe(() => {
+      this.cardFrames.init();
       this.messageBus.publish<string>(
         {
           type: PUBLIC_EVENTS.CARD_PAYMENTS_INIT,
@@ -151,8 +151,6 @@ export class ST {
         },
         EventScope.THIS_FRAME,
       );
-      this.CardFrames();
-      this.cardFrames.init();
     });
   }
 
@@ -282,6 +280,8 @@ export class ST {
         this.stopSubmitFormOnEnter();
       }
     }
+
+    return;
   }
 
   getBrowserInfo(): IBrowserInfo {
@@ -334,25 +334,6 @@ export class ST {
     return this.controlFrameLoader$;
   }
 
-  private CardFrames(): void {
-    this.cardFrames = new CardFrames(
-      this.config.jwt,
-      this.config.origin,
-      this.config.componentIds,
-      this.config.styles,
-      this.config.components.paymentTypes,
-      this.config.components.defaultPaymentType,
-      this.config.animatedCard,
-      this.config.buttonId,
-      this.config.fieldsToSubmit,
-      this.config.formId,
-      this.configProvider,
-      this.iframeFactory,
-      this.frameService,
-      this.messageBus,
-      this.jwtDecoder,
-    );
-  }
 
   private Storage(): void {
     this.storage.setItem('merchantTranslations', JSON.stringify(this.config.translations));

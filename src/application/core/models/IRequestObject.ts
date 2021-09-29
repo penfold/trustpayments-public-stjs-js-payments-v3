@@ -2,7 +2,6 @@ import { RequestType } from '../../../shared/types/RequestType';
 
 export interface IRequestData {
   requestid: string;
-  sitereference: string;
   [key: string]: string | string[] | RequestType[];
 }
 

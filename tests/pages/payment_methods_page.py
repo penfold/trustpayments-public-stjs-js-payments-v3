@@ -1,4 +1,7 @@
 import json
+import re
+import time
+from collections import defaultdict
 from urllib.parse import urlparse, parse_qs
 
 from assertpy import assert_that
@@ -11,10 +14,13 @@ from utils.configurations.jwt_generator import replace_jwt
 from utils.enums.auth_data import AuthData
 from utils.enums.auth_type import AuthType
 from utils.enums.field_type import FieldType
-from utils.enums.payment_type import PaymentType
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import add_to_shared_dict
 from utils.helpers.resources_reader import get_translation_from_json
+
+
+def format_card_number(card_number):
+    return ' '.join([card_number[i:i + 4] for i in range(0, len(card_number), 4)])
 
 
 class PaymentMethodsPage(BasePage):
@@ -28,35 +34,62 @@ class PaymentMethodsPage(BasePage):
         page_url = self._browser_executor.get_page_url()
         return page_url
 
-    def toggle_action_buttons_bar(self):
-        self._actions.click(PaymentMethodsLocators.actions_bar_toggle)
+    def get_payment_status_message(self):
+        return self._actions.get_text_with_wait(PaymentMethodsLocators.notification_frame)
 
-    def click_cardinal_cancel_btn(self):
-        self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
-        self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_cancel_btn)
+    def get_color_of_notification_frame(self):
+        return self._actions.get_element_attribute(PaymentMethodsLocators.notification_frame,
+                                                   'data-notification-color')
 
-    def click_cardinal_submit_btn(self):
-        self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
+    def get_logs(self):
+        logs = self._actions.get_value(PaymentMethodsLocators.logs_textarea)
+        result = re.findall('"name": "(.*)",\n  "step": "(.*)"', logs)
+        res = defaultdict(list)
+        for key, value in result:
+            res[key].append(value)
+        return res
 
-    def click_additional_btn(self):
-        self._actions.click(PaymentMethodsLocators.additional_button)
+    def check_if_value_is_present_in_logs(self, expected_name, expected_step, max_try=5):
+        logs = []
+        while max_try:
+            logs = self.get_logs()
+            if expected_step in logs[expected_name]:
+                break
+            max_try -= 1
+            time.sleep(1)
+        assertion_message = f'{expected_step} step is not present in {expected_name} logs'
+        add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+        assert expected_step in logs[expected_name], assertion_message
 
-    def click_cancel_3ds_btn(self):
-        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_cancel_3ds)
-        self._actions.click(PaymentMethodsLocators.action_btn_cancel_3ds)
+    def get_text_from_status_callback(self):
+        return self._actions.get_text_with_wait(PaymentMethodsLocators.callback_data_popup)
 
-    def click_remove_frames_btn(self):
-        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_remove_frames)
-        self._actions.click(PaymentMethodsLocators.action_btn_remove_frames)
+    def get_text_from_submit_callback_jwt(self):
+        return self._actions.get_text_with_wait(PaymentMethodsLocators.submit_callback_jwt_response)
 
-    def click_destroy_st_btn(self):
-        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_destroy_st)
-        self._actions.click(PaymentMethodsLocators.action_btn_destroy_st)
+    def get_text_from_submit_callback_threedresponse(self):
+        return self._actions.get_text_from_last_element(PaymentMethodsLocators.submit_callback_threedresponse)
 
-    def click_start_st_btn(self):
-        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_start_st)
-        self._actions.click(PaymentMethodsLocators.action_btn_start_st)
+    def get_text_from_browser_info(self):
+        return self._actions.get_text_with_wait(PaymentMethodsLocators.browser_info_callback)
+
+    # Card Form
+
+    def press_enter_button_on_security_code_field(self):
+        self._actions.switch_to_iframe_and_press_enter(FieldType.SECURITY_CODE.value,
+                                                       PaymentMethodsLocators.security_code_input_field)
+
+    def clear_security_code_field(self):
+        self._actions.switch_to_iframe_and_clear_input(FieldType.SECURITY_CODE.value,
+                                                       PaymentMethodsLocators.security_code_input_field)
+
+    def clear_card_number_field(self):
+        self._actions.switch_to_iframe_and_clear_input(FieldType.CARD_NUMBER.value,
+                                                       PaymentMethodsLocators.card_number_input_field)
+
+    def clear_expiry_date_field(self):
+        self._actions.switch_to_iframe_and_clear_input(FieldType.EXPIRATION_DATE.value,
+                                                       PaymentMethodsLocators.expiration_date_input_field)
 
     def fill_credit_card_field(self, field_type, value):
         if field_type == FieldType.CARD_NUMBER.name:
@@ -107,123 +140,13 @@ class PaymentMethodsPage(BasePage):
         else:
             self.fill_credit_card_field_ie_browser(FieldType.SECURITY_CODE.name, cvv)
 
-    def fill_merchant_input_field(self, field_type, value):
-        if field_type == FieldType.NAME.name:
-            self._actions.send_keys(PaymentMethodsLocators.merchant_name, value)
-        elif field_type == FieldType.EMAIL.name:
-            self._actions.send_keys(PaymentMethodsLocators.merchant_email, value)
-        elif field_type == FieldType.PHONE.name:
-            self._actions.send_keys(PaymentMethodsLocators.merchant_phone, value)
-
-    def fill_merchant_form(self, name, email, phone):
-        self.fill_merchant_input_field(FieldType.NAME.name, name)
-        self.fill_merchant_input_field(FieldType.EMAIL.name, email)
-        self.fill_merchant_input_field(FieldType.PHONE.name, phone)
-
-    def fill_amount_field(self, value):
-        self._actions.send_keys(PaymentMethodsLocators.amount_field, value)
-        self._waits.wait_for_javascript()
-
-    def fill_cardinal_authentication_code(self, auth_type):
-        auth = AuthType.__members__[auth_type].name  # pylint: disable=unsubscriptable-object
-        self.select_proper_cardinal_authentication(auth)
-
-    def fill_cardinal_v1_popup(self):
-        self._actions.switch_to_iframe(PaymentMethodsLocators.cardinal_v1_iframe)
-        self._waits.wait_for_element_to_be_displayed(
-            PaymentMethodsLocators.cardinal_v1_authentication_code_field)
-        self._actions.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
-                                AuthData.THREE_DS_CODE.value)
-        if 'Firefox' in CONFIGURATION.BROWSER:
-            self._actions.click_by_javascript(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
-        else:
-            self._actions.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
-
-    def fill_cardinal_v2_popup(self):
-        self._waits.wait_for_element_to_be_displayed(
-            PaymentMethodsLocators.cardinal_v2_authentication_code_field)
-        self._actions.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
-                                AuthData.THREE_DS_CODE.value)
+    def click_submit_btn(self):
         self.scroll_to_bottom()
-        if 'Firefox' in CONFIGURATION.BROWSER:
-            self._actions.click_by_javascript(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
-        else:
-            self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
-
-    def focus_on_authentication_label(self, auth):
-        if auth == AuthType.V2.name:
-            self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
-            self._actions.click(PaymentMethodsLocators.purchase_authentication_label)
-        else:
-            self._actions.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
-            self._actions.click(PaymentMethodsLocators.please_submit_label)
-        self._actions.switch_to_default_iframe()
-
-    def validate_cardinal_authentication_modal_appears(self, auth):
-        self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
-        if auth == AuthType.V2.name:
-            self._waits.wait_for_element_to_be_displayed(
-                PaymentMethodsLocators.cardinal_v2_authentication_code_field)
-        else:
-            self._actions.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
-            self._waits.wait_for_element_to_be_displayed(
-                PaymentMethodsLocators.cardinal_v1_authentication_code_field)
-        self._actions.switch_to_default_iframe()
-
-    def select_proper_cardinal_authentication(self, auth):
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_modal)
-        self._actions.switch_to_iframe(PaymentMethodsLocators.cardinal_iframe)
-        if auth == AuthType.V2.name:
-            self.fill_cardinal_v2_popup()
-        else:
-            self.fill_cardinal_v1_popup()
-        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.cardinal_modal)
-        self._actions.switch_to_default_content()
-
-    def press_enter_button_on_security_code_field(self):
-        self._actions.switch_to_iframe_and_press_enter(FieldType.SECURITY_CODE.value,
-                                                       PaymentMethodsLocators.security_code_input_field)
-
-    def clear_security_code_field(self):
-        self._actions.switch_to_iframe_and_clear_input(FieldType.SECURITY_CODE.value,
-                                                       PaymentMethodsLocators.security_code_input_field)
-
-    def clear_card_number_field(self):
-        self._actions.switch_to_iframe_and_clear_input(FieldType.CARD_NUMBER.value,
-                                                       PaymentMethodsLocators.card_number_input_field)
-
-    def clear_expiry_date_field(self):
-        self._actions.switch_to_iframe_and_clear_input(FieldType.EXPIRATION_DATE.value,
-                                                       PaymentMethodsLocators.expiration_date_input_field)
-
-    def get_payment_status_message(self):
-        status_message = self._actions.get_text_with_wait(PaymentMethodsLocators.notification_frame)
-        return status_message
-
-    def get_text_from_status_callback(self):
-        text = self._actions.get_text_with_wait(PaymentMethodsLocators.callback_data_popup)
-        return text
-
-    def get_text_from_submit_callback_jwt(self):
-        text = self._actions.get_text_with_wait(PaymentMethodsLocators.submit_callback_jwt_response)
-        return text
-
-    def get_text_from_submit_callback_threedresponse(self):
-        text = self._actions.get_text_from_last_element(PaymentMethodsLocators.submit_callback_threedresponse)
-        return text
-
-    def get_text_from_browser_info(self):
-        text = self._actions.get_text_with_wait(PaymentMethodsLocators.browser_info_callback)
-        return text
-
-    def get_color_of_notification_frame(self):
-        frame_color = self._actions.get_element_attribute(PaymentMethodsLocators.notification_frame,
-                                                          'data-notification-color')
-        return frame_color
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_button)
+        self._actions.click(PaymentMethodsLocators.pay_button)
 
     def get_value_of_input_field(self, field):
-        input_value = self.get_element_attribute(field, 'value')
-        return input_value
+        return self.get_element_attribute(field, 'value')
 
     def is_field_enabled(self, field_type):
         is_enabled = False
@@ -240,55 +163,10 @@ class PaymentMethodsPage(BasePage):
                 PaymentMethodsLocators.security_code_iframe,
                 PaymentMethodsLocators.security_code_input_field)
         elif field_type == FieldType.SUBMIT_BUTTON.name:
-            is_enabled = self._actions.is_element_enabled(PaymentMethodsLocators.pay_mock_button)
+            is_enabled = self._actions.is_element_enabled(PaymentMethodsLocators.pay_button)
+        elif field_type == FieldType.ADDITIONAL_SUBMIT_BUTTON.name:
+            is_enabled = self._actions.is_element_enabled(PaymentMethodsLocators.additional_button)
         return is_enabled
-
-    def choose_payment_methods(self, payment_type):
-        if payment_type == PaymentType.VISA_CHECKOUT.name:
-            self.select_visa_checkout_payment()
-        elif payment_type == PaymentType.APPLE_PAY.name:
-            self.select_apple_pay_payment()
-        elif payment_type == PaymentType.CARDINAL_COMMERCE.name:
-            self.select_cardinal_commerce_payment()
-        elif payment_type == PaymentType.GOOGLE_PAY.name:
-            self.select_google_pay_payment()
-
-    def select_cardinal_commerce_payment(self):
-        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION or 'High Sierra' in CONFIGURATION.REMOTE_OS_VERSION or \
-            'Google Nexus 6' in CONFIGURATION.REMOTE_DEVICE:
-            self.scroll_to_bottom()
-            self._waits.wait_for_javascript()
-            self._actions.click_by_javascript(PaymentMethodsLocators.pay_mock_button)
-        else:
-            self.scroll_to_bottom()
-            self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
-            self._actions.click(PaymentMethodsLocators.pay_mock_button)
-
-    def select_apple_pay_payment(self):
-        self._waits.wait_for_javascript()
-        self.scroll_to_bottom()
-        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
-            self._actions.click_by_javascript(PaymentMethodsLocators.apple_pay_mock_button)
-        else:
-            self._actions.click(PaymentMethodsLocators.apple_pay_mock_button)
-
-    def select_visa_checkout_payment(self):
-        self._waits.wait_for_javascript()
-        self.scroll_to_bottom()
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.visa_checkout_mock_button)
-        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
-            self._actions.click_by_javascript(PaymentMethodsLocators.visa_checkout_mock_button)
-        else:
-            self._actions.click(PaymentMethodsLocators.visa_checkout_mock_button)
-
-    def select_google_pay_payment(self):
-        self._waits.wait_for_javascript()
-        self.scroll_to_bottom()
-        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.google_pay_mock_button)
-        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
-            self._actions.click_by_javascript(PaymentMethodsLocators.google_pay_mock_button)
-        else:
-            self._actions.click(PaymentMethodsLocators.google_pay_mock_button)
 
     def get_element_attribute(self, field_type, attribute):
         attribute_value = ''
@@ -384,6 +262,118 @@ class PaymentMethodsPage(BasePage):
 
     def change_focus_to_page_title(self):
         self._actions.click(PaymentMethodsLocators.page_title)
+
+    # Additional form fields
+
+    def fill_merchant_input_field(self, field_type, value):
+        if field_type == FieldType.NAME.name:
+            self._actions.send_keys(PaymentMethodsLocators.merchant_name, value)
+        elif field_type == FieldType.EMAIL.name:
+            self._actions.send_keys(PaymentMethodsLocators.merchant_email, value)
+        elif field_type == FieldType.PHONE.name:
+            self._actions.send_keys(PaymentMethodsLocators.merchant_phone, value)
+
+    def fill_merchant_form(self, name, email, phone):
+        self.fill_merchant_input_field(FieldType.NAME.name, name)
+        self.fill_merchant_input_field(FieldType.EMAIL.name, email)
+        self.fill_merchant_input_field(FieldType.PHONE.name, phone)
+
+    def fill_amount_field(self, value):
+        self._actions.send_keys(PaymentMethodsLocators.amount_field, value)
+        self._waits.wait_for_javascript()
+
+    # Additional buttons
+
+    def toggle_action_buttons_bar(self):
+        self._actions.click(PaymentMethodsLocators.actions_bar_toggle)
+
+    def click_remove_frames_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_remove_frames)
+        self._actions.click(PaymentMethodsLocators.action_btn_remove_frames)
+
+    def click_destroy_st_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_destroy_st)
+        self._actions.click(PaymentMethodsLocators.action_btn_destroy_st)
+
+    def click_start_st_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_start_st)
+        self._actions.click(PaymentMethodsLocators.action_btn_start_st)
+
+    def click_cancel_3ds_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.action_btn_cancel_3ds)
+        self._actions.click(PaymentMethodsLocators.action_btn_cancel_3ds)
+
+    def click_additional_btn(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.additional_button)
+        self._actions.click(PaymentMethodsLocators.additional_button)
+
+    # ACS CC
+
+    def click_cardinal_submit_btn(self):
+        self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
+
+    def click_cardinal_cancel_btn(self):
+        self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+        self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_cancel_btn)
+
+    def fill_cardinal_authentication_code(self, auth_type):
+        auth = AuthType.__members__[auth_type].name  # pylint: disable=unsubscriptable-object
+        self.select_proper_cardinal_authentication(auth)
+
+    def fill_cardinal_v1_popup(self):
+        self._actions.switch_to_iframe(PaymentMethodsLocators.cardinal_v1_iframe)
+        self._waits.wait_for_element_to_be_displayed(
+            PaymentMethodsLocators.cardinal_v1_authentication_code_field)
+        self._actions.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
+                                AuthData.THREE_DS_CODE.value)
+        if 'Firefox' in CONFIGURATION.BROWSER:
+            self._actions.click_by_javascript(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
+        else:
+            self._actions.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
+
+    def fill_cardinal_v2_popup(self):
+        self._waits.wait_for_element_to_be_displayed(
+            PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+        self._actions.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
+                                AuthData.THREE_DS_CODE.value)
+        self.scroll_to_bottom()
+        if 'Firefox' in CONFIGURATION.BROWSER:
+            self._actions.click_by_javascript(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
+        else:
+            self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
+
+    def focus_on_authentication_label(self, auth):
+        if auth == AuthType.V2.name:
+            self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
+            self._actions.click(PaymentMethodsLocators.purchase_authentication_label)
+        else:
+            self._actions.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
+            self._actions.click(PaymentMethodsLocators.please_submit_label)
+        self._actions.switch_to_default_iframe()
+
+    def validate_cardinal_authentication_modal_appears(self, auth):
+        self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
+        if auth == AuthType.V2.name:
+            self._waits.wait_for_element_to_be_displayed(
+                PaymentMethodsLocators.cardinal_v2_authentication_code_field)
+        else:
+            self._actions.switch_to_iframe(FieldType.V1_PARENT_IFRAME.value)
+            self._waits.wait_for_element_to_be_displayed(
+                PaymentMethodsLocators.cardinal_v1_authentication_code_field)
+        self._actions.switch_to_default_iframe()
+
+    def select_proper_cardinal_authentication(self, auth):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_modal)
+        self._actions.switch_to_iframe(PaymentMethodsLocators.cardinal_iframe)
+        if auth == AuthType.V2.name:
+            self.fill_cardinal_v2_popup()
+        else:
+            self.fill_cardinal_v1_popup()
+        self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.cardinal_modal)
+        self._actions.switch_to_default_content()
+
+    # Validators
 
     def validate_value_of_input_field(self, field_type, expected_message):
         input_value = self.get_value_of_input_field(field_type)
@@ -595,15 +585,9 @@ class PaymentMethodsPage(BasePage):
             counter = self._actions.get_text_from_last_element(PaymentMethodsLocators.callback_cancel_counter)
         elif 'submit' in callback_popup:
             counter = self._actions.get_text_from_last_element(PaymentMethodsLocators.callback_submit_counter)
-        counter = counter.split(': ')[1]
         assertion_message += f' but is {counter}'
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
-        assert expected_callback_number == counter, assertion_message
-
-    def validate_placeholders(self, card_number, exp_date, cvv):
-        self.validate_placeholder(FieldType.CARD_NUMBER.name, card_number)
-        self.validate_placeholder(FieldType.EXPIRATION_DATE.name, exp_date)
-        self.validate_placeholder(FieldType.SECURITY_CODE.name, cvv)
+        assert expected_callback_number in counter, assertion_message
 
     def validate_placeholder(self, field_type, expected_placeholder):
         actual_placeholder = self.get_element_attribute(field_type, 'placeholder')
@@ -644,6 +628,8 @@ class PaymentMethodsPage(BasePage):
 
     def switch_to_example_page_parent_iframe(self):
         self._actions.switch_to_iframe(PaymentMethodsLocators.parent_iframe)
+
+    #   Waits
 
     def wait_for_example_page_parent_iframe(self):
         self._waits.wait_until_iframe_is_presented_and_switch_to_it(PaymentMethodsLocators.security_code_iframe)
@@ -698,19 +684,10 @@ class PaymentMethodsPage(BasePage):
             PaymentMethodsLocators.security_code_iframe)
 
     def wait_for_pay_button_to_be_active(self):
-        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_mock_button)
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_button)
 
-    def wait_for_pay_processing_end(self, language: str):
-        # pylint: disable=invalid-name
-        processing_text: str = 'Processing'
-        if language not in ('en_US', 'en_GB'):
-            with open(f'resources/languages/{language}.json', 'r', encoding='utf-8') as f:
-                translation = json.load(f)
-            processing_text = translation[processing_text]
-        processing_text = f'{processing_text} ...'
-
-        self._waits.wait_for_text_to_be_not_present_in_element(PaymentMethodsLocators.pay_mock_button,
-                                                               processing_text)
+    def wait_for_additional_submit_button_to_be_active(self):
+        self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.additional_button)
 
     def wait_for_notification_frame(self):
         if CONFIGURATION.REMOTE_DEVICE:

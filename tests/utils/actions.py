@@ -107,6 +107,12 @@ class Actions:
         element.click()
         self.switch_to_default_iframe()
 
+    def get_value(self, locator):
+        try:
+            return self.find_element(locator).get_attribute('value')
+        except StaleElementReferenceException:
+            return self.find_element(locator).get_attribute('value')
+
     def get_text(self, locator):
         try:
             return self.find_element(locator).text

@@ -1,0 +1,152 @@
+{
+  "analytics": true,
+  "applePay": {
+    "buttonStyle": "white-outline",
+    "buttonText": "buy",
+    "buttonPlacement": "st-apple-pay",
+    "merchantId": "merchantId",
+    "paymentRequest": {
+      "countryCode": "US",
+      "currencyCode": "USD",
+      "merchantCapabilities": [
+        "supports3DS",
+        "supportsCredit",
+        "supportsDebit"
+      ],
+      "supportedNetworks": [],
+      "total": {
+        "label": "Trust Payments Merchant",
+        "amount": "10.00"
+      }
+    },
+    "placement": "st-apple-pay"
+  },
+  "animatedCard": true,
+  "buttonId": "merchant-submit-button",
+  "componentIds": {
+    "animatedCard": "",
+    "cardNumber": "",
+    "expirationDate": "",
+    "notificationFrame": "",
+    "securityCode": ""
+  },
+  "components": {
+    "defaultPaymentType": "",
+    "paymentTypes": [],
+    "startOnLoad": false
+  },
+  "cybertonicaApiKey": "stfs",
+  "datacenterurl": "",
+  "deferInit": false,
+  "disableNotification": false,
+  "errorReporting": false,
+  "fieldsToSubmit": [
+    "pan",
+    "expirydate",
+    "securitycode"
+  ],
+  "formId": "st-form",
+  "googlePay": {
+    "buttonOptions": {
+      "buttonRootNode": "st-google-pay",
+      "buttonColor": "default",
+      "buttonType": "buy",
+      "buttonLocale": "en"
+    },
+    "paymentRequest": {
+      "allowedPaymentMethods": [{
+        "parameters": {
+          "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+          "allowedCardNetworks": ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"]
+        },
+        "tokenizationSpecification": {
+          "parameters": {
+            "gateway": "trustpayments",
+            "gatewayMerchantId": "test_james38641"
+          },
+          "type": "PAYMENT_GATEWAY"
+        },
+        "type": "CARD"
+      }],
+      "apiVersion": 2,
+      "apiVersionMinor": 0,
+      "merchantInfo": {
+        "merchantId": "merchant.net.securetrading",
+        "merchantName": "merchang"
+      },
+      "transactionInfo": {
+        "countryCode": "US",
+        "currencyCode": "USD",
+        "checkoutOption": "COMPLETE_IMMEDIATE_PURCHASE",
+        "totalPriceStatus": "FINAL",
+        "totalPrice": "10.00",
+        "displayItems": [
+          {
+            "label": "Example item",
+            "price": "10.00",
+            "type": "LINE_ITEM",
+            "status": "FINAL"
+          }
+        ]
+      }
+    }
+  },
+  "init": {
+    "cachetoken": "",
+    "threedinit": ""
+  },
+  "jwt": "",
+  "livestatus": 0,
+  "origin": "",
+  "panIcon": true,
+  "placeholders": {
+    "pan": "Card number",
+    "expirydate": "MM/YY",
+    "securitycode": "***"
+  },
+  "styles": {
+    "defaultStyles": {
+      "background-color-input": "AliceBlue"
+    },
+    "cardNumber": {
+      "font-size-input": "1.5rem",
+      "line-height-input": "1.6rem"
+    },
+    "expirationDate": {
+      "font-size-input": "1.5rem",
+      "line-height-input": "1.6rem"
+    },
+    "securityCode": {
+      "font-size-input": "1.5rem",
+      "line-height-input": "1.6rem"
+    },
+    "notificationFrame": {
+      "color-error": "#FFF333"
+    },
+    "controlFrame": {
+      "color-error": "#3358FF"
+    }
+  },
+  "submitFields": [],
+  "submitOnSuccess": false,
+  "submitOnError": false,
+  "submitOnCancel": false,
+  "translations": {
+    "An error occurred": "Wystąpił błąd"
+  },
+  "visaCheckout": {
+    "buttonSettings": {
+      "size": "154",
+      "color": "neutral"
+    },
+    "livestatus": 0,
+    "merchantId": "merchantId",
+    "paymentRequest": {
+      "subtotal": "20.00"
+    },
+    "placement": "st-visa-checkout",
+    "settings": {
+      "displayName": "My Test Site"
+    }
+  }
+}

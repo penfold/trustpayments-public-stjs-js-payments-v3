@@ -1,4 +1,7 @@
+from configuration import CONFIGURATION
 from pages.base_page import BasePage
+from pages.locators.payment_methods_locators import PaymentMethodsLocators
+from utils.enums.payment_type import PaymentType
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import add_to_shared_dict, get_number_of_requests_with_data, \
     get_number_of_wallet_verify_requests, get_number_of_thirdparty_requests, get_number_of_requests_without_data, \
@@ -9,6 +12,53 @@ from utils.helpers.request_executor import add_to_shared_dict, get_number_of_req
 
 class PaymentMethodsPageMock(BasePage):
     # pylint: disable=too-many-public-methods
+
+    def choose_payment_methods(self, payment_type):
+        if payment_type == PaymentType.VISA_CHECKOUT.name:
+            self.select_visa_checkout_payment()
+        elif payment_type == PaymentType.APPLE_PAY.name:
+            self.select_apple_pay_payment()
+        elif payment_type == PaymentType.CARDINAL_COMMERCE.name:
+            self.select_cardinal_commerce_payment()
+        elif payment_type == PaymentType.GOOGLE_PAY.name:
+            self.select_google_pay_payment()
+
+    def select_cardinal_commerce_payment(self):
+        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION or 'Google Nexus 6' in CONFIGURATION.REMOTE_DEVICE:
+            self.scroll_to_bottom()
+            self._waits.wait_for_javascript()
+            self._actions.click_by_javascript(PaymentMethodsLocators.pay_button)
+        else:
+            self.scroll_to_bottom()
+            self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_button)
+            self._actions.click(PaymentMethodsLocators.pay_button)
+
+    def select_apple_pay_payment(self):
+        self._waits.wait_for_javascript()
+        self.scroll_to_bottom()
+        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
+            self._actions.click_by_javascript(PaymentMethodsLocators.apple_pay_mock_button)
+        else:
+            self._actions.click(PaymentMethodsLocators.apple_pay_mock_button)
+
+    def select_visa_checkout_payment(self):
+        self._waits.wait_for_javascript()
+        self.scroll_to_bottom()
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.visa_checkout_mock_button)
+        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
+            self._actions.click_by_javascript(PaymentMethodsLocators.visa_checkout_mock_button)
+        else:
+            self._actions.click(PaymentMethodsLocators.visa_checkout_mock_button)
+
+    def select_google_pay_payment(self):
+        self._waits.wait_for_javascript()
+        self.scroll_to_bottom()
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.google_pay_mock_button)
+        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
+            self._actions.click_by_javascript(PaymentMethodsLocators.google_pay_mock_button)
+        else:
+            self._actions.click(PaymentMethodsLocators.google_pay_mock_button)
+
 
     def validate_number_of_requests_with_data(self, request_type, pan, expiry_date, cvv, expected_number_of_requests):
         actual_number_of_requests = get_number_of_requests_with_data(request_type, pan, expiry_date, cvv)

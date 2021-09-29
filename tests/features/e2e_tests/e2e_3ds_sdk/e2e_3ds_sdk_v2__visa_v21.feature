@@ -19,15 +19,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_FRICTIONLESS_SUCCESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -45,15 +45,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_FRICTIONLESS_FAILED
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -71,15 +71,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_FRICTIONLESS_STAND_IN
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -97,15 +97,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_UNAVAILABLE_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -123,15 +123,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_REJECTED_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -149,15 +149,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_DS_UNAVAILABLE
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -175,15 +175,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_IMPROPER_ARES_DATA
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -201,15 +201,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_ACS_UNAVAILABLE
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -227,12 +227,12 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -253,12 +253,12 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_STEP_UP_AUTH_FAILED
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -279,12 +279,12 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_STEP_UP_AUTH_ERROR
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -305,15 +305,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_FRICTIONLESS_SUCCESS_METHOD_URL
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -331,17 +331,17 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_NON_FRICTIONLESS_METHOD_URL
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -360,12 +360,12 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_NON_FRICTIONLESS_METHOD_URL
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
-    And User checks that methodUrl request is send
-    And User checks that threeDSMethodData contains required fields
+    Then User see that methodUrl request is send
+    And User see that threeDSMethodData contains required fields
       | field                        |
       | threeDSServerTransID         |
       | threeDSMethodNotificationURL |
@@ -386,15 +386,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_TRANS_STATUS_SUSPECTED_FRAUD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -412,15 +412,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_TRANS_STATUS_NOT_ENROLLED
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -438,15 +438,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_TRANS_STATUS_TRANSACTION_NON_PAYMENT
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -464,15 +464,15 @@ Feature: 3ds SDK v2 E2E tests - VISA v2.1
       | customercountryiso2a    | GB                |
       | billingcountryiso2a     | GB                |
     And User opens example page
-    And User waits for whole form to be loaded
+    And User waits for form inputs to be loaded
     When User fills payment form with defined card VISA_V21_3DS_SDK_TRANS_STATUS_3RI_TRANSACTION_NOT_SUPPORTED
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:

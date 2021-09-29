@@ -121,12 +121,6 @@ def _set_browser_options(browser):
 
 
 def _get_remote_capabilities(configuration):
-    # pylint: disable=unused-variable
-    network_logs = 'true'
-    if 'Safari' in configuration.REMOTE_BROWSER:
-        if 'High Sierra' in configuration.REMOTE_OS_VERSION or 'Mojave' in configuration.REMOTE_OS_VERSION:
-            network_logs = 'false'
-
     possible_caps = {
         'os': configuration.REMOTE_OS,
         'os_version': configuration.REMOTE_OS_VERSION,
@@ -146,7 +140,7 @@ def _get_remote_capabilities(configuration):
         'browserstack.ie.driver': configuration.BROWSERSTACK_IE_DRIVER,
         'browserstack.safari.driver': configuration.BROWSERSTACK_SAFARI_DRIVER,
         'browserstack.firefox.driver': configuration.BROWSERSTACK_FIREFOX_DRIVER,
-        'browserstack.networkLogs': network_logs,
+        'browserstack.networkLogs': 'true',
         'browserstack.console': 'errors',
         'browserstack.autoWait': 0,
         'browserstack.use_w3c': 'true',

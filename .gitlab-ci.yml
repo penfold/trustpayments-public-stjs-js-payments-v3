@@ -1,4 +1,4 @@
-.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 32.0.6
+.project-infrastructure-cicd-ref: &project-infrastructure-cicd-ref 32.2.3
 
 .project-infrastructure-cicd: &project-infrastructure-cicd
   project: securetrading-gl/st-server-project/project-infrastructure-cicd
@@ -44,7 +44,6 @@ variables:
   VISUAL_TESTS_SAFARI_TAG: '@visual_regression_safari'
   VISUAL_STYLING_TESTS_SAFARI_TAG: '@visual_regression_styling_safari'
   SMOKE_TESTS_WITH_APPLE_PAY: '@smoke_component_test,@apple_pay_smoke_test'
-  EXTENDED_TESTS_TAG: '@extended_tests_part_1,@extended_tests_part_2'
   ARTIFACT_RELEASE_DESCRIPTION_TYPE: "EXTENDED"
 
   ### Disabled Jobs:

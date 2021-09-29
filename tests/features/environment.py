@@ -5,6 +5,7 @@
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR         (to enable  debug-on-error)
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=yes     (to enable  debug-on-error)
 # USE: behave -D BEHAVE_DEBUG_ON_ERROR=no      (to disable debug-on-error)
+import time
 from logging import INFO
 
 from configuration import CONFIGURATION
@@ -47,6 +48,9 @@ def disable_headless_for_visa_checkout(context):
 def before_scenario(context, scenario):
     """Run before each scenario"""
     LOGGER.info('BEFORE SCENARIO')
+    # TODO - STJS-2245 - Temporary fix for cardinal 429 issue
+    if context.configuration.REMOTE == 0:
+        time.sleep(5)
     clear_shared_dict()
     add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, 'Scenario execution error, for details check gitlab log')
     if context.configuration.REMOTE:
@@ -68,7 +72,7 @@ def before_scenario(context, scenario):
                                        waits=context.waits)
     context.session_id = context.browser_executor.get_session_id()
     context.language = 'en_GB'
-    scenario.name = '%s executed on %s' % (scenario.name, context.browser.upper())
+    scenario.name = f'{scenario.name} executed on {context.browser.upper()}'
     LOGGER.info(scenario.name)
     validate_if_proper_browser_is_set_for_test(context, scenario)
 

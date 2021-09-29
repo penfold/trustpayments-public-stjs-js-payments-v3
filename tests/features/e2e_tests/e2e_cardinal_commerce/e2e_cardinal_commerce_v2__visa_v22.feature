@@ -12,12 +12,12 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     And User opens example page
     When User fills payment form with defined card VISA_V22_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -34,12 +34,12 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     And User opens example page
     When User fills payment form with defined card VISA_V22_FAILED_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | <callback>    |
-    And User will see that Submit button is "<state>"
+    And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
 
     Examples:
@@ -56,12 +56,12 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     And User opens example page
     When User fills payment form with defined card VISA_V22_FRICTIONLESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -78,12 +78,12 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     And User opens example page
     When User fills payment form with defined card VISA_V22_UNAVAILABLE_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
-    And User will see that Submit button is "disabled"
+    And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
     Examples:
@@ -100,7 +100,7 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     And User opens example page
     When User fills payment form with defined card VISA_V22_REJECTED_FRICTIONLESS_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -120,7 +120,7 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     And User opens example page
     When User fills payment form with defined card VISA_V22_AUTH_NOT_AVAILABLE_ON_LOOKUP
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -138,7 +138,7 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     And User opens example page
     When User fills payment form with defined card VISA_V22_ERROR_ON_LOOKUP
     And User clicks Pay button
-    Then User will see payment status information: "<payment_status>"
+    Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -159,7 +159,7 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     When User fills payment form with defined card VISA_V22_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -180,7 +180,7 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     When User fills payment form with defined card VISA_V22_STEP_UP_AUTH_FAILED
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -201,7 +201,7 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     When User fills payment form with defined card VISA_V22_STEP_UP_AUTH_UNAVAILABLE
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
@@ -222,12 +222,12 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     When User fills payment form with defined card VISA_V22_ERROR_ON_AUTH
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | error         |
-    And User will see that Submit button is "enabled"
+    And User will see that Pay button is "enabled"
     And User will see that ALL input fields are "enabled"
 
     Examples:
@@ -244,7 +244,7 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     And User opens example page
     When User fills payment form with defined card VISA_V22_BYPASSED_AUTH
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |

@@ -37,7 +37,7 @@ class PaymentMethodsLocators:
     parent_iframe: By = (By.ID, FieldType.PARENT_IFRAME.value)
 
     # payment methods
-    pay_mock_button: By = (By.ID, 'merchant-submit-button')
+    pay_button: By = (By.ID, 'merchant-submit-button')
     visa_checkout_mock_button: By = (By.ID, 'v-button')
     apple_pay_mock_button: By = (By.ID, 'st-apple-pay')
     google_pay_mock_button: By = (By.ID, 'gp-mocked-button')
@@ -50,6 +50,9 @@ class PaymentMethodsLocators:
     pay_button_label: By = (By.XPATH, '//button[@type=\'submit\']')
     purchase_authentication_label: By = (By.XPATH, '//*[text()="Purchase Authentication"]')
     please_submit_label: By = (By.XPATH, '//*[contains(text(),"Please submit")]')
+
+    # logs
+    logs_textarea: By = (By.ID, 'st-log-area')
 
     popups: By = (By.CSS_SELECTOR, '.st-popup div')
     callback_success_popup: By = (By.ID, 'success-popup')

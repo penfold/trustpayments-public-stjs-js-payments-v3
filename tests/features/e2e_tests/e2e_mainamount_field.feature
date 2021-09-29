@@ -7,7 +7,7 @@ Feature: E2E Card Payments with mainamount field in jwt payload
     And User opens example page
     When User fills payment form with defined card VISA_V21_FRICTIONLESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -58,7 +58,7 @@ Feature: E2E Card Payments with mainamount field in jwt payload
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page WITHOUT_SUBMIT_BUTTON
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And "submit" callback is called only once
     And "success" callback is called only once

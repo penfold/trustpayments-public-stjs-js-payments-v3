@@ -7,7 +7,7 @@ Feature: request type with callbacks - full test coverage
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -42,7 +42,7 @@ Feature: request type with callbacks - full test coverage
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -70,7 +70,7 @@ Feature: request type with callbacks - full test coverage
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -97,7 +97,7 @@ Feature: request type with callbacks - full test coverage
     And User opens example page
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -122,7 +122,7 @@ Feature: request type with callbacks - full test coverage
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -144,7 +144,7 @@ Feature: request type with callbacks - full test coverage
     And User opens example page
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
-    Then User will see payment status information: "Payment has been successfully processed"
+    Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once
     And "success" callback is called only once
     And submit callback contains JWT response
@@ -166,7 +166,7 @@ Feature: request type with callbacks - full test coverage
     When User fills payment form with defined card MASTERCARD_STEP_UP_AUTH_FAILED
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see payment status information: "An error occurred"
+    Then User will see notification frame text: "An error occurred"
     And "submit" callback is called only once
     And "error" callback is called only once
     And submit callback contains JWT response
@@ -193,7 +193,7 @@ Feature: request type with callbacks - full test coverage
     And User opens example page
     When User fills payment form with defined card MASTERCARD_INVALID_EXP_DATE_CARD
     And User clicks Pay button
-    Then User will see payment status information: "Invalid field"
+    Then User will see notification frame text: "Invalid field"
     And "submit" callback is called only once
     And "error" callback is called only once
     And submit callback contains JWT response

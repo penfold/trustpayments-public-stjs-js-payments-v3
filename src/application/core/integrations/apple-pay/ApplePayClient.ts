@@ -32,7 +32,7 @@ export class ApplePayClient implements IApplePayClient {
     private interFrameCommunicator: InterFrameCommunicator,
     private localStorage: BrowserLocalStorage,
     private messageBus: IMessageBus,
-    private jwtDecoder: JwtDecoder
+    private jwtDecoder: JwtDecoder,
   ) {}
 
   init$(): Observable<ApplePayClientStatus> {
@@ -43,7 +43,7 @@ export class ApplePayClient implements IApplePayClient {
             type: PUBLIC_EVENTS.APPLE_PAY_CONFIG,
             data: config,
           },
-          EventScope.ALL_FRAMES
+          EventScope.ALL_FRAMES,
         );
       }),
       tap(() => this.localStorage.setItem('completePayment', 'false')),
@@ -61,32 +61,73 @@ export class ApplePayClient implements IApplePayClient {
             return of(ApplePayClientStatus.VALIDATE_MERCHANT_SUCCESS);
 
           case ApplePayClientStatus.VALIDATE_MERCHANT_ERROR:
+            this.messageBus.publish({
+              type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
+              data: {
+                name: 'ApplePay',
+              },
+            }, EventScope.EXPOSED);
+
             return this.onValidateMerchantError$(details);
 
           case ApplePayClientStatus.ON_PAYMENT_AUTHORIZED:
             return this.onPaymentAuthorized$(details);
 
           case ApplePayClientStatus.CANCEL:
+            this.messageBus.publish({
+              type: PUBLIC_EVENTS.PAYMENT_METHOD_CANCELED,
+              data: {
+                name: 'ApplePay',
+              },
+            }, EventScope.EXPOSED);
             return this.onCancel$(details);
 
           case ApplePayClientStatus.SUCCESS:
+            this.messageBus.publish({
+              type: PUBLIC_EVENTS.PAYMENT_METHOD_COMPLETED,
+              data: {
+                name: 'ApplePay',
+              },
+            }, EventScope.EXPOSED);
+
             return this.onSuccess$(details);
 
           case ApplePayClientStatus.ERROR:
+            this.messageBus.publish({
+              type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
+              data: {
+                name: 'ApplePay',
+              },
+            }, EventScope.EXPOSED);
+
             return this.onError$(details);
 
           case ApplePayClientStatus.EMPTY_JWT_ERROR:
+            this.messageBus.publish({
+              type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
+              data: {
+                name: 'ApplePay',
+              },
+            }, EventScope.EXPOSED);
+
             return this.onError$(details, true);
 
           default:
+            this.messageBus.publish({
+              type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
+              data: {
+                name: 'ApplePay',
+              },
+            }, EventScope.EXPOSED);
+
             return throwError('Unknown Apple Pay status');
         }
-      })
+      }),
     );
   }
 
   private noActiveCardsInWallet$(
-    details: IApplePayClientStatusDetails
+    details: IApplePayClientStatusDetails,
   ): Observable<ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET> {
     const { errorCode, errorMessage } = details;
     this.applePayNotificationService.notification(errorCode, errorMessage);
@@ -98,7 +139,7 @@ export class ApplePayClient implements IApplePayClient {
           ...details,
         },
       },
-      EventScope.ALL_FRAMES
+      EventScope.ALL_FRAMES,
     );
 
     return of(ApplePayClientStatus.NO_ACTIVE_CARDS_IN_WALLET);
@@ -107,7 +148,7 @@ export class ApplePayClient implements IApplePayClient {
   private onCancel$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.CANCEL> {
     const { errorCode, errorMessage } = details;
     this.applePayNotificationService.notification(errorCode, errorMessage);
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK },  EventScope.ALL_FRAMES);
+    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, EventScope.ALL_FRAMES);
     this.messageBus.publish(
       {
         type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
@@ -115,7 +156,7 @@ export class ApplePayClient implements IApplePayClient {
           errorcode: 'cancelled',
         },
       },
-      EventScope.ALL_FRAMES
+      EventScope.ALL_FRAMES,
     );
 
     return of(ApplePayClientStatus.CANCEL);
@@ -130,7 +171,7 @@ export class ApplePayClient implements IApplePayClient {
         config.validateMerchantRequest,
         formData,
         payment,
-        config.merchantUrl
+        config.merchantUrl,
       )
       .pipe(
         tap(() => this.localStorage.setItem('completePayment', 'true')),
@@ -143,23 +184,23 @@ export class ApplePayClient implements IApplePayClient {
                 details: response,
               },
             },
-            EventScope.ALL_FRAMES
+            EventScope.ALL_FRAMES,
           );
         }),
-        mapTo(ApplePayClientStatus.SUCCESS)
+        mapTo(ApplePayClientStatus.SUCCESS),
       );
   }
 
   private onSuccess$(details: IApplePayClientStatusDetails): Observable<ApplePayClientStatus.SUCCESS> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
-    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK },  EventScope.ALL_FRAMES);
+    this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK }, EventScope.ALL_FRAMES);
     StCodec.resetJwt();
 
     return of(ApplePayClientStatus.SUCCESS);
   }
 
   private onValidateMerchant$(
-    details: IApplePayClientStatusDetails
+    details: IApplePayClientStatusDetails,
   ): Observable<ApplePayClientStatus.ON_VALIDATE_MERCHANT> {
     const { validateMerchantURL, config, paymentCancelled } = details;
 
@@ -175,10 +216,10 @@ export class ApplePayClient implements IApplePayClient {
                 details: response.data,
               },
             },
-            EventScope.ALL_FRAMES
+            EventScope.ALL_FRAMES,
           );
         }),
-        mapTo(ApplePayClientStatus.ON_VALIDATE_MERCHANT)
+        mapTo(ApplePayClientStatus.ON_VALIDATE_MERCHANT),
       );
   }
 
@@ -189,12 +230,12 @@ export class ApplePayClient implements IApplePayClient {
 
   private onError$(
     details: IApplePayClientStatusDetails,
-    callTransactionComplete?: boolean
+    callTransactionComplete?: boolean,
   ): Observable<ApplePayClientStatus.ERROR> {
     this.applePayNotificationService.notification(details.errorCode, details.errorMessage);
 
     if (callTransactionComplete) {
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
       this.messageBus.publish(
         {
           type: PUBLIC_EVENTS.TRANSACTION_COMPLETE,
@@ -203,7 +244,7 @@ export class ApplePayClient implements IApplePayClient {
             errorcode: String(ApplePayClientErrorCode.ERROR),
           },
         },
-        EventScope.ALL_FRAMES
+        EventScope.ALL_FRAMES,
       );
     }
 

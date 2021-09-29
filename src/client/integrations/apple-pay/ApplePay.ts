@@ -29,6 +29,7 @@ import { IApplePayWalletVerifyResponseBody } from '../../../application/core/int
 import { ApplePayStatus } from './apple-pay-session-service/ApplePayStatus';
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
+import { EventScope } from '../../../application/core/models/constants/EventScope';
 
 @Service()
 export class ApplePay {
@@ -55,6 +56,14 @@ export class ApplePay {
     this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_CONFIG))
       .pipe(
+        tap(() => {
+          this.messageBus.publish({
+            type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_STARTED,
+            data: {
+              name: 'ApplePay',
+            },
+          }, EventScope.EXPOSED);
+        }),
         switchMap((event: IMessageBusEvent<IConfig>) => this.verifyAvailability(event.data)),
         map((config: IConfig) =>
           this.applePayConfigService.getConfig(config, {
@@ -80,6 +89,12 @@ export class ApplePay {
             config.applePayConfig.paymentRequest.countryCode,
           );
           this.applePayGestureService.gestureHandle(this.initApplePaySession.bind(this), config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
+          this.messageBus.publish({
+            type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_COMPLETED,
+            data: {
+              name: 'ApplePay',
+            },
+          }, EventScope.EXPOSED);
         }),
         tap(() => {
           this.googleAnalytics.sendGaData(
@@ -91,6 +106,12 @@ export class ApplePay {
         }),
         catchError((errorMessage: string) => {
           console.error(errorMessage);
+          this.messageBus.publish({
+            type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_FAILED,
+            data: {
+              name: 'ApplePay',
+            },
+          }, EventScope.EXPOSED);
           return EMPTY;
         }),
         takeUntil(this.destroy$),
@@ -145,6 +166,12 @@ export class ApplePay {
     this.paymentCancelled = false;
     this.applePaySession = this.applePaySessionFactory.create(this.config.applePayVersion, this.config.paymentRequest);
     this.applePaySessionService.init(this.applePaySession, this.config.paymentRequest);
+    this.messageBus.publish({
+      type: PUBLIC_EVENTS.PAYMENT_METHOD_STARTED,
+      data: {
+        name: 'ApplePay',
+      },
+    }, EventScope.EXPOSED);
     this.onValidateMerchant();
     this.onPaymentAuthorized();
     this.onCancel();
