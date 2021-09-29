@@ -10,6 +10,7 @@ export const APMSchema: ObjectSchema = object().keys({
     string().valid(...Object.values(APMName)),
     object().keys({
       name: string().valid(...Object.values(APMName)),
+      placement: string(),
       successRedirectUrl: string(),
       errorRedirectUrl: string(),
       cancelRedirectUrl: string(),
