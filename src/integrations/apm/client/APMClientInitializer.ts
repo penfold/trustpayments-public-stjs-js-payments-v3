@@ -17,8 +17,11 @@ export class APMClientInitializer implements IMessageSubscriber {
 
   register(): void {
     this.frameQueryingService.whenReceive(
-      PUBLIC_EVENTS.APM_INIT_CLIENT,// TODO agree on message name
-      (event: IMessageBusEvent<IConfig>) => this.apmClient.init(event.data),
+      PUBLIC_EVENTS.APM_INIT_CLIENT,
+      (event: IMessageBusEvent<IConfig>) => {
+        return this.apmClient.init(event.data);
+      },
     );
   }
 }
+
