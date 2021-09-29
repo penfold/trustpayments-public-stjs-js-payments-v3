@@ -1,5 +1,5 @@
 import { array, object, ObjectSchema, string } from 'joi';
-import { APMNameList } from './IAPMConfig';
+import { APMName } from './APMName';
 
 export const APMSchema: ObjectSchema = object().keys({
   placement: string().required(),
@@ -7,9 +7,9 @@ export const APMSchema: ObjectSchema = object().keys({
   errorRedirectUrl: string().required(),
   cancelRedirectUrl: string().required(),
   apmList: array().items(
-    string().valid(...APMNameList),
+    string().valid(...Object.values(APMName)),
     object().keys({
-      name: string().valid(...APMNameList),
+      name: string().valid(...Object.values(APMName)),
       successRedirectUrl: string(),
       errorRedirectUrl: string(),
       cancelRedirectUrl: string(),

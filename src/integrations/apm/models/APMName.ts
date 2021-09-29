@@ -18,5 +18,6 @@ export enum APMName {
   trustly = 'trustly', // Trustly
   unionpay = 'unionpay', // UnionPay SecurePay
   wechat = 'wechat', // WeChat Pay
+  zip = 'zip', // WeChat Pay
   // TODO: a correct list will be provided by Ben
 }
