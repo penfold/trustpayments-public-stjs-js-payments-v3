@@ -88,17 +88,6 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayC
   }
 
   private paymentCancelled() {
-    const err = new Error('Payment has been cancelled');
-
-    // this.paymentErrors.error({
-    //   status: PaymentStatus.CANCEL,
-    //   data: err,
-    //   error: {
-    //     code: 50003,
-    //     message: err.message,
-    //   },
-    // });
-
-    return throwError(() => err);
+    return throwError(() => new Error('Payment has been cancelled'));
   }
 }
