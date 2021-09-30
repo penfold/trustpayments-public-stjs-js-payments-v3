@@ -9,29 +9,27 @@ module.exports = merge(common, {
   mode: 'development',
   devtool: 'source-map',
   devServer: {
-    compress: true,
-    contentBase: path.join(__dirname, './dist'),
-    publicPath: '',
-    port: 8443,
+    bonjour: true,
+    host: '0.0.0.0',
     https: {
       key: fs.readFileSync('./docker/app-html/nginx/cert/merchant.securetrading.net/key.pem'),
       cert: fs.readFileSync('./docker/app-html/nginx/cert/merchant.securetrading.net/cert.pem'),
-      ca: fs.readFileSync('./docker/app-html/nginx/cert/minica.pem'),
+      cacert: fs.readFileSync('./docker/app-html/nginx/cert/minica.pem'),
     },
-    host: '0.0.0.0',
-    writeToDisk: true,
-    index: 'index.html',
-    disableHostCheck: true,
-    watchOptions: {
-      ignored: ['node_modules']
+    port: 8443,
+    static: {
+      directory: path.join(__dirname, './dist'),
     },
-    injectClient: false,
+    client: false,
   },
   plugins: [
     new WebpackManifestPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       FRAME_URL: JSON.stringify(process.env.npm_config_frame_url),
-    })
-  ]
+    }),
+  ],
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+  },
 });
