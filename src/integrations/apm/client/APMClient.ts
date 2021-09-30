@@ -1,14 +1,14 @@
 import { Service } from 'typedi';
 import { Observable, of } from 'rxjs';
-import { IConfig } from '../../../shared/model/config/IConfig';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { getAPMListFromConfig } from '../models/APMUtils';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
+import { IAPMConfig } from '../models/IAPMConfig';
 
 @Service()
 export class APMClient {
-  init(config: IConfig): Observable<undefined> {
-    getAPMListFromConfig(config.apm).forEach(itemConfig => this.insertAPMButton(itemConfig));
+  init(config: IAPMConfig): Observable<undefined> {
+    getAPMListFromConfig(config).forEach(itemConfig => this.insertAPMButton(itemConfig));
 
     return of(undefined);
   }
