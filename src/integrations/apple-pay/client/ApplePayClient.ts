@@ -14,9 +14,12 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { MerchantValidationService } from './MerchantValidationService';
-import { mapTo, tap } from 'rxjs/operators';
+import { mapTo, takeUntil, tap } from 'rxjs/operators';
 import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
 import { PaymentAuthorizationService } from './PaymentAuthorizationService';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 
@@ -38,6 +41,8 @@ export class ApplePayClient {
   }
 
   init(config: IConfig): Observable<void> {
+    this.updateJwtListener(config);
+
     return this.isApplePayAvailable(config).pipe(
       map(config => this.resolveApplePayConfig(config)),
       tap(applePayConfig => this.insertApplePayButton(applePayConfig)),
@@ -52,6 +57,17 @@ export class ApplePayClient {
       }),
       mapTo(undefined),
     );
+  }
+
+  private updateJwtListener(config: IConfig): void {
+    this.messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.UPDATE_JWT),
+        takeUntil(this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY)))
+      )
+      .subscribe((event: IMessageBusEvent<IUpdateJwt>) => {
+        this.initGestureHandler(this.resolveApplePayConfig({ ...config, jwt: event.data.newJwt }));
+      });
   }
 
   private isApplePayAvailable(config: IConfig): Observable<IConfig> {
@@ -109,7 +125,7 @@ export class ApplePayClient {
   private initGestureHandler(config: IApplePayConfigObject): void {
     this.applePayButtonClickService.bindClickHandler(() => {
       this.initApplePaySession(config);
-      this.startPaymentProcess(config)
+      this.startPaymentProcess(config);
     }, config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
   }
 
