@@ -50,9 +50,6 @@ import { ITranslator } from '../../application/core/shared/translator/ITranslato
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { ExposedEvents, ExposedEventsName } from '../../application/core/models/constants/ExposedEvents';
 import { EventScope } from '../../application/core/models/constants/EventScope';
-import { APMClient } from '../../integrations/apm/client/APMClient';
-import { IAPMConfig } from '../../integrations/apm/models/IAPMConfig';
-import { APMPaymentMethodName } from '../../integrations/apm/models/IAPMPaymentMethod';
 
 @Service()
 export class ST {
@@ -118,7 +115,6 @@ export class ST {
     private googleAnalytics: GoogleAnalytics,
     private merchantFields: MerchantFields,
     private cardFrames: CardFrames,
-    private apmClient: APMClient,
   ) {
   }
 
@@ -152,21 +148,6 @@ export class ST {
         {
           type: PUBLIC_EVENTS.CARD_PAYMENTS_INIT,
           data: JSON.stringify(this.config),
-        },
-        EventScope.THIS_FRAME,
-      );
-    });
-  }
-
-  APM(config: IAPMConfig): void {
-    this.initControlFrame$().subscribe(() => {
-      this.messageBus.publish<IInitPaymentMethod<IAPMConfig>>(
-        {
-          type: PUBLIC_EVENTS.APM_INIT_CLIENT,
-          data: {
-            name: APMPaymentMethodName,
-            config,
-          },
         },
         EventScope.THIS_FRAME,
       );
@@ -311,7 +292,7 @@ export class ST {
     this.messageBus.publish(
       {
         type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL,
-      }, EventScope.ALL_FRAMES,
+      },  EventScope.ALL_FRAMES,
     );
   }
 
