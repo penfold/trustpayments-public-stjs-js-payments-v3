@@ -57,7 +57,7 @@ describe('getAPMListFromConfig', () => {
     },
   ];
 
-  it('should map atmList field to array of full configuration objects, assigning default values to fields not defined in item config', () => {
+  it('should map apmList field to array of full configuration objects, assigning default values to fields not defined in item config', () => {
     expect(getAPMListFromConfig(testConfig)).toEqual(expected);
   });
 });
