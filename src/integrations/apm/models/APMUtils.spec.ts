@@ -10,14 +10,14 @@ describe('getAPMListFromConfig', () => {
     successRedirectUrl: 'defaultSuccessRedirectUrl',
     placement: 'st-apm',
     apmList: [
-      APMName.zip,
-      { name: APMName.zip },
+      APMName.ZIP,
+      { name: APMName.ZIP },
       {
-        name: APMName.zip,
+        name: APMName.ZIP,
         successRedirectUrl: 'customSuccessUrl1',
       },
       {
-        name: APMName.zip,
+        name: APMName.ZIP,
         successRedirectUrl: 'customSuccessUrl1',
         errorRedirectUrl: 'customErrorUrl1',
         cancelRedirectUrl: 'customCancelUrl1',
@@ -28,28 +28,28 @@ describe('getAPMListFromConfig', () => {
 
   const expected: IAPMItemConfig[] = [
     {
-      name: APMName.zip,
+      name: APMName.ZIP,
       cancelRedirectUrl: 'defaultCancelRedirectUrl',
       errorRedirectUrl: 'defaultErrorRedirectUrl',
       successRedirectUrl: 'defaultSuccessRedirectUrl',
       placement: 'st-apm',
     },
     {
-      name: APMName.zip,
+      name: APMName.ZIP,
       cancelRedirectUrl: 'defaultCancelRedirectUrl',
       errorRedirectUrl: 'defaultErrorRedirectUrl',
       successRedirectUrl: 'defaultSuccessRedirectUrl',
       placement: 'st-apm',
     },
     {
-      name: APMName.zip,
+      name: APMName.ZIP,
       cancelRedirectUrl: 'defaultCancelRedirectUrl',
       errorRedirectUrl: 'defaultErrorRedirectUrl',
       successRedirectUrl: 'customSuccessUrl1',
       placement: 'st-apm',
     },
     {
-      name: APMName.zip,
+      name: APMName.ZIP,
       successRedirectUrl: 'customSuccessUrl1',
       errorRedirectUrl: 'customErrorUrl1',
       cancelRedirectUrl: 'customCancelUrl1',
