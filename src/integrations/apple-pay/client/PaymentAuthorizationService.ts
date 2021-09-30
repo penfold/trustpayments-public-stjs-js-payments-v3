@@ -10,10 +10,14 @@ import { IApplePayProcessPaymentResponse } from '../../../application/core/integ
 import { ApplePayStatus } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePayStatus';
 import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 
 @Service()
 export class PaymentAuthorizationService {
-  constructor(private frameQueryingService: IFrameQueryingService) {
+  constructor(
+    private frameQueryingService: IFrameQueryingService,
+    private googleAnalytics: GoogleAnalytics,
+  ) {
   }
 
   init(applePaySession: IApplePaySession, config: IApplePayConfigObject): void {
@@ -35,12 +39,15 @@ export class PaymentAuthorizationService {
         next: (response: IApplePayProcessPaymentResponse) => {
           if (Number(response.errorcode) === 0) {
             applePaySession.completePayment({ status: ApplePayStatus.STATUS_SUCCESS });
+            this.googleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed');
           } else {
             applePaySession.completePayment({ status: ApplePayStatus.STATUS_FAILURE });
+            this.googleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment failure');
           }
         },
         error: () => {
           applePaySession.completePayment({ status: ApplePayStatus.STATUS_FAILURE });
+          this.googleAnalytics.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment error');
         },
       });
     };

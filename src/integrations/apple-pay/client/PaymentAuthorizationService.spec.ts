@@ -13,19 +13,23 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { ApplePayStatus } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePayStatus';
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 
 describe('PaymentAuthorizationService', () => {
   let frameQueryingServiceMock: IFrameQueryingService;
+  let googleAnalyticsMock: GoogleAnalytics;
   let applePaySessionMock: IApplePaySession;
   let applePaySession: IApplePaySession;
   let paymentAuthorizationService: PaymentAuthorizationService;
 
   beforeEach(() => {
     frameQueryingServiceMock = mock<IFrameQueryingService>();
+    googleAnalyticsMock = mock(GoogleAnalytics);
     applePaySessionMock = mock<IApplePaySession>();
     applePaySession = instance(applePaySessionMock);
     paymentAuthorizationService = new PaymentAuthorizationService(
       instance(frameQueryingServiceMock),
+      instance(googleAnalyticsMock),
     );
 
     DomMethods.parseForm = jest.fn().mockReturnValueOnce({
@@ -123,6 +127,7 @@ describe('PaymentAuthorizationService', () => {
     }
 
     it('sends payment authorization query and complete payment', () => {
+      processPaymentResponse.errorcode = '0';
       when(frameQueryingServiceMock.query(anything(), CONTROL_FRAME_IFRAME)).thenReturn(of(processPaymentResponse));
 
       paymentAuthorizationService.init(applePaySession, config);
@@ -142,6 +147,7 @@ describe('PaymentAuthorizationService', () => {
       }), CONTROL_FRAME_IFRAME)).once();
 
       verify(applePaySessionMock.completePayment(deepEqual({ status: ApplePayStatus.STATUS_SUCCESS }))).once();
+      verify(googleAnalyticsMock.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment completed')).once();
     });
 
     it('sends payment authorization query and propagate failure when response errorcode!=0', () => {
@@ -154,6 +160,7 @@ describe('PaymentAuthorizationService', () => {
       applePaySession.onpaymentauthorized(event);
 
       verify(applePaySessionMock.completePayment(deepEqual({ status: ApplePayStatus.STATUS_FAILURE }))).once();
+      verify(googleAnalyticsMock.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment failure')).once();
     });
 
     it('sends payment authorization query and propagate failure when request fails', () => {
@@ -164,6 +171,7 @@ describe('PaymentAuthorizationService', () => {
       applePaySession.onpaymentauthorized(event);
 
       verify(applePaySessionMock.completePayment(deepEqual({ status: ApplePayStatus.STATUS_FAILURE }))).once();
+      verify(googleAnalyticsMock.sendGaData('event', 'Apple Pay', 'payment', 'Apple Pay payment error')).once();
     });
   });
 });

@@ -17,7 +17,8 @@ import { MerchantValidationService } from './MerchantValidationService';
 import { mapTo, tap } from 'rxjs/operators';
 import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
 import { PaymentAuthorizationService } from './PaymentAuthorizationService';
-import { IApplePayPaymentRequest } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 
 @Service()
 export class ApplePayClient {
@@ -32,6 +33,7 @@ export class ApplePayClient {
     private messageBus: IMessageBus,
     private merchantValidationService: MerchantValidationService,
     private paymentAuthorizationService: PaymentAuthorizationService,
+    private googleAnalytics: GoogleAnalytics,
   ) {
   }
 
@@ -40,6 +42,14 @@ export class ApplePayClient {
       map(config => this.resolveApplePayConfig(config)),
       tap(applePayConfig => this.insertApplePayButton(applePayConfig)),
       tap(applePayConfig => this.initGestureHandler(applePayConfig)),
+      tap(() => {
+        this.googleAnalytics.sendGaData(
+          'event',
+          'Apple Pay',
+          `${ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD}`,
+          'Can make payment',
+        );
+      }),
       mapTo(undefined),
     );
   }
@@ -105,5 +115,6 @@ export class ApplePayClient {
 
   private onCancel(): void {
     this.messageBus.publish({ type: PUBLIC_EVENTS.APPLE_PAY_CANCELLED });
+    this.googleAnalytics.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.CANCEL}`, 'Payment has been cancelled');
   }
 }
