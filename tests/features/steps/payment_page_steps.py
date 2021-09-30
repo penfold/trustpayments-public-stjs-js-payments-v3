@@ -478,9 +478,7 @@ def step_impl(context, name, email, phone):
 @then('User will see that browser is marked as supported: "(?P<is_supported>.+)"')
 def step_impl(context, is_supported):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    # ToDo - clarify if High Sierra should be removed from the pipeline (Safari 11 - not supported)
-    # skipping assertion on mobile devices, as browserstack doesn't allow to set up latest version of browser
-    if 'High Sierra' not in context.configuration.REMOTE_OS_VERSION and not context.configuration.REMOTE_DEVICE:
+    if not context.configuration.REMOTE_DEVICE:
         payment_page.validate_if_browser_is_supported_in_info_callback(is_supported)
 
 

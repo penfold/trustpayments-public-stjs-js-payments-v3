@@ -47,7 +47,7 @@ describe('ST', () => {
       '<div id="st-card-number" class="example-form__group"></div><div id="st-expiration-date" class="example-form__group"></div>' +
       '<div id="st-security-code" class="example-form__group"></div><div id="st-error-container" class="example-form__group"></div>' +
       '<div class="example-form__spacer"></div></div><div class="example-form__section"><div class="example-form__group">' +
-      '<button type="submit" class="example-form__button">PAY</button></div></div><div class="example-form__section">' +
+      '<button type="submit" class="st-form__button st-button-submit__disabled" disabled>Pay</button></div></div><div class="example-form__section">' +
       '<div id="st-control-frame" class="example-form__group"></div><div id="st-visa-checkout" class="example-form__group"></div>' +
       '<div id="st-apple-pay" class="example-form__group"></div></div><div id="st-animated-card" class="st-animated-card-wrapper">' +
       '</div></form>';
