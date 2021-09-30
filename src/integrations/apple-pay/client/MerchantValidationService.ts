@@ -8,10 +8,15 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 
 @Service()
 export class MerchantValidationService {
-  constructor(private frameQueryingService: IFrameQueryingService) {
+  constructor(
+    private frameQueryingService: IFrameQueryingService,
+    private googleAnalytics: GoogleAnalytics,
+  ) {
   }
 
   init(applePaySession: IApplePaySession, config: IApplePayConfigObject): void {
@@ -28,12 +33,33 @@ export class MerchantValidationService {
         next: (response: IApplePayWalletVerifyResponseBody) => {
           if (Number(response.errorcode) === 0) {
             applePaySession.completeMerchantValidation(JSON.parse(response.walletsession));
+            this.googleAnalytics.sendGaData(
+              'event',
+              'Apple Pay',
+              `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
+              'Apple Pay Merchant validation success',
+            );
+            this.googleAnalytics.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify success');
           } else {
             applePaySession.abort();
+            this.googleAnalytics.sendGaData(
+              'event',
+              'Apple Pay',
+              `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
+              'Apple Pay Merchant validation error',
+            );
+            this.googleAnalytics.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify failure');
           }
         },
         error: () => {
           applePaySession.abort();
+          this.googleAnalytics.sendGaData(
+            'event',
+            'Apple Pay',
+            `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`,
+            'Apple Pay Merchant validation error',
+          );
+          this.googleAnalytics.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify failure');
         },
       });
     };
