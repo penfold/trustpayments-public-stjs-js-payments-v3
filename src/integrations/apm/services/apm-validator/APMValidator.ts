@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { ValidationResult } from 'joi';
-import { APMSchema } from './APMSchema';
-import { IAPMConfig } from './IAPMConfig';
+import { APMSchema } from '../../models/APMSchema';
+import { IAPMConfig } from '../../models/IAPMConfig';
 
 @Service()
 export class APMValidator {

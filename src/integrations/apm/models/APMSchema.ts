@@ -1,18 +1,19 @@
-import { array, object, ObjectSchema, string } from 'joi';
-import { APMNameList } from './IAPMConfig';
+import Joi, {  ObjectSchema } from 'joi';
+import { APMName } from './APMName';
 
-export const APMSchema: ObjectSchema = object().keys({
-  placement: string().required(),
-  successRedirectUrl: string().required(),
-  errorRedirectUrl: string().required(),
-  cancelRedirectUrl: string().required(),
-  apmList: array().items(
-    string().valid(...APMNameList),
-    object().keys({
-      name: string().valid(...APMNameList),
-      successRedirectUrl: string(),
-      errorRedirectUrl: string(),
-      cancelRedirectUrl: string(),
+export const APMSchema: ObjectSchema = Joi.object().keys({
+  placement: Joi.string().required(),
+  successRedirectUrl: Joi.string().required(),
+  errorRedirectUrl: Joi.string().required(),
+  cancelRedirectUrl: Joi.string().required(),
+  apmList: Joi.array().items(
+    Joi.string().valid(...Object.values(APMName)),
+    Joi.object().keys({
+      name: Joi.string().valid(...Object.values(APMName)),
+      placement: Joi.string(),
+      successRedirectUrl: Joi.string(),
+      errorRedirectUrl: Joi.string(),
+      cancelRedirectUrl: Joi.string(),
     }),
   ).required(),
 });
