@@ -2,7 +2,6 @@ import { IAPMConfig } from './IAPMConfig';
 import { IAPMItemConfig } from './IAPMItemConfig';
 import { APMName } from './APMName';
 
-// TODO verify which properties should be taken from default
 export const getAPMListFromConfig = (config: IAPMConfig): IAPMItemConfig[] => {
   return config.apmList.map((item: IAPMItemConfig | APMName) => {
     let normalizedItemConfig: IAPMItemConfig;
