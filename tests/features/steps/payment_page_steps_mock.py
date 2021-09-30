@@ -203,8 +203,6 @@ def step_impl(context, request_type):
     elif 'config_tokenisation' in context.scenario.tags[0]:
         page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE_MOCK)
         page.validate_number_of_tokenisation_requests(request_type, context.cvv, 1)
-    elif 'submit_without_cvv' in context.scenario.tags:
-        validate_number_of_requests_with_pan_expirydate(context, request_type, 1)
     elif 'submit_cvv_only' in context.scenario.tags:
         validate_number_of_requests_with_cvv(context, request_type, 1)
     else:
