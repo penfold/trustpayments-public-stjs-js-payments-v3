@@ -9,8 +9,7 @@ describe('APMValidator', () => {
     successRedirectUrl: 'successurl',
     errorRedirectUrl: 'errorurl',
     cancelRedirectUrl: 'cancelurl',
-    // @ts-ignore
-    apmList: [APMName.ZIP, 'testid'],
+    apmList: [APMName.ZIP, 'testid' as APMName],
   }
 
   const config: IAPMConfig = {
