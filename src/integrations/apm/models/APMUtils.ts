@@ -5,16 +5,27 @@ import { APMName } from './APMName';
 // TODO verify which properties should be taken from default
 export const getAPMListFromConfig = (config: IAPMConfig): IAPMItemConfig[] => {
   return config.apmList.map((item: IAPMItemConfig | APMName) => {
+    let normalizedItemConfig: IAPMItemConfig;
+
     if (isAPMItemConfig(item)) {
-      return item;
+      normalizedItemConfig = {
+        name: item.name,
+        errorRedirectUrl: item.errorRedirectUrl || config.errorRedirectUrl,
+        successRedirectUrl: item.successRedirectUrl || config.successRedirectUrl,
+        cancelRedirectUrl: item.cancelRedirectUrl || config.cancelRedirectUrl,
+        placement: item.placement || config.placement,
+      };
     } else {
-      return {
+      normalizedItemConfig = {
         name: item,
         errorRedirectUrl: config.errorRedirectUrl,
         successRedirectUrl: config.successRedirectUrl,
         cancelRedirectUrl: config.cancelRedirectUrl,
+        placement: config.placement,
       };
     }
+
+    return normalizedItemConfig;
   });
 };
 

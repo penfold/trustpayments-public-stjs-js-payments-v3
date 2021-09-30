@@ -1,30 +1,20 @@
 import { Service } from 'typedi';
-import { IConfig } from '../../../shared/model/config/IConfig';
 import { Observable, of } from 'rxjs';
+import { IConfig } from '../../../shared/model/config/IConfig';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { getAPMListFromConfig } from '../models/APMUtils';
-import { IAPMConfig } from '../models/IAPMConfig';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
-import { APMName } from '../models/APMName';
 
 @Service()
 export class APMClient {
-  init(config: IConfig): Observable<unknown> {
-    this.insertAPMButtons(config.apm);
+  init(config: IConfig): Observable<undefined> {
+    getAPMListFromConfig(config.apm).forEach(itemConfig => this.insertAPMButton(itemConfig));
 
-    return of(null);
+    return of(undefined);
   }
 
-  private insertAPMButtons(config: IAPMConfig) {
-    const apmList = getAPMListFromConfig(config);
-
-    apmList.forEach((apmItemConfig: IAPMItemConfig) => {
-      this.insertAPMButton(config.placement, apmItemConfig);
-    });
-  }
-
-  private insertAPMButton(apmButtonPlacement: string, apmItemConfig: IAPMItemConfig) {
-    DomMethods.appendChildStrictIntoDOM(apmButtonPlacement, this.createButtonForApmItem(apmItemConfig));
+  private insertAPMButton(apmItemConfig: IAPMItemConfig) {
+    DomMethods.appendChildStrictIntoDOM(apmItemConfig.placement, this.createButtonForApmItem(apmItemConfig));
   }
 
   private createButtonForApmItem(apmItemConfig: IAPMItemConfig): HTMLElement {
@@ -32,14 +22,13 @@ export class APMClient {
 
     // TODO add styling and image assets ???
     button.innerText = `${apmItemConfig.name}`;
-    button.addEventListener('click', () => this.onAPMButtonClick(apmItemConfig.name));
+    button.addEventListener('click', (event) => this.onAPMButtonClick(event, apmItemConfig));
 
     return button;
   }
 
-  private onAPMButtonClick(name: APMName) {
+  private onAPMButtonClick(event: Event, { name }: IAPMItemConfig) {
+    event.preventDefault();
     console.log(`${name} payment button clicked`); // TODO start payement here
-
-    return undefined;
   }
 }
