@@ -50,7 +50,6 @@ import { ITranslator } from '../../application/core/shared/translator/ITranslato
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
 import { ExposedEvents, ExposedEventsName } from '../../application/core/models/constants/ExposedEvents';
 import { EventScope } from '../../application/core/models/constants/EventScope';
-import { APMClient } from '../../integrations/apm/client/APMClient';
 import { IAPMConfig } from '../../integrations/apm/models/IAPMConfig';
 import { APMPaymentMethodName } from '../../integrations/apm/models/IAPMPaymentMethod';
 
