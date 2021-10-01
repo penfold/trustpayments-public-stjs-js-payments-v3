@@ -60,7 +60,7 @@ export class DomMethods {
 
   static createHtmlElement = (attributes: Record<string, string>, markup: string): HTMLElement => {
     const element: HTMLElement = document.createElement(markup);
-    Object.keys(attributes).map(item => element.setAttribute(item, attributes[item]));
+    Object.keys(attributes).forEach(item => element.setAttribute(item, attributes[item]));
     return element;
   };
 
