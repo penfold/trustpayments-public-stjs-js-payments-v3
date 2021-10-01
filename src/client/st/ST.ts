@@ -162,7 +162,7 @@ export class ST {
     this.initControlFrame$().subscribe(() => {
       this.messageBus.publish<IInitPaymentMethod<IAPMConfig>>(
         {
-          type: PUBLIC_EVENTS.APM_INIT_CLIENT,
+          type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
           data: {
             name: APMPaymentMethodName,
             config,
