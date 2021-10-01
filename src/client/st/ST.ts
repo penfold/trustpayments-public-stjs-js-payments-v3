@@ -118,7 +118,6 @@ export class ST {
     private googleAnalytics: GoogleAnalytics,
     private merchantFields: MerchantFields,
     private cardFrames: CardFrames,
-    private apmClient: APMClient,
   ) {
   }
 
