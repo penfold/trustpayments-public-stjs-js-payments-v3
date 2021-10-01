@@ -120,18 +120,6 @@ module.exports = {
       Buffer: ['buffer', 'Buffer'],
     })
   ],
-  optimization: {
-    minimizer: [
-      (compiler) => {
-        const TerserPlugin = require('terser-webpack-plugin');
-        new TerserPlugin({
-          terserOptions: {
-            compress: {},
-          }
-        }).apply(compiler);
-      },
-    ],
-  },
   module: {
     rules: [
       {

@@ -1,173 +1,171 @@
 <!doctype html>
-<html class='no-js' lang='en'>
+<html class="no-js" lang="en">
 
 <head>
-  <meta charset='utf-8' />
-  <title>Trust Payments Example Form</title>
-  <meta name='description' content='Trust Payments example page with form'>
-  <meta name='viewport'
-        content='width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' />
-  <meta http-equiv='X-UA-Compatible' content='ie=edge' />
-  <link rel='icon' href='./img/favicon.webp' sizes='32x32'>
-  <link rel='icon' href='./img/favicon.webp' sizes='192x192'>
-  <link rel='apple-touch-icon' href='./img/favicon.webp'>
+    <meta charset="utf-8"/>
+    <title>Trust Payments Example Form</title>
+    <meta name="description" content="Trust Payments example page with form">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="icon" href="./img/favicon.webp" sizes="32x32">
+    <link rel="icon" href="./img/favicon.webp" sizes="192x192">
+    <link rel="apple-touch-icon" href="./img/favicon.webp">
 </head>
 
 <body>
 
 <main>
-  <header class='st-header'>
-    <figure class='st-header__logo'>
-      <img src='./img/trustpayments.png' alt='Trust Payments logo' title='Trust Payments' role='img'>
-    </figure>
-    <h1 class='st-header__title'>Example Form</h1>
-  </header>
+    <header class="st-header">
+        <figure class="st-header__logo">
+            <img src="./img/trustpayments.png" alt="Trust Payments logo" title="Trust Payments" role="img">
+        </figure>
+        <h1 class="st-header__title">Example Form</h1>
+    </header>
 
-  <form role='form' name='st-form' id='st-form' action='https://www.example.com' class='st-form' autocomplete='off'
-        novalidate>
+    <form role="form" name="st-form" id="st-form" action="https://www.example.com" class="st-form" autocomplete="off"
+          novalidate>
 
-    <div id='st-popup' class='st-popup'></div>
+        <div id="st-popup" class="st-popup"></div>
 
-    <div id='st-notification-frame' class='st-form__group'></div>
+        <div id="st-notification-frame" class="st-form__group"></div>
 
-    <div id='st-browser-info' class='st-form__group'></div>
+        <div id="st-browser-info" class="st-form__group"></div>
 
-    <fieldset class='st-form__fieldset'>
-      <legend>Payment details:</legend>
-      <div class='st-form__section st-form__section--horizontal'>
-        <div class='st-form__field'>
+        <fieldset class="st-form__fieldset">
+            <legend>Payment details:</legend>
+            <div class="st-form__section st-form__section--horizontal">
+                <div class="st-form__field">
 
-          <label for='st-form-price' class='st-form__label'>
-            price:
-            <abbr title='required' aria-label='required'>*</abbr>
-          </label>
+                    <label for="st-form-price" class="st-form__label">
+                        price:
+                        <abbr title="required" aria-label="required">*</abbr>
+                    </label>
 
-          <input type='text'
-                 name='myBillPrice'
-                 id='st-form-price'
-                 class='st-form__input'
-                 placeholder='myBillPrice'
-                 data-st-name='billingprice'
-                 disabled
-          />
-        </div>
-        <div class='st-form__field'>
-          <label for='example-form-amount' class='st-form__label'>
-            amount:
-            <abbr title='required' aria-label='required'>*</abbr>
-          </label>
-          <input type='number'
-                 name='myBillAmount'
-                 id='example-form-amount'
-                 class='st-form__input'
-                 placeholder='myBillAmount'
-                 data-st-name='billingamount'
-                 autocomplete='amount'
-          />
-        </div>
-      </div>
-      <div class='st-form__section st-form__section--horizontal'>
-        <div class='st-form__field'>
-          <label for='st-form-last-name' class='st-form__label'>name: </label>
-          <input type='text'
-                 name='myBillName'
-                 id='st-form-last-name'
-                 class='st-form__input'
-                 placeholder='Doe'
-                 data-st-name='billinglastname'
-                 autocomplete='family-name'
-          />
-        </div>
-        <div class='st-form__field'>
-          <label for='st-form-email' class='st-form__label'>e-mail: </label>
-          <input type='email'
-                 name='myBillEmail'
-                 id='st-form-email'
-                 class='st-form__input'
-                 placeholder='test@mail.com'
-                 data-st-name='billingemail'
-                 autocomplete='email'
-          />
-        </div>
+                    <input type="text"
+                           name="myBillPrice"
+                           id="st-form-price"
+                           class="st-form__input"
+                           placeholder="myBillPrice"
+                           data-st-name="billingprice"
+                           disabled
+                    />
+                </div>
+                <div class="st-form__field">
+                    <label for="example-form-amount" class="st-form__label">
+                        amount:
+                        <abbr title="required" aria-label="required">*</abbr>
+                    </label>
+                    <input type="number"
+                           name="myBillAmount"
+                           id="example-form-amount"
+                           class="st-form__input"
+                           placeholder="myBillAmount"
+                           data-st-name="billingamount"
+                           autocomplete="amount"
+                    />
+                </div>
+            </div>
+            <div class="st-form__section st-form__section--horizontal">
+                <div class="st-form__field">
+                    <label for="st-form-last-name" class="st-form__label">name: </label>
+                    <input type="text"
+                           name="myBillName"
+                           id="st-form-last-name"
+                           class="st-form__input"
+                           placeholder="Doe"
+                           data-st-name="billinglastname"
+                           autocomplete="family-name"
+                    />
+                </div>
+                <div class="st-form__field">
+                    <label for="st-form-email" class="st-form__label">e-mail: </label>
+                    <input type="email"
+                           name="myBillEmail"
+                           id="st-form-email"
+                           class="st-form__input"
+                           placeholder="test@mail.com"
+                           data-st-name="billingemail"
+                           autocomplete="email"
+                    />
+                </div>
 
-        <div class='st-form__field'>
-          <label for='st-form-phone' class='st-form__label'>phone: </label>
-          <input type='tel'
-                 name='myBillTel'
-                 id='st-form-phone'
-                 class='st-form__input'
-                 placeholder='+00 000 000 000'
-                 autocomplete='tel'
-          />
-        </div>
-      </div>
-      <div class='st-form__section st-form__section--horizontal'>
-        <div class='st-form__field'>
-          <label for='st-form-subscribe' class='st-form__label'>
-            type of payment:
-            <abbr title='required' aria-label='required'>*</abbr>
-          </label>
-          <select id='st-form-subscribe'
-                  class='st-form__input'
-                  placeholder='myBillSubscribe'
-                  autocomplete='subscribe'>
-            <option value='one-off payment'>one-off payment</option>
-            <option value='monthly payment'>monthly payment</option>
-          </select>
-        </div>
-      </div>
-    </fieldset>
+                <div class="st-form__field">
+                    <label for="st-form-phone" class="st-form__label">phone: </label>
+                    <input type="tel"
+                           name="myBillTel"
+                           id="st-form-phone"
+                           class="st-form__input"
+                           placeholder="+00 000 000 000"
+                           autocomplete="tel"
+                    />
+                </div>
+            </div>
+            <div class="st-form__section st-form__section--horizontal">
+                <div class="st-form__field">
+                    <label for="st-form-subscribe" class="st-form__label">
+                        type of payment:
+                        <abbr title="required" aria-label="required">*</abbr>
+                    </label>
+                    <select id="st-form-subscribe"
+                            class="st-form__input"
+                            placeholder="myBillSubscribe"
+                            autocomplete="subscribe">
+                        <option value="one-off payment">one-off payment</option>
+                        <option value="monthly payment">monthly payment</option>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
 
-    <fieldset class='st-form__fieldset'>
-      <legend>Logs:</legend>
-      <textarea id='st-log-area' rows='20' class='st-form__input'></textarea>
-    </fieldset>
+        <fieldset class="st-form__fieldset">
+            <legend>Logs:</legend>
+            <textarea id="st-log-area" rows="20" class="st-form__input"></textarea>
+        </fieldset>
 
-    <fieldset class='st-form__fieldset'>
-      <legend>Wallets</legend>
-      <div id='st-visa-checkout' class='st-form__group'></div>
-      <div id='st-apple-pay' class='st-form__group'></div>
-      <div id='st-google-pay' class='st-form__group'></div>
-    </fieldset>
+        <fieldset class="st-form__fieldset">
+            <legend>APM's:</legend>
+            <div id="st-visa-checkout" class="st-form__group"></div>
+            <div id="st-apple-pay" class="st-form__group"></div>
+            <div id="st-google-pay" class="st-form__group"></div>
+        </fieldset>
 
     <fieldset class='st-form__fieldset'>
       <legend>APM's</legend>
       <div id='st-apm' class='st-form__group'></div>
     </fieldset>
 
-    <fieldset id='st-card-payment' class='st-form__fieldset'>
+    <fieldset id="st-card-payment" class="st-form__fieldset">
       <legend>Credit card details:</legend>
-      <div id='st-card-number' class='st-form__group st-form__iframe-container'></div>
-      <div id='st-expiration-date' class='st-form__group st-form__iframe-container'></div>
-      <div id='st-security-code' class='st-form__group st-form__iframe-container'></div>
+      <div id="st-card-number" class="st-form__group st-form__iframe-container"></div>
+      <div id="st-expiration-date" class="st-form__group st-form__iframe-container"></div>
+      <div id="st-security-code" class="st-form__group st-form__iframe-container"></div>
     </fieldset>
 
-    <div id='st-animated-card' class='st-form__st-animated-card st-form__iframe-container'></div>
+        <div id="st-animated-card" class="st-form__st-animated-card st-form__iframe-container"></div>
 
-    <div class='st-form__group st-form__group--submit'>
-      <button type='submit' class='st-form__button st-button-submit__disabled' id='merchant-submit-button' disabled>
-        Pay
-      </button>
-    </div>
-  </form>
+        <div class="st-form__group st-form__group--submit">
+            <button type="submit" class="st-form__button st-button-submit__disabled" id="merchant-submit-button" disabled>Pay</button>
+        </div>
+    </form>
 
-  <footer class='st-footer'>
-    <p>&copy; Trust Payments 2020</p>
-  </footer>
+    <footer class="st-footer">
+        <p>&copy; Trust Payments 2020</p>
+    </footer>
 </main>
 
-<div id='st-helper-actions' class='st-helper-actions'>
-  <input type='button' id='st-action-remove' value='Remove frames'>
-  <input type='button' id='st-action-destroy' value='Destroy ST'>
-  <input type='button' id='st-action-start' value='Start ST'>
-  <input type='button' id='st-action-cancel-3ds' value='Cancel 3DS'>
-  <a href='#' id='st-actions-toggler' class='st-helper-actions__toggler'></a>
+<div id="st-helper-actions" class="st-helper-actions">
+  <input type="button" id="st-action-remove" value="Remove frames">
+  <input type="button" id="st-action-destroy" value="Destroy ST">
+  <input type="button" id="st-action-start" value="Start ST">
+  <input type="button" id="st-action-cancel-3ds" value="Cancel 3DS">
+  <a href="#" id="st-actions-toggler" class="st-helper-actions__toggler"></a>
 </div>
-<script type='text/javascript' src='./counter.js'></script>
-<script type='text/javascript' src='./inlineConfig.js'></script>
-<script type='text/javascript' src='./predefinedCallbacks.js'></script>
-<script type='text/javascript' src='<%= LIBRARY_URL %>/st.js'></script>
-<script type='text/javascript'>
+<script type="text/javascript" src="./counter.js"></script>
+<script type="text/javascript" src="./inlineConfig.js"></script>
+<script type="text/javascript" src="./predefinedCallbacks.js"></script>
+<script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
+<script type="text/javascript">
   var ST = SecureTrading;
   window.addEventListener('load', function() {
     var params = new URLSearchParams(window.location.search.substring(1));
@@ -184,12 +182,8 @@
           document.getElementById(elementId).addEventListener('click', handler);
         }
 
-        addClickHandler('st-action-start', function() {
-          init(config);
-        });
-        addClickHandler('st-action-destroy', function() {
-          st.destroy();
-        });
+        addClickHandler('st-action-start', function() { init(config); });
+        addClickHandler('st-action-destroy', function() { st.destroy(); });
         addClickHandler('st-action-remove', function() {
           document.querySelectorAll('.st-form__iframe-container').forEach(function(element) {
             element.innerHTML = '';
@@ -199,9 +193,7 @@
           document.getElementById('st-google-pay').innerHTML = '';
           document.getElementById('st-apple-pay').innerHTML = '';
         });
-        addClickHandler('st-action-cancel-3ds', function() {
-          st.cancelThreeDProcess();
-        });
+        addClickHandler('st-action-cancel-3ds', function() { st.cancelThreeDProcess(); });
         addClickHandler('st-actions-toggler', function() {
           document.getElementById('st-helper-actions').classList.toggle('st-helper-actions--unfold');
         });
@@ -258,30 +250,30 @@
       st.Cybertonica().then(function(response) {
         console.log(response);
       });
-      if (browserInfo === 'true') {
+      if (browserInfo === "true") {
         document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
       }
       updateJwtListener(st, updatedJwt);
 
-      st.on('paymentInitStarted', function(data) {
+      st.on('paymentInitStarted', function (data) {
         printLogs({ name: data.name, step: 'PAYMENT INIT STARTED' });
       });
-      st.on('paymentInitCompleted', function(data) {
+      st.on('paymentInitCompleted', function (data) {
         printLogs({ name: data.name, step: 'PAYMENT INIT COMPLETED' });
       });
-      st.on('paymentInitFailed', function(data) {
+      st.on('paymentInitFailed', function (data) {
         printLogs({ name: data.name, step: 'PAYMENT INIT FAILED' });
       });
-      st.on('paymentStarted', function(data) {
+      st.on('paymentStarted', function (data) {
         printLogs({ name: data.name, step: 'PAYMENT STARTED' });
       });
-      st.on('paymentCompleted', function(data) {
+      st.on('paymentCompleted', function (data) {
         printLogs({ name: data.name, step: 'PAYMENT COMPLETED' });
       });
-      st.on('paymentFailed', function(data) {
+      st.on('paymentFailed', function (data) {
         printLogs({ name: data.name, step: 'PAYMENT FAILED' });
       });
-      st.on('paymentCanceled', function(data) {
+      st.on('paymentCanceled', function (data) {
         printLogs({ name: data.name, step: 'PAYMENT CANCELED' });
       });
 
@@ -305,10 +297,10 @@
     }
 
     function setCallbacks(config) {
-      var configCallbackKeys = ['submitCallback', 'successCallback', 'cancelCallback', 'errorCallback'];
-      configCallbackKeys.forEach(function(callbackKey) {
+      var configCallbackKeys = ['submitCallback','successCallback','cancelCallback','errorCallback'];
+      configCallbackKeys.forEach(function(callbackKey){
         var callbackFunctionName = config[callbackKey] || null;
-        if (callbackFunctionName && typeof window.predefinedCallbacks[callbackFunctionName] === 'function') {
+        if (callbackFunctionName && typeof window.predefinedCallbacks[callbackFunctionName] === "function") {
           config[callbackKey] = window.predefinedCallbacks[callbackFunctionName];
         } else {
           config[callbackKey] = null;
