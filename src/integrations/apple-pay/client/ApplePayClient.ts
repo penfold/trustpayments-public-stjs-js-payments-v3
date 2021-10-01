@@ -14,10 +14,14 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { MerchantValidationService } from './MerchantValidationService';
-import { mapTo, tap } from 'rxjs/operators';
+import { mapTo, takeUntil, tap } from 'rxjs/operators';
 import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
 import { PaymentAuthorizationService } from './PaymentAuthorizationService';
-import { IApplePayPaymentRequest } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 
 @Service()
 export class ApplePayClient {
@@ -32,16 +36,38 @@ export class ApplePayClient {
     private messageBus: IMessageBus,
     private merchantValidationService: MerchantValidationService,
     private paymentAuthorizationService: PaymentAuthorizationService,
+    private googleAnalytics: GoogleAnalytics,
   ) {
   }
 
   init(config: IConfig): Observable<void> {
+    this.updateJwtListener(config);
+
     return this.isApplePayAvailable(config).pipe(
       map(config => this.resolveApplePayConfig(config)),
       tap(applePayConfig => this.insertApplePayButton(applePayConfig)),
       tap(applePayConfig => this.initGestureHandler(applePayConfig)),
+      tap(() => {
+        this.googleAnalytics.sendGaData(
+          'event',
+          'Apple Pay',
+          `${ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD}`,
+          'Can make payment',
+        );
+      }),
       mapTo(undefined),
     );
+  }
+
+  private updateJwtListener(config: IConfig): void {
+    this.messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.UPDATE_JWT),
+        takeUntil(this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY)))
+      )
+      .subscribe((event: IMessageBusEvent<IUpdateJwt>) => {
+        this.initGestureHandler(this.resolveApplePayConfig({ ...config, jwt: event.data.newJwt }));
+      });
   }
 
   private isApplePayAvailable(config: IConfig): Observable<IConfig> {
@@ -99,11 +125,12 @@ export class ApplePayClient {
   private initGestureHandler(config: IApplePayConfigObject): void {
     this.applePayButtonClickService.bindClickHandler(() => {
       this.initApplePaySession(config);
-      this.startPaymentProcess(config)
+      this.startPaymentProcess(config);
     }, config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
   }
 
   private onCancel(): void {
     this.messageBus.publish({ type: PUBLIC_EVENTS.APPLE_PAY_CANCELLED });
+    this.googleAnalytics.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.CANCEL}`, 'Payment has been cancelled');
   }
 }

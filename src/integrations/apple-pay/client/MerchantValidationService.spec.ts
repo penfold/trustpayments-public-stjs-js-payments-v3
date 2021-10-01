@@ -8,9 +8,12 @@ import { EMPTY, of, throwError } from 'rxjs';
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 
 describe('MerchantValidationService', () => {
   let frameQueryingServiceMock: IFrameQueryingService;
+  let googleAnalyticsMock: GoogleAnalytics;
   let applePaySessionMock: IApplePaySession;
   let applePaySession: IApplePaySession;
   let applePaySessionSpy: IApplePaySession;
@@ -19,11 +22,13 @@ describe('MerchantValidationService', () => {
 
   beforeEach(() => {
     frameQueryingServiceMock = mock<IFrameQueryingService>();
+    googleAnalyticsMock = mock(GoogleAnalytics);
     applePaySessionMock = mock<IApplePaySession>();
     applePaySession = instance(applePaySessionMock);
     applePaySessionSpy = spy(applePaySession);
     merchantValidationService = new MerchantValidationService(
       instance(frameQueryingServiceMock),
+      instance(googleAnalyticsMock),
     );
 
     when(frameQueryingServiceMock.query(anything(), anything())).thenReturn(of(EMPTY));
@@ -77,6 +82,8 @@ describe('MerchantValidationService', () => {
       }), CONTROL_FRAME_IFRAME)).once();
 
       verify(applePaySessionMock.completeMerchantValidation(deepEqual({ foo: 'bar' }))).once();
+      verify(googleAnalyticsMock.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`, 'Apple Pay Merchant validation success')).once();
+      verify(googleAnalyticsMock.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify success')).once();
     });
 
     it('sends validate merchant query and aborts session when response errorcode!=0', () => {
@@ -90,6 +97,8 @@ describe('MerchantValidationService', () => {
 
       verify(applePaySessionMock.completeMerchantValidation(anything())).never();
       verify(applePaySessionMock.abort()).once();
+      verify(googleAnalyticsMock.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`, 'Apple Pay Merchant validation error')).once();
+      verify(googleAnalyticsMock.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify failure')).once();
     });
 
     it('sends validate merchant query and aborts session when verify request fails', () => {
@@ -101,6 +110,8 @@ describe('MerchantValidationService', () => {
 
       verify(applePaySessionMock.completeMerchantValidation(anything())).never();
       verify(applePaySessionMock.abort()).once();
+      verify(googleAnalyticsMock.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.ON_VALIDATE_MERCHANT}`, 'Apple Pay Merchant validation error')).once();
+      verify(googleAnalyticsMock.sendGaData('event', 'Apple Pay', 'walletverify', 'Apple Pay walletverify failure')).once();
     });
   });
 });

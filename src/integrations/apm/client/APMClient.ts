@@ -1,14 +1,17 @@
 import { Service } from 'typedi';
 import { Observable, of } from 'rxjs';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
-import { getAPMListFromConfig } from '../models/APMUtils';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
+import { APMConfigResolver } from '../services/apm-config-resolver/APMConfigResolver';
 
 @Service()
 export class APMClient {
+  constructor(private apmUtils: APMConfigResolver) {
+  }
+
   init(config: IAPMConfig): Observable<undefined> {
-    getAPMListFromConfig(config).forEach(itemConfig => this.insertAPMButton(itemConfig));
+    this.apmUtils.resolve(config).apmList.forEach(itemConfig => this.insertAPMButton(itemConfig as IAPMItemConfig));
 
     return of(undefined);
   }
@@ -19,9 +22,6 @@ export class APMClient {
 
   private createButtonForApmItem(apmItemConfig: IAPMItemConfig): HTMLElement {
     const button = DomMethods.createHtmlElement({ type: 'button' }, 'button');
-
-    // TODO add styling and image assets ???
-    button.innerText = `${apmItemConfig.name}`;
     button.addEventListener('click', (event) => this.onAPMButtonClick(event, apmItemConfig));
 
     return button;

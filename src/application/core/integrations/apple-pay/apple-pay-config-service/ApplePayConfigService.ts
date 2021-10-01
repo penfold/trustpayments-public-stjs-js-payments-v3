@@ -25,7 +25,10 @@ export class ApplePayConfigService {
     const { currencyiso3a, locale, mainamount } = this.getStJwtData(jwt);
 
     return {
-      applePayConfig: applePay,
+      applePayConfig: {
+        ...applePay,
+        paymentRequest: this.updatePaymentRequest(applePay, currencyiso3a, mainamount, applePayVersion),
+      },
       applePayVersion,
       locale,
       formId,

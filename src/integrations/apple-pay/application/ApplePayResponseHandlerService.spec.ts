@@ -129,9 +129,9 @@ describe('ApplePayResponseHandlerService', () => {
           }))).once();
           verify(subscriberMock.complete()).once();
           done();
-        });
+      });
     });
-
+      
     it('publishes ERROR result if response observable returns an error', done => {
       const responseError = new Error('error');
 
