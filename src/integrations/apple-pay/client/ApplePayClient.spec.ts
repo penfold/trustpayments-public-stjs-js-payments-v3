@@ -1,4 +1,4 @@
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
@@ -19,6 +19,9 @@ import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { MerchantValidationService } from './MerchantValidationService';
 import { PaymentAuthorizationService } from './PaymentAuthorizationService';
 import { first } from 'rxjs/operators';
+import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 
 describe('ApplePayClient', () => {
   const configMock: IConfig = {
@@ -89,10 +92,12 @@ describe('ApplePayClient', () => {
   let applePayClickHandlingServiceMock: ApplePayClickHandlingService;
   let applePaySessionFactoryMock: ApplePaySessionFactory;
   let messageBusMock: IMessageBus;
+  let messageBusSpy: IMessageBus;
   let merchantValidationServiceMock: MerchantValidationService;
   let paymentAuthorizationServiceMock: PaymentAuthorizationService;
   let applePaySessionMock: IApplePaySession;
   let applePaySession: IApplePaySession;
+  let googleAnalyticsMock: GoogleAnalytics;
 
   beforeEach(() => {
     applePayConfigServiceMock = mock(ApplePayConfigService);
@@ -100,11 +105,13 @@ describe('ApplePayClient', () => {
     applePaySessionServiceMock = mock(ApplePaySessionService);
     applePayClickHandlingServiceMock = mock(ApplePayClickHandlingService);
     applePaySessionFactoryMock = mock(ApplePaySessionFactory);
-    messageBusMock = mock<IMessageBus>();
+    messageBusMock = new SimpleMessageBus();
+    messageBusSpy = spy(messageBusMock);
     merchantValidationServiceMock = mock(MerchantValidationService);
     paymentAuthorizationServiceMock = mock(PaymentAuthorizationService);
     applePaySessionMock = mock<IApplePaySession>();
     applePaySession = instance(applePaySessionMock);
+    googleAnalyticsMock = mock(GoogleAnalytics);
 
     applePayClient = new ApplePayClient(
       instance(applePayConfigServiceMock),
@@ -112,9 +119,10 @@ describe('ApplePayClient', () => {
       instance(applePaySessionServiceMock),
       instance(applePayClickHandlingServiceMock),
       instance(applePaySessionFactoryMock),
-      instance(messageBusMock),
+      messageBusMock,
       instance(merchantValidationServiceMock),
       instance(paymentAuthorizationServiceMock),
+      instance(googleAnalyticsMock),
     );
   });
 
@@ -162,6 +170,7 @@ describe('ApplePayClient', () => {
           applePayConfigMock.buttonStyle,
           applePayConfigMock.paymentRequest.countryCode,
         )).once();
+        verify(googleAnalyticsMock.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD}`, 'Can make payment')).once();
         done();
       });
     });
@@ -205,7 +214,7 @@ describe('ApplePayClient', () => {
 
       buttonClick.next(undefined);
 
-      verify(messageBusMock.publish(deepEqual({
+      verify(messageBusSpy.publish(deepEqual({
         type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
         data: {
           name: ApplePayPaymentMethodName,
@@ -218,7 +227,9 @@ describe('ApplePayClient', () => {
       applePayClient.init(configMock).subscribe(() => {
         buttonClick.next(undefined);
         applePaySession.oncancel(new Event('cancel'));
-        verify(messageBusMock.publish(deepEqual({ type: PUBLIC_EVENTS.APPLE_PAY_CANCELLED }))).once();
+
+        verify(messageBusSpy.publish(deepEqual({ type: PUBLIC_EVENTS.APPLE_PAY_CANCELLED }))).once();
+        verify(googleAnalyticsMock.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.CANCEL}`, 'Payment has been cancelled')).once();
         done();
       });
 
