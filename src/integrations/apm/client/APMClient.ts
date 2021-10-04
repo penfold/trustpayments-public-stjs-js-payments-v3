@@ -4,9 +4,16 @@ import { DomMethods } from '../../../application/core/shared/dom-methods/DomMeth
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
 import { APMConfigResolver } from '../services/apm-config-resolver/APMConfigResolver';
+import { APMName } from '../models/APMName';
+import './APMClient.scss';
+
 
 @Service()
 export class APMClient {
+  private apmIcons: Record<APMName, string> = {
+    [APMName.ZIP]: require('./images/zip.svg'),
+  };
+
   constructor(private apmUtils: APMConfigResolver) {
   }
 
@@ -21,7 +28,10 @@ export class APMClient {
   }
 
   private createButtonForApmItem(apmItemConfig: IAPMItemConfig): HTMLElement {
-    const button = DomMethods.createHtmlElement({ type: 'button' }, 'button');
+    const button = DomMethods.createHtmlElement({ class: 'st-apm-button' }, 'div');
+    if (this.apmIcons[apmItemConfig.name]) {
+      button.innerHTML = `<img src='${this.apmIcons[apmItemConfig.name]}' alt='${apmItemConfig.name}' class='st-apm-button__img'>`;
+    }
     button.addEventListener('click', (event) => this.onAPMButtonClick(event, apmItemConfig));
 
     return button;
