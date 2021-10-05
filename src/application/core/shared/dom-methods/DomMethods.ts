@@ -135,6 +135,10 @@ export class DomMethods {
     form.querySelectorAll(`.${DomMethods.CREATED_FIELD_CLASSNAME}`).forEach(element => element.remove());
   }
 
+  static redirect(url: string): void {
+    window.location.href = url;
+  }
+
   private static isScriptLoaded(params: IScriptParams): Element {
     const { src, id } = params;
     const scripts: HTMLCollection = document.getElementsByTagName(DomMethods.SCRIPT_MARKUP);
