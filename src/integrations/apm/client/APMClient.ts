@@ -14,11 +14,11 @@ export class APMClient {
     [APMName.ZIP]: require('./images/zip.svg'),
   };
 
-  constructor(private apmUtils: APMConfigResolver) {
+  constructor(private apmConfigResolver: APMConfigResolver) {
   }
 
   init(config: IAPMConfig): Observable<undefined> {
-    this.apmUtils.resolve(config).apmList.forEach(itemConfig => this.insertAPMButton(itemConfig as IAPMItemConfig));
+    this.apmConfigResolver.resolve(config).apmList.forEach(itemConfig => this.insertAPMButton(itemConfig as IAPMItemConfig));
 
     return of(undefined);
   }
