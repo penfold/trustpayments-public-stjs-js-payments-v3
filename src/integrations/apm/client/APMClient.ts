@@ -19,13 +19,13 @@ import { takeUntil } from 'rxjs/operators';
 @Service()
 export class APMClient {
   constructor(
-    private apmUtils: APMConfigResolver,
+    private apmConfigResolver: APMConfigResolver,
     private messageBus: IMessageBus,
     ) {
   }
 
   init(config: IAPMConfig): Observable<undefined> {
-    this.apmUtils.resolve(config).apmList.forEach(itemConfig => this.insertAPMButton(itemConfig as IAPMItemConfig));
+    this.apmConfigResolver.resolve(config).apmList.forEach(itemConfig => this.insertAPMButton(itemConfig as IAPMItemConfig));
 
     return of(undefined);
   }
