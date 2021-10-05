@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
-import { Observable, Subscriber, throwError } from 'rxjs';
+import { Observable, Observer, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 
@@ -10,7 +10,7 @@ import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 export class ApplePayResponseHandlerService {
   handleWalletVerifyResponse(
     response: Observable<IRequestTypeResponse>,
-    paymentResultSubscriber: Subscriber<IPaymentResult<IRequestTypeResponse>>,
+    paymentResultSubscriber: Observer<IPaymentResult<IRequestTypeResponse>>,
   ): Observable<IRequestTypeResponse> {
     return response.pipe(
       tap(responseData => {
@@ -45,7 +45,7 @@ export class ApplePayResponseHandlerService {
 
   handlePaymentResponse(
     response: Observable<IRequestTypeResponse>,
-    paymentResultSubscriber: Subscriber<IPaymentResult<IRequestTypeResponse>>,
+    paymentResultSubscriber: Observer<IPaymentResult<IRequestTypeResponse>>,
   ): Observable<IRequestTypeResponse> {
     return response.pipe(
       tap(responseData => {
@@ -82,5 +82,27 @@ export class ApplePayResponseHandlerService {
         return throwError(() => error);
       }),
     );
+  }
+
+  handleCancelResponse(
+    paymentResultSubscriber: Observer<IPaymentResult<IRequestTypeResponse>>,
+  ): void {
+    const message = 'Payment has been cancelled';
+    const errorcode = 'cancelled';
+
+    paymentResultSubscriber.next({
+      status: PaymentStatus.CANCEL,
+      data: {
+        errorcode,
+        errormessage: message,
+      },
+      error: {
+        code: 50003,
+        message: message,
+      },
+      paymentMethodName: ApplePayPaymentMethodName,
+    });
+
+    paymentResultSubscriber.complete();
   }
 }
