@@ -1,8 +1,7 @@
-import { firstValueFrom, Observable, of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { anything, capture, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
-import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ApplePayPaymentMethod } from './ApplePayPaymentMethod';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
@@ -16,12 +15,12 @@ import { IApplePayConfigObject } from '../../../application/core/integrations/ap
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { CustomerOutput } from '../../../application/core/models/constants/CustomerOutput';
 import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
-import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { tap } from 'rxjs/operators';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
+import { NoThreeDSRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/NoThreeDSRequestProcessingService';
 
 describe('ApplePayPaymentMethod', () => {
   const configMock: IConfig = {
@@ -48,33 +47,28 @@ describe('ApplePayPaymentMethod', () => {
   };
 
   let applePayPaymentMethod: ApplePayPaymentMethod;
-  let requestProcessingInitializerMock: RequestProcessingInitializer;
-  let requestProcessingServiceMock: IRequestProcessingService;
+  let requestProcessingServiceMock: NoThreeDSRequestProcessingService;
   let frameQueryingServiceMock: IFrameQueryingService;
   let gatewayClientMock: IGatewayClient;
   let applePayResponseHandlerServiceMock: ApplePayResponseHandlerService;
   let simpleMessageBus: IMessageBus;
 
   beforeEach(() => {
-    requestProcessingInitializerMock = mock(RequestProcessingInitializer);
     frameQueryingServiceMock = new FrameQueryingServiceMock();
     gatewayClientMock = mock<IGatewayClient>();
-    requestProcessingServiceMock = mock<IRequestProcessingService>();
+    requestProcessingServiceMock = mock(NoThreeDSRequestProcessingService);
     applePayResponseHandlerServiceMock = mock(ApplePayResponseHandlerService);
     simpleMessageBus = new SimpleMessageBus();
 
     applePayPaymentMethod = new ApplePayPaymentMethod(
-      instance(requestProcessingInitializerMock),
+      instance(requestProcessingServiceMock),
       frameQueryingServiceMock,
       instance(gatewayClientMock),
       instance(applePayResponseHandlerServiceMock),
       simpleMessageBus,
     );
 
-    when(requestProcessingInitializerMock.initialize()).thenReturn(new Observable<IRequestProcessingService>(subscriber => {
-      subscriber.next(instance(requestProcessingServiceMock));
-      subscriber.complete();
-    }));
+    when(requestProcessingServiceMock.init(null)).thenReturn(of(undefined));
 
     frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT, () => of(undefined));
   });
@@ -90,7 +84,7 @@ describe('ApplePayPaymentMethod', () => {
       const frameQueryingServiceSpy = spy(frameQueryingServiceMock);
 
       applePayPaymentMethod.init(configMock).subscribe(() => {
-        verify(requestProcessingInitializerMock.initialize()).once();
+        verify(requestProcessingServiceMock.init(null)).once();
         verify(frameQueryingServiceSpy.query(
           deepEqual({ type: PUBLIC_EVENTS.APPLE_PAY_INIT_CLIENT, data: configMock }),
           MERCHANT_PARENT_FRAME,
