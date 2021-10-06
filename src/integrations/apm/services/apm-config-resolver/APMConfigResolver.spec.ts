@@ -1,8 +1,19 @@
 import { APMConfigResolver } from './APMConfigResolver';
 import { IAPMConfig } from '../../models/IAPMConfig';
 import { APMName } from '../../models/APMName';
+import { APMValidator } from '../apm-validator/APMValidator';
+import { anything, instance, mock, when } from 'ts-mockito';
 
 describe('APMConfigResolver', () => {
+  let aPMConfigResolver: APMConfigResolver;
+  let aPMValidator: APMValidator;
+  beforeEach(() => {
+    aPMValidator = mock(APMValidator);
+    when(aPMValidator.validate(anything())).thenReturn({ error: null, value: null });
+    when(aPMValidator.validateAPMItemConfigs(anything())).thenReturn([]);
+    aPMConfigResolver = new APMConfigResolver(instance(aPMValidator));
+  });
+
   const testConfig: IAPMConfig = {
     cancelRedirectUrl: 'defaultCancelRedirectUrl',
     errorRedirectUrl: 'defaultErrorRedirectUrl',
@@ -61,7 +72,6 @@ describe('APMConfigResolver', () => {
   };
 
   it('should map apmList field to array of full configuration objects, assigning default values to fields not defined in item config', () => {
-    const aPMConfigResolver = new APMConfigResolver();
     expect(aPMConfigResolver.resolve(testConfig)).toEqual(expected);
   });
 });
