@@ -37,8 +37,8 @@ Feature: E2E Cybertonica
       | submit        |
       | success       |
 
-  @bypass_property
-  Scenario: Cybertonica - successful payment with bypass_pass
+
+  Scenario: Cybertonica - successful payment with bypass
     Given JS library configured by inline params CYBERTONICA_CONFIG and jwt BASE_JWT with additional attributes
       | key                      | value                         |
       | requesttypedescriptions  | THREEDQUERY AUTH              |
