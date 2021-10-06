@@ -20,6 +20,8 @@ import { IRequestProcessingService } from '../../../application/core/services/re
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { tap } from 'rxjs/operators';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 
 describe('ApplePayPaymentMethod', () => {
   const configMock: IConfig = {
@@ -51,6 +53,7 @@ describe('ApplePayPaymentMethod', () => {
   let frameQueryingServiceMock: IFrameQueryingService;
   let gatewayClientMock: IGatewayClient;
   let applePayResponseHandlerServiceMock: ApplePayResponseHandlerService;
+  let simpleMessageBus: IMessageBus;
 
   beforeEach(() => {
     requestProcessingInitializerMock = mock(RequestProcessingInitializer);
@@ -58,12 +61,14 @@ describe('ApplePayPaymentMethod', () => {
     gatewayClientMock = mock<IGatewayClient>();
     requestProcessingServiceMock = mock<IRequestProcessingService>();
     applePayResponseHandlerServiceMock = mock(ApplePayResponseHandlerService);
+    simpleMessageBus = new SimpleMessageBus();
 
     applePayPaymentMethod = new ApplePayPaymentMethod(
       instance(requestProcessingInitializerMock),
       frameQueryingServiceMock,
       instance(gatewayClientMock),
       instance(applePayResponseHandlerServiceMock),
+      simpleMessageBus,
     );
 
     when(requestProcessingInitializerMock.initialize()).thenReturn(new Observable<IRequestProcessingService>(subscriber => {
@@ -188,6 +193,30 @@ describe('ApplePayPaymentMethod', () => {
         type: PUBLIC_EVENTS.APPLE_PAY_AUTHORIZATION_2,
         data: authorizePaymentRequest,
       }, null);
+    });
+
+    it('cancel payment on APPLE_PAY_CANCELLED event', done => {
+      const responseMock = {
+        status: PaymentStatus.CANCEL,
+        data: {},
+        error: {
+          code: 50003,
+          message: 'Payment has been cancelled',
+        },
+        paymentMethodName: ApplePayPaymentMethodName,
+      };
+
+      applePayPaymentMethod.start(applePayConfig).subscribe(result => {
+        expect(result).toBe(responseMock)
+        done();
+      });
+
+      when(applePayResponseHandlerServiceMock.handleCancelResponse(anything())).thenCall((subscriber) => {
+        subscriber.next(responseMock);
+        subscriber.complete();
+      });
+
+      simpleMessageBus.publish({ type: PUBLIC_EVENTS.APPLE_PAY_CANCELLED });
     });
   });
 });
