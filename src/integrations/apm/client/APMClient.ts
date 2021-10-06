@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
@@ -18,7 +18,11 @@ export class APMClient {
   }
 
   init(config: IAPMConfig): Observable<undefined> {
-    this.apmConfigResolver.resolve(config).apmList.forEach(itemConfig => this.insertAPMButton(itemConfig as IAPMItemConfig));
+    try {
+      this.apmConfigResolver.resolve(config).apmList.forEach(itemConfig => this.insertAPMButton(itemConfig as IAPMItemConfig));
+    } catch (error) {
+      return throwError(() => error);
+    }
 
     return of(undefined);
   }

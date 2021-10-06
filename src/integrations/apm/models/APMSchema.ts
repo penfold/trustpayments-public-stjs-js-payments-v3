@@ -13,6 +13,7 @@ export const APMSchema: ObjectSchema = Joi.object().keys({
 
 const zipConfigSchema = Joi.object().keys({
     name: Joi.string().valid(APMName.ZIP),
+    test: Joi.string().required(),
     placement: Joi.string().required(),
     successRedirectUrl: Joi.string().required(),
     errorRedirectUrl: Joi.string().required(),

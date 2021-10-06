@@ -2,13 +2,35 @@ import { Service } from 'typedi';
 import { IAPMConfig } from '../../models/IAPMConfig';
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { APMName } from '../../models/APMName';
+import { APMValidator } from '../apm-validator/APMValidator';
+import { ValidationError, ValidationResult } from 'joi';
+import { APMConfigError } from '../../models/errors/APMConfigError';
 
 @Service()
 export class APMConfigResolver {
 
-  constructor() {}
+  constructor(
+    private apmValidator: APMValidator,
+  ) {
+  }
 
   resolve(config: IAPMConfig): IAPMConfig {
+    const result: ValidationResult = this.apmValidator.validate(config);
+    console.error(result);
+    if (result.error) {
+      throw new APMConfigError([result.error]);
+    }
+    const normalizedConfig: IAPMConfig = this.resolveConfig(config);
+    const validationErrors: ValidationError[] = this.apmValidator.validateAPMItemConfigs(normalizedConfig.apmList as IAPMItemConfig[]);
+    console.error(validationErrors);
+    if(validationErrors.length) {
+     throw new APMConfigError(validationErrors);
+    }
+
+    return normalizedConfig;
+  }
+
+  private resolveConfig(config: IAPMConfig): IAPMConfig {
     const resolvedApmList = config.apmList.map((item: IAPMItemConfig | APMName) => {
       let normalizedItemConfig: IAPMItemConfig;
 
