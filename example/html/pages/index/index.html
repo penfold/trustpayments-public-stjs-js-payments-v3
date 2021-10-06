@@ -124,10 +124,15 @@
         </fieldset>
 
         <fieldset class="st-form__fieldset">
-            <legend>APM's:</legend>
+            <legend>Wallets</legend>
             <div id="st-visa-checkout" class="st-form__group"></div>
             <div id="st-apple-pay" class="st-form__group"></div>
             <div id="st-google-pay" class="st-form__group"></div>
+        </fieldset>
+
+        <fieldset class="st-form__fieldset">
+            <legend>APM"s</legend>
+            <div id="st-apm" class="st-form__group"></div>
         </fieldset>
 
         <fieldset id="st-card-payment" class="st-form__fieldset">
@@ -235,6 +240,13 @@
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
       st.GooglePay(config.googlePay);
+      st.APM({
+        successRedirectUrl: 'successRedirectUrl',
+        errorRedirectUrl: 'errorRedirectUrl',
+        cancelRedirectUrl: 'cancelRedirectUrl',
+        placement: 'st-apm',
+        apmList: ['zip']
+      });
       st.Cybertonica().then(function(response) {
         console.log(response);
       });
