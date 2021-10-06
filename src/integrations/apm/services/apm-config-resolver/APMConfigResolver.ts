@@ -5,6 +5,9 @@ import { APMName } from '../../models/APMName';
 
 @Service()
 export class APMConfigResolver {
+
+  constructor() {}
+
   resolve(config: IAPMConfig): IAPMConfig {
     const resolvedApmList = config.apmList.map((item: IAPMItemConfig | APMName) => {
       let normalizedItemConfig: IAPMItemConfig;
