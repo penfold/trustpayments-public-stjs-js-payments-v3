@@ -61,7 +61,7 @@ describe('APMConfigResolver', () => {
   };
 
   it('should map apmList field to array of full configuration objects, assigning default values to fields not defined in item config', () => {
-    const apmUtils = new APMConfigResolver();
-    expect(apmUtils.resolve(testConfig)).toEqual(expected);
+    const aPMConfigResolver = new APMConfigResolver();
+    expect(aPMConfigResolver.resolve(testConfig)).toEqual(expected);
   });
 });

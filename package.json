@@ -32,6 +32,7 @@
     "build:rc": "webpack --config webpack.rc.js && npm run build:declarations",
     "prod": "npm run build",
     "test": "jest",
+    "test:watch": "jest --watchAll",
     "coverage": "jest --coverage",
     "typescript:check": "npx tsc --noEmit -p tsconfig.json",
     "build:declarations": "npx dts-bundle-generator ./src/declarations.ts -o ./dist/index.d.ts --project tsconfig.json --no-banner",
@@ -138,7 +139,7 @@
     "util": "0.12.4",
     "webpack": "5.56.1",
     "webpack-cli": "4.8.0",
-    "webpack-dev-server": "4.3.1",
+    "webpack-dev-server": "4.3.0",
     "webpack-manifest-plugin": "4.0.2",
     "webpack-merge": "5.8.0"
   },
