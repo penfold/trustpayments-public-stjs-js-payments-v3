@@ -58,7 +58,6 @@ export class APMClient {
   }
 
   private processPayment(config: IAPMItemConfig): void {
-
     const destroyEvent = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
     const paymentFailedEvent = this.messageBus.pipe(ofType(PUBLIC_EVENTS.PAYMENT_METHOD_FAILED));
 

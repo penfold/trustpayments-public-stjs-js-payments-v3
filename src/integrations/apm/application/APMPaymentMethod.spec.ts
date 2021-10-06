@@ -1,6 +1,5 @@
 import { APMPaymentMethod } from './APMPaymentMethod';
 import { deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
-import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { FrameQueryingServiceMock } from '../../../shared/services/message-bus/FrameQueryingServiceMock';
 import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
