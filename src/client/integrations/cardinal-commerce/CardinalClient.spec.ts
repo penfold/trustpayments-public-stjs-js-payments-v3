@@ -99,6 +99,23 @@ describe('CardinalClient', () => {
 
       cardinalMock.trigger(PaymentEvents.SETUP_COMPLETE);
     });
+
+    it('should check if only one setup function call has been made', done => {
+      jest.spyOn(cardinalMock, 'setup');
+
+      sendMessage({ type: PUBLIC_EVENTS.CARDINAL_SETUP, data: initializationData })
+        .pipe(delay(0))
+        .subscribe(() => done());
+
+      sendMessage({ type: PUBLIC_EVENTS.CARDINAL_SETUP, data: initializationData })
+        .pipe(delay(0))
+        .subscribe(() => done());
+
+      expect(cardinalMock.setup).toHaveBeenCalledWith('init', { jwt: 'foobar' });
+      expect(cardinalMock.setup).toHaveBeenCalledTimes(1);
+
+      cardinalMock.trigger(PaymentEvents.SETUP_COMPLETE);
+    });
   });
 
   describe('start', () => {

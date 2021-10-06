@@ -28,19 +28,20 @@ export class CardinalClient {
   private cardinal$: Observable<ICardinal>;
   private threeDPopupCancel$: Subject<void>;
   private destroy$: Observable<IMessageBusEvent<unknown>>;
+  private setupComplete$: Observable<void>;
 
   constructor(
     private interFrameCommunicator: InterFrameCommunicator,
     private messageBus: IMessageBus,
     private cardinalProvider: CardinalProvider,
     private configProvider: ConfigProvider,
-    private googleAnalytics: GoogleAnalytics
+    private googleAnalytics: GoogleAnalytics,
   ) {
     this.cardinal$ = defer(() =>
       this.configProvider.getConfig$().pipe(
         switchMap((config: IConfig) => this.cardinalProvider.getCardinal$(Boolean(config.livestatus))),
-        shareReplay(1)
-      )
+        shareReplay(1),
+      ),
     );
 
     this.threeDPopupCancel$ = new Subject<void>();
@@ -70,25 +71,30 @@ export class CardinalClient {
   }
 
   private cardinalSetup(data: IInitializationData): Observable<void> {
-    return this.cardinal$.pipe(
-      switchMap(
-        (cardinal: ICardinal) =>
-          new Observable<void>(subscriber => {
-            cardinal.on(PaymentEvents.SETUP_COMPLETE, () => {
-              subscriber.next(void 0);
-              subscriber.complete();
-              cardinal.off(PaymentEvents.SETUP_COMPLETE);
-            });
-            cardinal.configure(environment.CARDINAL_COMMERCE.CONFIG);
-            cardinal.setup(PaymentEvents.INIT, {
-              jwt: data.jwt,
-            });
-          })
-      ),
-      tap(() => {
-        this.googleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed');
-      }),
-    );
+    if (!this.setupComplete$) {
+      this.setupComplete$ = this.cardinal$.pipe(
+        switchMap(
+          (cardinal: ICardinal) =>
+            new Observable<void>(subscriber => {
+              cardinal.on(PaymentEvents.SETUP_COMPLETE, () => {
+                subscriber.next(void 0);
+                subscriber.complete();
+                cardinal.off(PaymentEvents.SETUP_COMPLETE);
+              });
+              cardinal.configure(environment.CARDINAL_COMMERCE.CONFIG);
+              cardinal.setup(PaymentEvents.INIT, {
+                jwt: data.jwt,
+              });
+            }),
+        ),
+        tap(() => {
+          this.googleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed');
+        }),
+        shareReplay(1),
+      );
+    }
+
+    return this.setupComplete$;
   }
 
   private cardinalContinue(data: IVerificationData): Observable<IVerificationResult> {
@@ -134,10 +140,10 @@ export class CardinalClient {
                   TransactionId: transactionId,
                 },
               },
-              jwt
+              jwt,
             );
-          })
-      )
+          }),
+      ),
     );
   }
 
@@ -147,7 +153,7 @@ export class CardinalClient {
     return this.cardinal$.pipe(
       first(),
       tap(cardinal => cardinal.trigger(eventName, data)),
-      mapTo(void 0)
+      mapTo(void 0),
     );
   }
 
@@ -164,8 +170,8 @@ export class CardinalClient {
             });
 
             cardinal.start(PaymentBrand, {}, data.jwt);
-          })
-      )
+          }),
+      ),
     );
   }
 
