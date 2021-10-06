@@ -22,6 +22,8 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
+import { PaymentCancelService } from './PaymentCancelService';
+
 
 @Service()
 export class ApplePayClient {
@@ -36,6 +38,7 @@ export class ApplePayClient {
     private messageBus: IMessageBus,
     private merchantValidationService: MerchantValidationService,
     private paymentAuthorizationService: PaymentAuthorizationService,
+    private paymentCancelService: PaymentCancelService,
     private googleAnalytics: GoogleAnalytics,
   ) {
   }
@@ -108,7 +111,7 @@ export class ApplePayClient {
     this.applePaySession = this.applePaySessionFactory.create(config.applePayVersion, config.paymentRequest);
     this.merchantValidationService.init(this.applePaySession, config);
     this.paymentAuthorizationService.init(this.applePaySession, config);
-    this.applePaySession.oncancel = () => this.onCancel();
+    this.paymentCancelService.init(this.applePaySession);
     this.applePaySession.begin();
   }
 
@@ -127,10 +130,5 @@ export class ApplePayClient {
       this.initApplePaySession(config);
       this.startPaymentProcess(config);
     }, config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
-  }
-
-  private onCancel(): void {
-    this.messageBus.publish({ type: PUBLIC_EVENTS.APPLE_PAY_CANCELLED });
-    this.googleAnalytics.sendGaData('event', 'Apple Pay', `${ApplePayClientStatus.CANCEL}`, 'Payment has been cancelled');
   }
 }

@@ -4,10 +4,8 @@ import { DomMethods } from '../../../application/core/shared/dom-methods/DomMeth
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
 import { APMConfigResolver } from '../services/apm-config-resolver/APMConfigResolver';
-import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
 import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { ApplePayPaymentMethodName } from '../../apple-pay/models/IApplePayPaymentMethod';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { Debug } from '../../../shared/Debug';
 import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
@@ -15,13 +13,18 @@ import { APMName } from '../models/APMName';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { takeUntil } from 'rxjs/operators';
+import './APMClient.scss';
 
 @Service()
 export class APMClient {
+  private apmIcons: Record<APMName, string> = {
+    [APMName.ZIP]: require('./images/zip.svg'),
+  };
+
   constructor(
     private apmConfigResolver: APMConfigResolver,
     private messageBus: IMessageBus,
-    ) {
+  ) {
   }
 
   init(config: IAPMConfig): Observable<undefined> {
@@ -35,7 +38,10 @@ export class APMClient {
   }
 
   private createButtonForApmItem(apmItemConfig: IAPMItemConfig): HTMLElement {
-    const button = DomMethods.createHtmlElement({ type: 'button' }, 'button');
+    const button = DomMethods.createHtmlElement({ class: 'st-apm-button' }, 'div');
+    if (this.apmIcons[apmItemConfig.name]) {
+      button.innerHTML = `<img src='${this.apmIcons[apmItemConfig.name]}' alt='${apmItemConfig.name}' class='st-apm-button__img'>`;
+    }
     button.addEventListener('click', (event) => this.onAPMButtonClick(event, apmItemConfig));
 
     return button;
@@ -56,7 +62,7 @@ export class APMClient {
       type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
       data: {
         data: config,
-        name: APMPaymentMethodName, // @TODO temporary
+        name: APMPaymentMethodName,
       },
     });
 
