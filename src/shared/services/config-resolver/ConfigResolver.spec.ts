@@ -1,4 +1,4 @@
-import { anything, instance, mock, spy, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import {
   config,
   configResolved,
@@ -7,20 +7,27 @@ import {
 } from './ConfigResolverTestData';
 import { ConfigResolver } from './ConfigResolver';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
+import { ContainerInstance } from 'typedi';
+import { SentryService } from '../sentry/SentryService';
+import { ValidationResult } from 'joi';
 
 describe('ConfigResolver', () => {
   let sut: ConfigResolver;
   let configValidatorMock: ConfigValidator;
-
-  beforeAll(() => {
-    when(spy(console).error(anything())).thenReturn(undefined);
-  });
+  let containerInstanceMock: ContainerInstance;
+  let sentryServiceMock: SentryService;
 
   beforeEach(() => {
     configValidatorMock = mock(ConfigValidator);
-    sut = new ConfigResolver(instance(configValidatorMock));
+    containerInstanceMock = mock(ContainerInstance);
+    sentryServiceMock = mock(SentryService);
+    sut = new ConfigResolver(
+      instance(configValidatorMock),
+      instance(containerInstanceMock),
+    );
 
     when(configValidatorMock.validate(anything())).thenReturn({ value: null });
+    when(containerInstanceMock.get(SentryService)).thenReturn(instance(sentryServiceMock));
   });
 
   it('should set default config-provider when some of properties are not set', () => {
@@ -41,6 +48,21 @@ describe('ConfigResolver', () => {
       error: { message: 'Some descriptive error', ...anything() },
     });
     expect(() => sut.resolve({ jwt: '' })).toThrow(new Error('Some descriptive error'));
+  });
+
+  it('should pass message to sentry if datacenterurl property is incorrect', () => {
+    when(configValidatorMock.validate(anything())).thenReturn({
+      value: 'Deprecation message',
+      warning: { details: [{ message: 'deprecation message', path: ['datacenterurl'], type: 'deprecate.error', context: { key: 'datacenterurl', value: 'tester' } }] },
+      error: undefined,
+    } as ValidationResult);
+    const error = new Error('Invalid datacenterurl config value: tester');
+    sut.resolve(config);
+    verify(
+      sentryServiceMock.sendCustomMessage(
+        deepEqual(error)
+      )
+    ).once();
   });
 
   it('should display a warning in console when init property has been set', () => {
