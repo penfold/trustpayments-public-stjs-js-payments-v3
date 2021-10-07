@@ -109,7 +109,7 @@ export class ApplePayPaymentService {
       ),
     ).pipe(
       map((data: IApplePayProcessPaymentData) => {
-        if (!data.response.errorcode) {
+        if (data.response.errorcode === undefined) {
           return {
             ...data.response,
             errormessage: 'An error occured',
