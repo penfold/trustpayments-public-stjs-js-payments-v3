@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { init, setTag, setExtra, BrowserOptions } from '@sentry/browser';
+import { init, setTag, setExtra, BrowserOptions, captureException } from '@sentry/browser';
 
 @Service()
 export class Sentry {
@@ -13,5 +13,9 @@ export class Sentry {
 
   setExtra(key: string, extra: unknown): void {
     setExtra(key, extra);
+  }
+
+  captureException(err: Error): void {
+    captureException(err);
   }
 }
