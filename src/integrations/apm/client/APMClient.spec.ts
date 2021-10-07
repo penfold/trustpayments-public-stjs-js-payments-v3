@@ -4,9 +4,12 @@ import { APMClient } from './APMClient';
 import { IAPMConfig } from '../models/IAPMConfig';
 import { APMName } from '../models/APMName';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 
 describe('APMClient', () => {
   let apmConfigResolver: APMConfigResolver;
+  let messageBus: IMessageBus;
   const testConfig: IAPMConfig = {
     placement: 'test-placement',
     successRedirectUrl: 'successUrl',
@@ -33,8 +36,9 @@ describe('APMClient', () => {
 
   beforeEach(() => {
     apmConfigResolver = mock(APMConfigResolver);
+    messageBus = new SimpleMessageBus();
     when(apmConfigResolver.resolve(anything())).thenReturn(testConfig);
-    apmClient = new APMClient(instance(apmConfigResolver));
+    apmClient = new APMClient(instance(apmConfigResolver), messageBus);
     document.body.innerHTML = '<div id="test-placement"></div><div id="test-placement-2"></div>';
   });
 
@@ -56,7 +60,7 @@ describe('APMClient', () => {
         document.body.querySelectorAll('div.st-apm-button').forEach((button, index) => {
           button.dispatchEvent(new Event('click'));
           // TODO this is temporary assertion, change it when APMClient is updated
-          expect(console.log).toHaveBeenCalledWith(`${(testConfig.apmList[index] as IAPMItemConfig).name} payment button clicked`);
+          expect(console.log).toHaveBeenCalledWith(`Payment method initialized: ${(testConfig.apmList[index] as IAPMItemConfig).name}. Payment button clicked`);
         });
         done();
       });

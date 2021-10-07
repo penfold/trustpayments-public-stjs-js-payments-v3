@@ -4,9 +4,16 @@ import { DomMethods } from '../../../application/core/shared/dom-methods/DomMeth
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
 import { APMConfigResolver } from '../services/apm-config-resolver/APMConfigResolver';
+import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
+import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { Debug } from '../../../shared/Debug';
+import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
 import { APMName } from '../models/APMName';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { takeUntil } from 'rxjs/operators';
 import './APMClient.scss';
-
 
 @Service()
 export class APMClient {
@@ -14,7 +21,10 @@ export class APMClient {
     [APMName.ZIP]: require('./images/zip.svg'),
   };
 
-  constructor(private apmConfigResolver: APMConfigResolver) {
+  constructor(
+    private apmConfigResolver: APMConfigResolver,
+    private messageBus: IMessageBus,
+  ) {
   }
 
   init(config: IAPMConfig): Observable<undefined> {
@@ -41,8 +51,30 @@ export class APMClient {
     return button;
   }
 
-  private onAPMButtonClick(event: Event, { name }: IAPMItemConfig) {
+  private onAPMButtonClick(event: Event, config: IAPMItemConfig) {
     event.preventDefault();
-    console.log(`${name} payment button clicked`); // TODO start payement here
+    Debug.log(`Payment method initialized: ${config.name}. Payment button clicked`);
+    this.processPayment(config);
+  }
+
+  private processPayment(config: IAPMItemConfig): void {
+    const destroyEvent = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+    const paymentFailedEvent = this.messageBus.pipe(ofType(PUBLIC_EVENTS.PAYMENT_METHOD_FAILED));
+
+    this.messageBus.publish<IStartPaymentMethod<IAPMItemConfig>>({
+      type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+      data: {
+        data: config,
+        name: APMPaymentMethodName,
+      },
+    });
+
+    this.messageBus.pipe(
+      ofType(PUBLIC_EVENTS.APM_REDIRECT),
+      takeUntil(destroyEvent),
+      takeUntil(paymentFailedEvent),
+    ).subscribe((event: IMessageBusEvent<string>) => {
+      DomMethods.redirect(event.data);
+    });
   }
 }
