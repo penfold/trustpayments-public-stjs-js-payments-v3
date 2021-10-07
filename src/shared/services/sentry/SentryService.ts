@@ -51,4 +51,8 @@ export class SentryService {
       beforeSend: (event: Event, hint?: EventHint) => this.eventScrubber.scrub(event, hint),
     });
   }
+
+  sendCustomMessage(err: Error) {
+    this.sentry.captureException(err);
+  }
 }

@@ -3,7 +3,7 @@ import {
   threeDSecureConfigName,
 } from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
 import { IConfig } from '../../model/config/IConfig';
-import { Service } from 'typedi';
+import { ContainerInstance, Service } from 'typedi';
 import { IComponentsIds } from '../../model/config/IComponentsIds';
 import { IComponentsConfig } from '../../model/config/IComponentsConfig';
 import { DefaultSubmitFields } from '../../../application/core/models/constants/config-resolver/DefaultSubmitFields';
@@ -18,10 +18,14 @@ import { IApplePayConfig } from '../../../application/core/integrations/apple-pa
 import { IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
+import { SentryService } from '../sentry/SentryService';
 
 @Service()
 export class ConfigResolver {
-  constructor(private configValidator: ConfigValidator) {
+  constructor(
+    private configValidator: ConfigValidator,
+    private container: ContainerInstance,
+  ) {
   }
 
   resolve(config: IConfig): IConfig {
@@ -77,6 +81,7 @@ export class ConfigResolver {
     if (validationResult.warning) {
       validationResult.warning.details.forEach((item: ValidationErrorItem) => {
         console.warn(item.message);
+        this.handleValidationExceptions(item);
       });
     }
   }
@@ -180,5 +185,11 @@ export class ConfigResolver {
     }
 
     return this.getValueOrDefault(value, DefaultConfig.cybertonicaApiKey);
+  }
+
+  private handleValidationExceptions(item: ValidationErrorItem): void {
+    if(item?.path?.toString() === 'datacenterurl') {
+      this.container.get(SentryService).sendCustomMessage(new Error(`Invalid ${item?.context?.key} config value: ${item?.context?.value}`));
+    }
   }
 }

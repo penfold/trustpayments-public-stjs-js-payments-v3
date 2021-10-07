@@ -193,7 +193,7 @@ export class StCodec {
       return;
     }
 
-    if (errorcode === StCodec.STATUS_CODES.ok) {
+    if (String(errorcode) === StCodec.STATUS_CODES.ok) {
       StCodec.publishResponse(responseContent, jwtResponse);
       return;
     }
