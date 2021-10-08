@@ -40,7 +40,7 @@
     "behave": "npm run testdocker && cd js-payments-testing &&",
     "export:translations": "cross-env-shell i18next-conv -l '$npm_package_config_locale' -s src/application/core/translations/$npm_package_config_locale.json -t src/translations/$npm_package_config_locale.po",
     "import:translations": "cross-env-shell i18next-conv -l '$npm_package_config_locale' -s src/translations/$npm_package_config_locale.po -t src/application/core/translations/$npm_package_config_locale.json",
-    "postshrinkwrap": "npx npm-force-resolutions && npm install --ignore-scripts",
+    "preinstall": "npx npm-force-resolutions",
     "prettier": "npx prettier --write \"./src/**/*.{ts,js,css,json}\"",
     "example": "ws --rewrite '/* -> /dist/$1' --https",
     "start:automated": "webpack serve --color --progress --config webpack.test.js",
@@ -71,7 +71,9 @@
   "homepage": "https://gitlab.com/trustpayments-public/stjs/js-payments/-/blob/master/README.md",
   "resolutions": {
     "glob-parent": "6.0.2",
-    "trim-newlines": "4.0.2"
+    "trim-newlines": "4.0.2",
+    "axios": "0.21.2",
+    "set-value": "4.0.1"
   },
   "devDependencies": {
     "@babel/core": "7.15.8",
@@ -146,7 +148,7 @@
   "dependencies": {
     "@babel/polyfill": "7.12.1",
     "@babel/runtime": "7.15.4",
-    "@sentry/browser": "6.13.2",
+    "@sentry/browser": "6.13.3",
     "@sheerun/mutationobserver-shim": "0.3.3",
     "@trustpayments/3ds-sdk-js": "1.0.164",
     "@trustpayments/http-client": "2.0.112",
@@ -163,7 +165,7 @@
     "dts-bundle-generator": "5.9.0",
     "element-remove": "1.0.4",
     "fastestsmallesttextencoderdecoder": "1.0.22",
-    "i18next": "20.6.1",
+    "i18next": "21.2.4",
     "joi": "17.4.2",
     "jwt-decode": "3.1.2",
     "location-origin": "1.1.4",

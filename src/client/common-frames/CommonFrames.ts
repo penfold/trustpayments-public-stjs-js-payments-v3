@@ -152,7 +152,7 @@ export class CommonFrames {
   }
 
   private getTransactionStatus(errorcode: string): string {
-    if (errorcode === '0') {
+    if (Number(errorcode) === 0) {
       return 'success';
     }
 

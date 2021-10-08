@@ -30,7 +30,10 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
     })
     .default({}),
   cybertonicaApiKey: Joi.string().allow(''),
-  datacenterurl: Joi.string().allow(''),
+  datacenterurl: Joi.string()
+    .allow('', 'https://webservices.securetrading.us', 'https://webservices.securetrading.net', 'https://webservices.securetrading.us/jwt/', 'https://webservices.securetrading.net/jwt/')
+    .warning('deprecate.error', { reason: 'wrong value has been provided' })
+    .messages({ 'deprecate.error': '{#label} is incorrect because {#reason}. Please use https://webservices.securetrading.us/jwt/ or https://webservices.securetrading.net/jwt/' }),
   deferInit: Joi.boolean(),
   disableNotification: Joi.boolean().default(false),
   errorCallback: Joi.any(),
