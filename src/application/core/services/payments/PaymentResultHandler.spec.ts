@@ -10,27 +10,35 @@ import { of } from 'rxjs';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { EventScope } from '../../models/constants/EventScope';
-
+import { ITranslator } from '../../shared/translator/ITranslator';
 
 describe('PaymentResultHandler', () => {
   let messageBus: IMessageBus;
   let notificationServiceMock: NotificationService;
   let configProviderMock: ConfigProvider;
   let paymentResultHandler: PaymentResultHandler;
+  let translatorMock: ITranslator;
 
   beforeEach(() => {
     messageBus = new SimpleMessageBus();
     notificationServiceMock = mock(NotificationService);
     configProviderMock = mock<ConfigProvider>();
+    translatorMock = mock<ITranslator>();
     paymentResultHandler = new PaymentResultHandler(
       messageBus,
       instance(notificationServiceMock),
-      instance(configProviderMock)
+      instance(configProviderMock),
+      instance(translatorMock),
     );
+
+    when(translatorMock.translate('ok')).thenReturn('payment successful');
+    when(translatorMock.translate('fail')).thenReturn('payment failed');
   });
 
   describe('handle()', () => {
-    const resultData = { foo: 'bar' };
+    const resultData = { foo: 'bar', errormessage: 'ok' };
+    const translatedResultData = { foo: 'bar', errormessage: 'payment successful' };
+
     let messageBusSpy: IMessageBus;
 
     beforeEach(() => {
@@ -47,7 +55,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
-            data: resultData,
+            data: translatedResultData,
           }),
           EventScope.ALL_FRAMES
         )
@@ -56,7 +64,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
-            data: resultData,
+            data: translatedResultData,
           }),
           EventScope.ALL_FRAMES
         )
@@ -74,7 +82,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
-            data: resultData,
+            data: translatedResultData,
           }),
           EventScope.ALL_FRAMES
         )
@@ -92,7 +100,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
-            data: resultData,
+            data: translatedResultData,
           }),
           EventScope.ALL_FRAMES
         )
@@ -101,7 +109,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK,
-            data: resultData,
+            data: translatedResultData,
           }),
           EventScope.ALL_FRAMES
         )
@@ -119,7 +127,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
-            data: resultData,
+            data: translatedResultData,
           }),
           EventScope.ALL_FRAMES
         )
@@ -128,7 +136,7 @@ describe('PaymentResultHandler', () => {
     });
 
     it('handles FAILURE result with submitOnError set to false', () => {
-      const errorMessage = 'payment failed';
+      const errorMessage = 'fail';
       const result: IPaymentResult<typeof resultData> = {
         status: PaymentStatus.FAILURE,
         data: resultData,
@@ -146,7 +154,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
-            data: resultData,
+            data: translatedResultData,
           }),
           EventScope.ALL_FRAMES
         )
@@ -155,16 +163,16 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
-            data: resultData,
+            data: translatedResultData,
           }),
           EventScope.ALL_FRAMES
         )
       ).once();
-      verify(notificationServiceMock.error(errorMessage)).once();
+      verify(notificationServiceMock.error('payment failed')).once();
     });
 
     it('handles FAILURE result with submitOnError set to true', () => {
-      const errorMessage = 'payment failed';
+      const errorMessage = 'fail';
       const result: IPaymentResult<typeof resultData> = {
         status: PaymentStatus.FAILURE,
         data: resultData,
@@ -182,7 +190,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
-            data: resultData,
+            data: translatedResultData,
           }),
           EventScope.ALL_FRAMES
         )
@@ -191,7 +199,7 @@ describe('PaymentResultHandler', () => {
     });
 
     it('handles ERROR result with submitOnError set to false', () => {
-      const errorMessage = 'payment failed';
+      const errorMessage = 'fail';
       const result: IPaymentResult<typeof resultData> = {
         status: PaymentStatus.ERROR,
         data: resultData,
@@ -209,7 +217,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
-            data: resultData,
+            data: translatedResultData,
           }),
           EventScope.ALL_FRAMES
         )
@@ -218,16 +226,16 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK,
-            data: resultData,
+            data: translatedResultData,
           }),
           EventScope.ALL_FRAMES
         )
       ).once();
-      verify(notificationServiceMock.error(errorMessage)).once();
+      verify(notificationServiceMock.error('payment failed')).once();
     });
 
     it('handles ERROR result with submitOnError set to true', () => {
-      const errorMessage = 'payment failed';
+      const errorMessage = 'fail';
       const result: IPaymentResult<typeof resultData> = {
         status: PaymentStatus.ERROR,
         data: resultData,
@@ -245,7 +253,7 @@ describe('PaymentResultHandler', () => {
         messageBusSpy.publish(
           deepEqual({
             type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT,
-            data: resultData,
+            data: translatedResultData,
           }),
           EventScope.ALL_FRAMES
         )
