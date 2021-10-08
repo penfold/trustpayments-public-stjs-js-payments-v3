@@ -54,6 +54,15 @@ describe('PaymentResultHandler', () => {
       verify(
         messageBusSpy.publish(
           deepEqual({
+            type: PUBLIC_EVENTS.APPEND_FORM_DATA,
+            data: translatedResultData,
+          }),
+          EventScope.ALL_FRAMES
+        )
+      ).once();
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK,
             data: translatedResultData,
           }),
@@ -96,6 +105,15 @@ describe('PaymentResultHandler', () => {
 
       paymentResultHandler.handle(result);
 
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.APPEND_FORM_DATA,
+            data: translatedResultData,
+          }),
+          EventScope.ALL_FRAMES
+        )
+      ).once();
       verify(
         messageBusSpy.publish(
           deepEqual({
@@ -150,6 +168,15 @@ describe('PaymentResultHandler', () => {
 
       paymentResultHandler.handle(result);
 
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.APPEND_FORM_DATA,
+            data: translatedResultData,
+          }),
+          EventScope.ALL_FRAMES
+        )
+      ).once();
       verify(
         messageBusSpy.publish(
           deepEqual({
@@ -213,6 +240,15 @@ describe('PaymentResultHandler', () => {
 
       paymentResultHandler.handle(result);
 
+      verify(
+        messageBusSpy.publish(
+          deepEqual({
+            type: PUBLIC_EVENTS.APPEND_FORM_DATA,
+            data: translatedResultData,
+          }),
+          EventScope.ALL_FRAMES
+        )
+      ).once();
       verify(
         messageBusSpy.publish(
           deepEqual({
