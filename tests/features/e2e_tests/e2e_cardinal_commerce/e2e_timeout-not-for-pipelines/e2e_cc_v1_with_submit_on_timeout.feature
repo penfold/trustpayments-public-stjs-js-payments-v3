@@ -10,7 +10,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment - Timeout
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card AMERICAN_EXPRESS_TIMEOUT_CARD
+    When User fills payment form with defined card AMEX_TIMEOUT_CARD
     And User clicks Pay button
     And User waits to be sent into page with url "www.example.com" after gateway timeout
     Then User will be sent to page with url "www.example.com" having params
