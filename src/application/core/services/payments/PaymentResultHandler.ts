@@ -44,6 +44,7 @@ export class PaymentResultHandler {
       }, EventScope.EXPOSED);
 
       this.notificationService.success(PAYMENT_SUCCESS);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.APPEND_FORM_DATA, data: result.data },  EventScope.ALL_FRAMES);
       this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
       this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
     });
@@ -62,6 +63,7 @@ export class PaymentResultHandler {
       }, EventScope.EXPOSED);
 
       this.notificationService.cancel(PAYMENT_CANCELLED);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.APPEND_FORM_DATA, data: result.data },  EventScope.ALL_FRAMES);
       this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
       this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
     });
@@ -82,6 +84,7 @@ export class PaymentResultHandler {
       }, EventScope.EXPOSED);
 
       this.notificationService.error(errorMessage);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.APPEND_FORM_DATA, data: result.data },  EventScope.ALL_FRAMES);
       this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
       this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
     });

@@ -18,21 +18,31 @@ describe('PaymentResultSubmitterSubscriber', () => {
   });
 
   describe('register', () => {
-    it('should call PaymentResultSubmitter.submit() on SUBMIT_PAYMENT_RESULT event', () => {
+    it('should call PaymentResultSubmitter.submitForm() on SUBMIT_PAYMENT_RESULT event', () => {
       const submitData = { foo: 'bar', bar: 'baz' };
 
       messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT, data: submitData });
 
-      verify(paymentResultSubmitterMock.submit(submitData)).once();
+      verify(paymentResultSubmitterMock.submitForm(submitData)).once();
     });
 
-    it('shouldnt call PaymentResultSubmitter.submit() after DESTROY event', () => {
+    it('should call PaymentResultSubmitter.prepareForm() on APPEND_FORM_DATA event', () => {
+      const submitData = { foo: 'bar', bar: 'baz' };
+
+      messageBus.publish({ type: PUBLIC_EVENTS.APPEND_FORM_DATA, data: submitData });
+
+      verify(paymentResultSubmitterMock.prepareForm(submitData)).once();
+    });
+
+    it('shouldnt call submitForm() or prepareForm() after DESTROY event', () => {
       const submitData = { foo: 'bar', bar: 'baz' };
 
       messageBus.publish({ type: PUBLIC_EVENTS.DESTROY });
       messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT, data: submitData });
+      messageBus.publish({ type: PUBLIC_EVENTS.APPEND_FORM_DATA, data: submitData });
 
-      verify(paymentResultSubmitterMock.submit(anything())).never();
+      verify(paymentResultSubmitterMock.submitForm(anything())).never();
+      verify(paymentResultSubmitterMock.prepareForm(anything())).never();
     });
   });
 });
