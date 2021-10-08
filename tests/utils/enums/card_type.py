@@ -10,4 +10,3 @@ class CardType(Enum):
     JCB = auto()
     MAESTRO = auto()
     MASTERCARD = auto()
-    AMERICANEXPRESS = auto()

@@ -10,7 +10,7 @@ Feature: Cardinal Commerce E2E tests v1 - Timeout
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card AMERICAN_EXPRESS_TIMEOUT_CARD
+    When User fills payment form with defined card AMEX_TIMEOUT_CARD
     And User clicks Pay button
     And User waits for timeout payment
     Then User will see notification frame text: "<payment_status>"
