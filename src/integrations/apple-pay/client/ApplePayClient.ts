@@ -3,15 +3,14 @@ import { ApplePayConfigService } from '../../../application/core/integrations/ap
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
-import { ApplePaySessionService } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 import { Observable, of, throwError, map } from 'rxjs';
 import { Service } from 'typedi';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
+import { IApplePaySession } from './IApplePaySession';
 import { ApplePayClickHandlingService } from './ApplePayClickHandlingService';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
+import { ApplePaySessionFactory } from './ApplePaySessionFactory';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { MerchantValidationService } from './MerchantValidationService';
 import { mapTo, takeUntil, tap } from 'rxjs/operators';
@@ -23,6 +22,7 @@ import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 import { PaymentCancelService } from './PaymentCancelService';
+import { IApplePaySessionWrapper } from './interfaces/IApplePaySessionWrapper';
 
 
 @Service()
@@ -32,7 +32,7 @@ export class ApplePayClient {
   constructor(
     private applePayConfigService: ApplePayConfigService,
     private applePayButtonService: ApplePayButtonService,
-    private applePaySessionService: ApplePaySessionService,
+    private applePaySessionWrapper: IApplePaySessionWrapper,
     private applePayButtonClickService: ApplePayClickHandlingService,
     private applePaySessionFactory: ApplePaySessionFactory,
     private messageBus: IMessageBus,
@@ -78,11 +78,11 @@ export class ApplePayClient {
       return throwError(() => new ApplePayInitError(`ApplePay not available: ${reason}`));
     }
 
-    if (!this.applePaySessionService.hasApplePaySessionObject()) {
+    if (!this.applePaySessionWrapper.isApplePaySessionAvailable()) {
       return notAvailable('Works only on Safari');
     }
 
-    if (!this.applePaySessionService.canMakePayments()) {
+    if (!this.applePaySessionWrapper.canMakePayments()) {
       return notAvailable('Your device does not support making payments with Apple Pay');
     }
 
@@ -127,8 +127,8 @@ export class ApplePayClient {
 
   private initGestureHandler(config: IApplePayConfigObject): void {
     this.applePayButtonClickService.bindClickHandler(() => {
-      this.initApplePaySession(config);
       this.startPaymentProcess(config);
+      this.initApplePaySession(config);
     }, config.applePayConfig.buttonPlacement || APPLE_PAY_BUTTON_ID);
   }
 }

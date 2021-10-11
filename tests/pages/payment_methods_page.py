@@ -707,3 +707,9 @@ class PaymentMethodsPage(BasePage):
 
     def wait_for_url_with_timeout(self, url, timeout):
         self._waits.wait_until_url_starts_with(url, timeout)
+
+    def click_proceed_btn_on_apple_pay_popup(self):
+        self._actions.click(PaymentMethodsLocators.apple_pay_proceed_btn)
+
+    def click_cancel_btn_on_apple_pay_popup(self):
+        self._actions.click(PaymentMethodsLocators.apple_pay_cancel_btn)

@@ -1,11 +1,11 @@
-import { IApplePaySessionWrapper } from './IApplePaySessionWrapper';
+import { ILegacyApplePaySessionWrapper } from './ILegacyApplePaySessionWrapper';
 import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePaySession } from './IApplePaySession';
 import { Service } from 'typedi';
 import { ApplePaySessionMock } from './ApplePaySessionMock';
 
 @Service()
-export class ApplePaySessionWrapperMock implements IApplePaySessionWrapper {
+export class LegacyApplePaySessionWrapperMock implements ILegacyApplePaySessionWrapper {
   isApplePaySessionAvailable(): boolean {
     return true;
   }

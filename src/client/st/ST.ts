@@ -156,23 +156,6 @@ export class ST {
 
   ApplePay(config: IApplePayConfig): void {
     if (config) {
-      this.config = this.configService.updateFragment('applePay', config);
-    }
-
-    this.initControlFrame$().subscribe(() => {
-      this.applePay.init();
-      this.messageBus.publish<undefined>(
-        {
-          type: PUBLIC_EVENTS.APPLE_PAY_INIT,
-          data: undefined,
-        },
-        EventScope.THIS_FRAME,
-      );
-    });
-  }
-
-  ApplePay2(config: IApplePayConfig): void {
-    if (config) {
       this.config = this.configService.updateFragment(ApplePayConfigName, config);
     }
 
