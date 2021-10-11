@@ -265,6 +265,9 @@ class PaymentMethodsPage(BasePage):
 
     # Additional form fields
 
+    def select_zip_payment_method(self):
+        self._actions.click(PaymentMethodsLocators.zip_button)
+
     def fill_merchant_input_field(self, field_type, value):
         if field_type == FieldType.NAME.name:
             self._actions.send_keys(PaymentMethodsLocators.merchant_name, value)
@@ -372,6 +375,9 @@ class PaymentMethodsPage(BasePage):
             self.fill_cardinal_v1_popup()
         self._waits.wait_for_element_to_be_not_displayed(PaymentMethodsLocators.cardinal_modal)
         self._actions.switch_to_default_content()
+
+    def scroll_to_apms(self):
+        self._actions.scroll_directly_to_element(PaymentMethodsLocators.zip_button)
 
     # Validators
 

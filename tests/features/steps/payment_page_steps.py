@@ -204,6 +204,11 @@ def step_impl(context, card_type):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_credit_card_icon_in_input_field(card_type)
 
+@when('User focuses on ZIP payment method')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.scroll_to_apms()
+
 
 @then('User will not see form field (?P<field_type>.+)')
 def step_impl(context, field_type):
@@ -486,3 +491,9 @@ def step_impl(context, is_supported):
 def step_impl(context, is_supported):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_if_os_is_supported_in_info_callback(is_supported)
+
+
+@when("User chooses ZIP from APM's list")
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.select_zip_payment_method()
