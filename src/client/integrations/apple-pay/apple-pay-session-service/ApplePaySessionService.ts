@@ -6,14 +6,14 @@ import { IApplePaySession } from './IApplePaySession';
 import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingMethodSelectedEvent';
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
 import { IApplePayPaymentAuthorizationResult } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
-import { IApplePaySessionWrapper } from './IApplePaySessionWrapper';
+import { ILegacyApplePaySessionWrapper } from './ILegacyApplePaySessionWrapper';
 
 @Service()
 export class ApplePaySessionService {
   private applePaySession: IApplePaySession;
   private paymentRequest: IApplePayPaymentRequest;
 
-  constructor(private applePaySessionWrapper: IApplePaySessionWrapper) {}
+  constructor(private applePaySessionWrapper: ILegacyApplePaySessionWrapper) {}
 
   init(applePaySession: IApplePaySession, paymentRequest: IApplePayPaymentRequest): void {
     this.applePaySession = applePaySession;

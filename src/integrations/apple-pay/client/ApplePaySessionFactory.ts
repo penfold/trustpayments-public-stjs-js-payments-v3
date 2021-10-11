@@ -1,11 +1,11 @@
 import { Service } from 'typedi';
-import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePaySession } from './IApplePaySession';
-import { ILegacyApplePaySessionWrapper } from './ILegacyApplePaySessionWrapper';
+import { IApplePayPaymentRequest } from './interfaces/IApplePayPaymentRequest';
+import { IApplePaySessionWrapper } from './interfaces/IApplePaySessionWrapper';
 
 @Service()
 export class ApplePaySessionFactory {
-  constructor(private applePaySessionWrapper: ILegacyApplePaySessionWrapper) {}
+  constructor(private applePaySessionWrapper: IApplePaySessionWrapper) {}
 
   create(applePayVersion: number, applePayPaymentRequest: IApplePayPaymentRequest): IApplePaySession {
     return this.applePaySessionWrapper.createInstance(applePayVersion, applePayPaymentRequest);

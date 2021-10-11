@@ -11,10 +11,13 @@ import { PaymentResultSubmitterSubscriber } from '../common-frames/PaymentResult
 import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import '../../shared/dependency-injection/ServiceDefinitions';
 import { ApplePayClientInitializer } from '../../integrations/apple-pay/client/ApplePayClientInitializer';
+import { IApplePaySessionWrapper } from '../../integrations/apple-pay/client/interfaces/IApplePaySessionWrapper';
+import { ApplePaySessionWrapper } from '../../integrations/apple-pay/client/ApplePaySessionWrapper';
 
 Container.set({ id: ConfigProvider, factory: () => Container.get(ConfigService) });
 Container.set({ id: ThreeDSecureFactory, type: ThreeDSecureFactory });
 Container.set({ id: IGooglePaySdkProvider, type: GooglePaySdkProvider });
+Container.set({ id: IApplePaySessionWrapper, type: ApplePaySessionWrapper });
 Container.import([
   PreventNavigationPopup,
   PaymentResultSubmitterSubscriber,
