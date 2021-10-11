@@ -20,6 +20,10 @@ export class PaymentResultSubmitterSubscriber implements IMessageSubscriber {
 
     messageBus
       .pipe(ofType(PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT), takeUntil(destroy$))
-      .subscribe((event: IMessageBusEvent<SubmitData>) => this.paymentResultSubmitter.submit(event.data));
+      .subscribe((event: IMessageBusEvent<SubmitData>) => this.paymentResultSubmitter.submitForm(event.data));
+
+    messageBus
+      .pipe(ofType(PUBLIC_EVENTS.APPEND_FORM_DATA), takeUntil(destroy$))
+      .subscribe((event: IMessageBusEvent<SubmitData>) => this.paymentResultSubmitter.prepareForm(event.data));
   }
 }

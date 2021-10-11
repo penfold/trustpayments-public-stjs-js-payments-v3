@@ -65,7 +65,7 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card AMERICAN_EXPRESS_FAILED_AUTH_CARD
+    When User fills payment form with defined card AMEX_FAILED_AUTH_CARD
     And User clicks Pay button
     And User fills V1 authentication modal
     Then User will be sent to page with url "www.example.com" having params
@@ -162,10 +162,10 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | eci                  | <eci>                                   |
 
     Examples:
-      | request_types            | baseamount     | currencyiso3a  | eci            | card                              |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 07             | AMERICAN_EXPRESS_UNAVAILABLE_CARD |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | AMERICAN_EXPRESS_UNAVAILABLE_CARD |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 00             | MASTERCARD_UNAVAILABLE_CARD       |
+      | request_types            | baseamount     | currencyiso3a  | eci            | card                        |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 07             | AMEX_UNAVAILABLE_CARD       |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | AMEX_UNAVAILABLE_CARD       |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 00             | MASTERCARD_UNAVAILABLE_CARD |
 
 
   Scenario Outline: TC_8 - Merchant Not Active with submitOn and request type: <request_types>

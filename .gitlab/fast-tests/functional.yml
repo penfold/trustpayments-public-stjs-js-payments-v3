@@ -68,7 +68,7 @@ e2e-cardinal-commerce-tests-release:
 #    - .rules-when-review
 #  variables:
 #    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_3ds_sdk'
-#  parallel: 17
+#  parallel: 23
 #
 #e2e-3ds-sdk-tests-release:
 #  extends:
@@ -77,7 +77,7 @@ e2e-cardinal-commerce-tests-release:
 #    - .rules-when-release
 #  variables:
 #    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_3ds_sdk'
-#  parallel: 17
+#  parallel: 23
 #
 
 # Merchants features E2E Tests Headless

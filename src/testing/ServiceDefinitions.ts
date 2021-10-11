@@ -11,6 +11,8 @@ import { ConfigProvider } from '../shared/services/config-provider/ConfigProvide
 import { TestConfigProvider } from './mocks/TestConfigProvider';
 import { IHttpOptionsProvider } from '../application/core/services/st-transport/http-options-provider/IHttpOptionsProvider';
 import { DefaultHttpOptionsProvider } from '../application/core/services/st-transport/http-options-provider/DefaultHttpOptionsProvider';
+import { ITranslator } from '../application/core/shared/translator/ITranslator';
+import { TranslatorWithMerchantTranslations } from '../application/core/shared/translator/TranslatorWithMerchantTranslations';
 
 const messageBus: IMessageBus = new SimpleMessageBus();
 const configProvider: ConfigProvider = new TestConfigProvider();
@@ -27,3 +29,4 @@ Container.set({ id: Cybertonica, type: CybertonicaMock });
 Container.set({ id: ConfigProvider, value: configProvider });
 Container.set({ id: ConfigProviderToken, value: configProvider });
 Container.set({ id: IHttpOptionsProvider, type: DefaultHttpOptionsProvider });
+Container.set({ id: ITranslator, type: TranslatorWithMerchantTranslations });

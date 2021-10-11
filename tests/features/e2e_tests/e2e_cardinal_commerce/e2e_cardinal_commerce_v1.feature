@@ -54,7 +54,7 @@ Feature: Cardinal Commerce E2E tests v1
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
-    When User fills payment form with defined card AMERICAN_EXPRESS_FAILED_AUTH_CARD
+    When User fills payment form with defined card AMEX_FAILED_AUTH_CARD
     And User clicks Pay button
     And User fills V1 authentication modal
     Then User will see notification frame text: "An error occurred"
@@ -86,10 +86,10 @@ Feature: Cardinal Commerce E2E tests v1
       | success       |
 
     Examples:
-      | request_types            | card                      |
-      | THREEDQUERY AUTH         | DISCOVER_PASSIVE_AUTH_CARD|
-      | ACCOUNTCHECK THREEDQUERY | DISCOVER_PASSIVE_AUTH_CARD|
-      | THREEDQUERY ACCOUNTCHECK | VISA_PASSIVE_AUTH_CARD    |
+      | request_types            | card                       |
+      | THREEDQUERY AUTH         | DISCOVER_PASSIVE_AUTH_CARD |
+      | ACCOUNTCHECK THREEDQUERY | DISCOVER_PASSIVE_AUTH_CARD |
+      | THREEDQUERY ACCOUNTCHECK | VISA_PASSIVE_AUTH_CARD     |
 
 
   Scenario Outline: TC_6 - Not Enrolled, request type: <request_types>
@@ -125,10 +125,10 @@ Feature: Cardinal Commerce E2E tests v1
       | success       |
 
     Examples:
-      | request_types            | card                             |
-      | THREEDQUERY AUTH         | AMERICAN_EXPRESS_UNAVAILABLE_CARD|
-      | ACCOUNTCHECK THREEDQUERY | AMERICAN_EXPRESS_UNAVAILABLE_CARD|
-      | THREEDQUERY ACCOUNTCHECK | MASTERCARD_UNAVAILABLE_CARD      |
+      | request_types            | card                        |
+      | THREEDQUERY AUTH         | AMEX_UNAVAILABLE_CARD       |
+      | ACCOUNTCHECK THREEDQUERY | AMEX_UNAVAILABLE_CARD       |
+      | THREEDQUERY ACCOUNTCHECK | MASTERCARD_UNAVAILABLE_CARD |
 
 
   Scenario Outline: TC_8 - Merchant Not Active, request type: <request_types>

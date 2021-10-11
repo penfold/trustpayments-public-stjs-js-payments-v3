@@ -1,5 +1,4 @@
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
-import { IConfig } from '../../shared/model/config/IConfig';
 import { DomMethods } from '../../application/core/shared/dom-methods/DomMethods';
 import { Service } from 'typedi';
 
@@ -11,9 +10,13 @@ export class PaymentResultSubmitter {
 
   constructor(private configProvider: ConfigProvider) {}
 
-  submit(data: SubmitData): void {
-    const config: IConfig = this.configProvider.getConfig();
-    const form: HTMLFormElement = document.getElementById(config.formId) as HTMLFormElement;
+  submitForm(data: SubmitData): void {
+    this.prepareForm(data).submit();
+  }
+
+  prepareForm(data: SubmitData): HTMLFormElement {
+    const config = this.configProvider.getConfig();
+    const form = document.getElementById(config.formId) as HTMLFormElement;
     const dataToSubmit: SubmitData = this.pickDataToSubmit(data, [
       ...PaymentResultSubmitter.REQUIRED_SUBMIT_FIELDS,
       ...config.submitFields,
@@ -21,7 +24,8 @@ export class PaymentResultSubmitter {
 
     DomMethods.removeAllCreatedFields(form);
     DomMethods.addDataToForm(form, dataToSubmit);
-    form.submit();
+
+    return form;
   }
 
   private pickDataToSubmit(data: SubmitData, submitFields: string[]): SubmitData {

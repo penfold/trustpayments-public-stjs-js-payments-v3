@@ -23,17 +23,17 @@ describe('PaymentResultSubmitter', () => {
     document.body.appendChild(form);
   });
 
-  describe('submit', () => {
+  describe('submitForm()', () => {
     it('removes all previously added fields', () => {
       jest.spyOn(DomMethods, 'removeAllCreatedFields');
-      paymentResultSubmitter.submit({ foo: 'bar' });
+      paymentResultSubmitter.submitForm({ foo: 'bar' });
       expect(DomMethods.removeAllCreatedFields).toHaveBeenCalledWith(form);
     });
 
     it('appends fields to form based on submitFields config param and some required fields', () => {
       jest.spyOn(DomMethods, 'addDataToForm');
 
-      paymentResultSubmitter.submit({
+      paymentResultSubmitter.submitForm({
         foo: 'foo',
         bar: 'bar',
         xyz: 'xyz',
@@ -50,8 +50,39 @@ describe('PaymentResultSubmitter', () => {
     });
 
     it('submits the form', () => {
-      paymentResultSubmitter.submit({ foo: 'bar' });
+      paymentResultSubmitter.submitForm({ foo: 'bar' });
       expect(form.submit).toHaveBeenCalled();
+    });
+  });
+
+  describe('prepareForm()', () => {
+    it('returns the form element', () => {
+      expect(paymentResultSubmitter.prepareForm({ foo: 'bar' })).toBe(form);
+    });
+
+    it('removes all previously added fields', () => {
+      jest.spyOn(DomMethods, 'removeAllCreatedFields');
+      paymentResultSubmitter.prepareForm({ foo: 'bar' });
+      expect(DomMethods.removeAllCreatedFields).toHaveBeenCalledWith(form);
+    });
+
+    it('appends fields to form based on submitFields config param and some required fields', () => {
+      jest.spyOn(DomMethods, 'addDataToForm');
+
+      paymentResultSubmitter.prepareForm({
+        foo: 'foo',
+        bar: 'bar',
+        xyz: 'xyz',
+        jwt: 'jwt',
+        threedresponse: 'threedresponse',
+      });
+
+      expect(DomMethods.addDataToForm).toHaveBeenCalledWith(form, {
+        foo: 'foo',
+        bar: 'bar',
+        jwt: 'jwt',
+        threedresponse: 'threedresponse',
+      });
     });
   });
 
