@@ -17,6 +17,7 @@ import { PaymentStatus } from '../../../application/core/services/payments/Payme
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { IAPMGatewayResponse } from '../models/IAPMGatewayResponse';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
+import { APMRequestPayloadFactory } from '../services/apm-request-payload-factory/APMRequestPayloadFactory';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class APMPaymentMethod implements IPaymentMethod<IAPMConfig, any, IRequestTypeResponse> {
@@ -25,6 +26,7 @@ export class APMPaymentMethod implements IPaymentMethod<IAPMConfig, any, IReques
     private frameQueryingService: IFrameQueryingService,
     private requestProcessingService: NoThreeDSRequestProcessingService,
     private messageBus: IMessageBus,
+    private apmRequestPayloadFactory: APMRequestPayloadFactory
   ) {
   }
 
@@ -45,11 +47,7 @@ export class APMPaymentMethod implements IPaymentMethod<IAPMConfig, any, IReques
   }
 
   start(apmConfig: IAPMItemConfig): Observable<IPaymentResult<IAPMGatewayResponse>> {
-    const request: IAPMGatewayRequest = {
-      paymenttypedescription: apmConfig.name,
-      successfulurlredirect: apmConfig.successRedirectUrl,
-      errorurlredirect: apmConfig.errorRedirectUrl,
-    };
+    const request = this.apmRequestPayloadFactory.create(apmConfig);
 
     return this.requestProcessingService.process(request).pipe(
       switchMap((response: IAPMGatewayResponse) => {
