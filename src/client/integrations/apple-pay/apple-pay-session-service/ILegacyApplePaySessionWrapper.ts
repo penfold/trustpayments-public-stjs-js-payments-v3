@@ -3,7 +3,7 @@ import { IApplePaySession } from './IApplePaySession';
 import { Service } from 'typedi';
 
 @Service()
-export abstract class IApplePaySessionWrapper {
+export abstract class ILegacyApplePaySessionWrapper {
   abstract isApplePaySessionAvailable(): boolean;
   abstract canMakePayments(): boolean;
   abstract canMakePaymentsWithActiveCard(merchantId: string): Promise<boolean>;

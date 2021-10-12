@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
+import { IApplePaySession } from './IApplePaySession';
 import { IApplePayValidateMerchantEvent } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';

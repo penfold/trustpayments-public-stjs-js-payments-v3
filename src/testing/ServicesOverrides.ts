@@ -15,10 +15,12 @@ import { CardinalProvider } from '../client/integrations/cardinal-commerce/Cardi
 import { MockCardinalProvider } from './mocks/MockCardinalProvider';
 import { ApplePay } from '../client/integrations/apple-pay/ApplePay';
 import { ApplePayMock } from '../client/integrations/apple-pay/ApplePayMock';
-import { IApplePaySessionWrapper } from '../client/integrations/apple-pay/apple-pay-session-service/IApplePaySessionWrapper';
-import { ApplePaySessionWrapperMock } from '../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionWrapperMock';
+import { ILegacyApplePaySessionWrapper } from '../client/integrations/apple-pay/apple-pay-session-service/ILegacyApplePaySessionWrapper';
+import { LegacyApplePaySessionWrapperMock } from '../client/integrations/apple-pay/apple-pay-session-service/LegacyApplePaySessionWrapperMock';
 import { IHttpOptionsProvider } from '../application/core/services/st-transport/http-options-provider/IHttpOptionsProvider';
 import { TestHttpOptionsProvider } from '../application/core/services/st-transport/http-options-provider/TestHttpOptionsProvider';
+import { IApplePaySessionWrapper } from '../integrations/apple-pay/client/interfaces/IApplePaySessionWrapper';
+import { ApplePaySessionWrapperMock } from '../integrations/apple-pay/client/ApplePaySessionWrapperMock';
 
 if(environment.testEnvironment) {
   Container.set({ id: Cybertonica, type: CybertonicaMock });
@@ -28,6 +30,7 @@ if(environment.testEnvironment) {
   Container.set({ id: ApplePay, type: ApplePayMock });
   Container.set({ id: ApplePayButtonService, type: ApplePayButtonServiceMock });
   Container.set({ id: IGooglePaySdkProvider, type: GooglePaySdkProviderMock });
+  Container.set({ id: ILegacyApplePaySessionWrapper, type: LegacyApplePaySessionWrapperMock });
   Container.set({ id: IApplePaySessionWrapper, type: ApplePaySessionWrapperMock });
   Container.set({ id: IHttpOptionsProvider, type: TestHttpOptionsProvider });
 }

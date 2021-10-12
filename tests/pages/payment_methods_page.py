@@ -143,7 +143,11 @@ class PaymentMethodsPage(BasePage):
     def click_submit_btn(self):
         self.scroll_to_bottom()
         self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_button)
-        self._actions.click(PaymentMethodsLocators.pay_button)
+        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION or 'Google Nexus 6' in CONFIGURATION.REMOTE_DEVICE:
+            self._waits.wait_for_javascript()
+            self._actions.click_by_javascript(PaymentMethodsLocators.pay_button)
+        else:
+            self._actions.click(PaymentMethodsLocators.pay_button)
 
     def get_value_of_input_field(self, field):
         return self.get_element_attribute(field, 'value')
@@ -327,7 +331,7 @@ class PaymentMethodsPage(BasePage):
             PaymentMethodsLocators.cardinal_v1_authentication_code_field)
         self._actions.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,
                                 AuthData.THREE_DS_CODE.value)
-        if 'Firefox' in CONFIGURATION.BROWSER:
+        if 'Firefox' in CONFIGURATION.BROWSER or 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
             self._actions.click_by_javascript(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
         else:
             self._actions.click(PaymentMethodsLocators.cardinal_v1_authentication_submit_btn)
@@ -338,7 +342,7 @@ class PaymentMethodsPage(BasePage):
         self._actions.send_keys(PaymentMethodsLocators.cardinal_v2_authentication_code_field,
                                 AuthData.THREE_DS_CODE.value)
         self.scroll_to_bottom()
-        if 'Firefox' in CONFIGURATION.BROWSER:
+        if 'Firefox' in CONFIGURATION.BROWSER or 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
             self._actions.click_by_javascript(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
         else:
             self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_submit_btn)
@@ -707,3 +711,9 @@ class PaymentMethodsPage(BasePage):
 
     def wait_for_url_with_timeout(self, url, timeout):
         self._waits.wait_until_url_starts_with(url, timeout)
+
+    def click_proceed_btn_on_apple_pay_popup(self):
+        self._actions.click(PaymentMethodsLocators.apple_pay_proceed_btn)
+
+    def click_cancel_btn_on_apple_pay_popup(self):
+        self._actions.click(PaymentMethodsLocators.apple_pay_cancel_btn)

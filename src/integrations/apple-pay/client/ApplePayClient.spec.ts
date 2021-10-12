@@ -1,10 +1,10 @@
+import { Subject } from 'rxjs';
 import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
 import { IApplePayPaymentRequest } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
-import { ApplePaySessionService } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ApplePayClient } from './ApplePayClient';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
@@ -12,9 +12,7 @@ import { IMessageBus } from '../../../application/core/shared/message-bus/IMessa
 import { ApplePayClickHandlingService } from './ApplePayClickHandlingService';
 import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { ApplePaySessionFactory } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionFactory';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
-import { of, Subject } from 'rxjs';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { MerchantValidationService } from './MerchantValidationService';
 import { PaymentAuthorizationService } from './PaymentAuthorizationService';
@@ -23,6 +21,8 @@ import { PaymentCancelService } from './PaymentCancelService';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
+import { ApplePaySessionWrapper } from './ApplePaySessionWrapper';
+import { ApplePaySessionFactory } from './ApplePaySessionFactory';
 
 describe('ApplePayClient', () => {
   const configMock: IConfig = {
@@ -89,7 +89,7 @@ describe('ApplePayClient', () => {
   let applePayClient: ApplePayClient;
   let applePayConfigServiceMock: ApplePayConfigService;
   let applePayButtonServiceMock: ApplePayButtonService;
-  let applePaySessionServiceMock: ApplePaySessionService;
+  let applePaySessionWrapperMock: ApplePaySessionWrapper;
   let applePayClickHandlingServiceMock: ApplePayClickHandlingService;
   let applePaySessionFactoryMock: ApplePaySessionFactory;
   let messageBusMock: SimpleMessageBus;
@@ -104,7 +104,7 @@ describe('ApplePayClient', () => {
   beforeEach(() => {
     applePayConfigServiceMock = mock(ApplePayConfigService);
     applePayButtonServiceMock = mock(ApplePayButtonService);
-    applePaySessionServiceMock = mock(ApplePaySessionService);
+    applePaySessionWrapperMock = mock(ApplePaySessionWrapper);
     applePayClickHandlingServiceMock = mock(ApplePayClickHandlingService);
     applePaySessionFactoryMock = mock(ApplePaySessionFactory);
     messageBusMock = new SimpleMessageBus();
@@ -119,7 +119,7 @@ describe('ApplePayClient', () => {
     applePayClient = new ApplePayClient(
       instance(applePayConfigServiceMock),
       instance(applePayButtonServiceMock),
-      instance(applePaySessionServiceMock),
+      instance(applePaySessionWrapperMock),
       instance(applePayClickHandlingServiceMock),
       instance(applePaySessionFactoryMock),
       messageBusMock as unknown as IMessageBus,
@@ -132,8 +132,8 @@ describe('ApplePayClient', () => {
 
   describe('init()', () => {
     beforeEach(() => {
-      when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(true);
-      when(applePaySessionServiceMock.canMakePayments()).thenReturn(true);
+      when(applePaySessionWrapperMock.isApplePaySessionAvailable()).thenReturn(true);
+      when(applePaySessionWrapperMock.canMakePayments()).thenReturn(true);
       when(applePayConfigServiceMock.getConfig(configMock, anything())).thenReturn(applePayConfigObjectMock);
       when(applePayClickHandlingServiceMock.bindClickHandler(anything(), anything())).thenCall(callback => {
         buttonClick.pipe(first()).subscribe(() => callback());
@@ -142,7 +142,7 @@ describe('ApplePayClient', () => {
     });
 
     it('throws an error when hasApplePaySessionObject returns false', (done) => {
-      when(applePaySessionServiceMock.hasApplePaySessionObject()).thenReturn(false);
+      when(applePaySessionWrapperMock.isApplePaySessionAvailable()).thenReturn(false);
 
       applePayClient.init(configMock).subscribe({
         error: err => {
@@ -154,7 +154,7 @@ describe('ApplePayClient', () => {
     });
 
     it('throws error when canMakePayments function returns false', (done) => {
-      when(applePaySessionServiceMock.canMakePayments()).thenReturn(false);
+      when(applePaySessionWrapperMock.canMakePayments()).thenReturn(false);
 
       applePayClient.init(configMock).subscribe({
         error: err => {

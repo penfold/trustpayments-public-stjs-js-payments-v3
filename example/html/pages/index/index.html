@@ -235,6 +235,10 @@
 
     function init(config) {
       setCallbacks(config);
+      if (!validDataCenterUrl(config.datacenterurl)) {
+        console.error('"datacenterurl" must be one of [https://webservices.securetrading.net/jwt/, https://webservices.securetrading.us/jwt/]');
+        return;
+      }
       var st = ST(config);
       st.Components(config.components);
       st.VisaCheckout(config.visaCheckout);
@@ -253,6 +257,7 @@
       if (browserInfo === "true") {
         document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
       }
+      
       updateJwtListener(st, updatedJwt);
 
       st.on('paymentInitStarted', function (data) {
@@ -294,6 +299,14 @@
       }
 
       outputElement.value += '' + logs + '\n';
+    }
+
+    function validDataCenterUrl(url) {
+      return (
+        url === undefined ||
+        url === 'https://webservices.securetrading.net/jwt/' ||
+        url === 'https://webservices.securetrading.us/jwt/'
+      );
     }
 
     function setCallbacks(config) {
