@@ -11,10 +11,12 @@ import { IRequestProcessingService } from '../../../application/core/services/re
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { NoThreeDSRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/NoThreeDSRequestProcessingService';
+import { APMRequestPayloadFactory } from '../services/apm-request-payload-factory/APMRequestPayloadFactory';
 
 describe('APMPaymentMethod', () => {
   let noThreeDSRequestProcessingServiceMock: NoThreeDSRequestProcessingService;
   let frameQueryingServiceMock: FrameQueryingServiceMock;
+  let requestPayloadFactoryMock: APMRequestPayloadFactory;
   let requestProcessingServiceMock: IRequestProcessingService;
   let sut: APMPaymentMethod;
   const APMConfigMock: IAPMConfig = {
@@ -31,10 +33,12 @@ describe('APMPaymentMethod', () => {
     frameQueryingServiceMock = new FrameQueryingServiceMock();
     requestProcessingServiceMock = mock<IRequestProcessingService>();
     messageBusMock = new SimpleMessageBus();
+    requestPayloadFactoryMock = mock(APMRequestPayloadFactory);
     sut = new APMPaymentMethod(
       frameQueryingServiceMock,
       instance(noThreeDSRequestProcessingServiceMock),
       messageBusMock,
+      requestPayloadFactoryMock
     );
 
     when(noThreeDSRequestProcessingServiceMock.init(null)).thenReturn(new Observable<void>(subscriber => {
