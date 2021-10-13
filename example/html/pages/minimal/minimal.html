@@ -2,32 +2,35 @@
 <html class="no-js" lang="en">
 
 <head>
-    <meta charset="utf-8"/>
-    <title>Trust Payments Minimal Example Form</title>
-    <meta name="description" content="Trust Payments example page with form">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <link rel="icon" href="./img/favicon.webp" sizes="32x32">
-    <link rel="icon" href="./img/favicon.webp" sizes="192x192">
-    <link rel="apple-touch-icon" href="./img/favicon.webp">
+  <meta charset="utf-8"/>
+  <title>Trust Payments Minimal Example Form</title>
+  <meta name="description" content="Trust Payments example page with form">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+  <link rel="icon" href="./img/favicon.webp" sizes="32x32">
+  <link rel="icon" href="./img/favicon.webp" sizes="192x192">
+  <link rel="apple-touch-icon" href="./img/favicon.webp">
 </head>
 
 <body>
 <main class="tp-minimal-form-example">
-    <form id="st-form" class="tp-minimal-form">
-        <h1>Trust Payments Minimal Example Form</h1>
-        <div id="st-notification-frame"></div>
-        <div id="st-card-number"></div>
-        <div id="st-expiration-date"></div>
-        <div id="st-security-code"></div>
-        <div id="st-control-frame"></div>
-        <div id="st-animated-card" class="st-form__st-animated-card"></div>
-        <div id="st-apple-pay" class="st-form__group"></div>
-        <div id="st-visa-checkout" class="st-form__group"></div>
-        <button type="button" id="update-button" class="tp-minimal-form__button">Update JWT</button>
-        <button type="submit" id="merchant-submit-button" class="tp-minimal-form__button">Pay</button>
-    </form>
+  <form id="st-form" class="tp-minimal-form">
+    <h1>Trust Payments Minimal Example Form</h1>
+    <div id="st-notification-frame"></div>
+    <div id="st-card-number"></div>
+    <div id="st-expiration-date"></div>
+    <div id="st-security-code"></div>
+    <div id="st-control-frame"></div>
+    <div id="st-animated-card" class="st-form__st-animated-card"></div>
+    <div id="st-visa-checkout" class="st-form__group"></div>
+    <div id="st-apple-pay" class="st-form__group"></div>
+    <div id="st-google-pay" class="st-form__group"></div>
+    <div id="st-apm" class="st-form__group"></div>
+
+    <button type="button" id="update-button" class="tp-minimal-form__button">Update JWT</button>
+    <button type="submit" id="merchant-submit-button" class="tp-minimal-form__button">Pay</button>
+  </form>
 </main>
 <script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
 <script type="text/javascript" src="./inlineConfig.js"></script>
@@ -40,7 +43,7 @@
       var updatedJwt = params.get('updatedJwt') || '';
 
       getConfig()
-        .then(function(config) {
+        .then(function (config) {
           init(config);
         });
 
@@ -60,7 +63,7 @@
           })
           .then(function (config) {
             return getJwt(config).then(function (jwt) {
-              return Object.assign(config, { jwt: jwt });
+              return Object.assign(config, {jwt: jwt});
             });
           })
           .catch(function (error) {
@@ -84,8 +87,15 @@
         st.Components(config.components);
         st.VisaCheckout(config.visaCheckout);
         st.ApplePay(config.applePay);
-        st.Cybertonica().then(function(response) {
+        st.Cybertonica().then(function (response) {
           console.error(response);
+        });
+        st.APM({
+          successRedirectUrl: 'successRedirectUrl',
+          errorRedirectUrl: 'errorRedirectUrl',
+          cancelRedirectUrl: 'cancelRedirectUrl',
+          placement: 'st-apm',
+          apmList: ['ZIP']
         });
         updateJwtListener(st, updatedJwt);
       }
