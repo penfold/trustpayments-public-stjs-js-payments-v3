@@ -1,9 +1,0 @@
-{
-  "components": {
-    "paymentTypes": [],
-    "startOnLoad": false
-  },
-  "panIcon": true,
-  "submitOnSuccess": true,
-  "submitFields": ["cachetoken"]
-}

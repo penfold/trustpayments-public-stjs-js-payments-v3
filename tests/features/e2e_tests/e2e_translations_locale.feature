@@ -86,7 +86,11 @@ Feature: Payment form translations from jwt locale
 
   @animated_card
   Scenario Outline: <locale> translations for animated card labels
-    Given JS library configured by inline params ANIMATED_CARD_PAN_ICON_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key          | value |
+      | panIcon      | true  |
+      | animatedCard | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
       | locale                  | <locale>         |

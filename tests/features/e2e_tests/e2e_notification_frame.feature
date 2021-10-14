@@ -4,7 +4,10 @@ Feature: Notification frame
   In order to check notification frame after payment
 
   Scenario: Disabled Notification frame is not displayed after payment
-    Given JS library configured by inline params DISABLE_NOTIFICATION_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key                 | value |
+      | disableNotification | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
@@ -12,7 +15,11 @@ Feature: Notification frame
     Then User will not see notification frame
 
   Scenario Outline: Notification frame is not displayed after payment with submitOn<submitOn>
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+      | submitOnError   | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
       | baseamount              | <amount>         |

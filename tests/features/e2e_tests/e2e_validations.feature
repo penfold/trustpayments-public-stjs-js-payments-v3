@@ -18,7 +18,10 @@ Feature: Payment form validations
 
 
   Scenario: "Field is required" fields validation for only Security code field enabled
-    Given JS library configured by inline params TOKENISATION_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key            | value        |
+      | fieldsToSubmit | securitycode |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
@@ -76,3 +79,12 @@ Feature: Payment form validations
       | card_number      | expiration_date | cvv | field           |
       | 4000000000001000 | 12/15           | 123 | EXPIRATION_DATE |
 
+
+  Scenario: App is embedded in another iframe - fields validation test
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page IN_IFRAME
+    When User clicks Pay button
+    Then User will see validation message "Field is required" under all fields
+    And User will see that all fields are highlighted
