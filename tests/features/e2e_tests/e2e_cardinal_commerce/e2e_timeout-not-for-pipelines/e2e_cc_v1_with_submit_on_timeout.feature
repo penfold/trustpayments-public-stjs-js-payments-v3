@@ -6,7 +6,11 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment - Timeout
 
 
   Scenario Outline: TC_5 - Timeout with submitOnSuccess and request type: <request_types>
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+      | submitOnError   | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page

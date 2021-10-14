@@ -19,14 +19,17 @@ Feature: E2E MOTO Payments
     And "success" callback is called only once
 
     Examples:
-      | CARD                  |
+      | CARD                      |
       | VISA_V21_FRICTIONLESS     |
       | VISA_V21_NON_FRICTIONLESS |
-      | MASTERCARD_CARD       |
+      | MASTERCARD_CARD           |
 
 
   Scenario Outline: Successful MOTO payment with requestTypes: AUTH - validation url params after redirect
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_ONLY_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value |
       | accounttypedescription  | MOTO  |
       | requesttypedescriptions | AUTH  |
@@ -45,7 +48,7 @@ Feature: E2E MOTO Payments
       | threedresponse       | should be none                          |
 
     Examples:
-      | CARD                  |
+      | CARD                      |
       | VISA_V21_FRICTIONLESS     |
       | VISA_V21_NON_FRICTIONLESS |
-      | MASTERCARD_CARD       |
+      | MASTERCARD_CARD           |

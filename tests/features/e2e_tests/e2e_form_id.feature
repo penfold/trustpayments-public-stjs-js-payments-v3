@@ -5,7 +5,10 @@ Feature: E2E for form id
   In order to check full payment functionality
 
   Background:
-    Given JS library configured by inline params CHANGED_FORM_ID_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key    | value    |
+      | formId | testForm |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
 

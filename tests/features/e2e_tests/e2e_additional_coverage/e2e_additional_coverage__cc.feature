@@ -1,7 +1,7 @@
 Feature: request type - Cardinal Commerce - full test coverage
 
   Scenario Outline: successful payment with only request types <request_types>  - frictionless
-    Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value               |
       | requesttypedescriptions | <request_types>     |
     And User opens example page
@@ -32,7 +32,7 @@ Feature: request type - Cardinal Commerce - full test coverage
     | AUTH RISKDEC                                       |
 
   Scenario Outline: successful payment with only request types <request_types> - frictionless
-    Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -56,7 +56,7 @@ Feature: request type - Cardinal Commerce - full test coverage
 
 
   Scenario Outline: successful payment with only request types <request_types> - non-frictionless
-    Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value               |
       | requesttypedescriptions | <request_types>     |
     And User opens example page
@@ -80,7 +80,7 @@ Feature: request type - Cardinal Commerce - full test coverage
     | RISKDEC ACCOUNTCHECK THREEDQUERY                   |
 
    Scenario Outline: unsuccessful payment with only request types <request_types> - non-frictionless
-    Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value               |
       | requesttypedescriptions | <request_types>     |
     And User opens example page
@@ -104,7 +104,7 @@ Feature: request type - Cardinal Commerce - full test coverage
     | RISKDEC ACCOUNTCHECK THREEDQUERY                   |
 
   Scenario Outline: successful payment with only request types <request_types> - non-frictionless
-    Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value               |
       | requesttypedescriptions | <request_types>     |
     And User opens example page
@@ -124,7 +124,7 @@ Feature: request type - Cardinal Commerce - full test coverage
     | RISKDEC ACCOUNTCHECK AUTH                          |
 
   Scenario Outline: successful payment with only request types <request_types> - non-frictionless
-    Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -143,7 +143,7 @@ Feature: request type - Cardinal Commerce - full test coverage
     | RISKDEC THREEDQUERY ACCOUNTCHECK SUBSCRIPTION      |
 
   Scenario Outline: successful payment with only request types <request_types> - non-frictionless
-    Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page

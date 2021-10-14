@@ -53,7 +53,10 @@ Feature: E2E startOnLoad
 
 
   Scenario Outline: Successful non-frictionless payment with submitOnSuccess and request types: <request_types>
-    Given JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
+    Given JS library configured with START_ON_LOAD_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
@@ -77,7 +80,10 @@ Feature: E2E startOnLoad
 
 
   Scenario: Unsuccessful payment with submitOnError and request types: THREEDQUERY AUTH
-    Given JS library configured by inline params START_ON_LOAD_SUBMIT_ON_ERROR_CONFIG and jwt JWT_FAILED_NON_FRICTIONLESS_CARD with additional attributes
+    Given JS library configured with START_ON_LOAD_CONFIG and additional attributes
+      | key           | value |
+      | submitOnError | true  |
+    And JS library authenticated by jwt JWT_FAILED_NON_FRICTIONLESS_CARD with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     When User opens example page WITHOUT_SUBMIT_BUTTON

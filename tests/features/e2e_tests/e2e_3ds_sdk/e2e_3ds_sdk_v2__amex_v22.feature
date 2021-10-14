@@ -1,4 +1,4 @@
-@3ds_sdk_v2.0_AMEX_V22
+@AMEX
 @3ds_sdk_v2.0
 @3ds_sdk
 Feature: 3ds SDK v2 E2E tests - AMEX v2.2
@@ -174,7 +174,7 @@ Feature: 3ds SDK v2 E2E tests - AMEX v2.2
       | billingcountryiso2a     | GB                |
     And User opens example page
     And User waits for form inputs to be loaded
-    When User fills payment form with defined card AMEX_V21_3DS_SDK_IMPROPER_ARES_DATA
+    When User fills payment form with defined card AMEX_V22_3DS_SDK_IMPROPER_ARES_DATA
     And User clicks Pay button
     Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
@@ -200,7 +200,7 @@ Feature: 3ds SDK v2 E2E tests - AMEX v2.2
       | billingcountryiso2a     | GB                |
     And User opens example page
     And User waits for form inputs to be loaded
-    When User fills payment form with defined card AMEX_V21_3DS_3DS_SDK_ACS_UNAVAILABLE
+    When User fills payment form with defined card AMEX_V22_3DS_3DS_SDK_ACS_UNAVAILABLE
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -226,7 +226,7 @@ Feature: 3ds SDK v2 E2E tests - AMEX v2.2
       | billingcountryiso2a     | GB                |
     And User opens example page
     And User waits for form inputs to be loaded
-    When User fills payment form with defined card AMEX_V21_3DS_3DS_SDK_NON_FRICTIONLESS
+    When User fills payment form with defined card AMEX_V22_3DS_3DS_SDK_NON_FRICTIONLESS
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
@@ -252,7 +252,7 @@ Feature: 3ds SDK v2 E2E tests - AMEX v2.2
       | billingcountryiso2a     | GB                |
     And User opens example page
     And User waits for form inputs to be loaded
-    When User fills payment form with defined card AMEX_V21_3DS_SDK_STEP_UP_AUTH_FAILED
+    When User fills payment form with defined card AMEX_V22_3DS_SDK_STEP_UP_AUTH_FAILED
     And User clicks Pay button
     And User see 3ds SDK challenge is displayed
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit

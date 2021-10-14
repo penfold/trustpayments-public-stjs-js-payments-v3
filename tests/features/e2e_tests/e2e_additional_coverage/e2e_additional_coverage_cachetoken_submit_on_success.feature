@@ -13,8 +13,11 @@
 #    Given User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
-#    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-#      | key                     | value            |
+#      And JS library configured with START_ON_LOAD_CONFIG and additional attributes
+#      | key             | value |
+#      | submitOnSuccess | true  |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value           |
 #      | requesttypedescriptions | <request_types>  |
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
@@ -50,8 +53,11 @@
 #    Given User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
-#    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
-#      | key                     | value            |
+#        And JS library configured with START_ON_LOAD_CONFIG and additional attributes
+#      | key             | value |
+#      | submitOnSuccess | true  |
+#    And JS library authenticated by jwt JWT_WITH_SUBSCRIPTION with additional attributes
+#      | key                     | value           |
 #      | requesttypedescriptions | <request_types>  |
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
@@ -79,8 +85,11 @@
 #    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
-#    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-#      | key                     | value            |
+#      And JS library configured with START_ON_LOAD_CONFIG and additional attributes
+#      | key             | value |
+#      | submitOnSuccess | true  |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value           |
 #      | requesttypedescriptions | <request_types>  |
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
@@ -109,8 +118,11 @@
 #    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
-#    Given JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-#      | key                     | value            |
+#      And JS library configured with START_ON_LOAD_CONFIG and additional attributes
+#      | key             | value |
+#      | submitOnSuccess | true  |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value           |
 #      | requesttypedescriptions | <request_types>  |
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
@@ -161,8 +173,11 @@
 #    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
-#    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
-#      | key                     | value            |
+#        And JS library configured with START_ON_LOAD_CONFIG and additional attributes
+#      | key             | value |
+#      | submitOnSuccess | true  |
+#    And JS library authenticated by jwt JWT_WITH_SUBSCRIPTION with additional attributes
+#      | key                     | value           |
 #      | requesttypedescriptions | <request_types>  |
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON

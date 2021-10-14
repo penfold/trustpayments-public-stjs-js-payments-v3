@@ -1,7 +1,7 @@
 Feature: request type with error callback and bypasscard- full test coverage
 
   Scenario Outline: unsuccessful payment with request types <request_types>, bypass and error callback - frictionless
-    Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
       | threedbypasspaymenttypes| VISA MASTERCARD |
@@ -36,7 +36,7 @@ Feature: request type with error callback and bypasscard- full test coverage
     | AUTH RISKDEC                                       |
 
   Scenario Outline: unsuccessful payment with request types <request_types>, bypass and error callback - frictionless
-    Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
       | threedbypasspaymenttypes| VISA MASTERCARD |
@@ -63,7 +63,7 @@ Feature: request type with error callback and bypasscard- full test coverage
     | RISKDEC THREEDQUERY ACCOUNTCHECK SUBSCRIPTION      |
 
    Scenario Outline: unsuccessful payment with request types <request_types>, bypass and error callback - non-frictionless
-    Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
       | threedbypasspaymenttypes| VISA MASTERCARD |
@@ -98,7 +98,7 @@ Feature: request type with error callback and bypasscard- full test coverage
     | RISKDEC ACCOUNTCHECK AUTH                          |
 
   Scenario Outline: successful payment with request types <request_types>, bypass and error callback - non-frictionless
-    Given JS library configured by inline params REQUEST_TYPE_ACC_TDQ_AUTH_RISK_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
+    Given JS library configured by inline params BASIC_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
       | threedbypasspaymenttypes| VISA MASTERCARD |
