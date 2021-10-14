@@ -10,7 +10,6 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { IAPMConfig } from '../models/IAPMConfig';
-import { IAPMGatewayRequest } from '../models/IAPMRequest';
 import { NoThreeDSRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/NoThreeDSRequestProcessingService';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
@@ -18,6 +17,7 @@ import { IMessageBus } from '../../../application/core/shared/message-bus/IMessa
 import { IAPMGatewayResponse } from '../models/IAPMGatewayResponse';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { APMRequestPayloadFactory } from '../services/apm-request-payload-factory/APMRequestPayloadFactory';
+import { EventScope } from '../../../application/core/models/constants/EventScope';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class APMPaymentMethod implements IPaymentMethod<IAPMConfig, any, IRequestTypeResponse> {
@@ -66,7 +66,7 @@ export class APMPaymentMethod implements IPaymentMethod<IAPMConfig, any, IReques
         this.messageBus.publish({
           type: PUBLIC_EVENTS.APM_REDIRECT,
           data: response.redirecturl,
-        });
+        },EventScope.ALL_FRAMES);
 
         return NEVER;
       }),
