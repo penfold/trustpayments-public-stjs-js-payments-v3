@@ -3,8 +3,13 @@ Feature: E2E Card Payments with cachetoken
   I want to use cachetoken from previous payment
   In order to execute payment without card data
 
+
   Scenario: Proper receiving cachetoken value from url param
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value      |
+      | submitOnSuccess | true       |
+      | submitFields    | cachetoken |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value         |
       | requesttypedescriptions | CACHETOKENISE |
     And User opens example page
@@ -16,7 +21,11 @@ Feature: E2E Card Payments with cachetoken
       | cachetoken | should not be none |
 
   Scenario: Proper receiving cachetoken value from url param with enabled startOnLoad option
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD_START_ON_LOAD and jwt JWT_WITH_FRICTIONLESS_CARD with additional attributes
+    Given JS library configured with START_ON_LOAD_CONFIG and additional attributes
+      | key             | value      |
+      | submitOnSuccess | true       |
+      | submitFields    | cachetoken |
+    And JS library authenticated by jwt JWT_WITH_FRICTIONLESS_CARD with additional attributes
       | key                     | value         |
       | requesttypedescriptions | CACHETOKENISE |
     When User opens example page
@@ -26,8 +35,13 @@ Feature: E2E Card Payments with cachetoken
       | cachetoken | should not be none |
 
 #  STJS-1278
+#
 #  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - non-frictionless card
-#    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
+#    Given JS library configured with BASIC_CONFIG and additional attributes
+#      | key             | value      |
+#      | submitOnSuccess | true       |
+#      | submitFields    | cachetoken |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value         |
 #      | requesttypedescriptions | CACHETOKENISE |
 #    And User opens example page
@@ -46,8 +60,13 @@ Feature: E2E Card Payments with cachetoken
 #      | error         |
 #
 #  STJS-1278
+#
 #  Scenario: Successful payment with cachetoken, startOnLoad and AUTH requestType - frictionless card
-#    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
+#    Given JS library configured with BASIC_CONFIG and additional attributes
+#      | key             | value      |
+#      | submitOnSuccess | true       |
+#      | submitFields    | cachetoken |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value         |
 #      | requesttypedescriptions | CACHETOKENISE |
 #    And User opens example page
@@ -66,8 +85,13 @@ Feature: E2E Card Payments with cachetoken
 #      | error         |
 #
 #  STJS-1278
+#
 #  Scenario: Declined payment with cachetoken, startOnLoad and AUTH requestType - frictionless card
-#    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
+#    Given JS library configured with BASIC_CONFIG and additional attributes
+#      | key             | value      |
+#      | submitOnSuccess | true       |
+#      | submitFields    | cachetoken |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value         |
 #      | requesttypedescriptions | CACHETOKENISE |
 #    And User opens example page
@@ -87,15 +111,23 @@ Feature: E2E Card Payments with cachetoken
 #      | error         |
 #
 #  STJS-1278
+#
 #  Scenario: Successful payment with cachetoken, submitOnSuccess, startOnLoad and AUTH requestType
-#    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
+#    Given JS library configured with BASIC_CONFIG and additional attributes
+#      | key             | value      |
+#      | submitOnSuccess | true       |
+#      | submitFields    | cachetoken |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value         |
 #      | requesttypedescriptions | CACHETOKENISE |
 #    And User opens example page
 #    And User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
-#    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+#    Given JS library configured with START_ON_LOAD_CONFIG and additional attributes
+#      | key             | value |
+#      | submitOnSuccess | true  |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value            |
 #      | requesttypedescriptions | AUTH             |
 #      | cachetoken              | cachetoken_value |
@@ -111,15 +143,23 @@ Feature: E2E Card Payments with cachetoken
 #      | jwt                  | should not be none                      |
 #
 #  STJS-1278
+#
 #  Scenario: Declined payment with cachetoken, submitOnError, startOnLoad and AUTH requestType
-#    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
+#    Given JS library configured with BASIC_CONFIG and additional attributes
+#      | key             | value      |
+#      | submitOnSuccess | true       |
+#      | submitFields    | cachetoken |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value         |
 #      | requesttypedescriptions | CACHETOKENISE |
 #    And User opens example page
 #    And User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
-#    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
+#    Given JS library configured with START_ON_LOAD_CONFIG and additional attributes
+#      | key           | value |
+#      | submitOnError | true  |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value            |
 #      | requesttypedescriptions | AUTH             |
 #      | cachetoken              | cachetoken_value |
@@ -136,6 +176,7 @@ Feature: E2E Card Payments with cachetoken
 #      | jwt                  | should not be none |
 #
 #  STJS-1278
+#
 #  Scenario: Successful payment with cachetoken and bypassCard
 #    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
@@ -153,6 +194,7 @@ Feature: E2E Card Payments with cachetoken
 #      | error         |
 #
 #  STJS-1278
+#
 #  Scenario Outline: Successful payment with cachetoken and requestTypes: <request_types>
 #    Given User fills payment form with defined card VISA_V21_FRICTIONLESS
 #    And User clicks Pay button
@@ -174,11 +216,15 @@ Feature: E2E Card Payments with cachetoken
 #      | ACCOUNTCHECK THREEDQUERY |
 #
 #  STJS-1278
+#
 #  Scenario: Successful payment with cachetoken, submitOnSuccess and request type: ACCOUNTCHECK THREEDQUERY
 #    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
-#    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+#    And JS library configured with START_ON_LOAD_CONFIG and additional attributes
+#      | key             | value |
+#      | submitOnSuccess | true  |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value                    |
 #      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
 #      | cachetoken              | cachetoken_value         |
@@ -195,11 +241,15 @@ Feature: E2E Card Payments with cachetoken
 #      | threedresponse       | should not be none                      |
 #
 #  STJS-1278
+#
 #  Scenario Outline: Cancel Cardinal popup with cachetoken, submitOnError and request type: <request_types>
 #    Given User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
 #    And User clicks Pay button
 #    And User gets cachetoken value from url
-#    And JS library configured by inline params START_ON_LOAD_SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
+#    Given JS library configured with START_ON_LOAD_CONFIG and additional attributes
+#      | key           | value |
+#      | submitOnError | true  |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value            |
 #      | requesttypedescriptions | <request_types>  |
 #      | cachetoken              | cachetoken_value |
@@ -220,8 +270,13 @@ Feature: E2E Card Payments with cachetoken
 #      | ACCOUNTCHECK THREEDQUERY | should not be none |
 #
 #  STJS-1278
+#
 #  Scenario Outline: Invalid combination of request types: <request_types>
-#    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CACHETOKEN_FIELD and jwt BASE_JWT with additional attributes
+#    Given JS library configured with BASIC_CONFIG and additional attributes
+#      | key             | value      |
+#      | submitOnSuccess | true       |
+#      | submitFields    | cachetoken |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value           |
 #      | requesttypedescriptions | <request_types> |
 #    And User opens example page

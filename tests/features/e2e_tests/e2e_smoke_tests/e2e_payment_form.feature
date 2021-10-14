@@ -15,7 +15,10 @@ Feature: payment form
 
   @cybertonica
   Scenario: Cybertonica - successful payment
-    Given JS library configured by inline params CYBERTONICA_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key               | value |
+      | cybertonicaApiKey | stfs  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page

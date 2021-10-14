@@ -1,4 +1,4 @@
-@3ds_sdk_v2.0_MASTERCARD_V21
+@MASTERCARD
 @3ds_sdk_v2.0
 @3ds_sdk
 Feature: 3ds SDK v2 E2E tests - MasterCard v2.1

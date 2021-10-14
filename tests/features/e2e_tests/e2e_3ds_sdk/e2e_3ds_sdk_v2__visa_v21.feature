@@ -1,4 +1,4 @@
-@3ds_sdk_v2.0_VISA_V21
+@VISA
 @3ds_sdk_v2.0
 @3ds_sdk
 Feature: 3ds SDK v2 E2E tests - VISA v2.1

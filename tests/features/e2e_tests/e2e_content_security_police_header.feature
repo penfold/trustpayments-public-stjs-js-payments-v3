@@ -43,7 +43,10 @@ Feature: E2E Card Payments with content-security-police header set
 
 
   Scenario Outline: Successful payment with submitOnSuccess=true for VISA_V21_FRICTIONLESS card and <request_types> request_types combination
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens minimal-content-security-header.html page with inline param
@@ -69,7 +72,10 @@ Feature: E2E Card Payments with content-security-police header set
 
 
   Scenario Outline: Successful payment with submitOnSuccess=true for VISA_V21_NON_FRICTIONLESS card and <request_types> request_types combination
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens minimal-content-security-header.html page with inline param
@@ -115,7 +121,10 @@ Feature: E2E Card Payments with content-security-police header set
 
 
   Scenario Outline: Successful payment with submitOnSuccess=true, bypass for VISA_V21_NON_FRICTIONLESS card and <request_types> request_types combination
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                      | value           |
       | requesttypedescriptions  | <request_types> |
       | threedbypasspaymenttypes | VISA            |

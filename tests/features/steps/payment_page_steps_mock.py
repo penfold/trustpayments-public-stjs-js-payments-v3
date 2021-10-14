@@ -322,9 +322,9 @@ def step_impl(context, request_type, thirdparty):
 @step('(?P<request_type>.+) requests contains updated jwt')
 def step_impl(context, request_type):
     page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE_MOCK)
-    if 'WALLETVERIFY' in request_type and 'APPLE_PAY' in context.thirdparty:
-        page.validate_updated_jwt_in_request(request_type, MockUrl.APPLEPAY_MOCK_URI.value,
-                                             context.update_jwt, 1)
+    if 'WALLETVERIFY' in request_type:
+        page.validate_updated_jwt_in_request(request_type, MockUrl.GATEWAY_MOCK_URI.value,
+                                             context.update_jwt_from_jsinit, 1)
     elif 'VISA_CHECKOUT' in request_type:
         page.validate_updated_jwt_in_request_for_visa(PaymentType.VISA_CHECKOUT.value,
                                                       context.update_jwt_from_jsinit, 1)

@@ -493,6 +493,15 @@ def step_impl(context, is_supported):
     payment_page.validate_if_os_is_supported_in_info_callback(is_supported)
 
 
+@step('User clicks (?P<button_type>.+) button on ApplePay popup')
+def step_impl(context, button_type):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    if button_type == 'Proceed':
+        payment_page.click_proceed_btn_on_apple_pay_popup()
+    elif button_type == 'Cancel':
+        payment_page.click_cancel_btn_on_apple_pay_popup()
+
+
 @when("User chooses ZIP from APM's list")
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)

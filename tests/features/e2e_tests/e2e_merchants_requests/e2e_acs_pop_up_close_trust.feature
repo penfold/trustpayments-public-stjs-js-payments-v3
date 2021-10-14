@@ -7,10 +7,10 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
 
   Scenario: Close 3ds pop up for challenge V1
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | THREEDQUERY AUTH   |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | key                     | value             |
+      | requesttypedescriptions | THREEDQUERY AUTH  |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
       | sitereference           | trustthreeds76424 |
     And User opens example page
     And User toggle action buttons bar
@@ -30,10 +30,10 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
 
   Scenario: Close 3ds pop up for challenge V2
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | THREEDQUERY AUTH   |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | key                     | value             |
+      | requesttypedescriptions | THREEDQUERY AUTH  |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
       | sitereference           | trustthreeds76424 |
     And User opens example page
     And User toggle action buttons bar
@@ -58,7 +58,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | baseamount              | 1500                      |
       | customercountryiso2a    | GB                        |
       | billingcountryiso2a     | GB                        |
-      | sitereference           | trustthreeds76424        |
+      | sitereference           | trustthreeds76424         |
     And User opens example page
     And User toggle action buttons bar
     And User fills payment form with defined card VISA_V21_3DS_SDK_NON_FRICTIONLESS
@@ -82,11 +82,14 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
 
   @STJS-2041
   Scenario Outline: Close 3ds pop up and retry payment with NON_FRICTIONLESS card - submit on success
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
       | sitereference           | trustthreeds76424 |
     And User opens example page
     And User toggle action buttons bar
@@ -126,7 +129,7 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
       | baseamount              | 1500                      |
       | customercountryiso2a    | GB                        |
       | billingcountryiso2a     | GB                        |
-      | sitereference           | trustthreeds76424        |
+      | sitereference           | trustthreeds76424         |
     And User opens example page
     And User toggle action buttons bar
     And User fills payment form with defined card MASTERCARD_V22_3DS_SDK_NON_FRICTIONLESS
@@ -150,11 +153,14 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
 
   @STJS-2041
   Scenario Outline: Close 3ds pop up and retry payment with FRICTIONLESS card - submit on success
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value             |
+      | requesttypedescriptions | <request_types>   |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
       | sitereference           | trustthreeds76424 |
     And User opens example page
     And User toggle action buttons bar
@@ -189,12 +195,12 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
 
   Scenario: Close 3ds pop up for startOnLoad payment
     Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | THREEDQUERY AUTH   |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | key                     | value             |
+      | requesttypedescriptions | THREEDQUERY AUTH  |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
       | sitereference           | trustthreeds76424 |
-      | pan                     | 5591390000000173   |
+      | pan                     | 5591390000000173  |
     And User opens example page WITHOUT_SUBMIT_BUTTON
     And User toggle action buttons bar
     And User see 3ds SDK challenge is displayed
@@ -209,14 +215,14 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
 
   Scenario: Close 3ds pop up and retry payment with updated jwt and NON_FRICTIONLESS card
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | THREEDQUERY AUTH   |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | key                     | value             |
+      | requesttypedescriptions | THREEDQUERY AUTH  |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
       | sitereference           | trustthreeds76424 |
     And User opens page WITH_UPDATE_JWT and jwt BASE_TRUST_UPDATED_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | THREEDQUERY AUTH   |
+      | key                     | value             |
+      | requesttypedescriptions | THREEDQUERY AUTH  |
       | sitereference           | trustthreeds76424 |
     And User toggle action buttons bar
     And User fills payment form with defined card VISA_V22_3DS_SDK_NON_FRICTIONLESS
@@ -234,14 +240,14 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
 
   Scenario: Close 3ds pop up and retry payment with updated jwt and FRICTIONLESS card
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | THREEDQUERY AUTH   |
-      | customercountryiso2a    | GB                 |
-      | billingcountryiso2a     | GB                 |
+      | key                     | value             |
+      | requesttypedescriptions | THREEDQUERY AUTH  |
+      | customercountryiso2a    | GB                |
+      | billingcountryiso2a     | GB                |
       | sitereference           | trustthreeds76424 |
     And User opens page WITH_UPDATE_JWT and jwt BASE_TRUST_UPDATED_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | THREEDQUERY AUTH   |
+      | key                     | value             |
+      | requesttypedescriptions | THREEDQUERY AUTH  |
       | sitereference           | trustthreeds76424 |
     And User toggle action buttons bar
     And User fills payment form with defined card VISA_V22_3DS_SDK_NON_FRICTIONLESS

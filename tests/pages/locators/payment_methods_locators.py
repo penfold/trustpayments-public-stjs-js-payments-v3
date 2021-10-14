@@ -91,3 +91,7 @@ class PaymentMethodsLocators:
     action_btn_destroy_st: By = (By.ID, 'st-action-destroy')
     action_btn_start_st: By = (By.ID, 'st-action-start')
     action_btn_cancel_3ds: By = (By.ID, 'st-action-cancel-3ds')
+
+    # ApplePay mock popup
+    apple_pay_proceed_btn: By = (By.ID, 'apple-pay-authorize-payment-button')
+    apple_pay_cancel_btn: By = (By.ID, 'apple-pay-cancel-payment-button')

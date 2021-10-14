@@ -4,7 +4,11 @@ Feature: Payments Card recognition
   In order to check that card is properly recognized
 
   Scenario Outline: Credit card recognition for <card_type> and validate date on animated card
-    Given JS library configured by inline params ANIMATED_CARD_PAN_ICON_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key          | value |
+      | panIcon      | true  |
+      | animatedCard | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
@@ -53,3 +57,18 @@ Feature: Payments Card recognition
     And User opens example page
     When User fills payment form with defined card VISA_V21_FRICTIONLESS
     Then User will not see form field CARD_ICON
+
+  Scenario: App is embedded in another iframe - animated card test
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key          | value |
+      | panIcon      | true  |
+      | animatedCard | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page IN_IFRAME
+    And User waits for form inputs to be loaded
+    When User fills payment form with credit card number "4111110000000211", expiration date "12/22" and cvv "123"
+    Then User will see card icon connected to card type VISA
+    And User will see the same provided data on animated credit card "4111 1100 0000 0211", "12/22" and "123"
+    And User will see that animated card is flipped, except for "AMEX"

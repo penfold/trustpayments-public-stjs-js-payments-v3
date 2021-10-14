@@ -1,4 +1,4 @@
-@3ds_sdk_v2.0_AMEX_V22
+@AMEX
 @3ds_sdk_v2.0
 @3ds_sdk
 Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.2

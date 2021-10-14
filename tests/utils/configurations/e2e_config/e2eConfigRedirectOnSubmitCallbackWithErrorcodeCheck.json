@@ -1,5 +1,0 @@
-{
-  "panIcon": true,
-  "submitOnSuccess": false,
-  "submitCallback": "errorCodeCheckAndRedirectCallback"
-}

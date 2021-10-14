@@ -6,7 +6,10 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
 
   @cardinal_commerce_v2.0
   Scenario Outline: TC_1 - Successful Frictionless Authentication with submitOnSuccess - Card: VISA_V21_SUCCESSFUL_FRICTIONLESS_AUTH
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -34,7 +37,10 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
 
   @cardinal_commerce_v2.0
   Scenario Outline: TC_2 - Failed Frictionless Authentication with submitOnError - Card: VISA_V21_FAILED_FRICTIONLESS_AUTH
-    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key        | value |
+      | <submitOn> | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -51,15 +57,18 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
       | status               | <status>           |
 
     Examples:
-      | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   | status         |
-      | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none | should be none |
-      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              | N              |
-      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | 60022     | should be none | should be none | should be none |
+      | submitOn        | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   | status         |
+      | submitOnError   | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none | should be none |
+      | submitOnSuccess | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              | N              |
+      | submitOnError   | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | 60022     | should be none | should be none | should be none |
 
 
   @cardinal_commerce_v2.0
   Scenario Outline: TC_3 - Attempts Stand-In Frictionless Authenticatio with submitOnSuccess - Card: VISA_V21_FRICTIONLESS
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -87,7 +96,10 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
 
   @cardinal_commerce_v2.0
   Scenario Outline: TC_4 - Unavailable Frictionless Authentication from the Issuer with submitOnSuccess - Card: VISA_V21_UNAVAILABLE_FRICTIONLESS_AUTH
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -115,7 +127,10 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
 
   @cardinal_commerce_v2.0
   Scenario Outline: TC_5 - Rejected Frictionless Authentication by the Issuer with submitOnError - Card: VISA_V21_REJECTED_FRICTIONLESS_AUTH
-    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key        | value |
+      | <submitOn> | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -132,15 +147,18 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
       | status               | <status>           |
 
     Examples:
-      | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   | status         |
-      | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none | should be none |
-      | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              | R              |
-      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | 60022     | should be none | should be none | should be none |
+      | submitOn        | request_types            | errormessage                            | errorcode | enrolled       | settlestatus   | status         |
+      | submitOnError   | THREEDQUERY AUTH         | Unauthenticated                         | 60022     | should be none | should be none | should be none |
+      | submitOnSuccess | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | 0         | Y              | 0              | R              |
+      | submitOnError   | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | 60022     | should be none | should be none | should be none |
 
 
   @cardinal_commerce_v2.0
   Scenario Outline: TC_6 - Authentication Not Available on Lookup with submitOnSuccess - Card: VISA_V21_AUTH_NOT_AVAILABLE_ON_LOOKUP
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -168,7 +186,11 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
 
   @cardinal_commerce_v2.0
   Scenario Outline: TC_7 - Error on Lookup with submitOn - Card: VISA_V21_ERROR_ON_LOOKUP
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_ERROR_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+      | submitOnError   | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -195,7 +217,10 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
 
   @cardinal_commerce_v2.0
   Scenario Outline: TC_9 -Successful Step Up Authentication with submitOnSuccess - Card: VISA_V21_NON_FRICTIONLESS
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -225,7 +250,10 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
 
   @cardinal_commerce_v2.0
   Scenario Outline: TC_10 - Failed Step Up Authentication with submitOnError - Card: VISA_V21_STEP_UP_AUTH_FAILED
-    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key           | value |
+      | submitOnError | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -252,7 +280,10 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
 
   @cardinal_commerce_v2.0
   Scenario Outline: TC_11 - Step Up Authentication is Unavailable with submitOnSuccess - Card: VISA_V21_STEP_UP_AUTH_UNAVAILABLE
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -282,7 +313,10 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
 
   @cardinal_commerce_v2.0
   Scenario Outline: TC_12 - Error on Authentication with submitOnError - Card: VISA_V21_ERROR_ON_AUTH
-    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key           | value |
+      | submitOnError | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page
@@ -308,7 +342,10 @@ Feature: Cardinal Commerce E2E tests with redirection after payment - Visa v2.1
 
 
   Scenario Outline: TC_13 - Bypassed Authentication with submitOnSuccess - Card: VISA_V21_BYPASSED_AUTH
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page

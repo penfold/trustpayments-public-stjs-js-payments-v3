@@ -29,9 +29,9 @@ class InlineConfigBuilder:
     def map_lib_config_additional_fields(self, lib_config, attributes):
         # current implementation works only for not nested objects
         config_keys_not_nested = ['analytics', 'animatedCard', 'buttonId', 'cancelCallback', 'cybertonicaApiKey',
-                                  'datacenterurl', 'disableNotification', 'errorCallback', 'formId', 'origin',
-                                  'panIcon', 'submitCallback', 'submitOnSuccess', 'submitOnError', 'submitOnCancel',
-                                  'successCallback']
+                                  'datacenterurl', 'disableNotification', 'errorCallback', 'fieldsToSubmit', 'formId',
+                                  'origin', 'panIcon', 'stopSubmitFormOnEnter', 'submitCallback', 'submitFields',
+                                  'submitOnSuccess', 'submitOnError', 'submitOnCancel', 'successCallback']
 
         for attr in attributes:
             key = attr['key']
@@ -42,7 +42,11 @@ class InlineConfigBuilder:
                     f'or not handled by "{self.map_lib_config_additional_fields.__name__}" method')
 
             if value in ['True', 'true', 'False', 'false']:
-                lib_config[key] = (value.lower() == 'true')
+                value = (value.lower() == 'true')
+
+            if key in ['fieldsToSubmit', 'submitFields']:
+                lib_config[key] = list(value.split(' '))
             else:
                 lib_config[key] = value
+
         return lib_config

@@ -35,7 +35,10 @@ Feature: E2E Card Payments with updated jwt
 
 
   Scenario: Successful payment with updated jwt without locale param and submit on success config
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITHOUT_LOCALE with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt JWT_WITHOUT_LOCALE with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens page WITH_UPDATE_JWT and jwt JWT_WITHOUT_LOCALE_AND_UPDATED_AMOUNT_AND_CURRENCY with additional attributes
