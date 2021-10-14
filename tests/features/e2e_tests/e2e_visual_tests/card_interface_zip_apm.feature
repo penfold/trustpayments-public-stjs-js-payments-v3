@@ -12,4 +12,4 @@ Feature: Visual regression - zip payment method
     And User waits for whole form to be displayed
     And User waits for Pay button to be active
     When User focuses on ZIP payment method
-    Then Screenshot is taken after 1 seconds and checked
+    Then Screenshot is taken after 360 seconds and checked
