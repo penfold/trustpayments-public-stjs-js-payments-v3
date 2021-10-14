@@ -1,7 +1,7 @@
-Feature: E2E ZIP Payments
-  As a user
-  I want to use ZIP payment
-  If I use alternative payment method
+#Feature: E2E ZIP Payments
+#  As a user
+#  I want to use ZIP payment
+#  If I use alternative payment method
 #
 #  Scenario Outline: Successful payment with ZIP
 #    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
@@ -80,19 +80,25 @@ Feature: E2E ZIP Payments
 #      | jwt                  | should not be none |
 #      | eci                  | 07                 |
 #      | settlestatus         | 3                  |
-  @test
-  Scenario: Unsuccessful payment with ZIP - gateway response with error
-    Given JS library configured by inline params BASIC_CONFIG and jwt JWT_WITHOUT_LOCALE with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens example page
-    And User waits for whole form to be displayed
-    When User chooses ZIP from APM's list
-    Then User will see notification frame text: "Invalid field"
-    And User will see following callback type called only once
-      | callback_type |
-      | submit        |
-      | error         |
+#
+#  Scenario: Unsuccessful payment with ZIP - gateway response with error
+#    Given JS library configured by inline params BASIC_CONFIG and jwt JWT_WITHOUT_LOCALE with additional attributes
+#      | key                     | value            |
+#      | requesttypedescriptions | THREEDQUERY AUTH |
+#      | currencyiso3a           | EUR              |
+#      | locale                  | en_GB            |
+#      | billingcountryiso2a     | US               |
+#      | billingfirstname        | test             |
+#      | baseamount              | 1000             |
+#      | customercountryiso2a    | DE               |
+#    And User opens example page
+#    And User waits for whole form to be displayed
+#    When User chooses ZIP from APM's list
+#    Then User will see notification frame text: "Invalid field"
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | submit        |
+#      | error         |
 #
 #
 #  Scenario: Cancel ZIP payment
