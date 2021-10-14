@@ -532,20 +532,20 @@
 #
 #
 #################################### Visual E2E Tests Browserstack ###################################
-#.visual-regression-tests-review:
-#  extends:
-#    - .extended-tests
-#    - .services-app-html-review
-#    - .sequentially-e2e-browserstack-tests
-#  image: ${IMAGE_JS_PAYMENTS_TESTS}
-#
-#.visual-regression-tests-release:
-#  extends:
-#    - .extended-tests
-#    - .services-app-html-release
-#    - .sequentially-e2e-browserstack-tests
-#  image: ${IMAGE_JS_PAYMENTS_TESTS}
-#
+.visual-regression-tests-review:
+  extends:
+    - .extended-tests
+    - .services-app-html-review
+    - .sequentially-e2e-browserstack-tests
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
+
+.visual-regression-tests-release:
+  extends:
+    - .extended-tests
+    - .services-app-html-release
+    - .sequentially-e2e-browserstack-tests
+  image: ${IMAGE_JS_PAYMENTS_TESTS}
+
 ##
 #
 #.win10-Chrome-latest-visual-tests:
