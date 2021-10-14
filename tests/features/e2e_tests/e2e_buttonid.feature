@@ -24,7 +24,10 @@ Feature: E2E for buttonID
     And User will see that ALL input fields are "disabled"
 
   Scenario: Successful payment by clicking on additional button connected by 'buttonID' property
-    Given JS library configured by inline params BUTTON_ID_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key      | value             |
+      | buttonId | additional-button |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page WITH_ADDITIONAL_BUTTON

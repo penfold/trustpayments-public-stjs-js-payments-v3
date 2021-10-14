@@ -1,4 +1,4 @@
-@3ds_sdk_v2.0_AMEX_V21
+@AMEX
 @3ds_sdk_v2.0
 @3ds_sdk
 Feature: 3ds SDK v2 E2E tests - AMEX v2.1
@@ -148,7 +148,7 @@ Feature: 3ds SDK v2 E2E tests - AMEX v2.1
       | billingcountryiso2a     | GB                |
     And User opens example page
     And User waits for form inputs to be loaded
-    When User fills payment form with defined card AMEX_V21_3DS_SDK_DS_UNAVAILABLE_RETRY
+    When User fills payment form with defined card AMEX_V21_3DS_SDK_DS_UNAVAILABLE
     And User clicks Pay button
     Then User will see notification frame text: "<payment_status>"
     And User will see following callback type called only once
@@ -304,7 +304,7 @@ Feature: 3ds SDK v2 E2E tests - AMEX v2.1
       | billingcountryiso2a     | GB                |
     And User opens example page
     And User waits for form inputs to be loaded
-    When User fills payment form with defined card AMEX_V21_3DS_SDK_FRICTIONLESS_SUCCESS
+    When User fills payment form with defined card AMEX_V21_3DS_SDK_FRICTIONLESS_SUCCESS_METHOD_URL
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once

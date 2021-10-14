@@ -58,7 +58,10 @@ Feature: Destroy ST instance
       | ACCOUNTCHECK THREEDQUERY |
 
   Scenario Outline: Destroy ST instance and retry payment with FRICTIONLESS card - redirect params verification
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
     And User opens example page

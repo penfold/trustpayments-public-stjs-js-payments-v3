@@ -5,8 +5,11 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
   In order to check payment functionality
 
 
-  Scenario: Prevent submit payment form by 'Enter' button with enabled 'stopSubmitFormOnEnter' option
-    Given JS library configured by inline params STOP_SUBMIT_FORM_ON_ENTER and jwt BASE_JWT with additional attributes
+  Scenario: stopSubmitFormOnEnter enabled - form submit by 'Enter' keyboard button
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key                   | value |
+      | stopSubmitFormOnEnter | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
@@ -19,7 +22,7 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
 
 
   @STJS-1919
-  Scenario: Submit payment form by 'Enter' button - 'stopSubmitFormOnEnter' option is disabled by default
+  Scenario: stopSubmitFormOnEnter default setting - form submit by 'Enter' keyboard button
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
@@ -33,8 +36,11 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     And User will see that ALL input fields are "disabled"
 
 
-  Scenario: Submit payment form by 'Enter' button with disabled 'stopSubmitFormOnEnter' option
-    Given JS library configured by inline params STOP_SUBMIT_FORM_ON_ENTER_FALSE and jwt BASE_JWT with additional attributes
+  Scenario:  stopSubmitFormOnEnter disabled - form submit by 'Enter' keyboard button
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key                   | value |
+      | stopSubmitFormOnEnter | false |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
@@ -48,8 +54,30 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     And User will see the same provided data in inputs fields
 
 
-  Scenario: Submit payment form by 'Pay' button with enabled options: submitOnSuccess and 'stopSubmitFormOnEnter'
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_STOP_SUBMIT_FORM_ON_ENTER and jwt BASE_JWT with additional attributes
+  Scenario: stopSubmitFormOnEnter enabled - form submit by 'Pay' button
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key                   | value |
+      | stopSubmitFormOnEnter | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens example page
+    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
+    And User clicks Pay button
+    And User fills V2 authentication modal
+    Then User will see notification frame text: "Payment has been successfully processed"
+    And "submit" callback is called only once
+    And "success" callback is called only once
+    And User will see that Pay button is "disabled"
+    And User will see that ALL input fields are "disabled"
+
+
+  Scenario: stopSubmitFormOnEnter and submitOnSuccess enabled - form submit by 'Pay' button
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key                   | value |
+      | submitOnSuccess       | true  |
+      | stopSubmitFormOnEnter | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
@@ -67,18 +95,3 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
       | settlestatus         | 0                                       |
       | transactionreference | should not be none                      |
       | jwt                  | should not be none                      |
-
-
-  Scenario: Submit payment form by 'Pay' button with enabled 'stopSubmitFormOnEnter' option
-    Given JS library configured by inline params STOP_SUBMIT_FORM_ON_ENTER and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens example page
-    When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
-    And User clicks Pay button
-    And User fills V2 authentication modal
-    Then User will see notification frame text: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
-    And User will see that Pay button is "disabled"
-    And User will see that ALL input fields are "disabled"

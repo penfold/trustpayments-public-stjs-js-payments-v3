@@ -13,7 +13,10 @@ Feature: E2E Card Payments with mainamount field in jwt payload
     And submit callback contains JWT response
 
   Scenario: Successful payment with submitOnSuccess and mainamount field in jwt payload
-    Given JS library configured by inline params SUBMIT_ON_SUCCESS_CONFIG and jwt JWT_WITH_MAINAMOUNT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt JWT_WITH_MAINAMOUNT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
@@ -34,7 +37,10 @@ Feature: E2E Card Payments with mainamount field in jwt payload
 
 
   Scenario: Unsuccessful payment with submitOnError and mainamount field in jwt payload
-    Given JS library configured by inline params SUBMIT_ON_ERROR_CONFIG and jwt JWT_WITH_MAINAMOUNT with additional attributes
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key           | value |
+      | submitOnError | true  |
+    And JS library authenticated by jwt JWT_WITH_MAINAMOUNT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
