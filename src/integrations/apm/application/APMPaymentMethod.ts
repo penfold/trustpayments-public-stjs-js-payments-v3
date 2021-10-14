@@ -65,7 +65,7 @@ export class APMPaymentMethod implements IPaymentMethod<IAPMConfig, any, IReques
 
         this.messageBus.publish({
           type: PUBLIC_EVENTS.APM_REDIRECT,
-          data: response.redirectUrl,
+          data: response.redirecturl,
         });
 
         return NEVER;
