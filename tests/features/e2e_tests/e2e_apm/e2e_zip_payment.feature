@@ -172,6 +172,29 @@
 #      | RISKDEC THREEDQUERY ACCOUNTCHECK SUBSCRIPTION      |
 #
 #
+#  Scenario Outline: Unsuccessful ZIP initialization with not valid config
+#    Given JS library configured by inline config BASIC_CONFIG
+#    And JS library configured by inline configAPMs BASIC_CONFIG_APM with additional attributes
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value                 |
+#      | locale                  | en_GB                 |
+#      | accounttypedescription  | ECOM                  |
+#      | requesttypedescriptions | AUTH                  |
+#      | billingfirstname        | <billingfirstname>    |
+#      | billinglastname         | <billinglastname>     |
+#      | billingemail            | <billingemail>        |
+#      | billingpremise          | <billingpremise>      |
+#      | billingpostcode         | <billingpostcode>     |
+#      | billingcountryiso2a     | <billingcountryiso2a> |
+#      | orderreference          | <orderreference>      |
+#      | currencyiso3a           | <currencyiso3a>       |
+#      | baseamount              | <baseamount>          |
+#    And User opens example page WITH_APM
+#    And User waits for whole form to be displayed
+#    And User waits for Pay button to be active
+#    When User chooses ZIP from APM's list
+#    Then User will see notification frame text: "No account found"
+  #
 #  Scenario: Successful ZIP payment with updated jwt
 #    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
 #      | key                     | value            |
