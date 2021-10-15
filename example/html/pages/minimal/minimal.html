@@ -15,22 +15,22 @@
 
 <body>
 <main class="tp-minimal-form-example">
-  <form id="st-form" class="tp-minimal-form">
-    <h1>Trust Payments Minimal Example Form</h1>
-    <div id="st-notification-frame"></div>
-    <div id="st-card-number"></div>
-    <div id="st-expiration-date"></div>
-    <div id="st-security-code"></div>
-    <div id="st-control-frame"></div>
-    <div id="st-animated-card" class="st-form__st-animated-card"></div>
-    <div id="st-visa-checkout" class="st-form__group"></div>
-    <div id="st-apple-pay" class="st-form__group"></div>
-    <div id="st-google-pay" class="st-form__group"></div>
-    <div id="st-apm" class="st-form__group"></div>
+    <form id="st-form" class="tp-minimal-form">
+        <h1>Trust Payments Minimal Example Form</h1>
+        <div id="st-notification-frame"></div>
+        <div id="st-card-number"></div>
+        <div id="st-expiration-date"></div>
+        <div id="st-security-code"></div>
+        <div id="st-control-frame"></div>
+        <div id="st-animated-card" class="st-form__st-animated-card"></div>
+        <div id="st-visa-checkout" class="st-form__group"></div>
+        <div id="st-apple-pay" class="st-form__group"></div>
+        <div id="st-google-pay" class="st-form__group"></div>
+        <div id="st-apm" class="st-form__group"></div>
 
-    <button type="button" id="update-button" class="tp-minimal-form__button">Update JWT</button>
-    <button type="submit" id="merchant-submit-button" class="tp-minimal-form__button">Pay</button>
-  </form>
+        <button type="button" id="update-button" class="tp-minimal-form__button">Update JWT</button>
+        <button type="submit" id="merchant-submit-button" class="tp-minimal-form__button">Pay</button>
+    </form>
 </main>
 <script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
 <script type="text/javascript" src="./inlineConfig.js"></script>
@@ -39,12 +39,13 @@
     window.addEventListener('load', function () {
       var params = new URLSearchParams(window.location.search.substring(1));
       var inlineConfig = params.get('inlineConfig') ? JSON.parse(params.get('inlineConfig')) : '';
+      var inlineConfigApm = params.get('inlineConfigApm') ? JSON.parse(params.get('inlineConfigApm')) : '';
       var jwt = params.get('jwt') || '';
       var updatedJwt = params.get('updatedJwt') || '';
 
-      getConfig()
-        .then(function (config) {
-          init(config);
+      Promise.all([getConfig(),getAPMsConfig()])
+        .then(function(configs) {
+          init(configs);
         });
 
       function getConfig() {
@@ -63,10 +64,29 @@
           })
           .then(function (config) {
             return getJwt(config).then(function (jwt) {
-              return Object.assign(config, {jwt: jwt});
+              return Object.assign(config, { jwt: jwt });
             });
           })
           .catch(function (error) {
+            console.error(error);
+          });
+      }
+
+      function getAPMsConfig() {
+        if (inlineConfigApm) {
+          return Promise.resolve(inlineConfigApm);
+        }
+
+        return window
+          .fetch('<%= CONFIG_URL %>/configAPMs.json')
+          .then(function(response) {
+            if (response.status !== 200) {
+              return Promise.reject('Failed to load APMs configuration file!');
+            }
+
+            return response.json()
+          })
+          .catch(function(error) {
             console.error(error);
           });
       }
@@ -81,23 +101,22 @@
         return window.configJWT('<%= CONFIG_URL %>/jwtdata.json');
       }
 
-      function init(config) {
+      function init(configs) {
+        var config = configs[0];
+        var apmConfig = configs[1];
         setCallbacks(config);
         var st = ST(config);
         st.Components(config.components);
         st.VisaCheckout(config.visaCheckout);
         st.ApplePay(config.applePay);
-        st.Cybertonica().then(function (response) {
+        st.Cybertonica().then(function(response) {
           console.error(response);
         });
-        st.APM({
-          successRedirectUrl: 'successRedirectUrl',
-          errorRedirectUrl: 'errorRedirectUrl',
-          cancelRedirectUrl: 'cancelRedirectUrl',
-          placement: 'st-apm',
-          apmList: ['ZIP']
-        });
         updateJwtListener(st, updatedJwt);
+
+        if (apmConfig) {
+          st.APM(apmConfig);
+        }
       }
 
       function updateJwtListener(st, updatedJwt) {
