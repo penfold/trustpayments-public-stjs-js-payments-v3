@@ -256,7 +256,6 @@
     }
 
     function init(config,apmConfig) {
-      console.log(apmConfig);
       setCallbacks(config);
       if (!validDataCenterUrl(config.datacenterurl)) {
         console.error('"datacenterurl" must be one of [https://webservices.securetrading.net/jwt/, https://webservices.securetrading.us/jwt/]');
@@ -267,7 +266,6 @@
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
       st.GooglePay(config.googlePay);
-      st.APM(apmConfig);
       st.Cybertonica().then(function(response) {
         console.log(response);
       });
@@ -298,6 +296,10 @@
       st.on('paymentCanceled', function (data) {
         printLogs({ name: data.name, step: 'PAYMENT CANCELED' });
       });
+
+      if (apmConfig) {
+        st.APM(apmConfig);
+      }
 
       return st;
     }

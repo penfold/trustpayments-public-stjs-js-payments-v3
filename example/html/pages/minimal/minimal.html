@@ -110,8 +110,11 @@
         st.Cybertonica().then(function(response) {
           console.error(response);
         });
-        st.APM(apmConfig);
         updateJwtListener(st, updatedJwt);
+        
+        if (apmConfig) {
+          st.APM(apmConfig);
+        }
       }
 
       function updateJwtListener(st, updatedJwt) {
