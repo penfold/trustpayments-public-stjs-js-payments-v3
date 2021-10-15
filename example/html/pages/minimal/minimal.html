@@ -23,8 +23,9 @@
         <div id="st-security-code"></div>
         <div id="st-control-frame"></div>
         <div id="st-animated-card" class="st-form__st-animated-card"></div>
-        <div id="st-apple-pay" class="st-form__group"></div>
         <div id="st-visa-checkout" class="st-form__group"></div>
+        <div id="st-apple-pay" class="st-form__group"></div>
+        <div id="st-apm" class="st-form__group"></div>
         <button type="button" id="update-button" class="tp-minimal-form__button">Update JWT</button>
         <button type="submit" id="merchant-submit-button" class="tp-minimal-form__button">Pay</button>
     </form>
@@ -86,6 +87,13 @@
         st.ApplePay(config.applePay);
         st.Cybertonica().then(function(response) {
           console.error(response);
+        });
+        st.APM({
+          successRedirectUrl: 'successRedirectUrl',
+          errorRedirectUrl: 'errorRedirectUrl',
+          cancelRedirectUrl: 'cancelRedirectUrl',
+          placement: 'st-apm',
+          apmList: ['QIWI','ZIP']
         });
         updateJwtListener(st, updatedJwt);
       }

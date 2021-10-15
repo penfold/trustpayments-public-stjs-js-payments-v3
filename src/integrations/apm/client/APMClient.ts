@@ -18,6 +18,7 @@ import './APMClient.scss';
 @Service()
 export class APMClient {
   private apmIcons: Record<APMName, string> = {
+    [APMName.QIWI]: require('./images/qiwi.svg'),
     [APMName.ZIP]: require('./images/zip.svg'),
   };
 
