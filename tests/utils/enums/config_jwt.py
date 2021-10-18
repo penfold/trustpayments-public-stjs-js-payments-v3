@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class JwtConfig(Enum):
+class ConfigJwt(Enum):
     BASE_JWT = 'base_jwt_config.json'
     BASE_JWT_DE = 'base_jwt_config_de.json'
     BASE_UPDATED_JWT = 'base_jwt__updated_config.json'

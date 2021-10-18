@@ -7,7 +7,7 @@ from utils.configurations.inline_config_builder import InlineConfigBuilder
 from utils.configurations.jwt_generator import encode_jwt_for_json, get_jwt_config_from_json, encode_jwt, \
      decode_jwt_from_jsinit
 from utils.enums.example_page_param import ExamplePageParam
-from utils.enums.jwt_config import JwtConfig
+from utils.enums.config_jwt import ConfigJwt
 from utils.enums.responses.jsinit_response import jsinit_response
 from utils.helpers.resources_reader import get_translation_from_json
 from utils.mock_handler import MockUrl
@@ -68,7 +68,7 @@ def step_impl(context, example_page):
         jwt = ''
         updated_jwt_from_jsinit = ''
         for row in context.table:
-            jwt = encode_jwt_for_json(JwtConfig[f'{row["jwtName"]}'])
+            jwt = encode_jwt_for_json(ConfigJwt[f'{row["jwtName"]}'])
             stub_jsinit_update_jwt_request(f'{row["jwtName"]}')
             updated_jwt_from_jsinit = decode_jwt_from_jsinit(jsinit_response[f'{row["jwtName"]}'])
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value % jwt}'
@@ -100,11 +100,13 @@ def step_impl(context, example_page):
         accept_untrusted_pages_on_safari_browsers(context)
     # setting url specific params accordingly to example page
     if example_page is None:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.inline_e2e_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}'
+    elif 'WITH_APM' in example_page:
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}&{context.INLINE_E2E_CONFIG_APM}'
     elif 'IN_IFRAME' in example_page:
-        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.inline_e2e_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.INLINE_E2E_CONFIG}'
     else:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.inline_e2e_config}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.INLINE_E2E_CONFIG}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
     payment_page.open_page(url)
@@ -117,14 +119,14 @@ def step_impl(context, example_page):
 def step_impl(context, jwt_config):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     # parse old jwt config (payload part) to dictionary object
-    jwt_payload_dict = get_jwt_config_from_json(JwtConfig[jwt_config].value)['payload']
+    jwt_payload_dict = get_jwt_config_from_json(ConfigJwt[jwt_config].value)['payload']
     # override/add default sitereference from config
     jwt_payload_dict['sitereference'] = CONFIGURATION.SITE_REFERENCE_CARDINAL
     # build payload base on additional attributes
     jwt_payload_dict = InlineConfigBuilder().map_jwt_additional_fields(jwt_payload_dict, context.table)
     jwt = encode_jwt(jwt_payload_dict)
 
-    url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam["WITH_UPDATE_JWT"].value % jwt}&{context.inline_e2e_config}'
+    url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam["WITH_UPDATE_JWT"].value % jwt}&{context.INLINE_E2E_CONFIG}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
     payment_page.open_page(url)
 
@@ -132,7 +134,16 @@ def step_impl(context, jwt_config):
 @step('User opens (?P<path>.+) page with inline param')
 def step_impl(context, path):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    url = f'{CONFIGURATION.URL.BASE_URL}/{path}?{context.inline_e2e_config}'
+    url = f'{CONFIGURATION.URL.BASE_URL}/{path}?{context.INLINE_E2E_CONFIG}'
+    if 'Safari' in context.browser:
+        accept_untrusted_pages_on_safari_browsers(context)
+    payment_page.open_page(url)
+
+
+@step('User opens (?P<path>.+) page with inline params')
+def step_impl(context, path):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    url = f'{CONFIGURATION.URL.BASE_URL}/{path}?{context.INLINE_E2E_CONFIG}&{context.INLINE_E2E_CONFIG_APM}'
     if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
     payment_page.open_page(url)
