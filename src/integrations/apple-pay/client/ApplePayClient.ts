@@ -44,9 +44,8 @@ export class ApplePayClient {
   }
 
   init(config: IConfig): Observable<void> {
-    this.updateJwtListener(config);
-
     return this.isApplePayAvailable(config).pipe(
+      tap(config => this.updateJwtListener(config)),
       map(config => this.resolveApplePayConfig(config)),
       tap(applePayConfig => this.insertApplePayButton(applePayConfig)),
       tap(applePayConfig => this.initGestureHandler(applePayConfig)),
