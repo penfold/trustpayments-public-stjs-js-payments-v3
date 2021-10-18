@@ -19,7 +19,8 @@ const zipConfigSchema = Joi.object().keys({
   cancelRedirectUrl: Joi.string().required(),
 });
 
-const pproConfigSchema = Joi.object().keys({
+const pproConfigSchemaFactory = (apmName: APMName) => Joi.object().keys({
+  name: Joi.string().valid(apmName).required(),
   placement: Joi.string().required(),
   successRedirectUrl: Joi.string().required(),
   errorRedirectUrl: Joi.string().required(),
@@ -27,5 +28,5 @@ const pproConfigSchema = Joi.object().keys({
 });
 
 export const APMSchemasMap: Map<APMName, ObjectSchema> = new Map()
-  .set(APMName.ZIP, zipConfigSchema)
-  .set(APMName.QIWI, { ...pproConfigSchema, name: Joi.string().valid(APMName.QIWI) });
+  .set(APMName.QIWI, pproConfigSchemaFactory(APMName.QIWI))
+  .set(APMName.ZIP, zipConfigSchema);
