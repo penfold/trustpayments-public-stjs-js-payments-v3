@@ -9,6 +9,7 @@ import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory'
 import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
 import { CacheTokenRequestProcessor } from '../request-processors/CacheTokenRequestProcessor';
+import { IAPMGatewayRequest } from '../../../../../integrations/apm/models/IAPMRequest';
 
 @Service()
 export class NoThreeDSRequestProcessingService implements IRequestProcessingService {
@@ -31,7 +32,7 @@ export class NoThreeDSRequestProcessingService implements IRequestProcessingServ
     return of(undefined);
   }
 
-  process(requestData: IStRequest, merchantUrl?: string): Observable<IRequestTypeResponse> {
+  process(requestData: IStRequest | IAPMGatewayRequest, merchantUrl?: string): Observable<IRequestTypeResponse> {
     const options: IRequestProcessingOptions = {
       merchantUrl,
       jsInitResponse: this.jsInitResponse,
