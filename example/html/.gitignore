@@ -1,4 +1,3 @@
-json/config.json
-json/jwtdata.json
+json/*.json
 node_modules
 dist

@@ -1,0 +1,16 @@
+.st-apm-button {
+  display: inline-block;
+  appearance: none;
+  background: transparent;
+  height: 40px;
+  width: auto;
+  cursor: pointer;
+}
+
+.st-apm-button + .st-apm-button {
+  margin-left: 8px;
+}
+
+.st-apm-button__img {
+  height: 100%;
+}

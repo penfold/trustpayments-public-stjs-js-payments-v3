@@ -2,7 +2,7 @@ import time
 import jwt
 
 from configuration import CONFIGURATION
-from utils.enums.jwt_config import JwtConfig
+from utils.enums.config_jwt import ConfigJwt
 from utils.helpers.random_data_generator import get_string
 from utils.helpers.resources_reader import get_jwt_config_from_json, get_mock_from_json
 
@@ -21,7 +21,7 @@ def decode_jwt(encoded_jwt):
     return jwt_json
 
 
-def encode_jwt_for_json(jwt_config: JwtConfig):
+def encode_jwt_for_json(jwt_config: ConfigJwt):
     data = get_jwt_config_from_json(jwt_config.value)
     jwt_token = jwt.encode({'iat': int(time.time()), 'iss': ISS_KEY, 'payload': data['payload']}, SECRET_KEY)
     return jwt_token
