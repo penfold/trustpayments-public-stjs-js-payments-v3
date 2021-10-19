@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class E2eConfig(Enum):
+class ConfigCardPaymentsAndDigitalWallets(Enum):
     BASIC_CONFIG = 'e2eBasicConfig.json'
     VISUAL_BASIC_CONFIG = 'visualBaseConfig.json'
     VISUAL_BASIC_WITH_STYLES_CONFIG = 'visualBaseConfigWithStyling.json'

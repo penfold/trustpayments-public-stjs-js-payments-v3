@@ -1,0 +1,9 @@
+{
+  "successRedirectUrl": "successRedirectUrl",
+  "errorRedirectUrl": "errorRedirectUrl",
+  "cancelRedirectUrl": "cancelRedirectUrl",
+  "placement": "st-apm",
+  "apmList": [
+    "ZIP"
+  ]
+}

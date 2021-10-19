@@ -60,7 +60,7 @@ export class DomMethods {
 
   static createHtmlElement = (attributes: Record<string, string>, markup: string): HTMLElement => {
     const element: HTMLElement = document.createElement(markup);
-    Object.keys(attributes).map(item => element.setAttribute(item, attributes[item]));
+    Object.keys(attributes).forEach(item => element.setAttribute(item, attributes[item]));
     return element;
   };
 
@@ -133,6 +133,10 @@ export class DomMethods {
 
   static removeAllCreatedFields(form: HTMLFormElement): void {
     form.querySelectorAll(`.${DomMethods.CREATED_FIELD_CLASSNAME}`).forEach(element => element.remove());
+  }
+
+  static redirect(url: string): void {
+    window.location.href = url;
   }
 
   private static isScriptLoaded(params: IScriptParams): Element {
