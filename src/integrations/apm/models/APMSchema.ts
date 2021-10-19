@@ -11,16 +11,16 @@ export const APMSchema: ObjectSchema = Joi.object().keys({
     .required(),
 });
 
-const zipConfigSchema = Joi.object().keys({
-  name: Joi.string().valid(APMName.ZIP),
+const pproConfigSchemaFactory = (apmName: APMName) => Joi.object().keys({
+  name: Joi.string().valid(apmName).required(),
   placement: Joi.string().required(),
   successRedirectUrl: Joi.string().required(),
   errorRedirectUrl: Joi.string().required(),
   cancelRedirectUrl: Joi.string().required(),
 });
 
-const pproConfigSchemaFactory = (apmName: APMName) => Joi.object().keys({
-  name: Joi.string().valid(apmName).required(),
+const zipConfigSchema = Joi.object().keys({
+  name: Joi.string().valid(APMName.ZIP),
   placement: Joi.string().required(),
   successRedirectUrl: Joi.string().required(),
   errorRedirectUrl: Joi.string().required(),

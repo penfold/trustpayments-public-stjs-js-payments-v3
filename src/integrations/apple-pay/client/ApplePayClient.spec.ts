@@ -8,7 +8,6 @@ import { IApplePayConfig } from '../../../application/core/integrations/apple-pa
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ApplePayClient } from './ApplePayClient';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
-import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { ApplePayClickHandlingService } from './ApplePayClickHandlingService';
 import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
@@ -16,13 +15,14 @@ import { IApplePayConfigObject } from '../../../application/core/integrations/ap
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { MerchantValidationService } from './MerchantValidationService';
 import { PaymentAuthorizationService } from './PaymentAuthorizationService';
-import { first } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
 import { PaymentCancelService } from './PaymentCancelService';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
 import { ApplePaySessionWrapper } from './ApplePaySessionWrapper';
 import { ApplePaySessionFactory } from './ApplePaySessionFactory';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 
 describe('ApplePayClient', () => {
   const configMock: IConfig = {
@@ -122,7 +122,7 @@ describe('ApplePayClient', () => {
       instance(applePaySessionWrapperMock),
       instance(applePayClickHandlingServiceMock),
       instance(applePaySessionFactoryMock),
-      messageBusMock as unknown as IMessageBus,
+      messageBusMock,
       instance(merchantValidationServiceMock),
       instance(paymentAuthorizationServiceMock),
       instance(paymentCancelServiceMock),
@@ -140,6 +140,41 @@ describe('ApplePayClient', () => {
       });
       when(applePaySessionFactoryMock.create(anything(), anything())).thenReturn(applePaySession);
     });
+
+    it('checks if the config contains new jwt key after sending UPDATE_JWT event', () => {
+      when(applePaySessionWrapperMock.isApplePaySessionAvailable()).thenReturn(true);
+
+      const event = {
+        type: PUBLIC_EVENTS.UPDATE_JWT,
+        data: {
+          newJwt: 'some-jwt',
+        },
+      };
+
+      applePayClient.init(configMock).subscribe();
+      messageBusMock.publish(event);
+
+      verify(applePayConfigServiceMock.getConfig(configMock, anything())).once();
+      verify(applePayConfigServiceMock.getConfig(deepEqual({ ...configMock, jwt: 'some-jwt' }), anything())).once();
+    });
+
+    it('checks if UPDATE_JWT event doesn\'t affect in the config when isApplePaySessionAvailable returns false', () => {
+      when(applePaySessionWrapperMock.isApplePaySessionAvailable()).thenReturn(false);
+
+      const event = {
+        type: PUBLIC_EVENTS.UPDATE_JWT,
+        data: {
+          newJwt: 'some-jwt',
+        },
+      };
+
+      applePayClient.init(configMock).subscribe();
+      messageBusMock.publish(event);
+
+      verify(applePayConfigServiceMock.getConfig(configMock, anything())).never();
+      verify(applePayConfigServiceMock.getConfig(deepEqual({ ...configMock, jwt: 'some-jwt' }), anything())).never();
+    });
+
 
     it('throws an error when hasApplePaySessionObject returns false', (done) => {
       when(applePaySessionWrapperMock.isApplePaySessionAvailable()).thenReturn(false);
