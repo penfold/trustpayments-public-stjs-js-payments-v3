@@ -4,6 +4,7 @@
   "cancelRedirectUrl": "cancelRedirectUrl",
   "placement": "st-apm",
   "apmList": [
-    "ZIP"
+   "UNIONPAY",
+   "ZIP"
   ]
 }
