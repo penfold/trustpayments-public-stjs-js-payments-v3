@@ -112,13 +112,6 @@
         st.Cybertonica().then(function(response) {
           console.error(response);
         });
-        st.APM({
-          successRedirectUrl: 'successRedirectUrl',
-          errorRedirectUrl: 'errorRedirectUrl',
-          cancelRedirectUrl: 'cancelRedirectUrl',
-          placement: 'st-apm',
-          apmList: ['QIWI','ZIP']
-        });
         updateJwtListener(st, updatedJwt);
 
         if (apmConfig) {

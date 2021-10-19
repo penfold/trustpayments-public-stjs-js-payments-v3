@@ -266,13 +266,6 @@
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
       st.GooglePay(config.googlePay);
-      st.APM({
-        successRedirectUrl: 'successRedirectUrl',
-        errorRedirectUrl: 'errorRedirectUrl',
-        cancelRedirectUrl: 'cancelRedirectUrl',
-        placement: 'st-apm',
-        apmList: ['QIWI','ZIP']
-      });
       st.Cybertonica().then(function(response) {
         console.log(response);
       });
