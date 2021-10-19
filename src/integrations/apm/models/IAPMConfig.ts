@@ -5,6 +5,6 @@ export interface IAPMConfig {
   placement: string;
   successRedirectUrl: string;
   errorRedirectUrl: string;
-  cancelRedirectUrl: string;
+  cancelRedirectUrl?: string;
   apmList: Array<APMName | IAPMItemConfig>;
 }
