@@ -20,4 +20,5 @@ const configSchemaFactory = (apmName: APMName) => Joi.object().keys({
 });
 
 export const APMSchemasMap: Map<APMName, ObjectSchema> = new Map()
+  .set(APMName.UNIONPAY, configSchemaFactory(APMName.UNIONPAY))
   .set(APMName.ZIP, configSchemaFactory(APMName.ZIP));
