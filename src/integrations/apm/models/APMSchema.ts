@@ -5,28 +5,20 @@ export const APMSchema: ObjectSchema = Joi.object().keys({
   placement: Joi.string().required(),
   successRedirectUrl: Joi.string().required(),
   errorRedirectUrl: Joi.string().required(),
-  cancelRedirectUrl: Joi.string().required(),
+  cancelRedirectUrl: Joi.string(),
   apmList: Joi.array()
     .items(Joi.string().valid(...Object.values(APMName)), Joi.object())
     .required(),
 });
 
-const pproConfigSchemaFactory = (apmName: APMName) => Joi.object().keys({
+const configSchemaFactory = (apmName: APMName) => Joi.object().keys({
   name: Joi.string().valid(apmName).required(),
   placement: Joi.string().required(),
   successRedirectUrl: Joi.string().required(),
   errorRedirectUrl: Joi.string().required(),
-  cancelRedirectUrl: Joi.string().required(),
-});
-
-const zipConfigSchema = Joi.object().keys({
-  name: Joi.string().valid(APMName.ZIP),
-  placement: Joi.string().required(),
-  successRedirectUrl: Joi.string().required(),
-  errorRedirectUrl: Joi.string().required(),
-  cancelRedirectUrl: Joi.string().required(),
+  cancelRedirectUrl: Joi.string(),
 });
 
 export const APMSchemasMap: Map<APMName, ObjectSchema> = new Map()
-  .set(APMName.QIWI, pproConfigSchemaFactory(APMName.QIWI))
-  .set(APMName.ZIP, zipConfigSchema);
+  .set(APMName.QIWI, configSchemaFactory(APMName.QIWI))
+  .set(APMName.ZIP, configSchemaFactory(APMName.ZIP));
