@@ -8,7 +8,6 @@ import { Service } from 'typedi';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
 import { PUBLIC_EVENTS } from '../../../../application/core/models/constants/EventTypes';
 import { IUpdateJwt } from '../../../../application/core/models/IUpdateJwt';
-import { APMLocaleTransform } from '../apm-locale-transform/APMLocaleTransform';
 
 @Service()
 export class APMFilterService {
@@ -16,7 +15,6 @@ export class APMFilterService {
     private jwtDecoder: JwtDecoder,
     private configProvider: ConfigProvider,
     private messageBus: IMessageBus,
-    private apmLocaleTransform: APMLocaleTransform,
   ) {
     this.messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_JWT, (data: IUpdateJwt) => {
       const { country, currency } = this.getCurrencyAndCountry(data.newJwt);
@@ -26,22 +24,21 @@ export class APMFilterService {
 
   filter(apmList: IAPMItemConfig[]): Observable<IAPMItemConfig[]> {
     const { country, currency } = this.getCurrencyAndCountry(this.configProvider.getConfig().jwt);
+    console.error(country, currency);
 
     return of(apmList.filter((item: IAPMItemConfig) => this.isAPMAvailable(item, currency, country)));
   }
 
   private getCurrencyAndCountry(jwt: string): { currency: string, country: string } {
-    const countryCode: string = this.apmLocaleTransform.toCountryCode(this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.locale);
-    console.error(countryCode);
     return {
       currency: this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.currencyiso3a,
-      country: countryCode,
+      country: this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.billingcountryiso2a,
     };
   }
 
-  private isAPMAvailable(item: IAPMItemConfig, currencyiso3a: string, locale: string): boolean {
+  private isAPMAvailable(item: IAPMItemConfig, currencyiso3a: string, countryiso: string): boolean {
     return APMAvailabilityMap.has(item.name) &&
       APMAvailabilityMap.get(item.name).currencies.includes(currencyiso3a) &&
-      APMAvailabilityMap.get(item.name).countries.includes(locale);
+      APMAvailabilityMap.get(item.name).countries.includes(countryiso);
   }
 }
