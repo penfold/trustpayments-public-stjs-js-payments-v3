@@ -82,7 +82,7 @@ export const APMAvailabilityMap: Map<APMName, { countries: string[], currencies:
     currencies: ['EUR', 'GBP', 'USD'],
   })
   .set(APMName.ZIP, {
-    countries: ['AUD', 'CAD', 'CHF', 'DKK', 'EUR', 'en_GB', 'HKD', 'JPY', 'KRW', 'NOK', 'NZD', 'SEK', 'SGD', 'THB', 'USD'],
+    countries: ['AUD', 'CAD', 'CHF', 'DKK', 'EUR', 'EN', 'HKD', 'JPY', 'KRW', 'NOK', 'NZD', 'SEK', 'SGD', 'THB', 'USD'],
     currencies: ['EUR', 'GBP', 'USD'],
   });
 

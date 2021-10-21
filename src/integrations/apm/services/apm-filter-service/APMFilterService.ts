@@ -8,10 +8,16 @@ import { Service } from 'typedi';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
 import { PUBLIC_EVENTS } from '../../../../application/core/models/constants/EventTypes';
 import { IUpdateJwt } from '../../../../application/core/models/IUpdateJwt';
+import { APMLocaleTransform } from '../apm-locale-transform/APMLocaleTransform';
 
 @Service()
 export class APMFilterService {
-  constructor(private jwtDecoder: JwtDecoder, private configProvider: ConfigProvider, private messageBus: IMessageBus) {
+  constructor(
+    private jwtDecoder: JwtDecoder,
+    private configProvider: ConfigProvider,
+    private messageBus: IMessageBus,
+    private apmLocaleTransform: APMLocaleTransform,
+  ) {
     this.messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_JWT, (data: IUpdateJwt) => {
       const { country, currency } = this.getCurrencyAndCountry(data.newJwt);
       this.messageBus.publish({ data: { country, currency }, type: PUBLIC_EVENTS.APM_CURRENCY_AND_COUNTRY });
@@ -25,10 +31,11 @@ export class APMFilterService {
   }
 
   private getCurrencyAndCountry(jwt: string): { currency: string, country: string } {
-
+    const countryCode: string = this.apmLocaleTransform.toCountryCode(this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.locale);
+    console.error(countryCode);
     return {
       currency: this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.currencyiso3a,
-      country: this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.locale,
+      country: countryCode,
     };
   }
 
