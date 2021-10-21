@@ -76,7 +76,7 @@ Feature: payment flow with redirect
     And Frictionless card payment mock responses are set as BASE_JSINIT and payment status SUCCESS
     And User opens example page
     And User waits for form inputs to be loaded
-    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+    When User fills payment form with defined card VISA_V21_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay button
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
@@ -84,9 +84,9 @@ Feature: payment flow with redirect
       | baseamount           | 1000                                    |
       | currencyiso3a        | GBP                                     |
       | errorcode            | 0                                       |
-      | status               | Y                                       |
+      | status               | A                                       |
       | transactionreference | should not be none                      |
-      | eci                  | 02                                      |
+      | eci                  | 06                                      |
       | enrolled             | Y                                       |
       | settlestatus         | 0                                       |
       | jwt                  | should not be none                      |
