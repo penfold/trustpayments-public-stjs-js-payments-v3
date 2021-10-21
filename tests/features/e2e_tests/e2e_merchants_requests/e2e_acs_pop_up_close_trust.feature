@@ -20,8 +20,10 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     When User clicks cancel 3ds action button
     Then User will see notification frame text: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
-    And "submit" callback is called only once
-    And "cancel" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | cancel        |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
     And User will see that Pay button is "enabled"
@@ -43,8 +45,10 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     When User clicks cancel 3ds action button
     Then User will see notification frame text: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
-    And "submit" callback is called only once
-    And "cancel" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | cancel        |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
     And User will see that Pay button is "enabled"
@@ -71,7 +75,9 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     And User fills 3ds SDK challenge with THREE_DS_CODE and submit
     Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once in second payment
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: <THREEDRESPONSE>
 
@@ -142,7 +148,9 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     When User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once in second payment
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
@@ -207,8 +215,10 @@ Feature: Close ACS pop-up (3DS modal) for Trustpayments provider
     When User clicks cancel 3ds action button
     Then User will see notification frame text: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
-    And "submit" callback is called only once
-    And "cancel" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | cancel        |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 

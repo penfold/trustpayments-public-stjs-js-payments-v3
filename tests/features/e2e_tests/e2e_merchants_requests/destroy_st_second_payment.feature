@@ -20,8 +20,10 @@ Feature: Destroy ST instance
     When User clicks Pay button
     And User fills V2 authentication modal
     Then User will see notification frame text: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
@@ -47,8 +49,10 @@ Feature: Destroy ST instance
     When User clicks Pay button
     And User fills V2 authentication modal
     Then User will see notification frame text: "An error occurred"
-    And "submit" callback is called only once
-    And "error" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | error         |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: True
 
@@ -107,8 +111,10 @@ Feature: Destroy ST instance
     When User clicks Start ST action button
     And User fills V2 authentication modal
     Then User will see notification frame text: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
