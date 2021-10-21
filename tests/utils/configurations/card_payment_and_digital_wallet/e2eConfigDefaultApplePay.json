@@ -1,5 +1,4 @@
 {
-  "submitOnSuccess": false,
   "submitCallback": "submitCallback",
   "successCallback": "successCallback",
   "errorCallback": "errorCallback",
@@ -33,7 +32,6 @@
         "amount": "1000",
         "type": "final"
       }
-    },
-    "buttonPlacement": "st-apple-pay"
+    }
   }
 }

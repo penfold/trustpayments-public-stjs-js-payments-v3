@@ -1,9 +1,17 @@
 {
-  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAudGVzdCIsImlhdCI6MTU3MTY0NzEyMC4xNzQzNDk1LCJwYXlsb2FkIjp7ImJhc2VhbW91bnQiOiIxMDAwIiwiYWNjb3VudHR5cGVkZXNjcmlwdGlvbiI6IkVDT00iLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwic2l0ZXJlZmVyZW5jZSI6InRlc3QxIiwibG9jYWxlIjoiZW5fR0IiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9ucyI6WyJBVVRIIl19fQ.0YCl31WORRSNIbbWSSq62bImmufXeK93BDv4lB--Kxk",
   "panIcon": true,
+  "styles": {
+    "defaultStyles": {
+      "background-color-input": "AliceBlue"
+    },
+    "notificationFrame": {
+      "color-error": "#FFF333"
+    },
+    "controlFrame": {
+      "color-error": "#3358FF"
+    }
+  },
   "submitOnSuccess": false,
-  "submitCallback": "submitCallback",
-  "successCallback": "successCallback",
   "applePay": {
     "buttonStyle": "white-outline",
     "buttonText": "donate",
@@ -22,5 +30,6 @@
         "amount": "10.00"
       }
     }
-  }
+  },
+  "cybertonicaApiKey": ""
 }

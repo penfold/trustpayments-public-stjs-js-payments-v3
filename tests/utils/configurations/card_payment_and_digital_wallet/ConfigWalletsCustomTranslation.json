@@ -1,0 +1,27 @@
+{
+  "submitOnSuccess": false,
+  "translations": {
+    "Card number": "CARD_NO_TRANSLATION_OVERRIDE",
+    "Expiration date": "EXP_DATE_TRANSLATION_OVERRIDE",
+    "Security code": "CODE_TRANSLATION_OVERRIDE",
+    "Field is required": "REQUIRED_TRANSLATION_OVERRIDE",
+    "Pay": "PAY_TRANSLATION_OVERRIDE",
+    "An error occurred": "NOTIFICATION_ERROR_TRANSLATION_OVERRIDE",
+    "Payment has been successfully processed": "NOTIFICATION_SUCCESS_TRANSLATION_OVERRIDE"
+  },
+  "visaCheckout": {
+    "buttonSettings": {
+      "size": "154",
+      "color": "neutral"
+    },
+    "livestatus": 0,
+    "merchantId": "SDUT1MEXJO10RARJF2S521ImTyKfn3_JmxePdXcydQIUb4kx4",
+    "paymentRequest": {
+      "subtotal": "20.00"
+    },
+    "placement": "st-visa-checkout",
+    "settings": {
+      "displayName": "My Test Site"
+    }
+  }
+}

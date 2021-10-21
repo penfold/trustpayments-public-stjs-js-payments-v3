@@ -12,8 +12,10 @@ Feature: E2E second payment
     And User fills V2 authentication modal
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
@@ -72,6 +74,8 @@ Feature: E2E second payment
     And User fills V2 authentication modal
     Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once in second payment
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False

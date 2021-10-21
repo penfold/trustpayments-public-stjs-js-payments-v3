@@ -10,8 +10,10 @@ Feature: request type with success callback and bypass card - full test coverage
     And User clicks Pay button
     Then User will see "submit" popup
     And User will see "success" popup
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
 
    Examples:
     | request_types                                      |
@@ -43,8 +45,10 @@ Feature: request type with success callback and bypass card - full test coverage
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button
     Then User will see "submit" popup
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
 
   Examples:
     | request_types                                      |
@@ -69,8 +73,10 @@ Feature: request type with success callback and bypass card - full test coverage
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
     Then User will see "submit" popup
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
 
     Examples:
     | request_types                                      |
@@ -103,8 +109,10 @@ Feature: request type with success callback and bypass card - full test coverage
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see "submit" popup
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
 
     Examples:
     | request_types                                      |

@@ -1,6 +1,7 @@
 from enum import Enum
 
 request_type_response = {
+    'AUTH': 'ccAUTHoK.json',
     'RISKDEC, ACCOUNTCHECK, THREEDQUERY': 'ccRiskdecAcheckTdq.json',
     'ACCOUNTCHECK, THREEDQUERY': 'ccAcheckTdq.json',
     'RISKDEC, ACCOUNTCHECK': 'ccRiskdecAcheck.json',
@@ -21,6 +22,7 @@ request_type_response = {
 
 request_type_tokenisation_response = {
     'RISKDEC, ACCOUNTCHECK, THREEDQUERY': 'tokenisationRiskdecAcheckTdq.json',
+    'AUTH': 'ccAUTHoK.json',
 }
 
 request_type_applepay = {
@@ -34,7 +36,7 @@ request_type_applepay = {
 }
 
 frictionless_request_type = {
-    'OK': 'frictionlessOk.json',
+    'SUCCESS': 'frictionlessOk.json',
     'DECLINE': 'frictionlessDecline.json',
     'UNAUTHENTICATED': 'frictionlessUnauthenticated.json',
     'TDQ_U_OK': 'frictionlessUOk.json',
@@ -68,13 +70,14 @@ request_type_google = {
 
 
 class RequestType(Enum):
-    THREEDQUERY = 1
-    AUTH = 2
-    WALLETVERIFY = 3
-    JSINIT = 4
-    RISKDEC_ACHECK_TDQ = 5
-    ACHECK_TDQ = 6
-    AUTH_RISKDEC = 7
-    RISKDEC_ACHECK = 8
-    ACHECK_AUTH = 9
-    RISKDEC_ACHECK_AUTH = 10
+    THREEDQUERY = 'THREEDQUERY'
+    AUTH = 'AUTH'
+    TDQ_AUTH = 'THREEDQUERY, AUTH'
+    WALLETVERIFY = 'WALLETVERIFY'
+    JSINIT = 'JSINIT'
+    RISKDEC_ACHECK_TDQ = 'RISKDEC, ACCOUNTCHECK, THREEDQUERY'
+    ACHECK_TDQ = 'ACCOUNTCHECK, THREEDQUERY'
+    AUTH_RISKDEC = 'AUTH, RISKDEC'
+    RISKDEC_ACHECK = 'RISKDEC, AUTH'
+    ACHECK_AUTH = 'ACCOUNTCHECK, AUTH'
+    RISKDEC_ACHECK_AUTH = 'RISKDEC, ACCOUNTCHECK, AUTH'

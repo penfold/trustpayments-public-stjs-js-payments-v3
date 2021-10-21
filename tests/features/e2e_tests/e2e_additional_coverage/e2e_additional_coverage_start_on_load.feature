@@ -7,8 +7,10 @@ Feature: request type + start on load - full test coverage
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
     Then User will see notification frame text: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
@@ -41,8 +43,10 @@ Feature: request type + start on load - full test coverage
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
     Then User will see notification frame text: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
@@ -68,8 +72,10 @@ Feature: request type + start on load - full test coverage
     When User opens example page WITHOUT_SUBMIT_BUTTON
     And User fills V2 authentication modal
     Then User will see notification frame text: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: <threedresponse_defined>
 
@@ -94,8 +100,10 @@ Feature: request type + start on load - full test coverage
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
     Then User will see notification frame text: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
@@ -118,8 +126,10 @@ Feature: request type + start on load - full test coverage
     When User opens example page WITHOUT_SUBMIT_BUTTON
     And User fills V2 authentication modal
     Then User will see notification frame text: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
@@ -139,8 +149,10 @@ Feature: request type + start on load - full test coverage
       | requesttypedescriptions | <request_types> |
     When User opens example page WITHOUT_SUBMIT_BUTTON
     Then User will see notification frame text: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
@@ -160,7 +172,9 @@ Feature: request type + start on load - full test coverage
     When User opens example page WITHOUT_SUBMIT_BUTTON
     And User fills V2 authentication modal
     Then User will see notification frame text: "An error occurred"
-    And "submit" callback is called only once
-    And "error" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | error         |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: True

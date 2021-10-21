@@ -3,15 +3,16 @@ Feature: Bypass Cards config - validation of requests send
   I want to use card payments method with bypass config
   In order to check payment functionality
 
-  Background:
-
-    Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens mock payment page
-
-  @<tag>
+  @bypass
   Scenario Outline: Card payment with Bypass
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                      | value                                    |
+      | requesttypedescriptions  | THREEDQUERY AUTH                         |
+      | threedbypasspaymenttypes | VISA AMEX MASTERCARD DISCOVER JCB DINERS |
+    And Card payment mock responses are set as <jsinit_response> and request type <request_types>
+    And User opens example page
     When User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
-    And User clicks Pay button - <request_types> response is set to "OK"
+    And User clicks Pay button
     Then User will see notification frame text: "<payment_status>"
     And User will see that notification frame has "<color>" color
     And <request_types> ware sent only once in one request
@@ -21,12 +22,12 @@ Feature: Bypass Cards config - validation of requests send
       | <callback>    |
 
     Examples:
-      | request_types                                 | payment_status                          | color | callback | tag                                         |
-      | THREEDQUERY                                   | Bypass                                  | red   | error    | config_bypass_cards_tdq                     |
-      | THREEDQUERY, AUTH, RISKDEC                    | Payment has been successfully processed | green | success  | config_bypass_cards_tdq_auth_riskdec        |
-      | ACCOUNTCHECK, THREEDQUERY, AUTH               | Payment has been successfully processed | green | success  | config_bypass_cards_acheck_tdq_auth         |
-      | RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH      | Payment has been successfully processed | green | success  | config_bypass_cards_riskdec_acheck_tdq_auth |
-      | ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION | Payment has been successfully processed | green | success  | config_bypass_cards_acheck_tdq_auth_sub     |
-      | THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH      | Invalid field                           | red   | error    | config_bypass_cards_tdq_acheck_riskdec_auth |
+      | request_types                                 | payment_status                          | color | callback | jsinit_response                       |
+      | THREEDQUERY                                   | Bypass                                  | red   | error    | JSINIT_BYPASS_TDQ                     |
+      | THREEDQUERY, AUTH, RISKDEC                    | Payment has been successfully processed | green | success  | JSINIT_BYPASS_TDQ_AUTH_RISKDEC        |
+      | ACCOUNTCHECK, THREEDQUERY, AUTH               | Payment has been successfully processed | green | success  | JSINIT_BYPASS_ACHECK_TDQ_AUTH         |
+      | RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH      | Payment has been successfully processed | green | success  | JSINIT_BYPASS_RISKDEC_ACHECK_TDQ_AUTH |
+      | ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION | Payment has been successfully processed | green | success  | JSINIT_BYPASS_ACHECK_TDQ_AUTH_SUB     |
+      | THREEDQUERY, ACCOUNTCHECK, RISKDEC, AUTH      | Invalid field                           | red   | error    | JSINIT_BYPASS_TDQ_ACHECK_RISKDEC_SUB  |
 
 
