@@ -17,7 +17,9 @@ import './APMClient.scss';
 
 @Service()
 export class APMClient {
-  private apmIcons: Record<APMName, string> = {
+  // TODO remove ts-ignore comment
+  // @ts-ignore
+  private apmIcons:Record<APMName, string> = {
     [APMName.ZIP]: require('./images/zip.svg'),
   };
 

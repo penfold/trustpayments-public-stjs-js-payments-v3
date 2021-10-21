@@ -1,9 +1,9 @@
 import { APMSchema, APMSchemasMap } from '../../models/APMSchema';
 import { IAPMConfig } from '../../models/IAPMConfig';
 import { Service } from 'typedi';
-import { ValidationError, ValidationResult } from 'joi';
+import * as Joi from 'joi';
+import { ObjectSchema, ValidationError, ValidationResult } from 'joi';
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
-import { APMName } from '../../models/APMName';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
@@ -23,16 +23,32 @@ export class APMValidator {
 
   validateAPMItemConfigs(apmList: Array<IAPMItemConfig>): ValidationError[] {
     const validationErrors: ValidationError[] = [];
-    const jwtPayload = this.jwtDecoder.decode<IStJwtPayload>(this.configProvider.getConfig().jwt).payload;
+    const jwtValidationError: ValidationError | null = this.validateJwt(apmList);
 
     apmList.forEach((apm: IAPMItemConfig) => {
       validationErrors.push(...[
         this.validateConfig(apm),
-        this.validateJwt(apm.name, jwtPayload),
       ].filter(Boolean));
     });
 
+    if (jwtValidationError) {
+      validationErrors.push(jwtValidationError);
+    }
+
     return validationErrors;
+  }
+
+  private validateJwt(apmList: Array<IAPMItemConfig>): ValidationError | null {
+    const jwtPayload = this.jwtDecoder.decode<IStJwtPayload>(this.configProvider.getConfig().jwt).payload;
+    const concatSchema: ObjectSchema = apmList.reduce((schema, apmConfig) => {
+      if (!AMPJwtSchemasMap.has(apmConfig.name)) {
+        return schema;
+      }
+
+      return schema.concat(AMPJwtSchemasMap.get(apmConfig.name));
+    }, Joi.object());
+
+    return concatSchema.validate(jwtPayload).error || null;
   }
 
   private validateConfig(apm: IAPMItemConfig): ValidationError | null {
@@ -41,16 +57,6 @@ export class APMValidator {
     }
 
     const validationResult: ValidationResult = APMSchemasMap.get(apm.name).validate(apm);
-
-    return validationResult.error || null;
-  }
-
-  private validateJwt(apmName: APMName, jwtPayload: IStJwtPayload): ValidationError | null {
-    if (!AMPJwtSchemasMap.has(apmName)) {
-      return null;
-    }
-
-    const validationResult: ValidationResult = AMPJwtSchemasMap.get(apmName).validate(jwtPayload);
 
     return validationResult.error || null;
   }
