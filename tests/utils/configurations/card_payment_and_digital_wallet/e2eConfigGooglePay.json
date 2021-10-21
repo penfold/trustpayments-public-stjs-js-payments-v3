@@ -1,5 +1,9 @@
 {
   "submitOnSuccess": false,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
+  "errorCallback": "errorCallback",
+  "cancelCallback": "cancelCallback",
   "googlePay": {
     "buttonOptions": {
       "buttonRootNode": "st-google-pay",

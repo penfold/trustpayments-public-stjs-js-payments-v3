@@ -3,8 +3,11 @@ from enum import Enum
 
 class ConfigCardPaymentsAndDigitalWallets(Enum):
     BASIC_CONFIG = 'e2eBasicConfig.json'
+    DEFAULT_CONFIG = 'e2eDefaultConfig.json'
     VISUAL_BASIC_CONFIG = 'visualBaseConfig.json'
     VISUAL_BASIC_WITH_STYLES_CONFIG = 'visualBaseConfigWithStyling.json'
+    VISUAL_MOCK_CONFIG = 'visualMockConfig.json'
+    VISUAL_MOCK_WITH_STYLES_CONFIG = 'visualBaseConfigWithStyling.json'
     VALIDATION_STYLES_CONFIG = 'e2eConfigWithValidationStyling.json'
     START_ON_LOAD_CONFIG = 'e2eConfigStartOnLoadTrue.json'
     PLACEHOLDERS_CONFIG = 'ConfigPlaceholders.json'
@@ -19,5 +22,8 @@ class ConfigCardPaymentsAndDigitalWallets(Enum):
     THREE_DS_SDK_POPUP_PROCESSING_SCREEN_ATTACH_TO_ELEMENT_CONFIG = 'e2eConfig3dsLibraryInPopupProcessingScreenAttachToElement.json'
 
     APPLE_PAY_CONFIG = 'e2eConfigApplePay.json'
+    APPLE_PAY_DEFAULT_CONFIG = 'e2eConfigDefaultApplePay.json'
     GOOGLE_PAY_CONFIG = 'e2eConfigGooglePay.json'
     VISA_CHECKOUT_CONFIG = 'e2eConfigVisaCheckout.json'
+    VISA_CHECKOUT_DEFAULT_CONFIG = 'e2eConfigDefaultVisaCheckout.json'
+    WALLETS_CUSTOM_TRANSLATION_CONFIG = 'ConfigWalletsCustomTranslation.json'

@@ -15,7 +15,7 @@ from utils.configurations.jwt_generator import replace_jwt_in_logs
 from utils.driver_factory import DriverFactory
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import mark_test_as_failed, set_scenario_name, mark_test_as_passed, \
-    clear_shared_dict, add_to_shared_dict
+    clear_shared_dict, add_to_shared_dict, remove_item_from_request_journal
 from utils.logger import get_logger
 from utils.reporter import Reporter
 from utils.visual_regression.screenshot_manager import ScreenshotManager
@@ -87,6 +87,8 @@ def after_scenario(context, scenario):
         except:
             LOGGER.info('Error was thrown while printing console logs')
     browser_name = context.browser
+    if 'component_tests' in str(scenario.location):
+        remove_item_from_request_journal()
     context.browser_executor.clear_cookies()
     context.browser_executor.close_browser()
     if context.configuration.REMOTE:

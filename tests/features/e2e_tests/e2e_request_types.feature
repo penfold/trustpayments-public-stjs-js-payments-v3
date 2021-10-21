@@ -15,8 +15,10 @@ Feature: E2E Card Payments with request types in config
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
 
 
   Scenario: Unsuccessful payment with config's requestTypes param having values in invalid order
@@ -39,8 +41,10 @@ Feature: E2E Card Payments with request types in config
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
 
 
   Scenario Outline: Successful payment with single requestTypes <REQUEST_TYPE_TC>

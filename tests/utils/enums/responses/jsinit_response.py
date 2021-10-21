@@ -1,57 +1,32 @@
-jsinit_response = {
-    'config_tokenisation_visa': 'jsinitTokenisationVisa.json',
-    'config_tokenisation_bypass_cards_visa': 'jsinitTokenisationVisa.json',
-    'config_tokenisation_visa_request_types': 'jsinitTokenisationVisa.json',
-    'config_tokenisation_amex': 'jsinitTokenisationAmex.json',
-    'subscription': 'jsinitSubscription.json',
-    'start_on_load_sub': 'jsinitStartOnLoadSubscription.json',
-    'start_on_load': 'jsinitStartOnLoad.json',
-    'config_start_on_load_requestTypes_tdq': 'jsinitStartOnLoadTdq.json',
-    'config_start_on_load_requestTypes_tdq_auth': 'jsinitStartOnLoadTdqAuth.json',
-    'config_start_on_load_sub_acheck_tdq_aut': 'jsinitStartOnLoadTdqAuth.json',
-    'config_start_on_load_acheck_tdq_auth_sub': 'jsinitStartOnLoadAcheckTdqAuthSub.json',
-    'config_immediate_payment': 'jsinitStartOnLoad.json',
-    'config_immediate_payment_and_submit_on_success': 'jsinitStartOnLoad.json',
-    'config_requestTypes_tdq': 'jsinitTDQ.json',
-    'config_requestTypes_tdq_submit_on_error': 'jsinitTDQ.json',
-    'config_requestTypes_acheck_tdq_auth': 'jsinitAcheckTdqAuth.json',
-    'config_requestTypes_tdq_auth_riskdec': 'jsinitTdqAuthRiskdec.json',
-    'config_requestTypes_riskdec_acheck_tdq_auth': 'jsinitRiskdecAcheckTdqAuth.json',
-    'config_requestTypes_tdq_submit_on_success': 'jsinitTDQ.json',
-    'config_requestTypes_tdq_acheck_riskdec_auth': 'jsinitTdqAcheckRiskdecAuth.json',
-    'config_requestTypes_acheck_tdq_auth_subscription': 'jsinitAcheckTdqAuthSub.json',
-    'config_immediate_payment_tdq': 'jsinitStartOnLoadTdq.json',
-    'config_immediate_payment_tdq_auth': 'jsinitStartOnLoadTdqAuth.json',
-    'config_immediate_payment_acheck_tdq_auth': 'jsinitStartOnLoadAcheckTdqAuth.json',
-    'config_immediate_payment_riskdec_acheck_tdq_auth': 'jsinitStartOnLoadRiskdecAcheckTdqAuth.json',
-    'config_bypass_cards_tdq': 'jsinitBypassTdq.json',
-    'config_bypass_cards_tdq_auth_riskdec': 'jsinitBypassTdqAuthRiskdec.json',
-    'config_bypass_cards_acheck_tdq_auth': 'jsinitBypassAcheckTdqAuth.json',
-    'config_bypass_cards_riskdec_acheck_tdq_auth': 'jsinitBypassRiskdecAcheckTdqAuth.json',
-    'config_bypass_cards_acheck_tdq_auth_sub': 'jsinitBypassAcheckTdqAuthSub.json',
-    'config_bypass_cards_tdq_acheck_riskdec_auth': 'jsinitBypassTdqAcheckRiskdecAuth.json',
-    'config_visa_auth': 'jsinitAuth.json',
-    'config_visa_acheck_auth': 'jsinitAcheckAuth.json',
-    'config_visa_acheck': 'jsinitAcheck.json',
-    'config_visa_riskdec_auth': 'jsinitRiskdecAuth.json',
-    'config_visa_riskdec_acheck_auth': 'jsinitRiskdecAcheckAuth.json',
-    'config_visa_auth_subscription': 'jsinitAuthSubscription.json',
-    'config_visa_acheck_subscription': 'jsinitAcheckSubscription.json',
-    'config_apple_auth': 'jsinitAuth.json',
-    'config_apple_acheck': 'jsinitAcheck.json',
-    'config_apple_acheck_auth': 'jsinitAcheckAuth.json',
-    'config_apple_riskdec_auth': 'jsinitRiskdecAuth.json',
-    'config_apple_riskdec_acheck_auth': 'jsinitRiskdecAcheckAuth.json',
-    'config_auth_subscription': 'jsinitAuthSubscription.json',
-    'config_acheck_subscription': 'jsinitAcheckSubscription.json',
-    'config_mainamount': 'jsinitMainamount.json',
-    'BASE_UPDATED_JWT': 'jsinitBaseUpdatedJwt.json',
-    'config_google_auth': 'jsinitAuth.json',
-    'config_google_acheck': 'jsinitAcheck.json',
-    'config_google_acheck_auth': 'jsinitAcheckAuth.json',
-    'config_google_riskdec_auth': 'jsinitRiskdecAuth.json',
-    'config_google_riskdec_acheck_auth': 'jsinitRiskdecAcheckAuth.json',
-    'config_google_auth_subscription': 'jsinitAuthSubscription.json',
-    'config_google_acheck_subscription': 'jsinitAcheckSubscription.json',
+from enum import Enum
 
-}
+
+class JSinitResponse(Enum):
+    BASE_JSINIT = 'jsinit.json'
+    JSINIT_UPDATED_JWT = 'jsinitBaseUpdatedJwt.json'
+    JSINIT_AUTH_UPDATED_JWT = 'jsinitAuthUpdatedJwt.json'
+    JSINIT_AUTH = 'jsinitAuth.json'
+    JSINIT_TDQ = 'jsinitTDQ.json'
+    JSINIT_TDQ_AUTH_RISKDEC = 'jsinitTdqAuthRiskdec.json'
+    JSINIT_ACHECK = 'jsinitAcheck.json'
+    JSINIT_ACHECK_AUTH = 'jsinitAcheckAuth.json'
+    JSINIT_ACHECK_TDQ_AUTH = 'jsinitAcheckTdqAuth.json'
+    JSINIT_ACHECK_TDQ_AUTH_SUB = 'jsinitAcheckTdqAuthSub.json'
+    JSINIT_RISKDEC_AUTH = 'jsinitRiskdecAuth.json'
+    JSINIT_RISKDEC_ACHECK_AUTH = 'jsinitRiskdecAcheckAuth.json'
+    JSINIT_RISKDEC_ACHECK_TDQ_AUTH = 'jsinitRiskdecAcheckTdqAuth.json'
+    JSINIT_AUTH_SUBSCRIPTION = 'jsinitAuthSubscription.json'
+    JSINIT_ACHECK_SUBSCRIPTION = 'jsinitAcheckSubscription.json'
+    JSINIT_MAINAMOUNT = 'jsinitMainamount.json'
+    JSINIT_BYPASS_TDQ = 'jsinitBypassTdq.json'
+    JSINIT_BYPASS_TDQ_AUTH_RISKDEC = 'jsinitBypassTdqAuthRiskdec.json'
+    JSINIT_BYPASS_ACHECK_TDQ_AUTH = 'jsinitBypassAcheckTdqAuth.json'
+    JSINIT_BYPASS_RISKDEC_ACHECK_TDQ_AUTH = 'jsinitBypassRiskdecAcheckTdqAuth.json'
+    JSINIT_BYPASS_ACHECK_TDQ_AUTH_SUB = 'jsinitBypassAcheckTdqAuthSub.json'
+    JSINIT_BYPASS_TDQ_ACHECK_RISKDEC_SUB = 'jsinitBypassTdqAcheckRiskdecAuth.json'
+    JSINIT_START_ON_LOAD_TDQ = 'jsinitStartOnLoadTdq.json'
+    JSINIT_START_ON_LOAD_TDQ_AUTH = 'jsinitStartOnLoadTdqAuth.json'
+    JSINIT_START_ON_LOAD_ACHECK_TDQ_AUTH_SUB = 'jsinitStartOnLoadAcheckTdqAuthSub.json'
+    JSINIT_TOKENISATION_VISA = 'jsinitTokenisationVisa.json'
+    JSINIT_TOKENISATION_BYPASS_VISA = 'jsinitTokenisationVisa.json'
+    JSINIT_TOKENISATION_AMEX = 'jsinitTokenisationAmex.json'

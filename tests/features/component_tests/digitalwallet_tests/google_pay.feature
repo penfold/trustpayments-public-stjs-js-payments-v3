@@ -3,41 +3,52 @@ Feature: GooglePay
   I want to use GooglePay payment method
   In order to check full payment functionality
 
-  Background:
-    Given JavaScript configuration is set for scenario based on scenario's @config tag
 
-  @config_google_base
   Scenario Outline: GooglePay - checking payment status for <action_code> response code
-    Given User opens mock payment page
-    When User chooses GooglePay as payment method - response is set to "<action_code>"
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And Google Pay mock responses are set as JSINIT_AUTH and payment status <action_code>
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
     And User will see following callback type called only once
       | <callback_type> |
     And submit callback contains JWT response
-    And GOOGLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type |
+      | GOOGLE_PAY   |
+      | AUTH         |
 
     Examples:
       | action_code | payment_status_message                  | color | callback_type |
       | SUCCESS     | Payment has been successfully processed | green | success       |
       | ERROR       | An error occurred                       | red   | error         |
 
-  @config_google_base
-  Scenario Outline: GooglePay - checking translation for "Payment has been cancelled" status for <language>
-    Given User opens mock payment page
-    When User changes page language to "<language>"
-    And User chooses GooglePay as payment method - response is set to "CANCEL"
-    Then User will see payment notification text: "Payment has been cancelled" translated into "<language>"
-    Examples:
-      | language |
-      | es_ES    |
 
-  @config_google_submit_on_success_true
+  Scenario: GooglePay - checking translation for "Payment has been cancelled" status for <language>
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+      | locale                  | es_ES |
+    And Google Pay mock responses are set as JSINIT_AUTH and payment status CANCEL
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
+    Then User will see payment notification text: "Payment has been cancelled" translated into "es_ES"
+
+
   Scenario: GooglePay - successful payment with enabled 'submit on success' process
-    Given User opens mock payment page
-    And User waits for form inputs to be loaded
+    Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And Google Pay mock responses are set as JSINIT_AUTH and payment status SUCCESS
+    And User opens example page
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
-    And User chooses GooglePay as payment method - response is set to "SUCCESS"
+    And User chooses GOOGLE_PAY as payment method
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
       | errormessage         | Payment has been successfully processed |
@@ -50,24 +61,42 @@ Feature: GooglePay
       | jwt                  | should not be none                      |
       | transactionreference | should not be none                      |
       | settlestatus         | 0                                       |
-    And GOOGLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type |
+      | GOOGLE_PAY   |
+      | AUTH         |
 
-  @config_google_submit_on_error_true
+
   Scenario: GooglePay - error payment with enabled 'submit on error' process
-    Given User opens mock payment page
-    And User waits for form inputs to be loaded
-    When User chooses GooglePay as payment method - response is set to "ERROR"
+    Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
+      | key           | value |
+      | submitOnError | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And Google Pay mock responses are set as JSINIT_AUTH and payment status ERROR
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will be sent to page with url "www.example.com" having params
       | key          | value             |
       | errormessage | An error occurred |
       | errorcode    | 30000             |
-    And GOOGLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type |
+      | GOOGLE_PAY   |
+      | AUTH         |
 
-  @config_google_base
+
   Scenario: GooglePay - error payment with disabled 'submit on error' process
-    Given User opens mock payment page
-    When User chooses GooglePay as payment method - response is set to "ERROR"
-    Then User remains on checkout page
+    Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
+      | key           | value |
+      | submitOnError | false |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And Google Pay mock responses are set as JSINIT_AUTH and payment status ERROR
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     And User will see notification frame text: "An error occurred"
     And User will see that notification frame has "red" color
     And User will see following callback type called only once
@@ -75,38 +104,59 @@ Feature: GooglePay
       | submit        |
       | error         |
     And submit callback contains JWT response
-    And GOOGLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type |
+      | GOOGLE_PAY   |
+      | AUTH         |
 
-  @config_google_submit_on_cancel_true
+
   Scenario: GooglePay - canceled payment with enabled 'submitOnCancel' process
-    Given User opens mock payment page
-    When User chooses GooglePay as payment method - response is set to "CANCEL"
+    Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
+      | key            | value |
+      | submitOnCancel | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And Google Pay mock responses are set as JSINIT_AUTH and payment status CANCEL
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will be sent to page with url "www.example.com" having params
       | key          | value  |
       | errormessage | cancel |
       | errorcode    | 1      |
 
-  @config_google_base
+
   Scenario: GooglePay - canceled payment with disabled 'submitOnCancel' process
-    Given User opens mock payment page
-    When User chooses GooglePay as payment method - response is set to "CANCEL"
-    Then User remains on checkout page
+    Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
+      | key            | value |
+      | submitOnCancel | false |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And Google Pay mock responses are set as JSINIT_AUTH and payment status CANCEL
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     And User will see notification frame text: "Payment has been cancelled"
     And User will see that notification frame has "yellow" color
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | cancel        |
-    And GOOGLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type |
+      | GOOGLE_PAY   |
 
-  @config_google_update_jwt
+
   Scenario: GooglePay - Successful payment with updated JWT
-    Given User opens mock payment page WITH_UPDATE_JWT
-      | jwtName          |
-      | BASE_UPDATED_JWT |
-    And User waits for form inputs to be loaded
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And Google Pay mock responses are set as JSINIT_AUTH_UPDATED_JWT and payment status SUCCESS
+    And User opens page WITH_UPDATE_JWT and jwt BASE_UPDATED_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
     When User calls updateJWT function by filling amount field
-    And User chooses GooglePay as payment method - response is set to "SUCCESS"
+    And User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
     And User will see following callback type called only once
@@ -114,17 +164,27 @@ Feature: GooglePay
       | submit        |
       | success       |
     And submit callback contains JWT response
-    And GOOGLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type |
+      | GOOGLE_PAY   |
+      | AUTH         |
+    And JSINIT requests contains updated jwt
 
-  @config_google_submit_on_success_true
+
   Scenario: GooglePay - update JWT and submitOnSuccess
-    Given User opens mock payment page WITH_UPDATE_JWT
-      | jwtName          |
-      | BASE_UPDATED_JWT |
-    And User waits for form inputs to be loaded
+    Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And Google Pay mock responses are set as JSINIT_AUTH_UPDATED_JWT and payment status SUCCESS
+    And User opens page WITH_UPDATE_JWT and jwt BASE_UPDATED_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User calls updateJWT function by filling amount field
-    And User chooses GooglePay as payment method - response is set to "SUCCESS"
+    And User chooses GOOGLE_PAY as payment method
     Then User will be sent to page with url "www.example.com" having params
       | key           | value                                   |
       | errormessage  | Payment has been successfully processed |
@@ -135,128 +195,194 @@ Feature: GooglePay
       | myBillEmail   | test@example                            |
       | myBillTel     | 44422224444                             |
       | jwt           | should not be none                      |
-    And GOOGLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type |
+      | GOOGLE_PAY   |
+      | AUTH         |
 
-  @config_google_auth
+
   Scenario: GooglePay - successful payment with additional request types: AUTH
-    Given User opens mock payment page
-    And User waits for form inputs to be loaded
-    When AUTH GooglePay mock response is set to SUCCESS
-    And User chooses GOOGLE_PAY as payment method
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And Google Pay mock responses are set as JSINIT_AUTH and request type AUTH
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And AUTH request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
+    And following requests were sent only once
+      | request_type |
+      | GOOGLE_PAY   |
+      | AUTH         |
 
-  @config_google_acheck_auth
+
   Scenario: GooglePay - successful payment with additional request types: ACCOUNTCHECK, AUTH
-    Given User opens mock payment page
-    When ACCOUNTCHECK, AUTH GooglePay mock response is set to SUCCESS
-    And User chooses GOOGLE_PAY as payment method
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value             |
+      | requesttypedescriptions | ACCOUNTCHECK AUTH |
+    And Google Pay mock responses are set as JSINIT_ACHECK_AUTH and request type ACCOUNTCHECK, AUTH
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And ACCOUNTCHECK, AUTH request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
+    And following requests were sent only once
+      | request_type       |
+      | GOOGLE_PAY         |
+      | ACCOUNTCHECK, AUTH |
 
-  @config_google_acheck
+
   Scenario: GooglePay - successful payment with additional request types: ACCOUNTCHECK
-    Given User opens mock payment page
-    When ACCOUNTCHECK GooglePay mock response is set to SUCCESS
-    And User chooses GOOGLE_PAY as payment method
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value        |
+      | requesttypedescriptions | ACCOUNTCHECK |
+    And Google Pay mock responses are set as JSINIT_ACHECK and request type ACCOUNTCHECK
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And ACCOUNTCHECK request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
+    And following requests were sent only once
+      | request_type |
+      | GOOGLE_PAY   |
+      | ACCOUNTCHECK |
 
-  @config_google_riskdec_auth
+
   Scenario: GooglePay - successful payment with additional request types: RISKDEC, AUTH
-    Given User opens mock payment page
-    When RISKDEC, AUTH GooglePay mock response is set to SUCCESS
-    And User chooses GOOGLE_PAY as payment method
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value        |
+      | requesttypedescriptions | RISKDEC AUTH |
+    And Google Pay mock responses are set as JSINIT_RISKDEC_AUTH and request type RISKDEC, AUTH
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And RISKDEC, AUTH request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
+    And following requests were sent only once
+      | request_type  |
+      | GOOGLE_PAY    |
+      | RISKDEC, AUTH |
 
-  @config_google_riskdec_acheck_auth
+
   Scenario: GooglePay - successful payment with additional request types: RISKDEC, ACCOUNTCHECK, AUTH
-    Given User opens mock payment page
-    When RISKDEC, ACCOUNTCHECK, AUTH GooglePay mock response is set to SUCCESS
-    And User chooses GOOGLE_PAY as payment method
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                     |
+      | requesttypedescriptions | RISKDEC ACCOUNTCHECK AUTH |
+    And Google Pay mock responses are set as JSINIT_RISKDEC_ACHECK_AUTH and request type RISKDEC, ACCOUNTCHECK, AUTH
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And RISKDEC, ACCOUNTCHECK, AUTH request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
+    And following requests were sent only once
+      | request_type                |
+      | GOOGLE_PAY                  |
+      | RISKDEC, ACCOUNTCHECK, AUTH |
 
-  @config_google_auth_subscription
+
   Scenario: GooglePay - successful payment with additional request types: AUTH, SUBSCRIPTION
-    Given User opens mock payment page
-    When AUTH, SUBSCRIPTION GooglePay mock response is set to SUCCESS
-    And User chooses GOOGLE_PAY as payment method
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
+      | key                     | value             |
+      | requesttypedescriptions | AUTH SUBSCRIPTION |
+    And Google Pay mock responses are set as JSINIT_AUTH_SUBSCRIPTION and request type AUTH, SUBSCRIPTION
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And AUTH, SUBSCRIPTION request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
+    And following requests were sent only once
+      | request_type       |
+      | GOOGLE_PAY         |
+      | AUTH, SUBSCRIPTION |
 
-  @config_google_acheck_subscription
+
   Scenario: GooglePay - successful payment with additional request types: ACCOUNTCHECK, SUBSCRIPTION
-    Given User opens mock payment page
-    When ACCOUNTCHECK, SUBSCRIPTION GooglePay mock response is set to SUCCESS
-    And User chooses GOOGLE_PAY as payment method
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
+      | key                     | value                     |
+      | requesttypedescriptions | ACCOUNTCHECK SUBSCRIPTION |
+    And Google Pay mock responses are set as JSINIT_ACHECK_SUBSCRIPTION and request type ACCOUNTCHECK, SUBSCRIPTION
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And ACCOUNTCHECK, SUBSCRIPTION request for GOOGLE_PAY is sent only once with correct data
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
+    And following requests were sent only once
+      | request_type               |
+      | GOOGLE_PAY                 |
+      | ACCOUNTCHECK, SUBSCRIPTION |
 
-  @config_cybertonica
+
   Scenario: GooglePay - Cybertonica - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
-    Given User opens mock payment page
-    When User chooses GooglePay as payment method - response is set to "SUCCESS"
+    Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
+      | key               | value |
+      | cybertonicaApiKey | stfs  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And Google Pay mock responses are set as JSINIT_AUTH and payment status SUCCESS
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
       | submit        |
       | success       |
     And submit callback contains JWT response
-    And THREEDQUERY, AUTH request was sent only once with 'fraudcontroltransactionid' flag
+    And following requests were sent only once with 'fraudcontroltransactionid' flag
+      | request_type |
+      | AUTH         |
 
-  @config_google_base
-  Scenario: GooglePay - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
-    Given User opens mock payment page
-    When User chooses GooglePay as payment method - response is set to "SUCCESS"
-    Then User will see notification frame text: "Payment has been successfully processed"
-    And User will see following callback type called only once
-      | callback_type |
-      | submit        |
-      | success       |
-    And submit callback contains JWT response
-    And THREEDQUERY, AUTH request was sent only once without 'fraudcontroltransactionid' flag
+# TODO - uncomment this scenario when STJS-1924 will be fixed
+#  Scenario: GooglePay - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
+#    Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
+#      | key               | value |
+#      | cybertonicaApiKey | test  |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value |
+#      | requesttypedescriptions | AUTH  |
+#    And Google Pay mock responses are set as JSINIT_AUTH and payment status SUCCESS
+#    And User opens example page
+#    When User chooses GOOGLE_PAY as payment method
+#    Then User will see notification frame text: "Payment has been successfully processed"
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | submit        |
+#      | success       |
+#    And submit callback contains JWT response
+#    And following requests were sent only once without 'fraudcontroltransactionid' flag
+#      | request_type |
+#      | AUTH         |
 
-  @config_google_base
+
   Scenario Outline: GooglePay - <payment> payment logs
-    Given User opens mock payment page
-    When User chooses GooglePay as payment method - response is set to "<action_code>"
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And Google Pay mock responses are set as JSINIT_AUTH and payment status <action_code>
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "<payment_status_message>"
     And User will see following logs
       | name      | step                   |
@@ -270,10 +396,14 @@ Feature: GooglePay
       | successful | SUCCESS     | Payment has been successfully processed | PAYMENT COMPLETED |
       | error      | ERROR       | An error occurred                       | PAYMENT FAILED    |
 
-  @config_google_base
+
   Scenario: GooglePay - canceled payment logs
-    Given User opens mock payment page
-    When User chooses GooglePay as payment method - response is set to "CANCEL"
+    Given JS library configured by inline params GOOGLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And Google Pay mock responses are set as JSINIT_AUTH and payment status CANCEL
+    And User opens example page
+    When User chooses GOOGLE_PAY as payment method
     Then User will see notification frame text: "Payment has been cancelled"
     And User will see following logs
       | name      | step                   |

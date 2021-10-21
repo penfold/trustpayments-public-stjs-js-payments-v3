@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class AUTHresponse(Enum):
-    OK = 'ccAUTHoK.json'
+    SUCCESS = 'ccAUTHoK.json'
     INVALID_FIELD = 'ccAUTHInvalidField.json'
     SOCKET_ERROR = 'ccAUTHSocketError.json'
     UNAUTHENTICATED = 'ccAUTHUnauthenticated.json'
