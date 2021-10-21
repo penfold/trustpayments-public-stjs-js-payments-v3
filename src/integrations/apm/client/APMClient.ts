@@ -12,8 +12,9 @@ import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
 import { APMName } from '../models/APMName';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil, tap } from 'rxjs/operators';
 import './APMClient.scss';
+import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
 
 @Service()
 export class APMClient {
@@ -24,12 +25,19 @@ export class APMClient {
   constructor(
     private apmConfigResolver: APMConfigResolver,
     private messageBus: IMessageBus,
+    private apmFilterService: APMFilterService,
   ) {
   }
 
   init(config: IAPMConfig): Observable<undefined> {
     try {
-      this.apmConfigResolver.resolve(config).apmList.forEach(itemConfig => this.insertAPMButton(itemConfig as IAPMItemConfig));
+      this.apmFilterService.filter(this.apmConfigResolver.resolve(config).apmList as IAPMItemConfig[]).pipe(
+        map((list: IAPMItemConfig[]) => {
+          list.forEach((item: IAPMItemConfig) => {
+            return this.insertAPMButton(item as IAPMItemConfig)
+          });
+        }),
+      ).subscribe();
     } catch (error) {
       return throwError(() => error);
     }
