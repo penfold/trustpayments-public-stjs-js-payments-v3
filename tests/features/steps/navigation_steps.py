@@ -11,6 +11,7 @@ from utils.mock_handler import MockUrl
 
 use_step_matcher('re')
 
+
 #     for MOCKs
 
 @then('User remains on checkout page')
@@ -67,6 +68,22 @@ def step_impl(context, jwt_config):
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
     payment_page.open_page(url)
 
+
+@step('User opens page WITH_APM and WITH_UPDATE_JWT - jwt (?P<jwt_config>.+) with additional attributes')
+def step_impl(context, jwt_config):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    # parse old jwt config (payload part) to dictionary object
+    jwt_payload_dict = get_jwt_config_from_json(ConfigJwt[jwt_config].value)['payload']
+    # override/add default sitereference from config
+    jwt_payload_dict['sitereference'] = CONFIGURATION.SITE_REFERENCE_CARDINAL
+    # build payload base on additional attributes
+    jwt_payload_dict = InlineConfigBuilder().map_jwt_additional_fields(jwt_payload_dict, context.table)
+    jwt = encode_jwt(jwt_payload_dict)
+
+    url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam["WITH_UPDATE_JWT"].value % jwt}' \
+          f'&{context.INLINE_E2E_CONFIG}&{context.INLINE_E2E_CONFIG_APM}'
+    url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
+    payment_page.open_page(url)
 
 
 @step('User opens (?P<path>.+) page with inline param')

@@ -209,6 +209,10 @@ class Actions:
         select = Select(self._driver.find_elements(*locator))
         select.select_by_index(element_number)
 
+    def select_element_by_text(self, locator, text):
+        select = Select(self._driver.find_element(*locator))
+        select.select_by_visible_text(text)
+
     def switch_to_iframe(self, iframe_name):
         self._waits.wait_until_iframe_is_presented_and_switch_to_it(iframe_name)
 

@@ -9,5 +9,5 @@ screenshots = {
     'scrn_card_interface_error_expiry_date_styling': 'cardInterfaceErrorExpiryDateWithStyling.png',
     'scrn_card_interface_error_invalid_patterns_styling': 'cardInterfaceErrorInvalidPatternsWithStyling.png',
     'scrn_card_interface_with_validation_styling': 'cardInterfaceWithValidationStyling.png',
-    'scrn_card_interface_zip_payment_method': 'cardInterfaceZipPaymentMethod.png'
+    'scrn_apm_interface_payment_method': 'apmInterfacePaymentMethod.png'
 }

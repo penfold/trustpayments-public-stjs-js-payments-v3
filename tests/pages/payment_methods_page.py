@@ -506,15 +506,6 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert expected_url in actual_url, assertion_message
 
-    def validate_base_url(self, url: str):
-        self._waits.wait_for_javascript()
-        self._waits.wait_until_url_starts_with(url)
-        actual_url = self._browser_executor.get_page_url()
-        parsed_url = urlparse(actual_url)
-        assertion_message = f'Url hostname is not correct, should be: "{url}" but is: "{parsed_url.hostname}"'
-        add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
-        assert_that(parsed_url.hostname).is_equal_to(url)
-
     @staticmethod
     def validate_if_url_contains_param(parsed_query_from_url, key, value):
         if 'should not be none' in value:
