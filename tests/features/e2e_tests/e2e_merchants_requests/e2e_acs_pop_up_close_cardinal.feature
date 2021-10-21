@@ -113,7 +113,7 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     And "submit" callback is called only once in second payment
     And User will see following callback type called only once
       | callback_type |
-      | submit        |
+      | success       |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
