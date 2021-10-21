@@ -18,6 +18,7 @@ import './APMClient.scss';
 @Service()
 export class APMClient {
   private apmIcons: Record<APMName, string> = {
+    [APMName.PAYU]: require('./images/payu.svg'),
     [APMName.ZIP]: require('./images/zip.svg'),
   };
 
