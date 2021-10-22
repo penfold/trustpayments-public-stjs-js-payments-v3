@@ -4,10 +4,10 @@
   "cancelRedirectUrl": "https://this_is_not_existing_page_cancel_redirect.com",
   "placement": "st-apm",
   "apmList": [
-    "IDEAL",
-    "MYBANK",
-    "PAYU",
-    "POSTFINANCE",
-    "ZIP"
+    "ZIP", {
+      "name": "POSTFINANCE",
+      "placement": "st-apm-override",
+      "errorRedirectUrl": "https://this_is_not_existing_page_error_redirect_override.com"
+    }
   ]
 }

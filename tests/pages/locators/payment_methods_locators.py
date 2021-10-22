@@ -52,13 +52,6 @@ class PaymentMethodsLocators:
     def get_apm_button_override_locator(cls, apm_type) -> By.XPATH:
         return By.XPATH, f'//div[@id=\'st-apm-override\']//img[@alt=\'{apm_type}\']/..'
 
-    zip_button: By = (By.XPATH, '//img[@alt=\'ZIP\']/..')
-    payu_button: By = (By.XPATH, '//div[@id=\'st-apm\']//img[@alt=\'PAYU\']/..')
-    payu_button_placement_override: By = (By.XPATH, '//div[@id=\'st-apm-override\']//img[@alt=\'PAYU\']/..')
-    mybank_button: By = (By.XPATH, '//div[@id=\'st-apm\']//img[@alt=\'MYBANK\']/..')
-    mybank_button_placement_override: By = (By.XPATH, '//div[@id=\'st-apm-override\']//img[@alt=\'MYBANK\']/..')
-    ideal_button: By = (By.XPATH, '//div[@id=\'st-apm\']//img[@alt=\'IDEAL\']/..')
-    ideal_button_placement_override: By = (By.XPATH, '//div[@id=\'st-apm-override\']//img[@alt=\'IDEAL\']/..')
     apm_simulator_drop_down: By = By.XPATH, '//select[@name=\'result\']'
     apm_simulator_submit: By = (By.ID, 'submitbutton')
 
