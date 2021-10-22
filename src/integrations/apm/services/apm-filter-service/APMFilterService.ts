@@ -5,6 +5,7 @@ import { ConfigProvider } from '../../../../shared/services/config-provider/Conf
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
 import { APMAvailabilityMap } from '../../models/APMAvailabilityMap';
 import { Service } from 'typedi';
+import { Debug } from '../../../../shared/Debug';
 
 @Service()
 export class APMFilterService {
@@ -16,7 +17,7 @@ export class APMFilterService {
 
   filter(apmList: IAPMItemConfig[], jwt?: string): Observable<IAPMItemConfig[]> {
     const { country, currency } = this.getCurrencyAndCountry(jwt ? jwt : this.configProvider.getConfig().jwt);
-    console.error(country, currency);
+    console.error(country, currency, jwt);
 
     return of(apmList.filter((item: IAPMItemConfig) => this.isAPMAvailable(item, currency, country)));
   }
@@ -29,8 +30,21 @@ export class APMFilterService {
   }
 
   private isAPMAvailable(item: IAPMItemConfig, currencyiso3a: string, countryiso: string): boolean {
-    return APMAvailabilityMap.has(item.name) &&
-      APMAvailabilityMap.get(item.name).currencies.includes(currencyiso3a) &&
-      APMAvailabilityMap.get(item.name).countries.includes(countryiso);
+    if (!APMAvailabilityMap.has(item.name)) {
+      Debug.log(`Payment method ${item.name} is not available.`);
+      return false;
+    }
+
+    if (!APMAvailabilityMap.get(item.name).currencies.includes(currencyiso3a)) {
+      Debug.log(`Your currency: ${currencyiso3a} is not supported by ${item.name}.`);
+      return false;
+    }
+
+    if (!APMAvailabilityMap.get(item.name).countries.includes(countryiso)) {
+      Debug.log(`Your country: ${countryiso} is not supported by ${item.name}.`);
+      return false;
+    }
+
+    return true;
   }
 }
