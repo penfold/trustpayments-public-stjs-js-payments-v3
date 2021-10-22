@@ -46,6 +46,8 @@ class PaymentMethodsLocators:
     zip_button: By = (By.XPATH, '//img[@alt=\'ZIP\']/..')
     payu_button: By = (By.XPATH, '//div[@id=\'st-apm\']//img[@alt=\'PAYU\']/..')
     payu_button_placement_override: By = (By.XPATH, '//div[@id=\'st-apm-override\']//img[@alt=\'PAYU\']/..')
+    mybank_button: By = (By.XPATH, '//div[@id=\'st-apm\']//img[@alt=\'MYBANK\']/..')
+    mybank_button_placement_override: By = (By.XPATH, '//div[@id=\'st-apm-override\']//img[@alt=\'MYBANK\']/..')
     apm_simulator_drop_down: By = By.XPATH, '//select[@name=\'result\']'
     apm_simulator_submit: By = (By.ID, 'submitbutton')
 

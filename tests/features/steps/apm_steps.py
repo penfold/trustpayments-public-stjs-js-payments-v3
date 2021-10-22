@@ -19,16 +19,28 @@ def step_impl(context):
     payment_page.click_zip_payment_method()
 
 
-@step('User chooses PayU from APM list')
+@step('User chooses PAYU from APM list')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
     payment_page.click_payu_payment_method(override_placement=False)
 
 
-@step('User chooses PayU from APM list - override placement')
+@step('User chooses PAYU from APM list - override placement')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
     payment_page.click_payu_payment_method(override_placement=True)
+
+
+@step('User chooses MYBANK from APM list')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
+    payment_page.click_mybank_payment_method(override_placement=False)
+
+
+@step('User chooses MYBANK from APM list - override placement')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
+    payment_page.click_mybank_payment_method(override_placement=True)
 
 
 @step('User will be sent to apm page - simulator')
@@ -58,10 +70,28 @@ def step_impl(context):
     assert payment_page.wait_for_payu_payment_method_visibility() is True, assertion_message
 
 
-@then('PayU is not available on APM list')
+@then('PAYU is not available on APM list')
 def step_impl(context):
     assertion_message = 'PayU button is available but should not be'
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
 
     add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
     assert payment_page.wait_for_payu_payment_method_invisibility() is True, assertion_message
+
+
+@then('MYBANK is available on APM list')
+def step_impl(context):
+    assertion_message = 'MyBank button is not available but should be'
+    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
+
+    add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+    assert payment_page.wait_for_mybank_payment_method_visibility() is True, assertion_message
+
+
+@then('MYBANK is not available on APM list')
+def step_impl(context):
+    assertion_message = 'MyBank button is available but should not be'
+    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
+
+    add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+    assert payment_page.wait_for_mybank_payment_method_invisibility() is True, assertion_message
