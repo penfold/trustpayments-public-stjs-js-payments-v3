@@ -19,6 +19,8 @@ import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 
 @Service()
 export class APMClient {
+  // TODO remove ts-ignore comment when all APMs are merged to master
+  // @ts-ignore
   private apmIcons: Record<APMName, string> = {
     [APMName.IDEAL]: require('./images/ideal.svg'),
     [APMName.MYBANK]: require('./images/mybank.svg'),
