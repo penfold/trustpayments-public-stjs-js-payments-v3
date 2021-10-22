@@ -4,13 +4,14 @@ Feature: ApplePay
   I want to use ApplePay payment method
   In order to check full payment functionality
 
-  Background:
-    Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens mock payment page
-
-  @base_config @wallet_test @apple_test_part1
+  @apple_test_part1
   Scenario Outline: ApplePay - checking payment status for <action_code> response code
-    When User chooses ApplePay as payment method - response is set to "<action_code>"
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status <action_code>
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
@@ -19,7 +20,11 @@ Feature: ApplePay
       | <callback>    |
       | submit        |
     And submit callback contains JWT response
-    And APPLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type      |
+      | APPLE_PAY         |
+      | WALLETVERIFY      |
+      | THREEDQUERY, AUTH |
 
     @apple_pay_smoke_test
     Examples:
@@ -30,22 +35,30 @@ Feature: ApplePay
 #      | ERROR       | "Invalid response"          | red    |error|
       | DECLINE     | Decline                | red   | error    |
 
-  @base_config @translations @apple_test_part1
-  Scenario Outline: ApplePay - checking translation for "Payment has been cancelled" status for <language>
-    When User changes page language to "<language>"
-    And User chooses ApplePay as payment method - response is set to "CANCEL"
+  @apple_test_part1
+  Scenario: ApplePay - checking translation for "Payment has been cancelled" status for <language>
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+      | locale                  | es_ES            |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status CANCEL
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Cancel button on ApplePay popup
-    Then User will see payment notification text: "Payment has been cancelled" translated into "<language>"
+    Then User will see payment notification text: "Payment has been cancelled" translated into "es_ES"
 
-    Examples:
-      | language |
-      | es_ES    |
-
-  @config_submit_on_success_true @apple_pay_smoke_test @apple_test_part1
+  @apple_pay_smoke_test @apple_test_part1
   Scenario: ApplePay - successful payment with enabled 'submit on success' process
-    Given User waits for form inputs to be loaded
+    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status SUCCESS
+    And User opens example page
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
-    And User chooses ApplePay as payment method - response is set to "SUCCESS"
+    And User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
@@ -61,10 +74,15 @@ Feature: ApplePay
       | transactionreference | should not be none                      |
       | settlestatus         | 0                                       |
 
-  @config_default @apple_test_part1
+  @apple_test_part1
   Scenario: ApplePay - successful payment - checking that 'submitOnSuccess' is enabled by default
+    Given JS library configured by inline params APPLE_PAY_DEFAULT_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status SUCCESS
+    And User opens example page
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
-    And User chooses ApplePay as payment method - response is set to "SUCCESS"
+    And User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
@@ -79,13 +97,24 @@ Feature: ApplePay
       | jwt                  | should not be none                      |
       | transactionreference | should not be none                      |
       | settlestatus         | 0                                       |
-    And APPLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type      |
+      | APPLE_PAY         |
+      | WALLETVERIFY      |
+      | THREEDQUERY, AUTH |
 
-  @config_submit_on_error_true @apple_test_part1
+  @apple_test_part1
   Scenario: ApplePay - error payment with enabled 'submit on error' process
-    Given User waits for form inputs to be loaded
+    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
+      | key           | value |
+      | submitOnError | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status DECLINE
+    And User opens example page
     When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
-    And User chooses ApplePay as payment method - response is set to "DECLINE"
+    And User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value              |
@@ -100,11 +129,23 @@ Feature: ApplePay
       | jwt                  | should not be none |
       | transactionreference | should not be none |
       | settlestatus         | 3                  |
-    And APPLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type      |
+      | APPLE_PAY         |
+      | WALLETVERIFY      |
+      | THREEDQUERY, AUTH |
 
-  @config_submit_on_success_error_cancel_false @apple_test_part1
+  @apple_test_part1
   Scenario: ApplePay - error payment with disabled 'submit on error' process
-    When User chooses ApplePay as payment method - response is set to "DECLINE"
+    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
+      | key           | value |
+      | submitOnError | false |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status DECLINE
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User remains on checkout page
     And User will see notification frame text: "Decline"
@@ -114,11 +155,20 @@ Feature: ApplePay
       | error         |
       | submit        |
     And submit callback contains JWT response
-    And APPLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type      |
+      | APPLE_PAY         |
+      | WALLETVERIFY      |
+      | THREEDQUERY, AUTH |
 
-  @config_default @apple_test_part1
+  @apple_test_part1
   Scenario: ApplePay - error payment - checking that 'submitOnError' is disabled by default
-    When User chooses ApplePay as payment method - response is set to "DECLINE"
+    Given JS library configured by inline params APPLE_PAY_DEFAULT_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status DECLINE
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User remains on checkout page
     And User will see notification frame text: "Decline"
@@ -128,29 +178,54 @@ Feature: ApplePay
       | error         |
       | submit        |
     And submit callback contains JWT response
-    And APPLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type      |
+      | APPLE_PAY         |
+      | WALLETVERIFY      |
+      | THREEDQUERY, AUTH |
 
-  @config_submit_on_cancel_true @apple_test_part1
+  @apple_test_part1
   Scenario: ApplePay - canceled payment with enabled 'submit on cancel' process
-    When User chooses ApplePay as payment method - response is set to "CANCEL"
+    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
+      | key            | value |
+      | submitOnCancel | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status CANCEL
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Cancel button on ApplePay popup
     And User will be sent to page with url "www.example.com" having params
       | key          | value                      |
       | errorcode    | cancelled                  |
       | errormessage | Payment has been cancelled |
 
-  @config_redirect_on_cancel_callback @apple_test_part1
+  @apple_test_part1
   Scenario: ApplePay - redirect on cancel callback
-    When User chooses ApplePay as payment method - response is set to "CANCEL"
+    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
+      | key            | value               |
+      | cancelCallback | redirectionCallback |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status CANCEL
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Cancel button on ApplePay popup
     And User will be sent to page with url "example.org" having params
       | key          | value                      |
       | errorcode    | cancelled                  |
       | errormessage | Payment has been cancelled |
 
-  @config_default @apple_test_part1
+  @apple_test_part1
   Scenario: ApplePay - canceled payment - checking that 'submitOnCancel' is disabled by default
-    When User chooses ApplePay as payment method - response is set to "CANCEL"
+    Given JS library configured by inline params APPLE_PAY_DEFAULT_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status CANCEL
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Cancel button on ApplePay popup
     Then User remains on checkout page
     And User will see notification frame text: "Payment has been cancelled"
@@ -160,9 +235,17 @@ Feature: ApplePay
       | cancel        |
       | submit        |
 
-  @config_submit_on_success_error_cancel_false @apple_test_part1
+  @apple_test_part1
   Scenario: ApplePay - canceled payment with disabled 'submit on cancel' process
-    When User chooses ApplePay as payment method - response is set to "CANCEL"
+    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
+      | key            | value |
+      | submitOnCancel | false |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status CANCEL
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Cancel button on ApplePay popup
     Then User remains on checkout page
     And User will see notification frame text: "Payment has been cancelled"
@@ -172,13 +255,17 @@ Feature: ApplePay
       | cancel        |
       | submit        |
 
-  @base_config  @apple_pay_smoke_test @apple_test_part2
+  @apple_pay_smoke_test @apple_test_part1
   Scenario: ApplePay - Successful payment with updated JWT
-    Given User opens mock payment page WITH_UPDATE_JWT
-      | jwtName          |
-      | BASE_UPDATED_JWT |
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And User opens page WITH_UPDATE_JWT and jwt BASE_UPDATED_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as JSINIT_UPDATED_JWT and payment status SUCCESS
     When User calls updateJWT function by filling amount field
-    And User chooses ApplePay as payment method - response is set to "SUCCESS"
+    And User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
@@ -187,17 +274,29 @@ Feature: ApplePay
       | success       |
       | submit        |
     And submit callback contains JWT response
-    And APPLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type      |
+      | APPLE_PAY         |
+      | WALLETVERIFY      |
+      | THREEDQUERY, AUTH |
     And WALLETVERIFY requests contains updated jwt
 
-  @config_submit_on_success_true @apple_test_part2
+  @apple_test_part1
   Scenario: ApplePay - update JWT and submitOnSuccess
-    Given User opens mock payment page WITH_UPDATE_JWT
-      | jwtName          |
-      | BASE_UPDATED_JWT |
-    When User fills merchant data with name "John Test", email "test@example", phone "44422224444"
+    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as JSINIT_UPDATED_JWT and payment status SUCCESS
+    And User opens page WITH_UPDATE_JWT and jwt BASE_UPDATED_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    When User calls updateJWT function by filling amount field
+    And User fills merchant data with name "John Test", email "test@example", phone "44422224444"
     And User calls updateJWT function by filling amount field
-    And User chooses ApplePay as payment method - response is set to "SUCCESS"
+    And User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will be sent to page with url "www.example.com" having params
       | key           | value                                   |
@@ -210,13 +309,21 @@ Feature: ApplePay
       | myBillTel     | 44422224444                             |
       | eci           | 07                                      |
       | jwt           | should not be none                      |
-    And APPLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type      |
+      | APPLE_PAY         |
+      | WALLETVERIFY      |
+      | THREEDQUERY, AUTH |
     And WALLETVERIFY requests contains updated jwt
 
-  @config_apple_auth @apple_test_part2
+  @apple_test_part1
   Scenario: ApplePay - successful payment with additional request types: AUTH
-    When AUTH ApplePay mock response is set to SUCCESS
-    And User chooses APPLE_PAY as payment method
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And ApplePay mock responses are set as JSINIT_AUTH and request type AUTH
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -224,12 +331,20 @@ Feature: ApplePay
       | success       |
       | submit        |
     And submit callback contains JWT response
-    And AUTH request for APPLE_PAY is sent only once with correct data
+    And following requests were sent only once
+      | request_type |
+      | APPLE_PAY    |
+      | WALLETVERIFY |
+      | AUTH         |
 
-  @config_apple_acheck @apple_test_part2
+  @apple_test_part2
   Scenario: ApplePay - successful payment with additional request types: ACCOUNTCHECK
-    When ACCOUNTCHECK ApplePay mock response is set to SUCCESS
-    And User chooses APPLE_PAY as payment method
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value        |
+      | requesttypedescriptions | ACCOUNTCHECK |
+    And ApplePay mock responses are set as JSINIT_ACHECK and request type ACCOUNTCHECK
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -237,12 +352,20 @@ Feature: ApplePay
       | success       |
       | submit        |
     And submit callback contains JWT response
-    And ACCOUNTCHECK request for APPLE_PAY is sent only once with correct data
+    And following requests were sent only once
+      | request_type |
+      | APPLE_PAY    |
+      | WALLETVERIFY |
+      | ACCOUNTCHECK |
 
-  @config_apple_acheck_auth @apple_test_part2
+  @apple_test_part2
   Scenario: ApplePay - successful payment with additional request types: ACCOUNTCHECK, AUTH
-    When ACCOUNTCHECK, AUTH ApplePay mock response is set to SUCCESS
-    And User chooses APPLE_PAY as payment method
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value             |
+      | requesttypedescriptions | ACCOUNTCHECK AUTH |
+    And ApplePay mock responses are set as JSINIT_ACHECK_AUTH and request type ACCOUNTCHECK, AUTH
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -250,12 +373,20 @@ Feature: ApplePay
       | success       |
       | submit        |
     And submit callback contains JWT response
-    And ACCOUNTCHECK, AUTH request for APPLE_PAY is sent only once with correct data
+    And following requests were sent only once
+      | request_type       |
+      | APPLE_PAY          |
+      | WALLETVERIFY       |
+      | ACCOUNTCHECK, AUTH |
 
-  @config_apple_riskdec_auth @apple_test_part2
+  @apple_test_part2
   Scenario: ApplePay - successful payment with additional request types: RISKDEC, AUTH
-    When RISKDEC, AUTH ApplePay mock response is set to SUCCESS
-    And User chooses APPLE_PAY as payment method
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value        |
+      | requesttypedescriptions | RISKDEC AUTH |
+    And ApplePay mock responses are set as JSINIT_RISKDEC_AUTH and request type RISKDEC, AUTH
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -263,12 +394,20 @@ Feature: ApplePay
       | success       |
       | submit        |
     And submit callback contains JWT response
-    And RISKDEC, AUTH request for APPLE_PAY is sent only once with correct data
+    And following requests were sent only once
+      | request_type  |
+      | APPLE_PAY     |
+      | WALLETVERIFY  |
+      | RISKDEC, AUTH |
 
-  @config_apple_riskdec_acheck_auth @apple_test_part2
+  @apple_test_part2
   Scenario: ApplePay - successful payment with additional request types: RISKDEC, ACCOUNTCHECK, AUTH
-    When RISKDEC, ACCOUNTCHECK, AUTH ApplePay mock response is set to SUCCESS
-    And User chooses APPLE_PAY as payment method
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value                     |
+      | requesttypedescriptions | RISKDEC ACCOUNTCHECK AUTH |
+    And ApplePay mock responses are set as JSINIT_RISKDEC_ACHECK_AUTH and request type RISKDEC, ACCOUNTCHECK, AUTH
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -276,12 +415,20 @@ Feature: ApplePay
       | success       |
       | submit        |
     And submit callback contains JWT response
-    And RISKDEC, ACCOUNTCHECK, AUTH request for APPLE_PAY is sent only once with correct data
+    And following requests were sent only once
+      | request_type                |
+      | APPLE_PAY                   |
+      | WALLETVERIFY                |
+      | RISKDEC, ACCOUNTCHECK, AUTH |
 
-  @config_auth_subscription @apple_test_part2
+  @apple_test_part2
   Scenario: ApplePay - successful payment with additional request types: AUTH, SUBSCRIPTION
-    When AUTH, SUBSCRIPTION ApplePay mock response is set to SUCCESS
-    And User chooses APPLE_PAY as payment method
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
+      | key                     | value             |
+      | requesttypedescriptions | AUTH SUBSCRIPTION |
+    And ApplePay mock responses are set as JSINIT_AUTH_SUBSCRIPTION and request type AUTH, SUBSCRIPTION
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -289,12 +436,20 @@ Feature: ApplePay
       | success       |
       | submit        |
     And submit callback contains JWT response
-    And AUTH, SUBSCRIPTION request for APPLE_PAY is sent only once with correct data
+    And following requests were sent only once
+      | request_type       |
+      | APPLE_PAY          |
+      | WALLETVERIFY       |
+      | AUTH, SUBSCRIPTION |
 
-  @config_acheck_subscription @apple_test_part2
+  @apple_test_part2
   Scenario: ApplePay - successful payment with additional request types: ACCOUNTCHECK, SUBSCRIPTION
-    When ACCOUNTCHECK, SUBSCRIPTION ApplePay mock response is set to SUCCESS
-    And User chooses APPLE_PAY as payment method
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt JWT_WITH_SUBSCRIPTION with additional attributes
+      | key                     | value                     |
+      | requesttypedescriptions | ACCOUNTCHECK SUBSCRIPTION |
+    And ApplePay mock responses are set as JSINIT_ACHECK_SUBSCRIPTION and request type ACCOUNTCHECK, SUBSCRIPTION
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -302,11 +457,23 @@ Feature: ApplePay
       | success       |
       | submit        |
     And submit callback contains JWT response
-    And ACCOUNTCHECK, SUBSCRIPTION request for APPLE_PAY is sent only once with correct data
+    And following requests were sent only once
+      | request_type               |
+      | APPLE_PAY                  |
+      | WALLETVERIFY               |
+      | ACCOUNTCHECK, SUBSCRIPTION |
 
-  @config_cybertonica @apple_test_part2
+  @apple_test_part2
   Scenario: ApplePay - Cybertonica - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
-    When User chooses ApplePay as payment method - response is set to "SUCCESS"
+    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
+      | key               | value |
+      | cybertonicaApiKey | stfs  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status SUCCESS
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -314,35 +481,72 @@ Feature: ApplePay
       | success       |
       | submit        |
     And submit callback contains JWT response
-    And THREEDQUERY, AUTH request was sent only once with 'fraudcontroltransactionid' flag
+    And following requests were sent only once with 'fraudcontroltransactionid' flag
+      | request_type      |
+      | THREEDQUERY, AUTH |
 
-  @base_config @cybertonica @apple_test_part2
-  Scenario: ApplePay - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
-    When User chooses ApplePay as payment method - response is set to "SUCCESS"
-    And User clicks Proceed button on ApplePay popup
-    Then User will see notification frame text: "Payment has been successfully processed"
-    And User will see following callback type called only once
-      | callback_type |
-      | success       |
-      | submit        |
-    And submit callback contains JWT response
-    And THREEDQUERY, AUTH request was sent only once without 'fraudcontroltransactionid' flag
+# TODO - uncomment this scenario when STJS-1924 will be fixed
+#  @apple_test_part2
+#  Scenario: ApplePay - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
+#    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
+#      | key               | value |
+#      | cybertonicaApiKey | test  |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value            |
+#      | requesttypedescriptions | THREEDQUERY AUTH |
+#    And ApplePay mock responses are set as BASE_JSINIT and payment status SUCCESS
+#    And User opens example page
+#    When User chooses APPLE_PAY as payment method
+#    And User clicks Proceed button on ApplePay popup
+#    Then User will see notification frame text: "Payment has been successfully processed"
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | success       |
+#      | submit        |
+#    And submit callback contains JWT response
+#    And following requests were sent only once without 'fraudcontroltransactionid' flag
+#      | request_type      |
+#      | THREEDQUERY, AUTH |
 
-  @config_disable_notifications_true @apple_test_part2
+  @apple_test_part2
   Scenario: ApplePay - notification frame is not displayed after successful payment
-    When User chooses ApplePay as payment method - response is set to "SUCCESS"
+    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
+      | key                 | value |
+      | disableNotification | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status SUCCESS
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will not see notification frame
 
-  @config_disable_notifications_true @apple_test_part2
+  @apple_test_part2
   Scenario: ApplePay - notification frame is not displayed after declined payment
-    When User chooses ApplePay as payment method - response is set to "DECLINE"
+    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
+      | key                 | value |
+      | disableNotification | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status DECLINE
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will not see notification frame
 
-  @config_disable_notifications_false @apple_test_part2
+  @apple_test_part2
   Scenario: ApplePay - notification frame is displayed after payment if disableNotification is false
-    When User chooses ApplePay as payment method - response is set to "SUCCESS"
+    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
+      | key                 | value |
+      | disableNotification | false |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status SUCCESS
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
@@ -352,9 +556,14 @@ Feature: ApplePay
       | submit        |
     And submit callback contains JWT response
 
-  @config_mainamount @apple_test_part2
+  @apple_test_part2
   Scenario Outline: ApplePay - <action_code> payment with mainamount field in jwt payload
-    When User chooses ApplePay as payment method - response is set to "<action_code>"
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt JWT_WITH_MAINAMOUNT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as JSINIT_MAINAMOUNT and payment status <action_code>
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "<payment_status_message>"
     And User will see that notification frame has "<color>" color
@@ -363,7 +572,11 @@ Feature: ApplePay
       | <callback>    |
       | submit        |
     And submit callback contains JWT response
-    And APPLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type      |
+      | APPLE_PAY         |
+      | WALLETVERIFY      |
+      | THREEDQUERY, AUTH |
 
     Examples:
       | action_code | payment_status_message                  | color | callback |
@@ -372,7 +585,12 @@ Feature: ApplePay
 
   @config_apple_buttonPlacement @apple_test_part2
   Scenario: ApplePay - successful payment with 'buttonPlacement' property in config
-    When User chooses ApplePay as payment method - response is set to "SUCCESS"
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status SUCCESS
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
@@ -380,11 +598,20 @@ Feature: ApplePay
       | success       |
       | submit        |
     And submit callback contains JWT response
-    And APPLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type      |
+      | APPLE_PAY         |
+      | WALLETVERIFY      |
+      | THREEDQUERY, AUTH |
 
-  @base_config @wallet_test @apple_test_part2
+  @wallet_test @apple_test_part2
   Scenario Outline: ApplePay - <payment> payment logs
-    When User chooses ApplePay as payment method - response is set to "<action_code>"
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status <action_code>
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "<payment_status_message>"
     And User will see following logs
@@ -401,7 +628,12 @@ Feature: ApplePay
 
   @base_config @wallet_test @apple_test_part2
   Scenario: ApplePay - canceled payment logs
-    When User chooses ApplePay as payment method - response is set to "CANCEL"
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status CANCEL
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
     And User clicks Cancel button on ApplePay popup
     Then User will see notification frame text: "Payment has been cancelled"
     And User will see following logs
@@ -410,10 +642,19 @@ Feature: ApplePay
       | ApplePay | PAYMENT INIT COMPLETED |
       | ApplePay | PAYMENT CANCELED       |
 
-  @base_config @parent_iframe @full_test_part_2 @full_test
+  @base_config @parent_iframe
   Scenario: ApplePay - successful payment when app is embedded in another iframe
-    When User chooses ApplePay as payment method - response is set to "SUCCESS"
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status SUCCEESS
+    And User opens example page IN_IFRAME
+    When User chooses APPLE_PAY as payment method
     And User clicks Proceed button on ApplePay popup
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And APPLE_PAY or AUTH requests were sent only once with correct data
+    And following requests were sent only once
+      | request_type      |
+      | APPLE_PAY         |
+      | WALLETVERIFY      |
+      | THREEDQUERY, AUTH |

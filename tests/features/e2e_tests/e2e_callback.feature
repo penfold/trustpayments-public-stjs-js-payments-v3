@@ -1,7 +1,7 @@
 Feature: E2E callbacks after payment
 
 
-    Scenario Outline: submit and success callback for successful payment - frictionless
+  Scenario Outline: submit and success callback for successful payment - frictionless
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | <request_types> |
@@ -359,7 +359,9 @@ Feature: E2E callbacks after payment
     And User opens example page
     When User clicks Pay button
     Then User will see "error" popup
-    And "error" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | error         |
 
 
   Scenario: data type passing to callback function

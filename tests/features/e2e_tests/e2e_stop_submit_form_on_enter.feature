@@ -30,8 +30,10 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     When User fills payment form with defined card VISA_V22_FRICTIONLESS
     And User press ENTER button in input field
     Then User will see notification frame text: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 
@@ -47,8 +49,10 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     When User fills payment form with defined card VISA_V22_FRICTIONLESS
     And User press ENTER button in input field
     Then User will see notification frame text: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
     And User will see the same provided data in inputs fields
@@ -66,8 +70,10 @@ Feature: E2E for 'stopSubmitFormOnEnter' option
     And User clicks Pay button
     And User fills V2 authentication modal
     Then User will see notification frame text: "Payment has been successfully processed"
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And User will see that Pay button is "disabled"
     And User will see that ALL input fields are "disabled"
 

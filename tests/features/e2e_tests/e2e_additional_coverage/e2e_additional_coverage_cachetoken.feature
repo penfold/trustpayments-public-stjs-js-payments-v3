@@ -19,8 +19,10 @@
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
 #    Then User will see notification frame text: "Payment has been successfully processed"
-#    And "submit" callback is called only once
-#    And "success" callback is called only once
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | success       |
+#      | submit        |
 #
 #    Examples:
 #      | request_types                         |
@@ -55,8 +57,10 @@
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
 #    Then User will see notification frame text: "Payment has been successfully processed"
-#    And "submit" callback is called only once
-#    And "success" callback is called only once
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | success       |
+#      | submit        |
 #
 #    Examples:
 #      | request_types                                      |
@@ -84,8 +88,10 @@
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
 #    And User fills V2 authentication modal
 #    Then User will see notification frame text: "Payment has been successfully processed"
-#    And "submit" callback is called only once
-#    And "success" callback is called only once
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | success       |
+#      | submit        |
 #
 #    Examples:
 #      | request_types                         |
@@ -112,8 +118,10 @@
 #      | cachetoken              | cachetoken_value |
 #    When User opens example page WITHOUT_SUBMIT_BUTTON
 #    Then User will see notification frame text: "Payment has been successfully processed"
-#    And "submit" callback is called only once
-#    And "success" callback is called only once
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | success       |
+#      | submit        |
 #
 #    Examples:
 #      | request_types             |

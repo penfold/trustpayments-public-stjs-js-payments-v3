@@ -5,10 +5,12 @@ Feature: Payment form validations
   In order to check payment form validations
 
   Background:
-    Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens mock payment page
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And Frictionless card payment mock responses are set as BASE_JSINIT and payment status SUCCESS
+    And User opens example page
 
-  @base_config
   Scenario: Submit payment form without data - fields validation
     And User waits for form inputs to be loaded
     And User waits for Pay button to be active
@@ -16,7 +18,7 @@ Feature: Payment form validations
     Then User will see validation message "Field is required" under all fields
     And THREEDQUERY, AUTH request was not sent
 
-  @base_config
+
   Scenario Outline: Filling payment form with incomplete data (backend validation) -> cardNumber "<card_number>", expiration: "<expiration>", cvv: "<cvv>"
     When User fills payment form with credit card number "<card_number>", expiration date "<expiration_date>" and cvv "<cvv>"
     And InvalidField response set for "<field>"
