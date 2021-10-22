@@ -6,9 +6,12 @@ class InlineConfigBuilder:
 
     def map_jwt_additional_fields(self, jwt, properties):
         # current implementation works only for not nested objects
-        payload_keys = ['accounttypedescription', 'baseamount', 'billingcountryiso2a', 'cachetoken', 'currencyiso3a',
-                        'customercountryiso2a', 'expirydate', 'locale', 'mainamount', 'pan', 'requesttypedescriptions',
-                        'securitycode', 'sitereference', 'threedbypasspaymenttypes']
+        payload_keys = ['accounttypedescription', 'baseamount', 'billingcountryiso2a', 'billingprefixname',
+                        'billingfirstname', 'billingmiddlename', 'billinglastname', 'billingsuffixname', 'billingemail',
+                        'billingpremise', 'billingpostcode', 'orderreference', 'cachetoken', 'currencyiso3a',
+                        'customercountryiso2a', 'expirydate', 'locale',
+                        'mainamount', 'pan', 'requesttypedescriptions', 'securitycode', 'sitereference',
+                        'threedbypasspaymenttypes']
 
         for prop in properties:
             key = prop['key']

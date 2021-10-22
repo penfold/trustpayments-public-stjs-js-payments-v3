@@ -4,54 +4,83 @@ Feature: Tokenisation
   I want to use card payments method with tokenisation config
   In order to check full payment functionality
 
-  Background:
-    Given JavaScript configuration is set for scenario based on scenario's @config tag
-    And User opens mock payment page
-
-  @config_tokenisation_visa
   @submit_cvv_only
   Scenario: Tokenisation - successful payment by VISA card
-    When User fills "SECURITY_CODE" field "123"
-    And THREEDQUERY mock response is set to "ENROLLED_Y"
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key            | value        |
+      | fieldsToSubmit | securitycode |
+    And JS library authenticated by jwt JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And Challenge card payment mock responses are set as JSINIT_TOKENISATION_VISA and payment status SUCCESS
     And ACS mock response is set to "OK"
-    And User clicks Pay button - AUTH response is set to "OK"
+    And User opens example page
+    When User fills "SECURITY_CODE" field "123"
+    And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
     And THREEDQUERY, AUTH ware sent only once in one request
 
-  @config_tokenisation_amex
   @submit_cvv_only
-  Scenario: Tokenisation case 1 - successful payment by AMEX card
+  Scenario: tokenization - Amex Frictionless
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key            | value        |
+      | fieldsToSubmit | securitycode |
+    And JS library authenticated by jwt JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And Frictionless card payment mock responses are set as JSINIT_TOKENISATION_AMEX and payment status SUCCESS
+    And User opens example page
     When User fills "SECURITY_CODE" field "1234"
-    And Frictionless THREEDQUERY, AUTH response is set to OK
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
 
-  @config_tokenisation_amex
   @submit_cvv_only
-  Scenario: Tokenisation case 2 - successful payment by AMEX card
-    When User fills "SECURITY_CODE" field "1234"
-    And THREEDQUERY mock response is set to "ENROLLED_Y"
+  Scenario: tokenization - Amex Non-Frictionless
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key            | value        |
+      | fieldsToSubmit | securitycode |
+    And JS library authenticated by jwt JWT_AMEX_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And Challenge card payment mock responses are set as JSINIT_TOKENISATION_AMEX and payment status SUCCESS
     And ACS mock response is set to "OK"
-    And User clicks Pay button - AUTH response is set to "OK"
+    And User opens example page
+    When User fills "SECURITY_CODE" field "1234"
+    And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
     And AUTH request was sent only once
 
-  @config_tokenisation_bypass_cards_visa
   @submit_cvv_only
   Scenario: Tokenisation and bypassCard - successful payment by VISA card
-    When User fills "SECURITY_CODE" field "123"
-    And THREEDQUERY mock response is set to "ENROLLED_Y"
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key            | value        |
+      | fieldsToSubmit | securitycode |
+    And JS library authenticated by jwt JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
+      | key                      | value                    |
+      | requesttypedescriptions  | THREEDQUERY AUTH RISKDEC |
+      | threedbypasspaymenttypes | VISA MASTERCARD          |
+    And Challenge card payment mock responses are set as JSINIT_TOKENISATION_BYPASS_VISA and payment status SUCCESS
     And ACS mock response is set to "OK"
-    And User clicks Pay button - AUTH response is set to "OK"
+    And User opens example page
+    When User fills "SECURITY_CODE" field "123"
+    And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
     And THREEDQUERY, AUTH ware sent only once in one request
 
-  @config_tokenisation_visa_request_types
   @submit_cvv_only
   Scenario: Tokenisation - successful payment by VISA with request types: RISKDEC, ACCOUNTCHECK, TDQ, AUTH
-    When User fills "SECURITY_CODE" field "123"
-    And RISKDEC, ACCOUNTCHECK, THREEDQUERY mock response is set to OK
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key            | value        |
+      | fieldsToSubmit | securitycode |
+    And JS library authenticated by jwt JWT_VISA_NON_FRICTIONLESS_PARENT_TRANSACTION with additional attributes
+      | key                     | value                                   |
+      | requesttypedescriptions | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH |
+    And Card payment mock responses are set as JSINIT_TOKENISATION_VISA and request type RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH
+    And Step up AUTH response is set to OK
     And ACS mock response is set to "OK"
-    And User clicks Pay button - AUTH response is set to "OK"
+    And User opens example page
+    When User fills "SECURITY_CODE" field "123"
+    And ACS mock response is set to "OK"
+    And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
     And AUTH request was sent only once

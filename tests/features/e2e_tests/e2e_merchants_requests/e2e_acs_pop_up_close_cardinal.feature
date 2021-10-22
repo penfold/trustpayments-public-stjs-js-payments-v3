@@ -17,8 +17,10 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     When User clicks cancel 3ds action button
     Then User will see notification frame text: "An error occurred"
     And User will see that notification frame has "red" color
-    And "submit" callback is called only once
-    And "error" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | error         |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
     And User will see that Pay button is "enabled"
@@ -42,7 +44,9 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     And User fills V2 authentication modal
     Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once in second payment
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: <THREEDRESPONSE>
 
@@ -107,7 +111,9 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     When User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
     And "submit" callback is called only once in second payment
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 
@@ -164,8 +170,10 @@ Feature: Close ACS pop-up (3DS modal) for Cardinal Commerce provider
     When User clicks cancel 3ds action button
     Then User will see notification frame text: "An error occurred"
     And User will see that notification frame has "red" color
-    And "submit" callback is called only once
-    And "error" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | error         |
+      | submit        |
     And submit callback contains JWT response
     And submit callback contains THREEDRESPONSE: False
 

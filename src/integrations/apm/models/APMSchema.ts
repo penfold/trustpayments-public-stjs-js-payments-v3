@@ -20,5 +20,7 @@ const configSchemaFactory = (apmName: APMName) => Joi.object().keys({
 });
 
 export const APMSchemasMap: Map<APMName, ObjectSchema> = new Map()
+  .set(APMName.MYBANK, configSchemaFactory(APMName.MYBANK))
+  .set(APMName.PAYU, configSchemaFactory(APMName.PAYU))
   .set(APMName.UNIONPAY, configSchemaFactory(APMName.UNIONPAY))
   .set(APMName.ZIP, configSchemaFactory(APMName.ZIP));
