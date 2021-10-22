@@ -10,37 +10,19 @@ use_step_matcher('re')
 @step('User focuses on APM payment methods section')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-    payment_page.scroll_to_apms()
+    payment_page.scroll_to_apm_list()
 
 
-@step('User chooses ZIP from APMs list')
-def step_impl(context):
+@step('User chooses (?P<apm_type>.+) from APM list')
+def step_impl(context, apm_type):
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-    payment_page.click_zip_payment_method()
+    payment_page.click_specific_apm_button(override_placement=False, apm_type=apm_type)
 
 
-@step('User chooses PAYU from APM list')
-def step_impl(context):
+@step('User chooses (?P<apm_type>.+) from APM list - override placement')
+def step_impl(context, apm_type):
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-    payment_page.click_payu_payment_method(override_placement=False)
-
-
-@step('User chooses PAYU from APM list - override placement')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-    payment_page.click_payu_payment_method(override_placement=True)
-
-
-@step('User chooses MYBANK from APM list')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-    payment_page.click_mybank_payment_method(override_placement=False)
-
-
-@step('User chooses MYBANK from APM list - override placement')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-    payment_page.click_mybank_payment_method(override_placement=True)
+    payment_page.click_specific_apm_button(override_placement=True, apm_type=apm_type)
 
 
 @step('User will be sent to apm page - simulator')
@@ -60,38 +42,19 @@ def step_impl(context, response_option):
     payment_page.submit_simulator_page_response()
 
 
-@then('PayU is available on APM list')
-def step_impl(context):
-    assertion_message = 'PayU button is not available but should be'
-    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-    payment_page.wait_for_payu_payment_method_visibility()
-
-    add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
-    assert payment_page.wait_for_payu_payment_method_visibility() is True, assertion_message
-
-
-@then('PAYU is not available on APM list')
-def step_impl(context):
-    assertion_message = 'PayU button is available but should not be'
+@then('(?P<apm_type>.+) is available on APM list')
+def step_impl(context, apm_type):
+    assertion_message = f'{apm_type} button is not available but should be'
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
 
     add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
-    assert payment_page.wait_for_payu_payment_method_invisibility() is True, assertion_message
+    assert payment_page.wait_for_specific_apm_payment_method_visibility(apm_type) is True, assertion_message
 
 
-@then('MYBANK is available on APM list')
-def step_impl(context):
-    assertion_message = 'MyBank button is not available but should be'
+@then('(?P<apm_type>.+) is not available on APM list')
+def step_impl(context, apm_type):
+    assertion_message = f'{apm_type} button is available but should not be'
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
 
     add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
-    assert payment_page.wait_for_mybank_payment_method_visibility() is True, assertion_message
-
-
-@then('MYBANK is not available on APM list')
-def step_impl(context):
-    assertion_message = 'MyBank button is available but should not be'
-    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-
-    add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
-    assert payment_page.wait_for_mybank_payment_method_invisibility() is True, assertion_message
+    assert payment_page.wait_for_specific_apm_payment_method_invisibility(apm_type) is True, assertion_message
