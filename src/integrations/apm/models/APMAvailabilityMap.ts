@@ -23,7 +23,7 @@ export const APMAvailabilityMap: Map<APMName, { countries: string[], currencies:
     countries: [APMCountryIso.DE],
     currencies: [APMCurrencyIso.EUR],
   })
-  .set('IDEAL' as APMName, {
+  .set(APMName.IDEAL, {
     countries: [APMCountryIso.NL],
     currencies: [APMCurrencyIso.EUR],
   })
@@ -31,7 +31,7 @@ export const APMAvailabilityMap: Map<APMName, { countries: string[], currencies:
     countries: [APMCountryIso.PT],
     currencies: [APMCurrencyIso.EUR],
   })
-  .set('MYBANK' as APMName, {
+  .set(APMName.MYBANK, {
     countries: [APMCountryIso.IT],
     currencies: [APMCurrencyIso.EUR],
   })
@@ -43,7 +43,7 @@ export const APMAvailabilityMap: Map<APMName, { countries: string[], currencies:
     countries: [],
     currencies: [APMCurrencyIso.ARS, APMCurrencyIso.AUD, APMCurrencyIso.BGN, APMCurrencyIso.CAD, APMCurrencyIso.CHF, APMCurrencyIso, APMCurrencyIso.DKK, APMCurrencyIso.EUR, APMCurrencyIso.GBP, APMCurrencyIso.HRK, APMCurrencyIso.HUF, APMCurrencyIso.MXN, APMCurrencyIso.NOK, APMCurrencyIso.NZD, APMCurrencyIso.PEN, APMCurrencyIso.PLN, APMCurrencyIso.RON, APMCurrencyIso.SEK, APMCurrencyIso.TRY, APMCurrencyIso.USD, APMCurrencyIso.UYU],
   })
-  .set('PAYU' as APMName, {
+  .set(APMName.PAYU, {
     countries: [APMCountryIso.CZ, APMCountryIso.PL],
     currencies: [APMCurrencyIso.CZK, APMCurrencyIso.PLN],
   })

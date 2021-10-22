@@ -1,6 +1,6 @@
 export enum APMName {
-  PAYU = 'PAYU',
-  MYBANK = 'MYBANK',
   IDEAL = 'IDEAL',
+  MYBANK = 'MYBANK',
+  PAYU = 'PAYU',
   ZIP = 'ZIP',
 }

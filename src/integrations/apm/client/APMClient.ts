@@ -12,32 +12,40 @@ import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
 import { APMName } from '../models/APMName';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import './APMClient.scss';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
+import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 
 @Service()
 export class APMClient {
   private apmIcons: Record<APMName, string> = {
-    [APMName.PAYU]: require('./images/payu.svg'),
-    [APMName.MYBANK]: require('./images/mybank.svg'),
     [APMName.IDEAL]: require('./images/ideal.svg'),
+    [APMName.MYBANK]: require('./images/mybank.svg'),
+    [APMName.PAYU]: require('./images/payu.svg'),
     [APMName.ZIP]: require('./images/zip.svg'),
   };
+  private apmConfig: IAPMConfig;
 
   constructor(
     private apmConfigResolver: APMConfigResolver,
     private messageBus: IMessageBus,
     private apmFilterService: APMFilterService,
   ) {
+    const $destroy = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+    this.messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil($destroy)).subscribe(({ newJwt }: IUpdateJwt) => {
+      this.update(newJwt);
+    });
   }
 
   init(config: IAPMConfig): Observable<undefined> {
+    this.apmConfig = config;
+
     try {
       this.apmFilterService.filter(this.apmConfigResolver.resolve(config).apmList as IAPMItemConfig[]).pipe(
         map((list: IAPMItemConfig[]) => {
           list.forEach((item: IAPMItemConfig) => {
-            return this.insertAPMButton(item as IAPMItemConfig)
+            return this.insertAPMButton(item as IAPMItemConfig);
           });
         }),
       ).subscribe();
@@ -46,6 +54,20 @@ export class APMClient {
     }
 
     return of(undefined);
+  }
+
+  private update(jwt: string): Observable<undefined> {
+    try {
+      this.apmFilterService.filter(this.apmConfigResolver.resolve(this.apmConfig).apmList as IAPMItemConfig[], jwt).pipe(
+        map((list: IAPMItemConfig[]) => {
+          list.forEach((item: IAPMItemConfig) => {
+            return this.insertAPMButton(item as IAPMItemConfig);
+          });
+        }),
+      ).subscribe();
+    } catch (error) {
+      return throwError(() => error);
+    }
   }
 
   private insertAPMButton(apmItemConfig: IAPMItemConfig) {
