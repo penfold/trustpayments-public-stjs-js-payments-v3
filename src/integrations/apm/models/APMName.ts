@@ -1,7 +1,8 @@
 export enum APMName {
-  PAYU = 'PAYU',
-  MYBANK = 'MYBANK',
+  BITPAY = 'BITPAY',
   IDEAL = 'IDEAL',
+  MYBANK = 'MYBANK',
+  PAYU = 'PAYU',
   POSTFINANCE = 'POSTFINANCE',
   PRZELEWY24 = 'PRZELEWY24',
   ZIP = 'ZIP',
