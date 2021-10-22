@@ -43,11 +43,16 @@ export class APMClient {
 
   init(config: IAPMConfig): Observable<undefined> {
     this.apmConfig = config;
+    this.filter(config);
+    return of(undefined);
+  }
 
+  private filter(config: IAPMConfig) {
     try {
       this.apmFilterService.filter(this.apmConfigResolver.resolve(config).apmList as IAPMItemConfig[]).pipe(
         map((list: IAPMItemConfig[]) => {
           list.forEach((item: IAPMItemConfig) => {
+            this.clear(item);
             return this.insertAPMButton(item as IAPMItemConfig);
           });
         }),
@@ -55,8 +60,10 @@ export class APMClient {
     } catch (error) {
       return throwError(() => error);
     }
+  }
 
-    return of(undefined);
+  private clear(apmItemConfig: IAPMItemConfig): void {
+    DomMethods.removeAllChildren(apmItemConfig.placement);
   }
 
   private update(jwt: string): Observable<undefined> {

@@ -17,7 +17,6 @@ export class APMFilterService {
 
   filter(apmList: IAPMItemConfig[], jwt?: string): Observable<IAPMItemConfig[]> {
     const { country, currency } = this.getCurrencyAndCountry(jwt ? jwt : this.configProvider.getConfig().jwt);
-    console.error(country, currency, jwt);
 
     return of(apmList.filter((item: IAPMItemConfig) => this.isAPMAvailable(item, currency, country)));
   }
