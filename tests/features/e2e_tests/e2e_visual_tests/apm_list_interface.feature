@@ -1,11 +1,11 @@
-#
+# this is commented on purpose
 #Feature: Visual regression - apm buttons list
 #  As a user
 #  I want to see apms payments options
 #  To make sure they are displayed properly
 #
 #  @scrn_apm_interface_payment_method @visual_regression @visual_regression_safari
-#  Scenario: ZIP display in list of APM's
+#  Scenario: display list of APM's buttons
 #    Given JS library configured by inline config VISUAL_BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes

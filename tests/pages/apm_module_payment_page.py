@@ -4,7 +4,7 @@ from pages.locators.payment_methods_locators import PaymentMethodsLocators
 
 class ApmModulePaymentPage(BasePage):
 
-    def click_zip_payment_method(self):
+    def select_zip_payment_method(self):
         self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.zip_button)
         self._actions.click(PaymentMethodsLocators.zip_button)
 
@@ -15,6 +15,14 @@ class ApmModulePaymentPage(BasePage):
         else:
             self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.payu_button_placement_override)
             self._actions.click(PaymentMethodsLocators.payu_button_placement_override)
+
+    def click_mybank_payment_method(self, override_placement):
+        if not override_placement:
+            self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.mybank_button)
+            self._actions.click(PaymentMethodsLocators.mybank_button)
+        else:
+            self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.mybank_button_placement_override)
+            self._actions.click(PaymentMethodsLocators.mybank_button_placement_override)
 
     def scroll_to_apms(self):
         self._actions.scroll_directly_to_element(PaymentMethodsLocators.apm_group)
@@ -33,3 +41,9 @@ class ApmModulePaymentPage(BasePage):
 
     def wait_for_payu_payment_method_visibility(self):
         return self._waits.wait_for_element_visibility(PaymentMethodsLocators.payu_button)
+
+    def wait_for_mybank_payment_method_invisibility(self):
+        return self._waits.wait_for_element_invisibility(PaymentMethodsLocators.mybank_button)
+
+    def wait_for_mybank_payment_method_visibility(self):
+        return self._waits.wait_for_element_visibility(PaymentMethodsLocators.mybank_button)
