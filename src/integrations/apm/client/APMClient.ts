@@ -22,6 +22,7 @@ export class APMClient {
     [APMName.MYBANK]: require('./images/mybank.svg'),
     [APMName.IDEAL]: require('./images/ideal.svg'),
     [APMName.POSTFINANCE]: require('./images/postfinance.svg'),
+    [APMName.PRZELEWY24]: require('./images/przelewy24.svg'),
     [APMName.ZIP]: require('./images/zip.svg'),
   };
 

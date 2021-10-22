@@ -24,4 +24,5 @@ export const APMSchemasMap: Map<APMName, ObjectSchema> = new Map()
   .set(APMName.MYBANK, configSchemaFactory(APMName.MYBANK))
   .set(APMName.IDEAL, configSchemaFactory(APMName.IDEAL))
   .set(APMName.POSTFINANCE, configSchemaFactory(APMName.POSTFINANCE))
+  .set(APMName.PRZELEWY24, configSchemaFactory(APMName.PRZELEWY24))
   .set(APMName.ZIP, configSchemaFactory(APMName.ZIP));
