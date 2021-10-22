@@ -15,8 +15,10 @@ Feature: E2E MOTO Payments
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see that notification frame has "green" color
-    And "submit" callback is called only once
-    And "success" callback is called only once
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
 
     Examples:
       | CARD                      |

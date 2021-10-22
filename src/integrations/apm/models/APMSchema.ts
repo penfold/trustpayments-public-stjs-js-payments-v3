@@ -29,4 +29,6 @@ const aliPaySchema = Joi.object().keys({
 
 export const APMSchemasMap: Map<APMName, ObjectSchema> = new Map()
   .set(APMName.ALIPAY, aliPaySchema)
+  .set(APMName.PAYU, configSchemaFactory(APMName.PAYU))
+  .set(APMName.MYBANK, configSchemaFactory(APMName.MYBANK))
   .set(APMName.ZIP, configSchemaFactory(APMName.ZIP));

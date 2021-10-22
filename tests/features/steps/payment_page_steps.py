@@ -423,14 +423,6 @@ def step_impl(context):
     payment_page.validate_callback_with_data_type('Error code: OK')
 
 
-@step('"(?P<callback_popup>.+)" callback is called only once')
-def step_impl(context, callback_popup):
-    # sleep added to handle potential issue with update callback counters after initial check count
-    time.sleep(1)
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_number_in_callback_counter_popup(callback_popup, '1')
-
-
 @step('"(?P<callback_popup>.+)" callback is called only once in second payment')
 def step_impl(context, callback_popup):
     time.sleep(1)

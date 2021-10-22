@@ -1,6 +1,9 @@
 {
-  "panIcon": true,
   "submitOnSuccess": false,
+  "submitCallback": "submitCallback",
+  "successCallback": "successCallback",
+  "errorCallback": "errorCallback",
+  "cancelCallback": "cancelCallback",
   "visaCheckout": {
     "buttonSettings": {
       "size": "154",

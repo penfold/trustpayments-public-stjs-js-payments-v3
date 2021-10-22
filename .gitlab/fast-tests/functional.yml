@@ -79,6 +79,26 @@ e2e-cardinal-commerce-tests-release:
 #    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_3ds_sdk'
 #  parallel: 23
 #
+# APMs E2E Tests Headless
+e2e-apms-tests-review:
+  extends:
+    - .e2e-tests-parallel
+    - .services-app-html-review
+    - .rules-when-review
+    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
+  parallel: 3
+
+e2e-apms-tests-release:
+  extends:
+    - .e2e-tests-parallel
+    - .service-app-html-release-merchant
+    - .rules-when-release
+    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
+  variables:
+    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
+  parallel: 3
 
 # Merchants features E2E Tests Headless
 e2e-merchants-features-tests-nightly:
@@ -110,7 +130,7 @@ e2e-smoke-tests-review:
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
-  parallel: 3
+  parallel: 4
 
 .e2e-smoke-tests-release:
   extends:
@@ -120,7 +140,7 @@ e2e-smoke-tests-review:
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
-  parallel: 3
+  parallel: 4
 
 # Additional coverage E2E Tests Headless
 .e2e-additional-coverage-tests-nightly:

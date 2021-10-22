@@ -4,58 +4,55 @@ Feature: Successful payments with start on load configuration
   I want to use start on load option when submit button is not displayed
   In order to check full payment functionality
 
-  Background:
-    Given JavaScript configuration is set for scenario based on scenario's @config tag
-
-  @config_start_on_load_requestTypes_tdq
+  @start_on_load
   Scenario: Successful payment with startOnLoad and request types THREEDQUERY
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_FRICTIONLESS_CARD with additional attributes
+      | key                     | value       |
+      | requesttypedescriptions | THREEDQUERY |
+    And Card payment mock responses are set as JSINIT_START_ON_LOAD_TDQ and request type THREEDQUERY
     And Single THREEDQUERY mock response is set to "ENROLLED_Y_WITHOUT_ACS_URL"
-    And User opens mock payment page WITHOUT_SUBMIT_BUTTON
+    When User opens example page WITHOUT_SUBMIT_BUTTON
     Then User will see notification frame text: "Payment has been successfully processed"
     And Single THREEDQUERY request was sent only once with correct data
 
-  @config_start_on_load_acheck_tdq_auth_sub
+  @start_on_load
   Scenario: Successful payment with startOnLoad and request types ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION
-    And Step up ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION response is set to OK
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_NON_FRICTIONLESS_CARD_SUBSCRIPTION with additional attributes
+      | key                     | value                                         |
+      | requesttypedescriptions | ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION |
+    And Challenge card payment mock responses are set as JSINIT_START_ON_LOAD_ACHECK_TDQ_AUTH_SUB and request type ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION
+    And Step up AUTH, SUBSCRIPTION response is set to OK
     And ACS mock response is set to "OK"
-    And AUTH, SUBSCRIPTION mock response is set to OK
-    And User opens mock payment page WITHOUT_SUBMIT_BUTTON
+    When User opens example page WITHOUT_SUBMIT_BUTTON
     Then User will see notification frame text: "Payment has been successfully processed"
     And ACCOUNTCHECK, THREEDQUERY, AUTH, SUBSCRIPTION ware sent only once in one request
     And AUTH, SUBSCRIPTION ware sent only once in one request
 
-  @config_start_on_load_requestTypes_tdq_auth
+  @start_on_load
   Scenario: Successful payment with startOnLoad request types: THREEDQUERY, AUTH
-    And THREEDQUERY mock response is set to "ENROLLED_Y"
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
+      | key                     | value             |
+      | requesttypedescriptions | THREEDQUERY, AUTH |
+    And Card payment mock responses are set as JSINIT_START_ON_LOAD_TDQ_AUTH and request type THREEDQUERY, AUTH
+    And Step up AUTH response is set to OK
     And ACS mock response is set to "OK"
-    And AUTH response is set to "OK"
-    And User opens mock payment page WITHOUT_SUBMIT_BUTTON
+    When User opens example page WITHOUT_SUBMIT_BUTTON
     Then User will see notification frame text: "Payment has been successfully processed"
     And THREEDQUERY, AUTH ware sent only once in one request
     And THREEDQUERY request was not sent
 
-  @config_immediate_payment
-  Scenario: Immediate payment (card enrolled N) - checking payment status for OK response code
-    And Frictionless THREEDQUERY, AUTH response is set to OK
-    And User opens mock payment page
-    Then User will see notification frame text: "Payment has been successfully processed"
-    And JSINIT request was sent only once
-    And THREEDQUERY, AUTH ware sent only once in one request
-
-  @config_immediate_payment
-  Scenario: Immediate payment (card enrolled Y) - check ACS response for code: FAILURE
-    When THREEDQUERY mock response is set to "ENROLLED_Y"
-    And ACS mock response is set to "FAILURE"
-    And User opens mock payment page
-    Then User will see notification frame text: "An error occurred"
-    And THREEDQUERY, AUTH ware sent only once in one request
-
-  @config_immediate_payment_and_submit_on_success
-  Scenario: Immediate payment with submitOnSuccess - successful payment
-    When THREEDQUERY mock response is set to "ENROLLED_Y"
+  @start_on_load
+  Scenario: startOnLoad with submitOnSuccess - successful payment
+    Given JS library configured with START_ON_LOAD_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt JWT_FAILED_NON_FRICTIONLESS_CARD with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And Challenge card payment mock responses are set as JSINIT_START_ON_LOAD_TDQ_AUTH and payment status SUCCESS
     And ACS mock response is set to "OK"
-    And AUTH response is set to "OK"
-    And User opens mock payment page
+    And Step up AUTH response is set to OK
+    When User opens example page
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
       | errormessage         | Payment has been successfully processed |
@@ -71,19 +68,18 @@ Feature: Successful payments with start on load configuration
     And THREEDQUERY, AUTH ware sent only once in one request
     And THREEDQUERY request was not sent
 
-  @config_immediate_payment
-  Scenario Outline: Immediate payment (card enrolled Y) - checking payment status for <action_code> response code
-    When THREEDQUERY mock response is set to "ENROLLED_Y"
+  @start_on_load
+  Scenario Outline: startOnLoad - checking payment status for <action_code> response code
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
+      | key                     | value             |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And Challenge card payment mock responses are set as JSINIT_START_ON_LOAD_TDQ_AUTH and payment status <action_code>
     And ACS mock response is set to "OK"
-    And AUTH response is set to "<action_code>"
-    And User opens mock payment page
+    When User opens example page
     Then User will see notification frame text: "<payment_status_message>"
     And THREEDQUERY, AUTH ware sent only once in one request
 
     Examples:
       | action_code | payment_status_message                  |
-      | OK          | Payment has been successfully processed |
-
-    Examples:
-      | action_code | payment_status_message |
-      | DECLINE     | Decline                |
+      | SUCCESS     | Payment has been successfully processed |
+      | DECLINE     | Decline                                 |
