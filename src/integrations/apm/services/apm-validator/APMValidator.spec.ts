@@ -59,6 +59,7 @@ describe('APMValidator', () => {
         'currencyiso3a': 'USD',
       }, undefined],
       [[{ name: APMName.ALIPAY }, { name: APMName.PRZELEWY24 }] as IAPMItemConfig[], {
+        'placement': 'test-id',
         'billingcountryiso2a': 'PL',
         'currencyiso3a': 'USD',
       }, '"orderreference" is required'],
