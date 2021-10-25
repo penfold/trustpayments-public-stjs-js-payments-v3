@@ -2,7 +2,6 @@ export enum APMName {
   ALIPAY = 'ALIPAY',
   BANCONTACT = 'BANCONTACT',
   BITPAY = 'BITPAY',
-  GIROPAY = 'GIROPAY',
   EPS = 'EPS',
   GIROPAY = 'GIROPAY',
   IDEAL = 'IDEAL',
