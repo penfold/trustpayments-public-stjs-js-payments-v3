@@ -1,10 +1,10 @@
 @APM
-@MYBANK
-@STJS-2458
-Feature: E2E MYBANK Payments
+@EPS
+@STJS-2568
+Feature: E2E EPS Payments
   As a user
-  I want to use MYBANK payment
-  If I use alternative payment method
+  I want to use EPS payment
+  If I use alternative payment methodR
 
 
   Scenario: Successful trigger of payment with accepted values for billingcountryiso2a and currencyiso3a
@@ -15,11 +15,11 @@ Feature: E2E MYBANK Payments
       | requesttypedescriptions | AUTH      |
       | baseamount              | 70        |
       | billingfirstname        | FirstName |
-      | billingcountryiso2a     | IT        |
+      | billingcountryiso2a     | AT        |
       | currencyiso3a           | EUR       |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
-    When User chooses MYBANK from APM list
+    When User chooses EPS from APM list
     Then User will be sent to apm page - simulator
 
 
@@ -30,7 +30,7 @@ Feature: E2E MYBANK Payments
       | key                     | value               |
       | requesttypedescriptions | AUTH                |
       | currencyiso3a           | EUR                 |
-      | billingcountryiso2a     | IT                  |
+      | billingcountryiso2a     | AT                  |
       | baseamount              | 123                 |
       | billingfirstname        | <billingfirstname>  |
       | billinglastname         | <billinglastname>   |
@@ -39,7 +39,7 @@ Feature: E2E MYBANK Payments
       | billingsuffixname       | <billingsuffixname> |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
-    When User chooses MYBANK from APM list
+    When User chooses EPS from APM list
     Then User will be sent to apm page - simulator
 
     Examples:
@@ -66,13 +66,13 @@ Feature: E2E MYBANK Payments
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
     # to be used with STJS-2443 & STJS-2444
-    #    Then MYBANK is not available on APM list
-    When User chooses MYBANK from APM list
+    #    Then EPS is not available on APM list
+    When User chooses EPS from APM list
     Then User will see notification frame text: "<notification_text>"
 
     Examples:
       | billingcountryiso2a | currencyiso3a | notification_text |
-      | IT                  | PLN           | No account found  |
+      | AT                  | PLN           | No account found  |
       | PL                  | EUR           | Invalid field     |
       |                     | EUR           | Invalid field     |
 
@@ -84,14 +84,14 @@ Feature: E2E MYBANK Payments
       | key                     | value |
       | requesttypedescriptions | AUTH  |
       | currencyiso3a           | EUR   |
-      | billingcountryiso2a     | IT    |
+      | billingcountryiso2a     | AT    |
       | baseamount              | 123   |
     And User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
     # to be used with STJS-2443 & STJS-2444
-    #    Then MYBANK is not available on APM list
-    When User chooses MYBANK from APM list
+    #    Then EPS is not available on APM list
+    When User chooses EPS from APM list
     Then User will see notification frame text: "Invalid field"
 
 
@@ -103,17 +103,17 @@ Feature: E2E MYBANK Payments
       | requesttypedescriptions | AUTH      |
       | baseamount              | 70        |
       | billingfirstname        | FirstName |
-      | billingcountryiso2a     | IT        |
+      | billingcountryiso2a     | AT        |
       | currencyiso3a           | EUR       |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value           |
       | requesttypedescriptions | AUTH            |
       | baseamount              | 707             |
       | billinglastname         | LastNameUpdated |
-      | billingcountryiso2a     | IT              |
+      | billingcountryiso2a     | AT              |
       | currencyiso3a           | EUR             |
     And User calls updateJWT function by filling amount field
-    When User chooses MYBANK from APM list
+    When User chooses EPS from APM list
     Then User will be sent to apm page - simulator
 
 
@@ -126,7 +126,7 @@ Feature: E2E MYBANK Payments
       | baseamount              | 70        |
       | billingfirstname        | FirstName |
       | billinglastname         | LastName  |
-      | billingcountryiso2a     | IT        |
+      | billingcountryiso2a     | AT        |
       | currencyiso3a           | EUR       |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value            |
@@ -140,8 +140,8 @@ Feature: E2E MYBANK Payments
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
     # to be used with STJS-2443 & STJS-2444
-    #    Then MYBANK is not available on APM list
-    When User chooses MYBANK from APM list
+    #    Then EPS is not available on APM list
+    When User chooses EPS from APM list
     Then User will see notification frame text: "Invalid field"
 
 
@@ -153,20 +153,20 @@ Feature: E2E MYBANK Payments
       | requesttypedescriptions | AUTH     |
       | baseamount              | 70       |
       | billinglastname         | LastName |
-      | billingcountryiso2a     | IT       |
+      | billingcountryiso2a     | AT       |
       | currencyiso3a           | EUR      |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value |
       | requesttypedescriptions | AUTH  |
       | baseamount              | 707   |
-      | billingcountryiso2a     | IT    |
+      | billingcountryiso2a     | AT    |
       | currencyiso3a           | EUR   |
     And User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
     # to be used with STJS-2443 & STJS-2444
-    #    Then MYBANK is not available on APM list
-    When User chooses MYBANK from APM list
+    #    Then EPS is not available on APM list
+    When User chooses EPS from APM list
     Then User will see notification frame text: "Invalid field"
 
 
@@ -179,11 +179,11 @@ Feature: E2E MYBANK Payments
       | baseamount              | 70                       |
       | billingfirstname        | FirstName                |
       | billinglastname         | LastName                 |
-      | billingcountryiso2a     | IT                       |
+      | billingcountryiso2a     | AT                       |
       | currencyiso3a           | EUR                      |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
-    When User chooses MYBANK from APM list
+    When User chooses EPS from APM list
     Then User will see notification frame text: "Invalid field"
 
 
@@ -195,14 +195,14 @@ Feature: E2E MYBANK Payments
 #      | key                     | value                     |
 #      | requesttypedescriptions | <requesttypedescriptions> |
 #      | currencyiso3a           | EUR                       |
-#      | billingcountryiso2a     | IT                        |
+#      | billingcountryiso2a     | AT                        |
 #      | baseamount              | 70                        |
 #      | billingfirstname        | FirstName                 |
 #      | billinglastname         | LastName                  |
 #    And User opens example page WITH_APM
 #    And User waits for whole form to be displayed
 #    And User waits for Pay button to be active
-#    When User chooses MYBANK from APM list
+#    When User chooses EPS from APM list
 #    Then User will be sent to apm page - simulator
 #
 #    Examples:
@@ -213,32 +213,32 @@ Feature: E2E MYBANK Payments
 #      | THREEDQUERY AUTH RISKDEC                            |
 #      | AUTH RISKDEC2                                       |
 #      | ACCOUNTCHECK THREEDQUERY AUTH                       |
-#      | RISKDEC ACCOUNTCHECK JSINIT AUTH SUBSCRIPTION       |
-#      | JSINIT AUTH                                         |
+#      | RISKDEC ACCOUNTCHECK JSINAT AUTH SUBSCRIPTION       |
+#      | JSINAT AUTH                                         |
 #      | RISKDEC2 ACCOUNTCHECK THREEDQUERY AUTH              |
 #      | RISKDEC ACCOUNTCHECK AUTH SUBSCRIPTION              |
 #      | THREEDQUERY AUTH SUBSCRIPTION                       |
 #      | RISKDEC THREEDQUERY AUTH SUBSCRIPTION               |
-#      | RISKDEC ACCOUNTCHECK JSINIT AUTH                    |
+#      | RISKDEC ACCOUNTCHECK JSINAT AUTH                    |
 #      | RISKDEC ACCOUNTCHECK AUTH                           |
 #      | FRAUDSCORE THREEDQUERY AUTH                         |
 #      | ACCOUNTCHECK AUTH SUBSCRIPTION                      |
 #      | RISKDEC2 THREEDQUERY AUTH SUBSCRIPTION              |
 #      | RISKDEC2 AUTH SUBSCRIPTION                          |
-#      | JSINIT AUTH FRAUDSCREENING                          |
-#      | FRAUDSCORE JSINIT AUTH                              |
-#      | ACCOUNTCHECK JSINIT AUTH                            |
+#      | JSINAT AUTH FRAUDSCREENING                          |
+#      | FRAUDSCORE JSINAT AUTH                              |
+#      | ACCOUNTCHECK JSINAT AUTH                            |
 #      | RISKDEC AUTH SUBSCRIPTION                           |
-#      | ACCOUNTCHECK JSINIT AUTH SUBSCRIPTION               |
+#      | ACCOUNTCHECK JSINAT AUTH SUBSCRIPTION               |
 #      | RISKDEC2 ACCOUNTCHECK AUTH                          |
 #      | THREEDQUERY AUTH FRAUDSCREENING                     |
 #      | ORDERDETAILS AUTH                                   |
-#      | JSINIT AUTH SUBSCRIPTION                            |
+#      | JSINAT AUTH SUBSCRIPTION                            |
 #      | AUTH SUBSCRIPTION                                   |
 #      | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH               |
-#      | RISKDEC JSINIT AUTH                                 |
+#      | RISKDEC JSINAT AUTH                                 |
 #      | RISKDEC2 ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION |
-#      | RISKDEC JSINIT AUTH SUBSCRIPTION                    |
+#      | RISKDEC JSINAT AUTH SUBSCRIPTION                    |
 #      | RISKDEC2 ACCOUNTCHECK AUTH SUBSCRIPTION             |
 #      | RISKDEC AUTH                                        |
 #      | RISKDEC2 AUTH                                       |
@@ -247,7 +247,7 @@ Feature: E2E MYBANK Payments
 #      | ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION          |
 #      | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION  |
 #      | RISKDEC2 THREEDQUERY AUTH                           |
-#      | JSINIT AUTH RISKDEC                                 |
+#      | JSINAT AUTH RISKDEC                                 |
 #      | AUTH RISKDEC                                        |
 #      | THREEDQUERY AUTH RISKDEC2                           |
 
@@ -261,19 +261,19 @@ Feature: E2E MYBANK Payments
       | baseamount              | 70        |
       | billingfirstname        | FirstName |
       | billinglastname         | LastName  |
-      | billingcountryiso2a     | IT        |
+      | billingcountryiso2a     | AT        |
       | currencyiso3a           | EUR       |
       | orderreference          | 123456    |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
-    And User chooses MYBANK from APM list
+    And User chooses EPS from APM list
     And User will be sent to apm page - simulator
     When User will select Succeeded response and submit
     Then User will be sent to page with url "this_is_not_existing_page_success_redirect.com" having params
-      | key                    | value  |
-      | paymenttypedescription | MYBANK |
-      | errorcode              | 0      |
-      | settlestatus           | 100    |
+      | key                    | value |
+      | paymenttypedescription | EPS  |
+      | errorcode              | 0     |
+      | settlestatus           | 100   |
 #      | orderreference         | 123456 | commented on purpose
 
 
@@ -286,42 +286,42 @@ Feature: E2E MYBANK Payments
       | baseamount              | 70        |
       | billingfirstname        | FirstName |
       | billinglastname         | LastName  |
-      | billingcountryiso2a     | IT        |
+      | billingcountryiso2a     | AT        |
       | currencyiso3a           | EUR       |
       | orderreference          | 123456    |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
-    And User chooses MYBANK from APM list
+    And User chooses EPS from APM list
     And User will be sent to apm page - simulator
     When User will select Failed Unknown response and submit
     Then User will be sent to page with url "this_is_not_existing_page_error_redirect.com" having params
-      | key                    | value  |
-      | paymenttypedescription | MYBANK |
-      | errorcode              | 70000  |
-      | settlestatus           | 3      |
+      | key                    | value |
+      | paymenttypedescription | EPS  |
+      | errorcode              | 70000 |
+      | settlestatus           | 3     |
 #      | orderreference         | 123456 |  commented on purpose
 
 
   Scenario: default configuration override
     Given JS library configured by inline config BASIC_CONFIG
-    And JS library configured by inline configAPMs MYBANK_CONFIG_APM
+    And JS library configured by inline configAPMs EPS_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value     |
       | requesttypedescriptions | AUTH      |
       | baseamount              | 70        |
       | billingfirstname        | FirstName |
       | billinglastname         | LastName  |
-      | billingcountryiso2a     | IT        |
+      | billingcountryiso2a     | AT        |
       | currencyiso3a           | EUR       |
       | orderreference          | 123456    |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
-    And User chooses MYBANK from APM list - override placement
+    And User chooses EPS from APM list - override placement
     And User will be sent to apm page - simulator
     When User will select Failed Unknown response and submit
     Then User will be sent to page with url "this_is_not_existing_page_error_redirect_override.com" having params
-      | key                    | value  |
-      | paymenttypedescription | MYBANK |
-      | errorcode              | 70000  |
-      | settlestatus           | 3      |
+      | key                    | value |
+      | paymenttypedescription | EPS  |
+      | errorcode              | 70000 |
+      | settlestatus           | 3     |
 #      | orderreference         | 123456 | commented on purpose

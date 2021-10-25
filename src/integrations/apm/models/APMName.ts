@@ -13,6 +13,7 @@ export enum APMName {
   QIWI = 'QIWI',
   REDPAGOS = 'REDPAGOS',
   TRUSTLY = 'TRUSTLY',
+  UNIONPAY = 'UNIONPAY',
   WECHATPAY = 'WECHATPAY',
   ZIP = 'ZIP',
 }

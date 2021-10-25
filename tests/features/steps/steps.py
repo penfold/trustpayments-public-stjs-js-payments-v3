@@ -95,7 +95,7 @@ def step_impl(context, how_many_seconds):
     sm = context.screenshot_manager
 
     expected_screenshot_filename = _browser_device(context) + '_' + screenshots[_screenshot_tag(context.scenario.tags)]
-    actual_screenshot_filename = sm.make_screenshot_for_visual_tests(expected_screenshot_filename, date_postfix=True)
+    actual_screenshot_filename = sm.make_screenshot_for_visual_tests(expected_screenshot_filename, date_postfix=False)
     assertion_message = f'\nScreenshots comparator detected differences between ' \
                         f'"expected/{expected_screenshot_filename}" and ' \
                         f'"actual/{actual_screenshot_filename}"\n' \
