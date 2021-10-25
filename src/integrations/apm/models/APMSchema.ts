@@ -30,6 +30,7 @@ export const APMSchemasMap: Map<APMName, ObjectSchema> = new Map()
   .set(APMName.PAYU, configSchemaFactory(APMName.PAYU))
   .set(APMName.POSTFINANCE, configSchemaFactory(APMName.POSTFINANCE))
   .set(APMName.PRZELEWY24, configSchemaFactory(APMName.PRZELEWY24))
+  .set(APMName.SEPADD, configSchemaFactory(APMName.SEPADD))
   .set(APMName.REDPAGOS, configSchemaFactory(APMName.REDPAGOS))
   .set(APMName.UNIONPAY, configSchemaFactory(APMName.UNIONPAY))
   .set(APMName.ZIP, configSchemaFactory(APMName.ZIP));
