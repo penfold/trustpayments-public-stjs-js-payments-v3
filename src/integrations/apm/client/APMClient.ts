@@ -19,6 +19,7 @@ import './APMClient.scss';
 export class APMClient {
   private apmIcons: Record<APMName, string> = {
     [APMName.BITPAY]: require('./images/bitpay.svg'),
+    [APMName.GIROPAY]: require('./images/giropay.svg'),
     [APMName.EPS]: require('./images/eps.svg'),
     [APMName.IDEAL]: require('./images/ideal.svg'),
     [APMName.MYBANK]: require('./images/mybank.svg'),
