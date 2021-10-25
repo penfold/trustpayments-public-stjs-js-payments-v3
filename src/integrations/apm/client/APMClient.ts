@@ -23,6 +23,7 @@ export class APMClient {
     [APMName.GIROPAY]: require('./images/giropay.svg'),
     [APMName.EPS]: require('./images/eps.svg'),
     [APMName.IDEAL]: require('./images/ideal.svg'),
+    [APMName.MULTIBANCO]: require('./images/multibanco.svg'),
     [APMName.MYBANK]: require('./images/mybank.svg'),
     [APMName.PAYU]: require('./images/payu.svg'),
     [APMName.POSTFINANCE]: require('./images/postfinance.svg'),

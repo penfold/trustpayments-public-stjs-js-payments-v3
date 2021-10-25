@@ -4,6 +4,7 @@ export enum APMName {
   GIROPAY = 'GIROPAY',
   EPS = 'EPS',
   IDEAL = 'IDEAL',
+  MULTIBANCO = 'MULTIBANCO',
   MYBANK = 'MYBANK',
   PAYU = 'PAYU',
   POSTFINANCE = 'POSTFINANCE',

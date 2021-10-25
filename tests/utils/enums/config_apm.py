@@ -8,6 +8,7 @@ class ConfigApm(Enum):
     GIROPAY_CONFIG_APM = 'e2eGIROPAYConfigApm.json'
     EPS_CONFIG_APM = 'e2eEPSConfigApm.json'
     IDEAL_CONFIG_APM = 'e2eIDEALConfigApm.json'
+    MULTIBANCO_CONFIG_APM = 'e2eMULTIBANCOConfigApm.json'
     MYBANK_CONFIG_APM = 'e2eMyBankConfigApm.json'
     PAYU_CONFIG_APM = 'e2ePayUConfigApm.json'
     POSTFINANCE_CONFIG_APM = 'e2ePOSTFINANCEConfigApm.json'
