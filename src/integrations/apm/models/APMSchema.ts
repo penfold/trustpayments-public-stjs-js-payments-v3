@@ -20,6 +20,7 @@ const configSchemaFactory = (apmName: APMName) => Joi.object().keys({
 });
 
 export const APMSchemasMap: Map<APMName, ObjectSchema> = new Map()
+  .set(APMName.BANCONTACT, configSchemaFactory(APMName.BANCONTACT))
   .set(APMName.BITPAY, configSchemaFactory(APMName.BITPAY))
   .set(APMName.GIROPAY, configSchemaFactory(APMName.GIROPAY))
   .set(APMName.EPS, configSchemaFactory(APMName.EPS))
