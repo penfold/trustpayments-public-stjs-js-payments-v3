@@ -1,9 +1,9 @@
 @APM
 @PAYU
 @STJS-2457
-Feature: E2E PayU Payments
+Feature: E2E PAYU Payments
   As a user
-  I want to use PayU payment
+  I want to use PAYU payment
   If I use alternative payment method
 
 

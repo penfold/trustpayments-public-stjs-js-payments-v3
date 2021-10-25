@@ -13,9 +13,11 @@ import { IStartPaymentMethod } from '../../../application/core/services/payments
 import { of } from 'rxjs';
 import clearAllMocks = jest.clearAllMocks;
 import resetAllMocks = jest.resetAllMocks;
+import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
 
 describe('APMClient', () => {
   let apmConfigResolver: APMConfigResolver;
+  let apmFilterService: APMFilterService;
   const messageBus = {
     publish: jest.fn(),
     pipe: jest.fn().mockRejectedValue(of(null)),
@@ -47,8 +49,9 @@ describe('APMClient', () => {
   beforeEach(() => {
     resetAllMocks();
     apmConfigResolver = mock(APMConfigResolver);
+    apmFilterService = mock(APMFilterService);
     when(apmConfigResolver.resolve(anything())).thenReturn(testConfig);
-    apmClient = new APMClient(instance(apmConfigResolver), messageBus);
+    apmClient = new APMClient(instance(apmConfigResolver), messageBus, instance(apmFilterService));
     document.body.innerHTML = '<div id="test-placement"></div><div id="test-placement-2"></div>';
   });
 
