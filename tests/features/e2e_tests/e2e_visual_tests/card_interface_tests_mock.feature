@@ -4,7 +4,7 @@ Feature: Visual regression - E2E Card Payments
   In order to check full payment functionality
 
   Background:
-    Given JS library configured by inline params VISUAL_MOCK_CONFIG and jwt BASE_JWT with additional attributes
+    Given JS library configured by inline params VISUAL_BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And Frictionless card payment mock responses are set as BASE_JSINIT and payment status SUCCESS
