@@ -5,5 +5,6 @@ export enum APMName {
   PAYU = 'PAYU',
   POSTFINANCE = 'POSTFINANCE',
   PRZELEWY24 = 'PRZELEWY24',
+  UNIONPAY = 'UNIONPAY',
   ZIP = 'ZIP',
 }
