@@ -3,6 +3,7 @@ from enum import Enum
 
 class ConfigApm(Enum):
     BASIC_CONFIG_APM = 'e2eBasicConfigApm.json'
+    BANCONTACT_CONFIG_APM = 'e2eBANCONTACTConfigApm.json'
     BITPAY_CONFIG_APM = 'e2eBITPAYConfigApm.json'
     GIROPAY_CONFIG_APM = 'e2eGIROPAYConfigApm.json'
     EPS_CONFIG_APM = 'e2eEPSConfigApm.json'
