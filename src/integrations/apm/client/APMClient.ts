@@ -20,14 +20,17 @@ export class APMClient {
   // TODO remove ts-ignore comment when all APMs are merged to master
   // @ts-ignore
   private apmIcons: Record<APMName, string> = {
+    [APMName.BANCONTACT]: require('./images/bancontact.svg'),
     [APMName.BITPAY]: require('./images/bitpay.svg'),
     [APMName.EPS]: require('./images/eps.svg'),
     [APMName.GIROPAY]: require('./images/giropay.svg'),
     [APMName.IDEAL]: require('./images/ideal.svg'),
+    [APMName.MULTIBANCO]: require('./images/multibanco.svg'),
     [APMName.MYBANK]: require('./images/mybank.svg'),
     [APMName.PAYU]: require('./images/payu.svg'),
     [APMName.POSTFINANCE]: require('./images/postfinance.svg'),
     [APMName.PRZELEWY24]: require('./images/przelewy24.svg'),
+    [APMName.REDPAGOS]: require('./images/redpagos.svg'),
     [APMName.UNIONPAY]: require('./images/unionpay.svg'),
     [APMName.ZIP]: require('./images/zip.svg'),
   };
