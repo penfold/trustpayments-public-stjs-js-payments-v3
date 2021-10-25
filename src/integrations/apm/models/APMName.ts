@@ -1,5 +1,6 @@
 export enum APMName {
   BITPAY = 'BITPAY',
+  EPS = 'EPS',
   IDEAL = 'IDEAL',
   MYBANK = 'MYBANK',
   PAYU = 'PAYU',
