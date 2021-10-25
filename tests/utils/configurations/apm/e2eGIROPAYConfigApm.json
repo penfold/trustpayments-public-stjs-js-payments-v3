@@ -4,14 +4,10 @@
   "cancelRedirectUrl": "https://this_is_not_existing_page_cancel_redirect.com",
   "placement": "st-apm",
   "apmList": [
-    "BITPAY",
-    "GIROPAY",
-    "EPS",
-    "IDEAL",
-    "MYBANK",
-    "PAYU",
-    "POSTFINANCE",
-    "PRZELEWY24",
-    "ZIP"
+    "ZIP", {
+      "name": "GIROPAY",
+      "placement": "st-apm-override",
+      "errorRedirectUrl": "https://this_is_not_existing_page_error_redirect_override.com"
+    }
   ]
 }

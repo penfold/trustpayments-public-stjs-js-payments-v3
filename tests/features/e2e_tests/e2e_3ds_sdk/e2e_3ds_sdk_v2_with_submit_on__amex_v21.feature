@@ -35,9 +35,9 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.1
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 02             |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 05             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 02             |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 05             |
 
 
   Scenario Outline: TC_2 - Failed Frictionless Authentication - Card: AMEX_V21 Request types: <request_types>
@@ -103,9 +103,9 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.1
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 01             |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 06             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 01             |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 06             |
 
 
   Scenario Outline: TC_4 - Unavailable Frictionless Authentication from the Issuer - Card: AMEX_V21 Request types: <request_types>
@@ -137,9 +137,9 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.1
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 07             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 00             |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 07             |
 
 
   Scenario Outline: TC_5 - Rejected Frictionless Authentication by the Issuer - Card: AMEX_V21 Request types: <request_types>
@@ -309,9 +309,9 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.1
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            | status |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 02             | Y      |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 05             | Y      |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | C      |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 02             | Y      |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 05             | Y      |
 
 
   Scenario Outline: TC_10 - Failed Step Up Authentication - Card: AMEX_V21 Request types: <request_types>
@@ -336,7 +336,7 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.1
       | baseamount           | should be none     |
       | currencyiso3a        | should be none     |
       | errorcode            | 50003              |
-      | status               | C                  |
+      | status               | N                  |
       | transactionreference | should not be none |
       | jwt                  | should not be none |
       | enrolled             | Y                  |
@@ -372,7 +372,7 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.1
       | baseamount           | should be none     |
       | currencyiso3a        | should be none     |
       | errorcode            | 50003              |
-      | status               | C                  |
+      | status               | N                  |
       | transactionreference | should not be none |
       | jwt                  | should not be none |
       | enrolled             | Y                  |
@@ -415,9 +415,9 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.1
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 02             |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 05             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 02             |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 05             |
 
 
   Scenario Outline: TC_13 - step up with require methodUrl - Card: AMEX_V21 Request types: <request_types>
@@ -451,9 +451,9 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.1
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            | status |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 02             | Y      |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 05             | Y      |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | C      |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 02             | Y      |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 05             | Y      |
 
 
   Scenario Outline: TC_4b - successful frictionless with suspected fraud - Card: AMEX_V21 Request types: <request_types>
@@ -485,9 +485,9 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.1
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 07             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 00             |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 07             |
 
 
   Scenario Outline: TC_4c - successful frictionless with card holder not enrolled in service - Card: AMEX_V21 Request types: <request_types>
@@ -553,9 +553,9 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.1
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 07             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 00             |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 07             |
 
 
   Scenario Outline: TC_4f - successful frictionless with 3RI transaction not supported - Card: AMEX_V21 Request types: <request_types>
@@ -578,7 +578,7 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.1
       | baseamount           | <baseamount>                            |
       | currencyiso3a        | <currencyiso3a>                         |
       | errorcode            | 0                                       |
-      | status               | U                                       |
+      | status               | A                                       |
       | transactionreference | should not be none                      |
       | jwt                  | should not be none                      |
       | enrolled             | Y                                       |
@@ -587,6 +587,6 @@ Feature: 3ds SDK v2 E2E tests with redirection after payment - AMEX v2.1
 
     Examples:
       | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+      | THREEDQUERY AUTH         | 1000           | GBP            | 06             |
       | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 00             |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 06             |
