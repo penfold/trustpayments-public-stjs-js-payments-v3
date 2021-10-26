@@ -255,7 +255,7 @@ export const minimalDefaultConfigResolve: IConfig = {
     paymentTypes: [''],
     startOnLoad: false,
   },
-  cybertonicaApiKey: 'stfs',
+  cybertonicaApiKey: '',
   datacenterurl: 'https://webservices.securetrading.net/jwt/',
   deferInit: false,
   disableNotification: false,
