@@ -33,6 +33,7 @@ export class APMClient {
     [APMName.REDPAGOS]: require('./images/redpagos.svg'),
     [APMName.SAFETYPAY]: require('./images/safetypay.svg'),
     [APMName.UNIONPAY]: require('./images/unionpay.svg'),
+    [APMName.WECHATPAY]: require('./images/wechatpay.svg'),
     [APMName.ZIP]: require('./images/zip.svg'),
   };
 
