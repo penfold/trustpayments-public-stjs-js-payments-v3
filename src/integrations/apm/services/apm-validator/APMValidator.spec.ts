@@ -30,7 +30,7 @@ describe('APMValidator', () => {
   };
 
   beforeEach(() => {
-    configProvider = mock(StoreConfigProvider);
+    configProvider = mock<ConfigProvider>();
     jwtDecoder = mock(JwtDecoder);
     when(configProvider.getConfig()).thenReturn({ jwt: '' });
     sut = new APMValidator(instance(jwtDecoder), instance(configProvider));
