@@ -21,6 +21,7 @@ export class APMConfigResolver {
       throw new APMConfigError([result.error]);
     }
     const normalizedConfig: IAPMConfig = this.resolveConfig(config);
+    console.log(normalizedConfig);
     const validationErrors: ValidationError[] = this.apmValidator.validateAPMItemConfigs(normalizedConfig.apmList as IAPMItemConfig[]);
 
     if (validationErrors.length) {
@@ -58,7 +59,6 @@ export class APMConfigResolver {
         successRedirectUrl: item.successRedirectUrl || config.successRedirectUrl,
         cancelRedirectUrl: item.cancelRedirectUrl || config.cancelRedirectUrl,
         placement: item.placement || config.placement,
-        returnUrl: item.returnUrl || config.returnUrl,
       };
     } else {
       normalizedItemConfig = {
@@ -67,7 +67,6 @@ export class APMConfigResolver {
         successRedirectUrl: config.successRedirectUrl,
         cancelRedirectUrl: config.cancelRedirectUrl,
         placement: config.placement,
-        returnUrl: config.returnUrl,
       };
     }
 
