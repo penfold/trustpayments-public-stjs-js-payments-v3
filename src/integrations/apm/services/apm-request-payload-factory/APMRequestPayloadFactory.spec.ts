@@ -10,6 +10,7 @@ describe('APMRequestPayloadFactory', () => {
     cancelRedirectUrl: 'cancelRedirectUrl',
     errorRedirectUrl: 'errorRedirectUrl',
     successRedirectUrl: 'successRedirectUrl',
+    returnUrl: 'returnUrl',
   });
   let subjectUnderTest: APMRequestPayloadFactory;
 
@@ -30,7 +31,7 @@ describe('APMRequestPayloadFactory', () => {
         createTestConfig(APMName.ALIPAY),
         {
           paymenttypedescription: APMName.ALIPAY,
-          returnurl: 'successRedirectUrl',
+          returnurl: 'returnUrl',
         },
       ],
     ])('should return request payload object based on APM name and config data', (config: IAPMItemConfig, expected: IAPMGatewayRequest) => {

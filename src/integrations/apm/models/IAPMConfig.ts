@@ -6,5 +6,6 @@ export interface IAPMConfig {
   successRedirectUrl: string;
   errorRedirectUrl: string;
   cancelRedirectUrl?: string;
+  returnUrl?: string;
   apmList: Array<APMName | IAPMItemConfig>;
 }

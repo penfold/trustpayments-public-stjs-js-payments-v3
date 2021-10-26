@@ -41,6 +41,7 @@ export class APMConfigResolver {
           successRedirectUrl: item.successRedirectUrl || config.successRedirectUrl,
           cancelRedirectUrl: item.cancelRedirectUrl || config.cancelRedirectUrl,
           placement: item.placement || config.placement,
+          returnUrl: item.returnUrl || config.returnUrl,
         };
       } else {
         normalizedItemConfig = {
@@ -49,6 +50,7 @@ export class APMConfigResolver {
           successRedirectUrl: config.successRedirectUrl,
           cancelRedirectUrl: config.cancelRedirectUrl,
           placement: config.placement,
+          returnUrl: config.returnUrl,
         };
       }
 

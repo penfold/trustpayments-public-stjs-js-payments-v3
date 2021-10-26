@@ -25,7 +25,7 @@ export class APMRequestPayloadFactory {
   private aliPayPayloadMapper(apmConfig: IAPMItemConfig): IAPMGatewayRequest {
     return {
       paymenttypedescription: apmConfig.name,
-      returnurl: apmConfig.successRedirectUrl,
+      returnurl: apmConfig.returnUrl,
     };
   }
 }
