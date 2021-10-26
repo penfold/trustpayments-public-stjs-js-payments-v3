@@ -17,3 +17,4 @@ class ConfigApm(Enum):
     SEPADD_CONFIG_APM = 'e2eSEPADDConfigApm.json'
     REDPAGOS_CONFIG_APM = 'e2eREDPAGOSConfigApm.json'
     SAFETYPAY_CONFIG_APM = 'e2eSAFETYPAYConfigApm.json'
+    WECHATPAY_CONFIG_APM = 'e2eWECHATPAYConfigApm.json'
