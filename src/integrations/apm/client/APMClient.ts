@@ -24,8 +24,8 @@ export class APMClient {
   private apmIcons: Record<APMName, string> = {
     [APMName.BANCONTACT]: require('./images/bancontact.svg'),
     [APMName.BITPAY]: require('./images/bitpay.svg'),
-    [APMName.GIROPAY]: require('./images/giropay.svg'),
     [APMName.EPS]: require('./images/eps.svg'),
+    [APMName.GIROPAY]: require('./images/giropay.svg'),
     [APMName.IDEAL]: require('./images/ideal.svg'),
     [APMName.MULTIBANCO]: require('./images/multibanco.svg'),
     [APMName.MYBANK]: require('./images/mybank.svg'),
@@ -37,6 +37,7 @@ export class APMClient {
     [APMName.REDPAGOS]: require('./images/redpagos.svg'),
     [APMName.SAFETYPAY]: require('./images/safetypay.svg'),
     [APMName.UNIONPAY]: require('./images/unionpay.svg'),
+    [APMName.WECHATPAY]: require('./images/wechatpay.svg'),
     [APMName.ZIP]: require('./images/zip.svg'),
   };
   private apmConfig: IAPMConfig;

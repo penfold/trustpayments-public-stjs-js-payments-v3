@@ -35,4 +35,5 @@ export const APMSchemasMap: Map<APMName, ObjectSchema> = new Map()
   .set(APMName.SEPADD, configSchemaFactory(APMName.SEPADD))
   .set(APMName.REDPAGOS, configSchemaFactory(APMName.REDPAGOS))
   .set(APMName.UNIONPAY, configSchemaFactory(APMName.UNIONPAY))
+  .set(APMName.WECHATPAY, configSchemaFactory(APMName.WECHATPAY))
   .set(APMName.ZIP, configSchemaFactory(APMName.ZIP));

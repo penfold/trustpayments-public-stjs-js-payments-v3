@@ -30,7 +30,7 @@ describe('APMValidator', () => {
   };
 
   beforeEach(() => {
-    configProvider = mock(StoreConfigProvider);
+    configProvider = mock<ConfigProvider>();
     jwtDecoder = mock(JwtDecoder);
     when(configProvider.getConfig()).thenReturn({ jwt: '' });
     sut = new APMValidator(instance(jwtDecoder), instance(configProvider));
@@ -52,14 +52,20 @@ describe('APMValidator', () => {
   });
 
   describe('validateAPMItemConfigs()', () => {
+    const configFactory = (apmName: APMName) => ({
+      name: apmName,
+      successRedirectUrl: 'example.com',
+      errorRedirectUrl: 'example.com',
+      placement: 'st-apm' ,
+    });
+
     it.each([
-      [[{ name: APMName.WECHATPAY }] as IAPMItemConfig[], { 'billingcountryiso2a': 'PL' }, '"currencyiso3a" is required'],
-      [[{ name: APMName.WECHATPAY }, { name: APMName.PRZELEWY24 }] as IAPMItemConfig[], {
+      [[configFactory(APMName.WECHATPAY)] as IAPMItemConfig[], { 'billingcountryiso2a': 'PL' }, '"currencyiso3a" is required'],
+      [[configFactory(APMName.WECHATPAY), configFactory(APMName.PRZELEWY24)] as IAPMItemConfig[], {
         'billingcountryiso2a': 'PL',
         'currencyiso3a': 'USD',
-      }, undefined],
-      [[{ name: APMName.ALIPAY }, { name: APMName.PRZELEWY24 }] as IAPMItemConfig[], {
-        'placement': 'test-id',
+      }, '"billingemail" is required'],
+      [[configFactory(APMName.ALIPAY), configFactory(APMName.PRZELEWY24 )] as IAPMItemConfig[], {
         'billingcountryiso2a': 'PL',
         'currencyiso3a': 'USD',
       }, '"orderreference" is required'],
