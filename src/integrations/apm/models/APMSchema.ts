@@ -20,13 +20,19 @@ const configSchemaFactory = (apmName: APMName) => Joi.object().keys({
 });
 
 export const APMSchemasMap: Map<APMName, ObjectSchema> = new Map()
+  .set(APMName.BANCONTACT, configSchemaFactory(APMName.BANCONTACT))
   .set(APMName.BITPAY, configSchemaFactory(APMName.BITPAY))
   .set(APMName.GIROPAY, configSchemaFactory(APMName.GIROPAY))
   .set(APMName.EPS, configSchemaFactory(APMName.EPS))
   .set(APMName.IDEAL, configSchemaFactory(APMName.IDEAL))
+  .set(APMName.MULTIBANCO, configSchemaFactory(APMName.MULTIBANCO))
   .set(APMName.MYBANK, configSchemaFactory(APMName.MYBANK))
   .set(APMName.PAYU, configSchemaFactory(APMName.PAYU))
   .set(APMName.POSTFINANCE, configSchemaFactory(APMName.POSTFINANCE))
   .set(APMName.PRZELEWY24, configSchemaFactory(APMName.PRZELEWY24))
+  .set(APMName.TRUSTLY, configSchemaFactory(APMName.TRUSTLY))
+  .set(APMName.SAFETYPAY, configSchemaFactory(APMName.SAFETYPAY))
+  .set(APMName.SEPADD, configSchemaFactory(APMName.SEPADD))
+  .set(APMName.REDPAGOS, configSchemaFactory(APMName.REDPAGOS))
   .set(APMName.UNIONPAY, configSchemaFactory(APMName.UNIONPAY))
   .set(APMName.ZIP, configSchemaFactory(APMName.ZIP));
