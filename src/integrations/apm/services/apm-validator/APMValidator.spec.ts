@@ -52,13 +52,20 @@ describe('APMValidator', () => {
   });
 
   describe('validateAPMItemConfigs()', () => {
+    const configFactory = (apmName: APMName) => ({
+      name: apmName,
+      successRedirectUrl: 'example.com',
+      errorRedirectUrl: 'example.com',
+      placement: 'st-apm' ,
+    });
+
     it.each([
-      [[{ name: APMName.WECHATPAY }] as IAPMItemConfig[], { 'billingcountryiso2a': 'PL' }, '"currencyiso3a" is required'],
-      [[{ name: APMName.WECHATPAY }, { name: APMName.PRZELEWY24 }] as IAPMItemConfig[], {
+      [[configFactory(APMName.WECHATPAY)] as IAPMItemConfig[], { 'billingcountryiso2a': 'PL' }, '"currencyiso3a" is required'],
+      [[configFactory(APMName.WECHATPAY), configFactory(APMName.PRZELEWY24)] as IAPMItemConfig[], {
         'billingcountryiso2a': 'PL',
         'currencyiso3a': 'USD',
-      }, undefined],
-      [[{ name: APMName.ALIPAY }, { name: APMName.PRZELEWY24 }] as IAPMItemConfig[], {
+      }, '"billingemail" is required'],
+      [[configFactory(APMName.ALIPAY), configFactory(APMName.PRZELEWY24 )] as IAPMItemConfig[], {
         'billingcountryiso2a': 'PL',
         'currencyiso3a': 'USD',
       }, '"orderreference" is required'],

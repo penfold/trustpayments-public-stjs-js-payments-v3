@@ -6,6 +6,19 @@ const pproJwtSchema = Joi.object().keys({
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
 }).unknown();
 
+const przelewy24JwtSchema = Joi.object().keys({
+  billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
+  currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
+  billingemail: Joi.string().required(),
+}).unknown();
+
+const redpagosJwtSchema = Joi.object().keys({
+  billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
+  currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
+  billingemail: Joi.string().required(),
+  billingdob:Joi.string().required(),
+}).unknown();
+
 const alipayJwtSchema = Joi.object().keys({
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
   orderreference: Joi.string().max(25).required(),
@@ -14,6 +27,12 @@ const alipayJwtSchema = Joi.object().keys({
 const wechatpayJwtSchema = Joi.object().keys({
   billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
+}).unknown();
+
+const sepaddJwtSchema = Joi.object().keys({
+  billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
+  currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
+  billingemail: Joi.string().required(),
 }).unknown();
 
 export const AMPJwtSchemasMap: Map<APMName, ObjectSchema> = new Map()
@@ -27,9 +46,10 @@ export const AMPJwtSchemasMap: Map<APMName, ObjectSchema> = new Map()
   .set(APMName.MYBANK, pproJwtSchema)
   .set(APMName.PAYU, pproJwtSchema)
   .set(APMName.POSTFINANCE, pproJwtSchema)
-  .set(APMName.PRZELEWY24, pproJwtSchema)
+  .set(APMName.PRZELEWY24, przelewy24JwtSchema)
   .set(APMName.QIWI, pproJwtSchema)
   .set(APMName.REDPAGOS, pproJwtSchema)
+  .set(APMName.SEPADD, sepaddJwtSchema)
   .set(APMName.TRUSTLY, pproJwtSchema)
   .set(APMName.WECHATPAY, wechatpayJwtSchema)
   .set(APMName.ZIP, pproJwtSchema);
