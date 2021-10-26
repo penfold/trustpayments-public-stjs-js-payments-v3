@@ -1,9 +1,9 @@
 @APM
 @PAYU
 @STJS-2457
-Feature: E2E PayU Payments
+Feature: E2E PAYU Payments
   As a user
-  I want to use PayU payment
+  I want to use PAYU payment
   If I use alternative payment method
 
 
@@ -258,7 +258,7 @@ Feature: E2E PayU Payments
 #      | AUTH RISKDEC                                        |
 #      | THREEDQUERY AUTH RISKDEC2                           |
 
-@MI
+
   Scenario: successRedirectUrl and parameters verification
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM

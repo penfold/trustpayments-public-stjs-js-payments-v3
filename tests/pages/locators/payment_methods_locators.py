@@ -43,11 +43,15 @@ class PaymentMethodsLocators:
     google_pay_mock_button: By = (By.ID, 'gp-mocked-button')
     # APMs
     apm_group: By = (By.ID, 'st-apm')
-    zip_button: By = (By.XPATH, '//img[@alt=\'ZIP\']/..')
-    payu_button: By = (By.XPATH, '//div[@id=\'st-apm\']//img[@alt=\'PAYU\']/..')
-    payu_button_placement_override: By = (By.XPATH, '//div[@id=\'st-apm-override\']//img[@alt=\'PAYU\']/..')
-    mybank_button: By = (By.XPATH, '//div[@id=\'st-apm\']//img[@alt=\'MYBANK\']/..')
-    mybank_button_placement_override: By = (By.XPATH, '//div[@id=\'st-apm-override\']//img[@alt=\'MYBANK\']/..')
+
+    @classmethod
+    def get_apm_button_locator(cls, apm_type) -> By.XPATH:
+        return By.XPATH, f'//div[@id=\'st-apm\']//img[@alt=\'{apm_type}\']/..'
+
+    @classmethod
+    def get_apm_button_override_locator(cls, apm_type) -> By.XPATH:
+        return By.XPATH, f'//div[@id=\'st-apm-override\']//img[@alt=\'{apm_type}\']/..'
+
     apm_simulator_drop_down: By = By.XPATH, '//select[@name=\'result\']'
     apm_simulator_submit: By = (By.ID, 'submitbutton')
 

@@ -4,8 +4,20 @@
   "cancelRedirectUrl": "https://this_is_not_existing_page_cancel_redirect.com",
   "placement": "st-apm",
   "apmList": [
-    "ZIP",
+    "BANCONTACT",
+    "BITPAY",
+    "GIROPAY",
+    "EPS",
+    "IDEAL",
+    "MULTIBANCO",
+    "MYBANK",
     "PAYU",
-    "MYBANK"
+    "POSTFINANCE",
+    "PRZELEWY24",
+    "TRUSTLY",
+    "SEPADD",
+    "REDPAGOS",
+    "SAFETYPAY",
+    "ZIP"
   ]
 }

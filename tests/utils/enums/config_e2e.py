@@ -6,8 +6,6 @@ class ConfigCardPaymentsAndDigitalWallets(Enum):
     DEFAULT_CONFIG = 'e2eDefaultConfig.json'
     VISUAL_BASIC_CONFIG = 'visualBaseConfig.json'
     VISUAL_BASIC_WITH_STYLES_CONFIG = 'visualBaseConfigWithStyling.json'
-    VISUAL_MOCK_CONFIG = 'visualMockConfig.json'
-    VISUAL_MOCK_WITH_STYLES_CONFIG = 'visualBaseConfigWithStyling.json'
     VALIDATION_STYLES_CONFIG = 'e2eConfigWithValidationStyling.json'
     START_ON_LOAD_CONFIG = 'e2eConfigStartOnLoadTrue.json'
     PLACEHOLDERS_CONFIG = 'ConfigPlaceholders.json'

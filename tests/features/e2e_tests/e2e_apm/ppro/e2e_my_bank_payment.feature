@@ -1,9 +1,9 @@
 @APM
 @MYBANK
 @STJS-2458
-Feature: E2E MyBank Payments
+Feature: E2E MYBANK Payments
   As a user
-  I want to use MyBank payment
+  I want to use MYBANK payment
   If I use alternative payment method
 
 
