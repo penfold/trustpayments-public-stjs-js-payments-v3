@@ -13,4 +13,7 @@ class ConfigApm(Enum):
     PAYU_CONFIG_APM = 'e2ePayUConfigApm.json'
     POSTFINANCE_CONFIG_APM = 'e2ePOSTFINANCEConfigApm.json'
     PRZELEWY24_CONFIG_APM = 'e2ePRZELEWY24ConfigApm.json'
+    TRUSTLY_CONFIG_APM = 'e2eTRUSTLYConfigApm.json'
+    SEPADD_CONFIG_APM = 'e2eSEPADDConfigApm.json'
     REDPAGOS_CONFIG_APM = 'e2eREDPAGOSConfigApm.json'
+    SAFETYPAY_CONFIG_APM = 'e2eSAFETYPAYConfigApm.json'
