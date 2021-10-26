@@ -227,8 +227,8 @@ export class ControlFrame {
 
           return this.configProvider.getConfig$().pipe(
             tap(config => this.setRequestTypes(config.jwt)),
-            switchMap(config =>
-              this.callThreeDQueryRequest(config.cybertonicaApiKey).pipe(
+            switchMap(({ cybertonicaApiKey }) =>
+              this.callThreeDQueryRequest(cybertonicaApiKey).pipe(
                 catchError(errorData => {
                   if (errorData.isCancelled) {
                     return this.onPaymentCancel(errorData);
