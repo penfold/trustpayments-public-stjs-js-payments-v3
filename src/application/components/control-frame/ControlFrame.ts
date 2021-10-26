@@ -1,3 +1,6 @@
+import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
+import { EMPTY, from, Observable, of, throwError } from 'rxjs';
+import { Container, Service } from 'typedi';
 import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
 import { StCodec } from '../../core/services/st-codec/StCodec';
 import { FormFieldsDetails } from '../../core/models/constants/FormFieldsDetails';
@@ -20,13 +23,10 @@ import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
 import { Validation } from '../../core/shared/validation/Validation';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
-import { Container, Service } from 'typedi';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { NotificationService } from '../../../client/notification/NotificationService';
 import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { EMPTY, from, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IThreeDInitResponse } from '../../core/models/IThreeDInitResponse';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -227,8 +227,8 @@ export class ControlFrame {
 
           return this.configProvider.getConfig$().pipe(
             tap(config => this.setRequestTypes(config.jwt)),
-            switchMap(() =>
-              this.callThreeDQueryRequest().pipe(
+            switchMap(config =>
+              this.callThreeDQueryRequest(config.cybertonicaApiKey).pipe(
                 catchError(errorData => {
                   if (errorData.isCancelled) {
                     return this.onPaymentCancel(errorData);
@@ -314,11 +314,11 @@ export class ControlFrame {
       });
   }
 
-  private callThreeDQueryRequest(): Observable<IThreeDQueryResponse> {
+  private callThreeDQueryRequest(cybertonicaApiKey: string): Observable<IThreeDQueryResponse> {
     const applyCybertonicaTid = (merchantFormData: IMerchantData) =>
       from(this.cybertonica.getTransactionId()).pipe(
         map(cybertonicaTid => {
-          if (!cybertonicaTid) {
+          if (!cybertonicaTid || !cybertonicaApiKey) {
             return merchantFormData;
           }
 

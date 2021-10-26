@@ -1,14 +1,13 @@
+import { ChallengeDisplayMode, LoggingLevel, ProcessingScreenMode } from '@trustpayments/3ds-sdk-js';
 import { environment } from '../../../../../environments/environment';
+import { IConfig } from '../../../../../shared/model/config/IConfig';
+import { MERCHANT_FORM_SELECTOR } from '../Selectors';
 import { DefaultFieldsToSubmit } from './DefaultFieldsToSubmit';
 import { DefaultSubmitFields } from './DefaultSubmitFields';
 import { DefaultComponentsIds } from './DefaultComponentsIds';
-import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { DefaultComponents } from './DefaultComponents';
 import { DefaultPlaceholders } from './DefaultPlaceholders';
 import { DefaultInit } from './DefaultInit';
-import { MERCHANT_FORM_SELECTOR } from '../Selectors';
-import { ChallengeDisplayMode, LoggingLevel, ProcessingScreenMode } from '@trustpayments/3ds-sdk-js';
-import { APPLE_PAY_BUTTON_ID } from '../../../integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 
 export const DefaultConfig: IConfig = {
   analytics: false,
@@ -19,7 +18,7 @@ export const DefaultConfig: IConfig = {
   cancelCallback: null,
   componentIds: DefaultComponentsIds,
   components: DefaultComponents,
-  cybertonicaApiKey: 'stfs',
+  cybertonicaApiKey: '',
   datacenterurl: environment.GATEWAY_URL,
   deferInit: false,
   disableNotification: false,
