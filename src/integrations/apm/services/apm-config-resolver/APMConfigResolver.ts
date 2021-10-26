@@ -10,7 +10,7 @@ import { APMConfigError } from '../../models/errors/APMConfigError';
 export class APMConfigResolver {
 
   constructor(
-    private apmValidator: APMValidator,
+    private apmValidator: APMValidator
   ) {
   }
 
@@ -23,8 +23,8 @@ export class APMConfigResolver {
     const normalizedConfig: IAPMConfig = this.resolveConfig(config);
     const validationErrors: ValidationError[] = this.apmValidator.validateAPMItemConfigs(normalizedConfig.apmList as IAPMItemConfig[]);
 
-    if(validationErrors.length) {
-     throw new APMConfigError(validationErrors);
+    if (validationErrors.length) {
+      throw new APMConfigError(validationErrors);
     }
 
     return normalizedConfig;
@@ -32,34 +32,65 @@ export class APMConfigResolver {
 
   private resolveConfig(config: IAPMConfig): IAPMConfig {
     const resolvedApmList = config.apmList.map((item: IAPMItemConfig | APMName) => {
-      let normalizedItemConfig: IAPMItemConfig;
-
-      if (this.isAPMItemConfig(item)) {
-        normalizedItemConfig = {
-          name: item.name,
-          errorRedirectUrl: item.errorRedirectUrl || config.errorRedirectUrl,
-          successRedirectUrl: item.successRedirectUrl || config.successRedirectUrl,
-          cancelRedirectUrl: item.cancelRedirectUrl || config.cancelRedirectUrl,
-          placement: item.placement || config.placement,
-          returnUrl: item.returnUrl || config.returnUrl,
-        };
-      } else {
-        normalizedItemConfig = {
-          name: item,
-          errorRedirectUrl: config.errorRedirectUrl,
-          successRedirectUrl: config.successRedirectUrl,
-          cancelRedirectUrl: config.cancelRedirectUrl,
-          placement: config.placement,
-          returnUrl: config.returnUrl,
-        };
+      const apmName = this.isAPMItemConfig(item) ? item.name : item;
+      switch (apmName) {
+        case APMName.ALIPAY:
+          return this.singleUrlConfigMapper(item, config);
+        default:
+          return this.defaultConfigMapper(item, config);
       }
 
-      return normalizedItemConfig;
     });
     return { ...config, apmList: resolvedApmList };
   }
 
   private isAPMItemConfig(configOrName: IAPMItemConfig | APMName): configOrName is IAPMItemConfig {
     return typeof configOrName !== 'string';
+  }
+
+  private defaultConfigMapper(item: IAPMItemConfig | APMName, config: IAPMConfig) {
+    let normalizedItemConfig: IAPMItemConfig;
+
+    if (this.isAPMItemConfig(item)) {
+      normalizedItemConfig = {
+        name: item.name,
+        errorRedirectUrl: item.errorRedirectUrl || config.errorRedirectUrl,
+        successRedirectUrl: item.successRedirectUrl || config.successRedirectUrl,
+        cancelRedirectUrl: item.cancelRedirectUrl || config.cancelRedirectUrl,
+        placement: item.placement || config.placement,
+        returnUrl: item.returnUrl || config.returnUrl,
+      };
+    } else {
+      normalizedItemConfig = {
+        name: item,
+        errorRedirectUrl: config.errorRedirectUrl,
+        successRedirectUrl: config.successRedirectUrl,
+        cancelRedirectUrl: config.cancelRedirectUrl,
+        placement: config.placement,
+        returnUrl: config.returnUrl,
+      };
+    }
+
+    return normalizedItemConfig;
+  }
+
+  private singleUrlConfigMapper(item: IAPMItemConfig | APMName, config: IAPMConfig) {
+    let normalizedItemConfig: IAPMItemConfig;
+
+    if (this.isAPMItemConfig(item)) {
+      normalizedItemConfig = {
+        name: item.name,
+        placement: item.placement || config.placement,
+        returnUrl: item.returnUrl || config.returnUrl,
+      };
+    } else {
+      normalizedItemConfig = {
+        name: item,
+        placement: config.placement,
+        returnUrl: config.returnUrl,
+      };
+    }
+
+    return normalizedItemConfig;
   }
 }

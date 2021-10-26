@@ -22,9 +22,7 @@ const configSchemaFactory = (apmName: APMName) => Joi.object().keys({
 const aliPaySchema = Joi.object().keys({
   name: Joi.string().valid(APMName.ALIPAY).required(),
   placement: Joi.string().required(),
-  successRedirectUrl: Joi.string().required(),
-  errorRedirectUrl: Joi.string(),
-  cancelRedirectUrl: Joi.string(),
+  returnUrl: Joi.string().required(),
 });
 
 export const APMSchemasMap: Map<APMName, ObjectSchema> = new Map()
