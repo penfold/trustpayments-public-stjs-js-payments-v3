@@ -18,7 +18,7 @@ export const DefaultConfig: IConfig = {
   cancelCallback: null,
   componentIds: DefaultComponentsIds,
   components: DefaultComponents,
-  cybertonicaApiKey: '',
+  cybertonicaApiKey: 'stfs',
   datacenterurl: environment.GATEWAY_URL,
   deferInit: false,
   disableNotification: false,
