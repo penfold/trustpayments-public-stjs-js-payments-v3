@@ -85,8 +85,8 @@ Feature: E2E Alipay Payments
     Examples:
       | billingcountryiso2a | currencyiso3a | notification_text |
       | UY                  | PLN           | No account found  |
-      | PL                  | CZK           | Invalid field     |
-      |                     | UAH           | Invalid field     |
+      | PL                  | CZK           | No account found  |
+      |                     | UAH           | No account found  |
 
 
   Scenario: Unsuccessful init - missing orderreference field in jwt
