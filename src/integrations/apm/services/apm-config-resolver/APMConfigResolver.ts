@@ -21,7 +21,6 @@ export class APMConfigResolver {
       throw new APMConfigError([result.error]);
     }
     const normalizedConfig: IAPMConfig = this.resolveConfig(config);
-    console.log(normalizedConfig);
     const validationErrors: ValidationError[] = this.apmValidator.validateAPMItemConfigs(normalizedConfig.apmList as IAPMItemConfig[]);
 
     if (validationErrors.length) {
