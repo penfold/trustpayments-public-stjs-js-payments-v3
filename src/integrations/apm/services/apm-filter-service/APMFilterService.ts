@@ -38,7 +38,7 @@ export class APMFilterService {
       Debug.log(`Your currency: ${currencyiso3a} is not supported by ${item.name}.`);
       return false;
     }
-console.error(APMAvailabilityMap.get(item.name).countries.length);
+
     if (!APMAvailabilityMap.get(item.name).countries.includes(countryiso) && APMAvailabilityMap.get(item.name).countries.length !== 0) {
       Debug.log(`Your country: ${countryiso} is not supported by ${item.name}.`);
       return false;
