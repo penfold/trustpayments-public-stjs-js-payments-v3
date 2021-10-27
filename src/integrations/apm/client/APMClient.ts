@@ -30,6 +30,7 @@ export class APMClient {
     [APMName.PAYU]: require('./images/payu.svg'),
     [APMName.POSTFINANCE]: require('./images/postfinance.svg'),
     [APMName.PRZELEWY24]: require('./images/przelewy24.svg'),
+    [APMName.SOFORT]: require('./images/sofort.svg'),
     [APMName.TRUSTLY]: require('./images/trustly.svg'),
     [APMName.SEPADD]: require('./images/sepadd.svg'),
     [APMName.REDPAGOS]: require('./images/redpagos.svg'),
