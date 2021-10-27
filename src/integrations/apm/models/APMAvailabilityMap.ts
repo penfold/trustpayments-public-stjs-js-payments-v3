@@ -3,23 +3,23 @@ import { APMCountryIso } from './APMCountryIso';
 import { APMCurrencyIso } from './APMCurrencyIso';
 
 export const APMAvailabilityMap: Map<APMName, { countries: string[], currencies: string[] }> = new Map()
-  .set('ALIPAY' as APMName, {
+  .set(APMName.ALIPAY, {
     countries: [],
     currencies: [APMCurrencyIso.EUR, APMCurrencyIso.GBP, APMCurrencyIso.USD],
   })
-  .set('BANCONTACT' as APMName, {
+  .set(APMName.BANCONTACT, {
     countries: [APMCountryIso.BE],
     currencies: [APMCurrencyIso.EUR],
   })
-  .set('BITPAY' as APMName, {
+  .set(APMName.BITPAY, {
     countries: [],
     currencies: [APMCurrencyIso.EUR, APMCurrencyIso.GBP, APMCurrencyIso.USD],
   })
-  .set('EPS' as APMName, {
+  .set(APMName.EPS, {
     countries: [APMCountryIso.AT],
     currencies: [APMCurrencyIso.EUR],
   })
-  .set('GIROPAY' as APMName, {
+  .set(APMName.GIROPAY, {
     countries: [APMCountryIso.DE],
     currencies: [APMCurrencyIso.EUR],
   })
@@ -27,7 +27,7 @@ export const APMAvailabilityMap: Map<APMName, { countries: string[], currencies:
     countries: [APMCountryIso.NL],
     currencies: [APMCurrencyIso.EUR],
   })
-  .set('MULTIBANCO' as APMName, {
+  .set(APMName.MULTIBANCO, {
     countries: [APMCountryIso.PT],
     currencies: [APMCurrencyIso.EUR],
   })
@@ -37,7 +37,7 @@ export const APMAvailabilityMap: Map<APMName, { countries: string[], currencies:
   })
   .set('PAYPAL' as APMName, {
     countries: [],
-    currencies: [APMCurrencyIso.AUD, APMCurrencyIso.CAD, APMCurrencyIso.EUR, APMCurrencyIso.GBP, 'JPY', APMCurrencyIso.USD],
+    currencies: [APMCurrencyIso.AUD, APMCurrencyIso.CAD, APMCurrencyIso.EUR, APMCurrencyIso.GBP, APMCurrencyIso.JPY, APMCurrencyIso.USD],
   })
   .set('PAYSAFECARD' as APMName, {
     countries: [],
@@ -47,39 +47,39 @@ export const APMAvailabilityMap: Map<APMName, { countries: string[], currencies:
     countries: [APMCountryIso.CZ, APMCountryIso.PL],
     currencies: [APMCurrencyIso.CZK, APMCurrencyIso.PLN],
   })
-  .set('POSTFINANCE' as APMName, {
+  .set(APMName.POSTFINANCE, {
     countries: [APMCountryIso.CH],
     currencies: [APMCurrencyIso.CHF, APMCurrencyIso.EUR],
   })
-  .set('PRZELEWY24' as APMName, {
+  .set(APMName.PRZELEWY24, {
     countries: [APMCountryIso.PL],
     currencies: [APMCurrencyIso.EUR, APMCurrencyIso.PLN],
   })
-  .set('REDPAGOS' as APMName, {
+  .set(APMName.REDPAGOS, {
     countries: [APMCountryIso.UY],
     currencies: [APMCurrencyIso.USD],
   })
-  .set('SAFETYPAY' as APMName, {
+  .set(APMName.SAFETYPAY, {
     countries: [APMCountryIso.AT, APMCountryIso.BE, APMCountryIso.CL, APMCountryIso.CO, APMCountryIso.CR, APMCountryIso.DE, APMCountryIso.EC, APMCountryIso.ES, APMCountryIso.MX, APMCountryIso.NL, APMCountryIso.PE, APMCountryIso.PR],
     currencies: [APMCurrencyIso.EUR, APMCurrencyIso.USD],
   })
-  .set('SEPADD' as APMName, {
+  .set(APMName.SEPADD, {
     countries: [APMCountryIso.AT, APMCountryIso.BE, APMCountryIso.CY, APMCountryIso.DE, APMCountryIso.EE, APMCountryIso.ES, APMCountryIso.FI, APMCountryIso.FR, APMCountryIso.GR, APMCountryIso.IE, APMCountryIso.IT, APMCountryIso.LT, APMCountryIso.LU, APMCountryIso.LV, APMCountryIso.MC, APMCountryIso.MT, APMCountryIso.NL, APMCountryIso.PT, APMCountryIso.SI, APMCountryIso.SK],
     currencies: [APMCurrencyIso.EUR],
   })
-  .set('SOFORT' as APMName, {
+  .set(APMName.SOFORT, {
     countries: [APMCountryIso.AT, APMCountryIso.BE, APMCountryIso.CH, APMCountryIso.DE, APMCountryIso.ES, APMCountryIso.IT, APMCountryIso.NL, APMCountryIso.PL],
     currencies: [APMCurrencyIso.EUR],
   })
-  .set('TRUSTLY' as APMName, {
+  .set(APMName.TRUSTLY, {
     countries: [APMCountryIso.DK, APMCountryIso.EE, APMCountryIso.ES, APMCountryIso.FI, APMCountryIso.IT, APMCountryIso.NO, APMCountryIso.PL, APMCountryIso.SE],
-    currencies: ['DKK', APMCurrencyIso.EUR, APMCurrencyIso.NOK, APMCurrencyIso.PLN, APMCurrencyIso.SEK],
+    currencies: [APMCurrencyIso.DKK, APMCurrencyIso.EUR, APMCurrencyIso.NOK, APMCurrencyIso.PLN, APMCurrencyIso.SEK],
   })
-  .set('UNIONPAY' as APMName, {
+  .set(APMName.UNIONPAY, {
     countries: [],
     currencies: [APMCurrencyIso.AUD, APMCurrencyIso.CAD, APMCurrencyIso.CHF, APMCurrencyIso.CNY, APMCurrencyIso.EUR, APMCurrencyIso.GBP, APMCurrencyIso.HKD, APMCurrencyIso.JPY, APMCurrencyIso.NZD, APMCurrencyIso.SGD, APMCurrencyIso.USD],
   })
-  .set('WECHATPAY' as APMName, {
+  .set(APMName.WECHATPAY, {
     countries: [APMCountryIso.CN],
     currencies: [APMCurrencyIso.EUR, APMCurrencyIso.USD],
   })
