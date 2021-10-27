@@ -251,7 +251,7 @@
             return Promise.reject('Failed to load APMs configuration file!');
           }
 
-          return response.json()
+          return response.json();
         })
         .catch(function (error) {
           console.error(error);
