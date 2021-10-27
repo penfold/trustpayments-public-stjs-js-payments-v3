@@ -1,4 +1,5 @@
 # type: ignore[no-redef]
+
 from behave import use_step_matcher, step, when, then
 from pages.page_factory import Pages
 from utils.enums.shared_dict_keys import SharedDictKey
@@ -25,12 +26,15 @@ def step_impl(context, apm_type):
     payment_page.click_specific_apm_button(override_placement=True, apm_type=apm_type)
 
 
-@step('User will be sent to apm page - simulator')
-def step_impl(context):
+@step('User will be sent to apm page - (?P<apm_page>.+)')
+def step_impl(context, apm_page):
     # Hardcoded url returned by Gateway
-    url = 'r3.girogate.de'
+    url = {
+        'sofort': 'www.sofort.com',
+        'simulator': 'r3.girogate.de'
+    }
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-    payment_page.validate_base_url(url)
+    payment_page.validate_base_url(url[apm_page])
     context.waits.wait_for_javascript()
 
 
@@ -58,3 +62,26 @@ def step_impl(context, apm_type):
 
     add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
     assert payment_page.wait_for_specific_apm_payment_method_invisibility(apm_type) is True, assertion_message
+
+
+@when('User will go through success payment process on sofort page and submit')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
+    payment_page.click_accept_cookies_btn_on_sofort_page()
+    context.waits.wait_for_javascript()
+    payment_page.select_bank_on_sofort_page_by_text('Demo Bank')
+    payment_page.click_next_btn_on_sofort_page()
+    payment_page.fill_test_credentials_on_sofort_page('test', 'test')
+    payment_page.click_next_btn_on_sofort_page()
+    payment_page.click_next_btn_on_sofort_page()
+    payment_page.fill_confirmation_code_on_sofort_page('123456')
+    payment_page.click_next_btn_on_sofort_page()
+
+
+@when('User will go through error payment process on sofort page and submit')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
+    payment_page.click_accept_cookies_btn_on_sofort_page()
+    context.waits.wait_for_javascript()
+    payment_page.click_cancel_btn_on_sofort_page()
+    payment_page.click_cancel_transaction_btn_on_sofort_page()

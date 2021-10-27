@@ -18,10 +18,12 @@
     "PAYU",
     "POSTFINANCE",
     "PRZELEWY24",
+    "SOFORT",
     "TRUSTLY",
     "SEPADD",
     "REDPAGOS",
     "SAFETYPAY",
-    "ZIP"
+    "ZIP",
+    "WECHATPAY"
   ]
 }
