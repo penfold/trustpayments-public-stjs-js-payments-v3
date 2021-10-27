@@ -89,24 +89,6 @@ Feature: E2E Alipay Payments
       |                     | UAH           | Invalid field     |
 
 
-  Scenario: Unsuccessful init - missing at least one of the billing name fields and billingdob
-    Given JS library configured by inline config BASIC_CONFIG
-    And JS library configured by inline configAPMs BASIC_CONFIG_APM
-    And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value    |
-      | requesttypedescriptions | AUTH     |
-      | orderreference          | order-01 |
-      | currencyiso3a           | USD      |
-      | billingcountryiso2a     | UY       |
-      | baseamount              | 123      |
-    And User opens example page WITH_APM
-    And User waits for Pay button to be active
-    And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then ALIPAY is not available on APM list
-    When User chooses ALIPAY from APM list
-    Then User will see notification frame text: "Invalid field"
-
   Scenario: Unsuccessful init - missing orderreference field in jwt
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
