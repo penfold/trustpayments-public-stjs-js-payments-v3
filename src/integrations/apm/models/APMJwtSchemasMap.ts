@@ -50,6 +50,7 @@ export const AMPJwtSchemasMap: Map<APMName, ObjectSchema> = new Map()
   .set(APMName.QIWI, pproJwtSchema)
   .set(APMName.REDPAGOS, pproJwtSchema)
   .set(APMName.SEPADD, sepaddJwtSchema)
+  .set(APMName.SOFORT, pproJwtSchema)
   .set(APMName.TRUSTLY, pproJwtSchema)
   .set(APMName.WECHATPAY, wechatpayJwtSchema)
   .set(APMName.ZIP, pproJwtSchema);

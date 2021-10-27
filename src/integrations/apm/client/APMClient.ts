@@ -65,7 +65,6 @@ export class APMClient {
       this.apmFilterService.filter(this.apmConfigResolver.resolve(config).apmList as IAPMItemConfig[]).pipe(
         map((list: IAPMItemConfig[]) => {
           list.forEach((item: IAPMItemConfig) => {
-            this.clear(item);
             return this.insertAPMButton(item as IAPMItemConfig);
           });
         }),
@@ -75,8 +74,11 @@ export class APMClient {
     }
   }
 
-  private clear(apmItemConfig: IAPMItemConfig): void {
-    DomMethods.removeAllChildren(apmItemConfig.placement);
+  private removeDuplicate(apmItemConfig: IAPMItemConfig): void {
+    const child: HTMLElement = document.getElementById(apmItemConfig.name);
+    if (child) {
+      document.getElementById(apmItemConfig.placement).removeChild(child);
+    }
   }
 
   private update(jwt: string): Observable<undefined> {
@@ -84,6 +86,7 @@ export class APMClient {
       this.apmFilterService.filter(this.apmConfigResolver.resolve(this.apmConfig).apmList as IAPMItemConfig[], jwt).pipe(
         map((list: IAPMItemConfig[]) => {
           list.forEach((item: IAPMItemConfig) => {
+            this.removeDuplicate(item);
             return this.insertAPMButton(item as IAPMItemConfig);
           });
         }),
@@ -100,7 +103,7 @@ export class APMClient {
   private createButtonForApmItem(apmItemConfig: IAPMItemConfig): HTMLElement {
     const button = DomMethods.createHtmlElement({ class: 'st-apm-button' }, 'div');
     if (this.apmIcons[apmItemConfig.name]) {
-      button.innerHTML = `<img src='${this.apmIcons[apmItemConfig.name]}' alt='${apmItemConfig.name}' class='st-apm-button__img'>`;
+      button.innerHTML = `<img src='${this.apmIcons[apmItemConfig.name]}' alt='${apmItemConfig.name}' id='${apmItemConfig.name}' class='st-apm-button__img'>`;
     }
     button.addEventListener('click', (event) => this.onAPMButtonClick(event, apmItemConfig));
 

@@ -39,7 +39,7 @@ export class APMFilterService {
       return false;
     }
 
-    if (!APMAvailabilityMap.get(item.name).countries.includes(countryiso)) {
+    if (!APMAvailabilityMap.get(item.name).countries.includes(countryiso) && APMAvailabilityMap.get(item.name).countries.length !== 0) {
       Debug.log(`Your country: ${countryiso} is not supported by ${item.name}.`);
       return false;
     }
