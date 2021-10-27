@@ -62,19 +62,16 @@ Feature: E2E MYBANK Payments
       | billinglastname         | LastName              |
       | billingcountryiso2a     | <billingcountryiso2a> |
       | currencyiso3a           | <currencyiso3a>       |
-    And User opens example page WITH_APM
+    When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then MYBANK is not available on APM list
-    When User chooses MYBANK from APM list
-    Then User will see notification frame text: "<notification_text>"
+    Then MYBANK is not available on APM list
 
     Examples:
-      | billingcountryiso2a | currencyiso3a | notification_text |
-      | IT                  | PLN           | No account found  |
-      | PL                  | EUR           | Invalid field     |
-      |                     | EUR           | Invalid field     |
+      | billingcountryiso2a | currencyiso3a |
+      | IT                  | PLN           |
+      | PL                  | EUR           |
+      |                     | EUR           |
 
 
   Scenario: Unsuccessful init - missing at least one of the billing name fields
@@ -86,13 +83,10 @@ Feature: E2E MYBANK Payments
       | currencyiso3a           | EUR   |
       | billingcountryiso2a     | IT    |
       | baseamount              | 123   |
-    And User opens example page WITH_APM
+    When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then MYBANK is not available on APM list
-    When User chooses MYBANK from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then MYBANK is not available on APM list
 
 
   Scenario: Successful trigger of payment with updated jwt
@@ -136,13 +130,10 @@ Feature: E2E MYBANK Payments
       | billinglastname         | LastNameUpdated  |
       | billingcountryiso2a     | CZ               |
       | currencyiso3a           | EUR              |
-    And User calls updateJWT function by filling amount field
+    When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then MYBANK is not available on APM list
-    When User chooses MYBANK from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then MYBANK is not available on APM list
 
 
   Scenario: Unsuccessful init - update jwt with missing required fields
@@ -161,13 +152,10 @@ Feature: E2E MYBANK Payments
       | baseamount              | 707   |
       | billingcountryiso2a     | IT    |
       | currencyiso3a           | EUR   |
-    And User calls updateJWT function by filling amount field
+    When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then MYBANK is not available on APM list
-    When User chooses MYBANK from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then MYBANK is not available on APM list
 
 
   Scenario: Unsuccessful trigger of payment without AUTH in requesttypesdescriptions

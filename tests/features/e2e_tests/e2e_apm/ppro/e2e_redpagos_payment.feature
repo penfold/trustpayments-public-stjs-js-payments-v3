@@ -67,19 +67,16 @@ Feature: E2E REDPAGOS Payments
       | billingdob              | 1980-02-01            |
       | billingcountryiso2a     | <billingcountryiso2a> |
       | currencyiso3a           | <currencyiso3a>       |
-    And User opens example page WITH_APM
+    When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then REDPAGOS is not available on APM list
-    When User chooses REDPAGOS from APM list
-    Then User will see notification frame text: "<notification_text>"
+    Then REDPAGOS is not available on APM list
 
     Examples:
-      | billingcountryiso2a | currencyiso3a | notification_text |
-      | UY                  | PLN           | No account found  |
-      | PL                  | USD           | Invalid field     |
-      |                     | USD           | Invalid field     |
+      | billingcountryiso2a | currencyiso3a |
+      | UY                  | PLN           |
+      | PL                  | USD           |
+      |                     | USD           |
 
 
   Scenario: Unsuccessful init - missing at least one of the billing name fields and billingdob
@@ -91,13 +88,10 @@ Feature: E2E REDPAGOS Payments
       | currencyiso3a           | USD   |
       | billingcountryiso2a     | UY    |
       | baseamount              | 123   |
-    And User opens example page WITH_APM
+    When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then REDPAGOS is not available on APM list
-    When User chooses REDPAGOS from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then REDPAGOS is not available on APM list
 
 
   Scenario: Successful trigger of payment with updated jwt
@@ -147,13 +141,10 @@ Feature: E2E REDPAGOS Payments
       | billingdob              | 1980-02-01         |
       | billingcountryiso2a     | CZ                 |
       | currencyiso3a           | USD                |
-    And User calls updateJWT function by filling amount field
+    When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then REDPAGOS is not available on APM list
-    When User chooses REDPAGOS from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then REDPAGOS is not available on APM list
 
 
   Scenario: Unsuccessful init - update jwt with missing required fields
@@ -174,13 +165,10 @@ Feature: E2E REDPAGOS Payments
       | baseamount              | 707   |
       | billingcountryiso2a     | UY    |
       | currencyiso3a           | USD   |
-    And User calls updateJWT function by filling amount field
+    When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then REDPAGOS is not available on APM list
-    When User chooses REDPAGOS from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then REDPAGOS is not available on APM list
 
 
   Scenario: Unsuccessful trigger of payment without AUTH in requesttypesdescriptions
