@@ -8,6 +8,10 @@
     "BITPAY",
     "GIROPAY",
     "EPS",
+    {
+      "name": "ALIPAY",
+      "returnUrl": "twojastara.pl"
+    },
     "IDEAL",
     "MULTIBANCO",
     "MYBANK",
