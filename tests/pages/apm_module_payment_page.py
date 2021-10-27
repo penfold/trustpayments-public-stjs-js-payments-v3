@@ -29,3 +29,26 @@ class ApmModulePaymentPage(BasePage):
 
     def wait_for_specific_apm_payment_method_visibility(self, apm_type):
         return self._waits.wait_for_element_visibility(PaymentMethodsLocators.get_apm_button_locator(apm_type))
+
+    # sofort simulator page
+    def click_accept_cookies_btn_on_sofort_page(self):
+        self._actions.click_by_javascript(PaymentMethodsLocators.sofort_accept_cookies_btn)
+
+    def select_bank_on_sofort_page_by_text(self, text):
+        self._actions.select_element_by_text(PaymentMethodsLocators.sofort_bank_drop_down, text)
+
+    def click_next_btn_on_sofort_page(self):
+        self._actions.click(PaymentMethodsLocators.sofort_next_btn)
+
+    def fill_test_credentials_on_sofort_page(self, user_id, pin):
+        self._actions.send_keys(PaymentMethodsLocators.sofort_user_id_input, user_id)
+        self._actions.send_keys(PaymentMethodsLocators.sofort_pin_input, pin)
+
+    def fill_confirmation_code_on_sofort_page(self, code):
+        self._actions.send_keys(PaymentMethodsLocators.sofort_confirmation_code_input, code)
+
+    def click_cancel_btn_on_sofort_page(self):
+        self._actions.click_by_javascript(PaymentMethodsLocators.sofort_cancel_btn)
+
+    def click_cancel_transaction_btn_on_sofort_page(self):
+        self._actions.click_by_javascript(PaymentMethodsLocators.sofort_cancel_transaction_btn)
