@@ -11,7 +11,7 @@ import { Debug } from '../../../../shared/Debug';
 export class APMConfigResolver {
 
   constructor(
-    private apmValidator: APMValidator,
+    private apmValidator: APMValidator
   ) {
   }
 

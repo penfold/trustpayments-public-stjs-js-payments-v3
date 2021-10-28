@@ -7,6 +7,8 @@ import { APMName } from '../../models/APMName';
 export class APMRequestPayloadFactory {
   create(apmConfig: IAPMItemConfig): IAPMGatewayRequest {
     switch (apmConfig.name) {
+      case APMName.ALIPAY:
+        return this.aliPayPayloadMapper(apmConfig);
       case APMName.ZIP:
         return this.zipPayloadMapper(apmConfig);
       default:
@@ -26,6 +28,13 @@ export class APMRequestPayloadFactory {
       paymenttypedescription: apmConfig.name,
       successfulurlredirect: apmConfig.successRedirectUrl,
       errorurlredirect: apmConfig.errorRedirectUrl,
+    };
+  }
+
+  private aliPayPayloadMapper(apmConfig: IAPMItemConfig): IAPMGatewayRequest {
+    return {
+      paymenttypedescription: apmConfig.name,
+      returnurl: apmConfig.returnUrl,
     };
   }
 }
