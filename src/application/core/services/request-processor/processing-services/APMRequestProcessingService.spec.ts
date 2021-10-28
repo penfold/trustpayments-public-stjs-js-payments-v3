@@ -1,17 +1,16 @@
+import { of } from 'rxjs';
 import { mock, instance, when, verify, anything, deepEqual } from 'ts-mockito';
 import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
-import { NoThreeDSRequestProcessingService } from './NoThreeDSRequestProcessingService';
 import { RequestProcessingChain } from '../RequestProcessingChain';
 import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { CacheTokenRequestProcessor } from '../request-processors/CacheTokenRequestProcessor';
-import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { IStRequest } from '../../../models/IStRequest';
-import { of } from 'rxjs';
+import { APMRequestProcessingService } from './APMRequestProcessingService';
 
-describe('NoThreeDSRequestProcessingService', () => {
+describe('APMRequestProcessingService', () => {
   let requestProcessingChainFactoryMock: RequestProcessingChainFactory;
-  let noThreeDSRequestProcessingService: NoThreeDSRequestProcessingService;
+  let ampRequestProcessingService: APMRequestProcessingService;
   let requestProcessingChainMock: RequestProcessingChain;
 
   const jsInitResponse: IThreeDInitResponse = {
@@ -22,7 +21,7 @@ describe('NoThreeDSRequestProcessingService', () => {
   beforeEach(() => {
     requestProcessingChainFactoryMock = mock(RequestProcessingChainFactory);
     requestProcessingChainMock = mock(RequestProcessingChain);
-    noThreeDSRequestProcessingService = new NoThreeDSRequestProcessingService(
+    ampRequestProcessingService = new APMRequestProcessingService(
       instance(requestProcessingChainFactoryMock),
     );
 
@@ -31,11 +30,10 @@ describe('NoThreeDSRequestProcessingService', () => {
 
   describe('init()', () => {
     it('should create a request processing chain with proper processors', done => {
-      noThreeDSRequestProcessingService.init(jsInitResponse).subscribe(() => {
+      ampRequestProcessingService.init(jsInitResponse).subscribe(() => {
         verify(requestProcessingChainFactoryMock.create(
           deepEqual([
             CacheTokenRequestProcessor,
-            CybertonicaRequestProcessor,
           ]),
           deepEqual([]),
         )).once();
@@ -49,12 +47,12 @@ describe('NoThreeDSRequestProcessingService', () => {
     const response: IRequestTypeResponse = {};
 
     beforeEach(() => {
-      noThreeDSRequestProcessingService.init(jsInitResponse);
+      ampRequestProcessingService.init(jsInitResponse);
       when(requestProcessingChainMock.process(anything(), anything())).thenReturn(of(response));
     });
 
     it('runs the processing chain with given request data', done => {
-      noThreeDSRequestProcessingService.process(request).subscribe(result => {
+      ampRequestProcessingService.process(request).subscribe(result => {
         verify(requestProcessingChainMock.process(request, deepEqual({
           jsInitResponse,
           merchantUrl: undefined,
@@ -66,7 +64,7 @@ describe('NoThreeDSRequestProcessingService', () => {
 
     it('runs the processing chain with given request data and merchant url', done => {
       const merchantUrl = 'https://merchanturl';
-      noThreeDSRequestProcessingService.process(request, merchantUrl).subscribe(result => {
+      ampRequestProcessingService.process(request, merchantUrl).subscribe(result => {
         verify(requestProcessingChainMock.process(request, deepEqual({
           jsInitResponse,
           merchantUrl,

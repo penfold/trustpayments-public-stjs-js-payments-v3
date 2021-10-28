@@ -1,4 +1,4 @@
-import { APMPaymentMethod } from './APMPaymentMethod';
+import { Observable, of } from 'rxjs';
 import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { FrameQueryingServiceMock } from '../../../shared/services/message-bus/FrameQueryingServiceMock';
 import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
@@ -6,19 +6,17 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { IAPMConfig } from '../models/IAPMConfig';
 import { APMName } from '../models/APMName';
-import { Observable, of } from 'rxjs';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { NoThreeDSRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/NoThreeDSRequestProcessingService';
 import { APMRequestPayloadFactory } from '../services/apm-request-payload-factory/APMRequestPayloadFactory';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
-import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
 import { EventScope } from '../../../application/core/models/constants/EventScope';
+import { APMRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/APMRequestProcessingService';
+import { APMPaymentMethod } from './APMPaymentMethod';
 
 describe('APMPaymentMethod', () => {
-  let noThreeDSRequestProcessingServiceMock: NoThreeDSRequestProcessingService;
+  let apmRequestProcessingServiceMock: APMRequestProcessingService;
   let frameQueryingServiceMock: FrameQueryingServiceMock;
   let requestPayloadFactoryMock: APMRequestPayloadFactory;
-  let requestProcessingServiceMock: IRequestProcessingService;
   let sut: APMPaymentMethod;
 
   const APMConfigMock: IAPMConfig = {
@@ -38,19 +36,18 @@ describe('APMPaymentMethod', () => {
   let messageBusMock: IMessageBus;
 
   beforeEach(() => {
-    noThreeDSRequestProcessingServiceMock = mock(NoThreeDSRequestProcessingService);
+    apmRequestProcessingServiceMock = mock(APMRequestProcessingService);
     frameQueryingServiceMock = new FrameQueryingServiceMock();
-    requestProcessingServiceMock = mock<IRequestProcessingService>();
     messageBusMock = mock<IMessageBus>();
     requestPayloadFactoryMock = mock(APMRequestPayloadFactory);
     sut = new APMPaymentMethod(
       frameQueryingServiceMock,
-      instance(noThreeDSRequestProcessingServiceMock),
+      instance(apmRequestProcessingServiceMock),
       instance(messageBusMock),
       instance(requestPayloadFactoryMock),
     );
 
-    when(noThreeDSRequestProcessingServiceMock.init(null)).thenReturn(new Observable<void>(subscriber => {
+    when(apmRequestProcessingServiceMock.init(null)).thenReturn(new Observable<void>(subscriber => {
       subscriber.next();
       subscriber.complete();
     }));
@@ -69,7 +66,7 @@ describe('APMPaymentMethod', () => {
       const frameQueryingServiceSpy = spy(frameQueryingServiceMock);
 
       sut.init(APMConfigMock).subscribe(() => {
-        verify(noThreeDSRequestProcessingServiceMock.init(null)).once();
+        verify(apmRequestProcessingServiceMock.init(null)).once();
         verify(frameQueryingServiceSpy.query(
           deepEqual({ type: PUBLIC_EVENTS.APM_INIT_CLIENT, data: APMConfigMock }),
           MERCHANT_PARENT_FRAME,
@@ -93,7 +90,7 @@ describe('APMPaymentMethod', () => {
 
       when(requestPayloadFactoryMock.create(anything())).thenReturn(request);
 
-      when(noThreeDSRequestProcessingServiceMock.process(anything())).thenReturn(of({
+      when(apmRequestProcessingServiceMock.process(anything())).thenReturn(of({
         errorcode: '1234',
         errormessage: 'error message',
       }));
@@ -106,14 +103,14 @@ describe('APMPaymentMethod', () => {
           status: 'failure',
         });
 
-        verify(noThreeDSRequestProcessingServiceMock.process(request)).once();
+        verify(apmRequestProcessingServiceMock.process(request)).once();
 
         done();
       });
     });
 
     it('should publish APM_REDIRECT event to message bus with an redirect url', () => {
-      when(noThreeDSRequestProcessingServiceMock.process(anything())).thenReturn(of({
+      when(apmRequestProcessingServiceMock.process(anything())).thenReturn(of({
         errorcode: '0',
         errormessage: 'success message',
         redirecturl: 'redirecturl',
