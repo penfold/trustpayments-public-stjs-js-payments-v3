@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, merge, Observable } from 'rxjs';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
@@ -12,9 +12,10 @@ import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
 import { APMName } from '../models/APMName';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { first, map, mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
 import './APMClient.scss';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 
 @Service()
 export class APMClient {
@@ -39,19 +40,18 @@ export class APMClient {
     [APMName.WECHATPAY]: require('./images/wechatpay.svg'),
     [APMName.ZIP]: require('./images/zip.svg'),
   };
-  private apmConfig: IAPMConfig;
   private destroy$: Observable<void>;
 
   constructor(
     private apmConfigResolver: APMConfigResolver,
     private messageBus: IMessageBus,
     private apmFilterService: APMFilterService,
+    private configProvider: ConfigProvider,
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
   init(config: IAPMConfig): Observable<undefined> {
-    this.apmConfig = config;
     return this.filter(config).pipe(
       tap((list: IAPMItemConfig[]) => {
         list.forEach((item: IAPMItemConfig) => this.insertAPMButton(item));
@@ -61,7 +61,15 @@ export class APMClient {
   }
 
   private filter(config: IAPMConfig): Observable<IAPMItemConfig[]> {
-    return combineLatest([this.messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT)), this.apmConfigResolver.resolve(config)]).pipe(
+    const jwt = merge(
+      this.messageBus.pipe(
+        ofType(PUBLIC_EVENTS.UPDATE_JWT),
+        map(event => event.data.newJwt)),
+      this.configProvider.getConfig$().pipe(map(config => config.jwt), first()),
+    );
+
+    return combineLatest([jwt, this.apmConfigResolver.resolve(config)]).pipe(
+      tap(console.error),
       switchMap(([updatedJwt, config]) => this.apmFilterService.filter(config.apmList as IAPMItemConfig[], updatedJwt.newJwt)),
       takeUntil(this.destroy$),
     );
