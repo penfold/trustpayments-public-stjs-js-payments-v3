@@ -15,6 +15,7 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import './APMClient.scss';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
+import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 
 @Service()
 export class APMClient {
@@ -56,15 +57,14 @@ export class APMClient {
     return of(undefined);
   }
 
-  private jwtChanges(): Observable<void> {
+  private jwtChanges(): Observable<IUpdateJwt> {
     return this.messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(this.destroy$));
   }
 
   private filter(config: IAPMConfig): Observable<undefined> {
     try {
-      combineLatest(this.jwtChanges(), this.apmConfigResolver.resolve(config)).pipe(
-        // @ts-ignore
-        switchMap(([jwt, config]) => this.apmFilterService.filter(config.apmList as IAPMItemConfig[], jwt)),
+      combineLatest([this.jwtChanges(), this.apmConfigResolver.resolve(config)]).pipe(
+        switchMap(([updatedJwt, config]) => this.apmFilterService.filter(config.apmList as IAPMItemConfig[], updatedJwt.newJwt)),
           tap((list: IAPMItemConfig[]) => {
             list.forEach((item: IAPMItemConfig) => {
               // this.clear(item);
@@ -80,21 +80,6 @@ export class APMClient {
     const child: HTMLElement = document.getElementById(apmItemConfig.name);
     if (child) {
       document.getElementById(apmItemConfig.placement).removeChild(child);
-    }
-  }
-
-  private update(jwt: string): Observable<undefined> {
-    try {
-      this.apmFilterService.filter(this.apmConfigResolver.resolve(this.apmConfig).apmList as IAPMItemConfig[], jwt).pipe(
-        map((list: IAPMItemConfig[]) => {
-          list.forEach((item: IAPMItemConfig) => {
-            this.removeDuplicate(item);
-            return this.insertAPMButton(item as IAPMItemConfig);
-          });
-        }),
-      ).subscribe();
-    } catch (error) {
-      return throwError(() => error);
     }
   }
 

@@ -6,6 +6,8 @@ import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload
 import { APMAvailabilityMap } from '../../models/APMAvailabilityMap';
 import { Service } from 'typedi';
 import { Debug } from '../../../../shared/Debug';
+import { APMCountryIso } from '../../models/APMCountryIso';
+import { APMCurrencyIso } from '../../models/APMCurrencyIso';
 
 @Service()
 export class APMFilterService {
@@ -18,7 +20,7 @@ export class APMFilterService {
   filter(apmList: IAPMItemConfig[], jwt?: string): Observable<IAPMItemConfig[]> {
     const { country, currency } = this.getCurrencyAndCountry(jwt ? jwt : this.configProvider.getConfig().jwt);
 
-    return of(apmList.filter((item: IAPMItemConfig) => this.isAPMAvailable(item, currency, country)));
+    return of(apmList.filter((item: IAPMItemConfig) => this.isAPMAvailable(item, currency as APMCurrencyIso, country as APMCountryIso)));
   }
 
   private getCurrencyAndCountry(jwt: string): { currency: string, country: string } {
@@ -30,7 +32,7 @@ export class APMFilterService {
     };
   }
 
-  private isAPMAvailable(item: IAPMItemConfig, currencyiso3a: string, countryiso: string): boolean {
+  private isAPMAvailable(item: IAPMItemConfig, currencyiso3a: APMCurrencyIso, countryiso: APMCountryIso): boolean {
     if (!APMAvailabilityMap.has(item.name)) {
       Debug.log(`Payment method ${item.name} is not available.`);
 
