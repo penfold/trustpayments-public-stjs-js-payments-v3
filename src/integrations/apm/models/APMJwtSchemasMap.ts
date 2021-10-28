@@ -1,6 +1,11 @@
 import Joi, { ObjectSchema } from 'joi';
 import { APMName } from './APMName';
 
+const alipayJwtSchema = Joi.object().keys({
+  currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
+  orderreference: Joi.string().max(25).required(),
+}).unknown();
+
 const pproJwtSchema = Joi.object().keys({
   billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
@@ -16,12 +21,7 @@ const redpagosJwtSchema = Joi.object().keys({
   billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
   billingemail: Joi.string().required(),
-  billingdob:Joi.string().required(),
-}).unknown();
-
-const alipayJwtSchema = Joi.object().keys({
-  currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
-  orderreference: Joi.string().max(25).required(),
+  billingdob: Joi.string().required(),
 }).unknown();
 
 const wechatpayJwtSchema = Joi.object().keys({
@@ -47,7 +47,6 @@ export const AMPJwtSchemasMap: Map<APMName, ObjectSchema> = new Map()
   .set(APMName.PAYU, pproJwtSchema)
   .set(APMName.POSTFINANCE, pproJwtSchema)
   .set(APMName.PRZELEWY24, przelewy24JwtSchema)
-  .set(APMName.QIWI, pproJwtSchema)
   .set(APMName.REDPAGOS, pproJwtSchema)
   .set(APMName.SEPADD, sepaddJwtSchema)
   .set(APMName.SAFETYPAY, pproJwtSchema)
