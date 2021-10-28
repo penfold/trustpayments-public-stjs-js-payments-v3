@@ -6,4 +6,5 @@ export interface IAPMItemConfig {
   successRedirectUrl?: string;
   errorRedirectUrl?: string;
   cancelRedirectUrl?: string;
+  returnUrl?: string;
 }
