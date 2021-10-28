@@ -14,6 +14,7 @@ import { NotificationService } from '../../../../client/notification/Notificatio
 import { StCodec } from '../../services/st-codec/StCodec';
 import { StTransport } from '../../services/st-transport/StTransport';
 import { Validation } from '../validation/Validation';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 
 @Service()
 export class Payment {
@@ -22,7 +23,9 @@ export class Payment {
   private stTransport: StTransport;
   private validation: Validation;
 
-  constructor() {
+  constructor(
+    private configProvider: ConfigProvider
+  ) {
     this.cybertonica = Container.get(Cybertonica);
     this.notificationService = Container.get(NotificationService);
     this.stTransport = Container.get(StTransport);
@@ -100,9 +103,10 @@ export class Payment {
       processPaymentRequestBody.md = responseData.md;
     }
 
+    const { cybertonicaApiKey } = this.configProvider.getConfig();
     const cybertonicaTid = await this.cybertonica.getTransactionId();
 
-    if (cybertonicaTid) {
+    if (cybertonicaTid && cybertonicaApiKey) {
       processPaymentRequestBody.fraudcontroltransactionid = cybertonicaTid;
     }
 

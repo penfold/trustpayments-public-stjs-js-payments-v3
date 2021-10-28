@@ -398,7 +398,7 @@ export class ControlFrame {
   }
 
   private setInstances(): void {
-    this.payment = new Payment();
+    this.payment = new Payment(this.configProvider);
     this.validation = new Validation();
   }
 
