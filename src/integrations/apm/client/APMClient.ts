@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { combineLatest, Observable, of, throwError } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
@@ -53,27 +53,19 @@ export class APMClient {
 
   init(config: IAPMConfig): Observable<undefined> {
     this.apmConfig = config;
-    this.filter(config);
+    this.filter(config).pipe(
+      map((list: IAPMItemConfig[]) => {
+        list.forEach((item: IAPMItemConfig) => this.insertAPMButton(item));
+      }),
+    ).subscribe();
     return of(undefined);
   }
 
-  private jwtChanges(): Observable<IUpdateJwt> {
-    return this.messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(this.destroy$));
-  }
-
-  private filter(config: IAPMConfig): Observable<undefined> {
-    try {
-      combineLatest([this.jwtChanges(), this.apmConfigResolver.resolve(config)]).pipe(
-        switchMap(([updatedJwt, config]) => this.apmFilterService.filter(config.apmList as IAPMItemConfig[], updatedJwt.newJwt)),
-          tap((list: IAPMItemConfig[]) => {
-            list.forEach((item: IAPMItemConfig) => {
-              // this.clear(item);
-              return this.insertAPMButton(item as IAPMItemConfig);
-            });
-          })).subscribe();
-    } catch (error) {
-      return throwError(() => error);
-    }
+  private filter(config: IAPMConfig): Observable<IAPMItemConfig[]> {
+    return combineLatest([this.messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT)), this.apmConfigResolver.resolve(config)]).pipe(
+      switchMap(([updatedJwt, config]) => this.apmFilterService.filter(config.apmList as IAPMItemConfig[], updatedJwt.newJwt)),
+      takeUntil(this.destroy$),
+    );
   }
 
   private removeDuplicate(apmItemConfig: IAPMItemConfig): void {
