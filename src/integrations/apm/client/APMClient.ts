@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { combineLatest, Observable, of } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
@@ -12,10 +12,9 @@ import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
 import { APMName } from '../models/APMName';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
 import './APMClient.scss';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
-import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 
 @Service()
 export class APMClient {
@@ -53,12 +52,12 @@ export class APMClient {
 
   init(config: IAPMConfig): Observable<undefined> {
     this.apmConfig = config;
-    this.filter(config).pipe(
-      map((list: IAPMItemConfig[]) => {
+    return this.filter(config).pipe(
+      tap((list: IAPMItemConfig[]) => {
         list.forEach((item: IAPMItemConfig) => this.insertAPMButton(item));
       }),
-    ).subscribe();
-    return of(undefined);
+      mapTo(undefined),
+    );
   }
 
   private filter(config: IAPMConfig): Observable<IAPMItemConfig[]> {
