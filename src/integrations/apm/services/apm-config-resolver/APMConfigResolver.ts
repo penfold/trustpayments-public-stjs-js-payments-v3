@@ -10,7 +10,7 @@ import { APMConfigError } from '../../models/errors/APMConfigError';
 export class APMConfigResolver {
 
   constructor(
-    private apmValidator: APMValidator,
+    private apmValidator: APMValidator
   ) {
   }
 
