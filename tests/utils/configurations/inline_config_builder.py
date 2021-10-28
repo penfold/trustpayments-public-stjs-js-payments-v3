@@ -10,7 +10,7 @@ class InlineConfigBuilder:
                         'billingprefixname', 'billingfirstname', 'billingmiddlename', 'billinglastname',
                         'billingsuffixname', 'billingemail',
                         'billingpremise', 'billingpostcode', 'orderreference', 'cachetoken', 'currencyiso3a',
-                        'customercountryiso2a', 'expirydate', 'locale',
+                        'customercountryiso2a', 'expirydate', 'iban', 'locale',
                         'mainamount', 'pan', 'requesttypedescriptions', 'securitycode', 'sitereference',
                         'threedbypasspaymenttypes']
 

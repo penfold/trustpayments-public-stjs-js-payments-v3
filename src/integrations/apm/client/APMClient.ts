@@ -23,12 +23,18 @@ export class APMClient {
     [APMName.GIROPAY]: require('./images/giropay.svg'),
     [APMName.EPS]: require('./images/eps.svg'),
     [APMName.IDEAL]: require('./images/ideal.svg'),
+    [APMName.MULTIBANCO]: require('./images/multibanco.svg'),
     [APMName.MYBANK]: require('./images/mybank.svg'),
     [APMName.PAYU]: require('./images/payu.svg'),
     [APMName.POSTFINANCE]: require('./images/postfinance.svg'),
     [APMName.PRZELEWY24]: require('./images/przelewy24.svg'),
+    [APMName.SOFORT]: require('./images/sofort.svg'),
+    [APMName.TRUSTLY]: require('./images/trustly.svg'),
+    [APMName.SEPADD]: require('./images/sepadd.svg'),
     [APMName.REDPAGOS]: require('./images/redpagos.svg'),
+    [APMName.SAFETYPAY]: require('./images/safetypay.svg'),
     [APMName.UNIONPAY]: require('./images/unionpay.svg'),
+    [APMName.WECHATPAY]: require('./images/wechatpay.svg'),
     [APMName.ZIP]: require('./images/zip.svg'),
   };
 

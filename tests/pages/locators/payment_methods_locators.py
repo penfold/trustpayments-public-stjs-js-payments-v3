@@ -54,6 +54,14 @@ class PaymentMethodsLocators:
 
     apm_simulator_drop_down: By = By.XPATH, '//select[@name=\'result\']'
     apm_simulator_submit: By = (By.ID, 'submitbutton')
+    sofort_bank_drop_down: By = (By.ID, 'MultipaysSessionSenderBankCode')
+    sofort_next_btn: By = (By.XPATH, '//button[contains(text(),"Next")]')
+    sofort_user_id_input: By = (By.ID, 'BackendFormLOGINNAMEUSERID')
+    sofort_pin_input: By = (By.ID, 'BackendFormUSERPIN')
+    sofort_confirmation_code_input: By = (By.ID, 'BackendFormTAN')
+    sofort_accept_cookies_btn: By = (By.XPATH, '//div[@id=\'Modal\']//div[@id=\'modal-button-container\']/button[1]')
+    sofort_cancel_btn: By = (By.XPATH, '//img[@alt=\'Cancel and return to Merchant\']')
+    sofort_cancel_transaction_btn: By = (By.ID, 'CancelTransaction')
 
     # labels
     page_title: By = (By.XPATH, '//*[@id=\'st-form\']/h1')
