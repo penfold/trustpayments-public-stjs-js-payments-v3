@@ -26,5 +26,9 @@
   "A target element for the input field with id could not be found. Please check your configuration": "No se pudo encontrar un elemento de destino para el campo de entrada con id. Por favor verifique su configuración",
   "Jwt has not been specified": "Jwt no ha sido especificado",
   "A target iframe-factory for the input field with id could not be found. Please check your configuration": "No se pudo encontrar una fábrica de iframe de destino para el campo de entrada con id. Por favor revise su configuración",
-  "Cancel": "Cancelar"
+  "Cancel": "Cancelar",
+  "MM/YY": "MM/AA",
+  "**** **** **** ****": "**** **** **** ****",
+  "***": "***",
+  "****": "****"
 }
