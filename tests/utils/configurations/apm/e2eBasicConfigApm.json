@@ -10,7 +10,7 @@
     "EPS",
     {
       "name": "ALIPAY",
-      "returnUrl": "twojastara.pl"
+      "returnUrl": "example.com"
     },
     "IDEAL",
     "MULTIBANCO",
