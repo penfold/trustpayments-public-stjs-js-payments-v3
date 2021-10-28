@@ -5,11 +5,12 @@ import { APMRequestPayloadFactory } from './APMRequestPayloadFactory';
 
 describe('APMRequestPayloadFactory', () => {
   const createTestConfig = (name: APMName): IAPMItemConfig => ({
-    name: APMName.ZIP,
+    name,
     placement: 'st-apm',
     cancelRedirectUrl: 'cancelRedirectUrl',
     errorRedirectUrl: 'errorRedirectUrl',
     successRedirectUrl: 'successRedirectUrl',
+    returnUrl: 'returnurl',
   });
   let subjectUnderTest: APMRequestPayloadFactory;
 
@@ -23,8 +24,7 @@ describe('APMRequestPayloadFactory', () => {
         createTestConfig(APMName.ZIP),
         {
           paymenttypedescription: APMName.ZIP,
-          successfulurlredirect: 'successRedirectUrl',
-          errorurlredirect: 'errorRedirectUrl',
+          returnurl: 'returnurl',
         },
       ],
     ])('should return request payload object based on APM name and config data', (config: IAPMItemConfig, expected: IAPMGatewayRequest) => {
