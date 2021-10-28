@@ -3,7 +3,6 @@ import { mock, instance, when, verify, anything, deepEqual } from 'ts-mockito';
 import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
 import { RequestProcessingChain } from '../RequestProcessingChain';
 import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
-import { CacheTokenRequestProcessor } from '../request-processors/CacheTokenRequestProcessor';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { IStRequest } from '../../../models/IStRequest';
 import { APMRequestProcessingService } from './APMRequestProcessingService';
@@ -32,9 +31,7 @@ describe('APMRequestProcessingService', () => {
     it('should create a request processing chain with proper processors', done => {
       ampRequestProcessingService.init(jsInitResponse).subscribe(() => {
         verify(requestProcessingChainFactoryMock.create(
-          deepEqual([
-            CacheTokenRequestProcessor,
-          ]),
+          deepEqual([]),
           deepEqual([]),
         )).once();
         done();

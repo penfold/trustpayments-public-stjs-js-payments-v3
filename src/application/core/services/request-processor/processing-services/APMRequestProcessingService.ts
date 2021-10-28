@@ -7,7 +7,6 @@ import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResp
 import { RequestProcessingChain } from '../RequestProcessingChain';
 import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
-import { CacheTokenRequestProcessor } from '../request-processors/CacheTokenRequestProcessor';
 import { IAPMGatewayRequest } from '../../../../../integrations/apm/models/IAPMRequest';
 
 @Service()
@@ -21,9 +20,7 @@ export class APMRequestProcessingService implements IRequestProcessingService {
   init(jsInitResponse: IThreeDInitResponse | null): Observable<void> {
     this.jsInitResponse = jsInitResponse;
     this.requestProcessingChain = this.requestProcessingChainFactory.create(
-      [
-        CacheTokenRequestProcessor,
-      ],
+      [],
       [],
     );
 
