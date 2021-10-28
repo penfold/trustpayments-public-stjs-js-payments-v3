@@ -26,6 +26,7 @@ export class APMConfigResolver {
 
     if (validationErrors.length) {
       Debug.error(validationErrors);
+      // throw new APMConfigError(validationErrors);
     }
 
     return normalizedConfig;
@@ -33,27 +34,24 @@ export class APMConfigResolver {
 
   private resolveConfig(config: IAPMConfig): IAPMConfig {
     const resolvedApmList = config.apmList.map((item: IAPMItemConfig | APMName) => {
-      let normalizedItemConfig: IAPMItemConfig;
 
       if (this.isAPMItemConfig(item)) {
-        normalizedItemConfig = {
-          name: item.name,
+        return {
+          ...item,
+          placement: item.placement || config.placement,
           errorRedirectUrl: item.errorRedirectUrl || config.errorRedirectUrl,
           successRedirectUrl: item.successRedirectUrl || config.successRedirectUrl,
           cancelRedirectUrl: item.cancelRedirectUrl || config.cancelRedirectUrl,
-          placement: item.placement || config.placement,
-        };
-      } else {
-        normalizedItemConfig = {
-          name: item,
-          errorRedirectUrl: config.errorRedirectUrl,
-          successRedirectUrl: config.successRedirectUrl,
-          cancelRedirectUrl: config.cancelRedirectUrl,
-          placement: config.placement,
         };
       }
 
-      return normalizedItemConfig;
+      return {
+        name: item,
+        placement: config.placement,
+        errorRedirectUrl: config.errorRedirectUrl,
+        successRedirectUrl: config.successRedirectUrl,
+        cancelRedirectUrl: config.cancelRedirectUrl,
+      };
     });
     return { ...config, apmList: resolvedApmList };
   }

@@ -3,21 +3,32 @@ import { APMName } from './APMName';
 
 export const APMSchema: ObjectSchema = Joi.object().keys({
   placement: Joi.string().required(),
-  successRedirectUrl: Joi.string().required(),
-  errorRedirectUrl: Joi.string().required(),
+  successRedirectUrl: Joi.string(),
+  errorRedirectUrl: Joi.string(),
   cancelRedirectUrl: Joi.string(),
   apmList: Joi.array()
     .items(Joi.string().valid(...Object.values(APMName)), Joi.object())
     .required(),
 });
 
-const configSchemaFactory = (apmName: APMName) => Joi.object().keys({
-  name: Joi.string().valid(apmName).required(),
-  placement: Joi.string().required(),
-  successRedirectUrl: Joi.string().required(),
-  errorRedirectUrl: Joi.string().required(),
-  cancelRedirectUrl: Joi.string(),
-});
+const configSchemaFactory = (apmName: APMName) => {
+  switch (apmName) {
+    case APMName.ZIP:
+      return Joi.object().keys({
+        name: Joi.string().valid(apmName).required(),
+        placement: Joi.string().required(),
+        returnUrl: Joi.string().required(),
+      }).unknown();
+    default:
+      return Joi.object().keys({
+        name: Joi.string().valid(apmName).required(),
+        placement: Joi.string().required(),
+        successRedirectUrl: Joi.string().required(),
+        errorRedirectUrl: Joi.string().required(),
+        cancelRedirectUrl: Joi.string(),
+      });
+  }
+};
 
 export const APMSchemasMap: Map<APMName, ObjectSchema> = new Map()
   .set(APMName.BANCONTACT, configSchemaFactory(APMName.BANCONTACT))
