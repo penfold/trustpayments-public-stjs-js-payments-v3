@@ -1,6 +1,11 @@
 import Joi, { ObjectSchema } from 'joi';
 import { APMName } from './APMName';
 
+const alipayJwtSchema = Joi.object().keys({
+  currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
+  orderreference: Joi.string().max(25).required(),
+}).unknown();
+
 const pproJwtSchema = Joi.object().keys({
   billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
@@ -16,12 +21,7 @@ const redpagosJwtSchema = Joi.object().keys({
   billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
   billingemail: Joi.string().required(),
-  billingdob:Joi.string().required(),
-}).unknown();
-
-const alipayJwtSchema = Joi.object().keys({
-  currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
-  orderreference: Joi.string().max(25).required(),
+  billingdob: Joi.string().required(),
 }).unknown();
 
 const wechatpayJwtSchema = Joi.object().keys({
