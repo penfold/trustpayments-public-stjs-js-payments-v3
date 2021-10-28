@@ -25,6 +25,12 @@ describe('APMRequestPayloadFactory', () => {
         {
           paymenttypedescription: APMName.ZIP,
           returnurl: 'returnurl',
+        }],
+      [
+        createTestConfig(APMName.ALIPAY),
+        {
+          paymenttypedescription: APMName.ALIPAY,
+          returnurl: 'returnurl',
         },
       ],
     ])('should return request payload object based on APM name and config data', (config: IAPMItemConfig, expected: IAPMGatewayRequest) => {

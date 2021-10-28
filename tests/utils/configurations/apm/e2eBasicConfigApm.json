@@ -8,6 +8,10 @@
     "BITPAY",
     "GIROPAY",
     "EPS",
+    {
+      "name": "ALIPAY",
+      "returnUrl": "https://this_is_not_existing_page_return_redirect.com"
+    },
     "IDEAL",
     "MULTIBANCO",
     "MYBANK",
