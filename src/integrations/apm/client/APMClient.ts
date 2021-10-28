@@ -17,8 +17,6 @@ import './APMClient.scss';
 
 @Service()
 export class APMClient {
-  // TODO remove ts-ignore comment when all APMs are merged to master
-  // @ts-ignore
   private apmIcons: Record<APMName, string> = {
     [APMName.ALIPAY]: require('./images/alipay.svg'),
     [APMName.BANCONTACT]: require('./images/bancontact.svg'),
