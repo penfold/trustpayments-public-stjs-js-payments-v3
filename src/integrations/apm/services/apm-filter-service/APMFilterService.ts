@@ -22,25 +22,30 @@ export class APMFilterService {
   }
 
   private getCurrencyAndCountry(jwt: string): { currency: string, country: string } {
+    const { billingcountryiso2a, currencyiso3a } = this.jwtDecoder.decode<IStJwtPayload>(jwt).payload;
+
     return {
-      currency: this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.currencyiso3a,
-      country: this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.billingcountryiso2a,
+      currency: currencyiso3a,
+      country: billingcountryiso2a,
     };
   }
 
   private isAPMAvailable(item: IAPMItemConfig, currencyiso3a: string, countryiso: string): boolean {
     if (!APMAvailabilityMap.has(item.name)) {
       Debug.log(`Payment method ${item.name} is not available.`);
+
       return false;
     }
 
     if (!APMAvailabilityMap.get(item.name).currencies.includes(currencyiso3a)) {
       Debug.log(`Your currency: ${currencyiso3a} is not supported by ${item.name}.`);
+
       return false;
     }
 
     if (!APMAvailabilityMap.get(item.name).countries.includes(countryiso) && APMAvailabilityMap.get(item.name).countries.length !== 0) {
       Debug.log(`Your country: ${countryiso} is not supported by ${item.name}.`);
+
       return false;
     }
 
