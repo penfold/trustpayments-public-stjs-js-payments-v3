@@ -2,7 +2,7 @@ import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
 import { RequestProcessingChain } from '../RequestProcessingChain';
 import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
-import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
+import { FraudControlRequestProcessor } from '../request-processors/FraudControlRequestProcessor';
 import { of } from 'rxjs';
 import { TPThreeDSRequestProcessingService } from './TPThreeDSRequestProcessingService';
 import { ConfigProvider } from '../../../../../shared/services/config-provider/ConfigProvider';
@@ -56,7 +56,7 @@ describe('TPThreeDSRequestProcessingService', () => {
       tpThreeDSRequestProcessingService.init(jsInitResponse).subscribe(() => {
         verify(requestProcessingChainFactoryMock.create(
           deepEqual([
-            CybertonicaRequestProcessor,
+            FraudControlRequestProcessor,
             ThreeDLookupRequestProcessor,
             BrowserDataRequestProcessor,
           ]),

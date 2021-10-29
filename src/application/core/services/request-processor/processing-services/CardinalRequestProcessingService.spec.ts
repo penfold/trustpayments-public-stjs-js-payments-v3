@@ -3,7 +3,7 @@ import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory'
 import { RequestProcessingChain } from '../RequestProcessingChain';
 import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { CacheTokenRequestProcessor } from '../request-processors/CacheTokenRequestProcessor';
-import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
+import { FraudControlRequestProcessor } from '../request-processors/FraudControlRequestProcessor';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { of } from 'rxjs';
@@ -52,7 +52,7 @@ describe('CardinalRequestProcessingService', () => {
         verify(requestProcessingChainFactoryMock.create(
           deepEqual([
             CacheTokenRequestProcessor,
-            CybertonicaRequestProcessor,
+            FraudControlRequestProcessor,
             CardinalStartRequestProcessor,
           ]),
           deepEqual([

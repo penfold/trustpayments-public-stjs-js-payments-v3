@@ -9,7 +9,6 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { mock, instance as mockInstance, when, anyString, anything } from 'ts-mockito';
 import { NotificationService } from '../../../client/notification/NotificationService';
-import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IStyles } from '../../../shared/model/config/IStyles';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
@@ -28,6 +27,7 @@ import spyOn = jest.spyOn;
 import { PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Translations';
 import { Translator } from '../../core/shared/translator/Translator';
 import { FormState } from '../../core/models/constants/FormState';
+import { FraudControlService } from '../../core/services/fraud-control/FraudControlService';
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -215,7 +215,7 @@ function controlFrameFixture() {
   const communicator: InterFrameCommunicator = mock(InterFrameCommunicator);
   const configProvider: ConfigProvider = mock<ConfigProvider>();
   const notification: NotificationService = mock(NotificationService);
-  const cybertonica: Cybertonica = mock(Cybertonica);
+  const fraudControlServiceMock: FraudControlService = mock(FraudControlService);
   const threeDProcess: ThreeDProcess = mock(ThreeDProcess);
   const messageBus: IMessageBus = new SimpleMessageBus();
   const frame: Frame = mock(Frame);
@@ -263,7 +263,7 @@ function controlFrameFixture() {
     mockInstance(communicator),
     mockInstance(configProvider),
     mockInstance(notification),
-    mockInstance(cybertonica),
+    mockInstance(fraudControlServiceMock),
     mockInstance(threeDProcess),
     messageBus,
     mockInstance(frame),

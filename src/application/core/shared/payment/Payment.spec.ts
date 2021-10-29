@@ -6,7 +6,6 @@ import { SimpleStorage } from '../../../../shared/services/storage/SimpleStorage
 import { StoreBasedStorage } from '../../../../shared/services/storage/StoreBasedStorage';
 import { RequestType } from '../../../../shared/types/RequestType';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
-import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
 import { CustomerOutput } from '../../models/constants/CustomerOutput';
 import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { ICard } from '../../models/ICard';
@@ -20,6 +19,8 @@ import { TranslatorToken } from '../../../../shared/dependency-injection/Injecti
 import { Translator } from '../translator/Translator';
 import { ITranslationProvider } from '../translator/ITranslationProvider';
 import { TranslationProvider } from '../translator/TranslationProvider';
+import { FraudControlService } from '../../services/fraud-control/FraudControlService';
+import { of } from 'rxjs';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 
@@ -34,7 +35,7 @@ describe('Payment', () => {
   let wallet: IWallet;
   let walletVerify: IWalletVerify;
   let notificationService: NotificationService;
-  let cybertonica: Cybertonica;
+  let fraudControlService: FraudControlService;
   let instance: Payment;
 
   beforeEach(() => {
@@ -43,7 +44,7 @@ describe('Payment', () => {
     wallet = fixture.wallet;
     walletVerify = fixture.walletverify;
     notificationService = fixture.notificationService;
-    cybertonica = fixture.cybertonicaMock;
+    fraudControlService = fixture.fraudControlServiceMock;
     instance = fixture.instance;
   });
 
@@ -76,10 +77,10 @@ describe('Payment', () => {
       }, undefined);
     });
 
-    it('should send remaining request types with cybertonica tid', async () => {
-      const cybertonicaTid = 'b268ab7f-25d7-430a-9be2-82b0f00c4039';
+    it('should send remaining request types with fraud control tid', async () => {
+      const fraudControlTid = 'b268ab7f-25d7-430a-9be2-82b0f00c4039';
 
-      when(cybertonica.getTransactionId()).thenResolve(cybertonicaTid);
+      when(fraudControlService.getTransactionId()).thenReturn(of(fraudControlTid));
 
       await instance.processPayment([RequestType.AUTH], card, {
         merchant: 'data',
@@ -89,7 +90,7 @@ describe('Payment', () => {
       expect(instance.stTransport.sendRequest).toHaveBeenCalledWith({
         ...card,
         merchant: 'data',
-        fraudcontroltransactionid: cybertonicaTid,
+        fraudcontroltransactionid: fraudControlTid,
       }, undefined);
     });
 
@@ -305,10 +306,10 @@ function paymentFixture() {
   const jwt =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0ZXN0X2p3dF9pc3N1ZXIiLCJwYXlsb2FkIjp7InNpdGVyZWZlcmVuY2UiOiJleGFtcGxlMTIzNDUiLCJiYXNlYW1vdW50IjoiMTAwMCIsImN1cnJlbmN5aXNvM2EiOiJHQlAifSwiaWF0IjoxNTE2MjM5MDIyfQ.jPuLMHxK3fznVddzkRoYC94hgheBXI1Y7zHAr7qNCig';
   const cachetoken = 'somecachetoken';
-  const cybertonicaMock = mock(Cybertonica);
+  const fraudControlServiceMock = mock(FraudControlService);
   const notificationService = mock(NotificationService);
-  when(cybertonicaMock.getTransactionId()).thenResolve(undefined);
-  Container.set(Cybertonica, mockInstance(cybertonicaMock));
+  when(fraudControlServiceMock.getTransactionId()).thenReturn(of(null));
+  Container.set(FraudControlService, mockInstance(fraudControlServiceMock));
   Container.set(NotificationService, mockInstance(notificationService));
   const instance: Payment = new Payment();
   const card = {
@@ -326,5 +327,5 @@ function paymentFixture() {
     walletvalidationurl: 'https://example.com',
     walletrequestdomain: 'https://example2.com',
   };
-  return { card, wallet, walletverify, instance, jwt, cachetoken, notificationService, cybertonicaMock };
+  return { card, wallet, walletverify, instance, jwt, cachetoken, notificationService, fraudControlServiceMock };
 }

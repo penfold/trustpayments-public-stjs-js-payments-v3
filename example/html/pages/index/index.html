@@ -276,12 +276,12 @@
       }
       var st = ST(config);
       st.Components(config.components);
-      st.VisaCheckout(config.visaCheckout);
-      st.ApplePay(config.applePay);
-      st.GooglePay(config.googlePay);
-      st.Cybertonica().then(function (response) {
-        console.log(response);
-      });
+      // st.VisaCheckout(config.visaCheckout);
+      // st.ApplePay(config.applePay);
+      // st.GooglePay(config.googlePay);
+      // st.Cybertonica().then(function (response) {
+      //   console.log(response);
+      // });
       if (browserInfo === "true") {
         document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
       }

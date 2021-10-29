@@ -17,6 +17,7 @@ import { FrameQueryingService } from '../../shared/services/message-bus/FrameQue
 import { config, jwt } from './STTestConfigs';
 import { CommonFrames } from '../common-frames/CommonFrames';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { of } from 'rxjs';
 
 const messageBusMock: SimpleMessageBus = new SimpleMessageBus();
 
@@ -70,7 +71,7 @@ describe('ST', () => {
     const key = 'some random key';
     beforeEach(() => {
       // @ts-expect-error Legacy spec testing internal implementations
-      stInstance.cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(key);
+      stInstance.cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(of(key));
     });
 
     it('should return transaction id when standalone cybertonica function has been called', async () => {

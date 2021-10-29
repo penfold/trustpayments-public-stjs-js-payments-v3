@@ -10,7 +10,7 @@ export interface IAFCybertonica {
   apiuser: string;
   collect_all: boolean;
   getInfoToSend: void;
-  init: (apiUserName: string, arg: string | undefined, baseName: string) => Promise<string>;
+  init: (apiUserName: string, arg: string | undefined, baseName: string) => string;
   logEvent: void;
   postInfo: void;
 }

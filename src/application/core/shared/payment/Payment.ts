@@ -1,5 +1,5 @@
 import { Container, Service } from 'typedi';
-import { Observable, from } from 'rxjs';
+import { Observable, from, firstValueFrom } from 'rxjs';
 import { CustomerOutput } from '../../models/constants/CustomerOutput';
 import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { RequestType } from '../../../../shared/types/RequestType';
@@ -9,21 +9,21 @@ import { IResponseData } from '../../models/IResponseData';
 import { IStRequest } from '../../models/IStRequest';
 import { IWallet } from '../../models/IWallet';
 import { IWalletVerify } from '../../models/IWalletVerify';
-import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { StCodec } from '../../services/st-codec/StCodec';
 import { StTransport } from '../../services/st-transport/StTransport';
 import { Validation } from '../validation/Validation';
+import { FraudControlService } from '../../services/fraud-control/FraudControlService';
 
 @Service()
 export class Payment {
-  private cybertonica: Cybertonica;
+  private fraudControlService: FraudControlService;
   private notificationService: NotificationService;
   private stTransport: StTransport;
   private validation: Validation;
 
   constructor() {
-    this.cybertonica = Container.get(Cybertonica);
+    this.fraudControlService = Container.get(FraudControlService);
     this.notificationService = Container.get(NotificationService);
     this.stTransport = Container.get(StTransport);
     this.validation = new Validation();
@@ -100,10 +100,10 @@ export class Payment {
       processPaymentRequestBody.md = responseData.md;
     }
 
-    const cybertonicaTid = await this.cybertonica.getTransactionId();
+    const fraudControlTid = await firstValueFrom(this.fraudControlService.getTransactionId());
 
-    if (cybertonicaTid) {
-      processPaymentRequestBody.fraudcontroltransactionid = cybertonicaTid;
+    if (fraudControlTid) {
+      processPaymentRequestBody.fraudcontroltransactionid = fraudControlTid;
     }
 
     return this.stTransport.sendRequest(processPaymentRequestBody, merchantUrl);

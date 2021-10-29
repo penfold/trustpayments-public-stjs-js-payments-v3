@@ -4,7 +4,7 @@ import { NoThreeDSRequestProcessingService } from './NoThreeDSRequestProcessingS
 import { RequestProcessingChain } from '../RequestProcessingChain';
 import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { CacheTokenRequestProcessor } from '../request-processors/CacheTokenRequestProcessor';
-import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
+import { FraudControlRequestProcessor } from '../request-processors/FraudControlRequestProcessor';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { IStRequest } from '../../../models/IStRequest';
 import { of } from 'rxjs';
@@ -35,7 +35,7 @@ describe('NoThreeDSRequestProcessingService', () => {
         verify(requestProcessingChainFactoryMock.create(
           deepEqual([
             CacheTokenRequestProcessor,
-            CybertonicaRequestProcessor,
+            FraudControlRequestProcessor,
           ]),
           deepEqual([]),
         )).once();

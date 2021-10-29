@@ -20,7 +20,7 @@ import { InterFrameCommunicator } from '../../shared/services/message-bus/InterF
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
-import { from, Observable, Subject, Subscription } from 'rxjs';
+import { firstValueFrom, from, Observable, Subject, Subscription } from 'rxjs';
 import { delay, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
@@ -57,7 +57,7 @@ import { APMPaymentMethodName } from '../../integrations/apm/models/IAPMPaymentM
 export class ST {
   private config: IConfig;
   private controlFrameLoader$: Observable<IConfig>;
-  private cybertonicaTid: Promise<string>;
+  private cybertonicaTid: Observable<string | null>;
   private destroy$: Subject<void> = new Subject();
   private registeredCallbacks: Map<keyof typeof ExposedEvents, Subscription> = new Map();
 
@@ -226,13 +226,14 @@ export class ST {
     });
   }
 
-  Cybertonica(): Promise<string> {
+  Cybertonica(): Promise<string | null> {
     if (!this.cybertonicaTid) {
-      this.cybertonica.init(this.config.cybertonicaApiKey);
-      this.cybertonicaTid = this.cybertonica.getTransactionId();
+      this.cybertonicaTid = this.cybertonica.init(this.config.cybertonicaApiKey).pipe(
+        switchMap(() => this.cybertonica.getTransactionId()),
+      );
     }
 
-    return this.cybertonicaTid;
+    return firstValueFrom(this.cybertonicaTid);
   }
 
   updateJWT(jwt: string): void {

@@ -6,7 +6,7 @@ import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResp
 import { Service } from 'typedi';
 import { RequestProcessingChain } from '../RequestProcessingChain';
 import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
-import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
+import { FraudControlRequestProcessor } from '../request-processors/FraudControlRequestProcessor';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
 import { CacheTokenRequestProcessor } from '../request-processors/CacheTokenRequestProcessor';
 import { IAPMGatewayRequest } from '../../../../../integrations/apm/models/IAPMRequest';
@@ -24,7 +24,7 @@ export class NoThreeDSRequestProcessingService implements IRequestProcessingServ
     this.requestProcessingChain = this.requestProcessingChainFactory.create(
       [
         CacheTokenRequestProcessor,
-        CybertonicaRequestProcessor,
+        FraudControlRequestProcessor,
       ],
       [],
     );
