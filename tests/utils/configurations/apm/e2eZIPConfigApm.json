@@ -5,9 +5,9 @@
   "placement": "st-apm",
   "apmList": [
     {
-      "name": "SEPADD",
+      "name": "ZIP",
       "placement": "st-apm-override",
-      "errorRedirectUrl": "https://this_is_not_existing_page_error_redirect_override.com"
+      "returnUrl": "https://this_is_not_existing_page_return_redirect.com"
     }
   ]
 }
