@@ -80,7 +80,10 @@ describe('APMConfigResolver', () => {
       ],
   };
 
-  it('should map apmList field to array of full configuration objects, assigning default values to fields not defined in item config', () => {
-    expect(aPMConfigResolver.resolve(testConfig)).toEqual(expected);
+  it('should map apmList field to array of full configuration objects, assigning default values to fields not defined in item config', done => {
+    aPMConfigResolver.resolve(testConfig).subscribe((result: IAPMConfig) => {
+      expect(result).toEqual(expected);
+    });
+    done();
   });
 });

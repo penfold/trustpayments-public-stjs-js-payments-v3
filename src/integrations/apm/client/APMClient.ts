@@ -54,7 +54,10 @@ export class APMClient {
   init(config: IAPMConfig): Observable<undefined> {
     return this.filter(config).pipe(
       tap((list: IAPMItemConfig[]) => {
-        list.forEach((item: IAPMItemConfig) => this.insertAPMButton(item));
+        list.forEach((item: IAPMItemConfig) => {
+          this.removeDuplicate(item);
+          this.insertAPMButton(item);
+        });
       }),
       mapTo(undefined),
     );
@@ -71,7 +74,7 @@ export class APMClient {
     return combineLatest([jwt, this.apmConfigResolver.resolve(config)]).pipe(
       switchMap(([updatedJwt, config]) => this.apmFilterService.filter(config.apmList as IAPMItemConfig[], updatedJwt.newJwt)),
       takeUntil(this.destroy$),
-    );
+    ) as Observable<IAPMItemConfig[]>;
   }
 
   private removeDuplicate(apmItemConfig: IAPMItemConfig): void {
@@ -81,7 +84,7 @@ export class APMClient {
     }
   }
 
-  private insertAPMButton(apmItemConfig: IAPMItemConfig) {
+  private insertAPMButton(apmItemConfig: IAPMItemConfig): void {
     DomMethods.appendChildStrictIntoDOM(apmItemConfig.placement, this.createButtonForApmItem(apmItemConfig));
   }
 

@@ -6,6 +6,7 @@ import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { APMName } from '../../models/APMName';
 import { APMValidator } from '../apm-validator/APMValidator';
 import { APMConfigError } from '../../models/errors/APMConfigError';
+import { Debug } from '../../../../shared/Debug';
 
 @Service()
 export class APMConfigResolver {
@@ -25,7 +26,7 @@ export class APMConfigResolver {
     const validationErrors: ValidationError[] = this.apmValidator.validateAPMItemConfigs(normalizedConfig.apmList as IAPMItemConfig[]);
 
     if (validationErrors.length) {
-      throw new APMConfigError(validationErrors);
+      Debug.error(...validationErrors);
     }
 
     return of(normalizedConfig);
