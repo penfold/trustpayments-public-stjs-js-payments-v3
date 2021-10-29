@@ -18,39 +18,32 @@ export class APMFilterService {
   }
 
   filter(apmList: IAPMItemConfig[], jwt?: string): Observable<IAPMItemConfig[]> {
-    const { country, currency } = this.getCurrencyAndCountry(jwt ? jwt : this.configProvider.getConfig().jwt);
-
-    return of(apmList.filter((item: IAPMItemConfig) => this.isAPMAvailable(item, currency as APMCurrencyIso, country as APMCountryIso)));
+    return of(apmList.filter((item: IAPMItemConfig) => this.isAPMAvailable(item, this.getJwtPayload(jwt ? jwt : this.configProvider.getConfig().jwt))));
   }
 
-  private getCurrencyAndCountry(jwt: string): { currency: string, country: string } {
-    const { billingcountryiso2a, currencyiso3a } = this.jwtDecoder.decode<IStJwtPayload>(jwt).payload;
-
-    return {
-      currency: currencyiso3a,
-      country: billingcountryiso2a,
-    };
+  private getJwtPayload(jwt: string): IStJwtPayload {
+    return this.jwtDecoder.decode<IStJwtPayload>(jwt).payload;
   }
 
-  private isAPMAvailable(item: IAPMItemConfig, currencyiso3a: APMCurrencyIso, countryiso: APMCountryIso): boolean {
+  private isAPMAvailable(item: IAPMItemConfig, payload: IStJwtPayload): boolean {
     if (!APMAvailabilityMap.has(item.name)) {
       Debug.log(`Payment method ${item.name} is not available.`);
 
       return false;
     }
 
-    if (!APMAvailabilityMap.get(item.name).currencies.includes(currencyiso3a)) {
-      Debug.log(`Your currency: ${currencyiso3a} is not supported by ${item.name}.`);
+    if (!APMAvailabilityMap.get(item.name).currencies.includes(payload.currencyiso3a as APMCurrencyIso)) {
+      Debug.log(`Your currency: ${payload.currencyiso3a} is not supported by ${item.name}.`);
 
       return false;
     }
 
-    if (!APMAvailabilityMap.get(item.name).countries.includes(countryiso) && APMAvailabilityMap.get(item.name).countries.length !== 0) {
-      Debug.log(`Your country: ${countryiso} is not supported by ${item.name}.`);
+    if (!APMAvailabilityMap.get(item.name).countries.includes(payload.billingcountryiso2a as APMCountryIso) && APMAvailabilityMap.get(item.name).countries.length !== 0) {
+      Debug.log(`Your country: ${payload.billingcountryiso2a} is not supported by ${item.name}.`);
 
       return false;
     }
 
-    return true;
+    return !(APMAvailabilityMap.get(item.name).payload.find((property: IStJwtPayload) => !Object.keys(payload).includes(property as string)));
   }
 }
