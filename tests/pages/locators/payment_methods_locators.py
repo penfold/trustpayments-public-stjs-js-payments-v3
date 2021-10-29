@@ -62,6 +62,8 @@ class PaymentMethodsLocators:
     sofort_accept_cookies_btn: By = (By.XPATH, '//div[@id=\'Modal\']//div[@id=\'modal-button-container\']/button[1]')
     sofort_cancel_btn: By = (By.XPATH, '//img[@alt=\'Cancel and return to Merchant\']')
     sofort_cancel_transaction_btn: By = (By.ID, 'CancelTransaction')
+    zip_allow_btn: By = (By.XPATH, '//input[@name=\'choice1\']')
+    zip_decline_btn: By = (By.XPATH, '//input[@name=\'choice2\']')
 
     # labels
     page_title: By = (By.XPATH, '//*[@id=\'st-form\']/h1')
