@@ -2,7 +2,7 @@ import { APMName } from './APMName';
 import { APMCountryIso } from './APMCountryIso';
 import { APMCurrencyIso } from './APMCurrencyIso';
 
-export const APMAvailabilityMap: Map<APMName, { countries: string[], currencies: string[] }> = new Map()
+export const APMAvailabilityMap: Map<APMName, { countries: APMCountryIso[], currencies: APMCurrencyIso[] }> = new Map()
   .set(APMName.ALIPAY, {
     countries: [],
     currencies: [APMCurrencyIso.EUR, APMCurrencyIso.GBP, APMCurrencyIso.USD],

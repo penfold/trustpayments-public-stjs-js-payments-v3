@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { Observable, of, throwError } from 'rxjs';
+import { combineLatest, merge, Observable } from 'rxjs';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
@@ -12,16 +12,15 @@ import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
 import { APMName } from '../models/APMName';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { map, takeUntil } from 'rxjs/operators';
+import { first, map, mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
 import './APMClient.scss';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
-import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 
 @Service()
 export class APMClient {
-  // TODO remove ts-ignore comment when all APMs are merged to master
-  // @ts-ignore
   private apmIcons: Record<APMName, string> = {
+    [APMName.ALIPAY]: require('./images/alipay.svg'),
     [APMName.BANCONTACT]: require('./images/bancontact.svg'),
     [APMName.BITPAY]: require('./images/bitpay.svg'),
     [APMName.EPS]: require('./images/eps.svg'),
@@ -32,67 +31,54 @@ export class APMClient {
     [APMName.PAYU]: require('./images/payu.svg'),
     [APMName.POSTFINANCE]: require('./images/postfinance.svg'),
     [APMName.PRZELEWY24]: require('./images/przelewy24.svg'),
-    [APMName.SOFORT]: require('./images/sofort.svg'),
-    [APMName.TRUSTLY]: require('./images/trustly.svg'),
-    [APMName.SEPADD]: require('./images/sepadd.svg'),
     [APMName.REDPAGOS]: require('./images/redpagos.svg'),
     [APMName.SAFETYPAY]: require('./images/safetypay.svg'),
+    [APMName.SEPADD]: require('./images/sepadd.svg'),
+    [APMName.SOFORT]: require('./images/sofort.svg'),
+    [APMName.TRUSTLY]: require('./images/trustly.svg'),
     [APMName.UNIONPAY]: require('./images/unionpay.svg'),
     [APMName.WECHATPAY]: require('./images/wechatpay.svg'),
     [APMName.ZIP]: require('./images/zip.svg'),
   };
-  private apmConfig: IAPMConfig;
+  private destroy$: Observable<void>;
 
   constructor(
     private apmConfigResolver: APMConfigResolver,
     private messageBus: IMessageBus,
     private apmFilterService: APMFilterService,
+    private configProvider: ConfigProvider,
   ) {
-    const $destroy = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
-    this.messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil($destroy)).subscribe(({ newJwt }: IUpdateJwt) => {
-      this.update(newJwt);
-    });
+    this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
   init(config: IAPMConfig): Observable<undefined> {
-    this.apmConfig = config;
-    this.filter(config);
-    return of(undefined);
+    return this.filter(config).pipe(
+      tap((list: IAPMItemConfig[]) => {
+        list.forEach((item: IAPMItemConfig) => this.insertAPMButton(item));
+      }),
+      mapTo(undefined),
+    );
   }
 
-  private filter(config: IAPMConfig) {
-    try {
-      this.apmFilterService.filter(this.apmConfigResolver.resolve(config).apmList as IAPMItemConfig[]).pipe(
-        map((list: IAPMItemConfig[]) => {
-          list.forEach((item: IAPMItemConfig) => {
-            return this.insertAPMButton(item as IAPMItemConfig);
-          });
-        }),
-      ).subscribe();
-    } catch (error) {
-      return throwError(() => error);
-    }
+  private filter(config: IAPMConfig): Observable<IAPMItemConfig[]> {
+    const jwt = merge(
+      this.messageBus.pipe(
+        ofType(PUBLIC_EVENTS.UPDATE_JWT),
+        map(event => event.data.newJwt)),
+      this.configProvider.getConfig$().pipe(map(config => config.jwt), first()),
+    );
+
+    return combineLatest([jwt, this.apmConfigResolver.resolve(config)]).pipe(
+      tap(console.error),
+      switchMap(([updatedJwt, config]) => this.apmFilterService.filter(config.apmList as IAPMItemConfig[], updatedJwt.newJwt)),
+      takeUntil(this.destroy$),
+    );
   }
 
   private removeDuplicate(apmItemConfig: IAPMItemConfig): void {
     const child: HTMLElement = document.getElementById(apmItemConfig.name);
     if (child) {
       document.getElementById(apmItemConfig.placement).removeChild(child);
-    }
-  }
-
-  private update(jwt: string): Observable<undefined> {
-    try {
-      this.apmFilterService.filter(this.apmConfigResolver.resolve(this.apmConfig).apmList as IAPMItemConfig[], jwt).pipe(
-        map((list: IAPMItemConfig[]) => {
-          list.forEach((item: IAPMItemConfig) => {
-            this.removeDuplicate(item);
-            return this.insertAPMButton(item as IAPMItemConfig);
-          });
-        }),
-      ).subscribe();
-    } catch (error) {
-      return throwError(() => error);
     }
   }
 

@@ -22,13 +22,14 @@ describe('APMConfigResolver', () => {
     apmList: [
       APMName.ZIP,
       { name: APMName.ZIP },
+      { name: APMName.ALIPAY, returnUrl: 'returnurl' },
       {
         name: APMName.ZIP,
         successRedirectUrl: 'customSuccessUrl1',
       },
       {
         name: APMName.ZIP,
-        successRedirectUrl: 'customSuccessUrl1',
+        successRedirectUrl: 'customSuccessUrl2',
         errorRedirectUrl: 'customErrorUrl1',
         cancelRedirectUrl: 'customCancelUrl1',
         placement: 'custom-placement-id',
@@ -55,6 +56,14 @@ describe('APMConfigResolver', () => {
           placement: 'st-apm',
         },
         {
+          name: APMName.ALIPAY,
+          returnUrl: 'returnurl',
+          placement: 'st-apm',
+          cancelRedirectUrl: 'defaultCancelRedirectUrl',
+          errorRedirectUrl: 'defaultErrorRedirectUrl',
+          successRedirectUrl: 'defaultSuccessRedirectUrl',
+        },
+        {
           name: APMName.ZIP,
           cancelRedirectUrl: 'defaultCancelRedirectUrl',
           errorRedirectUrl: 'defaultErrorRedirectUrl',
@@ -63,7 +72,7 @@ describe('APMConfigResolver', () => {
         },
         {
           name: APMName.ZIP,
-          successRedirectUrl: 'customSuccessUrl1',
+          successRedirectUrl: 'customSuccessUrl2',
           errorRedirectUrl: 'customErrorUrl1',
           cancelRedirectUrl: 'customCancelUrl1',
           placement: 'custom-placement-id',
