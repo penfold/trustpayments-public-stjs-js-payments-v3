@@ -21,4 +21,6 @@ export interface IStJwtPayload {
   subscriptionfinalnumber?: string;
   subscriptionbegindate?: string;
   credentialsonfile?: string;
+  billingcountryiso2a?: string;
+  customercountryiso2a?: string;
 }

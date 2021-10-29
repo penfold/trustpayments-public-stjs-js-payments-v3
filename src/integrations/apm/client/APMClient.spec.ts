@@ -11,11 +11,13 @@ import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
 import { of } from 'rxjs';
+import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
 import clearAllMocks = jest.clearAllMocks;
 import resetAllMocks = jest.resetAllMocks;
 
 describe('APMClient', () => {
   let apmConfigResolver: APMConfigResolver;
+  let apmFilterService: APMFilterService;
   const messageBus = {
     publish: jest.fn(),
     pipe: jest.fn().mockRejectedValue(of(null)),
@@ -47,8 +49,22 @@ describe('APMClient', () => {
   beforeEach(() => {
     resetAllMocks();
     apmConfigResolver = mock(APMConfigResolver);
+    apmFilterService = mock(APMFilterService);
     when(apmConfigResolver.resolve(anything())).thenReturn(testConfig);
-    apmClient = new APMClient(instance(apmConfigResolver), messageBus);
+    when(apmFilterService.filter(anything())).thenReturn(of([{
+      name: APMName.ZIP,
+      placement: 'test-placement',
+      successRedirectUrl: 'successUrl',
+      cancelRedirectUrl: 'cancelUrl',
+      errorRedirectUrl: 'errorUrl',
+    }, {
+      name: APMName.ZIP,
+      placement: 'test-placement-2',
+      successRedirectUrl: 'successUrl',
+      cancelRedirectUrl: 'cancelUrl',
+      errorRedirectUrl: 'errorUrl',
+    }]));
+    apmClient = new APMClient(instance(apmConfigResolver), messageBus, instance(apmFilterService));
     document.body.innerHTML = '<div id="test-placement"></div><div id="test-placement-2"></div>';
   });
 

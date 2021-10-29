@@ -1,4 +1,5 @@
 import { Service } from 'typedi';
+import { Observable, of } from 'rxjs';
 import { ValidationError, ValidationResult } from 'joi';
 import { IAPMConfig } from '../../models/IAPMConfig';
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
@@ -14,7 +15,7 @@ export class APMConfigResolver {
   ) {
   }
 
-  resolve(config: IAPMConfig): IAPMConfig {
+  resolve(config: IAPMConfig): Observable<IAPMConfig> {
     const result: ValidationResult = this.apmValidator.validate(config);
 
     if (result.error) {
@@ -27,7 +28,7 @@ export class APMConfigResolver {
       throw new APMConfigError(validationErrors);
     }
 
-    return normalizedConfig;
+    return of(normalizedConfig);
   }
 
   private resolveConfig(config: IAPMConfig): IAPMConfig {

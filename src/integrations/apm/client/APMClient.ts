@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { Observable, of, throwError } from 'rxjs';
+import { combineLatest, merge, Observable } from 'rxjs';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
@@ -12,8 +12,10 @@ import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
 import { APMName } from '../models/APMName';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { takeUntil } from 'rxjs/operators';
+import { first, map, mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
 import './APMClient.scss';
+import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 
 @Service()
 export class APMClient {
@@ -38,21 +40,46 @@ export class APMClient {
     [APMName.WECHATPAY]: require('./images/wechatpay.svg'),
     [APMName.ZIP]: require('./images/zip.svg'),
   };
+  private destroy$: Observable<void>;
 
   constructor(
     private apmConfigResolver: APMConfigResolver,
     private messageBus: IMessageBus,
+    private apmFilterService: APMFilterService,
+    private configProvider: ConfigProvider,
   ) {
+    this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
   init(config: IAPMConfig): Observable<undefined> {
-    try {
-      this.apmConfigResolver.resolve(config).apmList.forEach(itemConfig => this.insertAPMButton(itemConfig as IAPMItemConfig));
-    } catch (error) {
-      return throwError(() => error);
-    }
+    return this.filter(config).pipe(
+      tap((list: IAPMItemConfig[]) => {
+        list.forEach((item: IAPMItemConfig) => this.insertAPMButton(item));
+      }),
+      mapTo(undefined),
+    );
+  }
 
-    return of(undefined);
+  private filter(config: IAPMConfig): Observable<IAPMItemConfig[]> {
+    const jwt = merge(
+      this.messageBus.pipe(
+        ofType(PUBLIC_EVENTS.UPDATE_JWT),
+        map(event => event.data.newJwt)),
+      this.configProvider.getConfig$().pipe(map(config => config.jwt), first()),
+    );
+
+    return combineLatest([jwt, this.apmConfigResolver.resolve(config)]).pipe(
+      tap(console.error),
+      switchMap(([updatedJwt, config]) => this.apmFilterService.filter(config.apmList as IAPMItemConfig[], updatedJwt.newJwt)),
+      takeUntil(this.destroy$),
+    );
+  }
+
+  private removeDuplicate(apmItemConfig: IAPMItemConfig): void {
+    const child: HTMLElement = document.getElementById(apmItemConfig.name);
+    if (child) {
+      document.getElementById(apmItemConfig.placement).removeChild(child);
+    }
   }
 
   private insertAPMButton(apmItemConfig: IAPMItemConfig) {
@@ -62,7 +89,7 @@ export class APMClient {
   private createButtonForApmItem(apmItemConfig: IAPMItemConfig): HTMLElement {
     const button = DomMethods.createHtmlElement({ class: 'st-apm-button' }, 'div');
     if (this.apmIcons[apmItemConfig.name]) {
-      button.innerHTML = `<img src='${this.apmIcons[apmItemConfig.name]}' alt='${apmItemConfig.name}' class='st-apm-button__img'>`;
+      button.innerHTML = `<img src='${this.apmIcons[apmItemConfig.name]}' alt='${apmItemConfig.name}' id='${apmItemConfig.name}' class='st-apm-button__img'>`;
     }
     button.addEventListener('click', (event) => this.onAPMButtonClick(event, apmItemConfig));
 
