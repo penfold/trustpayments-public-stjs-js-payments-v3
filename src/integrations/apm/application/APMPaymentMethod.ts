@@ -1,16 +1,15 @@
+import { mapTo } from 'rxjs/operators';
 import { forkJoin, NEVER, Observable, of, switchMap } from 'rxjs';
 import { Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
-import { mapTo } from 'rxjs/operators';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { IAPMConfig } from '../models/IAPMConfig';
-import { NoThreeDSRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/NoThreeDSRequestProcessingService';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
@@ -18,13 +17,14 @@ import { IAPMGatewayResponse } from '../models/IAPMGatewayResponse';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { APMRequestPayloadFactory } from '../services/apm-request-payload-factory/APMRequestPayloadFactory';
 import { EventScope } from '../../../application/core/models/constants/EventScope';
+import { APMRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/APMRequestProcessingService';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class APMPaymentMethod implements IPaymentMethod<IAPMConfig, any, IRequestTypeResponse> {
 
   constructor(
     private frameQueryingService: IFrameQueryingService,
-    private requestProcessingService: NoThreeDSRequestProcessingService,
+    private requestProcessingService: APMRequestProcessingService,
     private messageBus: IMessageBus,
     private apmRequestPayloadFactory: APMRequestPayloadFactory
   ) {
