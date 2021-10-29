@@ -4,6 +4,7 @@ import { ApplePaySessionErrorCode } from './application/core/integrations/apple-
 import { IApplePaySessionConstructor } from './client/integrations/apple-pay/apple-pay-session-service/IApplePaySessionConstructor';
 import { ICardinal } from './client/integrations/cardinal-commerce/ICardinal';
 import { IGoogleClient } from './integrations/google-pay/models/IGooglePayClient';
+import { ISeon } from './application/core/integrations/seon/ISeon';
 
 interface IApplePayErrorConstructor {
   new (
@@ -19,5 +20,6 @@ declare global {
     ApplePaySession: IApplePaySessionConstructor | undefined;
     Cardinal: ICardinal | undefined;
     google: IGoogleClient | undefined;
+    seon: ISeon | undefined;
   }
 }

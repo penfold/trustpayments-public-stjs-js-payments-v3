@@ -1,12 +1,16 @@
 import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudControlDataProvider';
-import { from, Observable, of, switchMap } from 'rxjs';
-import { Service } from 'typedi';
+import { from, Observable, switchMap } from 'rxjs';
+import { Inject, Service } from 'typedi';
 import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
-import { Uuid } from '../../../core/shared/uuid/Uuid';
+import { Uuid } from '../../shared/uuid/Uuid';
+import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
 
 @Service()
-export class Seon implements IFraudControlDataProvider<undefined> {
+export class SeonFraudControlDataProvider implements IFraudControlDataProvider<undefined> {
+  constructor(@Inject(WINDOW) private window: Window) {
+  }
+  
   init(): Observable<void> {
     return this.insertSeonLibrary().pipe(
       switchMap(() => this.configureSeon()),
@@ -15,8 +19,7 @@ export class Seon implements IFraudControlDataProvider<undefined> {
 
   getTransactionId(): Observable<string | null> {
     return new Observable(observer => {
-      // @ts-ignore
-      window.seon.getBase64Session((data: string) => {
+      this.window.seon.getBase64Session((data: string | null) => {
         if (data) {
           observer.next(data);
           observer.complete();
@@ -35,8 +38,7 @@ export class Seon implements IFraudControlDataProvider<undefined> {
 
   private configureSeon(): Observable<void> {
     return new Observable(observer => {
-      // @ts-ignore
-      window.seon.config({
+      this.window.seon.config({
         host: this.getHostname(),
         session_id: Uuid.uuidv4(),
         audio_fingerprint: true,

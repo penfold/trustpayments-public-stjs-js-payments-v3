@@ -4,7 +4,7 @@ import { ContainerInstance, Service } from 'typedi';
 import { FraudControlDataProviderName } from './FraudControlProviderName.enum';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { mapTo, switchMap } from 'rxjs/operators';
-import { Seon } from '../../integrations/seon/Seon';
+import { SeonFraudControlDataProvider } from '../../integrations/seon/SeonFraudControlDataProvider';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
 
 @Service()
@@ -32,7 +32,7 @@ export class FraudControlServiceSelector {
   }
 
   private resolveProviderServiceType(): Observable<FraudControlDataProviderName> {
-    return of(FraudControlDataProviderName.CYBERTONICA);
+    return of(FraudControlDataProviderName.SEON);
   }
 
   private initProviderService(serviceType: FraudControlDataProviderName): Observable<IFraudControlDataProvider<unknown>> {
@@ -47,7 +47,7 @@ export class FraudControlServiceSelector {
         );
       }
       case FraudControlDataProviderName.SEON: {
-        const seon = this.container.get(Seon);
+        const seon = this.container.get(SeonFraudControlDataProvider);
 
         return seon.init().pipe(mapTo(seon));
       }
