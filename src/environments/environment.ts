@@ -50,4 +50,7 @@ export const environment = {
   SENTRY_WHITELIST_URLS: ['https://webservices.securetrading.net'],
   THREEDS_TERM_URL: 'https://payments.securetrading.net/process/payments/threedsmpilistener',
   BROWSER_DATA_URL: 'https://brw.3ds.trustpayments.dev/3dss/brw/browserData',
+  SEON: {
+    LIBRARY_URL: 'https://cdn.seondf.com/js/v4/agent.js',
+  },
 };
