@@ -69,7 +69,6 @@ export class APMClient {
     );
 
     return combineLatest([jwt, this.apmConfigResolver.resolve(config)]).pipe(
-      tap(console.error),
       switchMap(([updatedJwt, config]) => this.apmFilterService.filter(config.apmList as IAPMItemConfig[], updatedJwt.newJwt)),
       takeUntil(this.destroy$),
     );
