@@ -5,7 +5,6 @@ import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { anything, instance, mock, when } from 'ts-mockito';
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
-import { StoreConfigProvider } from '../../../../application/core/services/store-config-provider/StoreConfigProvider';
 
 describe('APMValidator', () => {
   let sut: APMValidator;
@@ -68,7 +67,7 @@ describe('APMValidator', () => {
       [[configFactory(APMName.ALIPAY), configFactory(APMName.PRZELEWY24 )] as IAPMItemConfig[], {
         'billingcountryiso2a': 'PL',
         'currencyiso3a': 'USD',
-      }, '"orderreference" is required'],
+      }, '"returnUrl" is required'],
     ])('should return an error when jwt fields are missing for any of APMs from apmList in config',
       (apmConfigList: IAPMItemConfig[], jwt, expectedError: string) => {
         when(jwtDecoder.decode(anything())).thenReturn({ payload: jwt });
