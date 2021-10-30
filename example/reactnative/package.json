@@ -26,8 +26,8 @@
     "react-native-webview": "11.14.0"
   },
   "devDependencies": {
-    "@babel/core": "7.15.8",
-    "@babel/runtime": "7.15.4",
+    "@babel/core": "7.16.0",
+    "@babel/runtime": "7.16.0",
     "@react-native-community/eslint-config": "3.0.1",
     "@types/jest": "27.0.2",
     "@types/react-native": "0.65.5",
