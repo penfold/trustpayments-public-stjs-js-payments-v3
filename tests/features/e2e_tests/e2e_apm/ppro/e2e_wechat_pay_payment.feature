@@ -32,9 +32,8 @@ Feature: E2E WECHATPAY Payments
       | requesttypedescriptions | AUTH                |
       | billingcountryiso2a     | CN                  |
       | currencyiso3a           | EUR                 |
-      | baseamount              | 123                 |
+      | baseamount              | 70                 |
       | billingemail            | FirstName@email.pl  |
-      | billingdob              | 1980-02-01          |
       | billingfirstname        | <billingfirstname>  |
       | billinglastname         | <billinglastname>   |
       | billingprefixname       | <billingprefixname> |
@@ -85,7 +84,7 @@ Feature: E2E WECHATPAY Payments
       | key                     | value |
       | requesttypedescriptions | AUTH  |
       | currencyiso3a           | USD   |
-      | billingcountryiso2a     | UY    |
+      | billingcountryiso2a     | CN    |
       | baseamount              | 123   |
     When User opens example page WITH_APM
     And User waits for Pay button to be active

@@ -114,7 +114,6 @@ Feature: E2E TRUSTLY Payments
       | billingcountryiso2a | currencyiso3a |
       | PL                  | CHF           |
       |                     | CHF           |
-      | EE                  | DKK           |
       |                     | EUR           |
 
 
