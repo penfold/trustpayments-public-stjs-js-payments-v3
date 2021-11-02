@@ -8,6 +8,7 @@ import { Service } from 'typedi';
 import { Debug } from '../../../../shared/Debug';
 import { APMCountryIso } from '../../models/APMCountryIso';
 import { APMCurrencyIso } from '../../models/APMCurrencyIso';
+import { APMBillingNameFields } from '../../models/APMPayloadFields';
 
 @Service()
 export class APMFilterService {
@@ -25,7 +26,17 @@ export class APMFilterService {
     return this.jwtDecoder.decode<IStJwtPayload>(jwt).payload;
   }
 
+  private isBillingNameFieldInJwt(payload: IStJwtPayload): boolean {
+    return Object.keys(payload).some((property: string) => APMBillingNameFields.includes(property) && payload[property].length !== 0);
+  }
+
   private isAPMAvailable(item: IAPMItemConfig, payload: IStJwtPayload): boolean {
+    if (!this.isBillingNameFieldInJwt(payload)) {
+      Debug.log(`Provided jwt does not include one of the required fields: ${APMBillingNameFields}.`);
+
+      return false;
+    }
+
     if (!APMAvailabilityMap.has(item.name)) {
       Debug.log(`Payment method ${item.name} is not available.`);
 

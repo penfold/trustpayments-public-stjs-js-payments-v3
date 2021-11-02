@@ -1,3 +1,5 @@
+export const APMBillingNameFields: string[] = ['billingprefixname', 'billingfirstname', 'billingmiddlename', 'billinglastname', 'billingsuffixname'];
+
 export enum APMPayloadFields {
   billingcountryiso2a = 'billingcountryiso2a',
   currencyiso3a = 'currencyiso3a',
