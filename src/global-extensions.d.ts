@@ -5,6 +5,7 @@ import { IApplePaySessionConstructor } from './client/integrations/apple-pay/app
 import { ICardinal } from './client/integrations/cardinal-commerce/ICardinal';
 import { IGoogleClient } from './integrations/google-pay/models/IGooglePayClient';
 import { ISeon } from './application/core/integrations/seon/ISeon';
+import { IAFCybertonica } from './application/core/integrations/cybertonica/IAFCybertonica';
 
 interface IApplePayErrorConstructor {
   new (
@@ -21,5 +22,6 @@ declare global {
     Cardinal: ICardinal | undefined;
     google: IGoogleClient | undefined;
     seon: ISeon | undefined;
+    AFCYBERTONICA: IAFCybertonica;
   }
 }

@@ -11,7 +11,7 @@ export class FraudControlService {
   getTransactionId(): Observable<string | null> {
     return this.fraudControlServiceSelector.getFraudControlDataProvider().pipe(
       switchMap(fraudControlDataProvider => fraudControlDataProvider.getTransactionId()),
-      catchError(() => of('')),
+      catchError(() => of(null)),
     );
   }
 }

@@ -5,16 +5,24 @@ import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { Uuid } from '../../shared/uuid/Uuid';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
+import { shareReplay } from 'rxjs/operators';
 
 @Service()
 export class SeonFraudControlDataProvider implements IFraudControlDataProvider<undefined> {
+  private initResult: Observable<void>;
+
   constructor(@Inject(WINDOW) private window: Window) {
   }
   
   init(): Observable<void> {
-    return this.insertSeonLibrary().pipe(
-      switchMap(() => this.configureSeon()),
-    );
+    if (!this.initResult) {
+      this.initResult = this.insertSeonLibrary().pipe(
+        switchMap(() => this.configureSeon()),
+        shareReplay(1),
+      );
+    }
+    
+    return this.initResult;
   }
 
   getTransactionId(): Observable<string | null> {
