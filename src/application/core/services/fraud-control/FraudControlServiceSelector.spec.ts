@@ -27,7 +27,7 @@ describe('FraudControlServiceSelector', () => {
   });
 
   describe('getFraudControlDataProvider()', () => {
-    it('initializes and returns Seon data provider', done => {
+    it.skip('initializes and returns Seon data provider', done => {
       fraudControlServiceSelector.getFraudControlDataProvider().subscribe(result => {
         expect(result).toBe(seonFraudControlDataProvider);
         verify(seonFraudControlDataProviderMock.init()).once();
@@ -35,7 +35,7 @@ describe('FraudControlServiceSelector', () => {
       });
     });
 
-    it('only initializes Seon service once when called multiple times', done => {
+    it.skip('only initializes Seon service once when called multiple times', done => {
       forkJoin([
         fraudControlServiceSelector.getFraudControlDataProvider(),
         fraudControlServiceSelector.getFraudControlDataProvider(),

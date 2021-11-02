@@ -32,7 +32,7 @@ export class FraudControlServiceSelector {
   }
 
   private resolveProviderServiceType(): Observable<FraudControlDataProviderName> {
-    return of(FraudControlDataProviderName.SEON);
+    return of(FraudControlDataProviderName.CYBERTONICA);
   }
 
   private initProviderService(serviceType: FraudControlDataProviderName): Observable<IFraudControlDataProvider<unknown>> {
