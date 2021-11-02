@@ -38,8 +38,8 @@ const wechatpayJwtSchema = Joi.object().keys({
 const zipJwtSchema = Joi.object().keys({
   accounttypedescription: Joi.string().max(25).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
-  baseamount: Joi.string().required(),
-  mainamount: Joi.string().required(),
+  baseamount: Joi.string().max(13),
+  mainamount: Joi.string().max(14),
   requesttypedescriptions: Joi.array().required(),
   sitereference: Joi.string().max(50).required(),
   billingfirstname: Joi.string().max(127).required(),
