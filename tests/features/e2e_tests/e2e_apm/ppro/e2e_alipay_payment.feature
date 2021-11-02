@@ -15,7 +15,6 @@ Feature: E2E Alipay Payments
       | requesttypedescriptions | AUTH               |
       | orderreference          | order-01           |
       | baseamount              | 70                 |
-      | orderreference          | order-01           |
       | billingfirstname        | FirstName          |
       | billingemail            | FirstName@email.pl |
       | billingcountryiso2a     | GB                 |
