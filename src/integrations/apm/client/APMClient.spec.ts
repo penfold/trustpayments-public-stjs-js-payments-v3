@@ -13,7 +13,6 @@ import { of } from 'rxjs';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
-import clearAllMocks = jest.clearAllMocks;
 import resetAllMocks = jest.resetAllMocks;
 
 describe('APMClient', () => {
@@ -32,16 +31,12 @@ describe('APMClient', () => {
         name: APMName.ZIP,
         placement: 'test-placement',
         returnUrl: 'test-url',
-        // cancelRedirectUrl: 'cancelUrl',
-        // errorRedirectUrl: 'errorUrl',
       },
-      // {
-      //   name: APMName.ZIP,
-      //   placement: 'test-placement-2',
-      //   successRedirectUrl: 'successUrl',
-      //   cancelRedirectUrl: 'cancelUrl',
-      //   errorRedirectUrl: 'errorUrl',
-      // },
+      {
+        name: APMName.ALIPAY,
+        placement: 'test-placement-2',
+        returnUrl: 'test-url',
+      },
     ],
   };
   let apmClient: APMClient;
@@ -56,13 +51,12 @@ describe('APMClient', () => {
       name: APMName.ZIP,
       placement: 'test-placement',
       returnUrl: 'test-url',
-    }, 
-    // {
-    //   name: APMName.ALIPAY,
-    //   placement: 'test-placement-2',
-    //   returnUrl: 'test-url',
-    // }
-  ]));
+    }, {
+      name: APMName.ALIPAY,
+      placement: 'test-placement-2',
+      returnUrl: 'test-url',
+    },
+    ]));
     apmClient = new APMClient(instance(apmConfigResolver), messageBus, instance(apmFilterService), instance(configProviderMock));
     document.body.innerHTML = '<div id="test-placement"></div><div id="test-placement-2"></div>';
   });
@@ -74,7 +68,7 @@ describe('APMClient', () => {
       (done) => {
         apmClient.init(testConfig).subscribe(() => {
           expect(document.body.innerHTML.replace(/"/g, '\''))
-            .toEqual(`<div id='test-placement'><div class='st-apm-button'><img src='${zipIconEncoded}' alt='${APMName.ZIP}' class='st-apm-button__img'></div></div><div id='test-placement-2'><div class='st-apm-button'><img src='${zipIconEncoded}' alt='${APMName.ZIP}' class='st-apm-button__img'></div></div>`);
+            .toEqual(`<div id='test-placement'><div class='st-apm-button'><img src='${zipIconEncoded}' alt='${APMName.ZIP}' id='${APMName.ZIP}' class='st-apm-button__img'></div></div><div id='test-placement-2'><div class='st-apm-button'><img src='${zipIconEncoded}' alt='${APMName.ALIPAY}' id='${APMName.ALIPAY}' class='st-apm-button__img'></div></div>`);
           done();
         });
       });
@@ -97,11 +91,11 @@ describe('APMClient', () => {
 
             insertedAPMButton.dispatchEvent(new Event('click'));
 
-            verify(messageBusSpy.publish(deepEqual(publishedEvent))).once();
+            verify(messageBusSpy.publish(deepEqual(publishedEvent))).times(1);
 
             messageBus.publish({ type: PUBLIC_EVENTS.APM_REDIRECT, data: testRedirectUrl });
 
-            verify(domMethodsSpy.redirect(testRedirectUrl)).once();
+            verify(domMethodsSpy.redirect(testRedirectUrl)).called();
           });
         done();
       });
