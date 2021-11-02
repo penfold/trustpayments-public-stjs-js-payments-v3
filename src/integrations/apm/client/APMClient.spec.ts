@@ -1,9 +1,8 @@
-import { anything, instance, mock, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { APMConfigResolver } from '../services/apm-config-resolver/APMConfigResolver';
 import { APMClient } from './APMClient';
 import { IAPMConfig } from '../models/IAPMConfig';
 import { APMName } from '../models/APMName';
-import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
@@ -13,16 +12,14 @@ import { IStartPaymentMethod } from '../../../application/core/services/payments
 import { of } from 'rxjs';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
+import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import clearAllMocks = jest.clearAllMocks;
 import resetAllMocks = jest.resetAllMocks;
 
 describe('APMClient', () => {
   let apmConfigResolver: APMConfigResolver;
   let apmFilterService: APMFilterService;
-  const messageBus = {
-    publish: jest.fn(),
-    pipe: jest.fn().mockRejectedValue(of(null)),
-  } as unknown as IMessageBus;
+  const messageBus = new SimpleMessageBus();
 
   const configProviderMock = mock<ConfigProvider>();
   const testConfig: IAPMConfig = {
@@ -34,17 +31,17 @@ describe('APMClient', () => {
       {
         name: APMName.ZIP,
         placement: 'test-placement',
-        successRedirectUrl: 'successUrl',
-        cancelRedirectUrl: 'cancelUrl',
-        errorRedirectUrl: 'errorUrl',
+        returnUrl: 'test-url',
+        // cancelRedirectUrl: 'cancelUrl',
+        // errorRedirectUrl: 'errorUrl',
       },
-      {
-        name: APMName.ZIP,
-        placement: 'test-placement-2',
-        successRedirectUrl: 'successUrl',
-        cancelRedirectUrl: 'cancelUrl',
-        errorRedirectUrl: 'errorUrl',
-      },
+      // {
+      //   name: APMName.ZIP,
+      //   placement: 'test-placement-2',
+      //   successRedirectUrl: 'successUrl',
+      //   cancelRedirectUrl: 'cancelUrl',
+      //   errorRedirectUrl: 'errorUrl',
+      // },
     ],
   };
   let apmClient: APMClient;
@@ -59,11 +56,13 @@ describe('APMClient', () => {
       name: APMName.ZIP,
       placement: 'test-placement',
       returnUrl: 'test-url',
-    }, {
-      name: APMName.ALIPAY,
-      placement: 'test-placement-2',
-      returnUrl: 'test-url',
-    }]));
+    }, 
+    // {
+    //   name: APMName.ALIPAY,
+    //   placement: 'test-placement-2',
+    //   returnUrl: 'test-url',
+    // }
+  ]));
     apmClient = new APMClient(instance(apmConfigResolver), messageBus, instance(apmFilterService), instance(configProviderMock));
     document.body.innerHTML = '<div id="test-placement"></div><div id="test-placement-2"></div>';
   });
@@ -81,8 +80,9 @@ describe('APMClient', () => {
       });
 
     it('should assign click event listener to inserted buttons, that will publish start payment method message, subscribe to apm redirect method and do a redirect', (done) => {
-      jest.spyOn(DomMethods, 'redirect').mockImplementation(() => {
-      });
+      const messageBusSpy = spy(messageBus);
+      const domMethodsSpy = spy(DomMethods);
+
       apmClient.init(testConfig).subscribe(() => {
         document.body.querySelectorAll('div.st-apm-button')
           .forEach((insertedAPMButton, index) => {
@@ -93,16 +93,16 @@ describe('APMClient', () => {
                 name: APMPaymentMethodName,
               },
             };
-            const testRedirectUrl = (testConfig.apmList[index] as IAPMItemConfig).successRedirectUrl;
-            messageBus.pipe = jest.fn().mockReturnValue(of({ data: testRedirectUrl }));
+            const testRedirectUrl = (testConfig.apmList[index] as IAPMItemConfig).returnUrl;
 
             insertedAPMButton.dispatchEvent(new Event('click'));
 
-            expect(messageBus.publish).toHaveBeenCalledWith(publishedEvent);
-            expect(DomMethods.redirect).toHaveBeenCalledWith(testRedirectUrl);
-            clearAllMocks();
-          });
+            verify(messageBusSpy.publish(deepEqual(publishedEvent))).once();
 
+            messageBus.publish({ type: PUBLIC_EVENTS.APM_REDIRECT, data: testRedirectUrl });
+
+            verify(domMethodsSpy.redirect(testRedirectUrl)).once();
+          });
         done();
       });
     });
