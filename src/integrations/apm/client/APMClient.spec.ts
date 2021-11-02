@@ -12,9 +12,9 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
 import { of } from 'rxjs';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import clearAllMocks = jest.clearAllMocks;
 import resetAllMocks = jest.resetAllMocks;
-import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 
 describe('APMClient', () => {
   let apmConfigResolver: APMConfigResolver;
@@ -54,19 +54,15 @@ describe('APMClient', () => {
     apmConfigResolver = mock(APMConfigResolver);
     apmFilterService = mock(APMFilterService);
     when(apmConfigResolver.resolve(anything())).thenReturn(of(testConfig));
-    when(configProviderMock.getConfig$()).thenReturn(of(anything()));
-    when(apmFilterService.filter(anything())).thenReturn(of([{
+    when(configProviderMock.getConfig$()).thenReturn(of({ jwt: '' }));
+    when(apmFilterService.filter(anything(), anything())).thenReturn(of([{
       name: APMName.ZIP,
       placement: 'test-placement',
-      successRedirectUrl: 'successUrl',
-      cancelRedirectUrl: 'cancelUrl',
-      errorRedirectUrl: 'errorUrl',
+      returnUrl: 'test-url',
     }, {
-      name: APMName.ZIP,
+      name: APMName.ALIPAY,
       placement: 'test-placement-2',
-      successRedirectUrl: 'successUrl',
-      cancelRedirectUrl: 'cancelUrl',
-      errorRedirectUrl: 'errorUrl',
+      returnUrl: 'test-url',
     }]));
     apmClient = new APMClient(instance(apmConfigResolver), messageBus, instance(apmFilterService), instance(configProviderMock));
     document.body.innerHTML = '<div id="test-placement"></div><div id="test-placement-2"></div>';
