@@ -29,34 +29,35 @@ export class APMFilterService {
     return this.jwtDecoder.decode<IStJwtPayload>(jwt).payload;
   }
 
-  private getUnavailableAPMs(payload: IStJwtPayload, apmList: IAPMItemConfig[]) {
+  private getUndefinedJwtFields(item: IAPMItemConfig, payload: IStJwtPayload): IStJwtPayload[] {
+    return APMAvailabilityMap.get(item.name).payload.filter((property: IStJwtPayload) => !Object.keys(payload).includes(property as string));
+  }
+
+  private getUnavailableAPMs(payload: IStJwtPayload, apmList: IAPMItemConfig[]): { countries: APMName[], currencies: APMName[] } {
     let countries: APMName[] = [];
     let currencies: APMName[] = [];
 
     APMAvailabilityMap.forEach((value, key) => {
-      if (!value.countries.includes(payload.billingcountryiso2a as APMCountryIso) && value.countries.length !== 0) {
+      if (!value.countries.includes(payload.billingcountryiso2a as APMCountryIso) && value.countries.length) {
         countries.push(key);
       }
 
-      if (!value.currencies.includes(payload.currencyiso3a as APMCurrencyIso) && value.currencies.length !== 0) {
+      if (!value.currencies.includes(payload.currencyiso3a as APMCurrencyIso) && value.currencies.length) {
         currencies.push(key);
       }
     });
 
-    countries = apmList.map((item: IAPMItemConfig) => {
+    countries = (apmList.map((item: IAPMItemConfig) => {
       if (countries.includes(item.name)) {
         return item.name;
       }
-    });
+    })).filter(item => item);
 
-    currencies = apmList.map((item: IAPMItemConfig) => {
+    currencies = (apmList.map((item: IAPMItemConfig) => {
       if (currencies.includes(item.name)) {
         return item.name;
       }
-    });
-
-    countries = countries.filter(item => item);
-    currencies = currencies.filter(item => item);
+    })).filter(item => item);
 
     if (countries.length) {
       Debug.warn(`Your country: ${payload.billingcountryiso2a} is not supported by ${countries}.`);
@@ -82,10 +83,10 @@ export class APMFilterService {
       return false;
     }
 
-    const undefinedFields = APMAvailabilityMap.get(item.name).payload.filter((property: IStJwtPayload) => !Object.keys(payload).includes(property as string));
+    const undefinedJwtFields = this.getUndefinedJwtFields(item, payload);
 
-    if (undefinedFields.length) {
-      Debug.warn(`Jwt does not include ${undefinedFields} required by ${item.name}`);
+    if (undefinedJwtFields.length) {
+      Debug.warn(`Jwt does not include ${undefinedJwtFields} required by ${item.name}`);
 
       return false;
     }
