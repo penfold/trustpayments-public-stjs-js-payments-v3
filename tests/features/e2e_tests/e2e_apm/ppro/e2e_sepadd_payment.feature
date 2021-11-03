@@ -221,7 +221,7 @@ Feature: E2E SEPADD Payments
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value                        |
-      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY     |
+      | requesttypedescriptions | THREEDQUERY RISKDEC          |
       | baseamount              | 70                           |
       | billingfirstname        | FirstName                    |
       | billingemail            | FirstName@email.pl           |

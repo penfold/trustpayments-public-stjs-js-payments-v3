@@ -180,12 +180,12 @@ Feature: E2E UNIONPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                    |
-      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
-      | baseamount              | 70                       |
-      | billingfirstname        | FirstName                |
-      | billingcountryiso2a     | CN                       |
-      | currencyiso3a           | CNY                      |
+      | key                     | value               |
+      | requesttypedescriptions | THREEDQUERY RISKDEC |
+      | baseamount              | 70                  |
+      | billingfirstname        | FirstName           |
+      | billingcountryiso2a     | CN                  |
+      | currencyiso3a           | CNY                 |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses UNIONPAY from APM list
