@@ -76,7 +76,7 @@ Feature: E2E BITPAY Payments
     Examples:
       | billingcountryiso2a | currencyiso3a |
       | PL                  | CHF           |
-      | GB                  | EUR           |
+      | GB                  | BYN           |
       | DE                  |               |
 
 

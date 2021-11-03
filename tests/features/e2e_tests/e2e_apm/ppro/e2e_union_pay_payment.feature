@@ -77,7 +77,7 @@ Feature: E2E UNIONPAY Payments
     Examples:
       | billingcountryiso2a | currencyiso3a |
       | CN                  | PLN           |
-      | PL                  | EUR           |
+      | PL                  | BYN           |
       | GB                  |               |
 
 

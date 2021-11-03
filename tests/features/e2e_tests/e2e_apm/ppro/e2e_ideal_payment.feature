@@ -66,8 +66,6 @@ Feature: E2E IDEAL Payments
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
     Then IDEAL is not available on APM list
-    When User chooses IDEAL from APM list
-    Then User will see notification frame text: "<notification_text>"
 
     Examples:
       | billingcountryiso2a | currencyiso3a |
