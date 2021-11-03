@@ -6,6 +6,7 @@ import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { IStRequest } from '../../../models/IStRequest';
 import { APMRequestProcessingService } from './APMRequestProcessingService';
+import { TermUrlRequestProcessor } from '../request-processors/TermUrlRequestProcessor';
 
 describe('APMRequestProcessingService', () => {
   let requestProcessingChainFactoryMock: RequestProcessingChainFactory;
@@ -31,7 +32,9 @@ describe('APMRequestProcessingService', () => {
     it('should create a request processing chain with proper processors', done => {
       ampRequestProcessingService.init(jsInitResponse).subscribe(() => {
         verify(requestProcessingChainFactoryMock.create(
-          deepEqual([]),
+          deepEqual([
+            TermUrlRequestProcessor,
+          ]),
           deepEqual([]),
         )).once();
         done();
