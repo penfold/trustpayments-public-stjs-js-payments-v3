@@ -176,14 +176,14 @@ Feature: E2E REDPAGOS Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                    |
-      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
-      | baseamount              | 70                       |
-      | billingfirstname        | FirstName                |
-      | billingemail            | FirstName@email.pl       |
-      | billingdob              | 1980-02-01               |
-      | billingcountryiso2a     | UY                       |
-      | currencyiso3a           | USD                      |
+      | key                     | value               |
+      | requesttypedescriptions | THREEDQUERY RISKDEC |
+      | baseamount              | 70                  |
+      | billingfirstname        | FirstName           |
+      | billingemail            | FirstName@email.pl  |
+      | billingdob              | 1980-02-01          |
+      | billingcountryiso2a     | UY                  |
+      | currencyiso3a           | USD                 |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses REDPAGOS from APM list

@@ -20,7 +20,7 @@ export class APMFilterService {
 
   filter(apmList: IAPMItemConfig[], jwt?: string): Observable<IAPMItemConfig[]> {
     const payload: IStJwtPayload = this.getJwtPayload(jwt ? jwt : this.configProvider.getConfig().jwt);
-    const unavailableAPMs = this.getUnavailableAPMs(payload);
+    const unavailableAPMs = this.getUnavailableAPMs(payload, apmList);
 
     return of(apmList.filter((item: IAPMItemConfig) => this.isAPMAvailable(item, payload, unavailableAPMs)));
   }
@@ -29,19 +29,34 @@ export class APMFilterService {
     return this.jwtDecoder.decode<IStJwtPayload>(jwt).payload;
   }
 
-  private getUnavailableAPMs(payload: IStJwtPayload) {
-    const countries: APMName[] = [];
-    const currencies: APMName[] = [];
+  private getUnavailableAPMs(payload: IStJwtPayload, apmList: IAPMItemConfig[]) {
+    let countries: APMName[] = [];
+    let currencies: APMName[] = [];
 
     APMAvailabilityMap.forEach((value, key) => {
-      if (!value.countries.includes(payload.billingcountryiso2a as APMCountryIso)) {
+      if (!value.countries.includes(payload.billingcountryiso2a as APMCountryIso) && value.countries.length !== 0) {
         countries.push(key);
       }
 
-      if (!value.currencies.includes(payload.currencyiso3a as APMCurrencyIso)) {
+      if (!value.currencies.includes(payload.currencyiso3a as APMCurrencyIso) && value.currencies.length !== 0) {
         currencies.push(key);
       }
     });
+
+    countries = apmList.map((item: IAPMItemConfig) => {
+      if (countries.includes(item.name)) {
+        return item.name;
+      }
+    });
+
+    currencies = apmList.map((item: IAPMItemConfig) => {
+      if (currencies.includes(item.name)) {
+        return item.name;
+      }
+    });
+
+    countries = countries.filter(item => item);
+    currencies = currencies.filter(item => item);
 
     if (countries.length) {
       Debug.warn(`Your country: ${payload.billingcountryiso2a} is not supported by ${countries}.`);

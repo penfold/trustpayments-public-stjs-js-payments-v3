@@ -164,13 +164,13 @@ Feature: E2E EPS Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                    |
-      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
-      | baseamount              | 70                       |
-      | billingfirstname        | FirstName                |
-      | billinglastname         | LastName                 |
-      | billingcountryiso2a     | AT                       |
-      | currencyiso3a           | EUR                      |
+      | key                     | value               |
+      | requesttypedescriptions | THREEDQUERY RISKDEC |
+      | baseamount              | 70                  |
+      | billingfirstname        | FirstName           |
+      | billinglastname         | LastName            |
+      | billingcountryiso2a     | AT                  |
+      | currencyiso3a           | EUR                 |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses EPS from APM list
@@ -261,7 +261,7 @@ Feature: E2E EPS Payments
     When User will select Succeeded response and submit
     Then User will be sent to page with url "this_is_not_existing_page_success_redirect.com" having params
       | key                    | value |
-      | paymenttypedescription | EPS  |
+      | paymenttypedescription | EPS   |
       | errorcode              | 0     |
       | settlestatus           | 100   |
 #      | orderreference         | 123456 | commented on purpose
@@ -286,7 +286,7 @@ Feature: E2E EPS Payments
     When User will select Failed Unknown response and submit
     Then User will be sent to page with url "this_is_not_existing_page_error_redirect.com" having params
       | key                    | value |
-      | paymenttypedescription | EPS  |
+      | paymenttypedescription | EPS   |
       | errorcode              | 70000 |
       | settlestatus           | 3     |
 #      | orderreference         | 123456 |  commented on purpose
@@ -311,7 +311,7 @@ Feature: E2E EPS Payments
     When User will select Failed Unknown response and submit
     Then User will be sent to page with url "this_is_not_existing_page_error_redirect_override.com" having params
       | key                    | value |
-      | paymenttypedescription | EPS  |
+      | paymenttypedescription | EPS   |
       | errorcode              | 70000 |
       | settlestatus           | 3     |
 #      | orderreference         | 123456 | commented on purpose
