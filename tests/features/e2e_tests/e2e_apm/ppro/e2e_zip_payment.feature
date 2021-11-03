@@ -1,240 +1,380 @@
-
 #Will be uncommented when ZIP will be supported by Gateway
 
-##@STJS-2437 - Tests automation task for Zip
+#@STJS-2437 - Tests automation task for Zip
 #Feature: E2E ZIP Payments
 #  As a user
 #  I want to use ZIP payment
 #  If I use alternative payment method
 #
 #
-#  Scenario Outline: Unsuccessful trigger of payment ZIP with missing required fields
-#    Given JS library configured by inline config BASIC_CONFIG
-#    And JS library configured by inline configAPMs BASIC_CONFIG_APM
-#    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value                 |
-#      | locale                  | en_GB                 |
-#      | accounttypedescription  | ECOM                  |
-#      | requesttypedescriptions | AUTH                  |
-#      | billingfirstname        | <billingfirstname>    |
-#      | billinglastname         | <billinglastname>     |
-#      | billingemail            | <billingemail>        |
-#      | billingpremise          | <billingpremise>      |
-#      | billingpostcode         | <billingpostcode>     |
-#      | billingcountryiso2a     | <billingcountryiso2a> |
-#      | orderreference          | <orderreference>      |
-#      | currencyiso3a           | <currencyiso3a>       |
-#      | baseamount              | <baseamount>          |
-#    And User opens example page WITH_APM
-#    And User waits for whole form to be displayed
-#    And User waits for Pay button to be active
-#    When User chooses ZIP from APM's list
-#    Then User will see notification frame text: "No account found"
-#
-#    Examples:
-#      | billingfirstname | billinglastname | billingemail    | billingpremise | billingpostcode | billingcountryiso2a | orderreference | currencyiso3a | baseamount |
-#      |                  |                 |                 |                |                 |                     |                |               |            |
-#      | FirstName        |                 |                 |                |                 |                     |                |               |            |
-#      | FirstName        | LastName        |                 |                |                 |                     |                |               |            |
-#      | FirstName        | LastName        | email@email.com |                |                 |                     |                |               |            |
-#      | FirstName        | LastName        | email@email.com | Premise        |                 |                     |                |               |            |
-#      | FirstName        | LastName        | email@email.com | Premise        | 22344           |                     |                |               |            |
-#      | FirstName        | LastName        | email@email.com | Premise        | 22344           | PL                  |                |               |            |
-#      | FirstName        | LastName        | email@email.com | Premise        | 22344           | US                  | 123456         |               |            |
-#      | FirstName        | LastName        | email@email.com | Premise        | 22344           | US                  | 123456         |               |            |
-#      | FirstName        | LastName        | email@email.com | Premise        | 22344           | US                  | 123456         | PLN           |            |
-#      | FirstName        | LastName        | email@email.com | Premise        | 22344           | US                  | 123456         | USD           |            |
-#
-#
-#  Scenario: Decline trigger of payment ZIP
+#  Scenario: Successful trigger of payment with accepted values for billingcountryiso2a and currencyiso3a
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value           |
-#      | locale                  | en_GB           |
-#      | accounttypedescription  | ECOM            |
 #      | requesttypedescriptions | AUTH            |
 #      | billingfirstname        | FirstName       |
 #      | billinglastname         | LastName        |
 #      | billingemail            | email@email.com |
 #      | billingpremise          | Premise         |
-#      | billingpostcode         | 22444           |
+#      | billingtown             | test            |
+#      | billingcounty           | test            |
+#      | billingstreet           | test            |
+#      | billingpostcode         | PO1 3AX         |
 #      | billingcountryiso2a     | GB              |
-#      | orderreference          | Reference       |
+#      | orderreference          | 123445          |
 #      | currencyiso3a           | GBP             |
-#      | baseamount              | 70000           |
+#      | baseamount              | 1000            |
 #    And User opens example page WITH_APM
-#    And User waits for whole form to be displayed
-#    And User waits for Pay button to be active
-#    When User chooses ZIP from APM's list
-#    Then User will see notification frame text: "Declined"
+#    And User focuses on APM payment methods section
+#    When User chooses ZIP from APM list
+#    Then User will be sent to apm page - zip
 #
 #
-#  Scenario Outline: Successful trigger of payment ZIP with accepted value (<billingcountryiso2a>) of billingcountryiso2a
+#  Scenario Outline: Unsuccessful init - not supported values for billingcountryiso2a and currencyiso3a
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value                 |
-#      | locale                  | en_GB                 |
-#      | accounttypedescription  | ECOM                  |
 #      | requesttypedescriptions | AUTH                  |
 #      | billingfirstname        | FirstName             |
 #      | billinglastname         | LastName              |
 #      | billingemail            | email@email.com       |
 #      | billingpremise          | Premise               |
-#      | billingpostcode         | 22444                 |
+#      | billingtown             | test                  |
+#      | billingcounty           | test                  |
+#      | billingstreet           | test                  |
+#      | billingpostcode         | PO1 3AX               |
 #      | billingcountryiso2a     | <billingcountryiso2a> |
-#      | orderreference          | Reference             |
-#      | currencyiso3a           | GBP                   |
-#      | baseamount              | 70                    |
+#      | orderreference          | 123445                |
+#      | currencyiso3a           | <currencyiso3a>       |
+#      | baseamount              | 1000                  |
 #    And User opens example page WITH_APM
-#    And User waits for whole form to be displayed
 #    And User waits for Pay button to be active
-#    When User chooses ZIP from APM's list
-#    Then User will be sent to page with url "XYZ" having params
+#    And User focuses on APM payment methods section
+#    Then ZIP is not available on APM list
 #
 #    Examples:
-#      | billingcountryiso2a |
-#      | AU                  |
-#      | NZ                  |
-#      | US                  |
-#      | GB                  |
-#      | ZA                  |
+#      | billingcountryiso2a | currencyiso3a |
+#      | UY                  | PLN           |
+#      | PL                  | USD           |
+#      |                     | USD           |
 #
 #
-#  Scenario Outline: Successful trigger of payment ZIP with accepted value (<currencyiso3a>) of currencyiso3a
+#  Scenario: Unsuccessful init - missing at least one of the billing name
+#    Given JS library configured by inline config BASIC_CONFIG
+#    And JS library configured by inline configAPMs BASIC_CONFIG_APM
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value     |
+#      | requesttypedescriptions | AUTH      |
+#      | billingfirstname        | FirstName |
+#      | billinglastname         | LastName  |
+#      | billingtown             | test      |
+#      | billingcounty           | test      |
+#      | billingstreet           | test      |
+#      | billingpostcode         | PO1 3AX   |
+#      | billingcountryiso2a     | GB        |
+#      | orderreference          | 123445    |
+#      | currencyiso3a           | GBP       |
+#      | baseamount              | 1000      |
+#    When User opens example page WITH_APM
+#    And User waits for Pay button to be active
+#    And User focuses on APM payment methods section
+#    Then ZIP is not available on APM list
+#
+#
+#  Scenario: Successful trigger of payment with updated jwt
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value           |
-#      | locale                  | en_GB           |
-#      | accounttypedescription  | ECOM            |
 #      | requesttypedescriptions | AUTH            |
 #      | billingfirstname        | FirstName       |
 #      | billinglastname         | LastName        |
 #      | billingemail            | email@email.com |
 #      | billingpremise          | Premise         |
-#      | billingpostcode         | 22444           |
+#      | billingtown             | test            |
+#      | billingcounty           | test            |
+#      | billingstreet           | test            |
+#      | billingpostcode         | PO1 3AX         |
 #      | billingcountryiso2a     | GB              |
-#      | orderreference          | Reference       |
-#      | currencyiso3a           | <currencyiso3a> |
-#      | baseamount              | 70              |
-#    And User opens example page WITH_APM
-#    And User waits for whole form to be displayed
-#    And User waits for Pay button to be active
-#    When User chooses ZIP from APM's list
-#    Then User will be sent to page with url "XYZ" having params
+#      | orderreference          | 123445          |
+#      | currencyiso3a           | GBP             |
+#      | baseamount              | 1000            |
+#    And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
+#      | key                     | value           |
+#      | requesttypedescriptions | AUTH            |
+#      | billingfirstname        | FirstNameUpdate |
+#      | billinglastname         | LastName        |
+#      | billingemail            | email@email.com |
+#      | billingpremise          | Premise         |
+#      | billingtown             | test            |
+#      | billingcounty           | test            |
+#      | billingstreet           | test            |
+#      | billingpostcode         | PO1 3AX         |
+#      | billingcountryiso2a     | AU              |
+#      | orderreference          | 123445          |
+#      | currencyiso3a           | USD             |
+#      | baseamount              | 1500            |
+#    And User calls updateJWT function by filling amount field
+#    When User chooses ZIP from APM list
+#    Then User will be sent to apm page - zip
 #
-#    Examples:
-#      | currencyiso3a |
-#      | AUD           |
-#      | NZD           |
-#      | USD           |
-#      | GBP           |
-#      | ZAR           |
 #
-#
-#  Scenario Outline: Successful trigger of payment ZIP with accepted value (<billingcountryiso2a>) of billingcountryiso2a
+#  Scenario: Unsuccessful init - update jwt with not supported values for billingcountryiso2a and currencyiso3a
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value                     |
-#      | locale                  | en_GB                     |
-#      | accounttypedescription  | ECOM                      |
-#      | requesttypedescriptions | <requesttypedescriptions> |
-#      | billingfirstname        | FirstName                 |
-#      | billinglastname         | LastName                  |
-#      | billingemail            | email@email.com           |
-#      | billingpremise          | Premise                   |
-#      | billingpostcode         | 22444                     |
-#      | billingcountryiso2a     | GB                        |
-#      | orderreference          | Reference                 |
-#      | currencyiso3a           | GBP                       |
-#      | baseamount              | 55                        |
-#    And User opens example page WITH_APM
-#    And User waits for whole form to be displayed
+#      | key                     | value           |
+#      | requesttypedescriptions | AUTH            |
+#      | billingfirstname        | FirstName       |
+#      | billinglastname         | LastName        |
+#      | billingemail            | email@email.com |
+#      | billingpremise          | Premise         |
+#      | billingtown             | test            |
+#      | billingcounty           | test            |
+#      | billingstreet           | test            |
+#      | billingpostcode         | PO1 3AX         |
+#      | billingcountryiso2a     | GB              |
+#      | orderreference          | 123445          |
+#      | currencyiso3a           | GBP             |
+#      | baseamount              | 1000            |
+#    And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
+#      | key                     | value           |
+#      | requesttypedescriptions | AUTH            |
+#      | billingfirstname        | FirstName       |
+#      | billinglastname         | LastName        |
+#      | billingemail            | email@email.com |
+#      | billingpremise          | Premise         |
+#      | billingtown             | test            |
+#      | billingcounty           | test            |
+#      | billingstreet           | test            |
+#      | billingpostcode         | PO1 3AX         |
+#      | billingcountryiso2a     | PL              |
+#      | orderreference          | 123445          |
+#      | currencyiso3a           | PLN             |
+#      | baseamount              | 1000            |
+#    When User calls updateJWT function by filling amount field
 #    And User waits for Pay button to be active
-#    When User chooses ZIP from APM's list
-#    Then User will be sent to page with url "XYZ" having params
-#
-#    Examples:
-#      | requesttypedescriptions                            |
-#      | RISKDEC ACCOUNTCHECK AUTH SUBSCRIPTION             |
-#      | THREEDQUERY AUTH SUBSCRIPTION                      |
-#      | RISKDEC THREEDQUERY AUTH SUBSCRIPTION              |
-#      | ACCOUNTCHECK SUBSCRIPTION                          |
-#      | ACCOUNTCHECK AUTH SUBSCRIPTION                     |
-#      | RISKDEC AUTH SUBSCRIPTION                          |
-#      | THREEDQUERY ACCOUNTCHECK SUBSCRIPTION              |
-#      | AUTH SUBSCRIPTION                                  |
-#      | ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION         |
-#      | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION |
-#      | RISKDEC THREEDQUERY ACCOUNTCHECK SUBSCRIPTION      |
+#    And User focuses on APM payment methods section
+#    Then ZIP is not available on APM list
 #
 #
-#  Scenario Outline: Unsuccessful ZIP initialization with not valid config
+#  Scenario: Unsuccessful init - update jwt with missing required fields
 #    Given JS library configured by inline config BASIC_CONFIG
-#    And JS library configured by inline configAPMs BASIC_CONFIG_APM with additional attributes
+#    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value                 |
-#      | locale                  | en_GB                 |
-#      | accounttypedescription  | ECOM                  |
-#      | requesttypedescriptions | AUTH                  |
-#      | billingfirstname        | <billingfirstname>    |
-#      | billinglastname         | <billinglastname>     |
-#      | billingemail            | <billingemail>        |
-#      | billingpremise          | <billingpremise>      |
-#      | billingpostcode         | <billingpostcode>     |
-#      | billingcountryiso2a     | <billingcountryiso2a> |
-#      | orderreference          | <orderreference>      |
-#      | currencyiso3a           | <currencyiso3a>       |
-#      | baseamount              | <baseamount>          |
-#    And User opens example page WITH_APM
-#    And User waits for whole form to be displayed
+#      | key                     | value           |
+#      | requesttypedescriptions | AUTH            |
+#      | billingfirstname        | FirstName       |
+#      | billinglastname         | LastName        |
+#      | billingemail            | email@email.com |
+#      | billingpremise          | Premise         |
+#      | billingtown             | test            |
+#      | billingcounty           | test            |
+#      | billingstreet           | test            |
+#      | billingpostcode         | PO1 3AX         |
+#      | billingcountryiso2a     | GB              |
+#      | orderreference          | 123445          |
+#      | currencyiso3a           | GBP             |
+#      | baseamount              | 1000            |
+#    And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
+#      | key                     | value           |
+#      | requesttypedescriptions | AUTH            |
+#      | billingemail            | email@email.com |
+#      | billingpremise          | Premise         |
+#      | billingtown             | test            |
+#      | billingcounty           | test            |
+#      | billingstreet           | test            |
+#      | billingpostcode         | PO1 3AX         |
+#      | billingcountryiso2a     | GB              |
+#      | orderreference          | 123445          |
+#      | currencyiso3a           | GBP             |
+#      | baseamount              | 1000            |
+#    When User calls updateJWT function by filling amount field
 #    And User waits for Pay button to be active
-#    When User chooses ZIP from APM's list
-#    Then User will see notification frame text: "No account found"
-  #
-#  Scenario: Successful ZIP payment with updated jwt
-#    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
-#      | key                     | value            |
-#      | requesttypedescriptions | THREEDQUERY AUTH |
-#    And User opens page WITH_UPDATE_JWT and jwt BASE_UPDATED_JWT with additional attributes
-#      | key                     | value            |
-#      | requesttypedescriptions | THREEDQUERY AUTH |
-#    And User calls updateJWT function by filling amount field
-#    When User chooses ZIP from APM's list
-#    Then User will not see notification frame
-#    And User will be sent to page with url "www.example.com" having params
-#      | key                  | value                                   |
-#      | errormessage         | Payment has been successfully processed |
-#      | baseamount           | 1000                                    |
-#      | currencyiso3a        | GBP                                     |
-#      | errorcode            | 0                                       |
-#      | threedresponse       | should not be none                      |
-#      | enrolled             | U                                       |
-#      | settlestatus         | 0                                       |
-#      | transactionreference | should not be none                      |
-#      | jwt                  | should not be none                      |
+#    And User focuses on APM payment methods section
+#    Then ZIP is not available on APM list
 #
 #
-#  Scenario: Zip payment with cybertronica fraudconroltranscationid
-#    Given JS library configured by inline params CYBERTONICA_CONFIG and jwt BASE_JWT with additional attributes
-#      | key                     | value            |
-#      | requesttypedescriptions | THREEDQUERY AUTH |
-#    And User opens example page
-#    And User waits for whole form to be displayed
-#    When User chooses ZIP from APM's list
-#    Then User will not see notification frame
-#    And User will be sent to page with url "www.example.com" having params
-#      | key                  | value                                   |
-#      | errormessage         | Payment has been successfully processed |
-#      | baseamount           | 1000                                    |
-#      | currencyiso3a        | GBP                                     |
-#      | errorcode            | 0                                       |
-#      | threedresponse       | should not be none                      |
-#      | enrolled             | U                                       |
-#      | settlestatus         | 0                                       |
-#      | transactionreference | should not be none                      |
-#      | jwt                  | should not be none                      |
+#  Scenario: Unsuccessful trigger of payment without AUTH in requesttypesdescriptions
+#    Given JS library configured by inline config BASIC_CONFIG
+#    And JS library configured by inline configAPMs BASIC_CONFIG_APM
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                 | value           |
+#      | billingfirstname    | FirstName       |
+#      | billinglastname     | LastName        |
+#      | billingemail        | email@email.com |
+#      | billingpremise      | Premise         |
+#      | billingtown         | test            |
+#      | billingcounty       | test            |
+#      | billingstreet       | test            |
+#      | billingpostcode     | PO1 3AX         |
+#      | billingcountryiso2a | GB              |
+#      | orderreference      | 123445          |
+#      | currencyiso3a       | GBP             |
+#      | baseamount          | 1000            |
+#    And User opens example page WITH_APM
+#    And User focuses on APM payment methods section
+#    When User chooses ZIP from APM list
+#    Then User will see notification frame text: "Invalid field"
 #
+#
+##  Functionality not available on gateway yet
+##  Scenario Outline: Bypass requesttypesdescriptions other than AUTH
+##    Given JS library configured by inline config BASIC_CONFIG
+##    And JS library configured by inline configAPMs BASIC_CONFIG_APM
+##    And JS library authenticated by jwt BASE_JWT with additional attributes
+##      | key                     | value              |
+##      | key                     | value           |
+##      | requesttypedescriptions | <requesttypedescriptions>            |
+##      | billingfirstname        | FirstName       |
+##      | billinglastname         | LastName        |
+##      | billingemail            | email@email.com |
+##      | billingpremise          | Premise         |
+##      | billingtown             | test            |
+##      | billingcounty           | test            |
+##      | billingstreet           | test            |
+##      | billingpostcode         | PO1 3AX         |
+##      | billingcountryiso2a     | GB              |
+##      | orderreference          | 123445          |
+##      | currencyiso3a           | GBP             |
+##      | baseamount              | 1000            |
+##    And User opens example page WITH_APM
+##    And User waits for whole form to be displayed
+##    And User waits for Pay button to be active
+##    When User chooses ZIP from APM list
+##    Then User will be sent to apm page - zip
+##
+##    Examples:
+##      | requesttypedescriptions                             |
+##      | THREEDQUERY AUTH                                    |
+##      | FRAUDSCORE AUTH                                     |
+##      | RISKDEC THREEDQUERY AUTH                            |
+##      | THREEDQUERY AUTH RISKDEC                            |
+##      | AUTH RISKDEC2                                       |
+##      | ACCOUNTCHECK THREEDQUERY AUTH                       |
+##      | RISKDEC ACCOUNTCHECK JSINUY AUTH SUBSCRIPTION       |
+##      | JSINUY AUTH                                         |
+##      | RISKDEC2 ACCOUNTCHECK THREEDQUERY AUTH              |
+##      | RISKDEC ACCOUNTCHECK AUTH SUBSCRIPTION              |
+##      | THREEDQUERY AUTH SUBSCRIPTION                       |
+##      | RISKDEC THREEDQUERY AUTH SUBSCRIPTION               |
+##      | RISKDEC ACCOUNTCHECK JSINUY AUTH                    |
+##      | RISKDEC ACCOUNTCHECK AUTH                           |
+##      | FRAUDSCORE THREEDQUERY AUTH                         |
+##      | ACCOUNTCHECK AUTH SUBSCRIPTION                      |
+##      | RISKDEC2 THREEDQUERY AUTH SUBSCRIPTION              |
+##      | RISKDEC2 AUTH SUBSCRIPTION                          |
+##      | JSINUY AUTH FRAUDSCREENING                          |
+##      | FRAUDSCORE JSINUY AUTH                              |
+##      | ACCOUNTCHECK JSINUY AUTH                            |
+##      | RISKDEC AUTH SUBSCRIPTION                           |
+##      | ACCOUNTCHECK JSINUY AUTH SUBSCRIPTION               |
+##      | RISKDEC2 ACCOUNTCHECK AUTH                          |
+##      | THREEDQUERY AUTH FRAUDSCREENING                     |
+##      | ORDERDETAILS AUTH                                   |
+##      | JSINUY AUTH SUBSCRIPTION                            |
+##      | AUTH SUBSCRIPTION                                   |
+##      | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH               |
+##      | RISKDEC JSINUY AUTH                                 |
+##      | RISKDEC2 ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION |
+##      | RISKDEC JSINUY AUTH SUBSCRIPTION                    |
+##      | RISKDEC2 ACCOUNTCHECK AUTH SUBSCRIPTION             |
+##      | RISKDEC AUTH                                        |
+##      | RISKDEC2 AUTH                                       |
+##      | ACCOUNTCHECK AUTH                                   |
+##      | AUTH FRAUDSCREENING                                 |
+##      | ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION          |
+##      | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION  |
+##      | RISKDEC2 THREEDQUERY AUTH                           |
+##      | JSINUY AUTH RISKDEC                                 |
+##      | AUTH RISKDEC                                        |
+##      | THREEDQUERY AUTH RISKDEC2                           |
+#
+#
+#  Scenario: RedirectUrl for success and parameters verification
+#    Given JS library configured by inline config BASIC_CONFIG
+#    And JS library configured by inline configAPMs BASIC_CONFIG_APM
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value           |
+#      | requesttypedescriptions | AUTH            |
+#      | billingfirstname        | FirstName       |
+#      | billinglastname         | LastName        |
+#      | billingemail            | email@email.com |
+#      | billingpremise          | Premise         |
+#      | billingtown             | test            |
+#      | billingcounty           | test            |
+#      | billingstreet           | test            |
+#      | billingpostcode         | PO1 3AX         |
+#      | billingcountryiso2a     | GB              |
+#      | orderreference          | 123445          |
+#      | currencyiso3a           | GBP             |
+#      | baseamount              | 1000            |
+#    And User opens example page WITH_APM
+#    And User focuses on APM payment methods section
+#    And User chooses ZIP from APM list
+#    And User will be sent to apm page - zip
+#    When User will click on allow button on ZIP example page
+#    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
+#      | key                  | value              |
+#      | transactionreference | should not be none |
+#      | settle_status        | 0                  |
+#
+#
+#  Scenario: RedirectUrl for error and parameters verification
+#    Given JS library configured by inline config BASIC_CONFIG
+#    And JS library configured by inline configAPMs BASIC_CONFIG_APM
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value           |
+#      | requesttypedescriptions | AUTH            |
+#      | billingfirstname        | FirstName       |
+#      | billinglastname         | LastName        |
+#      | billingemail            | email@email.com |
+#      | billingpremise          | Premise         |
+#      | billingtown             | test            |
+#      | billingcounty           | test            |
+#      | billingstreet           | test            |
+#      | billingpostcode         | PO1 3AX         |
+#      | billingcountryiso2a     | GB              |
+#      | orderreference          | 123445          |
+#      | currencyiso3a           | GBP             |
+#      | baseamount              | 1000            |
+#    And User opens example page WITH_APM
+#    And User focuses on APM payment methods section
+#    And User chooses ZIP from APM list
+#    And User will be sent to apm page - zip
+#    When User will click on Decline button on ZIP example page
+#    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
+#      | key                  | value              |
+#      | transactionreference | should not be none |
+#      | settle_status        | 3                  |
+#
+#
+#  Scenario: default configuration override
+#    Given JS library configured by inline config BASIC_CONFIG
+#    And JS library configured by inline configAPMs ZIP_CONFIG_APM
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value           |
+#      | requesttypedescriptions | AUTH            |
+#      | billingfirstname        | FirstName       |
+#      | billinglastname         | LastName        |
+#      | billingemail            | email@email.com |
+#      | billingpremise          | Premise         |
+#      | billingtown             | test            |
+#      | billingcounty           | test            |
+#      | billingstreet           | test            |
+#      | billingpostcode         | PO1 3AX         |
+#      | billingcountryiso2a     | GB              |
+#      | orderreference          | 123445          |
+#      | currencyiso3a           | GBP             |
+#      | baseamount              | 1000            |
+#    And User opens example page WITH_APM
+#    And User focuses on APM payment methods section
+#    And User chooses ZIP from APM list - override placement
+#    And User will be sent to apm page - zip
+#    When User will click on Decline button on ZIP example page
+#    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
+#      | key                  | value              |
+#      | transactionreference | should not be none |
+#      | settle_status        | 3                  |

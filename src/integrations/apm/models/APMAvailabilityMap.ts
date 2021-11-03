@@ -7,7 +7,7 @@ import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
 export const APMAvailabilityMap: Map<APMName, { countries: APMCountryIso[], currencies: APMCurrencyIso[], payload: IStJwtPayload[] }> = new Map()
   .set(APMName.ALIPAY, {
     countries: [],
-    currencies: [APMCurrencyIso.EUR, APMCurrencyIso.GBP, APMCurrencyIso.USD],
+    currencies: [APMCurrencyIso.AUD, APMCurrencyIso.CAD, APMCurrencyIso.CHF, APMCurrencyIso.DKK, APMCurrencyIso.EUR, APMCurrencyIso.GBP, APMCurrencyIso.HKD, APMCurrencyIso.JPY, APMCurrencyIso.KRW, APMCurrencyIso.NOK, APMCurrencyIso.NZD, APMCurrencyIso.SEK, APMCurrencyIso.SGD, APMCurrencyIso.THB, APMCurrencyIso.USD],
     payload: [APMPayloadFields.orderreference, APMPayloadFields.currencyiso3a],
   })
   .set(APMName.BANCONTACT, {
@@ -110,7 +110,6 @@ export const APMAvailabilityMap: Map<APMName, { countries: APMCountryIso[], curr
     currencies: [APMCurrencyIso.AUD, APMCurrencyIso.GBP, APMCurrencyIso.NZD],
     payload: [
       APMPayloadFields.accounttypedescription,
-      APMPayloadFields.baseamount,
       APMPayloadFields.billingcountryiso2a,
       APMPayloadFields.billingcounty,
       APMPayloadFields.billingtown,
@@ -121,7 +120,6 @@ export const APMAvailabilityMap: Map<APMName, { countries: APMCountryIso[], curr
       APMPayloadFields.billingstreet,
       APMPayloadFields.billingemail,
       APMPayloadFields.currencyiso3a,
-      APMPayloadFields.mainamount,
       APMPayloadFields.requesttypedescriptions,
       APMPayloadFields.sitereference,
     ],

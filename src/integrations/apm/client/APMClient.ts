@@ -121,6 +121,7 @@ export class APMClient {
       takeUntil(destroyEvent),
       takeUntil(paymentFailedEvent),
     ).subscribe((event: IMessageBusEvent<string>) => {
+      console.log(event);
       DomMethods.redirect(event.data);
     });
   }

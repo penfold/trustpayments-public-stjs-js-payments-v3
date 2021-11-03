@@ -27,23 +27,29 @@ export class APMFilterService {
 
   private isAPMAvailable(item: IAPMItemConfig, payload: IStJwtPayload): boolean {
     if (!APMAvailabilityMap.has(item.name)) {
-      Debug.log(`Payment method ${item.name} is not available.`);
+      Debug.error(`Payment method ${item.name} is not available.`);
 
       return false;
     }
 
     if (!APMAvailabilityMap.get(item.name).currencies.includes(payload.currencyiso3a as APMCurrencyIso)) {
-      Debug.log(`Your currency: ${payload.currencyiso3a} is not supported by ${item.name}.`);
+      Debug.error(`Your currency: ${payload.currencyiso3a} is not supported by ${item.name}.`);
 
       return false;
     }
 
     if (!APMAvailabilityMap.get(item.name).countries.includes(payload.billingcountryiso2a as APMCountryIso) && APMAvailabilityMap.get(item.name).countries.length !== 0) {
-      Debug.log(`Your country: ${payload.billingcountryiso2a} is not supported by ${item.name}.`);
+      Debug.error(`Your country: ${payload.billingcountryiso2a} is not supported by ${item.name}.`);
 
       return false;
     }
 
-    return !(APMAvailabilityMap.get(item.name).payload.find((property: IStJwtPayload) => !Object.keys(payload).includes(property as string)));
+    if (APMAvailabilityMap.get(item.name).payload.find((property: IStJwtPayload) => !Object.keys(payload).includes(property as string))) {
+      Debug.error('Jwt does not include some of the required fields');
+
+      return false;
+    }
+
+    return true;
   }
 }

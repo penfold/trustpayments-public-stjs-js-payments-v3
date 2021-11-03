@@ -20,3 +20,4 @@ class ConfigApm(Enum):
     SAFETYPAY_CONFIG_APM = 'e2eSAFETYPAYConfigApm.json'
     WECHATPAY_CONFIG_APM = 'e2eWECHATPAYConfigApm.json'
     UNIONPAY_CONFIG_APM = 'e2eUNIONPAYConfigApm.json'
+    ZIP_CONFIG_APM = 'e2eZIPConfigApm.json'
