@@ -34,11 +34,11 @@ export class APMFilterService {
     const currencies: APMName[] = [];
 
     APMAvailabilityMap.forEach((value, key) => {
-      if (!value.countries.includes(payload.billingcountryiso2a as APMCountryIso)) {
+      if (!value.countries.includes(payload.billingcountryiso2a as APMCountryIso) && value.countries.length !== 0) {
         countries.push(key);
       }
 
-      if (!value.currencies.includes(payload.currencyiso3a as APMCurrencyIso)) {
+      if (!value.currencies.includes(payload.currencyiso3a as APMCurrencyIso) && value.currencies.length !== 0) {
         currencies.push(key);
       }
     });
