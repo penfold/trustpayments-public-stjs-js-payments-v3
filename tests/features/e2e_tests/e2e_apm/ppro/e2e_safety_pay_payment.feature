@@ -203,13 +203,13 @@ Feature: E2E SAFETYPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                    |
-      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
-      | baseamount              | 704                      |
-      | billingfirstname        | FirstName                |
-      | billinglastname         | LastName                 |
-      | billingcountryiso2a     | AT                       |
-      | currencyiso3a           | EUR                      |
+      | key                     | value               |
+      | requesttypedescriptions | THREEDQUERY RISKDEC |
+      | baseamount              | 704                 |
+      | billingfirstname        | FirstName           |
+      | billinglastname         | LastName            |
+      | billingcountryiso2a     | AT                  |
+      | currencyiso3a           | EUR                 |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses SAFETYPAY from APM list

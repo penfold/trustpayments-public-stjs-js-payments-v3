@@ -185,14 +185,14 @@ Feature: E2E WECHATPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                    |
-      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
-      | baseamount              | 70                       |
-      | billingfirstname        | FirstName                |
-      | billinglastname         | LastName                 |
-      | billingemail            | FirstName@email.pl       |
-      | billingcountryiso2a     | CN                       |
-      | currencyiso3a           | EUR                      |
+      | key                     | value               |
+      | requesttypedescriptions | THREEDQUERY RISKDEC |
+      | baseamount              | 70                  |
+      | billingfirstname        | FirstName           |
+      | billinglastname         | LastName            |
+      | billingemail            | FirstName@email.pl  |
+      | billingcountryiso2a     | CN                  |
+      | currencyiso3a           | EUR                 |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses WECHATPAY from APM list
