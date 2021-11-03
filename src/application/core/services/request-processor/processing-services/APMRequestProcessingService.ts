@@ -8,6 +8,7 @@ import { RequestProcessingChain } from '../RequestProcessingChain';
 import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
 import { IAPMGatewayRequest } from '../../../../../integrations/apm/models/IAPMRequest';
+import { TermUrlRequestProcessor } from '../request-processors/TermUrlRequestProcessor';
 
 @Service()
 export class APMRequestProcessingService implements IRequestProcessingService {
@@ -20,7 +21,9 @@ export class APMRequestProcessingService implements IRequestProcessingService {
   init(jsInitResponse: IThreeDInitResponse | null): Observable<void> {
     this.jsInitResponse = jsInitResponse;
     this.requestProcessingChain = this.requestProcessingChainFactory.create(
-      [],
+      [
+        TermUrlRequestProcessor,
+      ],
       [],
     );
 

@@ -202,6 +202,7 @@
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                 | value           |
+#  | requesttypedescriptions | THREEDQUERY RISKDEC |
 #      | billingfirstname    | FirstName       |
 #      | billinglastname     | LastName        |
 #      | billingemail        | email@email.com |
