@@ -92,10 +92,7 @@ Feature: E2E REDPAGOS Payments
     And User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then REDPAGOS is not available on APM list
-    When User chooses REDPAGOS from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then REDPAGOS is not available on APM list
 
 
   Scenario: Successful trigger of payment with updated jwt
