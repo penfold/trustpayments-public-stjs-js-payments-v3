@@ -175,7 +175,7 @@ Feature: E2E TRUSTLY Payments
       | billingfirstname        | FirstNameUpdated |
       | billinglastname         | LastNameUpdated  |
       | billingcountryiso2a     | PL               |
-      | currencyiso3a           | SEK              |
+      | currencyiso3a           | CNY              |
     When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section

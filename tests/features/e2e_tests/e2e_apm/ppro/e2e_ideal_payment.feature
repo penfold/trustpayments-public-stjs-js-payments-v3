@@ -73,7 +73,7 @@ Feature: E2E IDEAL Payments
       | billingcountryiso2a | currencyiso3a |
       | NL                  | PLN           |
       | PL                  | EUR           |
-      |                     | EUR           |
+      | NL                  |               |
 
 
   Scenario: Unsuccessful init - missing at least one of the billing name fields
@@ -155,15 +155,11 @@ Feature: E2E IDEAL Payments
       | key                     | value |
       | requesttypedescriptions | AUTH  |
       | baseamount              | 707   |
-      | billingcountryiso2a     | NL    |
       | currencyiso3a           | EUR   |
     And User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then IDEAL is not available on APM list
-    When User chooses IDEAL from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then IDEAL is not available on APM list
 
 
   Scenario: Unsuccessful trigger of payment without AUTH in requesttypesdescriptions
@@ -267,7 +263,7 @@ Feature: E2E IDEAL Payments
     When User will select Succeeded response and submit
     Then User will be sent to page with url "this_is_not_existing_page_success_redirect.com" having params
       | key                    | value |
-      | paymenttypedescription | IDEAL  |
+      | paymenttypedescription | IDEAL |
       | errorcode              | 0     |
       | settlestatus           | 100   |
 #      | orderreference         | 123456 | commented on purpose
@@ -292,7 +288,7 @@ Feature: E2E IDEAL Payments
     When User will select Failed Unknown response and submit
     Then User will be sent to page with url "this_is_not_existing_page_error_redirect.com" having params
       | key                    | value |
-      | paymenttypedescription | IDEAL  |
+      | paymenttypedescription | IDEAL |
       | errorcode              | 70000 |
       | settlestatus           | 3     |
 #      | orderreference         | 123456 |  commented on purpose
@@ -317,7 +313,7 @@ Feature: E2E IDEAL Payments
     When User will select Failed Unknown response and submit
     Then User will be sent to page with url "this_is_not_existing_page_error_redirect_override.com" having params
       | key                    | value |
-      | paymenttypedescription | IDEAL  |
+      | paymenttypedescription | IDEAL |
       | errorcode              | 70000 |
       | settlestatus           | 3     |
 #      | orderreference         | 123456 | commented on purpose

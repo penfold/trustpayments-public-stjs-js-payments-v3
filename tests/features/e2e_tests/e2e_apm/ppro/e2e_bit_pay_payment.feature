@@ -76,19 +76,19 @@ Feature: E2E BITPAY Payments
     Examples:
       | billingcountryiso2a | currencyiso3a |
       | PL                  | CHF           |
-      |                     | EUR           |
-      |                     | PLN           |
+      | GB                  | EUR           |
+      | DE                  |               |
 
 
   Scenario: Unsuccessful init - missing at least one of the billing name fields
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | currencyiso3a           | EUR                |
-      | billingcountryiso2a     | PL                 |
-      | baseamount              | 123                |
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+      | currencyiso3a           | EUR   |
+      | billingcountryiso2a     | PL    |
+      | baseamount              | 123   |
     And User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -102,19 +102,19 @@ Feature: E2E BITPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billingcountryiso2a     | PL                 |
-      | currencyiso3a           | EUR                |
+      | key                     | value     |
+      | requesttypedescriptions | AUTH      |
+      | baseamount              | 70        |
+      | billingfirstname        | FirstName |
+      | billingcountryiso2a     | PL        |
+      | currencyiso3a           | EUR       |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 707                |
-      | billinglastname         | LastNameUpdated    |
-      | billingcountryiso2a     | PL                 |
-      | currencyiso3a           | GBP                |
+      | key                     | value           |
+      | requesttypedescriptions | AUTH            |
+      | baseamount              | 707             |
+      | billinglastname         | LastNameUpdated |
+      | billingcountryiso2a     | PL              |
+      | currencyiso3a           | GBP             |
     And User calls updateJWT function by filling amount field
     When User chooses BITPAY from APM list
     Then User will be sent to apm page - simulator
@@ -124,19 +124,19 @@ Feature: E2E BITPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billingcountryiso2a     | PL                 |
-      | currencyiso3a           | EUR                |
+      | key                     | value     |
+      | requesttypedescriptions | AUTH      |
+      | baseamount              | 70        |
+      | billingfirstname        | FirstName |
+      | billingcountryiso2a     | PL        |
+      | currencyiso3a           | EUR       |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 707                |
-      | billingfirstname        | FirstNameUpdated   |
-      | billingcountryiso2a     | DE                 |
-      | currencyiso3a           | PLN                |
+      | key                     | value            |
+      | requesttypedescriptions | AUTH             |
+      | baseamount              | 707              |
+      | billingfirstname        | FirstNameUpdated |
+      | billingcountryiso2a     | DE               |
+      | currencyiso3a           | PLN              |
     When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -147,25 +147,21 @@ Feature: E2E BITPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 70                 |
-      | billinglastname         | LastName           |
-      | billingcountryiso2a     | PL                 |
-      | currencyiso3a           | EUR                |
-    And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value    |
       | requesttypedescriptions | AUTH     |
-      | baseamount              | 707      |
+      | baseamount              | 70       |
+      | billinglastname         | LastName |
       | billingcountryiso2a     | PL       |
       | currencyiso3a           | EUR      |
-    And User calls updateJWT function by filling amount field
+    And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+      | baseamount              | 707   |
+      | currencyiso3a           | EUR   |
+    When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then BITPAY is not available on APM list
-    When User chooses BITPAY from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then BITPAY is not available on APM list
 
 
   Scenario: Unsuccessful trigger of payment without AUTH in requesttypesdescriptions
@@ -252,13 +248,13 @@ Feature: E2E BITPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billingcountryiso2a     | PL                 |
-      | currencyiso3a           | EUR                |
-      | orderreference          | 123456             |
+      | key                     | value     |
+      | requesttypedescriptions | AUTH      |
+      | baseamount              | 70        |
+      | billingfirstname        | FirstName |
+      | billingcountryiso2a     | PL        |
+      | currencyiso3a           | EUR       |
+      | orderreference          | 123456    |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses BITPAY from APM list
@@ -276,13 +272,13 @@ Feature: E2E BITPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billingcountryiso2a     | PL                 |
-      | currencyiso3a           | EUR                |
-      | orderreference          | 123456             |
+      | key                     | value     |
+      | requesttypedescriptions | AUTH      |
+      | baseamount              | 70        |
+      | billingfirstname        | FirstName |
+      | billingcountryiso2a     | PL        |
+      | currencyiso3a           | EUR       |
+      | orderreference          | 123456    |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses BITPAY from APM list
@@ -300,13 +296,13 @@ Feature: E2E BITPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BITPAY_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billingcountryiso2a     | PL                 |
-      | currencyiso3a           | EUR                |
-      | orderreference          | 123456             |
+      | key                     | value     |
+      | requesttypedescriptions | AUTH      |
+      | baseamount              | 70        |
+      | billingfirstname        | FirstName |
+      | billingcountryiso2a     | PL        |
+      | currencyiso3a           | EUR       |
+      | orderreference          | 123456    |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses BITPAY from APM list - override placement

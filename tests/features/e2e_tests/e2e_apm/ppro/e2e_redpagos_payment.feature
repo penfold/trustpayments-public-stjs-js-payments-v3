@@ -83,11 +83,12 @@ Feature: E2E REDPAGOS Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value |
-      | requesttypedescriptions | AUTH  |
-      | currencyiso3a           | USD   |
-      | billingcountryiso2a     | UY    |
-      | baseamount              | 123   |
+      | key                     | value      |
+      | requesttypedescriptions | AUTH       |
+      | currencyiso3a           | USD        |
+      | billingcountryiso2a     | UY         |
+      | billingdob              | 1980-02-01 |
+      | baseamount              | 123        |
     And User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -163,18 +164,15 @@ Feature: E2E REDPAGOS Payments
       | billingcountryiso2a     | UY                 |
       | currencyiso3a           | USD                |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value |
-      | requesttypedescriptions | AUTH  |
-      | baseamount              | 707   |
-      | billingcountryiso2a     | UY    |
-      | currencyiso3a           | USD   |
+      | key                     | value      |
+      | requesttypedescriptions | AUTH       |
+      | baseamount              | 707        |
+      | billingcountryiso2a     | UY         |
+      | currencyiso3a           | USD        |
     And User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then REDPAGOS is not available on APM list
-    When User chooses REDPAGOS from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then REDPAGOS is not available on APM list
 
 
   Scenario: Unsuccessful trigger of payment without AUTH in requesttypesdescriptions

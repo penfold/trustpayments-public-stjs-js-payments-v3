@@ -174,13 +174,10 @@ Feature: E2E PRZELEWY24 Payments
       | billinglastname         | LastName |
       | billingcountryiso2a     | PL       |
       | currencyiso3a           | EUR      |
-    And User calls updateJWT function by filling amount field
+    When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then PRZELEWY24 is not available on APM list
-    When User chooses PRZELEWY24 from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then PRZELEWY24 is not available on APM list
 
 
   Scenario: Unsuccessful trigger of payment without AUTH in requesttypesdescriptions
