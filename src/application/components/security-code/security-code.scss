@@ -29,3 +29,7 @@ body {
 .security-code__message {
   @extend %message;
 }
+
+.security-code__autocomplete {
+  @extend %autocomplete-capture-inputs;
+}

@@ -29,3 +29,8 @@ body {
 .card-number__message {
   @extend %message;
 }
+
+.card-number__autocomplete {
+  @extend %autocomplete-capture-inputs;
+}
+
