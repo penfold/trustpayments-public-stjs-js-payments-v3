@@ -43,7 +43,6 @@ Feature: E2E SEPADD Payments
       | MC                  | EUR           |
       | MT                  | EUR           |
       | NL                  | EUR           |
-      | PL                  | EUR           |
       | PT                  | EUR           |
       | SI                  | EUR           |
       | SK                  | EUR           |

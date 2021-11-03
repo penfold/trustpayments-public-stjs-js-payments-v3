@@ -74,8 +74,6 @@ Feature: E2E PAYU Payments
 
     Examples:
       | billingcountryiso2a | currencyiso3a |
-      | CZ                  | PLN           |
-      | PL                  | CZK           |
       | PL                  | EUR           |
       | DE                  | PLN           |
       |                     | PLN           |
@@ -139,7 +137,7 @@ Feature: E2E PAYU Payments
       | billingfirstname        | FirstNameUpdated |
       | billinglastname         | LastNameUpdated  |
       | billingcountryiso2a     | CZ               |
-      | currencyiso3a           | PLN              |
+      | currencyiso3a           | EUR              |
     When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
