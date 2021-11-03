@@ -110,7 +110,6 @@ export const APMAvailabilityMap: Map<APMName, { countries: APMCountryIso[], curr
     currencies: [APMCurrencyIso.AUD, APMCurrencyIso.GBP, APMCurrencyIso.NZD],
     payload: [
       APMPayloadFields.accounttypedescription,
-      APMPayloadFields.baseamount,
       APMPayloadFields.billingcountryiso2a,
       APMPayloadFields.billingcounty,
       APMPayloadFields.billingtown,
@@ -121,7 +120,6 @@ export const APMAvailabilityMap: Map<APMName, { countries: APMCountryIso[], curr
       APMPayloadFields.billingstreet,
       APMPayloadFields.billingemail,
       APMPayloadFields.currencyiso3a,
-      APMPayloadFields.mainamount,
       APMPayloadFields.requesttypedescriptions,
       APMPayloadFields.sitereference,
     ],
