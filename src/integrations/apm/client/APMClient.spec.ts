@@ -13,14 +13,15 @@ import { of } from 'rxjs';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
-import resetAllMocks = jest.resetAllMocks;
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 
 describe('APMClient', () => {
   let apmConfigResolver: APMConfigResolver;
   let apmFilterService: APMFilterService;
-  const messageBus = new SimpleMessageBus();
+  let messageBus: IMessageBus;
+  let configProviderMock: ConfigProvider;
+  let apmClient: APMClient;
 
-  const configProviderMock = mock<ConfigProvider>();
   const testConfig: IAPMConfig = {
     placement: 'test-placement',
     successRedirectUrl: 'successUrl',
@@ -39,12 +40,12 @@ describe('APMClient', () => {
       },
     ],
   };
-  let apmClient: APMClient;
 
   beforeEach(() => {
-    resetAllMocks();
+    configProviderMock = mock<ConfigProvider>();
     apmConfigResolver = mock(APMConfigResolver);
     apmFilterService = mock(APMFilterService);
+    messageBus = new SimpleMessageBus();
     when(apmConfigResolver.resolve(anything())).thenReturn(of(testConfig));
     when(configProviderMock.getConfig$()).thenReturn(of({ jwt: '' }));
     when(apmFilterService.filter(anything(), anything())).thenReturn(of([{

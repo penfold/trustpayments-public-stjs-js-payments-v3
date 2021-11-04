@@ -50,7 +50,7 @@ const zipJwtSchema = Joi.object().keys({
   billingpostcode: Joi.string().max(127).required(),
   billingcounty: Joi.string().max(127).required(),
   billingemail: Joi.string().max(255).required(),
-}).unknown();
+}).xor('baseamount', 'mainamount').unknown();
 
 export const AMPJwtSchemasMap: Map<APMName, ObjectSchema> = new Map()
   .set(APMName.ALIPAY, alipayJwtSchema)
