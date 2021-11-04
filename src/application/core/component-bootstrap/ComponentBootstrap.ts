@@ -20,6 +20,7 @@ export class ComponentBootstrap {
   run<T>(frameName: string, componentClass: new (...args: unknown[]) => T): T {
     this.frameIdentifier.setFrameName(frameName);
 
+    this.container.get(SentryService).init(environment.SENTRY.DSN, environment.SENTRY.ALLOWED_URLS);
     this.container.get(InterFrameCommunicator).init();
     this.container.get(MessageBusToken);
     this.container.get(StoreToken);
@@ -34,10 +35,6 @@ export class ComponentBootstrap {
       this.container.get(MessageSubscriberRegistry).register(...this.container.getMany(MessageSubscriberToken));
     }
 
-    const component = this.container.get(componentClass);
-
-    this.container.get(SentryService).init(environment.SENTRY_DSN, environment.SENTRY_WHITELIST_URLS);
-
-    return component;
+    return this.container.get(componentClass);
   }
 }
