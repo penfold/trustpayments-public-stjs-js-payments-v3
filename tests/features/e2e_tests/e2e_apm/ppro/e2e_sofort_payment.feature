@@ -76,17 +76,14 @@ Feature: E2E SOFORT Payments
     And User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then SOFORT is not available on APM list
-    When User chooses SOFORT from APM list
-    Then User will see notification frame text: "<notification_text>"
+    Then SOFORT is not available on APM list
 
     Examples:
-      | billingcountryiso2a | currencyiso3a | notification_text |
-      | CH                  | PLN           | No account found  |
-      |                     | PLN           | No account found  |
-      | US                  | EUR           | Invalid field     |
-      |                     | EUR           | Invalid field     |
+      | billingcountryiso2a | currencyiso3a |
+      | CH                  | PLN           |
+      |                     | PLN           |
+      | US                  | EUR           |
+      |                     | EUR           |
 
 
   Scenario: Unsuccessful init - missing at least one of the billing name fields
@@ -148,13 +145,10 @@ Feature: E2E SOFORT Payments
       | billinglastname         | LastNameUpdated  |
       | billingcountryiso2a     | US               |
       | currencyiso3a           | EUR              |
-    And User calls updateJWT function by filling amount field
+    When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then SOFORT is not available on APM list
-    When User chooses SOFORT from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then SOFORT is not available on APM list
 
 
   Scenario: Unsuccessful init - update jwt with missing required fields
@@ -171,15 +165,11 @@ Feature: E2E SOFORT Payments
       | key                     | value |
       | requesttypedescriptions | AUTH  |
       | baseamount              | 707   |
-      | billingcountryiso2a     | PL    |
       | currencyiso3a           | EUR   |
     And User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then SOFORT is not available on APM list
-    When User chooses SOFORT from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then SOFORT is not available on APM list
 
 
   Scenario: Unsuccessful trigger of payment without AUTH in requesttypesdescriptions
