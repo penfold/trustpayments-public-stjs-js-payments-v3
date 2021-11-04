@@ -9,6 +9,7 @@ import { Debug } from '../../../../shared/Debug';
 import { APMCountryIso } from '../../models/APMCountryIso';
 import { APMCurrencyIso } from '../../models/APMCurrencyIso';
 import { APMName } from '../../models/APMName';
+import { Money } from 'ts-money';
 
 @Service()
 export class APMFilterService {
@@ -19,14 +20,11 @@ export class APMFilterService {
   }
 
   filter(apmList: IAPMItemConfig[], jwt?: string): Observable<IAPMItemConfig[]> {
-    const payload: IStJwtPayload = this.getJwtPayload(jwt ? jwt : this.configProvider.getConfig().jwt);
-    const unavailableAPMs = this.getUnavailableAPMs(payload, apmList);
+    const jwtString = jwt || this.configProvider.getConfig().jwt;
+    const jwtPayload = this.jwtDecoder.decode<IStJwtPayload>(jwtString).payload;
+    const unavailableAPMs = this.getUnavailableAPMs(jwtPayload, apmList);
 
-    return of(apmList.filter((item: IAPMItemConfig) => this.isAPMAvailable(item, payload, unavailableAPMs)));
-  }
-
-  private getJwtPayload(jwt: string): IStJwtPayload {
-    return this.jwtDecoder.decode<IStJwtPayload>(jwt).payload;
+    return of(apmList.filter((item: IAPMItemConfig) => this.isAPMAvailable(item, jwtPayload, unavailableAPMs)));
   }
 
   private getUndefinedJwtFields(item: IAPMItemConfig, payload: IStJwtPayload): IStJwtPayload[] {
@@ -89,6 +87,25 @@ export class APMFilterService {
       Debug.warn(`Jwt does not include ${undefinedJwtFields} required by ${item.name}`);
 
       return false;
+    }
+
+    if (item.minBaseAmount || item.maxBaseAmount) {
+      const { baseamount, currencyiso3a, mainamount } = payload;
+      const amountInMinorUnits: number = (mainamount === undefined ?
+        Money.fromInteger(Number(baseamount), currencyiso3a) :
+        Money.fromDecimal(Number(mainamount), currencyiso3a)).getAmount();
+
+      if (item.minBaseAmount && amountInMinorUnits < item.minBaseAmount) {
+        Debug.warn(`Payment amount (${amountInMinorUnits}) is lower than minimal value (${item.minBaseAmount}) for ${item.name}.`);
+
+        return false;
+      }
+
+      if (item.maxBaseAmount && amountInMinorUnits > item.maxBaseAmount) {
+        Debug.warn(`Payment amount (${amountInMinorUnits}) is greater than maximal value (${item.maxBaseAmount}) for ${item.name}.`);
+
+        return false;
+      }
     }
 
     return true;
