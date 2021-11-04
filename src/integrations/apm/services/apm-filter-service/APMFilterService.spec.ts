@@ -6,6 +6,9 @@ import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { APMName } from '../../models/APMName';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
 import { Debug } from '../../../../shared/Debug';
+import { configFactory, fullAPMList, payloadFactory } from './APMFilterServiceTestConfigurations';
+import { APMCurrencyIso } from '../../models/APMCurrencyIso';
+import { APMCountryIso } from '../../models/APMCountryIso';
 
 describe('APMFilterService', () => {
   let jwtDecoderMock: JwtDecoder;
@@ -27,6 +30,7 @@ describe('APMFilterService', () => {
   });
 
   describe('filter()', () => {
+
     describe('min and max amount', () => {
       const item: IAPMItemConfig = {
         name: APMName.PAYU,
@@ -96,5 +100,34 @@ describe('APMFilterService', () => {
         });
       });
     });
+
+    describe('Undefined fields in JWT', () => {
+
+
+      it(`should return only ${APMName.BITPAY} and ${APMName.UNIONPAY} pay for full APM list, ${APMCurrencyIso.GBP} and ${APMCountryIso.GB} and minimal payload`, done => {
+        when(jwtDecoderMock.decode(anything())).thenReturn({ payload: payloadFactory(APMCurrencyIso.GBP, APMCountryIso.GB) });
+
+        apmFilterService.filter(fullAPMList, 'jwt').subscribe(result => {
+          expect(result).toEqual([configFactory(APMName.BITPAY), configFactory(APMName.UNIONPAY)]);
+          verify(debugSpy.warn(anything())).times(4);
+          done();
+        });
+      });
+
+      it(`should return ZIP when`)
+    });
+
+    describe.skip('Unavailable APM', () => {
+
+    });
+
+    describe.skip('Countries supported by APM', () => {
+
+    });
+
+    describe.skip('Currencies supported by APM', () => {
+
+    });
+
   });
 });
