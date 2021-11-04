@@ -60,7 +60,7 @@ export class ExpirationDate extends Input {
       MessageBus.EVENTS.VALIDATE_EXPIRATION_DATE_FIELD
     );
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
-      this.placeholder = config.placeholders.expirydate || '';
+      this.placeholder = this.translator.translate(config.placeholders.expirydate) || '';
       this.inputElement.setAttribute(ExpirationDate.PLACEHOLDER_ATTRIBUTE, this.placeholder);
 
       const styler: Styler = new Styler(this.getAllowedStyles(), this.frame.parseUrl().styles);

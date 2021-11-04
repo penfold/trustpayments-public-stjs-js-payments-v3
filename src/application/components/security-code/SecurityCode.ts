@@ -126,7 +126,7 @@ export class SecurityCode extends Input {
 
   private getPlaceholder(securityCodeLength: number): string {
     if (!this.configProvider.getConfig()) {
-      return '***';
+      return this.translator.translate('***');
     }
     if (
       securityCodeLength === UNKNOWN_CVC &&
@@ -136,14 +136,14 @@ export class SecurityCode extends Input {
 
       return this.configProvider.getConfig().placeholders.securitycode
         ? this.configProvider.getConfig().placeholders.securitycode
-        : '***';
+        : this.translator.translate('***');
     }
     if (
       this.configProvider.getConfig().placeholders.securitycode &&
       this.configProvider.getConfig().placeholders.securitycode === DefaultPlaceholders.securitycode
     ) {
 
-      return securityCodeLength === LONG_CVC ? '****' : DefaultPlaceholders.securitycode;
+      return securityCodeLength === LONG_CVC ? this.translator.translate('****') : DefaultPlaceholders.securitycode;
     }
 
     return this.configProvider.getConfig().placeholders.securitycode;
