@@ -13,11 +13,12 @@ Feature: Payment form translations from jwt locale
     And User opens example page
     And User waits for Pay button to be active
     Then User will see labels displayed on page translated into "<locale>"
-      | fields          |
-      | Card number     |
-      | Expiration date |
-      | Security code   |
-      | Pay             |
+      | fields                      |
+      | Card number                 |
+      | Expiration date             |
+      | Expiration date placeholder |
+      | Security code               |
+      | Pay                         |
     When User clicks Pay button
     Then User will see validation message "Field is required" under all fields translated into "<locale>"
 

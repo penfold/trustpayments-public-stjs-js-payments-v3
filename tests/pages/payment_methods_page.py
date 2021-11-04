@@ -247,6 +247,9 @@ class PaymentMethodsPage(BasePage):
     def get_expiration_date_iframe_element_text(self, locator):
         return self._actions.switch_to_iframe_and_get_text(PaymentMethodsLocators.expiration_date_iframe, locator)
 
+    def get_expiration_date_placeholder_text(self):
+        return self._actions.get_element_attribute(PaymentMethodsLocators.expiration_date_input_field, 'placeholder')
+
     def get_security_code_iframe_element_text(self, locator):
         return self._actions.switch_to_iframe_and_get_text(PaymentMethodsLocators.security_code_iframe, locator)
 
@@ -482,6 +485,9 @@ class PaymentMethodsPage(BasePage):
     def validate_expiration_date_iframe_element_text(self, expected_text):
         actual_text = self.get_expiration_date_iframe_element_text(PaymentMethodsLocators.expiration_date_label)
         self.validate_field_text(FieldType.EXPIRATION_DATE.name, actual_text, expected_text)
+
+    def validate_expiration_date_placeholder_text(self, expected_text):
+        actual_text = self.get_expiration_date_iframe_element_text(PaymentMethodsLocators.expiration_date_label)
 
     def validate_security_code_iframe_element_text(self, expected_text):
         actual_text = self.get_security_code_iframe_element_text(PaymentMethodsLocators.security_code_label)

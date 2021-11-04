@@ -14,6 +14,7 @@
   "Payment has been successfully processed": "Payment has been successfully processed",
   "Card number": "Card number",
   "Expiration date": "Expiration date",
+  "Expiration date placeholder": "MM/YY",
   "Security code": "Security code",
   "Ok": "Payment has been successfully processed",
   "Method not implemented": "Method not implemented",
