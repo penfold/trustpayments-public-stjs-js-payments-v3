@@ -24,7 +24,7 @@ import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../core/models/constants/Event
 import { EventScope } from '../../core/models/constants/EventScope';
 import { untilDestroy } from '../../../shared/services/message-bus/operators/untilDestroy';
 import { pluck } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, tap } from 'rxjs/operators';
 
 @Service()
 export class CardNumber extends Input {
@@ -292,7 +292,7 @@ export class CardNumber extends Input {
       .pipe(
         ofType(PUBLIC_EVENTS.AUTOCOMPLETE_CARD_NUMBER),
         pluck('data'),
-        filter(value => !this.cardNumberValue?.length),
+        filter(value => !this.inputElement.value?.length),
         untilDestroy<string>(this.messageBus)
       )
       .subscribe((cardNumber: string) => {

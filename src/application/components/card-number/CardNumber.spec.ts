@@ -4,32 +4,39 @@ import { CARD_NUMBER_INPUT, CARD_NUMBER_LABEL, CARD_NUMBER_MESSAGE } from '../..
 import { Input } from '../../core/shared/input/Input';
 import { Utils } from '../../core/shared/utils/Utils';
 import { Validation } from '../../core/shared/validation/Validation';
-import { instance, mock, when } from 'ts-mockito';
+import { anyNumber, anything, instance, mock, when } from 'ts-mockito';
 import { IconFactory } from '../../core/services/icon/IconFactory';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { Formatter } from '../../core/shared/formatter/Formatter';
 import { of } from 'rxjs';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import Container from 'typedi';
-import { TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
+import { MessageBusToken, TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../../core/shared/translator/Translator';
 import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
 import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
+import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
+import { EventScope } from '../../core/models/constants/EventScope';
 
-jest.mock('./../../core/shared/validation/Validation');
+const testMessageBus = new SimpleMessageBus();
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set({ id: TranslatorToken, type: Translator });
 Container.set({ id: ITranslationProvider, type: TranslationProvider });
+Container.set({ id: MessageBusToken, value: testMessageBus });
+
 
 describe('CardNumber', () => {
-  const { inputElement, messageElement, cardNumberInstance, labelElement } = cardNumberFixture();
+  const { inputElement, messageElement, cardNumberInstance, labelElement, cardNumberCorrect } = cardNumberFixture();
+  const cardNumberInput: HTMLInputElement = document.querySelector('#st-card-number-input');
 
   beforeAll(() => {
     document.body.appendChild(inputElement);
     document.body.appendChild(labelElement);
     document.body.appendChild(messageElement);
+    jest.spyOn(testMessageBus, 'publish');
   });
 
   it('should create cardNumberInstance of class CardNumber', () => {
@@ -44,6 +51,46 @@ describe('CardNumber', () => {
     // @ts-ignore
     expect(cardNumberInstance.getLabel()).toBe('Card number');
   });
+
+  it('should capture autocomplete and emit expiration date from autocomplete via message bus event', () => {
+    const expirationDateCaptureInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-expiration-date');
+    mockAutocompleteEvent(expirationDateCaptureInput, '12/2034');
+    expect(testMessageBus.publish).toHaveBeenCalledWith({
+        type: PUBLIC_EVENTS.AUTOCOMPLETE_EXPIRATION_DATE,
+        data: '12/2034',
+      },
+      EventScope.ALL_FRAMES
+    );
+  });
+
+  it('should capture autocomplete and emit security code from autocomplete via message bus event', () => {
+    const autoCompleteSecurityCodeInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-security-code');
+    mockAutocompleteEvent(autoCompleteSecurityCodeInput, '123');
+    expect(testMessageBus.publish).toHaveBeenCalledWith({
+        type: PUBLIC_EVENTS.AUTOCOMPLETE_SECURITY_CODE,
+        data: '123',
+      },
+      EventScope.ALL_FRAMES
+    );
+  });
+
+  it('if input has no value and event from other frame with card number from autocomplete is received, it should set input value to received value', () => {
+    cardNumberInput.value = null;
+    testMessageBus.publish({
+      type: PUBLIC_EVENTS.AUTOCOMPLETE_CARD_NUMBER,
+      data: cardNumberCorrect,
+    });
+    expect(cardNumberInput.value).toEqual(cardNumberCorrect);
+
+    cardNumberInput.value = '1234';
+    testMessageBus.publish({
+      type: PUBLIC_EVENTS.AUTOCOMPLETE_CARD_NUMBER,
+      data: cardNumberCorrect,
+    });
+    expect(cardNumberInput.value).toEqual('1234');
+
+  });
+
 
   describe('CardNumber._getCardNumberForBinProcess()', () => {
     it('should return input iframe-factory', () => {
@@ -74,17 +121,19 @@ describe('CardNumber', () => {
 
   describe('getMaxLengthOfCardNumber()', () => {
     const { cardNumberCorrect, unrecognizedCardNumber } = cardNumberFixture();
-    const maxLengthOfCardNumber = 19;
+    const maxLengthOfCardNumber = 21;
     const numberOfWhitespaces = 0;
 
     it('should return max length of card number', () => {
+      cardNumberInput.value = cardNumberCorrect;
       // @ts-ignore
-      expect(cardNumberInstance.getMaxLengthOfCardNumber(cardNumberCorrect)).toEqual(maxLengthOfCardNumber);
+      expect(cardNumberInstance.getMaxLengthOfCardNumber()).toEqual(maxLengthOfCardNumber);
     });
 
     it(`should return numberOfWhitespaces equals: ${numberOfWhitespaces} when cardFormat is not defined`, () => {
+      cardNumberInput.value = unrecognizedCardNumber;
       // @ts-ignore
-      expect(cardNumberInstance.getMaxLengthOfCardNumber(unrecognizedCardNumber)).toEqual(
+      expect(cardNumberInstance.getMaxLengthOfCardNumber()).toEqual(
         // @ts-ignore
         CardNumber.STANDARD_CARD_LENGTH
       );
@@ -307,7 +356,7 @@ describe('CardNumber', () => {
 
 function cardNumberFixture() {
   const html =
-    '<form id="st-card-number" class="card-number" novalidate=""><label id="st-card-number-label" for="st-card-number-input" class="card-number__label card-number__label--required">Card number</label><input id="st-card-number-input" class="card-number__input" type="text" autocomplete="off" required="" data-luhn-check="true" maxlength="NaN" minlength="19"><p id="st-card-number-message" class="card-number__message"></p></form>';
+    '<form id="st-card-number" class="card-number" novalidate=""><label id="st-card-number-label" for="st-card-number-input" class="card-number__label card-number__label--required">Card number</label><input id="st-card-number-input" class="card-number__input" type="text" autocomplete="off" required="" data-luhn-check="true" maxlength="NaN" minlength="19"><p id="st-card-number-message" class="card-number__message"></p><div class="card-number__autocomplete">     <input id="st-card-number-input-autocomplete-capture-expiration-date" type="text" autocomplete="cc-exp" tabindex="-1" inputmode="none" /><input id="st-card-number-input-autocomplete-capture-security-code" type="text" autocomplete="cc-csc" tabindex="-1" inputmode="none" /> </div></form>';
   document.body.innerHTML = html;
   const configProvider: ConfigProvider = mock<ConfigProvider>();
   const iconFactory: IconFactory = mock(IconFactory);
@@ -324,7 +373,7 @@ function cardNumberFixture() {
     instance(configProvider),
     instance(iconFactory),
     instance(formatter),
-    instance(validation),
+    instance(validation)
   );
 
   function createElement(markup: string) {
@@ -377,4 +426,9 @@ function cardNumberFixture() {
     cardNumberCorrect,
     receivedObject,
   };
+}
+
+function mockAutocompleteEvent(input: HTMLInputElement, value: string) {
+  input.value = value;
+  input.dispatchEvent(new Event('input'));
 }
