@@ -17,7 +17,7 @@ export class Translator implements ITranslator {
   }
 
   changeLanguage(language: Locale = 'en_GB'): void {
-    i18next.changeLanguage(language);
+    i18next.changeLanguage(language).then();
   }
 
   translate(text: string): string {
