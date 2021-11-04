@@ -32,8 +32,6 @@ export class ExpirationDate extends Input {
   private static INPUT_PATTERN = '^(0[1-9]|1[0-2])\\/([0-9]{2})$';
 
   private currentKeyCode: number;
-  private inputSelectionEnd: number;
-  private inputSelectionStart: number;
   private autocompleteCardNumberInput: HTMLInputElement = document.querySelector('#st-expiration-date-input-autocomplete-capture-number');
   private autocompleteSecurityCodeInput: HTMLInputElement = document.querySelector('#st-expiration-date-input-autocomplete-capture-security-code');
 
@@ -155,8 +153,6 @@ export class ExpirationDate extends Input {
   protected onKeydown(event: KeyboardEvent): KeyboardEvent {
     super.onKeydown(event);
     this.currentKeyCode = event.keyCode;
-    this.inputSelectionStart = this.inputElement.selectionStart;
-    this.inputSelectionEnd = this.inputElement.selectionEnd;
     return event;
   }
 

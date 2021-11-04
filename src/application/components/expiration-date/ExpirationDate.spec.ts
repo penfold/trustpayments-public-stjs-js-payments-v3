@@ -12,20 +12,78 @@ import {
   EXPIRATION_DATE_MESSAGE,
 } from '../../core/models/constants/Selectors';
 import Container from 'typedi';
-import { TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
+import { MessageBusToken, TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../../core/shared/translator/Translator';
 import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
 import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
 import { Validation } from '../../core/shared/validation/Validation';
+import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
+import { EventScope } from '../../core/models/constants/EventScope';
+import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 
 jest.mock('./../../core/shared/notification/Notification');
 
+const testMessageBus = new SimpleMessageBus();
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set({ id: TranslatorToken, type: Translator });
 Container.set({ id: ITranslationProvider, type: TranslationProvider });
+Container.set({ id: MessageBusToken, value: testMessageBus });
 
 describe('ExpirationDate', () => {
+  describe('autocomplete capture', () => {
+    const { expirationDateInstance } = expirationDateFixture();
+    let expirationDateInput: HTMLInputElement;
+
+    beforeAll(() => {
+      jest.spyOn(testMessageBus, 'publish');
+      expirationDateInput = document.querySelector('#st-expiration-date-input');
+    });
+
+    afterAll(() => {
+      expirationDateInput.value = null;
+    });
+
+    it('should capture autocomplete and emit card number from autocomplete via message bus event', () => {
+      const cardNumberInput: HTMLInputElement = document.querySelector('#st-expiration-date-input-autocomplete-capture-number');
+      mockAutocompleteEvent(cardNumberInput, '4100000000001000');
+      expect(testMessageBus.publish).toHaveBeenCalledWith({
+          type: PUBLIC_EVENTS.AUTOCOMPLETE_CARD_NUMBER,
+          data: '4100000000001000',
+        },
+        EventScope.ALL_FRAMES
+      );
+    });
+
+    it('should capture autocomplete and emit security code from autocomplete via message bus event', () => {
+      const autoCompleteSecurityCodeInput: HTMLInputElement = document.querySelector('#st-expiration-date-input-autocomplete-capture-security-code');
+      mockAutocompleteEvent(autoCompleteSecurityCodeInput, '123');
+      expect(testMessageBus.publish).toHaveBeenCalledWith({
+          type: PUBLIC_EVENTS.AUTOCOMPLETE_SECURITY_CODE,
+          data: '123',
+        },
+        EventScope.ALL_FRAMES
+      );
+    });
+
+    it.each([['12/2034', '12/34'], ['12/24', '12/24']])('if input has no value and event from other frame with expiration date from autocomplete is received, it should set input value to received value formatted to MM/YY format',
+      (autocompleteValue: string, expectedValue: string) => {
+        expirationDateInput.value = null;
+        testMessageBus.publish({
+          type: PUBLIC_EVENTS.AUTOCOMPLETE_EXPIRATION_DATE,
+          data: autocompleteValue,
+        });
+        expect(expirationDateInput.value).toEqual(expectedValue);
+
+        expirationDateInput.value = '12/12';
+        testMessageBus.publish({
+          type: PUBLIC_EVENTS.AUTOCOMPLETE_EXPIRATION_DATE,
+          data: autocompleteValue,
+        });
+        expect(expirationDateInput.value).toEqual('12/12');
+      });
+  });
+
   describe('ExpirationDate.ifFieldExists()', () => {
     it('should return input iframe-factory', () => {
       expect(ExpirationDate.ifFieldExists()).toBeInstanceOf(HTMLInputElement);
@@ -169,16 +227,6 @@ describe('ExpirationDate', () => {
       // @ts-ignore
       expect(expirationDateInstance.currentKeyCode).toEqual(34);
     });
-
-    it('should set inputSelectionStart', () => {
-      // @ts-ignore
-      expect(expirationDateInstance.inputSelectionStart).toEqual(0);
-    });
-
-    it('should set inputSelectionEnd', () => {
-      // @ts-ignore
-      expect(expirationDateInstance.inputSelectionEnd).toEqual(0);
-    });
   });
 
   describe('sendState()', () => {
@@ -200,7 +248,7 @@ describe('ExpirationDate', () => {
 
 function expirationDateFixture() {
   const html =
-    '<form id="st-expiration-date" class="expiration-date" novalidate=""> <label id="st-expiration-date-label" for="st-expiration-date-input" class="expiration-date__label expiration-date__label--required">Expiration date</label> <input id="st-expiration-date-input" class="expiration-date__input st-error-field" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="numeric" required="" data-dirty="true" data-pristine="false" data-validity="false" data-clicked="false" pattern="^(0[1-9]|1[0-2])\\/([0-9]{2})$"> <div id="st-expiration-date-message" class="expiration-date__message">Field is required</div> </form>';
+    '<form id="st-expiration-date" class="expiration-date" novalidate=""> <label id="st-expiration-date-label" for="st-expiration-date-input" class="expiration-date__label expiration-date__label--required">Expiration date</label> <input id="st-expiration-date-input" class="expiration-date__input st-error-field" type="text" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="numeric" required="" data-dirty="true" data-pristine="false" data-validity="false" data-clicked="false" pattern="^(0[1-9]|1[0-2])\\/([0-9]{2})$"> <div id="st-expiration-date-message" class="expiration-date__message">Field is required</div> </form><div class="expiration-date__autocomplete"><input id="st-expiration-date-input-autocomplete-capture-number" type="text" autocomplete="cc-number" tabindex="-1" inputmode="none"  tabindex="-1" inputmode="none" /> <input id="st-expiration-date-input-autocomplete-capture-security-code" type="text" autocomplete="cc-csc" tabindex="-1" inputmode="none" /></div>';
   document.body.innerHTML = html;
   const correctValue = '55';
   const incorrectValue = 'a';
@@ -223,7 +271,7 @@ function expirationDateFixture() {
   const expirationDateInstance: ExpirationDate = new ExpirationDate(
     instance(configProvider),
     instance(formatter),
-    instance(validation),
+    instance(validation)
   );
 
   const labelElement = document.createElement('label');
@@ -247,4 +295,9 @@ function expirationDateFixture() {
   document.body.appendChild(messageElement);
 
   return { element, elementWithError, elementWithExceededValue, expirationDateInstance, configProvider };
+}
+
+function mockAutocompleteEvent(input: HTMLInputElement, value: string) {
+  input.value = value;
+  input.dispatchEvent(new Event('input'));
 }
