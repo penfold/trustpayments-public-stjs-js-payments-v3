@@ -20,6 +20,8 @@ if (process.env.SENTRY_AUTH_TOKEN) {
     include: './dist',
     ignore: ['node_modules', 'webpack.dev.js'],
   }));
+} else {
+  console.error('SENTRY_AUTH_TOKEN from env variables is not defined!');
 }
 
 module.exports = merge(common, {
