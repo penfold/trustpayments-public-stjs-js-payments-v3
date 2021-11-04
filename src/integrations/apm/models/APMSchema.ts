@@ -24,6 +24,8 @@ const configSchemaFactory = (apmName: APMName) => {
         name: Joi.string().valid(apmName).required(),
         placement: Joi.string().required(),
         returnUrl: Joi.string().required(),
+        minBaseAmount: Joi.number().greater(0).integer(),
+        maxBaseAmount: Joi.number().greater(0).integer(),
       }).unknown();
     default:
       return Joi.object().keys({

@@ -7,4 +7,6 @@ export interface IAPMItemConfig {
   errorRedirectUrl?: string;
   cancelRedirectUrl?: string;
   returnUrl?: string;
+  minBaseAmount?: number;
+  maxBaseAmount?: number;
 }
