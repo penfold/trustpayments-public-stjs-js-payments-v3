@@ -71,26 +71,26 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
       | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
 
 
-#  Scenario Outline: Additional TC_2d. Transaction timed out at the ACS
-#    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
-#      | key                     | value           |
-#      | requesttypedescriptions | <request_types> |
-#    And User opens example page
-#    When User fills payment form with defined card VISA_TIMEOUT_2_ACS
-#    And User clicks Pay button
-#    Then User will see notification frame text: "Payment has been successfully processed"
-#    And User will see following callback type called only once
-#      | callback_type |
-#      | submit        |
-#      | success       |
-#    And User will see that Pay button is "disabled"
-#    And User will see that ALL input fields are "disabled"
-#
-#    Examples:
-#      | request_types            |
-#      | THREEDQUERY AUTH         |
-#      | ACCOUNTCHECK THREEDQUERY |
-#      | THREEDQUERY ACCOUNTCHECK |
+  Scenario Outline: Additional TC_2d. Transaction timed out at the ACS
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value           |
+      | requesttypedescriptions | <request_types> |
+    And User opens example page
+    When User fills payment form with defined card VISA_TIMEOUT_2_ACS
+    And User clicks Pay button
+    Then User will see notification frame text: "Payment has been successfully processed"
+    And User will see following callback type called only once
+      | callback_type |
+      | submit        |
+      | success       |
+    And User will see that Pay button is "disabled"
+    And User will see that ALL input fields are "disabled"
+
+    Examples:
+      | request_types            |
+      | THREEDQUERY AUTH         |
+      | ACCOUNTCHECK THREEDQUERY |
+      | THREEDQUERY ACCOUNTCHECK |
 
 
   Scenario Outline: Additional TC_2e. Non-Payment transaction not supported
