@@ -15,6 +15,17 @@ export class EventScrubber {
       return null;
     }
 
+    if (event.stacktrace) {
+      const { frames } = event.stacktrace;
+      const results = frames.find(frame => this.isLibError(frame.filename));
+      
+      if (!results) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+
     if (event.extra && typeof event.extra.config === 'object') {
       event.extra.config = { ...event.extra.config, jwt: '*****' };
     }
@@ -28,5 +39,14 @@ export class EventScrubber {
     }
 
     return event;
+  }
+
+  private isLibError(name: string) {
+    return (
+      name === '/js/v3/st.js' ||
+      name === '/js/v3/control-frame.html' ||
+      name === '/js/v3/security-code.html' ||
+      name === '/js/v3/card-number.html'
+    );
   }
 }
