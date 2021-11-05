@@ -1,7 +1,7 @@
-import { FrameIdentifier } from '../message-bus/FrameIdentifier';
 import { instance, mock, when } from 'ts-mockito';
-import { SentryContext } from './SentryContext';
+import { FrameIdentifier } from '../message-bus/FrameIdentifier';
 import { CARD_NUMBER_IFRAME } from '../../../application/core/models/constants/Selectors';
+import { SentryContext } from './SentryContext';
 
 describe('SentryContext', () => {
   let frameIdentifierMock: FrameIdentifier;

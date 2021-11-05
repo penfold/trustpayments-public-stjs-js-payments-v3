@@ -1,6 +1,6 @@
+import { anything, instance, mock, when } from 'ts-mockito';
 import { BrowsersList } from '../BrowsersList';
 import { BrowserSupport } from './BrowserSupport';
-import { anything, instance, mock, when } from 'ts-mockito';
 
 describe('BrowserSupport', () => {
   const browsers = [

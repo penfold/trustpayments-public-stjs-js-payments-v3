@@ -1,8 +1,8 @@
+import { ContainerInstance, Service } from 'typedi';
+import { TransportService } from '../st-transport/TransportService';
 import { IRequestProcessor } from './IRequestProcessor';
 import { IResponseProcessor } from './IResponseProcessor';
 import { RequestProcessingChain } from './RequestProcessingChain';
-import { TransportService } from '../st-transport/TransportService';
-import { ContainerInstance, Service } from 'typedi';
 import { IErrorHandler } from './IErrorHandler';
 
 @Service()

@@ -1,8 +1,8 @@
 import { Service } from 'typedi';
+import { first } from 'rxjs/operators';
 import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { ofType } from '../../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
-import { first } from 'rxjs/operators';
 
 @Service()
 export class ApplePayGestureService {

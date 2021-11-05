@@ -1,13 +1,12 @@
 import { mock, instance, when, verify, anything, deepEqual } from 'ts-mockito';
-import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
-import { RequestProcessingChain } from '../RequestProcessingChain';
+import { of } from 'rxjs';
 import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { CacheTokenRequestProcessor } from '../request-processors/CacheTokenRequestProcessor';
 import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
-import { of } from 'rxjs';
-import { CardinalRequestProcessingService } from './CardinalRequestProcessingService';
+import { RequestProcessingChain } from '../RequestProcessingChain';
+import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
 import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { InterFrameCommunicator } from '../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { SimpleMessageBus } from '../../../shared/message-bus/SimpleMessageBus';
@@ -17,6 +16,7 @@ import { RemainingRequestTypesResponseProcessor } from '../response-processors/R
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../models/constants/Selectors';
 import { PaymentEvents } from '../../../models/constants/PaymentEvents';
+import { CardinalRequestProcessingService } from './CardinalRequestProcessingService';
 
 describe('CardinalRequestProcessingService', () => {
   let requestProcessingChainFactoryMock: RequestProcessingChainFactory;

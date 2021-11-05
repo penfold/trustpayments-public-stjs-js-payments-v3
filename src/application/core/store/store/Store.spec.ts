@@ -1,10 +1,10 @@
+import { BehaviorSubject } from 'rxjs';
+import { toArray } from 'rxjs/operators';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
-import { Store } from './Store';
-import { BehaviorSubject } from 'rxjs';
 import { CallbackReducer } from '../CallbackReducer';
-import { toArray } from 'rxjs/operators';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
+import { Store } from './Store';
 
 describe('Store', () => {
   const state = { foo: 'bar' };

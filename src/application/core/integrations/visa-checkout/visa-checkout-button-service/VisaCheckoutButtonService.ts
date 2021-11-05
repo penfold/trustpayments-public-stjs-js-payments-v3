@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { VisaCheckoutButtonProps } from './VisaCheckoutButtonProps';
 import { DomMethods } from '../../../shared/dom-methods/DomMethods';
+import { VisaCheckoutButtonProps } from './VisaCheckoutButtonProps';
 import { IVisaCheckoutButtonSettings } from './IVisaCheckoutButtonSettings';
 import { IVisaCheckoutButtonProps } from './IVisaCheckoutButtonProps';
 

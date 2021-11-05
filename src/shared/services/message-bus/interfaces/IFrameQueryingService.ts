@@ -1,7 +1,7 @@
-import { IMessageBusEvent } from '../../../../application/core/models/IMessageBusEvent';
 import { Observable } from 'rxjs';
-import { QueryResponder } from '../types/QueryResponder';
 import { Service } from 'typedi';
+import { IMessageBusEvent } from '../../../../application/core/models/IMessageBusEvent';
+import { QueryResponder } from '../types/QueryResponder';
 
 @Service()
 export abstract class IFrameQueryingService {

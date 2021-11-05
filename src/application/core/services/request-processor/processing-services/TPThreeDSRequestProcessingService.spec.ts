@@ -1,10 +1,6 @@
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
-import { RequestProcessingChain } from '../RequestProcessingChain';
-import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
-import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
 import { of } from 'rxjs';
-import { TPThreeDSRequestProcessingService } from './TPThreeDSRequestProcessingService';
+import { ConfigInterface, LoggingLevel } from '@trustpayments/3ds-sdk-js';
 import { ConfigProvider } from '../../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { ThreeDLookupRequestProcessor } from '../request-processors/ThreeDLookupRequestProcessor';
@@ -14,11 +10,15 @@ import { TPChallengeResponseProcessor } from '../response-processors/TPChallenge
 import { RemainingRequestTypesResponseProcessor } from '../response-processors/RemainingRequestTypesResponseProcessor';
 import { HideProcessingScreenErrorHandler } from '../error-handlers/HideProcessingScreenErrorHandler';
 import { MERCHANT_PARENT_FRAME } from '../../../models/constants/Selectors';
-import { ConfigInterface, LoggingLevel } from '@trustpayments/3ds-sdk-js';
+import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
+import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
+import { RequestProcessingChain } from '../RequestProcessingChain';
+import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
 import { threeDSecureConfigName } from '../../three-d-verification/implementations/trust-payments/IThreeDSecure';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
+import { TPThreeDSRequestProcessingService } from './TPThreeDSRequestProcessingService';
 
 describe('TPThreeDSRequestProcessingService', () => {
   let requestProcessingChainFactoryMock: RequestProcessingChainFactory;

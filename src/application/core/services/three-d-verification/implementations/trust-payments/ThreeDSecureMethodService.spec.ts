@@ -1,11 +1,11 @@
-import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
-import { ThreeDSecureMethodService } from './ThreeDSecureMethodService';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { MethodURLResultInterface, ResultActionCode } from '@trustpayments/3ds-sdk-js';
+import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IMethodUrlData } from '../../../../../../client/integrations/three-d-secure/IMethodUrlData';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
-import { MethodURLResultInterface, ResultActionCode } from '@trustpayments/3ds-sdk-js';
+import { ThreeDSecureMethodService } from './ThreeDSecureMethodService';
 
 describe('ThreeDSecureMethodService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;

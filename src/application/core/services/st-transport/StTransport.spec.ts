@@ -1,12 +1,12 @@
 import { GlobalWithFetchMock } from 'jest-fetch-mock';
-import { StTransport } from './StTransport';
+import { mock, instance as mockInstance, when } from 'ts-mockito';
 import { Utils } from '../../shared/utils/Utils';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { mock, instance as mockInstance, when } from 'ts-mockito';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { StCodec } from '../st-codec/StCodec';
 import { environment } from '../../../../environments/environment';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { StTransport } from './StTransport';
 
 const customGlobal: GlobalWithFetchMock = (global as unknown) as GlobalWithFetchMock;
 customGlobal.fetch = require('jest-fetch-mock');

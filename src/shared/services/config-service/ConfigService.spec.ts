@@ -1,20 +1,18 @@
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { take, toArray } from 'rxjs/operators';
+import { ValidationError } from 'joi';
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { ConfigResolver } from '../config-resolver/ConfigResolver';
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { ConfigService } from './ConfigService';
 import { IConfig } from '../../model/config/IConfig';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { take, toArray } from 'rxjs/operators';
-import { JwtDecoder } from '../jwt-decoder/JwtDecoder';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
-import { ValidationError } from 'joi';
+import { ConfigService } from './ConfigService';
 
 describe('ConfigService', () => {
   let sut: ConfigService;
   let resolverMock: ConfigResolver;
   let messageBus: IMessageBus;
-  let jwtDecoderMock: JwtDecoder;
 
   const JWT = 'jwt';
 
@@ -25,7 +23,6 @@ describe('ConfigService', () => {
 
     beforeEach(() => {
       resolverMock = mock(ConfigResolver);
-      jwtDecoderMock = mock(JwtDecoder);
       messageBus = new SimpleMessageBus();
 
       when(resolverMock.resolve(config)).thenReturn(config);

@@ -1,11 +1,11 @@
-import { IMessageSubscriber } from '../../../shared/services/message-bus/interfaces/IMessageSubscriber';
 import { Service } from 'typedi';
+import { IMessageSubscriber } from '../../../shared/services/message-bus/interfaces/IMessageSubscriber';
 import { MessageSubscriberToken } from '../../../shared/dependency-injection/InjectionTokens';
-import { ApplePayClient } from './ApplePayClient';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
+import { ApplePayClient } from './ApplePayClient';
 
 @Service({ id: MessageSubscriberToken, multiple: true })
 export class ApplePayClientInitializer implements IMessageSubscriber {

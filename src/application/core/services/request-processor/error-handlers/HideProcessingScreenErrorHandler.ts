@@ -1,10 +1,10 @@
-import { IErrorHandler } from '../IErrorHandler';
 import { Service } from 'typedi';
+import { switchMap, tap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { IErrorHandler } from '../IErrorHandler';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
-import { switchMap, tap } from 'rxjs/operators';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
-import { Observable, of, throwError } from 'rxjs';
 import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { EventScope } from '../../../models/constants/EventScope';
 

@@ -1,19 +1,19 @@
 import { Service } from 'typedi';
-import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
-import { Locale } from './Locale';
-import { Translator } from './Translator';
-import { ITranslator } from './ITranslator';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { merge, Observable } from 'rxjs';
 import { IMessageBus } from '../message-bus/IMessageBus';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { filter, map, takeUntil } from 'rxjs/operators';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { merge, Observable } from 'rxjs';
+import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
 import { IUpdateJwt } from '../../models/IUpdateJwt';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { EventScope } from '../../models/constants/EventScope';
+import { ITranslator } from './ITranslator';
+import { Translator } from './Translator';
+import { Locale } from './Locale';
 
 @Service()
 export class TranslatorWithMerchantTranslations implements ITranslator {

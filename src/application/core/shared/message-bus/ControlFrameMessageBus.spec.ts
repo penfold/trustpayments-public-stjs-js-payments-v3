@@ -1,11 +1,11 @@
-import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
-import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { ControlFrameMessageBus } from './ControlFrameMessageBus';
 import { instance, mock, verify, when } from 'ts-mockito';
 import { Observable, Subject } from 'rxjs';
+import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
+import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { EventScope } from '../../models/constants/EventScope';
+import { ControlFrameMessageBus } from './ControlFrameMessageBus';
 
 describe('ControlFrameMessageBus', () => {
   let windowMock: IControlFrameWindow;

@@ -1,8 +1,8 @@
-import { ApplePayGestureService } from './ApplePayGestureService';
 import { APPLE_PAY_BUTTON_ID } from '../apple-pay-button-service/ApplePayButtonProperties';
 import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../shared/message-bus/SimpleMessageBus';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
+import { ApplePayGestureService } from './ApplePayGestureService';
 
 describe('ApplePayGestureService', () => {
   let applePayGestureService: ApplePayGestureService;

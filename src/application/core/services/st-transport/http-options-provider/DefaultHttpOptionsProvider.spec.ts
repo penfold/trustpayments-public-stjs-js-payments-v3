@@ -1,7 +1,7 @@
-import { DefaultHttpOptionsProvider } from './DefaultHttpOptionsProvider';
 import { instance, mock } from 'ts-mockito';
-import { IRequestObject } from '../../../models/IRequestObject';
 import { IHttpClientConfig } from '@trustpayments/http-client';
+import { IRequestObject } from '../../../models/IRequestObject';
+import { DefaultHttpOptionsProvider } from './DefaultHttpOptionsProvider';
 
 describe('DefaultHttpOptionsProvider', () => {
   let defaultHttpOptionsProvider: DefaultHttpOptionsProvider;

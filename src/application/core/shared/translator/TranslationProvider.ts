@@ -1,3 +1,4 @@
+import { Service } from 'typedi';
 import cy_GB from '../../../../translations/json/cy_GB.json';
 import da_DK from '../../../../translations/json/da_DK.json';
 import de_DE from '../../../../translations/json/de_DE.json';
@@ -8,9 +9,8 @@ import fr_FR from '../../../../translations/json/fr_FR.json';
 import nl_NL from '../../../../translations/json/nl_NL.json';
 import no_NO from '../../../../translations/json/no_NO.json';
 import sv_SE from '../../../../translations/json/sv_SE.json';
-import { ITranslationProvider } from './ITranslationProvider';
 import { IResources } from '../../models/ITranslationResources';
-import { Service } from 'typedi';
+import { ITranslationProvider } from './ITranslationProvider';
 
 @Service()
 export class TranslationProvider implements ITranslationProvider {

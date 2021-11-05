@@ -1,10 +1,6 @@
-import { APMValidator } from './APMValidator';
 import { IAPMConfig } from '../../models/IAPMConfig';
 import { APMName } from '../../models/APMName';
-import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { anything, instance, mock, when } from 'ts-mockito';
-import { IAPMItemConfig } from '../../models/IAPMItemConfig';
+import { APMValidator } from './APMValidator';
 
 describe('APMValidator', () => {
   let sut: APMValidator;

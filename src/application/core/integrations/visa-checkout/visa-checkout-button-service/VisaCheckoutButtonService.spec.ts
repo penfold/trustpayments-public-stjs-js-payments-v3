@@ -1,5 +1,5 @@
-import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
 import { environment } from '../../../../../environments/environment';
+import { VisaCheckoutButtonService } from './VisaCheckoutButtonService';
 import { IVisaCheckoutButtonSettings } from './IVisaCheckoutButtonSettings';
 
 describe('VisaCheckoutButtonService', () => {

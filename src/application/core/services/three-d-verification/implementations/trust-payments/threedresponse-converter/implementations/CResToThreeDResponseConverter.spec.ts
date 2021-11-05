@@ -1,9 +1,9 @@
-import { UnsignedJwtGenerator } from '../unsigned-jwt-generator/UnsignedJwtGenerator';
-import { CResToThreeDResponseConverter } from './CResToThreeDResponseConverter';
 import { anyNumber, anyString, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { IThreeDQueryResponse } from '../../../../../../models/IThreeDQueryResponse';
 import { ChallengeResultInterface, ResultActionCode } from '@trustpayments/3ds-sdk-js';
+import { IThreeDQueryResponse } from '../../../../../../models/IThreeDQueryResponse';
+import { UnsignedJwtGenerator } from '../unsigned-jwt-generator/UnsignedJwtGenerator';
 import { ICResData } from '../../data/ICResData';
+import { CResToThreeDResponseConverter } from './CResToThreeDResponseConverter';
 
 describe('CResToThreeDResponseConverter', () => {
   let unsignedJwtGeneratorMock: UnsignedJwtGenerator;

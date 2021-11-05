@@ -3,8 +3,6 @@ import { Service } from 'typedi';
 import { InterFrameCommunicator } from '../message-bus/InterFrameCommunicator';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { ofType } from '../message-bus/operators/ofType';
-import { IStorage } from './IStorage';
-import { ISynchronizedStorage } from './ISynchronizedStorage';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { IApplicationFrameState } from '../../../application/core/store/state/IApplicationFrameState';
@@ -12,6 +10,8 @@ import { IParentFrameState } from '../../../application/core/store/state/IParent
 import { IStore } from '../../../application/core/store/IStore';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { EventScope } from '../../../application/core/models/constants/EventScope';
+import { ISynchronizedStorage } from './ISynchronizedStorage';
+import { IStorage } from './IStorage';
 
 type CommonState = IApplicationFrameState | IParentFrameState;
 

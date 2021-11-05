@@ -1,8 +1,8 @@
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { Service } from 'typedi';
-import { IConfig } from '../../../../shared/model/config/IConfig';
 import { Observable } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
+import { IConfig } from '../../../../shared/model/config/IConfig';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { IStore } from '../../store/IStore';
 import { IApplicationFrameState } from '../../store/state/IApplicationFrameState';
 import { IParentFrameState } from '../../store/state/IParentFrameState';

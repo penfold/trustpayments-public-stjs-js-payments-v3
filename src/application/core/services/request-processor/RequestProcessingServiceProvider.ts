@@ -1,11 +1,11 @@
 import { ContainerInstance, Service } from 'typedi';
-import { IRequestProcessingService } from './IRequestProcessingService';
 import { ThreeDVerificationProviderName } from '../three-d-verification/data/ThreeDVerificationProviderName';
+import { RequestType } from '../../../../shared/types/RequestType';
+import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
+import { IRequestProcessingService } from './IRequestProcessingService';
 import { CardinalRequestProcessingService } from './processing-services/CardinalRequestProcessingService';
 import { TPThreeDSRequestProcessingService } from './processing-services/TPThreeDSRequestProcessingService';
 import { NoThreeDSRequestProcessingService } from './processing-services/NoThreeDSRequestProcessingService';
-import { RequestType } from '../../../../shared/types/RequestType';
-import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 
 @Service()
 export class RequestProcessingServiceProvider {

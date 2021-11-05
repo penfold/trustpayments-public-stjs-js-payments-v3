@@ -1,5 +1,5 @@
-import { JwtMasker } from './JwtMasker';
 import { QueryParams } from '@sentry/types';
+import { JwtMasker } from './JwtMasker';
 
 describe('JwtMasker', () => {
   let jwtMasker: JwtMasker;

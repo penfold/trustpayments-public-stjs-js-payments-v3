@@ -1,7 +1,7 @@
-import { IStRequest } from '../../models/IStRequest';
-import { IRequestProcessingOptions } from './IRequestProcessingOptions';
 import { Observable } from 'rxjs';
+import { IStRequest } from '../../models/IStRequest';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
+import { IRequestProcessingOptions } from './IRequestProcessingOptions';
 
 export interface IErrorHandler {
   handle(

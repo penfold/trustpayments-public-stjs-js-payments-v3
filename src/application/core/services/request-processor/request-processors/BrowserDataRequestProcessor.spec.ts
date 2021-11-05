@@ -1,9 +1,9 @@
 import { mock, instance, when } from 'ts-mockito';
-import { BrowserDataProvider } from '../../three-d-verification/implementations/trust-payments/BrowserDataProvider';
-import { BrowserDataRequestProcessor } from './BrowserDataRequestProcessor';
 import { of } from 'rxjs';
+import { BrowserDataProvider } from '../../three-d-verification/implementations/trust-payments/BrowserDataProvider';
 import { IBrowserData } from '../../three-d-verification/implementations/trust-payments/data/IBrowserData';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
+import { BrowserDataRequestProcessor } from './BrowserDataRequestProcessor';
 
 describe('BrowserDataRequestProcessor', () => {
   let browserDataProviderMock: BrowserDataProvider;

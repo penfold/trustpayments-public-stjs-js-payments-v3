@@ -1,7 +1,7 @@
+import { IApplePayErrorConstructor } from '../../../../../global-extensions';
 import { ApplePayErrorContactField } from './ApplePayErrorContactField';
 import { ApplePayErrorService } from './ApplePayErrorService';
 import { ApplePaySessionErrorCode } from './ApplePaySessionErrorCode';
-import { IApplePayErrorConstructor } from '../../../../../global-extensions';
 
 class MockedApplePayError {
   constructor(strA: ApplePaySessionErrorCode, strB?: ApplePayErrorContactField, strC?: string) {

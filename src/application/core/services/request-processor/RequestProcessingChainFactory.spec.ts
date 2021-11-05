@@ -1,13 +1,13 @@
 import { mock, instance, when } from 'ts-mockito';
-import { TransportService } from '../st-transport/TransportService';
 import { ContainerInstance } from 'typedi';
+import { Observable } from 'rxjs';
+import { TransportService } from '../st-transport/TransportService';
+import { IStRequest } from '../../models/IStRequest';
+import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 import { RequestProcessingChainFactory } from './RequestProcessingChainFactory';
 import { IRequestProcessor } from './IRequestProcessor';
-import { IStRequest } from '../../models/IStRequest';
 import { IRequestProcessingOptions } from './IRequestProcessingOptions';
-import { Observable } from 'rxjs';
 import { IResponseProcessor } from './IResponseProcessor';
-import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 import { IErrorHandler } from './IErrorHandler';
 import { RequestProcessingChain } from './RequestProcessingChain';
 

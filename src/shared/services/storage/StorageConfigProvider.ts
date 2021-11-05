@@ -1,9 +1,9 @@
-import { IConfig } from '../../model/config/IConfig';
-import { BrowserLocalStorage } from './BrowserLocalStorage';
 import { Service } from 'typedi';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, first, shareReplay } from 'rxjs/operators';
+import { IConfig } from '../../model/config/IConfig';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
+import { BrowserLocalStorage } from './BrowserLocalStorage';
 
 @Service()
 export class StorageConfigProvider implements ConfigProvider {

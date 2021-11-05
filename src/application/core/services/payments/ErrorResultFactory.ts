@@ -1,8 +1,8 @@
-import { IPaymentResult } from './IPaymentResult';
 import { Service } from 'typedi';
-import { PaymentStatus } from './PaymentStatus';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 import { PAYMENT_ERROR } from '../../models/constants/Translations';
+import { PaymentStatus } from './PaymentStatus';
+import { IPaymentResult } from './IPaymentResult';
 
 @Service()
 export class ErrorResultFactory {

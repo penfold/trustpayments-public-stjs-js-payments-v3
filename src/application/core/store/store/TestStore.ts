@@ -1,6 +1,6 @@
-import { IStore } from '../IStore';
 import { BehaviorSubject, Observable, Unsubscribable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { IStore } from '../IStore';
 
 export class TestStore<T = Record<string, unknown>> implements IStore<T> {
   constructor(private state$: BehaviorSubject<T>) {}

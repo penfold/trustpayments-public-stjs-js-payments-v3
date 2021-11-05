@@ -1,8 +1,8 @@
-import { ErrorResultFactory } from './ErrorResultFactory';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
+import { PAYMENT_ERROR } from '../../models/constants/Translations';
+import { ErrorResultFactory } from './ErrorResultFactory';
 import { IPaymentResult } from './IPaymentResult';
 import { PaymentStatus } from './PaymentStatus';
-import { PAYMENT_ERROR } from '../../models/constants/Translations';
 
 describe('ErrorResultFactory', () => {
   let errorResultFactory: ErrorResultFactory;

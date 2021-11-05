@@ -1,4 +1,3 @@
-import { MerchantFields } from './MerchantFields';
 import Container from 'typedi';
 import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../../application/core/shared/translator/Translator';
@@ -6,6 +5,7 @@ import { ITranslationProvider } from '../../application/core/shared/translator/I
 import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
+import { MerchantFields } from './MerchantFields';
 
 jest.mock('./../../application/core/shared/notification/Notification');
 

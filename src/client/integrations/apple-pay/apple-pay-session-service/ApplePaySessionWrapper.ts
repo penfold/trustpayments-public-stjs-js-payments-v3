@@ -1,7 +1,7 @@
-import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
-import { IApplePaySession } from './IApplePaySession';
 import { Inject, Service } from 'typedi';
+import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
+import { IApplePaySession } from './IApplePaySession';
 import { IApplePaySessionConstructor } from './IApplePaySessionConstructor';
 import { IApplePaySessionWrapper } from './IApplePaySessionWrapper';
 

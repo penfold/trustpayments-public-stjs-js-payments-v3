@@ -1,7 +1,7 @@
-import { IApplePaySession } from './IApplePaySession';
-import { ApplePaySessionFactory } from './ApplePaySessionFactory';
 import { anyNumber, anything, instance, mock, when } from 'ts-mockito';
 import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
+import { IApplePaySession } from './IApplePaySession';
+import { ApplePaySessionFactory } from './ApplePaySessionFactory';
 import { IApplePaySessionWrapper } from './IApplePaySessionWrapper';
 
 describe('ApplePaySessionFactory', () => {

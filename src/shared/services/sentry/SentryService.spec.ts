@@ -1,12 +1,12 @@
-import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { anyFunction, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { ConfigProvider } from '../config-provider/ConfigProvider';
+import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
+import { IConfig } from '../../model/config/IConfig';
 import { Sentry } from './Sentry';
 import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { SentryService } from './SentryService';
-import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { IConfig } from '../../model/config/IConfig';
 import { ExceptionsToSkip } from './ExceptionsToSkip';
 
 describe('SentryService', () => {

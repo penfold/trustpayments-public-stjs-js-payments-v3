@@ -1,5 +1,5 @@
-import { Utils } from '../utils/Utils';
 import { Container, Service } from 'typedi';
+import { Utils } from '../utils/Utils';
 import { Validation } from '../validation/Validation';
 
 @Service()

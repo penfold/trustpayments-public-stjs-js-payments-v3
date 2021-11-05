@@ -1,9 +1,9 @@
-import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
-import { RemainingRequestTypesProvider } from './RemainingRequestTypesProvider';
 import { instance, mock, when } from 'ts-mockito';
-import { TestStore } from '../../store/store/TestStore';
 import { BehaviorSubject } from 'rxjs';
+import { TestStore } from '../../store/store/TestStore';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IApplicationFrameState } from '../../store/state/IApplicationFrameState';
+import { RemainingRequestTypesProvider } from './RemainingRequestTypesProvider';
 
 describe('RemainingRequestTypesProvider', () => {
   let jwtDecoderMock: JwtDecoder;

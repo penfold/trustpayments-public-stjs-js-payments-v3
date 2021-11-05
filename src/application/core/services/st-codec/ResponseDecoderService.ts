@@ -1,9 +1,9 @@
 import { Service } from 'typedi';
 import { IHttpClientResponse } from '@trustpayments/http-client';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
 import { InvalidResponseError } from './InvalidResponseError';
 import { IJwtResponse } from './interfaces/IJwtResponse';
-import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
 import { IResponsePayload } from './interfaces/IResponsePayload';
 import { IRequestTypeResponse } from './interfaces/IRequestTypeResponse';
 import { IDecodedResponse } from './interfaces/IDecodedResponse';

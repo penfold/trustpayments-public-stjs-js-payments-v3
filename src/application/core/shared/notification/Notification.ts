@@ -1,6 +1,6 @@
+import { Service } from 'typedi';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { INotificationEvent } from '../../models/INotificationEvent';
-import { Service } from 'typedi';
 import {
   NOTIFICATION_FRAME_CORE_CLASS,
   NOTIFICATION_FRAME_ID,

@@ -1,11 +1,11 @@
-import { FrameAccessor } from '../../../../shared/services/message-bus/FrameAccessor';
 import { BehaviorSubject, of } from 'rxjs';
-import { LinkedStore } from './LinkedStore';
 import { instance, mock, when } from 'ts-mockito';
+import { FrameAccessor } from '../../../../shared/services/message-bus/FrameAccessor';
 import { IApplicationFrameState } from '../state/IApplicationFrameState';
 import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
 import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
 import { CONTROL_FRAME_IFRAME } from '../../models/constants/Selectors';
+import { LinkedStore } from './LinkedStore';
 
 describe('LinkedStore', () => {
   let frameAccessorMock: FrameAccessor;

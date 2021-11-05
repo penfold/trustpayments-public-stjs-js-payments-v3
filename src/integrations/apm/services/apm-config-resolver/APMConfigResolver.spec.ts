@@ -1,8 +1,8 @@
-import { APMConfigResolver } from './APMConfigResolver';
+import { anything, instance, mock, when } from 'ts-mockito';
 import { IAPMConfig } from '../../models/IAPMConfig';
 import { APMName } from '../../models/APMName';
 import { APMValidator } from '../apm-validator/APMValidator';
-import { anything, instance, mock, when } from 'ts-mockito';
+import { APMConfigResolver } from './APMConfigResolver';
 
 describe('APMConfigResolver', () => {
   let aPMConfigResolver: APMConfigResolver;

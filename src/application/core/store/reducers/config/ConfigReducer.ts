@@ -1,9 +1,9 @@
+import { Service } from 'typedi';
 import { IReducer } from '../../IReducer';
 import { IApplicationFrameState } from '../../state/IApplicationFrameState';
 import { IParentFrameState } from '../../state/IParentFrameState';
 import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
-import { Service } from 'typedi';
 import { ReducerToken } from '../../../../../shared/dependency-injection/InjectionTokens';
 
 type CommonState = IApplicationFrameState | IParentFrameState;

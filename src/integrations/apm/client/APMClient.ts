@@ -1,5 +1,6 @@
 import { Service } from 'typedi';
 import { combineLatest, merge, Observable } from 'rxjs';
+import { first, map, mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
@@ -12,7 +13,6 @@ import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
 import { APMName } from '../models/APMName';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { first, map, mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
 import './APMClient.scss';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';

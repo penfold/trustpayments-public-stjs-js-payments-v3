@@ -1,6 +1,6 @@
+import { instance, mock, when } from 'ts-mockito';
 import { FrameIdentifier } from './FrameIdentifier';
 import { FrameAccessor } from './FrameAccessor';
-import { instance, mock, when } from 'ts-mockito';
 import { FrameCollection } from './interfaces/FrameCollection';
 import { FrameNotFound } from './errors/FrameNotFound';
 

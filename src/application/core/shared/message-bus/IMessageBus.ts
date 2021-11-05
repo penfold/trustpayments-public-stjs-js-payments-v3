@@ -1,5 +1,5 @@
-import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { Observable, OperatorFunction, Subscribable, PartialObserver, Unsubscribable } from 'rxjs';
+import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { EventScope } from '../../models/constants/EventScope';
 
 export abstract class IMessageBus implements Subscribable<IMessageBusEvent> {

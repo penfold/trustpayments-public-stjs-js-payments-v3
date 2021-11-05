@@ -1,9 +1,9 @@
 import { Service } from 'typedi';
-import { ICResData } from '../../data/ICResData';
 import { ChallengeResultInterface } from '@trustpayments/3ds-sdk-js';
-import { AbstractThreeDResponseConverter } from './AbstractThreeDResponseConverter';
+import { ICResData } from '../../data/ICResData';
 import { IThreeDResponseJwt } from '../../data/IThreeDResponseJwt';
 import { IThreeDQueryResponse } from '../../../../../../models/IThreeDQueryResponse';
+import { AbstractThreeDResponseConverter } from './AbstractThreeDResponseConverter';
 
 @Service()
 export class CResToThreeDResponseConverter extends AbstractThreeDResponseConverter {

@@ -1,7 +1,7 @@
-import { IThreeDResponseConverter } from './IThreeDResponseConverter';
-import { IThreeDQueryResponse } from '../../../../../models/IThreeDQueryResponse';
 import { ChallengeResultInterface, ThreeDSecureVersion } from '@trustpayments/3ds-sdk-js';
 import { Service } from 'typedi';
+import { IThreeDQueryResponse } from '../../../../../models/IThreeDQueryResponse';
+import { IThreeDResponseConverter } from './IThreeDResponseConverter';
 import { CResToThreeDResponseConverter } from './implementations/CResToThreeDResponseConverter';
 import { PaResToThreeDResponseConverter } from './implementations/PaResToThreeDResponseConverter';
 

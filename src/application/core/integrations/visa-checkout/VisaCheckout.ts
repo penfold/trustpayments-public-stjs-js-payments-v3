@@ -1,5 +1,6 @@
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { Service } from 'typedi';
+import { Observable } from 'rxjs';
 import { IVisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/IVisaCheckoutClientStatus';
 import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { IConfig } from '../../../../shared/model/config/IConfig';
@@ -9,6 +10,7 @@ import { IMerchantData } from '../../models/IMerchantData';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { TERM_URL } from '../../models/constants/RequestData';
 import { IVisaCheckoutSdk } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
 import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
 import { IVisaCheckoutStatusDataCancel } from './visa-checkout-status-data/IVisaCheckoutStatusDataCancel';
@@ -17,8 +19,6 @@ import { IVisaCheckoutStatusDataPrePayment } from './visa-checkout-status-data/I
 import { IVisaCheckoutStatusDataSuccess } from './visa-checkout-status-data/IVisaCheckoutStatusDataSuccess';
 import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
-import { Observable } from 'rxjs';
-import { TERM_URL } from '../../models/constants/RequestData';
 
 @Service()
 export class VisaCheckout {

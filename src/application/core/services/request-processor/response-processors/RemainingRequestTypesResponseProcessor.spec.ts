@@ -1,14 +1,14 @@
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { RemainingRequestTypesProvider } from '../../three-d-verification/RemainingRequestTypesProvider';
-import { TransportService } from '../../st-transport/TransportService';
-import { RemainingRequestTypesResponseProcessor } from './RemainingRequestTypesResponseProcessor';
 import { of } from 'rxjs';
+import { TransportService } from '../../st-transport/TransportService';
+import { RemainingRequestTypesProvider } from '../../three-d-verification/RemainingRequestTypesProvider';
 import { IThreeDQueryResponse } from '../../../models/IThreeDQueryResponse';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { IJwtResponse } from '../../st-codec/interfaces/IJwtResponse';
+import { RemainingRequestTypesResponseProcessor } from './RemainingRequestTypesResponseProcessor';
 
 describe('RemainingRequestTypesResponseProcessor', () => {
   let remainingRequestTypesProviderMock: RemainingRequestTypesProvider;

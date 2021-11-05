@@ -1,6 +1,6 @@
-import { GooglePaySessionPaymentsClientMock } from './GooglePaySessionClientMock';
 import { paymentResponseMock } from '../../../client/integrations/google-pay/google-pay-sdk-provider/GooglePaySdkPaymentsClientMock';
 import { IGooglePayButtonOptions } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
+import { GooglePaySessionPaymentsClientMock } from './GooglePaySessionClientMock';
 
 describe('GooglePaySessionPaymentsClientMock', () => {
   let googlePaySessionPaymentsClientMock: GooglePaySessionPaymentsClientMock;

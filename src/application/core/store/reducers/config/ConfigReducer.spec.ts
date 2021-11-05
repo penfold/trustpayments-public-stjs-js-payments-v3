@@ -1,7 +1,7 @@
 import { IConfig } from '../../../../../shared/model/config/IConfig';
-import { ConfigReducer } from './ConfigReducer';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { IApplicationFrameState } from '../../state/IApplicationFrameState';
+import { ConfigReducer } from './ConfigReducer';
 
 describe('ConfigReducer', () => {
   const reducer = new ConfigReducer();

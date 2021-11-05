@@ -1,9 +1,9 @@
+import { Observable, of } from 'rxjs';
+import { Service } from 'typedi';
 import { IRequestProcessingService } from '../IRequestProcessingService';
 import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
-import { Observable, of } from 'rxjs';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
-import { Service } from 'typedi';
 import { RequestProcessingChain } from '../RequestProcessingChain';
 import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
 import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';

@@ -1,7 +1,7 @@
-import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
-import { IConfig } from '../../shared/model/config/IConfig';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Service } from 'typedi';
+import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import { IConfig } from '../../shared/model/config/IConfig';
 import { DefaultConfig } from '../../application/core/models/constants/config-resolver/DefaultConfig';
 
 @Service()

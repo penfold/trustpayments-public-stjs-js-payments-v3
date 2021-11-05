@@ -1,6 +1,6 @@
+import { CardType } from '@trustpayments/3ds-sdk-js';
 import { IResponseData } from './IResponseData';
 import { Enrollment } from './constants/Enrollment';
-import { CardType } from '@trustpayments/3ds-sdk-js';
 
 export interface IThreeDQueryResponse extends IResponseData {
   jwt: string;

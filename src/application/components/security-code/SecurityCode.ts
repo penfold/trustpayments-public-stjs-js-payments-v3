@@ -1,3 +1,7 @@
+import { Service } from 'typedi';
+import { filter, map, startWith, switchMap } from 'rxjs/operators';
+import { merge, Observable } from 'rxjs';
+import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { FormState } from '../../core/models/constants/FormState';
 import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
 import { Formatter } from '../../core/shared/formatter/Formatter';
@@ -11,13 +15,9 @@ import {
   SECURITY_CODE_WRAPPER,
 } from '../../core/models/constants/Selectors';
 import { Validation } from '../../core/shared/validation/Validation';
-import { Service } from 'typedi';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
-import { merge, Observable } from 'rxjs';
-import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { DefaultPlaceholders } from '../../core/models/constants/config-resolver/DefaultPlaceholders';
 import { LONG_CVC, SHORT_CVC, UNKNOWN_CVC } from '../../core/models/constants/SecurityCode';
 import { IConfig } from '../../../shared/model/config/IConfig';

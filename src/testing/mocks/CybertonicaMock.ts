@@ -1,5 +1,5 @@
-import { ICybertonica } from '../../application/core/integrations/cybertonica/ICybertonica';
 import { Service } from 'typedi';
+import { ICybertonica } from '../../application/core/integrations/cybertonica/ICybertonica';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 
 @Service()

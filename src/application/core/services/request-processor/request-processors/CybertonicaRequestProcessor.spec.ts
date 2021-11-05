@@ -1,7 +1,7 @@
 import { mock, instance, when } from 'ts-mockito';
 import { Cybertonica } from '../../../integrations/cybertonica/Cybertonica';
-import { CybertonicaRequestProcessor } from './CybertonicaRequestProcessor';
 import { IStRequest } from '../../../models/IStRequest';
+import { CybertonicaRequestProcessor } from './CybertonicaRequestProcessor';
 
 describe('CybertonicaRequestProcessor', () => {
   let cybertonicaMock: Cybertonica;

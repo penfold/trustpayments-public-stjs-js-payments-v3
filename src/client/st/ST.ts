@@ -1,4 +1,7 @@
 import './st.css';
+import { Container, Service } from 'typedi';
+import { delay, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { from, Observable, Subject, Subscription } from 'rxjs';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames';
@@ -11,7 +14,6 @@ import { VisaCheckout } from '../../application/core/integrations/visa-checkout/
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
-import { Container, Service } from 'typedi';
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
 import { ISubmitEvent } from '../../application/core/models/ISubmitEvent';
 import { ISuccessEvent } from '../../application/core/models/ISuccessEvent';
@@ -20,8 +22,6 @@ import { InterFrameCommunicator } from '../../shared/services/message-bus/InterF
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
-import { from, Observable, Subject, Subscription } from 'rxjs';
-import { delay, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { IframeFactory } from '../iframe-factory/IframeFactory';
@@ -333,7 +333,6 @@ export class ST {
 
     return this.controlFrameLoader$;
   }
-
 
   private Storage(): void {
     this.storage.setItem('merchantTranslations', JSON.stringify(this.config.translations));

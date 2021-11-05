@@ -1,9 +1,9 @@
-import { IRequestProcessor } from '../IRequestProcessor';
 import { Service } from 'typedi';
-import { IStRequest } from '../../../models/IStRequest';
 import { from, Observable } from 'rxjs';
-import { Cybertonica } from '../../../integrations/cybertonica/Cybertonica';
 import { map } from 'rxjs/operators';
+import { IRequestProcessor } from '../IRequestProcessor';
+import { IStRequest } from '../../../models/IStRequest';
+import { Cybertonica } from '../../../integrations/cybertonica/Cybertonica';
 
 @Service()
 export class CybertonicaRequestProcessor implements IRequestProcessor {

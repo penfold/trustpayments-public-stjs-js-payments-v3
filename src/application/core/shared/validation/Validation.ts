@@ -1,6 +1,7 @@
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { BrandDetailsType } from '@trustpayments/ts-iin-lookup/dist/types';
 import { luhnCheck } from '@trustpayments/ts-luhn-check';
+import { Container, Service } from 'typedi';
 import { StCodec } from '../../services/st-codec/StCodec';
 import { FormState } from '../../models/constants/FormState';
 import { ICard } from '../../models/ICard';
@@ -18,7 +19,6 @@ import {
 import { MessageBus } from '../message-bus/MessageBus';
 import { CARD_NUMBER_INPUT } from '../../models/constants/Selectors';
 import { Utils } from '../utils/Utils';
-import { Container, Service } from 'typedi';
 import { IMessageBus } from '../message-bus/IMessageBus';
 import { MessageBusToken, TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { ITranslator } from '../translator/ITranslator';

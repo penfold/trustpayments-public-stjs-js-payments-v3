@@ -1,12 +1,12 @@
 import { Service } from 'typedi';
+import { takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { FormState } from '../../application/core/models/constants/FormState';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { PAY } from '../../application/core/models/constants/Translations';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
-import { takeUntil } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { ITranslator } from '../../application/core/shared/translator/ITranslator';
 
@@ -47,7 +47,6 @@ export class PayButton {
       }
     });
 
-
     this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.UNLOCK_BUTTON), takeUntil(this.destroy$))
       .subscribe(() => this.disable(FormState.AVAILABLE));
@@ -60,7 +59,6 @@ export class PayButton {
         }
       });
   }
-
 
   disable(state: FormState): void {
     if (this.button) {

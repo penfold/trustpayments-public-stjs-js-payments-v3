@@ -6,6 +6,7 @@ import {
   ResultActionCode,
 } from '@trustpayments/3ds-sdk-js';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { EMPTY, of } from 'rxjs';
 import { IConfig } from '../../../../../../shared/model/config/IConfig';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { TestConfigProvider } from '../../../../../../testing/mocks/TestConfigProvider';
@@ -14,22 +15,21 @@ import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../../shared/message-bus/SimpleMessageBus';
-import { ThreeDSecureVerificationService } from './ThreeDSecureVerificationService';
 import { ICard } from '../../../../models/ICard';
 import { IMerchantData } from '../../../../models/IMerchantData';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { ThreeDVerificationProviderName } from '../../data/ThreeDVerificationProviderName';
 import { RequestType } from '../../../../../../shared/types/RequestType';
-import { EMPTY, of } from 'rxjs';
-import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { IThreeDLookupResponse } from '../../../../models/IThreeDLookupResponse';
-import { ThreeDSecureMethodService } from './ThreeDSecureMethodService';
-import { BrowserDataProvider } from './BrowserDataProvider';
-import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
 import { Enrollment } from '../../../../models/constants/Enrollment';
 import { CustomerOutput } from '../../../../models/constants/CustomerOutput';
 import { IGatewayClient } from '../../../gateway-client/IGatewayClient';
+import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
+import { ThreeDSecureMethodService } from './ThreeDSecureMethodService';
+import { BrowserDataProvider } from './BrowserDataProvider';
+import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
+import { ThreeDSecureVerificationService } from './ThreeDSecureVerificationService';
 import { ThreeDLookupRequest } from './data/ThreeDLookupRequest';
 import DoneCallback = jest.DoneCallback;
 

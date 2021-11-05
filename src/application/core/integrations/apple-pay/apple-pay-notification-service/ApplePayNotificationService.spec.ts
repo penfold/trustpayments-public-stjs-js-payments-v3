@@ -1,9 +1,9 @@
 import { instance as mockInstance, mock, verify } from 'ts-mockito';
 import { ApplePayClientErrorCode } from '../ApplePayClientErrorCode';
-import { ApplePayNotificationService } from './ApplePayNotificationService';
 import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { NotificationService } from '../../../../../client/notification/NotificationService';
 import { SimpleMessageBus } from '../../../shared/message-bus/SimpleMessageBus';
+import { ApplePayNotificationService } from './ApplePayNotificationService';
 
 describe('ApplePayClient', () => {
   let applePayNotificationService: ApplePayNotificationService;

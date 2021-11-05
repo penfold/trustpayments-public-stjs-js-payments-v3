@@ -15,11 +15,11 @@ import { IWallet } from '../../models/IWallet';
 import { IWalletVerify } from '../../models/IWalletVerify';
 import { StCodec } from '../../services/st-codec/StCodec';
 import { StTransport } from '../../services/st-transport/StTransport';
-import { Payment } from './Payment';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../translator/Translator';
 import { ITranslationProvider } from '../translator/ITranslationProvider';
 import { TranslationProvider } from '../translator/TranslationProvider';
+import { Payment } from './Payment';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 

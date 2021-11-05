@@ -1,10 +1,10 @@
-import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
 import { anything, instance, mock, spy, verify, when } from 'ts-mockito';
-import { ParentFrameMessageBus } from './ParentFrameMessageBus';
 import { of, Subject } from 'rxjs';
+import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
+import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { CONTROL_FRAME_IFRAME } from '../../models/constants/Selectors';
+import { ParentFrameMessageBus } from './ParentFrameMessageBus';
 
 describe('ParentFrameMessageBus', () => {
   const sampleEvent: IMessageBusEvent = { type: 'FOO' };

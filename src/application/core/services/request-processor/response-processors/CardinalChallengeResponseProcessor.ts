@@ -1,8 +1,8 @@
+import { Observable, of } from 'rxjs';
+import { Service } from 'typedi';
 import { IResponseProcessor } from '../IResponseProcessor';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { IStRequest } from '../../../models/IStRequest';
-import { Observable, of } from 'rxjs';
-import { Service } from 'typedi';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { CardinalChallengeService } from '../../three-d-verification/implementations/cardinal-commerce/CardinalChallengeService';
 import { IThreeDQueryResponse } from '../../../models/IThreeDQueryResponse';

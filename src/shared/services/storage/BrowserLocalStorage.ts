@@ -1,9 +1,9 @@
 import { Container, Service } from 'typedi';
+import { Observable } from 'rxjs';
 import { FrameIdentifier } from '../message-bus/FrameIdentifier';
 import { ParentFrameStorage } from './ParentFrameStorage';
 import { StoreBasedStorage } from './StoreBasedStorage';
 import { IStorage } from './IStorage';
-import { Observable } from 'rxjs';
 import { isSynchronized } from './ISynchronizedStorage';
 
 @Service()

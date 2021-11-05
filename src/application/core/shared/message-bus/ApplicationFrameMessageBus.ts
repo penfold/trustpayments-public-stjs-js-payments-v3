@@ -1,9 +1,9 @@
-import { SimpleMessageBus } from './SimpleMessageBus';
+import { Service } from 'typedi';
 import { FrameAccessor } from '../../../../shared/services/message-bus/FrameAccessor';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { Service } from 'typedi';
 import { EventScope } from '../../models/constants/EventScope';
+import { SimpleMessageBus } from './SimpleMessageBus';
 
 @Service()
 export class ApplicationFrameMessageBus extends SimpleMessageBus {

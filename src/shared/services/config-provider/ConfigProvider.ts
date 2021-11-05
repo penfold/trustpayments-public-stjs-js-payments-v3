@@ -1,6 +1,6 @@
-import { IConfig } from '../../model/config/IConfig';
 import { Observable } from 'rxjs';
 import { Service } from 'typedi';
+import { IConfig } from '../../model/config/IConfig';
 
 @Service()
 export abstract class ConfigProvider {

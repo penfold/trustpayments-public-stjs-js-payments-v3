@@ -4,8 +4,6 @@ import { filter, map, first } from 'rxjs/operators';
 import { ApplePayConfigService } from '../apple-pay-config-service/ApplePayConfigService';
 import { ApplePayClientErrorCode } from '../ApplePayClientErrorCode';
 import { IApplePayPayment } from '../apple-pay-payment-data/IApplePayPayment';
-import { IApplePayProcessPaymentData } from './IApplePayProcessPaymentData';
-import { IApplePayProcessPaymentResponse } from './IApplePayProcessPaymentResponse';
 import { IApplePayWalletVerifyResponse } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponse';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { RequestType } from '../../../../../shared/types/RequestType';
@@ -16,6 +14,8 @@ import { ofType } from '../../../../../shared/services/message-bus/operators/ofT
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
 import { IApplePayWalletVerifyResponseBody } from '../apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
+import { IApplePayProcessPaymentResponse } from './IApplePayProcessPaymentResponse';
+import { IApplePayProcessPaymentData } from './IApplePayProcessPaymentData';
 
 @Service()
 export class ApplePayPaymentService {

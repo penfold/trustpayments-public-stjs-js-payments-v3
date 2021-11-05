@@ -1,9 +1,9 @@
-import { IRequestProcessor } from '../IRequestProcessor';
 import { Inject, Service } from 'typedi';
-import { IStRequest } from '../../../models/IStRequest';
-import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
 import { from, Observable } from 'rxjs';
 import { mapTo, switchMap, tap } from 'rxjs/operators';
+import { IRequestProcessor } from '../IRequestProcessor';
+import { IStRequest } from '../../../models/IStRequest';
+import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
 import { IThreeDLookupResponse } from '../../../models/IThreeDLookupResponse';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { ThreeDLookupRequest } from '../../three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';

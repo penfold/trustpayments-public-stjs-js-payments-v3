@@ -1,13 +1,13 @@
+import { CardType } from '@trustpayments/3ds-sdk-js';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { ThreeDVerificationProviderName } from '../../data/ThreeDVerificationProviderName';
-import { VerificationResultHandler } from './VerificationResultHandler';
-import { IVerificationResult } from './data/IVerificationResult';
-import { ActionCode } from './data/ActionCode';
 import { PAYMENT_ERROR } from '../../../../models/constants/Translations';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { Enrollment } from '../../../../models/constants/Enrollment';
+import { VerificationResultHandler } from './VerificationResultHandler';
+import { IVerificationResult } from './data/IVerificationResult';
+import { ActionCode } from './data/ActionCode';
 import DoneCallback = jest.DoneCallback;
-import { CardType } from '@trustpayments/3ds-sdk-js';
 
 describe('VerificationResultHandler', () => {
   const threeDQueryResponse: IThreeDQueryResponse = {

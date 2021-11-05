@@ -6,7 +6,6 @@ import { IApplePayClientStatus } from '../../../application/core/integrations/ap
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
 import { IApplePayPaymentAuthorizationResult } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
 import { IApplePayPaymentAuthorizedEvent } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
-import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
 import { IApplePayValidateMerchantEvent } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
@@ -18,18 +17,19 @@ import { ApplePayButtonService } from '../../../application/core/integrations/ap
 import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
 import { ApplePayErrorService } from '../../../application/core/integrations/apple-pay/apple-pay-error-service/ApplePayErrorService';
 import { ApplePayGestureService } from '../../../application/core/integrations/apple-pay/apple-pay-gesture-service/ApplePayGestureService';
-import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
-import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { RequestType } from '../../../shared/types/RequestType';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
-import { ApplePayStatus } from './apple-pay-session-service/ApplePayStatus';
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { EventScope } from '../../../application/core/models/constants/EventScope';
+import { ApplePayStatus } from './apple-pay-session-service/ApplePayStatus';
+import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
+import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
+import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
 
 @Service()
 export class ApplePay {

@@ -1,12 +1,12 @@
-import { FrameAccessor } from '../../../../shared/services/message-bus/FrameAccessor';
-import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
-import { ApplicationFrameMessageBus } from './ApplicationFrameMessageBus';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { Subject } from 'rxjs';
+import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
+import { FrameAccessor } from '../../../../shared/services/message-bus/FrameAccessor';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { EventScope } from '../../models/constants/EventScope';
+import { ApplicationFrameMessageBus } from './ApplicationFrameMessageBus';
 
 describe('ApplicationFrameMessageBus', () => {
   let frameAccessorMock: FrameAccessor;

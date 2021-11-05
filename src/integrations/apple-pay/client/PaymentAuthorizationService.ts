@@ -8,9 +8,9 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
 import { ApplePayStatus } from '../../../client/integrations/apple-pay/apple-pay-session-service/ApplePayStatus';
-import { IApplePaySession } from './IApplePaySession';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { IApplePaySession } from './IApplePaySession';
 
 @Service()
 export class PaymentAuthorizationService {

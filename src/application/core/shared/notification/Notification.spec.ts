@@ -1,22 +1,22 @@
-import { MessageBus } from '../message-bus/MessageBus';
 import { instance, mock, when } from 'ts-mockito';
-import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { Notification } from './Notification';
+import { of } from 'rxjs';
+import Container from 'typedi';
 import { NotificationType } from '../../models/constants/NotificationType';
 import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
 import { CONTROL_FRAME_IFRAME } from '../../models/constants/Selectors';
-import { of } from 'rxjs';
 import { Frame } from '../frame/Frame';
 import { SimpleMessageBus } from '../message-bus/SimpleMessageBus';
 import { IMessageBus } from '../message-bus/IMessageBus';
 import { ITranslator } from '../translator/ITranslator';
-import Container from 'typedi';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
+import { MessageBus } from '../message-bus/MessageBus';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../translator/Translator';
 import { ITranslationProvider } from '../translator/ITranslationProvider';
 import { TranslationProvider } from '../translator/TranslationProvider';
 import { EventScope } from '../../models/constants/EventScope';
+import { Notification } from './Notification';
 
 Container.set({ id: TranslatorToken, type: Translator });
 Container.set({ id: ITranslationProvider, type: TranslationProvider });

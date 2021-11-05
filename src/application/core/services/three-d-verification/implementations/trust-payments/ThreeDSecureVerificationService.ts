@@ -1,5 +1,7 @@
 import { EMPTY, from, Observable, Subject, timer } from 'rxjs';
 import { Service } from 'typedi';
+import { CardType, ConfigInterface } from '@trustpayments/3ds-sdk-js';
+import { delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { ofType } from '../../../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
@@ -8,21 +10,19 @@ import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
 import { IThreeDVerificationService } from '../../IThreeDVerificationService';
-import { CardType, ConfigInterface } from '@trustpayments/3ds-sdk-js';
 import { RequestType } from '../../../../../../shared/types/RequestType';
 import { ICard } from '../../../../models/ICard';
 import { IMerchantData } from '../../../../models/IMerchantData';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
-import { delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ConfigProvider } from '../../../../../../shared/services/config-provider/ConfigProvider';
+import { IThreeDLookupResponse } from '../../../../models/IThreeDLookupResponse';
+import { IGatewayClient } from '../../../gateway-client/IGatewayClient';
 import { threeDSecureConfigName } from './IThreeDSecure';
 import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { BrowserDataProvider } from './BrowserDataProvider';
 import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
 import { ThreeDSecureMethodService } from './ThreeDSecureMethodService';
-import { IThreeDLookupResponse } from '../../../../models/IThreeDLookupResponse';
 import { IBrowserData } from './data/IBrowserData';
-import { IGatewayClient } from '../../../gateway-client/IGatewayClient';
 import { ThreeDLookupRequest } from './data/ThreeDLookupRequest';
 
 @Service()

@@ -1,6 +1,6 @@
-import { JwtReducer } from './JwtReducer';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { IApplicationFrameState } from '../../state/IApplicationFrameState';
+import { JwtReducer } from './JwtReducer';
 
 describe('JwtReducer', () => {
   let reducer: JwtReducer;

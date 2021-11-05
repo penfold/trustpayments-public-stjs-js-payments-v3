@@ -1,8 +1,8 @@
-import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { Service } from 'typedi';
-import { IAFCybertonica } from './IAFCybertonica';
+import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { environment } from '../../../../environments/environment';
 import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
+import { IAFCybertonica } from './IAFCybertonica';
 import { ICybertonica } from './ICybertonica';
 
 declare const AFCYBERTONICA: IAFCybertonica;

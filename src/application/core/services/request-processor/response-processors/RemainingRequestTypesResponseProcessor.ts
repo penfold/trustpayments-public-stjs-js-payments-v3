@@ -1,10 +1,10 @@
 import { Service } from 'typedi';
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { IResponseProcessor } from '../IResponseProcessor';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { IStRequest } from '../../../models/IStRequest';
-import { Observable, of } from 'rxjs';
 import { RemainingRequestTypesProvider } from '../../three-d-verification/RemainingRequestTypesProvider';
-import { switchMap } from 'rxjs/operators';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
 import { TransportService } from '../../st-transport/TransportService';
 import { RequestType } from '../../../../../shared/types/RequestType';

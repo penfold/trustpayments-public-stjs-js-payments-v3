@@ -1,19 +1,19 @@
-import { RequestEncoderService } from '../st-codec/RequestEncoderService';
-import { ResponseDecoderService } from '../st-codec/ResponseDecoderService';
-import { IStRequest } from '../../models/IStRequest';
-import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 import { Observable, of, throwError } from 'rxjs';
 import { HttpClient, IHttpClientResponse } from '@trustpayments/http-client';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { Service } from 'typedi';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
-import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 import { IHttpClientConfig } from '@trustpayments/http-client';
+import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
+import { IStRequest } from '../../models/IStRequest';
+import { ResponseDecoderService } from '../st-codec/ResponseDecoderService';
+import { RequestEncoderService } from '../st-codec/RequestEncoderService';
 import { IRequestObject } from '../../models/IRequestObject';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IDecodedResponse } from '../st-codec/interfaces/IDecodedResponse';
+import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
 type IBaseResponseType = IRequestTypeResponse & IJwtResponse;
 

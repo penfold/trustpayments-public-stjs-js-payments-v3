@@ -1,9 +1,9 @@
+import { Container, Service } from 'typedi';
 import { IAllowedStyles } from '../../models/IAllowedStyles';
 import { IGroupedStyles } from '../../models/IGroupedStyles';
 import { IStyle } from '../../../../shared/model/config/IStyle';
 import { ISubStyles } from '../../models/ISubStyles';
 import { DomMethods } from '../dom-methods/DomMethods';
-import { Container, Service } from 'typedi';
 import { Frame } from '../frame/Frame';
 import { IStyles } from '../../../../shared/model/config/IStyles';
 

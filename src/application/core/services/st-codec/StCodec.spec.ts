@@ -1,9 +1,6 @@
 import JwtDecode from 'jwt-decode';
 import Container from 'typedi';
-import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
-import { StCodec } from './StCodec';
-import { Translator } from '../../shared/translator/Translator';
-import { GatewayError } from './GatewayError';
+import { anything, instance as instanceOf, mock, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { ITranslationProvider } from '../../shared/translator/ITranslationProvider';
@@ -11,13 +8,16 @@ import { TranslationProvider } from '../../shared/translator/TranslationProvider
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
 import { ITranslator } from '../../shared/translator/ITranslator';
-import { anything, instance as instanceOf, mock, when } from 'ts-mockito';
+import { Translator } from '../../shared/translator/Translator';
+import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IResponseData } from '../../models/IResponseData';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
-import Spy = jasmine.Spy;
-import { IResponsePayload } from './interfaces/IResponsePayload';
 import { EventScope } from '../../models/constants/EventScope';
+import { GatewayError } from './GatewayError';
+import { StCodec } from './StCodec';
+import { IResponsePayload } from './interfaces/IResponsePayload';
+import Spy = jasmine.Spy;
 
 jest.mock('./../../shared/message-bus/MessageBus');
 jest.mock('./../../shared/notification/Notification');

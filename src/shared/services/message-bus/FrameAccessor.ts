@@ -1,9 +1,9 @@
 import { Inject, Service } from 'typedi';
-import { FrameIdentifier } from './FrameIdentifier';
-import { FrameCollection } from './interfaces/FrameCollection';
 import { WINDOW } from '../../dependency-injection/InjectionTokens';
 import IControlFrameWindow from '../../interfaces/IControlFrameWindow';
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
+import { FrameCollection } from './interfaces/FrameCollection';
+import { FrameIdentifier } from './FrameIdentifier';
 import { FrameNotFound } from './errors/FrameNotFound';
 
 @Service()

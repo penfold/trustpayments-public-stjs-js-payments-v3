@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { Observable } from 'rxjs';
-import { RequestType } from '../../../../shared/types/RequestType';
 import { filter, first, map } from 'rxjs/operators';
+import { RequestType } from '../../../../shared/types/RequestType';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { IStore } from '../../store/IStore';
 import { IApplicationFrameState } from '../../store/state/IApplicationFrameState';

@@ -1,8 +1,6 @@
 import { of } from 'rxjs';
-import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { anyFunction, anything, instance as mockInstance, mock, when } from 'ts-mockito';
-import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
-import { CommonFrames } from './CommonFrames';
+import Container from 'typedi';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { CustomerOutput } from '../../application/core/models/constants/CustomerOutput';
 import { DomMethods } from '../../application/core/shared/dom-methods/DomMethods';
@@ -19,7 +17,8 @@ import {
   PAYMENT_ERROR,
   PAYMENT_SUCCESS,
 } from '../../application/core/models/constants/Translations';
-import Container from 'typedi';
+import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
+import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../../application/core/shared/translator/Translator';
 import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
@@ -27,6 +26,7 @@ import { TranslationProvider } from '../../application/core/shared/translator/Tr
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { Enrollment } from '../../application/core/models/constants/Enrollment';
 import { EventScope } from '../../application/core/models/constants/EventScope';
+import { CommonFrames } from './CommonFrames';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set({ id: TranslatorToken, type: Translator });

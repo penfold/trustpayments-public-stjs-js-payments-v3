@@ -1,11 +1,11 @@
-import { DefaultHttpOptionsProvider } from './DefaultHttpOptionsProvider';
-import { IHttpOptionsProvider } from './IHttpOptionsProvider';
 import { Service } from 'typedi';
 import { IHttpClientConfig } from '@trustpayments/http-client';
 import { IRequestObject } from '../../../models/IRequestObject';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IStJwtPayload } from '../../../models/IStJwtPayload';
+import { IHttpOptionsProvider } from './IHttpOptionsProvider';
+import { DefaultHttpOptionsProvider } from './DefaultHttpOptionsProvider';
 
 @Service()
 export class TestHttpOptionsProvider implements IHttpOptionsProvider {

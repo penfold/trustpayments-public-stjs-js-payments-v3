@@ -1,4 +1,8 @@
 import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
+import { ContainerInstance } from 'typedi';
+import { ValidationResult } from 'joi';
+import { ConfigValidator } from '../config-validator/ConfigValidator';
+import { SentryService } from '../sentry/SentryService';
 import {
   config,
   configResolved,
@@ -6,10 +10,6 @@ import {
   minimalDefaultConfigResolve,
 } from './ConfigResolverTestData';
 import { ConfigResolver } from './ConfigResolver';
-import { ConfigValidator } from '../config-validator/ConfigValidator';
-import { ContainerInstance } from 'typedi';
-import { SentryService } from '../sentry/SentryService';
-import { ValidationResult } from 'joi';
 
 describe('ConfigResolver', () => {
   let sut: ConfigResolver;

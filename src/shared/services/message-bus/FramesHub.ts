@@ -1,13 +1,13 @@
 import { Service } from 'typedi';
-import { InterFrameCommunicator } from './InterFrameCommunicator';
 import { BehaviorSubject, from, Observable, of, Subject } from 'rxjs';
-import { ofType } from './operators/ofType';
 import { distinctUntilChanged, filter, first, map, mapTo, withLatestFrom } from 'rxjs/operators';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
-import { FrameIdentifier } from './FrameIdentifier';
 import { ArrayUtils } from '../../../application/core/shared/array-utils/ArrayUtils';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { FrameIdentifier } from './FrameIdentifier';
+import { ofType } from './operators/ofType';
+import { InterFrameCommunicator } from './InterFrameCommunicator';
 
 @Service()
 export class FramesHub {

@@ -1,7 +1,7 @@
-import { IStore } from '../IStore';
 import { BehaviorSubject, Observable, Unsubscribable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { Service } from 'typedi';
+import { IStore } from '../IStore';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IReducer } from '../IReducer';
 

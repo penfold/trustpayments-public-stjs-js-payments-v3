@@ -1,8 +1,8 @@
 import { ContainerInstance } from 'typedi';
 import { instance, mock, when } from 'ts-mockito';
+import { ReducerToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { CombinedReducerFactory } from './CombinedReducerFactory';
 import { CallbackReducer } from './CallbackReducer';
-import { ReducerToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { CombinedReducer } from './CombinedReducer';
 
 describe('CombinedReducerFactory', () => {

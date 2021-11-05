@@ -1,19 +1,19 @@
 import { of } from 'rxjs';
 import { anything, deepEqual, instance as mockInstance, mock, verify, when } from 'ts-mockito';
-import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { EventScope } from '../../models/constants/EventScope';
 import { ApplePayNotificationService } from './apple-pay-notification-service/ApplePayNotificationService';
 import { ApplePayClient } from './ApplePayClient';
 import { ApplePayClientStatus } from './ApplePayClientStatus';
 import { IApplePayClientStatus } from './IApplePayClientStatus';
 import { ApplePayPaymentService } from './apple-pay-payment-service/ApplePayPaymentService';
-import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
-import { EventScope } from '../../models/constants/EventScope';
+import { ApplePayClientErrorCode } from './ApplePayClientErrorCode';
 
 describe('ApplePayClient', () => {
   let applePayClient: ApplePayClient;

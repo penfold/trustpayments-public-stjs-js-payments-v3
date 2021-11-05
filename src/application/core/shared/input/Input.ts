@@ -1,4 +1,5 @@
 import { takeUntil } from 'rxjs/operators';
+import { Container } from 'typedi';
 import { IAllowedStyles } from '../../models/IAllowedStyles';
 import { IFormFieldState } from '../../models/IFormFieldState';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
@@ -6,16 +7,15 @@ import { Utils } from '../utils/Utils';
 import { Validation } from '../validation/Validation';
 import { onInputWraper } from '../on-input-wrapper/onInputWrapper';
 import { Frame } from '../frame/Frame';
-import { Container } from 'typedi';
 import { NOT_IMPLEMENTED_ERROR } from '../../models/constants/Translations';
 import { CARD_NUMBER_INPUT, CARD_NUMBER_WRAPPER } from '../../models/constants/Selectors';
-import { AllowedStylesService } from './AllowedStylesService';
 import { IMessageBus } from '../message-bus/IMessageBus';
 import { MessageBusToken, TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { ITranslator } from '../translator/ITranslator';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { AllowedStylesService } from './AllowedStylesService';
 
 export class Input {
   protected static PLACEHOLDER_ATTRIBUTE = 'placeholder';

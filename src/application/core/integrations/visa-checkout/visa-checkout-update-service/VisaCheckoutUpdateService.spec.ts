@@ -1,10 +1,10 @@
 import { mock, instance as mockInstance, when, anything } from 'ts-mockito';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
-import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
 import { IVisaCheckoutInitConfig } from '../IVisaCheckoutInitConfig';
 import { IStJwtPayload } from '../../../models/IStJwtPayload';
 import { environment } from '../../../../../environments/environment';
 import { VisaCheckoutButtonProps } from '../visa-checkout-button-service/VisaCheckoutButtonProps';
+import { VisaCheckoutUpdateService } from './VisaCheckoutUpdateService';
 
 describe('VisaCheckoutUpdateService', () => {
   let instance: VisaCheckoutUpdateService;

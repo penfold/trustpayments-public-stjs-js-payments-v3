@@ -1,25 +1,25 @@
 import { Service } from 'typedi';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { Money } from 'ts-money';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { IGooglePaySdkProvider } from './google-pay-sdk-provider/IGooglePaySdkProvider';
-import { GooglePayPaymentService } from './GooglePayPaymentService';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import {
   IGooglePayPaymentRequest,
   IGooglePayTransactionInfo,
   IPaymentData,
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
-import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { Observable } from 'rxjs';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { Money } from 'ts-money';
 import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
+import { GooglePayPaymentService } from './GooglePayPaymentService';
+import { IGooglePaySdkProvider } from './google-pay-sdk-provider/IGooglePaySdkProvider';
 
 @Service()
 export class GooglePay {

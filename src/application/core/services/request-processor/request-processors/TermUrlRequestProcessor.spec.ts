@@ -1,10 +1,10 @@
-import { RemainingRequestTypesProvider } from '../../three-d-verification/RemainingRequestTypesProvider';
-import { TermUrlRequestProcessor } from './TermUrlRequestProcessor';
 import { instance, mock, when } from 'ts-mockito';
-import { RequestType } from '../../../../../shared/types/RequestType';
 import { of } from 'rxjs';
+import { RequestType } from '../../../../../shared/types/RequestType';
+import { RemainingRequestTypesProvider } from '../../three-d-verification/RemainingRequestTypesProvider';
 import { IStRequest } from '../../../models/IStRequest';
 import { APMName } from '../../../../../integrations/apm/models/APMName';
+import { TermUrlRequestProcessor } from './TermUrlRequestProcessor';
 
 describe('TermUrlRequestProcessor', () => {
   const request: IStRequest = { paymenttypedescription: APMName.ZIP } as IStRequest;

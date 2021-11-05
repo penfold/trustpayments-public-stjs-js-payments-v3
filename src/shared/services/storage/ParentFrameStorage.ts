@@ -6,9 +6,9 @@ import { FramesHub } from '../message-bus/FramesHub';
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { ofType } from '../message-bus/operators/ofType';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IStorage } from './IStorage';
 import { ISynchronizedStorage } from './ISynchronizedStorage';
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 
 interface StorageData {
   [index: string]: unknown;
