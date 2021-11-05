@@ -53,8 +53,8 @@ describe('CardNumber', () => {
   });
 
   it('should capture autocomplete and emit expiration date from autocomplete via message bus event', () => {
-    const expirationDateCaptureInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-expiration-date');
-    mockAutocompleteEvent(expirationDateCaptureInput, '12/2034');
+    const autocompleteCaptureExpirationDateInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-expiration-date');
+    mockAutocompleteEvent(autocompleteCaptureExpirationDateInput, '12/2034');
     expect(testMessageBus.publish).toHaveBeenCalledWith({
         type: PUBLIC_EVENTS.AUTOCOMPLETE_EXPIRATION_DATE,
         data: '12/2034',
@@ -64,8 +64,8 @@ describe('CardNumber', () => {
   });
 
   it('should capture autocomplete and emit security code from autocomplete via message bus event', () => {
-    const autoCompleteSecurityCodeInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-security-code');
-    mockAutocompleteEvent(autoCompleteSecurityCodeInput, '123');
+    const autocompleteCaptureSecurityCodeInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-security-code');
+    mockAutocompleteEvent(autocompleteCaptureSecurityCodeInput, '123');
     expect(testMessageBus.publish).toHaveBeenCalledWith({
         type: PUBLIC_EVENTS.AUTOCOMPLETE_SECURITY_CODE,
         data: '123',
@@ -266,9 +266,15 @@ describe('CardNumber', () => {
   });
 
   describe('onInput', () => {
+    const { cardNumberInstance } = cardNumberFixture();
     const event: Event = new Event('input');
+    const autocompleteCaptureExpirationDateInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-expiration-date');
+    const autocompleteCaptureSecurityCodeInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-security-code');
+
 
     beforeEach(() => {
+      autocompleteCaptureExpirationDateInput.value = 'something';
+      autocompleteCaptureSecurityCodeInput.value = 'something';
       // @ts-ignore
       cardNumberInstance.setInputValue = jest.fn();
       // @ts-ignore
@@ -285,6 +291,11 @@ describe('CardNumber', () => {
     it('should call _sendState method', () => {
       // @ts-ignore
       expect(cardNumberInstance.sendState).toHaveBeenCalled();
+    });
+
+    it('should clear autocomplete capture inputs', () => {
+      expect(autocompleteCaptureExpirationDateInput.value).toEqual('');
+      expect(autocompleteCaptureSecurityCodeInput.value).toEqual('');
     });
   });
 

@@ -41,8 +41,8 @@ export class CardNumber extends Input {
   private cardNumberValue: string;
   private isCardNumberValid: boolean;
   private fieldInstance: HTMLInputElement = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
-  private expirationDateInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-expiration-date');
-  private securityCodeInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-security-code');
+  private autocompleteCaptureExpirationDateInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-expiration-date');
+  private autocompleteCaptureSecurityCodeInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-security-code');
   private readonly cardNumberField: HTMLInputElement;
 
   constructor(
@@ -300,10 +300,11 @@ export class CardNumber extends Input {
         this.format(this.inputElement.value);
         this.setInputValue();
         this.sendState();
+        this.clearAutocompleteInputs();
       });
 
-    this.captureAndEmitAutocomplete(this.expirationDateInput, PUBLIC_EVENTS.AUTOCOMPLETE_EXPIRATION_DATE);
-    this.captureAndEmitAutocomplete(this.securityCodeInput, PUBLIC_EVENTS.AUTOCOMPLETE_SECURITY_CODE);
+    this.captureAndEmitAutocomplete(this.autocompleteCaptureExpirationDateInput, PUBLIC_EVENTS.AUTOCOMPLETE_EXPIRATION_DATE);
+    this.captureAndEmitAutocomplete(this.autocompleteCaptureSecurityCodeInput, PUBLIC_EVENTS.AUTOCOMPLETE_SECURITY_CODE);
   }
 
 
@@ -319,7 +320,7 @@ export class CardNumber extends Input {
   }
 
   private clearAutocompleteInputs() {
-    this.expirationDateInput.value = null;
-    this.securityCodeInput.value = null;
+    this.autocompleteCaptureExpirationDateInput.value = null;
+    this.autocompleteCaptureSecurityCodeInput.value = null;
   }
 }

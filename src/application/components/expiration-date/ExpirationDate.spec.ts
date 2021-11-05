@@ -45,8 +45,8 @@ describe('ExpirationDate', () => {
     });
 
     it('should capture autocomplete and emit card number from autocomplete via message bus event', () => {
-      const cardNumberInput: HTMLInputElement = document.querySelector('#st-expiration-date-input-autocomplete-capture-number');
-      mockAutocompleteEvent(cardNumberInput, '4100000000001000');
+      const autocompleteCaptureCardNumberInput: HTMLInputElement = document.querySelector('#st-expiration-date-input-autocomplete-capture-number');
+      mockAutocompleteEvent(autocompleteCaptureCardNumberInput, '4100000000001000');
       expect(testMessageBus.publish).toHaveBeenCalledWith({
           type: PUBLIC_EVENTS.AUTOCOMPLETE_CARD_NUMBER,
           data: '4100000000001000',
@@ -56,8 +56,8 @@ describe('ExpirationDate', () => {
     });
 
     it('should capture autocomplete and emit security code from autocomplete via message bus event', () => {
-      const autoCompleteSecurityCodeInput: HTMLInputElement = document.querySelector('#st-expiration-date-input-autocomplete-capture-security-code');
-      mockAutocompleteEvent(autoCompleteSecurityCodeInput, '123');
+      const autocompleteCaptureSecurityCode: HTMLInputElement = document.querySelector('#st-expiration-date-input-autocomplete-capture-security-code');
+      mockAutocompleteEvent(autocompleteCaptureSecurityCode, '123');
       expect(testMessageBus.publish).toHaveBeenCalledWith({
           type: PUBLIC_EVENTS.AUTOCOMPLETE_SECURITY_CODE,
           data: '123',
@@ -178,11 +178,16 @@ describe('ExpirationDate', () => {
   describe('onInput()', () => {
     const { expirationDateInstance } = expirationDateFixture();
     const event: Event = new Event('input');
+    const autocompleteCaptureSecurityCode: HTMLInputElement = document.querySelector('#st-expiration-date-input-autocomplete-capture-security-code');
+    const autocompleteCaptureCardNumberInput: HTMLInputElement = document.querySelector('#st-expiration-date-input-autocomplete-capture-number');
     let spy: jest.SpyInstance;
 
     beforeEach(() => {
       // @ts-ignore
       spy = jest.spyOn(expirationDateInstance, 'sendState');
+      autocompleteCaptureCardNumberInput.value = 'something';
+      autocompleteCaptureSecurityCode.value = 'something;';
+
     });
 
     it('should call sendState method', () => {
@@ -190,6 +195,13 @@ describe('ExpirationDate', () => {
       expirationDateInstance.onInput(event);
       // @ts-ignore
       expect(spy).toBeCalled();
+    });
+
+    it('should clear autocomplete capture inputs', () => {
+      // @ts-ignore
+      expirationDateInstance.onInput(event);
+      expect(autocompleteCaptureCardNumberInput.value).toEqual('');
+      expect(autocompleteCaptureSecurityCode.value).toEqual('');
     });
   });
 
