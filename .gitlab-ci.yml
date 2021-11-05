@@ -49,6 +49,7 @@ variables:
   ### Disabled Jobs:
   # Initialize
   # DISABLE_JOB_copy_cicd_scripts: 'true'
+  DISABLE_JOB_notify_platform_team: 'true'
   # Pre-build
   # DISABLE_JOB_print_variables: 'true'
   # DISABLE_JOB_export_cleanup_artifacts: 'true'
