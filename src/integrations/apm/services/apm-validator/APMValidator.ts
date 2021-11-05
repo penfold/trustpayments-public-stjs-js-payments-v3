@@ -3,31 +3,33 @@ import { IAPMConfig } from '../../models/IAPMConfig';
 import { Service } from 'typedi';
 import { ValidationError, ValidationResult } from 'joi';
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
+import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
+import { APMJwtSchemasMap } from '../../models/APMJwtSchemasMap';
 
 @Service()
 export class APMValidator {
-
   constructor() {
   }
 
-  validate(config: IAPMConfig): ValidationResult {
+  validateConfig(config: IAPMConfig): ValidationResult {
     return APMSchema.validate(config);
   }
 
-  validateAPMItemConfigs(apmList: Array<IAPMItemConfig>): ValidationError[] {
-    const validationErrors: ValidationError[] = [];
+  validateItemConfig(apm: IAPMItemConfig): ValidationError | null {
+    if (!APMSchemasMap.has(apm.name)) {
+      return null;
+    }
 
-    apmList.forEach((apm: IAPMItemConfig) => {
-      if (!APMSchemasMap.has(apm.name)) {
-        return;
-      }
+    const validationResult: ValidationResult = APMSchemasMap.get(apm.name).validate(apm);
 
-      const validationResult: ValidationResult = APMSchemasMap.get(apm.name).validate(apm);
-      if (validationResult.error) {
-        validationErrors.push(validationResult.error);
-      }
-    });
+    return validationResult.error || null;
+  }
 
-    return validationErrors;
+  validateJwt(apm: IAPMItemConfig, jwtPayload: IStJwtPayload): ValidationError | null {
+    if (!APMJwtSchemasMap.has(apm.name)) {
+      return null;
+    }
+
+    return APMJwtSchemasMap.get(apm.name).validate(jwtPayload).error || null;
   }
 }

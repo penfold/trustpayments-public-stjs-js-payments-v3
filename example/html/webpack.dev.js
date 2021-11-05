@@ -10,6 +10,9 @@ module.exports = merge(common, {
   devServer: {
     bonjour: true,
     host: '0.0.0.0',
+    allowedHosts: [
+      '.securetrading.net',
+    ],
     https: {
       key: fs.readFileSync('./../../docker/app-html/nginx/cert/merchant.securetrading.net/key.pem'),
       cert: fs.readFileSync('./../../docker/app-html/nginx/cert/merchant.securetrading.net/cert.pem'),

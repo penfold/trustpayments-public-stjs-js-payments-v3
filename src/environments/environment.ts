@@ -46,8 +46,11 @@ export const environment = {
   production: false,
   testEnvironment: false,
   overrideDomain: '',
-  SENTRY_DSN: null as string,
-  SENTRY_WHITELIST_URLS: ['https://webservices.securetrading.net'],
   THREEDS_TERM_URL: 'https://payments.securetrading.net/process/payments/threedsmpilistener',
   BROWSER_DATA_URL: 'https://brw.3ds.trustpayments.dev/3dss/brw/browserData',
+  SENTRY: {
+    DSN: 'https://4b5507475285467eb274126ada5a0650@o402164.ingest.sentry.io/6034426',
+    ALLOWED_URLS: [],
+    SAMPLE_RATE: 1,
+  },
 };

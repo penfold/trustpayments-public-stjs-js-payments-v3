@@ -6,12 +6,11 @@ import { anything, instance, mock, when } from 'ts-mockito';
 
 describe('APMConfigResolver', () => {
   let aPMConfigResolver: APMConfigResolver;
-  let aPMValidator: APMValidator;
+  let apmValidator: APMValidator;
   beforeEach(() => {
-    aPMValidator = mock(APMValidator);
-    when(aPMValidator.validate(anything())).thenReturn({ error: null, value: null });
-    when(aPMValidator.validateAPMItemConfigs(anything())).thenReturn([]);
-    aPMConfigResolver = new APMConfigResolver(instance(aPMValidator));
+    apmValidator = mock(APMValidator);
+    when(apmValidator.validateConfig(anything())).thenReturn({ error: null, value: null });
+    aPMConfigResolver = new APMConfigResolver(instance(apmValidator));
   });
 
   const testConfig: IAPMConfig = {
@@ -80,7 +79,10 @@ describe('APMConfigResolver', () => {
       ],
   };
 
-  it('should map apmList field to array of full configuration objects, assigning default values to fields not defined in item config', () => {
-    expect(aPMConfigResolver.resolve(testConfig)).toEqual(expected);
+  it('should map apmList field to array of full configuration objects, assigning default values to fields not defined in item config', done => {
+    aPMConfigResolver.resolve(testConfig).subscribe((result: IAPMConfig) => {
+      expect(result).toEqual(expected);
+    });
+    done();
   });
 });
