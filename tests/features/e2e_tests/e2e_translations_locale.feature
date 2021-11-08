@@ -4,7 +4,7 @@ Feature: Payment form translations from jwt locale
   I want to use card payments method
   In order to check full payment functionality in various languages
 
-  @test
+
   Scenario Outline: <locale> translations of fields labels, pay button and fields validation message
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
@@ -103,6 +103,35 @@ Feature: Payment form translations from jwt locale
       | Card number     |
       | Expiration date |
       | Security code   |
+
+    Examples:
+      | locale |
+      | de_DE  |
+      | en_GB  |
+      | fr_FR  |
+      | en_US  |
+      | cy_GB  |
+      | da_DK  |
+      | es_ES  |
+      | nl_NL  |
+      | no_NO  |
+      | sv_SE  |
+
+  @test
+  Scenario Outline: <locale> translation with placeholders overwritten by config
+    Given JS library configured by inline params PLACEHOLDERS_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+      | locale                  | <locale>         |
+    When User opens example page
+    And User waits for Pay button to be active
+    Then User will see specific placeholders in input fields: Number, Expiration, CVV
+    And User will see labels displayed on page translated into "<locale>"
+      | fields          |
+      | Card number     |
+      | Expiration date |
+      | Security code   |
+      | Pay             |
 
     Examples:
       | locale |
