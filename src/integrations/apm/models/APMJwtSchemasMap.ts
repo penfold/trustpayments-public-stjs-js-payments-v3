@@ -28,6 +28,7 @@ const sepaddJwtSchema = Joi.object().keys({
   billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
   billingemail: Joi.string().required(),
+  iban: Joi.string().max(255).required(),
 }).unknown();
 
 const wechatpayJwtSchema = Joi.object().keys({
