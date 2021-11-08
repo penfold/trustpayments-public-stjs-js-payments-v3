@@ -279,7 +279,7 @@ def step_impl(context, language):
     labels = {
         'Card number': payment_page.validate_card_number_iframe_element_text,
         'Expiration date': payment_page.validate_expiration_date_iframe_element_text,
-        'Expiration date placeholder': payment_page.get_expiration_date_placeholder_text,
+        'Expiration date placeholder': payment_page.validate_expiration_date_placeholder_text,
         'Security code': payment_page.validate_security_code_iframe_element_text,
         'Pay': payment_page.validate_submit_btn_specific_translation
     }

@@ -4,7 +4,7 @@ Feature: Payment form translations from jwt locale
   I want to use card payments method
   In order to check full payment functionality in various languages
 
-
+  @test
   Scenario Outline: <locale> translations of fields labels, pay button and fields validation message
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |

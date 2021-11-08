@@ -5,6 +5,7 @@ class FieldType(Enum):
     ALL = 'all'
     CARD_NUMBER = 'st-card-number-iframe'
     EXPIRATION_DATE = 'st-expiration-date-iframe'
+    EXPIRATION_DATE_INPUT = 'st-expiration-date-input'
     SECURITY_CODE = 'st-security-code-iframe'
     ANIMATED_CARD = 'st-animated-card-iframe'
     NOTIFICATION_FRAME = 'st-notification-frame-iframe'
