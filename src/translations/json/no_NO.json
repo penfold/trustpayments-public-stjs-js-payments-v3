@@ -26,5 +26,9 @@
   "A target element for the input field with id could not be found. Please check your configuration": "Et målelement for inndatafeltet med ID ble ikke funnet. Vennligst sjekk konfigurasjonen din",
   "Jwt has not been specified": "Jwt er ikke spesifisert",
   "A target iframe-factory for the input field with id could not be found. Please check your configuration": "Et mål iframe-fabrikk for inndatafeltet med id ble ikke funnet. Kontroller konfigurasjonen",
-  "Cancel": "Avbryt"
+  "Cancel": "Avbryt",
+  "MM/YY": "MM/AA",
+  "**** **** **** ****": "**** **** **** ****",
+  "***": "***",
+  "****": "****"
 }

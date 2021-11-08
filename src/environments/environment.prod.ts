@@ -34,10 +34,13 @@ export const environment = {
   production: true,
   testEnvironment: false,
   overrideDomain: '',
-  SENTRY_DSN: 'https://6319b9ff1fb14ba48cd2c9025d67bd2d@o402164.ingest.sentry.io/5262818',
-  SENTRY_WHITELIST_URLS: ['https://webservices.securetrading.net'],
   THREEDS_TERM_URL: 'https://payments.securetrading.net/process/payments/threedsmpilistener',
   BROWSER_DATA_URL: 'https://brw.3ds.trustpayments.com/3dss/brw/browserData',
+  SENTRY: {
+    DSN: 'https://6319b9ff1fb14ba48cd2c9025d67bd2d@o402164.ingest.sentry.io/5262818',
+    ALLOWED_URLS: ['https://webservices.securetrading.net'],
+    SAMPLE_RATE: 0.1,
+  },
   SEON: {
     LIBRARY_URL: 'https://cdn.seondf.com/js/v4/agent.js',
   },

@@ -90,7 +90,7 @@ describe('ComponentBootstrap', () => {
       componentBootstrap.run(CARD_NUMBER_IFRAME, CardNumber);
 
       verify(containerMock.get(SentryService)).once();
-      verify(sentryServiceMock.init(environment.SENTRY_DSN, environment.SENTRY_WHITELIST_URLS)).once();
+      verify(sentryServiceMock.init(environment.SENTRY.DSN, environment.SENTRY.ALLOWED_URLS)).once();
     });
 
     it('registers all message subscribers if running the ControlFrame component', () => {

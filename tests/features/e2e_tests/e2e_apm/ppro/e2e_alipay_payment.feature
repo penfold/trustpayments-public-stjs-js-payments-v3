@@ -15,7 +15,6 @@ Feature: E2E Alipay Payments
       | requesttypedescriptions | AUTH               |
       | orderreference          | order-01           |
       | baseamount              | 70                 |
-      | orderreference          | order-01           |
       | billingfirstname        | FirstName          |
       | billingemail            | FirstName@email.pl |
       | billingcountryiso2a     | GB                 |
@@ -74,19 +73,16 @@ Feature: E2E Alipay Payments
       | billingdob              | 1980-02-01            |
       | billingcountryiso2a     | <billingcountryiso2a> |
       | currencyiso3a           | <currencyiso3a>       |
-    And User opens example page WITH_APM
+    When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then ALIPAY is not available on APM list
-    When User chooses ALIPAY from APM list
-    Then User will see notification frame text: "<notification_text>"
+    Then ALIPAY is not available on APM list
 
     Examples:
-      | billingcountryiso2a | currencyiso3a | notification_text |
-      | UY                  | PLN           | No account found  |
-      | PL                  | CZK           | No account found  |
-      |                     | UAH           | No account found  |
+      | billingcountryiso2a | currencyiso3a |
+      | UY                  | PLN           |
+      | PL                  | CZK           |
+      | GB                  |               |
 
 
   Scenario: Unsuccessful init - missing orderreference field in jwt
@@ -98,13 +94,10 @@ Feature: E2E Alipay Payments
       | currencyiso3a           | USD   |
       | billingcountryiso2a     | UY    |
       | baseamount              | 123   |
-    And User opens example page WITH_APM
+    When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then ALIPAY is not available on APM list
-    When User chooses ALIPAY from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then ALIPAY is not available on APM list
 
 
   Scenario: Successful trigger of payment with updated jwt
@@ -161,10 +154,7 @@ Feature: E2E Alipay Payments
     And User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then ALIPAY is not available on APM list
-    When User chooses ALIPAY from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then ALIPAY is not available on APM list
 
 
   Scenario: Unsuccessful init - update jwt with missing required fields
@@ -189,25 +179,22 @@ Feature: E2E Alipay Payments
     And User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then ALIPAY is not available on APM list
-    When User chooses ALIPAY from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then ALIPAY is not available on APM list
 
 
   Scenario: Unsuccessful trigger of payment without AUTH in requesttypesdescriptions
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                    |
-      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
-      | orderreference          | order-01                 |
-      | baseamount              | 70                       |
-      | billingfirstname        | FirstName                |
-      | billingemail            | FirstName@email.pl       |
-      | billingdob              | 1980-02-01               |
-      | billingcountryiso2a     | UY                       |
-      | currencyiso3a           | USD                      |
+      | key                     | value               |
+      | requesttypedescriptions | THREEDQUERY RISKDEC |
+      | orderreference          | order-01            |
+      | baseamount              | 70                  |
+      | billingfirstname        | FirstName           |
+      | billingemail            | FirstName@email.pl  |
+      | billingdob              | 1980-02-01          |
+      | billingcountryiso2a     | UY                  |
+      | currencyiso3a           | USD                 |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses ALIPAY from APM list

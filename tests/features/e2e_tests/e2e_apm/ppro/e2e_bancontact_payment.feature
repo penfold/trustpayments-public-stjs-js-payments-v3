@@ -62,19 +62,16 @@ Feature: E2E BANCONTACT Payments
       | billinglastname         | LastName              |
       | billingcountryiso2a     | <billingcountryiso2a> |
       | currencyiso3a           | <currencyiso3a>       |
-    And User opens example page WITH_APM
+    When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then BANCONTACT is not available on APM list
-    When User chooses BANCONTACT from APM list
-    Then User will see notification frame text: "<notification_text>"
+    Then BANCONTACT is not available on APM list
 
     Examples:
-      | billingcountryiso2a | currencyiso3a | notification_text |
-      | BE                  | PLN           | No account found  |
-      | PL                  | EUR           | Invalid field     |
-      |                     | EUR           | Invalid field     |
+      | billingcountryiso2a | currencyiso3a |
+      | BE                  | PLN           |
+      | PL                  | EUR           |
+      |                     | EUR           |
 
 
   Scenario: Unsuccessful init - missing at least one of the billing name fields
@@ -136,13 +133,10 @@ Feature: E2E BANCONTACT Payments
       | billinglastname         | LastNameUpdated  |
       | billingcountryiso2a     | CZ               |
       | currencyiso3a           | EUR              |
-    And User calls updateJWT function by filling amount field
+    When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then BANCONTACT is not available on APM list
-    When User chooses BANCONTACT from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then BANCONTACT is not available on APM list
 
 
   Scenario: Unsuccessful init - update jwt with missing required fields
@@ -159,28 +153,24 @@ Feature: E2E BANCONTACT Payments
       | key                     | value |
       | requesttypedescriptions | AUTH  |
       | baseamount              | 707   |
-      | billingcountryiso2a     | BE    |
       | currencyiso3a           | EUR   |
-    And User calls updateJWT function by filling amount field
+    When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then BANCONTACT is not available on APM list
-    When User chooses BANCONTACT from APM list
-    Then User will see notification frame text: "Invalid field"
+    Then BANCONTACT is not available on APM list
 
 
   Scenario: Unsuccessful trigger of payment without AUTH in requesttypesdescriptions
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                    |
-      | requesttypedescriptions | ACCOUNTCHECK THREEDQUERY |
-      | baseamount              | 70                       |
-      | billingfirstname        | FirstName                |
-      | billinglastname         | LastName                 |
-      | billingcountryiso2a     | BE                       |
-      | currencyiso3a           | EUR                      |
+      | key                     | value               |
+      | requesttypedescriptions | THREEDQUERY RISKDEC |
+      | baseamount              | 70                  |
+      | billingfirstname        | FirstName           |
+      | billinglastname         | LastName            |
+      | billingcountryiso2a     | BE                  |
+      | currencyiso3a           | EUR                 |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses BANCONTACT from APM list
@@ -270,10 +260,10 @@ Feature: E2E BANCONTACT Payments
     And User will be sent to apm page - simulator
     When User will select Succeeded response and submit
     Then User will be sent to page with url "this_is_not_existing_page_success_redirect.com" having params
-      | key                    | value |
-      | paymenttypedescription | BANCONTACT  |
-      | errorcode              | 0     |
-      | settlestatus           | 100   |
+      | key                    | value      |
+      | paymenttypedescription | BANCONTACT |
+      | errorcode              | 0          |
+      | settlestatus           | 100        |
 #      | orderreference         | 123456 | commented on purpose
 
 
@@ -295,10 +285,10 @@ Feature: E2E BANCONTACT Payments
     And User will be sent to apm page - simulator
     When User will select Failed Unknown response and submit
     Then User will be sent to page with url "this_is_not_existing_page_error_redirect.com" having params
-      | key                    | value |
-      | paymenttypedescription | BANCONTACT  |
-      | errorcode              | 70000 |
-      | settlestatus           | 3     |
+      | key                    | value      |
+      | paymenttypedescription | BANCONTACT |
+      | errorcode              | 70000      |
+      | settlestatus           | 3          |
 #      | orderreference         | 123456 |  commented on purpose
 
 
@@ -320,8 +310,8 @@ Feature: E2E BANCONTACT Payments
     And User will be sent to apm page - simulator
     When User will select Failed Unknown response and submit
     Then User will be sent to page with url "this_is_not_existing_page_error_redirect_override.com" having params
-      | key                    | value |
-      | paymenttypedescription | BANCONTACT  |
-      | errorcode              | 70000 |
-      | settlestatus           | 3     |
+      | key                    | value      |
+      | paymenttypedescription | BANCONTACT |
+      | errorcode              | 70000      |
+      | settlestatus           | 3          |
 #      | orderreference         | 123456 | commented on purpose

@@ -4,14 +4,14 @@ import { SentryContext } from './SentryContext';
 import { Event, EventHint } from '@sentry/types';
 import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';
-import { Observable } from 'rxjs';
-import { IConfig } from '../../model/config/IConfig';
-import { filter, first, switchMap, tap } from 'rxjs/operators';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { ExceptionsToSkip } from './ExceptionsToSkip';
+import { BrowserOptions } from '@sentry/browser';
+import { environment } from '../../../environments/environment.rc';
 
 @Service()
 export class SentryService {
-  private config$: Observable<IConfig>;
+  private configSubscription: Subscription;
 
   constructor(
     private configProvider: ConfigProvider,
@@ -19,21 +19,20 @@ export class SentryService {
     private sentryContext: SentryContext,
     private eventScrubber: EventScrubber
   ) {
-    this.config$ = configProvider.getConfig$(true);
   }
 
-  init(dsn: string, whitelistUrls: string[] = []): void {
+  init(dsn: string | null, whitelistUrls: string[] = []): void {
     if (!dsn) {
       return;
     }
 
-    this.config$
-      .pipe(
-        first(),
-        filter(config => config.errorReporting),
-        tap(() => this.initSentry(dsn, whitelistUrls)),
-        switchMap(() => this.config$)
-      )
+    if (this.configSubscription) {
+      this.configSubscription.unsubscribe();
+    }
+
+    this.initSentry(dsn, whitelistUrls);
+
+    this.configSubscription = this.configProvider.getConfig$(true)
       .subscribe(config => this.sentry.setExtra('config', config));
   }
 
@@ -41,18 +40,36 @@ export class SentryService {
     this.sentry.setTag('hostName', this.sentryContext.getHostName());
     this.sentry.setTag('frameName', this.sentryContext.getFrameName());
 
-    this.sentry.init({
+    const options: BrowserOptions = {
       dsn,
-      allowUrls: whitelistUrls,
-      environment: this.sentryContext.getEnvironmentName(),
       release: this.sentryContext.getReleaseVersion(),
       ignoreErrors: ExceptionsToSkip,
-      sampleRate: 0.1,
-      beforeSend: (event: Event, hint?: EventHint) => this.eventScrubber.scrub(event, hint),
-    });
+      sampleRate: environment.SENTRY.SAMPLE_RATE,
+      attachStacktrace: true,
+      normalizeDepth: 3,
+      beforeSend: (event: Event, hint?: EventHint) => this.beforeSend(event, hint),
+    };
+
+    if (whitelistUrls.length) {
+      options.allowUrls = whitelistUrls;
+    }
+
+    this.sentry.init(options);
   }
 
-  sendCustomMessage(err: Error) {
+  sendCustomMessage(err: Error): void {
     this.sentry.captureException(err);
+  }
+
+  private beforeSend(event: Event, hint?: EventHint): Promise<Event | null> {
+    return firstValueFrom(this.configProvider.getConfig$(false)).then(config => {
+      if (!config.errorReporting) {
+        return null;
+      }
+
+      event.environment = config.livestatus ? 'prod' : 'dev';
+
+      return this.eventScrubber.scrub(event, hint);
+    });
   }
 }

@@ -33,13 +33,13 @@ export class ClientBootstrap {
 
     this.isAlreadyRunning = true;
     this.frameIdentifier.setFrameName(MERCHANT_PARENT_FRAME);
+    this.container.get(SentryService).init(environment.SENTRY.DSN, environment.SENTRY.ALLOWED_URLS);
     this.container.get(InterFrameCommunicator).init();
     this.container.get(FramesHub).init();
     this.container.get(MessageBusToken);
     this.container.get(StoreToken);
     this.container.get(BrowserLocalStorage).init();
     this.container.get(MessageSubscriberRegistry).register(...this.container.getMany(MessageSubscriberToken));
-    this.container.get(SentryService).init(environment.SENTRY_DSN, environment.SENTRY_WHITELIST_URLS);
     this.container.get(TranslatorToken).init();
 
     const st: ST = this.container.get(ST);
