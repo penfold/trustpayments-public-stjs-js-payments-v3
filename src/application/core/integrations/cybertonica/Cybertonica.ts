@@ -3,7 +3,7 @@ import { Inject, Service } from 'typedi';
 import { environment } from '../../../../environments/environment';
 import { ICybertonica } from './ICybertonica';
 import { from, Observable, of, ReplaySubject, timeout } from 'rxjs';
-import { catchError, map, mapTo, tap } from 'rxjs/operators';
+import { catchError, map, mapTo } from 'rxjs/operators';
 import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudControlDataProvider';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
 
