@@ -109,7 +109,7 @@
         st.Components(config.components);
         st.VisaCheckout(config.visaCheckout);
         st.ApplePay(config.applePay);
-        st.Cybertonica().then(function(response) {
+        st.getFraudControlData().then(function(response) {
           console.error(response);
         });
         updateJwtListener(st, updatedJwt);

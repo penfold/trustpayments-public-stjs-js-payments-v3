@@ -67,15 +67,15 @@ describe('ST', () => {
     });
   });
 
-  describe('Cybertonica()', () => {
+  describe('getFraudControlData()', () => {
     const key = 'some random key';
     beforeEach(() => {
       // @ts-expect-error Legacy spec testing internal implementations
-      stInstance.cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(of(key));
+      stInstance.fraudControlService.getTransactionId = jest.fn().mockReturnValueOnce(of(key));
     });
 
     it('should return transaction id when standalone cybertonica function has been called', async () => {
-      expect(await stInstance.Cybertonica()).toEqual(key);
+      expect(await stInstance.getFraudControlData()).toEqual(key);
     });
   });
 
