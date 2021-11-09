@@ -47,7 +47,7 @@ describe('APMClient', () => {
     apmFilterService = mock(APMFilterService);
     messageBus = new SimpleMessageBus();
     when(apmConfigResolver.resolve(anything())).thenReturn(of(testConfig));
-    when(configProviderMock.getConfig$()).thenReturn(of({ jwt: '' }));
+    when(configProviderMock.getConfig()).thenReturn({ jwt: '' });
     when(apmFilterService.filter(anything(), anything())).thenReturn(of([{
       name: APMName.ZIP,
       placement: 'test-placement',
