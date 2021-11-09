@@ -52,7 +52,7 @@ describe('SeonFraudControlDataProvider', () => {
           session_id: sessionId,
           audio_fingerprint: true,
           canvas_fingerprint: true,
-          webgl_fingerprint: true,
+          webgl_fingerprint: anything(),
           onSuccess: anyFunction(),
           onError: anyFunction(),
         }))).once();
@@ -105,7 +105,7 @@ describe('SeonFraudControlDataProvider', () => {
 
       when(consoleSpy.warn(anything())).thenReturn(undefined);
       when(seonMock.getBase64Session(anything())).thenCall(callback => callback(null));
-      
+
       seonFraudControlDataProvider.getTransactionId().subscribe(result => {
         expect(result).toEqual(null);
         verify(consoleSpy.warn('Failed to retrieve session data.')).once();

@@ -13,7 +13,7 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
 
   constructor(@Inject(WINDOW) private window: Window) {
   }
-  
+
   init(): Observable<void> {
     if (!this.initResult) {
       this.initResult = this.insertSeonLibrary().pipe(
@@ -21,7 +21,7 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
         shareReplay(1),
       );
     }
-    
+
     return this.initResult;
   }
 
@@ -51,7 +51,7 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
         session_id: Uuid.uuidv4(),
         audio_fingerprint: true,
         canvas_fingerprint: true,
-        webgl_fingerprint: true,
+        webgl_fingerprint: this.isWebglSupported(),
         onSuccess: () => {
           observer.next(undefined);
           observer.complete();
@@ -66,5 +66,19 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
     link.href = environment.SEON.LIBRARY_URL;
 
     return link.hostname;
+  }
+
+  private isWebglSupported(): boolean {
+    try {
+      const canvas = document.createElement('canvas');
+
+      return Boolean(
+        // @ts-ignore
+        this.window.WebGLRenderingContext &&
+        (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+      );
+    } catch (e) {
+      return false;
+    }
   }
 }
