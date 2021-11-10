@@ -49,9 +49,9 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
       this.window.seon.config({
         host: this.getHostname(),
         session_id: Uuid.uuidv4(),
-        audio_fingerprint: true,
+        audio_fingerprint: false,
         canvas_fingerprint: true,
-        webgl_fingerprint: this.isWebglSupported(),
+        webgl_fingerprint: true,
         onSuccess: () => {
           observer.next(undefined);
           observer.complete();
@@ -66,19 +66,5 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
     link.href = environment.SEON.LIBRARY_URL;
 
     return link.hostname;
-  }
-
-  private isWebglSupported(): boolean {
-    try {
-      const canvas = document.createElement('canvas');
-
-      return Boolean(
-        // @ts-ignore
-        this.window.WebGLRenderingContext &&
-        (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
-      );
-    } catch (e) {
-      return false;
-    }
   }
 }
