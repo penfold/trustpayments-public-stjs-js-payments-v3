@@ -5,7 +5,7 @@ import { from, Observable, timer } from 'rxjs';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { RequestProcessingChain } from '../RequestProcessingChain';
-import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
+import { FraudControlRequestProcessor } from '../request-processors/FraudControlRequestProcessor';
 import { RemainingRequestTypesResponseProcessor } from '../response-processors/RemainingRequestTypesResponseProcessor';
 import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
@@ -39,7 +39,7 @@ export class TPThreeDSRequestProcessingService implements IRequestProcessingServ
     this.jsInitResponse = jsInitResponse;
     this.processingChain = this.processingChainFactory.create(
       [
-        CybertonicaRequestProcessor,
+        FraudControlRequestProcessor,
         ThreeDLookupRequestProcessor,
         BrowserDataRequestProcessor,
       ],

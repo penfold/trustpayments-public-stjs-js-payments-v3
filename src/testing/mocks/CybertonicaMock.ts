@@ -1,27 +1,17 @@
 import { ICybertonica } from '../../application/core/integrations/cybertonica/ICybertonica';
 import { Service } from 'typedi';
-import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
+import { Observable, of } from 'rxjs';
 
 @Service()
 export class CybertonicaMock implements ICybertonica {
   private static TID_KEY = 'app.tid';
   private static readonly MOCKED_TID = '63d1d099-d635-41b6-bb82-96017f7da6bb';
 
-  constructor(private storage: BrowserLocalStorage) {}
-
-  init(apiUserName: string): Promise<string> {
-    if (!apiUserName) {
-      return Promise.resolve(undefined);
-    }
-
-    const tid = CybertonicaMock.MOCKED_TID;
-
-    this.storage.setItem(CybertonicaMock.TID_KEY, tid);
-
-    return Promise.resolve(tid);
+  init(apiUserName: string): Observable<void> {
+    return of(undefined);
   }
 
-  getTransactionId(): Promise<string> {
-    return Promise.resolve(this.storage.getItem(CybertonicaMock.TID_KEY) as string);
+  getTransactionId(): Observable<string | null> {
+    return of(CybertonicaMock.MOCKED_TID);
   }
 }

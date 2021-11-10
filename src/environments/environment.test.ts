@@ -46,4 +46,7 @@ export const environment = {
     ALLOWED_URLS: [],
     SAMPLE_RATE: 0,
   },
+  SEON: {
+    LIBRARY_URL: 'https://cdn.seondf.com/js/v4/agent.js',
+  },
 };

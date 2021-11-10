@@ -279,7 +279,7 @@
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
       st.GooglePay(config.googlePay);
-      st.Cybertonica().then(function (response) {
+      st.getFraudControlData().then(function (response) {
         console.log(response);
       });
       if (browserInfo === "true") {

@@ -17,7 +17,7 @@ import { ITriggerData } from '../../../../../client/integrations/cardinal-commer
 import { PaymentEvents } from '../../../models/constants/PaymentEvents';
 import { RequestProcessingChain } from '../RequestProcessingChain';
 import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
-import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
+import { FraudControlRequestProcessor } from '../request-processors/FraudControlRequestProcessor';
 import { CardinalStartRequestProcessor } from '../request-processors/CardinalStartRequestProcessor';
 import { CardinalChallengeResponseProcessor } from '../response-processors/CardinalChallengeResponseProcessor';
 import { RemainingRequestTypesResponseProcessor } from '../response-processors/RemainingRequestTypesResponseProcessor';
@@ -41,7 +41,7 @@ export class CardinalRequestProcessingService implements IRequestProcessingServi
     this.processingChain = this.processingChainFactory.create(
       [
         CacheTokenRequestProcessor,
-        CybertonicaRequestProcessor,
+        FraudControlRequestProcessor,
         CardinalStartRequestProcessor,
       ],
       [
