@@ -49,8 +49,8 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
       this.window.seon.config({
         host: this.getHostname(),
         session_id: Uuid.uuidv4(),
-        audio_fingerprint: false,
-        canvas_fingerprint: true,
+        audio_fingerprint: true,
+        canvas_fingerprint: false,
         webgl_fingerprint: true,
         onSuccess: () => {
           observer.next(undefined);
