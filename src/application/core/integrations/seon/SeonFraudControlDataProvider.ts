@@ -51,7 +51,7 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
         session_id: Uuid.uuidv4(),
         audio_fingerprint: true,
         canvas_fingerprint: true,
-        webgl_fingerprint: false,
+        webgl_fingerprint: true,
         onSuccess: () => {
           observer.next(undefined);
           observer.complete();
