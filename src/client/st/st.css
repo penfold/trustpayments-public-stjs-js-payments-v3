@@ -105,11 +105,9 @@ iframe:active {
   color: #fff;
 }
 
-#seon-font,
-#seon-off,
-.disconnect-highlighted,
-.ddg-extension-hide {
+.__seon-hidden {
   position: absolute;
+  top: -999999px;
   left: -99999px;
 }
 

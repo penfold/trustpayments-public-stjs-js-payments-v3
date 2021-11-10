@@ -6,12 +6,18 @@ import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { Uuid } from '../../shared/uuid/Uuid';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
 import { shareReplay } from 'rxjs/operators';
+import { FrameIdentifier } from '../../../../shared/services/message-bus/FrameIdentifier';
+import { BrowserDetector } from '../../../../shared/services/browser-detector/BrowserDetector';
 
 @Service()
 export class SeonFraudControlDataProvider implements IFraudControlDataProvider<undefined> {
   private initResult: Observable<void>;
 
-  constructor(@Inject(WINDOW) private window: Window) {
+  constructor(
+    @Inject(WINDOW) private window: Window,
+    private frameIdentifier: FrameIdentifier,
+    private browserDetector: BrowserDetector,
+  ) {
   }
 
   init(): Observable<void> {
@@ -20,6 +26,7 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
         switchMap(() => this.configureSeon()),
         shareReplay(1),
       );
+      this.removeObsoleteHtmlElements();
     }
 
     return this.initResult;
@@ -32,7 +39,6 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
           observer.next(data);
           observer.complete();
         } else {
-          console.warn('Failed to retrieve session data.');
           observer.next(null);
           observer.complete();
         }
@@ -66,5 +72,35 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
     link.href = environment.SEON.LIBRARY_URL;
 
     return link.hostname;
+  }
+
+  private removeObsoleteHtmlElements(): void {
+    if (!this.frameIdentifier.isParentFrame()) {
+      return;
+    }
+
+    const browserInfo = this.browserDetector.getBrowserInfo();
+
+    if (browserInfo.browser.name !== 'Internet Explorer') {
+      return;
+    }
+
+    const observer = new MutationObserver(() => {
+      const seonFont = document.getElementById('seon-font');
+      const disconnectHighlighted = document.querySelector('.disconnect-highlighted');
+      const ddgExtensionHide = document.querySelector('.ddg-extension-hide');
+
+      if (seonFont && disconnectHighlighted && ddgExtensionHide) {
+        const hiddenClassName = '__seon-hidden';
+        seonFont.parentElement.classList.add(hiddenClassName);
+        disconnectHighlighted.parentElement.classList.add(hiddenClassName);
+        ddgExtensionHide.parentElement.classList.add(hiddenClassName);
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+    });
   }
 }

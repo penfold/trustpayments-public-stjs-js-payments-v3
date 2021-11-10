@@ -5,22 +5,30 @@ import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { environment } from '../../../../environments/environment';
 import { Uuid } from '../../shared/uuid/Uuid';
 import { forkJoin } from 'rxjs';
+import { FrameIdentifier } from '../../../../shared/services/message-bus/FrameIdentifier';
+import { BrowserDetector } from '../../../../shared/services/browser-detector/BrowserDetector';
 
 type WindowType = Window & { seon: ISeon };
 
 describe('SeonFraudControlDataProvider', () => {
   let seonMock: ISeon;
   let windowMock: WindowType;
+  let frameIdentifierMock: FrameIdentifier;
+  let browserDetectorMock: BrowserDetector;
   let seonFraudControlDataProvider: SeonFraudControlDataProvider;
   let domMethodsSpy: typeof DomMethods;
 
   beforeEach(() => {
     seonMock = mock<ISeon>();
     windowMock = mock<WindowType>();
+    frameIdentifierMock = mock(FrameIdentifier);
+    browserDetectorMock = mock(BrowserDetector);
     domMethodsSpy = spy(DomMethods);
 
     seonFraudControlDataProvider = new SeonFraudControlDataProvider(
       instance(windowMock),
+      instance(frameIdentifierMock),
+      instance(browserDetectorMock),
     );
 
     when(domMethodsSpy.insertScript(anything(), anything())).thenResolve();
@@ -30,6 +38,7 @@ describe('SeonFraudControlDataProvider', () => {
         config.onSuccess('success');
       }
     });
+    when(frameIdentifierMock.isParentFrame()).thenReturn(false);
   });
 
   describe('init()', () => {
