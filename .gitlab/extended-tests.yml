@@ -626,7 +626,7 @@ win10-IE-11.0-visual-tests-review:
     OS_VERSION: 10
     BROWSER: IE
     BROWSER_VERSION: '11.0'
-    POETRY_TAGS: VISUAL_STYLING_TESTS_TAG
+    POETRY_TAGS: $VISUAL_STYLING_TESTS_TAG
 
 .win10-IE-11.0-visual-tests-styling-release:
   extends:

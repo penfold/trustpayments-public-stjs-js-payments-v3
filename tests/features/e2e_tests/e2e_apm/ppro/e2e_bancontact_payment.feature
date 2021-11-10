@@ -109,6 +109,7 @@ Feature: E2E BANCONTACT Payments
       | billinglastname         | LastNameUpdated |
       | billingcountryiso2a     | BE              |
       | currencyiso3a           | EUR             |
+    And User waits for Pay button to be active
     And User calls updateJWT function by filling amount field
     When User chooses BANCONTACT from APM list
     Then User will be sent to apm page - simulator
@@ -133,8 +134,8 @@ Feature: E2E BANCONTACT Payments
       | billinglastname         | LastNameUpdated  |
       | billingcountryiso2a     | CZ               |
       | currencyiso3a           | EUR              |
-    When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
+    When User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
     Then BANCONTACT is not available on APM list
 
@@ -154,8 +155,8 @@ Feature: E2E BANCONTACT Payments
       | requesttypedescriptions | AUTH  |
       | baseamount              | 707   |
       | currencyiso3a           | EUR   |
-    When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
+    When User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
     Then BANCONTACT is not available on APM list
 

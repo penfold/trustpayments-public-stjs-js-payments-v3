@@ -1,8 +1,5 @@
 import { Service } from 'typedi';
 import { FrameIdentifier } from '../message-bus/FrameIdentifier';
-import { environment } from '../../../environments/environment';
-
-type EnvironmentName = 'dev' | 'prod';
 
 @Service()
 export class SentryContext {
@@ -14,10 +11,6 @@ export class SentryContext {
 
   getHostName(): string {
     return window.location.hostname;
-  }
-
-  getEnvironmentName(): EnvironmentName {
-    return environment.production ? 'prod' : 'dev';
   }
 
   getReleaseVersion(): string {

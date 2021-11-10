@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { combineLatest, merge, Observable } from 'rxjs';
-import { first, map, mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
@@ -52,36 +52,35 @@ export class APMClient {
   }
 
   init(config: IAPMConfig): Observable<undefined> {
-    return this.filter(config).pipe(
-      tap((list: IAPMItemConfig[]) => {
-        list.forEach((item: IAPMItemConfig) => {
-          this.removeDuplicate(item);
-          this.insertAPMButton(item);
-        });
-      }),
+    this.messageBus.pipe(
+      ofType(PUBLIC_EVENTS.UPDATE_JWT),
+      map(event => event.data.newJwt),
+      switchMap(updatedJwt => this.filter(config, updatedJwt)),
+      takeUntil(this.destroy$),
+    ).subscribe((list: IAPMItemConfig[]) => this.insertAPMButtons(list));
+
+    return this.filter(config, this.configProvider.getConfig().jwt).pipe(
+      tap((list: IAPMItemConfig[]) => this.insertAPMButtons(list)),
       mapTo(undefined),
     );
   }
 
-  private filter(config: IAPMConfig): Observable<IAPMItemConfig[]> {
-    const jwt = merge(
-      this.messageBus.pipe(
-        ofType(PUBLIC_EVENTS.UPDATE_JWT),
-        map(event => event.data.newJwt)),
-      this.configProvider.getConfig$().pipe(map(config => config.jwt), first()),
-    );
-
-    return combineLatest([jwt, this.apmConfigResolver.resolve(config)]).pipe(
-      switchMap(([updatedJwt, config]) => this.apmFilterService.filter(config.apmList as IAPMItemConfig[], updatedJwt.newJwt)),
+  private filter(config: IAPMConfig, jwt: string): Observable<IAPMItemConfig[]> {
+    return this.apmConfigResolver.resolve(config).pipe(
+      switchMap(normalizedConfig => this.apmFilterService.filter(normalizedConfig.apmList as IAPMItemConfig[], jwt)),
       takeUntil(this.destroy$),
     ) as Observable<IAPMItemConfig[]>;
   }
 
-  private removeDuplicate(apmItemConfig: IAPMItemConfig): void {
-    const child: HTMLElement = document.getElementById(apmItemConfig.name);
-    if (child) {
-      document.getElementById(apmItemConfig.placement).removeChild(child);
-    }
+  private insertAPMButtons(itemList: IAPMItemConfig[]): void {
+    this.clearExistingButtons();
+    itemList.forEach((item: IAPMItemConfig) => {
+      this.insertAPMButton(item);
+    });
+  }
+
+  private clearExistingButtons(): void {
+    document.querySelectorAll('div.st-apm-button').forEach(element => element.remove());
   }
 
   private insertAPMButton(apmItemConfig: IAPMItemConfig): void {

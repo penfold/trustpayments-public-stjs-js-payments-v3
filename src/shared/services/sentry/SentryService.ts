@@ -42,10 +42,11 @@ export class SentryService {
 
     const options: BrowserOptions = {
       dsn,
-      environment: this.sentryContext.getEnvironmentName(),
       release: this.sentryContext.getReleaseVersion(),
       ignoreErrors: ExceptionsToSkip,
       sampleRate: environment.SENTRY.SAMPLE_RATE,
+      attachStacktrace: true,
+      normalizeDepth: 3,
       beforeSend: (event: Event, hint?: EventHint) => this.beforeSend(event, hint),
     };
 
@@ -65,6 +66,8 @@ export class SentryService {
       if (!config.errorReporting) {
         return null;
       }
+
+      event.environment = config.livestatus ? 'prod' : 'dev';
 
       return this.eventScrubber.scrub(event, hint);
     });

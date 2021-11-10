@@ -22,10 +22,6 @@ describe('SentryContext', () => {
     expect(sentryContext.getHostName()).toMatch(/.+/);
   });
 
-  it('returns environment', () => {
-    expect(sentryContext.getEnvironmentName()).toMatch(/dev|prod/);
-  });
-
   it('returns release version', () => {
     expect(sentryContext.getReleaseVersion()).toMatch(/^\d+\.\d+\.\d+$/);
   });

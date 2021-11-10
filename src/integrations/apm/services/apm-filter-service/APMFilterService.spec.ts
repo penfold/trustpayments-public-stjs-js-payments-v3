@@ -1,11 +1,15 @@
 import { anything, instance, mock, spy, verify, when } from 'ts-mockito';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { ValidationError } from 'joi';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { APMName } from '../../models/APMName';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
 import { Debug } from '../../../../shared/Debug';
 import { APMValidator } from '../apm-validator/APMValidator';
+import { APMAvailabilityMap } from '../../models/APMAvailabilityMap';
+import { APMCountryIso } from '../../models/APMCountryIso';
+import { APMCurrencyIso } from '../../models/APMCurrencyIso';
 import { APMFilterService } from './APMFilterService';
 
 describe('APMFilterService', () => {
@@ -14,6 +18,8 @@ describe('APMFilterService', () => {
   let apmValidatorMock: APMValidator;
   let apmFilterService: APMFilterService;
   let debugSpy: typeof Debug;
+  let consoleSpy: typeof window.console;
+  let availabilityMapSpy: typeof APMAvailabilityMap;
 
   beforeEach(() => {
     jwtDecoderMock = mock(JwtDecoder);
@@ -22,26 +28,152 @@ describe('APMFilterService', () => {
     apmFilterService = new APMFilterService(
       instance(jwtDecoderMock),
       instance(configProviderMock),
-      instance(apmValidatorMock)
+      instance(apmValidatorMock),
     );
 
+    consoleSpy = spy(console);
     debugSpy = spy(Debug);
+    availabilityMapSpy = spy(APMAvailabilityMap);
 
     when(debugSpy.warn(anything())).thenReturn(undefined);
+    when(consoleSpy.warn(anything())).thenReturn(undefined);
+    when(configProviderMock.getConfig()).thenReturn({ jwt: 'jwt' });
+    when(apmValidatorMock.validateItemConfig(anything())).thenReturn(null);
+    when(apmValidatorMock.validateJwt(anything(), anything())).thenReturn(null);
   });
 
   describe('filter()', () => {
-    describe('min and max amount', () => {
-      const item: IAPMItemConfig = {
-        name: APMName.PAYU,
-        minBaseAmount: 1000,
-        maxBaseAmount: 2000,
-      };
-      const basePayload: IStJwtPayload = {
-        currencyiso3a: 'PLN',
-        billingcountryiso2a: 'PL',
-      };
+    const item: IAPMItemConfig = {
+      name: APMName.PAYU,
+      minBaseAmount: 1000,
+      maxBaseAmount: 2000,
+    };
+    const basePayload: IStJwtPayload = {
+      currencyiso3a: 'PLN',
+      billingcountryiso2a: 'PL',
+    };
+    const samplePayload: IStJwtPayload = {
+      ...basePayload,
+      baseamount: '1000',
+    };
+    const validationError = new ValidationError('not valid', null, null);
 
+    beforeEach(() => {
+      when(jwtDecoderMock.decode(anything())).thenReturn({ payload: samplePayload });
+      when(availabilityMapSpy.has(anything())).thenReturn(true);
+      when(availabilityMapSpy.get(anything())).thenReturn({
+        countries: [APMCountryIso.PL],
+        currencies: [APMCurrencyIso.PLN],
+        payload: [],
+      });
+    });
+
+    it('removes APMs that dont exist in APMAvailabilityMap', done => {
+      const item1 = { ...item, name: APMName.ZIP };
+      const item2 = { ...item, name: APMName.ALIPAY };
+      const item3 = { ...item, name: APMName.EPS };
+
+      when(availabilityMapSpy.has(APMName.ZIP)).thenReturn(true);
+      when(availabilityMapSpy.has(APMName.ALIPAY)).thenReturn(false);
+      when(availabilityMapSpy.has(APMName.EPS)).thenReturn(true);
+
+      apmFilterService.filter([item1, item2, item3]).subscribe(result => {
+        expect(result).toEqual([item1, item3]);
+        verify(consoleSpy.warn('The following APMs have been hidden due to configuration incompatibility: ALIPAY')).once();
+        done();
+      });
+    });
+
+    it('removes items which dont pass config validation', done => {
+      when(apmValidatorMock.validateItemConfig(item)).thenReturn(validationError);
+
+      apmFilterService.filter([item]).subscribe(result => {
+        expect(result).toEqual([]);
+        verify(debugSpy.warn('Configuration for PAYU APM is invalid: not valid')).once();
+        done();
+      });
+    });
+
+    it('removes items which dont pass jwt schema validation', done => {
+      when(apmValidatorMock.validateJwt(item, samplePayload)).thenReturn(validationError);
+
+      apmFilterService.filter([item]).subscribe(result => {
+        expect(result).toEqual([]);
+        verify(debugSpy.warn('JWT configuration for PAYU APM is invalid: not valid')).once();
+        done();
+      });
+    });
+
+    describe('countries and currencies', () => {
+      it('doesnt remove items if billing country and currency matches the restrictions', done => {
+        when(availabilityMapSpy.get(APMName.PAYU)).thenReturn({
+          payload: [],
+          countries: [APMCountryIso.PL],
+          currencies: [APMCurrencyIso.PLN],
+        });
+
+        apmFilterService.filter([item]).subscribe(result => {
+          expect(result).toEqual([item]);
+          done();
+        });
+      });
+
+      it('doesnt remove items if there are no country restrictions for them', done => {
+        when(availabilityMapSpy.get(APMName.PAYU)).thenReturn({
+          payload: [],
+          countries: [],
+          currencies: [APMCurrencyIso.PLN],
+        });
+
+        apmFilterService.filter([item]).subscribe(result => {
+          expect(result).toEqual([item]);
+          done();
+        });
+      });
+
+      it('removes items if billing country doesnt match the restrictions', done => {
+        when(availabilityMapSpy.get(APMName.PAYU)).thenReturn({
+          payload: [],
+          countries: [APMCountryIso.GB],
+          currencies: [APMCurrencyIso.PLN],
+        });
+
+        apmFilterService.filter([item]).subscribe(result => {
+          expect(result).toEqual([]);
+          verify(debugSpy.warn('Billing country PL is not available for PAYU.')).once();
+          done();
+        });
+      });
+
+      it('doesnt remove items if there are no currency restrictions for them', done => {
+        when(availabilityMapSpy.get(APMName.PAYU)).thenReturn({
+          payload: [],
+          countries: [APMCountryIso.PL],
+          currencies: [],
+        });
+
+        apmFilterService.filter([item]).subscribe(result => {
+          expect(result).toEqual([item]);
+          done();
+        });
+      });
+
+      it('removes items if payment currency doesnt match the restrictions', done => {
+        when(availabilityMapSpy.get(APMName.PAYU)).thenReturn({
+          payload: [],
+          countries: [APMCountryIso.PL],
+          currencies: [APMCurrencyIso.GBP],
+        });
+
+        apmFilterService.filter([item]).subscribe(result => {
+          expect(result).toEqual([]);
+          verify(debugSpy.warn('Billing currency PLN is not available for PAYU.')).once();
+          done();
+        });
+      });
+    });
+
+    describe('min and max amount', () => {
       it('doesnt remove item when baseamount is between min and max amount', done => {
         when(jwtDecoderMock.decode(anything())).thenReturn({ payload: { ...basePayload, baseamount: '1500' } });
 

@@ -1,13 +1,15 @@
-import { anyFunction, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { ConfigProvider } from '../config-provider/ConfigProvider';
+import { anyFunction, anything, capture, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { BehaviorSubject, of, Subject } from 'rxjs';
+import { Event } from '@sentry/types';
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IConfig } from '../../model/config/IConfig';
+import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { Sentry } from './Sentry';
 import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { SentryService } from './SentryService';
 import { ExceptionsToSkip } from './ExceptionsToSkip';
+import { JwtMasker } from './JwtMasker';
 
 describe('SentryService', () => {
   const DSN = 'https://123@456.ingest.sentry.io/7890';
@@ -16,20 +18,23 @@ describe('SentryService', () => {
   let configProviderMock: ConfigProvider;
   let sentryMock: Sentry;
   let sentryContextMock: SentryContext;
-  let eventScrubberMock: EventScrubber;
+  let eventScrubber: EventScrubber;
   let sentryService: SentryService;
+  let jwtMaskerMock: JwtMasker;
   let config$: Subject<IConfig>;
 
   beforeEach(() => {
+    jwtMaskerMock = mock(JwtMasker);
     configProviderMock = mock<ConfigProvider>();
     sentryMock = mock(Sentry);
     sentryContextMock = mock(SentryContext);
-    eventScrubberMock = mock(EventScrubber);
+    eventScrubber = new EventScrubber(
+      instance(jwtMaskerMock)
+    );
     config$ = new BehaviorSubject(config);
 
     when(sentryContextMock.getFrameName()).thenReturn(CONTROL_FRAME_IFRAME);
     when(sentryContextMock.getReleaseVersion()).thenReturn('1.2.3');
-    when(sentryContextMock.getEnvironmentName()).thenReturn('prod');
     when(sentryContextMock.getHostName()).thenReturn('webservices.securetrading.net');
     when(configProviderMock.getConfig$(true)).thenReturn(config$);
 
@@ -37,7 +42,7 @@ describe('SentryService', () => {
       instance(configProviderMock),
       instance(sentryMock),
       instance(sentryContextMock),
-      instance(eventScrubberMock)
+      eventScrubber
     );
   });
 
@@ -68,16 +73,47 @@ describe('SentryService', () => {
         deepEqual({
           allowUrls: whitelistUrls,
           dsn: DSN,
-          environment: 'prod',
           release: '1.2.3',
           ignoreErrors: ExceptionsToSkip,
           sampleRate: 0.1,
           beforeSend: anyFunction(),
+          attachStacktrace: true,
+          normalizeDepth: 3,
         })
       )
     ).once();
 
     setTimeout(() => done());
+  });
+
+  it('adds prod environment property in beforeSend when livestatus = 1', done => {
+    when(configProviderMock.getConfig$(false)).thenReturn(of({ ...config, livestatus: 1 }));
+
+    const whitelistUrls = ['https://webservices.securetrading.net'];
+
+    sentryService.init(DSN, whitelistUrls);
+
+    const [ args ] = capture(sentryMock.init).last();
+
+    (args.beforeSend({}) as Promise<Event | null>).then(res => {
+      expect(res.environment).toBe('prod');
+      done();
+    });
+  });
+
+  it('adds dev environment property in beforeSend when livestatus = 0', done => {
+    when(configProviderMock.getConfig$(false)).thenReturn(of({ ...config, livestatus: 0 }));
+
+    const whitelistUrls = ['https://webservices.securetrading.net'];
+
+    sentryService.init(DSN, whitelistUrls);
+
+    const [ args ] = capture(sentryMock.init).last();
+
+    (args.beforeSend({}) as Promise<Event | null>).then(res => {
+      expect(res.environment).toBe('dev');
+      done();
+    });
   });
 
   it('sets config-provider to extras whenever config-provider changes', () => {
