@@ -1,4 +1,3 @@
-import HttpClient from '@trustpayments/http-client';
 import { Container } from 'typedi';
 import { ApplePayButtonService } from '../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePayButtonServiceMock } from '../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonServiceMock';
@@ -21,6 +20,8 @@ import { IHttpOptionsProvider } from '../application/core/services/st-transport/
 import { TestHttpOptionsProvider } from '../application/core/services/st-transport/http-options-provider/TestHttpOptionsProvider';
 import { IApplePaySessionWrapper } from '../integrations/apple-pay/client/interfaces/IApplePaySessionWrapper';
 import { ApplePaySessionWrapperMock } from '../integrations/apple-pay/client/ApplePaySessionWrapperMock';
+import { SeonFraudControlDataProvider } from '../application/core/integrations/seon/SeonFraudControlDataProvider';
+import { SeonFraudControlDataProviderMock } from '../application/core/integrations/seon/SeonFraudControlDataProviderMock';
 
 if(environment.testEnvironment) {
   Container.set({ id: Cybertonica, type: CybertonicaMock });
@@ -33,4 +34,6 @@ if(environment.testEnvironment) {
   Container.set({ id: ILegacyApplePaySessionWrapper, type: LegacyApplePaySessionWrapperMock });
   Container.set({ id: IApplePaySessionWrapper, type: ApplePaySessionWrapperMock });
   Container.set({ id: IHttpOptionsProvider, type: TestHttpOptionsProvider });
+  Container.set({ id: SeonFraudControlDataProvider, type: SeonFraudControlDataProviderMock });
 }
+

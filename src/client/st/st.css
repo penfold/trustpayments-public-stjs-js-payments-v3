@@ -104,3 +104,10 @@ iframe:active {
   border-color: #01cb4d;
   color: #fff;
 }
+
+.__seon-hidden {
+  position: absolute;
+  top: -999999px;
+  left: -99999px;
+}
+
