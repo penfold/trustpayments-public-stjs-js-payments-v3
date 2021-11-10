@@ -39,6 +39,7 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
           observer.next(data);
           observer.complete();
         } else {
+          console.warn('Failed to retrieve session data.');
           observer.next(null);
           observer.complete();
         }
