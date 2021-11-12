@@ -22,6 +22,7 @@ include:
   - local: '/.gitlab/post-release.yml'
   - local: '/.gitlab/smoke/build-images.yml'
   - local: '/.gitlab/smoke/tests.yml'
+  - local: '/.gitlab/others/sentry-sourcemaps.yml'
 
 variables:
   PROJECT_INFRASTRUCTURE_CICD_REF: *project-infrastructure-cicd-ref
