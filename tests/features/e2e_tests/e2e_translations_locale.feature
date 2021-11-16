@@ -34,6 +34,7 @@ Feature: Payment form translations from jwt locale
       | nl_NL  |
       | no_NO  |
       | sv_SE  |
+      | it_IT  |
 
 
   Scenario Outline: <locale> translation for "Success" payment notification
@@ -58,6 +59,7 @@ Feature: Payment form translations from jwt locale
       | nl_NL  |
       | no_NO  |
       | sv_SE  |
+      | it_IT  |
 
 
   Scenario Outline: <locale> translation for "Error" payment notification
@@ -83,9 +85,10 @@ Feature: Payment form translations from jwt locale
       | nl_NL  |
       | no_NO  |
       | sv_SE  |
+      | it_IT  |
 
 
-  @animated_card
+  @animated_card @check
   Scenario Outline: <locale> translations for animated card labels
     Given JS library configured with BASIC_CONFIG and additional attributes
       | key          | value |
@@ -97,12 +100,13 @@ Feature: Payment form translations from jwt locale
       | locale                  | <locale>         |
     And User opens example page
     And User waits for Pay button to be active
-    When User fills payment form with defined card AMEX_CARD
+    When User focuses on "ANIMATED_CARD" field
     Then User will see labels displayed on animated card translated into "<locale>"
-      | fields          |
-      | Card number     |
-      | Expiration date |
-      | Security code   |
+      | fields                      |
+      | Card number                 |
+      | Expiration date             |
+      | Expiration date placeholder |
+      | Security code               |
 
     Examples:
       | locale |
@@ -116,6 +120,7 @@ Feature: Payment form translations from jwt locale
       | nl_NL  |
       | no_NO  |
       | sv_SE  |
+      | it_IT  |
 
   @test
   Scenario Outline: <locale> translation with placeholders overwritten by config
@@ -145,3 +150,4 @@ Feature: Payment form translations from jwt locale
       | nl_NL  |
       | no_NO  |
       | sv_SE  |
+      | it_IT  |

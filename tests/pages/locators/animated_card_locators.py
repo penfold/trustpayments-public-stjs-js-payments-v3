@@ -18,4 +18,5 @@ class AnimatedCardLocators:
     # labels
     card_number_label: By = (By.ID, 'st-animated-card-card-number-label')
     expiration_date_label: By = (By.ID, 'st-animated-card-expiration-date-label')
+    expiration_date_placeholder: By = (By.ID, 'st-animated-card-expiration-date')
     security_code_label: By = (By.ID, 'st-animated-card-security-code-label')
