@@ -193,7 +193,7 @@
         }
 
         addClickHandler('st-action-start', function () {
-          init(config);
+          init(config, apmConfig);
         });
         addClickHandler('st-action-destroy', function () {
           st.destroy();
@@ -270,7 +270,7 @@
 
     function init(config, apmConfig) {
       setCallbacks(config);
-      if (!validDataCenterUrl(config.datacenterurl)) {
+     if (!validDataCenterUrl(config.datacenterurl)) {
         console.error('"datacenterurl" must be one of [https://webservices.securetrading.net/jwt/, https://webservices.securetrading.us/jwt/]');
         return;
       }
@@ -314,6 +314,7 @@
         st.APM(apmConfig);
       }
 
+      window.resetCallbackCounter();
       return st;
     }
 
@@ -345,7 +346,9 @@
       var configCallbackKeys = ['submitCallback', 'successCallback', 'cancelCallback', 'errorCallback'];
       configCallbackKeys.forEach(function (callbackKey) {
         var callbackFunctionName = config[callbackKey] || null;
-        if (callbackFunctionName && typeof window.predefinedCallbacks[callbackFunctionName] === "function") {
+        if (callbackFunctionName && typeof callbackFunctionName === "function") {
+          config[callbackKey] = callbackFunctionName;
+        } else if (callbackFunctionName && typeof callbackFunctionName === "string" && typeof window.predefinedCallbacks[callbackFunctionName] === "function") {
           config[callbackKey] = window.predefinedCallbacks[callbackFunctionName];
         } else {
           config[callbackKey] = null;

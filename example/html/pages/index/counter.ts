@@ -1,11 +1,11 @@
-const popupStyles: string =
+const popupStyles =
   'display: flex; justify-content: center; position: fixed; left: 0; height: 50px; width: 220px;right:0;color: white;padding: 0 10px;align-items: center;border-radius: 10px;font-family: Verdana;font-size: 15px;z-index:2';
 const popup = document.getElementById('st-popup');
-let callbackCounter: number = 0;
-let submitCallbackCounter: number = 0;
-let successCallbackCounter: number = 0;
-let errorCallbackCounter: number = 0;
-let cancelCallbackCounter: number = 0;
+let callbackCounter = 0;
+let submitCallbackCounter = 0;
+let successCallbackCounter = 0;
+let errorCallbackCounter = 0;
+let cancelCallbackCounter = 0;
 
 // @ts-ignore
 window.displayCallbackCounter = (id: string, text: string, tp: string) => {
@@ -41,3 +41,7 @@ window.displayCallbackCounter = (id: string, text: string, tp: string) => {
     popup.removeChild(div);
   }, 15000);
 };
+// @ts-ignore
+window.resetCallbackCounter = () => {
+  callbackCounter = submitCallbackCounter = successCallbackCounter = errorCallbackCounter = cancelCallbackCounter = 0;
+}
