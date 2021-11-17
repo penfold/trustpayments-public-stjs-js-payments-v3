@@ -62,7 +62,7 @@
         "tokenizationSpecification": {
           "parameters": {
             "gateway": "trustpayments",
-            "gatewayMerchantId": "test_james38641"
+            "gatewayMerchantId": "test_jsmanualcardinal91921"
           },
           "type": "PAYMENT_GATEWAY"
         },

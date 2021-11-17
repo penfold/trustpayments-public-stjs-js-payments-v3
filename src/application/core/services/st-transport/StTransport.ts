@@ -1,7 +1,7 @@
+import { Service } from 'typedi';
 import JwtDecode from 'jwt-decode';
 import { Utils } from '../../shared/utils/Utils';
 import { StCodec } from '../st-codec/StCodec';
-import { Service } from 'typedi';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IStRequest } from '../../models/IStRequest';
@@ -28,7 +28,7 @@ interface IFetchOptions {
  *     pan: '4111111111111111',
  *     requesttypedescription: 'AUTH',
  *     securitycode: '123',
- *     sitereference: 'test_james38641'
+ *     sitereference: 'test_jsmanualcardinal91921'
  *   }).then();
  */
 @Service()
