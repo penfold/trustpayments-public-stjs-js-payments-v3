@@ -1,8 +1,8 @@
+import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
 import { APMName } from './APMName';
 import { APMCountryIso } from './APMCountryIso';
 import { APMCurrencyIso } from './APMCurrencyIso';
 import { APMPayloadFields } from './APMPayloadFields';
-import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
 
 export const APMAvailabilityMap: Map<APMName, { countries: APMCountryIso[], currencies: APMCurrencyIso[], payload: IStJwtPayload[] }> = new Map()
   .set(APMName.ALIPAY, {

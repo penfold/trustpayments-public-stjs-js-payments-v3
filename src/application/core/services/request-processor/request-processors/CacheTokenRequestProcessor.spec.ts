@@ -1,5 +1,5 @@
-import { CacheTokenRequestProcessor } from './CacheTokenRequestProcessor';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
+import { CacheTokenRequestProcessor } from './CacheTokenRequestProcessor';
 
 describe('CacheTokenRequestProcessor', () => {
   let cacheTokenRequestProcessor: CacheTokenRequestProcessor;

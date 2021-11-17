@@ -1,10 +1,10 @@
-import { Store } from './Store';
+import { Inject, Service } from 'typedi';
+import { BehaviorSubject } from 'rxjs';
 import { IApplicationFrameState } from '../state/IApplicationFrameState';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { Inject, Service } from 'typedi';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
-import { BehaviorSubject } from 'rxjs';
 import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
+import { Store } from './Store';
 
 @Service()
 export class ControlFrameStore extends Store<IApplicationFrameState> {

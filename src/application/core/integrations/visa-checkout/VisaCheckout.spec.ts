@@ -1,17 +1,17 @@
 import { of } from 'rxjs';
+import { mock, when, instance as mockInstance, verify, anything, deepEqual, spy } from 'ts-mockito';
 import { VisaCheckoutClientStatus } from '../../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
 import { IVisaCheckoutSdk } from './visa-checkout-sdk-provider/IVisaCheckoutSdk';
 import { VisaCheckoutSdkProvider } from './visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
 import { IVisaCheckoutStatusData } from './visa-checkout-status-data/IVisaCheckoutStatusData';
 import { IVisaCheckoutUpdateConfig } from './visa-checkout-update-service/IVisaCheckoutUpdateConfig';
 import { VisaCheckoutUpdateService } from './visa-checkout-update-service/VisaCheckoutUpdateService';
 import { VisaCheckout } from './VisaCheckout';
-import { mock, when, instance as mockInstance, verify, anything, deepEqual, spy } from 'ts-mockito';
 import { VisaCheckoutResponseType } from './VisaCheckoutResponseType';
-import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
 
 describe('VisaCheckout', () => {
   let instance: VisaCheckout;

@@ -1,15 +1,15 @@
 import { anything, instance, mock, verify, when } from 'ts-mockito';
+import { of, throwError } from 'rxjs';
+import { TransportService } from '../st-transport/TransportService';
+import { IStRequest } from '../../models/IStRequest';
+import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
+import { ThreeDVerificationProviderName } from '../three-d-verification/data/ThreeDVerificationProviderName';
+import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
 import { IRequestProcessor } from './IRequestProcessor';
 import { IResponseProcessor } from './IResponseProcessor';
 import { RequestProcessingChain } from './RequestProcessingChain';
-import { TransportService } from '../st-transport/TransportService';
 import { IErrorHandler } from './IErrorHandler';
-import { IStRequest } from '../../models/IStRequest';
-import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
-import { of, throwError } from 'rxjs';
 import { IRequestProcessingOptions } from './IRequestProcessingOptions';
-import { ThreeDVerificationProviderName } from '../three-d-verification/data/ThreeDVerificationProviderName';
-import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
 
 describe('RequestProcessingChain', () => {
   let requestProcessorMocks: IRequestProcessor[];

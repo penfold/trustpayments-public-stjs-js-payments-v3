@@ -1,17 +1,17 @@
-import { RequestEncoderService } from '../st-codec/RequestEncoderService';
-import { ResponseDecoderService } from '../st-codec/ResponseDecoderService';
 import { HttpClient, IHttpClientResponse } from '@trustpayments/http-client';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
-import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { TransportService } from './TransportService';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { of } from 'rxjs';
+import { IHttpClientConfig } from '@trustpayments/http-client';
 import { IStRequest } from '../../models/IStRequest';
 import { IRequestObject } from '../../models/IRequestObject';
-import { IHttpClientConfig } from '@trustpayments/http-client';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { ResponseDecoderService } from '../st-codec/ResponseDecoderService';
+import { RequestEncoderService } from '../st-codec/RequestEncoderService';
 import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { TransportService } from './TransportService';
+import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
 describe('TransportService', () => {
   const request: IStRequest = instance(mock<IStRequest>());

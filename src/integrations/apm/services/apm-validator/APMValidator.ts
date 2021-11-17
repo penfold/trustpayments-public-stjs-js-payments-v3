@@ -1,7 +1,7 @@
-import { APMSchema, APMSchemasMap } from '../../models/APMSchema';
-import { IAPMConfig } from '../../models/IAPMConfig';
 import { Service } from 'typedi';
 import { ValidationError, ValidationResult } from 'joi';
+import { APMSchema, APMSchemasMap } from '../../models/APMSchema';
+import { IAPMConfig } from '../../models/IAPMConfig';
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
 import { APMJwtSchemasMap } from '../../models/APMJwtSchemasMap';

@@ -1,9 +1,9 @@
-import { Cybertonica } from './Cybertonica';
-import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { instance, mock, spy, when, anything, verify, deepEqual } from 'ts-mockito';
-import { IAFCybertonica } from './IAFCybertonica';
-import { environment } from '../../../../environments/environment';
 import { firstValueFrom, forkJoin, NEVER, switchMap } from 'rxjs';
+import { DomMethods } from '../../shared/dom-methods/DomMethods';
+import { environment } from '../../../../environments/environment';
+import { Cybertonica } from './Cybertonica';
+import { IAFCybertonica } from './IAFCybertonica';
 
 type WindowType = Window & { AFCYBERTONICA: IAFCybertonica };
 

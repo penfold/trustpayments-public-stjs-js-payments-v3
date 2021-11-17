@@ -1,7 +1,5 @@
-import { StTransport } from '../st-transport/StTransport';
-import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { StTransportGatewayClient } from './StTransportGatewayClient';
+import { CardType } from '@trustpayments/3ds-sdk-js';
 import { ThreeDInitRequest } from '../three-d-verification/data/ThreeDInitRequest';
 import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
@@ -9,9 +7,11 @@ import { IStRequest } from '../../models/IStRequest';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 import { ThreeDVerificationProviderName } from '../three-d-verification/data/ThreeDVerificationProviderName';
-import { CardType } from '@trustpayments/3ds-sdk-js';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { StTransport } from '../st-transport/StTransport';
 import { IApplePayValidateMerchantRequest } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { IApplePayWalletVerifyResponseBody } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
+import { StTransportGatewayClient } from './StTransportGatewayClient';
 
 describe('StTransportGatewayClient', () => {
   let transportMock: StTransport;

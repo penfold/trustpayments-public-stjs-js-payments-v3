@@ -1,6 +1,6 @@
+import { ContainerInstance, Service } from 'typedi';
 import { FramesHub } from '../../../shared/services/message-bus/FramesHub';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
-import { ContainerInstance, Service } from 'typedi';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { environment } from '../../../environments/environment';
 import { MessageSubscriberRegistry } from '../../../shared/services/message-bus/MessageSubscriberRegistry';

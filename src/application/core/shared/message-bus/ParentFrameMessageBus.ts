@@ -3,8 +3,8 @@ import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { InterFrameCommunicator } from '../../../../shared/services/message-bus/InterFrameCommunicator';
 import { CONTROL_FRAME_IFRAME } from '../../models/constants/Selectors';
 import { FramesHub } from '../../../../shared/services/message-bus/FramesHub';
-import { SimpleMessageBus } from './SimpleMessageBus';
 import { EventScope } from '../../models/constants/EventScope';
+import { SimpleMessageBus } from './SimpleMessageBus';
 
 @Service()
 export class ParentFrameMessageBus extends SimpleMessageBus {

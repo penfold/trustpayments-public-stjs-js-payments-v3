@@ -1,8 +1,5 @@
 import { Observable, of } from 'rxjs';
 import { Service } from 'typedi';
-import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import {
   ThreeDSecureInterface,
   ChallengeResultInterface,
@@ -12,12 +9,15 @@ import {
   CardType,
   ThreeDSecureVersion,
 } from '@trustpayments/3ds-sdk-js';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { Translator } from '../../../application/core/shared/translator/Translator';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { IMethodUrlData } from './IMethodUrlData';
 import { IChallengeData } from './IChallengeData';
-import { ofType } from '../../../shared/services/message-bus/operators/ofType';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 
 @Service()
 export class ThreeDSecureClient {

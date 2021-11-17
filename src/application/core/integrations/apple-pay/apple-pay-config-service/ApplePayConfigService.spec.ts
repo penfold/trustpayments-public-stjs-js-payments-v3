@@ -1,13 +1,13 @@
 import { anything, instance, mock, when } from 'ts-mockito';
 import { IApplePayConfig } from '../IApplePayConfig';
-import { IApplePayConfigObject } from './IApplePayConfigObject';
 import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
-import { ApplePayConfigService } from './ApplePayConfigService';
 import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePaySessionService } from '../../../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
+import { ApplePayConfigService } from './ApplePayConfigService';
+import { IApplePayConfigObject } from './IApplePayConfigObject';
 
 describe('ApplePayConfigService', () => {
   const paymentRequest: IApplePayPaymentRequest = {

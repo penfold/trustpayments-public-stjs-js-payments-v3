@@ -1,7 +1,7 @@
-import { IMessageSubscriber } from '../../shared/services/message-bus/interfaces/IMessageSubscriber';
 import { Inject, Service } from 'typedi';
-import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { first, takeUntil } from 'rxjs/operators';
+import { IMessageSubscriber } from '../../shared/services/message-bus/interfaces/IMessageSubscriber';
+import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { MessageSubscriberToken, WINDOW } from '../../shared/dependency-injection/InjectionTokens';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';

@@ -1,22 +1,21 @@
-import { mock, instance, when, verify, anything, deepEqual, spy } from 'ts-mockito';
-import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
-import { MerchantValidationService } from './MerchantValidationService';
+import { mock, instance, when, verify, anything, deepEqual } from 'ts-mockito';
+import { EMPTY, of, throwError } from 'rxjs';
 import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
 import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
-import { EMPTY, of, throwError } from 'rxjs';
+import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
+import { MerchantValidationService } from './MerchantValidationService';
 
 describe('MerchantValidationService', () => {
   let frameQueryingServiceMock: IFrameQueryingService;
   let googleAnalyticsMock: GoogleAnalytics;
   let applePaySessionMock: IApplePaySession;
   let applePaySession: IApplePaySession;
-  let applePaySessionSpy: IApplePaySession;
   let merchantValidationService: MerchantValidationService;
   const validationUrl = 'https://validationurl';
 
@@ -25,7 +24,6 @@ describe('MerchantValidationService', () => {
     googleAnalyticsMock = mock(GoogleAnalytics);
     applePaySessionMock = mock<IApplePaySession>();
     applePaySession = instance(applePaySessionMock);
-    applePaySessionSpy = spy(applePaySession);
     merchantValidationService = new MerchantValidationService(
       instance(frameQueryingServiceMock),
       instance(googleAnalyticsMock),

@@ -1,16 +1,16 @@
-import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
-import { ChallengeResultHandler } from './ChallengeResultHandler';
-import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { CardType, ChallengeResultInterface, ResultActionCode } from '@trustpayments/3ds-sdk-js';
+import { of } from 'rxjs';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IChallengeData } from '../../../../../../client/integrations/three-d-secure/IChallengeData';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
-import { CardType, ChallengeResultInterface, ResultActionCode } from '@trustpayments/3ds-sdk-js';
-import { of } from 'rxjs';
+import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { Enrollment } from '../../../../models/constants/Enrollment';
 import { environment } from '../../../../../../environments/environment';
+import { ThreeDSecureChallengeService } from './ThreeDSecureChallengeService';
+import { ChallengeResultHandler } from './ChallengeResultHandler';
 
 describe('ThreeDSecureChallengeService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;

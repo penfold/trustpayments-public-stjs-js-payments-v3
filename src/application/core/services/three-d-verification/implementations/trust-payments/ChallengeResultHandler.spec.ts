@@ -1,10 +1,10 @@
 import { ResultActionCode, ChallengeResultInterface, CardType } from '@trustpayments/3ds-sdk-js';
-import { ChallengeResultHandler } from './ChallengeResultHandler';
-import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
-import DoneCallback = jest.DoneCallback;
-import { PAYMENT_CANCELLED, PAYMENT_ERROR } from '../../../../models/constants/Translations';
-import { ThreeDResponseConverter } from './threedresponse-converter/ThreeDResponseConverter';
 import { anything, instance, mock, when } from 'ts-mockito';
+import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
+import { PAYMENT_CANCELLED, PAYMENT_ERROR } from '../../../../models/constants/Translations';
+import { ChallengeResultHandler } from './ChallengeResultHandler';
+import { ThreeDResponseConverter } from './threedresponse-converter/ThreeDResponseConverter';
+import DoneCallback = jest.DoneCallback;
 
 describe('ChallengeResultHandler', () => {
   let threeDResponseConverterMock: ThreeDResponseConverter;

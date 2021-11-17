@@ -1,17 +1,12 @@
 import { Service } from 'typedi';
-import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
-import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { IInitializationData } from './data/IInitializationData';
-import { CardinalProvider } from './CardinalProvider';
 import { first, mapTo, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { ICardinal } from './ICardinal';
 import { defer, Observable, Subject, Subscription } from 'rxjs';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { PaymentEvents } from '../../../application/core/models/constants/PaymentEvents';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { PaymentBrand } from '../../../application/core/models/constants/PaymentBrand';
-import { ITriggerData } from './data/ITriggerData';
-import { IValidationResult } from './data/IValidationResult';
 import { environment } from '../../../environments/environment';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
@@ -21,6 +16,11 @@ import { IVerificationResult } from '../../../application/core/services/three-d-
 import { ActionCode } from '../../../application/core/services/three-d-verification/implementations/cardinal-commerce/data/ActionCode';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { ICardinal } from './ICardinal';
+import { CardinalProvider } from './CardinalProvider';
+import { IInitializationData } from './data/IInitializationData';
+import { IValidationResult } from './data/IValidationResult';
+import { ITriggerData } from './data/ITriggerData';
 
 @Service()
 export class CardinalClient {

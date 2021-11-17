@@ -1,9 +1,9 @@
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
-import { ApplePayClickHandlingService } from './ApplePayClickHandlingService';
-import Mock = jest.Mock;
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { ApplePayClickHandlingService } from './ApplePayClickHandlingService';
+import Mock = jest.Mock;
 
 describe('ApplePayClickHandlingService', () => {
   let messageBus: IMessageBus;

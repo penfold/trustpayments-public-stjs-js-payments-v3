@@ -1,14 +1,13 @@
-import { IResponseData } from '../../models/IResponseData';
-import { StCodec } from '../../services/st-codec/StCodec';
-import { FormState } from '../../models/constants/FormState';
+import Container from 'typedi';
+import { MessageBus } from '../message-bus/MessageBus';
 import {
   VALIDATION_ERROR,
   VALIDATION_ERROR_FIELD_IS_REQUIRED,
   VALIDATION_ERROR_PATTERN_MISMATCH,
 } from '../../models/constants/Translations';
-import { MessageBus } from '../message-bus/MessageBus';
-import { Validation } from './Validation';
-import Container from 'typedi';
+import { FormState } from '../../models/constants/FormState';
+import { StCodec } from '../../services/st-codec/StCodec';
+import { IResponseData } from '../../models/IResponseData';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../translator/Translator';
 import { ITranslationProvider } from '../translator/ITranslationProvider';
@@ -16,6 +15,7 @@ import { TranslationProvider } from '../translator/TranslationProvider';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
 import { IFormFieldsValidity } from '../../models/IFormFieldsValidity';
+import { Validation } from './Validation';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set({ id: TranslatorToken, type: Translator });

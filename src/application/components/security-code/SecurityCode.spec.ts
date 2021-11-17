@@ -1,19 +1,16 @@
-import { SecurityCode } from './SecurityCode';
+import { anyFunction, instance, mock, when } from 'ts-mockito';
+import { EMPTY, of } from 'rxjs';
+import Container from 'typedi';
 import { SECURITY_CODE_INPUT, SECURITY_CODE_LABEL, SECURITY_CODE_MESSAGE } from '../../core/models/constants/Selectors';
 import { Input } from '../../core/shared/input/Input';
 import { Utils } from '../../core/shared/utils/Utils';
-import { anyFunction, instance, mock, when } from 'ts-mockito';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
-import { EMPTY, of } from 'rxjs';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { Formatter } from '../../core/shared/formatter/Formatter';
-import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
-import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
-import Container from 'typedi';
 import { TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../../core/shared/translator/Translator';
 import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
@@ -21,6 +18,7 @@ import { TranslationProvider } from '../../core/shared/translator/TranslationPro
 import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
 import { FormState } from '../../core/models/constants/FormState';
 import { Validation } from '../../core/shared/validation/Validation';
+import { SecurityCode } from './SecurityCode';
 
 jest.mock('./../../core/shared/notification/Notification');
 
@@ -262,7 +260,6 @@ function securityCodeFixture() {
     instance(jwtDecoder),
     instance(validation),
   );
-
 
   return { securityCodeInstance, configProvider, communicatorMock };
 }

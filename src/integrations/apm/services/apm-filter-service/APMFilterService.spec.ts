@@ -1,7 +1,7 @@
+import { anything, instance, mock, spy, verify, when } from 'ts-mockito';
+import { ValidationError } from 'joi';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { APMFilterService } from './APMFilterService';
-import { anything, instance, mock, spy, verify, when } from 'ts-mockito';
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { APMName } from '../../models/APMName';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
@@ -10,7 +10,7 @@ import { APMValidator } from '../apm-validator/APMValidator';
 import { APMAvailabilityMap } from '../../models/APMAvailabilityMap';
 import { APMCountryIso } from '../../models/APMCountryIso';
 import { APMCurrencyIso } from '../../models/APMCurrencyIso';
-import { ValidationError } from 'joi';
+import { APMFilterService } from './APMFilterService';
 
 describe('APMFilterService', () => {
   let jwtDecoderMock: JwtDecoder;

@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { IconMap } from './IconMap';
 import { IIconAttributes } from '../../models/IIconAttributes';
+import { IconMap } from './IconMap';
 
 @Service()
 export class IconFactory {

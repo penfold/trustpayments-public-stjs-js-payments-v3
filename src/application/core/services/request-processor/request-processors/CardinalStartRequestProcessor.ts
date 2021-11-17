@@ -1,11 +1,11 @@
-import { IRequestProcessor } from '../IRequestProcessor';
 import { Service } from 'typedi';
-import { IStRequest } from '../../../models/IStRequest';
 import { from, Observable } from 'rxjs';
+import { mapTo } from 'rxjs/operators';
+import { IRequestProcessor } from '../IRequestProcessor';
+import { IStRequest } from '../../../models/IStRequest';
 import { InterFrameCommunicator } from '../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../models/constants/Selectors';
-import { mapTo } from 'rxjs/operators';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
 import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
 import { IInitializationData } from '../../../../../client/integrations/cardinal-commerce/data/IInitializationData';

@@ -1,6 +1,4 @@
-import { IPaymentResult } from './IPaymentResult';
 import { Service } from 'typedi';
-import { PaymentStatus } from './PaymentStatus';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { NotificationService } from '../../../../client/notification/NotificationService';
@@ -8,6 +6,8 @@ import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { EventScope } from '../../models/constants/EventScope';
 import { ITranslator } from '../../shared/translator/ITranslator';
+import { PaymentStatus } from './PaymentStatus';
+import { IPaymentResult } from './IPaymentResult';
 
 @Service()
 export class PaymentResultHandler {

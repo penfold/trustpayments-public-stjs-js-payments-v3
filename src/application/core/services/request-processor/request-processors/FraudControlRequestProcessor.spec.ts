@@ -1,8 +1,8 @@
 import { mock, instance, when } from 'ts-mockito';
-import { FraudControlRequestProcessor } from './FraudControlRequestProcessor';
+import { of } from 'rxjs';
 import { IStRequest } from '../../../models/IStRequest';
 import { FraudControlService } from '../../fraud-control/FraudControlService';
-import { of } from 'rxjs';
+import { FraudControlRequestProcessor } from './FraudControlRequestProcessor';
 
 describe('FraudControlRequestProcessor', () => {
   let fraudControlServiceMock: FraudControlService;

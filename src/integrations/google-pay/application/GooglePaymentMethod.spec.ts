@@ -1,8 +1,7 @@
-import { IPaymentError } from '../../../application/core/services/payments/IPaymentError';
-import { GooglePaymentMethod } from './GooglePaymentMethod';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
-import { GooglePaymentMethodName } from '../models/IGooglePaymentMethod';
 import { Observable, of, throwError } from 'rxjs';
+import { GooglePaymentMethodName } from '../models/IGooglePaymentMethod';
+import { IPaymentError } from '../../../application/core/services/payments/IPaymentError';
 import { IGooglePayGatewayRequest } from '../models/IGooglePayRequest';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -10,6 +9,7 @@ import { GooglePayConfigName, IGooglePayConfig } from '../models/IGooglePayConfi
 import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
+import { GooglePaymentMethod } from './GooglePaymentMethod';
 
 describe('GooglePaymentMethod', () => {
   let requestProcessingServiceMock: IRequestProcessingService;

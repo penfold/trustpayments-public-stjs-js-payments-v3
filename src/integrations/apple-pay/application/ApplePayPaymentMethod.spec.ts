@@ -1,26 +1,26 @@
 import { firstValueFrom, of } from 'rxjs';
 import { anything, capture, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
+import { tap } from 'rxjs/operators';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { ApplePayPaymentMethod } from './ApplePayPaymentMethod';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { FrameQueryingServiceMock } from '../../../shared/services/message-bus/FrameQueryingServiceMock';
 import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
-import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { CustomerOutput } from '../../../application/core/models/constants/CustomerOutput';
 import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
-import { tap } from 'rxjs/operators';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { NoThreeDSRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/NoThreeDSRequestProcessingService';
+import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
+import { ApplePayPaymentMethod } from './ApplePayPaymentMethod';
 
 describe('ApplePayPaymentMethod', () => {
   const configMock: IConfig = {

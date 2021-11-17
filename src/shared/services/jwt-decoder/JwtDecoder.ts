@@ -1,6 +1,6 @@
 import jwt_decode from 'jwt-decode';
-import { IStJwtObj } from '../../../application/core/models/IStJwtObj';
 import { Service } from 'typedi';
+import { IStJwtObj } from '../../../application/core/models/IStJwtObj';
 
 @Service()
 export class JwtDecoder {

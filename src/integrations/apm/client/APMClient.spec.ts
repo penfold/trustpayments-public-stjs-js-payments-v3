@@ -1,6 +1,5 @@
 import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
-import { APMConfigResolver } from '../services/apm-config-resolver/APMConfigResolver';
-import { APMClient } from './APMClient';
+import { of } from 'rxjs';
 import { IAPMConfig } from '../models/IAPMConfig';
 import { APMName } from '../models/APMName';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
@@ -9,11 +8,12 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { APMPaymentMethodName } from '../models/IAPMPaymentMethod';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
-import { of } from 'rxjs';
+import { APMConfigResolver } from '../services/apm-config-resolver/APMConfigResolver';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { APMClient } from './APMClient';
 
 describe('APMClient', () => {
   let apmConfigResolver: APMConfigResolver;

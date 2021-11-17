@@ -10,12 +10,12 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { TranslationProvider } from '../../../application/core/shared/translator/TranslationProvider';
 import { Translator } from '../../../application/core/shared/translator/Translator';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
-import { ThreeDSecureClient } from './ThreeDSecureClient';
-import DoneCallback = jest.DoneCallback;
-import { IMethodUrlData } from './IMethodUrlData';
-import { IChallengeData } from './IChallengeData';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
+import { ThreeDSecureClient } from './ThreeDSecureClient';
+import { IMethodUrlData } from './IMethodUrlData';
+import { IChallengeData } from './IChallengeData';
+import DoneCallback = jest.DoneCallback;
 
 describe('ThreeDSecureClient', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;

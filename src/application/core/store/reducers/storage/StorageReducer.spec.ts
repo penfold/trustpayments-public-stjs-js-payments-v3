@@ -1,7 +1,7 @@
-import { StorageReducer } from './StorageReducer';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { IApplicationFrameState } from '../../state/IApplicationFrameState';
 import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
+import { StorageReducer } from './StorageReducer';
 
 describe('StorageReducer', () => {
   const storageReducer = new StorageReducer();

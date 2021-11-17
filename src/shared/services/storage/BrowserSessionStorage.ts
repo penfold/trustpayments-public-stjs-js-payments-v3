@@ -1,8 +1,8 @@
 import { Service } from 'typedi';
-import { AbstractStorage } from './AbstractStorage';
 import { InterFrameCommunicator } from '../message-bus/InterFrameCommunicator';
 import { FramesHub } from '../message-bus/FramesHub';
 import { FrameIdentifier } from '../message-bus/FrameIdentifier';
+import { AbstractStorage } from './AbstractStorage';
 
 @Service()
 export class BrowserSessionStorage extends AbstractStorage {

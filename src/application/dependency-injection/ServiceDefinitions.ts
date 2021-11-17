@@ -1,10 +1,10 @@
 import { Container } from 'typedi';
+import { HttpClient } from '@trustpayments/http-client';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { StoreConfigProvider } from '../core/services/store-config-provider/StoreConfigProvider';
 import { JwtReducer } from '../core/store/reducers/jwt/JwtReducer';
 import { IHttpOptionsProvider } from '../core/services/st-transport/http-options-provider/IHttpOptionsProvider';
 import { DefaultHttpOptionsProvider } from '../core/services/st-transport/http-options-provider/DefaultHttpOptionsProvider';
-import { HttpClient } from '@trustpayments/http-client';
 import { GooglePaymentMethod } from '../../integrations/google-pay/application/GooglePaymentMethod';
 import { ApplePayPaymentMethod } from '../../integrations/apple-pay/application/ApplePayPaymentMethod';
 import { APMPaymentMethod } from '../../integrations/apm/application/APMPaymentMethod';

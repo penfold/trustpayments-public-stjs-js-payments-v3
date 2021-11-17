@@ -1,9 +1,10 @@
 import { ValidationErrorItem, ValidationResult } from 'joi';
+import { ContainerInstance, Service } from 'typedi';
+import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 import {
   threeDSecureConfigName,
 } from '../../../application/core/services/three-d-verification/implementations/trust-payments/IThreeDSecure';
 import { IConfig } from '../../model/config/IConfig';
-import { ContainerInstance, Service } from 'typedi';
 import { IComponentsIds } from '../../model/config/IComponentsIds';
 import { IComponentsConfig } from '../../model/config/IComponentsConfig';
 import { DefaultSubmitFields } from '../../../application/core/models/constants/config-resolver/DefaultSubmitFields';
@@ -17,7 +18,6 @@ import { environment } from '../../../environments/environment';
 import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 import { IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
-import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 import { SentryService } from '../sentry/SentryService';
 
 @Service()
