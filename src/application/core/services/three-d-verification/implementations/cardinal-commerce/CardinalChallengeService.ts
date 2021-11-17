@@ -1,17 +1,17 @@
 import { Service } from 'typedi';
+import { from, Observable } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
-import { from, Observable } from 'rxjs';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
-import { IVerificationData } from './data/IVerificationData';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
-import { IVerificationResult } from './data/IVerificationResult';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
-import { switchMap, tap } from 'rxjs/operators';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
-import { VerificationResultHandler } from './VerificationResultHandler';
 import { Enrollment } from '../../../../models/constants/Enrollment';
+import { VerificationResultHandler } from './VerificationResultHandler';
+import { IVerificationResult } from './data/IVerificationResult';
+import { IVerificationData } from './data/IVerificationData';
 
 @Service()
 export class CardinalChallengeService {

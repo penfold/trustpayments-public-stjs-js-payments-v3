@@ -1,23 +1,23 @@
 import { ContainerInstance } from 'typedi';
-import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { PaymentController } from './PaymentController';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { of, zip } from 'rxjs';
+import { delay } from 'rxjs/operators';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
-import { IPaymentMethod } from './IPaymentMethod';
 import { PaymentMethodToken } from '../../../dependency-injection/InjectionTokens';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { Debug } from '../../../../shared/Debug';
+import { GooglePaymentMethodName } from '../../../../integrations/google-pay/models/IGooglePaymentMethod';
+import { PaymentController } from './PaymentController';
+import { IPaymentMethod } from './IPaymentMethod';
 import { PaymentResultHandler } from './PaymentResultHandler';
 import { IInitPaymentMethod } from './events/IInitPaymentMethod';
-import { of, zip } from 'rxjs';
-import { Debug } from '../../../../shared/Debug';
 import { IPaymentResult } from './IPaymentResult';
 import { PaymentStatus } from './PaymentStatus';
 import { IStartPaymentMethod } from './events/IStartPaymentMethod';
-import { delay } from 'rxjs/operators';
 import { ErrorResultFactory } from './ErrorResultFactory';
 
 import spyOn = jest.spyOn;
-import { GooglePaymentMethodName } from '../../../../integrations/google-pay/models/IGooglePaymentMethod';
 
 describe('PaymentController', () => {
   let containerMock: ContainerInstance;

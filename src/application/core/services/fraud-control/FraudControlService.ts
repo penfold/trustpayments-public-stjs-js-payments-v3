@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
-import { FraudControlServiceSelector } from './FraudControlServiceSelector';
 import { Observable, of, timeout } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
+import { FraudControlServiceSelector } from './FraudControlServiceSelector';
 
 @Service()
 export class FraudControlService {

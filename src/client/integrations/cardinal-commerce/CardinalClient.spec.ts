@@ -1,26 +1,26 @@
-import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { CardinalProvider } from './CardinalProvider';
 import { anyString, anything, instance, mock, spy, verify, when } from 'ts-mockito';
-import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
-import { CardinalClient } from './CardinalClient';
-import { ICardinal } from './ICardinal';
-import { IConfig } from '../../../shared/model/config/IConfig';
 import { Observable, of, Subscription } from 'rxjs';
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { IInitializationData } from './data/IInitializationData';
+import { delay } from 'rxjs/operators';
 import { CardinalMock } from '../../../testing/mocks/CardinalMock';
 import { environment } from '../../../environments/environment';
 import { PaymentEvents } from '../../../application/core/models/constants/PaymentEvents';
-import { delay } from 'rxjs/operators';
+import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { IConfig } from '../../../shared/model/config/IConfig';
+import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { PaymentBrand } from '../../../application/core/models/constants/PaymentBrand';
-import { ITriggerData } from './data/ITriggerData';
 import { IVerificationData } from '../../../application/core/services/three-d-verification/implementations/cardinal-commerce/data/IVerificationData';
 import { IVerificationResult } from '../../../application/core/services/three-d-verification/implementations/cardinal-commerce/data/IVerificationResult';
 import { ActionCode } from '../../../application/core/services/three-d-verification/implementations/cardinal-commerce/data/ActionCode';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { IInitializationData } from './data/IInitializationData';
+import { ICardinal } from './ICardinal';
+import { CardinalClient } from './CardinalClient';
+import { CardinalProvider } from './CardinalProvider';
+import { ITriggerData } from './data/ITriggerData';
 
 describe('CardinalClient', () => {
   let configProviderMock: ConfigProvider;

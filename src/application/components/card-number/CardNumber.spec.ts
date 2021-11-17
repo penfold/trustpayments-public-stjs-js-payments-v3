@@ -1,21 +1,21 @@
-import { CardNumber } from './CardNumber';
+import { instance, mock, when } from 'ts-mockito';
+import { of } from 'rxjs';
+import Container from 'typedi';
 import { FormState } from '../../core/models/constants/FormState';
 import { CARD_NUMBER_INPUT, CARD_NUMBER_LABEL, CARD_NUMBER_MESSAGE } from '../../core/models/constants/Selectors';
 import { Input } from '../../core/shared/input/Input';
 import { Utils } from '../../core/shared/utils/Utils';
 import { Validation } from '../../core/shared/validation/Validation';
-import { instance, mock, when } from 'ts-mockito';
 import { IconFactory } from '../../core/services/icon/IconFactory';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { Formatter } from '../../core/shared/formatter/Formatter';
-import { of } from 'rxjs';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import Container from 'typedi';
 import { TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../../core/shared/translator/Translator';
 import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
 import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
+import { CardNumber } from './CardNumber';
 
 jest.mock('./../../core/shared/validation/Validation');
 

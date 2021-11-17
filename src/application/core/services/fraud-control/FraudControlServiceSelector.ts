@@ -1,11 +1,11 @@
 import { Observable, of, throwError } from 'rxjs';
-import { IFraudControlDataProvider } from './IFraudControlDataProvider';
 import { ContainerInstance, Service } from 'typedi';
-import { FraudControlDataProviderName } from './FraudControlProviderName.enum';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { mapTo, switchMap } from 'rxjs/operators';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { SeonFraudControlDataProvider } from '../../integrations/seon/SeonFraudControlDataProvider';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
+import { FraudControlDataProviderName } from './FraudControlProviderName.enum';
+import { IFraudControlDataProvider } from './IFraudControlDataProvider';
 
 @Service()
 export class FraudControlServiceSelector {

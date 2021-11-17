@@ -1,11 +1,11 @@
-import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { Inject, Service } from 'typedi';
-import { environment } from '../../../../environments/environment';
-import { ICybertonica } from './ICybertonica';
 import { from, Observable, of, ReplaySubject, timeout } from 'rxjs';
 import { catchError, map, mapTo } from 'rxjs/operators';
+import { DomMethods } from '../../shared/dom-methods/DomMethods';
+import { environment } from '../../../../environments/environment';
 import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudControlDataProvider';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
+import { ICybertonica } from './ICybertonica';
 
 @Service()
 export class Cybertonica implements ICybertonica, IFraudControlDataProvider<string> {

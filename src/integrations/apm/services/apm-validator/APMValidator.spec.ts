@@ -1,12 +1,12 @@
-import { APMValidator } from './APMValidator';
+import { anything, mock, when } from 'ts-mockito';
 import { IAPMConfig } from '../../models/IAPMConfig';
 import { APMName } from '../../models/APMName';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { anything, mock, when } from 'ts-mockito';
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
 import { RequestType } from '../../../../shared/types/RequestType';
+import { APMValidator } from './APMValidator';
 
 describe('APMValidator', () => {
   let sut: APMValidator;

@@ -1,7 +1,7 @@
-import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { delay, filter, first, map, takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Service } from 'typedi';
+import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { CONTROL_FRAME_COMPONENT_NAME, CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
 import { PAYMENT_CANCELLED } from '../../application/core/models/constants/Translations';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';

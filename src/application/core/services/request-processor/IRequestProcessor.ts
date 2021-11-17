@@ -1,5 +1,5 @@
-import { IStRequest } from '../../models/IStRequest';
 import { Observable } from 'rxjs';
+import { IStRequest } from '../../models/IStRequest';
 import { IRequestProcessingOptions } from './IRequestProcessingOptions';
 
 export interface IRequestProcessor {

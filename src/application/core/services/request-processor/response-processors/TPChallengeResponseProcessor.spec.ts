@@ -1,12 +1,12 @@
 import { anything, instance, mock, verify, when } from 'ts-mockito';
+import { CardType } from '@trustpayments/3ds-sdk-js';
+import { of } from 'rxjs';
 import { ThreeDSecureChallengeService } from '../../three-d-verification/implementations/trust-payments/ThreeDSecureChallengeService';
-import { TPChallengeResponseProcessor } from './TPChallengeResponseProcessor';
 import { IThreeDQueryResponse } from '../../../models/IThreeDQueryResponse';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
-import { CardType } from '@trustpayments/3ds-sdk-js';
-import { of } from 'rxjs';
+import { TPChallengeResponseProcessor } from './TPChallengeResponseProcessor';
 
 describe('TPChallengeResponseProcessor', () => {
   let challengeServiceMock: ThreeDSecureChallengeService;

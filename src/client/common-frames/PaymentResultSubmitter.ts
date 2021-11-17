@@ -1,6 +1,6 @@
+import { Service } from 'typedi';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { DomMethods } from '../../application/core/shared/dom-methods/DomMethods';
-import { Service } from 'typedi';
 
 type SubmitData = Record<string, string>;
 

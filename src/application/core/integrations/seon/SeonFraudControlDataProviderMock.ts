@@ -1,6 +1,6 @@
-import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudControlDataProvider';
 import { Observable, of } from 'rxjs';
 import { Service } from 'typedi';
+import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudControlDataProvider';
 
 @Service()
 export class SeonFraudControlDataProviderMock implements IFraudControlDataProvider<undefined> {

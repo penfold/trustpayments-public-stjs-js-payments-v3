@@ -1,19 +1,19 @@
-import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { of } from 'rxjs';
+import { CardType } from '@trustpayments/3ds-sdk-js';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { ThreeDInitRequest } from '../three-d-verification/data/ThreeDInitRequest';
 import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IStRequest } from '../../models/IStRequest';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { TransportService } from '../st-transport/TransportService';
-import { TransportServiceGatewayClient } from './TransportServiceGatewayClient';
-import { of } from 'rxjs';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
 import { ThreeDVerificationProviderName } from '../three-d-verification/data/ThreeDVerificationProviderName';
-import { CardType } from '@trustpayments/3ds-sdk-js';
 import { IApplePayValidateMerchantRequest } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { IApplePayWalletVerifyResponseBody } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
+import { TransportServiceGatewayClient } from './TransportServiceGatewayClient';
 
 describe('TransportServiceGatewayClient', () => {
   let transportServiceMock: TransportService;

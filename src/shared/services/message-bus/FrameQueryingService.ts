@@ -1,9 +1,3 @@
-import { InterFrameCommunicator } from './InterFrameCommunicator';
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
-import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
-import { QueryMessage } from './messages/QueryMessage';
-import { ofType } from './operators/ofType';
-import { ResponseMessage } from './messages/ResponseMessage';
 import {
   catchError,
   EMPTY,
@@ -19,9 +13,15 @@ import {
   throwError,
 } from 'rxjs';
 import { Service } from 'typedi';
+import { take } from 'rxjs/operators';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
+import { InterFrameCommunicator } from './InterFrameCommunicator';
+import { QueryMessage } from './messages/QueryMessage';
+import { ofType } from './operators/ofType';
+import { ResponseMessage } from './messages/ResponseMessage';
 import { FrameIdentifier } from './FrameIdentifier';
 import { ErrorReconstructor } from './ErrorReconstructor';
-import { take } from 'rxjs/operators';
 import { QueryResponder } from './types/QueryResponder';
 import { IFrameQueryingService } from './interfaces/IFrameQueryingService';
 

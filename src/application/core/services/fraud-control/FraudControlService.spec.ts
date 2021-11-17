@@ -1,8 +1,8 @@
+import { instance, mock, spy, when } from 'ts-mockito';
+import { NEVER, Observable, of, throwError } from 'rxjs';
 import { FraudControlService } from './FraudControlService';
 import { FraudControlServiceSelector } from './FraudControlServiceSelector';
 import { IFraudControlDataProvider } from './IFraudControlDataProvider';
-import { instance, mock, spy, when } from 'ts-mockito';
-import { NEVER, Observable, of, throwError } from 'rxjs';
 
 describe('FraudControlService', () => {
   const TID = '343d7850-5cfc-4f5a-b8d0-c06e6af3d556';

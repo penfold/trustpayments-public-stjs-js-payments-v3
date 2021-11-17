@@ -1,8 +1,8 @@
+import { mock } from 'ts-mockito';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
+import { environment } from '../../../environments/environment';
 import { ICardinal } from './ICardinal';
 import { CardinalProvider } from './CardinalProvider';
-import { environment } from '../../../environments/environment';
-import { mock } from 'ts-mockito';
 
 describe('CardinalProvider', () => {
   const cardinal: ICardinal = mock<ICardinal>();

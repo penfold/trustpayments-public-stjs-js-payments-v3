@@ -1,7 +1,7 @@
-import { IHttpOptionsProvider } from './IHttpOptionsProvider';
 import { IHttpClientConfig } from '@trustpayments/http-client';
 import { Service } from 'typedi';
 import { IRequestObject } from '../../../models/IRequestObject';
+import { IHttpOptionsProvider } from './IHttpOptionsProvider';
 
 @Service()
 export class DefaultHttpOptionsProvider implements IHttpOptionsProvider {

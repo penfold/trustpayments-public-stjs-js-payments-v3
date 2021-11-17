@@ -1,9 +1,9 @@
+import { Inject, Service } from 'typedi';
+import { WINDOW } from '../../../shared/dependency-injection/InjectionTokens';
 import { IApplePayPaymentRequest } from './interfaces/IApplePayPaymentRequest';
 import { IApplePaySession } from './IApplePaySession';
-import { Inject, Service } from 'typedi';
 import { IApplePaySessionConstructor } from './interfaces/IApplePaySessionConstructor';
 import { IApplePaySessionWrapper } from './interfaces/IApplePaySessionWrapper';
-import { WINDOW } from '../../../shared/dependency-injection/InjectionTokens';
 
 @Service()
 export class ApplePaySessionWrapper implements IApplePaySessionWrapper {

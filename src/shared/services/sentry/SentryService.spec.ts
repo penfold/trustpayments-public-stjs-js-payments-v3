@@ -1,15 +1,15 @@
-import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { anyFunction, anything, capture, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { BehaviorSubject, Subject, of } from 'rxjs';
+import { Event } from '@sentry/types';
+import { ConfigProvider } from '../config-provider/ConfigProvider';
+import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
+import { IConfig } from '../../model/config/IConfig';
 import { Sentry } from './Sentry';
 import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { SentryService } from './SentryService';
-import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
-import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
-import { IConfig } from '../../model/config/IConfig';
 import { ExceptionsToSkip } from './ExceptionsToSkip';
 import { JwtMasker } from './JwtMasker';
-import { Event } from '@sentry/types';
 
 describe('SentryService', () => {
   const DSN = 'https://123@456.ingest.sentry.io/7890';

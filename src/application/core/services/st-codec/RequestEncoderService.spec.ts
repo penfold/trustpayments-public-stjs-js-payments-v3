@@ -1,9 +1,9 @@
 import { mock, instance, when } from 'ts-mockito';
-import { RequestEncoderService } from './RequestEncoderService';
 import { Store } from '../../store/store/Store';
 import { IStore } from '../../store/IStore';
 import { IApplicationFrameState } from '../../store/state/IApplicationFrameState';
 import { COMMUNICATION_ERROR_INVALID_REQUEST } from '../../models/constants/Translations';
+import { RequestEncoderService } from './RequestEncoderService';
 import { InvalidRequestError } from './InvalidRequestError';
 
 describe('RequestEncoderService', () => {

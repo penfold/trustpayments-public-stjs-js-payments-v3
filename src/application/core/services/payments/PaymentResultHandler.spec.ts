@@ -1,16 +1,16 @@
+import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
+import { of } from 'rxjs';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { PaymentResultHandler } from './PaymentResultHandler';
 import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
-import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
-import { IPaymentResult } from './IPaymentResult';
-import { PaymentStatus } from './PaymentStatus';
-import { of } from 'rxjs';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { EventScope } from '../../models/constants/EventScope';
 import { ITranslator } from '../../shared/translator/ITranslator';
+import { PaymentStatus } from './PaymentStatus';
+import { IPaymentResult } from './IPaymentResult';
+import { PaymentResultHandler } from './PaymentResultHandler';
 
 describe('PaymentResultHandler', () => {
   let messageBus: IMessageBus;

@@ -1,5 +1,5 @@
-import { TransportService } from '../../../application/core/services/st-transport/TransportService';
 import { Container } from 'typedi';
+import { TransportService } from '../../../application/core/services/st-transport/TransportService';
 import { MessageBusToken, StoreToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { Store } from '../../../application/core/store/store/Store';
 import { JwtReducer } from '../../../application/core/store/reducers/jwt/JwtReducer';

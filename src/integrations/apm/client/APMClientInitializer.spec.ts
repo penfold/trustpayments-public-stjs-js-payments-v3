@@ -1,11 +1,11 @@
-import { APMClientInitializer } from './APMClientInitializer';
-import { APMClient } from './APMClient';
 import { anyFunction, instance, mock, verify, when } from 'ts-mockito';
 import { FrameQueryingService } from '../../../shared/services/message-bus/FrameQueryingService';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IAPMConfig } from '../models/IAPMConfig';
 import { APMName } from '../models/APMName';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
+import { APMClient } from './APMClient';
+import { APMClientInitializer } from './APMClientInitializer';
 
 describe('APMClientInitializer', () => {
   const testConfig: IAPMConfig = {

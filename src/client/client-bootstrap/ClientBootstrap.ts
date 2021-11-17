@@ -1,5 +1,6 @@
-import { SentryService } from '../../shared/services/sentry/SentryService';
 import { ContainerInstance, Service } from 'typedi';
+import { first } from 'rxjs/operators';
+import { SentryService } from '../../shared/services/sentry/SentryService';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { environment } from '../../environments/environment';
 import { MessageSubscriberRegistry } from '../../shared/services/message-bus/MessageSubscriberRegistry';
@@ -18,7 +19,6 @@ import { InterFrameCommunicator } from '../../shared/services/message-bus/InterF
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
-import { first } from 'rxjs/operators';
 
 @Service()
 export class ClientBootstrap {

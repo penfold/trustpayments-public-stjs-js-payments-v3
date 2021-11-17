@@ -8,10 +8,8 @@ import { VisaCheckout } from '../application/core/integrations/visa-checkout/Vis
 import { VisaCheckoutMock } from '../application/core/integrations/visa-checkout/VisaCheckoutMock';
 import { GooglePaySdkProviderMock } from '../client/integrations/google-pay/google-pay-sdk-provider/GooglePaySdkProviderMock';
 import { IGooglePaySdkProvider } from '../client/integrations/google-pay/google-pay-sdk-provider/IGooglePaySdkProvider';
-import { CybertonicaMock } from './mocks/CybertonicaMock';
 import { environment } from '../environments/environment';
 import { CardinalProvider } from '../client/integrations/cardinal-commerce/CardinalProvider';
-import { MockCardinalProvider } from './mocks/MockCardinalProvider';
 import { ApplePay } from '../client/integrations/apple-pay/ApplePay';
 import { ApplePayMock } from '../client/integrations/apple-pay/ApplePayMock';
 import { ILegacyApplePaySessionWrapper } from '../client/integrations/apple-pay/apple-pay-session-service/ILegacyApplePaySessionWrapper';
@@ -22,6 +20,8 @@ import { IApplePaySessionWrapper } from '../integrations/apple-pay/client/interf
 import { ApplePaySessionWrapperMock } from '../integrations/apple-pay/client/ApplePaySessionWrapperMock';
 import { SeonFraudControlDataProvider } from '../application/core/integrations/seon/SeonFraudControlDataProvider';
 import { SeonFraudControlDataProviderMock } from '../application/core/integrations/seon/SeonFraudControlDataProviderMock';
+import { MockCardinalProvider } from './mocks/MockCardinalProvider';
+import { CybertonicaMock } from './mocks/CybertonicaMock';
 
 if(environment.testEnvironment) {
   Container.set({ id: Cybertonica, type: CybertonicaMock });
@@ -36,4 +36,3 @@ if(environment.testEnvironment) {
   Container.set({ id: IHttpOptionsProvider, type: TestHttpOptionsProvider });
   Container.set({ id: SeonFraudControlDataProvider, type: SeonFraudControlDataProviderMock });
 }
-

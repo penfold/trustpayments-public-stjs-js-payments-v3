@@ -1,6 +1,6 @@
-import { ICybertonica } from '../../application/core/integrations/cybertonica/ICybertonica';
 import { Service } from 'typedi';
 import { Observable, of } from 'rxjs';
+import { ICybertonica } from '../../application/core/integrations/cybertonica/ICybertonica';
 
 @Service()
 export class CybertonicaMock implements ICybertonica {

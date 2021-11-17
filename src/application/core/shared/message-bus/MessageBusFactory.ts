@@ -1,5 +1,5 @@
-import { FrameIdentifier } from '../../../../shared/services/message-bus/FrameIdentifier';
 import { ContainerInstance, Service } from 'typedi';
+import { FrameIdentifier } from '../../../../shared/services/message-bus/FrameIdentifier';
 import { IMessageBus } from './IMessageBus';
 import { ParentFrameMessageBus } from './ParentFrameMessageBus';
 import { ControlFrameMessageBus } from './ControlFrameMessageBus';

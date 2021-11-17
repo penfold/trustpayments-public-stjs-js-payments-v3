@@ -1,13 +1,13 @@
 import { mock, instance, when, verify, anything, deepEqual } from 'ts-mockito';
-import { HideProcessingScreenResponseProcessor } from './HideProcessingScreenResponseProcessor';
+import { timer } from 'rxjs';
 import { InterFrameCommunicator } from '../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
-import { timer } from 'rxjs';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { IJwtResponse } from '../../st-codec/interfaces/IJwtResponse';
 import { IStRequest } from '../../../models/IStRequest';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../models/constants/Selectors';
+import { HideProcessingScreenResponseProcessor } from './HideProcessingScreenResponseProcessor';
 
 describe('HideProcessingScreenResponseProcessor', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
@@ -49,6 +49,7 @@ describe('HideProcessingScreenResponseProcessor', () => {
     });
 
     it('sends the THREE_D_SECURE_PROCESSING_SCREEN_HIDE event when timer is not specified', done => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { timer, ...optionsWithoutTimer } = options;
       hideProcessingScreenResponseProcessor.process(response, request, optionsWithoutTimer).subscribe(result => {
         verify(interFrameCommunicatorMock.query(deepEqual({

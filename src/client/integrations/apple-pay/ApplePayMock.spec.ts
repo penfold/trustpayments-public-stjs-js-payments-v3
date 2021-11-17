@@ -5,10 +5,10 @@ import { ApplePayErrorService } from '../../../application/core/integrations/app
 import { ApplePayGestureService } from '../../../application/core/integrations/apple-pay/apple-pay-gesture-service/ApplePayGestureService';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
 import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
 import { ApplePayMock } from './ApplePayMock';
-import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 
 describe('ApplePayMock', () => {
   const applePayButtonService = mock(ApplePayButtonService);

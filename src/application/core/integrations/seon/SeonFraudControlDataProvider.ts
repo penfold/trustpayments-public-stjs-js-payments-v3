@@ -1,11 +1,11 @@
-import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudControlDataProvider';
 import { from, Observable, switchMap } from 'rxjs';
 import { Inject, Service } from 'typedi';
+import { shareReplay } from 'rxjs/operators';
+import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudControlDataProvider';
 import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { Uuid } from '../../shared/uuid/Uuid';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
-import { shareReplay } from 'rxjs/operators';
 import { FrameIdentifier } from '../../../../shared/services/message-bus/FrameIdentifier';
 import { BrowserDetector } from '../../../../shared/services/browser-detector/BrowserDetector';
 

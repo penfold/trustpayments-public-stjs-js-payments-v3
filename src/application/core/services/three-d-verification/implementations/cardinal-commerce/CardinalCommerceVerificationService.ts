@@ -1,6 +1,7 @@
 import { Service } from 'typedi';
-import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { from, Observable, of } from 'rxjs';
+import { mapTo, switchMap, tap } from 'rxjs/operators';
+import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IInitializationData } from '../../../../../../client/integrations/cardinal-commerce/data/IInitializationData';
 import { ITriggerData } from '../../../../../../client/integrations/cardinal-commerce/data/ITriggerData';
@@ -12,12 +13,11 @@ import { IThreeDVerificationService } from '../../IThreeDVerificationService';
 import { ICard } from '../../../../models/ICard';
 import { IMerchantData } from '../../../../models/IMerchantData';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
-import { mapTo, switchMap, tap } from 'rxjs/operators';
-import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { RequestType } from '../../../../../../shared/types/RequestType';
-import { CardinalChallengeService } from './CardinalChallengeService';
 import { IGatewayClient } from '../../../gateway-client/IGatewayClient';
+import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
+import { CardinalChallengeService } from './CardinalChallengeService';
 
 @Service()
 export class CardinalCommerceVerificationService implements IThreeDVerificationService<void> {

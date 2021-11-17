@@ -1,11 +1,11 @@
-import { IMessageSubscriber } from '../../../shared/services/message-bus/interfaces/IMessageSubscriber';
 import { Service } from 'typedi';
+import { IMessageSubscriber } from '../../../shared/services/message-bus/interfaces/IMessageSubscriber';
 import { MessageSubscriberToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
-import { APMClient } from './APMClient';
 import { IAPMConfig } from '../models/IAPMConfig';
+import { APMClient } from './APMClient';
 
 @Service({ id: MessageSubscriberToken, multiple: true })
 export class APMClientInitializer implements IMessageSubscriber {

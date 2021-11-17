@@ -1,9 +1,9 @@
-import { mock, instance, when, verify, anything } from 'ts-mockito';
+import { mock, instance, when, verify } from 'ts-mockito';
 import { ContainerInstance } from 'typedi';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { FraudControlServiceSelector } from './FraudControlServiceSelector';
-import { SeonFraudControlDataProvider } from '../../integrations/seon/SeonFraudControlDataProvider';
 import { of, forkJoin } from 'rxjs';
+import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { SeonFraudControlDataProvider } from '../../integrations/seon/SeonFraudControlDataProvider';
+import { FraudControlServiceSelector } from './FraudControlServiceSelector';
 
 describe('FraudControlServiceSelector', () => {
   let containerMock: ContainerInstance;

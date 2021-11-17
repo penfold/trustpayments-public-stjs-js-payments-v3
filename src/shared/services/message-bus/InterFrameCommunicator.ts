@@ -3,11 +3,11 @@ import { filter, map, share, defer, fromEvent, Observable, Subject, firstValueFr
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { environment } from '../../../environments/environment';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
-import { FrameAccessor } from './FrameAccessor';
-import { FrameNotFound } from './errors/FrameNotFound';
 import { Debug } from '../../Debug';
 import { CONFIG, WINDOW } from '../../dependency-injection/InjectionTokens';
 import { IConfig } from '../../model/config/IConfig';
+import { FrameNotFound } from './errors/FrameNotFound';
+import { FrameAccessor } from './FrameAccessor';
 import { EventDataSanitizer } from './EventDataSanitizer';
 import { IFrameQueryingService } from './interfaces/IFrameQueryingService';
 import { FrameQueryingService } from './FrameQueryingService';

@@ -1,7 +1,6 @@
 import { Money } from 'ts-money';
 import { Service } from 'typedi';
 import { IApplePayConfig } from '../IApplePayConfig';
-import { IApplePayConfigObject } from './IApplePayConfigObject';
 import { IApplePayPaymentRequest } from '../apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePayValidateMerchantRequest } from '../apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
@@ -10,6 +9,7 @@ import { Locale } from '../../../shared/translator/Locale';
 import { ApplePayNetworksService } from '../apple-pay-networks-service/ApplePayNetworksService';
 import { ApplePaySessionService } from '../../../../../client/integrations/apple-pay/apple-pay-session-service/ApplePaySessionService';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
+import { IApplePayConfigObject } from './IApplePayConfigObject';
 
 @Service()
 export class ApplePayConfigService {

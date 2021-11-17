@@ -1,21 +1,21 @@
 import { of } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
+import { CardType } from '@trustpayments/3ds-sdk-js';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
-import { ThreeDVerificationProviderService } from './ThreeDVerificationProviderService';
-import { ThreeDProcess } from './ThreeDProcess';
-import { ThreeDVerificationProviderName } from './data/ThreeDVerificationProviderName';
-import { IThreeDVerificationService } from './IThreeDVerificationService';
 import { RequestType } from '../../../../shared/types/RequestType';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { Enrollment } from '../../models/constants/Enrollment';
-import { JsInitResponseService } from './JsInitResponseService';
-import { CardType } from '@trustpayments/3ds-sdk-js';
 import { EventScope } from '../../models/constants/EventScope';
+import { JsInitResponseService } from './JsInitResponseService';
+import { IThreeDVerificationService } from './IThreeDVerificationService';
+import { ThreeDVerificationProviderName } from './data/ThreeDVerificationProviderName';
+import { ThreeDProcess } from './ThreeDProcess';
+import { ThreeDVerificationProviderService } from './ThreeDVerificationProviderService';
 
 describe('ThreeDProcess', () => {
   let messageBusMock: IMessageBus;
