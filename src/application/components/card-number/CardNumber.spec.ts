@@ -1,25 +1,24 @@
-import { FormState } from '../../core/models/constants/FormState';
-import { CARD_NUMBER_INPUT, CARD_NUMBER_LABEL, CARD_NUMBER_MESSAGE } from '../../core/models/constants/Selectors';
-import { CardNumber } from './CardNumber';
+import { instance, mock, when } from 'ts-mockito';
+import { Container } from 'typedi';
+import { of } from 'rxjs';
 import { Validation } from '../../core/shared/validation/Validation';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
-import { instance, mock, when } from 'ts-mockito';
 import { MessageBusToken, TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
 import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
-import { Container } from 'typedi';
 import { Translator } from '../../core/shared/translator/Translator';
 import { Utils } from '../../core/shared/utils/Utils';
 import { EventScope } from '../../core/models/constants/EventScope';
-import { of } from 'rxjs';
+import { CARD_NUMBER_INPUT, CARD_NUMBER_LABEL, CARD_NUMBER_MESSAGE } from '../../core/models/constants/Selectors';
+import { FormState } from '../../core/models/constants/FormState';
 import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
 import { IconFactory } from '../../core/services/icon/IconFactory';
 import { Formatter } from '../../core/shared/formatter/Formatter';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { Input } from '../../core/shared/input/Input';
-
+import { CardNumber } from './CardNumber';
 
 const testMessageBus = new SimpleMessageBus();
 
@@ -27,7 +26,6 @@ Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set({ id: TranslatorToken, type: Translator });
 Container.set({ id: ITranslationProvider, type: TranslationProvider });
 Container.set({ id: MessageBusToken, value: testMessageBus });
-
 
 describe('CardNumber', () => {
   const { inputElement, messageElement, cardNumberInstance, labelElement, cardNumberCorrect } = cardNumberFixture();
@@ -91,7 +89,6 @@ describe('CardNumber', () => {
     expect(cardNumberInput.value).toEqual('1234');
 
   });
-
 
   describe('CardNumber._getCardNumberForBinProcess()', () => {
     it('should return input iframe-factory', () => {
@@ -271,7 +268,6 @@ describe('CardNumber', () => {
     const event: Event = new Event('input');
     const autocompleteCaptureExpirationDateInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-expiration-date');
     const autocompleteCaptureSecurityCodeInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-security-code');
-
 
     beforeEach(() => {
       autocompleteCaptureExpirationDateInput.value = 'something';

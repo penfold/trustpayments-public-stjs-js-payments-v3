@@ -1,6 +1,7 @@
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { Service } from 'typedi';
 import { filter } from 'rxjs/operators';
+import { pluck } from 'rxjs';
 import { FormState } from '../../core/models/constants/FormState';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
@@ -24,7 +25,6 @@ import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { EventScope } from '../../core/models/constants/EventScope';
 import { untilDestroy } from '../../../shared/services/message-bus/operators/untilDestroy';
-import { pluck } from 'rxjs';
 
 @Service()
 export class CardNumber extends Input {
@@ -306,7 +306,6 @@ export class CardNumber extends Input {
     this.captureAndEmitAutocomplete(this.autocompleteCaptureExpirationDateInput, PUBLIC_EVENTS.AUTOCOMPLETE_EXPIRATION_DATE);
     this.captureAndEmitAutocomplete(this.autocompleteCaptureSecurityCodeInput, PUBLIC_EVENTS.AUTOCOMPLETE_SECURITY_CODE);
   }
-
 
   private captureAndEmitAutocomplete(input: HTMLInputElement, messageType: string) {
     input.addEventListener('input', (event: Event) => {

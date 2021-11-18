@@ -12,7 +12,6 @@ import {
   EXPIRATION_DATE_MESSAGE,
 } from '../../core/models/constants/Selectors';
 import { Validation } from '../../core/shared/validation/Validation';
-import { ExpirationDate } from './ExpirationDate';
 import { EventScope } from '../../core/models/constants/EventScope';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
@@ -21,7 +20,7 @@ import { Translator } from '../../core/shared/translator/Translator';
 import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
-
+import { ExpirationDate } from './ExpirationDate';
 
 jest.mock('./../../core/shared/notification/Notification');
 
@@ -33,7 +32,7 @@ Container.set({ id: MessageBusToken, value: testMessageBus });
 
 describe('ExpirationDate', () => {
   describe('autocomplete capture', () => {
-    const { expirationDateInstance } = expirationDateFixture();
+    expirationDateFixture();
     let expirationDateInput: HTMLInputElement;
 
     beforeAll(() => {

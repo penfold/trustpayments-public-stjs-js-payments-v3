@@ -4,7 +4,6 @@ import Container from 'typedi';
 import { SECURITY_CODE_INPUT, SECURITY_CODE_LABEL, SECURITY_CODE_MESSAGE } from '../../core/models/constants/Selectors';
 import { Input } from '../../core/shared/input/Input';
 import { Utils } from '../../core/shared/utils/Utils';
-import { SecurityCode } from './SecurityCode';
 import { Validation } from '../../core/shared/validation/Validation';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { MessageBusToken, TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
@@ -22,6 +21,7 @@ import { TranslationProvider } from '../../core/shared/translator/TranslationPro
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { Formatter } from '../../core/shared/formatter/Formatter';
 import { IConfig } from '../../../shared/model/config/IConfig';
+import { SecurityCode } from './SecurityCode';
 
 jest.mock('./../../core/shared/notification/Notification');
 
@@ -329,7 +329,6 @@ function securityCodeFixture() {
     instance(jwtDecoder),
     instance(validation)
   );
-
 
   return { securityCodeInstance, configProvider, communicatorMock, formatter };
 }
