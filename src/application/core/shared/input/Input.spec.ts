@@ -1,16 +1,16 @@
-import { Input } from './Input';
+import { instance as mockInstance, mock, when } from 'ts-mockito';
+import { of } from 'rxjs';
+import Container from 'typedi';
 import { NOT_IMPLEMENTED_ERROR } from '../../models/constants/Translations';
 import { Utils } from '../utils/Utils';
 import { Validation } from '../validation/Validation';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { instance as mockInstance, mock, when } from 'ts-mockito';
-import { of } from 'rxjs';
-import Container from 'typedi';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../translator/Translator';
 import { ITranslationProvider } from '../translator/ITranslationProvider';
 import { TranslationProvider } from '../translator/TranslationProvider';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
+import { Input } from './Input';
 
 jest.mock('./../validation/Validation');
 jest.mock('./../notification/Notification');

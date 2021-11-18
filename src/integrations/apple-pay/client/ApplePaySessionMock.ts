@@ -1,9 +1,9 @@
+import { environment } from '../../../environments/environment';
 import { IApplePaySession } from './IApplePaySession';
 import { IApplePayPaymentAuthorizationResult } from './interfaces/IApplePayPaymentAuthorizationResult';
 import { IApplePayPaymentAuthorizedEvent } from './interfaces/IApplePayPaymentAuthorizedEvent';
 import { IApplePayValidateMerchantEvent } from './interfaces/IApplePayValidateMerchantEvent';
 import { ApplePayPopupMock } from './ApplePayPopupMock';
-import { environment } from '../../../environments/environment';
 
 export class ApplePaySessionMock implements IApplePaySession {
   private applePayPopupMock: ApplePayPopupMock = new ApplePayPopupMock();

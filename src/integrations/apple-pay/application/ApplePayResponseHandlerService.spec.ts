@@ -1,10 +1,10 @@
 import { anything, deepEqual, instance, mock, verify } from 'ts-mockito';
-import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
-import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { of, Subscriber, throwError } from 'rxjs';
+import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
+import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
 
 describe('ApplePayResponseHandlerService', () => {
   let applePayResponseHandlerService: ApplePayResponseHandlerService;

@@ -333,26 +333,26 @@ Feature: GooglePay
       | GOOGLE_PAY                 |
       | ACCOUNTCHECK, SUBSCRIPTION |
 
-
-  Scenario: GooglePay - Cybertonica - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
-    Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
-      | key               | value |
-      | cybertonicaApiKey | stfs  |
-    And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value |
-      | requesttypedescriptions | AUTH  |
-    And Google Pay mock responses are set as JSINIT_AUTH and payment status SUCCESS
-    And User opens example page
-    When User chooses GOOGLE_PAY as payment method
-    Then User will see notification frame text: "Payment has been successfully processed"
-    And User will see following callback type called only once
-      | callback_type |
-      | submit        |
-      | success       |
-    And submit callback contains JWT response
-    And following requests were sent only once with 'fraudcontroltransactionid' flag
-      | request_type |
-      | AUTH         |
+#TODO - Cybertonica will be replaced by SEON
+#  Scenario: GooglePay - Cybertonica - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
+#    Given JS library configured with GOOGLE_PAY_CONFIG and additional attributes
+#      | key               | value |
+#      | cybertonicaApiKey | stfs  |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value |
+#      | requesttypedescriptions | AUTH  |
+#    And Google Pay mock responses are set as JSINIT_AUTH and payment status SUCCESS
+#    And User opens example page
+#    When User chooses GOOGLE_PAY as payment method
+#    Then User will see notification frame text: "Payment has been successfully processed"
+#    And User will see following callback type called only once
+#      | callback_type |
+#      | submit        |
+#      | success       |
+#    And submit callback contains JWT response
+#    And following requests were sent only once with 'fraudcontroltransactionid' flag
+#      | request_type |
+#      | AUTH         |
 
 # TODO - uncomment this scenario when STJS-1924 will be fixed
 #  Scenario: GooglePay - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment

@@ -13,9 +13,9 @@
         }
         xhr.open('GET', './config.json');
         xhr.send(null);
-      }); 
+      });
     }
-    
+
     function setCallbacks(config) {
       config.submitCallback = function(data) {
         var stringified = JSON.stringify(data);
@@ -31,18 +31,18 @@
         alert('This is cancel message');
       };
     }
-    
+
     function updateJwtListener() {
       document.getElementById('example-form-amount').addEventListener('input', function() {
         var newJwt = document.getElementById('jwt-to-update').value;
         if (newJwt !== '') {
-          st.updateJWT(newJwt); 
+          st.updateJWT(newJwt);
         } else {
           alert('Please update the jwt key before changing the ammount value');
         }
       });
     }
-    
+
     function handleResize() {
       return new ResizeObserver(function(entries) {
         window.ReactNativeWebView.postMessage(entries[0].target.offsetHeight);
@@ -60,7 +60,7 @@
         }
       });
     }
-    
+
     function init(config) {
       setCallbacks(config);
       handleResize().observe(document.getElementById('st-form'));
@@ -69,15 +69,15 @@
       st.Components(config.components);
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
-      st.Cybertonica().then(function(response) {
+      st.getFraudControlData().then(function(response) {
         console.error(response);
       });
       updateJwtListener(st);
     }
-        
+
     getConfig()
       .then(function(config) {
         init(config);
       });
-  });    
+  });
 })(SecureTrading);

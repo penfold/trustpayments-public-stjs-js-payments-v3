@@ -1,24 +1,24 @@
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { of } from 'rxjs';
+import { CardType } from '@trustpayments/3ds-sdk-js';
 import { IInitializationData } from '../../../../../../client/integrations/cardinal-commerce/data/IInitializationData';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { ThreeDVerificationProviderName } from '../../data/ThreeDVerificationProviderName';
-import { CardinalCommerceVerificationService } from './CardinalCommerceVerificationService';
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { PaymentEvents } from '../../../../models/constants/PaymentEvents';
 import { ICard } from '../../../../models/ICard';
 import { RequestType } from '../../../../../../shared/types/RequestType';
-import { of } from 'rxjs';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { IMerchantData } from '../../../../models/IMerchantData';
-import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
-import { CardinalChallengeService } from './CardinalChallengeService';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { Enrollment } from '../../../../models/constants/Enrollment';
 import { IGatewayClient } from '../../../gateway-client/IGatewayClient';
-import { CardType } from '@trustpayments/3ds-sdk-js';
+import { CardinalChallengeService } from './CardinalChallengeService';
+import { ThreeDQueryRequest } from './data/ThreeDQueryRequest';
+import { CardinalCommerceVerificationService } from './CardinalCommerceVerificationService';
 import spyOn = jest.spyOn;
 
 describe('CardinalCommerceVerificationService', () => {

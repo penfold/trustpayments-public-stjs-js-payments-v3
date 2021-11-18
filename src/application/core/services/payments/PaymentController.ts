@@ -1,19 +1,19 @@
 import { ContainerInstance, Service } from 'typedi';
-import { IPaymentMethod } from './IPaymentMethod';
+import { EMPTY, Observable, of } from 'rxjs';
+import { catchError, first, map, mapTo, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { PaymentMethodToken } from '../../../dependency-injection/InjectionTokens';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { EMPTY, Observable, of } from 'rxjs';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { catchError, first, map, mapTo, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { IInitPaymentMethod } from './events/IInitPaymentMethod';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
-import { IStartPaymentMethod } from './events/IStartPaymentMethod';
 import { Debug } from '../../../../shared/Debug';
+import { EventScope } from '../../models/constants/EventScope';
+import { IPaymentMethod } from './IPaymentMethod';
+import { IInitPaymentMethod } from './events/IInitPaymentMethod';
+import { IStartPaymentMethod } from './events/IStartPaymentMethod';
 import { IPaymentResult } from './IPaymentResult';
 import { PaymentResultHandler } from './PaymentResultHandler';
 import { ErrorResultFactory } from './ErrorResultFactory';
-import { EventScope } from '../../models/constants/EventScope';
 
 @Service()
 export class PaymentController {

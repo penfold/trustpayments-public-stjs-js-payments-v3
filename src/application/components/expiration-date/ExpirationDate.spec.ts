@@ -1,9 +1,9 @@
-import { ExpirationDate } from './ExpirationDate';
+import { mock, instance, when } from 'ts-mockito';
+import { of } from 'rxjs';
+import Container from 'typedi';
 import { FormState } from '../../core/models/constants/FormState';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { mock, instance, when } from 'ts-mockito';
 import { Formatter } from '../../core/shared/formatter/Formatter';
-import { of } from 'rxjs';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { LABEL_EXPIRATION_DATE } from '../../core/models/constants/Translations';
 import {
@@ -11,16 +11,17 @@ import {
   EXPIRATION_DATE_LABEL,
   EXPIRATION_DATE_MESSAGE,
 } from '../../core/models/constants/Selectors';
-import Container from 'typedi';
+import { Validation } from '../../core/shared/validation/Validation';
+import { ExpirationDate } from './ExpirationDate';
+import { EventScope } from '../../core/models/constants/EventScope';
+import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
+import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
 import { MessageBusToken, TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../../core/shared/translator/Translator';
 import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
-import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
-import { Validation } from '../../core/shared/validation/Validation';
-import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
-import { EventScope } from '../../core/models/constants/EventScope';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+
 
 jest.mock('./../../core/shared/notification/Notification');
 

@@ -1,5 +1,6 @@
 import HttpClient from '@trustpayments/http-client';
 import { Container } from 'typedi';
+import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import { environment } from '../../environments/environment';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
@@ -8,7 +9,6 @@ import { GooglePaySdkProvider } from '../integrations/google-pay/google-pay-sdk-
 import { IGooglePaySdkProvider } from '../integrations/google-pay/google-pay-sdk-provider/IGooglePaySdkProvider';
 import { PreventNavigationPopup } from '../message-subscribers/PreventNavigationPopup';
 import { PaymentResultSubmitterSubscriber } from '../common-frames/PaymentResultSubmitterSubscriber';
-import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import '../../shared/dependency-injection/ServiceDefinitions';
 import { ApplePayClientInitializer } from '../../integrations/apple-pay/client/ApplePayClientInitializer';
 import { IApplePaySessionWrapper } from '../../integrations/apple-pay/client/interfaces/IApplePaySessionWrapper';

@@ -1,13 +1,13 @@
 import { from, Observable } from 'rxjs';
-import { IBrowserData } from './data/IBrowserData';
+import { map } from 'rxjs/operators';
+import { Service } from 'typedi';
+import { BrowserDataInterface } from '@trustpayments/3ds-sdk-js';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
-import { map } from 'rxjs/operators';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
-import { Service } from 'typedi';
-import { BrowserDataInterface } from '@trustpayments/3ds-sdk-js';
 import { environment } from '../../../../../../environments/environment';
+import { IBrowserData } from './data/IBrowserData';
 
 @Service()
 export class BrowserDataProvider {

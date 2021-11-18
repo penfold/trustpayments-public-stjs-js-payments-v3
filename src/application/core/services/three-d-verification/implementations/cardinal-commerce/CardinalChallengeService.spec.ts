@@ -1,20 +1,20 @@
+import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { of } from 'rxjs';
+import { CardType } from '@trustpayments/3ds-sdk-js';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
-import { VerificationResultHandler } from './VerificationResultHandler';
-import { CardinalChallengeService } from './CardinalChallengeService';
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { ThreeDVerificationProviderName } from '../../data/ThreeDVerificationProviderName';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
-import { IVerificationData } from './data/IVerificationData';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
-import { ActionCode } from './data/ActionCode';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
-import { of } from 'rxjs';
-import { IVerificationResult } from './data/IVerificationResult';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { Enrollment } from '../../../../models/constants/Enrollment';
-import { CardType } from '@trustpayments/3ds-sdk-js';
+import { IVerificationResult } from './data/IVerificationResult';
+import { ActionCode } from './data/ActionCode';
+import { IVerificationData } from './data/IVerificationData';
+import { CardinalChallengeService } from './CardinalChallengeService';
+import { VerificationResultHandler } from './VerificationResultHandler';
 
 describe('CardinalChallengeService', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;

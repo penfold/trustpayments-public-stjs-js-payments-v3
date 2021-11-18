@@ -2,7 +2,6 @@ import { mock, instance, when, anything, verify, deepEqual } from 'ts-mockito';
 import { EMPTY, of, throwError } from 'rxjs';
 import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
-import { PaymentAuthorizationService } from './PaymentAuthorizationService';
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
 import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
@@ -14,6 +13,7 @@ import { ApplePayStatus } from '../../../client/integrations/apple-pay/apple-pay
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { PaymentAuthorizationService } from './PaymentAuthorizationService';
 
 describe('PaymentAuthorizationService', () => {
   let frameQueryingServiceMock: IFrameQueryingService;

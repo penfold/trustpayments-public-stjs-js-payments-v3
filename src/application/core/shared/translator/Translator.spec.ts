@@ -1,9 +1,6 @@
 import { mock, instance, when } from 'ts-mockito';
 import Container from 'typedi';
-import { Translator } from './Translator';
-import { TranslationProvider } from './TranslationProvider';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
-import { ITranslationProvider } from './ITranslationProvider';
 import cy_GB from '../../../../translations/json/cy_GB.json';
 import da_DK from '../../../../translations/json/da_DK.json';
 import de_DE from '../../../../translations/json/de_DE.json';
@@ -16,6 +13,9 @@ import no_NO from '../../../../translations/json/no_NO.json';
 import sv_SE from '../../../../translations/json/sv_SE.json';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
+import { ITranslationProvider } from './ITranslationProvider';
+import { TranslationProvider } from './TranslationProvider';
+import { Translator } from './Translator';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set({ id: TranslatorToken, type: Translator });

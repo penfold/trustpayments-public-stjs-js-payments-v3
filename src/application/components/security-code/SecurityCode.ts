@@ -1,3 +1,7 @@
+import { Service } from 'typedi';
+import { filter, map, startWith, switchMap } from 'rxjs/operators';
+import { merge, Observable, pluck } from 'rxjs';
+import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { FormState } from '../../core/models/constants/FormState';
 import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
 import { Formatter } from '../../core/shared/formatter/Formatter';
@@ -11,13 +15,9 @@ import {
   SECURITY_CODE_WRAPPER,
 } from '../../core/models/constants/Selectors';
 import { Validation } from '../../core/shared/validation/Validation';
-import { Service } from 'typedi';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
-import { merge, Observable, pluck } from 'rxjs';
-import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { DefaultPlaceholders } from '../../core/models/constants/config-resolver/DefaultPlaceholders';
 import { LONG_CVC, SHORT_CVC, UNKNOWN_CVC } from '../../core/models/constants/SecurityCode';
 import { IConfig } from '../../../shared/model/config/IConfig';
@@ -45,7 +45,7 @@ export class SecurityCode extends Input {
     private localStorage: BrowserLocalStorage,
     private formatter: Formatter,
     private jwtDecoder: JwtDecoder,
-    protected validation: Validation,
+    protected validation: Validation
   ) {
     super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider, validation);
     this.securityCodeLength = UNKNOWN_CVC;
@@ -118,7 +118,7 @@ export class SecurityCode extends Input {
     this.validation.backendValidation(
       this.inputElement,
       this.messageElement,
-      MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD,
+      MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD
     );
 
     this.initAutocomplete();
@@ -153,16 +153,16 @@ export class SecurityCode extends Input {
     const jwtFromConfig$: Observable<string> = this.configProvider.getConfig$().pipe(map(config => config.jwt));
     const jwtFromUpdate$: Observable<string> = this.messageBus.pipe(
       ofType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT),
-      map(event => event.data.newJwt),
+      map(event => event.data.newJwt)
     );
 
     const cardNumberInput$: Observable<string> = this.messageBus.pipe(
       ofType(MessageBus.EVENTS.CHANGE_CARD_NUMBER),
-      map((event: IMessageBusEvent<IFormFieldState>) => event.data.value),
+      map((event: IMessageBusEvent<IFormFieldState>) => event.data.value)
     );
 
     const cardNumberFromJwt$: Observable<string> = merge(jwtFromConfig$, jwtFromUpdate$).pipe(
-      map(jwt => this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.pan),
+      map(jwt => this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.pan)
     );
 
     const maskedPanFromJsInit$: Observable<string> = this.configProvider
@@ -180,7 +180,7 @@ export class SecurityCode extends Input {
         }
         return iinLookup.lookup(cardNumber).cvcLength[0];
       }),
-      startWith(UNKNOWN_CVC),
+      startWith(UNKNOWN_CVC)
     );
   }
 
@@ -223,7 +223,7 @@ export class SecurityCode extends Input {
     this.inputElement.value = this.formatter.code(
       this.inputElement.value,
       this.getMaxSecurityCodeLength(),
-      SECURITY_CODE_INPUT,
+      SECURITY_CODE_INPUT
     );
   }
 

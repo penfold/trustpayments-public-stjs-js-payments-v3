@@ -1,11 +1,11 @@
-import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { Service } from 'typedi';
-import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
 import { Observable, of } from 'rxjs';
+import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
+import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { ITestResultData } from './interfaces/ITestResultData';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
+import { ITestResultData } from './interfaces/ITestResultData';
 import { ITestStartData } from './interfaces/ITestStartData';
 
 @Service({ id: PaymentMethodToken, multiple: true })

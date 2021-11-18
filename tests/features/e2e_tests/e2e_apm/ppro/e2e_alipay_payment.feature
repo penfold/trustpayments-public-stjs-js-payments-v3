@@ -123,6 +123,7 @@ Feature: E2E Alipay Payments
       | billingdob              | 1980-02-01         |
       | billingcountryiso2a     | UY                 |
       | currencyiso3a           | USD                |
+    And User waits for Pay button to be active
     And User calls updateJWT function by filling amount field
     When User chooses ALIPAY from APM list
     Then User will be sent to page with url "excashier.alipaydev.com" having params
@@ -151,8 +152,8 @@ Feature: E2E Alipay Payments
       | billingdob              | 1980-02-01         |
       | billingcountryiso2a     | CZ                 |
       | currencyiso3a           | USD                |
-    And User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
+    And User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
     Then ALIPAY is not available on APM list
 
@@ -176,8 +177,8 @@ Feature: E2E Alipay Payments
       | baseamount              | 707   |
       | billingcountryiso2a     | UY    |
       | currencyiso3a           | USD   |
-    And User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
+    And User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
     Then ALIPAY is not available on APM list
 

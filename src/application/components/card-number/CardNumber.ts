@@ -1,3 +1,6 @@
+import { iinLookup } from '@trustpayments/ts-iin-lookup';
+import { Service } from 'typedi';
+import { filter } from 'rxjs/operators';
 import { FormState } from '../../core/models/constants/FormState';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
@@ -6,8 +9,6 @@ import { Input } from '../../core/shared/input/Input';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Utils } from '../../core/shared/utils/Utils';
 import { Validation } from '../../core/shared/validation/Validation';
-import { iinLookup } from '@trustpayments/ts-iin-lookup';
-import { Service } from 'typedi';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { IconFactory } from '../../core/services/icon/IconFactory';
 import { IConfig } from '../../../shared/model/config/IConfig';
@@ -20,11 +21,10 @@ import {
   CARD_NUMBER_WRAPPER,
 } from '../../core/models/constants/Selectors';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
-import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
+import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { EventScope } from '../../core/models/constants/EventScope';
 import { untilDestroy } from '../../../shared/services/message-bus/operators/untilDestroy';
 import { pluck } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
 
 @Service()
 export class CardNumber extends Input {

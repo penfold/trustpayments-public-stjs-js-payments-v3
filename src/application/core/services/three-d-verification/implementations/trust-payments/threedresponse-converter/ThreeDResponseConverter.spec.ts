@@ -1,9 +1,9 @@
-import { CResToThreeDResponseConverter } from './implementations/CResToThreeDResponseConverter';
-import { PaResToThreeDResponseConverter } from './implementations/PaResToThreeDResponseConverter';
-import { ThreeDResponseConverter } from './ThreeDResponseConverter';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 import { ChallengeResultInterface, ResultActionCode } from '@trustpayments/3ds-sdk-js';
 import { IThreeDQueryResponse } from '../../../../../models/IThreeDQueryResponse';
+import { CResToThreeDResponseConverter } from './implementations/CResToThreeDResponseConverter';
+import { PaResToThreeDResponseConverter } from './implementations/PaResToThreeDResponseConverter';
+import { ThreeDResponseConverter } from './ThreeDResponseConverter';
 
 describe('ThreeDResponseConverter', () => {
   let cResToThreeDResponseConverterMock: CResToThreeDResponseConverter;

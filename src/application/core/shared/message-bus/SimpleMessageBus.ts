@@ -1,11 +1,11 @@
-import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { Observable, Subject, Unsubscribable } from 'rxjs';
-import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { map } from 'rxjs/operators';
 import { Service } from 'typedi';
-import { IMessageBus } from './IMessageBus';
+import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
+import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { EventScope } from '../../models/constants/EventScope';
+import { IMessageBus } from './IMessageBus';
 
 @Service()
 export class SimpleMessageBus extends Subject<IMessageBusEvent> implements IMessageBus, Observable<IMessageBusEvent> {

@@ -41,4 +41,7 @@ export const environment = {
     ALLOWED_URLS: ['https://webservices.securetrading.net'],
     SAMPLE_RATE: 0.1,
   },
+  SEON: {
+    LIBRARY_URL: 'https://cdn.seondf.com/js/v4/agent.js',
+  },
 };

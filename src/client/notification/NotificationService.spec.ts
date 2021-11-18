@@ -1,11 +1,11 @@
-import { NotificationService } from './NotificationService';
+import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
 import { NotificationType } from '../../application/core/models/constants/NotificationType';
-import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { EventScope } from '../../application/core/models/constants/EventScope';
+import { NotificationService } from './NotificationService';
 
 describe('NotificationService', () => {
   let messageBus: IMessageBus;

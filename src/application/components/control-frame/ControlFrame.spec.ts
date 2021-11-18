@@ -1,33 +1,33 @@
-import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
-import { VisaCheckoutClientStatus } from '../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
-import { ControlFrame } from './ControlFrame';
-import { StCodec } from '../../core/services/st-codec/StCodec';
-import { IFormFieldState } from '../../core/models/IFormFieldState';
-import { MessageBus } from '../../core/shared/message-bus/MessageBus';
-import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
-import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
-import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { mock, instance as mockInstance, when, anyString, anything } from 'ts-mockito';
-import { NotificationService } from '../../../client/notification/NotificationService';
-import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
-import { IConfig } from '../../../shared/model/config/IConfig';
-import { IStyles } from '../../../shared/model/config/IStyles';
-import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
-import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
-import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
-import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
-import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { EMPTY, of } from 'rxjs';
+import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
+import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+import { frameAllowedStyles } from '../../core/shared/frame/frame-const';
+import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
+import { IStyles } from '../../../shared/model/config/IStyles';
+import { IConfig } from '../../../shared/model/config/IConfig';
+import { NotificationService } from '../../../client/notification/NotificationService';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
+import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
+import { MessageBus } from '../../core/shared/message-bus/MessageBus';
+import { IFormFieldState } from '../../core/models/IFormFieldState';
+import { StCodec } from '../../core/services/st-codec/StCodec';
+import { VisaCheckoutClientStatus } from '../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
+import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
 import { Frame } from '../../core/shared/frame/Frame';
 import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
 import { ApplePayClientStatus } from '../../core/integrations/apple-pay/ApplePayClientStatus';
 import { PaymentController } from '../../core/services/payments/PaymentController';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
-import spyOn = jest.spyOn;
 import { PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Translations';
 import { Translator } from '../../core/shared/translator/Translator';
 import { FormState } from '../../core/models/constants/FormState';
+import { FraudControlService } from '../../core/services/fraud-control/FraudControlService';
+import { ControlFrame } from './ControlFrame';
+import spyOn = jest.spyOn;
 
 jest.mock('./../../core/shared/payment/Payment');
 
@@ -215,7 +215,7 @@ function controlFrameFixture() {
   const communicator: InterFrameCommunicator = mock(InterFrameCommunicator);
   const configProvider: ConfigProvider = mock<ConfigProvider>();
   const notification: NotificationService = mock(NotificationService);
-  const cybertonica: Cybertonica = mock(Cybertonica);
+  const fraudControlServiceMock: FraudControlService = mock(FraudControlService);
   const threeDProcess: ThreeDProcess = mock(ThreeDProcess);
   const messageBus: IMessageBus = new SimpleMessageBus();
   const frame: Frame = mock(Frame);
@@ -263,7 +263,7 @@ function controlFrameFixture() {
     mockInstance(communicator),
     mockInstance(configProvider),
     mockInstance(notification),
-    mockInstance(cybertonica),
+    mockInstance(fraudControlServiceMock),
     mockInstance(threeDProcess),
     messageBus,
     mockInstance(frame),

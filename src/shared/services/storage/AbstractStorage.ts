@@ -1,4 +1,3 @@
-import { IStorage } from './IStorage';
 import { fromEventPattern, Observable, Subscribable } from 'rxjs';
 import { map, shareReplay, startWith } from 'rxjs/operators';
 import { InterFrameCommunicator } from '../message-bus/InterFrameCommunicator';
@@ -7,6 +6,7 @@ import { FramesHub } from '../message-bus/FramesHub';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { FrameIdentifier } from '../message-bus/FrameIdentifier';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
+import { IStorage } from './IStorage';
 
 export abstract class AbstractStorage implements IStorage, Subscribable<unknown> {
   private static readonly STORAGE_EVENT = 'storage';

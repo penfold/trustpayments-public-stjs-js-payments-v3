@@ -1,8 +1,8 @@
-import { PreventNavigationPopup } from './PreventNavigationPopup';
 import { anyFunction, instance, mock, verify } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { PreventNavigationPopup } from './PreventNavigationPopup';
 
 describe('PreventNavigationPopup', () => {
   let windowMock: Window;

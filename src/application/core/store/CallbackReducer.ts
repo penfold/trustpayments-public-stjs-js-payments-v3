@@ -1,5 +1,5 @@
-import { IReducer } from './IReducer';
 import { IMessageBusEvent } from '../models/IMessageBusEvent';
+import { IReducer } from './IReducer';
 
 export class CallbackReducer<T> implements IReducer<T> {
   constructor(private callback: (state: T, action: IMessageBusEvent) => T) {}

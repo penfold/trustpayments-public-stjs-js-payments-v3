@@ -1,24 +1,25 @@
-import { CardNumber } from './CardNumber';
 import { FormState } from '../../core/models/constants/FormState';
 import { CARD_NUMBER_INPUT, CARD_NUMBER_LABEL, CARD_NUMBER_MESSAGE } from '../../core/models/constants/Selectors';
-import { Input } from '../../core/shared/input/Input';
-import { Utils } from '../../core/shared/utils/Utils';
+import { CardNumber } from './CardNumber';
 import { Validation } from '../../core/shared/validation/Validation';
-import { anyNumber, anything, instance, mock, when } from 'ts-mockito';
-import { IconFactory } from '../../core/services/icon/IconFactory';
-import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { Formatter } from '../../core/shared/formatter/Formatter';
-import { of } from 'rxjs';
-import { IConfig } from '../../../shared/model/config/IConfig';
-import Container from 'typedi';
+import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
+import { instance, mock, when } from 'ts-mockito';
 import { MessageBusToken, TranslatorToken } from '../../../shared/dependency-injection/InjectionTokens';
+import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
+import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
+import { Container } from 'typedi';
 import { Translator } from '../../core/shared/translator/Translator';
+import { Utils } from '../../core/shared/utils/Utils';
+import { EventScope } from '../../core/models/constants/EventScope';
+import { of } from 'rxjs';
 import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
-import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
-import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
-import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
-import { EventScope } from '../../core/models/constants/EventScope';
+import { IconFactory } from '../../core/services/icon/IconFactory';
+import { Formatter } from '../../core/shared/formatter/Formatter';
+import { IConfig } from '../../../shared/model/config/IConfig';
+import { Input } from '../../core/shared/input/Input';
+
 
 const testMessageBus = new SimpleMessageBus();
 

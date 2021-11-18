@@ -13,10 +13,10 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { NotificationService } from '../../notification/NotificationService';
-import { VisaCheckoutClient } from './VisaCheckoutClient';
-import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 import { EventScope } from '../../../application/core/models/constants/EventScope';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { VisaCheckoutClient } from './VisaCheckoutClient';
+import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 
 describe('VisaCheckoutClient', () => {
   let visaCheckoutClient: VisaCheckoutClient;

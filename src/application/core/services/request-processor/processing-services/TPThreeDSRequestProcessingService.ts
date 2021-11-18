@@ -1,19 +1,19 @@
-import { IRequestProcessingService } from '../IRequestProcessingService';
 import { Service } from 'typedi';
-import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { from, Observable, timer } from 'rxjs';
+import { map, mapTo, switchMap, shareReplay } from 'rxjs/operators';
+import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
+import { IRequestProcessingService } from '../IRequestProcessingService';
+import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { RequestProcessingChain } from '../RequestProcessingChain';
-import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
+import { FraudControlRequestProcessor } from '../request-processors/FraudControlRequestProcessor';
 import { RemainingRequestTypesResponseProcessor } from '../response-processors/RemainingRequestTypesResponseProcessor';
 import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
-import { map, mapTo, switchMap, shareReplay } from 'rxjs/operators';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { threeDSecureConfigName } from '../../three-d-verification/implementations/trust-payments/IThreeDSecure';
 import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
-import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 import { MERCHANT_PARENT_FRAME } from '../../../models/constants/Selectors';
 import { ConfigProvider } from '../../../../../shared/services/config-provider/ConfigProvider';
 import { InterFrameCommunicator } from '../../../../../shared/services/message-bus/InterFrameCommunicator';
@@ -39,7 +39,7 @@ export class TPThreeDSRequestProcessingService implements IRequestProcessingServ
     this.jsInitResponse = jsInitResponse;
     this.processingChain = this.processingChainFactory.create(
       [
-        CybertonicaRequestProcessor,
+        FraudControlRequestProcessor,
         ThreeDLookupRequestProcessor,
         BrowserDataRequestProcessor,
       ],

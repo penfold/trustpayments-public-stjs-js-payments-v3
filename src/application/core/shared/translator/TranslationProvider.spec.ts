@@ -1,5 +1,6 @@
 import { Container } from 'typedi';
 import * as translations from '../../models/constants/Translations';
+import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import cy_GB from './../../../../translations/json/cy_GB.json';
 import da_DK from './../../../../translations/json/da_DK.json';
 import de_DE from './../../../../translations/json/de_DE.json';
@@ -11,7 +12,6 @@ import nl_NL from './../../../../translations/json/nl_NL.json';
 import no_NO from './../../../../translations/json/no_NO.json';
 import sv_SE from './../../../../translations/json/sv_SE.json';
 import { TranslationProvider } from './TranslationProvider';
-import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from './Translator';
 import { ITranslationProvider } from './ITranslationProvider';
 

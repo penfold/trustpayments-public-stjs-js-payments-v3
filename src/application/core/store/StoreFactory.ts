@@ -1,9 +1,9 @@
+import { ContainerInstance, Service } from 'typedi';
 import { FrameIdentifier } from '../../../shared/services/message-bus/FrameIdentifier';
 import { IParentFrameState } from './state/IParentFrameState';
 import { IApplicationFrameState } from './state/IApplicationFrameState';
 import { LinkedStore } from './store/LinkedStore';
 import { IStore } from './IStore';
-import { ContainerInstance, Service } from 'typedi';
 import { ParentFrameStore } from './store/ParentFrameStore';
 import { ControlFrameStore } from './store/ControlFrameStore';
 import { CombinedReducerFactory } from './CombinedReducerFactory';

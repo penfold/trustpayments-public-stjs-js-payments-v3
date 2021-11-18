@@ -1,5 +1,4 @@
 import { Service } from 'typedi';
-import { IApplePaySession } from './IApplePaySession';
 import { IApplePayValidateMerchantEvent } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
 import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
@@ -10,6 +9,7 @@ import { IApplePayWalletVerifyResponseBody } from '../../../application/core/int
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
+import { IApplePaySession } from './IApplePaySession';
 
 @Service()
 export class MerchantValidationService {

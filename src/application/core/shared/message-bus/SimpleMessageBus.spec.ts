@@ -1,7 +1,7 @@
-import { SimpleMessageBus } from './SimpleMessageBus';
-import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { IMessageBusEvent } from '../../models/IMessageBusEvent';
+import { SimpleMessageBus } from './SimpleMessageBus';
 
 describe('SimpleMessageBus', () => {
   const sampleEvent: IMessageBusEvent = { type: 'FOO', data: 'bar' };

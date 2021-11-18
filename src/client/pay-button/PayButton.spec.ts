@@ -1,13 +1,13 @@
-import { PayButton } from './PayButton';
-import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
-import { Translator } from '../../application/core/shared/translator/Translator';
 import { instance, mock, when } from 'ts-mockito';
-import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { of } from 'rxjs';
+import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
+import { Translator } from '../../application/core/shared/translator/Translator';
+import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { FormState } from '../../application/core/models/constants/FormState';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
-import Mock = jest.Mock;
 import { PAY } from '../../application/core/models/constants/Translations';
+import { PayButton } from './PayButton';
+import Mock = jest.Mock;
 
 describe('PayButton', () => {
   let sut: PayButton;

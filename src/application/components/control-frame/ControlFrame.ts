@@ -1,3 +1,6 @@
+import { Container, Service } from 'typedi';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
+import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
 import { StCodec } from '../../core/services/st-codec/StCodec';
 import { FormFieldsDetails } from '../../core/models/constants/FormFieldsDetails';
@@ -20,13 +23,9 @@ import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
 import { Validation } from '../../core/shared/validation/Validation';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
-import { Container, Service } from 'typedi';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { NotificationService } from '../../../client/notification/NotificationService';
-import { Cybertonica } from '../../core/integrations/cybertonica/Cybertonica';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { EMPTY, from, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IThreeDInitResponse } from '../../core/models/IThreeDInitResponse';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -44,6 +43,7 @@ import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import { ITranslator } from '../../core/shared/translator/ITranslator';
 import { IStJwtPayload } from '../../core/models/IStJwtPayload';
 import { EventScope } from '../../core/models/constants/EventScope';
+import { FraudControlService } from '../../core/services/fraud-control/FraudControlService';
 
 @Service()
 export class ControlFrame {
@@ -80,7 +80,7 @@ export class ControlFrame {
     private communicator: InterFrameCommunicator,
     private configProvider: ConfigProvider,
     private notification: NotificationService,
-    private cybertonica: Cybertonica,
+    private fraudControlService: FraudControlService,
     private threeDProcess: ThreeDProcess,
     private messageBus: IMessageBus,
     private frame: Frame,
@@ -113,7 +113,6 @@ export class ControlFrame {
         StCodec.updateJwt(config.jwt);
       }
 
-      this.initCybertonica(config);
       this.updateMerchantFieldsEvent();
       this.paymentController.init();
 
@@ -315,22 +314,22 @@ export class ControlFrame {
   }
 
   private callThreeDQueryRequest(): Observable<IThreeDQueryResponse> {
-    const applyCybertonicaTid = (merchantFormData: IMerchantData) =>
-      from(this.cybertonica.getTransactionId()).pipe(
-        map(cybertonicaTid => {
-          if (!cybertonicaTid) {
+    const applyFraudControl = (merchantFormData: IMerchantData) =>
+      this.fraudControlService.getTransactionId().pipe(
+        map(fraudControlTid => {
+          if (!fraudControlTid) {
             return merchantFormData;
           }
 
           return {
             ...merchantFormData,
-            fraudcontroltransactionid: cybertonicaTid,
+            fraudcontroltransactionid: fraudControlTid,
           };
         })
       );
 
     return of({ ...this.merchantFormData }).pipe(
-      switchMap(applyCybertonicaTid),
+      switchMap(applyFraudControl),
       switchMap(merchantFormData =>
         this.threeDProcess.performThreeDQuery$(this.remainingRequestTypes, this.card, merchantFormData)
       )
@@ -404,14 +403,6 @@ export class ControlFrame {
 
   private updateMerchantFields(data: IMerchantData): void {
     this.merchantFormData = data;
-  }
-
-  private initCybertonica(config: IConfig): void {
-    const { cybertonicaApiKey } = config;
-
-    if (cybertonicaApiKey) {
-      this.cybertonica.init(cybertonicaApiKey);
-    }
   }
 
   private initThreeDProcess(config: IConfig): void {

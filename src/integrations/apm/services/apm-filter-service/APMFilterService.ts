@@ -1,15 +1,15 @@
 import { Observable, of } from 'rxjs';
+import { Service } from 'typedi';
+import { Money } from 'ts-money';
 import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { IStJwtPayload } from '../../../../application/core/models/IStJwtPayload';
 import { APMAvailabilityMap } from '../../models/APMAvailabilityMap';
-import { Service } from 'typedi';
 import { Debug } from '../../../../shared/Debug';
 import { APMCountryIso } from '../../models/APMCountryIso';
 import { APMCurrencyIso } from '../../models/APMCurrencyIso';
 import { APMName } from '../../models/APMName';
-import { Money } from 'ts-money';
 import { APMValidator } from '../apm-validator/APMValidator';
 
 @Service()

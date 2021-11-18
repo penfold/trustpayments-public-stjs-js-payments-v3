@@ -20,12 +20,12 @@ import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { NotificationService } from '../../notification/NotificationService';
-import { IVisaCheckoutClient } from './IVisaCheckoutClient';
-import { IVisaCheckoutClientStatus } from './IVisaCheckoutClientStatus';
-import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 import { InvalidResponseError } from '../../../application/core/services/st-codec/InvalidResponseError';
 import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
 import { EventScope } from '../../../application/core/models/constants/EventScope';
+import { IVisaCheckoutClient } from './IVisaCheckoutClient';
+import { IVisaCheckoutClientStatus } from './IVisaCheckoutClientStatus';
+import { VisaCheckoutClientStatus } from './VisaCheckoutClientStatus';
 
 @Service()
 export class VisaCheckoutClient implements IVisaCheckoutClient {

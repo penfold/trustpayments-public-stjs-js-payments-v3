@@ -1,8 +1,8 @@
-import { IRequestObject } from '../../../models/IRequestObject';
 import { instance, mock, when } from 'ts-mockito';
 import { IHttpClientConfig } from '@trustpayments/http-client';
-import { TestHttpOptionsProvider } from './TestHttpOptionsProvider';
+import { IRequestObject } from '../../../models/IRequestObject';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
+import { TestHttpOptionsProvider } from './TestHttpOptionsProvider';
 
 describe('TestHttpOptionsProvider', () => {
   let testHttpOptionsProvider: TestHttpOptionsProvider;

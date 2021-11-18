@@ -1,12 +1,11 @@
-import { FrameIdentifier } from '../../shared/services/message-bus/FrameIdentifier';
 import Container, { ContainerInstance } from 'typedi';
+import { instance, mock, verify, when } from 'ts-mockito';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { SentryService } from '../../shared/services/sentry/SentryService';
 import { MessageSubscriberRegistry } from '../../shared/services/message-bus/MessageSubscriberRegistry';
-import { instance, mock, verify, when } from 'ts-mockito';
+import { FrameIdentifier } from '../../shared/services/message-bus/FrameIdentifier';
 import { environment } from '../../environments/environment';
 import { IMessageSubscriber } from '../../shared/services/message-bus/interfaces/IMessageSubscriber';
-import { ClientBootstrap } from './ClientBootstrap';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { ST } from '../st/ST';
 import { MERCHANT_PARENT_FRAME } from '../../application/core/models/constants/Selectors';
@@ -25,6 +24,7 @@ import { Translator } from '../../application/core/shared/translator/Translator'
 import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
 import { ITranslator } from '../../application/core/shared/translator/ITranslator';
+import { ClientBootstrap } from './ClientBootstrap';
 
 Container.set({ id: TranslatorToken, type: Translator });
 Container.set({ id: ITranslationProvider, type: TranslationProvider });

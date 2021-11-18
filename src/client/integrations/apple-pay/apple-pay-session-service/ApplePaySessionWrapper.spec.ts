@@ -1,7 +1,7 @@
 import { instance, mock, verify, when } from 'ts-mockito';
+import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { ApplePaySessionWrapper } from './ApplePaySessionWrapper';
 import { IApplePaySessionConstructor } from './IApplePaySessionConstructor';
-import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePaySession } from './IApplePaySession';
 
 type WindowType = Window & { ApplePaySession: IApplePaySessionConstructor | undefined };

@@ -1,7 +1,8 @@
-import { IRequestProcessingService } from '../IRequestProcessingService';
 import { Service } from 'typedi';
-import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { from, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { IRequestProcessingService } from '../IRequestProcessingService';
+import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { IMessageBusEvent } from '../../../models/IMessageBusEvent';
@@ -9,15 +10,13 @@ import { IInitializationData } from '../../../../../client/integrations/cardinal
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../models/constants/Selectors';
 import { InterFrameCommunicator } from '../../../../../shared/services/message-bus/InterFrameCommunicator';
-import { map, tap } from 'rxjs/operators';
 import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { ofType } from '../../../../../shared/services/message-bus/operators/ofType';
-import { MessageBus } from '../../../shared/message-bus/MessageBus';
 import { ITriggerData } from '../../../../../client/integrations/cardinal-commerce/data/ITriggerData';
 import { PaymentEvents } from '../../../models/constants/PaymentEvents';
 import { RequestProcessingChain } from '../RequestProcessingChain';
 import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
-import { CybertonicaRequestProcessor } from '../request-processors/CybertonicaRequestProcessor';
+import { FraudControlRequestProcessor } from '../request-processors/FraudControlRequestProcessor';
 import { CardinalStartRequestProcessor } from '../request-processors/CardinalStartRequestProcessor';
 import { CardinalChallengeResponseProcessor } from '../response-processors/CardinalChallengeResponseProcessor';
 import { RemainingRequestTypesResponseProcessor } from '../response-processors/RemainingRequestTypesResponseProcessor';
@@ -41,7 +40,7 @@ export class CardinalRequestProcessingService implements IRequestProcessingServi
     this.processingChain = this.processingChainFactory.create(
       [
         CacheTokenRequestProcessor,
-        CybertonicaRequestProcessor,
+        FraudControlRequestProcessor,
         CardinalStartRequestProcessor,
       ],
       [

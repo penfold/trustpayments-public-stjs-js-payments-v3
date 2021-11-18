@@ -1,4 +1,7 @@
 import './st.css';
+import { Container, Service } from 'typedi';
+import { firstValueFrom, from, Observable, Subject, Subscription } from 'rxjs';
+import { delay, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames';
@@ -11,7 +14,6 @@ import { VisaCheckout } from '../../application/core/integrations/visa-checkout/
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
 import { IConfig } from '../../shared/model/config/IConfig';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
-import { Container, Service } from 'typedi';
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
 import { ISubmitEvent } from '../../application/core/models/ISubmitEvent';
 import { ISuccessEvent } from '../../application/core/models/ISuccessEvent';
@@ -20,8 +22,6 @@ import { InterFrameCommunicator } from '../../shared/services/message-bus/InterF
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
-import { from, Observable, Subject, Subscription } from 'rxjs';
-import { delay, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import { IframeFactory } from '../iframe-factory/IframeFactory';
@@ -30,7 +30,6 @@ import { Frame } from '../../application/core/shared/frame/Frame';
 import { CONTROL_FRAME_IFRAME } from '../../application/core/models/constants/Selectors';
 import { CardinalClient } from '../integrations/cardinal-commerce/CardinalClient';
 import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
-import { Cybertonica } from '../../application/core/integrations/cybertonica/Cybertonica';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { Notification } from '../../application/core/shared/notification/Notification';
 import { NotificationService } from '../notification/NotificationService';
@@ -52,12 +51,13 @@ import { ExposedEvents, ExposedEventsName } from '../../application/core/models/
 import { EventScope } from '../../application/core/models/constants/EventScope';
 import { IAPMConfig } from '../../integrations/apm/models/IAPMConfig';
 import { APMPaymentMethodName } from '../../integrations/apm/models/IAPMPaymentMethod';
+import { FraudControlService } from '../../application/core/services/fraud-control/FraudControlService';
+import { SentryService } from '../../shared/services/sentry/SentryService';
 
 @Service()
 export class ST {
   private config: IConfig;
   private controlFrameLoader$: Observable<IConfig>;
-  private cybertonicaTid: Promise<string>;
   private destroy$: Subject<void> = new Subject();
   private registeredCallbacks: Map<keyof typeof ExposedEvents, Subscription> = new Map();
 
@@ -101,7 +101,7 @@ export class ST {
     private communicator: InterFrameCommunicator,
     private configProvider: ConfigProvider,
     private configService: ConfigService,
-    private cybertonica: Cybertonica,
+    private fraudControlService: FraudControlService,
     private frameService: Frame,
     private framesHub: FramesHub,
     private iframeFactory: IframeFactory,
@@ -117,6 +117,7 @@ export class ST {
     private googleAnalytics: GoogleAnalytics,
     private merchantFields: MerchantFields,
     private cardFrames: CardFrames,
+    private sentryService: SentryService,
   ) {
   }
 
@@ -226,13 +227,18 @@ export class ST {
     });
   }
 
-  Cybertonica(): Promise<string> {
-    if (!this.cybertonicaTid) {
-      this.cybertonica.init(this.config.cybertonicaApiKey);
-      this.cybertonicaTid = this.cybertonica.getTransactionId();
-    }
+  Cybertonica(): Promise<string | null> {
+    const message = 'The Cybertonica() function is deprected. Use getFraudControlData() instead.';
 
-    return this.cybertonicaTid;
+    console.warn(message);
+
+    this.sentryService.sendCustomMessage(new Error(message));
+
+    return Promise.resolve(null);
+  }
+
+  getFraudControlData(): Promise<string | null> {
+    return firstValueFrom(this.fraudControlService.getTransactionId());
   }
 
   updateJWT(jwt: string): void {
@@ -333,7 +339,6 @@ export class ST {
 
     return this.controlFrameLoader$;
   }
-
 
   private Storage(): void {
     this.storage.setItem('merchantTranslations', JSON.stringify(this.config.translations));

@@ -3,10 +3,10 @@ import { IStRequest } from '../../models/IStRequest';
 import { COMMUNICATION_ERROR_INVALID_REQUEST } from '../../models/constants/Translations';
 // @ts-ignore
 import packageInfo from '../../../../../package.json';
-import { InvalidRequestError } from './InvalidRequestError';
 import { IRequestObject } from '../../models/IRequestObject';
 import { IStore } from '../../store/IStore';
 import { IApplicationFrameState } from '../../store/state/IApplicationFrameState';
+import { InvalidRequestError } from './InvalidRequestError';
 
 @Service()
 export class RequestEncoderService {

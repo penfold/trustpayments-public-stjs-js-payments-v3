@@ -1,6 +1,5 @@
 import { Service } from 'typedi';
 import { IStyle } from '../../shared/model/config/IStyle';
-import { IframeFactoryAttributes } from './IframeFactoryAttributes';
 import {
   ANIMATED_CARD_COMPONENT,
   CARD_NUMBER_COMPONENT,
@@ -8,6 +7,7 @@ import {
   EXPIRATION_DATE_COMPONENT,
   SECURITY_CODE_COMPONENT,
 } from '../../application/core/models/constants/Selectors';
+import { IframeFactoryAttributes } from './IframeFactoryAttributes';
 
 @Service()
 export class IframeFactory {

@@ -10,11 +10,7 @@ import { IMessageBus } from '../../../application/core/shared/message-bus/IMessa
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
-import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
-import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
-import { ApplePay } from './ApplePay';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
-import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
 import { ApplePayClientErrorCode } from '../../../application/core/integrations/apple-pay/ApplePayClientErrorCode';
 import { IApplePayClientStatus } from '../../../application/core/integrations/apple-pay/IApplePayClientStatus';
 import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
@@ -22,6 +18,10 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { RequestType } from '../../../shared/types/RequestType';
 import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { IApplePaySession } from './apple-pay-session-service/IApplePaySession';
+import { ApplePay } from './ApplePay';
+import { ApplePaySessionService } from './apple-pay-session-service/ApplePaySessionService';
+import { ApplePaySessionFactory } from './apple-pay-session-service/ApplePaySessionFactory';
 
 describe('ApplePay', () => {
   let applePay: ApplePay;

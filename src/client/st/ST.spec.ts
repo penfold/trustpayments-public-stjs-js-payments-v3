@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import { Container } from 'typedi';
-import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
-import SecureTrading, { ST } from './ST';
+import { instance, mock } from 'ts-mockito';
+import { of } from 'rxjs';
+import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
@@ -9,14 +10,14 @@ import { TranslatorToken } from '../../shared/dependency-injection/InjectionToke
 import { Translator } from '../../application/core/shared/translator/Translator';
 import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
-import { instance, mock } from 'ts-mockito';
-import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
+import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { EventScope } from '../../application/core/models/constants/EventScope';
 import { IFrameQueryingService } from '../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { FrameQueryingService } from '../../shared/services/message-bus/FrameQueryingService';
-import { config, jwt } from './STTestConfigs';
 import { CommonFrames } from '../common-frames/CommonFrames';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import SecureTrading, { ST } from './ST';
+import { config, jwt } from './STTestConfigs';
 
 const messageBusMock: SimpleMessageBus = new SimpleMessageBus();
 
@@ -66,15 +67,15 @@ describe('ST', () => {
     });
   });
 
-  describe('Cybertonica()', () => {
+  describe('getFraudControlData()', () => {
     const key = 'some random key';
     beforeEach(() => {
       // @ts-expect-error Legacy spec testing internal implementations
-      stInstance.cybertonica.getTransactionId = jest.fn().mockReturnValueOnce(key);
+      stInstance.fraudControlService.getTransactionId = jest.fn().mockReturnValueOnce(of(key));
     });
 
     it('should return transaction id when standalone cybertonica function has been called', async () => {
-      expect(await stInstance.Cybertonica()).toEqual(key);
+      expect(await stInstance.getFraudControlData()).toEqual(key);
     });
   });
 

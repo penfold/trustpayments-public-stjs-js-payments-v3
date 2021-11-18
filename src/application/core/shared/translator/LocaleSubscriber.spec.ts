@@ -1,12 +1,12 @@
 import { Container } from 'typedi';
 import { mock, instance, when, verify } from 'ts-mockito';
-import { Translator } from './Translator';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IMessageBus } from '../message-bus/IMessageBus';
 import { SimpleMessageBus } from '../message-bus/SimpleMessageBus';
-import { LocaleSubscriber } from './LocaleSubscriber';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { LocaleSubscriber } from './LocaleSubscriber';
+import { Translator } from './Translator';
 import { ITranslationProvider } from './ITranslationProvider';
 import { TranslationProvider } from './TranslationProvider';
 

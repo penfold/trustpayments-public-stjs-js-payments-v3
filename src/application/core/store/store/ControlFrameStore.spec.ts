@@ -1,8 +1,8 @@
-import { ControlFrameStore } from './ControlFrameStore';
+import { BehaviorSubject } from 'rxjs';
 import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
 import IControlFrameWindow from '../../../../shared/interfaces/IControlFrameWindow';
-import { BehaviorSubject } from 'rxjs';
 import { IApplicationFrameState } from '../state/IApplicationFrameState';
+import { ControlFrameStore } from './ControlFrameStore';
 
 describe('ControlFrameStore', () => {
   it('puts the state subject in window object', () => {

@@ -116,6 +116,7 @@ Feature: E2E REDPAGOS Payments
       | billingdob              | 1980-02-01         |
       | billingcountryiso2a     | UY                 |
       | currencyiso3a           | USD                |
+    And User waits for Pay button to be active
     And User calls updateJWT function by filling amount field
     When User chooses REDPAGOS from APM list
     Then User will be sent to apm page - simulator
@@ -142,8 +143,8 @@ Feature: E2E REDPAGOS Payments
       | billingdob              | 1980-02-01         |
       | billingcountryiso2a     | CZ                 |
       | currencyiso3a           | USD                |
-    When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
+    When User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
     Then REDPAGOS is not available on APM list
 
@@ -166,8 +167,8 @@ Feature: E2E REDPAGOS Payments
       | baseamount              | 707        |
       | billingcountryiso2a     | UY         |
       | currencyiso3a           | USD        |
-    And User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
+    When User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
     Then REDPAGOS is not available on APM list
 

@@ -1,7 +1,7 @@
-import { FrameIdentifier } from '../message-bus/FrameIdentifier';
 import { instance, mock, when } from 'ts-mockito';
-import { SentryContext } from './SentryContext';
+import { FrameIdentifier } from '../message-bus/FrameIdentifier';
 import { CARD_NUMBER_IFRAME } from '../../../application/core/models/constants/Selectors';
+import { SentryContext } from './SentryContext';
 
 describe('SentryContext', () => {
   let frameIdentifierMock: FrameIdentifier;
@@ -20,10 +20,6 @@ describe('SentryContext', () => {
 
   it('returns window hostname', () => {
     expect(sentryContext.getHostName()).toMatch(/.+/);
-  });
-
-  it('returns environment', () => {
-    expect(sentryContext.getEnvironmentName()).toMatch(/dev|prod/);
   });
 
   it('returns release version', () => {

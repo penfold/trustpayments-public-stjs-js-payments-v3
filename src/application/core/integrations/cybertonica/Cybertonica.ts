@@ -1,18 +1,16 @@
+import { Inject, Service } from 'typedi';
+import { from, Observable, of, ReplaySubject, timeout } from 'rxjs';
+import { catchError, map, mapTo } from 'rxjs/operators';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
-import { Service } from 'typedi';
-import { IAFCybertonica } from './IAFCybertonica';
 import { environment } from '../../../../environments/environment';
-import { BrowserLocalStorage } from '../../../../shared/services/storage/BrowserLocalStorage';
+import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudControlDataProvider';
+import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
 import { ICybertonica } from './ICybertonica';
 
-declare const AFCYBERTONICA: IAFCybertonica;
-
 @Service()
-export class Cybertonica implements ICybertonica {
+export class Cybertonica implements ICybertonica, IFraudControlDataProvider<string> {
   private static readonly SDK_ADDRESS = environment.CYBERTONICA.CYBERTONICA_LIVE_URL;
-  private static LOCALE = 'locale';
   private static SCRIPT_TARGET = 'head';
-  private static TID_KEY = 'app.tid';
   private static TID_TIMEOUT = 5000;
 
   private static getBasename(): string {
@@ -21,35 +19,42 @@ export class Cybertonica implements ICybertonica {
     return 'https://' + link.hostname;
   }
 
-  private tid: Promise<string> = Promise.resolve(undefined);
+  private tid: ReplaySubject<string | null> = new ReplaySubject<string | null>(1);
+  private initialized = false;
 
-  constructor(private storage: BrowserLocalStorage) {
-    this.storage.setItem(Cybertonica.TID_KEY, '');
+  constructor(@Inject(WINDOW) private window: Window) {
   }
 
-  private insertCybertonicaLibrary(): Promise<Element> {
-    return DomMethods.insertScript(Cybertonica.SCRIPT_TARGET, { src: Cybertonica.SDK_ADDRESS });
-  }
-
-  init(apiUserName: string): Promise<string> {
-    const tid = this.insertCybertonicaLibrary().then(() =>
-      AFCYBERTONICA.init(apiUserName, undefined, Cybertonica.getBasename())
-    );
-    const timeout = new Promise<null>(resolve => setTimeout(() => resolve(null), Cybertonica.TID_TIMEOUT));
-
-    this.tid = Promise.race([tid, timeout]);
-    this.tid.then(value => this.storage.setItem(Cybertonica.TID_KEY, value));
-
-    return this.tid;
-  }
-
-  getTransactionId(): Promise<string> {
-    const tid = this.storage.getItem(Cybertonica.TID_KEY) as string;
-
-    if (tid !== null && tid !== '') {
-      return Promise.resolve(tid);
+  init(apiUserName: string): Observable<void> {
+    if (!this.initialized) {
+      this.initialized = true;
+      this.initializeCybertonica(apiUserName).pipe(
+        catchError(() => of(null)),
+        timeout({ each: Cybertonica.TID_TIMEOUT, with: () => of(null) }),
+      ).subscribe(tid => {
+        this.tid.next(tid);
+        this.tid.complete();
+      });
     }
 
-    return this.tid;
+    return this.tid.pipe(mapTo(undefined));
+  }
+
+  getTransactionId(): Observable<string | null> {
+    return this.tid.asObservable();
+  }
+
+  private initializeCybertonica(apiUserName: string): Observable<string | null> {
+    if (!apiUserName) {
+      return of(null);
+    }
+
+    return this.insertCybertonicaLibrary().pipe(
+      map(() => this.window.AFCYBERTONICA.init(apiUserName, undefined, Cybertonica.getBasename()) || null),
+    );
+  }
+
+  private insertCybertonicaLibrary(): Observable<Element> {
+    return from(DomMethods.insertScript(Cybertonica.SCRIPT_TARGET, { src: Cybertonica.SDK_ADDRESS }));
   }
 }

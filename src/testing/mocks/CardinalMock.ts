@@ -1,6 +1,6 @@
+import { ajax } from 'rxjs/ajax';
 import { ICardinal, IOrderObject } from '../../client/integrations/cardinal-commerce/ICardinal';
 import { PaymentEvents } from '../../application/core/models/constants/PaymentEvents';
-import { ajax } from 'rxjs/ajax';
 import { environment } from '../../environments/environment';
 import { IValidationResult } from '../../client/integrations/cardinal-commerce/data/IValidationResult';
 

@@ -1,7 +1,6 @@
-import { FrameIdentifier } from '../../../shared/services/message-bus/FrameIdentifier';
 import { ContainerInstance } from 'typedi';
-import { ComponentBootstrap } from './ComponentBootstrap';
 import { instance, mock, verify, when } from 'ts-mockito';
+import { FrameIdentifier } from '../../../shared/services/message-bus/FrameIdentifier';
 import { CardNumber } from '../../components/card-number/CardNumber';
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { FramesHub } from '../../../shared/services/message-bus/FramesHub';
@@ -20,6 +19,7 @@ import {
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { TranslatorWithMerchantTranslations } from '../shared/translator/TranslatorWithMerchantTranslations';
 import { ITranslator } from '../shared/translator/ITranslator';
+import { ComponentBootstrap } from './ComponentBootstrap';
 
 describe('ComponentBootstrap', () => {
   let frameIdentifierMock: FrameIdentifier;

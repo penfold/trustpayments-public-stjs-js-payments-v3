@@ -1,4 +1,6 @@
+import { Observable } from 'rxjs';
+
 export interface ICybertonica {
-  init(apiUserName: string): Promise<string | undefined>;
-  getTransactionId(): Promise<string | undefined>;
+  init(apiUserName: string): Observable<void>;
+  getTransactionId(): Observable<string | null>;
 }

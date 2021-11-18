@@ -1,6 +1,8 @@
 import { first } from 'rxjs/operators';
 import { of, zip } from 'rxjs';
 import Container from 'typedi';
+import { HttpClient } from '@trustpayments/http-client';
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IInitPaymentMethod } from '../../../application/core/services/payments/events/IInitPaymentMethod';
 import { PaymentController } from '../../../application/core/services/payments/PaymentController';
@@ -14,19 +16,17 @@ import { GooglePaymentMethodName } from '../../../integrations/google-pay/models
 import { JwtReducer } from '../../../application/core/store/reducers/jwt/JwtReducer';
 import { TransportService } from '../../../application/core/services/st-transport/TransportService';
 import { PaymentResultSubmitterSubscriber } from '../../../client/common-frames/PaymentResultSubmitterSubscriber';
-import { HttpClient } from '@trustpayments/http-client';
 import { googlePayConfigMock } from '../../../client/integrations/google-pay/GooglePayConfigMock';
 import { GooglePayInitializeSubscriber } from '../../../client/integrations/google-pay/google-pay-initialize-subscriber/GooglePayInitializeSubscriber';
-import { GooglePaySessionPaymentsClientMock } from './GooglePaySessionClientMock';
 import { IGooglePayGatewayRequest } from '../../../integrations/google-pay/models/IGooglePayRequest';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { IStRequest } from '../../../application/core/models/IStRequest';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IThreeDVerificationService } from '../../../application/core/services/three-d-verification/IThreeDVerificationService';
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { TransportServiceGatewayClient } from '../../../application/core/services/gateway-client/TransportServiceGatewayClient';
+import { GooglePaySessionPaymentsClientMock } from './GooglePaySessionClientMock';
 
 describe.skip('GooglePay Payment', () => {
   let paymentController: PaymentController;

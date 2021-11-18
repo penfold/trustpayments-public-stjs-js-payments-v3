@@ -19,6 +19,9 @@ if (process.env.SENTRY_AUTH_TOKEN) {
     release: releaseVersion,
     include: './dist',
     ignore: ['node_modules', 'webpack.dev.js'],
+    errorHandler: (error, invokeErr, compilation) => {
+      compilation.warnings.push('Sentry CLI Plugin Error: ' + error.message);
+    },
   }));
 }
 
@@ -28,7 +31,7 @@ module.exports = merge(common, {
   resolve: {
     alias: {
       [path.resolve(__dirname, 'src/environments/environment')]:
-        path.resolve(__dirname, 'src/environments/environment.prod.ts')
-    }
-  }
+        path.resolve(__dirname, 'src/environments/environment.prod.ts'),
+    },
+  },
 });

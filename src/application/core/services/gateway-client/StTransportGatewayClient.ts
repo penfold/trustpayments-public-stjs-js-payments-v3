@@ -1,20 +1,20 @@
 import { Service } from 'typedi';
 import { from, Observable, of, throwError } from 'rxjs';
-import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { IStRequest } from '../../models/IStRequest';
 import { StTransport } from '../st-transport/StTransport';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { ThreeDInitRequest } from '../three-d-verification/data/ThreeDInitRequest';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { IGatewayClient } from './IGatewayClient';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 import { IThreeDLookupResponse } from '../../models/IThreeDLookupResponse';
 import { ThreeDLookupRequest } from '../three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
 import { IApplePayValidateMerchantRequest } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { IApplePayWalletVerifyResponseBody } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { RequestType } from '../../../../shared/types/RequestType';
+import { IGatewayClient } from './IGatewayClient';
 
 @Service()
 export class StTransportGatewayClient implements IGatewayClient {

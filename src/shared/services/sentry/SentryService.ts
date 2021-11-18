@@ -1,13 +1,13 @@
-import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { Service } from 'typedi';
-import { SentryContext } from './SentryContext';
 import { Event, EventHint } from '@sentry/types';
+import { firstValueFrom, Subscription } from 'rxjs';
+import { BrowserOptions } from '@sentry/browser';
+import { ConfigProvider } from '../config-provider/ConfigProvider';
+import { environment } from '../../../environments/environment.rc';
+import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';
-import { firstValueFrom, Subscription } from 'rxjs';
 import { ExceptionsToSkip } from './ExceptionsToSkip';
-import { BrowserOptions } from '@sentry/browser';
-import { environment } from '../../../environments/environment.rc';
 
 @Service()
 export class SentryService {
@@ -42,10 +42,11 @@ export class SentryService {
 
     const options: BrowserOptions = {
       dsn,
-      environment: this.sentryContext.getEnvironmentName(),
       release: this.sentryContext.getReleaseVersion(),
       ignoreErrors: ExceptionsToSkip,
       sampleRate: environment.SENTRY.SAMPLE_RATE,
+      attachStacktrace: true,
+      normalizeDepth: 3,
       beforeSend: (event: Event, hint?: EventHint) => this.beforeSend(event, hint),
     };
 
@@ -65,6 +66,8 @@ export class SentryService {
       if (!config.errorReporting) {
         return null;
       }
+
+      event.environment = config.livestatus ? 'prod' : 'dev';
 
       return this.eventScrubber.scrub(event, hint);
     });

@@ -1,16 +1,18 @@
-import { APMConfigResolver } from './APMConfigResolver';
+import { anything, instance, mock, when } from 'ts-mockito';
 import { IAPMConfig } from '../../models/IAPMConfig';
 import { APMName } from '../../models/APMName';
 import { APMValidator } from '../apm-validator/APMValidator';
-import { anything, instance, mock, when } from 'ts-mockito';
+import { APMConfigResolver } from './APMConfigResolver';
 
 describe('APMConfigResolver', () => {
-  let aPMConfigResolver: APMConfigResolver;
-  let apmValidator: APMValidator;
+  let apmValidatorMock: APMValidator;
+  let apmConfigResolver: APMConfigResolver;
+
   beforeEach(() => {
-    apmValidator = mock(APMValidator);
-    when(apmValidator.validateConfig(anything())).thenReturn({ error: null, value: null });
-    aPMConfigResolver = new APMConfigResolver(instance(apmValidator));
+    apmValidatorMock = mock(APMValidator);
+    apmConfigResolver = new APMConfigResolver(instance(apmValidatorMock));
+
+    when(apmValidatorMock.validateConfig(anything())).thenReturn({ error: null, value: null });
   });
 
   const testConfig: IAPMConfig = {
@@ -80,7 +82,7 @@ describe('APMConfigResolver', () => {
   };
 
   it('should map apmList field to array of full configuration objects, assigning default values to fields not defined in item config', done => {
-    aPMConfigResolver.resolve(testConfig).subscribe((result: IAPMConfig) => {
+    apmConfigResolver.resolve(testConfig).subscribe((result: IAPMConfig) => {
       expect(result).toEqual(expected);
     });
     done();

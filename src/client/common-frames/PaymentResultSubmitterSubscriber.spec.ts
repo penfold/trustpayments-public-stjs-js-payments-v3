@@ -1,9 +1,9 @@
-import { PaymentResultSubmitter } from './PaymentResultSubmitter';
-import { PaymentResultSubmitterSubscriber } from './PaymentResultSubmitterSubscriber';
-import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { anything, instance, mock, verify } from 'ts-mockito';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
+import { PaymentResultSubmitterSubscriber } from './PaymentResultSubmitterSubscriber';
+import { PaymentResultSubmitter } from './PaymentResultSubmitter';
 
 describe('PaymentResultSubmitterSubscriber', () => {
   let paymentResultSubmitterMock: PaymentResultSubmitter;
