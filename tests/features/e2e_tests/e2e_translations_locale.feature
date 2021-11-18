@@ -88,8 +88,41 @@ Feature: Payment form translations from jwt locale
       | it_IT  |
 
 
-  @animated_card @check
+  @animated_card
   Scenario Outline: <locale> translations for animated card labels
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key          | value |
+      | panIcon      | true  |
+      | animatedCard | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+      | locale                  | <locale>         |
+    And User opens example page
+    And User waits for Pay button to be active
+    When User fills payment form with defined card AMEX_CARD
+    Then User will see labels displayed on animated card translated into "<locale>"
+      | fields          |
+      | Card number     |
+      | Expiration date |
+      | Security code   |
+
+    Examples:
+      | locale |
+      | de_DE  |
+      | en_GB  |
+      | fr_FR  |
+      | en_US  |
+      | cy_GB  |
+      | da_DK  |
+      | es_ES  |
+      | nl_NL  |
+      | no_NO  |
+      | sv_SE  |
+      | it_IT  |
+
+  @animated_card
+  Scenario Outline: <locale> translations for blank animated card labels
     Given JS library configured with BASIC_CONFIG and additional attributes
       | key          | value |
       | panIcon      | true  |
@@ -106,7 +139,6 @@ Feature: Payment form translations from jwt locale
       | Card number                 |
       | Expiration date             |
       | Expiration date placeholder |
-      | Security code               |
 
     Examples:
       | locale |
@@ -120,10 +152,9 @@ Feature: Payment form translations from jwt locale
       | nl_NL  |
       | no_NO  |
       | sv_SE  |
-      #ToDo uncomment after implemenatation
-#      | it_IT  |
+      | it_IT  |
 
-  @test
+
   Scenario Outline: <locale> translation with placeholders overwritten by config
     Given JS library configured by inline params PLACEHOLDERS_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
