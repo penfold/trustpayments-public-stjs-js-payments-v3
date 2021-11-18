@@ -32,6 +32,8 @@
 
     <div id="st-browser-info" class="st-form__group"></div>
 
+    <div id="st-fraud-control" class="st-form__group"></div>
+
     <fieldset class="st-form__fieldset">
       <legend>Payment details:</legend>
       <div class="st-form__section st-form__section--horizontal">
@@ -181,6 +183,7 @@
     var jwt = params.get('jwt') || '';
     var updatedJwt = params.get('updatedJwt') || '';
     var browserInfo = params.get('browserInfo');
+    var fraudControl = params.get('fraudControl');
 
     Promise.all([getConfig(), getAPMsConfig()])
       .then(function (configValues) {
@@ -279,11 +282,18 @@
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
       st.GooglePay(config.googlePay);
-      st.getFraudControlData().then(function (response) {
-        console.log(response);
-      });
       if (browserInfo === "true") {
         document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
+      }
+      if (fraudControl === "true") {
+        var fraudControlField = document.getElementById('st-fraud-control');
+        st.getFraudControlData()
+          .then(function (response) {
+            fraudControlField.innerText = response;
+          })
+          .catch(function () {
+            fraudControlField.innerText = 'Fraud control failed';
+          });
       }
 
       updateJwtListener(st, updatedJwt);
