@@ -12,3 +12,6 @@ class ExamplePageParam(Enum):
     WITH_CHANGED_FORM_ID = 'formId=testForm&'
     WITH_BROWSER_INFO = 'browserInfo=true'
     WITH_SPECIFIC_IFRAME = 'iframe.html?iframeName=testFrame'
+    WITH_CSP = 'minimal-content-security-header.html'
+    WITH_SEON_OBJECT = 'fraudControl=true'
+

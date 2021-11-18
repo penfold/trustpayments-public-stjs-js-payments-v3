@@ -463,51 +463,44 @@ Feature: ApplePay
       | WALLETVERIFY               |
       | ACCOUNTCHECK, SUBSCRIPTION |
 
-    #TODO - Cybertonica will be replaced by SEON
-#  @apple_test_part2
-#  Scenario: ApplePay - Cybertonica - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
-#    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
-#      | key               | value |
-#      | cybertonicaApiKey | stfs  |
-#    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value            |
-#      | requesttypedescriptions | THREEDQUERY AUTH |
-#    And ApplePay mock responses are set as BASE_JSINIT and payment status SUCCESS
-#    And User opens example page
-#    When User chooses APPLE_PAY as payment method
-#    And User clicks Proceed button on ApplePay popup
-#    Then User will see notification frame text: "Payment has been successfully processed"
-#    And User will see following callback type called only once
-#      | callback_type |
-#      | success       |
-#      | submit        |
-#    And submit callback contains JWT response
-#    And following requests were sent only once with 'fraudcontroltransactionid' flag
-#      | request_type      |
-#      | THREEDQUERY, AUTH |
+  @apple_test_part2 @ms
+  Scenario: ApplePay - SEON - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status SUCCESS
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
+    And User clicks Proceed button on ApplePay popup
+    Then User will see notification frame text: "Payment has been successfully processed"
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
+    And submit callback contains JWT response
+    And following requests were sent only once with 'fraudcontroltransactionid' flag
+      | request_type      |
+      | THREEDQUERY, AUTH |
 
-# TODO - uncomment this scenario when STJS-1924 will be fixed
-#  @apple_test_part2
-#  Scenario: ApplePay - Cybertonica - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
-#    Given JS library configured with APPLE_PAY_CONFIG and additional attributes
-#      | key               | value |
-#      | cybertonicaApiKey | test  |
-#    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value            |
-#      | requesttypedescriptions | THREEDQUERY AUTH |
-#    And ApplePay mock responses are set as BASE_JSINIT and payment status SUCCESS
-#    And User opens example page
-#    When User chooses APPLE_PAY as payment method
-#    And User clicks Proceed button on ApplePay popup
-#    Then User will see notification frame text: "Payment has been successfully processed"
-#    And User will see following callback type called only once
-#      | callback_type |
-#      | success       |
-#      | submit        |
-#    And submit callback contains JWT response
-#    And following requests were sent only once without 'fraudcontroltransactionid' flag
-#      | request_type      |
-#      | THREEDQUERY, AUTH |
+
+  @apple_test_part2
+  Scenario: ApplePay - SEON - 'fraudcontroltransactionid' flag is not added to AUTH requests during payment
+    Given JS library configured by inline params APPLE_PAY_CONFIG and jwt JWT_WITH_FRAUD_CONTROL with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And ApplePay mock responses are set as BASE_JSINIT and payment status SUCCESS
+    And User opens example page
+    When User chooses APPLE_PAY as payment method
+    And User clicks Proceed button on ApplePay popup
+    Then User will see notification frame text: "Payment has been successfully processed"
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
+    And submit callback contains JWT response
+    And following requests were sent only once without 'fraudcontroltransactionid' flag
+      | request_type      |
+      | THREEDQUERY, AUTH |
 
   @apple_test_part2
   Scenario: ApplePay - notification frame is not displayed after successful payment

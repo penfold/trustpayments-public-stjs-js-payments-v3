@@ -73,6 +73,9 @@ class PaymentMethodsPage(BasePage):
     def get_text_from_browser_info(self):
         return self._actions.get_text_with_wait(PaymentMethodsLocators.browser_info_callback)
 
+    def get_seon_object(self):
+        return self._actions.get_text_with_wait(PaymentMethodsLocators.seon_object)
+
     # Card Form
 
     def press_enter_button_on_security_code_field(self):
@@ -708,3 +711,10 @@ class PaymentMethodsPage(BasePage):
 
     def click_cancel_btn_on_apple_pay_popup(self):
         self._actions.click(PaymentMethodsLocators.apple_pay_cancel_btn)
+
+    def validate_seon_object(self):
+        seon_object_text = self.get_seon_object()
+        assertion_message = f'SEON object should be returned by getFraudControlData function but is not'
+        add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+        assert_that(seon_object_text, assertion_message).is_not_empty()
+        assert_that(seon_object_text, assertion_message).starts_with('Web;')

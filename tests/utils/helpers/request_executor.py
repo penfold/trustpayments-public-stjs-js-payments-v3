@@ -3,6 +3,7 @@ import json
 import requests
 from requests.auth import HTTPBasicAuth
 
+from resources.seon_mock_object import seon_mock_object
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.read_configuration import get_from_env
 
@@ -78,7 +79,7 @@ def get_number_of_requests_with_fraudcontroltransactionid_flag(request_type):
     count = requests.post(WEBSERVICES_ADMIN_REQUESTS_COUNT_URL,
                           json={'url': '/jwt/', 'bodyPatterns': [
                               {
-                                  'matchesJsonPath': '$.request[:1][?(@.fraudcontroltransactionid=="63d1d099-d635-41b6-bb82-96017f7da6bb")]'}
+                                  'matchesJsonPath': '$.request[:1][?(@.fraudcontroltransactionid=="'+seon_mock_object+'")]'}
                           ],
                                 'headers': {'st-request-types': {'equalTo': request_type}}}, verify=False)
     data = json.loads(count.content)
