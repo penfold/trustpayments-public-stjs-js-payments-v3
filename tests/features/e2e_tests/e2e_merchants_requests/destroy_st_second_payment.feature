@@ -12,6 +12,7 @@ Feature: Destroy ST instance
     And User clicks Pay button
     And User fills V2 authentication modal
     And User will see notification frame text: "Payment has been successfully processed"
+    And Wait for popups to disappear
     And User toggle action buttons bar
     And User clicks Remove frames action button
     And User clicks Destroy ST action button
@@ -41,6 +42,7 @@ Feature: Destroy ST instance
     And User clicks Pay button
     And User fills V2 authentication modal
     And User will see notification frame text: "An error occurred"
+    And Wait for popups to disappear
     And User toggle action buttons bar
     And User clicks Remove frames action button
     And User clicks Destroy ST action button
@@ -73,6 +75,7 @@ Feature: Destroy ST instance
     And User clicks Pay button
     And User fills V2 authentication modal
     And User will see notification frame text: "An error occurred"
+    And Wait for popups to disappear
     And User toggle action buttons bar
     And User clicks Remove frames action button
     And User clicks Destroy ST action button
@@ -105,6 +108,7 @@ Feature: Destroy ST instance
     And User opens example page
     And User fills V2 authentication modal
     And User will see notification frame text: "Payment has been successfully processed"
+    And Wait for popups to disappear
     And User toggle action buttons bar
     And User clicks Remove frames action button
     And User clicks Destroy ST action button
