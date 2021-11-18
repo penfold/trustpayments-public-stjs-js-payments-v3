@@ -1,23 +1,34 @@
-import { Observable, of, throwError } from 'rxjs';
-import { IFraudControlDataProvider } from './IFraudControlDataProvider';
+import { Observable, throwError } from 'rxjs';
 import { ContainerInstance, Service } from 'typedi';
-import { FraudControlDataProviderName } from './FraudControlProviderName.enum';
-import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { mapTo, switchMap } from 'rxjs/operators';
+import { map, mapTo, switchMap } from 'rxjs/operators';
 import { SeonFraudControlDataProvider } from '../../integrations/seon/SeonFraudControlDataProvider';
 import { Cybertonica } from '../../integrations/cybertonica/Cybertonica';
+import { JwtProvider } from '../../../../shared/services/jwt-provider/JwtProvider';
+import { FraudControlDataProviderName } from './FraudControlProviderName.enum';
+import { IFraudControlDataProvider } from './IFraudControlDataProvider';
+import { DisabledFraudControlDataProvider } from './DisabledFraudControlDataProvider';
+
+type ProviderType = typeof Cybertonica
+  | typeof SeonFraudControlDataProvider
+  | typeof DisabledFraudControlDataProvider;
 
 @Service()
 export class FraudControlServiceSelector {
-  private providers: Map<FraudControlDataProviderName, Observable<IFraudControlDataProvider<unknown>>> = new Map();
+  private static readonly DEFAULT_SERVICE = FraudControlDataProviderName.SEON;
+  private providers: Map<FraudControlDataProviderName, Observable<IFraudControlDataProvider>> = new Map();
+  private providerTypes: Record<FraudControlDataProviderName, ProviderType> = {
+    [FraudControlDataProviderName.CYBERTONICA]: Cybertonica,
+    [FraudControlDataProviderName.DISABLED]: DisabledFraudControlDataProvider,
+    [FraudControlDataProviderName.SEON]: SeonFraudControlDataProvider,
+  };
 
   constructor(
     private container: ContainerInstance,
-    private configProvider: ConfigProvider,
+    private jwtProvider: JwtProvider,
   ) {
   }
 
-  getFraudControlDataProvider(): Observable<IFraudControlDataProvider<unknown>> {
+  getFraudControlDataProvider(): Observable<IFraudControlDataProvider> {
     return this.resolveProviderServiceType().pipe(
       switchMap(serviceType => {
         if (this.providers.has(serviceType)) {
@@ -32,28 +43,21 @@ export class FraudControlServiceSelector {
   }
 
   private resolveProviderServiceType(): Observable<FraudControlDataProviderName> {
-    return of(FraudControlDataProviderName.SEON);
+    return this.jwtProvider.getJwtPayload().pipe(
+      map(payload => payload.fraudcontroltransactionid ?
+        FraudControlDataProviderName.DISABLED :
+        FraudControlServiceSelector.DEFAULT_SERVICE
+      ),
+    );
   }
 
-  private initProviderService(serviceType: FraudControlDataProviderName): Observable<IFraudControlDataProvider<unknown>> {
-    switch (serviceType) {
-      case FraudControlDataProviderName.CYBERTONICA: {
-        return this.configProvider.getConfig$().pipe(
-          switchMap(config => {
-            const cybertonica = this.container.get(Cybertonica);
-
-            return cybertonica.init(config.cybertonicaApiKey).pipe(mapTo(cybertonica));
-          }),
-        );
-      }
-      case FraudControlDataProviderName.SEON: {
-        const seon = this.container.get(SeonFraudControlDataProvider);
-
-        return seon.init().pipe(mapTo(seon));
-      }
-      default: {
-        return throwError(() => new Error(`Unknown Fraud Control Service: ${serviceType}`));
-      }
+  private initProviderService(serviceType: FraudControlDataProviderName): Observable<IFraudControlDataProvider> {
+    if (!this.providerTypes[serviceType]) {
+      return throwError(() => new Error(`Unknown Fraud Control Service: ${serviceType}`));
     }
+
+    const providerService: IFraudControlDataProvider = this.container.get<IFraudControlDataProvider>(this.providerTypes[serviceType]);
+
+    return providerService.init().pipe(mapTo(providerService));
   }
 }
