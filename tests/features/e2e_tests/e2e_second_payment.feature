@@ -31,6 +31,7 @@ Feature: E2E second payment
     And User fills V2 authentication modal
     Then User will see notification frame text: "Invalid process"
     And User waits for notification frame to disappear
+    And Wait for popups to disappear
     When User clicks Pay button
     And User fills V2 authentication modal
     Then User will see notification frame text: "Invalid process"
@@ -49,6 +50,7 @@ Feature: E2E second payment
     And User clicks Pay button
     Then User will see notification frame text: "Unauthenticated"
     And User waits for notification frame to disappear
+    And Wait for popups to disappear
     And User clicks Pay button
     And User will see notification frame text: "Unauthenticated"
     And User will see that notification frame has "red" color
@@ -68,6 +70,7 @@ Feature: E2E second payment
     And User fills V2 authentication modal
     Then User will see notification frame text: "An error occurred"
     And User waits for notification frame to disappear
+    And Wait for popups to disappear
     When User calls updateJWT function by filling amount field
     And User fills payment form with defined card VISA_V21_NON_FRICTIONLESS
     And User clicks Pay button
