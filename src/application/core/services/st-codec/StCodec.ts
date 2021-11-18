@@ -1,4 +1,5 @@
 import jwt_decode from 'jwt-decode';
+import { Container } from 'typedi';
 import { FormState } from '../../models/constants/FormState';
 import { IErrorData } from '../../models/IErrorData';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
@@ -12,20 +13,19 @@ import { MessageBus } from '../../shared/message-bus/MessageBus';
 import { Validation } from '../../shared/validation/Validation';
 // @ts-ignore
 import packageInfo from '../../../../../package.json';
-import { Container } from 'typedi';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { IStJwtObj } from '../../models/IStJwtObj';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { MessageBusToken, TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
-import { GatewayError } from './GatewayError';
-import { InvalidResponseError } from './InvalidResponseError';
 import { Locale } from '../../shared/translator/Locale';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
-import { IResponsePayload } from './interfaces/IResponsePayload';
-import { IRequestTypeResponse } from './interfaces/IRequestTypeResponse';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { EventScope } from '../../models/constants/EventScope';
+import { GatewayError } from './GatewayError';
+import { InvalidResponseError } from './InvalidResponseError';
+import { IResponsePayload } from './interfaces/IResponsePayload';
+import { IRequestTypeResponse } from './interfaces/IRequestTypeResponse';
 
 export class StCodec {
   static CONTENT_TYPE = 'application/json';

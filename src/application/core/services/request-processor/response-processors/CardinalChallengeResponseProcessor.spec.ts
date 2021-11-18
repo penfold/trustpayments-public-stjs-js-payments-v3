@@ -1,12 +1,12 @@
 import { mock, instance, when, verify, anything } from 'ts-mockito';
+import { of } from 'rxjs';
 import { CardinalChallengeService } from '../../three-d-verification/implementations/cardinal-commerce/CardinalChallengeService';
-import { CardinalChallengeResponseProcessor } from './CardinalChallengeResponseProcessor';
 import { IThreeDQueryResponse } from '../../../models/IThreeDQueryResponse';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
-import { of } from 'rxjs';
+import { CardinalChallengeResponseProcessor } from './CardinalChallengeResponseProcessor';
 
 describe('CardinalChallengeResponseProcessor', () => {
   let challengeServiceMock: CardinalChallengeService;

@@ -1,15 +1,15 @@
-import { FrameIdentifier } from './FrameIdentifier';
-import { InterFrameCommunicator } from './InterFrameCommunicator';
 import { anything, capture, instance, mock, verify, when } from 'ts-mockito';
+import { mapTo, take, toArray, of, Subject, throwError, timer } from 'rxjs';
 import {
   CARD_NUMBER_IFRAME,
   CONTROL_FRAME_IFRAME,
   MERCHANT_PARENT_FRAME,
 } from '../../../application/core/models/constants/Selectors';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { FrameIdentifier } from './FrameIdentifier';
+import { InterFrameCommunicator } from './InterFrameCommunicator';
 import { FrameQueryingService } from './FrameQueryingService';
 import { ErrorReconstructor } from './ErrorReconstructor';
-import { mapTo, take, toArray, of, Subject, throwError, timer } from 'rxjs';
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { QueryMessage } from './messages/QueryMessage';
 import { ResponseMessage } from './messages/ResponseMessage';
 

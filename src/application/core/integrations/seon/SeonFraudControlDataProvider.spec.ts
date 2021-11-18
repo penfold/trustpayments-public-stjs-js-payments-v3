@@ -1,12 +1,12 @@
 import { instance, mock, spy, when, verify, anyFunction, anything, deepEqual } from 'ts-mockito';
-import { SeonFraudControlDataProvider } from './SeonFraudControlDataProvider';
-import { ISeon, ISeonConfig } from './ISeon';
+import { forkJoin } from 'rxjs';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { environment } from '../../../../environments/environment';
 import { Uuid } from '../../shared/uuid/Uuid';
-import { forkJoin } from 'rxjs';
 import { FrameIdentifier } from '../../../../shared/services/message-bus/FrameIdentifier';
 import { BrowserDetector } from '../../../../shared/services/browser-detector/BrowserDetector';
+import { ISeon, ISeonConfig } from './ISeon';
+import { SeonFraudControlDataProvider } from './SeonFraudControlDataProvider';
 
 type WindowType = Window & { seon: ISeon };
 

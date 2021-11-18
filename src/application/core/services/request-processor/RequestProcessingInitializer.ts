@@ -1,11 +1,11 @@
 import { Service } from 'typedi';
 import { Observable } from 'rxjs';
-import { IRequestProcessingService } from './IRequestProcessingService';
-import { JsInitResponseService } from '../three-d-verification/JsInitResponseService';
-import { RequestProcessingServiceProvider } from './RequestProcessingServiceProvider';
 import { first, mapTo, switchMap } from 'rxjs/operators';
+import { JsInitResponseService } from '../three-d-verification/JsInitResponseService';
 import { RemainingRequestTypesProvider } from '../three-d-verification/RemainingRequestTypesProvider';
 import { RequestType } from '../../../../shared/types/RequestType';
+import { RequestProcessingServiceProvider } from './RequestProcessingServiceProvider';
+import { IRequestProcessingService } from './IRequestProcessingService';
 
 @Service()
 export class RequestProcessingInitializer {

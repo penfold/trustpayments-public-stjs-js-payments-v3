@@ -1,16 +1,16 @@
 import { mock, instance, when, verify, anything, deepEqual, spy } from 'ts-mockito';
-import { IGatewayClient } from '../../gateway-client/IGatewayClient';
-import { ThreeDSecureMethodService } from '../../three-d-verification/implementations/trust-payments/ThreeDSecureMethodService';
-import { InterFrameCommunicator } from '../../../../../shared/services/message-bus/InterFrameCommunicator';
-import { ThreeDLookupRequestProcessor } from './ThreeDLookupRequestProcessor';
-import { IThreeDLookupResponse } from '../../../models/IThreeDLookupResponse';
 import { CardType } from '@trustpayments/3ds-sdk-js';
 import { of } from 'rxjs';
+import { IThreeDLookupResponse } from '../../../models/IThreeDLookupResponse';
+import { InterFrameCommunicator } from '../../../../../shared/services/message-bus/InterFrameCommunicator';
+import { ThreeDSecureMethodService } from '../../three-d-verification/implementations/trust-payments/ThreeDSecureMethodService';
+import { IGatewayClient } from '../../gateway-client/IGatewayClient';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
 import { IStRequest } from '../../../models/IStRequest';
 import { ThreeDLookupRequest } from '../../three-d-verification/implementations/trust-payments/data/ThreeDLookupRequest';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../models/constants/Selectors';
+import { ThreeDLookupRequestProcessor } from './ThreeDLookupRequestProcessor';
 
 describe('ThreeDLookupRequestProcessor', () => {
   let gatewayClientMock: IGatewayClient;

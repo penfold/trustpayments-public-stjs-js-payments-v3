@@ -2,8 +2,8 @@ import { mock, instance, verify, deepEqual } from 'ts-mockito';
 import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { PaymentCancelService } from './PaymentCancelService';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { PaymentCancelService } from './PaymentCancelService';
 
 describe('PaymentCancelService', () => {
   let messageBus: IMessageBus;

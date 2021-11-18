@@ -1,10 +1,10 @@
-import { IRequestProcessor } from './IRequestProcessor';
-import { IResponseProcessor } from './IResponseProcessor';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { TransportService } from '../st-transport/TransportService';
 import { IStRequest } from '../../models/IStRequest';
-import { Observable, of, throwError } from 'rxjs';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
-import { catchError, switchMap } from 'rxjs/operators';
+import { IRequestProcessor } from './IRequestProcessor';
+import { IResponseProcessor } from './IResponseProcessor';
 import { IRequestProcessingOptions } from './IRequestProcessingOptions';
 import { IErrorHandler } from './IErrorHandler';
 

@@ -1,8 +1,8 @@
-import { IRequestProcessor } from '../IRequestProcessor';
 import { Service } from 'typedi';
-import { IStRequest } from '../../../models/IStRequest';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { IStRequest } from '../../../models/IStRequest';
+import { IRequestProcessor } from '../IRequestProcessor';
 import { FraudControlService } from '../../fraud-control/FraudControlService';
 
 @Service()

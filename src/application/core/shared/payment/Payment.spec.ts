@@ -1,5 +1,6 @@
 import { instance as mockInstance, mock, spy, verify, when } from 'ts-mockito';
 import { Container } from 'typedi';
+import { of } from 'rxjs';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { SimpleStorage } from '../../../../shared/services/storage/SimpleStorage';
@@ -14,13 +15,12 @@ import { IWallet } from '../../models/IWallet';
 import { IWalletVerify } from '../../models/IWalletVerify';
 import { StCodec } from '../../services/st-codec/StCodec';
 import { StTransport } from '../../services/st-transport/StTransport';
-import { Payment } from './Payment';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../translator/Translator';
 import { ITranslationProvider } from '../translator/ITranslationProvider';
 import { TranslationProvider } from '../translator/TranslationProvider';
 import { FraudControlService } from '../../services/fraud-control/FraudControlService';
-import { of } from 'rxjs';
+import { Payment } from './Payment';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 

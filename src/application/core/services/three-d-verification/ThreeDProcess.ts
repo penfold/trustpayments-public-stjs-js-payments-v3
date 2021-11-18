@@ -1,19 +1,19 @@
+import { Service } from 'typedi';
+import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
+import { combineLatest, Observable } from 'rxjs';
+import { first, mapTo, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { IThreeDQueryResponse } from '../../models/IThreeDQueryResponse';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
-import { Service } from 'typedi';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { ICard } from '../../models/ICard';
 import { IMerchantData } from '../../models/IMerchantData';
+import { IMessageBus } from '../../shared/message-bus/IMessageBus';
+import { EventScope } from '../../models/constants/EventScope';
 import { IThreeDVerificationService } from './IThreeDVerificationService';
 import { ThreeDVerificationProviderService } from './ThreeDVerificationProviderService';
-import { IMessageBus } from '../../shared/message-bus/IMessageBus';
-import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
-import { combineLatest, Observable } from 'rxjs';
-import { first, mapTo, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { JsInitResponseService } from './JsInitResponseService';
-import { EventScope } from '../../models/constants/EventScope';
 
 @Service()
 export class ThreeDProcess {

@@ -12,7 +12,6 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { TransportServiceGatewayClient } from '../../../application/core/services/gateway-client/TransportServiceGatewayClient';
-import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
 import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
 import { IApplePayProcessPaymentResponse } from '../../../application/core/integrations/apple-pay/apple-pay-payment-service/IApplePayProcessPaymentResponse';
 import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
@@ -20,6 +19,7 @@ import { IApplePayConfigObject } from '../../../application/core/integrations/ap
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
  import { NoThreeDSRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/NoThreeDSRequestProcessingService';
+import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayConfigObject, IRequestTypeResponse> {

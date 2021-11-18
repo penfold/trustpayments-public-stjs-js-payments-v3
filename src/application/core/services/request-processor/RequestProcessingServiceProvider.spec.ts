@@ -1,12 +1,12 @@
 import { ContainerInstance } from 'typedi';
-import { RequestProcessingServiceProvider } from './RequestProcessingServiceProvider';
 import { instance, mock, when } from 'ts-mockito';
-import { NoThreeDSRequestProcessingService } from './processing-services/NoThreeDSRequestProcessingService';
-import { CardinalRequestProcessingService } from './processing-services/CardinalRequestProcessingService';
-import { TPThreeDSRequestProcessingService } from './processing-services/TPThreeDSRequestProcessingService';
 import { ThreeDVerificationProviderName } from '../three-d-verification/data/ThreeDVerificationProviderName';
 import { RequestType } from '../../../../shared/types/RequestType';
 import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
+import { RequestProcessingServiceProvider } from './RequestProcessingServiceProvider';
+import { NoThreeDSRequestProcessingService } from './processing-services/NoThreeDSRequestProcessingService';
+import { CardinalRequestProcessingService } from './processing-services/CardinalRequestProcessingService';
+import { TPThreeDSRequestProcessingService } from './processing-services/TPThreeDSRequestProcessingService';
 
 describe('RequestProcessingServiceProvider', () => {
   const noThreeDSRequestProcessingService = instance(mock(NoThreeDSRequestProcessingService));

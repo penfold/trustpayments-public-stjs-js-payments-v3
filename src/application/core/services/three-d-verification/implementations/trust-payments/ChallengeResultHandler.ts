@@ -1,10 +1,9 @@
-import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { Observable, of, throwError } from 'rxjs';
 import { ChallengeResultInterface, ResultActionCode, ThreeDSecureVersion } from '@trustpayments/3ds-sdk-js';
-import { PAYMENT_CANCELLED, PAYMENT_ERROR } from '../../../../models/constants/Translations';
 import { Service } from 'typedi';
+import { PAYMENT_CANCELLED, PAYMENT_ERROR } from '../../../../models/constants/Translations';
+import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { ThreeDResponseConverter } from './threedresponse-converter/ThreeDResponseConverter';
-import { tap } from 'rxjs/operators';
 
 @Service()
 export class ChallengeResultHandler {

@@ -1,8 +1,8 @@
 import { anyFunction, anything, instance, mock, verify, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { ApplePayClient } from './ApplePayClient';
 import { ApplePayClientInitializer } from './ApplePayClientInitializer';
-import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 
 describe('ApplePayClientInitializer', () => {
   let applePayClientInitializer: ApplePayClientInitializer;

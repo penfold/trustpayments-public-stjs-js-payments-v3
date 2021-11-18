@@ -1,14 +1,14 @@
-import { IApplePaySession } from './IApplePaySession';
 import { IApplePayPaymentAuthorizedEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizedEvent';
 import { IApplePayPaymentMethodSelectedEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentMethodSelectedEvent';
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
 import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingMethodSelectedEvent';
 import { IApplePayValidateMerchantEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantEvent';
 import { IApplePayPaymentAuthorizationResult } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
+import { environment } from '../../../../environments/environment';
 import { IApplePayShippingContactUpdate } from './IApplePayShippingContactUpdate';
 import { IApplePayPaymentMethodUpdate } from './IApplePayPaymentMethodUpdate';
 import { IApplePayShippingMethodUpdate } from './IApplePayShippingMethodUpdate';
-import { environment } from '../../../../environments/environment';
+import { IApplePaySession } from './IApplePaySession';
 
 export class ApplePaySessionMock implements IApplePaySession {
   oncancel: (event: Event) => void;

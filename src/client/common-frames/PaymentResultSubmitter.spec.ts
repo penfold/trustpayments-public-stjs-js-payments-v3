@@ -1,7 +1,7 @@
-import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
-import { PaymentResultSubmitter } from './PaymentResultSubmitter';
 import { instance, mock, when } from 'ts-mockito';
+import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { DomMethods } from '../../application/core/shared/dom-methods/DomMethods';
+import { PaymentResultSubmitter } from './PaymentResultSubmitter';
 
 describe('PaymentResultSubmitter', () => {
   let configProviderMock: ConfigProvider;

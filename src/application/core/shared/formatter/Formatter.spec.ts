@@ -1,5 +1,5 @@
-import { Formatter } from './Formatter';
 import { EXPIRATION_DATE_INPUT } from '../../models/constants/Selectors';
+import { Formatter } from './Formatter';
 
 jest.mock('./../notification/Notification');
 

@@ -1,8 +1,8 @@
-import { FrameIdentifier } from '../../../shared/services/message-bus/FrameIdentifier';
 import { ContainerInstance } from 'typedi';
+import { instance, mock, verify, when } from 'ts-mockito';
+import { FrameIdentifier } from '../../../shared/services/message-bus/FrameIdentifier';
 import { CombinedReducerFactory } from './CombinedReducerFactory';
 import { StoreFactory } from './StoreFactory';
-import { instance, mock, verify, when } from 'ts-mockito';
 import { CombinedReducer } from './CombinedReducer';
 import { ParentFrameStore } from './store/ParentFrameStore';
 import { ControlFrameStore } from './store/ControlFrameStore';

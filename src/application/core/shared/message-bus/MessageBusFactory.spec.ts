@@ -1,7 +1,7 @@
-import { FrameIdentifier } from '../../../../shared/services/message-bus/FrameIdentifier';
 import { ContainerInstance } from 'typedi';
-import { MessageBusFactory } from './MessageBusFactory';
 import { instance, mock, when } from 'ts-mockito';
+import { FrameIdentifier } from '../../../../shared/services/message-bus/FrameIdentifier';
+import { MessageBusFactory } from './MessageBusFactory';
 import { ParentFrameMessageBus } from './ParentFrameMessageBus';
 import { ControlFrameMessageBus } from './ControlFrameMessageBus';
 import { ApplicationFrameMessageBus } from './ApplicationFrameMessageBus';

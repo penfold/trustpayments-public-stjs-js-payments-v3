@@ -1,9 +1,8 @@
-import { Event, EventHint, QueryParams } from '@sentry/types';
-import { EventScrubber } from './EventScrubber';
+import { Event, EventHint } from '@sentry/types';
+import { anything, instance, mock,when } from 'ts-mockito';
 import { GatewayError } from '../../../application/core/services/st-codec/GatewayError';
+import { EventScrubber } from './EventScrubber';
 import { JwtMasker } from './JwtMasker';
-import { anything, instance, mock, spy, verify, when } from 'ts-mockito';
-import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 
 describe('EventScrubber', () => {
   let eventScrubber: EventScrubber;
@@ -33,7 +32,6 @@ describe('EventScrubber', () => {
       foo: 'bar',
     });
   });
-
 
   it('filters out gateway errors', () => {
     const event: Event = {};

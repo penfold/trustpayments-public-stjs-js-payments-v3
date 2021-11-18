@@ -2,10 +2,10 @@ import { from, Observable } from 'rxjs';
 import { Service } from 'typedi';
 import { IApplePayPaymentMethodSelectedEvent } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentMethodSelectedEvent';
 import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
-import { IApplePaySession } from './IApplePaySession';
 import { IApplePayShippingMethodSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingMethodSelectedEvent';
 import { IApplePayShippingContactSelectedEvent } from '../apple-pay-shipping-data/IApplePayShippingContactSelectedEvent';
 import { IApplePayPaymentAuthorizationResult } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentAuthorizationResult ';
+import { IApplePaySession } from './IApplePaySession';
 import { ILegacyApplePaySessionWrapper } from './ILegacyApplePaySessionWrapper';
 
 @Service()

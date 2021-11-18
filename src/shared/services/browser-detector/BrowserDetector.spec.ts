@@ -1,5 +1,5 @@
-import { BrowserDetector } from './BrowserDetector';
 import { instance, mock, when } from 'ts-mockito';
+import { BrowserDetector } from './BrowserDetector';
 import { BrowserSupport } from './browser-support/BrowserSupport';
 import { DeviceSupport } from './device-support/DeviceSupport';
 

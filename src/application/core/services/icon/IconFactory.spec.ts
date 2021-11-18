@@ -1,6 +1,6 @@
+import { mock, instance as mockInstance, when } from 'ts-mockito';
 import { IconFactory } from './IconFactory';
 import { IconMap, mapIcon } from './IconMap';
-import { mock, instance as mockInstance, when } from 'ts-mockito';
 
 describe('IconFactory', () => {
   const iconMap: IconMap = mock(IconMap);

@@ -1,13 +1,13 @@
-import { JsInitResponseService } from '../three-d-verification/JsInitResponseService';
-import { RequestProcessingServiceProvider } from './RequestProcessingServiceProvider';
-import { RequestProcessingInitializer } from './RequestProcessingInitializer';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
+import { of } from 'rxjs';
+import { JsInitResponseService } from '../three-d-verification/JsInitResponseService';
 import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { ThreeDVerificationProviderName } from '../three-d-verification/data/ThreeDVerificationProviderName';
-import { of } from 'rxjs';
-import { IRequestProcessingService } from './IRequestProcessingService';
 import { RemainingRequestTypesProvider } from '../three-d-verification/RemainingRequestTypesProvider';
 import { RequestType } from '../../../../shared/types/RequestType';
+import { IRequestProcessingService } from './IRequestProcessingService';
+import { RequestProcessingInitializer } from './RequestProcessingInitializer';
+import { RequestProcessingServiceProvider } from './RequestProcessingServiceProvider';
 
 describe('RequestProcessingInitializer', () => {
   let jsInitResponseServiceMock: JsInitResponseService;

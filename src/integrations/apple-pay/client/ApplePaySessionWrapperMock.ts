@@ -1,7 +1,7 @@
+import { Service } from 'typedi';
 import { IApplePaySessionWrapper } from './interfaces/IApplePaySessionWrapper';
 import { IApplePayPaymentRequest } from './interfaces/IApplePayPaymentRequest';
 import { IApplePaySession } from './IApplePaySession';
-import { Service } from 'typedi';
 import { ApplePaySessionMock } from './ApplePaySessionMock';
 
 @Service()

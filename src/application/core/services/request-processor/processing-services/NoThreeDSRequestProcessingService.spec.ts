@@ -1,13 +1,13 @@
 import { mock, instance, when, verify, anything, deepEqual } from 'ts-mockito';
+import { of } from 'rxjs';
 import { RequestProcessingChainFactory } from '../RequestProcessingChainFactory';
-import { NoThreeDSRequestProcessingService } from './NoThreeDSRequestProcessingService';
 import { RequestProcessingChain } from '../RequestProcessingChain';
 import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { CacheTokenRequestProcessor } from '../request-processors/CacheTokenRequestProcessor';
 import { FraudControlRequestProcessor } from '../request-processors/FraudControlRequestProcessor';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { IStRequest } from '../../../models/IStRequest';
-import { of } from 'rxjs';
+import { NoThreeDSRequestProcessingService } from './NoThreeDSRequestProcessingService';
 
 describe('NoThreeDSRequestProcessingService', () => {
   let requestProcessingChainFactoryMock: RequestProcessingChainFactory;

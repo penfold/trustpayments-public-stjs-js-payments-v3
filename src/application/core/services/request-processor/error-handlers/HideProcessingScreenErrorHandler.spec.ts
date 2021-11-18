@@ -1,12 +1,12 @@
-import { HideProcessingScreenErrorHandler } from './HideProcessingScreenErrorHandler';
-import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { deepEqual, instance, mock, verify } from 'ts-mockito';
+import { of } from 'rxjs';
+import { IMessageBus } from '../../../shared/message-bus/IMessageBus';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
 import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { ThreeDVerificationProviderName } from '../../three-d-verification/data/ThreeDVerificationProviderName';
-import { of } from 'rxjs';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
 import { EventScope } from '../../../models/constants/EventScope';
+import { HideProcessingScreenErrorHandler } from './HideProcessingScreenErrorHandler';
 
 describe('HideProcessingScreenErrorHandler', () => {
   const sampleError = new Error();

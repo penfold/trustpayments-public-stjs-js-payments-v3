@@ -1,13 +1,13 @@
-import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { Service } from 'typedi';
-import { SentryContext } from './SentryContext';
 import { Event, EventHint } from '@sentry/types';
+import { firstValueFrom, Subscription } from 'rxjs';
+import { BrowserOptions } from '@sentry/browser';
+import { ConfigProvider } from '../config-provider/ConfigProvider';
+import { environment } from '../../../environments/environment.rc';
+import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';
-import { firstValueFrom, Subscription } from 'rxjs';
 import { ExceptionsToSkip } from './ExceptionsToSkip';
-import { BrowserOptions } from '@sentry/browser';
-import { environment } from '../../../environments/environment.rc';
 
 @Service()
 export class SentryService {

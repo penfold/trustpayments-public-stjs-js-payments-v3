@@ -5,8 +5,8 @@ import { RequestProcessingChain } from '../RequestProcessingChain';
 import { IThreeDInitResponse } from '../../../models/IThreeDInitResponse';
 import { IRequestTypeResponse } from '../../st-codec/interfaces/IRequestTypeResponse';
 import { IStRequest } from '../../../models/IStRequest';
-import { APMRequestProcessingService } from './APMRequestProcessingService';
 import { TermUrlRequestProcessor } from '../request-processors/TermUrlRequestProcessor';
+import { APMRequestProcessingService } from './APMRequestProcessingService';
 
 describe('APMRequestProcessingService', () => {
   let requestProcessingChainFactoryMock: RequestProcessingChainFactory;

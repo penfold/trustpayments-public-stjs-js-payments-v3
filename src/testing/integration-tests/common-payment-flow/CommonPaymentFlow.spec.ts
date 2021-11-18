@@ -1,20 +1,20 @@
-import { TestPaymentMethod } from './TestPaymentMethod';
 import { Container } from 'typedi';
+import { zip } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { PaymentController } from '../../../application/core/services/payments/PaymentController';
 import { TestConfigProvider } from '../../mocks/TestConfigProvider';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { ConfigProviderToken, MessageBusToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IInitPaymentMethod } from '../../../application/core/services/payments/events/IInitPaymentMethod';
-import { ITestResultData } from './interfaces/ITestResultData';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { IStartPaymentMethod } from '../../../application/core/services/payments/events/IStartPaymentMethod';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
-import { zip } from 'rxjs';
-import { first } from 'rxjs/operators';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { PaymentResultSubmitterSubscriber } from '../../../client/common-frames/PaymentResultSubmitterSubscriber';
+import { ITestResultData } from './interfaces/ITestResultData';
+import { TestPaymentMethod } from './TestPaymentMethod';
 import { ITestStartData } from './interfaces/ITestStartData';
 
 const testPaymentMethodName = 'test';

@@ -1,23 +1,21 @@
-import { CardFrames } from './CardFrames';
-import { FormState } from '../../application/core/models/constants/FormState';
-import { DomMethods } from '../../application/core/shared/dom-methods/DomMethods';
-import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
-import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { anyString, anything, instance as instanceOf, mock, when } from 'ts-mockito';
 import { of } from 'rxjs';
-import { IframeFactory } from '../iframe-factory/IframeFactory';
-import { Frame } from '../../application/core/shared/frame/Frame';
+import Container from 'typedi';
+import { FormState } from '../../application/core/models/constants/FormState';
+import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
+import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
+import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
 import {
   CARD_NUMBER_IFRAME, CARD_NUMBER_INPUT_SELECTOR,
   EXPIRATION_DATE_IFRAME, EXPIRATION_DATE_INPUT_SELECTOR,
   SECURITY_CODE_IFRAME, SECURITY_CODE_INPUT_SELECTOR,
 } from '../../application/core/models/constants/Selectors';
-import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
-import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
-import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
-import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
-import spyOn = jest.spyOn;
-import Container from 'typedi';
+import { Frame } from '../../application/core/shared/frame/Frame';
+import { IframeFactory } from '../iframe-factory/IframeFactory';
+import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
+import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
+import { DomMethods } from '../../application/core/shared/dom-methods/DomMethods';
 import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../../application/core/shared/translator/Translator';
 import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
@@ -25,6 +23,8 @@ import { TranslationProvider } from '../../application/core/shared/translator/Tr
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { EventScope } from '../../application/core/models/constants/EventScope';
 import { PayButton } from '../pay-button/PayButton';
+import { CardFrames } from './CardFrames';
+import spyOn = jest.spyOn;
 
 jest.mock('./../../application/core/shared/notification/Notification');
 jest.mock('./../../application/core/shared/validation/Validation');
@@ -71,7 +71,6 @@ describe('CardFrames', () => {
         origin: '',
       })
     );
-
 
     when(iframeFactory.create(anyString(), anyString(), anything(), anything())).thenCall(
       (name: string, id: string) => {

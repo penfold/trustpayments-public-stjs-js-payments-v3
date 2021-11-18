@@ -1,10 +1,10 @@
+import { ChallengeResultInterface, ResultActionCode } from '@trustpayments/3ds-sdk-js';
+import { Service } from 'typedi';
 import { IThreeDResponseConverter } from '../IThreeDResponseConverter';
 import { UnsignedJwtGenerator } from '../unsigned-jwt-generator/UnsignedJwtGenerator';
-import { ChallengeResultInterface, ResultActionCode } from '@trustpayments/3ds-sdk-js';
 import { Uuid } from '../../../../../../shared/uuid/Uuid';
 import { IThreeDResponseJwt } from '../../data/IThreeDResponseJwt';
 import { IThreeDQueryResponse } from '../../../../../../models/IThreeDQueryResponse';
-import { Service } from 'typedi';
 
 @Service()
 export abstract class AbstractThreeDResponseConverter implements IThreeDResponseConverter {

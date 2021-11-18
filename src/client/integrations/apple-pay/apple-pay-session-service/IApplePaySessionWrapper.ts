@@ -1,6 +1,6 @@
+import { Service } from 'typedi';
 import { IApplePayPaymentRequest } from '../../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePaySession } from './IApplePaySession';
-import { Service } from 'typedi';
 
 @Service()
 export abstract class IApplePaySessionWrapper {

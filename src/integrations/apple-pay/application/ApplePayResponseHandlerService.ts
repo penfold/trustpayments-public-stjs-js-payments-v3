@@ -1,9 +1,9 @@
 import { Service } from 'typedi';
+import { Observable, Observer, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
-import { Observable, Observer, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 
 @Service()

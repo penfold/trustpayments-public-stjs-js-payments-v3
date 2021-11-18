@@ -1,5 +1,5 @@
-import SpyInstance = jest.SpyInstance;
 import { DomMethods } from './DomMethods';
+import SpyInstance = jest.SpyInstance;
 
 describe('DomMethods', () => {
   beforeEach(() => {

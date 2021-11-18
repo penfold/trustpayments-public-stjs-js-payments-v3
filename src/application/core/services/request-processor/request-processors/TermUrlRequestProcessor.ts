@@ -1,10 +1,10 @@
-import { IRequestProcessor } from '../IRequestProcessor';
 import { Service } from 'typedi';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { IRequestProcessor } from '../IRequestProcessor';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
-import { Observable } from 'rxjs';
 import { RemainingRequestTypesProvider } from '../../three-d-verification/RemainingRequestTypesProvider';
-import { map } from 'rxjs/operators';
 import { RequestType } from '../../../../../shared/types/RequestType';
 
 @Service()

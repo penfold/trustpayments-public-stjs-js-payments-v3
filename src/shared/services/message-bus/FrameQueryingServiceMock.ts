@@ -1,7 +1,7 @@
-import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { EMPTY, Observable, ReplaySubject } from 'rxjs';
-import { QueryResponder } from './types/QueryResponder';
 import { take } from 'rxjs/operators';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { QueryResponder } from './types/QueryResponder';
 import { IFrameQueryingService } from './interfaces/IFrameQueryingService';
 
 export class FrameQueryingServiceMock implements IFrameQueryingService {

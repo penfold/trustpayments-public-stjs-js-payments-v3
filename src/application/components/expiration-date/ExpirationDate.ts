@@ -1,3 +1,4 @@
+import { Service } from 'typedi';
 import { FormState } from '../../core/models/constants/FormState';
 import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
 import { Formatter } from '../../core/shared/formatter/Formatter';
@@ -9,7 +10,6 @@ import {
   EXPIRATION_DATE_MESSAGE,
   EXPIRATION_DATE_WRAPPER,
 } from '../../core/models/constants/Selectors';
-import { Service } from 'typedi';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { Styler } from '../../core/shared/styler/Styler';

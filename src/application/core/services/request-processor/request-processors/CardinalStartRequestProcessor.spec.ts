@@ -1,10 +1,10 @@
 import { mock, instance, when, verify, anything, deepEqual } from 'ts-mockito';
 import { InterFrameCommunicator } from '../../../../../shared/services/message-bus/InterFrameCommunicator';
-import { CardinalStartRequestProcessor } from './CardinalStartRequestProcessor';
 import { IStRequest } from '../../../models/IStRequest';
 import { IRequestProcessingOptions } from '../IRequestProcessingOptions';
 import { MERCHANT_PARENT_FRAME } from '../../../models/constants/Selectors';
 import { PUBLIC_EVENTS } from '../../../models/constants/EventTypes';
+import { CardinalStartRequestProcessor } from './CardinalStartRequestProcessor';
 
 describe('CardinalStartRequestProcessor', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;

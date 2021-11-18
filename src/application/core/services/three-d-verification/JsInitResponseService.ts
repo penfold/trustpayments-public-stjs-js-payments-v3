@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs';
-import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { Service } from 'typedi';
+import { shareReplay, startWith, switchMap } from 'rxjs/operators';
+import { IThreeDInitResponse } from '../../models/IThreeDInitResponse';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
-import { shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { IGatewayClient } from '../gateway-client/IGatewayClient';
 

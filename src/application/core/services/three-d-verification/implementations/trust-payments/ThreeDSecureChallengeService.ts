@@ -1,15 +1,15 @@
-import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { from, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { ChallengeResultInterface, ThreeDSecureVersion, CardType } from '@trustpayments/3ds-sdk-js';
+import { Service } from 'typedi';
+import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { IMessageBusEvent } from '../../../../models/IMessageBusEvent';
 import { IChallengeData } from '../../../../../../client/integrations/three-d-secure/IChallengeData';
 import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
-import { switchMap } from 'rxjs/operators';
-import { ChallengeResultInterface, ThreeDSecureVersion, CardType } from '@trustpayments/3ds-sdk-js';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
-import { ChallengeResultHandler } from './ChallengeResultHandler';
-import { Service } from 'typedi';
 import { environment } from '../../../../../../environments/environment';
+import { ChallengeResultHandler } from './ChallengeResultHandler';
 
 @Service()
 export class ThreeDSecureChallengeService {
