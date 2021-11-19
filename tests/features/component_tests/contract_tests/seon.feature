@@ -45,7 +45,6 @@ Feature: SEON
     When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay button
     Then User will see notification frame text: "Payment has been successfully processed"
-    And RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH ware sent only once in one request
     And following requests were sent only once with 'fraudcontroltransactionid' flag
       | request_type                             |
       | RISKDEC, ACCOUNTCHECK, THREEDQUERY, AUTH |
@@ -100,7 +99,7 @@ Feature: SEON
     And following requests were sent only once with 'fraudcontroltransactionid' flag
       | request_type      |
       | THREEDQUERY, AUTH |
-  
+
   Scenario: SEON - successful payment on example page with enabled Content Security Policy
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
