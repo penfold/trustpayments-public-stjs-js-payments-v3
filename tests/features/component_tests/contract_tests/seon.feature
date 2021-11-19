@@ -68,3 +68,37 @@ Feature: SEON
       | request_type      |
       | THREEDQUERY, AUTH |
       | AUTH              |
+
+  Scenario: SEON - verify 'fraudcontroltransactionid' flag is not added to requests after update jwt with fraudControl
+    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And Frictionless card payment mock responses are set as JSINIT_UPDATED_JWT and payment status SUCCESS
+    And User opens page WITH_UPDATE_JWT and jwt BASE_UPDATED_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+    And User calls updateJWT function by filling amount field
+    And User clicks Pay button
+    Then User will see notification frame text: "Payment has been successfully processed"
+    And following requests were sent only once without 'fraudcontroltransactionid' flag
+      | request_type      |
+      | THREEDQUERY, AUTH |
+      | AUTH              |
+
+  Scenario: SEON - verify 'fraudcontroltransactionid' flag is added to requests after update jwt without fraudControl
+    Given JS library configured by inline params JSINIT_UPDATED_JWT and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    And Frictionless card payment mock responses are set as BASIC_CONFIG and payment status SUCCESS
+    And User opens page WITH_UPDATE_JWT and jwt BASE_UPDATED_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+    When User fills payment form with defined card MASTERCARD_SUCCESSFUL_FRICTIONLESS_AUTH
+    And User calls updateJWT function by filling amount field
+    And User clicks Pay button
+    Then User will see notification frame text: "Payment has been successfully processed"
+    And following requests were sent only once with 'fraudcontroltransactionid' flag
+      | request_type      |
+      | THREEDQUERY, AUTH |
+      | AUTH              |

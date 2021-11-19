@@ -24,3 +24,4 @@ class ConfigJwt(Enum):
     JWT_WITH_MAINAMOUNT = 'jwt_with_mainamount.json'
     JWT_WITH_MAINAMOUNT_AND_FRICTIONLESS = 'jwt_with_mainamount_and_frictionless.json'
     JWT_WITH_FRAUD_CONTROL = 'jwt_with_fraudcontroltransactionid.json'
+    JWT_WITH_NON_FRICTIONLESS_FRAUD_CONTROL = 'jwt_config_non_frictionless_fraudcontrol.json'
