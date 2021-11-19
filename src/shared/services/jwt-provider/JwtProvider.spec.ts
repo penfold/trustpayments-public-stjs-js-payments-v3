@@ -34,7 +34,9 @@ describe('JwtProvider', () => {
         done();
       });
     });
+  });
 
+  describe('getJwtPayload()', () => {
     it('returns decoded jwt payload from config', done => {
       jwtProvider.getJwtPayload().subscribe(result => {
         expect(result).toBe(payload);

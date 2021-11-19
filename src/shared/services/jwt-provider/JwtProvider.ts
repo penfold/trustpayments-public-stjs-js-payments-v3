@@ -1,4 +1,4 @@
-import { map } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Service } from 'typedi';
 import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
@@ -21,7 +21,7 @@ export class JwtProvider {
 
   getRawJwt(): Observable<string> {
     return this.configProvider.getConfig$().pipe(
-      map(config => config.jwt),
+      pluck('jwt'),
     );
   }
 }
