@@ -320,6 +320,7 @@ class PaymentMethodsPage(BasePage):
         self._actions.switch_to_iframe(FieldType.CARDINAL_IFRAME.value)
         self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.cardinal_v2_authentication_code_field)
         self._actions.click(PaymentMethodsLocators.cardinal_v2_authentication_cancel_btn)
+        self._actions.switch_to_default_content()
 
     def fill_cardinal_authentication_code(self, auth_type):
         auth = AuthType.__members__[auth_type].name  # pylint: disable=unsubscriptable-object
