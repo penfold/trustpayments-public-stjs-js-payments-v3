@@ -4,7 +4,7 @@ import { IFraudControlDataProvider } from './IFraudControlDataProvider';
 
 @Service()
 export class DisabledFraudControlDataProvider implements IFraudControlDataProvider {
-  init(): Observable<void> {
+  init(): Observable<undefined> {
     return of(undefined);
   }
 

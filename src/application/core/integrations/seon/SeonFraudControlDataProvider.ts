@@ -11,7 +11,7 @@ import { BrowserDetector } from '../../../../shared/services/browser-detector/Br
 
 @Service()
 export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
-  private initResult: Observable<void>;
+  private initResult: Observable<undefined>;
 
   constructor(
     @Inject(WINDOW) private window: Window,
@@ -20,7 +20,7 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
   ) {
   }
 
-  init(): Observable<void> {
+  init(): Observable<undefined> {
     if (!this.initResult) {
       this.initResult = this.insertSeonLibrary().pipe(
         switchMap(() => this.configureSeon()),
@@ -51,7 +51,7 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
     return from(DomMethods.insertScript('head', { src: environment.SEON.LIBRARY_URL }));
   }
 
-  private configureSeon(): Observable<void> {
+  private configureSeon(): Observable<undefined> {
     return new Observable(observer => {
       this.window.seon.config({
         host: this.getHostname(),

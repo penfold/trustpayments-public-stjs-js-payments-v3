@@ -4,7 +4,7 @@ import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudCo
 
 @Service()
 export class SeonFraudControlDataProviderMock implements IFraudControlDataProvider {
-  init(): Observable<void> {
+  init(): Observable<undefined> {
     return of(undefined);
   }
 

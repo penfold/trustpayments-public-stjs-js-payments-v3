@@ -26,7 +26,7 @@ export class Cybertonica implements ICybertonica, IFraudControlDataProvider {
   constructor(@Inject(WINDOW) private window: Window, private configProvider: ConfigProvider) {
   }
 
-  init(): Observable<void> {
+  init(): Observable<undefined> {
     if (!this.initialized) {
       this.initialized = true;
       this.configProvider.getConfig$().pipe(
