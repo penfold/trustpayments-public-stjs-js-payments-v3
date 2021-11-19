@@ -1,5 +1,5 @@
 import Container, { ContainerInstance } from 'typedi';
-import { instance, mock, verify, when } from 'ts-mockito';
+import { anything, instance, mock, spy, verify, when } from 'ts-mockito';
 import { BrowserLocalStorage } from '../../shared/services/storage/BrowserLocalStorage';
 import { SentryService } from '../../shared/services/sentry/SentryService';
 import { MessageSubscriberRegistry } from '../../shared/services/message-bus/MessageSubscriberRegistry';
@@ -116,12 +116,15 @@ describe('ClientBootstrap', () => {
       verify(messageSubscriberRegistryMock.register(messageSubscriberOne, messageSubscriberTwo)).once();
     });
 
-    it('throws error when initializing the library twice', () => {
+    it('logs message and destoys previous instance when initializing the library twice', () => {
+      const consoleSpy = spy(console);
+      when(consoleSpy.warn(anything())).thenReturn(undefined);
+      
       clientBootstrap.run(config);
-
-      expect(() => clientBootstrap.run(config)).toThrowError(
-        'Cannot init, ST instance already running. Call destroy() method first.'
-      );
+      clientBootstrap.run(config);
+      
+      verify(stMock.destroy()).once();
+      verify(consoleSpy.warn('The current instance of ST has been destroyed as a result of starting ST again')).once();
     });
 
     it('allows the second initialization after destroy has been called', () => {
