@@ -489,7 +489,7 @@ def step_impl(context, button_type):
         payment_page.click_cancel_btn_on_apple_pay_popup()
 
 
-@then("User will see SEON object in logs area")
+@then('User will see SEON object in logs area')
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     payment_page.validate_seon_object()

@@ -14,4 +14,3 @@ class ExamplePageParam(Enum):
     WITH_SPECIFIC_IFRAME = 'iframe.html?iframeName=testFrame'
     WITH_CSP = 'minimal-content-security-header.html'
     WITH_SEON_OBJECT = 'fraudControl=true'
-

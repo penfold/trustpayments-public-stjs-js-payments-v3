@@ -463,7 +463,7 @@ Feature: ApplePay
       | WALLETVERIFY               |
       | ACCOUNTCHECK, SUBSCRIPTION |
 
-  @apple_test_part2 @ms
+  @apple_test_part2
   Scenario: ApplePay - SEON - 'fraudcontroltransactionid' flag is added to AUTH requests during payment
     Given JS library configured by inline params APPLE_PAY_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
