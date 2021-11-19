@@ -28,7 +28,8 @@ export class ClientBootstrap {
 
   run(config: IConfig): ST {
     if (this.isAlreadyRunning) {
-      throw new Error('Cannot init, ST instance already running. Call destroy() method first.');
+      this.container.get(ST).destroy();
+      console.warn('The current instance of ST has been destroyed as a result of starting ST again');
     }
 
     this.isAlreadyRunning = true;

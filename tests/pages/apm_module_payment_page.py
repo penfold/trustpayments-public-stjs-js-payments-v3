@@ -53,8 +53,5 @@ class ApmModulePaymentPage(BasePage):
     def click_cancel_transaction_btn_on_sofort_page(self):
         self._actions.click_by_javascript(PaymentMethodsLocators.sofort_cancel_transaction_btn)
 
-    def click_allow_btn_on_zip_example_page(self):
-        self._actions.click(PaymentMethodsLocators.zip_allow_btn)
-
-    def click_decline_btn_on_zip_example_page(self):
-        self._actions.click(PaymentMethodsLocators.zip_decline_btn)
+    def click_cancel_btn_on_zip_sandbox_page(self):
+        self._actions.click(PaymentMethodsLocators.zip_cancel_btn)
