@@ -10,7 +10,7 @@ import { FrameIdentifier } from '../../../../shared/services/message-bus/FrameId
 import { BrowserDetector } from '../../../../shared/services/browser-detector/BrowserDetector';
 
 @Service()
-export class SeonFraudControlDataProvider implements IFraudControlDataProvider<undefined> {
+export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
   private initResult: Observable<void>;
 
   constructor(

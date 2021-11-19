@@ -7,12 +7,12 @@ import { IFraudControlDataProvider } from './IFraudControlDataProvider';
 describe('FraudControlService', () => {
   const TID = '343d7850-5cfc-4f5a-b8d0-c06e6af3d556';
   let fraudControlServiceSelectorMock: FraudControlServiceSelector;
-  let fraudControlDataProviderMock: IFraudControlDataProvider<unknown>;
+  let fraudControlDataProviderMock: IFraudControlDataProvider;
   let fraudControlService: FraudControlService;
 
   beforeEach(() => {
     fraudControlServiceSelectorMock = mock(FraudControlServiceSelector);
-    fraudControlDataProviderMock = mock<IFraudControlDataProvider<unknown>>();
+    fraudControlDataProviderMock = mock<IFraudControlDataProvider>();
     fraudControlService = new FraudControlService(
       instance(fraudControlServiceSelectorMock),
     );

@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-export interface IFraudControlDataProvider<T> {
-  init(initData: T): Observable<void>;
+export interface IFraudControlDataProvider {
+  init(): Observable<void>;
   getTransactionId(): Observable<string | null>;
 }
