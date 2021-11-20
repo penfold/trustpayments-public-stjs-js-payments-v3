@@ -74,6 +74,7 @@ class PaymentMethodsPage(BasePage):
         return self._actions.get_text_with_wait(PaymentMethodsLocators.browser_info_callback)
 
     def get_seon_object_from_logs_area(self):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.seon_object)
         return self._actions.get_text_with_wait(PaymentMethodsLocators.seon_object)
 
     # Card Form
