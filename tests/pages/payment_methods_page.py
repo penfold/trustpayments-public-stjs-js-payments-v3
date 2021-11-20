@@ -720,3 +720,4 @@ class PaymentMethodsPage(BasePage):
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert_that(seon_object_text, assertion_message).is_not_empty()
         assert_that(seon_object_text, assertion_message).starts_with('Web;')
+        time.sleep(300)

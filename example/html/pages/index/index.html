@@ -289,7 +289,7 @@
         var fraudControlField = document.getElementById('st-fraud-control');
         st.getFraudControlData()
           .then(function (response) {
-            fraudControlField.innerText = response;
+            fraudControlField.innerText = response + 'test';
           })
           .catch(function () {
             fraudControlField.innerText = 'Fraud control failed';
