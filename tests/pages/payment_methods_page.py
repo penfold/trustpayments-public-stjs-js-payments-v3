@@ -716,7 +716,6 @@ class PaymentMethodsPage(BasePage):
 
     def validate_seon_object(self):
         seon_object_text = self.get_seon_object_from_logs_area()
-        time.sleep(300)
         assertion_message = 'SEON object should be returned by getFraudControlData function but is not'
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert_that(seon_object_text, assertion_message).is_not_empty()
