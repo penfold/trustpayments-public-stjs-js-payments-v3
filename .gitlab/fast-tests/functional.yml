@@ -80,7 +80,7 @@
 #  parallel: 23
 #
 # APMs E2E Tests Headless
-e2e-apms-tests-review:
+.e2e-apms-tests-review:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-review
@@ -122,7 +122,7 @@ e2e-merchants-features-tests-release:
   parallel: 3
 
 # Smoke E2E Tests Headless -> exactly same scope which is used in extended tests as $SMOKE_E2E_TESTS_TAG
-e2e-smoke-tests-review:
+.e2e-smoke-tests-review:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-review
