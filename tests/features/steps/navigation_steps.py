@@ -133,6 +133,7 @@ def step_impl(context):
         url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.INLINE_E2E_CONFIG}'
     else:
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.INLINE_E2E_CONFIG}'
+    url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
     payment_page.open_page(url)
