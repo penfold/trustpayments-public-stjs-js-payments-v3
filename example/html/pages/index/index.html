@@ -295,7 +295,7 @@
             fraudControlField.innerText = 'Fraud control failed';
           });
       }
-
+      getSeonObject(st);
       updateJwtListener(st, updatedJwt);
 
       st.on('paymentInitStarted', function (data) {
@@ -331,6 +331,20 @@
     function updateJwtListener(st, updatedJwt) {
       document.getElementById('example-form-amount').addEventListener('input', function () {
           st.updateJWT(updatedJwt);
+        }
+      );
+    }
+
+    function getSeonObject(st) {
+      document.getElementById('st-form-phone').addEventListener('input', function () {
+          var fraudControlField = document.getElementById('st-fraud-control');
+        st.getFraudControlData()
+          .then(function (response) {
+            fraudControlField.innerText = response + 'test';
+          })
+          .catch(function () {
+            fraudControlField.innerText = 'Fraud control failed';
+          });
         }
       );
     }

@@ -467,6 +467,12 @@ def step_impl(context, name, email, phone):
     payment_page.fill_merchant_form(name, email, phone)
 
 
+@step('User fills phone number field (?P<phone>.+)')
+def step_impl(context, phone):
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.fill_merchant_input_field('PHONE', phone)
+
+
 @then('User will see that browser is marked as supported: "(?P<is_supported>.+)"')
 def step_impl(context, is_supported):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)

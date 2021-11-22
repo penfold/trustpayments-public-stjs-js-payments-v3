@@ -35,7 +35,6 @@ def step_impl(context, language):
 @step('User opens (?:example page|example page (?P<example_page>.+))')
 def step_impl(context, example_page):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    time.sleep(9000)
     if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
     # setting url specific params accordingly to example page
