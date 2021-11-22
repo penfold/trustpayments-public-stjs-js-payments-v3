@@ -32,8 +32,6 @@
 
     <div id="st-browser-info" class="st-form__group"></div>
 
-    <div id="st-fraud-control" class="st-form__group"></div>
-
     <fieldset class="st-form__fieldset">
       <legend>Payment details:</legend>
       <div class="st-form__section st-form__section--horizontal">
@@ -183,7 +181,6 @@
     var jwt = params.get('jwt') || '';
     var updatedJwt = params.get('updatedJwt') || '';
     var browserInfo = params.get('browserInfo');
-    var fraudControl = params.get('fraudControl');
 
     Promise.all([getConfig(), getAPMsConfig()])
       .then(function (configValues) {
@@ -196,7 +193,7 @@
         }
 
         addClickHandler('st-action-start', function () {
-          init(config, apmConfig);
+          init(config);
         });
         addClickHandler('st-action-destroy', function () {
           st.destroy();
@@ -273,7 +270,7 @@
 
     function init(config, apmConfig) {
       setCallbacks(config);
-     if (!validDataCenterUrl(config.datacenterurl)) {
+      if (!validDataCenterUrl(config.datacenterurl)) {
         console.error('"datacenterurl" must be one of [https://webservices.securetrading.net/jwt/, https://webservices.securetrading.us/jwt/]');
         return;
       }
@@ -282,18 +279,11 @@
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
       st.GooglePay(config.googlePay);
+      st.Cybertonica().then(function (response) {
+        console.log(response);
+      });
       if (browserInfo === "true") {
         document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
-      }
-      if (fraudControl === "true") {
-        var fraudControlField = document.getElementById('st-fraud-control');
-        st.getFraudControlData()
-          .then(function (response) {
-            fraudControlField.innerText = response;
-          })
-          .catch(function () {
-            fraudControlField.innerText = 'Fraud control failed';
-          });
       }
 
       updateJwtListener(st, updatedJwt);
@@ -324,7 +314,6 @@
         st.APM(apmConfig);
       }
 
-      window.resetCallbackCounter();
       return st;
     }
 
@@ -356,9 +345,7 @@
       var configCallbackKeys = ['submitCallback', 'successCallback', 'cancelCallback', 'errorCallback'];
       configCallbackKeys.forEach(function (callbackKey) {
         var callbackFunctionName = config[callbackKey] || null;
-        if (callbackFunctionName && typeof callbackFunctionName === "function") {
-          config[callbackKey] = callbackFunctionName;
-        } else if (callbackFunctionName && typeof callbackFunctionName === "string" && typeof window.predefinedCallbacks[callbackFunctionName] === "function") {
+        if (callbackFunctionName && typeof window.predefinedCallbacks[callbackFunctionName] === "function") {
           config[callbackKey] = window.predefinedCallbacks[callbackFunctionName];
         } else {
           config[callbackKey] = null;
