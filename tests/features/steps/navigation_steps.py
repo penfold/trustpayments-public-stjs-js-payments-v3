@@ -1,4 +1,6 @@
 # type: ignore[no-redef]
+import time
+
 from behave import use_step_matcher, step, then
 from configuration import CONFIGURATION
 from pages.page_factory import Pages
@@ -115,3 +117,23 @@ def accept_untrusted_pages_on_safari_browsers_mocks(context):
     payment_page.open_page_with_safari_issue_fix(MockUrl.WEBSERVICES_STJS_URI.value)
     payment_page.open_page_with_safari_issue_fix(MockUrl.THIRDPARTY_URL.value)
     accept_untrusted_pages_on_safari_browsers(context)
+
+@step("User opens example page-timeout")
+def step_impl(context):
+    example_page = 'test'
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    if 'Safari' in context.browser:
+        accept_untrusted_pages_on_safari_browsers(context)
+    # setting url specific params accordingly to example page
+    if example_page is None:
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}'
+    elif 'WITH_APM' in example_page:
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}&{context.INLINE_E2E_CONFIG_APM}'
+    elif 'IN_IFRAME' in example_page:
+        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.INLINE_E2E_CONFIG}'
+    else:
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.INLINE_E2E_CONFIG}'
+    url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
+
+    payment_page.open_page(url)
+    time.sleep(9000)
