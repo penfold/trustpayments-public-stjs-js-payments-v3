@@ -14,7 +14,17 @@ export class FraudControlService {
     return this.fraudControlServiceSelector.getFraudControlDataProvider().pipe(
       switchMap(fraudControlDataProvider => fraudControlDataProvider.getTransactionId()),
       timeout(FraudControlService.TIMEOUT),
-      catchError(() => of(null)),
+      catchError(err => {
+        const logs = document.getElementById('st-log-area') as HTMLTextAreaElement;
+
+        console.error(err);
+
+        if (logs) {
+          logs.value += JSON.stringify(err) + '\n';
+        }
+
+        return of(null);
+      }),
     );
   }
 }
