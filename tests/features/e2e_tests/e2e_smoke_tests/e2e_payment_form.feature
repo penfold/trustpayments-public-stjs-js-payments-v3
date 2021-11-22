@@ -19,7 +19,7 @@ Feature: payment form
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page
-    And User waits for Pay button to be active
+
     And User opens example page WITH_SEON_OBJECT
     And User waits for Pay button to be active
     Then User will see SEON object in logs area
