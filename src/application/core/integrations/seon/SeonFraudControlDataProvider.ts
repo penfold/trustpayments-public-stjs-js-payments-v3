@@ -1,6 +1,6 @@
 import { from, Observable, switchMap } from 'rxjs';
 import { Inject, Service } from 'typedi';
-import { shareReplay } from 'rxjs/operators';
+import { shareReplay, tap } from 'rxjs/operators';
 import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudControlDataProvider';
 import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
@@ -21,8 +21,14 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
   }
 
   init(): Observable<undefined> {
+    this.log('SEON INIT CALLED');
     if (!this.initResult) {
+      this.log('INITIATING SEON');
       this.initResult = this.insertSeonLibrary().pipe(
+        tap(() => {
+          this.log('SEON INSERTED');
+          this.log(this.window.seon);
+        }),
         switchMap(() => this.configureSeon()),
         shareReplay(1),
       );
@@ -33,8 +39,11 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
   }
 
   getTransactionId(): Observable<string | null> {
+    this.log('GETTING SEON TRANSACTION DATA');
     return new Observable(observer => {
       this.window.seon.getBase64Session((data: string | null) => {
+        this.log('SEON DATA');
+        this.log(data);
         if (data) {
           observer.next(data);
           observer.complete();
@@ -60,10 +69,15 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
         canvas_fingerprint: true,
         webgl_fingerprint: true,
         onSuccess: () => {
+          this.log('SEON CONFIG SUCCESS');
           observer.next(undefined);
           observer.complete();
         },
-        onError: (message: string) => observer.error(new Error(message)),
+        onError: (message: string) => {
+          this.log('SEON CONFIG ERROR');
+          this.log(message);
+          observer.error(new Error(message));
+        },
       });
     });
   }
@@ -103,5 +117,16 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
     observer.observe(document.body, {
       childList: true,
     });
+  }
+
+  // @ts-ignore
+  private log(data: any): void { // eslint-disable-line
+    const logs = document.getElementById('st-log-area') as HTMLTextAreaElement;
+
+    console.log(data);
+
+    if (logs) {
+      logs.value += JSON.stringify(data) + '\n';
+    }
   }
 }
