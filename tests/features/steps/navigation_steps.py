@@ -118,7 +118,7 @@ def accept_untrusted_pages_on_safari_browsers_mocks(context):
     payment_page.open_page_with_safari_issue_fix(MockUrl.THIRDPARTY_URL.value)
     accept_untrusted_pages_on_safari_browsers(context)
 
-@step("User opens example page-timeout")
+@step('User opens example page-timeout')
 def step_impl(context):
     example_page = 'test'
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
