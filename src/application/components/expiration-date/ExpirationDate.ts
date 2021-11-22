@@ -1,4 +1,6 @@
 import { Service } from 'typedi';
+import { pluck } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { FormState } from '../../core/models/constants/FormState';
 import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
 import { Formatter } from '../../core/shared/formatter/Formatter';
@@ -15,6 +17,10 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { Styler } from '../../core/shared/styler/Styler';
 import { LABEL_EXPIRATION_DATE } from '../../core/models/constants/Translations';
 import { Validation } from '../../core/shared/validation/Validation';
+import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
+import { untilDestroy } from '../../../shared/services/message-bus/operators/untilDestroy';
+import { EventScope } from '../../core/models/constants/EventScope';
 
 @Service()
 export class ExpirationDate extends Input {
@@ -26,13 +32,13 @@ export class ExpirationDate extends Input {
   private static INPUT_PATTERN = '^(0[1-9]|1[0-2])\\/([0-9]{2})$';
 
   private currentKeyCode: number;
-  private inputSelectionEnd: number;
-  private inputSelectionStart: number;
+  private autocompleteCardNumberInput: HTMLInputElement = document.querySelector('#st-expiration-date-input-autocomplete-capture-number');
+  private autocompleteSecurityCodeInput: HTMLInputElement = document.querySelector('#st-expiration-date-input-autocomplete-capture-security-code');
 
   constructor(
     configProvider: ConfigProvider,
     private formatter: Formatter,
-    protected validation: Validation,
+    protected validation: Validation
   ) {
     super(
       EXPIRATION_DATE_INPUT,
@@ -102,6 +108,8 @@ export class ExpirationDate extends Input {
         ]);
       }
     });
+
+    this.initAutocomplete();
   }
 
   getLabel(): string {
@@ -131,6 +139,7 @@ export class ExpirationDate extends Input {
 
   protected onInput(event: Event): void {
     super.onInput(event);
+    this.formatAutocompleteValue();
     this.inputElement.value = this.validation.limitLength(
       this.inputElement.value,
       ExpirationDate.EXPIRATION_DATE_LENGTH
@@ -138,13 +147,12 @@ export class ExpirationDate extends Input {
     this.inputElement.value = this.formatter.date(this.inputElement.value, EXPIRATION_DATE_INPUT);
     this.validation.keepCursorsPosition(this.inputElement);
     this.sendState();
+    this.clearAutocompleteInputs();
   }
 
   protected onKeydown(event: KeyboardEvent): KeyboardEvent {
     super.onKeydown(event);
     this.currentKeyCode = event.keyCode;
-    this.inputSelectionStart = this.inputElement.selectionStart;
-    this.inputSelectionEnd = this.inputElement.selectionEnd;
     return event;
   }
 
@@ -176,5 +184,44 @@ export class ExpirationDate extends Input {
   private enableInputField(): void {
     this.inputElement.removeAttribute(ExpirationDate.DISABLED_ATTRIBUTE);
     this.inputElement.classList.remove(ExpirationDate.DISABLED_CLASS);
+  }
+
+  private initAutocomplete() {
+    this.messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.AUTOCOMPLETE_EXPIRATION_DATE),
+        pluck('data'),
+        filter(value => !this.inputElement.value?.length),
+        untilDestroy(this.messageBus)
+      )
+      .subscribe((expirationDate: string) => {
+        this.inputElement.value = expirationDate;
+        this.formatAutocompleteValue();
+        this.format(this.inputElement.value);
+        this.sendState();
+      });
+
+    this.captureAndEmitAutocomplete(this.autocompleteCardNumberInput, PUBLIC_EVENTS.AUTOCOMPLETE_CARD_NUMBER);
+    this.captureAndEmitAutocomplete(this.autocompleteSecurityCodeInput, PUBLIC_EVENTS.AUTOCOMPLETE_SECURITY_CODE);
+  }
+
+  private captureAndEmitAutocomplete(input: HTMLInputElement, messageType: string) {
+    input.addEventListener('input', (event: Event) => {
+      const value = (event.target as HTMLInputElement).value;
+
+      this.messageBus.publish({
+        type: messageType,
+        data: value,
+      }, EventScope.ALL_FRAMES);
+    });
+  }
+
+  private clearAutocompleteInputs() {
+    this.autocompleteCardNumberInput.value = null;
+    this.autocompleteSecurityCodeInput.value = null;
+  }
+
+  private formatAutocompleteValue() {
+    this.inputElement.value = /\d{2}\/\d{4}/.test(this.inputElement.value) ? this.inputElement.value.replace(/\/\d{2}/, '/') : this.inputElement.value;
   }
 }

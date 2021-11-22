@@ -83,7 +83,20 @@
   }
 }
 
-textarea#st-log-area {
-  font-family: monospace;
-  font-size: 8px;
+%autocomplete-capture-inputs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 0;
+  width: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+
+  > input {
+    appearance: none;
+    height: 0;
+    width: 0;
+    border: 0;
+  }
 }
