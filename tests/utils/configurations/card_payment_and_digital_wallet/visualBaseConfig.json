@@ -1,25 +1,5 @@
 {
   "panIcon": true,
   "submitOnSuccess": false,
-  "applePay": {
-    "buttonStyle": "white-outline",
-    "buttonText": "donate",
-    "merchantId": "merchant.net.securetrading",
-    "paymentRequest": {
-      "countryCode": "US",
-      "currencyCode": "USD",
-      "merchantCapabilities": [
-        "supports3DS",
-        "supportsCredit",
-        "supportsDebit"
-      ],
-      "supportedNetworks": ["masterCard"],
-      "total": {
-        "label": "Trust Payment",
-        "amount": "10.00"
-      }
-    },
-    "placement": "st-apple-pay"
-  }
 }
 

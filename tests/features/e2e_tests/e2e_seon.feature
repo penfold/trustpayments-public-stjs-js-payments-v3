@@ -108,7 +108,7 @@ Feature: E2E SEON
 
 
   Scenario: SEON - successful payment with startOnLoad and fraudcontroltransactionid in jwt payload
-    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_CARD with additional attributes
+    Given JS library configured by inline params START_ON_LOAD_CONFIG and jwt JWT_WITH_NON_FRICTIONLESS_FRAUD_CONTROL with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
     And User opens example page WITHOUT_SUBMIT_BUTTON
