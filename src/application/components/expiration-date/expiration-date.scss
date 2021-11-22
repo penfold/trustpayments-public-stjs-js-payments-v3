@@ -29,3 +29,8 @@ body {
 .expiration-date__message {
   @extend %message;
 }
+
+.expiration-date__autocomplete {
+  @extend %autocomplete-capture-inputs;
+}
+

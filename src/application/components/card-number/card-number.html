@@ -1,21 +1,27 @@
 <div class="st-form-container">
   <form id="st-card-number" class="card-number">
-      <label
-        id="st-card-number-label"
-        for="st-card-number-input"
-        class="card-number__label card-number__label--required"
-      ></label>
-      <div class="st-card-number__wrapper" id="st-card-number-wrapper">
-        <input
-          id="st-card-number-input"
-          class="card-number__input"
-          autocomplete="off"
-          autocorrect="off"
-          spellcheck="false"
-          inputmode="numeric"
-          required
-        />
-        <div id="st-card-number-message" class="card-number__message"></div>
+    <label
+      id="st-card-number-label"
+      for="st-card-number-input"
+      class="card-number__label card-number__label--required"
+    ></label>
+    <div class="st-card-number__wrapper" id="st-card-number-wrapper">
+      <input
+        id="st-card-number-input"
+        class="card-number__input"
+        autocomplete="cc-number"
+        autocorrect="off"
+        spellcheck="false"
+        inputmode="numeric"
+        required
+      />
+      <div id="st-card-number-message" class="card-number__message"></div>
+      <div class="card-number__autocomplete">
+        <input id="st-card-number-input-autocomplete-capture-expiration-date" type="text" autocomplete="cc-exp"
+               tabindex="-1" inputmode="none" />
+        <input id="st-card-number-input-autocomplete-capture-security-code" type="text" autocomplete="cc-csc"
+               tabindex="-1" inputmode="none" />
       </div>
-    </form>
+    </div>
+  </form>
 </div>

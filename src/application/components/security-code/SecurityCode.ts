@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
-import { merge, Observable } from 'rxjs';
+import { merge, Observable, pluck } from 'rxjs';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { FormState } from '../../core/models/constants/FormState';
 import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
@@ -25,6 +25,9 @@ import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLoc
 import { Styler } from '../../core/shared/styler/Styler';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { IStJwtPayload } from '../../core/models/IStJwtPayload';
+import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
+import { untilDestroy } from '../../../shared/services/message-bus/operators/untilDestroy';
+import { EventScope } from '../../core/models/constants/EventScope';
 
 @Service()
 export class SecurityCode extends Input {
@@ -34,13 +37,15 @@ export class SecurityCode extends Input {
   private static DISABLED_CLASS = 'st-input--disabled';
 
   private securityCodeLength: number;
+  private autocompleteCardNumberInput: HTMLInputElement = document.querySelector('#st-security-code-input-autocomplete-capture-number');
+  private autocompleteExpirationDateInput: HTMLInputElement = document.querySelector('#st-security-code-input-autocomplete-capture-expiration-date');
 
   constructor(
     configProvider: ConfigProvider,
     private localStorage: BrowserLocalStorage,
     private formatter: Formatter,
     private jwtDecoder: JwtDecoder,
-    protected validation: Validation,
+    protected validation: Validation
   ) {
     super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider, validation);
     this.securityCodeLength = UNKNOWN_CVC;
@@ -113,8 +118,10 @@ export class SecurityCode extends Input {
     this.validation.backendValidation(
       this.inputElement,
       this.messageElement,
-      MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD,
+      MessageBus.EVENTS.VALIDATE_SECURITY_CODE_FIELD
     );
+
+    this.initAutocomplete();
   }
 
   private getPlaceholder(securityCodeLength: number): string {
@@ -146,16 +153,16 @@ export class SecurityCode extends Input {
     const jwtFromConfig$: Observable<string> = this.configProvider.getConfig$().pipe(map(config => config.jwt));
     const jwtFromUpdate$: Observable<string> = this.messageBus.pipe(
       ofType(MessageBus.EVENTS_PUBLIC.UPDATE_JWT),
-      map(event => event.data.newJwt),
+      map(event => event.data.newJwt)
     );
 
     const cardNumberInput$: Observable<string> = this.messageBus.pipe(
       ofType(MessageBus.EVENTS.CHANGE_CARD_NUMBER),
-      map((event: IMessageBusEvent<IFormFieldState>) => event.data.value),
+      map((event: IMessageBusEvent<IFormFieldState>) => event.data.value)
     );
 
     const cardNumberFromJwt$: Observable<string> = merge(jwtFromConfig$, jwtFromUpdate$).pipe(
-      map(jwt => this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.pan),
+      map(jwt => this.jwtDecoder.decode<IStJwtPayload>(jwt).payload.pan)
     );
 
     const maskedPanFromJsInit$: Observable<string> = this.configProvider
@@ -173,7 +180,7 @@ export class SecurityCode extends Input {
         }
         return iinLookup.lookup(cardNumber).cvcLength[0];
       }),
-      startWith(UNKNOWN_CVC),
+      startWith(UNKNOWN_CVC)
     );
   }
 
@@ -198,6 +205,7 @@ export class SecurityCode extends Input {
     this.setInputValue();
     this.validation.keepCursorsPosition(this.inputElement);
     this.sendState();
+    this.clearAutocompleteInputs();
   }
 
   protected onPaste(event: ClipboardEvent): void {
@@ -215,7 +223,7 @@ export class SecurityCode extends Input {
     this.inputElement.value = this.formatter.code(
       this.inputElement.value,
       this.getMaxSecurityCodeLength(),
-      SECURITY_CODE_INPUT,
+      SECURITY_CODE_INPUT
     );
   }
 
@@ -315,5 +323,40 @@ export class SecurityCode extends Input {
 
   private getMaxSecurityCodeLength(): number {
     return this.securityCodeLength === UNKNOWN_CVC ? LONG_CVC : this.securityCodeLength;
+  }
+
+  private initAutocomplete() {
+    this.messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.AUTOCOMPLETE_SECURITY_CODE),
+        pluck('data'),
+        filter(value => !this.inputElement.value?.length),
+        untilDestroy(this.messageBus)
+      )
+      .subscribe((expirationDate: string) => {
+        this.inputElement.value = expirationDate;
+        this.format(this.inputElement.value);
+        this.setInputValue();
+        this.sendState();
+      });
+
+    this.captureAndEmitAutocomplete(this.autocompleteCardNumberInput, PUBLIC_EVENTS.AUTOCOMPLETE_CARD_NUMBER);
+    this.captureAndEmitAutocomplete(this.autocompleteExpirationDateInput, PUBLIC_EVENTS.AUTOCOMPLETE_EXPIRATION_DATE);
+  }
+
+  private captureAndEmitAutocomplete(input: HTMLInputElement, messageType: string) {
+    input.addEventListener('input', (event: Event) => {
+      const value = (event.target as HTMLInputElement).value;
+
+      this.messageBus.publish({
+        type: messageType,
+        data: value,
+      }, EventScope.ALL_FRAMES);
+    });
+  }
+
+  private clearAutocompleteInputs() {
+    this.autocompleteCardNumberInput.value = null;
+    this.autocompleteExpirationDateInput.value = null;
   }
 }
