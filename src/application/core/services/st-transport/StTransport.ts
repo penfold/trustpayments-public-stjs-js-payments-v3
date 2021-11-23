@@ -9,6 +9,8 @@ import { environment } from '../../../../environments/environment';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { InvalidResponseError } from '../st-codec/InvalidResponseError';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
 
 interface IFetchOptions {
   headers: {
@@ -42,7 +44,7 @@ export class StTransport {
   private config: IConfig;
   private codec: StCodec;
 
-  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder) {}
+  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder, private sentryService: SentryService) {}
 
   /**
    * Perform a JSON API request with ST
@@ -99,6 +101,8 @@ export class StTransport {
     })
       .then(codec.decode)
       .catch((error: Error | unknown) => {
+        this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', new Error('timeout')));
+
         if (error instanceof InvalidResponseError) {
           return Promise.reject(error);
         }

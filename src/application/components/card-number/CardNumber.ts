@@ -1,6 +1,7 @@
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { Service } from 'typedi';
-import { takeUntil } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
+import { pluck } from 'rxjs';
 import { FormState } from '../../core/models/constants/FormState';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
@@ -23,6 +24,7 @@ import {
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { EventScope } from '../../core/models/constants/EventScope';
+import { untilDestroy } from '../../../shared/services/message-bus/operators/untilDestroy';
 
 @Service()
 export class CardNumber extends Input {
@@ -39,13 +41,15 @@ export class CardNumber extends Input {
   private cardNumberValue: string;
   private isCardNumberValid: boolean;
   private fieldInstance: HTMLInputElement = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
+  private autocompleteCaptureExpirationDateInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-expiration-date');
+  private autocompleteCaptureSecurityCodeInput: HTMLInputElement = document.querySelector('#st-card-number-input-autocomplete-capture-security-code');
   private readonly cardNumberField: HTMLInputElement;
 
   constructor(
     configProvider: ConfigProvider,
     private iconFactory: IconFactory,
     private formatter: Formatter,
-    protected validation: Validation,
+    protected validation: Validation
   ) {
     super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER, configProvider, validation);
     this.cardNumberField = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
@@ -59,7 +63,7 @@ export class CardNumber extends Input {
     this.validation.backendValidation(
       this.inputElement,
       this.messageElement,
-      MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD,
+      MessageBus.EVENTS.VALIDATE_CARD_NUMBER_FIELD
     );
     this.sendState();
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
@@ -112,12 +116,13 @@ export class CardNumber extends Input {
         ]);
       }
 
-      const destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
-      this.messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), takeUntil(destroy$)).subscribe(() => {
+      this.messageBus.pipe(ofType(PUBLIC_EVENTS.UPDATE_JWT), untilDestroy(this.messageBus)).subscribe(() => {
         this.placeholder = this.translator.translate(config.placeholders.pan) || '';
         this.inputElement.setAttribute(CardNumber.PLACEHOLDER_ATTRIBUTE, this.placeholder);
       });
     });
+
+    this.initAutocomplete();
   }
 
   protected getLabel(): string {
@@ -134,6 +139,7 @@ export class CardNumber extends Input {
     super.onInput(event);
     this.setInputValue();
     this.sendState();
+    this.clearAutocompleteInputs();
   }
 
   protected onPaste(event: ClipboardEvent): void {
@@ -276,8 +282,44 @@ export class CardNumber extends Input {
         data: CardNumber.getCardNumberForBinProcess(value),
         type: MessageBus.EVENTS_PUBLIC.BIN_PROCESS,
       };
-      this.messageBus.publish(binProcessEvent,  EventScope.ALL_FRAMES);
+      this.messageBus.publish(binProcessEvent, EventScope.ALL_FRAMES);
     }
     this.messageBus.publish(messageBusEvent);
+  }
+
+  private initAutocomplete() {
+    this.messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.AUTOCOMPLETE_CARD_NUMBER),
+        pluck('data'),
+        filter(value => !this.inputElement.value?.length),
+        untilDestroy<string>(this.messageBus)
+      )
+      .subscribe((cardNumber: string) => {
+        this.inputElement.value = cardNumber;
+        this.format(this.inputElement.value);
+        this.setInputValue();
+        this.sendState();
+        this.clearAutocompleteInputs();
+      });
+
+    this.captureAndEmitAutocomplete(this.autocompleteCaptureExpirationDateInput, PUBLIC_EVENTS.AUTOCOMPLETE_EXPIRATION_DATE);
+    this.captureAndEmitAutocomplete(this.autocompleteCaptureSecurityCodeInput, PUBLIC_EVENTS.AUTOCOMPLETE_SECURITY_CODE);
+  }
+
+  private captureAndEmitAutocomplete(input: HTMLInputElement, messageType: string) {
+    input.addEventListener('input', (event: Event) => {
+      const value = (event.target as HTMLInputElement).value;
+
+      this.messageBus.publish({
+        type: messageType,
+        data: value,
+      }, EventScope.ALL_FRAMES);
+    });
+  }
+
+  private clearAutocompleteInputs() {
+    this.autocompleteCaptureExpirationDateInput.value = null;
+    this.autocompleteCaptureSecurityCodeInput.value = null;
   }
 }
