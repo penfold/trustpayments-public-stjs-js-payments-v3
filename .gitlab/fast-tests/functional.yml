@@ -32,7 +32,7 @@ e2e-card-payments-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant
-    - .rules-when-release
+    - .rules-when-review
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests'
