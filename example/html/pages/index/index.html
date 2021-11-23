@@ -279,9 +279,6 @@
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
       st.GooglePay(config.googlePay);
-      st.getFraudControlData().then(function (response) {
-        console.log(response);
-      });
       if (browserInfo === "true") {
         document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
       }

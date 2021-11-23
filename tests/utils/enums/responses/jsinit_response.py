@@ -30,3 +30,4 @@ class JSinitResponse(Enum):
     JSINIT_TOKENISATION_VISA = 'jsinitTokenisationVisa.json'
     JSINIT_TOKENISATION_BYPASS_VISA = 'jsinitTokenisationVisa.json'
     JSINIT_TOKENISATION_AMEX = 'jsinitTokenisationAmex.json'
+    JSINIT_UPDATED_JWT_FRAUD_CONTROL = 'jsinitUpdatedJwtFraudControl.json'

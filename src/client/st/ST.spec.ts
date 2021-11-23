@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import { Container } from 'typedi';
 import { instance, mock } from 'ts-mockito';
-import { of } from 'rxjs';
 import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
@@ -64,18 +63,6 @@ describe('ST', () => {
     it('should block submit button', () => {
       expect(submitButton.classList.contains('st-button-submit__disabled')).toEqual(true);
       expect(submitButton.getAttribute('disabled')).toEqual('');
-    });
-  });
-
-  describe('getFraudControlData()', () => {
-    const key = 'some random key';
-    beforeEach(() => {
-      // @ts-expect-error Legacy spec testing internal implementations
-      stInstance.fraudControlService.getTransactionId = jest.fn().mockReturnValueOnce(of(key));
-    });
-
-    it('should return transaction id when standalone cybertonica function has been called', async () => {
-      expect(await stInstance.getFraudControlData()).toEqual(key);
     });
   });
 

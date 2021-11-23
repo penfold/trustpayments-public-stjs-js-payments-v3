@@ -10,8 +10,8 @@ import { FrameIdentifier } from '../../../../shared/services/message-bus/FrameId
 import { BrowserDetector } from '../../../../shared/services/browser-detector/BrowserDetector';
 
 @Service()
-export class SeonFraudControlDataProvider implements IFraudControlDataProvider<undefined> {
-  private initResult: Observable<void>;
+export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
+  private initResult: Observable<undefined>;
 
   constructor(
     @Inject(WINDOW) private window: Window,
@@ -20,7 +20,7 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
   ) {
   }
 
-  init(): Observable<void> {
+  init(): Observable<undefined> {
     if (!this.initResult) {
       this.initResult = this.insertSeonLibrary().pipe(
         switchMap(() => this.configureSeon()),
@@ -51,7 +51,7 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider<u
     return from(DomMethods.insertScript('head', { src: environment.SEON.LIBRARY_URL }));
   }
 
-  private configureSeon(): Observable<void> {
+  private configureSeon(): Observable<undefined> {
     return new Observable(observer => {
       this.window.seon.config({
         host: this.getHostname(),

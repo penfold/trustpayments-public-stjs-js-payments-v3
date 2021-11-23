@@ -3,8 +3,8 @@ import { Service } from 'typedi';
 import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudControlDataProvider';
 
 @Service()
-export class SeonFraudControlDataProviderMock implements IFraudControlDataProvider<undefined> {
-  init(): Observable<void> {
+export class SeonFraudControlDataProviderMock implements IFraudControlDataProvider {
+  init(): Observable<undefined> {
     return of(undefined);
   }
 
