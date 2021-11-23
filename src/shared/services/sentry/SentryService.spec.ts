@@ -4,6 +4,7 @@ import { Event } from '@sentry/types';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IConfig } from '../../model/config/IConfig';
+import { environment } from '../../../environments/environment';
 import { Sentry } from './Sentry';
 import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
@@ -75,7 +76,7 @@ describe('SentryService', () => {
           dsn: DSN,
           release: '1.2.3',
           ignoreErrors: ExceptionsToSkip,
-          sampleRate: 1,
+          sampleRate: environment.SENTRY.SAMPLE_RATE,
           beforeSend: anyFunction(),
           attachStacktrace: true,
           normalizeDepth: 3,
