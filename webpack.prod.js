@@ -1,17 +1,18 @@
-const { merge } = require('webpack-merge');
-const common = require('./webpack.common.js');
-const webpack = require('webpack');
 const path = require('path');
+const { merge } = require('webpack-merge');
+const webpack = require('webpack');
 const SentryWebpackPlugin = require('@sentry/webpack-plugin');
+const common = require('./webpack.common.js');
 const releaseVersion = require('./package.json').version;
 
+const generateSourceMaps = Boolean(process.env.npm_config_sentry_sourcemaps);
 const plugins = [
   new webpack.DefinePlugin({
     FRAME_URL: JSON.stringify(process.env.npm_config_frame_url),
   }),
 ];
 
-if (process.env.SENTRY_AUTH_TOKEN) {
+if (generateSourceMaps) {
   plugins.push(new SentryWebpackPlugin({
     authToken: process.env.SENTRY_AUTH_TOKEN,
     org: 'trustpayments',
@@ -27,6 +28,7 @@ if (process.env.SENTRY_AUTH_TOKEN) {
 
 module.exports = merge(common, {
   mode: 'production',
+  devtool: generateSourceMaps ? 'source-map' : undefined,
   plugins,
   resolve: {
     alias: {
