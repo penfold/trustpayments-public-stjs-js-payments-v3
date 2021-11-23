@@ -75,7 +75,7 @@ describe('SentryService', () => {
           dsn: DSN,
           release: '1.2.3',
           ignoreErrors: ExceptionsToSkip,
-          sampleRate: 0.1,
+          sampleRate: 1,
           beforeSend: anyFunction(),
           attachStacktrace: true,
           normalizeDepth: 3,

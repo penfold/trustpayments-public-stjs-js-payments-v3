@@ -6,6 +6,7 @@ import { IConfig } from '../../../../shared/model/config/IConfig';
 import { StCodec } from '../st-codec/StCodec';
 import { environment } from '../../../../environments/environment';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { StTransport } from './StTransport';
 
 const customGlobal: GlobalWithFetchMock = (global as unknown) as GlobalWithFetchMock;
@@ -39,12 +40,13 @@ describe('StTransport class', () => {
   let instance: StTransport;
   const configProviderMock = mock<ConfigProvider>();
   const jwtDecoderMock: JwtDecoder = mock(JwtDecoder);
+  const sentryServiceMock = mock(SentryService);
   let mockFT: jest.Mock;
   let codec: StCodec;
 
   beforeEach(() => {
     when(configProviderMock.getConfig()).thenReturn(config);
-    instance = new StTransport(mockInstance(configProviderMock), mockInstance(jwtDecoderMock));
+    instance = new StTransport(mockInstance(configProviderMock), mockInstance(jwtDecoderMock), mockInstance(sentryServiceMock));
     // This effectively creates a MVP codec so that we aren't testing all that here
     // @ts-ignore
     instance.codec = codec = {

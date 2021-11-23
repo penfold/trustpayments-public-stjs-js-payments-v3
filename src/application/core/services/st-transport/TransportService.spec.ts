@@ -1,6 +1,6 @@
 import { HttpClient, IHttpClientResponse } from '@trustpayments/http-client';
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { IHttpClientConfig } from '@trustpayments/http-client';
 import { IStRequest } from '../../models/IStRequest';
 import { IRequestObject } from '../../models/IRequestObject';
@@ -10,6 +10,8 @@ import { ResponseDecoderService } from '../st-codec/ResponseDecoderService';
 import { RequestEncoderService } from '../st-codec/RequestEncoderService';
 import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { TransportService } from './TransportService';
 import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
@@ -35,6 +37,7 @@ describe('TransportService', () => {
   let httpOptionsProviderMock: IHttpOptionsProvider;
   let messageBusMock: IMessageBus;
   let transportService: TransportService;
+  let sentryServiceMock: SentryService;
 
   beforeEach(() => {
     requestEncoderMock = mock(RequestEncoderService);
@@ -43,13 +46,15 @@ describe('TransportService', () => {
     configProviderMock = mock<ConfigProvider>();
     httpOptionsProviderMock = mock<IHttpOptionsProvider>();
     messageBusMock = mock<IMessageBus>();
+    sentryServiceMock = mock(SentryService);
     transportService = new TransportService(
       instance(requestEncoderMock),
       instance(responseDecoderMock),
       instance(httpClientMock),
       instance(configProviderMock),
       instance(httpOptionsProviderMock),
-      instance(messageBusMock)
+      instance(messageBusMock),
+      instance(sentryServiceMock),
     );
 
     when(configProviderMock.getConfig$()).thenReturn(
@@ -161,5 +166,33 @@ describe('TransportService', () => {
         done();
       });
     });
+
+    it('sends timeout error to sentry', done => {
+      const httpError: Error = new Error('timeout');
+
+      when(httpClientMock.post$(anything(), anything(), anything())).thenReturn(throwError(() => httpError));
+
+      transportService.sendRequest(request).subscribe({
+        error: (error: Error) => {
+          expect(error).toBe(httpError);
+          verify(sentryServiceMock.sendCustomMessage(deepEqual(new RequestTimeoutError('Request timeout', error)))).once();
+          done();
+        },
+      });
+    })
+
+    it('should not send errors to sentry if they are not timeout errors', done => {
+      const httpError: Error = new Error('other');
+
+      when(httpClientMock.post$(anything(), anything(), anything())).thenReturn(throwError(() => httpError));
+
+      transportService.sendRequest(request).subscribe({
+        error: (error: Error) => {
+          expect(error).toBe(httpError);
+          verify(sentryServiceMock.sendCustomMessage(deepEqual(new RequestTimeoutError('Request timeout', error)))).never();
+          done();
+        },
+      });
+    })
   });
 });

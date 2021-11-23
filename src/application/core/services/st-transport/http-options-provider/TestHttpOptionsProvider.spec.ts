@@ -33,7 +33,7 @@ describe('TestHttpOptionsProvider', () => {
           'Content-Type': 'application/json',
           'ST-Request-Types': '',
         },
-        timeout: 60000,
+        timeout: 30000,
       });
     });
 

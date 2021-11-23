@@ -48,6 +48,7 @@ export const environment = {
   overrideDomain: '',
   THREEDS_TERM_URL: 'https://payments.securetrading.net/process/payments/threedsmpilistener',
   BROWSER_DATA_URL: 'https://brw.3ds.trustpayments.dev/3dss/brw/browserData',
+  REQUEST_TIMEOUT: 30000,
   SENTRY: {
     DSN: 'https://4b5507475285467eb274126ada5a0650@o402164.ingest.sentry.io/6034426',
     ALLOWED_URLS: [],
