@@ -32,7 +32,7 @@ def step_impl(context, apm_page):
     url = {
         'sofort': 'www.sofort.com',
         'simulator': 'r3.girogate.de',
-        'zip': '10.4.37.9'
+        'zip': 'checkout.sand.gb.zip.co'
     }
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
     payment_page.validate_base_url(url[apm_page])
@@ -91,7 +91,4 @@ def step_impl(context):
 @when('User will click on (?P<option>.+) button on ZIP example page')
 def step_impl(context, option):
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
-    if option == 'allow':
-        payment_page.click_allow_btn_on_zip_example_page()
-    else:
-        payment_page.click_decline_btn_on_zip_example_page()
+    payment_page.click_cancel_btn_on_zip_sandbox_page()

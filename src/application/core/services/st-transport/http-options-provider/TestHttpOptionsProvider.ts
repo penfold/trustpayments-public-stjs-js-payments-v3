@@ -4,6 +4,7 @@ import { IRequestObject } from '../../../models/IRequestObject';
 import { RequestType } from '../../../../../shared/types/RequestType';
 import { JwtDecoder } from '../../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IStJwtPayload } from '../../../models/IStJwtPayload';
+import { environment } from '../../../../../environments/environment';
 import { IHttpOptionsProvider } from './IHttpOptionsProvider';
 import { DefaultHttpOptionsProvider } from './DefaultHttpOptionsProvider';
 
@@ -18,7 +19,7 @@ export class TestHttpOptionsProvider implements IHttpOptionsProvider {
         'Content-Type': DefaultHttpOptionsProvider.CONTENT_TYPE,
         'ST-Request-Types': this.extractRequestTypesFromRequest(requestObject).join(', '),
       },
-      timeout: DefaultHttpOptionsProvider.REQUEST_TIMEOUT,
+      timeout: environment.REQUEST_TIMEOUT,
     };
   }
 

@@ -7,17 +7,23 @@
     >
     </label>
     <div class="st-expiration-date__wrapper" id="st-expiration-date-wrapper">
-        <input
-          id="st-expiration-date-input"
-          class="expiration-date__input"
-          type="text"
-          autocomplete="off"
-          autocorrect="off"
-          spellcheck="false"
-          inputmode="numeric"
-          required
-        />
-        <div id="st-expiration-date-message" class="expiration-date__message"></div>
+      <input
+        id="st-expiration-date-input"
+        class="expiration-date__input"
+        type="text"
+        autocomplete="cc-exp"
+        autocorrect="off"
+        spellcheck="false"
+        inputmode="numeric"
+        required
+      />
+      <div id="st-expiration-date-message" class="expiration-date__message"></div>
+      <div class="expiration-date__autocomplete">
+        <input id="st-expiration-date-input-autocomplete-capture-number" type="text" autocomplete="cc-number"
+               tabindex="-1" inputmode="none" />
+        <input id="st-expiration-date-input-autocomplete-capture-security-code" type="text" autocomplete="cc-csc"
+               tabindex="-1" inputmode="none" />
+      </div>
     </div>
   </div>
 </div>

@@ -3,7 +3,7 @@ import { Event, EventHint } from '@sentry/types';
 import { firstValueFrom, Subscription } from 'rxjs';
 import { BrowserOptions } from '@sentry/browser';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
-import { environment } from '../../../environments/environment.rc';
+import { environment } from '../../../environments/environment';
 import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';

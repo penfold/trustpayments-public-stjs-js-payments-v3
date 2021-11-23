@@ -1,6 +1,7 @@
 import { instance, mock } from 'ts-mockito';
 import { IHttpClientConfig } from '@trustpayments/http-client';
 import { IRequestObject } from '../../../models/IRequestObject';
+import { environment } from '../../../../../environments/environment';
 import { DefaultHttpOptionsProvider } from './DefaultHttpOptionsProvider';
 
 describe('DefaultHttpOptionsProvider', () => {
@@ -20,7 +21,7 @@ describe('DefaultHttpOptionsProvider', () => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        timeout: 60000,
+        timeout: environment.REQUEST_TIMEOUT,
       });
     });
   });

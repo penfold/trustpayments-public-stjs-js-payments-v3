@@ -69,9 +69,6 @@
       st.Components(config.components);
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
-      st.getFraudControlData().then(function(response) {
-        console.error(response);
-      });
       updateJwtListener(st);
     }
 

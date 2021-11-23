@@ -1,21 +1,21 @@
 import { Service } from 'typedi';
-import { init, setTag, setExtra, BrowserOptions, captureException } from '@sentry/browser';
+import * as SentryBrowser from '@sentry/browser';
 
 @Service()
 export class Sentry {
-  init(options?: BrowserOptions): void {
-    init(options);
+  init(options?: SentryBrowser.BrowserOptions): void {
+    SentryBrowser.init(options);
   }
 
   setTag(key: string, value: string): void {
-    setTag(key, value);
+    SentryBrowser.setTag(key, value);
   }
 
   setExtra(key: string, extra: unknown): void {
-    setExtra(key, extra);
+    SentryBrowser.setExtra(key, extra);
   }
 
   captureException(err: Error): void {
-    captureException(err);
+    SentryBrowser.captureException(err);
   }
 }
