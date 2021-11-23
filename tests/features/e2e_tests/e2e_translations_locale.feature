@@ -13,11 +13,12 @@ Feature: Payment form translations from jwt locale
     And User opens example page
     And User waits for Pay button to be active
     Then User will see labels displayed on page translated into "<locale>"
-      | fields          |
-      | Card number     |
-      | Expiration date |
-      | Security code   |
-      | Pay             |
+      | fields                      |
+      | Card number                 |
+      | Expiration date             |
+      | Expiration date placeholder |
+      | Security code               |
+      | Pay                         |
     When User clicks Pay button
     Then User will see validation message "Field is required" under all fields translated into "<locale>"
 
@@ -33,6 +34,7 @@ Feature: Payment form translations from jwt locale
       | nl_NL  |
       | no_NO  |
       | sv_SE  |
+      | it_IT  |
 
 
   Scenario Outline: <locale> translation for "Success" payment notification
@@ -57,6 +59,7 @@ Feature: Payment form translations from jwt locale
       | nl_NL  |
       | no_NO  |
       | sv_SE  |
+      | it_IT  |
 
 
   Scenario Outline: <locale> translation for "Error" payment notification
@@ -82,6 +85,7 @@ Feature: Payment form translations from jwt locale
       | nl_NL  |
       | no_NO  |
       | sv_SE  |
+      | it_IT  |
 
 
   @animated_card
@@ -115,3 +119,67 @@ Feature: Payment form translations from jwt locale
       | nl_NL  |
       | no_NO  |
       | sv_SE  |
+      | it_IT  |
+
+  @animated_card
+  Scenario Outline: <locale> translations for blank animated card labels
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key          | value |
+      | panIcon      | true  |
+      | animatedCard | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+      | locale                  | <locale>         |
+    And User opens example page
+    And User waits for Pay button to be active
+    When User focuses on "ANIMATED_CARD" field
+    Then User will see labels displayed on animated card translated into "<locale>"
+      | fields                      |
+      | Card number                 |
+      | Expiration date             |
+      | Expiration date placeholder |
+
+    Examples:
+      | locale |
+      | de_DE  |
+      | en_GB  |
+      | fr_FR  |
+      | en_US  |
+      | cy_GB  |
+      | da_DK  |
+      | es_ES  |
+      | nl_NL  |
+      | no_NO  |
+      | sv_SE  |
+      | it_IT  |
+
+
+  Scenario Outline: <locale> translation with placeholders overwritten by config
+    Given JS library configured by inline params PLACEHOLDERS_CONFIG and jwt BASE_JWT with additional attributes
+      | key                     | value            |
+      | requesttypedescriptions | THREEDQUERY AUTH |
+      | locale                  | <locale>         |
+    When User opens example page
+    And User waits for Pay button to be active
+    Then User will see specific placeholders in input fields: Number, Expiration, CVV
+    And User will see labels displayed on page translated into "<locale>"
+      | fields          |
+      | Card number     |
+      | Expiration date |
+      | Security code   |
+      | Pay             |
+
+    Examples:
+      | locale |
+      | de_DE  |
+      | en_GB  |
+      | fr_FR  |
+      | en_US  |
+      | cy_GB  |
+      | da_DK  |
+      | es_ES  |
+      | nl_NL  |
+      | no_NO  |
+      | sv_SE  |
+      | it_IT  |

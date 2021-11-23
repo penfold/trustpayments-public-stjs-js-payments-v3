@@ -483,6 +483,10 @@ class PaymentMethodsPage(BasePage):
         actual_text = self.get_expiration_date_iframe_element_text(PaymentMethodsLocators.expiration_date_label)
         self.validate_field_text(FieldType.EXPIRATION_DATE.name, actual_text, expected_text)
 
+    def validate_expiration_date_placeholder_text(self, expected_text):
+        actual_text = self.get_element_attribute(FieldType.EXPIRATION_DATE.name, 'placeholder')
+        self.validate_field_text(FieldType.EXPIRATION_DATE_INPUT.name, actual_text, expected_text)
+
     def validate_security_code_iframe_element_text(self, expected_text):
         actual_text = self.get_security_code_iframe_element_text(PaymentMethodsLocators.security_code_label)
         self.validate_field_text(FieldType.SECURITY_CODE.name, actual_text, expected_text)

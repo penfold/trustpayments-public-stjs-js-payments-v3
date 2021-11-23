@@ -155,7 +155,7 @@
     "@sheerun/mutationobserver-shim": "0.3.3",
     "@trustpayments/3ds-sdk-js": "1.0.180",
     "@trustpayments/http-client": "2.0.121",
-    "@trustpayments/js-payments-card": "2.0.274",
+    "@trustpayments/js-payments-card": "2.2.0",
     "@trustpayments/jwt-generator": "2.0.112",
     "@trustpayments/ts-iin-lookup": "2.0.112",
     "@trustpayments/ts-luhn-check": "2.0.112",

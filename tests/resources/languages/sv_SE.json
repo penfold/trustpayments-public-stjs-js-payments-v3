@@ -14,6 +14,7 @@
   "Payment has been successfully processed": "Betalningen lyckades",
   "Card number": "Kortnummer",
   "Expiration date": "Sista giltighetsdatum",
+  "Expiration date placeholder": "MM/ÅÅ",
   "Security code": "Säkerhetskod",
   "Ok": "Betalningen lyckades",
   "Method not implemented": "Metoden har inte implementerats",
