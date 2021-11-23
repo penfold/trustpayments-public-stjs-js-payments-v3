@@ -13,6 +13,8 @@ import { IRequestObject } from '../../models/IRequestObject';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IDecodedResponse } from '../st-codec/interfaces/IDecodedResponse';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
+import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
 import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
 type IBaseResponseType = IRequestTypeResponse & IJwtResponse;
@@ -25,7 +27,8 @@ export class TransportService {
     private httpClient: HttpClient,
     private configProvider: ConfigProvider,
     private httpOptionsProvider: IHttpOptionsProvider,
-    private messageBus: IMessageBus
+    private messageBus: IMessageBus,
+    private sentryService: SentryService,
   ) {}
 
   sendRequest<T extends IBaseResponseType>(request: IStRequest, gatewayUrl?: string): Observable<T> {
@@ -41,6 +44,9 @@ export class TransportService {
       tap((response: IDecodedResponse) => this.handleJwtUpdates(response)),
       map((response: IDecodedResponse) => ({ ...response.customerOutput, jwt: response.responseJwt } as T)),
       catchError((error: Error) => {
+        if (error.message.startsWith('timeout')) {
+          this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', error));
+        }
         this.resetJwt();
         return throwError(error);
       }),

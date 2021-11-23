@@ -2,6 +2,8 @@ import { Service } from 'typedi';
 import { Event, EventHint } from '@sentry/types';
 import { GatewayError } from '../../../application/core/services/st-codec/GatewayError';
 import { JwtMasker } from './JwtMasker';
+import { RequestTimeoutError } from './RequestTimeoutError';
+import { ErrorTag } from './ErrorTag';
 
 @Service()
 export class EventScrubber {
@@ -13,6 +15,10 @@ export class EventScrubber {
 
     if (originalException instanceof GatewayError) {
       return null;
+    }
+    
+    if (originalException instanceof RequestTimeoutError) {
+      event.tags.tag = ErrorTag.TIMEOUT;
     }
 
     if (event.extra && typeof event.extra.config === 'object') {
