@@ -1,3 +1,4 @@
+from configuration import CONFIGURATION
 from pages.base_page import BasePage
 from pages.locators.payment_methods_locators import PaymentMethodsLocators
 
@@ -7,10 +8,16 @@ class ApmModulePaymentPage(BasePage):
     def click_specific_apm_button(self, override_placement, apm_type):
         if not override_placement:
             self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.get_apm_button_locator(apm_type))
-            self._actions.click(PaymentMethodsLocators.get_apm_button_locator(apm_type))
+            if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
+                self._actions.click_by_javascript(PaymentMethodsLocators.get_apm_button_locator(apm_type))
+            else:
+                self._actions.click(PaymentMethodsLocators.get_apm_button_locator(apm_type))
         else:
             self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.get_apm_button_override_locator(apm_type))
-            self._actions.click(PaymentMethodsLocators.get_apm_button_override_locator(apm_type))
+            if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION:
+                self._actions.click_by_javascript(PaymentMethodsLocators.get_apm_button_override_locator(apm_type))
+            else:
+                self._actions.click(PaymentMethodsLocators.get_apm_button_override_locator(apm_type))
 
     def scroll_to_apm_list(self):
         self._actions.scroll_directly_to_element(PaymentMethodsLocators.apm_group)
