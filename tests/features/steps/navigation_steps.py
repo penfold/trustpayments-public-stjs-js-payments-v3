@@ -123,6 +123,5 @@ def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
-
     payment_page.open_page(url)
-
+    time.sleep(9000)
