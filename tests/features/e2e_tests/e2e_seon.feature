@@ -65,15 +65,6 @@ Feature: E2E SEON
     Then User will see notification frame text: "Payment has been successfully processed"
 
 
-  Scenario: SEON - verify if getFraudControlData function returns seon object
-    Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
-      | key                     | value            |
-      | requesttypedescriptions | THREEDQUERY AUTH |
-    And User opens example page WITH_SEON_OBJECT
-    And User waits for Pay button to be active
-    Then User will see SEON object in logs area
-
-
   Scenario: SEON - successful payment with deprecated 'cybertonicaApiKey' in config
     Given JS library configured with BASIC_CONFIG and additional attributes
       | key               | value |

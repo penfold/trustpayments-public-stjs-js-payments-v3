@@ -89,7 +89,6 @@ class PaymentMethodsLocators:
     callback_cancel_counter: By = (By.ID, 'cancel-callback-counter')
     callback_submit_counter: By = (By.ID, 'submit-callback-counter')
     browser_info_callback: By = (By.ID, 'st-browser-info')
-    seon_object: By = (By.ID, 'st-fraud-control')
 
     card_icon_in_input_field: By = (By.ID, 'card-icon')
 
