@@ -14,6 +14,7 @@
   "Payment has been successfully processed": "De betaling is verwerkt",
   "Card number": "Kaartnummer",
   "Expiration date": "Vervaldatum",
+  "Expiration date placeholder": "MM/JJ",
   "Security code": "Beveiligingscode",
   "Ok": "De betaling is verwerkt",
   "Method not implemented": "De methode is niet geïmplementeerd",

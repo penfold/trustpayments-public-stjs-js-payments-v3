@@ -14,6 +14,7 @@
   "Payment has been successfully processed": "Mae'r taliad wedi ei brosesu'n llwyddiannus",
   "Card number": "Rhif y cerdyn",
   "Expiration date": "Dyddiad dod i ben",
+  "Expiration date placeholder": "MM/BB",
   "Security code": "Cod diogelwch",
   "Ok": "Mae'r taliad wedi ei brosesu'n llwyddiannus",
   "Method not implemented": "Nid yw'r dull wedi ei weithredu",

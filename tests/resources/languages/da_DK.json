@@ -14,6 +14,7 @@
   "Payment has been successfully processed": "Betaling er gennemført",
   "Card number": "Kortnummer",
   "Expiration date": "Udløbsdato",
+  "Expiration date placeholder": "MM/ÅÅ",
   "Security code": "Sikkerhedskode",
   "Ok": "Betaling er gennemført",
   "Method not implemented": "Metode ikke implementeret",

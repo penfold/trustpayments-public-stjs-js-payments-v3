@@ -38,6 +38,7 @@ def step_impl(context, language):
     labels = {
         'Card number': AnimatedCardLocators.card_number_label,
         'Expiration date': AnimatedCardLocators.expiration_date_label,
+        'Expiration date placeholder': AnimatedCardLocators.expiration_date_placeholder,
         'Security code': AnimatedCardLocators.security_code_label,
     }
     with soft_assertions():
