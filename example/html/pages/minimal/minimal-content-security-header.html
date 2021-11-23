@@ -88,9 +88,6 @@
           st.Components(config.components);
           st.VisaCheckout(config.visaCheckout);
           st.ApplePay(config.applePay);
-          st.getFraudControlData().then(function(response) {
-            console.error(response);
-          });
           if (browserInfo === "true") {
             document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
           }
