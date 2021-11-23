@@ -6,7 +6,7 @@ Feature: Visual regression - apm buttons list
 
   @scrn_apm_interface_payment_method @visual_regression_safari
   Scenario: display list of APM's buttons
-    Given JS library configured by inline config VISUAL_BASIC_CONFIG
+    Given JS library configured by inline config VISUAL_MOCK_BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
       | key                     | value                        |

@@ -1,6 +1,6 @@
 import './st.css';
 import { Container, Service } from 'typedi';
-import { firstValueFrom, from, Observable, Subject, Subscription } from 'rxjs';
+import { from, Observable, Subject, Subscription } from 'rxjs';
 import { delay, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import '../../application/core/shared/override-domain/OverrideDomain';
@@ -228,17 +228,13 @@ export class ST {
   }
 
   Cybertonica(): Promise<string | null> {
-    const message = 'The Cybertonica() function is deprected. Use getFraudControlData() instead.';
+    const message = 'The Cybertonica() function is deprected.';
 
     console.warn(message);
 
     this.sentryService.sendCustomMessage(new Error(message));
 
     return Promise.resolve(null);
-  }
-
-  getFraudControlData(): Promise<string | null> {
-    return firstValueFrom(this.fraudControlService.getTransactionId());
   }
 
   updateJWT(jwt: string): void {

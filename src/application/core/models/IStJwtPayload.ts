@@ -23,4 +23,5 @@ export interface IStJwtPayload {
   credentialsonfile?: string;
   billingcountryiso2a?: string;
   customercountryiso2a?: string;
+  fraudcontroltransactionid?: string;
 }
