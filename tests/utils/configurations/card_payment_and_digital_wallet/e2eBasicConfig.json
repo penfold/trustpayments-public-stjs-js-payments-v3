@@ -1,4 +1,5 @@
 {
+  "errorReporting": false,
   "submitOnSuccess": false,
   "submitCallback": "submitCallback",
   "successCallback": "successCallback",

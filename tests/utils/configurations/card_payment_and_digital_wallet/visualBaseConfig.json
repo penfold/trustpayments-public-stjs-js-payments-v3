@@ -1,4 +1,5 @@
 {
+  "errorReporting": false,
   "panIcon": true,
   "submitOnSuccess": false
 }

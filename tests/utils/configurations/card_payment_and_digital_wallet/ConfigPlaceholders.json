@@ -1,4 +1,5 @@
 {
+  "errorReporting": false,
   "placeholders": {
     "pan": "Number",
     "expirydate": "Expiration",
