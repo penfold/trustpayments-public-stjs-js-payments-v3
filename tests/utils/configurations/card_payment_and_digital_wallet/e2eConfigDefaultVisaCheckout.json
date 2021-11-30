@@ -1,4 +1,5 @@
 {
+  "errorReporting": false,
   "visaCheckout": {
     "buttonSettings": {
       "size": "154",
