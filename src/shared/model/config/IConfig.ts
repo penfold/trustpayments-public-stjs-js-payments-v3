@@ -1,8 +1,8 @@
 import { ConfigInterface } from '@trustpayments/3ds-sdk-js';
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
-import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 import { GooglePayConfigName, IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
+import { IApplePayConfig } from '../../../integrations/apple-pay/client/models/IApplePayConfig';
 import { IBypassInit } from './IBypassInit';
 import { IComponentsConfig } from './IComponentsConfig';
 import { IComponentsIds } from './IComponentsIds';

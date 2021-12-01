@@ -2,10 +2,6 @@ import { Observable, of, throwError, map } from 'rxjs';
 import { Service } from 'typedi';
 import { mapTo, takeUntil, tap } from 'rxjs/operators';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
-import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
-import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
-import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
@@ -15,14 +11,18 @@ import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
-import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
-import { PaymentAuthorizationService } from './PaymentAuthorizationService';
-import { MerchantValidationService } from './MerchantValidationService';
-import { ApplePaySessionFactory } from './ApplePaySessionFactory';
-import { ApplePayClickHandlingService } from './ApplePayClickHandlingService';
-import { IApplePaySession } from './IApplePaySession';
-import { PaymentCancelService } from './PaymentCancelService';
-import { IApplePaySessionWrapper } from './interfaces/IApplePaySessionWrapper';
+import { ApplePayClientStatus } from './models/ApplePayClientStatus';
+import { IApplePaySession } from './models/IApplePaySession';
+import { IApplePaySessionWrapper } from './models/IApplePaySessionWrapper';
+import { APPLE_PAY_BUTTON_ID } from './services/button/ApplePayButtonProperties';
+import { ApplePayButtonService } from './services/button/ApplePayButtonService';
+import { ApplePayClickHandlingService } from './services/button/ApplePayClickHandlingService';
+import { ApplePayConfigService } from './services/config/ApplePayConfigService';
+import { IApplePayConfigObject } from './services/config/IApplePayConfigObject';
+import { PaymentAuthorizationService } from './services/payment/PaymentAuthorizationService';
+import { PaymentCancelService } from './services/payment/PaymentCancelService';
+import { ApplePaySessionFactory } from './services/session/ApplePaySessionFactory';
+import { MerchantValidationService } from './services/validation/MerchantValidationService';
 
 @Service()
 export class ApplePayClient {

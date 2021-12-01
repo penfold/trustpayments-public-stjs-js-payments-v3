@@ -36,13 +36,13 @@ import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
 import { IThreeDQueryResponse } from '../../core/models/IThreeDQueryResponse';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
-import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { PaymentController } from '../../core/services/payments/PaymentController';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import { ITranslator } from '../../core/shared/translator/ITranslator';
 import { IStJwtPayload } from '../../core/models/IStJwtPayload';
 import { EventScope } from '../../core/models/constants/EventScope';
+import { ApplePayClient } from '../../../integrations/apple-pay/client/ApplePayClient';
 import { FraudControlService } from '../../core/services/fraud-control/FraudControlService';
 
 @Service()
@@ -92,7 +92,6 @@ export class ControlFrame {
   ) {
     this.init();
     this.initVisaCheckout();
-    this.initApplePay();
     this.initCardPayments();
     this.initJsInit();
     this.initConfigChange();
@@ -141,18 +140,6 @@ export class ControlFrame {
         first(),
         switchMap(() => {
           return this.visaCheckoutClient.init$();
-        })
-      )
-      .subscribe();
-  }
-
-  private initApplePay(): void {
-    this.messageBus
-      .pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_INIT))
-      .pipe(
-        first(),
-        switchMap(() => {
-          return this.applePayClient.init$();
         })
       )
       .subscribe();

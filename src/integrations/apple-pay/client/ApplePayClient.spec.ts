@@ -1,27 +1,27 @@
 import { Subject } from 'rxjs';
 import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { first } from 'rxjs/operators';
-import { APPLE_PAY_BUTTON_ID } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonProperties';
-import { ApplePayButtonService } from '../../../application/core/integrations/apple-pay/apple-pay-button-service/ApplePayButtonService';
-import { ApplePayConfigService } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/ApplePayConfigService';
-import { IApplePayPaymentRequest } from '../../../application/core/integrations/apple-pay/apple-pay-payment-data/IApplePayPaymentRequest';
-import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
-import { IApplePaySession } from '../../../client/integrations/apple-pay/apple-pay-session-service/IApplePaySession';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
-import { ApplePayClientStatus } from '../../../application/core/integrations/apple-pay/ApplePayClientStatus';
-import { MerchantValidationService } from './MerchantValidationService';
-import { PaymentAuthorizationService } from './PaymentAuthorizationService';
-import { PaymentCancelService } from './PaymentCancelService';
-import { ApplePaySessionWrapper } from './ApplePaySessionWrapper';
-import { ApplePaySessionFactory } from './ApplePaySessionFactory';
-import { ApplePayClickHandlingService } from './ApplePayClickHandlingService';
 import { ApplePayClient } from './ApplePayClient';
+import { IApplePayPaymentRequest } from './models/apple-pay-payment-data/IApplePayPaymentRequest';
+import { ApplePayClientStatus } from './models/ApplePayClientStatus';
+import { IApplePayConfig } from './models/IApplePayConfig';
+import { IApplePaySession } from './models/IApplePaySession';
+import { APPLE_PAY_BUTTON_ID } from './services/button/ApplePayButtonProperties';
+import { ApplePayButtonService } from './services/button/ApplePayButtonService';
+import { ApplePayClickHandlingService } from './services/button/ApplePayClickHandlingService';
+import { ApplePayConfigService } from './services/config/ApplePayConfigService';
+import { IApplePayConfigObject } from './services/config/IApplePayConfigObject';
+import { PaymentAuthorizationService } from './services/payment/PaymentAuthorizationService';
+import { PaymentCancelService } from './services/payment/PaymentCancelService';
+import { ApplePaySessionFactory } from './services/session/ApplePaySessionFactory';
+import { MerchantValidationService } from './services/validation/MerchantValidationService';
+import { ApplePaySessionWrapper } from './services/session/ApplePaySessionWrapper';
 
 describe('ApplePayClient', () => {
   const configMock: IConfig = {

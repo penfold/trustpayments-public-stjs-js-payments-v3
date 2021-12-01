@@ -11,8 +11,8 @@ import { TransportService } from '../st-transport/TransportService';
 import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeResponse';
 import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
 import { ThreeDVerificationProviderName } from '../three-d-verification/data/ThreeDVerificationProviderName';
-import { IApplePayValidateMerchantRequest } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
-import { IApplePayWalletVerifyResponseBody } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
+import { IApplePayValidateMerchantRequest } from '../../../../integrations/apple-pay/client/models/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
+import { IApplePayWalletVerifyResponseBody } from '../../../../integrations/apple-pay/client/models/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { TransportServiceGatewayClient } from './TransportServiceGatewayClient';
 
 describe('TransportServiceGatewayClient', () => {
