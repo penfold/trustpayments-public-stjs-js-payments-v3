@@ -6,11 +6,8 @@ import { IGatewayClient } from '../../../application/core/services/gateway-clien
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
-import { IApplePayValidateMerchantRequest } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
 import { FrameQueryingServiceMock } from '../../../shared/services/message-bus/FrameQueryingServiceMock';
-import { IApplePayWalletVerifyResponseBody } from '../../../application/core/integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
-import { IApplePayConfigObject } from '../../../application/core/integrations/apple-pay/apple-pay-config-service/IApplePayConfigObject';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { CustomerOutput } from '../../../application/core/models/constants/CustomerOutput';
 import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
@@ -19,8 +16,11 @@ import { PaymentStatus } from '../../../application/core/services/payments/Payme
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { NoThreeDSRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/NoThreeDSRequestProcessingService';
-import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
+import { IApplePayValidateMerchantRequest } from '../client/models/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
+import { IApplePayWalletVerifyResponseBody } from '../client/models/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
+import { IApplePayConfigObject } from '../client/services/config/IApplePayConfigObject';
 import { ApplePayPaymentMethod } from './ApplePayPaymentMethod';
+import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
 
 describe('ApplePayPaymentMethod', () => {
   const configMock: IConfig = {

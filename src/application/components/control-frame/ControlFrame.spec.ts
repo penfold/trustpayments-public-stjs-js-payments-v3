@@ -17,8 +17,6 @@ import { StCodec } from '../../core/services/st-codec/StCodec';
 import { VisaCheckoutClientStatus } from '../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
 import { Frame } from '../../core/shared/frame/Frame';
-import { ApplePayClient } from '../../core/integrations/apple-pay/ApplePayClient';
-import { ApplePayClientStatus } from '../../core/integrations/apple-pay/ApplePayClientStatus';
 import { PaymentController } from '../../core/services/payments/PaymentController';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { IUpdateJwt } from '../../core/models/IUpdateJwt';
@@ -26,6 +24,7 @@ import { PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Tran
 import { Translator } from '../../core/shared/translator/Translator';
 import { FormState } from '../../core/models/constants/FormState';
 import { FraudControlService } from '../../core/services/fraud-control/FraudControlService';
+import { ApplePayClient } from '../../../integrations/apple-pay/client/ApplePayClient';
 import { ControlFrame } from './ControlFrame';
 import spyOn = jest.spyOn;
 
@@ -256,7 +255,6 @@ function controlFrameFixture() {
     },
   });
   when(visaCheckoutClientMock.init$()).thenReturn(of(VisaCheckoutClientStatus.SUCCESS));
-  when(applePayClientMock.init$()).thenReturn(of(ApplePayClientStatus.SUCCESS));
 
   const instance = new ControlFrame(
     mockInstance(localStorage),

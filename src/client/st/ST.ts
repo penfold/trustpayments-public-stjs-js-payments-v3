@@ -8,7 +8,6 @@ import { CardFrames } from '../card-frames/CardFrames';
 import { CommonFrames } from '../common-frames/CommonFrames';
 import { ThreeDSecureClient } from '../integrations/three-d-secure/ThreeDSecureClient';
 import { MerchantFields } from '../merchant-fields/MerchantFields';
-import { ApplePay } from '../integrations/apple-pay/ApplePay';
 import { GoogleAnalytics } from '../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { VisaCheckout } from '../../application/core/integrations/visa-checkout/VisaCheckout';
 import { IComponentsConfig } from '../../shared/model/config/IComponentsConfig';
@@ -33,7 +32,6 @@ import { ClientBootstrap } from '../client-bootstrap/ClientBootstrap';
 import { BrowserDetector } from '../../shared/services/browser-detector/BrowserDetector';
 import { Notification } from '../../application/core/shared/notification/Notification';
 import { NotificationService } from '../notification/NotificationService';
-import { IApplePayConfig } from '../../application/core/integrations/apple-pay/IApplePayConfig';
 import { IBrowserInfo } from '../../shared/services/browser-detector/IBrowserInfo';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { IStore } from '../../application/core/store/IStore';
@@ -53,6 +51,7 @@ import { IAPMConfig } from '../../integrations/apm/models/IAPMConfig';
 import { APMPaymentMethodName } from '../../integrations/apm/models/IAPMPaymentMethod';
 import { FraudControlService } from '../../application/core/services/fraud-control/FraudControlService';
 import { SentryService } from '../../shared/services/sentry/SentryService';
+import { IApplePayConfig } from '../../integrations/apple-pay/client/models/IApplePayConfig';
 
 @Service()
 export class ST {
@@ -94,7 +93,6 @@ export class ST {
   }
 
   constructor(
-    private applePay: ApplePay,
     private browserDetector: BrowserDetector,
     private cardinalClient: CardinalClient,
     private threeDSecureClient: ThreeDSecureClient,

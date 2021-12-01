@@ -9,8 +9,8 @@ import { IRequestTypeResponse } from '../st-codec/interfaces/IRequestTypeRespons
 import { ThreeDVerificationProviderName } from '../three-d-verification/data/ThreeDVerificationProviderName';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { StTransport } from '../st-transport/StTransport';
-import { IApplePayValidateMerchantRequest } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
-import { IApplePayWalletVerifyResponseBody } from '../../integrations/apple-pay/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
+import { IApplePayValidateMerchantRequest } from '../../../../integrations/apple-pay/client/models/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
+import { IApplePayWalletVerifyResponseBody } from '../../../../integrations/apple-pay/client/models/apple-pay-walletverify-data/IApplePayWalletVerifyResponseBody';
 import { StTransportGatewayClient } from './StTransportGatewayClient';
 
 describe('StTransportGatewayClient', () => {

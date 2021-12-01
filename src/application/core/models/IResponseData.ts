@@ -1,5 +1,5 @@
-import { IApplePayShippingBillingContact } from '../../../client/integrations/apple-pay/apple-pay-shipping-data/IApplePayShippingBillingContact';
-import { IApplePayShippingContact } from '../../../client/integrations/apple-pay/apple-pay-shipping-data/IApplePayShippingContact';
+import { IApplePayShippingBillingContact } from '../../../integrations/apple-pay/client/models/IApplePayShippingBillingContact';
+import { IApplePayShippingContact } from '../../../integrations/apple-pay/client/models/IApplePayShippingContact';
 import { IRequestTypeResponse } from '../services/st-codec/interfaces/IRequestTypeResponse';
 import { CustomerOutput } from './constants/CustomerOutput';
 

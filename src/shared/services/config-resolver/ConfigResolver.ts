@@ -15,10 +15,10 @@ import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa
 import { IPlaceholdersConfig } from '../../../application/core/models/IPlaceholdersConfig';
 import { DefaultPlaceholders } from '../../../application/core/models/constants/config-resolver/DefaultPlaceholders';
 import { environment } from '../../../environments/environment';
-import { IApplePayConfig } from '../../../application/core/integrations/apple-pay/IApplePayConfig';
 import { IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { SentryService } from '../sentry/SentryService';
+import { IApplePayConfig } from '../../../integrations/apple-pay/client/models/IApplePayConfig';
 
 @Service()
 export class ConfigResolver {

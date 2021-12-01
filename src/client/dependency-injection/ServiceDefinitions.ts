@@ -11,8 +11,8 @@ import { PreventNavigationPopup } from '../message-subscribers/PreventNavigation
 import { PaymentResultSubmitterSubscriber } from '../common-frames/PaymentResultSubmitterSubscriber';
 import '../../shared/dependency-injection/ServiceDefinitions';
 import { ApplePayClientInitializer } from '../../integrations/apple-pay/client/ApplePayClientInitializer';
-import { IApplePaySessionWrapper } from '../../integrations/apple-pay/client/interfaces/IApplePaySessionWrapper';
-import { ApplePaySessionWrapper } from '../../integrations/apple-pay/client/ApplePaySessionWrapper';
+import { IApplePaySessionWrapper } from '../../integrations/apple-pay/client/models/IApplePaySessionWrapper';
+import { ApplePaySessionWrapper } from '../../integrations/apple-pay/client/services/session/ApplePaySessionWrapper';
 import { APMClientInitializer } from '../../integrations/apm/client/APMClientInitializer';
 
 Container.set({ id: ConfigProvider, factory: () => Container.get(ConfigService) });
