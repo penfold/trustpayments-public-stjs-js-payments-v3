@@ -17,7 +17,7 @@
     "@angular/common": "13.0.2",
     "@angular/compiler": "13.0.2",
     "@angular/core": "13.0.2",
-    "@angular/flex-layout": "12.0.0-beta.35",
+    "@angular/flex-layout": "13.0.0-beta.36",
     "@angular/forms": "13.0.2",
     "@angular/material": "13.0.2",
     "@angular/platform-browser": "13.0.2",
@@ -51,11 +51,14 @@
     "stream-browserify": "3.0.0",
     "ts-node": "10.4.0",
     "tslint": "6.1.3",
-    "typescript": "4.5.2",
+    "typescript": "4.4.4",
     "util": "0.12.4"
   },
   "browser": {
     "crypto": false,
     "stream": false
+  },
+  "resolutions": {
+    "@angular/cdk": "13.0.2"
   }
 }

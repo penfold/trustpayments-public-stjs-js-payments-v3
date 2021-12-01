@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "babel-plugin-styled-components": "1.13.3",
+    "babel-plugin-styled-components": "2.0.2",
     "gatsby": "4.2.0",
     "gatsby-image": "3.11.0",
     "gatsby-plugin-copy-files": "1.1.0",
