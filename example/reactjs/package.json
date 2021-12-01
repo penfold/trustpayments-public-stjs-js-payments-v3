@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "babel-plugin-styled-components": "1.13.2",
+    "babel-plugin-styled-components": "1.13.3",
     "gatsby": "4.2.0",
     "gatsby-image": "3.11.0",
-    "gatsby-plugin-copy-files": "1.0.4",
+    "gatsby-plugin-copy-files": "1.1.0",
     "gatsby-plugin-manifest": "4.2.0",
     "gatsby-plugin-offline": "5.2.0",
     "gatsby-plugin-react-helmet": "5.2.0",
@@ -15,14 +15,14 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-helmet": "6.1.0",
-    "react-i18next": "11.12.0",
+    "react-i18next": "11.14.3",
     "react-load-script": "0.0.6",
-    "styled-components": "5.3.1"
+    "styled-components": "5.3.3"
   },
   "devDependencies": {
-    "gatsby-plugin-eslint": "4.0.0",
+    "gatsby-plugin-eslint": "4.0.2",
     "npm-run-all": "4.1.5",
-    "prettier": "2.4.1"
+    "prettier": "2.5.0"
   },
   "scripts": {
     "build": "gatsby build",
