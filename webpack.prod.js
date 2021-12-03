@@ -5,14 +5,13 @@ const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 const common = require('./webpack.common.js');
 const releaseVersion = require('./package.json').version;
 
-const generateSourceMaps = Boolean(process.env.npm_config_sentry_sourcemaps);
 const plugins = [
   new webpack.DefinePlugin({
     FRAME_URL: JSON.stringify(process.env.npm_config_frame_url),
   }),
 ];
 
-if (generateSourceMaps) {
+if (process.env.npm_config_sentry_sourcemaps) {
   plugins.push(new SentryWebpackPlugin({
     authToken: process.env.SENTRY_AUTH_TOKEN,
     org: 'trustpayments',
@@ -28,7 +27,7 @@ if (generateSourceMaps) {
 
 module.exports = merge(common, {
   mode: 'production',
-  devtool: generateSourceMaps ? 'source-map' : undefined,
+  devtool: 'source-map',
   plugins,
   resolve: {
     alias: {
