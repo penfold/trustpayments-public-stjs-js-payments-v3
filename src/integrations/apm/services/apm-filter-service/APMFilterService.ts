@@ -11,6 +11,8 @@ import { APMCountryIso } from '../../models/APMCountryIso';
 import { APMCurrencyIso } from '../../models/APMCurrencyIso';
 import { APMName } from '../../models/APMName';
 import { APMValidator } from '../apm-validator/APMValidator';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
+import { MisconfigurationError } from '../../../../shared/services/sentry/MisconfigurationError';
 
 @Service()
 export class APMFilterService {
@@ -18,6 +20,7 @@ export class APMFilterService {
     private jwtDecoder: JwtDecoder,
     private configProvider: ConfigProvider,
     private apmValidator: APMValidator,
+    private sentryService: SentryService,
   ) {
   }
 
@@ -57,6 +60,7 @@ export class APMFilterService {
     const validationError = this.apmValidator.validateItemConfig(item);
 
     if (validationError) {
+      this.sentryService.sendCustomMessage(new MisconfigurationError(`Misconfiguration: Configuration for ${item.name} APM is invalid: ${validationError.message}`));
       Debug.warn(`Configuration for ${item.name} APM is invalid: ${validationError.message}`);
 
       return false;

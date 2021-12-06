@@ -4,6 +4,7 @@ import { GatewayError } from '../../../application/core/services/st-codec/Gatewa
 import { JwtMasker } from './JwtMasker';
 import { RequestTimeoutError } from './RequestTimeoutError';
 import { ErrorTag } from './ErrorTag';
+import { MisconfigurationError } from './MisconfigurationError';
 
 @Service()
 export class EventScrubber {
@@ -19,6 +20,10 @@ export class EventScrubber {
     
     if (originalException instanceof RequestTimeoutError) {
       event.tags.tag = ErrorTag.TIMEOUT;
+    }
+
+    if (originalException instanceof MisconfigurationError) {
+      event.tags.tag = ErrorTag.MISCONFIGURATION;
     }
 
     if (event.extra && typeof event.extra.config === 'object') {

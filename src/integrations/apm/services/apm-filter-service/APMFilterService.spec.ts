@@ -1,4 +1,4 @@
-import { anything, instance, mock, spy, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { ValidationError } from 'joi';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
@@ -10,6 +10,8 @@ import { APMValidator } from '../apm-validator/APMValidator';
 import { APMAvailabilityMap } from '../../models/APMAvailabilityMap';
 import { APMCountryIso } from '../../models/APMCountryIso';
 import { APMCurrencyIso } from '../../models/APMCurrencyIso';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
+import { MisconfigurationError } from '../../../../shared/services/sentry/MisconfigurationError';
 import { APMFilterService } from './APMFilterService';
 
 describe('APMFilterService', () => {
@@ -20,15 +22,18 @@ describe('APMFilterService', () => {
   let debugSpy: typeof Debug;
   let consoleSpy: typeof window.console;
   let availabilityMapSpy: typeof APMAvailabilityMap;
+  let sentryServiceMock: SentryService;
 
   beforeEach(() => {
     jwtDecoderMock = mock(JwtDecoder);
     configProviderMock = mock<ConfigProvider>();
     apmValidatorMock = mock(APMValidator);
+    sentryServiceMock = mock(SentryService);
     apmFilterService = new APMFilterService(
       instance(jwtDecoderMock),
       instance(configProviderMock),
       instance(apmValidatorMock),
+      instance(sentryServiceMock),
     );
 
     consoleSpy = spy(console);
@@ -89,6 +94,7 @@ describe('APMFilterService', () => {
 
       apmFilterService.filter([item]).subscribe(result => {
         expect(result).toEqual([]);
+        verify(sentryServiceMock.sendCustomMessage(deepEqual(new MisconfigurationError('Misconfiguration: Configuration for PAYU APM is invalid: not valid')))).once();
         verify(debugSpy.warn('Configuration for PAYU APM is invalid: not valid')).once();
         done();
       });

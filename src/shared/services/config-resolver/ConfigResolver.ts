@@ -18,6 +18,7 @@ import { environment } from '../../../environments/environment';
 import { IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { SentryService } from '../sentry/SentryService';
+import { MisconfigurationError } from '../sentry/MisconfigurationError';
 import { IApplePayConfig } from '../../../integrations/apple-pay/client/models/IApplePayConfig';
 
 @Service()
@@ -75,6 +76,7 @@ export class ConfigResolver {
     const validationResult: ValidationResult = this.configValidator.validate(config);
 
     if (validationResult.error) {
+      this.container.get(SentryService).sendCustomMessage(new MisconfigurationError(`Misconfiguration: ${validationResult.error.message}`, validationResult.error));
       throw validationResult.error;
     }
 
@@ -190,6 +192,9 @@ export class ConfigResolver {
   private handleValidationExceptions(item: ValidationErrorItem): void {
     if(item?.path?.toString() === 'datacenterurl') {
       this.container.get(SentryService).sendCustomMessage(new Error(`Invalid ${item?.context?.key} config value: ${item?.context?.value}`));
+    }
+    if(item?.type === 'deprecate.error') {
+      this.container.get(SentryService).sendCustomMessage(new MisconfigurationError(`Misconfiguration: ${item?.message}`));
     }
   }
 }
