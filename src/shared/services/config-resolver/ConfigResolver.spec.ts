@@ -27,7 +27,7 @@ describe('ConfigResolver', () => {
       instance(containerInstanceMock),
     );
 
-    when(configValidatorMock.validate(anything())).thenReturn({ value: null });
+    when(configValidatorMock.validate(anything())).thenReturn({ error: undefined, value: null });
     when(containerInstanceMock.get(SentryService)).thenReturn(instance(sentryServiceMock));
   });
 
