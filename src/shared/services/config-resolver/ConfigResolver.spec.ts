@@ -3,6 +3,7 @@ import { ContainerInstance } from 'typedi';
 import { ValidationResult } from 'joi';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { SentryService } from '../sentry/SentryService';
+import { MisconfigurationError } from '../sentry/MisconfigurationError';
 import {
   config,
   configResolved,
@@ -48,6 +49,19 @@ describe('ConfigResolver', () => {
       error: { message: 'Some descriptive error', ...anything() },
     });
     expect(() => sut.resolve({ jwt: '' })).toThrow(new Error('Some descriptive error'));
+  });
+
+  it('should pass error to sentry', () => {
+    when(configValidatorMock.validate(anything())).thenReturn({
+      value: 'Some descriptive error',
+      error: { message: 'Some descriptive error', ...anything() },
+    });
+    expect(() => sut.resolve({ jwt: '' })).toThrow(new Error('Some descriptive error'));
+    verify(
+      sentryServiceMock.sendCustomMessage(
+        deepEqual(new MisconfigurationError('Misconfiguration: Some descriptive error', new Error('Some descriptive error')))
+      )
+    ).once();
   });
 
   it('should pass message to sentry if datacenterurl property is incorrect', () => {
