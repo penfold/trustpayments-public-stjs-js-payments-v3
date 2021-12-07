@@ -143,11 +143,7 @@ class PaymentMethodsPage(BasePage):
     def click_submit_btn(self):
         self.scroll_to_bottom()
         self._waits.wait_for_element_to_be_clickable(PaymentMethodsLocators.pay_button)
-        if 'Catalina' in CONFIGURATION.REMOTE_OS_VERSION or 'Google Nexus 6' in CONFIGURATION.REMOTE_DEVICE:
-            self._waits.wait_for_javascript()
-            self._actions.click_by_javascript(PaymentMethodsLocators.pay_button)
-        else:
-            self._actions.click(PaymentMethodsLocators.pay_button)
+        self._actions.click(PaymentMethodsLocators.pay_button)
 
     def get_value_of_input_field(self, field):
         return self.get_element_attribute(field, 'value')
