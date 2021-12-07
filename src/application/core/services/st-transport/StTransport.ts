@@ -99,7 +99,7 @@ export class StTransport {
       ...fetchOptions,
       body: requestBody,
     })
-      .then(codec.decode)
+      .then(response => codec.decode(response, JSON.parse(requestBody)))
       .catch((error: Error | unknown) => {
         this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', new Error('timeout')));
 

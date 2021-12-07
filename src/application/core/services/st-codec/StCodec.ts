@@ -22,6 +22,8 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { EventScope } from '../../models/constants/EventScope';
+import { IRequestObject } from '../../models/IRequestObject';
+import { RequestType } from '../../../../shared/types/RequestType';
 import { GatewayError } from './GatewayError';
 import { InvalidResponseError } from './InvalidResponseError';
 import { IResponsePayload } from './interfaces/IResponsePayload';
@@ -87,7 +89,7 @@ export class StCodec {
       data: eventData,
       type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE,
     };
-    StCodec.getMessageBus().publish(notificationEvent,  EventScope.ALL_FRAMES);
+    StCodec.getMessageBus().publish(notificationEvent, EventScope.ALL_FRAMES);
   }
 
   static updateJwt(newJWT: string): void {
@@ -141,7 +143,7 @@ export class StCodec {
     StCodec.publishResponse(StCodec.createCommunicationError());
     StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_RESPONSE);
     validation.blockForm(FormState.AVAILABLE);
-    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
+    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
 
     return new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
   }
@@ -177,7 +179,7 @@ export class StCodec {
     jwtResponse: string
   ): void {
     StCodec.getNotification().error(errormessageTranslated);
-    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
+    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
     StCodec.publishResponse(responseContent, jwtResponse);
   }
 
@@ -197,7 +199,6 @@ export class StCodec {
       StCodec.publishResponse(responseContent, jwtResponse);
       return;
     }
-
     if (responseContent.walletsource && responseContent.walletsource === 'APPLEPAY') {
       StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
       return new GatewayError(errormessage);
@@ -252,19 +253,23 @@ export class StCodec {
 
   encode(requestObject: IStRequest): string {
     if (!Object.keys(requestObject).length) {
-      StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
+      StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
       StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_REQUEST);
       throw new Error(COMMUNICATION_ERROR_INVALID_REQUEST);
     }
     return JSON.stringify(this.buildRequestObject(requestObject));
   }
 
-  async decode(responseObject: Response | Record<string, unknown>): Promise<Record<string, unknown>> {
+  // requestBody is added as workaround for capturing failed JSINIT request
+  async decode(responseObject: Response | Record<string, unknown>, requestBody?: IRequestObject): Promise<Record<string, unknown>> {
+    let isCardPayment: boolean; // this is workaround for capturing failed card AUTH request
+
     return new Promise((resolve, reject) => {
       if (typeof responseObject.json === 'function') {
         responseObject.json().then((responseData: IResponsePayload) => {
           try {
             const decoded = StCodec.decodeResponseJwt(responseData.jwt, reject);
+            isCardPayment = decoded?.payload?.response?.some(response => response?.requesttypedescription === RequestType.AUTH || response?.requesttypedescription === RequestType.THREEDQUERY);
             const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
 
             if (Number(verifiedResponse.errorcode) === 0) {
@@ -278,6 +283,23 @@ export class StCodec {
               response: verifiedResponse,
             });
           } catch (error) {
+            if (requestBody?.request.some(request => request.requesttypedescriptions?.includes(RequestType.JSINIT))) {
+              const jsInitFailedEvent: IMessageBusEvent = {
+                type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_FAILED,
+                data: {
+                  name: 'CARD',
+                },
+              };
+              StCodec.getMessageBus().publish(jsInitFailedEvent, EventScope.EXPOSED);
+            } else if (isCardPayment) {
+              const cardPaymentFailedEvent: IMessageBusEvent = {
+                type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
+                data: {
+                  name: 'CARD',
+                },
+              };
+              StCodec.getMessageBus().publish(cardPaymentFailedEvent, EventScope.EXPOSED);
+            }
             StCodec.resetJwt();
           }
         });
