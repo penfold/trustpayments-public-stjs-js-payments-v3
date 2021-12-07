@@ -1,4 +1,4 @@
-import { mock, instance as mockInstance, when, anyString, anything } from 'ts-mockito';
+import { anyString, anything, instance as mockInstance, mock, when } from 'ts-mockito';
 import { EMPTY, of } from 'rxjs';
 import { ThreeDProcess } from '../../core/services/three-d-verification/ThreeDProcess';
 import { IMessageBus } from '../../core/shared/message-bus/IMessageBus';
@@ -24,6 +24,7 @@ import { PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Tran
 import { Translator } from '../../core/shared/translator/Translator';
 import { FormState } from '../../core/models/constants/FormState';
 import { FraudControlService } from '../../core/services/fraud-control/FraudControlService';
+import { EventScope } from '../../core/models/constants/EventScope';
 import { ApplePayClient } from '../../../integrations/apple-pay/client/ApplePayClient';
 import { ControlFrame } from './ControlFrame';
 import spyOn = jest.spyOn;
@@ -129,34 +130,78 @@ describe('ControlFrame', () => {
       instance.validation = {
         blockForm: jest.fn(),
       };
+      // @ts-ignore
+      instance.messageBus.publish = jest.fn();
     });
 
-    it('should call notification success when promise is resolved', async () => {
-      // @ts-ignore
-      instance.payment = {
-        processPayment: jest.fn().mockResolvedValueOnce(undefined),
-      };
-      // @ts-ignore
-      await instance.processPayment(data);
+    describe('when payment is processed successfully', () => {
+      beforeEach(() => {
+        // @ts-ignore
+        instance.payment = {
+          processPayment: jest.fn().mockResolvedValueOnce(undefined),
+        };
+      });
 
-      // @ts-ignore
-      expect(instance.notification.success).toHaveBeenCalledWith(PAYMENT_SUCCESS);
-      // @ts-ignore
-      expect(instance.validation.blockForm).toHaveBeenCalledWith(FormState.COMPLETE);
+      it('should call notification success', async () => {
+        // @ts-ignore
+        await instance.processPayment(data);
+        // @ts-ignore
+        expect(instance.notification.success).toHaveBeenCalledWith(PAYMENT_SUCCESS);
+      });
+
+      it('should block form', async () => {
+        // @ts-ignore
+        await instance.processPayment(data);
+        // @ts-ignore
+        expect(instance.validation.blockForm).toHaveBeenCalledWith(FormState.COMPLETE);
+      });
+
+      it('should publish exposed event', async () => {
+        // @ts-ignore
+        await instance.processPayment(data);
+        // @ts-ignore
+        expect(instance.messageBus.publish).toHaveBeenCalledWith(
+          {
+            type: PUBLIC_EVENTS.PAYMENT_METHOD_COMPLETED,
+            data: { name: 'CARD' },
+          }, EventScope.EXPOSED);
+      });
     });
 
-    it('should call notification error when promise is rejected', async () => {
-      // @ts-ignore
-      instance.payment = {
-        processPayment: jest.fn().mockRejectedValueOnce(undefined),
-      };
-      // @ts-ignore
-      await instance.processPayment(data);
+    describe('when payment is not processed successfully', () => {
+      beforeEach(()=>{
+        // @ts-ignore
+        instance.payment = {
+          processPayment: jest.fn().mockRejectedValueOnce(undefined),
+        };
+      })
 
-      // @ts-ignore
-      expect(instance.notification.error).toHaveBeenCalledWith(PAYMENT_ERROR);
-      // @ts-ignore
-      expect(instance.validation.blockForm).toHaveBeenCalledWith(FormState.AVAILABLE);
+      it('should call notification error', async () => {
+        // @ts-ignore
+        await instance.processPayment(data);
+
+        // @ts-ignore
+        expect(instance.notification.error).toHaveBeenCalledWith(PAYMENT_ERROR);
+      });
+
+      it('should unblock form', async () => {
+        // @ts-ignore
+        await instance.processPayment(data);
+
+        // @ts-ignore
+        expect(instance.validation.blockForm).toHaveBeenCalledWith(FormState.AVAILABLE);
+      });
+
+      it('should publish exposed event', async () => {
+        // @ts-ignore
+        await instance.processPayment(data);
+        // @ts-ignore
+        expect(instance.messageBus.publish).toHaveBeenCalledWith(
+          {
+            type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
+            data: { name: 'CARD' },
+          }, EventScope.EXPOSED);
+      });
     });
   });
 
@@ -269,7 +314,7 @@ function controlFrameFixture() {
     mockInstance(visaCheckoutClientMock),
     mockInstance(applePayClientMock),
     mockInstance(paymentControllerMock),
-    mockInstance(translator),
+    mockInstance(translator)
   );
   const messageBusEvent = {
     type: '',

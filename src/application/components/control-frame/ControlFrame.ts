@@ -15,9 +15,10 @@ import { IMessageBusEvent } from '../../core/models/IMessageBusEvent';
 import { IResponseData } from '../../core/models/IResponseData';
 import { ISubmitData } from '../../core/models/ISubmitData';
 import {
-  PAYMENT_SUCCESS,
+  COMMUNICATION_ERROR_INVALID_RESPONSE,
+  PAYMENT_CANCELLED,
   PAYMENT_ERROR,
-  COMMUNICATION_ERROR_INVALID_RESPONSE, PAYMENT_CANCELLED,
+  PAYMENT_SUCCESS,
 } from '../../core/models/constants/Translations';
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Payment } from '../../core/shared/payment/Payment';
@@ -69,6 +70,7 @@ export class ControlFrame {
   private isPaymentReady = false;
   private formFields: IFormFieldsDetails = FormFieldsDetails;
   private formFieldsValidity: IFormFieldsValidity = FormFieldsValidity;
+  private cardPaymentMethodName = 'CARD';
   private merchantFormData: IMerchantData;
   private payment: Payment;
   private remainingRequestTypes: RequestType[];
@@ -88,7 +90,7 @@ export class ControlFrame {
     private visaCheckoutClient: VisaCheckoutClient,
     private applePayClient: ApplePayClient,
     private paymentController: PaymentController,
-    private translator: ITranslator,
+    private translator: ITranslator
   ) {
     this.init();
     this.initVisaCheckout();
@@ -118,10 +120,24 @@ export class ControlFrame {
       return of(config);
     });
   }
+
   initCardPayments(): void {
+
     this.messageBus
       .pipe(ofType(PUBLIC_EVENTS.CARD_PAYMENTS_INIT))
-      .pipe(first())
+      .pipe(
+        first(),
+        tap(() => {
+          this.messageBus.publish({
+              type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_STARTED,
+              data: {
+                name: this.cardPaymentMethodName,
+              },
+            },
+            EventScope.EXPOSED
+          );
+        })
+      )
       .subscribe((event: IMessageBusEvent<string>) => {
         this.setInstances();
         this.setFormFieldsValidities();
@@ -205,14 +221,31 @@ export class ControlFrame {
         switchMap((data: ISubmitData) => {
           this.isPaymentReady = true;
           if (!this.isDataValid(data)) {
-            this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
-            this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE },  EventScope.ALL_FRAMES);
+            this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
+            this.messageBus.publish({
+              type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
+              data: { name: this.cardPaymentMethodName },
+            }, EventScope.EXPOSED);
+            this.messageBus.publish({
+              type: PUBLIC_EVENTS.BLOCK_FORM,
+              data: FormState.AVAILABLE,
+            }, EventScope.ALL_FRAMES);
             this.validateFormFields();
             return EMPTY;
           }
 
           return this.configProvider.getConfig$().pipe(
             tap(config => this.setRequestTypes(config.jwt)),
+            tap(() => {
+              this.messageBus.publish({
+                  type: PUBLIC_EVENTS.PAYMENT_METHOD_STARTED,
+                  data: {
+                    name: this.cardPaymentMethodName,
+                  },
+                },
+                EventScope.EXPOSED
+              );
+            }),
             switchMap(() =>
               this.callThreeDQueryRequest().pipe(
                 catchError(errorData => {
@@ -248,12 +281,16 @@ export class ControlFrame {
     errorData.errormessage = translatedErrorMessage;
 
     if (!(errorData instanceof Error)) {
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
+      this.messageBus.publish({
+        type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
+        data: { name: this.cardPaymentMethodName },
+      }, EventScope.EXPOSED);
       StCodec.publishResponse(errorData, errorData.jwt);
     }
 
     this.resetJwt();
-    this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE },  EventScope.ALL_FRAMES);
+    this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, EventScope.ALL_FRAMES);
     this.notification.error(translatedErrorMessage);
 
     return throwError(errorData);
@@ -264,12 +301,16 @@ export class ControlFrame {
     errorData.errormessage = translatedErrorMessage;
 
     if (!(errorData instanceof Error)) {
-      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK },  EventScope.ALL_FRAMES);
+      this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_CANCEL_CALLBACK }, EventScope.ALL_FRAMES);
+      this.messageBus.publish({
+        type: PUBLIC_EVENTS.PAYMENT_METHOD_CANCELED,
+        data: { name: this.cardPaymentMethodName },
+      }, EventScope.EXPOSED);
       StCodec.publishResponse(errorData, errorData.jwt);
     }
 
     this.resetJwt();
-    this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE },  EventScope.ALL_FRAMES);
+    this.messageBus.publish({ type: PUBLIC_EVENTS.BLOCK_FORM, data: FormState.AVAILABLE }, EventScope.ALL_FRAMES);
     this.notification.cancel(translatedErrorMessage);
 
     return throwError(errorData);
@@ -285,13 +326,25 @@ export class ControlFrame {
           {
             type: PUBLIC_EVENTS.CALL_MERCHANT_SUCCESS_CALLBACK,
           },
-          EventScope.ALL_FRAMES,
+          EventScope.ALL_FRAMES
         );
         this.notification.success(PAYMENT_SUCCESS);
+        this.messageBus.publish({
+            type: PUBLIC_EVENTS.PAYMENT_METHOD_COMPLETED,
+            data: {
+              name: this.cardPaymentMethodName,
+            },
+          },
+          EventScope.EXPOSED
+        );
         this.validation.blockForm(FormState.COMPLETE);
       })
       .catch(() => {
-        this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK },  EventScope.ALL_FRAMES);
+        this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
+        this.messageBus.publish({
+          type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
+          data: { name: this.cardPaymentMethodName },
+        }, EventScope.EXPOSED);
         this.notification.error(PAYMENT_ERROR);
         this.validation.blockForm(FormState.AVAILABLE);
       })
@@ -393,9 +446,30 @@ export class ControlFrame {
   }
 
   private initThreeDProcess(config: IConfig): void {
-    this.threeDProcess.init$().subscribe({
+    this.threeDProcess.init$().pipe(
+      catchError((error,caught) => {
+        this.messageBus.publish({
+            type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_FAILED,
+            data: {
+              name: this.cardPaymentMethodName,
+            },
+          },
+          EventScope.EXPOSED
+        );
+
+        return throwError(error);
+      })
+    ).subscribe({
       next: () => {
         this.isPaymentReady = true;
+        this.messageBus.publish({
+            type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_COMPLETED,
+            data: {
+              name: this.cardPaymentMethodName,
+            },
+          },
+          EventScope.EXPOSED
+        );
 
         if (config.components.startOnLoad) {
           this.messageBus.publish({

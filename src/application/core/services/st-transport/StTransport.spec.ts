@@ -52,10 +52,10 @@ describe('StTransport class', () => {
     instance.codec = codec = {
       encode: jest.fn(x => JSON.stringify(x)),
       decode: jest.fn(
-        x =>
+        (response, request?) =>
           new Promise((resolve, reject) => {
-            if (typeof x.json === 'function') {
-              resolve(x.json());
+            if (typeof response.json === 'function') {
+              resolve(response.json());
               return;
             }
             reject(new Error('codec error'));
@@ -184,8 +184,10 @@ describe('StTransport class', () => {
       mockFT.mockReturnValue(mockFetch);
       await expect(instance.sendRequest({ requesttypedescription: 'AUTH' })).resolves.toEqual(expected);
       expect(codec.decode).toHaveBeenCalledWith({
-        json: expect.any(Function),
-      });
+          json: expect.any(Function),
+        },
+        { requesttypedescription: 'AUTH' }
+      );
     });
 
     it('should throttle requests', async () => {
