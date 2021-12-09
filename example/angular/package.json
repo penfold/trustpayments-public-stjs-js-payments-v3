@@ -35,7 +35,7 @@
     "@angular/compiler-cli": "13.0.3",
     "@types/jasmine": "3.10.2",
     "@types/jasminewd2": "2.0.10",
-    "@types/node": "16.11.11",
+    "@types/node": "16.11.12",
     "buffer": "6.0.3",
     "codelyzer": "6.0.2",
     "crypto-browserify": "3.12.0",
