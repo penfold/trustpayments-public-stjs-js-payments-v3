@@ -15,6 +15,7 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IDecodedResponse } from '../st-codec/interfaces/IDecodedResponse';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
+import { TimeoutDetailsType } from '../../../../shared/services/sentry/RequestTimeout';
 import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
 type IBaseResponseType = IRequestTypeResponse & IJwtResponse;
@@ -37,15 +38,17 @@ export class TransportService {
       : this.configProvider.getConfig$().pipe(map(config => config.datacenterurl));
     const requestObject: IRequestObject = this.requestEncoder.encode(request);
     const httpOptions: IHttpClientConfig = this.httpOptionsProvider.getOptions(requestObject);
+    let resolvedUrl = '';
 
     return gatewayUrl$.pipe(
+      tap((url: string) => { resolvedUrl = url }),
       switchMap(url => this.httpClient.post$(url, requestObject, httpOptions)),
       map((response: IHttpClientResponse<IJwtResponse>) => this.responseDecoder.decode(response)),
       tap((response: IDecodedResponse) => this.handleJwtUpdates(response)),
       map((response: IDecodedResponse) => ({ ...response.customerOutput, jwt: response.responseJwt } as T)),
       catchError((error: Error) => {
         if (error.message.startsWith('timeout')) {
-          this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', error));
+          this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', { originalError: error, type: TimeoutDetailsType.GATEWAY, requestUrl: resolvedUrl }));
         }
         this.resetJwt();
         return throwError(error);

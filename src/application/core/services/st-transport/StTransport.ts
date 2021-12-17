@@ -11,6 +11,7 @@ import { InvalidResponseError } from '../st-codec/InvalidResponseError';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
+import { TimeoutDetailsType } from '../../../../shared/services/sentry/RequestTimeout';
 
 interface IFetchOptions {
   headers: {
@@ -101,7 +102,7 @@ export class StTransport {
     })
       .then(response => codec.decode(response, JSON.parse(requestBody)))
       .catch((error: Error | unknown) => {
-        this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', new Error('timeout')));
+        this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', { type: TimeoutDetailsType.GATEWAY, requestUrl: gatewayUrl }));
 
         if (error instanceof InvalidResponseError) {
           return Promise.reject(error);
