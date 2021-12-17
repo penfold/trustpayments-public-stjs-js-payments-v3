@@ -20,6 +20,8 @@ export class EventScrubber {
     
     if (originalException instanceof RequestTimeoutError) {
       event.tags.tag = ErrorTag.TIMEOUT;
+      event.tags.timeout_type = (hint?.originalException as RequestTimeoutError)?.timeoutDetails?.type;
+      event.tags.timeout_url = (hint?.originalException as RequestTimeoutError)?.timeoutDetails?.requestUrl;
     }
 
     if (originalException instanceof MisconfigurationError) {

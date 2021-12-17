@@ -175,7 +175,7 @@ describe('TransportService', () => {
       transportService.sendRequest(request).subscribe({
         error: (error: Error) => {
           expect(error).toBe(httpError);
-          verify(sentryServiceMock.sendCustomMessage(deepEqual(new RequestTimeoutError('Request timeout', error)))).once();
+          verify(sentryServiceMock.sendCustomMessage(deepEqual(new RequestTimeoutError('Request timeout', { originalError: error })))).once();
           done();
         },
       });
@@ -189,7 +189,7 @@ describe('TransportService', () => {
       transportService.sendRequest(request).subscribe({
         error: (error: Error) => {
           expect(error).toBe(httpError);
-          verify(sentryServiceMock.sendCustomMessage(deepEqual(new RequestTimeoutError('Request timeout', error)))).never();
+          verify(sentryServiceMock.sendCustomMessage(deepEqual(new RequestTimeoutError('Request timeout', { originalError: error })))).never();
           done();
         },
       });
