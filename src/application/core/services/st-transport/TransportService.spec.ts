@@ -12,6 +12,7 @@ import { IJwtResponse } from '../st-codec/interfaces/IJwtResponse';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
+import { GatewayError } from '../st-codec/GatewayError';
 import { TransportService } from './TransportService';
 import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
@@ -179,9 +180,9 @@ describe('TransportService', () => {
           done();
         },
       });
-    })
+    });
 
-    it('should not send errors to sentry if they are not timeout errors', done => {
+    it('sends other gateway errors to sentry', done => {
       const httpError: Error = new Error('other');
 
       when(httpClientMock.post$(anything(), anything(), anything())).thenReturn(throwError(() => httpError));
@@ -189,10 +190,31 @@ describe('TransportService', () => {
       transportService.sendRequest(request).subscribe({
         error: (error: Error) => {
           expect(error).toBe(httpError);
-          verify(sentryServiceMock.sendCustomMessage(deepEqual(new RequestTimeoutError('Request timeout', { originalError: error })))).never();
+          verify(sentryServiceMock.sendCustomMessage(deepEqual(new GatewayError('Gateway error - other', error)))).once();
           done();
         },
       });
-    })
+    });
+
+    it('sends gateway responses to sentry if errorcode != 0', done => {
+      const errorResponse = {
+        responseJwt: 'responsejwt',
+        updatedMerchantJwt: 'merchantjwt',
+        customerOutput: {
+          errorcode: '1234',
+          customeroutput: 'ERROR',
+          errormessage: 'ERROR',
+          requesttypedescription: 'FOOBAR',
+          transactionstartedtimestamp: '',
+        },
+      };
+
+      when(responseDecoderMock.decode(response)).thenReturn(errorResponse);
+
+      transportService.sendRequest(request).subscribe(() => {
+        verify(sentryServiceMock.sendCustomMessage(deepEqual(new GatewayError('Gateway error - ERROR', errorResponse)))).once();
+        done();
+      });
+    });
   });
 });

@@ -1,6 +1,5 @@
-import { Event, EventHint } from '@sentry/types';
+import { Event } from '@sentry/types';
 import { anything, instance, mock,when } from 'ts-mockito';
-import { GatewayError } from '../../../application/core/services/st-codec/GatewayError';
 import { EventScrubber } from './EventScrubber';
 import { JwtMasker } from './JwtMasker';
 
@@ -31,14 +30,5 @@ describe('EventScrubber', () => {
       jwt: '*****',
       foo: 'bar',
     });
-  });
-
-  it('filters out gateway errors', () => {
-    const event: Event = {};
-    const hint: EventHint = {
-      originalException: new GatewayError(),
-    };
-
-    expect(eventScrubber.scrub(event, hint)).toBeNull();
   });
 });

@@ -15,6 +15,7 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IDecodedResponse } from '../st-codec/interfaces/IDecodedResponse';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
+import { GatewayError } from '../st-codec/GatewayError';
 import { TimeoutDetailsType } from '../../../../shared/services/sentry/RequestTimeout';
 import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
@@ -46,9 +47,18 @@ export class TransportService {
       map((response: IHttpClientResponse<IJwtResponse>) => this.responseDecoder.decode(response)),
       tap((response: IDecodedResponse) => this.handleJwtUpdates(response)),
       map((response: IDecodedResponse) => ({ ...response.customerOutput, jwt: response.responseJwt } as T)),
+      tap(response => {
+        if (Number(response.errorcode) !== 0) {
+          this.sentryService.sendCustomMessage(
+            new GatewayError(`Gateway error - ${response.errormessage}`, response)
+          );
+        }
+      }),
       catchError((error: Error) => {
         if (error.message.startsWith('timeout')) {
           this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', { originalError: error, type: TimeoutDetailsType.GATEWAY, requestUrl: resolvedUrl }));
+        } else {
+          this.sentryService.sendCustomMessage(new GatewayError(`Gateway error - ${error.message}`, error));
         }
         this.resetJwt();
         return throwError(error);

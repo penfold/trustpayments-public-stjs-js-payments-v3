@@ -1,6 +1,6 @@
 import JwtDecode from 'jwt-decode';
 import Container from 'typedi';
-import { anything, instance as instanceOf, mock, when } from 'ts-mockito';
+import { anything, deepEqual, instance as instanceOf, mock, verify, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { ITranslationProvider } from '../../shared/translator/ITranslationProvider';
@@ -11,6 +11,7 @@ import { ITranslator } from '../../shared/translator/ITranslator';
 import { Translator } from '../../shared/translator/Translator';
 import { COMMUNICATION_ERROR_INVALID_RESPONSE } from '../../models/constants/Translations';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { IResponseData } from '../../models/IResponseData';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { EventScope } from '../../models/constants/EventScope';
@@ -28,6 +29,13 @@ Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('StCodec class', () => {
   const { instance, jwt, requestid, fullResponse, ridRegex } = stCodecFixture();
+  let sentryServiceMock: SentryService;
+
+  beforeEach(() => {
+    sentryServiceMock = mock(SentryService);
+
+    Container.set({ id: SentryService, value: instanceOf(sentryServiceMock) });
+  });
 
   describe('StCodec.verifyResponseObject()', () => {
     // @ts-ignore
@@ -226,6 +234,8 @@ describe('StCodec class', () => {
       StCodec.getErrorData = jest.fn((data: IResponseData) => originalGetErrorData(data));
       // @ts-ignore
       spy = jest.spyOn(StCodec.getNotification(), 'error');
+      // @ts-ignore
+      jest.spyOn(console, 'error').mockImplementation(() => {});
     });
 
     afterEach(() => {
@@ -241,6 +251,20 @@ describe('StCodec class', () => {
       expect(spy).toHaveBeenCalledTimes(0);
       expect(StCodec.publishResponse).toHaveBeenCalledWith(content, jwt);
       expect(content.errormessage).toBe('Ok');
+    });
+
+    it('should handle invalid field error and send error to sentry', () => {
+      const content = { errorcode: '30000', errormessage: 'Invalid field', errordata: ['jwt'], requesttypedescription: 'AUTH' };
+      const jwt = 'jwtString';
+
+      try {
+        // @ts-ignore
+        StCodec.handleValidGatewayResponse(content, jwt);
+      } catch (e) {
+        verify(sentryServiceMock.sendCustomMessage(
+          deepEqual(new GatewayError('Gateway error - Invalid field', content)))
+        ).once();
+      }
     });
   });
 
