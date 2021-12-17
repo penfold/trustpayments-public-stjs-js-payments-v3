@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { first, mapTo, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { defer, Observable, Subject, Subscription } from 'rxjs';
+import { defer, Observable, share, Subject, Subscription } from 'rxjs';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
@@ -16,6 +16,7 @@ import { IVerificationResult } from '../../../application/core/services/three-d-
 import { ActionCode } from '../../../application/core/services/three-d-verification/implementations/cardinal-commerce/data/ActionCode';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
+import { SentryService } from '../../../shared/services/sentry/SentryService';
 import { ICardinal } from './ICardinal';
 import { CardinalProvider } from './CardinalProvider';
 import { IInitializationData } from './data/IInitializationData';
@@ -36,12 +37,14 @@ export class CardinalClient {
     private cardinalProvider: CardinalProvider,
     private configProvider: ConfigProvider,
     private googleAnalytics: GoogleAnalytics,
+    private sentryService: SentryService
   ) {
     this.cardinal$ = defer(() =>
       this.configProvider.getConfig$().pipe(
         switchMap((config: IConfig) => this.cardinalProvider.getCardinal$(Boolean(config.livestatus))),
-        shareReplay(1),
-      ),
+        this.sentryService.captureAndReportResourceLoadingTimeout('Cardinal script load timeout'),
+        share()
+      )
     );
 
     this.threeDPopupCancel$ = new Subject<void>();
@@ -85,12 +88,12 @@ export class CardinalClient {
               cardinal.setup(PaymentEvents.INIT, {
                 jwt: data.jwt,
               });
-            }),
+            })
         ),
         tap(() => {
           this.googleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed');
         }),
-        shareReplay(1),
+        shareReplay(1)
       );
     }
 
@@ -140,10 +143,10 @@ export class CardinalClient {
                   TransactionId: transactionId,
                 },
               },
-              jwt,
+              jwt
             );
-          }),
-      ),
+          })
+      )
     );
   }
 
@@ -153,7 +156,7 @@ export class CardinalClient {
     return this.cardinal$.pipe(
       first(),
       tap(cardinal => cardinal.trigger(eventName, data)),
-      mapTo(void 0),
+      mapTo(void 0)
     );
   }
 
@@ -170,8 +173,8 @@ export class CardinalClient {
             });
 
             cardinal.start(PaymentBrand, {}, data.jwt);
-          }),
-      ),
+          })
+      )
     );
   }
 

@@ -1,14 +1,16 @@
 import { of } from 'rxjs';
-import { deepEqual, instance as mockInstance, mock, verify } from 'ts-mockito';
+import { anything, deepEqual, instance as mockInstance, mock, verify, when } from 'ts-mockito';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { VisaCheckoutButtonService } from '../visa-checkout-button-service/VisaCheckoutButtonService';
 import { IVisaCheckoutUpdateConfig } from '../visa-checkout-update-service/IVisaCheckoutUpdateConfig';
+import { SentryService } from '../../../../../shared/services/sentry/SentryService';
 import { IVisaCheckoutSdk } from './IVisaCheckoutSdk';
 import { VisaCheckoutSdkProvider } from './VisaCheckoutSdkProvider';
 
 describe('VisaCheckoutSdkProvider', () => {
   let visaCheckoutSdkProvider: VisaCheckoutSdkProvider;
   let visaCheckoutButtonServiceMock: VisaCheckoutButtonService;
+  let sentryServiceMock: SentryService;
 
   const configMock: IConfig = {
     jwt: '',
@@ -48,8 +50,10 @@ describe('VisaCheckoutSdkProvider', () => {
 
   beforeEach(() => {
     visaCheckoutButtonServiceMock = mock(VisaCheckoutButtonService);
+    sentryServiceMock = mock(SentryService);
+    when(sentryServiceMock.captureAndReportResourceLoadingTimeout(anything())).thenReturn(source => source);
 
-    visaCheckoutSdkProvider = new VisaCheckoutSdkProvider(mockInstance(visaCheckoutButtonServiceMock));
+    visaCheckoutSdkProvider = new VisaCheckoutSdkProvider(mockInstance(visaCheckoutButtonServiceMock), mockInstance(sentryServiceMock));
     visaCheckoutSdkProvider.insertScript$ = () => of(document.createElement('script'));
   });
 

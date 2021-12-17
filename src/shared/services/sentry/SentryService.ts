@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { Event, EventHint } from '@sentry/types';
-import { firstValueFrom, Subscription } from 'rxjs';
+import { firstValueFrom, Observable, OperatorFunction, Subscription, throwError, timeout } from 'rxjs';
 import { BrowserOptions } from '@sentry/browser';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { environment } from '../../../environments/environment';
@@ -8,6 +8,7 @@ import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';
 import { ExceptionsToSkip } from './ExceptionsToSkip';
+import { RequestTimeoutError } from './RequestTimeoutError';
 
 @Service()
 export class SentryService {
@@ -59,6 +60,20 @@ export class SentryService {
 
   sendCustomMessage(err: Error): void {
     this.sentry.captureException(err);
+  }
+
+  captureAndReportResourceLoadingTimeout(errorMessage: string, scriptLoadTimeout = environment.SCRIPT_LOAD_TIMEOUT): OperatorFunction<any, any> {
+    return (source: Observable<any>) => source
+      .pipe(
+        timeout({
+          each: scriptLoadTimeout,
+          with: () => {
+            const error = new RequestTimeoutError(errorMessage);
+            this.sendCustomMessage(error);
+            return throwError(() => error);
+          },
+        })
+      );
   }
 
   private beforeSend(event: Event, hint?: EventHint): Promise<Event | null> {

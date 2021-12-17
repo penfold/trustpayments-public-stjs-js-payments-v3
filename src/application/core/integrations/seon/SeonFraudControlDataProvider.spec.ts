@@ -1,10 +1,11 @@
-import { instance, mock, spy, when, verify, anyFunction, anything, deepEqual } from 'ts-mockito';
-import { forkJoin } from 'rxjs';
+import { anyFunction, anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
+import { forkJoin, of } from 'rxjs';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { environment } from '../../../../environments/environment';
 import { Uuid } from '../../shared/uuid/Uuid';
 import { FrameIdentifier } from '../../../../shared/services/message-bus/FrameIdentifier';
 import { BrowserDetector } from '../../../../shared/services/browser-detector/BrowserDetector';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { ISeon, ISeonConfig } from './ISeon';
 import { SeonFraudControlDataProvider } from './SeonFraudControlDataProvider';
 
@@ -17,21 +18,24 @@ describe('SeonFraudControlDataProvider', () => {
   let browserDetectorMock: BrowserDetector;
   let seonFraudControlDataProvider: SeonFraudControlDataProvider;
   let domMethodsSpy: typeof DomMethods;
+  let sentryServiceMock: SentryService;
 
   beforeEach(() => {
     seonMock = mock<ISeon>();
     windowMock = mock<WindowType>();
     frameIdentifierMock = mock(FrameIdentifier);
     browserDetectorMock = mock(BrowserDetector);
+    sentryServiceMock = mock(SentryService);
     domMethodsSpy = spy(DomMethods);
 
     seonFraudControlDataProvider = new SeonFraudControlDataProvider(
       instance(windowMock),
       instance(frameIdentifierMock),
       instance(browserDetectorMock),
+      instance(sentryServiceMock)
     );
 
-    when(domMethodsSpy.insertScript(anything(), anything())).thenResolve();
+    when(domMethodsSpy.insertScript(anything(), anything())).thenReturn(of(null));
     when(windowMock.seon).thenReturn(instance(seonMock));
     when(seonMock.config(anything())).thenCall((config: ISeonConfig) => {
       if (config.onSuccess) {
@@ -39,6 +43,7 @@ describe('SeonFraudControlDataProvider', () => {
       }
     });
     when(frameIdentifierMock.isParentFrame()).thenReturn(false);
+    when(sentryServiceMock.captureAndReportResourceLoadingTimeout(anything())).thenReturn(source => source);
   });
 
   describe('init()', () => {

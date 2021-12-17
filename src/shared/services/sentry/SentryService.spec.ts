@@ -1,6 +1,7 @@
 import { anyFunction, anything, capture, deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { BehaviorSubject, Subject, of } from 'rxjs';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { Event } from '@sentry/types';
+import { delay } from 'rxjs/operators';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { CONTROL_FRAME_IFRAME } from '../../../application/core/models/constants/Selectors';
 import { IConfig } from '../../model/config/IConfig';
@@ -11,6 +12,7 @@ import { EventScrubber } from './EventScrubber';
 import { SentryService } from './SentryService';
 import { ExceptionsToSkip } from './ExceptionsToSkip';
 import { JwtMasker } from './JwtMasker';
+import { RequestTimeoutError } from './RequestTimeoutError';
 
 describe('SentryService', () => {
   const DSN = 'https://123@456.ingest.sentry.io/7890';
@@ -94,7 +96,7 @@ describe('SentryService', () => {
 
     sentryService.init(DSN, whitelistUrls);
 
-    const [ args ] = capture(sentryMock.init).last();
+    const [args] = capture(sentryMock.init).last();
 
     (args.beforeSend({}) as Promise<Event | null>).then(res => {
       expect(res.environment).toBe('prod');
@@ -109,7 +111,7 @@ describe('SentryService', () => {
 
     sentryService.init(DSN, whitelistUrls);
 
-    const [ args ] = capture(sentryMock.init).last();
+    const [args] = capture(sentryMock.init).last();
 
     (args.beforeSend({}) as Promise<Event | null>).then(res => {
       expect(res.environment).toBe('dev');
@@ -125,5 +127,29 @@ describe('SentryService', () => {
     config$.next(config);
 
     verify(sentryMock.setExtra('config', config)).times(4);
+  });
+
+  describe('captureAndReportResourceLoadingTimeout()', () => {
+    it('should set timeout do given observable stream and throw RequestTimeout with provided message when source doesn\'t emit in set timeout', () => {
+      jest.useFakeTimers();
+      const scriptLoadTiemout = environment.SCRIPT_LOAD_TIMEOUT;
+      const delayedObservable = of(null).pipe(delay(scriptLoadTiemout + 1));
+      const instantObservable = of('some value');
+
+      jest.runAllTimers();
+      delayedObservable.pipe(
+        sentryService.captureAndReportResourceLoadingTimeout('custom message')
+      ).subscribe({
+        next: () => {
+        },
+        error: (error: RequestTimeoutError) => {
+          expect(error.message).toEqual('custom message');
+          expect(error instanceof RequestTimeoutError).toBe(true);
+        },
+      });
+      instantObservable.pipe(
+        sentryService.captureAndReportResourceLoadingTimeout('custom message')
+      ).subscribe(value => expect(value).toEqual('some value'));
+    });
   });
 });

@@ -1,3 +1,4 @@
+import { of } from 'rxjs';
 import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
 import { environment } from '../../../../environments/environment';
 import { IGooglePaySessionPaymentsClient } from '../../../../integrations/google-pay/models/IGooglePayPaymentsClient';
@@ -37,7 +38,7 @@ describe('GooglePaySdkProvider', () => {
       const buttonWrapper = document.createElement('div');
       buttonWrapper.setAttribute('id', 'st-google-pay');
 
-      return Promise.resolve(document.createElement('script'));
+      return of(document.createElement('script'));
     });
   });
 

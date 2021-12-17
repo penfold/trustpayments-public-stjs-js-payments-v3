@@ -1,5 +1,6 @@
 import { anything, instance, mock, verify, when } from 'ts-mockito';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { mapTo } from 'rxjs/operators';
 import { GooglePaymentMethodName } from '../models/IGooglePaymentMethod';
 import { IPaymentError } from '../../../application/core/services/payments/IPaymentError';
 import { IGooglePayGatewayRequest } from '../models/IGooglePayRequest';
@@ -9,6 +10,8 @@ import { GooglePayConfigName, IGooglePayConfig } from '../models/IGooglePayConfi
 import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
+import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
+import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { GooglePaymentMethod } from './GooglePaymentMethod';
 
 describe('GooglePaymentMethod', () => {
@@ -16,6 +19,7 @@ describe('GooglePaymentMethod', () => {
   let requestProcessingInitializerMock: RequestProcessingInitializer;
   let configProviderMock: ConfigProvider;
   let googlePaymentMethod: GooglePaymentMethod;
+  let frameQueryingServiceMock: IFrameQueryingService;
 
   const paymentResponse: IRequestTypeResponse = {
     errorcode: '0',
@@ -31,17 +35,17 @@ describe('GooglePaymentMethod', () => {
   beforeEach(() => {
     requestProcessingInitializerMock = mock(RequestProcessingInitializer);
     requestProcessingServiceMock = mock<IRequestProcessingService>();
+    frameQueryingServiceMock = mock<IFrameQueryingService>();
+    when(frameQueryingServiceMock.query(anything(), anything())).thenReturn(of(null));
     configProviderMock = mock<ConfigProvider>();
     googlePaymentMethod = new GooglePaymentMethod(
       instance(requestProcessingInitializerMock),
       instance(configProviderMock),
+      instance(frameQueryingServiceMock)
     );
 
     when(requestProcessingServiceMock.process(anything(), anything())).thenReturn(of(paymentResponse));
-    when(requestProcessingInitializerMock.initialize()).thenReturn(new Observable<IRequestProcessingService>(subscriber => {
-      // don't ask why, a simple of(...) just doesnt't work ¯\_(ツ)_/¯
-      subscriber.next(instance(requestProcessingServiceMock));
-    }));
+    when(requestProcessingInitializerMock.initialize()).thenReturn(of(null).pipe((mapTo(instance(requestProcessingServiceMock)))));
     when(configProviderMock.getConfig()).thenReturn({ [GooglePayConfigName]: {} as IGooglePayConfig });
   });
 
@@ -52,9 +56,10 @@ describe('GooglePaymentMethod', () => {
   });
 
   describe('init()', () => {
-    it('should initialize request processing service', done => {
-      googlePaymentMethod.init().subscribe(() => {
+    it('should initialize request processing service and init GooglePay', done => {
+      googlePaymentMethod.init({} as IGooglePayConfig).subscribe(() => {
         verify(requestProcessingInitializerMock.initialize()).once();
+        verify(frameQueryingServiceMock.query(anything(), MERCHANT_PARENT_FRAME)).once();
         done();
       });
     });
@@ -62,7 +67,7 @@ describe('GooglePaymentMethod', () => {
 
   describe('start()', () => {
     beforeEach(() => {
-      googlePaymentMethod.init().subscribe();
+      googlePaymentMethod.init({} as IGooglePayConfig).subscribe();
     });
 
     it('performs request processing and returns the PaymentResult', done => {

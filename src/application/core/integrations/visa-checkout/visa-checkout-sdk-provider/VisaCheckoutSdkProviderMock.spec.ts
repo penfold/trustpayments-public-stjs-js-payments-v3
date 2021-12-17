@@ -1,13 +1,15 @@
-import { deepEqual, instance as mockInstance, mock, verify } from 'ts-mockito';
+import { anything, deepEqual, instance as mockInstance, mock, verify, when } from 'ts-mockito';
 import { IConfig } from '../../../../../shared/model/config/IConfig';
 import { VisaCheckoutButtonService } from '../visa-checkout-button-service/VisaCheckoutButtonService';
 import { IVisaCheckoutUpdateConfig } from '../visa-checkout-update-service/IVisaCheckoutUpdateConfig';
+import { SentryService } from '../../../../../shared/services/sentry/SentryService';
 import { IVisaCheckoutSdk } from './IVisaCheckoutSdk';
 import { VisaCheckoutSdkProviderMock } from './VisaCheckoutSdkProviderMock';
 
 describe('VisaCheckoutSdkProviderMock', () => {
   let visaCheckoutSdkProviderMock: VisaCheckoutSdkProviderMock;
   let visaCheckoutButtonServiceMock: VisaCheckoutButtonService;
+  let sentryServiceMock: SentryService;
 
   const configMock: IConfig = {
     jwt: '',
@@ -47,8 +49,10 @@ describe('VisaCheckoutSdkProviderMock', () => {
 
   beforeEach(() => {
     visaCheckoutButtonServiceMock = mock(VisaCheckoutButtonService);
+    sentryServiceMock = mock(SentryService);
+    when(sentryServiceMock.captureAndReportResourceLoadingTimeout(anything())).thenReturn(source => source);
 
-    visaCheckoutSdkProviderMock = new VisaCheckoutSdkProviderMock(mockInstance(visaCheckoutButtonServiceMock));
+    visaCheckoutSdkProviderMock = new VisaCheckoutSdkProviderMock(mockInstance(visaCheckoutButtonServiceMock), mockInstance(sentryServiceMock));
   });
 
   describe('getSdk$()', () => {
@@ -66,8 +70,10 @@ describe('VisaCheckoutSdkProviderMock', () => {
           // Needs to stringify as Jest cannot compare functions
           expect(JSON.stringify(sdk)).toBe(
             JSON.stringify({
-              init: () => {},
-              on: () => {},
+              init: () => {
+              },
+              on: () => {
+              },
             })
           );
 

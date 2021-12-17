@@ -16,6 +16,7 @@ import { ActionCode } from '../../../application/core/services/three-d-verificat
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { SentryService } from '../../../shared/services/sentry/SentryService';
 import { IInitializationData } from './data/IInitializationData';
 import { ICardinal } from './ICardinal';
 import { CardinalClient } from './CardinalClient';
@@ -32,6 +33,7 @@ describe('CardinalClient', () => {
   let communicationCallbacks: Map<string, (event: IMessageBusEvent) => unknown>;
   let messageBusMock: IMessageBus;
   let googleAnalytics: GoogleAnalytics;
+  let sentryServiceMock: SentryService;
 
   const config: IConfig = { livestatus: 0 } as IConfig;
   const sendMessage = (event: IMessageBusEvent): Observable<unknown> => {
@@ -47,6 +49,7 @@ describe('CardinalClient', () => {
     cardinalMock = new CardinalMock(true);
     messageBusMock = new SimpleMessageBus();
     googleAnalytics = mock(GoogleAnalytics);
+    sentryServiceMock = mock(SentryService);
 
     when(configProviderMock.getConfig$()).thenReturn(of(config));
     when(cardinalProviderMock.getCardinal$(false)).thenReturn(of(cardinalMock));
@@ -62,12 +65,15 @@ describe('CardinalClient', () => {
       return communicationCallbacks.get(event.type)(event);
     });
 
+    when(sentryServiceMock.captureAndReportResourceLoadingTimeout(anything())).thenReturn(source => source);
+
     cardinalClient = new CardinalClient(
       interFrameCommunicator,
       messageBusMock,
       instance(cardinalProviderMock),
       instance(configProviderMock),
       instance(googleAnalytics),
+      instance(sentryServiceMock)
     );
 
     cardinalClient.init();

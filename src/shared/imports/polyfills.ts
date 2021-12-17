@@ -1,11 +1,12 @@
 import 'location-origin';
 import 'whatwg-fetch';
-import 'url-polyfill';
 import 'reflect-metadata';
 import 'core-js/es/array';
 import 'core-js/es/object';
 import 'core-js/es/function/name';
 import 'core-js/es/map';
+import 'core-js/web/url';
+import 'core-js/web/url-search-params';
 import 'fastestsmallesttextencoderdecoder';
 import '@sheerun/mutationobserver-shim';
 import 'element-remove';

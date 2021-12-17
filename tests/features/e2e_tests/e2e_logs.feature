@@ -17,9 +17,9 @@ Feature: Logs
       | GooglePay | <gp_payment_init>      |
 
     Examples:
-      | config       | gp_payment_init        |
-      | BASIC_CONFIG | PAYMENT INIT COMPLETED |
-#      | BASIC_CONFIG      | PAYMENT INIT FAILED | STJS-2202
+      | config            | gp_payment_init        |
+      | GOOGLE_PAY_CONFIG | PAYMENT INIT COMPLETED |
+      | BASIC_CONFIG      | PAYMENT INIT FAILED    |
 
 
   Scenario Outline: Init logs verification for Digital wallets - <config>
@@ -38,7 +38,7 @@ Feature: Logs
     Examples:
       | config            | gp_payment_init        |
       | GOOGLE_PAY_CONFIG | PAYMENT INIT COMPLETED |
-      | APPLE_PAY_CONFIG  | PAYMENT INIT COMPLETED |
+      | APPLE_PAY_CONFIG  | PAYMENT INIT FAILED    |
 #      | APPLE_PAY_CONFIG  | PAYMENT INIT FAILED | STJS-2202
 
   Scenario: Init logs with successful transaction- Card Payments
@@ -58,7 +58,7 @@ Feature: Logs
       | ApplePay  | PAYMENT INIT STARTED   |
       | ApplePay  | PAYMENT INIT FAILED    |
       | GooglePay | PAYMENT INIT STARTED   |
-      | GooglePay | PAYMENT INIT COMPLETED |
+      | GooglePay | PAYMENT INIT FAILED    |
 
   Scenario: Init logs with unsuccessful transaction- Card Payments
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
@@ -78,7 +78,7 @@ Feature: Logs
       | ApplePay  | PAYMENT INIT STARTED   |
       | ApplePay  | PAYMENT INIT FAILED    |
       | GooglePay | PAYMENT INIT STARTED   |
-      | GooglePay | PAYMENT INIT COMPLETED |
+      | GooglePay | PAYMENT INIT FAILED    |
 
   Scenario: Init logs with invalid library configuration -  Card Payments
     Given JS library configured by inline params BASIC_CONFIG and jwt INVALID_JWT with additional attributes
