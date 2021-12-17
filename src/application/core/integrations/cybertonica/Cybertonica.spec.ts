@@ -1,8 +1,10 @@
-import { firstValueFrom, forkJoin, NEVER, of, switchMap } from 'rxjs';
-import { instance, mock, spy, when, anything, verify, deepEqual } from 'ts-mockito';
+import { forkJoin, of, switchMap } from 'rxjs';
+import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
+import { delay } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { IAFCybertonica } from './IAFCybertonica';
 import { Cybertonica } from './Cybertonica';
 
@@ -16,19 +18,23 @@ describe('Cybertonica', () => {
   let configProviderMock: ConfigProvider;
   let cybertonicaMock: IAFCybertonica;
   let domMethodsSpy: typeof DomMethods;
+  let sentryServiceMock: SentryService;
 
   beforeEach(() => {
     domMethodsSpy = spy(DomMethods);
     windowMock = mock<WindowType>();
     cybertonicaMock = mock<IAFCybertonica>();
     configProviderMock = mock<ConfigProvider>();
+    sentryServiceMock = mock(SentryService);
+    when(sentryServiceMock.captureAndReportResourceLoadingTimeout(anything())).thenReturn(source => source);
     cybertonica = new Cybertonica(
       instance(windowMock),
       instance(configProviderMock),
+      instance(sentryServiceMock)
     );
 
     when(windowMock.AFCYBERTONICA).thenReturn(instance(cybertonicaMock));
-    when(domMethodsSpy.insertScript(anything(), anything())).thenResolve(null);
+    when(domMethodsSpy.insertScript(anything(), anything())).thenReturn(of(document.createElement('src') as HTMLScriptElement));
     when(cybertonicaMock.init(anything(), anything(), anything())).thenReturn(TID);
     when(configProviderMock.getConfig$()).thenReturn(of({
       cybertonicaApiKey: 'apiKey',
@@ -66,35 +72,35 @@ describe('Cybertonica', () => {
   describe('getTransactionId()', () => {
     it('returns fraud control transaction id', done => {
       cybertonica.init().pipe(
-        switchMap(() => cybertonica.getTransactionId()),
-      ).subscribe(tid => {
-        expect(tid).toEqual(TID);
+        switchMap(() => cybertonica.getTransactionId())
+      ).subscribe(transactionId => {
+        expect(transactionId).toEqual(TID);
         done();
       });
     });
 
     it('returns null if cybertonica initialization fails', done => {
-      when(cybertonicaMock.init(anything(), anything(), anything())).thenThrow(new Error('failed'));
+      when(windowMock.AFCYBERTONICA).thenReturn(undefined);
 
       cybertonica.init().pipe(
-        switchMap(() => cybertonica.getTransactionId()),
-      ).subscribe(tid => {
-        expect(tid).toBeNull();
+        switchMap(() => cybertonica.getTransactionId())
+      ).subscribe(transactionId => {
+        expect(transactionId).toBeNull();
         done();
       });
     });
 
     it('returns null if getting TID takes longer then timeout value', done => {
-      // @ts-ignore to speed up test
-      when(spy(Cybertonica).TID_TIMEOUT).thenReturn(100);
-      when(domMethodsSpy.insertScript(anything(), anything())).thenReturn(firstValueFrom(NEVER));
+      jest.useFakeTimers();
+      when(domMethodsSpy.insertScript(anything(), anything())).thenReturn(of(null).pipe(delay(10000)));
 
       cybertonica.init().pipe(
-        switchMap(() => cybertonica.getTransactionId()),
+        switchMap(() => cybertonica.getTransactionId())
       ).subscribe(tid => {
         expect(tid).toBeNull();
         done();
       });
+      jest.runAllTimers();
     });
   });
 });

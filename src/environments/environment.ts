@@ -57,4 +57,6 @@ export const environment = {
   SEON: {
     LIBRARY_URL: 'https://cdn.seondf.com/js/v4/agent.js',
   },
+  SCRIPT_LOAD_TIMEOUT: 30000,
+
 };

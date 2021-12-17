@@ -1,11 +1,12 @@
 import { Inject, Service } from 'typedi';
-import { from, Observable, of, ReplaySubject, timeout } from 'rxjs';
+import { Observable, of, ReplaySubject, timeout } from 'rxjs';
 import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudControlDataProvider';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { ICybertonica } from './ICybertonica';
 
 @Service()
@@ -15,15 +16,15 @@ export class Cybertonica implements ICybertonica, IFraudControlDataProvider {
   private static TID_TIMEOUT = 5000;
 
   private static getBasename(): string {
-    const link = document.createElement('a');
-    link.href = Cybertonica.SDK_ADDRESS;
+    const link = new URL(Cybertonica.SDK_ADDRESS);
+
     return 'https://' + link.hostname;
   }
 
   private tid: ReplaySubject<string | null> = new ReplaySubject<string | null>(1);
   private initialized = false;
 
-  constructor(@Inject(WINDOW) private window: Window, private configProvider: ConfigProvider) {
+  constructor(@Inject(WINDOW) private window: Window, private configProvider: ConfigProvider, private sentryService: SentryService) {
   }
 
   init(): Observable<undefined> {
@@ -52,11 +53,13 @@ export class Cybertonica implements ICybertonica, IFraudControlDataProvider {
     }
 
     return this.insertCybertonicaLibrary().pipe(
-      map(() => this.window.AFCYBERTONICA.init(apiUserName, undefined, Cybertonica.getBasename()) || null),
+      map(() => this.window.AFCYBERTONICA?.init(apiUserName, undefined, Cybertonica.getBasename()) || null)
     );
   }
 
   private insertCybertonicaLibrary(): Observable<Element> {
-    return from(DomMethods.insertScript(Cybertonica.SCRIPT_TARGET, { src: Cybertonica.SDK_ADDRESS }));
+    return DomMethods.insertScript(Cybertonica.SCRIPT_TARGET, { src: Cybertonica.SDK_ADDRESS }).pipe(
+      this.sentryService.captureAndReportResourceLoadingTimeout('Cybertonica script load timeout')
+    );
   }
 }

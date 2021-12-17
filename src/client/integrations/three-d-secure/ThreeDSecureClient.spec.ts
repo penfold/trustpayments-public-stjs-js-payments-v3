@@ -209,7 +209,7 @@ describe('ThreeDSecureClient', () => {
     it('should call cancel method which cancels challenge process', () => {
       // @ts-ignore
       const spy = jest.spyOn(sut.threeDSecure, 'cancelChallenge$');
-      when(threeDSecureMock.init$(anything())).thenReturn(of(anything()));
+      when(threeDSecureMock.init$(anything())).thenReturn(of(null));
 
       messageBusMock.publish({ type: PUBLIC_EVENTS.THREED_CANCEL });
       expect(spy).toHaveBeenCalled();

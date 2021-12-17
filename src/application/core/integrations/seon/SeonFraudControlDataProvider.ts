@@ -1,4 +1,4 @@
-import { from, Observable, switchMap } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { Inject, Service } from 'typedi';
 import { shareReplay } from 'rxjs/operators';
 import { IFraudControlDataProvider } from '../../services/fraud-control/IFraudControlDataProvider';
@@ -8,6 +8,7 @@ import { Uuid } from '../../shared/uuid/Uuid';
 import { WINDOW } from '../../../../shared/dependency-injection/InjectionTokens';
 import { FrameIdentifier } from '../../../../shared/services/message-bus/FrameIdentifier';
 import { BrowserDetector } from '../../../../shared/services/browser-detector/BrowserDetector';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
 
 @Service()
 export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
@@ -17,6 +18,7 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
     @Inject(WINDOW) private window: Window,
     private frameIdentifier: FrameIdentifier,
     private browserDetector: BrowserDetector,
+    private sentryService: SentryService
   ) {
   }
 
@@ -24,7 +26,7 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
     if (!this.initResult) {
       this.initResult = this.insertSeonLibrary().pipe(
         switchMap(() => this.configureSeon()),
-        shareReplay(1),
+        shareReplay(1)
       );
       this.removeObsoleteHtmlElements();
     }
@@ -48,7 +50,9 @@ export class SeonFraudControlDataProvider implements IFraudControlDataProvider {
   }
 
   private insertSeonLibrary(): Observable<Element> {
-    return from(DomMethods.insertScript('head', { src: environment.SEON.LIBRARY_URL }));
+    return DomMethods.insertScript('head', { src: environment.SEON.LIBRARY_URL }).pipe(
+      this.sentryService.captureAndReportResourceLoadingTimeout('Seon script load timeout')
+    );
   }
 
   private configureSeon(): Observable<undefined> {

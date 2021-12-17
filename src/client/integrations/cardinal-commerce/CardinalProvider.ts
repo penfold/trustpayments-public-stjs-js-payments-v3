@@ -1,4 +1,4 @@
-import { from, interval, Observable } from 'rxjs';
+import { interval, Observable } from 'rxjs';
 import { Service } from 'typedi';
 import { filter, first, map, switchMap } from 'rxjs/operators';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
@@ -31,16 +31,17 @@ export class CardinalProvider implements ICardinalProvider {
 
     DomMethods.insertStyle(mobileViewStyles);
 
-    return from(DomMethods.insertScript('head', scriptOptions)).pipe(
-      switchMap(
-        () =>
-          interval().pipe(
-            // @ts-ignore
-            map(() => window.Cardinal),
-            filter(Boolean),
-            first()
-          ) as Observable<ICardinal>
-      )
+    return DomMethods.insertScript('head', scriptOptions).pipe(
+      switchMap(this.waitForCardinalInit)
     );
+  }
+
+  private waitForCardinalInit(): Observable<ICardinal> {
+    return interval().pipe(
+      // @ts-ignore
+      map(() => window.Cardinal),
+      filter(Boolean),
+      first()
+    ) as Observable<ICardinal>;
   }
 }

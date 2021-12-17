@@ -1,12 +1,18 @@
 import { Service } from 'typedi';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
 
 @Service()
 export class GoogleAnalytics {
   private communicate: string;
   private gaScript: HTMLScriptElement;
   private gaScriptContent: Text;
+
+  constructor(private sentryService: SentryService) {
+  }
 
   init(): void {
     this.insertGALibrary();
@@ -53,11 +59,14 @@ export class GoogleAnalytics {
     ga('create', 'UA-${environment.GA_MEASUREMENT_ID}', {'storage': 'none'});
     ga('set', 'anonymizeIp', true);
     ga('set', 'allowAdFeatures', false);
-    ga('send', 'pageview', location.pathname);`
+    ga('send', 'pageview', location.pathname);`;
   }
 
   private insertGALibrary(): void {
-    DomMethods.insertScript('head', { async: 'async', src: environment.GA_SCRIPT_SRC, id: 'googleAnalytics' });
+    DomMethods.insertScript('head', { async: 'async', src: environment.GA_SCRIPT_SRC, id: 'googleAnalytics' }).pipe(
+      this.sentryService.captureAndReportResourceLoadingTimeout('Google Analytics script load timeout'),
+      catchError(() => of(null))
+    ).subscribe();
   }
 
   private insertGAScript(): Promise<string> {

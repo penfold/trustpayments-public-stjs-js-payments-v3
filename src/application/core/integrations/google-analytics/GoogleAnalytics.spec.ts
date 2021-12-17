@@ -1,22 +1,31 @@
+import { anyString, instance, mock, when } from 'ts-mockito';
+import { of } from 'rxjs';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
+import { DomMethods } from '../../shared/dom-methods/DomMethods';
+import { environment } from '../../../../environments/environment';
 import { GoogleAnalytics } from './GoogleAnalytics';
 
 jest.mock('./../../shared/message-bus/MessageBus');
 
 describe('GoogleAnalytics', () => {
-  const instance = new GoogleAnalytics();
+  let sentryServiceMock: SentryService;
+  let sut: GoogleAnalytics;
 
   describe('init()', () => {
     beforeEach(() => {
       // @ts-ignore
-      instance.insertGALibrary = jest.fn();
+      sentryServiceMock = mock(SentryService);
+      when(sentryServiceMock.captureAndReportResourceLoadingTimeout(anyString())).thenReturn(source => source);
+      jest.spyOn(DomMethods, 'insertScript').mockReturnValue(of(null));
+      sut = new GoogleAnalytics(instance(sentryServiceMock));
+
       // @ts-ignore
-      instance.createGAScript = jest.fn().mockResolvedValueOnce({});
+      sut.createGAScript = jest.fn().mockResolvedValueOnce({});
     });
 
     it('should call insertGALibrary and GoogleAnalytics.disableUserIDTracking', () => {
-      instance.init();
-      // @ts-ignore
-      expect(instance.insertGALibrary).toHaveBeenCalled();
+      sut.init();
+      expect(DomMethods.insertScript).toHaveBeenCalledWith('head', { async: 'async', src: environment.GA_SCRIPT_SRC, id: 'googleAnalytics' });
     });
   });
 
@@ -24,7 +33,7 @@ describe('GoogleAnalytics', () => {
     beforeEach(() => {
       // @ts-ignore
       window.ga = jest.fn();
-      instance.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
+      sut.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
     });
 
     it('should call send method from google analytics', () => {
@@ -36,13 +45,13 @@ describe('GoogleAnalytics', () => {
   describe('createGAScript', () => {
     beforeEach(() => {
       // @ts-ignore
-      instance.createGAScript = jest.fn().mockResolvedValueOnce('Google Analytics: script has been appended');
-      instance.init();
+      sut.createGAScript = jest.fn().mockResolvedValueOnce('Google Analytics: script has been appended');
+      sut.init();
     });
 
     it('should call createGAScript function', () => {
       // @ts-ignore
-      expect(instance.createGAScript).toHaveBeenCalledTimes(1);
+      expect(sut.createGAScript).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -55,7 +64,7 @@ describe('GoogleAnalytics', () => {
 
     it('should append script', async () => {
       // @ts-ignore
-      const data = await instance.insertGAScript();
+      const data = await sut.insertGAScript();
       // @ts-ignore
       expect(data).toEqual('Google Analytics: script has been appended');
     });
@@ -63,7 +72,7 @@ describe('GoogleAnalytics', () => {
     //
     it('should call document.head.appendChild', async () => {
       // @ts-ignore
-      await instance.insertGAScript();
+      await sut.insertGAScript();
       // @ts-ignore
       expect(document.head.appendChild).toHaveBeenCalled();
     });

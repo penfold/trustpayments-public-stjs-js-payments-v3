@@ -1,3 +1,10 @@
 {
-  "extends": ".cicd_scripts/execute/config/js/eslintrc.json"
+  "extends": ".cicd_scripts/execute/config/js/eslintrc.json",
+  "settings": {
+    "polyfills": [
+      "Promise",
+      "URL",
+      "URLSearchParams"
+    ]
+  }
 }

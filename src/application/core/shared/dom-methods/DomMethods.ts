@@ -1,3 +1,5 @@
+import { fromEvent, Observable, of } from 'rxjs';
+import { first, mapTo } from 'rxjs/operators';
 import { IScriptParams } from '../../models/IScriptParams';
 
 export class DomMethods {
@@ -69,24 +71,26 @@ export class DomMethods {
     ...Array.from(form.querySelectorAll<HTMLInputElement>(DomMethods.INPUT_MARKUP)),
   ];
 
-  static insertScript(target: string, params: IScriptParams): Promise<Element> {
-    return new Promise((resolve) => {
-      const loaded: Element = DomMethods.isScriptLoaded(params);
-      if (loaded) {
-        resolve(loaded);
-      } else {
-        let targetElement: Element = document.getElementsByTagName(target)[0];
-        if (!targetElement) {
-          targetElement = document.getElementById(target);
-        }
-        // @ts-expect-error TypeScript doesn't allow you to assign known interfaces to dictionaries
-        const script: Element = DomMethods.setMarkupAttributes(DomMethods.SCRIPT_MARKUP, params);
-        targetElement.appendChild(script);
-        script.addEventListener('load', () => {
-          resolve(script);
-        });
-      }
-    });
+  static insertScript(target: string, params: IScriptParams): Observable<HTMLScriptElement> {
+    const loaded: HTMLScriptElement = DomMethods.isScriptLoaded(params);
+
+    if (loaded) {
+      return of(loaded).pipe(first())
+    }
+
+    let targetElement: Element = document.getElementsByTagName(target)[0];
+    if (!targetElement) {
+      targetElement = document.getElementById(target);
+    }
+    // @ts-expect-error TypeScript doesn't allow you to assign known interfaces to dictionaries
+    const script: HTMLScriptElement = DomMethods.setMarkupAttributes(DomMethods.SCRIPT_MARKUP, params);
+    targetElement.appendChild(script);
+
+    return fromEvent(script, 'load')
+      .pipe(
+        mapTo(script),
+        first(),
+      )
   }
 
   static insertStyle(contents: string[] | string): void {
@@ -101,7 +105,7 @@ export class DomMethods {
 
     if (typeof contents === 'string') {
       if (!style.innerHTML.includes(contents)) {
-        style.innerHTML =  style.innerHTML + contents;
+        style.innerHTML = style.innerHTML + contents;
       }
     } else {
       contents.forEach((item: string) => (style.sheet as CSSStyleSheet).insertRule(item, 0));
@@ -139,22 +143,15 @@ export class DomMethods {
     window.location.href = url;
   }
 
-  private static isScriptLoaded(params: IScriptParams): Element {
+  private static isScriptLoaded(params: IScriptParams): HTMLScriptElement | null {
     const { src, id } = params;
-    const scripts: HTMLCollection = document.getElementsByTagName(DomMethods.SCRIPT_MARKUP);
-    const scriptById: HTMLElement = document.getElementById(id);
-    if (scriptById) {
-      return scriptById;
-    }
-    for (const script of Array.from(scripts)) {
-      if (script.getAttribute(DomMethods.SRC_ATTRIBUTE) === src) {
-        return script;
-      }
-    }
+    const scriptBySrc: HTMLScriptElement | null = document.querySelector<HTMLScriptElement>(`${DomMethods.SCRIPT_MARKUP}[${DomMethods.SRC_ATTRIBUTE}="${src}"]`);
+    const scriptById: HTMLScriptElement | null = document.getElementById(id) as HTMLScriptElement;
+    return scriptById || scriptBySrc;
   }
 
-  private static setMarkupAttributes(target: string, params: Record<string, string>): Element {
-    const element: Element = document.createElement(target) as Element;
+  private static setMarkupAttributes(target: string, params: Record<string, string>): HTMLElement {
+    const element: HTMLElement = document.createElement(target);
     Object.keys(params).forEach((param: string) => {
       element.setAttribute(param, params[param]);
     });

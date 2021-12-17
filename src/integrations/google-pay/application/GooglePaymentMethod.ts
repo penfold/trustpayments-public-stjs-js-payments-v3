@@ -1,4 +1,4 @@
-import { Observable, of, throwError } from 'rxjs';
+import { forkJoin, Observable, of, throwError } from 'rxjs';
 import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
@@ -12,6 +12,10 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { GooglePayConfigName, IGooglePayConfig } from '../models/IGooglePayConfig';
 import { GooglePaymentMethodName } from '../models/IGooglePaymentMethod';
 import { IGooglePayGatewayRequest } from '../models/IGooglePayRequest';
+import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
+import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
+import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class GooglePaymentMethod implements IPaymentMethod<IGooglePayConfig, IGooglePayGatewayRequest, IRequestTypeResponse> {
@@ -20,6 +24,7 @@ export class GooglePaymentMethod implements IPaymentMethod<IGooglePayConfig, IGo
   constructor(
     private requestProcessingInitializer: RequestProcessingInitializer,
     private configProvider: ConfigProvider,
+    private frameQueryingService: IFrameQueryingService
   ) {
   }
 
@@ -27,10 +32,17 @@ export class GooglePaymentMethod implements IPaymentMethod<IGooglePayConfig, IGo
     return GooglePaymentMethodName;
   }
 
-  init(): Observable<void> {
+  init(config: IGooglePayConfig): Observable<void> {
     this.requestProcessingService = this.requestProcessingInitializer.initialize();
+    const initClientQueryEvent: IMessageBusEvent = {
+      type: PUBLIC_EVENTS.GOOGLE_PAY_CLIENT_INIT,
+      data: config,
+    };
 
-    return this.requestProcessingService.pipe(mapTo(undefined));
+    return forkJoin([
+      this.requestProcessingService,
+      this.frameQueryingService.query(initClientQueryEvent, MERCHANT_PARENT_FRAME),
+    ]).pipe(mapTo(undefined));
   }
 
   start(data: IGooglePayGatewayRequest): Observable<IPaymentResult<IRequestTypeResponse>> {
@@ -46,7 +58,7 @@ export class GooglePaymentMethod implements IPaymentMethod<IGooglePayConfig, IGo
   }
 
   private handleResponseError(responseOrError, data: IGooglePayGatewayRequest) {
-    if(!responseOrError.requesttypedescription) {
+    if (!responseOrError.requesttypedescription) {
       return throwError(responseOrError);
     }
 
@@ -61,20 +73,20 @@ export class GooglePaymentMethod implements IPaymentMethod<IGooglePayConfig, IGo
     response: IRequestTypeResponse,
     request: IGooglePayGatewayRequest
   ): IPaymentResult<IRequestTypeResponse> {
-      const mappedResponse: IPaymentResult<IRequestTypeResponse> = {
-        status: request.resultStatus || this.resolvePaymentStatus(response),
-        data: response,
-        paymentMethodName: GooglePaymentMethodName,
+    const mappedResponse: IPaymentResult<IRequestTypeResponse> = {
+      status: request.resultStatus || this.resolvePaymentStatus(response),
+      data: response,
+      paymentMethodName: GooglePaymentMethodName,
+    };
+
+    if (mappedResponse.status === PaymentStatus.ERROR) {
+      mappedResponse.error = {
+        code: Number(response.errorcode),
+        message: response.errormessage,
       };
+    }
 
-      if(mappedResponse.status === PaymentStatus.ERROR){
-        mappedResponse.error = {
-          code: Number(response.errorcode),
-          message: response.errormessage,
-        }
-      }
-
-      return mappedResponse;
+    return mappedResponse;
   }
 
   private resolvePaymentStatus(response: IRequestTypeResponse): PaymentStatus {

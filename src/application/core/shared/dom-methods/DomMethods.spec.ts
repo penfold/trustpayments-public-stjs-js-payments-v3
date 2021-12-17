@@ -10,9 +10,11 @@ describe('DomMethods', () => {
   describe('DomMethods.insertScript', () => {
     const { scriptUrl } = createFormFixture();
 
-    it('should inject script to head', () => {
-      DomMethods.insertScript('head', scriptUrl);
-      expect(document.head.innerHTML).toBe('<script src="http://example.com/test.js"></script>');
+    it('should inject script to head and return an observable with inserted script', () => {
+      DomMethods.insertScript('head', scriptUrl).subscribe(script => {
+        expect(script.src).toEqual(scriptUrl.src);
+        expect(document.head.innerHTML).toBe('<script src="http://example.com/test.js"></script>');
+      });
     });
   });
 

@@ -18,6 +18,7 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
+import { SentryService } from '../../../shared/services/sentry/SentryService';
 import { GooglePayPaymentService } from './GooglePayPaymentService';
 import { IGooglePaySdkProvider } from './google-pay-sdk-provider/IGooglePaySdkProvider';
 
@@ -32,17 +33,19 @@ export class GooglePay {
     private googlePayPaymentService: GooglePayPaymentService,
     private jwtDecoder: JwtDecoder,
     private messageBus: IMessageBus,
-    private googlePaySdkProvider: IGooglePaySdkProvider
+    private googlePaySdkProvider: IGooglePaySdkProvider,
+    private sentryService: SentryService
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
-  init(config: IConfig): void {
+  init(config: IConfig): Observable<IConfig> {
     this.config = config;
 
-    this.googlePaySdkProvider
+    return this.googlePaySdkProvider
       .setupSdk$(config)
       .pipe(
+        this.sentryService.captureAndReportResourceLoadingTimeout('Google Pay script load timeout'),
         tap((googlePaySdk: IGooglePaySessionPaymentsClient) => {
           this.googlePaySdk = googlePaySdk;
           this.addGooglePayButton();
@@ -51,10 +54,8 @@ export class GooglePay {
         tap((config: IConfig) => {
           this.config = config;
           this.updateJwtListener();
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
+        })
+      );
   }
 
   private updateConfigWithJWT(jwt: string): IConfig {
