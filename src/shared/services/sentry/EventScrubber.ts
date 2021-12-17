@@ -1,10 +1,13 @@
 import { Service } from 'typedi';
 import { Event, EventHint } from '@sentry/types';
 import { GatewayError } from '../../../application/core/services/st-codec/GatewayError';
+import { IConfig } from '../../model/config/IConfig';
+import { IResponseData } from '../../../application/core/models/IResponseData';
 import { JwtMasker } from './JwtMasker';
 import { RequestTimeoutError } from './RequestTimeoutError';
 import { ErrorTag } from './ErrorTag';
 import { MisconfigurationError } from './MisconfigurationError';
+import { ErrorCode } from './ErrorCodes';
 
 @Service()
 export class EventScrubber {
@@ -15,7 +18,28 @@ export class EventScrubber {
     const { originalException } = hint || {};
 
     if (originalException instanceof GatewayError) {
-      return null;
+      event.tags.tag = ErrorTag.GATEWAY;
+      event.extra.response = originalException.response;
+
+      if ((event?.extra?.config as IConfig).livestatus === 0) {
+        return null;
+      }
+      if ((originalException.response as IResponseData).errorcode === ErrorCode.INSUFFICIENT_FUNDS) {
+        return null;
+      }
+      if ((originalException.response as IResponseData).errorcode === ErrorCode.BYPASS) {
+        event.extra.response = originalException.response;
+        event.tags.tag = ErrorTag.MISCONFIGURATION;
+      }
+      if ((originalException.response as IResponseData).errorcode === ErrorCode.INVALID_FIELD) {
+        const exceptionsArray = ['pan', 'expirationDate', 'securityCode'];
+        if ((originalException.response as IResponseData).errordata.some(errorfield => exceptionsArray.includes(errorfield))) {
+          return null;
+        } else {
+          event.extra.response = originalException.response;
+          event.tags.tag = ErrorTag.MISCONFIGURATION;
+        }
+      }
     }
     
     if (originalException instanceof RequestTimeoutError) {

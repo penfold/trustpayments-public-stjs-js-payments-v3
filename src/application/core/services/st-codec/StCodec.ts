@@ -22,6 +22,7 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { EventScope } from '../../models/constants/EventScope';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { IRequestObject } from '../../models/IRequestObject';
 import { RequestType } from '../../../../shared/types/RequestType';
 import { GatewayError } from './GatewayError';
@@ -199,6 +200,11 @@ export class StCodec {
       StCodec.publishResponse(responseContent, jwtResponse);
       return;
     }
+
+    Container.get(SentryService).sendCustomMessage(
+      new GatewayError(`Gateway error - ${errormessage}`, responseContent)
+    );
+
     if (responseContent.walletsource && responseContent.walletsource === 'APPLEPAY') {
       StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
       return new GatewayError(errormessage);
@@ -275,6 +281,9 @@ export class StCodec {
             if (Number(verifiedResponse.errorcode) === 0) {
               StCodec.replaceJwt(decoded.payload.jwt);
             } else {
+              Container.get(SentryService).sendCustomMessage(
+                new GatewayError(`Gateway error - ${verifiedResponse.errormessage}`, verifiedResponse)
+              );
               StCodec.resetJwt();
             }
 
@@ -283,6 +292,9 @@ export class StCodec {
               response: verifiedResponse,
             });
           } catch (error) {
+            Container.get(SentryService).sendCustomMessage(
+              new GatewayError(`Gateway error - ${error.message}`, error)
+            );
             if (requestBody?.request.some(request => request.requesttypedescriptions?.includes(RequestType.JSINIT))) {
               const jsInitFailedEvent: IMessageBusEvent = {
                 type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_FAILED,
