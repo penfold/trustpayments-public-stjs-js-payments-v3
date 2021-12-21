@@ -25,7 +25,7 @@ Feature: E2E ZIP Payments
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses ZIP from APM list
-#    Then User will be sent to apm page - zip @todo: uncomment when zip sandbox issue is resolved
+    Then User will be sent to apm page - zip
 
 
   Scenario Outline: Unsuccessful init - not supported values for billingcountryiso2a and currencyiso3a
@@ -115,7 +115,7 @@ Feature: E2E ZIP Payments
       | baseamount              | 1500            |
     And User calls updateJWT function by filling amount field
     When User chooses ZIP from APM list
-#    Then User will be sent to apm page - zip @todo: uncomment when zip sandbox issue is resolved
+    Then User will be sent to apm page - zip
 
 
   Scenario: Unsuccessful init - update jwt with not supported values for billingcountryiso2a and currencyiso3a
@@ -241,7 +241,7 @@ Feature: E2E ZIP Payments
     And User waits for whole form to be displayed
     And User waits for Pay button to be active
     When User chooses ZIP from APM list
-#    Then User will be sent to apm page - zip @todo: uncomment when zip sandbox issue is resolved
+    Then User will be sent to apm page - zip
 
     Examples:
       | requesttypedescriptions |
@@ -311,13 +311,12 @@ Feature: E2E ZIP Payments
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses ZIP from APM list
-#    todo: uncomment when zip sandbox issue is resolved
-#    And User will be sent to apm page - zip
-#    When User will click on cancel button on ZIP example page
-#    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
-#      | key                  | value              |
-#      | transactionreference | should not be none |
-#      | settle_status        | 3                  |
+    And User will be sent to apm page - zip
+    When User will click on cancel button on ZIP example page
+    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
+      | key                  | value              |
+      | transactionreference | should not be none |
+      | settle_status        | 3                  |
 
 #  Scenario: RedirectUrl for success and parameters verification
 #    Given JS library configured by inline config BASIC_CONFIG
@@ -398,7 +397,7 @@ Feature: E2E ZIP Payments
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses ZIP from APM list - override placement
-#    And User will be sent to apm page - zip @todo: uncomment when zip sandbox issue is resolved
+    And User will be sent to apm page - zip
 #    When User will click on Decline button on ZIP example page
 #    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
 #      | key                  | value              |
