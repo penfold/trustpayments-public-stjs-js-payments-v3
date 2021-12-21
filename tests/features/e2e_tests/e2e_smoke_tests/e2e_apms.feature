@@ -25,7 +25,7 @@ Feature: E2E APMs Payments
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses ZIP from APM list
-#    Then User will be sent to apm page - zip @todo: uncomment when zip sandbox issue is resolved
+    Then User will be sent to apm page - zip
 
 
   Scenario: Successful trigger of PAYU payment with accepted values for billingcountryiso2a and currencyiso3a
