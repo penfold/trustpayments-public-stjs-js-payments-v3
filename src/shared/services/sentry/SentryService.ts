@@ -4,6 +4,7 @@ import { firstValueFrom, Observable, OperatorFunction, Subscription, throwError,
 import { BrowserOptions } from '@sentry/browser';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { environment } from '../../../environments/environment';
+import { JwtProvider } from '../jwt-provider/JwtProvider';
 import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';
@@ -18,7 +19,8 @@ export class SentryService {
     private configProvider: ConfigProvider,
     private sentry: Sentry,
     private sentryContext: SentryContext,
-    private eventScrubber: EventScrubber
+    private eventScrubber: EventScrubber,
+    private jwtProvider: JwtProvider
   ) {
   }
 
@@ -35,6 +37,11 @@ export class SentryService {
 
     this.configSubscription = this.configProvider.getConfig$(true)
       .subscribe(config => this.sentry.setExtra('config', config));
+
+    this.jwtProvider.getJwtPayload().subscribe(jwtPayload => {
+        this.sentry.setUser({ 'id': jwtPayload?.sitereference });
+      }
+    );
   }
 
   private initSentry(dsn: string, whitelistUrls: string[]): void {
