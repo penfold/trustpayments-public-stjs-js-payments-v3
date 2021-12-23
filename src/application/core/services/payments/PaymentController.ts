@@ -8,12 +8,14 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { Debug } from '../../../../shared/Debug';
 import { EventScope } from '../../models/constants/EventScope';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { IPaymentMethod } from './IPaymentMethod';
 import { IInitPaymentMethod } from './events/IInitPaymentMethod';
 import { IStartPaymentMethod } from './events/IStartPaymentMethod';
 import { IPaymentResult } from './IPaymentResult';
 import { PaymentResultHandler } from './PaymentResultHandler';
 import { ErrorResultFactory } from './ErrorResultFactory';
+import { PaymentError } from './error/PaymentError';
 
 @Service()
 export class PaymentController {
@@ -25,6 +27,7 @@ export class PaymentController {
     private messageBus: IMessageBus,
     private paymentResultHandler: PaymentResultHandler,
     private errorResultFactory: ErrorResultFactory,
+    private sentryService: SentryService,
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
@@ -50,6 +53,9 @@ export class PaymentController {
             mapTo(name),
             catchError((error: Error) => {
               Debug.error(`Payment method initialization failed: ${name}`, error);
+              this.sentryService.sendCustomMessage(
+                PaymentError.duringInit('Payment method initialization failed', name, error)
+              );
               this.messageBus.publish({
                 type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_FAILED,
                 data: { name },
@@ -84,6 +90,9 @@ export class PaymentController {
             }),
             catchError((error: unknown) => {
               Debug.error(`Running payment method failed: ${name}`, error);
+              this.sentryService.sendCustomMessage(
+                PaymentError.duringProcess('Running payment method failed', name, error)
+              );
               this.messageBus.publish({
                 type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_FAILED,
                 data: { name },

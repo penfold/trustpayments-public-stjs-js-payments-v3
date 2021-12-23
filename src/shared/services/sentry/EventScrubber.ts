@@ -1,8 +1,12 @@
 import { Service } from 'typedi';
 import { Event, EventHint } from '@sentry/types';
+import { TimeoutError } from 'rxjs';
 import { GatewayError } from '../../../application/core/services/st-codec/GatewayError';
 import { IConfig } from '../../model/config/IConfig';
 import { IResponseData } from '../../../application/core/models/IResponseData';
+import { PaymentError } from '../../../application/core/services/payments/error/PaymentError';
+import { FrameCommunicationError } from '../message-bus/errors/FrameCommunicationError';
+import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { JwtMasker } from './JwtMasker';
 import { RequestTimeoutError } from './RequestTimeoutError';
 import { ErrorTag } from './ErrorTag';
@@ -41,15 +45,39 @@ export class EventScrubber {
         }
       }
     }
-    
+
+    if (originalException instanceof TimeoutError) {
+      event.tags.tag = ErrorTag.TIMEOUT;
+    }
+
     if (originalException instanceof RequestTimeoutError) {
       event.tags.tag = ErrorTag.TIMEOUT;
       event.tags.timeout_type = (hint?.originalException as RequestTimeoutError)?.timeoutDetails?.type;
       event.tags.timeout_url = (hint?.originalException as RequestTimeoutError)?.timeoutDetails?.requestUrl;
+      event.extra.originalError = originalException.timeoutDetails?.originalError;
     }
 
     if (originalException instanceof MisconfigurationError) {
       event.tags.tag = ErrorTag.MISCONFIGURATION;
+      event.extra.originalError = originalException.previousError;
+    }
+
+    if (originalException instanceof PaymentError) {
+      event.tags.tag = originalException.isInitError() ? ErrorTag.PAYMENT_INIT : ErrorTag.PAYMENT;
+      event.extra.paymentMethodName = originalException.paymentMethodName;
+      event.extra.errorData = originalException.errorData;
+    }
+
+    if (originalException instanceof FrameCommunicationError) {
+      event.tags.tag = ErrorTag.INTERNAL;
+      event.extra.sourceFrame = originalException.sourceFrame;
+      event.extra.targetFrame = originalException.targetFrame;
+      event.extra.event = originalException.event;
+      event.extra.originalError = originalException.originalError;
+      event.extra.documentFrames = DomMethods.getAllIframes().map(element => ({
+        name: element.name,
+        src: element.src,
+      }));
     }
 
     if (event.extra && typeof event.extra.config === 'object') {

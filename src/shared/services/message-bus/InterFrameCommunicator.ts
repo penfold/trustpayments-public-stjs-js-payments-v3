@@ -1,16 +1,26 @@
 import { ContainerInstance, Inject, Service } from 'typedi';
-import { filter, map, share, defer, fromEvent, Observable, Subject, firstValueFrom } from 'rxjs';
+import {
+  filter,
+  map,
+  share,
+  defer,
+  fromEvent,
+  Observable,
+  Subject,
+  firstValueFrom,
+} from 'rxjs';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { environment } from '../../../environments/environment';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
-import { Debug } from '../../Debug';
 import { CONFIG, WINDOW } from '../../dependency-injection/InjectionTokens';
 import { IConfig } from '../../model/config/IConfig';
-import { FrameNotFound } from './errors/FrameNotFound';
+import { SentryService } from '../sentry/SentryService';
 import { FrameAccessor } from './FrameAccessor';
 import { EventDataSanitizer } from './EventDataSanitizer';
 import { IFrameQueryingService } from './interfaces/IFrameQueryingService';
 import { FrameQueryingService } from './FrameQueryingService';
+import { FrameCommunicationError } from './errors/FrameCommunicationError';
+import { FrameIdentifier } from './FrameIdentifier';
 
 @Service()
 export class InterFrameCommunicator {
@@ -27,6 +37,7 @@ export class InterFrameCommunicator {
     private container: ContainerInstance,
     private eventDataSanitizer: EventDataSanitizer,
     private frameQueryingService: IFrameQueryingService,
+    private frameIdentifier: FrameIdentifier,
     @Inject(WINDOW) private window: Window
   ) {
     this.incomingEvent$ = fromEvent<MessageEvent>(this.window, InterFrameCommunicator.MESSAGE_EVENT).pipe(
@@ -49,13 +60,15 @@ export class InterFrameCommunicator {
       const frameOrigin = targetFrame === parentFrame ? this.getParentOrigin() : this.frameOrigin;
       const sanitizedMessage: IMessageBusEvent = { ...message, data: this.eventDataSanitizer.sanitize(message.data) };
 
-      targetFrame.postMessage(sanitizedMessage, frameOrigin);
-    } catch (e) {
-      if (e instanceof FrameNotFound) {
-        return Debug.warn(e.message);
-      }
-
-      throw e;
+      new Promise(resolve => {
+        targetFrame.postMessage(sanitizedMessage, frameOrigin);
+        resolve(null);
+      }).catch(error => {
+        // this is the only way to catch errors on postMessage as they are not caught by try...catch clause ¯\_(ツ)_/¯
+        this.sentryService.sendCustomMessage(this.createCommunicationError(message, String(target), error));
+      });
+    } catch (error) {
+      throw this.createCommunicationError(message, String(target), error);
     }
   }
 
@@ -110,5 +123,23 @@ export class InterFrameCommunicator {
     this.parentOrigin = config.origin || InterFrameCommunicator.DEFAULT_ORIGIN;
 
     return this.parentOrigin;
+  }
+
+  private createCommunicationError(
+    event: IMessageBusEvent,
+    targetFrame: string,
+    originalError?: Error,
+  ): FrameCommunicationError {
+    return new FrameCommunicationError(
+      'Failed to post inter-frame message.',
+      event,
+      this.frameIdentifier.getFrameName(),
+      targetFrame,
+      originalError,
+    );
+  }
+
+  private get sentryService(): SentryService {
+    return this.container.get(SentryService);
   }
 }

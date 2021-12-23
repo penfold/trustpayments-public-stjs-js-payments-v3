@@ -13,7 +13,6 @@ import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { SentryService } from './SentryService';
 import { ExceptionsToSkip } from './ExceptionsToSkip';
-import { JwtMasker } from './JwtMasker';
 import { RequestTimeoutError } from './RequestTimeoutError';
 
 describe('SentryService', () => {
@@ -23,23 +22,18 @@ describe('SentryService', () => {
   let configProviderMock: ConfigProvider;
   let sentryMock: Sentry;
   let sentryContextMock: SentryContext;
-  let eventScrubber: EventScrubber;
+  let eventScrubberMock: EventScrubber;
   let sentryService: SentryService;
-  let jwtMaskerMock: JwtMasker;
   let jwtProviderMock: JwtProvider;
-  const jwtPayloadChangesMock = new BehaviorSubject<IStJwtPayload>({ sitereference: 'test-site-reference' });
   let config$: Subject<IConfig>;
+  const jwtPayloadChangesMock = new BehaviorSubject<IStJwtPayload>({ sitereference: 'test-site-reference' });
 
   beforeEach(() => {
-    jwtMaskerMock = mock(JwtMasker);
     configProviderMock = mock<ConfigProvider>();
     sentryMock = mock(Sentry);
     sentryContextMock = mock(SentryContext);
     jwtProviderMock = mock(JwtProvider);
-    eventScrubber = new EventScrubber(
-      instance(jwtMaskerMock)
-    );
-    when(sentryMock.setExtra(anything(), anything())).thenCall((...args) => console.log(args));
+    eventScrubberMock = mock(EventScrubber);
     config$ = new BehaviorSubject(config);
 
     when(sentryContextMock.getFrameName()).thenReturn(CONTROL_FRAME_IFRAME);
@@ -47,12 +41,13 @@ describe('SentryService', () => {
     when(sentryContextMock.getHostName()).thenReturn('webservices.securetrading.net');
     when(configProviderMock.getConfig$(true)).thenReturn(config$);
     when(jwtProviderMock.getJwtPayload()).thenReturn(jwtPayloadChangesMock);
+    when(eventScrubberMock.scrub(anything(), anything())).thenCall(event => event);
 
     sentryService = new SentryService(
       instance(configProviderMock),
       instance(sentryMock),
       instance(sentryContextMock),
-      eventScrubber,
+      instance(eventScrubberMock),
       instance(jwtProviderMock)
     );
   });
