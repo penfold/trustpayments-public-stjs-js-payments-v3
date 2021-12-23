@@ -8,6 +8,7 @@ import { PaymentMethodToken } from '../../../dependency-injection/InjectionToken
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { Debug } from '../../../../shared/Debug';
 import { GooglePaymentMethodName } from '../../../../integrations/google-pay/models/IGooglePaymentMethod';
+import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { PaymentController } from './PaymentController';
 import { IPaymentMethod } from './IPaymentMethod';
 import { PaymentResultHandler } from './PaymentResultHandler';
@@ -15,8 +16,8 @@ import { IInitPaymentMethod } from './events/IInitPaymentMethod';
 import { IPaymentResult } from './IPaymentResult';
 import { PaymentStatus } from './PaymentStatus';
 import { IStartPaymentMethod } from './events/IStartPaymentMethod';
+import { PaymentError } from './error/PaymentError';
 import { ErrorResultFactory } from './ErrorResultFactory';
-
 import spyOn = jest.spyOn;
 
 describe('PaymentController', () => {
@@ -25,6 +26,7 @@ describe('PaymentController', () => {
   let paymentController: PaymentController;
   let paymentResultHandlerMock: PaymentResultHandler;
   let errorResultFactoryMock: ErrorResultFactory;
+  let sentryServiceMock: SentryService;
   let fooPaymentMethodMock: IPaymentMethod;
   let fooPaymentMethod: IPaymentMethod;
   let barPaymentMethodMock: IPaymentMethod;
@@ -34,6 +36,7 @@ describe('PaymentController', () => {
     containerMock = mock(ContainerInstance);
     paymentResultHandlerMock = mock(PaymentResultHandler);
     errorResultFactoryMock = mock(ErrorResultFactory);
+    sentryServiceMock = mock(SentryService);
     fooPaymentMethodMock = mock<IPaymentMethod>();
     fooPaymentMethod = instance(fooPaymentMethodMock);
     barPaymentMethodMock = mock<IPaymentMethod>();
@@ -45,6 +48,7 @@ describe('PaymentController', () => {
       messageBus,
       instance(paymentResultHandlerMock),
       instance(errorResultFactoryMock),
+      instance(sentryServiceMock),
     );
 
     when(containerMock.getMany(PaymentMethodToken)).thenReturn([fooPaymentMethod, barPaymentMethod]);
@@ -92,6 +96,7 @@ describe('PaymentController', () => {
 
     it('logs error message when trying to initialize not existing payment method', () => {
       const config = { aaa: 'bbb' };
+      const error = new Error('Payment method with name nonexisting not found.');
 
       messageBus.publish<IInitPaymentMethod<typeof config>>({
         type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
@@ -103,8 +108,12 @@ describe('PaymentController', () => {
 
       expect(Debug.error).toHaveBeenCalledWith(
         'Payment method initialization failed: nonexisting',
-        new Error('Payment method with name nonexisting not found.')
+        error,
       );
+
+      verify(sentryServiceMock.sendCustomMessage(deepEqual(
+        PaymentError.duringInit('Payment method initialization failed', 'nonexisting', error)
+      ))).once();
     });
 
     it('logs error message when payment method initialization fails', () => {
@@ -122,6 +131,10 @@ describe('PaymentController', () => {
       });
 
       expect(Debug.error).toHaveBeenCalledWith('Payment method initialization failed: foo', initializationError);
+
+      verify(sentryServiceMock.sendCustomMessage(deepEqual(
+        PaymentError.duringInit('Payment method initialization failed', 'foo', initializationError)
+      ))).once();
     });
 
     it('initializes all payment methods', done => {
@@ -183,8 +196,17 @@ describe('PaymentController', () => {
       expect(Debug.error).toHaveBeenCalledWith('Payment method initialization failed: foo', fooError);
       expect(Debug.log).toHaveBeenCalledWith('Payment method initialized: bar');
     });
+  });
 
-    it('starts given payment method with data and returns the result to result handler', () => {
+  describe('start()', () => {
+    beforeEach(() => {
+      paymentController.init();
+
+      spyOn(Debug, 'log').mockReturnValue(undefined);
+      spyOn(Debug, 'error').mockReturnValue(undefined);
+    });
+
+    it('starts given payment method with data and returns the result to result handler', async () => {
       const data = { bbb: 'ccc' };
       const result: IPaymentResult<unknown> = { status: PaymentStatus.SUCCESS, paymentMethodName: 'Card' };
       spyOn(messageBus, 'publish');
@@ -235,6 +257,10 @@ describe('PaymentController', () => {
         'Running payment method failed: nonexisting',
         error,
       );
+
+      verify(sentryServiceMock.sendCustomMessage(deepEqual(
+        PaymentError.duringProcess('Running payment method failed', 'nonexisting', error)
+      ))).once();
     });
 
     it('logs error message and returns error result when payment method processing fails', () => {
@@ -266,6 +292,10 @@ describe('PaymentController', () => {
       verify(paymentResultHandlerMock.handle(errorResult)).once();
       expect(messageBus.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.JWT_RESET });
       expect(Debug.error).toHaveBeenCalledWith('Running payment method failed: foo', paymentError);
+
+      verify(sentryServiceMock.sendCustomMessage(deepEqual(
+        PaymentError.duringProcess('Running payment method failed', 'foo', paymentError)
+      ))).once();
     });
 
     it('doesnt init any payment methods after DESTROY event', () => {

@@ -143,6 +143,10 @@ export class DomMethods {
     window.location.href = url;
   }
 
+  static getAllIframes(): HTMLIFrameElement[] {
+    return Array.from(document.getElementsByTagName('iframe'));
+  }
+
   private static isScriptLoaded(params: IScriptParams): HTMLScriptElement | null {
     const { src, id } = params;
     const scriptBySrc: HTMLScriptElement | null = document.querySelector<HTMLScriptElement>(`${DomMethods.SCRIPT_MARKUP}[${DomMethods.SRC_ATTRIBUTE}="${src}"]`);

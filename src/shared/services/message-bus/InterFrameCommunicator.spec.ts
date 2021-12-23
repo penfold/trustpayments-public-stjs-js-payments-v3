@@ -1,17 +1,19 @@
-import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { first, of } from 'rxjs';
 import { ContainerInstance } from 'typedi';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { environment } from '../../../environments/environment';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
-import { Debug } from '../../Debug';
 import { CONFIG } from '../../dependency-injection/InjectionTokens';
+import { SentryService } from '../sentry/SentryService';
 import { FrameNotFound } from './errors/FrameNotFound';
 import { InterFrameCommunicator } from './InterFrameCommunicator';
 import { FrameAccessor } from './FrameAccessor';
 import { EventDataSanitizer } from './EventDataSanitizer';
 import { IFrameQueryingService } from './interfaces/IFrameQueryingService';
 import { FrameQueryingService } from './FrameQueryingService';
+import { FrameIdentifier } from './FrameIdentifier';
+import { FrameCommunicationError } from './errors/FrameCommunicationError';
 
 describe('InterFrameCommunicator', () => {
   const PARENT_FRAME_ORIGIN = 'https://foobar.com';
@@ -26,6 +28,8 @@ describe('InterFrameCommunicator', () => {
   let foobarFrame: Window;
   let eventDataSanitizerMock: EventDataSanitizer;
   let frameQueryingServiceMock: IFrameQueryingService;
+  let frameIdentifierMock: FrameIdentifier;
+  let sentryServiceMock: SentryService;
 
   beforeEach(() => {
     frameAccessorMock = mock(FrameAccessor);
@@ -38,13 +42,16 @@ describe('InterFrameCommunicator', () => {
     Object.setPrototypeOf(foobarFrame, Window.prototype);
     eventDataSanitizerMock = mock(EventDataSanitizer);
     frameQueryingServiceMock = mock<IFrameQueryingService>();
+    frameIdentifierMock = mock(FrameIdentifier);
+    sentryServiceMock = mock(SentryService);
 
     interFrameCommunicator = new InterFrameCommunicator(
       instance(frameAccessorMock),
       instance(containerMock),
       instance(eventDataSanitizerMock),
       instance(frameQueryingServiceMock),
-      window
+      instance(frameIdentifierMock),
+      window,
     );
 
     when(frameAccessorMock.getParentFrame()).thenReturn(parentFrame);
@@ -53,7 +60,9 @@ describe('InterFrameCommunicator', () => {
     when(containerMock.get(CONFIG)).thenReturn({
       origin: PARENT_FRAME_ORIGIN,
     });
+    when(containerMock.get(SentryService)).thenReturn(instance(sentryServiceMock));
     when(eventDataSanitizerMock.sanitize(anything())).thenCall((data) => data);
+    when(frameIdentifierMock.getFrameName()).thenReturn(MERCHANT_PARENT_FRAME);
   });
 
   describe('constructor()', () => {
@@ -100,22 +109,38 @@ describe('InterFrameCommunicator', () => {
       verify(foobarFrameMock.postMessage(deepEqual(message), APP_FRAME_ORIGIN)).once();
     });
 
-    it('should log warning when target frame is not found', () => {
-      const debugSpy = spy(Debug);
-      const errorMessage = 'Target frame "notexistingframe" not found.';
+    it('should throw FrameCommunicationError when target frame is not found', () => {
+      const notFoundError = new FrameNotFound('Target frame "notexistingframe" not found.');
 
-      when(frameAccessorMock.getFrame('notexistingframe')).thenThrow(new FrameNotFound(errorMessage));
-      when(debugSpy.warn(anything())).thenReturn(undefined);
+      when(frameAccessorMock.getFrame('notexistingframe')).thenThrow(notFoundError);
 
-      interFrameCommunicator.send(message, 'notexistingframe');
-
-      verify(debugSpy.warn(errorMessage)).once();
+      expect(() => interFrameCommunicator.send(message, 'notexistingframe'))
+        .toThrowError(new FrameCommunicationError(
+          'Failed to post inter-frame message.',
+          message,
+          MERCHANT_PARENT_FRAME,
+          'notexistingframe',
+          notFoundError,
+        ));
     });
 
-    it('should throw error when posting message fails', () => {
-      when(foobarFrameMock.postMessage(anything(), anything())).thenThrow(new Error('sending failed'));
+    it('should report an error to sentry when sending message fails', done => {
+      const error = new Error('sending failed');
 
-      expect(() => interFrameCommunicator.send(message, foobarFrame)).toThrowError('sending failed');
+      when(foobarFrameMock.postMessage(anything(), anything())).thenThrow(error);
+
+      interFrameCommunicator.send(message, foobarFrame);
+
+      setTimeout(() => {
+        verify(sentryServiceMock.sendCustomMessage(deepEqual(new FrameCommunicationError(
+          'Failed to post inter-frame message.',
+          message,
+          MERCHANT_PARENT_FRAME,
+          String(foobarFrame),
+          error,
+        )))).once();
+        done();
+      });
     });
   });
 

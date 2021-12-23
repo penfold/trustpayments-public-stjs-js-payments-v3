@@ -101,6 +101,21 @@ describe('DomMethods', () => {
       expect(form.querySelectorAll('.-st-created-field').length).toBe(0);
     });
   });
+
+  describe('DomMethods.getAllIframes()', () => {
+    it('retrieves all iframes from the document', () => {
+      const iframe1 = document.createElement('iframe');
+      const iframe2 = document.createElement('iframe');
+      document.body.appendChild(iframe1);
+      document.body.appendChild(iframe2);
+
+      expect(DomMethods.getAllIframes()).toEqual([iframe1, iframe2]);
+    });
+
+    it('returns an empty array if there are no iframes in document', () => {
+      expect(DomMethods.getAllIframes()).toEqual([]);
+    });
+  });
 });
 
 function addInput(form: HTMLFormElement, name: string, value: string, stName?: string) {
