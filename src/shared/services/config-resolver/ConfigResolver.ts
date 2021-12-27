@@ -20,12 +20,14 @@ import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { SentryService } from '../sentry/SentryService';
 import { MisconfigurationError } from '../sentry/MisconfigurationError';
 import { IApplePayConfig } from '../../../integrations/apple-pay/client/models/IApplePayConfig';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 
 @Service()
 export class ConfigResolver {
   constructor(
     private configValidator: ConfigValidator,
     private container: ContainerInstance,
+    private googleAnalytics: GoogleAnalytics,
   ) {
   }
 
@@ -195,6 +197,7 @@ export class ConfigResolver {
     }
     if(item?.type === 'deprecate.error') {
       this.container.get(SentryService).sendCustomMessage(new MisconfigurationError(`Misconfiguration: ${item?.message}`));
+      this.googleAnalytics.sendGaData('event', 'config', 'deprecated', item?.message);
     }
   }
 }

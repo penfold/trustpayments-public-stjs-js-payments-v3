@@ -11,6 +11,7 @@ import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { EventPlacement, EventType } from '../../../application/core/integrations/google-analytics/events';
 import { ApplePayClientStatus } from './models/ApplePayClientStatus';
 import { IApplePaySession } from './models/IApplePaySession';
 import { IApplePaySessionWrapper } from './models/IApplePaySessionWrapper';
@@ -43,12 +44,14 @@ export class ApplePayClient {
   }
 
   init(config: IConfig): Observable<void> {
+    this.googleAnalytics.sendGaData('event', EventPlacement.APPLE_PAY, EventType.BEGIN, 'Apple Pay start begin');
     return this.isApplePayAvailable(config).pipe(
       tap(config => this.updateJwtListener(config)),
       map(config => this.resolveApplePayConfig(config)),
       tap(applePayConfig => this.insertApplePayButton(applePayConfig)),
       tap(applePayConfig => this.initGestureHandler(applePayConfig)),
       tap(() => {
+        this.googleAnalytics.sendGaData('event', EventPlacement.APPLE_PAY, EventType.COMPLETE, 'Apple Pay start completed');
         this.googleAnalytics.sendGaData(
           'event',
           'Apple Pay',

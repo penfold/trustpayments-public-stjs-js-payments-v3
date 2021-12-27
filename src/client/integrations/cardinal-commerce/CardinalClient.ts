@@ -17,6 +17,7 @@ import { ActionCode } from '../../../application/core/services/three-d-verificat
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
+import { EventPlacement, EventType } from '../../../application/core/integrations/google-analytics/events';
 import { ICardinal } from './ICardinal';
 import { CardinalProvider } from './CardinalProvider';
 import { IInitializationData } from './data/IInitializationData';
@@ -52,6 +53,8 @@ export class CardinalClient {
   }
 
   init(): void {
+    this.googleAnalytics.sendGaData('event', EventPlacement.CARDINAL, EventType.BEGIN, 'Cardinal start begin');
+
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.CARDINAL_SETUP)
       .thenRespond((event: IMessageBusEvent<IInitializationData>) => this.cardinalSetup(event.data));
@@ -91,7 +94,7 @@ export class CardinalClient {
             })
         ),
         tap(() => {
-          this.googleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed');
+          this.googleAnalytics.sendGaData('event', EventPlacement.CARDINAL, EventType.COMPLETE, 'Cardinal start complete');
         }),
         shareReplay(1)
       );

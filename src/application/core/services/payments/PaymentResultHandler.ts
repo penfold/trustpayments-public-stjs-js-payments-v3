@@ -6,6 +6,8 @@ import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { EventScope } from '../../models/constants/EventScope';
 import { ITranslator } from '../../shared/translator/ITranslator';
+import { EventType } from '../../integrations/google-analytics/events';
+import { GoogleAnalytics } from '../../integrations/google-analytics/GoogleAnalytics';
 import { PaymentStatus } from './PaymentStatus';
 import { IPaymentResult } from './IPaymentResult';
 
@@ -16,6 +18,7 @@ export class PaymentResultHandler {
     private notificationService: NotificationService,
     private configProvider: ConfigProvider,
     private translator: ITranslator,
+    private googleAnalytics: GoogleAnalytics,
   ) {}
 
   handle<T>(result: IPaymentResult<T>): void {
@@ -43,6 +46,8 @@ export class PaymentResultHandler {
         data: { name: result.paymentMethodName },
       }, EventScope.EXPOSED);
 
+      this.googleAnalytics.sendGaData('event', result.paymentMethodName, EventType.COMPLETE, `Payment by ${result.paymentMethodName} completed`);
+
       this.notificationService.success(PAYMENT_SUCCESS);
       this.messageBus.publish({ type: PUBLIC_EVENTS.APPEND_FORM_DATA, data: result.data },  EventScope.ALL_FRAMES);
       this.messageBus.publish({ type: PUBLIC_EVENTS.CALL_MERCHANT_SUBMIT_CALLBACK, data: result.data },  EventScope.ALL_FRAMES);
@@ -61,6 +66,8 @@ export class PaymentResultHandler {
         type: PUBLIC_EVENTS.PAYMENT_METHOD_CANCELED,
         data: { name: result.paymentMethodName },
       }, EventScope.EXPOSED);
+
+      this.googleAnalytics.sendGaData('event', result.paymentMethodName, EventType.FAIL, `Payment by ${result.paymentMethodName} failed`);
 
       this.notificationService.cancel(PAYMENT_CANCELLED);
       this.messageBus.publish({ type: PUBLIC_EVENTS.APPEND_FORM_DATA, data: result.data },  EventScope.ALL_FRAMES);
@@ -82,6 +89,8 @@ export class PaymentResultHandler {
         type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
         data: { name: result.paymentMethodName },
       }, EventScope.EXPOSED);
+
+      this.googleAnalytics.sendGaData('event', result.paymentMethodName, EventType.FAIL, `Payment by ${result.paymentMethodName} failed`);
 
       this.notificationService.error(errorMessage);
       this.messageBus.publish({ type: PUBLIC_EVENTS.APPEND_FORM_DATA, data: result.data },  EventScope.ALL_FRAMES);

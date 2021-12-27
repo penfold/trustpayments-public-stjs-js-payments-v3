@@ -19,6 +19,8 @@ import { IMessageBus } from '../../../application/core/shared/message-bus/IMessa
 import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { EventPlacement, EventType } from '../../../application/core/integrations/google-analytics/events';
 import { GooglePayPaymentService } from './GooglePayPaymentService';
 import { IGooglePaySdkProvider } from './google-pay-sdk-provider/IGooglePaySdkProvider';
 
@@ -34,12 +36,14 @@ export class GooglePay {
     private jwtDecoder: JwtDecoder,
     private messageBus: IMessageBus,
     private googlePaySdkProvider: IGooglePaySdkProvider,
-    private sentryService: SentryService
+    private sentryService: SentryService,
+    private googleAnalytics: GoogleAnalytics,
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
   init(config: IConfig): Observable<IConfig> {
+    this.googleAnalytics.sendGaData('event', EventPlacement.GOOGLE_PAY, EventType.BEGIN, 'Google Pay start begin');
     this.config = config;
 
     return this.googlePaySdkProvider
@@ -49,6 +53,7 @@ export class GooglePay {
         tap((googlePaySdk: IGooglePaySessionPaymentsClient) => {
           this.googlePaySdk = googlePaySdk;
           this.addGooglePayButton();
+          this.googleAnalytics.sendGaData('event', EventPlacement.GOOGLE_PAY, EventType.COMPLETE, 'Google Pay start completed');
         }),
         switchMap(() => this.configProvider.getConfig$()),
         tap((config: IConfig) => {

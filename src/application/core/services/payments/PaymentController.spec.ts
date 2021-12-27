@@ -9,6 +9,7 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { Debug } from '../../../../shared/Debug';
 import { GooglePaymentMethodName } from '../../../../integrations/google-pay/models/IGooglePaymentMethod';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
+import { GoogleAnalytics } from '../../integrations/google-analytics/GoogleAnalytics';
 import { PaymentController } from './PaymentController';
 import { IPaymentMethod } from './IPaymentMethod';
 import { PaymentResultHandler } from './PaymentResultHandler';
@@ -31,6 +32,7 @@ describe('PaymentController', () => {
   let fooPaymentMethod: IPaymentMethod;
   let barPaymentMethodMock: IPaymentMethod;
   let barPaymentMethod: IPaymentMethod;
+  let googleAnalyticsMock: GoogleAnalytics;
 
   beforeEach(() => {
     containerMock = mock(ContainerInstance);
@@ -41,6 +43,7 @@ describe('PaymentController', () => {
     fooPaymentMethod = instance(fooPaymentMethodMock);
     barPaymentMethodMock = mock<IPaymentMethod>();
     barPaymentMethod = instance(barPaymentMethodMock);
+    googleAnalyticsMock = mock(GoogleAnalytics);
 
     messageBus = new SimpleMessageBus();
     paymentController = new PaymentController(
@@ -49,6 +52,7 @@ describe('PaymentController', () => {
       instance(paymentResultHandlerMock),
       instance(errorResultFactoryMock),
       instance(sentryServiceMock),
+      instance(googleAnalyticsMock),
     );
 
     when(containerMock.getMany(PaymentMethodToken)).thenReturn([fooPaymentMethod, barPaymentMethod]);

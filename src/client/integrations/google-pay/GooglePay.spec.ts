@@ -9,6 +9,7 @@ import { IConfig } from '../../../shared/model/config/IConfig';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 import { GooglePaySdkProvider } from './google-pay-sdk-provider/GooglePaySdkProvider';
 import { GooglePay } from './GooglePay';
@@ -24,6 +25,7 @@ describe('GooglePay', () => {
   let googlePaySdkProviderMock: GooglePaySdkProvider;
   let sentryServiceMock: SentryService;
   let googlePaySessionPaymentsClientMock: IGooglePaySessionPaymentsClient;
+  let googleAnalyticsMock: GoogleAnalytics;
 
   const configMock: IConfig = {
     jwt: '',
@@ -42,6 +44,7 @@ describe('GooglePay', () => {
     simpleMessageBus = new SimpleMessageBus();
     googlePaySdkProviderMock = mock(GooglePaySdkProvider);
     googlePaySessionPaymentsClientMock = mock<IGooglePaySessionPaymentsClient>();
+    googleAnalyticsMock = mock(GoogleAnalytics);
     when(googlePaySessionPaymentsClientMock.createButton(anything())).thenReturn(document.createElement('button'));
     when(googlePaySessionPaymentsClientMock.isReadyToPay(anything())).thenResolve();
     when(googlePaySessionPaymentsClientMock.loadPaymentData(anything())).thenResolve();
@@ -56,7 +59,8 @@ describe('GooglePay', () => {
       instance(jwtDecoderMock),
       simpleMessageBus,
       instance(googlePaySdkProviderMock),
-      instance(sentryServiceMock)
+      instance(sentryServiceMock),
+      instance(googleAnalyticsMock),
     );
 
     simpleMessageBus.publish({

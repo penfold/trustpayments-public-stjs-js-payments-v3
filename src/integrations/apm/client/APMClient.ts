@@ -16,6 +16,8 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import './APMClient.scss';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
+import { EventPlacement, EventType } from '../../../application/core/integrations/google-analytics/events';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 
 @Service()
 export class APMClient {
@@ -47,11 +49,13 @@ export class APMClient {
     private messageBus: IMessageBus,
     private apmFilterService: APMFilterService,
     private configProvider: ConfigProvider,
+    private googleAnalytics: GoogleAnalytics,
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
   init(config: IAPMConfig): Observable<undefined> {
+    this.googleAnalytics.sendGaData('event', EventPlacement.APM, EventType.BEGIN, 'APM start begin');
     this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.UPDATE_JWT),
       map(event => event.data.newJwt),
@@ -77,6 +81,7 @@ export class APMClient {
     itemList.forEach((item: IAPMItemConfig) => {
       this.insertAPMButton(item);
     });
+    this.googleAnalytics.sendGaData('event', EventPlacement.APM, EventType.COMPLETE, 'APM start complete');
   }
 
   private clearExistingButtons(): void {

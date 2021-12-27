@@ -9,6 +9,8 @@ import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { Debug } from '../../../../shared/Debug';
 import { EventScope } from '../../models/constants/EventScope';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
+import { GoogleAnalytics } from '../../integrations/google-analytics/GoogleAnalytics';
+import { EventType } from '../../integrations/google-analytics/events';
 import { IPaymentMethod } from './IPaymentMethod';
 import { IInitPaymentMethod } from './events/IInitPaymentMethod';
 import { IStartPaymentMethod } from './events/IStartPaymentMethod';
@@ -28,6 +30,7 @@ export class PaymentController {
     private paymentResultHandler: PaymentResultHandler,
     private errorResultFactory: ErrorResultFactory,
     private sentryService: SentryService,
+    private googleAnalytics: GoogleAnalytics,
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
@@ -83,6 +86,7 @@ export class PaymentController {
           of(true).pipe(
             switchMap(() => this.getPaymentMethod(name).start(data)),
             tap(() => {
+              this.googleAnalytics.sendGaData('event', name, EventType.BEGIN, `Payment by ${name} started`);
               this.messageBus.publish({
                 type: PUBLIC_EVENTS.PAYMENT_METHOD_STARTED,
                 data: { name },
@@ -93,6 +97,7 @@ export class PaymentController {
               this.sentryService.sendCustomMessage(
                 PaymentError.duringProcess('Running payment method failed', name, error)
               );
+              this.googleAnalytics.sendGaData('event', name, EventType.FAIL, `Payment by ${name} failed`);
               this.messageBus.publish({
                 type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_FAILED,
                 data: { name },
