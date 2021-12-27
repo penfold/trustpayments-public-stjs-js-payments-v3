@@ -10,6 +10,7 @@ import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';
 import { ExceptionsToSkip } from './ExceptionsToSkip';
 import { RequestTimeoutError } from './RequestTimeoutError';
+import { PayloadSanitizer } from './PayloadSanitizer';
 
 @Service()
 export class SentryService {
@@ -20,7 +21,8 @@ export class SentryService {
     private sentry: Sentry,
     private sentryContext: SentryContext,
     private eventScrubber: EventScrubber,
-    private jwtProvider: JwtProvider
+    private jwtProvider: JwtProvider,
+    private payloadSanitizer: PayloadSanitizer,
   ) {
   }
 
@@ -36,7 +38,10 @@ export class SentryService {
     this.initSentry(dsn, whitelistUrls);
 
     this.configSubscription = this.configProvider.getConfig$(true)
-      .subscribe(config => this.sentry.setExtra('config', config));
+      .subscribe(config => {
+        this.sentry.setExtra('config', config);
+        this.sentry.setExtra('jwt', this.payloadSanitizer.maskSensitiveJwtFields(config.jwt));
+      });
 
     this.jwtProvider.getJwtPayload().subscribe(jwtPayload => {
         this.sentry.setUser({ 'id': jwtPayload?.sitereference });
