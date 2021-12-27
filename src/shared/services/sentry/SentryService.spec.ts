@@ -14,6 +14,7 @@ import { EventScrubber } from './EventScrubber';
 import { SentryService } from './SentryService';
 import { ExceptionsToSkip } from './ExceptionsToSkip';
 import { RequestTimeoutError } from './RequestTimeoutError';
+import { PayloadSanitizer } from './PayloadSanitizer';
 
 describe('SentryService', () => {
   const DSN = 'https://123@456.ingest.sentry.io/7890';
@@ -25,14 +26,17 @@ describe('SentryService', () => {
   let eventScrubberMock: EventScrubber;
   let sentryService: SentryService;
   let jwtProviderMock: JwtProvider;
-  let config$: Subject<IConfig>;
+  let payloadSanitizerMock: PayloadSanitizer;
   const jwtPayloadChangesMock = new BehaviorSubject<IStJwtPayload>({ sitereference: 'test-site-reference' });
+  let config$: Subject<IConfig>;
 
   beforeEach(() => {
     configProviderMock = mock<ConfigProvider>();
     sentryMock = mock(Sentry);
     sentryContextMock = mock(SentryContext);
     jwtProviderMock = mock(JwtProvider);
+    payloadSanitizerMock = mock(PayloadSanitizer);
+    when(sentryMock.setExtra(anything(), anything())).thenCall((...args) => console.log(args));
     eventScrubberMock = mock(EventScrubber);
     config$ = new BehaviorSubject(config);
 
@@ -48,7 +52,8 @@ describe('SentryService', () => {
       instance(sentryMock),
       instance(sentryContextMock),
       instance(eventScrubberMock),
-      instance(jwtProviderMock)
+      instance(jwtProviderMock),
+      instance(payloadSanitizerMock),
     );
   });
 

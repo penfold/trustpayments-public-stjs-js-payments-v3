@@ -37,7 +37,7 @@ describe('EventScrubber', () => {
     expect(config).toEqual({
       jwt: '*****',
       foo: 'bar',
-    });
+    }); 
   });
 
   it.each([
