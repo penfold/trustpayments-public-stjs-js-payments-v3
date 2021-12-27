@@ -1,14 +1,14 @@
 export enum EventPlacement {
   ST = 'ST',
-  GOOGLE_PAY = 'NOACTION',
-  APPLE_PAY = 'FAILURE',
-  APM = 'APM',
-  CARDINAL = 'CARDINAL',
+  GOOGLE_PAY = 'Google Pay',
+  APPLE_PAY = 'Apple Pay',
+  APM = 'Apm',
+  CARDINAL = 'Cardinal',
 }
 
 export enum EventType {
-  INIT = 'INIT',
-  BEGIN = 'BEGIN',
-  COMPLETE = 'COMPLETE',
-  FAIL = 'FAIL',
+  INIT = 'init',
+  BEGIN = 'begin',
+  COMPLETE = 'complete',
+  FAIL = 'fail',
 }
