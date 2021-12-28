@@ -4,6 +4,7 @@ import { TimeoutError } from 'rxjs';
 import { GatewayError } from '../../../application/core/services/st-codec/GatewayError';
 import { IConfig } from '../../model/config/IConfig';
 import { IResponseData } from '../../../application/core/models/IResponseData';
+import { CardinalError } from '../../../application/core/services/st-codec/CardinalError';
 import { PaymentError } from '../../../application/core/services/payments/error/PaymentError';
 import { FrameCommunicationError } from '../message-bus/errors/FrameCommunicationError';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
@@ -55,6 +56,11 @@ export class EventScrubber {
       event.tags.timeout_type = (hint?.originalException as RequestTimeoutError)?.timeoutDetails?.type;
       event.tags.timeout_url = (hint?.originalException as RequestTimeoutError)?.timeoutDetails?.requestUrl;
       event.extra.originalError = originalException.timeoutDetails?.originalError;
+    }
+
+    if (originalException instanceof CardinalError) {
+      event.tags.tag = ErrorTag.CARDINAL;
+      event.extra.response = originalException.response;
     }
 
     if (originalException instanceof MisconfigurationError) {
