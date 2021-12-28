@@ -52,6 +52,7 @@
     "@trustpayments/jwt-generator": "2.0.131",
     "buffer": "6.0.3",
     "crypto-browserify": "3.12.0",
+    "node-jose": "2.0.0",
     "stream-browserify": "3.0.0",
     "util": "0.12.4"
   }

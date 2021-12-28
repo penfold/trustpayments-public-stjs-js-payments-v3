@@ -275,10 +275,10 @@
         return;
       }
       var st = ST(config);
-      st.Components(config.components);
+      // st.Components(config.components);
       st.VisaCheckout(config.visaCheckout);
-      st.ApplePay(config.applePay);
-      st.GooglePay(config.googlePay);
+      // st.ApplePay(config.applePay);
+      // st.GooglePay(config.googlePay);
       if (browserInfo === "true") {
         document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
       }
@@ -307,9 +307,9 @@
         printLogs({name: data.name, step: 'PAYMENT CANCELED'});
       });
 
-      if (apmConfig) {
-        st.APM(apmConfig);
-      }
+      // if (apmConfig) {
+      //   st.APM(apmConfig);
+      // }
 
       window.resetCallbackCounter();
       return st;
