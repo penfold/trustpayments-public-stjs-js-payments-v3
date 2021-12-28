@@ -1,8 +1,9 @@
 export enum ErrorTag {
-  TIMEOUT = 'timeout',
-  MISCONFIGURATION = 'misconfiguration',
+  CARDINAL = 'cardinal',
   GATEWAY = 'gateway',
-  PAYMENT_INIT = 'payment_init',
-  PAYMENT = 'payment',
   INTERNAL = 'internal',
+  MISCONFIGURATION = 'misconfiguration',
+  PAYMENT = 'payment',
+  PAYMENT_INIT = 'payment_init',
+  TIMEOUT = 'timeout',
 }

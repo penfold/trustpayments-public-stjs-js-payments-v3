@@ -87,6 +87,7 @@ describe('SentryService', () => {
           release: '1.2.3',
           ignoreErrors: ExceptionsToSkip,
           sampleRate: environment.SENTRY.SAMPLE_RATE,
+          beforeBreadcrumb: anyFunction(),
           beforeSend: anyFunction(),
           attachStacktrace: true,
           normalizeDepth: 3,

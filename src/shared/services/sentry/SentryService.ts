@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { Event, EventHint } from '@sentry/types';
 import { firstValueFrom, Observable, OperatorFunction, Subscription, throwError, timeout } from 'rxjs';
-import { BrowserOptions } from '@sentry/browser';
+import { Breadcrumb, BreadcrumbHint, BrowserOptions } from '@sentry/browser';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { environment } from '../../../environments/environment';
 import { JwtProvider } from '../jwt-provider/JwtProvider';
@@ -61,6 +61,7 @@ export class SentryService {
       attachStacktrace: true,
       normalizeDepth: 3,
       beforeSend: (event: Event, hint?: EventHint) => this.beforeSend(event, hint),
+      beforeBreadcrumb: (breadcrumb: Breadcrumb, hint?: BreadcrumbHint): Breadcrumb | null => this.beforeBreadcrumb(breadcrumb, hint),
     };
 
     if (whitelistUrls.length) {
@@ -86,6 +87,10 @@ export class SentryService {
           },
         })
       );
+  }
+
+  private beforeBreadcrumb(breadcrumb: Breadcrumb, hint?: BreadcrumbHint): Breadcrumb | null {
+    return breadcrumb.category === 'console' && (breadcrumb.level === 'info' || breadcrumb.level === 'log') ? null : breadcrumb;
   }
 
   private beforeSend(event: Event, hint?: EventHint): Promise<Event | null> {
