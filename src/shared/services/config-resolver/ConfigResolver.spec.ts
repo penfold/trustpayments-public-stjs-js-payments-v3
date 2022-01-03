@@ -4,7 +4,6 @@ import { ValidationResult } from 'joi';
 import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { SentryService } from '../sentry/SentryService';
 import { MisconfigurationError } from '../sentry/MisconfigurationError';
-import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import {
   config,
   configResolved,
@@ -18,17 +17,14 @@ describe('ConfigResolver', () => {
   let configValidatorMock: ConfigValidator;
   let containerInstanceMock: ContainerInstance;
   let sentryServiceMock: SentryService;
-  let googleAnalyticsMock: GoogleAnalytics;
 
   beforeEach(() => {
     configValidatorMock = mock(ConfigValidator);
     containerInstanceMock = mock(ContainerInstance);
     sentryServiceMock = mock(SentryService);
-    googleAnalyticsMock = mock(GoogleAnalytics);
     sut = new ConfigResolver(
       instance(configValidatorMock),
       instance(containerInstanceMock),
-      instance(googleAnalyticsMock),
     );
 
     when(configValidatorMock.validate(anything())).thenReturn({ error: undefined, value: null });

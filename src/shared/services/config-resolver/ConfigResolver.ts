@@ -27,7 +27,6 @@ export class ConfigResolver {
   constructor(
     private configValidator: ConfigValidator,
     private container: ContainerInstance,
-    private googleAnalytics: GoogleAnalytics,
   ) {
   }
 
@@ -197,7 +196,7 @@ export class ConfigResolver {
     }
     if(item?.type === 'deprecate.error') {
       this.container.get(SentryService).sendCustomMessage(new MisconfigurationError(`Misconfiguration: ${item?.message}`));
-      this.googleAnalytics.sendGaData('event', 'config', 'deprecated', item?.message);
+      this.container.get(GoogleAnalytics).sendGaData('event', 'config', 'deprecated', item?.message);
     }
   }
 }
