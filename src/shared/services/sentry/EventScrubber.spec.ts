@@ -4,6 +4,9 @@ import { TimeoutError } from 'rxjs';
 import { PaymentError } from '../../../application/core/services/payments/error/PaymentError';
 import { FrameCommunicationError } from '../message-bus/errors/FrameCommunicationError';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
+import { IStore } from '../../../application/core/store/IStore';
+import { IApplicationFrameState } from '../../../application/core/store/state/IApplicationFrameState';
+import { Store } from '../../../application/core/store/store/Store';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { EventScrubber } from './EventScrubber';
 import { JwtMasker } from './JwtMasker';
@@ -14,12 +17,21 @@ import { MisconfigurationError } from './MisconfigurationError';
 describe('EventScrubber', () => {
   let eventScrubber: EventScrubber;
   let jwtMaskerMock: JwtMasker;
+  let storeMock: IStore<IApplicationFrameState>;
+
+  const statePayload = {
+    jwt: 'somejwt',
+    storage: {},
+    initialConfig: {},
+  };
 
   beforeEach(() => {
     jwtMaskerMock = mock(JwtMasker);
+    storeMock = mock(Store);
 
     when(jwtMaskerMock.mask(anything())).thenReturn('jwt=*****' as any);
-    eventScrubber = new EventScrubber(instance(jwtMaskerMock));
+    when(storeMock.getState()).thenReturn(statePayload);
+    eventScrubber = new EventScrubber(instance(jwtMaskerMock), instance(storeMock));
   });
 
   it('masks the jtw in the config-provider in extras', () => {
@@ -37,7 +49,7 @@ describe('EventScrubber', () => {
     expect(config).toEqual({
       jwt: '*****',
       foo: 'bar',
-    }); 
+    });
   });
 
   it.each([

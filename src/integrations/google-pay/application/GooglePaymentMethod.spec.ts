@@ -12,6 +12,7 @@ import { RequestProcessingInitializer } from '../../../application/core/services
 import { IRequestTypeResponse } from '../../../application/core/services/st-codec/interfaces/IRequestTypeResponse';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
+import { IConfig } from '../../../shared/model/config/IConfig';
 import { GooglePaymentMethod } from './GooglePaymentMethod';
 
 describe('GooglePaymentMethod', () => {
@@ -57,7 +58,7 @@ describe('GooglePaymentMethod', () => {
 
   describe('init()', () => {
     it('should initialize request processing service and init GooglePay', done => {
-      googlePaymentMethod.init({} as IGooglePayConfig).subscribe(() => {
+      googlePaymentMethod.init({} as IConfig).subscribe(() => {
         verify(requestProcessingInitializerMock.initialize()).once();
         verify(frameQueryingServiceMock.query(anything(), MERCHANT_PARENT_FRAME)).once();
         done();
@@ -67,7 +68,7 @@ describe('GooglePaymentMethod', () => {
 
   describe('start()', () => {
     beforeEach(() => {
-      googlePaymentMethod.init({} as IGooglePayConfig).subscribe();
+      googlePaymentMethod.init({} as IConfig).subscribe();
     });
 
     it('performs request processing and returns the PaymentResult', done => {
