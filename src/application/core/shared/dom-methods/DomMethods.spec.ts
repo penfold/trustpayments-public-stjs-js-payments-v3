@@ -116,6 +116,37 @@ describe('DomMethods', () => {
       expect(DomMethods.getAllIframes()).toEqual([]);
     });
   });
+
+  describe('DomMethods.removeFormFieldByName()', () => {
+    const removedFieldName = 'hiddenInput';
+    let testForm: HTMLFormElement;
+    let otherForm: HTMLFormElement;
+
+    const formHtml = `<input type="text" name="name">
+        <input type="password" name="password">
+        <input type="hidden" name="${removedFieldName}">
+        <input type="radio" name="radioButton" id="radioFirstChoice" value="1">
+        <input type="radio" name="radioButton" id="radioSecondChoice" value="2">
+        <input type="radio" name="radioButton" id="radioThirdChoice" value="3">
+    `;
+    const testHtml = `
+      <form id="otherForm">${formHtml}</form>
+      <form id="testForm">${formHtml}</form>
+    `;
+
+    beforeEach(() => {
+      document.body.innerHTML = testHtml;
+      testForm = document.forms['testForm'];
+      otherForm = document.forms['otherForm'];
+    });
+
+    it('should remove elements with given name only from given form', function () {
+      DomMethods.removeFormFieldByName(testForm, removedFieldName);
+
+      expect(testForm.elements.namedItem(removedFieldName)).toBe(null);
+      expect(otherForm.elements.namedItem(removedFieldName)).toBeDefined();
+    });
+  });
 });
 
 function addInput(form: HTMLFormElement, name: string, value: string, stName?: string) {

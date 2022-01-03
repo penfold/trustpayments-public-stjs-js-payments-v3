@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { Event, EventHint } from '@sentry/types';
 import { firstValueFrom, Observable, OperatorFunction, Subscription, throwError, timeout } from 'rxjs';
-import { BrowserOptions } from '@sentry/browser';
+import { Breadcrumb, BreadcrumbHint, BrowserOptions } from '@sentry/browser';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { environment } from '../../../environments/environment';
 import { JwtProvider } from '../jwt-provider/JwtProvider';
@@ -10,6 +10,7 @@ import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';
 import { ExceptionsToSkip } from './ExceptionsToSkip';
 import { RequestTimeoutError } from './RequestTimeoutError';
+import { PayloadSanitizer } from './PayloadSanitizer';
 
 @Service()
 export class SentryService {
@@ -20,7 +21,8 @@ export class SentryService {
     private sentry: Sentry,
     private sentryContext: SentryContext,
     private eventScrubber: EventScrubber,
-    private jwtProvider: JwtProvider
+    private jwtProvider: JwtProvider,
+    private payloadSanitizer: PayloadSanitizer,
   ) {
   }
 
@@ -36,7 +38,10 @@ export class SentryService {
     this.initSentry(dsn, whitelistUrls);
 
     this.configSubscription = this.configProvider.getConfig$(true)
-      .subscribe(config => this.sentry.setExtra('config', config));
+      .subscribe(config => {
+        this.sentry.setExtra('config', config);
+        this.sentry.setExtra('jwt', this.payloadSanitizer.maskSensitiveJwtFields(config.jwt));
+      });
 
     this.jwtProvider.getJwtPayload().subscribe(jwtPayload => {
         this.sentry.setUser({ 'id': jwtPayload?.sitereference });
@@ -56,6 +61,7 @@ export class SentryService {
       attachStacktrace: true,
       normalizeDepth: 3,
       beforeSend: (event: Event, hint?: EventHint) => this.beforeSend(event, hint),
+      beforeBreadcrumb: (breadcrumb: Breadcrumb, hint?: BreadcrumbHint): Breadcrumb | null => this.beforeBreadcrumb(breadcrumb, hint),
     };
 
     if (whitelistUrls.length) {
@@ -81,6 +87,10 @@ export class SentryService {
           },
         })
       );
+  }
+
+  private beforeBreadcrumb(breadcrumb: Breadcrumb, hint?: BreadcrumbHint): Breadcrumb | null {
+    return breadcrumb.category === 'console' && (breadcrumb.level === 'info' || breadcrumb.level === 'log') ? null : breadcrumb;
   }
 
   private beforeSend(event: Event, hint?: EventHint): Promise<Event | null> {

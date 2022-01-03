@@ -6,10 +6,9 @@
   "apmList": [
     {
       "name": "ZIP",
-      "placement": "st-apm-override",
       "returnUrl": "https://this_is_not_existing_page_return_redirect.com",
       "minBaseAmount": "1000",
-      "maxBaseAmount": "5000"
+      "maxBaseAmount": "3000"
     }
   ]
 }

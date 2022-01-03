@@ -13,6 +13,7 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { IOnCardinalValidated } from '../../../application/core/models/IOnCardinalValidated';
 import { IVerificationData } from '../../../application/core/services/three-d-verification/implementations/cardinal-commerce/data/IVerificationData';
 import { IVerificationResult } from '../../../application/core/services/three-d-verification/implementations/cardinal-commerce/data/IVerificationResult';
+import { CardinalError } from '../../../application/core/services/st-codec/CardinalError';
 import { ActionCode } from '../../../application/core/services/three-d-verification/implementations/cardinal-commerce/data/ActionCode';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
@@ -123,6 +124,9 @@ export class CardinalClient {
 
             cardinal.on(PaymentEvents.VALIDATED, (result: IValidationResult, responseJwt: string) => {
               if (result.ErrorNumber !== CardinalClient.CARDINAL_VALIDATION_ERROR) {
+                if (result.ActionCode === ActionCode.ERROR) {
+                  this.sentryService.sendCustomMessage(new CardinalError(result.ErrorDescription, result));
+                }
                 subscriber.next({
                   validated: result.Validated,
                   actionCode: result.ActionCode,

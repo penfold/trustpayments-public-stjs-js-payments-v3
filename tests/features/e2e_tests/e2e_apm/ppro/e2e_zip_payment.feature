@@ -80,6 +80,33 @@ Feature: E2E ZIP Payments
     Then ZIP is not available on APM list
 
 
+  Scenario Outline: Unsuccessful init - baseamount value from jwt payload exceeds min and max values from config
+    Given JS library configured by inline config BASIC_CONFIG
+    And JS library configured by inline configAPMs ZIP_MIN_MAX_CONFIG_APM
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value        |
+      | requesttypedescriptions | AUTH         |
+      | billingfirstname        | FirstName    |
+      | billinglastname         | LastName     |
+      | billingtown             | test         |
+      | billingcounty           | test         |
+      | billingstreet           | test         |
+      | billingpostcode         | PO1 3AX      |
+      | billingcountryiso2a     | GB           |
+      | orderreference          | 123445       |
+      | currencyiso3a           | GBP          |
+      | baseamount              | <baseamount> |
+    When User opens example page WITH_APM
+    And User waits for Pay button to be active
+    And User focuses on APM payment methods section
+    Then ZIP is not available on APM list
+
+    Examples:
+      | baseamount |
+      | 999        |
+      | 3001       |
+
+
   Scenario: Successful trigger of payment with updated jwt
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
