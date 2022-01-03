@@ -52,6 +52,7 @@ import { APMPaymentMethodName } from '../../integrations/apm/models/IAPMPaymentM
 import { FraudControlService } from '../../application/core/services/fraud-control/FraudControlService';
 import { SentryService } from '../../shared/services/sentry/SentryService';
 import { IApplePayConfig } from '../../integrations/apple-pay/client/models/IApplePayConfig';
+import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
 
 @Service()
 export class ST {
@@ -139,6 +140,18 @@ export class ST {
   }
 
   Components(config: IComponentsConfig | undefined): void {
+
+    this.messageBus.publish<ISetPartialConfig<IComponentsConfig>>(
+      {
+        type: PUBLIC_EVENTS.PARTIAL_CONFIG_SET,
+        data: {
+          name: 'components',
+          config,
+        },
+      },
+      EventScope.ALL_FRAMES
+    );
+
     if (config) {
       this.config = this.configService.updateFragment('components', config);
     }
@@ -156,6 +169,18 @@ export class ST {
   }
 
   APM(config: IAPMConfig): void {
+
+    this.messageBus.publish<ISetPartialConfig<IAPMConfig>>(
+      {
+        type: PUBLIC_EVENTS.PARTIAL_CONFIG_SET,
+        data: {
+          name: APMPaymentMethodName,
+          config,
+        },
+      },
+      EventScope.ALL_FRAMES
+    );
+
     this.initControlFrame$().subscribe(() => {
       this.messageBus.publish<IInitPaymentMethod<IAPMConfig>>(
         {
@@ -171,6 +196,18 @@ export class ST {
   }
 
   ApplePay(config: IApplePayConfig): void {
+
+    this.messageBus.publish<ISetPartialConfig<IApplePayConfig>>(
+      {
+        type: PUBLIC_EVENTS.PARTIAL_CONFIG_SET,
+        data: {
+          name: GooglePaymentMethodName,
+          config,
+        },
+      },
+      EventScope.ALL_FRAMES
+    );
+
     if (config) {
       this.config = this.configService.updateFragment(ApplePayConfigName, config);
     }
@@ -190,6 +227,18 @@ export class ST {
   }
 
   GooglePay(config: IGooglePayConfig): void {
+
+    this.messageBus.publish<ISetPartialConfig<IGooglePayConfig>>(
+      {
+        type: PUBLIC_EVENTS.PARTIAL_CONFIG_SET,
+        data: {
+          name: GooglePaymentMethodName,
+          config,
+        },
+      },
+      EventScope.ALL_FRAMES
+    );
+
     if (config) {
       this.config = this.configService.updateFragment(GooglePayConfigName, config);
     }
@@ -209,6 +258,18 @@ export class ST {
   }
 
   VisaCheckout(visaCheckoutConfig: IVisaCheckoutConfig | undefined): void {
+
+    this.messageBus.publish<ISetPartialConfig<IVisaCheckoutConfig>>(
+      {
+        type: PUBLIC_EVENTS.PARTIAL_CONFIG_SET,
+        data: {
+          name: 'VisaCheckout',
+          config: visaCheckoutConfig,
+        },
+      },
+      EventScope.ALL_FRAMES
+    );
+
     if (visaCheckoutConfig) {
       this.config = this.configService.updateFragment('visaCheckout', visaCheckoutConfig);
     }
@@ -262,6 +323,18 @@ export class ST {
   }
 
   init(config: IConfig): void {
+
+    this.messageBus.publish<ISetPartialConfig<IConfig>>(
+      {
+        type: PUBLIC_EVENTS.PARTIAL_CONFIG_SET,
+        data: {
+          name: 'config',
+          config,
+        },
+      },
+      EventScope.ALL_FRAMES
+    );
+
     this.framesHub.reset();
     this.storage.init();
     this.config = this.configService.setup(config);

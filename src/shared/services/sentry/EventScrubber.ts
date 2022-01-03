@@ -8,6 +8,8 @@ import { CardinalError } from '../../../application/core/services/st-codec/Cardi
 import { PaymentError } from '../../../application/core/services/payments/error/PaymentError';
 import { FrameCommunicationError } from '../message-bus/errors/FrameCommunicationError';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
+import { CommonState } from '../../../application/core/store/reducers/initial-config/InitialConfigReducer';
+import { IStore } from '../../../application/core/store/IStore';
 import { JwtMasker } from './JwtMasker';
 import { RequestTimeoutError } from './RequestTimeoutError';
 import { ErrorTag } from './ErrorTag';
@@ -16,11 +18,16 @@ import { ErrorCode } from './ErrorCodes';
 
 @Service()
 export class EventScrubber {
-  constructor(private jwtMasker: JwtMasker) {
+  constructor(
+    private jwtMasker: JwtMasker,
+    private store: IStore<CommonState>,
+  ) {
   }
 
   scrub(event: Event, hint?: EventHint): Event | null {
     const { originalException } = hint || {};
+
+    event.extra.initialConfig = this.store.getState().initialConfig;
 
     if (originalException instanceof GatewayError) {
       event.tags.tag = ErrorTag.GATEWAY;

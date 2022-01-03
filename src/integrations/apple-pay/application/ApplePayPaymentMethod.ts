@@ -1,4 +1,4 @@
-import { forkJoin, Observable, mapTo, takeUntil, Subject } from 'rxjs';
+import { forkJoin, mapTo, Observable, Subject, takeUntil } from 'rxjs';
 import { Inject, Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
@@ -15,21 +15,20 @@ import { TransportServiceGatewayClient } from '../../../application/core/service
 import { IApplePayGatewayRequest } from '../models/IApplePayRequest';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
- import { NoThreeDSRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/NoThreeDSRequestProcessingService';
- import { IApplePayValidateMerchantRequest } from '../client/models/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
- import { IApplePayConfigObject } from '../client/services/config/IApplePayConfigObject';
- import { IApplePayProcessPaymentResponse } from './services/apple-pay-payment-service/IApplePayProcessPaymentResponse';
- import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
+import { NoThreeDSRequestProcessingService } from '../../../application/core/services/request-processor/processing-services/NoThreeDSRequestProcessingService';
+import { IApplePayValidateMerchantRequest } from '../client/models/apple-pay-walletverify-data/IApplePayValidateMerchantRequest';
+import { IApplePayConfigObject } from '../client/services/config/IApplePayConfigObject';
+import { IApplePayProcessPaymentResponse } from './services/apple-pay-payment-service/IApplePayProcessPaymentResponse';
+import { ApplePayResponseHandlerService } from './ApplePayResponseHandlerService';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayConfigObject, IRequestTypeResponse> {
-
   constructor(
     private requestProcessingService: NoThreeDSRequestProcessingService,
     private frameQueryingService: IFrameQueryingService,
     @Inject(() => TransportServiceGatewayClient) private gatewayClient: IGatewayClient,
     private applePayResponseHandlerService: ApplePayResponseHandlerService,
-    private messageBus: IMessageBus,
+    private messageBus: IMessageBus
   ) {}
 
   getName(): string {
@@ -56,9 +55,9 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayC
       (event: IMessageBusEvent<IApplePayValidateMerchantRequest>) => {
         return this.applePayResponseHandlerService.handleWalletVerifyResponse(
           this.gatewayClient.walletVerify(event.data),
-          paymentResult,
+          paymentResult
         );
-      },
+      }
     );
 
     this.frameQueryingService.whenReceive(
@@ -66,24 +65,22 @@ export class ApplePayPaymentMethod implements IPaymentMethod<IConfig, IApplePayC
       (event: IMessageBusEvent<IApplePayGatewayRequest>) => {
         return this.applePayResponseHandlerService.handlePaymentResponse(
           this.authorizePayment(event.data, config.merchantUrl),
-          paymentResult,
+          paymentResult
         );
-      },
+      }
     );
 
-    this.messageBus
-      .pipe(
-        ofType(PUBLIC_EVENTS.APPLE_PAY_CANCELLED),
-        takeUntil(paymentResult),
-      )
-      .subscribe(() => {
-        this.applePayResponseHandlerService.handleCancelResponse(paymentResult);
-      });
+    this.messageBus.pipe(ofType(PUBLIC_EVENTS.APPLE_PAY_CANCELLED), takeUntil(paymentResult)).subscribe(() => {
+      this.applePayResponseHandlerService.handleCancelResponse(paymentResult);
+    });
 
     return paymentResult.asObservable();
   }
 
-  private authorizePayment(request: IApplePayGatewayRequest, merchantUrl: string): Observable<IApplePayProcessPaymentResponse> {
+  private authorizePayment(
+    request: IApplePayGatewayRequest,
+    merchantUrl: string
+  ): Observable<IApplePayProcessPaymentResponse> {
     return this.requestProcessingService.process(request, merchantUrl) as Observable<IApplePayProcessPaymentResponse>;
   }
 }
