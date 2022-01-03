@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { first, mapTo, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { defer, Observable, share, Subject, Subscription } from 'rxjs';
+import { catchError, first, mapTo, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { defer, Observable, share, Subject, Subscription, EMPTY } from 'rxjs';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
@@ -95,6 +95,10 @@ export class CardinalClient {
         ),
         tap(() => {
           this.googleAnalytics.sendGaData('event', EventPlacement.CARDINAL, EventType.COMPLETE, 'Cardinal start complete');
+        }),
+        catchError(() => {
+          this.googleAnalytics.sendGaData('event', EventPlacement.CARDINAL, EventType.FAIL, 'Cardinal start failed');
+          return EMPTY;
         }),
         shareReplay(1)
       );

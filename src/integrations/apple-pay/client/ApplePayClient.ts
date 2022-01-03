@@ -1,6 +1,6 @@
-import { Observable, of, throwError, map } from 'rxjs';
+import { Observable, of, throwError, map, EMPTY } from 'rxjs';
 import { Service } from 'typedi';
-import { mapTo, takeUntil, tap } from 'rxjs/operators';
+import { catchError, mapTo, takeUntil, tap } from 'rxjs/operators';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
@@ -58,6 +58,10 @@ export class ApplePayClient {
           `${ApplePayClientStatus.CAN_MAKE_PAYMENTS_WITH_ACTIVE_CARD}`,
           'Can make payment',
         );
+      }),
+      catchError(() => {
+        this.googleAnalytics.sendGaData('event', EventPlacement.APPLE_PAY, EventType.FAIL, 'Apple Pay start failed');
+        return EMPTY;
       }),
       mapTo(undefined),
     );

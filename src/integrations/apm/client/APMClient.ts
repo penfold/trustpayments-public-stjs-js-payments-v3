@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { Observable } from 'rxjs';
-import { map, mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Observable, EMPTY } from 'rxjs';
+import { catchError, map, mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IAPMItemConfig } from '../models/IAPMItemConfig';
 import { IAPMConfig } from '../models/IAPMConfig';
@@ -65,6 +65,10 @@ export class APMClient {
 
     return this.filter(config, this.configProvider.getConfig().jwt).pipe(
       tap((list: IAPMItemConfig[]) => this.insertAPMButtons(list)),
+      catchError(() => {
+        this.googleAnalytics.sendGaData('event', EventPlacement.CARDINAL, EventType.FAIL, 'APM start failed');
+        return EMPTY;
+      }),
       mapTo(undefined),
     );
   }

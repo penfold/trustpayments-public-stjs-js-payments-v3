@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { switchMap, takeUntil, tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Observable, EMPTY } from 'rxjs';
 import { Money } from 'ts-money';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
@@ -54,6 +54,10 @@ export class GooglePay {
           this.googlePaySdk = googlePaySdk;
           this.addGooglePayButton();
           this.googleAnalytics.sendGaData('event', EventPlacement.GOOGLE_PAY, EventType.COMPLETE, 'Google Pay start completed');
+        }),
+        catchError(() => {
+          this.googleAnalytics.sendGaData('event', EventPlacement.GOOGLE_PAY, EventType.FAIL, 'Google Pay start failed');
+          return EMPTY;
         }),
         switchMap(() => this.configProvider.getConfig$()),
         tap((config: IConfig) => {
