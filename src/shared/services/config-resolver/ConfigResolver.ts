@@ -196,7 +196,10 @@ export class ConfigResolver {
     }
     if(item?.type === 'deprecate.error') {
       this.container.get(SentryService).sendCustomMessage(new MisconfigurationError(`Misconfiguration: ${item?.message}`));
-      this.container.get(GoogleAnalytics).sendGaData('event', 'config', 'deprecated', item?.message);
+
+      setTimeout(() => {
+        this.container.get(GoogleAnalytics).sendGaData('event', 'config', 'deprecated', item?.message);
+      }, 500)
     }
   }
 }
