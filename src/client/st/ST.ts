@@ -349,7 +349,10 @@ export class ST {
       this.watchForFrameUnload();
       this.cardinalClient.init();
       this.threeDSecureClient.init();
-      this.googleAnalytics.sendGaData('event', GAEventPlacement.ST, GAEventType.INIT, `ST init - version ${require('../../../package.json').version}`);
+
+      setTimeout(() => {
+        this.googleAnalytics.sendGaData('event', GAEventPlacement.ST, GAEventType.INIT, `ST init - version ${require('../../../package.json').version}`);
+      }, 500);
 
       if (this.config.stopSubmitFormOnEnter) {
         this.stopSubmitFormOnEnter();

@@ -54,8 +54,6 @@ export class CardinalClient {
   }
 
   init(): void {
-    this.googleAnalytics.sendGaData('event', GAEventPlacement.CARDINAL, GAEventType.BEGIN, 'Cardinal start begin');
-
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.CARDINAL_SETUP)
       .thenRespond((event: IMessageBusEvent<IInitializationData>) => this.cardinalSetup(event.data));
@@ -79,6 +77,8 @@ export class CardinalClient {
 
   private cardinalSetup(data: IInitializationData): Observable<void> {
     if (!this.setupComplete$) {
+      this.googleAnalytics.sendGaData('event', GAEventPlacement.CARDINAL, GAEventType.BEGIN, 'Cardinal start begin');
+
       this.setupComplete$ = this.cardinal$.pipe(
         switchMap(
           (cardinal: ICardinal) =>
@@ -95,7 +95,7 @@ export class CardinalClient {
             })
         ),
         tap(() => {
-          this.googleAnalytics.sendGaData('event', GAEventPlacement.CARDINAL, GAEventType.COMPLETE, 'Cardinal start complete');
+          this.googleAnalytics.sendGaData('event', GAEventPlacement.CARDINAL, GAEventType.COMPLETE, 'Cardinal start completed');
         }),
         catchError(() => {
           this.googleAnalytics.sendGaData('event', GAEventPlacement.CARDINAL, GAEventType.FAIL, 'Cardinal start failed');

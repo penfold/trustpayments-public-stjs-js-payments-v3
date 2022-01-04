@@ -173,6 +173,7 @@ export class GooglePay {
   };
 
   private onPaymentAuthorized(paymentData: IPaymentData): void {
+    this.googleAnalytics.sendGaData('event', GAEventPlacement.GOOGLE_PAY, GAEventType.COMPLETE, 'Payment by GooglePay completed');
     const formData = DomMethods.parseForm(this.config.formId);
     return this.googlePayPaymentService.processPayment(formData, paymentData);
   }

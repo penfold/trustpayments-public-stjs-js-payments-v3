@@ -31,7 +31,7 @@ export class GoogleAnalytics {
       });
   }
 
-  sendGaData(hitType: string, eventCategory: string, eventAction: string, eventLabel: string): void | boolean {
+  async sendGaData(hitType: string, eventCategory: string, eventAction: string, eventLabel: string): Promise<void | boolean> {
     // @ts-ignore
     if (window.ga) {
       // @ts-ignore
