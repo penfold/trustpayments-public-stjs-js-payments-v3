@@ -16,7 +16,7 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import './APMClient.scss';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
-import { EventPlacement, EventType } from '../../../application/core/integrations/google-analytics/events';
+import { GAEventPlacement, GAEventType } from '../../../application/core/integrations/google-analytics/events';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 
 @Service()
@@ -55,7 +55,7 @@ export class APMClient {
   }
 
   init(config: IAPMConfig): Observable<undefined> {
-    this.googleAnalytics.sendGaData('event', EventPlacement.APM, EventType.BEGIN, 'APM start begin');
+    this.googleAnalytics.sendGaData('event', GAEventPlacement.APM, GAEventType.BEGIN, 'APM start begin');
     this.messageBus.pipe(
       ofType(PUBLIC_EVENTS.UPDATE_JWT),
       map(event => event.data.newJwt),
@@ -66,7 +66,7 @@ export class APMClient {
     return this.filter(config, this.configProvider.getConfig().jwt).pipe(
       tap((list: IAPMItemConfig[]) => this.insertAPMButtons(list)),
       catchError(() => {
-        this.googleAnalytics.sendGaData('event', EventPlacement.CARDINAL, EventType.FAIL, 'APM start failed');
+        this.googleAnalytics.sendGaData('event', GAEventPlacement.CARDINAL, GAEventType.FAIL, 'APM start failed');
         return EMPTY;
       }),
       mapTo(undefined),
@@ -85,7 +85,7 @@ export class APMClient {
     itemList.forEach((item: IAPMItemConfig) => {
       this.insertAPMButton(item);
     });
-    this.googleAnalytics.sendGaData('event', EventPlacement.APM, EventType.COMPLETE, 'APM start complete');
+    this.googleAnalytics.sendGaData('event', GAEventPlacement.APM, GAEventType.COMPLETE, 'APM start complete');
   }
 
   private clearExistingButtons(): void {

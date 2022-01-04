@@ -20,7 +20,7 @@ import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pa
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
-import { EventPlacement, EventType } from '../../../application/core/integrations/google-analytics/events';
+import { GAEventPlacement, GAEventType } from '../../../application/core/integrations/google-analytics/events';
 import { GooglePayPaymentService } from './GooglePayPaymentService';
 import { IGooglePaySdkProvider } from './google-pay-sdk-provider/IGooglePaySdkProvider';
 
@@ -43,7 +43,7 @@ export class GooglePay {
   }
 
   init(config: IConfig): Observable<IConfig> {
-    this.googleAnalytics.sendGaData('event', EventPlacement.GOOGLE_PAY, EventType.BEGIN, 'Google Pay start begin');
+    this.googleAnalytics.sendGaData('event', GAEventPlacement.GOOGLE_PAY, GAEventType.BEGIN, 'Google Pay start begin');
     this.config = config;
 
     return this.googlePaySdkProvider
@@ -53,10 +53,10 @@ export class GooglePay {
         tap((googlePaySdk: IGooglePaySessionPaymentsClient) => {
           this.googlePaySdk = googlePaySdk;
           this.addGooglePayButton();
-          this.googleAnalytics.sendGaData('event', EventPlacement.GOOGLE_PAY, EventType.COMPLETE, 'Google Pay start completed');
+          this.googleAnalytics.sendGaData('event', GAEventPlacement.GOOGLE_PAY, GAEventType.COMPLETE, 'Google Pay start completed');
         }),
         catchError(() => {
-          this.googleAnalytics.sendGaData('event', EventPlacement.GOOGLE_PAY, EventType.FAIL, 'Google Pay start failed');
+          this.googleAnalytics.sendGaData('event', GAEventPlacement.GOOGLE_PAY, GAEventType.FAIL, 'Google Pay start failed');
           return EMPTY;
         }),
         switchMap(() => this.configProvider.getConfig$()),
