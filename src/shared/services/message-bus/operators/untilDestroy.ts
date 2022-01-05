@@ -3,6 +3,6 @@ import { IMessageBus } from '../../../../application/core/shared/message-bus/IMe
 import { PUBLIC_EVENTS } from '../../../../application/core/models/constants/EventTypes';
 import { ofType } from './ofType';
 
-export function untilDestroy<T extends unknown>(messageBus: IMessageBus) {
+export function untilDestroy<T>(messageBus: IMessageBus) {
   return (source: Observable<T>): Observable<T> => source.pipe(takeUntil(messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY))));
 }
