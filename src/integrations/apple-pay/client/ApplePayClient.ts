@@ -1,6 +1,6 @@
-import { Observable, of, throwError, map, EMPTY } from 'rxjs';
+import { Observable, of, throwError, map } from 'rxjs';
 import { Service } from 'typedi';
-import { catchError, mapTo, takeUntil, tap } from 'rxjs/operators';
+import { mapTo, takeUntil, tap } from 'rxjs/operators';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
@@ -59,11 +59,7 @@ export class ApplePayClient {
           'Can make payment',
         );
       }),
-      catchError(() => {
-        this.googleAnalytics.sendGaData('event', GAEventPlacement.APPLE_PAY, GAEventType.FAIL, 'Apple Pay start failed');
-        return EMPTY;
-      }),
-      mapTo(undefined),
+      mapTo(undefined)
     );
   }
 
@@ -80,6 +76,7 @@ export class ApplePayClient {
 
   private isApplePayAvailable(config: IConfig): Observable<IConfig> {
     const notAvailable = (reason: string): Observable<never> => {
+      this.googleAnalytics.sendGaData('event', GAEventPlacement.APPLE_PAY, GAEventType.FAIL, 'Apple Pay start failed');
       return throwError(() => new ApplePayInitError(`ApplePay not available: ${reason}`));
     }
 

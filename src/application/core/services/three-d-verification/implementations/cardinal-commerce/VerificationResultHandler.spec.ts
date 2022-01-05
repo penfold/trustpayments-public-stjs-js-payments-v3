@@ -1,9 +1,11 @@
+import { instance, mock } from 'ts-mockito';
 import { CardType } from '@trustpayments/3ds-sdk-js';
 import { IThreeDInitResponse } from '../../../../models/IThreeDInitResponse';
 import { ThreeDVerificationProviderName } from '../../data/ThreeDVerificationProviderName';
 import { PAYMENT_ERROR } from '../../../../models/constants/Translations';
 import { IThreeDQueryResponse } from '../../../../models/IThreeDQueryResponse';
 import { Enrollment } from '../../../../models/constants/Enrollment';
+import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { VerificationResultHandler } from './VerificationResultHandler';
 import { IVerificationResult } from './data/IVerificationResult';
 import { ActionCode } from './data/ActionCode';
@@ -37,9 +39,11 @@ describe('VerificationResultHandler', () => {
   };
 
   let verificationResultHandler: VerificationResultHandler;
+  let googleAnalyticsMock: GoogleAnalytics;
 
   beforeEach(() => {
-    verificationResultHandler = new VerificationResultHandler();
+    googleAnalyticsMock = mock(GoogleAnalytics);
+    verificationResultHandler = new VerificationResultHandler(instance(googleAnalyticsMock));
   });
 
   it.each<ActionCode | DoneCallback>([ActionCode.SUCCESS, ActionCode.NOACTION])(

@@ -19,6 +19,7 @@ import {
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
 import { TranslatorWithMerchantTranslations } from '../shared/translator/TranslatorWithMerchantTranslations';
 import { ITranslator } from '../shared/translator/ITranslator';
+import { GoogleAnalytics } from '../integrations/google-analytics/GoogleAnalytics';
 import { ComponentBootstrap } from './ComponentBootstrap';
 
 describe('ComponentBootstrap', () => {
@@ -31,6 +32,7 @@ describe('ComponentBootstrap', () => {
   let interFrameCommunicatorMock: InterFrameCommunicator;
   let componentBootstrap: ComponentBootstrap;
   let translatorToken: ITranslator;
+  let googleAnalyticsMock: GoogleAnalytics;
 
   beforeEach(() => {
     frameIdentifierMock = mock(FrameIdentifier);
@@ -41,6 +43,7 @@ describe('ComponentBootstrap', () => {
     messageSubscriberRegistryMock = mock(MessageSubscriberRegistry);
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
     translatorToken = mock(TranslatorWithMerchantTranslations);
+    googleAnalyticsMock = mock(GoogleAnalytics)
     componentBootstrap = new ComponentBootstrap(instance(frameIdentifierMock), instance(containerMock));
 
     when(frameIdentifierMock.isControlFrame()).thenReturn(false);
@@ -50,6 +53,7 @@ describe('ComponentBootstrap', () => {
     when(containerMock.get(SentryService)).thenReturn(instance(sentryServiceMock));
     when(containerMock.get(MessageSubscriberRegistry)).thenReturn(instance(messageSubscriberRegistryMock));
     when(containerMock.get(InterFrameCommunicator)).thenReturn(instance(interFrameCommunicatorMock));
+    when(containerMock.get(GoogleAnalytics)).thenReturn(instance(googleAnalyticsMock));
   });
 
   describe('run', () => {
