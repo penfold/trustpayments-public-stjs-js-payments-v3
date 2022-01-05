@@ -56,7 +56,7 @@ export class ApplePayClient {
           'Can make payment',
         );
       }),
-      mapTo(undefined)
+      mapTo(undefined),
     );
   }
 
