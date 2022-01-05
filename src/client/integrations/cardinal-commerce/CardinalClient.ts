@@ -1,9 +1,8 @@
 import { Service } from 'typedi';
-import { catchError, first, mapTo, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { defer, Observable, share, Subject, Subscription, EMPTY } from 'rxjs';
+import { first, mapTo, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { defer, Observable, share, Subject, Subscription } from 'rxjs';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
-import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { PaymentEvents } from '../../../application/core/models/constants/PaymentEvents';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { PaymentBrand } from '../../../application/core/models/constants/PaymentBrand';
@@ -18,7 +17,6 @@ import { ActionCode } from '../../../application/core/services/three-d-verificat
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
-import { GAEventPlacement, GAEventType } from '../../../application/core/integrations/google-analytics/events';
 import { ICardinal } from './ICardinal';
 import { CardinalProvider } from './CardinalProvider';
 import { IInitializationData } from './data/IInitializationData';
@@ -38,7 +36,6 @@ export class CardinalClient {
     private messageBus: IMessageBus,
     private cardinalProvider: CardinalProvider,
     private configProvider: ConfigProvider,
-    private googleAnalytics: GoogleAnalytics,
     private sentryService: SentryService
   ) {
     this.cardinal$ = defer(() =>
@@ -77,8 +74,6 @@ export class CardinalClient {
 
   private cardinalSetup(data: IInitializationData): Observable<void> {
     if (!this.setupComplete$) {
-      this.googleAnalytics.sendGaData('event', GAEventPlacement.CARDINAL, GAEventType.BEGIN, 'Cardinal start begin');
-
       this.setupComplete$ = this.cardinal$.pipe(
         switchMap(
           (cardinal: ICardinal) =>
@@ -94,13 +89,6 @@ export class CardinalClient {
               });
             })
         ),
-        tap(() => {
-          this.googleAnalytics.sendGaData('event', GAEventPlacement.CARDINAL, GAEventType.COMPLETE, 'Cardinal start completed');
-        }),
-        catchError(() => {
-          this.googleAnalytics.sendGaData('event', GAEventPlacement.CARDINAL, GAEventType.FAIL, 'Cardinal start failed');
-          return EMPTY;
-        }),
         shareReplay(1)
       );
     }

@@ -12,7 +12,6 @@ import {
   TranslatorToken,
 } from '../../../shared/dependency-injection/InjectionTokens';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
-import { GoogleAnalytics } from '../integrations/google-analytics/GoogleAnalytics';
 
 @Service()
 export class ComponentBootstrap {
@@ -27,7 +26,6 @@ export class ComponentBootstrap {
     this.container.get(StoreToken);
     this.container.get(BrowserLocalStorage).init();
     this.container.get(TranslatorToken).init();
-    this.container.get(GoogleAnalytics).init();
 
     const framesHub: FramesHub = this.container.get(FramesHub);
     framesHub.init();

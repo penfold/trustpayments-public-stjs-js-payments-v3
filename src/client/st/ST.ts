@@ -52,7 +52,7 @@ import { APMPaymentMethodName } from '../../integrations/apm/models/IAPMPaymentM
 import { FraudControlService } from '../../application/core/services/fraud-control/FraudControlService';
 import { SentryService } from '../../shared/services/sentry/SentryService';
 import { IApplePayConfig } from '../../integrations/apple-pay/client/models/IApplePayConfig';
-import { GAEventPlacement, GAEventType } from '../../application/core/integrations/google-analytics/events';
+import { GAEventType } from '../../application/core/integrations/google-analytics/events';
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
 
 @Service()
@@ -351,7 +351,7 @@ export class ST {
       this.threeDSecureClient.init();
 
       setTimeout(() => {
-        this.googleAnalytics.sendGaData('event', GAEventPlacement.ST, GAEventType.INIT, `ST init - version ${require('../../../package.json').version}`);
+        this.googleAnalytics.sendGaData('event', 'ST', GAEventType.INIT, `ST init - version ${require('../../../package.json').version}`);
       }, 500);
 
       if (this.config.stopSubmitFormOnEnter) {

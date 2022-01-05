@@ -11,7 +11,6 @@ import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { IUpdateJwt } from '../../../application/core/models/IUpdateJwt';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
-import { GAEventPlacement, GAEventType } from '../../../application/core/integrations/google-analytics/events';
 import { ApplePayClientStatus } from './models/ApplePayClientStatus';
 import { IApplePaySession } from './models/IApplePaySession';
 import { IApplePaySessionWrapper } from './models/IApplePaySessionWrapper';
@@ -44,14 +43,12 @@ export class ApplePayClient {
   }
 
   init(config: IConfig): Observable<void> {
-    this.googleAnalytics.sendGaData('event', GAEventPlacement.APPLE_PAY, GAEventType.BEGIN, 'Apple Pay start begin');
     return this.isApplePayAvailable(config).pipe(
       tap(config => this.updateJwtListener(config)),
       map(config => this.resolveApplePayConfig(config)),
       tap(applePayConfig => this.insertApplePayButton(applePayConfig)),
       tap(applePayConfig => this.initGestureHandler(applePayConfig)),
       tap(() => {
-        this.googleAnalytics.sendGaData('event', GAEventPlacement.APPLE_PAY, GAEventType.COMPLETE, 'Apple Pay start completed');
         this.googleAnalytics.sendGaData(
           'event',
           'Apple Pay',
@@ -76,7 +73,6 @@ export class ApplePayClient {
 
   private isApplePayAvailable(config: IConfig): Observable<IConfig> {
     const notAvailable = (reason: string): Observable<never> => {
-      this.googleAnalytics.sendGaData('event', GAEventPlacement.APPLE_PAY, GAEventType.FAIL, 'Apple Pay start failed');
       return throwError(() => new ApplePayInitError(`ApplePay not available: ${reason}`));
     }
 

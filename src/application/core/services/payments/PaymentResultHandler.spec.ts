@@ -8,7 +8,6 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { PAYMENT_CANCELLED, PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../models/constants/Translations';
 import { EventScope } from '../../models/constants/EventScope';
 import { ITranslator } from '../../shared/translator/ITranslator';
-import { GoogleAnalytics } from '../../integrations/google-analytics/GoogleAnalytics';
 import { PaymentStatus } from './PaymentStatus';
 import { IPaymentResult } from './IPaymentResult';
 import { PaymentResultHandler } from './PaymentResultHandler';
@@ -19,20 +18,17 @@ describe('PaymentResultHandler', () => {
   let configProviderMock: ConfigProvider;
   let paymentResultHandler: PaymentResultHandler;
   let translatorMock: ITranslator;
-  let googleAnalyticsMock: GoogleAnalytics;
 
   beforeEach(() => {
     messageBus = new SimpleMessageBus();
     notificationServiceMock = mock(NotificationService);
     configProviderMock = mock<ConfigProvider>();
     translatorMock = mock<ITranslator>();
-    googleAnalyticsMock = mock(GoogleAnalytics);
     paymentResultHandler = new PaymentResultHandler(
       messageBus,
       instance(notificationServiceMock),
       instance(configProviderMock),
       instance(translatorMock),
-      instance(googleAnalyticsMock),
     );
 
     when(translatorMock.translate('ok')).thenReturn('payment successful');

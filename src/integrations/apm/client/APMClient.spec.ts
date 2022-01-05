@@ -13,7 +13,6 @@ import { APMFilterService } from '../services/apm-filter-service/APMFilterServic
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { APMClient } from './APMClient';
 
 describe('APMClient', () => {
@@ -22,7 +21,6 @@ describe('APMClient', () => {
   let messageBus: IMessageBus;
   let configProviderMock: ConfigProvider;
   let apmClient: APMClient;
-  let googleAnalyticsMock: GoogleAnalytics;
 
   const testConfig: IAPMConfig = {
     placement: 'test-placement',
@@ -48,7 +46,6 @@ describe('APMClient', () => {
     apmConfigResolver = mock(APMConfigResolver);
     apmFilterService = mock(APMFilterService);
     messageBus = new SimpleMessageBus();
-    googleAnalyticsMock = mock(GoogleAnalytics);
     when(apmConfigResolver.resolve(anything())).thenReturn(of(testConfig));
     when(configProviderMock.getConfig()).thenReturn({ jwt: '' });
     when(apmFilterService.filter(anything(), anything())).thenReturn(of([{
@@ -61,7 +58,7 @@ describe('APMClient', () => {
       returnUrl: 'test-url',
     },
     ]));
-    apmClient = new APMClient(instance(apmConfigResolver), messageBus, instance(apmFilterService), instance(configProviderMock), instance(googleAnalyticsMock));
+    apmClient = new APMClient(instance(apmConfigResolver), messageBus, instance(apmFilterService), instance(configProviderMock));
     document.body.innerHTML = '<div id="test-placement"></div><div id="test-placement-2"></div>';
   });
 
