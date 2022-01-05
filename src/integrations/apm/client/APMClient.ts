@@ -85,7 +85,7 @@ export class APMClient {
     itemList.forEach((item: IAPMItemConfig) => {
       this.insertAPMButton(item);
     });
-    this.googleAnalytics.sendGaData('event', GAEventPlacement.APM, GAEventType.COMPLETE, 'APM start complete');
+    this.googleAnalytics.sendGaData('event', GAEventPlacement.APM, GAEventType.COMPLETE, 'APM start completed');
   }
 
   private clearExistingButtons(): void {

@@ -35,9 +35,7 @@ export class PaymentResultHandler {
   }
 
   private handleSuccess<T>(result: IPaymentResult<T>): void {
-    console.log('event1 ---');
     this.googleAnalytics.sendGaData('event', result.paymentMethodName, GAEventType.COMPLETE, `Payment by ${result.paymentMethodName} completed`);
-    console.log('event1 ---');
 
     this.configProvider.getConfig$().subscribe(config => {
       if (config.submitOnSuccess) {
@@ -49,6 +47,8 @@ export class PaymentResultHandler {
         type: PUBLIC_EVENTS.PAYMENT_METHOD_COMPLETED,
         data: { name: result.paymentMethodName },
       }, EventScope.EXPOSED);
+
+      this.googleAnalytics.sendGaData('event', result.paymentMethodName, GAEventType.COMPLETE, `Payment by ${result.paymentMethodName} completed`);
 
       this.notificationService.success(PAYMENT_SUCCESS);
       this.messageBus.publish({ type: PUBLIC_EVENTS.APPEND_FORM_DATA, data: result.data },  EventScope.ALL_FRAMES);
