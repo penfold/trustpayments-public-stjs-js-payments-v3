@@ -199,7 +199,7 @@ export class ConfigResolver {
 
       setTimeout(() => {
         this.container.get(GoogleAnalytics).sendGaData('event', 'config', 'deprecated', item?.message);
-      }, 500)
+      }, 500);
     }
   }
 }

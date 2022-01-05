@@ -35,8 +35,6 @@ export class PaymentResultHandler {
   }
 
   private handleSuccess<T>(result: IPaymentResult<T>): void {
-    this.googleAnalytics.sendGaData('event', result.paymentMethodName, GAEventType.COMPLETE, `Payment by ${result.paymentMethodName} completed`);
-
     this.configProvider.getConfig$().subscribe(config => {
       if (config.submitOnSuccess) {
         this.messageBus.publish({ type: PUBLIC_EVENTS.SUBMIT_PAYMENT_RESULT, data: result.data },  EventScope.ALL_FRAMES);
