@@ -54,11 +54,12 @@ describe('StTransport class', () => {
       decode: jest.fn(
         (response, request?) =>
           new Promise((resolve, reject) => {
-            if (typeof response.json === 'function') {
+            if (typeof response?.json === 'function') {
               resolve(response.json());
               return;
             }
             reject(new Error('codec error'));
+          }).catch(() => {
           })
       ),
     } as StCodec;
@@ -153,7 +154,8 @@ describe('StTransport class', () => {
 
     it.each([
       [resolvingPromise({}), resolvingPromise({})],
-      [rejectingPromise(timeoutError), resolvingPromise({})],
+      [rejectingPromise(timeoutError).catch(() => {
+      }), resolvingPromise({})],
     ])('should reject invalid responses', async (mockFetch, expected) => {
       mockFT.mockReturnValue(mockFetch);
 
