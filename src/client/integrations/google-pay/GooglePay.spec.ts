@@ -56,7 +56,7 @@ describe('GooglePay', () => {
       instance(jwtDecoderMock),
       simpleMessageBus,
       instance(googlePaySdkProviderMock),
-      instance(sentryServiceMock),
+      instance(sentryServiceMock)
     );
 
     simpleMessageBus.publish({

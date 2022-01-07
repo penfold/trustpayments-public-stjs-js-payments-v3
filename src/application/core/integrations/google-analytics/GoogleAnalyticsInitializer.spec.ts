@@ -13,7 +13,6 @@ describe('register()', () => {
 
   beforeEach(() => {
     googleAnalyticsMock = mock(GoogleAnalytics);
-    // when(jwtDecoderMock.decode(newJwt)).thenReturn({ payload: { locale: 'no_NO' } });
     messageBus = new SimpleMessageBus();
     googleAnalyticsInitializer = new GoogleAnalyticsInitializer(instance(googleAnalyticsMock));
     googleAnalyticsInitializer.register(messageBus);
