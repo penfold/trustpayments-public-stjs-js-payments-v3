@@ -5,19 +5,19 @@ import { IMessageBus } from '../../../../application/core/shared/message-bus/IMe
 import { MessageSubscriberToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { IConfig } from '../../../../shared/model/config/IConfig';
 import { IMessageSubscriber } from '../../../../shared/services/message-bus/interfaces/IMessageSubscriber';
-import { GooglePay } from '../GooglePay';
+import { GooglePayClient } from '../GooglePayClient';
 import { IFrameQueryingService } from '../../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 
 @Service({ id: MessageSubscriberToken, multiple: true })
-export class GooglePayInitializeSubscriber implements IMessageSubscriber {
-  constructor(private googlePay: GooglePay, private frameQueryingService: IFrameQueryingService) {
+export class GooglePayClientInitializer implements IMessageSubscriber {
+  constructor(private googlePayClient: GooglePayClient, private frameQueryingService: IFrameQueryingService) {
   }
 
   register(messageBus: IMessageBus): void {
     this.frameQueryingService.whenReceive(
       PUBLIC_EVENTS.GOOGLE_PAY_CLIENT_INIT,
       (event: IMessageBusEvent<IConfig>) => {
-         return this.googlePay.init(event.data);
+         return this.googlePayClient.init(event.data);
       }
     );
   }

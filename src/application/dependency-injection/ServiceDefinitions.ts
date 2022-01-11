@@ -11,9 +11,10 @@ import { APMPaymentMethod } from '../../integrations/apm/application/APMPaymentM
 import { IGatewayClient } from '../core/services/gateway-client/IGatewayClient';
 import { StTransportGatewayClient } from '../core/services/gateway-client/StTransportGatewayClient';
 import '../../shared/dependency-injection/ServiceDefinitions';
+import { ClickToPayPaymentMethod } from '../../integrations/click-to-pay/application/ClickToPayPaymentMethod';
 
 Container.set({ id: ConfigProvider, type: StoreConfigProvider });
 Container.set({ id: IHttpOptionsProvider, type: DefaultHttpOptionsProvider });
 Container.set({ id: HttpClient, type: HttpClient });
 Container.set({ id: IGatewayClient, type: StTransportGatewayClient });
-Container.import([JwtReducer, GooglePaymentMethod, ApplePayPaymentMethod, APMPaymentMethod]);
+Container.import([JwtReducer, GooglePaymentMethod, ApplePayPaymentMethod, APMPaymentMethod, ClickToPayPaymentMethod]);

@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { Container } from 'typedi';
 import { instance, mock } from 'ts-mockito';
 import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
+import { of } from 'rxjs';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
@@ -15,6 +16,8 @@ import { IFrameQueryingService } from '../../shared/services/message-bus/interfa
 import { FrameQueryingService } from '../../shared/services/message-bus/FrameQueryingService';
 import { CommonFrames } from '../common-frames/CommonFrames';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { IClickToPayConfig } from '../../integrations/click-to-pay/models/IClickToPayConfig';
+import { ClickToPayPaymentMethodName } from '../../integrations/click-to-pay/models/ClickToPayPaymentMethodName';
 import SecureTrading, { ST } from './ST';
 import { config, jwt } from './STTestConfigs';
 
@@ -141,5 +144,36 @@ describe('ST', () => {
     it(`should send ${PUBLIC_EVENTS.THREED_CANCEL} event on MessageBus`, () => {
       expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.THREED_CANCEL }, EventScope.ALL_FRAMES);
     });
+  });
+
+  describe('ClickToPay()', () => {
+    const clickToPayConfig: IClickToPayConfig = {};
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      jest.spyOn(messageBusMock, 'publish');
+      stInstance['initControlFrame$'] = jest.fn().mockReturnValueOnce(of(null));// TODO mock dependencies properly
+      stInstance.ClickToPay(clickToPayConfig);
+    });
+
+    it('should update config store with provided ClickToPay config', () => {
+      expect(messageBusMock.publish).toHaveBeenNthCalledWith(1,{
+        type: PUBLIC_EVENTS.PARTIAL_CONFIG_SET,
+        data: {
+          name: ClickToPayPaymentMethodName,
+          config: clickToPayConfig,
+        },
+      }, EventScope.ALL_FRAMES);
+    })
+
+    it('initialize ClickToPay method with provided config', () => {
+      expect(messageBusMock.publish).toHaveBeenNthCalledWith(2,{
+        type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
+        data: {
+          name: ClickToPayPaymentMethodName,
+          config: clickToPayConfig,
+        },
+      }, EventScope.THIS_FRAME);
+    })
   });
 });

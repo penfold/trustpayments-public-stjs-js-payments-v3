@@ -3,13 +3,13 @@ import { PUBLIC_EVENTS } from '../../../../application/core/models/constants/Eve
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../../../application/core/shared/message-bus/SimpleMessageBus';
 import { IConfig } from '../../../../shared/model/config/IConfig';
-import { GooglePay } from '../GooglePay';
+import { GooglePayClient } from '../GooglePayClient';
 import { IFrameQueryingService } from '../../../../shared/services/message-bus/interfaces/IFrameQueryingService';
-import { GooglePayInitializeSubscriber } from './GooglePayInitializeSubscriber';
+import { GooglePayClientInitializer } from './GooglePayClientInitializer';
 
-describe('GooglePayInitializeSubscriber', () => {
-  let sut: GooglePayInitializeSubscriber;
-  let googlePayMock: GooglePay;
+describe('GooglePayClientInitalizer', () => {
+  let sut: GooglePayClientInitializer;
+  let googlePayClientMock: GooglePayClient;
   let simpleMessageBus: IMessageBus;
   let frameQueryingServiceMock: IFrameQueryingService;
 
@@ -19,19 +19,19 @@ describe('GooglePayInitializeSubscriber', () => {
 
   beforeEach(() => {
     simpleMessageBus = new SimpleMessageBus();
-    googlePayMock = mock(GooglePay);
+    googlePayClientMock = mock(GooglePayClient);
     frameQueryingServiceMock = mock<IFrameQueryingService>();
     when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.GOOGLE_PAY_CLIENT_INIT, anyFunction())).thenCall((eventType, callback) => {
       callback({ type: eventType, data: configMock });
     });
 
-    sut = new GooglePayInitializeSubscriber(instance(googlePayMock), instance(frameQueryingServiceMock));
+    sut = new GooglePayClientInitializer(instance(googlePayClientMock), instance(frameQueryingServiceMock));
   });
 
   describe('register', () => {
     it('should invoke GooglePay to initialize the library', () => {
       sut.register(simpleMessageBus);
-      verify(googlePayMock.init(anything())).once();
+      verify(googlePayClientMock.init(anything())).once();
     });
   });
 });

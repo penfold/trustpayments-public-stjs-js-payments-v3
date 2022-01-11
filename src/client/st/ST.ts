@@ -53,6 +53,8 @@ import { FraudControlService } from '../../application/core/services/fraud-contr
 import { SentryService } from '../../shared/services/sentry/SentryService';
 import { IApplePayConfig } from '../../integrations/apple-pay/client/models/IApplePayConfig';
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
+import { IClickToPayConfig } from '../../integrations/click-to-pay/models/IClickToPayConfig';
+import { ClickToPayPaymentMethodName } from '../../integrations/click-to-pay/models/ClickToPayPaymentMethodName';
 
 @Service()
 export class ST {
@@ -284,6 +286,33 @@ export class ST {
         EventScope.THIS_FRAME,
       );
     });
+  }
+
+  ClickToPay(clickToPayConfig: IClickToPayConfig) {
+    this.messageBus.publish<ISetPartialConfig<IClickToPayConfig>>(
+      {
+        type: PUBLIC_EVENTS.PARTIAL_CONFIG_SET,
+        data: {
+          name: ClickToPayPaymentMethodName,
+          config: clickToPayConfig,
+        },
+      },
+      EventScope.ALL_FRAMES,
+    );
+
+    this.initControlFrame$().subscribe(() => {
+      this.messageBus.publish<IInitPaymentMethod<IClickToPayConfig>>(
+        {
+          type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
+          data: {
+            name: ClickToPayPaymentMethodName,
+            config: clickToPayConfig,
+          },
+        },
+        EventScope.THIS_FRAME,
+      );
+    });
+
   }
 
   Cybertonica(): Promise<string | null> {

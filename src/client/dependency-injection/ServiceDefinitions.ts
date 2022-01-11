@@ -4,7 +4,7 @@ import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import { environment } from '../../environments/environment';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
-import { GooglePayInitializeSubscriber } from '../integrations/google-pay/google-pay-initialize-subscriber/GooglePayInitializeSubscriber';
+
 import { GooglePaySdkProvider } from '../integrations/google-pay/google-pay-sdk-provider/GooglePaySdkProvider';
 import { IGooglePaySdkProvider } from '../integrations/google-pay/google-pay-sdk-provider/IGooglePaySdkProvider';
 import { PreventNavigationPopup } from '../message-subscribers/PreventNavigationPopup';
@@ -14,6 +14,8 @@ import { ApplePayClientInitializer } from '../../integrations/apple-pay/client/A
 import { IApplePaySessionWrapper } from '../../integrations/apple-pay/client/models/IApplePaySessionWrapper';
 import { ApplePaySessionWrapper } from '../../integrations/apple-pay/client/services/session/ApplePaySessionWrapper';
 import { APMClientInitializer } from '../../integrations/apm/client/APMClientInitializer';
+import { ClickToPayClientInitializer } from '../../integrations/click-to-pay/client/ClickToPayClientInitializer';
+import { GooglePayClientInitializer } from '../integrations/google-pay/google-pay-client-initializer/GooglePayClientInitializer';
 
 Container.set({ id: ConfigProvider, factory: () => Container.get(ConfigService) });
 Container.set({ id: ThreeDSecureFactory, type: ThreeDSecureFactory });
@@ -22,9 +24,10 @@ Container.set({ id: IApplePaySessionWrapper, type: ApplePaySessionWrapper });
 Container.import([
   PreventNavigationPopup,
   PaymentResultSubmitterSubscriber,
-  GooglePayInitializeSubscriber,
+  GooglePayClientInitializer,
   ApplePayClientInitializer,
   APMClientInitializer,
+  ClickToPayClientInitializer,
 ]);
 
 if(environment.testEnvironment){

@@ -23,7 +23,7 @@ import { GooglePayPaymentService } from './GooglePayPaymentService';
 import { IGooglePaySdkProvider } from './google-pay-sdk-provider/IGooglePaySdkProvider';
 
 @Service()
-export class GooglePay {
+export class GooglePayClient {
   private googlePaySdk: IGooglePaySessionPaymentsClient;
   private config: IConfig;
   private destroy$: Observable<IMessageBusEvent>;

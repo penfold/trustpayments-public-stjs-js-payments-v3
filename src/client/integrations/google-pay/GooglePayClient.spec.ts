@@ -11,12 +11,12 @@ import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { SentryService } from '../../../shared/services/sentry/SentryService';
 import { IGooglePaySessionPaymentsClient } from '../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 import { GooglePaySdkProvider } from './google-pay-sdk-provider/GooglePaySdkProvider';
-import { GooglePay } from './GooglePay';
+import { GooglePayClient } from './GooglePayClient';
 import { googlePayConfigMock } from './GooglePayConfigMock';
 import { GooglePayPaymentService } from './GooglePayPaymentService';
 
-describe('GooglePay', () => {
-  let sut: GooglePay;
+describe('GooglePayClient', () => {
+  let sut: GooglePayClient;
   let configProviderMock: ConfigProvider;
   let googlePayPaymentServiceMock: GooglePayPaymentService;
   let jwtDecoderMock: JwtDecoder;
@@ -50,7 +50,7 @@ describe('GooglePay', () => {
     when(googlePaySdkProviderMock.setupSdk$(anything())).thenReturn(of(null).pipe(mapTo(instance(googlePaySessionPaymentsClientMock)), tap(console.log)));
     when(configProviderMock.getConfig$()).thenReturn(of(configMock));
 
-    sut = new GooglePay(
+    sut = new GooglePayClient(
       instance(configProviderMock),
       instance(googlePayPaymentServiceMock),
       instance(jwtDecoderMock),
