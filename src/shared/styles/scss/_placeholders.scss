@@ -29,7 +29,7 @@
 %label--readonly {
   color: $color-label-readonly; // @param
 
-  &:after {
+  &::after {
     color: $color-placeholder; // @param
   }
 }
@@ -47,10 +47,6 @@
 
   &::placeholder {
     color: $color-input-placeholder; // @param
-  }
-
-  &:-ms-input-placeholder {
-    color: $color-input-placeholder;
   }
 }
 
