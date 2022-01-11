@@ -33,6 +33,8 @@ window.addEventListener('load', async () => {
   }
 
   async function identityLookup() {
+    console.log('awaiting email');
+    
     const email = prompt('Email address', '');
 
     if (!email?.length) {
