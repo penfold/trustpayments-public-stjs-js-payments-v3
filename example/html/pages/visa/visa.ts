@@ -34,7 +34,7 @@ window.addEventListener('load', async () => {
 
   async function identityLookup() {
     console.log('awaiting email');
-    
+
     const email = prompt('Email address', '');
 
     if (!email?.length) {
@@ -86,7 +86,7 @@ window.addEventListener('load', async () => {
       card: {
         primaryAccountNumber: prompt('PAN', '4111111111111111'),
         panExpirationMonth: prompt('Expiry month', '01'),
-        panExpirationYear: prompt('Expiry year', '2022'),
+        panExpirationYear: prompt('Expiry year', '2023'),
         cardSecurityCode: prompt('Security code', '123'),
         cardholderFullName: prompt('Cardholder name', 'John Smith'),
       },
