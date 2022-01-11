@@ -4,7 +4,6 @@ import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import { environment } from '../../environments/environment';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { ConfigService } from '../../shared/services/config-service/ConfigService';
-
 import { GooglePaySdkProvider } from '../integrations/google-pay/google-pay-sdk-provider/GooglePaySdkProvider';
 import { IGooglePaySdkProvider } from '../integrations/google-pay/google-pay-sdk-provider/IGooglePaySdkProvider';
 import { PreventNavigationPopup } from '../message-subscribers/PreventNavigationPopup';
@@ -30,6 +29,6 @@ Container.import([
   ClickToPayClientInitializer,
 ]);
 
-if(environment.testEnvironment){
+if (environment.testEnvironment) {
   Container.set({ id: HttpClient, type: HttpClient });
 }

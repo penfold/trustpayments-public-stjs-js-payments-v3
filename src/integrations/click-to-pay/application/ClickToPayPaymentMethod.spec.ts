@@ -13,7 +13,7 @@ describe('ClickToPayPaymentMethod', () => {
 
   beforeEach(() => {
     frameQueryingService = mock<IFrameQueryingService>();
-    when(frameQueryingService.query(anything(), anything())).thenCall((...args)=>{console.log(args);return of(null)})
+    when(frameQueryingService.query(anything(), anything())).thenReturn(of(null));
     sut = new ClickToPayPaymentMethod(instance(frameQueryingService));
   });
 
