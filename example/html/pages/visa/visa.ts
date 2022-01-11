@@ -33,8 +33,14 @@ window.addEventListener('load', async () => {
   }
 
   async function identityLookup() {
+    const email = prompt('Email address', '');
+
+    if (!email?.length) {
+      return Promise.resolve(null);
+    }
+
     return vSrc.identityLookup({
-      identityValue: 'wirus15+vcteste4h5@gmail.com',
+      identityValue: email,
       type: 'EMAIL',
     });
   }
@@ -119,7 +125,7 @@ window.addEventListener('load', async () => {
       const identityLookupResult = await identityLookup();
       console.log('IDENTITY LOOKUP', identityLookupResult);
 
-      if (identityLookupResult.consumerPresent) {
+      if (identityLookupResult?.consumerPresent) {
         console.log('INITIATE IDENTITY VALIDATION', await initiateIdentityValidation());
         console.log('COMPLETE VALIDATION', await completeIdentityValidation(idTokens));
       }
