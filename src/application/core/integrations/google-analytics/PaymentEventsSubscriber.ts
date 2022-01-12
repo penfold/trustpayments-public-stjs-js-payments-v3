@@ -11,7 +11,7 @@ import { GAEventType } from './events';
 import { GoogleAnalytics } from './GoogleAnalytics';
 
 @Service({ id: MessageSubscriberToken, multiple: true })
-export class GoogleAnalyticsInitializer implements IMessageSubscriber {
+export class PaymentEventsSubscriber implements IMessageSubscriber {
   constructor(private googleAnalytics: GoogleAnalytics) {}
 
   register(messageBus: IMessageBus): void {

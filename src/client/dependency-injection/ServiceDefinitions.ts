@@ -14,7 +14,7 @@ import { ApplePayClientInitializer } from '../../integrations/apple-pay/client/A
 import { IApplePaySessionWrapper } from '../../integrations/apple-pay/client/models/IApplePaySessionWrapper';
 import { ApplePaySessionWrapper } from '../../integrations/apple-pay/client/services/session/ApplePaySessionWrapper';
 import { APMClientInitializer } from '../../integrations/apm/client/APMClientInitializer';
-import { GoogleAnalyticsInitializer } from '../../application/core/integrations/google-analytics/GoogleAnalyticsInitializer';
+import { PaymentEventsSubscriber } from '../../application/core/integrations/google-analytics/PaymentEventsSubscriber';
 
 Container.set({ id: ConfigProvider, factory: () => Container.get(ConfigService) });
 Container.set({ id: ThreeDSecureFactory, type: ThreeDSecureFactory });
@@ -26,7 +26,7 @@ Container.import([
   GooglePayInitializeSubscriber,
   ApplePayClientInitializer,
   APMClientInitializer,
-  GoogleAnalyticsInitializer,
+  PaymentEventsSubscriber,
 ]);
 
 if(environment.testEnvironment){
