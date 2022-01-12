@@ -18,8 +18,8 @@
 %label--required {
   position: relative;
 
-  &:after {
-    content: '*';
+  &::after {
+    content: "*";
     display: inline;
     font-size: 1.5em;
     font-weight: bold;
@@ -31,7 +31,7 @@
 %label--readonly {
   color: $color-label-readonly; // @param
 
-  &:after {
+  &::after {
     color: $color-placeholder; // @param
   }
 }

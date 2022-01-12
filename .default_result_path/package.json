@@ -57,7 +57,7 @@
     "lint": "npx eslint ./src",
     "lint:fix": "npx eslint --fix ./src",
     "prepare": "husky install",
-    "postinstall": "npm run install --prefix ./node_modules/@sentry/cli --no-package-lock"
+    "postinstall": "npm run install --prefix ./node_modules/@sentry/cli"
   },
   "repository": {
     "type": "git",
