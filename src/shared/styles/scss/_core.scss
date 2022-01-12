@@ -50,8 +50,8 @@ body {
 }
 
 input:-webkit-autofill.error-field {
-  animation-name: autofill;
-  animation-fill-mode: both;
+  -webkit-animation-name: autofill;
+  -webkit-animation-fill-mode: both;
 }
 
 .st-button-submit__disabled {

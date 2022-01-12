@@ -46,6 +46,24 @@
       "deg"
     ],
     "selector-class-pattern": null,
-    "scss/percent-placeholder-pattern": null
+    "scss/percent-placeholder-pattern": null,
+    "property-no-vendor-prefix": [
+      true,
+      {
+        "severity": "warning"
+      }
+    ],
+    "at-rule-no-vendor-prefix": [
+      true,
+      {
+        "severity": "warning"
+      }
+    ],
+    "selector-no-vendor-prefix": [
+      true,
+      {
+        "severity": "warning"
+      }
+    ]
   }
 }
