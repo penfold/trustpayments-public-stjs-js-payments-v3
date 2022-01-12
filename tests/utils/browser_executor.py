@@ -53,6 +53,10 @@ class BrowserExecutor:
         alert = self.switch_to_alert()
         return alert.text
 
+    def send_text_to_alert(self, text):
+        alert = self.switch_to_alert()
+        alert.sendKeys(text)
+
     def get_page_url(self):
         return self._driver.current_url
 

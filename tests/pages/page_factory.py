@@ -7,6 +7,7 @@ from pages.payment_methods_page_mock import PaymentMethodsPageMock
 from pages.reactjs_page import ReactjsPage
 from pages.three_ds_page import ThreeDsPage
 from pages.visa_checkout_page import VisaCheckoutPage
+from pages.visa_click_two_pay_page import VisaClickTwoPay
 
 
 class Pages(Enum):
@@ -15,6 +16,7 @@ class Pages(Enum):
     PAYMENT_METHODS_PAGE_MOCK = PaymentMethodsPageMock
     ANIMATED_CARD_PAGE = AnimatedCardPage
     VISA_CHECKOUT_PAGE = VisaCheckoutPage
+    VISA_CLICK_TWO_PAY = VisaClickTwoPay
     APM_MODULE_PAYMENT_PAGE = ApmModulePaymentPage
     REACTJS_PAGE = ReactjsPage
     THREE_DS_PAGE = ThreeDsPage
