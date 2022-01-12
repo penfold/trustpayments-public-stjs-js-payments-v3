@@ -75,3 +75,6 @@ dist/
 # Python virtual env
 .venv
 test/.venv
+
+# output of ci/cd scripts
+.default_result_path
