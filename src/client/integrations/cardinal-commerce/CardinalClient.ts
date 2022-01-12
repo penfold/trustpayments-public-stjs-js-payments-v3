@@ -3,6 +3,7 @@ import { first, mapTo, shareReplay, switchMap, takeUntil, tap } from 'rxjs/opera
 import { defer, Observable, share, Subject, Subscription } from 'rxjs';
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { InterFrameCommunicator } from '../../../shared/services/message-bus/InterFrameCommunicator';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { PaymentEvents } from '../../../application/core/models/constants/PaymentEvents';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { PaymentBrand } from '../../../application/core/models/constants/PaymentBrand';
@@ -36,6 +37,7 @@ export class CardinalClient {
     private messageBus: IMessageBus,
     private cardinalProvider: CardinalProvider,
     private configProvider: ConfigProvider,
+    private googleAnalytics: GoogleAnalytics,
     private sentryService: SentryService
   ) {
     this.cardinal$ = defer(() =>
@@ -89,6 +91,9 @@ export class CardinalClient {
               });
             })
         ),
+        tap(() => {
+          this.googleAnalytics.sendGaData('event', 'Cardinal', 'init', 'Cardinal Setup Completed');
+        }),
         shareReplay(1)
       );
     }
