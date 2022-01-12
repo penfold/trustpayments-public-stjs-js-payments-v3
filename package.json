@@ -76,7 +76,9 @@
     "json-schema": "0.4.0",
     "rxjs": "7.5.1",
     "node-forge": "1.0.0",
-    "postcss": "8.4.5"
+    "postcss": "8.4.5",
+    "string-width": "4.2.3",
+    "is-fullwidth-code-point": "3.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.16.7",
@@ -168,7 +170,7 @@
     "bowser": "2.11.0",
     "browserslist": "4.19.1",
     "core-js": "3.19.3",
-    "dts-bundle-generator": "6.3.0",
+    "dts-bundle-generator": "6.4.0",
     "element-remove": "1.0.4",
     "fastestsmallesttextencoderdecoder": "1.0.22",
     "i18next": "21.6.5",
