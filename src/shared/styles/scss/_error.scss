@@ -18,7 +18,7 @@
 }
 
 
-@-webkit-keyframes autofill {
+@keyframes autofill {
   to {
     background-color: #f8d7da;
     color: #721c24;
@@ -27,6 +27,6 @@
 }
 
 input:-webkit-autofill.st-error-field {
-  -webkit-animation-name: autofill;
-  -webkit-animation-fill-mode: both;
+  animation-name: autofill;
+  animation-fill-mode: both;
 }

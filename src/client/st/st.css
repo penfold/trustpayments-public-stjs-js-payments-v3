@@ -14,7 +14,7 @@
   opacity: 1 !important;
 }
 
-iframe[id^='st-'] {
+iframe[id^="st-"] {
   height: 110px;
   border: 0;
 }
@@ -65,8 +65,8 @@ iframe:active {
   box-sizing: border-box;
 }
 
-.notification-frame:after {
-  content: 'x';
+.notification-frame::after {
+  content: "x";
   display: block;
   position: absolute;
   top: 0;

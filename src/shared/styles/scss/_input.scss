@@ -1,6 +1,6 @@
 .st-button-submit {
   &__disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
@@ -11,7 +11,7 @@
 
 .st-input {
   &--disabled {
-    opacity: .5;
+    opacity: 0.5;
     cursor: not-allowed;
     background: transparent;
   }
