@@ -12,7 +12,9 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   buttonId: Joi.string().allow(''),
   stopSubmitFormOnEnter: Joi.boolean(),
   cancelCallback: Joi.any(),
-  clickToPay: Joi.any(),
+  clickToPay: Joi.object().keys({
+    buttonPlacement: Joi.string(),
+  }),
   componentIds: Joi.object()
     .keys({
       animatedCard: Joi.string().allow('').default('st-animated-card'),
