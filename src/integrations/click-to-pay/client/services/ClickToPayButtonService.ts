@@ -5,7 +5,6 @@ import { IClickToPayConfig } from '../../models/IClickToPayConfig';
 @Service()
 export class ClickToPayButtonService {
   insertClickToPayButton(config: IClickToPayConfig): Element {
-    console.log(config);
     const { buttonPlacement = 'st-click-to-pay' } = config;
 
     return !this.isButtonInserted(buttonPlacement)
