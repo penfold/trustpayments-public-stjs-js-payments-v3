@@ -17,6 +17,7 @@ class VisaClickTwoPay(BasePage):
             self._actions.switch_to_default_iframe()
         self._waits.wait_for_element_to_be_clickable(VisaClickTwoPayLocators.visa_click_two_pay_button)
         self._actions.click(VisaClickTwoPayLocators.visa_click_two_pay_button)
+        self._actions.click(VisaClickTwoPayLocators.visa_click_two_pay_button)
 
     def get_one_time_password(self):
         mail_ids = gmail_service.get_unseen_mail_ids_with_wait(5)

@@ -11,7 +11,7 @@ use_step_matcher('re')
 @step('User clicks on Visa Click two Pay button')
 def step_impl(context):
     visa_click_to_pay_page = context.page_factory.get_page(Pages.VISA_CLICK_TWO_PAY)
-    visa_click_to_pay_page.click_visa_checkout_button(context)
+    visa_click_to_pay_page.click_visa_click_two_pay_button(context)
 
 
 @step('User fills Visa Click two Pay email address')
