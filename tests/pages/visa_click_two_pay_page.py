@@ -17,7 +17,21 @@ class VisaClickTwoPay(BasePage):
             self._actions.switch_to_default_iframe()
         self._waits.wait_for_element_to_be_clickable(VisaClickTwoPayLocators.visa_click_two_pay_button)
         self._actions.click(VisaClickTwoPayLocators.visa_click_two_pay_button)
-        self._actions.click(VisaClickTwoPayLocators.visa_click_two_pay_button)
+
+    def fill_required_address_fields(self, first_name, last_name, city, state, postal_code, phone_number, email):
+        self._actions.switch_to_iframe(VisaClickTwoPayLocators.visa_click_two_pay)
+        self._waits.wait_for_element_visibility(VisaClickTwoPayLocators.visa_click_two_pay_name_field)
+        self._actions.send_keys(VisaClickTwoPayLocators.visa_click_two_pay_name_field, first_name)
+        self._actions.send_keys(VisaClickTwoPayLocators.visa_click_two_pay_surname, last_name)
+        self._actions.send_keys(VisaClickTwoPayLocators.visa_click_two_pay_address_line_1, city)
+        self._actions.send_keys(VisaClickTwoPayLocators.visa_click_two_pay_city_address, city)
+        self._actions.send_keys(VisaClickTwoPayLocators.visa_click_two_pay_state_field, state)
+        self._actions.send_keys(VisaClickTwoPayLocators.visa_click_two_pay_postal_code, postal_code)
+        self._actions.send_keys(VisaClickTwoPayLocators.visa_click_two_pay_phone_number_field, phone_number)
+        self._waits.wait_for_element_visibility(VisaClickTwoPayLocators.visa_click_two_pay_email_field)
+        self._actions.send_keys(VisaClickTwoPayLocators.visa_click_two_pay_email_field, email)
+        self._waits.wait_for_element_to_be_clickable(VisaClickTwoPayLocators.visa_click_two_pay_continue_btn)
+        self._actions.click(VisaClickTwoPayLocators.visa_click_two_pay_continue_btn)
 
     def get_one_time_password(self):
         mail_ids = gmail_service.get_unseen_mail_ids_with_wait(5)

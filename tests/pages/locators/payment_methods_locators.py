@@ -36,6 +36,7 @@ class PaymentMethodsLocators:
     animated_card_iframe: By = (By.ID, FieldType.ANIMATED_CARD.value)
     parent_iframe: By = (By.ID, FieldType.PARENT_IFRAME.value)
 
+
     # payment methods
     pay_button: By = (By.ID, 'merchant-submit-button')
     visa_checkout_mock_button: By = (By.ID, 'v-button')

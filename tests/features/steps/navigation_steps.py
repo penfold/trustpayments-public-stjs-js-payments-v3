@@ -33,20 +33,20 @@ def step_impl(context, language):
 @step('User opens (?:example page|example page (?P<example_page>.+))')
 def step_impl(context, example_page):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    if 'Safari' in context.browser:
-        accept_untrusted_pages_on_safari_browsers(context)
-    # setting url specific params accordingly to example page
-    if example_page is None:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}'
-    elif 'WITH_APM' in example_page:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}&{context.INLINE_E2E_CONFIG_APM}'
-    elif 'IN_IFRAME' in example_page:
-        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.INLINE_E2E_CONFIG}'
-    else:
-        url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.INLINE_E2E_CONFIG}'
-    url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
+    # if 'Safari' in context.browser:
+    #     accept_untrusted_pages_on_safari_browsers(context)
+    # # setting url specific params accordingly to example page
+    # if example_page is None:
+    #     url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}'
+    # elif 'WITH_APM' in example_page:
+    #     url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}&{context.INLINE_E2E_CONFIG_APM}'
+    # elif 'IN_IFRAME' in example_page:
+    #     url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.INLINE_E2E_CONFIG}'
+    # else:
+    # url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.INLINE_E2E_CONFIG}'
+    # url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
 
-    payment_page.open_page(url)
+    payment_page.open_page(CONFIGURATION.URL.BASE_URL)
 
     if example_page is not None and 'IN_IFRAME' in example_page:
         payment_page.switch_to_example_page_parent_iframe()

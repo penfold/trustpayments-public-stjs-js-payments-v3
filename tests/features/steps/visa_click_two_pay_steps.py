@@ -1,4 +1,6 @@
 # type: ignore[no-redef]
+from time import sleep
+
 from behave import step, use_step_matcher
 
 from pages.page_factory import Pages
@@ -6,19 +8,34 @@ from utils.enums.card import Card
 from utils.enums.visa_checkout_field import VisaCheckoutField
 
 use_step_matcher('re')
+USER_DATA = {'name': 'john', 'surname': 'test', 'city': 'Willow Grove', 'address_line_1': 'Willow Grove', 'state': 'PA',
+             'zip_code': '19001', 'phone_number': '9343242342'}
 
 
 @step('User clicks on Visa Click two Pay button')
 def step_impl(context):
     visa_click_to_pay_page = context.page_factory.get_page(Pages.VISA_CLICK_TWO_PAY)
     visa_click_to_pay_page.click_visa_click_two_pay_button(context)
+    sleep(5)
+    visa_click_to_pay_page.dismiss_alert()
+    sleep(1)
+    visa_click_to_pay_page.accept_alert()
+    sleep(1)
+    visa_click_to_pay_page.accept_alert()
+    sleep(1)
+    visa_click_to_pay_page.accept_alert()
+    sleep(1)
+    visa_click_to_pay_page.accept_alert()
+    sleep(1)
+    visa_click_to_pay_page.accept_alert()
 
 
-@step('User fills Visa Click two Pay email address')
+@step('User fills Visa Click two Pay required fields')
 def step_impl(context):
     visa_click_to_pay_page = context.page_factory.get_page(Pages.VISA_CLICK_TWO_PAY)
-    visa_click_to_pay_page.send_text_to_alert('securetestpgs2@gmail.com')
-    visa_click_to_pay_page.accept_alert()
+    visa_click_to_pay_page.fill_required_address_fields(USER_DATA['name'], USER_DATA['surname'],
+                                                        USER_DATA['address_line_1'], USER_DATA['city'],
+                                                        USER_DATA['state'], USER_DATA['zip_code'])
 
 
 @step('User fills Visa Click two Pay one time password')
@@ -34,4 +51,3 @@ def step_impl(context):
     visa_click_to_pay_page = context.page_factory.get_page(Pages.VISA_CLICK_TWO_PAY)
     visa_click_to_pay_page.send_text_to_alert('1')
     visa_click_to_pay_page.accept_alert()
-
