@@ -20,6 +20,7 @@ import { ConfigValidator } from '../config-validator/ConfigValidator';
 import { SentryService } from '../sentry/SentryService';
 import { MisconfigurationError } from '../sentry/MisconfigurationError';
 import { IApplePayConfig } from '../../../integrations/apple-pay/client/models/IApplePayConfig';
+import { IClickToPayConfig } from '../../../integrations/click-to-pay/models/IClickToPayConfig';
 
 @Service()
 export class ConfigResolver {
@@ -38,6 +39,7 @@ export class ConfigResolver {
       buttonId: this.getValueOrDefault(config.buttonId, DefaultConfig.buttonId),
       stopSubmitFormOnEnter: this.getValueOrDefault(config.stopSubmitFormOnEnter, DefaultConfig.stopSubmitFormOnEnter),
       cancelCallback: this.getValueOrDefault(config.cancelCallback, DefaultConfig.cancelCallback),
+      clickToPay: this.setClickToPayConfig(config.clickToPay),
       componentIds: this.setComponentIds(config.componentIds),
       components: this.setComponentsProperties(config.components),
       cybertonicaApiKey: this.resolveCybertonicaApiKey(config.cybertonicaApiKey),
@@ -112,6 +114,13 @@ export class ConfigResolver {
   }
 
   private setVisaCheckoutConfig(config: IVisaCheckoutConfig): IVisaCheckoutConfig {
+    if (!config || !Object.keys(config).length) {
+      return;
+    }
+    return config;
+  }
+
+  private setClickToPayConfig(config: IClickToPayConfig): IClickToPayConfig {
     if (!config || !Object.keys(config).length) {
       return;
     }

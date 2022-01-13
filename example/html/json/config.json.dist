@@ -23,6 +23,9 @@
   },
   "animatedCard": true,
   "buttonId": "merchant-submit-button",
+  "clickToPay": {
+    "buttonPlacement": "st-click-to-pay"
+  },
   "componentIds": {
     "animatedCard": "",
     "cardNumber": "",

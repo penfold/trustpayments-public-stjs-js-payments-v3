@@ -3,6 +3,7 @@ import { IPlaceholdersConfig } from '../../../application/core/models/IPlacehold
 import { IVisaCheckoutConfig } from '../../../application/core/integrations/visa-checkout/IVisaCheckoutConfig';
 import { GooglePayConfigName, IGooglePayConfig } from '../../../integrations/google-pay/models/IGooglePayConfig';
 import { IApplePayConfig } from '../../../integrations/apple-pay/client/models/IApplePayConfig';
+import { IClickToPayConfig } from '../../../integrations/click-to-pay/models/IClickToPayConfig';
 import { IBypassInit } from './IBypassInit';
 import { IComponentsConfig } from './IComponentsConfig';
 import { IComponentsIds } from './IComponentsIds';
@@ -14,6 +15,7 @@ export interface IConfig {
   applePay?: IApplePayConfig;
   buttonId?: string;
   cancelCallback?: (...args: unknown[]) => unknown | null;
+  clickToPay?: IClickToPayConfig;
   componentIds?: IComponentsIds;
   components?: IComponentsConfig;
   cybertonicaApiKey?: string;

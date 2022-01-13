@@ -128,6 +128,7 @@
       <div id="st-visa-checkout" class="st-form__group"></div>
       <div id="st-apple-pay" class="st-form__group"></div>
       <div id="st-google-pay" class="st-form__group"></div>
+      <div id="st-click-to-pay" class="st-form__group"></div>
     </fieldset>
 
     <fieldset class="st-form__fieldset">
@@ -279,6 +280,7 @@
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
       st.GooglePay(config.googlePay);
+      st.ClickToPay(config.clickToPay);
       if (browserInfo === "true") {
         document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
       }
