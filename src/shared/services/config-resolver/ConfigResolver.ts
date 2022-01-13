@@ -116,7 +116,7 @@ export class ConfigResolver {
       return;
     }
     return config;
-}
+  }
 
   private setApplePayConfig(config: IApplePayConfig): IApplePayConfig {
     if (!config || !Object.keys(config).length) {
