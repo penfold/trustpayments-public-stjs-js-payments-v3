@@ -179,22 +179,24 @@
     var params = new URLSearchParams(window.location.search.substring(1));
     var inlineConfig = params.get('inlineConfig') ? JSON.parse(params.get('inlineConfig')) : '';
     var inlineConfigApm = params.get('inlineConfigApm') ? JSON.parse(params.get('inlineConfigApm')) : '';
+    var inlineConfigCtp = params.get('inlineConfigCtp') ? JSON.parse(params.get('inlineConfigCtp')) : '';
     var jwt = params.get('jwt') || '';
     var updatedJwt = params.get('updatedJwt') || '';
     var browserInfo = params.get('browserInfo');
 
-    Promise.all([getConfig(), getAPMsConfig()])
+    Promise.all([getConfig(), getAPMsConfig(), getCTPConfig()])
       .then(function (configValues) {
         var config = configValues[0];
         var apmConfig = configValues[1];
-        var st = init(config, apmConfig);
+        var ctpConfig = configValues[2];
+        var st = init(config, apmConfig, ctpConfig);
 
         function addClickHandler(elementId, handler) {
           document.getElementById(elementId).addEventListener('click', handler);
         }
 
         addClickHandler('st-action-start', function () {
-          init(config, apmConfig);
+          init(config, apmConfig, ctpConfig);
         });
         addClickHandler('st-action-destroy', function () {
           st.destroy();
@@ -259,6 +261,25 @@
         });
     }
 
+    function getCTPConfig() {
+      if (inlineConfigCtp) {
+        return Promise.resolve(inlineConfigCtp);
+      }
+
+      return window
+        .fetch('<%= CONFIG_URL %>/configCTP.json')
+        .then(function (response) {
+          if (response.status !== 200) {
+            return Promise.reject('Failed to load CTP configuration file!');
+          }
+
+          return response.json();
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    }
+
     function getJwt(config) {
       var presetJwt = jwt || config.jwt;
 
@@ -269,7 +290,7 @@
       return window.configJWT('<%= CONFIG_URL %>/jwtdata.json');
     }
 
-    function init(config, apmConfig) {
+    function init(config, apmConfig, ctpConfig) {
       setCallbacks(config);
      if (!validDataCenterUrl(config.datacenterurl)) {
         console.error('"datacenterurl" must be one of [https://webservices.securetrading.net/jwt/, https://webservices.securetrading.us/jwt/]');
@@ -280,7 +301,6 @@
       st.VisaCheckout(config.visaCheckout);
       st.ApplePay(config.applePay);
       st.GooglePay(config.googlePay);
-      st.ClickToPay(config.clickToPay);
       if (browserInfo === "true") {
         document.getElementById('st-browser-info').innerText = JSON.stringify(st.getBrowserInfo());
       }
@@ -311,6 +331,10 @@
 
       if (apmConfig) {
         st.APM(apmConfig);
+      }
+
+      if (ctpConfig) {
+        st.ClickToPay(ctpConfig);
       }
 
       window.resetCallbackCounter();
