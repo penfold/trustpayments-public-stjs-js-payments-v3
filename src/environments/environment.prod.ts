@@ -15,7 +15,7 @@ export const environment = {
     SONGBIRD_TEST_URL: 'https://songbirdstag.cardinalcommerce.com/edge/v1/songbird.js',
   },
   CLICK_TO_PAY: {
-    BUTTON_URL: 'https://assets.secure.checkout.visa.com/wallet-services-web/xo/button.png?size=302&color=dark&animation=true&legacy=false&svg=true&orderedCardBrands=VISA%2CMASTERCARD%2CAMEX',
+    BUTTON_URL: 'https://assets.secure.checkout.visa.com/wallet-services-web/xo/button.png?size=302&color=dark&animation=true&legacy=false&svg=true&orderedCardBrands=VISA',
   },
   FRAME_URL: FRAME_URL || 'https://webservices.securetrading.net/js/v3',
   GATEWAY_URL,
