@@ -8,21 +8,15 @@ describe('ClickToPayButtonService', () => {
   }
   const emptyConfig: IClickToPayConfig = {}
 
-  const removeAllButtons = () => {
-    const buttons = document.getElementsByTagName('img');
-    for (let i = buttons.length - 1; i >= 0; i--) {
-      buttons[0].parentNode.removeChild(buttons[0]);
-    }
-  };
-
   beforeEach(() => {
     const element: HTMLElement = document.createElement('div');
     element.setAttribute('id', 'st-click-to-pay');
-    document.getElementsByTagName('body')[0].appendChild(element);
+    document.body.appendChild(element);
   });
 
   afterEach(() => {
-    removeAllButtons();
+    const image = document.getElementById('st-click-to-pay');
+    image.parentNode.removeChild(image);
   });
 
   it('should create correct markup and insert button into merchants page', () => {
@@ -35,7 +29,7 @@ describe('ClickToPayButtonService', () => {
     clickToPayButtonService.insertClickToPayButton(config);
     clickToPayButtonService.insertClickToPayButton(config);
 
-    expect(clickToPayButtonService.insertClickToPayButton(config)).toEqual(null);
+    expect(document.getElementsByTagName('img').length).toEqual(1);
   });
 
   it('should set default button values of label and style if nothing has been specified', () => {
