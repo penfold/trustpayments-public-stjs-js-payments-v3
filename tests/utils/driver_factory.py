@@ -103,6 +103,9 @@ def _get_local_options(browser, headless):
     options.add_argument('--remote-debugging-address=0.0.0.0')
     options.add_argument('--remote-debugging-port=9222')
     options.add_argument('--disable-gpu')
+    options.add_argument("--disable-blink-features")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36")
 
     return options
 

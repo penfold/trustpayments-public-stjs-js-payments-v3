@@ -43,11 +43,12 @@ def step_impl(context, example_page):
     elif 'IN_IFRAME' in example_page:
         url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.INLINE_E2E_CONFIG}'
     elif 'VISA_CLICK_TWO_PAY' in example_page:
-        url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.INLINE_E2E_CONFIG}'
+        url = f'{CONFIGURATION.URL.BASE_URL}/visa.html'
     else:
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.INLINE_E2E_CONFIG}'
-        url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
-    payment_page.open_page(CONFIGURATION.URL.BASE_URL)
+    #url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
+
+    payment_page.open_page(url)
 
     if example_page is not None and 'IN_IFRAME' in example_page:
         payment_page.switch_to_example_page_parent_iframe()

@@ -1,15 +1,7 @@
-from time import sleep
-
-from configuration import CONFIGURATION
-from pages.locators.animated_card_locators import AnimatedCardLocators
-from pages.locators.payment_methods_locators import PaymentMethodsLocators
+import time
 from pages.base_page import BasePage
 from pages.locators.visa_click_two_pay_locators import VisaClickTwoPayLocators
-from utils.enums.field_type import FieldType
-from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers import gmail_service
-from utils.helpers.request_executor import add_to_shared_dict
-from utils.helpers.resources_reader import get_translation_from_json
 
 
 class VisaClickTwoPay(BasePage):
@@ -56,9 +48,9 @@ class VisaClickTwoPay(BasePage):
         #     VisaClickTwoPayLocators.visa_click_two_pay_iframe)
         self._waits.wait_for_element_visibility(VisaClickTwoPayLocators.visa_click_two_pay_phone_finish_setup_header)
         self._waits.wait_for_element_to_be_clickable(VisaClickTwoPayLocators.visa_click_two_pay_continue_btn)
-        self._actions.click(VisaClickTwoPayLocators.visa_click_two_pay_continue_btn)
+        self._actions.click_by_javascript(VisaClickTwoPayLocators.visa_click_two_pay_continue_btn)
         self._actions.switch_to_default_iframe()
-        sleep(15)
+        time.sleep(5)
 
 
     def get_one_time_password(self):
