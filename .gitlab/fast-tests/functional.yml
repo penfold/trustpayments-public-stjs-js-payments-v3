@@ -88,7 +88,7 @@ e2e-vc2p-tests-review:
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_visa_click_2_pay'
-  parallel: 1
+  parallel: 2
 
 # APMs E2E Tests Headless
 e2e-apms-tests-review:
