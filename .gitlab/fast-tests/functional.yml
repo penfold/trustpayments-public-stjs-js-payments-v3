@@ -170,54 +170,54 @@ e2e-merchants-features-tests-release:
     - .services-app-html-mock
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
-.card-payments-contract-tests:
-  extends:
-    - .component-app-html-mock
-    - .parallel-component-tests
-  variables:
-    FEATURE_FILES_DIR: 'features/component_tests/contract_tests'
-  parallel: 12
-
-contract-card-payments-tests-review:
-  extends:
-    - .card-payments-contract-tests
-    - .rules-when-review
-
-contract-card-payments-tests-release:
-  extends:
-    - .card-payments-contract-tests
-    - .rules-when-release
-
-.visa-checkout-component-tests:
-  extends:
-    - .component-app-html-mock
-    - .sequentially-component-tests
-  variables:
-    FEATURE_FILE_NAME: 'component_tests/digitalwallet_tests/visa_checkout.feature'
-
-component-visa-checkout-tests-review:
-  extends:
-    - .visa-checkout-component-tests
-    - .rules-when-review
-
-component-visa-checkout-tests-release:
-  extends:
-    - .visa-checkout-component-tests
-    - .rules-when-release
-
-.google-pay-component-tests:
-  extends:
-    - .component-app-html-mock
-    - .sequentially-component-tests
-  variables:
-    FEATURE_FILE_NAME: 'component_tests/digitalwallet_tests/google_pay.feature'
-
-component-google-pay-tests-review:
-  extends:
-    - .google-pay-component-tests
-    - .rules-when-review
-
-component-google-pay-tests-release:
-  extends:
-    - .google-pay-component-tests
-    - .rules-when-release
+#.card-payments-contract-tests:
+#  extends:
+#    - .component-app-html-mock
+#    - .parallel-component-tests
+#  variables:
+#    FEATURE_FILES_DIR: 'features/component_tests/contract_tests'
+#  parallel: 12
+#
+#contract-card-payments-tests-review:
+#  extends:
+#    - .card-payments-contract-tests
+#    - .rules-when-review
+#
+#contract-card-payments-tests-release:
+#  extends:
+#    - .card-payments-contract-tests
+#    - .rules-when-release
+#
+#.visa-checkout-component-tests:
+#  extends:
+#    - .component-app-html-mock
+#    - .sequentially-component-tests
+#  variables:
+#    FEATURE_FILE_NAME: 'component_tests/digitalwallet_tests/visa_checkout.feature'
+#
+#component-visa-checkout-tests-review:
+#  extends:
+#    - .visa-checkout-component-tests
+#    - .rules-when-review
+#
+#component-visa-checkout-tests-release:
+#  extends:
+#    - .visa-checkout-component-tests
+#    - .rules-when-release
+#
+#.google-pay-component-tests:
+#  extends:
+#    - .component-app-html-mock
+#    - .sequentially-component-tests
+#  variables:
+#    FEATURE_FILE_NAME: 'component_tests/digitalwallet_tests/google_pay.feature'
+#
+#component-google-pay-tests-review:
+#  extends:
+#    - .google-pay-component-tests
+#    - .rules-when-review
+#
+#component-google-pay-tests-release:
+#  extends:
+#    - .google-pay-component-tests
+#    - .rules-when-release

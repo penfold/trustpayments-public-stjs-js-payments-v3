@@ -2,6 +2,7 @@
 Feature: As a User I would like to be able to
   pay with Visa click to pay
 
+  @smoke_e2e_test
   Scenario: Successful Authentication by Visa click 2 pay
     Given JS library configured by inline config BASIC_CONFIG
     And User opens example page VISA_CLICK_TWO_PAY
