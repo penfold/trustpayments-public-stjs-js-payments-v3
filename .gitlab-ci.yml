@@ -37,7 +37,7 @@ variables:
   IMAGE_JS_PAYMENTS_WIREMOCK: ${CI_REGISTRY_IMAGE}/wiremock:${CI_PIPELINE_ID}
 
   SMOKE_MOCK_TESTS_TAG: '@smoke_mock_test'
-  SMOKE_E2E_TESTS_TAG: '@smoke_e2e_test'
+  SMOKE_E2E_TESTS_TAG: '@smoke_e2e_test_visa'
   VISUAL_ACS_POPUP_TESTS_TAG: '@visual_acs_popup_regression'
   VISUAL_TESTS_TAG: '@visual_regression'
   VISUAL_STYLING_TESTS_TAG: '@visual_regression_styling'
