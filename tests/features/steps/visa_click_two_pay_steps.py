@@ -37,6 +37,7 @@ def step_impl(context):
 @step('User fills Visa Click two Pay required fields')
 def step_impl(context):
     visa_click_to_pay_page = context.page_factory.get_page(Pages.VISA_CLICK_TWO_PAY)
+    sleep(25)
     visa_click_to_pay_page.fill_required_address_fields(USER_DATA['name'], USER_DATA['surname'],
                                                         USER_DATA['address_line_1'], USER_DATA['city'],
                                                         USER_DATA['state'], USER_DATA['zip_code'],

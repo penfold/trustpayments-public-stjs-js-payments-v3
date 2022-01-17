@@ -18,15 +18,15 @@
   image: ${IMAGE_JS_PAYMENTS_TESTS}
 
 # Card Payments E2E Tests Headless
-e2e-card-payments-tests-review:
-  extends:
-    - .e2e-tests-parallel
-    - .services-app-html-review
-    - .rules-when-review
-    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
-  variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests'
-  parallel: 26
+#e2e-card-payments-tests-review:
+#  extends:
+#    - .e2e-tests-parallel
+#    - .services-app-html-review
+#    - .rules-when-review
+#    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
+#  variables:
+#    FEATURE_FILES_DIR: 'features/e2e_tests'
+#  parallel: 26
 
 e2e-card-payments-tests-release:
   extends:
@@ -39,15 +39,15 @@ e2e-card-payments-tests-release:
   parallel: 26
 
 # Cardinal Commerce E2E Tests Headless
-e2e-cardinal-commerce-tests-review:
-  extends:
-    - .e2e-tests-parallel
-    - .services-app-html-review
-    - .rules-when-review
-    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
-  variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
-  parallel: 9
+#e2e-cardinal-commerce-tests-review:
+#  extends:
+#    - .e2e-tests-parallel
+#    - .services-app-html-review
+#    - .rules-when-review
+#    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
+#  variables:
+#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
+#  parallel: 9
 
 e2e-cardinal-commerce-tests-release:
   extends:
@@ -91,15 +91,15 @@ e2e-vc2p-tests-review:
   parallel: 2
 
 # APMs E2E Tests Headless
-e2e-apms-tests-review:
-  extends:
-    - .e2e-tests-parallel
-    - .services-app-html-review
-    - .rules-when-review
-    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
-  variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
-  parallel: 19
+#e2e-apms-tests-review:
+#  extends:
+#    - .e2e-tests-parallel
+#    - .services-app-html-review
+#    - .rules-when-review
+#    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
+#  variables:
+#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
+#  parallel: 19
 
 e2e-apms-tests-release:
   extends:
@@ -133,15 +133,15 @@ e2e-merchants-features-tests-release:
   parallel: 4
 
 # Smoke E2E Tests Headless -> exactly same scope which is used in extended tests as $SMOKE_E2E_TESTS_TAG
-e2e-smoke-tests-review:
-  extends:
-    - .e2e-tests-parallel
-    - .services-app-html-review
-    - .rules-when-review
-    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
-  variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
-  parallel: 4
+#e2e-smoke-tests-review:
+#  extends:
+#    - .e2e-tests-parallel
+#    - .services-app-html-review
+#    - .rules-when-review
+#    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
+#  variables:
+#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_smoke_tests'
+#  parallel: 4
 
 .e2e-smoke-tests-release:
   extends:
