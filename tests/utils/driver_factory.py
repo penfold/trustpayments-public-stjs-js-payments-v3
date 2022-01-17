@@ -150,7 +150,8 @@ def _get_remote_capabilities(configuration):
         'ie.ensureCleanSession': 'true',
         'ie.forceCreateProcessApi': 'true',
         'resolution': '1920x1080',
-        'goog:loggingPrefs': configuration.LOGGING_PREFS
+        'goog:loggingPrefs': configuration.LOGGING_PREFS,
+        'chromeOptions': {'args': ['incognito']}
     }
     capabilities = {}
     for key, value in possible_caps.items():
