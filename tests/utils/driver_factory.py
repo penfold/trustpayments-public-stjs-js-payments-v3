@@ -151,7 +151,7 @@ def _get_remote_capabilities(configuration):
         'ie.forceCreateProcessApi': 'true',
         'resolution': '1920x1080',
         'goog:loggingPrefs': configuration.LOGGING_PREFS,
-        'chromeOptions': {'args': ['disable-blink-features=AutomationControlled', 'incognito']}
+        'chromeOptions': {'args': ['disable-blink-features=AutomationControlled', 'disable-blink-features', 'user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36']}
     }
     capabilities = {}
     for key, value in possible_caps.items():

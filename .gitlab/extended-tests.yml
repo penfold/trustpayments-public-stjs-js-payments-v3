@@ -168,7 +168,7 @@ iPhone11-14.0-component-tests-smoke-nightly:
 .win10-Chrome-latest-e2e-tests-smoke:
   variables:
     OS: Windows
-    OS_VERSION: '8.1'
+    OS_VERSION: '10'
     BROWSER: Chrome
     BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
