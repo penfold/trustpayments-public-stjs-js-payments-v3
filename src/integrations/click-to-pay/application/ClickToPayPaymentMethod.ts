@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Service } from 'typedi';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
@@ -9,6 +9,7 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
+import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ClickToPayPaymentMethod implements IPaymentMethod<IClickToPayConfig> {
@@ -28,6 +29,6 @@ export class ClickToPayPaymentMethod implements IPaymentMethod<IClickToPayConfig
   }
 
   start(data: unknown): Observable<IPaymentResult<unknown>> {
-    return undefined;
+    return of({ status: PaymentStatus.SUCCESS, paymentMethodName: ClickToPayPaymentMethodName } );
   }
 }
