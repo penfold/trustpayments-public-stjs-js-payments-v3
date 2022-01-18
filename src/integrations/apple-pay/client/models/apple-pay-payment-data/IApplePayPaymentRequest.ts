@@ -17,7 +17,7 @@ export interface IApplePayPaymentRequest {
   shippingType?: string;
   shippingMethods?: IApplePayShippingMethod;
   shippingContact?: IApplePayShippingContact;
-  supportedCountries?: string;
+  supportedCountries?: string[];
   requiredBillingContactFields?: string[];
   requiredShippingContactFields?: string[];
 }

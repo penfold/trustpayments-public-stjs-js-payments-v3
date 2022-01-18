@@ -77,7 +77,7 @@ export const ApplePayPaymentRequestSchema: Joi.ObjectSchema = Joi.object().keys(
     country: Joi.string(),
     countryCode: Joi.string(),
   }),
-  supportedCountries: Joi.string(),
+  supportedCountries: Joi.array().items(Joi.string()),
   requiredBillingContactFields: Joi.array().items(Joi.string()),
   requiredShippingContactFields: Joi.array().items(Joi.string()),
 });
