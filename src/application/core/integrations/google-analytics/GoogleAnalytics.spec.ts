@@ -24,13 +24,13 @@ describe('GoogleAnalytics', () => {
       expect(DomMethods.insertScript).toHaveBeenCalledWith('head', {
         async: 'async',
         src: environment.GA_SCRIPT_SRC,
-        id: 'googleAnalytics',
       });
     });
   });
 
   describe('sendGaData', () => {
     beforeEach(() => {
+      sut.init();
       // @ts-ignore
       window.ga = jest.fn();
       sut.sendGaData('event', 'Visa Checkout', 'payment status', 'Visa Checkout payment error');
