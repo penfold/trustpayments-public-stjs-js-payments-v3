@@ -350,9 +350,7 @@ export class ST {
       this.cardinalClient.init();
       this.threeDSecureClient.init();
 
-      setTimeout(() => {
-        this.googleAnalytics.sendGaData('event', 'ST', GAEventType.INIT, `ST init - version ${VERSION}`);
-      }, 500);
+      this.googleAnalytics.sendGaData('event', 'ST', GAEventType.INIT, `ST init - version ${VERSION}`);
 
       if (this.config.stopSubmitFormOnEnter) {
         this.stopSubmitFormOnEnter();
