@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { EMPTY, interval, Observable, switchMap, throwError } from 'rxjs';
-import { catchError, filter, first, map, shareReplay } from 'rxjs/operators';
+import { EMPTY, interval, Observable, ReplaySubject, switchMap, throwError } from 'rxjs';
+import { catchError, filter, first, map, mapTo, shareReplay } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../shared/dom-methods/DomMethods';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
@@ -11,17 +11,17 @@ interface GA {
 
 @Service()
 export class GoogleAnalytics {
-  private ga: Observable<GA>;
+  private ga: ReplaySubject<GA> = new ReplaySubject<GA>();
 
   constructor(private sentryService: SentryService) {
   }
 
   init(): void {
-    this.ga = this.insertGALibrary().pipe(
+    this.insertGALibrary().pipe(
       map(() => this.createGAScript()),
       switchMap(gaScript => this.insertGAScript(gaScript)),
-      catchError(error => throwError(() => new Error(error))),
-    );
+      catchError(error => throwError(() => new Error(error)))
+    ).subscribe((ga: GA) => this.ga.next(ga));
   }
 
   sendGaData(hitType: string, eventCategory: string, eventAction: string, eventLabel: string): void {
@@ -64,7 +64,8 @@ export class GoogleAnalytics {
       map(() => window?.ga?.loaded),
       filter(Boolean),
       first(),
-      shareReplay(1),
+      mapTo(window['ga']),
+      shareReplay(1)
     );
   }
 }
