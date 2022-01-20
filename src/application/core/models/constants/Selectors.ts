@@ -42,7 +42,12 @@ export const EXPIRATION_DATE_COMPONENT = `${environment.FRAME_URL}/expiration-da
 export const SECURITY_CODE_COMPONENT = `${environment.FRAME_URL}/security-code.html`;
 export const CONTROL_FRAME_COMPONENT = `${environment.FRAME_URL}/control-frame.html`;
 export const ANIMATED_CARD_COMPONENT = `${environment.FRAME_URL}/animated-card.html`;
+export const CLICK_TO_PAY_FRAME_COMPONENT = `${environment.FRAME_URL}/click-to-pay.html`;
 
 export const ANIMATED_CARD_INPUT_SELECTOR = 'st-animated-card';
 export const ANIMATED_CARD_COMPONENT_IFRAME = 'st-animated-card-iframe';
 export const ANIMATED_CARD_COMPONENT_NAME = 'animatedCard';
+
+export const CLICK_TO_PAY_COMPONENT_NAME = 'clickToPay';
+export const CLICK_TO_PAY_FORM_CONFIRM = 'st-click-to-pay-form_confirm'
+export const CLICK_TO_PAY_IFRAME = 'st-click-to-pay-iframe';
