@@ -13,6 +13,8 @@ import { APMFilterService } from '../services/apm-filter-service/APMFilterServic
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { GAEventType } from '../../../application/core/integrations/google-analytics/events';
 import { APMClient } from './APMClient';
 
 describe('APMClient', () => {
@@ -20,6 +22,7 @@ describe('APMClient', () => {
   let apmFilterService: APMFilterService;
   let messageBus: IMessageBus;
   let configProviderMock: ConfigProvider;
+  let googleAnalyticsMock: GoogleAnalytics;
   let apmClient: APMClient;
 
   const testConfig: IAPMConfig = {
@@ -45,6 +48,7 @@ describe('APMClient', () => {
     configProviderMock = mock<ConfigProvider>();
     apmConfigResolver = mock(APMConfigResolver);
     apmFilterService = mock(APMFilterService);
+    googleAnalyticsMock = mock(GoogleAnalytics);
     messageBus = new SimpleMessageBus();
     when(apmConfigResolver.resolve(anything())).thenReturn(of(testConfig));
     when(configProviderMock.getConfig()).thenReturn({ jwt: '' });
@@ -58,7 +62,13 @@ describe('APMClient', () => {
       returnUrl: 'test-url',
     },
     ]));
-    apmClient = new APMClient(instance(apmConfigResolver), messageBus, instance(apmFilterService), instance(configProviderMock));
+    apmClient = new APMClient(
+      instance(apmConfigResolver),
+      messageBus,
+      instance(apmFilterService),
+      instance(configProviderMock),
+      instance(googleAnalyticsMock),
+    );
     document.body.innerHTML = '<div id="test-placement"></div><div id="test-placement-2"></div>';
   });
 
@@ -98,6 +108,7 @@ describe('APMClient', () => {
 
             messageBus.publish({ type: PUBLIC_EVENTS.APM_REDIRECT, data: testRedirectUrl });
 
+            verify(googleAnalyticsMock.sendGaData('event', 'APM redirect', GAEventType.REDIRECT, `APM redirect initiated: ${(testConfig.apmList[index] as IAPMItemConfig).name}`)).once();
             verify(domMethodsSpy.redirect(testRedirectUrl)).called();
           });
         done();
