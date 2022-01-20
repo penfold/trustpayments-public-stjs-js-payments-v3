@@ -54,7 +54,7 @@ import { SentryService } from '../../shared/services/sentry/SentryService';
 import { IApplePayConfig } from '../../integrations/apple-pay/client/models/IApplePayConfig';
 import { GAEventType } from '../../application/core/integrations/google-analytics/events';
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
-declare const VERSION: string | undefined;
+declare const ST_VERSION: string | undefined;
 @Service()
 export class ST {
   private config: IConfig;
@@ -350,9 +350,7 @@ export class ST {
       this.cardinalClient.init();
       this.threeDSecureClient.init();
 
-      setTimeout(() => {
-        this.googleAnalytics.sendGaData('event', 'ST', GAEventType.INIT, `ST init - version ${VERSION}`);
-      }, 500);
+      this.googleAnalytics.sendGaData('event', 'ST', GAEventType.INIT, `ST init - version ${ST_VERSION}`);
 
       if (this.config.stopSubmitFormOnEnter) {
         this.stopSubmitFormOnEnter();
