@@ -29,7 +29,11 @@ describe('GoogleAnalytics', () => {
   });
 
   describe('sendGaData', () => {
+    const mockGA = jest.fn();
     beforeEach(() => {
+
+      // TODO find a way to mock this properly
+      sut['insertGAScript'] = jest.fn().mockReturnValue(of(mockGA))
       sut.init();
       // @ts-ignore
       window.ga = jest.fn();
@@ -37,8 +41,8 @@ describe('GoogleAnalytics', () => {
     });
 
     it('should call send method from google analytics', () => {
-      // @ts-ignore
-      expect(window.ga).toHaveBeenCalled();
+      expect(mockGA).toHaveBeenCalledWith('send', { eventAction: 'payment status', eventCategory: 'Visa Checkout', eventLabel: 'Visa Checkout payment error', hitType: 'event' }
+    );
     });
   });
 
