@@ -709,3 +709,7 @@ class PaymentMethodsPage(BasePage):
 
     def click_cancel_btn_on_apple_pay_popup(self):
         self._actions.click(PaymentMethodsLocators.apple_pay_cancel_btn)
+
+    def is_vc2p_override_button_displayed(self):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.visa_c2p_btn_override)
+        return self._actions.is_element_displayed(PaymentMethodsLocators.visa_c2p_btn_override)
