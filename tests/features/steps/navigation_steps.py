@@ -40,6 +40,8 @@ def step_impl(context, example_page):
         url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}'
     elif 'WITH_APM' in example_page:
         url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}&{context.INLINE_E2E_CONFIG_APM}'
+    elif 'WITH_VC2P' in example_page:
+        url = f'{CONFIGURATION.URL.BASE_URL}/?{context.INLINE_E2E_CONFIG}&{context.INLINE_E2E_CONFIG_V2CP}'
     elif 'IN_IFRAME' in example_page:
         url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.INLINE_E2E_CONFIG}'
     else:
@@ -95,10 +97,13 @@ def step_impl(context, path):
     payment_page.open_page(url)
 
 
-@step('User opens (?P<path>.+) page with inline params')
-def step_impl(context, path):
+@step('User opens (?P<path>.+) page with (?:inline params|(?P<config>.+) inline params)')
+def step_impl(context, path, config):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    url = f'{CONFIGURATION.URL.BASE_URL}/{path}?{context.INLINE_E2E_CONFIG}&{context.INLINE_E2E_CONFIG_APM}'
+    if config == 'VC2P':
+        url = f'{CONFIGURATION.URL.BASE_URL}/{path}?{context.INLINE_E2E_CONFIG}&{context.INLINE_E2E_CONFIG_V2CP}'
+    else:
+        url = f'{CONFIGURATION.URL.BASE_URL}/{path}?{context.INLINE_E2E_CONFIG}&{context.INLINE_E2E_CONFIG_APM}'
     if 'Safari' in context.browser:
         accept_untrusted_pages_on_safari_browsers(context)
     payment_page.open_page(url)

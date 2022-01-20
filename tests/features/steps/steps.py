@@ -10,15 +10,18 @@ from behave import given, step, then, use_step_matcher
 from configuration import CONFIGURATION
 from pages.page_factory import Pages
 from utils.configurations.inline_config_builder import InlineConfigBuilder
-from utils.configurations.inline_config_generator import create_inline_config, create_inline_config_apm
+from utils.configurations.inline_config_generator import create_inline_config, create_inline_config_apm, \
+    create_inline_config_visa_c2p
 from utils.configurations.jwt_generator import encode_jwt_for_json, encode_jwt
 from utils.enums.config import screenshots
 from utils.enums.config_apm import ConfigApm
 from utils.enums.config_e2e import ConfigCardPaymentsAndDigitalWallets
 from utils.enums.config_jwt import ConfigJwt
+from utils.enums.config_vc2p import ConfigVC2P
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import add_to_shared_dict
-from utils.helpers.resources_reader import get_e2e_config_from_json, get_jwt_config_from_json, get_apm_config_from_json
+from utils.helpers.resources_reader import get_e2e_config_from_json, get_jwt_config_from_json, get_apm_config_from_json, \
+    get_vc2p_config_from_json
 from utils.waits import Waits
 
 use_step_matcher('re')
@@ -54,6 +57,12 @@ def step_impl(context, e2e_config):
 def step_impl(context, apm_config):
     e2e_config_apm_dict = get_apm_config_from_json(ConfigApm[apm_config].value)
     context.INLINE_E2E_CONFIG_APM = create_inline_config_apm(e2e_config_apm_dict)
+
+
+@step('JS library configured by inline VisaC2P config (?P<vc2p_config>.+)')
+def step_impl(context, vc2p_config):
+    e2e_config_vc2p_dict = get_vc2p_config_from_json(ConfigVC2P[vc2p_config].value)
+    context.INLINE_E2E_CONFIG_V2CP = create_inline_config_visa_c2p(e2e_config_vc2p_dict)
 
 
 @step('JS library configured with (?P<e2e_config>.+) and additional attributes')
