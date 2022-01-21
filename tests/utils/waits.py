@@ -13,7 +13,7 @@ from utils.configurations.jwt_generator import replace_jwt, replace_updated_jwt
 class Waits:
 
     MAX_TRY_USED_WITH_DEFAULT_TIMEOUT = 2
-    MAX_TRY_WITHOUT_TIMEOUT = 30
+    MAX_TRY_WITHOUT_TIMEOUT = 60
     OVER_GATEWAY_TIMEOUT = 35
     OVER_ACS_MOCK_TIMEOUT = 60
 
