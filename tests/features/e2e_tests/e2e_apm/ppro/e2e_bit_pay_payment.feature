@@ -92,8 +92,6 @@ Feature: E2E BITPAY Payments
     And User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
-    # to be used with STJS-2443 & STJS-2444
-    #    Then BITPAY is not available on APM list
     When User chooses BITPAY from APM list
     Then User will see notification frame text: "Invalid field"
 
@@ -181,70 +179,6 @@ Feature: E2E BITPAY Payments
     Then User will see notification frame text: "Invalid field"
 
 
-#  Functionality not available on gateway yet
-#  Scenario Outline: Bypass requesttypesdescriptions other than AUTH
-#    Given JS library configured by inline config BASIC_CONFIG
-#    And JS library configured by inline configAPMs BASIC_CONFIG_APM
-#    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value                     |
-#      | requesttypedescriptions | <requesttypedescriptions> |
-#      | currencyiso3a           | EUR                       |
-#      | billingcountryiso2a     | PL                        |
-#      | baseamount              | 70                        |
-#      | billingfirstname        | FirstName                 |
-#    And User opens example page WITH_APM
-#    And User waits for whole form to be displayed
-#    And User waits for Pay button to be active
-#    When User chooses BITPAY from APM list
-#    Then User will be sent to apm page - simulator
-#
-#    Examples:
-#      | requesttypedescriptions                             |
-#      | THREEDQUERY AUTH                                    |
-#      | FRAUDSCORE AUTH                                     |
-#      | RISKDEC THREEDQUERY AUTH                            |
-#      | THREEDQUERY AUTH RISKDEC                            |
-#      | AUTH RISKDEC2                                       |
-#      | ACCOUNTCHECK THREEDQUERY AUTH                       |
-#      | RISKDEC ACCOUNTCHECK JSINPL AUTH SUBSCRIPTION       |
-#      | JSINPL AUTH                                         |
-#      | RISKDEC2 ACCOUNTCHECK THREEDQUERY AUTH              |
-#      | RISKDEC ACCOUNTCHECK AUTH SUBSCRIPTION              |
-#      | THREEDQUERY AUTH SUBSCRIPTION                       |
-#      | RISKDEC THREEDQUERY AUTH SUBSCRIPTION               |
-#      | RISKDEC ACCOUNTCHECK JSINPL AUTH                    |
-#      | RISKDEC ACCOUNTCHECK AUTH                           |
-#      | FRAUDSCORE THREEDQUERY AUTH                         |
-#      | ACCOUNTCHECK AUTH SUBSCRIPTION                      |
-#      | RISKDEC2 THREEDQUERY AUTH SUBSCRIPTION              |
-#      | RISKDEC2 AUTH SUBSCRIPTION                          |
-#      | JSINPL AUTH FRAUDSCREENING                          |
-#      | FRAUDSCORE JSINPL AUTH                              |
-#      | ACCOUNTCHECK JSINPL AUTH                            |
-#      | RISKDEC AUTH SUBSCRIPTION                           |
-#      | ACCOUNTCHECK JSINPL AUTH SUBSCRIPTION               |
-#      | RISKDEC2 ACCOUNTCHECK AUTH                          |
-#      | THREEDQUERY AUTH FRAUDSCREENING                     |
-#      | ORDERDETAILS AUTH                                   |
-#      | JSINPL AUTH SUBSCRIPTION                            |
-#      | AUTH SUBSCRIPTION                                   |
-#      | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH               |
-#      | RISKDEC JSINPL AUTH                                 |
-#      | RISKDEC2 ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION |
-#      | RISKDEC JSINPL AUTH SUBSCRIPTION                    |
-#      | RISKDEC2 ACCOUNTCHECK AUTH SUBSCRIPTION             |
-#      | RISKDEC AUTH                                        |
-#      | RISKDEC2 AUTH                                       |
-#      | ACCOUNTCHECK AUTH                                   |
-#      | AUTH FRAUDSCREENING                                 |
-#      | ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION          |
-#      | RISKDEC ACCOUNTCHECK THREEDQUERY AUTH SUBSCRIPTION  |
-#      | RISKDEC2 THREEDQUERY AUTH                           |
-#      | JSINPL AUTH RISKDEC                                 |
-#      | AUTH RISKDEC                                        |
-#      | THREEDQUERY AUTH RISKDEC2                           |
-
-
   Scenario: successRedirectUrl and parameters verification
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
@@ -266,7 +200,6 @@ Feature: E2E BITPAY Payments
       | paymenttypedescription | BITPAY |
       | errorcode              | 0      |
       | settlestatus           | 100    |
-#      | orderreference         | 123456 | commented on purpose
 
 
   Scenario: errorRedirectUrl and parameters verification
@@ -290,7 +223,6 @@ Feature: E2E BITPAY Payments
       | paymenttypedescription | BITPAY |
       | errorcode              | 70000  |
       | settlestatus           | 3      |
-#      | orderreference         | 123456 |  commented on purpose
 
 
   Scenario: default configuration override
@@ -314,4 +246,3 @@ Feature: E2E BITPAY Payments
       | paymenttypedescription | BITPAY |
       | errorcode              | 70000  |
       | settlestatus           | 3      |
-#      | orderreference         | 123456 | commented on purpose
