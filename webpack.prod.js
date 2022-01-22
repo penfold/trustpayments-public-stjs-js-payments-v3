@@ -8,6 +8,7 @@ const releaseVersion = require('./package.json').version;
 const plugins = [
   new webpack.DefinePlugin({
     FRAME_URL: JSON.stringify(process.env.npm_config_frame_url),
+    ST_VERSION: JSON.stringify(process.env.npm_package_version),
   }),
 ];
 
