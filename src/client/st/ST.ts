@@ -52,8 +52,9 @@ import { APMPaymentMethodName } from '../../integrations/apm/models/IAPMPaymentM
 import { FraudControlService } from '../../application/core/services/fraud-control/FraudControlService';
 import { SentryService } from '../../shared/services/sentry/SentryService';
 import { IApplePayConfig } from '../../integrations/apple-pay/client/models/IApplePayConfig';
+import { GAEventType } from '../../application/core/integrations/google-analytics/events';
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
-
+declare const ST_VERSION: string | undefined;
 @Service()
 export class ST {
   private config: IConfig;
@@ -348,6 +349,8 @@ export class ST {
       this.watchForFrameUnload();
       this.cardinalClient.init();
       this.threeDSecureClient.init();
+
+      this.googleAnalytics.sendGaData('event', 'ST', GAEventType.INIT, `ST init - version ${ST_VERSION}`);
 
       if (this.config.stopSubmitFormOnEnter) {
         this.stopSubmitFormOnEnter();

@@ -16,6 +16,8 @@ import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEv
 import './APMClient.scss';
 import { APMFilterService } from '../services/apm-filter-service/APMFilterService';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
+import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
+import { GAEventType } from '../../../application/core/integrations/google-analytics/events';
 
 @Service()
 export class APMClient {
@@ -47,6 +49,7 @@ export class APMClient {
     private messageBus: IMessageBus,
     private apmFilterService: APMFilterService,
     private configProvider: ConfigProvider,
+    private googleAnalytics: GoogleAnalytics,
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
@@ -120,6 +123,7 @@ export class APMClient {
       takeUntil(destroyEvent),
       takeUntil(paymentFailedEvent),
     ).subscribe((event: IMessageBusEvent<string>) => {
+      this.googleAnalytics.sendGaData('event', 'APM redirect', GAEventType.REDIRECT, `APM redirect initiated: ${config.name}`);
       DomMethods.redirect(event.data);
     });
   }
