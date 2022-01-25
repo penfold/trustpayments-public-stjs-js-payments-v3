@@ -35,6 +35,7 @@ describe('APMConfigResolver', () => {
         cancelRedirectUrl: 'customCancelUrl1',
         placement: 'custom-placement-id',
       },
+      { name: APMName.ACCOUNT2ACCOUNT, returnUrl: 'returnurl' },
     ],
   };
 
@@ -77,6 +78,14 @@ describe('APMConfigResolver', () => {
           errorRedirectUrl: 'customErrorUrl1',
           cancelRedirectUrl: 'customCancelUrl1',
           placement: 'custom-placement-id',
+        },
+        {
+          name: APMName.ACCOUNT2ACCOUNT,
+          returnUrl: 'returnurl',
+          placement: 'st-apm',
+          cancelRedirectUrl: 'defaultCancelRedirectUrl',
+          errorRedirectUrl: 'defaultErrorRedirectUrl',
+          successRedirectUrl: 'defaultSuccessRedirectUrl',
         },
       ],
   };
