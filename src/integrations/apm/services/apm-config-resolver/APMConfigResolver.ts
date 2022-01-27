@@ -9,8 +9,7 @@ import { APMConfigError } from '../../models/errors/APMConfigError';
 
 @Service()
 export class APMConfigResolver {
-  constructor(private apmValidator: APMValidator) {
-  }
+  constructor(private apmValidator: APMValidator) {}
 
   resolve(config: IAPMConfig): Observable<IAPMConfig> {
     const result: ValidationResult = this.apmValidator.validateConfig(config);
@@ -24,15 +23,26 @@ export class APMConfigResolver {
 
   private resolveConfig(config: IAPMConfig): IAPMConfig {
     const resolvedApmList = config.apmList.map((item: IAPMItemConfig | APMName) => {
-
       if (this.isAPMItemConfig(item)) {
-        return {
+        const resolved = {
           ...item,
           placement: item.placement || config.placement,
           errorRedirectUrl: item.errorRedirectUrl || config.errorRedirectUrl,
           successRedirectUrl: item.successRedirectUrl || config.successRedirectUrl,
           cancelRedirectUrl: item.cancelRedirectUrl || config.cancelRedirectUrl,
         };
+
+        if (item.name === APMName.ACCOUNT2ACCOUNT) {
+          resolved.button = {
+            width: item.button?.width || '80px',
+            height: item.button?.height || '65px',
+            backgroundColor: item.button?.backgroundColor || '#389c74',
+            textColor: item.button?.textColor || '#fff',
+            text: item.button?.text || 'Pay by Bank',
+          };
+        }
+
+        return resolved;
       }
 
       return {
