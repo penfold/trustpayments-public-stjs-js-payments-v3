@@ -45,13 +45,26 @@ export class APMConfigResolver {
         return resolved;
       }
 
-      return {
+      const resolved: IAPMItemConfig = {
         name: item,
         placement: config.placement,
         errorRedirectUrl: config.errorRedirectUrl,
         successRedirectUrl: config.successRedirectUrl,
         cancelRedirectUrl: config.cancelRedirectUrl,
       };
+
+      if (item === APMName.ACCOUNT2ACCOUNT) {
+        resolved.button = {
+          width: '80px',
+          height: '65px',
+          backgroundColor: '#389c74',
+          textColor: '#fff',
+          text: 'Pay by Bank',
+        };
+      }
+
+      return resolved;
+
     });
     return { ...config, apmList: resolvedApmList };
   }
