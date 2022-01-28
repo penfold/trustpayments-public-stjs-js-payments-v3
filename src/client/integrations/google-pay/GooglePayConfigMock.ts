@@ -16,7 +16,7 @@ export const googlePayConfigMock: IGooglePayConfig = {
       tokenizationSpecification: {
         parameters: {
           gateway: 'trustpayments',
-          gatewayMerchantId: 'test_james38641',
+          gatewayMerchantId: 'test_jsautocardinal91923',
         },
         type: 'PAYMENT_GATEWAY',
       },
