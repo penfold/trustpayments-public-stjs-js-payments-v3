@@ -8,7 +8,7 @@ const jwtDefaultPayload = {
   baseamount: '1000',
   accounttypedescription: 'ECOM',
   currencyiso3a: 'GBP',
-  sitereference: 'test_james38641',
+  sitereference: 'test_jsmanualcardinal91921',
   requesttypedescriptions: ['THREEDQUERY']
 };
 

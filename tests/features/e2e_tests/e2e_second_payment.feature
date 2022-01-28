@@ -24,17 +24,17 @@ Feature: E2E second payment
     Given JS library configured by inline params BASIC_CONFIG and jwt BASE_JWT with additional attributes
       | key                     | value            |
       | requesttypedescriptions | THREEDQUERY AUTH |
-      | baseamount              | 14492            |
+      | baseamount              | 60010            |
     And User opens example page
     When User fills payment form with defined card VISA_V22_NON_FRICTIONLESS
     And User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see notification frame text: "Invalid process"
+    Then User will see notification frame text: "Bank System Error"
     And User waits for notification frame to disappear
     And Wait for popups to disappear
     When User clicks Pay button
     And User fills V2 authentication modal
-    Then User will see notification frame text: "Invalid process"
+    Then User will see notification frame text: "Bank System Error"
     And "submit" callback is called only once in second payment
     And "error" callback is called only once in second payment
     And submit callback contains JWT response

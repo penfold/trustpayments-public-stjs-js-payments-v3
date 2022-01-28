@@ -31,7 +31,7 @@ interface IFetchOptions {
  *     pan: '4111111111111111',
  *     requesttypedescription: 'AUTH',
  *     securitycode: '123',
- *     sitereference: 'test_james38641'
+ *     sitereference: 'test_jsautocardinal91923'
  *   }).then();
  */
 @Service()
