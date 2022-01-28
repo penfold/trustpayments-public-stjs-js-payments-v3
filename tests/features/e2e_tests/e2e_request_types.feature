@@ -72,23 +72,23 @@ Feature: E2E Card Payments with request types in config
       | ACCOUNTCHECK    |
       | AUTH            |
 
-
-  Scenario: Successful payment with single requestTypes RISKDEC
-    Given JS library configured with BASIC_CONFIG and additional attributes
-      | key             | value |
-      | submitOnSuccess | true  |
-    And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value   |
-      | requesttypedescriptions | RISKDEC |
-    And User opens example page
-    When User fills payment form with defined card VISA_V21_FRICTIONLESS
-    And User clicks Pay button
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | errorcode            | 0                                       |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
+#TODO Uncomment when additional configuration will be added to new site reference
+#  Scenario: Successful payment with single requestTypes RISKDEC
+#    Given JS library configured with BASIC_CONFIG and additional attributes
+#      | key             | value |
+#      | submitOnSuccess | true  |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value   |
+#      | requesttypedescriptions | RISKDEC |
+#    And User opens example page
+#    When User fills payment form with defined card VISA_V21_FRICTIONLESS
+#    And User clicks Pay button
+#    Then User will be sent to page with url "www.example.com" having params
+#      | key                  | value                                   |
+#      | errormessage         | Payment has been successfully processed |
+#      | errorcode            | 0                                       |
+#      | transactionreference | should not be none                      |
+#      | jwt                  | should not be none                      |
 
 
   Scenario Outline: unsuccessful payment with THREEDQUERY as only request type and bypass set to used card
@@ -115,7 +115,8 @@ Feature: E2E Card Payments with request types in config
       | key                      | value           |
       | requesttypedescriptions  | <request_types> |
       | threedbypasspaymenttypes | VISA MASTERCARD |
-      | currencyiso3a            | JPY             |
+#TODO Uncomment when additional configuration will be added to new site reference
+#      | currencyiso3a            | JPY             |
     And User opens example page
     When User fills payment form with defined card MASTERCARD_CARD
     And User clicks Pay button

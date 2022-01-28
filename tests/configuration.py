@@ -22,7 +22,7 @@ def load_config():
         'SCREENSHOTS_PATH': get_path_from_env('AUTOMATION_SCREENSHOTS', 'screenshots'),
         'SECRET_KEY': get_from_env('JWT_SECRET_KEY', 'you_will_never_guess'),
         'ISS_KEY': get_from_env('JWT_ISS_KEY', 'you_will_never_guess'),
-        'SITE_REFERENCE_CARDINAL': get_from_env('SITE_REFERENCE_CARDINAL', 'test_james38641'),
+        'SITE_REFERENCE_CARDINAL': get_from_env('SITE_REFERENCE_CARDINAL', 'test_jsautocardinal91923'),
         'SITE_REFERENCE_TRUST': get_from_env('SITE_REFERENCE_TRUST', 'you_will_never_guess'),
         'BROWSER': get_from_env('AUTOMATION_BROWSER', 'chrome'),
         'HEADLESS': get_from_env('HEADLESS', True),

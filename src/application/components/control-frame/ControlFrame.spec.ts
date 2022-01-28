@@ -293,7 +293,7 @@ function controlFrameFixture() {
       baseamount: '1000',
       accounttypedescription: 'ECOM',
       currencyiso3a: 'GBP',
-      sitereference: 'test_james38641',
+      sitereference: 'test_jsautocardinal91923',
       locale: 'en_GB',
       pan: '3089500000000000021',
       expirydate: '01/22',

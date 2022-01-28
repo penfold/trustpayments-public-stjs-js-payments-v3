@@ -87,8 +87,9 @@ Feature: Cardinal Commerce E2E tests v1
 
     Examples:
       | request_types            | card                       |
-      | THREEDQUERY AUTH         | DISCOVER_PASSIVE_AUTH_CARD |
-      | ACCOUNTCHECK THREEDQUERY | DISCOVER_PASSIVE_AUTH_CARD |
+#TODO Uncomment when additional configuration will be added to new site reference
+#      | THREEDQUERY AUTH         | DISCOVER_PASSIVE_AUTH_CARD |
+#      | ACCOUNTCHECK THREEDQUERY | DISCOVER_PASSIVE_AUTH_CARD |
       | THREEDQUERY ACCOUNTCHECK | VISA_PASSIVE_AUTH_CARD     |
 
 
@@ -224,8 +225,9 @@ Feature: Cardinal Commerce E2E tests v1
 
     Examples:
       | request_types            | card                        |
-      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
-      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
+#TODO Uncomment when additional configuration will be added to new site reference
+#      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
+#      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
       | THREEDQUERY ACCOUNTCHECK | MASTERCARD_BYPASSED_AUTH_V1 |
 
 
@@ -246,6 +248,7 @@ Feature: Cardinal Commerce E2E tests v1
 
     Examples:
       | request_types            | card                        |
-      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
-      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
+#TODO Uncomment when additional configuration will be added to new site reference
+#      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
+#      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
       | THREEDQUERY ACCOUNTCHECK | MASTERCARD_BYPASSED_AUTH_V1 |
