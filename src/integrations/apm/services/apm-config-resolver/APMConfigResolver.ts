@@ -6,6 +6,7 @@ import { IAPMItemConfig } from '../../models/IAPMItemConfig';
 import { APMName } from '../../models/APMName';
 import { APMValidator } from '../apm-validator/APMValidator';
 import { APMConfigError } from '../../models/errors/APMConfigError';
+import { APMA2AButtonConfig } from '../../models/APMA2AButtonConfig';
 
 @Service()
 export class APMConfigResolver {
@@ -34,11 +35,11 @@ export class APMConfigResolver {
 
         if (item.name === APMName.ACCOUNT2ACCOUNT) {
           resolved.button = {
-            width: item.button?.width || '80px',
-            height: item.button?.height || '65px',
-            backgroundColor: item.button?.backgroundColor || '#389c74',
-            textColor: item.button?.textColor || '#fff',
-            text: item.button?.text || 'Pay by Bank',
+            width: item.button?.width || APMA2AButtonConfig.width,
+            height: item.button?.height || APMA2AButtonConfig.height,
+            backgroundColor: item.button?.backgroundColor || APMA2AButtonConfig.backgroundColor,
+            textColor: item.button?.textColor || APMA2AButtonConfig.textColor,
+            text: item.button?.text || APMA2AButtonConfig.text,
           };
         }
 
@@ -54,13 +55,7 @@ export class APMConfigResolver {
       };
 
       if (item === APMName.ACCOUNT2ACCOUNT) {
-        resolved.button = {
-          width: '80px',
-          height: '65px',
-          backgroundColor: '#389c74',
-          textColor: '#fff',
-          text: 'Pay by Bank',
-        };
+        resolved.button = APMA2AButtonConfig;
       }
 
       return resolved;

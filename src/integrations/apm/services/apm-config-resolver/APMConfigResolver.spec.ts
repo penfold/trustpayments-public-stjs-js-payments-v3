@@ -1,6 +1,7 @@
 import { anything, instance, mock, when } from 'ts-mockito';
 import { IAPMConfig } from '../../models/IAPMConfig';
 import { APMName } from '../../models/APMName';
+import { APMA2AButtonConfig } from '../../models/APMA2AButtonConfig';
 import { APMValidator } from '../apm-validator/APMValidator';
 import { APMConfigResolver } from './APMConfigResolver';
 
@@ -86,6 +87,9 @@ describe('APMConfigResolver', () => {
           cancelRedirectUrl: 'defaultCancelRedirectUrl',
           errorRedirectUrl: 'defaultErrorRedirectUrl',
           successRedirectUrl: 'defaultSuccessRedirectUrl',
+          button: {
+            ...APMA2AButtonConfig,
+          },
         },
       ],
   };

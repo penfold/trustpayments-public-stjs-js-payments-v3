@@ -13,6 +13,18 @@ export const APMSchema: ObjectSchema = Joi.object().keys({
 
 const configSchemaFactory = (apmName: APMName) => {
   switch (apmName) {
+    case APMName.ACCOUNT2ACCOUNT:
+      return Joi.object().keys({
+        button: Joi.object().keys({
+          width: Joi.string(),
+          height: Joi.string(),
+          backgroundColor: Joi.string(),
+          textColor: Joi.string(),
+          text: Joi.string(),
+        }),
+        name: Joi.string().valid(apmName).required(),
+        returnUrl: Joi.string().required(),
+      }).unknown();
     case APMName.ALIPAY:
       return Joi.object().keys({
         name: Joi.string().valid(apmName).required(),
@@ -34,7 +46,6 @@ const configSchemaFactory = (apmName: APMName) => {
         successRedirectUrl: Joi.string().required(),
         errorRedirectUrl: Joi.string().required(),
         cancelRedirectUrl: Joi.string(),
-        button: Joi.object(),
       });
   }
 };
