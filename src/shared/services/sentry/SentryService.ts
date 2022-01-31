@@ -59,7 +59,7 @@ export class SentryService {
       ignoreErrors: ExceptionsToSkip,
       sampleRate: environment.SENTRY.SAMPLE_RATE,
       attachStacktrace: true,
-      normalizeDepth: 3,
+      normalizeDepth: 4,
       beforeSend: (event: Event, hint?: EventHint) => this.beforeSend(event, hint),
       beforeBreadcrumb: (breadcrumb: Breadcrumb, hint?: BreadcrumbHint): Breadcrumb | null => this.beforeBreadcrumb(breadcrumb, hint),
     };
