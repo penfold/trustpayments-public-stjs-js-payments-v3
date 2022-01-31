@@ -12,9 +12,9 @@ import { Sentry } from './Sentry';
 import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { SentryService } from './SentryService';
-import { ExceptionsToSkip } from './ExceptionsToSkip';
 import { RequestTimeoutError } from './RequestTimeoutError';
 import { PayloadSanitizer } from './PayloadSanitizer';
+import { SENTRY_INIT_BROWSER_OPTIONS } from './constants/SentryBrowserOptions';
 
 describe('SentryService', () => {
   const DSN = 'https://123@456.ingest.sentry.io/7890';
@@ -85,12 +85,9 @@ describe('SentryService', () => {
           allowUrls: whitelistUrls,
           dsn: DSN,
           release: '1.2.3',
-          ignoreErrors: ExceptionsToSkip,
-          sampleRate: environment.SENTRY.SAMPLE_RATE,
+         ...SENTRY_INIT_BROWSER_OPTIONS,
           beforeBreadcrumb: anyFunction(),
           beforeSend: anyFunction(),
-          attachStacktrace: true,
-          normalizeDepth: 3,
         })
       )
     ).once();

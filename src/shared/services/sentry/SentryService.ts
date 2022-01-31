@@ -8,9 +8,9 @@ import { JwtProvider } from '../jwt-provider/JwtProvider';
 import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';
-import { ExceptionsToSkip } from './ExceptionsToSkip';
 import { RequestTimeoutError } from './RequestTimeoutError';
 import { PayloadSanitizer } from './PayloadSanitizer';
+import { SENTRY_INIT_BROWSER_OPTIONS } from './constants/SentryBrowserOptions';
 
 @Service()
 export class SentryService {
@@ -55,11 +55,8 @@ export class SentryService {
 
     const options: BrowserOptions = {
       dsn,
+      ...SENTRY_INIT_BROWSER_OPTIONS,
       release: this.sentryContext.getReleaseVersion(),
-      ignoreErrors: ExceptionsToSkip,
-      sampleRate: environment.SENTRY.SAMPLE_RATE,
-      attachStacktrace: true,
-      normalizeDepth: 4,
       beforeSend: (event: Event, hint?: EventHint) => this.beforeSend(event, hint),
       beforeBreadcrumb: (breadcrumb: Breadcrumb, hint?: BreadcrumbHint): Breadcrumb | null => this.beforeBreadcrumb(breadcrumb, hint),
     };
