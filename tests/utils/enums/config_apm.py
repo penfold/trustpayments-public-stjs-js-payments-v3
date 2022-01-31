@@ -23,3 +23,4 @@ class ConfigApm(Enum):
     UNIONPAY_CONFIG_APM = 'e2eUNIONPAYConfigApm.json'
     ZIP_CONFIG_APM = 'e2eZIPConfigApm.json'
     ZIP_MIN_MAX_CONFIG_APM = 'e2eZIPminMaxConfigApm.json'
+    ACCOUNT2ACCOUNT_CONFIG_APM = 'e2eATAConfigApm.json'

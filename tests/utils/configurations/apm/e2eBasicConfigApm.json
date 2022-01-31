@@ -33,6 +33,10 @@
       "returnUrl": "https://this_is_not_existing_page_return_redirect.com"
     },
     "WECHATPAY",
-    "UNIONPAY"
+    "UNIONPAY",
+    {
+      "name": "ATA",
+      "returnUrl": "https://example.com/?onReturn"
+    }
   ]
 }

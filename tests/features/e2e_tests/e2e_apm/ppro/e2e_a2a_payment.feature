@@ -16,17 +16,17 @@ Feature: E2E A2A Payments
       | baseamount              | 70                    |
       | billingfirstname        | FirstName             |
       | billingcountryiso2a     | <billingcountryiso2a> |
-      | currencyiso3a           | <currencyiso3a>       |
+      | currencyiso3a           | GBP                   |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses ATA from APM list
     Then User will be sent to apm page - ATA
 
     Examples:
-      | billingcountryiso2a | currencyiso3a |
-      | PL                  | GBP           |
-      | DE                  | EUR           |
-      | FR                  | USD           |
+      | billingcountryiso2a |
+      | PL                  |
+      | DE                  |
+      | FR                  |
 
 
   Scenario Outline: Successful trigger of payment with only one of billing name field
@@ -80,7 +80,7 @@ Feature: E2E A2A Payments
       | billingcountryiso2a | currencyiso3a |
       | PL                  | CHF           |
       | GB                  | BYN           |
-      | DE                  |               |
+      | DE                  | EUR           |
 
 
   Scenario: Unsuccessful init - missing at least one of the billing name fields
@@ -144,8 +144,7 @@ Feature: E2E A2A Payments
     And User waits for Pay button to be active
     When User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
-#TODO Still waiting for list of supported countries and currencies for a2a
-#    Then ATA is not available on APM list
+    #this should work
     When User chooses ATA from APM list
     Then User will see notification frame text: "Invalid field"
 
@@ -182,8 +181,8 @@ Feature: E2E A2A Payments
       | requesttypedescriptions | THREEDQUERY RISKDEC |
       | baseamount              | 70                  |
       | billingfirstname        | FirstName           |
-      | billingcountryiso2a     | PL                  |
-      | currencyiso3a           | EUR                 |
+      | billingcountryiso2a     | GB                  |
+      | currencyiso3a           | GBP                 |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses ATA from APM list
