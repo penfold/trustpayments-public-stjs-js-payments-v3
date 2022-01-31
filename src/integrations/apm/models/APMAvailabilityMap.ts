@@ -7,8 +7,8 @@ import { APMPayloadFields } from './APMPayloadFields';
 export const APMAvailabilityMap: Map<APMName, { countries: APMCountryIso[], currencies: APMCurrencyIso[], payload: IStJwtPayload[] }> = new Map()
   .set(APMName.ACCOUNT2ACCOUNT, {
     countries: [],
-    currencies: [],
-    payload: [APMPayloadFields.currencyiso3a, APMPayloadFields.orderreference],
+    currencies: [APMCurrencyIso.GBP],
+    payload: [APMPayloadFields.currencyiso3a],
   })
   .set(APMName.ALIPAY, {
     countries: [],

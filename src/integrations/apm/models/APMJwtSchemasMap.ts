@@ -3,7 +3,6 @@ import { APMName } from './APMName';
 
 const account2accountJwtSchema = Joi.object().keys({
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
-  orderreference: Joi.string().max(25).required(),
 }).unknown();
 
 const alipayJwtSchema = Joi.object().keys({
