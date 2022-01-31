@@ -1,9 +1,17 @@
 import { anything, instance, mock, when } from 'ts-mockito';
+import Container from 'typedi';
 import { IAPMConfig } from '../../models/IAPMConfig';
 import { APMName } from '../../models/APMName';
+import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { Translator } from '../../../../application/core/shared/translator/Translator';
+import { ITranslationProvider } from '../../../../application/core/shared/translator/ITranslationProvider';
+import { TranslationProvider } from '../../../../application/core/shared/translator/TranslationProvider';
 import { APMA2AButtonConfig } from '../../models/APMA2AButtonConfig';
 import { APMValidator } from '../apm-validator/APMValidator';
 import { APMConfigResolver } from './APMConfigResolver';
+
+Container.set({ id: TranslatorToken, type: Translator });
+Container.set({ id: ITranslationProvider, type: TranslationProvider });
 
 describe('APMConfigResolver', () => {
   let apmValidatorMock: APMValidator;

@@ -95,22 +95,11 @@ export class APMClient {
   private createButtonForApmItem(apmItemConfig: IAPMItemConfig): HTMLElement {
     const button = DomMethods.createHtmlElement({ class: 'st-apm-button' }, 'div');
     if (this.apmIcons[apmItemConfig.name]) {
-      button.innerHTML = `<img src='${this.apmIcons[apmItemConfig.name]}' alt='${apmItemConfig.name}' id='ST-APM-${
+      button.innerHTML = `<img src="${this.apmIcons[apmItemConfig.name]}" alt="${apmItemConfig.name}" id="ST-APM-${
         apmItemConfig.name
-      }' class='st-apm-button__img'>`;
+      }" class="st-apm-button__img">`;
     } else {
-      button.innerHTML = `
-          <button
-            class = 'st-apm-button__button'
-            id='ST-APM-${apmItemConfig.name}'
-            style='
-              width: ${apmItemConfig.button.width};
-              height: ${apmItemConfig.button.height};
-              background-color: ${apmItemConfig.button.backgroundColor};
-              color: ${apmItemConfig.button.textColor};'
-              type='button'
-            >${apmItemConfig.button.text}</button>
-         `;
+      button.innerHTML = `<button class="st-apm-button__button" id="ST-APM-${apmItemConfig.name}" style="width: ${apmItemConfig.button.width}; height: ${apmItemConfig.button.height}; background-color: ${apmItemConfig.button.backgroundColor}; color: ${apmItemConfig.button.textColor};" type="button"><span>${apmItemConfig.button.text}</span></button>`;
     }
     button.addEventListener('click', event => this.onAPMButtonClick(event, apmItemConfig));
 
