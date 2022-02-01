@@ -95,36 +95,36 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
       | ACCOUNTCHECK THREEDQUERY | should not be none |
       | THREEDQUERY ACCOUNTCHECK | should not be none |
 
-#TODO Uncomment when additional configuration will be added to new site reference
-#  Scenario Outline: TC_4 - Attempts/Non-Participating with submitOnSuccess and request type: <request_types>
-#    Given JS library configured with BASIC_CONFIG and additional attributes
-#      | key             | value |
-#      | submitOnSuccess | true  |
-#    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value           |
-#      | requesttypedescriptions | <request_types> |
-#    And User opens example page
-#    When User fills payment form with defined card DISCOVER_PASSIVE_AUTH_CARD
-#    And User clicks Pay button
-#    Then User will be sent to page with url "www.example.com" having params
-#      | key                  | value                                   |
-#      | errormessage         | Payment has been successfully processed |
-#      | baseamount           | <baseamount>                            |
-#      | currencyiso3a        | <currencyiso3a>                         |
-#      | errorcode            | 0                                       |
-#      | status               | <status>                                |
-#      | transactionreference | should not be none                      |
-#      | jwt                  | should not be none                      |
-#      | enrolled             | Y                                       |
-#      | settlestatus         | 0                                       |
-#      | eci                  | <eci>                                   |
-#      | threedresponse       | <threedresponse>                        |
-#
-#    Examples:
-#      | request_types            | baseamount     | currencyiso3a  | status         | eci            | threedresponse     |
-#      | THREEDQUERY AUTH         | 1000           | GBP            | A              | 06             | should be none     |
-#      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none | should not be none |
-#      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | A              | 06             | should be none     |
+
+  Scenario Outline: TC_4 - Attempts/Non-Participating with submitOnSuccess and request type: <request_types>
+    Given JS library configured with BASIC_CONFIG and additional attributes
+      | key             | value |
+      | submitOnSuccess | true  |
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value           |
+      | requesttypedescriptions | <request_types> |
+    And User opens example page
+    When User fills payment form with defined card DISCOVER_PASSIVE_AUTH_CARD
+    And User clicks Pay button
+    Then User will be sent to page with url "www.example.com" having params
+      | key                  | value                                   |
+      | errormessage         | Payment has been successfully processed |
+      | baseamount           | <baseamount>                            |
+      | currencyiso3a        | <currencyiso3a>                         |
+      | errorcode            | 0                                       |
+      | status               | <status>                                |
+      | transactionreference | should not be none                      |
+      | jwt                  | should not be none                      |
+      | enrolled             | Y                                       |
+      | settlestatus         | 0                                       |
+      | eci                  | <eci>                                   |
+      | threedresponse       | <threedresponse>                        |
+
+    Examples:
+      | request_types            | baseamount     | currencyiso3a  | status         | eci            | threedresponse     |
+      | THREEDQUERY AUTH         | 1000           | GBP            | A              | 06             | should be none     |
+      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none | should be none | should not be none |
+      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | A              | 06             | should be none     |
 
 
   Scenario Outline: TC_6 - Not Enrolled with submitOnSuccess and request type: <request_types>
@@ -330,9 +330,8 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
 
     Examples:
       | request_types            | card                        |
-#TODO Uncomment when additional configuration will be added to new site reference
-#      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
-#      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
+      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
+      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
       | THREEDQUERY ACCOUNTCHECK | MASTERCARD_BYPASSED_AUTH_V1 |
 
 
@@ -365,7 +364,6 @@ Feature: Cardinal Commerce E2E tests v1 with redirection after payment
 
     Examples:
       | request_types            | card                        |
-#TODO Uncomment when additional configuration will be added to new site reference
-#      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
-#      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
+      | THREEDQUERY AUTH         | DISCOVER_BYPASSED_AUTH_CARD |
+      | ACCOUNTCHECK THREEDQUERY | DISCOVER_BYPASSED_AUTH_CARD |
       | THREEDQUERY ACCOUNTCHECK | MASTERCARD_BYPASSED_AUTH_V1 |
