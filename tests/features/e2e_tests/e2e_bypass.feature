@@ -24,11 +24,10 @@ Feature: E2E Card Payments with bypass
       | card            |
       | VISA_CARD       |
       | AMEX_CARD       |
-#TODO Uncomment when additional configuration will be added to new site reference
-#      | DISCOVER_CARD   |
-#      | JCB_CARD        |
+      | DISCOVER_CARD   |
+      | JCB_CARD        |
       | MASTERCARD_CARD |
-#      | DINERS_CARD     |
+      | DINERS_CARD     |
 
 
   Scenario: Successful payment with bypassCard using MASTERCARD_SUCCESSFUL_AUTH_CARD card with 3d secure
