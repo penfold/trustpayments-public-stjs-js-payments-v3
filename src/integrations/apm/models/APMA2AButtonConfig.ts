@@ -1,7 +1,7 @@
 export const APMA2AButtonConfig = {
   backgroundColor: '#389c74',
-  height: '65px',
+  height: '40px',
   text: 'Pay by Bank',
   textColor: '#fff',
-  width: '80px',
+  width: '100px',
 }

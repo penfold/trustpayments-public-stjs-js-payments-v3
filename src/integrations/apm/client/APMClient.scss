@@ -7,6 +7,10 @@
   cursor: pointer;
 }
 
+.st-apm-button--withButton {
+  height: auto;
+}
+
 .st-apm-button + .st-apm-button {
   margin-left: 8px;
 }
@@ -18,10 +22,15 @@
 .st-apm-button__button {
   border-width: 0;
   cursor: pointer;
+  padding-left: 6px;
+  padding-right: 6px;
+  border-radius: 3px;
 }
 
 .st-apm-button__button span {
   display: block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 12px;
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

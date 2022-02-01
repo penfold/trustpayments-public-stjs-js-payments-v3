@@ -99,7 +99,8 @@ export class APMClient {
         apmItemConfig.name
       }" class="st-apm-button__img">`;
     } else {
-      button.innerHTML = `<button class="st-apm-button__button" id="ST-APM-${apmItemConfig.name}" style="width: ${apmItemConfig.button.width}; height: ${apmItemConfig.button.height}; background-color: ${apmItemConfig.button.backgroundColor}; color: ${apmItemConfig.button.textColor};" type="button"><span>${apmItemConfig.button.text}</span></button>`;
+      button.classList.add('st-apm-button--withButton');
+      button.innerHTML = `<button class="st-apm-button__button" id="ST-APM-${apmItemConfig.name}" style="min-width: ${apmItemConfig.button.width}; height: ${apmItemConfig.button.height}; background-color: ${apmItemConfig.button.backgroundColor}; color: ${apmItemConfig.button.textColor};" type="button"><span>${apmItemConfig.button.text}</span></button>`;
     }
     button.addEventListener('click', event => this.onAPMButtonClick(event, apmItemConfig));
 
