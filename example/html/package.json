@@ -11,7 +11,7 @@
     "start": "webpack serve --color --progress --config webpack.dev.js"
   },
   "devDependencies": {
-    "@babel/core": "7.16.10",
+    "@babel/core": "7.16.12",
     "@babel/helper-define-map": "7.16.7",
     "@babel/plugin-proposal-class-properties": "7.16.7",
     "@babel/plugin-proposal-decorators": "7.16.7",
@@ -19,7 +19,7 @@
     "@babel/plugin-transform-exponentiation-operator": "7.16.7",
     "@babel/plugin-transform-runtime": "7.16.10",
     "@babel/plugin-transform-typescript": "7.16.8",
-    "@babel/preset-env": "7.16.10",
+    "@babel/preset-env": "7.16.11",
     "@babel/preset-typescript": "7.16.7",
     "babel-loader": "8.2.3",
     "babel-plugin-transform-typescript-metadata": "0.3.2",
