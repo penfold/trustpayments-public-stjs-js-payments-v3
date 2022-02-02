@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { Container } from 'typedi';
-import { instance, mock } from 'ts-mockito';
+import { of } from 'rxjs';
+import { anything, instance, mock, resetCalls, verify, when } from 'ts-mockito';
 import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
@@ -15,10 +16,12 @@ import { IFrameQueryingService } from '../../shared/services/message-bus/interfa
 import { FrameQueryingService } from '../../shared/services/message-bus/FrameQueryingService';
 import { CommonFrames } from '../common-frames/CommonFrames';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
+import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import SecureTrading, { ST } from './ST';
 import { config, jwt } from './STTestConfigs';
 
 const messageBusMock: SimpleMessageBus = new SimpleMessageBus();
+const framesHubMock: FramesHub = mock(FramesHub);
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
 Container.set(IMessageBus, messageBusMock);
@@ -27,9 +30,11 @@ Container.set({ id: ITranslationProvider, type: TranslationProvider });
 Container.set({ id: CommonFrames, value: instance(mock(CommonFrames)) });
 Container.set({ id: ThreeDSecureFactory, value: instance(mock(ThreeDSecureFactory)) });
 Container.set({ id: IFrameQueryingService, type: FrameQueryingService });
+Container.set({ id: FramesHub, value: instance(framesHubMock) });
+
+when(framesHubMock.waitForFrame(anything())).thenCall(frame => of(frame));
 
 describe('ST', () => {
-
   const stInstance: ST = SecureTrading(config);
 
   beforeAll(() => {
@@ -122,12 +127,17 @@ describe('ST', () => {
   describe('destroy()', () => {
     beforeEach(() => {
       jest.clearAllMocks();
+      resetCalls(framesHubMock);
       jest.spyOn(messageBusMock, 'publish');
       stInstance.destroy();
     });
 
     it(`should send ${PUBLIC_EVENTS.DESTROY} event on MessageBus`, () => {
       expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.DESTROY }, EventScope.ALL_FRAMES);
+    });
+
+    it('should reset the frames hub', () => {
+      verify(framesHubMock.reset()).once();
     });
   });
 
