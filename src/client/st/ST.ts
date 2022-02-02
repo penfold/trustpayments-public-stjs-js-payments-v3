@@ -310,6 +310,7 @@ export class ST {
   }
 
   destroy(): void {
+    this.framesHub.reset();
     this.messageBus.publish(
       {
         type: MessageBus.EVENTS_PUBLIC.DESTROY,
