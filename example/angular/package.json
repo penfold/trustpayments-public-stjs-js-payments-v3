@@ -49,6 +49,6 @@
     "stream": false
   },
   "resolutions": {
-    "@angular/cdk": "13.1.2"
+    "@angular/cdk": "13.2.0"
   }
 }
