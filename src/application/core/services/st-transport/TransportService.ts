@@ -17,6 +17,9 @@ import { SentryService } from '../../../../shared/services/sentry/SentryService'
 import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
 import { GatewayError } from '../st-codec/GatewayError';
 import { TimeoutDetailsType } from '../../../../shared/services/sentry/RequestTimeout';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { IStJwtPayload } from '../../models/IStJwtPayload';
+import { SentryBreadcumbsCategories } from '../../../../shared/services/sentry/SentryBreadcrumbsCategories';
 import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
 type IBaseResponseType = IRequestTypeResponse & IJwtResponse;
@@ -31,6 +34,7 @@ export class TransportService {
     private httpOptionsProvider: IHttpOptionsProvider,
     private messageBus: IMessageBus,
     private sentryService: SentryService,
+    private jwtDecoder: JwtDecoder,
   ) {}
 
   sendRequest<T extends IBaseResponseType>(request: IStRequest, gatewayUrl?: string): Observable<T> {
@@ -43,11 +47,18 @@ export class TransportService {
 
     return gatewayUrl$.pipe(
       tap((url: string) => { resolvedUrl = url }),
+      tap(() => {
+        const decodedJwt = this.jwtDecoder.decode(requestObject.jwt);
+        // sentry filters out messages with "AUTH"
+        const requestTypeMessage = `${(decodedJwt.payload as IStJwtPayload).requesttypedescriptions}`.replace('AUTH', 'A*UTH');
+        this.sentryService.addBreadcrumb(SentryBreadcumbsCategories.GATEWAY_REQUEST, `requestid: ${requestObject.request[0].requestid}, requesttypedescriptions: ${requestTypeMessage}`);
+      }),
       switchMap(url => this.httpClient.post$(url, requestObject, httpOptions)),
       map((response: IHttpClientResponse<IJwtResponse>) => this.responseDecoder.decode(response)),
       tap((response: IDecodedResponse) => this.handleJwtUpdates(response)),
       map((response: IDecodedResponse) => ({ ...response.customerOutput, jwt: response.responseJwt } as T)),
       tap(response => {
+        this.sentryService.addBreadcrumb(SentryBreadcumbsCategories.GATEWAY_RESPONSE, `errorcode: ${response.errorcode}, errormessage: ${response.errormessage}`);
         if (Number(response.errorcode) !== 0) {
           this.sentryService.sendCustomMessage(
             new GatewayError(`Gateway error - ${response.errormessage}`, response)

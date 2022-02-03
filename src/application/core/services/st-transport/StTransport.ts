@@ -12,6 +12,9 @@ import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { TimeoutDetailsType } from '../../../../shared/services/sentry/RequestTimeout';
+import { SentryBreadcumbsCategories } from '../../../../shared/services/sentry/SentryBreadcrumbsCategories';
+import { IStJwtPayload } from '../../models/IStJwtPayload';
+import { IResponseData } from '../../models/IResponseData';
 
 interface IFetchOptions {
   headers: {
@@ -95,12 +98,27 @@ export class StTransport {
   private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions, merchantUrl?: string): Promise<Record<string, unknown>> {
     const codec = this.getCodec();
     const gatewayUrl = merchantUrl ? merchantUrl : this.getConfig().datacenterurl;
+    const parsedRequestBody = JSON.parse(requestBody);
+    const decodedJwt = this.jwtDecoder.decode(parsedRequestBody.jwt);
+    // sentry filters out messages with "AUTH"
+    const requestTypeMessage = `${(decodedJwt.payload as IStJwtPayload).requesttypedescriptions}`.replace('AUTH', 'A*UTH');
+    this.sentryService.addBreadcrumb(
+      SentryBreadcumbsCategories.GATEWAY_REQUEST,
+      `requestid: ${parsedRequestBody.request[0].requestid}, requesttypedescriptions: ${requestTypeMessage}`
+    );
 
     return this.fetchRetry(gatewayUrl, {
       ...fetchOptions,
       body: requestBody,
     })
-      .then(response => codec.decode(response, JSON.parse(requestBody)))
+      .then(response => codec.decode(response, JSON.parse(requestBody))
+      .then(decodedResponse => {
+        this.sentryService.addBreadcrumb(
+          SentryBreadcumbsCategories.GATEWAY_RESPONSE,
+          `errorcode: ${(decodedResponse.response as IResponseData).errorcode}, errormessage: ${(decodedResponse.response as IResponseData).errormessage}`
+        );
+        return decodedResponse;
+      }))
       .catch((error: Error | unknown) => {
         this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', { type: TimeoutDetailsType.GATEWAY, requestUrl: gatewayUrl }));
 
