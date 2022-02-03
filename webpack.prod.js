@@ -23,6 +23,7 @@ if (process.env.npm_config_sentry_sourcemaps) {
     errorHandler: (error, invokeErr, compilation) => {
       compilation.warnings.push('Sentry CLI Plugin Error: ' + error.message);
     },
+    urlPrefix: '~/js/v3',
   }));
 }
 
