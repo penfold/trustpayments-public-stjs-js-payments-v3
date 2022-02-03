@@ -1,5 +1,5 @@
 import { GlobalWithFetchMock } from 'jest-fetch-mock';
-import { mock, instance as mockInstance, when } from 'ts-mockito';
+import { mock, instance as mockInstance, when, anything } from 'ts-mockito';
 import { Utils } from '../../shared/utils/Utils';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../../../shared/model/config/IConfig';
@@ -63,6 +63,11 @@ describe('StTransport class', () => {
           })
       ),
     } as StCodec;
+    when(jwtDecoderMock.decode(anything())).thenReturn({
+      payload: {
+        requesttypedescriptions: ['AUTH'],
+      },
+    });
   });
 
   afterEach(() => {
@@ -108,7 +113,7 @@ describe('StTransport class', () => {
 
     it('should build the fetch options', async () => {
       const requestBody = `{"jwt":"${config.jwt}"}`;
-      const requestObject = { requesttypedescriptions: ['AUTH'] };
+      const requestObject = { requesttypedescriptions: ['AUTH'], request: [{ requestid: 'test-123' }] };
 
       mockFT.mockReturnValue(
         resolvingPromise({
@@ -131,7 +136,7 @@ describe('StTransport class', () => {
 
     it('should build the fetch options with merchantUrl is set', async () => {
       const requestBody = `{"jwt":"${config.jwt}"}`;
-      const requestObject = { requesttypedescriptions: ['AUTH'] };
+      const requestObject = { requesttypedescriptions: ['AUTH'], request: [{ requestid: 'test-123' }] };
 
       mockFT.mockReturnValue(
         resolvingPromise({
@@ -160,7 +165,7 @@ describe('StTransport class', () => {
       mockFT.mockReturnValue(mockFetch);
 
       async function testSendRequest() {
-        return await instance.sendRequest({ requesttypedescription: 'AUTH' });
+        return await instance.sendRequest({ requesttypedescription: 'AUTH', request: [{ requestid: 'test-123' }] } as object);
       }
 
       const response = testSendRequest();
@@ -184,16 +189,16 @@ describe('StTransport class', () => {
       ],
     ])('should decode the json response', async (mockFetch, expected) => {
       mockFT.mockReturnValue(mockFetch);
-      await expect(instance.sendRequest({ requesttypedescription: 'AUTH' })).resolves.toEqual(expected);
+      await expect(instance.sendRequest({ requesttypedescription: 'AUTH', request: [{ requestid: 'test-123' }] } as object)).resolves.toEqual(expected);
       expect(codec.decode).toHaveBeenCalledWith({
           json: expect.any(Function),
         },
-        { requesttypedescription: 'AUTH' }
+        { requesttypedescription: 'AUTH', request: [{ requestid: 'test-123' }] },
       );
     });
 
     it('should throttle requests', async () => {
-      const requestObject = { requesttypedescription: 'AUTH' };
+      const requestObject = { requesttypedescription: 'AUTH', request: [{ requestid: 'test-123' }] };
 
       mockFT.mockReturnValue(
         resolvingPromise({
