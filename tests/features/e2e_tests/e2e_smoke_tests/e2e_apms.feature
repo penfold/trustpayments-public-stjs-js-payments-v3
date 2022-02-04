@@ -1,9 +1,9 @@
-@smoke_e2e_test
 Feature: E2E APMs Payments
   As a user
   I want to use ZIP payment
   If I use alternative payment method
 
+  @smoke_e2e_test @apm
   Scenario: Successful trigger of ZIP payment with accepted values for billingcountryiso2a and currencyiso3a
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
@@ -27,7 +27,7 @@ Feature: E2E APMs Payments
     When User chooses ZIP from APM list
     Then User will be sent to apm page - zip
 
-
+  @smoke_e2e_test @apm
   Scenario: Successful trigger of PAYU payment with accepted values for billingcountryiso2a and currencyiso3a
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM

@@ -18,10 +18,12 @@ import { APMFilterService } from '../services/apm-filter-service/APMFilterServic
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { GoogleAnalytics } from '../../../application/core/integrations/google-analytics/GoogleAnalytics';
 import { GAEventType } from '../../../application/core/integrations/google-analytics/events';
+import { untilDestroy } from '../../../shared/services/message-bus/operators/untilDestroy';
 
 @Service()
 export class APMClient {
   private apmIcons: Record<APMName, string> = {
+    [APMName.ACCOUNT2ACCOUNT]: '',
     [APMName.ALIPAY]: require('./images/alipay.svg'),
     [APMName.BANCONTACT]: require('./images/bancontact.svg'),
     [APMName.BITPAY]: require('./images/bitpay.svg'),
@@ -49,29 +51,29 @@ export class APMClient {
     private messageBus: IMessageBus,
     private apmFilterService: APMFilterService,
     private configProvider: ConfigProvider,
-    private googleAnalytics: GoogleAnalytics,
-  ) {
-    this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
-  }
+    private googleAnalytics: GoogleAnalytics
+  ) {}
 
   init(config: IAPMConfig): Observable<undefined> {
-    this.messageBus.pipe(
-      ofType(PUBLIC_EVENTS.UPDATE_JWT),
-      map(event => event.data.newJwt),
-      switchMap(updatedJwt => this.filter(config, updatedJwt)),
-      takeUntil(this.destroy$),
-    ).subscribe((list: IAPMItemConfig[]) => this.insertAPMButtons(list));
+    this.messageBus
+      .pipe(
+        ofType(PUBLIC_EVENTS.UPDATE_JWT),
+        map(event => event.data.newJwt),
+        switchMap(updatedJwt => this.filter(config, updatedJwt)),
+        untilDestroy(this.messageBus)
+      )
+      .subscribe((list: IAPMItemConfig[]) => this.insertAPMButtons(list));
 
     return this.filter(config, this.configProvider.getConfig().jwt).pipe(
       tap((list: IAPMItemConfig[]) => this.insertAPMButtons(list)),
-      mapTo(undefined),
+      mapTo(undefined)
     );
   }
 
   private filter(config: IAPMConfig, jwt: string): Observable<IAPMItemConfig[]> {
     return this.apmConfigResolver.resolve(config).pipe(
       switchMap(normalizedConfig => this.apmFilterService.filter(normalizedConfig.apmList as IAPMItemConfig[], jwt)),
-      takeUntil(this.destroy$),
+      untilDestroy(this.messageBus)
     ) as Observable<IAPMItemConfig[]>;
   }
 
@@ -93,9 +95,14 @@ export class APMClient {
   private createButtonForApmItem(apmItemConfig: IAPMItemConfig): HTMLElement {
     const button = DomMethods.createHtmlElement({ class: 'st-apm-button' }, 'div');
     if (this.apmIcons[apmItemConfig.name]) {
-      button.innerHTML = `<img src="${this.apmIcons[apmItemConfig.name]}" alt="${apmItemConfig.name}" id="ST-APM-${apmItemConfig.name}" class="st-apm-button__img">`;
+      button.innerHTML = `<img src="${this.apmIcons[apmItemConfig.name]}" alt="${apmItemConfig.name}" id="ST-APM-${
+        apmItemConfig.name
+      }" class="st-apm-button__img">`;
+    } else {
+      button.classList.add('st-apm-button--withButton');
+      button.innerHTML = `<button class="st-apm-button__button" id="ST-APM-${apmItemConfig.name}" style="min-width: ${apmItemConfig.button.width}; height: ${apmItemConfig.button.height}; background-color: ${apmItemConfig.button.backgroundColor}; color: ${apmItemConfig.button.textColor};" type="button"><span>${apmItemConfig.button.text}</span></button>`;
     }
-    button.addEventListener('click', (event) => this.onAPMButtonClick(event, apmItemConfig));
+    button.addEventListener('click', event => this.onAPMButtonClick(event, apmItemConfig));
 
     return button;
   }
@@ -107,7 +114,6 @@ export class APMClient {
   }
 
   private processPayment(config: IAPMItemConfig): void {
-    const destroyEvent = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
     const paymentFailedEvent = this.messageBus.pipe(ofType(PUBLIC_EVENTS.PAYMENT_METHOD_FAILED));
 
     this.messageBus.publish<IStartPaymentMethod<IAPMItemConfig>>({
@@ -118,13 +124,16 @@ export class APMClient {
       },
     });
 
-    this.messageBus.pipe(
-      ofType(PUBLIC_EVENTS.APM_REDIRECT),
-      takeUntil(destroyEvent),
-      takeUntil(paymentFailedEvent),
-    ).subscribe((event: IMessageBusEvent<string>) => {
-      this.googleAnalytics.sendGaData('event', 'APM redirect', GAEventType.REDIRECT, `APM redirect initiated: ${config.name}`);
-      DomMethods.redirect(event.data);
-    });
+    this.messageBus
+      .pipe(ofType(PUBLIC_EVENTS.APM_REDIRECT), untilDestroy(this.messageBus), takeUntil(paymentFailedEvent))
+      .subscribe((event: IMessageBusEvent<string>) => {
+        this.googleAnalytics.sendGaData(
+          'event',
+          'APM redirect',
+          GAEventType.REDIRECT,
+          `APM redirect initiated: ${config.name}`
+        );
+        DomMethods.redirect(event.data);
+      });
   }
 }
