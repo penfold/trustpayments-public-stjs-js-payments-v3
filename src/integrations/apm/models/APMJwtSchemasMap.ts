@@ -1,6 +1,10 @@
 import Joi, { ObjectSchema } from 'joi';
 import { APMName } from './APMName';
 
+const account2accountJwtSchema = Joi.object().keys({
+  currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
+}).unknown();
+
 const alipayJwtSchema = Joi.object().keys({
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
   orderreference: Joi.string().max(25).required(),
@@ -54,6 +58,7 @@ const zipJwtSchema = Joi.object().keys({
 }).xor('baseamount', 'mainamount').unknown();
 
 export const APMJwtSchemasMap: Map<APMName, ObjectSchema> = new Map()
+  .set(APMName.ACCOUNT2ACCOUNT, account2accountJwtSchema)
   .set(APMName.ALIPAY, alipayJwtSchema)
   .set(APMName.BANCONTACT, pproJwtSchema)
   .set(APMName.BITPAY, pproJwtSchema)

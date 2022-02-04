@@ -5,6 +5,11 @@ import { APMCurrencyIso } from './APMCurrencyIso';
 import { APMPayloadFields } from './APMPayloadFields';
 
 export const APMAvailabilityMap: Map<APMName, { countries: APMCountryIso[], currencies: APMCurrencyIso[], payload: IStJwtPayload[] }> = new Map()
+  .set(APMName.ACCOUNT2ACCOUNT, {
+    countries: [],
+    currencies: [APMCurrencyIso.GBP],
+    payload: [APMPayloadFields.currencyiso3a],
+  })
   .set(APMName.ALIPAY, {
     countries: [],
     currencies: [APMCurrencyIso.AUD, APMCurrencyIso.CAD, APMCurrencyIso.CHF, APMCurrencyIso.DKK, APMCurrencyIso.EUR, APMCurrencyIso.GBP, APMCurrencyIso.HKD, APMCurrencyIso.JPY, APMCurrencyIso.KRW, APMCurrencyIso.NOK, APMCurrencyIso.NZD, APMCurrencyIso.SEK, APMCurrencyIso.SGD, APMCurrencyIso.THB, APMCurrencyIso.USD],

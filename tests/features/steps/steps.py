@@ -52,6 +52,8 @@ def step_impl(context, e2e_config):
 
 @step('JS library configured by inline configAPMs (?P<apm_config>.+)')
 def step_impl(context, apm_config):
+    if 'IE' in CONFIGURATION.BROWSER and 'scrn_a2a' in context.scenario.tags[0]:
+        apm_config = 'ATA_CUSTOMIZED_BTN_CONFIG_APM_IE'
     e2e_config_apm_dict = get_apm_config_from_json(ConfigApm[apm_config].value)
     context.INLINE_E2E_CONFIG_APM = create_inline_config_apm(e2e_config_apm_dict)
 

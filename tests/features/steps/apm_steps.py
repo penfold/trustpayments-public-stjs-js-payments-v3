@@ -32,7 +32,8 @@ def step_impl(context, apm_page):
     url = {
         'sofort': 'www.sofort.com',
         'simulator': 'r3.girogate.de',
-        'zip': 'checkout.sand.gb.zip.co'
+        'zip': 'checkout.sand.gb.zip.co',
+        'ATA': 'todo'
     }
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
     payment_page.validate_base_url(url[apm_page])

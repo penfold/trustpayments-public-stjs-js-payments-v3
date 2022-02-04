@@ -1,4 +1,5 @@
 export enum APMName {
+  ACCOUNT2ACCOUNT = 'ATA',
   ALIPAY = 'ALIPAY',
   BANCONTACT = 'BANCONTACT',
   BITPAY = 'BITPAY',
