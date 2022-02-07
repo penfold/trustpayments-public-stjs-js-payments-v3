@@ -51,13 +51,6 @@ module.exports = {
       './src/testing/ServicesOverrides.ts',
       './src/application/components/animated-card/animated-card.ts',
     ],
-    clickToPay: [
-      './src/shared/imports/polyfills.ts',
-      './src/bootstrap.ts',
-      './src/application/dependency-injection/ServiceDefinitions.ts',
-      './src/testing/ServicesOverrides.ts',
-      './src/application/components/click-to-pay/click-to-pay.ts',
-    ],
   },
   output: {
     filename: '[name].js',
@@ -100,14 +93,6 @@ module.exports = {
         partial: 'animatedCard',
       },
       chunks: ['animatedCard'],
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'click-to-pay.html',
-      template: './src/application/components/index.html',
-      templateParameters: {
-        partial: 'clickToPay',
-      },
-      chunks: ['clickToPay'],
     }),
     new HtmlWebpackPlugin({
       filename: 'control-frame.html',

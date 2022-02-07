@@ -13,7 +13,6 @@ import { ApplePayClientInitializer } from '../../integrations/apple-pay/client/A
 import { IApplePaySessionWrapper } from '../../integrations/apple-pay/client/models/IApplePaySessionWrapper';
 import { ApplePaySessionWrapper } from '../../integrations/apple-pay/client/services/session/ApplePaySessionWrapper';
 import { APMClientInitializer } from '../../integrations/apm/client/APMClientInitializer';
-import { ClickToPayClientInitializer } from '../../integrations/click-to-pay/client/ClickToPayClientInitializer';
 import { GooglePayClientInitializer } from '../integrations/google-pay/google-pay-client-initializer/GooglePayClientInitializer';
 
 Container.set({ id: ConfigProvider, factory: () => Container.get(ConfigService) });
@@ -26,7 +25,6 @@ Container.import([
   GooglePayClientInitializer,
   ApplePayClientInitializer,
   APMClientInitializer,
-  ClickToPayClientInitializer,
 ]);
 
 if (environment.testEnvironment) {

@@ -17,7 +17,7 @@ describe('ClickToPayPaymentMethod', () => {
   let requestProcessingServiceMock: IRequestProcessingService;
   const testConfig: IClickToPayConfig = {};
   const expectedEventObject: IMessageBusEvent<IClickToPayConfig> = {
-    type: PUBLIC_EVENTS.CLICK_TO_PAY_INIT_CLIENT,
+    type: PUBLIC_EVENTS.CLICK_TO_PAY_INIT,
     data: testConfig,
   };
 

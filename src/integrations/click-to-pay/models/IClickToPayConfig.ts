@@ -1,4 +1,3 @@
+// eslint-disable-next-line
 export interface IClickToPayConfig {
-  buttonPlacement?: string;
-  placement?: string;
 }

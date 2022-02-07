@@ -117,6 +117,3 @@ class PaymentMethodsLocators:
     apple_pay_proceed_btn: By = (By.ID, 'apple-pay-authorize-payment-button')
     apple_pay_cancel_btn: By = (By.ID, 'apple-pay-cancel-payment-button')
 
-    # Visa Click to Pay
-    visa_c2p_btn: By = (By.XPATH, '//div[@id=\'st-click-to-pay\']/img')
-    visa_c2p_btn_override: By = (By.XPATH, '//div[@id=\'st-apm-override\']/img')

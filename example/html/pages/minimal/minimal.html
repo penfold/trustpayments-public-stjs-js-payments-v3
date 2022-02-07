@@ -27,7 +27,6 @@
         <div id="st-apple-pay" class="st-form__group"></div>
         <div id="st-google-pay" class="st-form__group"></div>
         <div id="st-apm" class="st-form__group"></div>
-        <div id="st-click-to-pay" class="st-form__group"></div>
 
         <button type="button" id="update-button" class="tp-minimal-form__button">Update JWT</button>
         <button type="submit" id="merchant-submit-button" class="tp-minimal-form__button">Pay</button>
@@ -45,7 +44,7 @@
       var jwt = params.get('jwt') || '';
       var updatedJwt = params.get('updatedJwt') || '';
 
-      Promise.all([getConfig(),getAPMsConfig(), getCTPConfig()])
+      Promise.all([getConfig(),getAPMsConfig()])
         .then(function(configs) {
           init(configs);
         });
@@ -93,25 +92,6 @@
           });
       }
 
-      function getCTPConfig() {
-      if (inlineConfigCtp) {
-        return Promise.resolve(inlineConfigCtp);
-      }
-
-      return window
-        .fetch('<%= CONFIG_URL %>/configCTP.json')
-        .then(function (response) {
-          if (response.status !== 200) {
-            return Promise.reject('Failed to load CTP configuration file!');
-          }
-
-          return response.json();
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
-    }
-
       function getJwt(config) {
         var presetJwt = jwt || config.jwt;
 
@@ -125,7 +105,6 @@
       function init(configs) {
         var config = configs[0];
         var apmConfig = configs[1];
-        var ctpConfig = configs[2];
         setCallbacks(config);
         var st = ST(config);
         st.Components(config.components);
@@ -136,10 +115,6 @@
         if (apmConfig) {
           st.APM(apmConfig);
         }
-
-        if (ctpConfig) {
-        st.ClickToPay(ctpConfig);
-      }
       }
 
       function updateJwtListener(st, updatedJwt) {
