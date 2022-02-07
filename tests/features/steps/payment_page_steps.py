@@ -487,9 +487,3 @@ def step_impl(context, button_type):
         payment_page.click_proceed_btn_on_apple_pay_popup()
     elif button_type == 'Cancel':
         payment_page.click_cancel_btn_on_apple_pay_popup()
-
-
-@then('User see that visa button is displayed in place defined in config')
-def step_impl(context):
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    assert payment_page.is_vc2p_override_button_displayed() is True, 'Visa override button is not available but should be'

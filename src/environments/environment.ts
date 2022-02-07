@@ -24,9 +24,6 @@ export const environment = {
   CARDINAL_COMMERCE_CONFIG: {
     logging: { level: 'on' },
   },
-  CLICK_TO_PAY: {
-    BUTTON_URL: 'https://sandbox-assets.secure.checkout.visa.com/wallet-services-web/xo/button.png?size=302&color=dark&animation=true&legacy=false&svg=true&orderedCardBrands=VISA',
-  },
   FRAME_URL: FRAME_URL || 'https://localhost:8443',
   GATEWAY_URL,
   GA_MEASUREMENT_ID: '42057093-5',

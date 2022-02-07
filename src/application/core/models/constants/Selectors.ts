@@ -46,5 +46,3 @@ export const ANIMATED_CARD_COMPONENT = `${environment.FRAME_URL}/animated-card.h
 export const ANIMATED_CARD_INPUT_SELECTOR = 'st-animated-card';
 export const ANIMATED_CARD_COMPONENT_IFRAME = 'st-animated-card-iframe';
 export const ANIMATED_CARD_COMPONENT_NAME = 'animatedCard';
-
-export const CLICK_TO_PAY_COMPONENT_NAME = 'clickToPay';
