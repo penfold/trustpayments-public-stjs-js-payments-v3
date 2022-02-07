@@ -65,6 +65,7 @@ module.exports = {
   globals: {
     HOST: 'localhost',
     FRAME_URL: 'https://localhost:8443',
+    ST_VERSION: '0.0.0',
   },
 
   // An array of directory names to be searched recursively up from the requiring module's location

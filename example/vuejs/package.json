@@ -14,15 +14,15 @@
     "@trustpayments/jwt-generator": "2.0.135",
     "axios": "0.24.0",
     "core-js": "3.20.2",
-    "vue": "3.2.27",
+    "vue": "3.2.29",
     "vue-class-component": "8.0.0-rc.1",
     "vue-plugin-load-script": "2.1.0",
     "vue-router": "4.0.12",
     "vue-toastification": "2.0.0-rc.5"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.9.1",
-    "@typescript-eslint/parser": "5.9.1",
+    "@typescript-eslint/eslint-plugin": "5.10.2",
+    "@typescript-eslint/parser": "5.10.2",
     "@vue/cli-plugin-babel": "4.5.15",
     "@vue/cli-plugin-eslint": "5.0.0-rc.2",
     "@vue/cli-plugin-router": "4.5.15",

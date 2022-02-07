@@ -1,16 +1,17 @@
 import { Service } from 'typedi';
 import { Event, EventHint } from '@sentry/types';
 import { firstValueFrom, Observable, OperatorFunction, Subscription, throwError, timeout } from 'rxjs';
-import { Breadcrumb, BreadcrumbHint, BrowserOptions } from '@sentry/browser';
+import { Breadcrumb, BreadcrumbHint, BrowserOptions, addBreadcrumb } from '@sentry/browser';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { environment } from '../../../environments/environment';
 import { JwtProvider } from '../jwt-provider/JwtProvider';
 import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';
-import { ExceptionsToSkip } from './ExceptionsToSkip';
 import { RequestTimeoutError } from './RequestTimeoutError';
 import { PayloadSanitizer } from './PayloadSanitizer';
+import { SENTRY_INIT_BROWSER_OPTIONS } from './constants/SentryBrowserOptions';
+import { SentryBreadcumbsCategories } from './SentryBreadcrumbsCategories';
 
 @Service()
 export class SentryService {
@@ -55,11 +56,8 @@ export class SentryService {
 
     const options: BrowserOptions = {
       dsn,
+      ...SENTRY_INIT_BROWSER_OPTIONS,
       release: this.sentryContext.getReleaseVersion(),
-      ignoreErrors: ExceptionsToSkip,
-      sampleRate: environment.SENTRY.SAMPLE_RATE,
-      attachStacktrace: true,
-      normalizeDepth: 3,
       beforeSend: (event: Event, hint?: EventHint) => this.beforeSend(event, hint),
       beforeBreadcrumb: (breadcrumb: Breadcrumb, hint?: BreadcrumbHint): Breadcrumb | null => this.beforeBreadcrumb(breadcrumb, hint),
     };
@@ -87,6 +85,10 @@ export class SentryService {
           },
         })
       );
+  }
+
+  addBreadcrumb(category: SentryBreadcumbsCategories, message: string): void {
+    addBreadcrumb({ category, message });
   }
 
   private beforeBreadcrumb(breadcrumb: Breadcrumb, hint?: BreadcrumbHint): Breadcrumb | null {

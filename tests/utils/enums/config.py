@@ -10,5 +10,5 @@ screenshots = {
     'scrn_card_interface_error_invalid_patterns_styling': 'cardInterfaceErrorInvalidPatternsWithStyling.png',
     'scrn_card_interface_with_validation_styling': 'cardInterfaceWithValidationStyling.png',
     'scrn_apm_interface_payment_method': 'apmInterfacePaymentMethod.png',
-    'scrn_vc2p_button': 'visaClickToPayButton.png'
+    'scrn_a2a_customized_button': 'a2aButton.png'
 }

@@ -21,19 +21,56 @@ describe('APMRequestPayloadFactory', () => {
   describe('create()', () => {
     it.each([
       [
-        createTestConfig(APMName.ZIP),
+        APMName.ZIP,
         {
           paymenttypedescription: APMName.ZIP,
           returnurl: 'returnurl',
         }],
       [
-        createTestConfig(APMName.ALIPAY),
+        APMName.ALIPAY,
         {
           paymenttypedescription: APMName.ALIPAY,
           returnurl: 'returnurl',
         },
       ],
-    ])('should return request payload object based on APM name and config data', (config: IAPMItemConfig, expected: IAPMGatewayRequest) => {
+      [
+        APMName.ACCOUNT2ACCOUNT,
+        {
+          paymenttypedescription: APMName.ACCOUNT2ACCOUNT,
+          returnurl: 'returnurl',
+        },
+      ],
+    ])('for APMs with not-default payload structure should return request payload object based on APM name and config data - %s', (apmName:APMName, expected: IAPMGatewayRequest) => {
+      const config = createTestConfig(apmName);
+      expect(subjectUnderTest.create(config)).toEqual(expected);
+    });
+
+    it.each([
+      APMName.BANCONTACT,
+      APMName.BITPAY,
+      APMName.EPS,
+      APMName.GIROPAY,
+      APMName.IDEAL,
+      APMName.MULTIBANCO,
+      APMName.MYBANK,
+      APMName.PAYU,
+      APMName.POSTFINANCE,
+      APMName.PRZELEWY24,
+      APMName.REDPAGOS,
+      APMName.SAFETYPAY,
+      APMName.SEPADD,
+      APMName.SOFORT,
+      APMName.TRUSTLY,
+      APMName.UNIONPAY,
+      APMName.WECHATPAY,
+    ])('for APM with default payload structure it should return request payload mapped with default mapper from config object  - %s',
+      (apmName: APMName) => {
+        const config = createTestConfig(apmName);
+        const expected = {
+          paymenttypedescription: config.name,
+          successfulurlredirect: config.successRedirectUrl,
+          errorurlredirect: config.errorRedirectUrl,
+        }
       expect(subjectUnderTest.create(config)).toEqual(expected);
     });
   });

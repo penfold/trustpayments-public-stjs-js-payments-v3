@@ -8,6 +8,7 @@ const releaseVersion = require('./package.json').version;
 const plugins = [
   new webpack.DefinePlugin({
     FRAME_URL: JSON.stringify(process.env.npm_config_frame_url),
+    ST_VERSION: JSON.stringify(process.env.npm_package_version),
   }),
 ];
 
@@ -22,6 +23,7 @@ if (process.env.npm_config_sentry_sourcemaps) {
     errorHandler: (error, invokeErr, compilation) => {
       compilation.warnings.push('Sentry CLI Plugin Error: ' + error.message);
     },
+    urlPrefix: '~/js/v3',
   }));
 }
 
