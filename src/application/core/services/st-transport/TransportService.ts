@@ -55,16 +55,20 @@ export class TransportService {
       }),
       switchMap(url => this.httpClient.post$(url, requestObject, httpOptions)),
       map((response: IHttpClientResponse<IJwtResponse>) => this.responseDecoder.decode(response)),
-      tap((response: IDecodedResponse) => this.handleJwtUpdates(response)),
-      map((response: IDecodedResponse) => ({ ...response.customerOutput, jwt: response.responseJwt } as T)),
-      tap(response => {
-        this.sentryService.addBreadcrumb(SentryBreadcumbsCategories.GATEWAY_RESPONSE, `errorcode: ${response.errorcode}, errormessage: ${response.errormessage}`);
-        if (Number(response.errorcode) !== 0) {
+      tap((response: IDecodedResponse) => {
+        const { errorcode, errormessage } = response.customerOutput;
+        this.sentryService.addBreadcrumb(
+          SentryBreadcumbsCategories.GATEWAY_RESPONSE,
+          `errorcode: ${errorcode}, errormessage: ${errormessage}, requestreference: ${response.requestreference}`,
+        );
+        if (Number(errorcode) !== 0) {
           this.sentryService.sendCustomMessage(
-            new GatewayError(`Gateway error - ${response.errormessage}`, response)
+            new GatewayError(`Gateway error - ${errormessage}`, response.customerOutput)
           );
         }
+        this.handleJwtUpdates(response);
       }),
+      map((response: IDecodedResponse) => ({ ...response.customerOutput, jwt: response.responseJwt } as T)),
       catchError((error: Error) => {
         if (error.message.startsWith('timeout')) {
           this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', { originalError: error, type: TimeoutDetailsType.GATEWAY, requestUrl: resolvedUrl }));

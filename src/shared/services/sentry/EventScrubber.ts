@@ -56,6 +56,10 @@ export class EventScrubber {
           event.tags.tag = ErrorTag.MISCONFIGURATION;
         }
       }
+
+      if ((event.extra.response as IResponseData)?.maskedpan) {
+        (event.extra.response as IResponseData).maskedpan = '***';
+      }
     }
 
     if (originalException instanceof TimeoutError) {

@@ -289,6 +289,7 @@ export class StCodec {
 
             resolve({
               jwt: responseData.jwt,
+              requestreference: decoded.payload.requestreference,
               response: verifiedResponse,
             });
           } catch (error) {
