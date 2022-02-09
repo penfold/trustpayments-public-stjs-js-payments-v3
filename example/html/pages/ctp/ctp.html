@@ -1,0 +1,192 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Trust Payments Visa CTP Form</title>
+    <meta name="description" content="Trust Payments example page with form">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="icon" href="./img/favicon.webp" sizes="32x32">
+    <link rel="icon" href="./img/favicon.webp" sizes="192x192">
+    <link rel="apple-touch-icon" href="./img/favicon.webp">
+  </head>
+  <body>
+    <main>
+      <header class="st-header">
+        <figure class="st-header__logo">
+          <img src="./img/trustpayments.png" alt="Trust Payments logo" title="Trust Payments" role="img">
+        </figure>
+        <h1 class="st-header__title">Visa CTP Form</h1>
+      </header>
+      <form role="form" name="st-form" id="st-form" action="https://www.example.com" class="st-form" autocomplete="off" novalidate>
+        <fieldset class="st-form__fieldset">
+          <legend>Billing details:</legend>
+          <div class="st-form__section st-form__section--horizontal">
+            <div class="st-form__field">
+              <label for="st-form-title" class="st-form__label">
+                Title
+              </label>
+              <input type="text" name="title" id="st-form-title" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-first-name" class="st-form__label">
+                First name
+              </label>
+              <input type="text" name="firstName" id="st-form-first-name" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-last-name" class="st-form__label">
+                Last name
+              </label>
+              <input type="text" name="lastName" id="st-form-last-name" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-house-name" class="st-form__label">
+                House name/no.
+              </label>
+              <input type="text" name="houseName" id="st-form-house-name" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-street" class="st-form__label">
+                Street
+              </label>
+              <input type="text" name="street" id="st-form-street" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-town" class="st-form__label">
+                Town
+              </label>
+              <input type="text" name="town" id="st-form-town" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-county" class="st-form__label">
+                County
+              </label>
+              <input type="text" name="county" id="st-form-county" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-country" class="st-form__label">
+                Country
+              </label>
+              <input type="text" name="country" id="st-form-country" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-post-code" class="st-form__label">
+                Post code
+              </label>
+              <input type="text" name="postCode" id="st-form-post-code" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-email" class="st-form__label">
+                Email
+              </label>
+              <input type="text" name="email" id="st-form-email" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-telephone" class="st-form__label">
+                Telephone
+              </label>
+              <input type="text" name="telephone" id="st-form-telephone" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-telephone-type" class="st-form__label">
+                Telephone type
+              </label>
+              <input type="text" name="telephoneType" id="st-form-telephone-type" class="st-form__input"/>
+            </div>
+          </div>
+        </fieldset>
+        <fieldset class="st-form__fieldset">
+          <legend>Payment details:</legend>
+          <div class="st-form__section st-form__section--horizontal">
+            <div class="st-form__field">
+              <label for="st-form-card-number" class="st-form__label">
+                Card number:
+                <abbr title="required" aria-label="required">*</abbr>
+              </label>
+              <input type="text" name="cardNumber" id="st-form-card-number" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-expiry-date" class="st-form__label">
+                Expiry date:
+                <abbr title="required" aria-label="required">*</abbr>
+              </label>
+              <input type="text" name="expiryDate" id="st-form-expiry-date" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-security-code" class="st-form__label">
+                Security code:
+                <abbr title="required" aria-label="required">*</abbr>
+              </label>
+              <input type="text" name="securityCode" id="st-form-security-code" class="st-form__input"/>
+            </div>
+            <div class="st-form__field">
+              <label for="st-form-name-on-card" class="st-form__label">
+                Name on card:
+              </label>
+              <input type="text" name="nameOnCard" id="st-form-name-on-card" class="st-form__input"/>
+            </div>
+            <div class="st-form__actions--wrapper"> 
+              <div class="st-form__visa--ctp">
+                <p>Click to pay | <span>Look up my cards</span></p>
+                <div>
+                  <input type="checkbox" id="register" name="register">
+                  <label for="register">Register your card with Click to Pay for a faster checkout experience.</label>
+                  <p><a href="#">Learn more about Click to Pay</a></p>
+                </div>
+              </div>
+              <div class="st-form__group st-form__group--submit">
+                <button type="submit" class="st-form__button" id="merchant-submit-button">
+                  Pay securely
+                </button>
+              </div>
+          </div>
+        </fieldset>
+      </form>
+    </main>
+    <script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
+    <script type="text/javascript">
+      var ST = SecureTrading;
+      window.addEventListener('load', function () {
+        Promise.all([getConfig()])
+          .then(function (configValues) {
+            var config = configValues[0];
+            var st = init(config);
+          });
+
+        function getConfig() {
+          return window
+            .fetch('<%= CONFIG_URL %>/config.json')
+            .then(function (response) {
+              if (response.status !== 200) {
+                return Promise.reject('Failed to load configuration file!');
+              }
+
+              return response.json();
+            })
+            .then(function (config) {
+              return getJwt(config).then(function (jwt) {
+                return Object.assign(config, {jwt: jwt});
+              });
+            })
+            .catch(function (error) {
+              console.error(error);
+            });
+        }
+
+        function getJwt(config) {
+          if (config.jwt) {
+            return Promise.resolve(config.jwt);
+          }
+
+          return window.configJWT('<%= CONFIG_URL %>/jwtdata.json');
+        }
+
+        function init(config) {
+          var st = ST(config);
+          return st;
+        }
+      });
+  </script>
+  </body>
+</html>

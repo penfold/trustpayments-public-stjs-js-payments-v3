@@ -1,0 +1,54 @@
+.st-header {
+  padding: 0 15px;
+}
+
+.st-form__section--horizontal {
+  flex-wrap: wrap;
+}
+
+.st-form__field {
+  width: 48%;
+  margin: 0;
+}
+
+.st-form__input {
+  padding: 0.8rem;
+}
+
+.st-form__group--submit {
+  margin-left: auto;
+}
+
+.st-form__button {
+  background-color: #e71b59;
+  color: #fff;
+  border: 0;
+  padding: 1.6rem 3.5em;
+  margin: 20px 0 0 auto;
+  transition: .3s;
+
+  &:hover {
+    background-color: rgba(231, 27, 89, 0.8);
+  }
+}
+
+.st-form__actions--wrapper {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.st-form__visa--ctp {
+  border: 3px solid #d9d9d9;
+  background-color: #f0f0f0;
+  max-width: 50%;
+  border-radius: 13px;
+  padding: 1rem;
+  margin-top: 20px;
+
+  span, a {
+    color: #e71b59;
+    cursor: pointer;
+  }
+}

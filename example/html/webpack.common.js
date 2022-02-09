@@ -18,6 +18,7 @@ module.exports = {
     inlineConfig: ['./pages/index/inline-config.ts'],
     counter: ['./pages/index/counter.ts'],
     predefinedCallbacks: ['./pages/index/predefined-callbacks.ts'],
+    ctp: ['./pages/ctp/ctp.ts'],
   },
   output: {
     filename: '[name].js',
@@ -55,6 +56,12 @@ module.exports = {
       filename: 'minimal-content-security-header.html',
       template: './pages/minimal/minimal-content-security-header.html',
       chunks: ['minimal'],
+      publicPath: './',
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'ctp.html',
+      template: './pages/ctp/ctp.html',
+      chunks: ['ctp'],
       publicPath: './',
     }),
     new CopyPlugin({
