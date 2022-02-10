@@ -1,5 +1,6 @@
 from pages.base_page import BasePage
 from pages.locators.apm_module_locators import ApmModulePaymentLocators
+from utils.helpers.request_executor import retrieve_sms_code
 
 
 class ApmModulePaymentPage(BasePage):
@@ -93,3 +94,27 @@ class ApmModulePaymentPage(BasePage):
     def click_cancel_button(self):
         self._waits.wait_for_element_to_be_displayed(ApmModulePaymentLocators.confirm_btn)
         self._actions.click(ApmModulePaymentLocators.cancel_btn)
+
+    def fill_phone_number(self, number):
+        self._waits.wait_for_element_to_be_displayed(ApmModulePaymentLocators.zip_phone_number_field)
+        self._waits.wait_for_element_to_be_displayed(ApmModulePaymentLocators.zip_next_button)
+        self._actions.send_keys(ApmModulePaymentLocators.zip_phone_number_field, number)
+        self._waits.wait_for_element_to_be_clickable(ApmModulePaymentLocators.zip_next_button)
+        self._actions.click(ApmModulePaymentLocators.zip_next_button)
+
+    def fill_sms_code(self):
+        self._waits.wait_for_element_to_be_displayed(ApmModulePaymentLocators.zip_phone_code_input_1)
+        code = retrieve_sms_code()
+        self._actions.send_keys(ApmModulePaymentLocators.zip_phone_code_input_1, code[0])
+        self._actions.send_keys(ApmModulePaymentLocators.zip_phone_code_input_2, code[1])
+        self._actions.send_keys(ApmModulePaymentLocators.zip_phone_code_input_3, code[2])
+        self._actions.send_keys(ApmModulePaymentLocators.zip_phone_code_input_4, code[3])
+        self._actions.send_keys(ApmModulePaymentLocators.zip_phone_code_input_5, code[4])
+        self._actions.send_keys(ApmModulePaymentLocators.zip_phone_code_input_6, code[5])
+
+    def accept_terms_and_confirm_payment(self):
+        self._waits.wait_for_element_to_be_displayed(ApmModulePaymentLocators.zip_order_summary_header)
+        self._waits.wait_for_element_to_be_displayed(ApmModulePaymentLocators.zip_terms_div)
+        self._actions.click(ApmModulePaymentLocators.zip_terms_div)
+        self._waits.wait_for_element_to_be_clickable(ApmModulePaymentLocators.zip_confirm_payment_button)
+        self._actions.click(ApmModulePaymentLocators.zip_confirm_payment_button)
