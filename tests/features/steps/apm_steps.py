@@ -1,5 +1,6 @@
 # type: ignore[no-redef]
 from behave import use_step_matcher, step, when, then
+
 from pages.page_factory import Pages
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers.request_executor import add_to_shared_dict
@@ -121,3 +122,21 @@ def step_impl(context):
 def step_impl(context):
     payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
     payment_page.click_cancel_button()
+
+
+@step('User fills ZIP phone number field')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
+    payment_page.fill_phone_number('7380327185')
+
+
+@step('User fills ZIP one time password')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
+    payment_page.fill_sms_code()
+
+
+@then('User will be sent to ZIP order summary page')
+def step_impl(context):
+    payment_page = context.page_factory.get_page(Pages.APM_MODULE_PAYMENT_PAGE)
+    payment_page.accept_terms_and_confirm_payment()
