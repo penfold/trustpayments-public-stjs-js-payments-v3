@@ -134,8 +134,8 @@ def _browser_device(context):
 def step_impl(context, url: str):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     with soft_assertions():
-        payment_page.validate_base_url(url)
         context.waits.wait_for_javascript()
+        payment_page.validate_base_url(url)
         actual_url = payment_page.get_page_url()
         parsed_url = urlparse(actual_url)
         parsed_query_from_url = parse_qs(parsed_url.query)
