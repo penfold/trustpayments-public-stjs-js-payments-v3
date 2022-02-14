@@ -126,7 +126,7 @@
               </label>
               <input type="text" name="nameOnCard" id="st-form-name-on-card" class="st-form__input"/>
             </div>
-            <div class="st-form__actions--wrapper"> 
+            <div class="st-form__actions--wrapper">
               <div class="st-form__visa--ctp">
                 <p>Click to pay | <span>Look up my cards</span></p>
                 <div>
@@ -184,6 +184,21 @@
 
         function init(config) {
           var st = ST(config);
+          var clickToPayAdapterInitParams = { // TODO update init params
+            formId: 'st-form',
+            cardListContainerId:'',
+            srciDpaId: 'srciDpaId',
+            dpaTransactionOptions:{}
+          };
+          debugger;
+          st.ClickToPay({ adapter: 'hpp' })
+            .then(adapter => adapter.init(clickToPayAdapterInitParams))
+            .then(adapter => {
+              console.log('CTP adapter is initialized');
+              // TODO do something with adapter
+            })
+            .catch(error => console.error(error));
+
           return st;
         }
       });
