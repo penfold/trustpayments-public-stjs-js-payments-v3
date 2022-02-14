@@ -115,7 +115,7 @@ export class StTransport {
       .then(decodedResponse => {
         this.sentryService.addBreadcrumb(
           SentryBreadcumbsCategories.GATEWAY_RESPONSE,
-          `errorcode: ${(decodedResponse.response as IResponseData).errorcode}, errormessage: ${(decodedResponse.response as IResponseData).errormessage}`
+          `errorcode: ${(decodedResponse.response as IResponseData).errorcode}, errormessage: ${(decodedResponse.response as IResponseData).errormessage}, requestreference: ${decodedResponse.requestreference}`
         );
         return decodedResponse;
       }))

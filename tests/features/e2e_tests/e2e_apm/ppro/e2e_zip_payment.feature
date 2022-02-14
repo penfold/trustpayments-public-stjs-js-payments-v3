@@ -25,7 +25,14 @@ Feature: E2E ZIP Payments
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses ZIP from APM list
-    Then User will be sent to apm page - zip
+    And User will be sent to apm page - zip
+    And User fills ZIP phone number field
+    And User fills ZIP one time password
+    Then User will be sent to ZIP order summary page
+    And User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
+      | key                  | value              |
+      | orderreference       | 123445             |
+      | transactionreference | should not be none |
 
 
   Scenario Outline: Unsuccessful init - not supported values for billingcountryiso2a and currencyiso3a
@@ -137,7 +144,7 @@ Feature: E2E ZIP Payments
       | billingstreet           | test            |
       | billingpostcode         | PO1 3AX         |
       | billingcountryiso2a     | GB              |
-      | orderreference          | 123445          |
+      | orderreference          | 123446          |
       | currencyiso3a           | GBP             |
       | baseamount              | 1500            |
     And User calls updateJWT function by filling amount field
@@ -269,6 +276,7 @@ Feature: E2E ZIP Payments
     And User waits for Pay button to be active
     When User chooses ZIP from APM list
     Then User will be sent to apm page - zip
+
 
     Examples:
       | requesttypedescriptions |
@@ -425,7 +433,7 @@ Feature: E2E ZIP Payments
     And User focuses on APM payment methods section
     And User chooses ZIP from APM list - override placement
     And User will be sent to apm page - zip
-#    When User will click on Decline button on ZIP example page
+#    When User will click on Decline button on ZIP example pageó
 #    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
 #      | key                  | value              |
 #      | transactionreference | should not be none |

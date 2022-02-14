@@ -82,6 +82,7 @@ describe('TransportService', () => {
     when(responseDecoderMock.decode(response)).thenReturn({
       responseJwt: 'responsejwt',
       updatedMerchantJwt: 'merchantjwt',
+      requestreference: 'test',
       customerOutput: {
         errorcode: '0',
         customeroutput: 'SUCCESS',
@@ -116,7 +117,7 @@ describe('TransportService', () => {
     it('adds sentry breadcrumbs on request and response', done => {
       transportService.sendRequest(request).subscribe(() => {
         verify(sentryServiceMock.addBreadcrumb(SentryBreadcumbsCategories.GATEWAY_REQUEST, 'requestid: test-123, requesttypedescriptions: A*UTH')).once();
-        verify(sentryServiceMock.addBreadcrumb(SentryBreadcumbsCategories.GATEWAY_RESPONSE, 'errorcode: 0, errormessage: SUCCESS')).once();
+        verify(sentryServiceMock.addBreadcrumb(SentryBreadcumbsCategories.GATEWAY_RESPONSE, 'errorcode: 0, errormessage: SUCCESS, requestreference: test')).once();
         done();
       });
     });
@@ -136,6 +137,7 @@ describe('TransportService', () => {
       when(responseDecoderMock.decode(response)).thenReturn({
         responseJwt: 'responsejwt',
         updatedMerchantJwt: 'merchantjwt',
+        requestreference: 'test',
         customerOutput: {
           errorcode: '1234',
           customeroutput: 'ERROR',
@@ -226,6 +228,7 @@ describe('TransportService', () => {
       const errorResponse = {
         responseJwt: 'responsejwt',
         updatedMerchantJwt: 'merchantjwt',
+        requestreference: 'test',
         customerOutput: {
           errorcode: '1234',
           customeroutput: 'ERROR',

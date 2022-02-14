@@ -7,7 +7,7 @@
     {
       "name": "ATA",
       "placement": "st-apm-override",
-      "returnUrl": "https://this_is_not_existing_page_error_redirect_override.com"
+      "returnUrl": "https://this_is_not_existing_page_return_redirect.com"
     }
   ]
 }

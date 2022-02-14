@@ -6,7 +6,9 @@ Feature: E2E A2A Payments
   I want to use A2A payment
   If I use alternative payment method
 
-#
+#TODO Currently A2A tests can run against BB6.
+# Uncomment these tests when site ref dedicated for prod env will be prepared
+  
 #  Scenario Outline: Successful trigger of payment with accepted values for billingcountryiso2a and currencyiso3a
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
@@ -14,7 +16,6 @@ Feature: E2E A2A Payments
 #      | key                     | value                 |
 #      | requesttypedescriptions | AUTH                  |
 #      | baseamount              | 70                    |
-#      | billingfirstname        | FirstName             |
 #      | billingcountryiso2a     | <billingcountryiso2a> |
 #      | currencyiso3a           | GBP                   |
 #    And User opens example page WITH_APM
@@ -35,7 +36,7 @@ Feature: E2E A2A Payments
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value               |
 #      | requesttypedescriptions | AUTH                |
-#      | currencyiso3a           | GBP                 |
+#      | currencyiso3a           | EUR                 |
 #      | billingcountryiso2a     | GB                  |
 #      | baseamount              | 123                 |
 #      | billingfirstname        | <billingfirstname>  |
@@ -77,25 +78,7 @@ Feature: E2E A2A Payments
 #      | billingcountryiso2a | currencyiso3a |
 #      | PL                  | CHF           |
 #      | GB                  | BYN           |
-#      | DE                  | EUR           |
-#
-#
-#  Scenario: Unsuccessful init - missing at least one of the billing name fields
-#    Given JS library configured by inline config BASIC_CONFIG
-#    And JS library configured by inline configAPMs BASIC_CONFIG_APM
-#    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value |
-#      | requesttypedescriptions | AUTH  |
-#      | currencyiso3a           | GBP   |
-#      | billingcountryiso2a     | GB    |
-#      | baseamount              | 123   |
-#    And User opens example page WITH_APM
-#    And User waits for Pay button to be active
-#    And User focuses on APM payment methods section
-#    # to be used with STJS-2443 & STJS-2444
-#    #    Then ATA is not available on APM list
-#    When User chooses ATA from APM list
-#    Then User will see notification frame text: "Invalid field"
+#      | DE                  | PLN           |
 #
 #
 #  Scenario: Successful trigger of payment with updated jwt
@@ -114,7 +97,7 @@ Feature: E2E A2A Payments
 #      | baseamount              | 707             |
 #      | billinglastname         | LastNameUpdated |
 #      | billingcountryiso2a     | PL              |
-#      | currencyiso3a           | GBP             |
+#      | currencyiso3a           | EUR             |
 #    And User waits for Pay button to be active
 #    And User calls updateJWT function by filling amount field
 #    When User chooses ATA from APM list
@@ -141,12 +124,10 @@ Feature: E2E A2A Payments
 #    And User waits for Pay button to be active
 #    When User calls updateJWT function by filling amount field
 #    And User focuses on APM payment methods section
-#    #this should work
-#    When User chooses ATA from APM list
 #    Then ATA is not available on APM list
 #
 #
-#  Scenario: Unsuccessful init - update jwt with missing required fields
+#  Scenario: Unsuccessful init - update jwt with not supported requesttype
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -157,30 +138,32 @@ Feature: E2E A2A Payments
 #      | billingcountryiso2a     | GB       |
 #      | currencyiso3a           | GBP      |
 #    And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-#      | key                     | value |
-#      | requesttypedescriptions | AUTH  |
-#      | baseamount              | 707   |
-#      | billingcountryiso2a     | GB       |
+#      | key                     | value       |
+#      | requesttypedescriptions | THREEDQUERY |
+#      | baseamount              | 707         |
+#      | billingcountryiso2a     | GB          |
+#      | currencyiso3a           | GBP         |
 #    And User waits for Pay button to be active
 #    When User calls updateJWT function by filling amount field
 #    And User focuses on APM payment methods section
-##    Then ATA is not available on APM list
+#    When User chooses ATA from APM list
+#    Then User will see notification frame text: "Invalid acquirer for 3-D Secure"
 #
 #
 #  Scenario: Unsuccessful trigger of payment without AUTH in requesttypesdescriptions
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
-#      | key                     | value               |
-#      | requesttypedescriptions | THREEDQUERY RISKDEC |
-#      | baseamount              | 70                  |
-#      | billingfirstname        | FirstName           |
-#      | billingcountryiso2a     | GB                  |
-#      | currencyiso3a           | GBP                 |
+#      | key                     | value        |
+#      | requesttypedescriptions | ACCOUNTCHECK |
+#      | baseamount              | 70           |
+#      | billingfirstname        | FirstName    |
+#      | billingcountryiso2a     | GB           |
+#      | currencyiso3a           | GBP          |
 #    And User opens example page WITH_APM
 #    And User focuses on APM payment methods section
 #    When User chooses ATA from APM list
-#    Then User will see notification frame text: "Invalid field"
+#    Then User will see notification frame text: "Invalid requesttype"
 #
 #
 #  Scenario: successRedirectUrl and parameters verification
@@ -198,13 +181,14 @@ Feature: E2E A2A Payments
 #    And User focuses on APM payment methods section
 #    And User chooses ATA from APM list
 #    And User will be sent to apm page - ATA
-#    When User will select Succeeded response and submit
-#    Then User will be sent to page with url "this_is_not_existing_page_success_redirect.com" having params
-#      | key                    | value |
-#      | paymenttypedescription | ATA   |
-#      | errorcode              | 0     |
-#      | settlestatus           | 100   |
-##      | orderreference         | 123456 | commented on purpose
+#    When User chooses country and bank on Token page
+#    And User login to bank account with valid credentials
+#    And User confirm payment
+#    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
+#      | key                  | value              |
+#      | transactionreference | should not be none |
+#      | settlestatus         | 100                |
+#      | orderreference       | 123456             |
 #
 #
 #  Scenario: errorRedirectUrl and parameters verification
@@ -222,13 +206,14 @@ Feature: E2E A2A Payments
 #    And User focuses on APM payment methods section
 #    And User chooses ATA from APM list
 #    And User will be sent to apm page - ATA
-##TODO    When Add steps for a2a payment flow
-#    Then User will be sent to page with url "this_is_not_existing_page_error_redirect.com" having params
-#      | key                    | value |
-#      | paymenttypedescription | ATA   |
-#      | errorcode              | 70000 |
-#      | settlestatus           | 3     |
-##      | orderreference         | 123456 |  commented on purpose
+#    When User chooses country and bank on Token page
+#    And User login to bank account with valid credentials
+#    And User cancel payment
+#    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
+#      | key                  | value              |
+#      | transactionreference | should not be none |
+#      | settlestatus         | 10                 |
+#      | orderreference       | 123456             |
 #
 #
 #  Scenario: default configuration override
@@ -237,19 +222,18 @@ Feature: E2E A2A Payments
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
 #      | key                     | value     |
 #      | requesttypedescriptions | AUTH      |
-#      | baseamount              | 70000     |
+#      | baseamount              | 1000     |
 #      | billingfirstname        | FirstName |
 #      | billingcountryiso2a     | GB        |
 #      | currencyiso3a           | GBP       |
-#      | orderreference          | 123456    |
 #    And User opens example page WITH_APM
 #    And User focuses on APM payment methods section
 #    And User chooses ATA from APM list - override placement
 #    And User will be sent to apm page - ATA
-##TODO    When Add steps for a2a payment flow
-#    Then User will be sent to page with url "this_is_not_existing_page_error_redirect_override.com" having params
-#      | key                    | value |
-#      | paymenttypedescription | ATA   |
-#      | errorcode              | 70000 |
-#      | settlestatus           | 3     |
-##      | orderreference         | 123456 | commented on purpose
+#    When User chooses country and bank on Token page
+#    And User login to bank account with valid credentials
+#    And User confirm payment
+#    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
+#      | key                  | value              |
+#      | transactionreference | should not be none |
+#      | settlestatus         | 100                |

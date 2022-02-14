@@ -24,8 +24,9 @@ export class ResponseDecoderService {
       }
 
       return {
-        responseJwt: jwt,
         customerOutput: this.extractResponseObject(payload),
+        requestreference: payload.requestreference,
+        responseJwt: jwt,
         updatedMerchantJwt: payload.jwt,
       };
     } catch (e) {
