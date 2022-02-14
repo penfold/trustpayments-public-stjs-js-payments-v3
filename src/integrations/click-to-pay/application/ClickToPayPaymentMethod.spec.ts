@@ -8,6 +8,7 @@ import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventT
 import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
+import { ClickToPayAdapterName } from '../adapter/ClickToPayAdapterName';
 import { ClickToPayPaymentMethod } from './ClickToPayPaymentMethod';
 
 describe('ClickToPayPaymentMethod', () => {
@@ -15,7 +16,9 @@ describe('ClickToPayPaymentMethod', () => {
   let frameQueryingService: IFrameQueryingService;
   let requestProcessingInitializerMock: RequestProcessingInitializer;
   let requestProcessingServiceMock: IRequestProcessingService;
-  const testConfig: IClickToPayConfig = {};
+  const testConfig: IClickToPayConfig = {
+    adapter: ClickToPayAdapterName.hpp,
+  };
   const expectedEventObject: IMessageBusEvent<IClickToPayConfig> = {
     type: PUBLIC_EVENTS.CLICK_TO_PAY_INIT,
     data: testConfig,

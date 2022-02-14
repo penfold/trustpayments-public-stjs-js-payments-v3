@@ -1,3 +1,5 @@
-// eslint-disable-next-line
+import { ClickToPayAdapterName } from '../adapter/ClickToPayAdapterName';
+
 export interface IClickToPayConfig {
+  adapter: ClickToPayAdapterName;
 }
