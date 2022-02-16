@@ -1,5 +1,5 @@
-export const GAEventType = {
-  INIT: 'init',
-  PAYMENT: 'payment',
-  REDIRECT: 'redirect',
+export enum GAEventType {
+  INIT = 'init',
+  PAYMENT = 'payment',
+  REDIRECT = 'redirect',
 }

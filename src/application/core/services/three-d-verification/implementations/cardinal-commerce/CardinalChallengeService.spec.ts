@@ -10,6 +10,8 @@ import { PUBLIC_EVENTS } from '../../../../models/constants/EventTypes';
 import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { Enrollment } from '../../../../models/constants/Enrollment';
+import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
+import { SimpleMessageBus } from '../../../../shared/message-bus/SimpleMessageBus';
 import { IVerificationResult } from './data/IVerificationResult';
 import { ActionCode } from './data/ActionCode';
 import { IVerificationData } from './data/IVerificationData';
@@ -21,6 +23,7 @@ describe('CardinalChallengeService', () => {
   let verificationResultHandlerMock: VerificationResultHandler;
   let cardinalChallengeService: CardinalChallengeService;
   let googleAnalyticsMock: GoogleAnalytics;
+  let messageBusMock: IMessageBus;
 
   const threeDQueryResponse: IThreeDQueryResponse = {
     jwt: '',
@@ -51,10 +54,12 @@ describe('CardinalChallengeService', () => {
     interFrameCommunicatorMock = mock(InterFrameCommunicator);
     verificationResultHandlerMock = mock(VerificationResultHandler);
     googleAnalyticsMock = mock(GoogleAnalytics);
+    messageBusMock = new SimpleMessageBus();
     cardinalChallengeService = new CardinalChallengeService(
       instance(interFrameCommunicatorMock),
       instance(verificationResultHandlerMock),
       instance(googleAnalyticsMock),
+      messageBusMock,
     );
   });
 

@@ -9,6 +9,8 @@ import { MERCHANT_PARENT_FRAME } from '../../../../models/constants/Selectors';
 import { GoogleAnalytics } from '../../../../integrations/google-analytics/GoogleAnalytics';
 import { InterFrameCommunicator } from '../../../../../../shared/services/message-bus/InterFrameCommunicator';
 import { Enrollment } from '../../../../models/constants/Enrollment';
+import { IMessageBus } from '../../../../shared/message-bus/IMessageBus';
+import { EventScope } from '../../../../models/constants/EventScope';
 import { VerificationResultHandler } from './VerificationResultHandler';
 import { IVerificationResult } from './data/IVerificationResult';
 import { IVerificationData } from './data/IVerificationData';
@@ -19,6 +21,7 @@ export class CardinalChallengeService {
     private interFrameCommunicator: InterFrameCommunicator,
     private verificationResultHandler: VerificationResultHandler,
     private googleAnalytics: GoogleAnalytics,
+    private messageBus: IMessageBus,
   ) {
   }
 
@@ -37,8 +40,15 @@ export class CardinalChallengeService {
       },
     };
 
+    this.messageBus.publish({
+      type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_SHOW,
+    },  EventScope.ALL_FRAMES)
+
     return from(this.interFrameCommunicator.query<IVerificationResult>(verifyQueryEvent, MERCHANT_PARENT_FRAME)).pipe(
       tap(() => this.googleAnalytics.sendGaData('event', 'Cardinal', 'auth', 'Cardinal card authenticated')),
+      tap(() => this.messageBus.publish({
+        type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE,
+      },  EventScope.ALL_FRAMES)),
       switchMap((validationResult: IVerificationResult) => this.verificationResultHandler.handle$(threeDQueryResponse, validationResult, jsInitResponse)),
     );
   }
