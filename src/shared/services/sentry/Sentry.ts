@@ -1,5 +1,6 @@
 import { Service } from 'typedi';
-import { User, init, setTag, setExtra, captureException, setUser, BrowserOptions } from '@sentry/browser';
+import { User, init, setTag, setExtra, captureException, setUser, BrowserOptions, addBreadcrumb } from '@sentry/browser';
+import { Breadcrumb } from '@sentry/types';
 
 @Service()
 export class Sentry {
@@ -21,5 +22,9 @@ export class Sentry {
 
   setUser(user: User): void {
     setUser(user);
+  }
+
+  addBreadcrumb(breadcrumb:Breadcrumb) {
+    addBreadcrumb(breadcrumb)
   }
 }
