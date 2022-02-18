@@ -123,3 +123,89 @@ input:-webkit-autofill.error-field {
     text-align: right;
   }
 }
+
+form.cards {
+  margin-bottom: 200px;
+  margin-top: 200px;
+  width: 100%;
+}
+
+.cards__card, .cards__addCard {
+  align-items: center;
+  border-color: #d6d6d6;
+  border-style: solid;
+  border-width: 1px;
+  cursor: pointer;
+  display: flex;
+  height: 40px;
+  margin-bottom: 6px;
+  margin-top: 6px;
+  padding: 5px;
+}
+
+.cards__card--inactive {
+  cursor: auto;
+  opacity: 0.5;
+}
+
+.cards__addCard {
+  justify-content: space-between;
+}
+
+.cards__card__checkbox {
+  display: flex;
+  height: 27px;
+  width: 40px;
+}
+
+.cards__card__logo {
+  display: flex;
+  padding-right: 10px;
+  border-right: solid 1px #737373;
+
+  img {
+    height: 24px;
+  }
+
+}
+
+span.cards__card__image {
+  display: flex;
+}
+
+span.cards__card__type {
+  display: flex;
+
+  img {
+    height: 24px;
+  }
+
+}
+
+span.cards__card__description, span.cards__addCard__label {
+  color: #000 !important;
+  display: flex;
+  flex-grow: 2;
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 100px;
+  padding-left: 10px;
+}
+
+span.cards__addCard__button {
+  display: inline-block;
+}
+
+span.cards__addCard__label {
+  font-size: 12px;
+}
+
+button.cards__addCard__button {
+  background-color: #cef0e3;
+  border-style: none;
+  color: #24de96;
+  font-size: 24px;
+  font-weight: bold;
+  height: 40px;
+  width: 60px;
+}
