@@ -52,3 +52,20 @@
     cursor: pointer;
   }
 }
+
+#st-ctp-separator, #st-ctp-lookup-btn, #st-ctp-registration {
+  display: none;
+
+  &.visible {
+    display: inline-block;
+  }
+}
+
+.st-form-expiry-date-wrapper {
+  display: flex;
+  justify-content: space-between;
+
+  .st-form__input {
+    max-width: 45%;
+  }
+}
