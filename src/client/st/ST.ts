@@ -54,6 +54,8 @@ import { SentryService } from '../../shared/services/sentry/SentryService';
 import { IApplePayConfig } from '../../integrations/apple-pay/client/models/IApplePayConfig';
 import { GAEventType } from '../../application/core/integrations/google-analytics/events';
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
+import { Uuid } from '../../application/core/shared/uuid/Uuid';
+import { SessionToken } from '../../shared/dependency-injection/InjectionTokens';
 declare const ST_VERSION: string | undefined;
 @Service()
 export class ST {
@@ -490,5 +492,8 @@ export class ST {
 }
 
 export default (config: IConfig): ST => {
-  return Container.get(ClientBootstrap).run(config);
+  const container = Container;
+  container.set(SessionToken, Uuid.uuidv4());
+
+  return container.get(ClientBootstrap).run(config);
 };

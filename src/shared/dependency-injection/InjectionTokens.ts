@@ -17,3 +17,4 @@ export const ReducerToken = new Token<IReducer<any>>('reducer');
 export const StoreToken = new Token<IStore<unknown>>('store');
 export const TranslatorToken = new Token<ITranslator>('translator');
 export const ConfigProviderToken = new Token<ConfigProvider>('config-provider');
+export const SessionToken = new Token<string>('sessionId')
