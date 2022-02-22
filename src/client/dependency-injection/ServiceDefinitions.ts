@@ -15,6 +15,7 @@ import { ApplePaySessionWrapper } from '../../integrations/apple-pay/client/serv
 import { APMClientInitializer } from '../../integrations/apm/client/APMClientInitializer';
 import { PaymentEventsSubscriber } from '../../application/core/integrations/google-analytics/PaymentEventsSubscriber';
 import { GooglePayClientInitializer } from '../integrations/google-pay/google-pay-client-initializer/GooglePayClientInitializer';
+import { VisaSrcProvider } from '../../integrations/click-to-pay/digital-terminal/src/VisaSrcProvider';
 
 Container.set({ id: ConfigProvider, factory: () => Container.get(ConfigService) });
 Container.set({ id: ThreeDSecureFactory, type: ThreeDSecureFactory });
@@ -32,3 +33,5 @@ Container.import([
 if (environment.testEnvironment) {
   Container.set({ id: HttpClient, type: HttpClient });
 }
+
+Container.import([VisaSrcProvider]);

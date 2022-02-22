@@ -168,6 +168,9 @@ module.exports = {
           path.join(__dirname, 'node_modules/joi'),
           path.join(__dirname, 'node_modules/topo'),
           path.join(__dirname, 'node_modules/caniuse-lite'),
+          path.join(__dirname, 'node_modules/node-jose'),
+          path.join(__dirname, 'node_modules/buffer'),
+          path.join(__dirname, 'node_modules/pako'),
         ],
       },
       {

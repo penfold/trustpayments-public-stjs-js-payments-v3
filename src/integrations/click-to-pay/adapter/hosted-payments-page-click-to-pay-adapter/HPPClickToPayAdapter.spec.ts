@@ -7,6 +7,7 @@ import { DigitalTerminal } from '../../digital-terminal/DigitalTerminal';
 import { PUBLIC_EVENTS } from '../../../../application/core/models/constants/EventTypes';
 import { EventScope } from '../../../../application/core/models/constants/EventScope';
 import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentificationData';
+import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdentificationResult';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPClickToPayAdapter } from './HPPClickToPayAdapter';
 
@@ -91,10 +92,11 @@ describe('HPPClickToPayAdapter', () => {
 
   describe('identifyUser()', () => {
     it('should return response from DigitalTerminal.identifyUser() method as Promise', (done) => {
-      when(digitalTerminalMock.identifyUser(anything())).thenReturn(of(true));
+      const identificationResult: IIdentificationResult = { isSuccessful: true };
       const testData: IIdentificationData = {
         email: 'email@example.com',
       };
+      when(digitalTerminalMock.identifyUser(anything())).thenReturn(of(identificationResult));
       const response = sut.identifyUser(testData);
       expect(response).toBeInstanceOf(Promise);
       response.then(result => {
