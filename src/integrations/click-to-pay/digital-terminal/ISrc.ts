@@ -172,13 +172,29 @@ export interface ISrcProfile {
   maskedConsumer: IMaskedConsumer;
 }
 
+export interface IIdentityLookupResponse {
+  consumerPresent: boolean;
+}
+
+export interface IInitiateIdentityValidationResponse {
+  maskedValidationChannel: string | IPhoneNumber;
+}
+
+export interface ICompleteIdValidationResponse {
+  idToken: string;
+}
+
+export interface IUnbindAppInstanceResponse {
+  srcCorrelatedId: string;
+}
+
 export interface ISrc {
   init(initData: ISrcInitData): Promise<void>;
   isRecognized(): Promise<IIsRecognizedResponse>;
   getSrcProfile(idTokens: string[]): Promise<ISrcProfileList>;
-  identityLookup(consumerIdentity: IConsumerIdentity): Promise<{ consumerPresent: boolean }>;
-  initiateIdentityValidation(): Promise<{ maskedValidationChannel: string | IPhoneNumber }>;
-  completeIdValidation(validationData: string): Promise<{ idToken: string }>;
+  identityLookup(consumerIdentity: IConsumerIdentity): Promise<IIdentityLookupResponse>;
+  initiateIdentityValidation(): Promise<IInitiateIdentityValidationResponse>;
+  completeIdentityValidation(validationData: string): Promise<ICompleteIdValidationResponse>;
   checkout(data: ICheckoutData): Promise<ICheckoutResponse>;
-  unbindAppInstance(idToken: string): Promise<{ srcCorrelatedId: string }>;
+  unbindAppInstance(idToken?: string): Promise<IUnbindAppInstanceResponse>;
 }

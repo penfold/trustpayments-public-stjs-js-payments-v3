@@ -20,6 +20,7 @@ module.exports = function(api) {
     ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
     '@babel/plugin-transform-runtime',
     '@babel/plugin-proposal-optional-catch-binding',
+    '@babel/plugin-transform-exponentiation-operator',
   ];
 
   return {
