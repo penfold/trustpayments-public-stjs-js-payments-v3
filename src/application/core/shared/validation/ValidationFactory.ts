@@ -6,7 +6,6 @@ export class ValidationFactory {
   constructor(private containerInstance: ContainerInstance) {}
 
   create(): Validation{
-    console.log(this.containerInstance)
     return new Validation(this.containerInstance);
   }
 }

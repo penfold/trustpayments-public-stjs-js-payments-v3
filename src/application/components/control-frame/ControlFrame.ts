@@ -94,6 +94,7 @@ export class ControlFrame {
     private translator: ITranslator,
     private validationFactory: ValidationFactory
   ) {
+    this.validation = validationFactory.create();
     this.init();
     this.initVisaCheckout();
     this.initCardPayments();

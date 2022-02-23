@@ -12,13 +12,11 @@ import { IWalletVerify } from '../../models/IWalletVerify';
 import { NotificationService } from '../../../../client/notification/NotificationService';
 import { StCodec } from '../../services/st-codec/StCodec';
 import { StTransport } from '../../services/st-transport/StTransport';
-import { Validation } from '../validation/Validation';
 import { FraudControlService } from '../../services/fraud-control/FraudControlService';
 
 @Service()
 export class Payment {
   constructor(private stTransport: StTransport,
-              private validation: Validation,
               private fraudControlService: FraudControlService,
               private notificationService: NotificationService) {
   }

@@ -23,6 +23,10 @@ import { EventScope } from '../../models/constants/EventScope';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { IRequestObject } from '../../models/IRequestObject';
 import { RequestType } from '../../../../shared/types/RequestType';
+import { ValidationFactory } from '../../shared/validation/ValidationFactory';
+import { Validation } from '../../shared/validation/Validation';
+import { FormState } from '../../models/constants/FormState';
+import { IErrorData } from '../../models/IErrorData';
 import { GatewayError } from './GatewayError';
 import { InvalidResponseError } from './InvalidResponseError';
 import { IResponsePayload } from './interfaces/IResponsePayload';
@@ -35,6 +39,7 @@ export class StCodec {
   static MINIMUM_REQUEST_FIELDS = 1;
   static jwt: string;
   static originalJwt: string;
+  static validation: Validation;
 
   /**
    * Generate a unique ID for a request
@@ -138,10 +143,9 @@ export class StCodec {
   }
 
   private static handleInvalidResponse() {
-    // const validation = new Validation()
     StCodec.publishResponse(StCodec.createCommunicationError());
     StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_RESPONSE);
-    // validation.blockForm(FormState.AVAILABLE);
+    StCodec.validation.blockForm(FormState.AVAILABLE);
     StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
 
     return new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
@@ -182,9 +186,30 @@ export class StCodec {
     StCodec.publishResponse(responseContent, jwtResponse);
   }
 
+  private static decodeResponseJwt(jwt: string, reject: (error: Error) => void) {
+    let decoded: IStJwtObj<IResponsePayload>;
+    try {
+      decoded = jwt_decode<IStJwtObj<IResponsePayload>>(jwt);
+    } catch (e) {
+      reject(StCodec.handleInvalidResponse());
+    }
+    return decoded;
+  }
+
+  private readonly requestId: string;
+  private jwtDecoder: JwtDecoder;
+
+  constructor(jwtDecoder: JwtDecoder, jwt: string, validationFactory: ValidationFactory) {
+    StCodec.validation = validationFactory.create();
+    this.requestId = StCodec.createRequestId();
+    this.jwtDecoder = jwtDecoder;
+    StCodec.notification = Container.get(NotificationService);
+    StCodec.jwt = jwt;
+    StCodec.originalJwt = jwt;
+    StCodec.locale = this.jwtDecoder.decode<IStJwtPayload>(StCodec.jwt).payload.locale || 'en_GB';
+  }
   private static handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
     const translator = Container.get(TranslatorToken);
-    // const validation = new Validation();
 
     const { errorcode, errormessage, requesttypedescription } = responseContent;
 
@@ -209,36 +234,13 @@ export class StCodec {
     }
 
     if (responseContent.errordata) {
-      // validation.getErrorData(StCodec.getErrorData(responseContent) as IErrorData);
+      StCodec.validation.getErrorData(StCodec.getErrorData(responseContent) as IErrorData);
     }
 
-    // validation.blockForm(FormState.AVAILABLE);
+    StCodec.validation.blockForm(FormState.AVAILABLE);
     StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
     throw new GatewayError(errormessage, responseContent);
   }
-
-  private static decodeResponseJwt(jwt: string, reject: (error: Error) => void) {
-    let decoded: IStJwtObj<IResponsePayload>;
-    try {
-      decoded = jwt_decode<IStJwtObj<IResponsePayload>>(jwt);
-    } catch (e) {
-      reject(StCodec.handleInvalidResponse());
-    }
-    return decoded;
-  }
-
-  private readonly requestId: string;
-  private jwtDecoder: JwtDecoder;
-
-  constructor(jwtDecoder: JwtDecoder, jwt: string) {
-    this.requestId = StCodec.createRequestId();
-    this.jwtDecoder = jwtDecoder;
-    StCodec.notification = Container.get(NotificationService);
-    StCodec.jwt = jwt;
-    StCodec.originalJwt = jwt;
-    StCodec.locale = this.jwtDecoder.decode<IStJwtPayload>(StCodec.jwt).payload.locale || 'en_GB';
-  }
-
   buildRequestObject(requestData: IStRequest): Record<string, unknown> {
     return {
       acceptcustomeroutput: '2.00',

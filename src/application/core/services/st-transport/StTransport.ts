@@ -15,6 +15,7 @@ import { TimeoutDetailsType } from '../../../../shared/services/sentry/RequestTi
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { IResponseData } from '../../models/IResponseData';
 import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/SentryBreadcrumbsCategories';
+import { ValidationFactory } from '../../shared/validation/ValidationFactory';
 
 interface IFetchOptions {
   headers: {
@@ -48,7 +49,7 @@ export class StTransport {
   private config: IConfig;
   private codec: StCodec;
 
-  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder, private sentryService: SentryService) {}
+  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder, private sentryService: SentryService, protected validationFactory: ValidationFactory) {}
 
   /**
    * Perform a JSON API request with ST
@@ -169,7 +170,7 @@ export class StTransport {
   private getCodec(): StCodec {
     if (!this.codec) {
       const { jwt } = this.getConfig();
-      this.codec = new StCodec(this.jwtDecoder, jwt);
+      this.codec = new StCodec(this.jwtDecoder, jwt, this.validationFactory);
     }
 
     return this.codec;
