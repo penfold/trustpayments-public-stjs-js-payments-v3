@@ -15,6 +15,8 @@ import { ConfigProvider } from '../../../../shared/services/config-provider/Conf
 import { ITranslator } from '../translator/ITranslator';
 import { ofType } from '../../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
+// @ts-ignore
+import { ValidationFactory } from '../validation/ValidationFactory';
 import { AllowedStylesService } from './AllowedStylesService';
 
 export class Input {
@@ -33,6 +35,7 @@ export class Input {
   protected translator: ITranslator;
   private allowedStyles: AllowedStylesService;
   private stopSubmitFormOnEnter: boolean;
+  protected validation: Validation;
 
   constructor(
     inputSelector: string,
@@ -40,8 +43,9 @@ export class Input {
     labelSelector: string,
     wrapperSelector: string,
     protected configProvider: ConfigProvider,
-    protected validation: Validation,
+    protected validationFactory: ValidationFactory,
   ) {
+    this.validation = this.validationFactory.create();
     this.messageBus = Container.get(MessageBusToken);
     this.allowedStyles = Container.get(AllowedStylesService);
     this.frame = Container.get(Frame);
@@ -59,7 +63,6 @@ export class Input {
   }
 
   init(): void {
-    this.validation = new Validation();
     this.addTabListener();
 
     this.configProvider.getConfig$().subscribe(config => {

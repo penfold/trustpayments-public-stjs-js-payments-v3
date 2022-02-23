@@ -1,4 +1,4 @@
-import { Container, Service } from 'typedi';
+import { Service } from 'typedi';
 import { Observable, of } from 'rxjs';
 import { ValidationResult } from 'joi';
 import { IAPMConfig } from '../../models/IAPMConfig';
@@ -7,18 +7,15 @@ import { APMName } from '../../models/APMName';
 import { APMValidator } from '../apm-validator/APMValidator';
 import { APMConfigError } from '../../models/errors/APMConfigError';
 import { APMA2AButtonConfig } from '../../models/APMA2AButtonConfig';
-import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { ITranslator } from '../../../../application/core/shared/translator/ITranslator';
 
 @Service()
 export class APMConfigResolver {
 
-  private translator: ITranslator;
-
   constructor(
-    private apmValidator: APMValidator
+    private apmValidator: APMValidator,
+    private translator: ITranslator
   ) {
-    this.translator = Container.get(TranslatorToken);
   }
 
   resolve(config: IAPMConfig): Observable<IAPMConfig> {

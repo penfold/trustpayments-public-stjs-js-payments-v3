@@ -17,7 +17,6 @@ import { IPaymentAuthorized } from '../../application/core/models/IPaymentAuthor
 import { IStyles } from '../../shared/model/config/IStyles';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import { MessageBus } from '../../application/core/shared/message-bus/MessageBus';
-import { Validation } from '../../application/core/shared/validation/Validation';
 import { Enrollment } from '../../application/core/models/constants/Enrollment';
 import { RequestType } from '../../shared/types/RequestType';
 import { EventScope } from '../../application/core/models/constants/EventScope';
@@ -36,7 +35,6 @@ export class CommonFrames {
   private submitOnError: boolean;
   private submitOnSuccess: boolean;
   private submitOnCancel: boolean;
-  private validation: Validation;
 
   constructor(
     private configProvider: ConfigProvider,
@@ -44,13 +42,12 @@ export class CommonFrames {
     private iframeFactory: IframeFactory,
     private jwtDecoder: JwtDecoder,
     private localStorage: BrowserLocalStorage,
-    private messageBus: IMessageBus
+    private messageBus: IMessageBus,
   ) {
   }
 
   init(): void {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
-    this.validation = new Validation();
 
     this.configProvider.getConfig$().subscribe(config => {
       this.dataCenterUrl = config.datacenterurl;

@@ -1,4 +1,4 @@
-import { Container, Service } from 'typedi';
+import { Service } from 'typedi';
 import { Observable, from, firstValueFrom } from 'rxjs';
 import { CustomerOutput } from '../../models/constants/CustomerOutput';
 import { PAYMENT_SUCCESS } from '../../models/constants/Translations';
@@ -17,16 +17,10 @@ import { FraudControlService } from '../../services/fraud-control/FraudControlSe
 
 @Service()
 export class Payment {
-  private fraudControlService: FraudControlService;
-  private notificationService: NotificationService;
-  private stTransport: StTransport;
-  private validation: Validation;
-
-  constructor() {
-    this.fraudControlService = Container.get(FraudControlService);
-    this.notificationService = Container.get(NotificationService);
-    this.stTransport = Container.get(StTransport);
-    this.validation = new Validation();
+  constructor(private stTransport: StTransport,
+              private validation: Validation,
+              private fraudControlService: FraudControlService,
+              private notificationService: NotificationService) {
   }
 
   async processPayment(
@@ -93,7 +87,7 @@ export class Payment {
   ): Promise<Record<string, unknown>> {
     const processPaymentRequestBody = { ...requestData };
 
-    if (responseData) {
+    if(responseData) {
       processPaymentRequestBody.cachetoken = responseData.cachetoken;
       processPaymentRequestBody.threedresponse = responseData.threedresponse;
       processPaymentRequestBody.pares = responseData.pares;
@@ -102,7 +96,7 @@ export class Payment {
 
     const fraudControlTid = await firstValueFrom(this.fraudControlService.getTransactionId());
 
-    if (fraudControlTid) {
+    if(fraudControlTid) {
       processPaymentRequestBody.fraudcontroltransactionid = fraudControlTid;
     }
 

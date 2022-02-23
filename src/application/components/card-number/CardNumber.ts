@@ -25,6 +25,7 @@ import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { EventScope } from '../../core/models/constants/EventScope';
 import { untilDestroy } from '../../../shared/services/message-bus/operators/untilDestroy';
+import { ValidationFactory } from '../../core/shared/validation/ValidationFactory';
 
 @Service()
 export class CardNumber extends Input {
@@ -49,11 +50,11 @@ export class CardNumber extends Input {
     configProvider: ConfigProvider,
     private iconFactory: IconFactory,
     private formatter: Formatter,
-    protected validation: Validation
+    protected validationFactory: ValidationFactory
   ) {
-    super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER, configProvider, validation);
+    super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER, configProvider, validationFactory);
     this.cardNumberField = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
-    this.validation = new Validation();
+    this.validation = this.validationFactory.create();
     this.isCardNumberValid = true;
     this.cardNumberLength = CardNumber.STANDARD_CARD_LENGTH;
     this.setFocusListener();

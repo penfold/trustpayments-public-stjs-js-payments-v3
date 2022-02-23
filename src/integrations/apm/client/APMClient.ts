@@ -44,7 +44,6 @@ export class APMClient {
     [APMName.WECHATPAY]: require('./images/wechatpay.svg'),
     [APMName.ZIP]: require('./images/zip.svg'),
   };
-  private destroy$: Observable<void>;
 
   constructor(
     private apmConfigResolver: APMConfigResolver,

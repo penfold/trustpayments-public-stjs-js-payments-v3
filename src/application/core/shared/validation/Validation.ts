@@ -1,7 +1,7 @@
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { BrandDetailsType } from '@trustpayments/ts-iin-lookup/dist/types';
 import { luhnCheck } from '@trustpayments/ts-luhn-check';
-import { Container, Service } from 'typedi';
+import { Container, ContainerInstance, Service } from 'typedi';
 import { StCodec } from '../../services/st-codec/StCodec';
 import { FormState } from '../../models/constants/FormState';
 import { ICard } from '../../models/ICard';
@@ -151,9 +151,9 @@ export class Validation {
   private messageBus: IMessageBus;
   private frame: Frame;
 
-  constructor(private translator: ITranslator = Container.get(TranslatorToken)) {
-    this.messageBus = Container.get(MessageBusToken);
-    this.frame = Container.get(Frame);
+  constructor(private container: ContainerInstance, private translator: ITranslator = Container.get(TranslatorToken)) {
+    this.messageBus = this.container.get(MessageBusToken);
+    this.frame = this.container.get(Frame);
     this.init();
   }
 

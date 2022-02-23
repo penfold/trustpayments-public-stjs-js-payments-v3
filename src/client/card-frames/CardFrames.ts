@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import Container, { Service } from 'typedi';
+import {  Service } from 'typedi';
 import { FormState } from '../../application/core/models/constants/FormState';
 import { IMessageBusEvent } from '../../application/core/models/IMessageBusEvent';
 import { IStyles } from '../../shared/model/config/IStyles';
@@ -18,7 +18,6 @@ import {
   SECURITY_CODE_COMPONENT_NAME,
   SECURITY_CODE_IFRAME,
 } from '../../application/core/models/constants/Selectors';
-import { Validation } from '../../application/core/shared/validation/Validation';
 import { ofType } from '../../shared/services/message-bus/operators/ofType';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../shared/model/config/IConfig';
@@ -26,8 +25,6 @@ import { PRIVATE_EVENTS, PUBLIC_EVENTS } from '../../application/core/models/con
 import { Frame } from '../../application/core/shared/frame/Frame';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
-import { ITranslator } from '../../application/core/shared/translator/ITranslator';
-import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
 import { Locale } from '../../application/core/shared/translator/Locale';
 import { IComponentsIds } from '../../shared/model/config/IComponentsIds';
 import { IStJwtPayload } from '../../application/core/models/IStJwtPayload';
@@ -40,8 +37,6 @@ export class CardFrames {
   private cardNumber: HTMLIFrameElement;
   private expirationDate: HTMLIFrameElement;
   private securityCode: HTMLIFrameElement;
-  private validation: Validation;
-  private translator: ITranslator;
   private messageBusEvent: IMessageBusEvent<{ message: string; }> = { data: { message: '' }, type: '' };
   private defaultPaymentType: string;
   private paymentTypes: string[];
@@ -72,7 +67,7 @@ export class CardFrames {
     private frame: Frame,
     private messageBus: IMessageBus,
     private jwtDecoder: JwtDecoder,
-    private payButton: PayButton,
+    private payButton: PayButton
   ) {
   }
 
@@ -85,7 +80,6 @@ export class CardFrames {
       this.jwt = config.jwt;
       this.origin = config.origin;
       this.styles = this.getStyles(config.styles);
-      this.translator = Container.get(TranslatorToken);
       this.params = {
         locale: this.jwtDecoder.decode<IStJwtPayload>(config.jwt).payload.locale || 'en_GB',
         origin: this.origin,
@@ -295,7 +289,6 @@ export class CardFrames {
     jwt: string,
     formId: string,
   ): void {
-    this.validation = new Validation();
     this.formId = formId;
     this.defaultPaymentType = defaultPaymentType;
     this.paymentTypes = paymentTypes;

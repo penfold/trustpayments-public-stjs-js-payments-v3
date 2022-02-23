@@ -11,7 +11,6 @@ module.exports = {
   entry: {
     st: [
       './src/shared/imports/polyfills.ts',
-      './src/bootstrap.ts',
       './src/client/dependency-injection/ServiceDefinitions.ts',
       './src/testing/ServicesOverrides.ts',
       './src/client/st/ST.ts',

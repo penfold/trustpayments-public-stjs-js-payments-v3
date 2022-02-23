@@ -45,6 +45,7 @@ import { IStJwtPayload } from '../../core/models/IStJwtPayload';
 import { EventScope } from '../../core/models/constants/EventScope';
 import { ApplePayClient } from '../../../integrations/apple-pay/client/ApplePayClient';
 import { FraudControlService } from '../../core/services/fraud-control/FraudControlService';
+import { ValidationFactory } from '../../core/shared/validation/ValidationFactory';
 
 @Service()
 export class ControlFrame {
@@ -90,7 +91,8 @@ export class ControlFrame {
     private visaCheckoutClient: VisaCheckoutClient,
     private applePayClient: ApplePayClient,
     private paymentController: PaymentController,
-    private translator: ITranslator
+    private translator: ITranslator,
+    private validationFactory: ValidationFactory
   ) {
     this.init();
     this.initVisaCheckout();
@@ -139,7 +141,6 @@ export class ControlFrame {
         })
       )
       .subscribe((event: IMessageBusEvent<string>) => {
-        this.setInstances();
         this.setFormFieldsValidities();
         this.formFieldChangeEvent(MessageBus.EVENTS.CHANGE_CARD_NUMBER, this.formFields.cardNumber);
         this.formFieldChangeEvent(MessageBus.EVENTS.CHANGE_EXPIRATION_DATE, this.formFields.expirationDate);
@@ -434,11 +435,6 @@ export class ControlFrame {
     this.formFieldsValidity.cardNumber.state = this.formFields.cardNumber.validity;
     this.formFieldsValidity.expirationDate.state = this.formFields.expirationDate.validity;
     this.formFieldsValidity.securityCode.state = this.formFields.securityCode.validity;
-  }
-
-  private setInstances(): void {
-    this.payment = new Payment();
-    this.validation = new Validation();
   }
 
   private updateMerchantFields(data: IMerchantData): void {

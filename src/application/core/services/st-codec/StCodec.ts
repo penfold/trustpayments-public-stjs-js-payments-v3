@@ -1,7 +1,6 @@
 import jwt_decode from 'jwt-decode';
 import { Container } from 'typedi';
-import { FormState } from '../../models/constants/FormState';
-import { IErrorData } from '../../models/IErrorData';
+
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IResponseData } from '../../models/IResponseData';
 import { IStRequest } from '../../models/IStRequest';
@@ -10,7 +9,6 @@ import {
   COMMUNICATION_ERROR_INVALID_REQUEST,
 } from '../../models/constants/Translations';
 import { MessageBus } from '../../shared/message-bus/MessageBus';
-import { Validation } from '../../shared/validation/Validation';
 // @ts-ignore
 import packageInfo from '../../../../../package.json';
 import { NotificationService } from '../../../../client/notification/NotificationService';
@@ -140,10 +138,10 @@ export class StCodec {
   }
 
   private static handleInvalidResponse() {
-    const validation = new Validation();
+    // const validation = new Validation()
     StCodec.publishResponse(StCodec.createCommunicationError());
     StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_RESPONSE);
-    validation.blockForm(FormState.AVAILABLE);
+    // validation.blockForm(FormState.AVAILABLE);
     StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
 
     return new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
@@ -186,7 +184,7 @@ export class StCodec {
 
   private static handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
     const translator = Container.get(TranslatorToken);
-    const validation = new Validation();
+    // const validation = new Validation();
 
     const { errorcode, errormessage, requesttypedescription } = responseContent;
 
@@ -211,10 +209,10 @@ export class StCodec {
     }
 
     if (responseContent.errordata) {
-      validation.getErrorData(StCodec.getErrorData(responseContent) as IErrorData);
+      // validation.getErrorData(StCodec.getErrorData(responseContent) as IErrorData);
     }
 
-    validation.blockForm(FormState.AVAILABLE);
+    // validation.blockForm(FormState.AVAILABLE);
     StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
     throw new GatewayError(errormessage, responseContent);
   }
