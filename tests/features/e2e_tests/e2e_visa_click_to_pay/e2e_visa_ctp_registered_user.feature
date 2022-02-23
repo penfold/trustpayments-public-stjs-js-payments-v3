@@ -3,25 +3,6 @@ Feature: Visa Click To Pay
   I want to use Visa Click To Pay payment method
   In order to check full payment functionality
 
-#tescase Sebastiana
-  Scenario: Successful payment - Unregistered VISA CTP user without registration
-    Given JS library configured by inline config BASIC_CONFIG
-    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
-    And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | orderreference          | order-01           |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billingemail            | FirstName@email.pl |
-      | billingcountryiso2a     | GB                 |
-      | currencyiso3a           | GBP                |
-    And User opens example page VISA_CTP
-    When User chooses VISA_CTP from APM list
-    And User fills VISA_CTP card details with defined card VISA_V21_FRICTIONLESS
-    And User reviews check-out page without registering as a new user
-    And User fills VISA_CTP one time password
-    Then User will see that VISA_CTP payment was successful
 
   Scenario Outline: Successful payment - Registered VISA CTP user on recognized device with saved credit cards
     Given JS library configured by inline config BASIC_CONFIG
@@ -38,7 +19,7 @@ Feature: Visa Click To Pay
     And User opens example page VISA_CTP
     When User chooses VISA_CTP from APM list
     And User selects string card on VISA_CTP popup
-    And User reviews check-out page without registering as a new user
+    And User reviews VISA_CTP checkout page
     Then User will see that VISA_CTP payment was successful
 
     Examples:
@@ -63,7 +44,7 @@ Feature: Visa Click To Pay
     And User opens example page VISA_CTP
     When User chooses VISA_CTP from APM list
     And User selects <string> card on VISA_CTP popup
-    And User reviews check-out page without registering as a new user
+    And User reviews VISA_CTP checkout page
     And User fills 3ds SDK challenge with <string> and submit
     Then User will see that VISA_CTP payment was successful
 
@@ -86,7 +67,7 @@ Feature: Visa Click To Pay
     And User opens example page VISA_CTP
     When User chooses VISA_CTP from APM list
     And User selects <string> card on VISA_CTP popup
-    And User reviews check-out page without registering as a new user
+    And User reviews VISA_CTP checkout page
     And User fills 3ds SDK challenge with <string> and submit
     Then User will see that VISA_CTP payment was unsuccessfull
 
@@ -110,7 +91,7 @@ Feature: Visa Click To Pay
     And User opens example page VISA_CTP
     When User chooses VISA_CTP from APM list
     And User selects string card on VISA_CTP popup
-    And User reviews check-out page without registering as a new user
+    And User reviews VISA_CTP checkout page
     Then User will see that VISA_CTP payment was declined
 
 
@@ -131,8 +112,84 @@ Feature: Visa Click To Pay
     And User login to VISA_CTP account with valid e-mail address
     And User fills VISA_CTP one time password
     And User selects string card on VISA_CTP popup
-    And User reviews check-out page without registering as a new user
+    And User reviews VISA_CTP checkout page
     Then User will see that VISA_CTP payment was successfull
 
 
+  Scenario: Successful payment - Registered VISA_CTP user on unrecognized device with saved credit cards and 3DS authentication
+    Given JS library configured by inline config BASIC_CONFIG
+    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value              |
+      | requesttypedescriptions | AUTH               |
+      | orderreference          | order-01           |
+      | baseamount              | 1000               |
+      | billingfirstname        | FirstName          |
+      | billingemail            | FirstName@email.pl |
+      | billingcountryiso2a     | GB                 |
+      | currencyiso3a           | GBP                |
+    And User opens example page VISA_CTP
+    When User chooses VISA_CTP from APM list
+    And User login to VISA_CTP account with valid e-mail address
+    And User fills VISA_CTP one time password
+    And User selects string card on VISA_CTP popup
+    And User reviews VISA_CTP checkout page
+    And User fills 3ds SDK challenge with <string> and submit
+    Then User will see that VISA_CTP payment was successfull
+
+  Scenario: Cancel payment - Registered VISA CTP user on recognized device with saved credit cards
+    Given JS library configured by inline config BASIC_CONFIG
+    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value              |
+      | requesttypedescriptions | ACCOUNTCHECK AUTH  |
+      | orderreference          | order-01           |
+      | baseamount              | 1000               |
+      | billingfirstname        | FirstName          |
+      | billingemail            | FirstName@email.pl |
+      | billingcountryiso2a     | GB                 |
+      | currencyiso3a           | GBP                |
+    And User opens example page VISA_CTP
+    When User chooses VISA_CTP from APM list
+    And User selects <string> card on VISA_CTP popup
+    And User closes VISA_CTP checkout page
+    Then User will see that VISA_CTP payment was cancelled
+
+  Scenario: Successful payment - Registered VISA CTP user adds new card details
+    Given JS library configured by inline config BASIC_CONFIG
+    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value              |
+      | requesttypedescriptions | ACCOUNTCHECK AUTH  |
+      | orderreference          | order-01           |
+      | baseamount              | 1000               |
+      | billingfirstname        | FirstName          |
+      | billingemail            | FirstName@email.pl |
+      | billingcountryiso2a     | GB                 |
+      | currencyiso3a           | GBP                |
+    And User opens example page VISA_CTP
+    When User chooses VISA_CTP from APM list
+    And User chooses to add new card on VISA_CTP popup
+    And User fills VISA_CTP card details with defined card MASTERCARD_FRICTIONLESS
+    And User reviews VISA_CTP checkout page
+    Then User will see that VISA_CTP payment was successful
+
+  Scenario: Unsuccessful card adding - invalid card details
+    Given JS library configured by inline config BASIC_CONFIG
+    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value              |
+      | requesttypedescriptions | ACCOUNTCHECK AUTH  |
+      | orderreference          | order-01           |
+      | baseamount              | 1000               |
+      | billingfirstname        | FirstName          |
+      | billingemail            | FirstName@email.pl |
+      | billingcountryiso2a     | GB                 |
+      | currencyiso3a           | GBP                |
+    And User opens example page VISA_CTP
+    When User chooses VISA_CTP from APM list
+    And User chooses to add new card on VISA_CTP popup
+    And User fills VISA_CTP card details with defined card MASTERCARD_INVALID_EXP_DATE_CARD
+    And User reviews VISA_CTP checkout page
+    Then User will see that VISA_CTP payment was successful
 
