@@ -53,14 +53,6 @@
   }
 }
 
-#st-ctp-separator, #st-ctp-lookup-btn, #st-ctp-registration {
-  display: none;
-
-  &.visible {
-    display: inline-block;
-  }
-}
-
 .st-form-expiry-date-wrapper {
   display: flex;
   justify-content: space-between;
@@ -76,4 +68,8 @@
   fieldset {
     margin: 15px 2px;
   }
+}
+
+#st-form .hidden {
+  display: none;
 }

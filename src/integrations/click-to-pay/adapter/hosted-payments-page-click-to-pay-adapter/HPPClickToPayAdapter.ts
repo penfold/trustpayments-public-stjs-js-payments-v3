@@ -10,7 +10,6 @@ import { EventScope } from '../../../../application/core/models/constants/EventS
 import { IMessageBusEvent } from '../../../../application/core/models/IMessageBusEvent';
 import { IFrameQueryingService } from '../../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentificationData';
-import { IHPPClickToPayCardList } from './IHPPClickToPayCardList';
 
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 
@@ -31,7 +30,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     return firstValueFrom(this.digitalTerminal.identifyUser(identificationData).pipe(map(response => !!response)));
   }
 
-  showCardsList(): Promise<IHPPClickToPayCardList> {
+  showCardList(): Promise<void> {
     return Promise.resolve(null);
   }
 
