@@ -1,4 +1,4 @@
-import { Container } from 'typedi';
+import { Container, ContainerInstance } from 'typedi';
 import { HttpClient } from '@trustpayments/http-client';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { StoreConfigProvider } from '../core/services/store-config-provider/StoreConfigProvider';
@@ -10,10 +10,13 @@ import { ApplePayPaymentMethod } from '../../integrations/apple-pay/application/
 import { APMPaymentMethod } from '../../integrations/apm/application/APMPaymentMethod';
 import { IGatewayClient } from '../core/services/gateway-client/IGatewayClient';
 import { StTransportGatewayClient } from '../core/services/gateway-client/StTransportGatewayClient';
-import '../../shared/dependency-injection/ServiceDefinitions';
+import { initializeContainer as initializeContainerShared } from '../../shared/dependency-injection/ServiceDefinitions';
 
-Container.set({ id: ConfigProvider, type: StoreConfigProvider });
-Container.set({ id: IHttpOptionsProvider, type: DefaultHttpOptionsProvider });
-Container.set({ id: HttpClient, type: HttpClient });
-Container.set({ id: IGatewayClient, type: StTransportGatewayClient });
-Container.import([JwtReducer, GooglePaymentMethod, ApplePayPaymentMethod, APMPaymentMethod]);
+export const initializeContainer = (container: ContainerInstance) => {
+  initializeContainerShared(container);
+  container.set({ id: ConfigProvider, type: StoreConfigProvider });
+  container.set({ id: IHttpOptionsProvider, type: DefaultHttpOptionsProvider });
+  container.set({ id: HttpClient, type: HttpClient });
+  container.set({ id: IGatewayClient, type: StTransportGatewayClient });
+  Container.import([JwtReducer, GooglePaymentMethod, ApplePayPaymentMethod, APMPaymentMethod]);
+}

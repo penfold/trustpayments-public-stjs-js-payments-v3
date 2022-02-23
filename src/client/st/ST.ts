@@ -56,6 +56,7 @@ import { GAEventType } from '../../application/core/integrations/google-analytic
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
 import { Uuid } from '../../application/core/shared/uuid/Uuid';
 import { SessionToken, WINDOW } from '../../shared/dependency-injection/InjectionTokens';
+import { initializeContainer } from '../dependency-injection/ServiceDefinitions';
 declare const ST_VERSION: string | undefined;
 @Service()
 export class ST {
@@ -497,5 +498,7 @@ export default (config: IConfig): ST => {
   container.set(SessionToken, id);
   container.set(WINDOW, window);
   container.set(ContainerInstance, container);
+  initializeContainer(container);
+
   return container.get(ClientBootstrap).run(config);
 };

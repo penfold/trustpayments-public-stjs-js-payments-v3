@@ -1,4 +1,4 @@
-import { Container } from 'typedi';
+import { Container, ContainerInstance } from 'typedi';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { MessageBusFactory } from '../../application/core/shared/message-bus/MessageBusFactory';
 import { ApplePayReducer } from '../../application/core/store/reducers/apple-pay/ApplePayReducer';
@@ -16,12 +16,15 @@ import { IFrameQueryingService } from '../services/message-bus/interfaces/IFrame
 import { FrameQueryingService } from '../services/message-bus/FrameQueryingService';
 import { MessageBusToken, StoreToken, TranslatorToken } from './InjectionTokens';
 
-Container.set({ id: IMessageBus, factory: [MessageBusFactory, 'create'] });
-Container.set({ id: MessageBusToken, factory: [MessageBusFactory, 'create'] });
-Container.set({ id: IStore, factory: [StoreFactory, 'create'] });
-Container.set({ id: StoreToken, factory: [StoreFactory, 'create'] });
-Container.set({ id: ITranslationProvider, type: TranslationProvider });
-Container.set({ id: ITranslator, type: TranslatorWithMerchantTranslations });
-Container.set({ id: TranslatorToken, type: TranslatorWithMerchantTranslations });
-Container.set({ id: IFrameQueryingService, type: FrameQueryingService });
-Container.import([ConfigReducer, StorageReducer, ApplePayReducer, InitialConfigReducer, LocaleSubscriber]);
+export const initializeContainer = (container: ContainerInstance) => {
+
+  container.set({ id: IMessageBus, factory: [MessageBusFactory, 'create'] });
+  container.set({ id: MessageBusToken, factory: [MessageBusFactory, 'create'] });
+  container.set({ id: IStore, factory: [StoreFactory, 'create'] });
+  container.set({ id: StoreToken, factory: [StoreFactory, 'create'] });
+  container.set({ id: ITranslationProvider, type: TranslationProvider });
+  container.set({ id: ITranslator, type: TranslatorWithMerchantTranslations });
+  container.set({ id: TranslatorToken, type: TranslatorWithMerchantTranslations });
+  container.set({ id: IFrameQueryingService, type: FrameQueryingService });
+  Container.import([ConfigReducer, StorageReducer, ApplePayReducer, InitialConfigReducer, LocaleSubscriber]);
+};

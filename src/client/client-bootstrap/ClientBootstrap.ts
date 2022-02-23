@@ -24,16 +24,18 @@ import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventType
 export class ClientBootstrap {
   private isAlreadyRunning = false;
 
-  constructor(private frameIdentifier: FrameIdentifier, private container: ContainerInstance) {}
+  constructor(private frameIdentifier: FrameIdentifier, private container: ContainerInstance) {
+  }
 
   run(config: IConfig): ST {
-    if (this.isAlreadyRunning) {
+    if(this.isAlreadyRunning) {
       this.container.get(ST).destroy();
       console.warn('The current instance of ST has been destroyed as a result of starting ST again');
     }
 
     this.isAlreadyRunning = true;
     this.frameIdentifier.setFrameName(MERCHANT_PARENT_FRAME);
+    this.container.set({ id: SentryService, type: SentryService });
     this.container.get(SentryService).init(environment.SENTRY.DSN, environment.SENTRY.ALLOWED_URLS);
     this.container.get(InterFrameCommunicator).init();
     this.container.get(FramesHub).init();

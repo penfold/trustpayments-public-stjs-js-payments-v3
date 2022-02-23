@@ -1,4 +1,4 @@
-import { Container, Service } from 'typedi';
+import { ContainerInstance, Service } from 'typedi';
 import { Observable } from 'rxjs';
 import { FrameIdentifier } from '../message-bus/FrameIdentifier';
 import { ParentFrameStorage } from './ParentFrameStorage';
@@ -10,8 +10,8 @@ import { isSynchronized } from './ISynchronizedStorage';
 export class BrowserLocalStorage implements IStorage {
   private readonly storage: IStorage;
 
-  constructor(private identifier: FrameIdentifier) {
-    this.storage = identifier.isParentFrame() ? Container.get(ParentFrameStorage) : Container.get(StoreBasedStorage);
+  constructor(private identifier: FrameIdentifier, private container: ContainerInstance) {
+    this.storage = identifier.isParentFrame() ? this.container.get(ParentFrameStorage) : this.container.get(StoreBasedStorage);
   }
 
   init(): void {
