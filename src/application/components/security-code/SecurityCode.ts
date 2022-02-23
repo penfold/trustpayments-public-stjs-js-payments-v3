@@ -14,7 +14,6 @@ import {
   SECURITY_CODE_MESSAGE,
   SECURITY_CODE_WRAPPER,
 } from '../../core/models/constants/Selectors';
-import { Validation } from '../../core/shared/validation/Validation';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
@@ -28,6 +27,7 @@ import { IStJwtPayload } from '../../core/models/IStJwtPayload';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { untilDestroy } from '../../../shared/services/message-bus/operators/untilDestroy';
 import { EventScope } from '../../core/models/constants/EventScope';
+import { ValidationFactory } from '../../core/shared/validation/ValidationFactory';
 
 @Service()
 export class SecurityCode extends Input {
@@ -45,9 +45,10 @@ export class SecurityCode extends Input {
     private localStorage: BrowserLocalStorage,
     private formatter: Formatter,
     private jwtDecoder: JwtDecoder,
-    protected validation: Validation
+    protected validationFactory: ValidationFactory
   ) {
-    super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider, validation);
+    super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider, validationFactory);
+    this.validation = this.validationFactory.create();
     this.securityCodeLength = UNKNOWN_CVC;
     this.configProvider.getConfig$().subscribe((config: IConfig) => {
       this.placeholder = this.getPlaceholder(this.securityCodeLength);

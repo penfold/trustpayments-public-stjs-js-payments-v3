@@ -16,11 +16,11 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { Styler } from '../../core/shared/styler/Styler';
 import { LABEL_EXPIRATION_DATE } from '../../core/models/constants/Translations';
-import { Validation } from '../../core/shared/validation/Validation';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { untilDestroy } from '../../../shared/services/message-bus/operators/untilDestroy';
 import { EventScope } from '../../core/models/constants/EventScope';
+import { ValidationFactory } from '../../core/shared/validation/ValidationFactory';
 
 @Service()
 export class ExpirationDate extends Input {
@@ -38,7 +38,7 @@ export class ExpirationDate extends Input {
   constructor(
     configProvider: ConfigProvider,
     private formatter: Formatter,
-    protected validation: Validation
+    protected validationFactory: ValidationFactory
   ) {
     super(
       EXPIRATION_DATE_INPUT,
@@ -46,12 +46,13 @@ export class ExpirationDate extends Input {
       EXPIRATION_DATE_LABEL,
       EXPIRATION_DATE_WRAPPER,
       configProvider,
-      validation
+      validationFactory
     );
     super.setEventListener(MessageBus.EVENTS.BLUR_EXPIRATION_DATE);
     super.setEventListener(MessageBus.EVENTS.FOCUS_EXPIRATION_DATE);
     this.setAttributes({ pattern: ExpirationDate.INPUT_PATTERN });
     this.setDisableListener();
+    this.validation = this.validationFactory.create();
     this.validation.backendValidation(
       this.inputElement,
       this.messageElement,
