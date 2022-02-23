@@ -223,7 +223,9 @@
                 </button>
               </div>
           </div>
+          </div>
         </fieldset>
+        <div id="st-ctp-login"></div>
         <fieldset class="st-form__fieldset">
           <legend>Logs:</legend>
           <textarea id="st-log-area" rows="20" class="st-form__input"></textarea>
@@ -238,7 +240,7 @@
         var inlineConfig = params.get('inlineConfig') ? JSON.parse(params.get('inlineConfig')) : '';
         var jwt = params.get('jwt') || '';
         var updatedJwt = params.get('updatedJwt') || '';
-  
+
         Promise.all([getConfig()])
           .then(function (configValues) {
             var config = configValues[0];
@@ -278,7 +280,7 @@
 
           return window.configJWT('<%= CONFIG_URL %>/jwtdata.json');
         }
-        
+
         function checkIsUserRecognized(isUserRecognized) {
           isUserRecognized.then(isRecognized => {
             if (!isRecognized) {
@@ -302,6 +304,7 @@
             .then(adapter => adapter.init(clickToPayAdapterInitParams))
             .then(adapter => {
               console.log('CTP adapter is initialized');
+              setLookupMyCardsClickListener(adapter);
               // TODO do something with adapter
               checkIsUserRecognized(adapter.isRecognized());
             })
@@ -332,6 +335,16 @@
           });
 
           return st;
+        }
+
+        function setLookupMyCardsClickListener(adapterInstance) {
+          document.querySelector('#st-ctp-lookup-btn').addEventListener('click', () => {
+            adapterInstance.identifyUser().then(result => {
+              // TODO show card list here
+              console.log('identified: %s', result)
+              }
+            ).catch(e => console.error(e));
+          });
         }
 
         function updateJwtListener(st, updatedJwt) {

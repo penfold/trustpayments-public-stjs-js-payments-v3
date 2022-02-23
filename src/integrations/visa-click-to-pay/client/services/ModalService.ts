@@ -1,30 +1,28 @@
-import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { Service } from 'typedi';
 import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
-import { modalSignInEmail } from './ModalContent';
+import { ModalFactory } from './ModalFactory';
 
 const modalTargetElement = 'st-modal-wrapper';
-const modalContentElement = 'modal';
-const closeElement = 'st-modal-close-btn';
+const modalContentElement = 'st-modal';
+const openedModalClass = 'st-modal--open';
+const notificationClass = 'st-modal__notification';
 
 @Service()
 export class ModalService {
-  private modalWrapperElement: Element;
+  private modalWrapperElement: HTMLElement;
   private modalOpened$ = new BehaviorSubject<boolean>(undefined);
   private modalContent$ = new Subject<HTMLElement>();
 
-  constructor() {
+  constructor(private modalFactory: ModalFactory) {
+    this.modalWrapperElement = DomMethods.createHtmlElement({ id: modalTargetElement }, 'div');
+    DomMethods.appendChildIntoDOM('body', this.modalWrapperElement);
     this.displayModal();
-    // example usage:
-    this.show(modalSignInEmail);
   }
 
-  show(content: HTMLElement): void {
-    this.modalWrapperElement = DomMethods.createHtmlElement({ id: modalTargetElement }, 'div');
-    document.body.appendChild(this.modalWrapperElement);
+  show(content: HTMLElement){
     this.modalContent$.next(content);
     this.modalOpened$.next(true);
-    this.closeModalListener();
   }
 
   hide(): void {
@@ -32,25 +30,38 @@ export class ModalService {
     this.modalContent$.next(null);
   }
 
+  showNotification(notificationText: string){
+    const notificationContainer = document.querySelector('.st-modal__header');
+    if(!notificationContainer){
+      return
+    }
+    const notificationElement = document.createElement('div');
+    notificationElement.classList.add(notificationClass);
+    notificationElement.innerText = notificationText;
+
+    notificationContainer.appendChild(notificationElement);
+  }
   private displayModal(): void {
-    combineLatest([this.modalOpened$,this.modalContent$]).subscribe(
+    combineLatest([this.modalOpened$, this.modalContent$]).subscribe(
       ([modalOpen, modalContent]) => {
         if (modalOpen) {
-          document.getElementById(modalTargetElement).appendChild(DomMethods.createHtmlElement({ class: modalContentElement }, 'div'));
-          document.getElementsByClassName(modalContentElement)[0].appendChild(modalContent);
-          document.getElementById(modalTargetElement).classList.add('open');
+          const modalContentWrapper = DomMethods.createHtmlElement({ class: modalContentElement }, 'div');
+          const headerElement = this.modalFactory.createModalHeader(()=>this.hide());
+          document.getElementById(modalTargetElement).appendChild(modalContentWrapper);
+          modalContentWrapper.appendChild(headerElement);
+          modalContentWrapper.appendChild(modalContent);
+          document.getElementById(modalTargetElement).classList.add(openedModalClass);
+
         } else {
-          document.getElementById(modalTargetElement).classList.remove('open');
-          document.getElementsByClassName(modalContentElement)[0].remove();
+          document.getElementById(modalTargetElement)?.classList.remove(openedModalClass);
+          DomMethods.removeElement(document.querySelector(`.${modalContentElement}`));
         }
       }
     );
   }
-  
-  private closeModalListener(): void {
-    document.getElementById(closeElement).addEventListener('click', event => {
-      event.preventDefault();
-      this.hide();
-    });
+
+  clearNotifications() {
+    const notifications = document.querySelectorAll(`.${notificationClass}`);
+    notifications.forEach(element=>DomMethods.removeElement(element));
   }
 }
