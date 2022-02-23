@@ -19,83 +19,162 @@
         <h1 class="st-header__title">Visa CTP Form</h1>
       </header>
       <form role="form" name="st-form" id="st-form" action="https://www.example.com" class="st-form" autocomplete="off" novalidate>
-        <fieldset class="st-form__fieldset">
-          <legend>Billing details:</legend>
-          <div class="st-form__section st-form__section--horizontal">
-            <div class="st-form__field">
-              <label for="st-form-title" class="st-form__label">
-                Title
-              </label>
-              <input type="text" name="title" id="st-form-title" class="st-form__input"/>
+        <div class="st-form__fieldset-wrapper">
+          <fieldset class="st-form__fieldset">
+            <legend>Billing details:</legend>
+            <div class="st-form__section st-form__section--horizontal">
+              <div class="st-form__field">
+                <label for="st-form-title" class="st-form__label">
+                  Title
+                </label>
+                <input type="text" name="title" id="st-form-title" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-first-name" class="st-form__label">
+                  First name
+                </label>
+                <input type="text" name="firstName" id="st-form-first-name" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-last-name" class="st-form__label">
+                  Last name
+                </label>
+                <input type="text" name="lastName" id="st-form-last-name" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-house-name" class="st-form__label">
+                  House name/no.
+                </label>
+                <input type="text" name="houseName" id="st-form-house-name" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-street" class="st-form__label">
+                  Street
+                </label>
+                <input type="text" name="street" id="st-form-street" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-town" class="st-form__label">
+                  Town
+                </label>
+                <input type="text" name="town" id="st-form-town" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-county" class="st-form__label">
+                  County
+                </label>
+                <input type="text" name="county" id="st-form-county" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-country" class="st-form__label">
+                  Country
+                </label>
+                <input type="text" name="country" id="st-form-country" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-post-code" class="st-form__label">
+                  Post code
+                </label>
+                <input type="text" name="postCode" id="st-form-post-code" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-email" class="st-form__label">
+                  Email
+                </label>
+                <input type="text" name="email" id="st-form-email" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-telephone" class="st-form__label">
+                  Telephone
+                </label>
+                <input type="text" name="telephone" id="st-form-telephone" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-telephone-type" class="st-form__label">
+                  Telephone type
+                </label>
+                <input type="text" name="telephoneType" id="st-form-telephone-type" class="st-form__input"/>
+              </div>
             </div>
-            <div class="st-form__field">
-              <label for="st-form-first-name" class="st-form__label">
-                First name
-              </label>
-              <input type="text" name="firstName" id="st-form-first-name" class="st-form__input"/>
+          </fieldset>
+          <fieldset class="st-form__fieldset">
+            <legend>Delivery details:</legend>
+            <div class="st-form__section st-form__section--horizontal">
+              <div class="st-form__field">
+                <label for="st-form-title-d" class="st-form__label">
+                  Title
+                </label>
+                <input type="text" name="dtitle" id="st-form-title-d" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-first-name-d" class="st-form__label">
+                  First name
+                </label>
+                <input type="text" name="dfirstName" id="st-form-first-name-d" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-last-name-d" class="st-form__label">
+                  Last name
+                </label>
+                <input type="text" name="dlastName" id="st-form-last-name-d" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-house-name-d" class="st-form__label">
+                  House name/no.
+                </label>
+                <input type="text" name="dhouseName" id="st-form-house-name-d" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-street-d" class="st-form__label">
+                  Street
+                </label>
+                <input type="text" name="dstreet" id="st-form-street-d" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-town-d" class="st-form__label">
+                  Town
+                </label>
+                <input type="text" name="dtown" id="st-form-town-d" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-county-d" class="st-form__label">
+                  County
+                </label>
+                <input type="text" name="dcounty" id="st-form-county-d" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-country-d" class="st-form__label">
+                  Country
+                </label>
+                <input type="text" name="dcountry" id="st-form-country-d" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-post-code-d" class="st-form__label">
+                  Post code
+                </label>
+                <input type="text" name="dpostCode" id="st-form-post-code-d" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-email-d" class="st-form__label">
+                  Email
+                </label>
+                <input type="text" name="demail" id="st-form-email-d" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-telephone-d" class="st-form__label">
+                  Telephone
+                </label>
+                <input type="text" name="dtelephone" id="st-form-telephone-d" class="st-form__input"/>
+              </div>
+              <div class="st-form__field">
+                <label for="st-form-telephone-type-d" class="st-form__label">
+                  Telephone type
+                </label>
+                <input type="text" name="dtelephoneType" id="st-form-telephone-type-d" class="st-form__input"/>
+              </div>
             </div>
-            <div class="st-form__field">
-              <label for="st-form-last-name" class="st-form__label">
-                Last name
-              </label>
-              <input type="text" name="lastName" id="st-form-last-name" class="st-form__input"/>
-            </div>
-            <div class="st-form__field">
-              <label for="st-form-house-name" class="st-form__label">
-                House name/no.
-              </label>
-              <input type="text" name="houseName" id="st-form-house-name" class="st-form__input"/>
-            </div>
-            <div class="st-form__field">
-              <label for="st-form-street" class="st-form__label">
-                Street
-              </label>
-              <input type="text" name="street" id="st-form-street" class="st-form__input"/>
-            </div>
-            <div class="st-form__field">
-              <label for="st-form-town" class="st-form__label">
-                Town
-              </label>
-              <input type="text" name="town" id="st-form-town" class="st-form__input"/>
-            </div>
-            <div class="st-form__field">
-              <label for="st-form-county" class="st-form__label">
-                County
-              </label>
-              <input type="text" name="county" id="st-form-county" class="st-form__input"/>
-            </div>
-            <div class="st-form__field">
-              <label for="st-form-country" class="st-form__label">
-                Country
-              </label>
-              <input type="text" name="country" id="st-form-country" class="st-form__input"/>
-            </div>
-            <div class="st-form__field">
-              <label for="st-form-post-code" class="st-form__label">
-                Post code
-              </label>
-              <input type="text" name="postCode" id="st-form-post-code" class="st-form__input"/>
-            </div>
-            <div class="st-form__field">
-              <label for="st-form-email" class="st-form__label">
-                Email
-              </label>
-              <input type="text" name="email" id="st-form-email" class="st-form__input"/>
-            </div>
-            <div class="st-form__field">
-              <label for="st-form-telephone" class="st-form__label">
-                Telephone
-              </label>
-              <input type="text" name="telephone" id="st-form-telephone" class="st-form__input"/>
-            </div>
-            <div class="st-form__field">
-              <label for="st-form-telephone-type" class="st-form__label">
-                Telephone type
-              </label>
-              <input type="text" name="telephoneType" id="st-form-telephone-type" class="st-form__input"/>
-            </div>
-          </div>
-        </fieldset>
+          </fieldset>
+        </div>
         <fieldset class="st-form__fieldset">
           <legend>Payment details:</legend>
           <div class="st-form__section st-form__section--horizontal">
@@ -144,6 +223,10 @@
                 </button>
               </div>
           </div>
+        </fieldset>
+        <fieldset class="st-form__fieldset">
+          <legend>Logs:</legend>
+          <textarea id="st-log-area" rows="20" class="st-form__input"></textarea>
         </fieldset>
       </form>
     </main>
@@ -226,15 +309,46 @@
 
           updateJwtListener(st, updatedJwt);
 
+          st.on('paymentInitStarted', function (data) {
+            printLogs({name: data.name, step: 'PAYMENT INIT STARTED'});
+          });
+          st.on('paymentInitCompleted', function (data) {
+            printLogs({name: data.name, step: 'PAYMENT INIT COMPLETED'});
+          });
+          st.on('paymentInitFailed', function (data) {
+            printLogs({name: data.name, step: 'PAYMENT INIT FAILED'});
+          });
+          st.on('paymentStarted', function (data) {
+            printLogs({name: data.name, step: 'PAYMENT STARTED'});
+          });
+          st.on('paymentCompleted', function (data) {
+            printLogs({name: data.name, step: 'PAYMENT COMPLETED'});
+          });
+          st.on('paymentFailed', function (data) {
+            printLogs({name: data.name, step: 'PAYMENT FAILED'});
+          });
+          st.on('paymentCanceled', function (data) {
+            printLogs({name: data.name, step: 'PAYMENT CANCELED'});
+          });
+
           return st;
         }
 
         function updateJwtListener(st, updatedJwt) {
           // todo: update element id for testing purposes
-          document.getElementById('example-form-amount').addEventListener('input', function () {
+          document.getElementById('st-form-title-d').addEventListener('input', function () {
               st.updateJWT(updatedJwt);
             }
           );
+        }
+
+        function printLogs(logs) {
+          var outputElement = document.getElementById('st-log-area');
+          if (typeof logs === 'object') {
+            logs = JSON.stringify(logs, null, 2);
+          }
+
+          outputElement.value += '' + logs + '\n';
         }
       });
   </script>

@@ -69,3 +69,11 @@
     max-width: 45%;
   }
 }
+
+.st-form__fieldset-wrapper {
+  display: flex;
+
+  fieldset {
+    margin: 15px 2px;
+  }
+}
