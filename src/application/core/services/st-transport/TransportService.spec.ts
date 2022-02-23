@@ -14,7 +14,7 @@ import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestT
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { GatewayError } from '../st-codec/GatewayError';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
-import { SentryBreadcumbsCategories } from '../../../../shared/services/sentry/SentryBreadcrumbsCategories';
+import { EventScope } from '../../models/constants/EventScope';
 import { TransportService } from './TransportService';
 import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
@@ -116,8 +116,19 @@ describe('TransportService', () => {
 
     it('adds sentry breadcrumbs on request and response', done => {
       transportService.sendRequest(request).subscribe(() => {
-        verify(sentryServiceMock.addBreadcrumb(SentryBreadcumbsCategories.GATEWAY_REQUEST, 'requestid: test-123, requesttypedescriptions: A*UTH')).once();
-        verify(sentryServiceMock.addBreadcrumb(SentryBreadcumbsCategories.GATEWAY_RESPONSE, 'errorcode: 0, errormessage: SUCCESS, requestreference: test')).once();
+
+        verify(messageBusMock.publish(deepEqual({
+          type: PUBLIC_EVENTS.GATEWAY_REQUEST_SEND,
+          data: {
+            customMessage: 'requestid: test-123, requesttypedescriptions: A*UTH',
+          },
+        }), EventScope.ALL_FRAMES)).once();
+        verify(messageBusMock.publish(deepEqual({
+          type: PUBLIC_EVENTS.GATEWAY_RESPONSE_RECEIVED,
+          data: {
+            customMessage: 'errorcode: 0, errormessage: SUCCESS, requestreference: test',
+          },
+        }), EventScope.ALL_FRAMES)).once();
         done();
       });
     });
