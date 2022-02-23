@@ -1,18 +1,30 @@
-import { Observable, of } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { Uuid } from '../../../application/core/shared/uuid/Uuid';
 import { environment } from '../../../environments/environment';
 import { SrcAggregate } from './SrcAggregate';
 import { IInitData } from './interfaces/IInitData';
+import { IAggregatedProfiles } from './interfaces/IAggregatedProfiles';
+import { IInitialCheckoutData } from './interfaces/IInitialCheckoutData';
+import { ICheckoutResponse } from './ISrc';
+import { CheckoutDataTransformer } from './CheckoutDataTransformer';
+import { UserIdentificationService } from './UserIdentificationService';
+import { IdentificationFailureReason } from './IdentificationFailureReason';
+import { IIdentificationResult } from './interfaces/IIdentificationResult';
 import { IIdentificationData } from './interfaces/IIdentificationData';
 
 @Service()
 export class DigitalTerminal {
   private idTokens: string[];
   private srciTransactionId: string;
+  private srcProfiles: IAggregatedProfiles;
 
-  constructor(private srcAggregate: SrcAggregate) {
+  constructor(
+    private srcAggregate: SrcAggregate,
+    private checkoutDataTransformer: CheckoutDataTransformer,
+    private userIdentificationService: UserIdentificationService
+  ) {
   }
 
   init(data: IInitData): Observable<void> {
@@ -29,13 +41,40 @@ export class DigitalTerminal {
 
   isRecognized(): Observable<boolean> {
     return this.srcAggregate.isRecognized().pipe(
-      tap(result => { this.idTokens = [...this.idTokens, ...result.idTokens] }),
-      map(result => result.recognized),
-      tap(() => console.log(this.idTokens)),
+      tap(result => {
+        this.idTokens = [...this.idTokens, ...result.idTokens];
+      }),
+      map(result => result.recognized)
     );
   }
 
-  identifyUser(identificationData: IIdentificationData): Observable<boolean> {
-    return of(false);
+  getSrcProfiles(): Observable<IAggregatedProfiles> {
+    return this.srcAggregate.getSrcProfile(this.idTokens).pipe(
+      tap(profiles => {
+        this.srcProfiles = profiles;
+      })
+    );
+  }
+
+  identifyUser(identificationData: IIdentificationData): Observable<IIdentificationResult> {
+    return this.userIdentificationService.identifyUser(this.srcAggregate, identificationData).pipe(
+      tap(result => {
+        this.idTokens.push(result.idToken);
+      }),
+      map(result => ({
+        isSuccessful: Boolean(result.idToken),
+        failureReason: IdentificationFailureReason.OTHER,
+      }))
+    );
+  }
+
+  checkout(data: IInitialCheckoutData): Observable<ICheckoutResponse> {
+    return this.checkoutDataTransformer.transform(data, this.srciTransactionId, this.srcProfiles).pipe(
+      switchMap(({ checkoutData, srcName }) => this.srcAggregate.checkout(srcName, checkoutData))
+    );
+  }
+
+  unbindAppInstance(): Observable<undefined> {
+    return this.srcAggregate.unbindAppInstance();
   }
 }

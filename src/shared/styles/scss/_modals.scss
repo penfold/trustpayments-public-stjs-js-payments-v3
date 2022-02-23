@@ -14,12 +14,12 @@
   transition: all 0.3s;
 }
 
-#st-modal-wrapper.open {
+#st-modal-wrapper.st-modal--open {
   visibility: visible;
   opacity: 1;
 }
 
-.modal {
+.st-modal {
   max-width: 500px;
   max-height: 500px;
   width: 100%;
@@ -46,11 +46,11 @@
   }
 }
 
-.header {
+.st-modal__header {
   text-align: center;
 }
 
-.btn-close {
+#st-modal__close-btn {
   position: absolute;
   right: 15px;
   top: 12px;
@@ -60,4 +60,10 @@
 .number-inputs {
   display: flex;
   justify-content: center;
+}
+
+.st-modal__notification{
+  line-height: 2;
+  background: red;
+  color: white;
 }

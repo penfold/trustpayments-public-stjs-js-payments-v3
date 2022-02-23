@@ -1,5 +1,5 @@
 import { Observable, switchMap } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { ISrcProvider } from '../ISrcProvider';
 import { ISrc } from '../ISrc';
@@ -7,10 +7,12 @@ import { ConfigProvider } from '../../../../shared/services/config-provider/Conf
 import { environment } from '../../../../environments/environment';
 import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
 import { SrcName } from '../SrcName';
+import { SrcProviderToken } from '../../../../client/dependency-injection/InjectionTokens';
 
-@Service()
+@Service({ id: SrcProviderToken, multiple: true })
 export class VisaSrcProvider implements ISrcProvider {
   private sdkUrl: Observable<string>;
+  private src: Observable<ISrc>;
 
   constructor(private configProvider: ConfigProvider) {
     this.sdkUrl = configProvider.getConfig$().pipe(
@@ -20,14 +22,7 @@ export class VisaSrcProvider implements ISrcProvider {
         return config.livestatus ? PROD : SANDBOX;
       }),
     );
-  }
-
-  getSrcName(): SrcName {
-    return SrcName.VISA;
-  }
-
-  getSrc(): Observable<ISrc> {
-    return this.sdkUrl.pipe(
+    this.src = this.sdkUrl.pipe(
       switchMap(sdkUrl => DomMethods.insertScript('head', { src: sdkUrl })),
       map(() => {
         // @ts-ignore
@@ -36,6 +31,15 @@ export class VisaSrcProvider implements ISrcProvider {
 
         return vSrc;
       }),
+      shareReplay(1),
     );
+  }
+
+  getSrcName(): SrcName {
+    return SrcName.VISA;
+  }
+
+  getSrc(): Observable<ISrc> {
+    return this.src;
   }
 }

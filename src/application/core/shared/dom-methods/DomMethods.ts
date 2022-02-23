@@ -155,7 +155,7 @@ export class DomMethods {
   }
 
   static removeElement(element: Element): void {
-    element.parentNode.removeChild(element);
+    element?.parentNode.removeChild(element);
   }
 
   static redirect(url: string): void {
