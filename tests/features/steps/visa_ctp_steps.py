@@ -24,26 +24,36 @@ def step_impl(context, card: Card):
     raise NotImplementedError(u'User fills VISA_CTP card details with defined card:')
 
 
-@step("User reviews check-out page (?P<condition>.+) registering as a new user")
-def step_impl(context, condition):
+@step('User reviews VISA_CTP checkout page')
+def step_impl(context):
     raise NotImplementedError(u'STEP: And User reviews check-out page <condition> registering as a new user')
 
 
-@step("User fills VISA_CTP one time password")
+@step('User fills VISA_CTP one time password')
 def step_impl(context):
     raise NotImplementedError(u'STEP: And User fills VISA_CTP one time password')
 
 
-@then("User will see that VISA_CTP payment was (?P<param>.+)")
+@then('User will see that VISA_CTP payment was (?P<param>.+)')
 def step_impl(context, param):
     raise NotImplementedError(u'STEP: Then User will see that VISA_CTP payment was <param>')
 
 
-@step("User selects (?P<string>.+) card on VISA_CTP popup")
+@step('User selects (?P<string>.+) card on VISA_CTP popup')
 def step_impl(context, string):
     raise NotImplementedError(u'STEP: And User selects <string> card on VISA_CTP popup')
 
 
-@step("User login to VISA_CTP account with valid e-mail address")
+@step('User login to VISA_CTP account with valid e-mail address')
 def step_impl(context):
     raise NotImplementedError(u'STEP: And User login to VISA_CTP account with valid e-mail address')
+
+
+@step("User closes VISA_CTP checkout page")
+def step_impl(context):
+    raise NotImplementedError(u'STEP: And User cancels payment on checkout page')
+
+
+@step("User chooses to add new card on VISA_CTP popup")
+def step_impl(context):
+    raise NotImplementedError(u'STEP: And User chooses to add new card on VISA_CTP popup')
