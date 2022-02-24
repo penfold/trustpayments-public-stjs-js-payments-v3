@@ -19,7 +19,7 @@ import { GatewayError } from '../st-codec/GatewayError';
 import { TimeoutDetailsType } from '../../../../shared/services/sentry/RequestTimeout';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
-import { SentryBreadcumbsCategories } from '../../../../shared/services/sentry/SentryBreadcrumbsCategories';
+import { EventScope } from '../../models/constants/EventScope';
 import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
 type IBaseResponseType = IRequestTypeResponse & IJwtResponse;
@@ -34,8 +34,9 @@ export class TransportService {
     private httpOptionsProvider: IHttpOptionsProvider,
     private messageBus: IMessageBus,
     private sentryService: SentryService,
-    private jwtDecoder: JwtDecoder,
-  ) {}
+    private jwtDecoder: JwtDecoder
+  ) {
+  }
 
   sendRequest<T extends IBaseResponseType>(request: IStRequest, gatewayUrl?: string): Observable<T> {
     const gatewayUrl$: Observable<string> = gatewayUrl
@@ -46,21 +47,31 @@ export class TransportService {
     let resolvedUrl = '';
 
     return gatewayUrl$.pipe(
-      tap((url: string) => { resolvedUrl = url }),
+      tap((url: string) => {
+        resolvedUrl = url;
+      }),
       tap(() => {
         const decodedJwt = this.jwtDecoder.decode(requestObject.jwt);
         // sentry filters out messages with "AUTH"
         const requestTypeMessage = `${(decodedJwt.payload as IStJwtPayload).requesttypedescriptions}`.replace('AUTH', 'A*UTH');
-        this.sentryService.addBreadcrumb(SentryBreadcumbsCategories.GATEWAY_REQUEST, `requestid: ${requestObject.request[0].requestid}, requesttypedescriptions: ${requestTypeMessage}`);
+        this.messageBus.publish({
+          type: PUBLIC_EVENTS.GATEWAY_REQUEST_SEND,
+          data: {
+            customMessage: `requestid: ${requestObject.request[0].requestid}, requesttypedescriptions: ${requestTypeMessage}`,
+          },
+        }, EventScope.ALL_FRAMES);
+
       }),
       switchMap(url => this.httpClient.post$(url, requestObject, httpOptions)),
       map((response: IHttpClientResponse<IJwtResponse>) => this.responseDecoder.decode(response)),
       tap((response: IDecodedResponse) => {
         const { errorcode, errormessage } = response.customerOutput;
-        this.sentryService.addBreadcrumb(
-          SentryBreadcumbsCategories.GATEWAY_RESPONSE,
-          `errorcode: ${errorcode}, errormessage: ${errormessage}, requestreference: ${response.requestreference}`,
-        );
+        this.messageBus.publish({
+          type: PUBLIC_EVENTS.GATEWAY_RESPONSE_RECEIVED,
+          data: {
+            customMessage: `errorcode: ${errorcode}, errormessage: ${errormessage}, requestreference: ${response.requestreference}`,
+          },
+        }, EventScope.ALL_FRAMES);
         if (Number(errorcode) !== 0) {
           this.sentryService.sendCustomMessage(
             new GatewayError(`Gateway error - ${errormessage}`, response.customerOutput)
@@ -70,23 +81,27 @@ export class TransportService {
       }),
       map((response: IDecodedResponse) => ({ ...response.customerOutput, jwt: response.responseJwt } as T)),
       catchError((error: Error) => {
-        if (error.message.startsWith('timeout')) {
-          this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', { originalError: error, type: TimeoutDetailsType.GATEWAY, requestUrl: resolvedUrl }));
+        if(error.message.startsWith('timeout')) {
+          this.sentryService.sendCustomMessage(new RequestTimeoutError('Request timeout', {
+            originalError: error,
+            type: TimeoutDetailsType.GATEWAY,
+            requestUrl: resolvedUrl,
+          }));
         } else {
           this.sentryService.sendCustomMessage(new GatewayError(`Gateway error - ${error.message}`, error));
         }
         this.resetJwt();
         return throwError(error);
-      }),
+      })
     );
   }
 
   private handleJwtUpdates(response: IDecodedResponse): void {
-    if (Number(response.customerOutput.errorcode) !== 0) {
+    if(Number(response.customerOutput.errorcode) !== 0) {
       return this.resetJwt();
     }
 
-    if (response.updatedMerchantJwt) {
+    if(response.updatedMerchantJwt) {
       this.messageBus.publish({ type: PUBLIC_EVENTS.JWT_REPLACED, data: response.updatedMerchantJwt });
     }
   }

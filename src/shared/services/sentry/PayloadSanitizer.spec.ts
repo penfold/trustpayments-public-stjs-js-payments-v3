@@ -36,7 +36,7 @@ describe('Payload Sanitizer', () => {
         baseamount: '1000',
         currencyiso3a: 'GBP',
         pan: '***',
-        requesttypedescriptions: ['THREEDQUERY', 'AUTH'],
+        requesttypedescriptions: ['THREEDQUERY', 'A*UTH'],
         sitereference: 'test_jsmanualcardinal91921',
         customerprefixname: '***',
         customerfirstname: '***',
