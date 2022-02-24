@@ -32,6 +32,8 @@ def step_impl(context, register):
         pass
     elif register in "and cancels payment":
         pass
+    elif register in "and unbinds device":
+        pass
     raise NotImplementedError(u'STEP: And User reviews check-out page <condition> registering as a new user')
 
 
