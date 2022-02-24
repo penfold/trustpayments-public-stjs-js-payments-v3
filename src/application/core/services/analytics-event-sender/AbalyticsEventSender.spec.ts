@@ -2,20 +2,20 @@ import { instance, mock, verify } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { SimpleMessageBus } from '../../shared/message-bus/SimpleMessageBus';
-import { GAEventType } from './events';
-import { GoogleAnalytics } from './GoogleAnalytics';
-import { PaymentEventsSubscriber } from './PaymentEventsSubscriber';
+import { GAEventType } from '../../integrations/google-analytics/events';
+import { GoogleAnalytics } from '../../integrations/google-analytics/GoogleAnalytics';
+import { AnalyticsEventSender } from './AnalyticsEventSender';
 
 describe('register()', () => {
-  let paymentEventsSubscriber: PaymentEventsSubscriber;
+  let eventsMessageSender: AnalyticsEventSender;
   let googleAnalyticsMock: GoogleAnalytics;
   let messageBus: IMessageBus;
 
   beforeEach(() => {
     googleAnalyticsMock = mock(GoogleAnalytics);
     messageBus = new SimpleMessageBus();
-    paymentEventsSubscriber = new PaymentEventsSubscriber(instance(googleAnalyticsMock));
-    paymentEventsSubscriber.register(messageBus);
+    eventsMessageSender = new AnalyticsEventSender(instance(googleAnalyticsMock));
+    eventsMessageSender.register(messageBus);
   });
 
   it('should send init started event to Google Analytics', () => {

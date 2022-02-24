@@ -1,4 +1,4 @@
-export enum SentryBreadcumbsCategories {
+export enum SentryBreadcrumbsCategories {
   GATEWAY_REQUEST = 'GATEWAY_REQUEST',
   GATEWAY_RESPONSE = 'GATEWAY_RESPONSE',
   EXPOSED_EVENTS = 'EXPOSED_EVENTS',

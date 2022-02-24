@@ -12,9 +12,9 @@ import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { TimeoutDetailsType } from '../../../../shared/services/sentry/RequestTimeout';
-import { SentryBreadcumbsCategories } from '../../../../shared/services/sentry/SentryBreadcrumbsCategories';
 import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { IResponseData } from '../../models/IResponseData';
+import { SentryBreadcrumbsCategories } from '../../../../shared/services/sentry/SentryBreadcrumbsCategories';
 
 interface IFetchOptions {
   headers: {
@@ -103,7 +103,7 @@ export class StTransport {
     // sentry filters out messages with "AUTH"
     const requestTypeMessage = `${(decodedJwt.payload as IStJwtPayload).requesttypedescriptions}`.replace('AUTH', 'A*UTH');
     this.sentryService.addBreadcrumb(
-      SentryBreadcumbsCategories.GATEWAY_REQUEST,
+      SentryBreadcrumbsCategories.GATEWAY_REQUEST,
       `requestid: ${parsedRequestBody.request[0].requestid}, requesttypedescriptions: ${requestTypeMessage}`
     );
 
@@ -114,7 +114,7 @@ export class StTransport {
       .then(response => codec.decode(response, JSON.parse(requestBody))
       .then(decodedResponse => {
         this.sentryService.addBreadcrumb(
-          SentryBreadcumbsCategories.GATEWAY_RESPONSE,
+          SentryBreadcrumbsCategories.GATEWAY_RESPONSE,
           `errorcode: ${(decodedResponse.response as IResponseData).errorcode}, errormessage: ${(decodedResponse.response as IResponseData).errormessage}, requestreference: ${decodedResponse.requestreference}`
         );
         return decodedResponse;
