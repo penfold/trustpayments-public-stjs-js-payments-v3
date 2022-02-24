@@ -19,7 +19,7 @@ Feature: Visa Click To Pay
     And User opens example page VISA_CTP
     When User chooses VISA_CTP from APM list
     And User selects string card on VISA_CTP popup
-    And User reviews VISA_CTP checkout page
+    And User reviews VISA_CTP checkout page and continues payment
     Then User will see that VISA_CTP payment was successful
 
     Examples:
@@ -44,7 +44,7 @@ Feature: Visa Click To Pay
     And User opens example page VISA_CTP
     When User chooses VISA_CTP from APM list
     And User selects <string> card on VISA_CTP popup
-    And User reviews VISA_CTP checkout page
+    And User reviews VISA_CTP checkout page and continues payment
     And User fills 3ds SDK challenge with <string> and submit
     Then User will see that VISA_CTP payment was successful
 
@@ -67,7 +67,7 @@ Feature: Visa Click To Pay
     And User opens example page VISA_CTP
     When User chooses VISA_CTP from APM list
     And User selects <string> card on VISA_CTP popup
-    And User reviews VISA_CTP checkout page
+    And User reviews VISA_CTP checkout page and continues payment
     And User fills 3ds SDK challenge with <string> and submit
     Then User will see that VISA_CTP payment was unsuccessfull
 
@@ -91,7 +91,7 @@ Feature: Visa Click To Pay
     And User opens example page VISA_CTP
     When User chooses VISA_CTP from APM list
     And User selects string card on VISA_CTP popup
-    And User reviews VISA_CTP checkout page
+    And User reviews VISA_CTP checkout page and continues payment
     Then User will see that VISA_CTP payment was declined
 
 
@@ -112,7 +112,7 @@ Feature: Visa Click To Pay
     And User login to VISA_CTP account with valid e-mail address
     And User fills VISA_CTP one time password
     And User selects string card on VISA_CTP popup
-    And User reviews VISA_CTP checkout page
+    And User reviews VISA_CTP checkout page and continues payment
     Then User will see that VISA_CTP payment was successfull
 
 
@@ -133,7 +133,7 @@ Feature: Visa Click To Pay
     And User login to VISA_CTP account with valid e-mail address
     And User fills VISA_CTP one time password
     And User selects string card on VISA_CTP popup
-    And User reviews VISA_CTP checkout page
+    And User reviews VISA_CTP checkout page and continues payment
     And User fills 3ds SDK challenge with <string> and submit
     Then User will see that VISA_CTP payment was successfull
 
@@ -152,7 +152,7 @@ Feature: Visa Click To Pay
     And User opens example page VISA_CTP
     When User chooses VISA_CTP from APM list
     And User selects <string> card on VISA_CTP popup
-    And User closes VISA_CTP checkout page
+    And  User reviews VISA_CTP checkout page and cancels payment
     Then User will see that VISA_CTP payment was cancelled
 
   Scenario: Successful payment - Registered VISA CTP user adds new card details
@@ -171,7 +171,7 @@ Feature: Visa Click To Pay
     When User chooses VISA_CTP from APM list
     And User chooses to add new card on VISA_CTP popup
     And User fills VISA_CTP card details with defined card MASTERCARD_FRICTIONLESS
-    And User reviews VISA_CTP checkout page
+    And User reviews VISA_CTP checkout page and continues payment
     Then User will see that VISA_CTP payment was successful
 
   Scenario: Unsuccessful card adding - invalid card details
@@ -190,6 +190,6 @@ Feature: Visa Click To Pay
     When User chooses VISA_CTP from APM list
     And User chooses to add new card on VISA_CTP popup
     And User fills VISA_CTP card details with defined card MASTERCARD_INVALID_EXP_DATE_CARD
-    And User reviews VISA_CTP checkout page
+    And User reviews VISA_CTP checkout page and continues payment
     Then User will see that VISA_CTP payment was successful
 

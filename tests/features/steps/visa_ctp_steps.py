@@ -24,8 +24,14 @@ def step_impl(context, card: Card):
     raise NotImplementedError(u'User fills VISA_CTP card details with defined card:')
 
 
-@step('User reviews VISA_CTP checkout page')
-def step_impl(context):
+@step('User reviews VISA_CTP checkout page (?P<register>.+)')
+def step_impl(context, register):
+    if register in "with registering as new user":
+        pass
+    elif register in "and continues payment":
+        pass
+    elif register in "and cancels payment":
+        pass
     raise NotImplementedError(u'STEP: And User reviews check-out page <condition> registering as a new user')
 
 
@@ -47,11 +53,6 @@ def step_impl(context, string):
 @step('User login to VISA_CTP account with valid e-mail address')
 def step_impl(context):
     raise NotImplementedError(u'STEP: And User login to VISA_CTP account with valid e-mail address')
-
-
-@step("User closes VISA_CTP checkout page")
-def step_impl(context):
-    raise NotImplementedError(u'STEP: And User cancels payment on checkout page')
 
 
 @step("User chooses to add new card on VISA_CTP popup")
