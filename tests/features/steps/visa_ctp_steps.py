@@ -1,5 +1,5 @@
 # type: ignore[no-redef]
-from behave import use_step_matcher, step, then
+from behave import use_step_matcher, step, then, when
 
 from pages.page_factory import Pages
 from utils.enums.card import Card
@@ -13,7 +13,7 @@ def step_impl(context):
     vctp_page.fill_billing_details_form()
 
 
-@step("User fills VISA_CTP card details with defined card (?P<card>.+)")
+@step('User fills VISA_CTP card details with defined card (?P<card>.+)')
 def step_impl(context, card: Card):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
@@ -26,7 +26,7 @@ def step_impl(context, card: Card):
 
 @step('User reviews VISA_CTP checkout page (?P<register>.+)')
 def step_impl(context, register):
-    if register in "with registering as new user":
+    if register in "with remembering my choice option":
         pass
     elif register in "and continues payment":
         pass
@@ -55,6 +55,26 @@ def step_impl(context):
     raise NotImplementedError(u'STEP: And User login to VISA_CTP account with valid e-mail address')
 
 
-@step("User chooses to add new card on VISA_CTP popup")
+@step('User chooses to add new card on VISA_CTP popup')
 def step_impl(context):
     raise NotImplementedError(u'STEP: And User chooses to add new card on VISA_CTP popup')
+
+
+@step('User chooses to edit (?P<card>.+) details on VISA_CTP popup')
+def step_impl(context, card):
+    raise NotImplementedError(u'STEP: And User chooses to add new card on VISA_CTP popup')
+
+
+@step('User chooses to register his card on VISA_CTP popup')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: And User chooses to register his card on VISA_CTP popup')
+
+
+@step('User fills VISA_CTP billing address')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: And User fills VISA_CTP billing address')
+
+
+@when('User selects Look up my cards')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: When User selects Look up my cards')
