@@ -95,7 +95,7 @@ export const cardListMock: ICorrelatedMaskedCard[] = [
     panExpirationYear: 2022,
     digitalCardData: {
       status: 'ACTIVE',
-      artUri: 'card003Url',
+      artUri: 'card001Url',
       artHeight: 40,
       artWidth: 60,
     },
@@ -134,7 +134,7 @@ export const cardListMock: ICorrelatedMaskedCard[] = [
     panExpirationYear: 2022,
     digitalCardData: {
       status: 'ACTIVE',
-      artUri: 'card004Url',
+      artUri: 'card002Url',
       artHeight: 40,
       artWidth: 60,
     },
