@@ -177,6 +177,8 @@
         </div>
         <fieldset class="st-form__fieldset">
           <legend>Payment details:</legend>
+          <div id="st-ctp-login"></div>
+          <div id="st-ctp-cards"></div>
           <div class="st-form__section st-form__section" id="st-card-details-section">
             <div class="st-form__field">
               <label for="st-form-card-number" class="st-form__label">
@@ -250,7 +252,7 @@
               </div>
             </div>
           </div>
-          <div class="st-form__section st-form__section">
+          <div class="st-form__section st-form__section" id="st-ctp-submit-section">
             <div class="st-form__actions--wrapper">
               <div class="st-form__group st-form__group--submit">
                 <button type="submit" class="st-form__button" id="merchant-submit-button">
@@ -260,8 +262,6 @@
             </div>
           </div>
         </fieldset>
-        <div id="st-ctp-login"></div>
-        <div id="st-ctp-cards"></div>
         <fieldset class="st-form__fieldset">
           <legend>Logs:</legend>
           <textarea id="st-log-area" rows="20" class="st-form__input"></textarea>
@@ -378,7 +378,7 @@
           document.querySelector('#st-ctp-lookup-btn').addEventListener('click', function() {
             adapterInstance.identifyUser()
               .then(function (result) {
-                printLogs('user identified: %s', result);
+                printLogs(`user identified: ${JSON.stringify(result)}`);
                 if (result.isSuccessful) {
                   adapterInstance.showCardList();
                 }
@@ -399,13 +399,16 @@
 
         function onUpdateView(updateView) {
           var cardDetailsElement = document.getElementById('st-card-details-section');
+          var submitElement = document.getElementById('st-ctp-submit-section');
 
           if (updateView.displayCardForm === true) {
             cardDetailsElement.classList.remove('hidden');
+            submitElement.classList.remove('hidden');
           }
 
           if (updateView.displayCardForm === false) {
             cardDetailsElement.classList.add('hidden');
+            submitElement.classList.add('hidden');
           }
         }
 

@@ -4,26 +4,25 @@ import { environment } from '../../../environments/environment';
 import { DigitalTerminal } from './DigitalTerminal';
 import { SrcAggregate } from './SrcAggregate';
 import { CheckoutDataTransformer } from './CheckoutDataTransformer';
-import { UserIdentificationService } from './UserIdentificationService';
 import { SrcName } from './SrcName';
 import { IAggregatedProfiles } from './interfaces/IAggregatedProfiles';
 import { IInitialCheckoutData } from './interfaces/IInitialCheckoutData';
 import { ICheckoutData, ICheckoutResponse } from './ISrc';
+import { IUserIdentificationService } from './interfaces/IUserIdentificationService';
 
 describe('DigitalTerminal', () => {
   let srcAggregateMock: SrcAggregate;
   let checkoutDataTransformerMock: CheckoutDataTransformer;
-  let userIdentificationServiceMock: UserIdentificationService;
+  let userIdentificationServiceMock: IUserIdentificationService;
   let digitalTerminal: DigitalTerminal;
 
   beforeEach(() => {
     srcAggregateMock = mock(SrcAggregate);
     checkoutDataTransformerMock = mock(CheckoutDataTransformer);
-    userIdentificationServiceMock = mock(UserIdentificationService);
+    userIdentificationServiceMock = mock<IUserIdentificationService>();
     digitalTerminal = new DigitalTerminal(
       instance(srcAggregateMock),
-      instance(checkoutDataTransformerMock),
-      instance(userIdentificationServiceMock),
+      instance(checkoutDataTransformerMock)
     );
 
     when(srcAggregateMock.init(anything())).thenReturn(of(undefined));
@@ -119,7 +118,7 @@ describe('DigitalTerminal', () => {
     it('returns successful result if identification result contains idToken', done => {
       when(userIdentificationServiceMock.identifyUser(anything(),identificationData,)).thenReturn(of({ idToken: 'idtoken' }));
 
-      digitalTerminal.identifyUser(identificationData).subscribe(result => {
+      digitalTerminal.identifyUser(instance(userIdentificationServiceMock), identificationData).subscribe(result => {
         expect(result.isSuccessful).toBe(true);
         done();
       });
@@ -128,7 +127,7 @@ describe('DigitalTerminal', () => {
     it('returns non-successful result if identification result doesnt contain idToken', done => {
       when(userIdentificationServiceMock.identifyUser(anything(),identificationData,)).thenReturn(of({ idToken: undefined }));
 
-      digitalTerminal.identifyUser(identificationData).subscribe(result => {
+      digitalTerminal.identifyUser(instance(userIdentificationServiceMock), identificationData).subscribe(result => {
         expect(result.isSuccessful).toBe(false);
         done();
       });

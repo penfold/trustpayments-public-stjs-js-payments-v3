@@ -2,8 +2,8 @@ import { Service } from 'typedi';
 import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { IFrameQueryingService } from '../../../shared/services/message-bus/interfaces/IFrameQueryingService';
-import { HPPClickToPayAdapter } from './hosted-payments-page-click-to-pay-adapter/HPPClickToPayAdapter';
 import { ClickToPayAdapterName } from './ClickToPayAdapterName';
+import { HPPClickToPayAdapter } from './hpp-adapter/HPPClickToPayAdapter';
 
 @Service()
 export class ClickToPayAdapterFactory {
