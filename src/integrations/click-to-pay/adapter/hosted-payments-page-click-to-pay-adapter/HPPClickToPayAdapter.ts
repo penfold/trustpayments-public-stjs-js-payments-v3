@@ -1,5 +1,5 @@
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
-import { filter, mapTo, tap } from 'rxjs/operators';
+import { filter, map, mapTo, tap } from 'rxjs/operators';
 import { IClickToPayAdapter } from '../IClickToPayClientAdapter';
 import { DigitalTerminal } from '../../digital-terminal/DigitalTerminal';
 import { IInitPaymentMethod } from '../../../../application/core/services/payments/events/IInitPaymentMethod';
@@ -10,7 +10,7 @@ import { EventScope } from '../../../../application/core/models/constants/EventS
 import { IMessageBusEvent } from '../../../../application/core/models/IMessageBusEvent';
 import { IFrameQueryingService } from '../../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentificationData';
-import { IHPPClickToPayCardList } from './IHPPClickToPayCardList';
+
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 
 export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAdapterInitParams, HPPClickToPayAdapter> {
@@ -26,11 +26,11 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     return firstValueFrom(this.digitalTerminal.isRecognized());
   }
 
-  identifyUser(identificationData: IIdentificationData): Promise<boolean> {
-    return firstValueFrom(this.digitalTerminal.identifyUser(identificationData));
+  identifyUser(identificationData?: IIdentificationData): Promise<boolean> {
+    return firstValueFrom(this.digitalTerminal.identifyUser(identificationData).pipe(map(response => !!response)));
   }
 
-  showCardsList(): Promise<IHPPClickToPayCardList> {
+  showCardList(): Promise<void> {
     return Promise.resolve(null);
   }
 
