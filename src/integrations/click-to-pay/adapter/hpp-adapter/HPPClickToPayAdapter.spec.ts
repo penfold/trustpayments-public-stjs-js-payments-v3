@@ -20,22 +20,30 @@ describe('HPPClickToPayAdapter', () => {
     signInContainerId: 'signin',
     formId: 'formId',
     dpaTransactionOptions: null,
-    onUpdateView: () => {},
+    onUpdateView: () => {
+    },
   };
   let messageBus: IMessageBus;
   let frameQueryingServiceMock: IFrameQueryingService;
   let digitalTerminalMock: DigitalTerminal;
+  let userIdentificationServiceMock: HPPUserIdentificationService;
   let sut: HPPClickToPayAdapter;
 
   beforeEach(() => {
     messageBus = mock<IMessageBus>();
     frameQueryingServiceMock = mock<IFrameQueryingService>();
     digitalTerminalMock = mock(DigitalTerminal);
+    userIdentificationServiceMock = mock(HPPUserIdentificationService);
     when(digitalTerminalMock.init(anything())).thenReturn(of(undefined));
     when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_INIT, anyFunction())).thenCall((eventType, callback) => {
       callback({ type: eventType, data: initParams }).subscribe();
     });
-    sut = new HPPClickToPayAdapter(instance(digitalTerminalMock), instance(messageBus), instance(frameQueryingServiceMock));
+    sut = new HPPClickToPayAdapter(
+      instance(digitalTerminalMock),
+      instance(messageBus),
+      instance(frameQueryingServiceMock),
+      instance(userIdentificationServiceMock)
+    );
   });
 
   describe('init()', () => {

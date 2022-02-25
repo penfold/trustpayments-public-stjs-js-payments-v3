@@ -5,15 +5,22 @@ import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { ClickToPayAdapterFactory } from './ClickToPayAdapterFactory';
 import { ClickToPayAdapterName } from './ClickToPayAdapterName';
 import { HPPClickToPayAdapter } from './hpp-adapter/HPPClickToPayAdapter';
+import { HPPUserIdentificationService } from './hpp-adapter/HPPUserIdentificationService';
 
 describe('ClickToPayAdapterFactory()', () => {
   let sut: ClickToPayAdapterFactory;
 
   beforeEach(() => {
     const messageBus: IMessageBus = mock<IMessageBus>();
-    const frameQueryingServiceMock: IFrameQueryingService = mock<IFrameQueryingService>();
-    const digitalTerminalMock: DigitalTerminal = mock(DigitalTerminal);
-    sut = new ClickToPayAdapterFactory(instance(digitalTerminalMock), instance(messageBus), instance(frameQueryingServiceMock));
+    const frameQueryingServiceMock = mock<IFrameQueryingService>();
+    const digitalTerminalMock = mock(DigitalTerminal);
+    const userIdentificationServiceMock: HPPUserIdentificationService = mock(HPPUserIdentificationService);
+    sut = new ClickToPayAdapterFactory(
+      instance(digitalTerminalMock),
+      instance(messageBus),
+      instance(frameQueryingServiceMock),
+      instance(userIdentificationServiceMock)
+    );
   });
 
   describe('create()', () => {

@@ -1,6 +1,5 @@
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { filter, mapTo, tap } from 'rxjs/operators';
-import Container from 'typedi';
 import { IClickToPayAdapter } from '../interfaces/IClickToPayClientAdapter';
 import { DigitalTerminal } from '../../digital-terminal/DigitalTerminal';
 import { IInitPaymentMethod } from '../../../../application/core/services/payments/events/IInitPaymentMethod';
@@ -19,7 +18,12 @@ import { HPPUserIdentificationService } from './HPPUserIdentificationService';
 export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAdapterInitParams, HPPClickToPayAdapter> {
   private initParams: IHPPClickToPayAdapterInitParams;
 
-  constructor(private digitalTerminal: DigitalTerminal, private messageBus: IMessageBus, private frameQueryingService: IFrameQueryingService) {
+  constructor(
+    private digitalTerminal: DigitalTerminal,
+    private messageBus: IMessageBus,
+    private frameQueryingService: IFrameQueryingService,
+    private userIdentificationService: HPPUserIdentificationService
+  ) {
   }
 
   init(initParams: IHPPClickToPayAdapterInitParams): Promise<HPPClickToPayAdapter> {
@@ -33,9 +37,8 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
   }
 
   identifyUser(identificationData?: IIdentificationData): Promise<IIdentificationResult> {
-    const userIdentificationService = Container.get(HPPUserIdentificationService);
-    userIdentificationService.setInitParams(this.initParams);
-    return firstValueFrom(this.digitalTerminal.identifyUser(userIdentificationService, identificationData));
+    this.userIdentificationService.setInitParams(this.initParams);
+    return firstValueFrom(this.digitalTerminal.identifyUser(this.userIdentificationService, identificationData));
   }
 
   showCardList(): Promise<void> {

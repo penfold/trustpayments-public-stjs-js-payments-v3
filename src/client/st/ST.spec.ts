@@ -166,7 +166,7 @@ describe('ST', () => {
     beforeEach(() => {
       stInstance['initControlFrame$'] = jest.fn().mockReturnValueOnce(of(null));// TODO mock dependencies properly
       when(clickToPayAdapterFactoryMock.create(ClickToPayAdapterName.hpp))
-        .thenReturn(new HPPClickToPayAdapter(null, null, null));
+        .thenReturn(new HPPClickToPayAdapter(null, null, null,null));
     });
 
     it('should create ClickToPayAdapter depending on adapter type and return Promise with reference to it', done => {
