@@ -1,4 +1,4 @@
-import { IDpaTransactionOptions } from '../digital-terminal/ISrc';
+import { IDpaTransactionOptions } from '../../digital-terminal/ISrc';
 
 export interface IClickToPayAdapterInitParams {
   srciDpaId: string,

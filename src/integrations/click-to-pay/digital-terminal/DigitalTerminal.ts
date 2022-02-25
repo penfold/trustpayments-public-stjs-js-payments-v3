@@ -9,10 +9,10 @@ import { IAggregatedProfiles } from './interfaces/IAggregatedProfiles';
 import { IInitialCheckoutData } from './interfaces/IInitialCheckoutData';
 import { ICheckoutResponse } from './ISrc';
 import { CheckoutDataTransformer } from './CheckoutDataTransformer';
-import { UserIdentificationService } from './UserIdentificationService';
 import { IdentificationFailureReason } from './IdentificationFailureReason';
 import { IIdentificationResult } from './interfaces/IIdentificationResult';
 import { IIdentificationData } from './interfaces/IIdentificationData';
+import { IUserIdentificationService } from './interfaces/IUserIdentificationService';
 
 @Service()
 export class DigitalTerminal {
@@ -22,8 +22,7 @@ export class DigitalTerminal {
 
   constructor(
     private srcAggregate: SrcAggregate,
-    private checkoutDataTransformer: CheckoutDataTransformer,
-    private userIdentificationService: UserIdentificationService
+    private checkoutDataTransformer: CheckoutDataTransformer
   ) {
   }
 
@@ -56,8 +55,8 @@ export class DigitalTerminal {
     );
   }
 
-  identifyUser(identificationData: IIdentificationData): Observable<IIdentificationResult> {
-    return this.userIdentificationService.identifyUser(this.srcAggregate, identificationData).pipe(
+  identifyUser(userIdentificationService: IUserIdentificationService, identificationData: IIdentificationData): Observable<IIdentificationResult> {
+    return userIdentificationService.identifyUser(this.srcAggregate, identificationData).pipe(
       tap(result => {
         this.idTokens.push(result.idToken);
       }),

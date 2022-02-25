@@ -4,7 +4,7 @@ import { IFrameQueryingService } from '../../../shared/services/message-bus/inte
 import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { ClickToPayAdapterFactory } from './ClickToPayAdapterFactory';
 import { ClickToPayAdapterName } from './ClickToPayAdapterName';
-import { HPPClickToPayAdapter } from './hosted-payments-page-click-to-pay-adapter/HPPClickToPayAdapter';
+import { HPPClickToPayAdapter } from './hpp-adapter/HPPClickToPayAdapter';
 
 describe('ClickToPayAdapterFactory()', () => {
   let sut: ClickToPayAdapterFactory;

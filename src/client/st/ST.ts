@@ -56,9 +56,9 @@ import { GAEventType } from '../../application/core/integrations/google-analytic
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
 import { IClickToPayConfig } from '../../integrations/click-to-pay/models/IClickToPayConfig';
 import { ClickToPayAdapterFactory } from '../../integrations/click-to-pay/adapter/ClickToPayAdapterFactory';
-import { IClickToPayAdapter } from '../../integrations/click-to-pay/adapter/IClickToPayClientAdapter';
-import { HPPClickToPayAdapter } from '../../integrations/click-to-pay/adapter/hosted-payments-page-click-to-pay-adapter/HPPClickToPayAdapter';
-import { IClickToPayAdapterInitParams } from '../../integrations/click-to-pay/adapter/IClickToPayAdapterInitParams';
+import { IClickToPayAdapter } from '../../integrations/click-to-pay/adapter/interfaces/IClickToPayClientAdapter';
+import { IClickToPayAdapterInitParams } from '../../integrations/click-to-pay/adapter/interfaces/IClickToPayAdapterInitParams';
+import { HPPClickToPayAdapter } from '../../integrations/click-to-pay/adapter/hpp-adapter/HPPClickToPayAdapter';
 
 declare const ST_VERSION: string | undefined;
 
@@ -295,10 +295,10 @@ export class ST {
     });
   }
 
-  ClickToPay(clickToPayConfig: IClickToPayConfig):Promise<IClickToPayAdapter<IClickToPayAdapterInitParams, any> | HPPClickToPayAdapter>{
+  ClickToPay(clickToPayConfig: IClickToPayConfig): Promise<IClickToPayAdapter<IClickToPayAdapterInitParams, any> | HPPClickToPayAdapter> {
     return firstValueFrom(
       this.initControlFrame$().pipe(
-        mapTo(this.clickToPayAdapterFactory.create(clickToPayConfig.adapter)),
+        mapTo(this.clickToPayAdapterFactory.create(clickToPayConfig.adapter))
       )
     );
   }
