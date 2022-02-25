@@ -1,7 +1,5 @@
 # type: ignore[no-redef]
-
-from behave import use_step_matcher, step, then
-
+from behave import use_step_matcher, step, then, when
 from pages.page_factory import Pages
 from utils.enums.card import Card
 from utils.helpers.gmail_service import EMAIL_LOGIN
@@ -21,7 +19,7 @@ def step_impl(context):
     vctp_page.fill_delivery_details_form()
 
 
-@step("User fills VISA_CTP card details with defined card (?P<card>.+)")
+@step('User fills VISA_CTP card details with defined card (?P<card>.+)')
 def step_impl(context, card: Card):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
@@ -34,8 +32,16 @@ def step_impl(context):
     vctp_page.click_look_up_my_cards_btn()
 
 
-@step('User reviews VISA_CTP checkout page')
-def step_impl(context):
+@step('User reviews VISA_CTP checkout page (?P<register>.+)')
+def step_impl(context, register):
+    if register in "with remembering my choice option":
+        pass
+    elif register in "and continues payment":
+        pass
+    elif register in "and cancels payment":
+        pass
+    elif register in "and unbinds device":
+        pass
     raise NotImplementedError(u'STEP: And User reviews check-out page <condition> registering as a new user')
 
 
@@ -62,11 +68,31 @@ def step_impl(context, string):
     raise NotImplementedError(u'STEP: And User selects <string> card on VISA_CTP popup')
 
 
-@step("User closes VISA_CTP checkout page")
+@step('User login to VISA_CTP account with valid e-mail address')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: And User cancels payment on checkout page')
+    raise NotImplementedError(u'STEP: And User login to VISA_CTP account with valid e-mail address')
 
 
-@step("User chooses to add new card on VISA_CTP popup")
+@step('User chooses to add new card on VISA_CTP popup')
 def step_impl(context):
     raise NotImplementedError(u'STEP: And User chooses to add new card on VISA_CTP popup')
+
+
+@step('User chooses to edit (?P<card>.+) details on VISA_CTP popup')
+def step_impl(context, card):
+    raise NotImplementedError(u'STEP: And User chooses to add new card on VISA_CTP popup')
+
+
+@step('User chooses to register his card on VISA_CTP popup')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: And User chooses to register his card on VISA_CTP popup')
+
+
+@step('User fills VISA_CTP billing address')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: And User fills VISA_CTP billing address')
+
+
+@when('User selects Look up my cards')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: When User selects Look up my cards')
