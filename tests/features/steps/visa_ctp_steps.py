@@ -1,5 +1,5 @@
 # type: ignore[no-redef]
-from behave import use_step_matcher, step, then, when
+from behave import use_step_matcher, step, then
 from pages.page_factory import Pages
 from utils.enums.card import Card
 from utils.helpers.gmail_service import EMAIL_LOGIN
@@ -26,7 +26,7 @@ def step_impl(context, card: Card):
     vctp_page.fill_payment_form(card.number, card.expiration_date, card.cvv)
 
 
-@step('User clicks on "Look up my cards" link')
+@step('User selects Look up my cards')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_look_up_my_cards_btn()
@@ -68,11 +68,6 @@ def step_impl(context, string):
     raise NotImplementedError(u'STEP: And User selects <string> card on VISA_CTP popup')
 
 
-@step('User login to VISA_CTP account with valid e-mail address')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: And User login to VISA_CTP account with valid e-mail address')
-
-
 @step('User chooses to add new card on VISA_CTP popup')
 def step_impl(context):
     raise NotImplementedError(u'STEP: And User chooses to add new card on VISA_CTP popup')
@@ -91,8 +86,3 @@ def step_impl(context):
 @step('User fills VISA_CTP billing address')
 def step_impl(context):
     raise NotImplementedError(u'STEP: And User fills VISA_CTP billing address')
-
-
-@when('User selects Look up my cards')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When User selects Look up my cards')
