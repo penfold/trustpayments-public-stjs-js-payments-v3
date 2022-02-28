@@ -26,13 +26,13 @@ def step_impl(context, card: Card):
 
 @step('User reviews VISA_CTP checkout page (?P<register>.+)')
 def step_impl(context, register):
-    if register in "with remembering my choice option":
+    if register in 'with remembering my choice option':
         pass
-    elif register in "and continues payment":
+    elif register in 'and continues payment':
         pass
-    elif register in "and cancels payment":
+    elif register in 'and cancels payment':
         pass
-    elif register in "and unbinds device":
+    elif register in 'and unbinds device':
         pass
     raise NotImplementedError(u'STEP: And User reviews check-out page <condition> registering as a new user')
 

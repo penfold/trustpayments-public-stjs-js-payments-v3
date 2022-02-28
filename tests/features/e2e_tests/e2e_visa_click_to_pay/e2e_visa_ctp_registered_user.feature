@@ -17,8 +17,7 @@ Feature: Visa Click To Pay
       | billingcountryiso2a     | GB                 |
       | currencyiso3a           | GBP                |
     And User opens example page VISA_CTP
-    When User selects Look up my cards
-    And User selects string card on VISA_CTP popup
+    When User selects string card on VISA_CTP popup
     And User reviews VISA_CTP checkout page and continues payment
     Then User will see that VISA_CTP payment was successful
 
@@ -42,8 +41,7 @@ Feature: Visa Click To Pay
       | billingcountryiso2a     | GB                 |
       | currencyiso3a           | GBP                |
     And User opens example page VISA_CTP
-    When User selects Look up my cards
-    And User selects <string> card on VISA_CTP popup
+    When User selects string card on VISA_CTP popup
     And User reviews VISA_CTP checkout page and continues payment
     And User fills 3ds SDK challenge with <string> and submit
     Then User will see that VISA_CTP payment was successful
@@ -65,8 +63,7 @@ Feature: Visa Click To Pay
       | billingcountryiso2a     | GB                 |
       | currencyiso3a           | GBP                |
     And User opens example page VISA_CTP
-    When User selects Look up my cards
-    And User selects <string> card on VISA_CTP popup
+    When User selects string card on VISA_CTP popup
     And User reviews VISA_CTP checkout page and continues payment
     And User fills 3ds SDK challenge with <string> and submit
     Then User will see that VISA_CTP payment was unsuccessful
@@ -89,8 +86,7 @@ Feature: Visa Click To Pay
       | billingcountryiso2a     | GB                 |
       | currencyiso3a           | GBP                |
     And User opens example page VISA_CTP
-    When User selects Look up my cards
-    And User selects string card on VISA_CTP popup
+    When User selects string card on VISA_CTP popup
     And User reviews VISA_CTP checkout page and continues payment
     Then User will see that VISA_CTP payment was declined
 
@@ -128,7 +124,7 @@ Feature: Visa Click To Pay
       | billingcountryiso2a     | GB                 |
       | currencyiso3a           | GBP                |
     And User opens example page VISA_CTP
-    When User selects Look up my cards
+    When User selects Look up my cardsó
     And User login to VISA_CTP account with valid e-mail address
     And User fills VISA_CTP one time password
     And User selects string card on VISA_CTP popup
