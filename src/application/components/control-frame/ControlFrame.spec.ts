@@ -26,6 +26,7 @@ import { FormState } from '../../core/models/constants/FormState';
 import { FraudControlService } from '../../core/services/fraud-control/FraudControlService';
 import { EventScope } from '../../core/models/constants/EventScope';
 import { ApplePayClient } from '../../../integrations/apple-pay/client/ApplePayClient';
+import { ValidationFactory } from '../../core/shared/validation/ValidationFactory';
 import { ControlFrame } from './ControlFrame';
 import spyOn = jest.spyOn;
 
@@ -275,6 +276,7 @@ function controlFrameFixture() {
       },
     },
   ];
+  const validationFactory: ValidationFactory = mock(ValidationFactory);
 
   when(communicator.whenReceive(anyString())).thenReturn({
     thenRespond: () => undefined,
@@ -314,7 +316,8 @@ function controlFrameFixture() {
     mockInstance(visaCheckoutClientMock),
     mockInstance(applePayClientMock),
     mockInstance(paymentControllerMock),
-    mockInstance(translator)
+    mockInstance(translator),
+    mockInstance( validationFactory),
   );
   const messageBusEvent = {
     type: '',

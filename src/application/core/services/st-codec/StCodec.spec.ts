@@ -1,6 +1,6 @@
 import JwtDecode from 'jwt-decode';
 import Container from 'typedi';
-import { anything, deepEqual, instance as instanceOf, mock, verify, when } from 'ts-mockito';
+import { anything, deepEqual, instance as mockInstance, instance as instanceOf, mock, verify, when } from 'ts-mockito';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { ITranslationProvider } from '../../shared/translator/ITranslationProvider';
@@ -15,6 +15,8 @@ import { SentryService } from '../../../../shared/services/sentry/SentryService'
 import { IResponseData } from '../../models/IResponseData';
 import { IDecodedJwt } from '../../models/IDecodedJwt';
 import { EventScope } from '../../models/constants/EventScope';
+import { ValidationFactory } from '../../shared/validation/ValidationFactory';
+import { Validation } from '../../shared/validation/Validation';
 import { GatewayError } from './GatewayError';
 import { StCodec } from './StCodec';
 import { IResponsePayload } from './interfaces/IResponsePayload';
@@ -511,6 +513,7 @@ describe('StCodec class', () => {
 
 function stCodecFixture() {
   const jwtDecoder: JwtDecoder = mock<JwtDecoder>();
+  const validationFactory: ValidationFactory = mock(ValidationFactory);
   when(jwtDecoder.decode(anything())).thenReturn({ payload: { locale: 'en_GB' }, sitereference: 'live2' });
 
   const jwt =
@@ -522,7 +525,12 @@ function stCodecFixture() {
     jwt:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NjExMTUyMDksInBheWxvYWQiOnsicmVxdWVzdHJlZmVyZW5jZSI6IlczMy0wcm0wZ2N5eCIsInJlc3BvbnNlIjpbeyJhY2NvdW50dHlwZWRlc2NyaXB0aW9uIjoiRUNPTSIsImFjcXVpcmVycmVzcG9uc2Vjb2RlIjoiMDAiLCJhdXRoY29kZSI6IlRFU1Q1NiIsImJhc2VhbW91bnQiOiIxMDAiLCJjdXJyZW5jeWlzbzNhIjoiR0JQIiwiZGNjZW5hYmxlZCI6IjAiLCJlcnJvcmNvZGUiOiIwIiwiZXJyb3JtZXNzYWdlIjoiT2siLCJpc3N1ZXIiOiJTZWN1cmVUcmFkaW5nIFRlc3QgSXNzdWVyMSIsImlzc3VlcmNvdW50cnlpc28yYSI6IlVTIiwibGl2ZXN0YXR1cyI6IjAiLCJtYXNrZWRwYW4iOiI0MTExMTEjIyMjIyMwMjExIiwibWVyY2hhbnRjb3VudHJ5aXNvMmEiOiJHQiIsIm1lcmNoYW50bmFtZSI6IndlYnNlcnZpY2UgVU5JQ09ERSBtZXJjaGFudG5hbWUiLCJtZXJjaGFudG51bWJlciI6IjAwMDAwMDAwIiwib3BlcmF0b3JuYW1lIjoid2Vic2VydmljZXNAc2VjdXJldHJhZGluZy5jb20iLCJvcmRlcnJlZmVyZW5jZSI6IkFVVEhfVklTQV9QT1NULVBBU1MtSlNPTi1KU09OIiwicGF5bWVudHR5cGVkZXNjcmlwdGlvbiI6IlZJU0EiLCJyZXF1ZXN0dHlwZWRlc2NyaXB0aW9uIjoiQVVUSCIsInNlY3VyaXR5cmVzcG9uc2VhZGRyZXNzIjoiMiIsInNlY3VyaXR5cmVzcG9uc2Vwb3N0Y29kZSI6IjIiLCJzZWN1cml0eXJlc3BvbnNlc2VjdXJpdHljb2RlIjoiMiIsInNldHRsZWR1ZWRhdGUiOiIyMDE5LTAyLTIxIiwic2V0dGxlc3RhdHVzIjoiMCIsInNwbGl0ZmluYWxudW1iZXIiOiIxIiwidGlkIjoiMjc4ODI3ODgiLCJ0cmFuc2FjdGlvbnJlZmVyZW5jZSI6IjMzLTktODAxNjgiLCJ0cmFuc2FjdGlvbnN0YXJ0ZWR0aW1lc3RhbXAiOiIyMDE5LTAyLTIxIDEwOjA2OjM1In1dLCJzZWNyYW5kIjoiWktBVk1za1dRIiwidmVyc2lvbiI6IjEuMDAifX0.lLHIs5UsXht0IyFCGEF_x7AM4u_lOWX47J5cCuakqtc',
   };
+  const mockValidation: Validation = mock(Validation);
+
   Container.get(TranslatorToken).init();
-  const instance: StCodec = new StCodec(instanceOf(jwtDecoder), jwt);
+  when(validationFactory.create()).thenReturn(mockInstance(mockValidation))
+
+  const instance: StCodec = new StCodec(instanceOf(jwtDecoder), jwt, mockInstance(validationFactory));
+
   return { jwt, instance, fullResponse, requestid, ridRegex };
 }

@@ -1,6 +1,7 @@
-import { Container, Service } from 'typedi';
+import { Service } from 'typedi';
 import { Utils } from '../utils/Utils';
 import { Validation } from '../validation/Validation';
+import { ValidationFactory } from '../validation/ValidationFactory';
 
 @Service()
 export class Formatter {
@@ -13,8 +14,8 @@ export class Formatter {
   };
   private validation: Validation;
 
-  constructor() {
-    this.validation = Container.get(Validation);
+  constructor(private validationFactory: ValidationFactory) {
+    this.validation =  this.validationFactory.create();
   }
 
   number(cardNumber: string, id: string): { formatted: string, nonformatted: string } {

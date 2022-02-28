@@ -10,6 +10,7 @@ import { Translator } from '../translator/Translator';
 import { ITranslationProvider } from '../translator/ITranslationProvider';
 import { TranslationProvider } from '../translator/TranslationProvider';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
+import { ValidationFactory } from '../validation/ValidationFactory';
 import { Input } from './Input';
 
 jest.mock('./../validation/Validation');
@@ -115,7 +116,7 @@ describe('FormField', () => {
 
     it('should validate method has been called with inputElement and messageElement', () => {
       // @ts-ignore
-      expect(instance.validation.validate).toHaveBeenCalledWith(instance.inputElement, instance.messageElement);
+      expect(instance.validation.validate).toHaveBeenCalled();
     });
   });
 
@@ -227,7 +228,11 @@ function formFieldFixture() {
   const labelElement: HTMLLabelElement = document.createElement('label');
   const messageElement: HTMLParagraphElement = document.createElement('p');
   const configProviderMock: ConfigProvider = mock<ConfigProvider>();
-  const validation: Validation = mock(Validation);
+  const validationFactory: ValidationFactory = mock(ValidationFactory);
+  const mockValidation: Validation = mock(Validation);
+
+  when(validationFactory.create()).thenReturn(mockInstance(mockValidation))
+
   labelElement.id = 'st-form-field-label';
   inputElement.id = 'st-form-field-input';
   messageElement.id = 'st-form-field-message';
@@ -250,7 +255,9 @@ function formFieldFixture() {
     'st-form-field-label',
     'st-form-field__wrapper',
     mockInstance(configProviderMock),
-    mockInstance(validation)
+    mockInstance(validationFactory)
   );
+
+  (instance as any).validation.validate = jest.fn();
   return { instance, inputElement, messageElement, labelElement };
 }

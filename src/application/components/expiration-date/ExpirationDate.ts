@@ -52,7 +52,6 @@ export class ExpirationDate extends Input {
     super.setEventListener(MessageBus.EVENTS.FOCUS_EXPIRATION_DATE);
     this.setAttributes({ pattern: ExpirationDate.INPUT_PATTERN });
     this.setDisableListener();
-    this.validation = this.validationFactory.create();
     this.validation.backendValidation(
       this.inputElement,
       this.messageElement,

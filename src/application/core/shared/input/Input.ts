@@ -43,7 +43,7 @@ export class Input {
     labelSelector: string,
     wrapperSelector: string,
     protected configProvider: ConfigProvider,
-    protected validationFactory: ValidationFactory,
+    protected validationFactory : ValidationFactory,
   ) {
     this.validation = this.validationFactory.create();
     this.messageBus = Container.get(MessageBusToken);

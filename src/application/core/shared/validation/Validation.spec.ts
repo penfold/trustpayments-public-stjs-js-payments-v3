@@ -1,4 +1,5 @@
-import Container from 'typedi';
+import Container, { ContainerInstance } from 'typedi';
+import { instance as mockInstance, mock } from 'ts-mockito';
 import { MessageBus } from '../message-bus/MessageBus';
 import {
   VALIDATION_ERROR,
@@ -15,6 +16,7 @@ import { TranslationProvider } from '../translator/TranslationProvider';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
 import { IFormFieldsValidity } from '../../models/IFormFieldsValidity';
+import { SimpleMessageBus } from '../message-bus/SimpleMessageBus';
 import { Validation } from './Validation';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
@@ -252,7 +254,12 @@ describe('Validation', () => {
 });
 
 function validationFixture() {
-  const instance: Validation = new Validation();
+  const containerMock = mock(ContainerInstance);
+  const testMessageBus = new SimpleMessageBus();
+  const instance: Validation = new Validation(mockInstance(containerMock));
+
+  (instance as any).messageBus = testMessageBus;
+
   const inputElement = document.createElement('input');
   const inputElementMerchant = document.createElement('input');
   inputElementMerchant.setAttribute('data-st-name', 'billingemail');

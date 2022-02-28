@@ -48,18 +48,6 @@ describe('Payment', () => {
     instance = fixture.instance;
   });
 
-  describe('constructor()', () => {
-    beforeEach(() => {
-      // @ts-ignore
-      instance.stTransport.sendRequest = jest.fn();
-    });
-
-    it('should set attributes to payment instance', () => {
-      // @ts-ignore
-      expect(instance.stTransport).toBeInstanceOf(StTransport);
-    });
-  });
-
   describe('processPayment()', () => {
     beforeEach(() => {
       // @ts-ignore
@@ -308,10 +296,14 @@ function paymentFixture() {
   const cachetoken = 'somecachetoken';
   const fraudControlServiceMock = mock(FraudControlService);
   const notificationService = mock(NotificationService);
+  const stTransport: StTransport = mock(StTransport);
+
   when(fraudControlServiceMock.getTransactionId()).thenReturn(of(null));
+
   Container.set(FraudControlService, mockInstance(fraudControlServiceMock));
   Container.set(NotificationService, mockInstance(notificationService));
-  const instance: Payment = new Payment();
+
+  const instance: Payment = new Payment(mockInstance(stTransport), mockInstance(fraudControlServiceMock), mockInstance(notificationService));
   const card = {
     expirydate: '10/22',
     pan: '4111111111111111',

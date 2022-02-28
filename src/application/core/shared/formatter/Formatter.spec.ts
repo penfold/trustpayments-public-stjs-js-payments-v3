@@ -1,4 +1,7 @@
+import { instance as mockInstance, mock, when } from 'ts-mockito';
 import { EXPIRATION_DATE_INPUT } from '../../models/constants/Selectors';
+import { ValidationFactory } from '../validation/ValidationFactory';
+import { Validation } from '../validation/Validation';
 import { Formatter } from './Formatter';
 
 jest.mock('./../notification/Notification');
@@ -42,7 +45,17 @@ function formatterFixture() {
         </form>
   `;
   document.body.innerHTML = html;
-  const instance = new Formatter();
+
+  const validationFactory: ValidationFactory = mock(ValidationFactory);
+  const mockValidation: Validation = mock(Validation);
+
+  when(validationFactory.create()).thenReturn(mockInstance(mockValidation))
+
+  const instance = new Formatter(mockInstance( validationFactory));
+
+  // (instance as any).validation.expirationDate = jest.fn();
+   (instance as any).validation.expirationDateValue = '123'
+
   const trimNonNumeric = [
     ['123', '123'],
     ['  1  2  3  ', '123'],

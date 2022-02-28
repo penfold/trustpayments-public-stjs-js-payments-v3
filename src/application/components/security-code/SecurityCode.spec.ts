@@ -1,4 +1,4 @@
-import { anyFunction, anything, instance, mock, when } from 'ts-mockito';
+import { anyFunction, anything, instance as mockInstance, instance, mock, when } from 'ts-mockito';
 import { EMPTY, of } from 'rxjs';
 import Container from 'typedi';
 import { SECURITY_CODE_INPUT, SECURITY_CODE_LABEL, SECURITY_CODE_MESSAGE } from '../../core/models/constants/Selectors';
@@ -21,6 +21,7 @@ import { TranslationProvider } from '../../core/shared/translator/TranslationPro
 import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { Formatter } from '../../core/shared/formatter/Formatter';
 import { IConfig } from '../../../shared/model/config/IConfig';
+import { ValidationFactory } from '../../core/shared/validation/ValidationFactory';
 import { SecurityCode } from './SecurityCode';
 
 jest.mock('./../../core/shared/notification/Notification');
@@ -316,18 +317,21 @@ function securityCodeFixture() {
   const formatter: Formatter = mock(Formatter);
   const validation: Validation = mock(Validation);
   const jwtDecoder: JwtDecoder = mock(JwtDecoder);
+  const validationFactory: ValidationFactory = mock(ValidationFactory);
   const localStorage: BrowserLocalStorage = mock(BrowserLocalStorage);
   when(localStorage.select(anyFunction())).thenReturn(of('34****4565'));
   when(configProvider.getConfig$()).thenReturn(of(config));
   when(configProvider.getConfig()).thenReturn(config);
   when(validation.limitLength(anything(), anything())).thenCall((input, length) => input.substring(0, length));
+  when(validationFactory.create()).thenReturn(mockInstance(validation))
   when(formatter.code(anything(), anything(), anything())).thenCall((input: string) => input.length > 3 ? '' : input);
+
   const securityCodeInstance = new SecurityCode(
     instance(configProvider),
     instance(localStorage),
     instance(formatter),
     instance(jwtDecoder),
-    instance(validation)
+    instance(validationFactory)
   );
 
   return { securityCodeInstance, configProvider, communicatorMock, formatter };

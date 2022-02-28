@@ -1,4 +1,4 @@
-import { mock, instance, when } from 'ts-mockito';
+import { mock, instance, when, instance as mockInstance } from 'ts-mockito';
 import { of } from 'rxjs';
 import Container from 'typedi';
 import { FormState } from '../../core/models/constants/FormState';
@@ -11,7 +11,6 @@ import {
   EXPIRATION_DATE_LABEL,
   EXPIRATION_DATE_MESSAGE,
 } from '../../core/models/constants/Selectors';
-import { Validation } from '../../core/shared/validation/Validation';
 import { EventScope } from '../../core/models/constants/EventScope';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { TestConfigProvider } from '../../../testing/mocks/TestConfigProvider';
@@ -20,6 +19,8 @@ import { Translator } from '../../core/shared/translator/Translator';
 import { ITranslationProvider } from '../../core/shared/translator/ITranslationProvider';
 import { TranslationProvider } from '../../core/shared/translator/TranslationProvider';
 import { SimpleMessageBus } from '../../core/shared/message-bus/SimpleMessageBus';
+import { ValidationFactory } from '../../core/shared/validation/ValidationFactory';
+import { Validation } from '../../core/shared/validation/Validation';
 import { ExpirationDate } from './ExpirationDate';
 
 jest.mock('./../../core/shared/notification/Notification');
@@ -272,7 +273,8 @@ function expirationDateFixture() {
   };
   const configProvider: ConfigProvider = mock<ConfigProvider>();
   const formatter: Formatter = mock(Formatter);
-  const validation: Validation = mock(Validation);
+  const mockValidation: Validation = mock(Validation);
+  const validationFactory: ValidationFactory = mock(ValidationFactory);
   // @ts-ignore
   when(configProvider.getConfig()).thenReturn({
     jwt: '',
@@ -280,10 +282,12 @@ function expirationDateFixture() {
     placeholders: { pan: '4154654', expirydate: '12/22', securitycode: '123' },
   });
   when(configProvider.getConfig$()).thenReturn(of(config));
+  when(validationFactory.create()).thenReturn(mockInstance(mockValidation))
+
   const expirationDateInstance: ExpirationDate = new ExpirationDate(
     instance(configProvider),
     instance(formatter),
-    instance(validation)
+    instance(validationFactory)
   );
 
   const labelElement = document.createElement('label');

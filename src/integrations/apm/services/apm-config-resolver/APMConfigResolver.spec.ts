@@ -8,6 +8,7 @@ import { ITranslationProvider } from '../../../../application/core/shared/transl
 import { TranslationProvider } from '../../../../application/core/shared/translator/TranslationProvider';
 import { APMA2AButtonConfig } from '../../models/APMA2AButtonConfig';
 import { APMValidator } from '../apm-validator/APMValidator';
+import { ITranslator } from '../../../../application/core/shared/translator/ITranslator';
 import { APMConfigResolver } from './APMConfigResolver';
 
 Container.set({ id: TranslatorToken, type: Translator });
@@ -16,10 +17,13 @@ Container.set({ id: ITranslationProvider, type: TranslationProvider });
 describe('APMConfigResolver', () => {
   let apmValidatorMock: APMValidator;
   let apmConfigResolver: APMConfigResolver;
+  let translatorMock: ITranslator;
 
   beforeEach(() => {
     apmValidatorMock = mock(APMValidator);
-    apmConfigResolver = new APMConfigResolver(instance(apmValidatorMock));
+    translatorMock = mock<ITranslator>();
+
+    apmConfigResolver = new APMConfigResolver(instance(apmValidatorMock), instance(translatorMock));
 
     when(apmValidatorMock.validateConfig(anything())).thenReturn({ error: null, value: null });
   });
