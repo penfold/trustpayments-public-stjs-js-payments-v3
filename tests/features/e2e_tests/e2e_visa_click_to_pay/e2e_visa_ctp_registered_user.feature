@@ -124,7 +124,7 @@ Feature: Visa Click To Pay
       | billingcountryiso2a     | GB                 |
       | currencyiso3a           | GBP                |
     And User opens example page VISA_CTP
-    When User selects Look up my cardsó
+    When User selects Look up my cards
     And User login to VISA_CTP account with valid e-mail address
     And User fills VISA_CTP one time password
     And User selects string card on VISA_CTP popup
