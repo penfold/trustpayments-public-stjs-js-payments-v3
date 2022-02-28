@@ -1,4 +1,4 @@
-import { ContainerInstance, Service } from 'typedi';
+import { Container, ContainerInstance, Service } from 'typedi';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, first, map, mapTo, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { PaymentMethodToken } from '../../../dependency-injection/InjectionTokens';
@@ -33,8 +33,9 @@ export class PaymentController {
   }
 
   init(): void {
-    const paymentMethods: IPaymentMethod[] = this.container.getMany(PaymentMethodToken);
+    const paymentMethods: IPaymentMethod[] = Container.getMany(PaymentMethodToken);
 
+    console.log(paymentMethods);
     paymentMethods.forEach(paymentMethod => this.paymentMethods.set(paymentMethod.getName(), paymentMethod));
 
     this.messageBus

@@ -1,10 +1,10 @@
-import { Container } from 'typedi';
+import { Container, ContainerInstance } from 'typedi';
 import { zip } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { PaymentController } from '../../../application/core/services/payments/PaymentController';
 import { TestConfigProvider } from '../../mocks/TestConfigProvider';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
-import { ConfigProviderToken, MessageBusToken } from '../../../shared/dependency-injection/InjectionTokens';
+import { ConfigProviderToken, MessageBusToken, WINDOW } from '../../../shared/dependency-injection/InjectionTokens';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { IInitPaymentMethod } from '../../../application/core/services/payments/events/IInitPaymentMethod';
 import { IConfig } from '../../../shared/model/config/IConfig';
@@ -13,11 +13,12 @@ import { PaymentStatus } from '../../../application/core/services/payments/Payme
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { PaymentResultSubmitterSubscriber } from '../../../client/common-frames/PaymentResultSubmitterSubscriber';
+import { initializeContainerServiceDefinition } from '../../ServiceDefinitions';
 import { ITestResultData } from './interfaces/ITestResultData';
 import { TestPaymentMethod } from './TestPaymentMethod';
 import { ITestStartData } from './interfaces/ITestStartData';
 
-const testPaymentMethodName = 'test';
+const testPaymentMethodName = 'Test';
 
 describe('Common Payment Flow', () => {
   let paymentController: PaymentController;
@@ -28,12 +29,18 @@ describe('Common Payment Flow', () => {
   let paymentResultSubmitterSubscriber: PaymentResultSubmitterSubscriber;
 
   beforeAll(() => {
-    Container.set({ id: PaymentResultSubmitterSubscriber, type: PaymentResultSubmitterSubscriber });
+    const container = Container.of('id');
+
     Container.import([TestPaymentMethod]);
-    paymentController = Container.get(PaymentController);
-    configProvider = Container.get(ConfigProviderToken) as TestConfigProvider;
-    messageBus = Container.get(MessageBusToken);
-    paymentResultSubmitterSubscriber = Container.get(PaymentResultSubmitterSubscriber);
+    initializeContainerServiceDefinition(container);
+    container.set(WINDOW, window);
+    container.set(ContainerInstance, container);
+    container.set({ id: PaymentResultSubmitterSubscriber, type: PaymentResultSubmitterSubscriber });
+
+    paymentController = container.get(PaymentController);
+    configProvider = container.get(ConfigProviderToken) as TestConfigProvider;
+    messageBus = container.get(MessageBusToken);
+    paymentResultSubmitterSubscriber = container.get(PaymentResultSubmitterSubscriber);
 
     config = {
       formId: 'st-form',
