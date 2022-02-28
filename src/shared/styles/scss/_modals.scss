@@ -1,4 +1,4 @@
-#st-modal-wrapper {
+#st-hpp-prompt-wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -14,12 +14,12 @@
   transition: all 0.3s;
 }
 
-#st-modal-wrapper.st-modal--open {
+#st-hpp-prompt-wrapper.st-hpp-prompt--open {
   visibility: visible;
   opacity: 1;
 }
 
-.st-modal {
+.st-hpp-prompt {
   max-width: 500px;
   max-height: 500px;
   width: 100%;
@@ -46,11 +46,11 @@
   }
 }
 
-.st-modal__header {
+.st-hpp-prompt__header {
   text-align: center;
 }
 
-#st-modal__close-btn {
+#st-hpp-prompt__close-btn {
   position: absolute;
   right: 15px;
   top: 12px;
@@ -62,7 +62,7 @@
   justify-content: center;
 }
 
-.st-modal__notification{
+.st-hpp-prompt__notification{
   line-height: 2;
   background: red;
   color: white;

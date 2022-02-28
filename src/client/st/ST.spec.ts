@@ -20,7 +20,8 @@ import { IClickToPayConfig } from '../../integrations/click-to-pay/models/IClick
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { ClickToPayAdapterName } from '../../integrations/click-to-pay/adapter/ClickToPayAdapterName';
 import { ClickToPayAdapterFactory } from '../../integrations/click-to-pay/adapter/ClickToPayAdapterFactory';
-import { HPPClickToPayAdapter } from '../../integrations/click-to-pay/adapter/hosted-payments-page-click-to-pay-adapter/HPPClickToPayAdapter';
+
+import { HPPClickToPayAdapter } from '../../integrations/click-to-pay/adapter/hpp-adapter/HPPClickToPayAdapter';
 import SecureTrading, { ST } from './ST';
 import { config, jwt } from './STTestConfigs';
 
@@ -165,7 +166,7 @@ describe('ST', () => {
     beforeEach(() => {
       stInstance['initControlFrame$'] = jest.fn().mockReturnValueOnce(of(null));// TODO mock dependencies properly
       when(clickToPayAdapterFactoryMock.create(ClickToPayAdapterName.hpp))
-        .thenReturn(new HPPClickToPayAdapter(null, null, null));
+        .thenReturn(new HPPClickToPayAdapter(null, null, null,null));
     });
 
     it('should create ClickToPayAdapter depending on adapter type and return Promise with reference to it', done => {

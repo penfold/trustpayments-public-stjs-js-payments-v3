@@ -1,6 +1,6 @@
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
-import { filter, map, mapTo, tap } from 'rxjs/operators';
-import { IClickToPayAdapter } from '../IClickToPayClientAdapter';
+import { filter, mapTo, tap } from 'rxjs/operators';
+import { IClickToPayAdapter } from '../interfaces/IClickToPayClientAdapter';
 import { DigitalTerminal } from '../../digital-terminal/DigitalTerminal';
 import { IInitPaymentMethod } from '../../../../application/core/services/payments/events/IInitPaymentMethod';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
@@ -10,14 +10,24 @@ import { EventScope } from '../../../../application/core/models/constants/EventS
 import { IMessageBusEvent } from '../../../../application/core/models/IMessageBusEvent';
 import { IFrameQueryingService } from '../../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentificationData';
+import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdentificationResult';
 
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
+import { HPPUserIdentificationService } from './HPPUserIdentificationService';
 
 export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAdapterInitParams, HPPClickToPayAdapter> {
-  constructor(private digitalTerminal: DigitalTerminal, private messageBus: IMessageBus, private frameQueryingService: IFrameQueryingService) {
+  private initParams: IHPPClickToPayAdapterInitParams;
+
+  constructor(
+    private digitalTerminal: DigitalTerminal,
+    private messageBus: IMessageBus,
+    private frameQueryingService: IFrameQueryingService,
+    private userIdentificationService: HPPUserIdentificationService
+  ) {
   }
 
   init(initParams: IHPPClickToPayAdapterInitParams): Promise<HPPClickToPayAdapter> {
+    this.initParams = initParams;
     this.startPaymentMethodInit(initParams);
     return this.completePaymentMethodInit(initParams);
   }
@@ -26,8 +36,9 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     return firstValueFrom(this.digitalTerminal.isRecognized());
   }
 
-  identifyUser(identificationData?: IIdentificationData): Promise<boolean> {
-    return firstValueFrom(this.digitalTerminal.identifyUser(identificationData).pipe(map(response => !!response)));
+  identifyUser(identificationData?: IIdentificationData): Promise<IIdentificationResult> {
+    this.userIdentificationService.setInitParams(this.initParams);
+    return firstValueFrom(this.digitalTerminal.identifyUser(this.userIdentificationService, identificationData));
   }
 
   showCardList(): Promise<void> {
@@ -64,8 +75,8 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     return firstValueFrom(initialized.asObservable().pipe(filter(Boolean), mapTo(this)));
   }
 
-  private initAdapter(data: IHPPClickToPayAdapterInitParams): Observable<void> {
-    return this.digitalTerminal.init(data).pipe(
+  private initAdapter(initParams: IHPPClickToPayAdapterInitParams): Observable<void> {
+    return this.digitalTerminal.init(initParams).pipe(
       tap(() => {
         // TODO initialize everything else here
       })
