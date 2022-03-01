@@ -408,46 +408,46 @@ OSXCatalina-Safari-13.1-e2e-tests-smoke-nightly:
 
 #
 
-.OSXBigSur-Chrome-latest-e2e-tests-smoke:
+.OSXMonterey-Chrome-latest-e2e-tests-smoke:
   variables:
     OS: OS X
-    OS_VERSION: Big Sur
+    OS_VERSION: Monterey
     BROWSER: Chrome
     BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
 
-.OSXBigSur-Chrome-latest-e2e-tests-smoke-release:
+.OSXMonterey-Chrome-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
-    - .OSXBigSur-Chrome-latest-e2e-tests-smoke
+    - .OSXMonterey-Chrome-latest-e2e-tests-smoke
     - .rules-extended-tests-release
 
-OSXBigSur-Chrome-latest-e2e-tests-smoke-nightly:
+OSXMonterey-Chrome-latest-e2e-tests-smoke-nightly:
   extends:
     - .e2e-tests-browserstack-review
-    - .OSXBigSur-Chrome-latest-e2e-tests-smoke
+    - .OSXMonterey-Chrome-latest-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 #
 
-.OSXBigSur-Firefox-latest-e2e-tests-smoke:
+.OSXMonterey-Firefox-latest-e2e-tests-smoke:
   variables:
     OS: OS X
-    OS_VERSION: Big Sur
+    OS_VERSION: Monterey
     BROWSER: Firefox
     BROWSER_VERSION: 'latest'
     POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
 
-.OSXBigSur-Firefox-latest-e2e-tests-smoke-release:
+.OSXMonterey-Firefox-latest-e2e-tests-smoke-release:
   extends:
     - .e2e-tests-browserstack-release
-    - .OSXBigSur-Firefox-latest-e2e-tests-smoke
+    - .OSXMonterey-Firefox-latest-e2e-tests-smoke
     - .rules-extended-tests-release
 
-.OSXBigSur-Firefox-latest-e2e-tests-smoke-nightly:
+OSXMonterey-Firefox-latest-e2e-tests-smoke-nightly:
   extends:
     - .e2e-tests-browserstack-review
-    - .OSXBigSur-Firefox-latest-e2e-tests-smoke
+    - .OSXMonterey-Firefox-latest-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
 # MOBILES
@@ -556,28 +556,6 @@ SamsungGalaxyS20-10.0-e2e-tests-smoke-nightly:
 
 #
 
-.GooglePixel4-10.0-e2e-tests-smoke:
-  variables:
-    DEVICE: Google Pixel 4
-    OS_VERSION: '10.0'
-    REAL_MOBILE: 'true'
-    BROWSER: Chrome
-    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
-
-GooglePixel4-10.0-e2e-tests-smoke-release:
-  extends:
-    - .visual-regression-tests-release
-    - .GooglePixel4-10.0-e2e-tests-smoke
-    - .rules-extended-tests-release
-
-GooglePixel4-10.0-e2e-tests-smoke-nightly:
-  extends:
-    - .visual-regression-tests-review
-    - .GooglePixel4-10.0-e2e-tests-smoke
-    - .rules-extended-tests-review-manual-allow-failure
-
-#
-
 .SamsungGalaxyS21-11.0-e2e-tests-smoke:
   variables:
     DEVICE: Samsung Galaxy S21
@@ -598,6 +576,27 @@ SamsungGalaxyS21-11.0-e2e-tests-smoke-nightly:
     - .SamsungGalaxyS21-11.0-e2e-tests-smoke
     - .rules-extended-tests-review-manual-allow-failure
 
+#
+
+.GooglePixel6-12.0-e2e-tests-smoke:
+  variables:
+    DEVICE: Google Pixel 6
+    OS_VERSION: '12.0'
+    REAL_MOBILE: 'true'
+    BROWSER: Chrome
+    POETRY_TAGS: $SMOKE_E2E_TESTS_TAG
+
+GooglePixel6-12.0-e2e-tests-smoke-release:
+  extends:
+    - .visual-regression-tests-release
+    - .GooglePixel6-12.0-e2e-tests-smoke
+    - .rules-extended-tests-release
+
+GooglePixel6-12.0-e2e-tests-smoke-nightly:
+  extends:
+    - .visual-regression-tests-review
+    - .GooglePixel6-12.0-e2e-tests-smoke
+    - .rules-extended-tests-review-manual-allow-failure
 
 ################################### Visual E2E Tests Browserstack ###################################
 .visual-regression-tests-review:
