@@ -26,6 +26,8 @@ class VisaClickToPayLocators:
 
     # Visa modal
     email_input: By = (By.NAME, 'st-ctp-email')
-    submit_email_btn: By = (By.XPATH, '//div[@id=\'st-modal-wrapper\']//button')
-    submit_otp_btn: By = (By.XPATH, '//div[@id=\'st-modal-wrapper\']//button')
-    otp_input: By = (By.XPATH, '//div[@id=\'st-modal-wrapper\']//input')
+    submit_email_btn: By = (By.XPATH, '//div[@id=\'st-ctp-login\']//button')
+    submit_otp_btn: By = (By.XPATH, '//div[@id=\'st-ctp-login\']//button')
+    otp_input: By = (By.NAME, 'st-ctp-code')
+    resend_otp_btn: By = (By.ID, 'st-ctp-opt-resend')
+    validation_message: By = (By.XPATH, '//div[@class=\'st-hpp-prompt__notification\']')

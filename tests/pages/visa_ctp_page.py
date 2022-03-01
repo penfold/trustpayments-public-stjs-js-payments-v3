@@ -91,3 +91,9 @@ class VisaClickToPayPage(BasePage):
 
     def click_submit_otp_btn(self):
         self._actions.click(VisaClickToPayLocators.submit_otp_btn)
+
+    def get_validation_message(self):
+        return self._actions.get_text_with_wait(VisaClickToPayLocators.validation_message)
+
+    def clear_email_input(self):
+        self._actions.clear_input(VisaClickToPayLocators.email_input)

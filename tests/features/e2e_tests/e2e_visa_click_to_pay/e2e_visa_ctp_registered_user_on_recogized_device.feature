@@ -73,7 +73,6 @@ Feature: Visa Click To Pay
       | request_types    |
       | THREEDQUERY AUTH |
 
-
   Scenario: Decline payment - Registered VISA CTP user on recognized device with saved credit cards
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
