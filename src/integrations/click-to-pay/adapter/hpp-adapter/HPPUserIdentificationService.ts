@@ -1,6 +1,6 @@
 import { BehaviorSubject, combineLatest, NEVER, Observable, of, ReplaySubject } from 'rxjs';
 import { Service } from 'typedi';
-import { catchError, filter, finalize, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ITranslator } from '../../../../application/core/shared/translator/ITranslator';
 import { SrcAggregate } from '../../digital-terminal/SrcAggregate';
 import { ICompleteIdValidationResponse, IInitiateIdentityValidationResponse } from '../../digital-terminal/ISrc';
@@ -87,10 +87,11 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
               switchMap(validationResponse => this.askForCode(validationResponse, codeSendTrigger)),
               switchMap(code => srcAggregate.completeIdentityValidation(srcName, code)
                 .pipe(
+                  tap(console.log),
+                  tap(() => this.hppCTPUserPromptService.hide()),
                   catchError(error => this.handleInvalidOTPCode(error))
                 )
               ),
-              tap(() => this.hppCTPUserPromptService.hide())
             )
         )
       );
@@ -119,7 +120,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     this.callUpdateViewCallback(false);
     this.hppCTPUserPromptService.show(formElement, this.getTargetElement());
 
-    return result.pipe(finalize(() => this.callUpdateViewCallback(true)));
+    return result.asObservable();
   }
 
   private callUpdateViewCallback(displayCardForm: boolean) {

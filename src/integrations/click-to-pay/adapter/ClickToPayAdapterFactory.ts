@@ -5,14 +5,15 @@ import { IFrameQueryingService } from '../../../shared/services/message-bus/inte
 import { CardListGenerator } from '../card-list/CardListGenerator';
 import { ClickToPayAdapterName } from './ClickToPayAdapterName';
 import { HPPClickToPayAdapter } from './hpp-adapter/HPPClickToPayAdapter';
+import { HPPUserIdentificationService } from './hpp-adapter/HPPUserIdentificationService';
 
 @Service()
 export class ClickToPayAdapterFactory {
-  constructor(
-    private digitalTerminal: DigitalTerminal,
-    private messageBus: IMessageBus,
-    private frameQueryingService: IFrameQueryingService,
-    private cardListGenerator: CardListGenerator
+  constructor(private digitalTerminal: DigitalTerminal,
+              private messageBus: IMessageBus,
+              private frameQueryingService: IFrameQueryingService,
+              private userIdentificationService: HPPUserIdentificationService,
+              private cardListGenerator: CardListGenerator
   ) {
   }
 
@@ -22,8 +23,8 @@ export class ClickToPayAdapterFactory {
         this.digitalTerminal,
         this.messageBus,
         this.frameQueryingService,
-        this.cardListGenerator
-      );
+        this.userIdentificationService,
+        this.cardListGenerator);
     }
   }
 }

@@ -6,6 +6,7 @@ import { CardListGenerator } from '../card-list/CardListGenerator';
 import { ClickToPayAdapterFactory } from './ClickToPayAdapterFactory';
 import { ClickToPayAdapterName } from './ClickToPayAdapterName';
 import { HPPClickToPayAdapter } from './hpp-adapter/HPPClickToPayAdapter';
+import { HPPUserIdentificationService } from './hpp-adapter/HPPUserIdentificationService';
 
 describe('ClickToPayAdapterFactory()', () => {
   let sut: ClickToPayAdapterFactory;
@@ -14,8 +15,15 @@ describe('ClickToPayAdapterFactory()', () => {
     const messageBus: IMessageBus = mock<IMessageBus>();
     const frameQueryingServiceMock: IFrameQueryingService = mock<IFrameQueryingService>();
     const digitalTerminalMock: DigitalTerminal = mock(DigitalTerminal);
+    const userIdentificationServiceMock: HPPUserIdentificationService = mock(HPPUserIdentificationService);
     const cardListGenerator: CardListGenerator = mock(CardListGenerator);
-    sut = new ClickToPayAdapterFactory(instance(digitalTerminalMock), instance(messageBus), instance(frameQueryingServiceMock), instance(cardListGenerator));
+    sut = new ClickToPayAdapterFactory(
+      instance(digitalTerminalMock),
+      instance(messageBus),
+      instance(frameQueryingServiceMock),
+      instance(userIdentificationServiceMock),
+      instance(cardListGenerator),
+    );
   });
 
   describe('create()', () => {

@@ -1,10 +1,10 @@
-import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Service } from 'typedi';
 import { IInitiateIdentityValidationResponse } from '../../digital-terminal/ISrc';
 
 @Service()
 export class HPPCTPUserPromptFactory {
-  createEmailForm(result: ReplaySubject<string>): HTMLFormElement {
+  createEmailForm(result: Subject<string>): HTMLFormElement {
     const fieldName = 'st-ctp-email';
     const formElement = document.createElement('form');
     const emailPattern = '[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'; // eslint-disable-line no-useless-escape
@@ -35,7 +35,7 @@ export class HPPCTPUserPromptFactory {
     return formElement;
   }
 
-  createOTPForm(result: ReplaySubject<string>, validationResponse: IInitiateIdentityValidationResponse, resendSubject: BehaviorSubject<boolean>): HTMLFormElement {
+  createOTPForm(result: Subject<string>, validationResponse: IInitiateIdentityValidationResponse, resendSubject: BehaviorSubject<boolean>): HTMLFormElement {
     const otpCodePattern = '[0-9]{6}$';
     const fieldName = 'st-ctp-code';
     const formElement = document.createElement('form');
