@@ -31,3 +31,13 @@ class VisaClickToPayLocators:
     otp_input: By = (By.NAME, 'st-ctp-code')
     resend_otp_btn: By = (By.ID, 'st-ctp-opt-resend')
     validation_message: By = (By.XPATH, '//div[@class=\'st-hpp-prompt__notification\']')
+    add_card_button: By = (By.ID, 'st-add-card__button')
+    #cos jest nie tak z tym elementem i nie mozna go znalezc
+    card_number_modal_input: By = (By.ID, 'pan')
+    expiry_date_list_month: By = (By.ID, 'expiryDateMonthId')
+    expiry_date_list_year: By = (By.ID, 'expiryDateYearId')
+    security_code_modal_input: By = (By.ID, 'cvv')
+
+    @classmethod
+    def get_card_by_name(cls, card_name) -> By.XPATH:
+        return By.XPATH, f"""//*[@id="st-ctp-cards"]/div[1]/span[3][contains(text(), '{card_name}')]"""

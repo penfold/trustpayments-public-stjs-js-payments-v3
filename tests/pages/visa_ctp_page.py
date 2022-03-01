@@ -97,3 +97,18 @@ class VisaClickToPayPage(BasePage):
 
     def clear_email_input(self):
         self._actions.clear_input(VisaClickToPayLocators.email_input)
+
+    def select_existing_card_by_name(self, card_name):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.add_card_button)
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.get_card_by_name(card_name))
+        self._actions.click(VisaClickToPayLocators.get_card_by_name(card_name))
+        self._actions.click(VisaClickToPayLocators.submit_button)
+
+    def add_new_card_in_modal(self, card_number, expiration_date, cvv):
+        self._actions.scroll_directly_to_element(VisaClickToPayLocators.card_number_modal_input)
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.card_number_modal_input)
+        self._actions.send_keys(VisaClickToPayLocators.card_number_modal_input, card_number)
+        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_month, expiration_date[:3])
+        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_year, '20' + expiration_date[3::])
+        self._actions.send_keys(VisaClickToPayLocators.security_code_modal_input, cvv)
+        self._actions.click(VisaClickToPayLocators.submit_button)

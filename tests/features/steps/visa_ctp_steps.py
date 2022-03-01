@@ -3,10 +3,10 @@ import time
 
 from assertpy import assert_that
 from behave import use_step_matcher, step, then
+
 from pages.page_factory import Pages
 from utils.enums.card import Card
 from utils.helpers.gmail_service import EMAIL_LOGIN
-from utils.helpers.random_data_generator import get_string
 
 use_step_matcher('re')
 
@@ -62,7 +62,7 @@ def step_impl(context, email_state):
     vctp_page.fill_email_input(email[email_state])
     vctp_page.click_submit_email_btn()
 
-
+#duplicated method ?
 @step('User fills VISA_CTP one time password')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
@@ -79,19 +79,26 @@ def step_impl(context, otp):
     elif otp in 'invalid':
         vctp_page.fill_otp_field('123')
 
+
 @then('User will see that VISA_CTP payment was (?P<param>.+)')
 def step_impl(context, param):
     raise NotImplementedError(u'STEP: Then User will see that VISA_CTP payment was <param>')
 
 
-@step('User selects (?P<string>.+) card on VISA_CTP popup')
-def step_impl(context, string):
-    raise NotImplementedError(u'STEP: And User selects <string> card on VISA_CTP popup')
+@step('User selects (?P<card>.+) card on VISA_CTP popup')
+def step_impl(context, card):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.select_existing_card_by_name(card)
 
 
-@step('User chooses to add new card on VISA_CTP popup')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: And User chooses to add new card on VISA_CTP popup')
+@step('User chooses to add new card (?P<card>.+) on VISA_CTP popup')
+def step_impl(context, card):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
+    context.pan = str(card.number)
+    context.exp_date = str(card.expiration_date)
+    context.cvv = str(card.cvv)
+    vctp_page.add_new_card_in_modal(card.number, card.expiration_date, card.cvv)
 
 
 @step('User chooses to edit (?P<card>.+) details on VISA_CTP popup')
