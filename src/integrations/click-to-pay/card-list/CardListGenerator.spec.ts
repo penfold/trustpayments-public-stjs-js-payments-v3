@@ -17,9 +17,7 @@ describe('CardListGenerator', () => {
 
   it('generates html for single active card', () => {
     const expected = `
-      <span class="st-card__checkbox">
-        <span style='display: none'><input type="radio" name="srcDigitalCardId" value="001" id="radio001"></span><span class="st-card__tick" id="tick001" name="tick"></span>
-      </span>
+      <span class="st-card__checkbox"><label><input id="radio001" name="srcDigitalCardId" type="radio" value="001"><span class="radio"></span></label></span>
       <span class="st-card__image">
         <img src="card001Url" alt="" style="width: 60px; height: 40px">
       </span>
@@ -42,9 +40,7 @@ describe('CardListGenerator', () => {
 
   it('generates html for single inactive card', () => {
     const expected = `
-      <span class="st-card__checkbox">
-        <span style='display: none'></span>
-      </span>
+      <span class="st-card__checkbox"></span>
       <span class="st-card__image">
         <img src="card002Url" alt="" style="width: 60px; height: 40px">
       </span>

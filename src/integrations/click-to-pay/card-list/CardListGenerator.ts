@@ -26,7 +26,7 @@ export class CardListGenerator {
     });
 
     const addCardRow = document.createElement('div');
-    addCardRow.classList.add('st-addCard');
+    addCardRow.classList.add('st-add-card');
     addCardRow.innerHTML = this.addCardContent();
     container.appendChild(addCardRow);
 
@@ -38,28 +38,28 @@ export class CardListGenerator {
   private addCardContent(): string {
     return `
       <div class="st-add-card__label">
-        <span class="st-addCard__label">
+        <span class="st-add-card__label">
           Add new card
         </span>
-        <span class="st-addCard__button">
-          <button id="st-add-card__button" class="st-addCard__button" type="button">+</button>
+        <span class="st-add-card__button">
+          <button id="st-add-card__button" class="st-add-card__button" type="button">+</button>
         </span>
       </div>
       <div class="st-add-card__details">
-        Card number
+        Card number <span class="st-add-card__details-asterix"></span>
         <input id="pan" type="text" name="pan">
       </div>
       <div class="st-add-card__details">
         <span class="st-add-card__details-element">
-          Expiry date
-          <select id="expiryDateMonth" name="expiryDateMonth"></select>
+          Expiry date <span class="st-add-card__details-asterix"></span>
+          <select id="expiryDateMonthId" name="expiryDateMonth"></select>
         </span>
         <span class="st-add-card__details-element">
-          <select id="expiryDateYear" name="expiryDateYear"></select>
+          <select id="expiryDateYearId" name="expiryDateYear"></select>
         </span>
       </div>
       <div class="st-add-card__details">
-        Security code<br>
+        Security code <span class="st-add-card__details-asterix"></span><br>
         <input id="cvv" maxlength="3" name="cvv" type="text">
       </div>
     `;
@@ -67,19 +67,17 @@ export class CardListGenerator {
 
   private addEventHandlers(): void {
     document.getElementById('cvv').addEventListener('focus', () => this.handleFocus());
-    document.getElementById('expiryDateMonth').addEventListener('focus', () => this.handleFocus());
-    document.getElementById('expiryDateYear').addEventListener('focus', () => this.handleFocus());
+    document.getElementById('expiryDateMonthId').addEventListener('focus', () => this.handleFocus());
+    document.getElementById('expiryDateYearId').addEventListener('focus', () => this.handleFocus());
     document.getElementById('pan').addEventListener('focus', () => this.handleFocus());
     document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
   }
 
   private cardContent(card: ICorrelatedMaskedCard): string {
     return `
-      <span class="st-card__checkbox">
-        <span style='display: none'>${card.isActive ? '<input type="radio" name="srcDigitalCardId" value="' + card.srcDigitalCardId + '" id="radio' + card.srcDigitalCardId + '">' : ''}</span>${card.isActive ? '<span class="st-card__tick" id="tick' + card.srcDigitalCardId + '" name="tick"></span>' : ''}
-      </span>
+      <span class="st-card__checkbox">${card.isActive ? '<label><input id="radio' + card.srcDigitalCardId + '" name="srcDigitalCardId" type="radio" value="' + card.srcDigitalCardId + '"><span class="radio"></span></label>' : ''}</span>
       <span class="st-card__image">
-        <img src="${card.digitalCardData.artUri}" alt="" style="width: ${card.digitalCardData.artWidth}px; height: ${card.digitalCardData.artHeight}px">
+        <img src="${card.digitalCardData.artUri}" alt="" style="width: 60px; height: 40px">
       </span>
       <span class="st-card__description">
         ${card.srcName}<br>
@@ -97,14 +95,13 @@ export class CardListGenerator {
   private clearForm(): void {
     (document.getElementById('cvv') as HTMLInputElement).value = '';
     (document.getElementById('pan') as HTMLInputElement).value = '';
-    (document.getElementById('expiryDateMonth') as HTMLSelectElement).value = '';
-    (document.getElementById('expiryDateYear') as HTMLSelectElement).value = '';
+    (document.getElementById('expiryDateMonthId') as HTMLSelectElement).value = '';
+    (document.getElementById('expiryDateYearId') as HTMLSelectElement).value = '';
   }
 
   private clearSelection(): void {
-    document.getElementsByName('tick').forEach((element: HTMLSpanElement) => {
-      console.log('usuwam', element);
-      element.classList.remove('st-card__tick--selected');
+    document.getElementsByName('srcDigitalCardId').forEach((element: HTMLInputElement) => {
+      element.checked = false;
     });
   }
 
@@ -117,7 +114,7 @@ export class CardListGenerator {
   }
 
   private fillUpExpiryMonth(): void {
-    const select = document.getElementsByName('expiryDateMonth')[0];
+    const select = document.getElementById('expiryDateMonthId');
     const option = document.createElement('option') as HTMLOptionElement;
     option.value = option.innerHTML = '';
     select.appendChild(option);
@@ -130,7 +127,7 @@ export class CardListGenerator {
   }
 
   private fillUpExpiryYear(): void {
-    const select = document.getElementsByName('expiryDateYear')[0];
+    const select = document.getElementById('expiryDateYearId');
     const currentYear = new Date().getFullYear();
     const option = document.createElement('option') as HTMLOptionElement;
     option.value = option.innerHTML = '';

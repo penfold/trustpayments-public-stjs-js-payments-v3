@@ -9,6 +9,7 @@ import { EventScope } from '../../../../application/core/models/constants/EventS
 import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentificationData';
 import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdentificationResult';
 import { IdentificationFailureReason } from '../../digital-terminal/IdentificationFailureReason';
+import { CardListGenerator } from '../../card-list/CardListGenerator';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPClickToPayAdapter } from './HPPClickToPayAdapter';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
@@ -25,17 +26,19 @@ describe('HPPClickToPayAdapter', () => {
   let messageBus: IMessageBus;
   let frameQueryingServiceMock: IFrameQueryingService;
   let digitalTerminalMock: DigitalTerminal;
+  let cardListGeneratorMock: CardListGenerator;
   let sut: HPPClickToPayAdapter;
 
   beforeEach(() => {
     messageBus = mock<IMessageBus>();
     frameQueryingServiceMock = mock<IFrameQueryingService>();
     digitalTerminalMock = mock(DigitalTerminal);
+    cardListGeneratorMock = mock(CardListGenerator);
     when(digitalTerminalMock.init(anything())).thenReturn(of(undefined));
     when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_INIT, anyFunction())).thenCall((eventType, callback) => {
       callback({ type: eventType, data: initParams }).subscribe();
     });
-    sut = new HPPClickToPayAdapter(instance(digitalTerminalMock), instance(messageBus), instance(frameQueryingServiceMock));
+    sut = new HPPClickToPayAdapter(instance(digitalTerminalMock), instance(messageBus), instance(frameQueryingServiceMock), instance(cardListGeneratorMock));
   });
 
   describe('init()', () => {
