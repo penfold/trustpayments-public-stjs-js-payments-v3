@@ -1,4 +1,4 @@
-import { anyFunction, anyOfClass, anything, instance, mock, objectContaining, verify, when } from 'ts-mockito';
+import { anyFunction, anything, instance, mock, objectContaining, verify, when } from 'ts-mockito';
 import { of, throwError } from 'rxjs';
 import { ClickToPayPaymentMethodName } from '../../models/ClickToPayPaymentMethodName';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
@@ -8,6 +8,8 @@ import { PUBLIC_EVENTS } from '../../../../application/core/models/constants/Eve
 import { EventScope } from '../../../../application/core/models/constants/EventScope';
 import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentificationData';
 import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdentificationResult';
+import { SrcNameFinder } from '../../digital-terminal/SrcNameFinder';
+import { SrcName } from '../../digital-terminal/SrcName';
 import { IdentificationFailureReason } from '../../digital-terminal/IdentificationFailureReason';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPClickToPayAdapter } from './HPPClickToPayAdapter';
@@ -26,6 +28,7 @@ describe('HPPClickToPayAdapter', () => {
   let messageBus: IMessageBus;
   let frameQueryingServiceMock: IFrameQueryingService;
   let digitalTerminalMock: DigitalTerminal;
+  let srcNameFinderMock: SrcNameFinder;
   let userIdentificationServiceMock: HPPUserIdentificationService;
   let sut: HPPClickToPayAdapter;
 
@@ -33,6 +36,7 @@ describe('HPPClickToPayAdapter', () => {
     messageBus = mock<IMessageBus>();
     frameQueryingServiceMock = mock<IFrameQueryingService>();
     digitalTerminalMock = mock(DigitalTerminal);
+    srcNameFinderMock = mock(SrcNameFinder);
     userIdentificationServiceMock = mock(HPPUserIdentificationService);
     when(digitalTerminalMock.init(anything())).thenReturn(of(undefined));
     when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_INIT, anyFunction())).thenCall((eventType, callback) => {
@@ -42,7 +46,8 @@ describe('HPPClickToPayAdapter', () => {
       instance(digitalTerminalMock),
       instance(messageBus),
       instance(frameQueryingServiceMock),
-      instance(userIdentificationServiceMock)
+      instance(userIdentificationServiceMock),
+      instance(srcNameFinderMock),
     );
   });
 
@@ -60,6 +65,19 @@ describe('HPPClickToPayAdapter', () => {
         verify(messageBus.publish(objectContaining(paymentMethodInitEvent), EventScope.THIS_FRAME)).once();
         done();
       });
+    });
+  });
+
+  describe('getSrcName()', () => {
+    it('should find pan using SrcNameFinder', done => {
+      const pan = '4111';
+      when(srcNameFinderMock.findSrcNameByPan(pan)).thenReturn(of(SrcName.VISA));
+
+      sut.getSrcName(pan).then(srcName => {
+        expect(srcName).toEqual(SrcName.VISA);
+        verify(srcNameFinderMock.findSrcNameByPan(pan)).once();
+        done();
+      })
     });
   });
 
@@ -87,7 +105,6 @@ describe('HPPClickToPayAdapter', () => {
         done();
       });
     });
-
   });
   it('should propagate error from DigitalTerminal.isRecognized() if any occurs', (done) => {
     const errorResponse = new Error('digital terminal error');
@@ -115,11 +132,11 @@ describe('HPPClickToPayAdapter', () => {
       const testData: IIdentificationData = {
         email: 'email@example.com',
       };
-      when(digitalTerminalMock.identifyUser(anyOfClass(HPPUserIdentificationService), anything())).thenReturn(of(identificationResult));
+      when(digitalTerminalMock.identifyUser(anything(), anything())).thenReturn(of(identificationResult));
       const response = sut.identifyUser(testData);
       expect(response).toBeInstanceOf(Promise);
       response.then(result => {
-        verify(digitalTerminalMock.identifyUser(anyOfClass(HPPUserIdentificationService), testData)).once();
+        verify(digitalTerminalMock.identifyUser(anything(), testData)).once();
         expect(result).toEqual(identificationResult);
         done();
       });
@@ -128,14 +145,14 @@ describe('HPPClickToPayAdapter', () => {
     it('should propagate error from DigitalTerminal.identifyUser() if any occurs', (done) => {
       const errorResponse = new Error('digital terminal error');
 
-      when(digitalTerminalMock.identifyUser(anyOfClass(HPPUserIdentificationService), anything())).thenReturn(throwError(() => errorResponse));
+      when(digitalTerminalMock.identifyUser(anything(), anything())).thenReturn(throwError(() => errorResponse));
       const testData: IIdentificationData = {
         email: 'email@example.com',
       };
       const response = sut.identifyUser(testData);
       expect(response).toBeInstanceOf(Promise);
       response.catch(error => {
-        verify(digitalTerminalMock.identifyUser(anyOfClass(HPPUserIdentificationService), testData)).once();
+        verify(digitalTerminalMock.identifyUser(anything(), testData)).once();
         // eslint-disable-next-line jest/no-conditional-expect
         expect(error).toEqual(errorResponse);
       }).finally(() => done());

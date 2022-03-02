@@ -1,3 +1,4 @@
+import { Service } from 'typedi';
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { filter, mapTo, tap } from 'rxjs/operators';
 import { IClickToPayAdapter } from '../interfaces/IClickToPayClientAdapter';
@@ -10,11 +11,13 @@ import { EventScope } from '../../../../application/core/models/constants/EventS
 import { IMessageBusEvent } from '../../../../application/core/models/IMessageBusEvent';
 import { IFrameQueryingService } from '../../../../shared/services/message-bus/interfaces/IFrameQueryingService';
 import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentificationData';
+import { SrcNameFinder } from '../../digital-terminal/SrcNameFinder';
+import { SrcName } from '../../digital-terminal/SrcName';
 import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdentificationResult';
-
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
 
+@Service()
 export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAdapterInitParams, HPPClickToPayAdapter> {
   private initParams: IHPPClickToPayAdapterInitParams;
 
@@ -22,7 +25,8 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     private digitalTerminal: DigitalTerminal,
     private messageBus: IMessageBus,
     private frameQueryingService: IFrameQueryingService,
-    private userIdentificationService: HPPUserIdentificationService
+    private userIdentificationService: HPPUserIdentificationService,
+    private srcNameFinder: SrcNameFinder,
   ) {
   }
 
@@ -43,6 +47,10 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
 
   showCardList(): Promise<void> {
     return Promise.resolve(null);
+  }
+
+  getSrcName(pan: string): Promise<SrcName | null> {
+    return firstValueFrom(this.srcNameFinder.findSrcNameByPan(pan));
   }
 
   private startPaymentMethodInit(initParams: IHPPClickToPayAdapterInitParams) {
