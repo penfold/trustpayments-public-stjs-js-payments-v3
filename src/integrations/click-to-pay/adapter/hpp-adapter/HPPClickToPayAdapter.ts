@@ -14,7 +14,11 @@ import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentifi
 import { SrcNameFinder } from '../../digital-terminal/SrcNameFinder';
 import { SrcName } from '../../digital-terminal/SrcName';
 import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdentificationResult';
+
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
+
+import { CardListGenerator } from '../../card-list/CardListGenerator';
+
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
 import { HPPCheckoutDataProvider } from './HPPCheckoutDataProvider';
@@ -29,6 +33,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     private frameQueryingService: IFrameQueryingService,
     private userIdentificationService: HPPUserIdentificationService,
     private srcNameFinder: SrcNameFinder,
+    private cardListGenerator: CardListGenerator,
     private hppCheckoutDataProvider: HPPCheckoutDataProvider
   ) {
   }
@@ -48,8 +53,10 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     return firstValueFrom(this.digitalTerminal.identifyUser(this.userIdentificationService, identificationData));
   }
 
-  showCardList(): Promise<void> {
-    return Promise.resolve(null);
+  showCardList(): void {
+    this.digitalTerminal.getSrcProfiles().subscribe(cardList => {
+      this.cardListGenerator.displayCards(this.initParams.cardListContainerId, cardList.aggregatedCards);
+    });
   }
 
   getSrcName(pan: string): Promise<SrcName | null> {
@@ -108,4 +115,3 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     });
   }
 }
-
