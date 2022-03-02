@@ -11,6 +11,7 @@ import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdenti
 import { SrcNameFinder } from '../../digital-terminal/SrcNameFinder';
 import { SrcName } from '../../digital-terminal/SrcName';
 import { IdentificationFailureReason } from '../../digital-terminal/IdentificationFailureReason';
+import { CardListGenerator } from '../../card-list/CardListGenerator';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPClickToPayAdapter } from './HPPClickToPayAdapter';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
@@ -30,6 +31,7 @@ describe('HPPClickToPayAdapter', () => {
   let digitalTerminalMock: DigitalTerminal;
   let srcNameFinderMock: SrcNameFinder;
   let userIdentificationServiceMock: HPPUserIdentificationService;
+  let cardListGeneratorMock: CardListGenerator;
   let sut: HPPClickToPayAdapter;
 
   beforeEach(() => {
@@ -38,7 +40,9 @@ describe('HPPClickToPayAdapter', () => {
     digitalTerminalMock = mock(DigitalTerminal);
     srcNameFinderMock = mock(SrcNameFinder);
     userIdentificationServiceMock = mock(HPPUserIdentificationService);
+    cardListGeneratorMock = mock(CardListGenerator);
     when(digitalTerminalMock.init(anything())).thenReturn(of(undefined));
+    when(digitalTerminalMock.getSrcProfiles()).thenReturn(of(undefined));
     when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_INIT, anyFunction())).thenCall((eventType, callback) => {
       callback({ type: eventType, data: initParams }).subscribe();
     });
@@ -48,6 +52,7 @@ describe('HPPClickToPayAdapter', () => {
       instance(frameQueryingServiceMock),
       instance(userIdentificationServiceMock),
       instance(srcNameFinderMock),
+      instance(cardListGeneratorMock)
     );
   });
 
