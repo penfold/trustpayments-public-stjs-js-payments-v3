@@ -31,3 +31,4 @@ class VisaClickToPayLocators:
     otp_input: By = (By.NAME, 'st-ctp-code')
     resend_otp_btn: By = (By.ID, 'st-ctp-opt-resend')
     validation_message: By = (By.XPATH, '//div[@class=\'st-hpp-prompt__notification\']')
+    cancel_btn: By = (By.ID, 'st-hpp-prompt__close-btn')

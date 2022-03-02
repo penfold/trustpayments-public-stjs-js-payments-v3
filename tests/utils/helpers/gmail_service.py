@@ -1,11 +1,11 @@
 import email
 import imaplib
-import os
 import time
+from configuration import CONFIGURATION
 
 # imap need to be enabled on gmail account and access for less secure devices need to be anabled for that google account
-EMAIL_LOGIN = os.environ.get('EMAIL_LOGIN')
-EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+EMAIL_LOGIN = CONFIGURATION.VCTP_LOGIN
+EMAIL_PASSWORD = CONFIGURATION.VCTP_PASSWORD
 
 SMTP_SERVER = 'imap.gmail.com'
 SMTP_PORT = 993

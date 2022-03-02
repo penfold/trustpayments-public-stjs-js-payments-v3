@@ -51,7 +51,9 @@ def load_config():
         'BROWSERSTACK_DEBUG': get_from_env('BROWSERSTACK_DEBUG', 'true'),
         'EXECUTABLE_PATH_EDGE_DRIVER': get_from_env('EXECUTABLE_PATH_EDGE_DRIVER', ''),
         'EXECUTABLE_PATH_IE_DRIVER': get_from_env('EXECUTABLE_PATH_IE_DRIVER', ''),
-        'LOGGING_PREFS': {'browser': 'SEVERE'}
+        'LOGGING_PREFS': {'browser': 'SEVERE'},
+        'VCTP_LOGIN': get_from_env('EMAIL_LOGIN', 'securetestpgs5@gmail.com'),
+        'VCTP_PASSWORD': get_from_env('EMAIL_PASSWORD', 'Securetestpgs1'),
     }
 
     return AttrDict(config)

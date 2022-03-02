@@ -6,7 +6,6 @@ from behave import use_step_matcher, step, then
 from pages.page_factory import Pages
 from utils.enums.card import Card
 from utils.helpers.gmail_service import EMAIL_LOGIN
-from utils.helpers.random_data_generator import get_string
 
 use_step_matcher('re')
 
@@ -33,7 +32,8 @@ def step_impl(context, card: Card):
 @step('User selects Look up my cards')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    time.sleep(4)
+    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
+    payment_page.check_if_value_is_present_in_logs('ClickToPay', 'PAYMENT INIT COMPLETED')
     vctp_page.click_look_up_my_cards_btn()
 
 
@@ -76,12 +76,17 @@ def step_impl(context, otp):
         vctp_page.fill_otp_field_and_check()
     elif otp in 'incorrect':
         vctp_page.fill_otp_field('111111')
+        vctp_page.click_submit_otp_btn()
     elif otp in 'invalid':
         vctp_page.fill_otp_field('123')
+        vctp_page.click_submit_otp_btn()
 
-@then('User will see that VISA_CTP payment was (?P<param>.+)')
+
+@step('User will see that VISA_CTP payment was (?P<param>.+)')
 def step_impl(context, param):
-    raise NotImplementedError(u'STEP: Then User will see that VISA_CTP payment was <param>')
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    is_login_form_displayed = vctp_page.is_login_form_displayed()
+    assert_that(is_login_form_displayed).is_false()
 
 
 @step('User selects (?P<string>.+) card on VISA_CTP popup')
@@ -120,3 +125,22 @@ def step_impl(context, expected_message):
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.clear_email_input()
+
+
+@step("User cancel payment on login view")
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_cancel_button()
+
+
+@step("User clicks on Resend code button")
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    context.otp_after_first_login = vctp_page.get_last_unseen_otp()
+    vctp_page.click_resend_code_button()
+    context.otp_after_resend = vctp_page.get_last_unseen_otp()
+
+
+@then("OTP is sent again to user email")
+def step_impl(context):
+    assert_that(context.otp_after_first_login).is_equal_to(context.otp_after_resend)

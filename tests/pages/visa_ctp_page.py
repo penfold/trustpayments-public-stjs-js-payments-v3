@@ -89,6 +89,11 @@ class VisaClickToPayPage(BasePage):
             self._actions.delete_on_input(VisaClickToPayLocators.otp_input)
         self._actions.send_keys(VisaClickToPayLocators.otp_input, one_time_code)
 
+    def get_last_unseen_otp(self):
+        mail_ids = gmail_service.get_unseen_mail_ids_with_wait(10)
+        code = gmail_service.get_verification_code_from_email_subject(str(int(mail_ids[len(mail_ids) - 1])))
+        return code
+
     def click_submit_otp_btn(self):
         self._actions.click(VisaClickToPayLocators.submit_otp_btn)
 
@@ -97,3 +102,13 @@ class VisaClickToPayPage(BasePage):
 
     def clear_email_input(self):
         self._actions.clear_input(VisaClickToPayLocators.email_input)
+
+    def click_cancel_button(self):
+        self._actions.click(VisaClickToPayLocators.cancel_btn)
+
+    def is_login_form_displayed(self):
+        self._waits.wait_for_element_to_be_not_displayed(VisaClickToPayLocators.submit_email_btn)
+        return self._actions.is_element_displayed(VisaClickToPayLocators.submit_email_btn)
+
+    def click_resend_code_button(self):
+        self._actions.click(VisaClickToPayLocators.resend_otp_btn)
