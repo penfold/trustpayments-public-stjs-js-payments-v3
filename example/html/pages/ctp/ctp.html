@@ -347,6 +347,7 @@
           printLogs('CTP adapter is initialized');
           setLookupMyCardsClickListener(adapter);
           checkIfUserIsRecognized(adapter);
+          getSrcName(adapter);
         })
         .catch(function(error) {
           console.error(error);
@@ -399,6 +400,18 @@
           adapterInstance.showCardList();
         }
       });
+    }
+
+    function getSrcName(adapterInstance) {
+      const cardNumberElement = document.getElementById('st-form-card-number');
+      cardNumberElement.addEventListener('change', inputHandler(adapterInstance));
+    }
+
+    const inputHandler = function(adapterInstance) {
+      return (event) => {
+        const cardType = adapterInstance.getSrcName(event.target.value);
+        console.log(cardType);
+      }
     }
 
     function onUpdateView(updateView) {
