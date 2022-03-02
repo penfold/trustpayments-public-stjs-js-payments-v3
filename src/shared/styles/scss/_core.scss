@@ -123,3 +123,166 @@ input:-webkit-autofill.error-field {
     text-align: right;
   }
 }
+
+.st-cards {
+  .st-card, .st-add-card {
+    align-items: center;
+    border: solid 1px #d6d6d6;
+    cursor: pointer;
+    height: 40px;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    padding: 5px;
+  }
+
+  .st-card {
+    display: flex;
+  }
+
+  .st-add-card {
+    display: block;
+    height: auto;
+    justify-content: space-between;
+    min-height: 40px;
+  }
+
+  .st-card--inactive {
+    cursor: auto;
+    opacity: 0.5;
+  }
+
+  .st-card__checkbox {
+    display: flex;
+    height: 27px;
+    margin-right: 10px;
+    width: 27px;
+  }
+
+  .st-card__logo {
+    display: flex;
+    padding-right: 10px;
+    border-right: solid 1px #737373;
+
+    img {
+      height: 24px;
+    }
+
+  }
+
+  span.st-card__image {
+    display: flex;
+  }
+
+  span.st-card__type {
+    display: flex;
+
+    img {
+      height: 24px;
+    }
+
+  }
+
+  span.st-card__description, span.st-add-card__label {
+    color: #000 !important;
+    display: flex;
+    flex-grow: 2;
+    font-size: 10px;
+    font-weight: 600;
+    min-width: 100px;
+    padding-left: 10px;
+  }
+
+  span.st-add-card__button {
+    display: inline-block;
+  }
+
+  span.st-add-card__label {
+    font-size: 12px;
+    line-height: 40px;
+    padding: 0;
+  }
+
+  button.st-add-card__button {
+    background-color: #cef0e3;
+    border-style: none;
+    cursor: pointer;
+    color: #24de96;
+    font-size: 24px;
+    font-weight: bold;
+    height: 40px;
+    width: 60px;
+  }
+
+  .st-add-card__details {
+    box-sizing: border-box;
+  }
+
+  .st-add-card__label {
+    box-sizing: border-box;
+    display: block;
+  }
+
+  div.st-add-card__label {
+    display: flex;
+  }
+
+  div.st-add-card__details {
+    display: none;
+    font-size: 12px;
+    margin: 5px 0;
+
+    input, select {
+      border-radius: 2px;
+      border: solid 1px #d6d6d6;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    input[name='cvv'] {
+      width: 30%;
+    }
+  }
+
+  .st-add-card__details-asterix::after {
+    color: red;
+    content: "\002A";
+  }
+
+  span.st-add-card__details-element {
+    box-sizing: border-box;
+    display: inline-block;
+    width: calc(50% - 2px);
+    color: #000;
+  }
+
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+.radio {
+  accent-color: green;
+  appearance: none;
+  border-radius: 27px;
+  border: 4px solid green;
+  display: inline-block;
+  height: 27px;
+  box-sizing: border-box;
+  position: relative;
+  width: 27px;
+}
+
+input:checked + .radio {
+  background: green;
+}
+
+input:checked + .radio::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  content: "\2713";
+  font-size: 20px;
+  color: white;
+}
