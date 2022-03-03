@@ -1,4 +1,4 @@
-import { instance as mockInstance, mock, spy, verify, when } from 'ts-mockito';
+import { instance as mockInstance, mock, verify, when } from 'ts-mockito';
 import { Container } from 'typedi';
 import { of } from 'rxjs';
 import { NotificationService } from '../../../../client/notification/NotificationService';
@@ -211,12 +211,9 @@ describe('Payment', () => {
         jwt: 'jwt',
       } as unknown) as IThreeDQueryResponse;
 
-      const stCodecSpy = spy(StCodec);
-
       const result = await instance.processPayment([], {} as ICard, {}, response);
 
       expect(result.response).toBe(response);
-      verify(stCodecSpy.publishResponse(response, 'jwt')).once();
       verify(notificationService.success(PAYMENT_SUCCESS)).once();
     });
 
@@ -226,12 +223,9 @@ describe('Payment', () => {
         jwt: 'jwt',
       } as unknown) as IThreeDQueryResponse;
 
-      const stCodecSpy = spy(StCodec);
-
       const result = await instance.processPayment([], {} as ICard, {}, response);
 
       expect(result.response).toBe(response);
-      verify(stCodecSpy.publishResponse(response, 'jwt')).never();
       verify(notificationService.success(PAYMENT_SUCCESS)).never();
     });
 
@@ -241,12 +235,9 @@ describe('Payment', () => {
         jwt: 'jwt',
       } as unknown) as IThreeDQueryResponse;
 
-      const stCodecSpy = spy(StCodec);
-
       const result = await instance.processPayment([], {} as ICard, {}, response);
 
       expect(result.response).toBe(response);
-      verify(stCodecSpy.publishResponse(response, 'jwt')).never();
       verify(notificationService.success(PAYMENT_SUCCESS)).never();
     });
 
@@ -297,13 +288,14 @@ function paymentFixture() {
   const fraudControlServiceMock = mock(FraudControlService);
   const notificationService = mock(NotificationService);
   const stTransport: StTransport = mock(StTransport);
+  const stCodec: StCodec = mock(StCodec);
 
   when(fraudControlServiceMock.getTransactionId()).thenReturn(of(null));
 
   Container.set(FraudControlService, mockInstance(fraudControlServiceMock));
   Container.set(NotificationService, mockInstance(notificationService));
 
-  const instance: Payment = new Payment(mockInstance(stTransport), mockInstance(fraudControlServiceMock), mockInstance(notificationService));
+  const instance: Payment = new Payment(mockInstance(stTransport), mockInstance(fraudControlServiceMock), mockInstance(notificationService), mockInstance(stCodec));
   const card = {
     expirydate: '10/22',
     pan: '4111111111111111',

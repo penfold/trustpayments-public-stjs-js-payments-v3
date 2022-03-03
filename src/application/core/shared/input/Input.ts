@@ -1,5 +1,5 @@
 import { takeUntil } from 'rxjs/operators';
-import { Container } from 'typedi';
+import { ContainerInstance } from 'typedi';
 import { IAllowedStyles } from '../../models/IAllowedStyles';
 import { IFormFieldState } from '../../models/IFormFieldState';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
@@ -42,15 +42,16 @@ export class Input {
     messageSelector: string,
     labelSelector: string,
     wrapperSelector: string,
+    protected container: ContainerInstance,
     protected configProvider: ConfigProvider,
     protected validationFactory : ValidationFactory,
   ) {
     this.validation = this.validationFactory.create();
-    this.messageBus = Container.get(MessageBusToken);
-    this.allowedStyles = Container.get(AllowedStylesService);
-    this.frame = Container.get(Frame);
-    this.translator = Container.get(TranslatorToken);
-    this.cardNumberInput = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
+    this.messageBus = this.container.get(MessageBusToken);
+    this.allowedStyles =  this.container.get(AllowedStylesService);
+    this.frame =  this.container.get(Frame);
+    this.translator =  this.container.get(TranslatorToken);
+     this.cardNumberInput = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
     this.inputElement = document.getElementById(inputSelector) as HTMLInputElement;
     this.labelElement = document.getElementById(labelSelector) as HTMLLabelElement;
     this.messageElement = document.getElementById(messageSelector) as HTMLInputElement;

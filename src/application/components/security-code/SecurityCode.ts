@@ -1,4 +1,4 @@
-import { Service } from 'typedi';
+import { ContainerInstance, Service } from 'typedi';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import { merge, Observable, pluck } from 'rxjs';
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
@@ -45,9 +45,10 @@ export class SecurityCode extends Input {
     private localStorage: BrowserLocalStorage,
     private formatter: Formatter,
     private jwtDecoder: JwtDecoder,
-    protected validationFactory: ValidationFactory
+    protected validationFactory: ValidationFactory,
+    protected container: ContainerInstance,
   ) {
-    super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, configProvider, validationFactory);
+    super(SECURITY_CODE_INPUT, SECURITY_CODE_MESSAGE, SECURITY_CODE_LABEL, SECURITY_CODE_WRAPPER, container, configProvider, validationFactory);
     this.validation = this.validationFactory.create();
     this.securityCodeLength = UNKNOWN_CVC;
     this.configProvider.getConfig$().subscribe((config: IConfig) => {

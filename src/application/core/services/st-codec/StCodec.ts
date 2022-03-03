@@ -1,5 +1,5 @@
 import jwt_decode from 'jwt-decode';
-import { Container } from 'typedi';
+import { Container, ContainerInstance, Service } from 'typedi';
 
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IResponseData } from '../../models/IResponseData';
@@ -15,10 +15,8 @@ import { NotificationService } from '../../../../client/notification/Notificatio
 import { IStJwtObj } from '../../models/IStJwtObj';
 import { IMessageBus } from '../../shared/message-bus/IMessageBus';
 import { MessageBusToken, TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
-import { Locale } from '../../shared/translator/Locale';
 import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
-import { IStJwtPayload } from '../../models/IStJwtPayload';
 import { EventScope } from '../../models/constants/EventScope';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { IRequestObject } from '../../models/IRequestObject';
@@ -32,14 +30,18 @@ import { InvalidResponseError } from './InvalidResponseError';
 import { IResponsePayload } from './interfaces/IResponsePayload';
 import { IRequestTypeResponse } from './interfaces/IRequestTypeResponse';
 
+@Service()
 export class StCodec {
-  static CONTENT_TYPE = 'application/json';
-  static VERSION = '1.00';
-  static VERSION_INFO = `STJS::N/A::${packageInfo.version}::N/A`;
-  static MINIMUM_REQUEST_FIELDS = 1;
-  static jwt: string;
-  static originalJwt: string;
-  static validation: Validation;
+  CONTENT_TYPE = 'application/json';
+  VERSION = '1.00';
+  VERSION_INFO = `STJS::N/A::${packageInfo.version}::N/A`;
+  MINIMUM_REQUEST_FIELDS = 1;
+  private originalJwt: string;
+  private validation: Validation;
+  private messageBus: IMessageBus;
+  jwt: string;
+  private readonly requestId: string;
+  private jwtDecoder: JwtDecoder;
 
   /**
    * Generate a unique ID for a request
@@ -48,11 +50,11 @@ export class StCodec {
    *   (since we prepend 'J-' the random section will be 2 char shorter)
    * @return A newly generated random request ID
    */
-  static createRequestId(length = 10): string {
+  createRequestId(length = 10): string {
     return 'J-' + Math.random().toString(36).substring(2, length);
   }
 
-  static getErrorData(data: IResponseData): unknown {
+  private getErrorData(data: IResponseData): unknown {
     const { errordata, errormessage, requesttypedescription } = data;
     return {
       errordata,
@@ -61,12 +63,12 @@ export class StCodec {
     };
   }
 
-  static verifyResponseObject(responseData: IResponsePayload, jwtResponse: string): IResponseData {
-    if (StCodec.isInvalidResponse(responseData)) {
-      throw StCodec.handleInvalidResponse();
+  private verifyResponseObject(responseData: IResponsePayload, jwtResponse: string): IResponseData {
+    if (this.isInvalidResponse(responseData)) {
+      throw this.handleInvalidResponse();
     }
-    const responseContent: IResponseData = StCodec.determineResponse(responseData, jwtResponse);
-    StCodec.handleValidGatewayResponse(responseContent, jwtResponse);
+    const responseContent: IResponseData = this.determineResponse(responseData, jwtResponse);
+    this.handleValidGatewayResponse(responseContent, jwtResponse);
     return responseContent;
   }
 
@@ -75,8 +77,8 @@ export class StCodec {
    * @param responseData The decoded response from the gateway
    * @param jwtResponse The raw JWT response from the gateway
    */
-  static publishResponse(responseData: IResponseData, jwtResponse?: string): void {
-    const translator = Container.get(TranslatorToken);
+  publishResponse(responseData: IResponseData, jwtResponse?: string): void {
+    const translator = this.container.get(TranslatorToken);
     responseData.errormessage = translator.translate(responseData.errormessage);
     const eventData = { ...responseData };
     if (jwtResponse !== undefined) {
@@ -93,29 +95,26 @@ export class StCodec {
       data: eventData,
       type: MessageBus.EVENTS_PUBLIC.TRANSACTION_COMPLETE,
     };
-    StCodec.getMessageBus().publish(notificationEvent, EventScope.ALL_FRAMES);
+    this.messageBus.publish(notificationEvent, EventScope.ALL_FRAMES);
   }
 
-  static updateJwt(newJWT: string): void {
-    StCodec.jwt = newJWT ? newJWT : StCodec.jwt;
-    StCodec.originalJwt = newJWT ? newJWT : StCodec.originalJwt;
-    this.getMessageBus().publish({ type: PUBLIC_EVENTS.JWT_UPDATED, data: newJWT });
+  updateJwt(newJWT: string): void {
+    this.jwt  = newJWT ? newJWT : this.jwt ;
+    this.originalJwt = newJWT ? newJWT : this.originalJwt;
+    this.messageBus.publish({ type: PUBLIC_EVENTS.JWT_UPDATED, data: newJWT });
   }
 
-  static resetJwt(): void {
-    StCodec.jwt = StCodec.originalJwt;
-    this.getMessageBus().publish({ type: PUBLIC_EVENTS.JWT_RESET });
+  resetJwt(): void {
+    this.jwt = this.originalJwt;
+    this.messageBus.publish({ type: PUBLIC_EVENTS.JWT_RESET });
   }
 
-  static replaceJwt(jwt: string): void {
-    StCodec.jwt = jwt;
-    this.getMessageBus().publish({ type: PUBLIC_EVENTS.JWT_REPLACED, data: jwt });
+  private replaceJwt(jwt: string): void {
+    this.jwt = jwt;
+    this.messageBus.publish({ type: PUBLIC_EVENTS.JWT_REPLACED, data: jwt });
   }
 
-  private static notification: NotificationService;
-  private static messageBus: IMessageBus;
-  private static locale: Locale;
-  private static REQUESTS_WITH_ERROR_MESSAGES = [
+  private REQUESTS_WITH_ERROR_MESSAGES = [
     'AUTH',
     'CACHETOKENISE',
     'ERROR',
@@ -125,42 +124,34 @@ export class StCodec {
     'SUBSCRIPTION',
     'ACCOUNTCHECK',
   ];
-  private static STATUS_CODES = { invalidfield: '30000', ok: '0', declined: '70000' };
+  private STATUS_CODES = { invalidfield: '30000', ok: '0', declined: '70000' };
 
-  private static getMessageBus(): IMessageBus {
-    return StCodec.messageBus || (StCodec.messageBus = Container.get(MessageBusToken));
-  }
-
-  private static getNotification(): NotificationService {
-    return StCodec.notification || (StCodec.notification = Container.get(NotificationService));
-  }
-
-  private static createCommunicationError() {
+  private createCommunicationError() {
     return {
       errorcode: '50003',
       errormessage: COMMUNICATION_ERROR_INVALID_RESPONSE,
     } as IResponseData;
   }
 
-  private static handleInvalidResponse() {
-    StCodec.publishResponse(StCodec.createCommunicationError());
-    StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_RESPONSE);
-    StCodec.validation.blockForm(FormState.AVAILABLE);
-    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
+  private handleInvalidResponse() {
+    this.publishResponse(this.createCommunicationError());
+    this.notificationService.error(COMMUNICATION_ERROR_INVALID_RESPONSE);
+    this.validation.blockForm(FormState.AVAILABLE);
+    this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
 
     return new InvalidResponseError(COMMUNICATION_ERROR_INVALID_RESPONSE);
   }
 
-  private static isInvalidResponse(responseData: IResponsePayload) {
+  isInvalidResponse(responseData: IResponsePayload) {
     return !(
       responseData &&
-      responseData.version === StCodec.VERSION &&
-      responseData.response &&
-      (responseData.response as IRequestTypeResponse[]).length > 0
+      responseData?.version === this.VERSION &&
+      responseData?.response &&
+      (responseData?.response as IRequestTypeResponse[]).length > 0
     );
   }
 
-  private static determineResponse(responseData: IResponsePayload, jwtResponse: string) {
+  private determineResponse(responseData: IResponsePayload, jwtResponse: string) {
     let responseContent: IResponseData;
     responseData.response.forEach((r) => {
       if (r.customeroutput) {
@@ -176,91 +167,94 @@ export class StCodec {
     return responseContent;
   }
 
-  private static propagateStatus(
+  private propagateStatus(
     errormessageTranslated: string,
     responseContent: IResponseData,
     jwtResponse: string
   ): void {
-    StCodec.getNotification().error(errormessageTranslated);
-    StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
-    StCodec.publishResponse(responseContent, jwtResponse);
+    this.notificationService.error(errormessageTranslated);
+    this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
+    this.publishResponse(responseContent, jwtResponse);
   }
 
-  private static decodeResponseJwt(jwt: string, reject: (error: Error) => void) {
+  private decodeResponseJwt(jwt: string, reject: (error: Error) => void) {
     let decoded: IStJwtObj<IResponsePayload>;
     try {
       decoded = jwt_decode<IStJwtObj<IResponsePayload>>(jwt);
     } catch (e) {
-      reject(StCodec.handleInvalidResponse());
+      reject(this.handleInvalidResponse());
     }
     return decoded;
   }
 
-  private readonly requestId: string;
-  private jwtDecoder: JwtDecoder;
-
-  constructor(jwtDecoder: JwtDecoder, jwt: string, validationFactory: ValidationFactory) {
-    StCodec.validation = validationFactory.create();
-    this.requestId = StCodec.createRequestId();
+  constructor(jwtDecoder: JwtDecoder,
+              jwt: string,
+              validationFactory: ValidationFactory,
+              private container: ContainerInstance,
+              private notificationService: NotificationService,
+              private sentryService: SentryService) {
+    this.messageBus = this.container.get(MessageBusToken);
+    this.validation = validationFactory.create();
+    this.requestId = this.createRequestId();
     this.jwtDecoder = jwtDecoder;
-    StCodec.notification = Container.get(NotificationService);
-    StCodec.jwt = jwt;
-    StCodec.originalJwt = jwt;
-    StCodec.locale = this.jwtDecoder.decode<IStJwtPayload>(StCodec.jwt).payload.locale || 'en_GB';
+
+    this.jwt = jwt;
+    this.originalJwt = jwt;
   }
-  private static handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
+
+  private handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
     const translator = Container.get(TranslatorToken);
 
     const { errorcode, errormessage, requesttypedescription } = responseContent;
 
     const errormessageTranslated = translator.translate(errormessage);
 
-    if (!StCodec.REQUESTS_WITH_ERROR_MESSAGES.includes(requesttypedescription)) {
+    if (!this.REQUESTS_WITH_ERROR_MESSAGES.includes(requesttypedescription)) {
       return;
     }
 
-    if (String(errorcode) === StCodec.STATUS_CODES.ok) {
-      StCodec.publishResponse(responseContent, jwtResponse);
+    if (String(errorcode) === this.STATUS_CODES.ok) {
+      this.publishResponse(responseContent, jwtResponse);
       return;
     }
 
-    Container.get(SentryService).sendCustomMessage(
+    this.sentryService.sendCustomMessage(
       new GatewayError(`Gateway error - ${errormessage}`, responseContent)
     );
 
     if (responseContent.walletsource && responseContent.walletsource === 'APPLEPAY') {
-      StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
+      this.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
       return new GatewayError(errormessage, responseContent);
     }
 
     if (responseContent.errordata) {
-      StCodec.validation.getErrorData(StCodec.getErrorData(responseContent) as IErrorData);
+      this.validation.getErrorData(this.getErrorData(responseContent) as IErrorData);
     }
 
-    StCodec.validation.blockForm(FormState.AVAILABLE);
-    StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
+    this.validation.blockForm(FormState.AVAILABLE);
+    this.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
     throw new GatewayError(errormessage, responseContent);
   }
   buildRequestObject(requestData: IStRequest): Record<string, unknown> {
     return {
       acceptcustomeroutput: '2.00',
-      jwt: StCodec.jwt,
+      jwt: this.jwt ,
       request: [
         {
           ...requestData,
           requestid: this.requestId,
-          sitereference: this.jwtDecoder.decode(StCodec.jwt).sitereference,
+          sitereference: this.jwtDecoder.decode(this.jwt).sitereference,
         },
       ],
-      version: StCodec.VERSION,
-      versioninfo: StCodec.VERSION_INFO,
+      version: this.VERSION,
+      versioninfo: this.VERSION_INFO,
     };
   }
 
   encode(requestObject: IStRequest): string {
     if (!Object.keys(requestObject).length) {
-      StCodec.getMessageBus().publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
-      StCodec.getNotification().error(COMMUNICATION_ERROR_INVALID_REQUEST);
+      this.messageBus.publish({ type: MessageBus.EVENTS_PUBLIC.CALL_MERCHANT_ERROR_CALLBACK }, EventScope.ALL_FRAMES);
+      this.notificationService.error(COMMUNICATION_ERROR_INVALID_REQUEST);
       throw new Error(COMMUNICATION_ERROR_INVALID_REQUEST);
     }
     return JSON.stringify(this.buildRequestObject(requestObject));
@@ -274,17 +268,17 @@ export class StCodec {
       if (typeof responseObject.json === 'function') {
         responseObject.json().then((responseData: IResponsePayload) => {
           try {
-            const decoded = StCodec.decodeResponseJwt(responseData.jwt, reject);
+            const decoded = this.decodeResponseJwt(responseData.jwt, reject);
             isCardPayment = decoded?.payload?.response?.some(response => response?.requesttypedescription === RequestType.AUTH || response?.requesttypedescription === RequestType.THREEDQUERY);
-            const verifiedResponse: IResponseData = StCodec.verifyResponseObject(decoded.payload, responseData.jwt);
+            const verifiedResponse: IResponseData = this.verifyResponseObject(decoded.payload, responseData.jwt);
 
             if (Number(verifiedResponse.errorcode) === 0) {
-              StCodec.replaceJwt(decoded.payload.jwt);
+              this.replaceJwt(decoded.payload.jwt);
             } else {
-              Container.get(SentryService).sendCustomMessage(
+              this.sentryService.sendCustomMessage(
                 new GatewayError(`Gateway error - ${verifiedResponse.errormessage}`, verifiedResponse)
               );
-              StCodec.resetJwt();
+              this.resetJwt();
             }
 
             resolve({
@@ -293,7 +287,7 @@ export class StCodec {
               response: verifiedResponse,
             });
           } catch (error) {
-            Container.get(SentryService).sendCustomMessage(
+            this.sentryService.sendCustomMessage(
               new GatewayError(`Gateway error - ${error.message}`, error)
             );
             if (requestBody?.request.some(request => request.requesttypedescriptions?.includes(RequestType.JSINIT))) {
@@ -303,7 +297,7 @@ export class StCodec {
                   name: 'CARD',
                 },
               };
-              StCodec.getMessageBus().publish(jsInitFailedEvent, EventScope.EXPOSED);
+              this.messageBus.publish(jsInitFailedEvent, EventScope.EXPOSED);
             } else if (isCardPayment) {
               const cardPaymentFailedEvent: IMessageBusEvent = {
                 type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
@@ -311,14 +305,14 @@ export class StCodec {
                   name: 'CARD',
                 },
               };
-              StCodec.getMessageBus().publish(cardPaymentFailedEvent, EventScope.EXPOSED);
+              this.messageBus.publish(cardPaymentFailedEvent, EventScope.EXPOSED);
             }
-            StCodec.resetJwt();
+            this.resetJwt();
           }
         });
       } else {
-        StCodec.resetJwt();
-        reject(StCodec.handleInvalidResponse());
+        this.resetJwt();
+        reject(this.handleInvalidResponse());
       }
     });
   }

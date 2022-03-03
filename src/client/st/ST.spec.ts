@@ -1,43 +1,14 @@
 import 'reflect-metadata';
-import { Container } from 'typedi';
-import { of } from 'rxjs';
-import { anything, instance, mock, resetCalls, verify, when } from 'ts-mockito';
-import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
-import { TestConfigProvider } from '../../testing/mocks/TestConfigProvider';
+
 import { SimpleMessageBus } from '../../application/core/shared/message-bus/SimpleMessageBus';
 import { PUBLIC_EVENTS } from '../../application/core/models/constants/EventTypes';
-import { TranslatorToken } from '../../shared/dependency-injection/InjectionTokens';
-import { Translator } from '../../application/core/shared/translator/Translator';
-import { ITranslationProvider } from '../../application/core/shared/translator/ITranslationProvider';
-import { TranslationProvider } from '../../application/core/shared/translator/TranslationProvider';
-import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
 import { EventScope } from '../../application/core/models/constants/EventScope';
-import { IFrameQueryingService } from '../../shared/services/message-bus/interfaces/IFrameQueryingService';
-import { FrameQueryingService } from '../../shared/services/message-bus/FrameQueryingService';
-import { CommonFrames } from '../common-frames/CommonFrames';
-import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
-import { FramesHub } from '../../shared/services/message-bus/FramesHub';
-import SecureTrading, { ST } from './ST';
 import { config, jwt } from './STTestConfigs';
-
-const messageBusMock: SimpleMessageBus = new SimpleMessageBus();
-const framesHubMock: FramesHub = mock(FramesHub);
-
-Container.set({ id: ConfigProvider, type: TestConfigProvider });
-Container.set(IMessageBus, messageBusMock);
-Container.set({ id: TranslatorToken, type: Translator });
-Container.set({ id: ITranslationProvider, type: TranslationProvider });
-Container.set({ id: CommonFrames, value: instance(mock(CommonFrames)) });
-Container.set({ id: ThreeDSecureFactory, value: instance(mock(ThreeDSecureFactory)) });
-Container.set({ id: IFrameQueryingService, type: FrameQueryingService });
-Container.set({ id: FramesHub, value: instance(framesHubMock) });
-
-when(framesHubMock.waitForFrame(anything())).thenCall(frame => of(frame));
+import SecureTrading, { ST } from './ST';
 
 describe('ST', () => {
-  const stInstance: ST = SecureTrading(config);
-
-  beforeAll(() => {
+  let stInstance: ST;
+  beforeEach(() => {
     document.body.innerHTML =
       '<form id="st-form" class="example-form">' +
       '<h1 class="example-form__title">Secure Trading<span>AMOUNT: <strong>10.00 GBP</strong></span></h1>' +
@@ -56,11 +27,15 @@ describe('ST', () => {
       '<div id="st-control-frame" class="example-form__group"></div><div id="st-visa-checkout" class="example-form__group"></div>' +
       '<div id="st-apple-pay" class="example-form__group"></div></div><div id="st-animated-card" class="st-animated-card-wrapper">' +
       '</div></form>';
+    stInstance = SecureTrading(config);
+    (stInstance as any).displayLiveStatus = jest.fn();
+    (stInstance as any).messageBus = new SimpleMessageBus();
   });
 
   describe('Components()', () => {
     let submitButton: HTMLButtonElement;
     beforeEach(() => {
+
       submitButton = document.querySelector('button[type="submit"]');
       stInstance.Components(config.components);
     });
@@ -72,46 +47,34 @@ describe('ST', () => {
   });
 
   describe('init()', () => {
-    let consoleSpy: jest.SpyInstance;
-
-    beforeEach(() => {
-      consoleSpy = jest.spyOn(console, 'log');
-    });
-
     it('should display test mode message when the library is not in the production mode', () => {
       stInstance.init({
         jwt,
         livestatus: 0,
       });
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        '%cThe %csecure%c//%ctrading %cLibrary is currently working in test mode. Please check your configuration.',
-        'margin: 100px 0; font-size: 2em; color: #e71b5a',
-        'font-size: 2em; font-weight: bold',
-        'font-size: 2em; font-weight: 1000; color: #e71b5a',
-        'font-size: 2em; font-weight: bold',
-        'font-size: 2em; font-weight: regular; color: #e71b5a');
+      expect((stInstance as any).displayLiveStatus).toHaveBeenCalledWith(false);
     });
 
     it('should not display test mode message when the library is in the production mode', () => {
+
       stInstance.init({
         jwt,
         livestatus: 1,
       });
 
-      expect(consoleSpy).toHaveBeenCalledTimes(0);
+      expect((stInstance as any).displayLiveStatus).toHaveBeenCalledWith(true);
     });
   });
 
   describe('updateJWT()', () => {
-
     beforeEach(() => {
-      jest.spyOn(messageBusMock, 'publish');
+      jest.spyOn((stInstance as any).messageBus, 'publish');
       stInstance.updateJWT('somenewjwtvalue');
     });
 
     it('should send UPDATE_JWT event to message bus', () => {
-      expect(messageBusMock.publish).toHaveBeenCalledWith({
+      expect((stInstance as any).messageBus.publish).toHaveBeenCalledWith({
         type: PUBLIC_EVENTS.UPDATE_JWT,
         data: { newJwt: 'somenewjwtvalue' },
       });
@@ -126,30 +89,25 @@ describe('ST', () => {
 
   describe('destroy()', () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      resetCalls(framesHubMock);
-      jest.spyOn(messageBusMock, 'publish');
+      jest.spyOn((stInstance as any).messageBus, 'publish');
       stInstance.destroy();
     });
 
     it(`should send ${PUBLIC_EVENTS.DESTROY} event on MessageBus`, () => {
-      expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.DESTROY }, EventScope.ALL_FRAMES);
+      expect((stInstance as any).messageBus.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.DESTROY }, EventScope.ALL_FRAMES);
     });
 
-    it('should reset the frames hub', () => {
-      verify(framesHubMock.reset()).once();
-    });
   });
 
   describe('cancelThreeDProcess()', () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      jest.spyOn(messageBusMock, 'publish');
+      jest.spyOn((stInstance as any).messageBus, 'publish');
       stInstance.cancelThreeDProcess();
     });
 
     it(`should send ${PUBLIC_EVENTS.THREED_CANCEL} event on MessageBus`, () => {
-      expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.THREED_CANCEL }, EventScope.ALL_FRAMES);
+      expect((stInstance as any).messageBus.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.THREED_CANCEL }, EventScope.ALL_FRAMES);
     });
   });
 });

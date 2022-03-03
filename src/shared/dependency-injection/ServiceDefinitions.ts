@@ -1,4 +1,4 @@
-import { Container, ContainerInstance } from 'typedi';
+import { ContainerInstance } from 'typedi';
 import { IMessageBus } from '../../application/core/shared/message-bus/IMessageBus';
 import { MessageBusFactory } from '../../application/core/shared/message-bus/MessageBusFactory';
 import { ApplePayReducer } from '../../application/core/store/reducers/apple-pay/ApplePayReducer';
@@ -14,7 +14,7 @@ import { ITranslator } from '../../application/core/shared/translator/ITranslato
 import { TranslatorWithMerchantTranslations } from '../../application/core/shared/translator/TranslatorWithMerchantTranslations';
 import { IFrameQueryingService } from '../services/message-bus/interfaces/IFrameQueryingService';
 import { FrameQueryingService } from '../services/message-bus/FrameQueryingService';
-import { MessageBusToken, StoreToken, TranslatorToken } from './InjectionTokens';
+import { MessageBusToken, MessageSubscriberToken, ReducerToken, StoreToken, TranslatorToken } from './InjectionTokens';
 
 export const initializeContainer = (container: ContainerInstance) => {
 
@@ -26,5 +26,9 @@ export const initializeContainer = (container: ContainerInstance) => {
   container.set({ id: ITranslator, type: TranslatorWithMerchantTranslations });
   container.set({ id: TranslatorToken, type: TranslatorWithMerchantTranslations });
   container.set({ id: IFrameQueryingService, type: FrameQueryingService });
-  Container.import([ConfigReducer, StorageReducer, ApplePayReducer, InitialConfigReducer, LocaleSubscriber]);
+  container.set({ id: ReducerToken, type: ConfigReducer, multiple: true });
+  container.set({ id: ReducerToken, type: StorageReducer, multiple: true });
+  container.set({ id: ReducerToken, type: ApplePayReducer, multiple: true });
+  container.set({ id: ReducerToken, type: InitialConfigReducer, multiple: true });
+  container.set({ id: MessageSubscriberToken, type: LocaleSubscriber, multiple: true });
 };

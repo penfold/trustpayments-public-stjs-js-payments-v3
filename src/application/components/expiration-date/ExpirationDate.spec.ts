@@ -1,6 +1,6 @@
 import { mock, instance, when, instance as mockInstance } from 'ts-mockito';
 import { of } from 'rxjs';
-import Container from 'typedi';
+import Container, { ContainerInstance } from 'typedi';
 import { FormState } from '../../core/models/constants/FormState';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { Formatter } from '../../core/shared/formatter/Formatter';
@@ -275,6 +275,10 @@ function expirationDateFixture() {
   const formatter: Formatter = mock(Formatter);
   const mockValidation: Validation = mock(Validation);
   const validationFactory: ValidationFactory = mock(ValidationFactory);
+  const container: ContainerInstance = mock(ContainerInstance);
+
+  when(container.get(MessageBusToken)).thenReturn(testMessageBus);
+
   // @ts-ignore
   when(configProvider.getConfig()).thenReturn({
     jwt: '',
@@ -287,7 +291,8 @@ function expirationDateFixture() {
   const expirationDateInstance: ExpirationDate = new ExpirationDate(
     instance(configProvider),
     instance(formatter),
-    instance(validationFactory)
+    instance(validationFactory),
+    instance(container)
   );
 
   const labelElement = document.createElement('label');

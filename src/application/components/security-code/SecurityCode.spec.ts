@@ -1,6 +1,6 @@
 import { anyFunction, anything, instance as mockInstance, instance, mock, when } from 'ts-mockito';
 import { EMPTY, of } from 'rxjs';
-import Container from 'typedi';
+import Container, { ContainerInstance } from 'typedi';
 import { SECURITY_CODE_INPUT, SECURITY_CODE_LABEL, SECURITY_CODE_MESSAGE } from '../../core/models/constants/Selectors';
 import { Input } from '../../core/shared/input/Input';
 import { Utils } from '../../core/shared/utils/Utils';
@@ -319,6 +319,7 @@ function securityCodeFixture() {
   const jwtDecoder: JwtDecoder = mock(JwtDecoder);
   const validationFactory: ValidationFactory = mock(ValidationFactory);
   const localStorage: BrowserLocalStorage = mock(BrowserLocalStorage);
+  const container: ContainerInstance = mock(ContainerInstance);
   when(localStorage.select(anyFunction())).thenReturn(of('34****4565'));
   when(configProvider.getConfig$()).thenReturn(of(config));
   when(configProvider.getConfig()).thenReturn(config);
@@ -326,12 +327,15 @@ function securityCodeFixture() {
   when(validationFactory.create()).thenReturn(mockInstance(validation))
   when(formatter.code(anything(), anything(), anything())).thenCall((input: string) => input.length > 3 ? '' : input);
 
+  when(container.get(MessageBusToken)).thenReturn(testMessageBus);
+
   const securityCodeInstance = new SecurityCode(
     instance(configProvider),
     instance(localStorage),
     instance(formatter),
     instance(jwtDecoder),
-    instance(validationFactory)
+    instance(validationFactory),
+    instance(container)
   );
 
   return { securityCodeInstance, configProvider, communicatorMock, formatter };

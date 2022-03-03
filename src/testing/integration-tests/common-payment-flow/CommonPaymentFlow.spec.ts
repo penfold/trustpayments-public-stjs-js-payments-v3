@@ -14,11 +14,12 @@ import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { PaymentResultSubmitterSubscriber } from '../../../client/common-frames/PaymentResultSubmitterSubscriber';
 import { initializeContainerServiceDefinition } from '../../ServiceDefinitions';
+import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
 import { ITestResultData } from './interfaces/ITestResultData';
 import { TestPaymentMethod } from './TestPaymentMethod';
 import { ITestStartData } from './interfaces/ITestStartData';
 
-const testPaymentMethodName = 'Test';
+const testPaymentMethodName = 'test';
 
 describe('Common Payment Flow', () => {
   let paymentController: PaymentController;
@@ -31,9 +32,9 @@ describe('Common Payment Flow', () => {
   beforeAll(() => {
     const container = Container.of('id');
 
-    Container.import([TestPaymentMethod]);
     initializeContainerServiceDefinition(container);
     container.set(WINDOW, window);
+    container.set({ id: PaymentMethodToken, type: TestPaymentMethod });
     container.set(ContainerInstance, container);
     container.set({ id: PaymentResultSubmitterSubscriber, type: PaymentResultSubmitterSubscriber });
 

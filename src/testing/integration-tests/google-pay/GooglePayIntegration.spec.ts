@@ -9,7 +9,7 @@ import { PaymentController } from '../../../application/core/services/payments/P
 import { DomMethods } from '../../../application/core/shared/dom-methods/DomMethods';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { GooglePaymentMethod } from '../../../integrations/google-pay/application/GooglePaymentMethod';
-import { ConfigProviderToken, MessageBusToken } from '../../../shared/dependency-injection/InjectionTokens';
+import { ConfigProviderToken, MessageBusToken, ReducerToken } from '../../../shared/dependency-injection/InjectionTokens';
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { TestConfigProvider } from '../../mocks/TestConfigProvider';
 import { GooglePaymentMethodName } from '../../../integrations/google-pay/models/IGooglePaymentMethod';
@@ -26,6 +26,7 @@ import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IThreeDVerificationService } from '../../../application/core/services/three-d-verification/IThreeDVerificationService';
 import { IGatewayClient } from '../../../application/core/services/gateway-client/IGatewayClient';
 import { TransportServiceGatewayClient } from '../../../application/core/services/gateway-client/TransportServiceGatewayClient';
+import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
 import { GooglePaySessionPaymentsClientMock } from './GooglePaySessionClientMock';
 
 describe.skip('GooglePay Payment', () => {
@@ -58,7 +59,9 @@ describe.skip('GooglePay Payment', () => {
     Container.set({ id: HttpClient, type: HttpClient });
     Container.set({ id: IThreeDVerificationService, value: instance(threeDVerificationServiceMock) });
     Container.set({ id: IGatewayClient, type: TransportServiceGatewayClient });
-    Container.import([JwtReducer, GooglePaymentMethod]);
+    Container.set({ id: ReducerToken, type: JwtReducer, multiple:true });
+    Container.set({ id: PaymentMethodToken, type: GooglePaymentMethod, multiple:true });
+
     paymentController = Container.get(PaymentController);
     configProvider = Container.get(ConfigProviderToken) as TestConfigProvider;
     messageBus = Container.get(MessageBusToken);

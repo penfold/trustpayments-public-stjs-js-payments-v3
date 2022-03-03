@@ -1,4 +1,4 @@
-import { Service } from 'typedi';
+import { ContainerInstance, Service } from 'typedi';
 import { pluck } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { FormState } from '../../core/models/constants/FormState';
@@ -38,13 +38,15 @@ export class ExpirationDate extends Input {
   constructor(
     configProvider: ConfigProvider,
     private formatter: Formatter,
-    protected validationFactory: ValidationFactory
+    protected validationFactory: ValidationFactory,
+    protected container: ContainerInstance,
   ) {
     super(
       EXPIRATION_DATE_INPUT,
       EXPIRATION_DATE_MESSAGE,
       EXPIRATION_DATE_LABEL,
       EXPIRATION_DATE_WRAPPER,
+      container,
       configProvider,
       validationFactory
     );

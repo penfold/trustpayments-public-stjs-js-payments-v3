@@ -1,4 +1,9 @@
-import { Container, Service } from 'typedi';
+/**
+ Inicjalizacja payment Controlera
+ (wszystkie calle przechodzą przez to )
+ **/
+
+import { Service } from 'typedi';
 import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
@@ -32,7 +37,6 @@ import { IThreeDInitResponse } from '../../core/models/IThreeDInitResponse';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 import { Frame } from '../../core/shared/frame/Frame';
-import { CONFIG } from '../../../shared/dependency-injection/InjectionTokens';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import { RequestType } from '../../../shared/types/RequestType';
 import { IThreeDQueryResponse } from '../../core/models/IThreeDQueryResponse';
@@ -60,7 +64,7 @@ export class ControlFrame {
   }
 
   private resetJwt(): void {
-    StCodec.resetJwt();
+    this.stCodec.resetJwt();
   }
 
   private card: ICard = {
@@ -73,7 +77,6 @@ export class ControlFrame {
   private formFieldsValidity: IFormFieldsValidity = FormFieldsValidity;
   private cardPaymentMethodName = 'CARD';
   private merchantFormData: IMerchantData;
-  private payment: Payment;
   private remainingRequestTypes: RequestType[];
   private validation: Validation;
   private slicedPan: string;
@@ -92,14 +95,15 @@ export class ControlFrame {
     private applePayClient: ApplePayClient,
     private paymentController: PaymentController,
     private translator: ITranslator,
-    private validationFactory: ValidationFactory
+    private validationFactory: ValidationFactory,
+    private stCodec: StCodec,
+    private payment: Payment
   ) {
     this.validation = validationFactory.create();
     this.init();
-    this.initVisaCheckout();
-    this.initCardPayments();
-    this.initJsInit();
-    this.initConfigChange();
+    this.initVisaCheckout();  /**  do wywalenia **/
+    this.initCardPayments();  /** wypada do payment metody **/
+    this.initJsInit();  /** płatność kartą won **/
   }
 
   private init(): void {
@@ -114,16 +118,16 @@ export class ControlFrame {
       });
 
       if (config.jwt) {
-        StCodec.updateJwt(config.jwt);
+        this.stCodec.updateJwt(config.jwt);
       }
 
       this.updateMerchantFieldsEvent();
-      this.paymentController.init();
+      this.paymentController.init();   /** musi zostać **/
 
       return of(config);
     });
   }
-
+  /** karta **/
   initCardPayments(): void {
 
     this.messageBus
@@ -181,15 +185,6 @@ export class ControlFrame {
       });
   }
 
-  private initConfigChange(): void {
-    this.messageBus.pipe(ofType(PUBLIC_EVENTS.CONFIG_CHANGED)).subscribe((event: IMessageBusEvent<IConfig>) => {
-      if (event.data) {
-        Container.set(CONFIG, event.data);
-        return;
-      }
-    });
-  }
-
   private formFieldChangeEvent(event: string, field: IFormFieldState): void {
     this.messageBus.subscribeType(event, (data: IFormFieldState) => {
       this.formFieldChange(event, data.value);
@@ -205,16 +200,16 @@ export class ControlFrame {
 
   private updateJwtEvent(): void {
     this.messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_JWT, (data: IUpdateJwt) => {
-      StCodec.updateJwt(data.newJwt);
+      this.stCodec.updateJwt(data.newJwt);
     });
   }
-
+  /** karta i inne do zmiany **/
   private updateMerchantFieldsEvent(): void {
     this.messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
       this.updateMerchantFields(data);
     });
   }
-
+  /** karta **/
   private submitFormEvent(): void {
     this.messageBus
       .pipe(
@@ -265,7 +260,7 @@ export class ControlFrame {
       )
       .subscribe(threeDQueryResponse => this.processPayment(threeDQueryResponse));
   }
-
+  /** karta **/
   private isDataValid(data: ISubmitData): boolean {
     const dataInJwt = data ? data.dataInJwt : false;
     const { validity } = this.validation.formValidation(
@@ -277,7 +272,7 @@ export class ControlFrame {
 
     return validity;
   }
-
+  /** karta **/
   private onPaymentFailure(errorData: IResponseData, errorMessage: string = PAYMENT_ERROR): Observable<never> {
     const translatedErrorMessage = this.translator.translate(errorMessage);
     errorData.errormessage = translatedErrorMessage;
@@ -288,7 +283,7 @@ export class ControlFrame {
         type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
         data: { name: this.cardPaymentMethodName },
       }, EventScope.EXPOSED);
-      StCodec.publishResponse(errorData, errorData.jwt);
+      this.stCodec.publishResponse(errorData, errorData.jwt);
     }
 
     this.resetJwt();
@@ -298,6 +293,7 @@ export class ControlFrame {
     return throwError(errorData);
   }
 
+  /** karta **/
   private onPaymentCancel(errorData: IResponseData, errorMessage: string = PAYMENT_CANCELLED): Observable<never> {
     const translatedErrorMessage = this.translator.translate(errorMessage);
     errorData.errormessage = translatedErrorMessage;
@@ -308,7 +304,7 @@ export class ControlFrame {
         type: PUBLIC_EVENTS.PAYMENT_METHOD_CANCELED,
         data: { name: this.cardPaymentMethodName },
       }, EventScope.EXPOSED);
-      StCodec.publishResponse(errorData, errorData.jwt);
+      this.stCodec.publishResponse(errorData, errorData.jwt);
     }
 
     this.resetJwt();
@@ -317,9 +313,9 @@ export class ControlFrame {
 
     return throwError(errorData);
   }
-
+  /** karta **/
   private processPayment(responseData: IResponseData): Promise<void> {
-    this.setRequestTypes(StCodec.jwt);
+    this.setRequestTypes(this.stCodec.jwt);
 
     return this.payment
       .processPayment(this.remainingRequestTypes, this.card, this.merchantFormData, responseData)
@@ -354,7 +350,7 @@ export class ControlFrame {
         this.resetJwt();
       });
   }
-
+  /** karta **/
   private callThreeDQueryRequest(): Observable<IThreeDQueryResponse> {
     const applyFraudControl = (merchantFormData: IMerchantData) =>
       this.fraudControlService.getTransactionId().pipe(
@@ -377,7 +373,7 @@ export class ControlFrame {
       )
     );
   }
-
+  /** karta **/
   private validateFormFields() {
     this.publishBlurEvent({
       type: MessageBus.EVENTS.BLUR_CARD_NUMBER,
@@ -390,11 +386,11 @@ export class ControlFrame {
     });
     this.validation.setFormValidity(this.formFieldsValidity);
   }
-
+  /** karta **/
   private publishBlurEvent(event: IMessageBusEvent): void {
     this.messageBus.publish(event);
   }
-
+  /** karta **/
   private formFieldChange(event: string, value: string) {
     switch (event) {
       case MessageBus.EVENTS.CHANGE_CARD_NUMBER:
@@ -408,40 +404,35 @@ export class ControlFrame {
         break;
     }
   }
-
+  /** karta **/
   private getJwt(): string {
     return this.frame.parseUrl(ControlFrame.ALLOWED_PARAMS).jwt;
   }
 
-  private getPanFromJwt(): string {
-    const jwt: string = this.getJwt();
-    const decoded = this.jwtDecoder.decode<IStJwtPayload>(jwt);
-
-    return decoded.payload.pan || '';
-  }
-
+  /** karta **/
   private setCardExpiryDate(value: string): void {
     this.card.expirydate = value;
   }
-
+  /** karta **/
   private setCardPan(value: string): void {
     this.card.pan = value;
   }
-
+  /** karta **/
   private setCardSecurityCode(value: string): void {
     this.card.securitycode = value;
   }
-
+  /** karta **/
   private setFormFieldsValidities(): void {
     this.formFieldsValidity.cardNumber.state = this.formFields.cardNumber.validity;
     this.formFieldsValidity.expirationDate.state = this.formFields.expirationDate.validity;
     this.formFieldsValidity.securityCode.state = this.formFields.securityCode.validity;
   }
-
+  /** karta i inne potrzebne nie wywalać **/
   private updateMerchantFields(data: IMerchantData): void {
     this.merchantFormData = data;
   }
 
+  /** karta **/
   private initThreeDProcess(config: IConfig): void {
     this.threeDProcess.init$().pipe(
       catchError((error,caught) => {

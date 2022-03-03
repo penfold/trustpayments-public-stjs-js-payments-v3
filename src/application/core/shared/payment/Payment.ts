@@ -18,7 +18,8 @@ import { FraudControlService } from '../../services/fraud-control/FraudControlSe
 export class Payment {
   constructor(private stTransport: StTransport,
               private fraudControlService: FraudControlService,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              private stCodec: StCodec) {
   }
 
   async processPayment(
@@ -103,7 +104,7 @@ export class Payment {
 
   private publishThreedResponse(responseData: IResponseData): Promise<Record<string, unknown>> {
     // This should only happen if were processing a 3DS payment with no requests after the THREEDQUERY
-    StCodec.publishResponse(responseData, responseData.jwt);
+    this.stCodec.publishResponse(responseData, responseData.jwt);
     this.notificationService.success(PAYMENT_SUCCESS);
 
     return this.publishResponse(responseData);

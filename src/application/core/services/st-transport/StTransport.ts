@@ -47,9 +47,8 @@ export class StTransport {
   private static TIMEOUT = 60000;
   private throttlingRequests = new Map<string, Promise<Record<string, unknown>>>();
   private config: IConfig;
-  private codec: StCodec;
 
-  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder, private sentryService: SentryService, protected validationFactory: ValidationFactory) {}
+  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder, private sentryService: SentryService, protected validationFactory: ValidationFactory, private codec: StCodec) {}
 
   /**
    * Perform a JSON API request with ST
@@ -72,8 +71,8 @@ export class StTransport {
     const { jwt } = JSON.parse(requestBody);
     const options: IFetchOptions = {
       headers: {
-        Accept: StCodec.CONTENT_TYPE,
-        'Content-Type': StCodec.CONTENT_TYPE,
+        Accept: this.codec.CONTENT_TYPE,
+        'Content-Type': this.codec.CONTENT_TYPE,
       },
       method: 'post',
     };
@@ -168,11 +167,6 @@ export class StTransport {
   }
 
   private getCodec(): StCodec {
-    if (!this.codec) {
-      const { jwt } = this.getConfig();
-      this.codec = new StCodec(this.jwtDecoder, jwt, this.validationFactory);
-    }
-
     return this.codec;
   }
 }

@@ -1,16 +1,18 @@
 import { instance as mockInstance, mock, when } from 'ts-mockito';
 import { of } from 'rxjs';
-import Container from 'typedi';
+import Container, { ContainerInstance } from 'typedi';
 import { NOT_IMPLEMENTED_ERROR } from '../../models/constants/Translations';
 import { Utils } from '../utils/Utils';
 import { Validation } from '../validation/Validation';
 import { ConfigProvider } from '../../../../shared/services/config-provider/ConfigProvider';
-import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
+import { MessageBusToken, TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../translator/Translator';
 import { ITranslationProvider } from '../translator/ITranslationProvider';
 import { TranslationProvider } from '../translator/TranslationProvider';
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
 import { ValidationFactory } from '../validation/ValidationFactory';
+import { SimpleMessageBus } from '../message-bus/SimpleMessageBus';
+import { TranslatorWithMerchantTranslations } from '../translator/TranslatorWithMerchantTranslations';
 import { Input } from './Input';
 
 jest.mock('./../validation/Validation');
@@ -230,8 +232,13 @@ function formFieldFixture() {
   const configProviderMock: ConfigProvider = mock<ConfigProvider>();
   const validationFactory: ValidationFactory = mock(ValidationFactory);
   const mockValidation: Validation = mock(Validation);
+  const containerMock: ContainerInstance = mock(ContainerInstance);
+  const translatorToken = mock(TranslatorWithMerchantTranslations);
+  const testMessageBus = new SimpleMessageBus();
 
   when(validationFactory.create()).thenReturn(mockInstance(mockValidation))
+  when(containerMock.get(MessageBusToken)).thenReturn(testMessageBus);
+  when(containerMock.get(TranslatorToken)).thenReturn(translatorToken);
 
   labelElement.id = 'st-form-field-label';
   inputElement.id = 'st-form-field-input';
@@ -254,10 +261,11 @@ function formFieldFixture() {
     'st-form-field-message',
     'st-form-field-label',
     'st-form-field__wrapper',
+    mockInstance(containerMock),
     mockInstance(configProviderMock),
     mockInstance(validationFactory)
   );
-
   (instance as any).validation.validate = jest.fn();
+
   return { instance, inputElement, messageElement, labelElement };
 }

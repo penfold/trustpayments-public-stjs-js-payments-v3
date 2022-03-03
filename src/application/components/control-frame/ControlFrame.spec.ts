@@ -36,8 +36,7 @@ describe('ControlFrame', () => {
   const { data, instance, messageBusEvent, messageBus } = controlFrameFixture();
 
   beforeEach(() => {
-    // @ts-ignore
-    instance.messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
+    messageBus.subscribeType = jest.fn().mockImplementationOnce((event, callback) => {
       callback(data);
     });
   });
@@ -244,7 +243,8 @@ describe('ControlFrame', () => {
 
   describe('updateJwtEvent', () => {
     it('calls StCodec.updateJwt() on UPDATE_JWT event', () => {
-      const updateJwtSpy = spyOn(StCodec, 'updateJwt');
+      const { stCodec } = controlFrameFixture();
+      const updateJwtSpy = spyOn(stCodec, 'updateJwt');
 
       messageBus.publish<IUpdateJwt>({ type: PUBLIC_EVENTS.UPDATE_JWT, data: { newJwt: 'foobar' } });
 
@@ -269,6 +269,7 @@ function controlFrameFixture() {
   const applePayClientMock: ApplePayClient = mock(ApplePayClient);
   const paymentControllerMock: PaymentController = mock(PaymentController);
   const translator: Translator = mock(Translator);
+  const stCodec: StCodec = mock(StCodec);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -310,14 +311,16 @@ function controlFrameFixture() {
     mockInstance(notification),
     mockInstance(fraudControlServiceMock),
     mockInstance(threeDProcess),
-    messageBus,
+    mockInstance(messageBus),
     mockInstance(frame),
     mockInstance(jwtDecoderMock),
     mockInstance(visaCheckoutClientMock),
     mockInstance(applePayClientMock),
     mockInstance(paymentControllerMock),
     mockInstance(translator),
-    mockInstance( validationFactory),
+    mockInstance(validationFactory),
+    mockInstance(stCodec)
+
   );
   const messageBusEvent = {
     type: '',
@@ -327,7 +330,7 @@ function controlFrameFixture() {
     value: 'test value',
   };
 
-  StCodec.jwt = JWT;
+  when((instance as any).messageBus).thenReturn(messageBus);
 
-  return { data, instance, messageBusEvent, messageBus };
+  return { data, instance, messageBusEvent, messageBus, stCodec };
 }

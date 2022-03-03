@@ -51,7 +51,7 @@ describe('InterFrameCommunicator', () => {
       instance(eventDataSanitizerMock),
       instance(frameQueryingServiceMock),
       instance(frameIdentifierMock),
-      window,
+      window
     );
 
     when(frameAccessorMock.getParentFrame()).thenReturn(parentFrame);

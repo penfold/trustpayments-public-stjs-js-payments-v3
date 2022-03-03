@@ -1,5 +1,5 @@
 import HttpClient from '@trustpayments/http-client';
-import { Container, ContainerInstance } from 'typedi';
+import { ContainerInstance } from 'typedi';
 import { ThreeDSecureFactory } from '@trustpayments/3ds-sdk-js';
 import { environment } from '../../environments/environment';
 import { ConfigProvider } from '../../shared/services/config-provider/ConfigProvider';
@@ -16,23 +16,22 @@ import { ApplePaySessionWrapper } from '../../integrations/apple-pay/client/serv
 import { APMClientInitializer } from '../../integrations/apm/client/APMClientInitializer';
 import { SentryBreadcrumbsSender } from '../../application/core/services/sentry-breadcrumbs-sender/SentryBreadcrumbsSender';
 import { AnalyticsEventSender } from '../../application/core/services/analytics-event-sender/AnalyticsEventSender';
+import { MessageSubscriberToken } from '../../shared/dependency-injection/InjectionTokens';
 
 export const initializeContainer = (container: ContainerInstance) => {
   initializeContainerShared(container);
+
   container.set({ id: ConfigProvider, factory: () => container.get(ConfigService) });
   container.set({ id: ThreeDSecureFactory, type: ThreeDSecureFactory });
   container.set({ id: IGooglePaySdkProvider, type: GooglePaySdkProvider });
   container.set({ id: IApplePaySessionWrapper, type: ApplePaySessionWrapper });
-
-  Container.import([
-    PreventNavigationPopup,
-    PaymentResultSubmitterSubscriber,
-    GooglePayInitializeSubscriber,
-    ApplePayClientInitializer,
-    APMClientInitializer,
-    SentryBreadcrumbsSender,
-    AnalyticsEventSender,
-  ]);
+  container.set({ id: MessageSubscriberToken, type: PreventNavigationPopup, multiple: true });
+  container.set({ id: MessageSubscriberToken, type: PaymentResultSubmitterSubscriber, multiple: true });
+  container.set({ id: MessageSubscriberToken, type: GooglePayInitializeSubscriber, multiple: true });
+  container.set({ id: MessageSubscriberToken, type: ApplePayClientInitializer, multiple: true });
+  container.set({ id: MessageSubscriberToken, type: APMClientInitializer, multiple: true });
+  container.set({ id: MessageSubscriberToken, type: SentryBreadcrumbsSender, multiple: true });
+  container.set({ id: MessageSubscriberToken, type: AnalyticsEventSender, multiple: true });
 
   if(environment.testEnvironment){
     container.set({ id: HttpClient, type: HttpClient });

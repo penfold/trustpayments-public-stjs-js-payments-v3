@@ -44,27 +44,27 @@ describe('StTransport class', () => {
   const sentryServiceMock = mock(SentryService);
   const validationFactory = mock(ValidationFactory);
   let mockFT: jest.Mock;
-  let codec: StCodec;
+  const codec: StCodec = mock(StCodec);
 
   beforeEach(() => {
     when(configProviderMock.getConfig()).thenReturn(config);
-    instance = new StTransport(mockInstance(configProviderMock), mockInstance(jwtDecoderMock), mockInstance(sentryServiceMock), mockInstance(validationFactory));
+    instance = new StTransport(mockInstance(configProviderMock), mockInstance(jwtDecoderMock), mockInstance(sentryServiceMock), mockInstance(validationFactory), mockInstance(codec));
     // This effectively creates a MVP codec so that we aren't testing all that here
     // @ts-ignore
-    instance.codec = codec = {
-      encode: jest.fn(x => JSON.stringify(x)),
-      decode: jest.fn(
-        (response, request?) =>
-          new Promise((resolve, reject) => {
-            if (typeof response?.json === 'function') {
-              resolve(response.json());
-              return;
-            }
-            reject(new Error('codec error'));
-          }).catch(() => {
-          })
-      ),
-    } as StCodec;
+    // instance.stCodec = codec = {
+    //   encode: jest.fn(x => JSON.stringify(x)),
+    //   decode: jest.fn(
+    //     (response, request?) =>
+    //       new Promise((resolve, reject) => {
+    //         if (typeof response?.json === 'function') {
+    //           resolve(response.json());
+    //           return;
+    //         }
+    //         reject(new Error('codec error'));
+    //       }).catch(() => {
+    //       })
+    //   ),
+    // } as StCodec;
     when(jwtDecoderMock.decode(anything())).thenReturn({
       payload: {
         requesttypedescriptions: ['AUTH'],

@@ -1,5 +1,5 @@
 import { instance as mockInstance, instance, mock, when } from 'ts-mockito';
-import { Container } from 'typedi';
+import { Container, ContainerInstance } from 'typedi';
 import { of } from 'rxjs';
 import { Validation } from '../../core/shared/validation/Validation';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
@@ -80,6 +80,7 @@ describe('CardNumber', () => {
     //   type: PUBLIC_EVENTS.AUTOCOMPLETE_CARD_NUMBER,
     //   data: cardNumberCorrect,
     // });
+    //
     // expect(cardNumberInput.value).toEqual(cardNumberCorrect);
 
     cardNumberInput.value = '1234';
@@ -372,7 +373,9 @@ function cardNumberFixture() {
   const formatter: Formatter = mock(Formatter);
   const validationFactory: ValidationFactory = mock(ValidationFactory);
   const mockValidation: Validation = mock(Validation);
+  const container: ContainerInstance = mock(ContainerInstance);
 
+  when(container.get(MessageBusToken)).thenReturn(testMessageBus);
   when(validationFactory.create()).thenReturn(mockInstance(mockValidation))
 
   when(configProvider.getConfig$()).thenReturn(of({} as IConfig));
@@ -387,7 +390,8 @@ function cardNumberFixture() {
     instance(configProvider),
     instance(iconFactory),
     instance(formatter),
-    instance(validationFactory)
+    instance(validationFactory),
+    instance(container)
   );
 
   function createElement(markup: string) {

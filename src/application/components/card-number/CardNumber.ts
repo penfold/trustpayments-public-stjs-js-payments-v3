@@ -1,5 +1,5 @@
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
-import { Service } from 'typedi';
+import { ContainerInstance, Service } from 'typedi';
 import { filter } from 'rxjs/operators';
 import { pluck } from 'rxjs';
 import { FormState } from '../../core/models/constants/FormState';
@@ -50,9 +50,10 @@ export class CardNumber extends Input {
     configProvider: ConfigProvider,
     private iconFactory: IconFactory,
     private formatter: Formatter,
-    protected validationFactory: ValidationFactory
+    protected validationFactory: ValidationFactory,
+    protected container: ContainerInstance,
   ) {
-    super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER, configProvider, validationFactory);
+    super(CARD_NUMBER_INPUT, CARD_NUMBER_MESSAGE, CARD_NUMBER_LABEL, CARD_NUMBER_WRAPPER, container, configProvider, validationFactory);
     this.cardNumberField = document.getElementById(CARD_NUMBER_INPUT) as HTMLInputElement;
     this.validation = this.validationFactory.create();
     this.isCardNumberValid = true;

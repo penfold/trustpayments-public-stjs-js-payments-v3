@@ -1,11 +1,10 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Container, Service } from 'typedi';
+import { Service } from 'typedi';
 import { filter, first } from 'rxjs/operators';
 import { IConfig } from '../../model/config/IConfig';
 import { ConfigResolver } from '../config-resolver/ConfigResolver';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { ConfigProvider } from '../config-provider/ConfigProvider';
-import { CONFIG } from '../../dependency-injection/InjectionTokens';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
 import { GooglePayConfigName } from '../../../integrations/google-pay/models/IGooglePayConfig';
 
@@ -62,7 +61,7 @@ export class ConfigService implements ConfigProvider {
       data: JSON.parse(JSON.stringify(config)),
     });
 
-    Container.set(CONFIG, config);
+    // Container.set(CONFIG, config);
 
     return config;
   }

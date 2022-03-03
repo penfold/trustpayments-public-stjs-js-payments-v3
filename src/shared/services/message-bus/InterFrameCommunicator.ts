@@ -12,9 +12,10 @@ import {
 import { IMessageBusEvent } from '../../../application/core/models/IMessageBusEvent';
 import { environment } from '../../../environments/environment';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
-import { CONFIG, WINDOW } from '../../dependency-injection/InjectionTokens';
+import { WINDOW } from '../../dependency-injection/InjectionTokens';
 import { IConfig } from '../../model/config/IConfig';
 import { SentryService } from '../sentry/SentryService';
+import { ConfigProvider } from '../config-provider/ConfigProvider';
 import { FrameAccessor } from './FrameAccessor';
 import { EventDataSanitizer } from './EventDataSanitizer';
 import { IFrameQueryingService } from './interfaces/IFrameQueryingService';
@@ -114,11 +115,11 @@ export class InterFrameCommunicator {
       return this.parentOrigin;
     }
 
-    if (!this.container.has(CONFIG)) {
+    if (!this.configProvider.getConfig()) {
       return InterFrameCommunicator.DEFAULT_ORIGIN;
     }
 
-    const config: IConfig = this.container.get(CONFIG);
+    const config: IConfig = this.configProvider.getConfig();
 
     this.parentOrigin = config.origin || InterFrameCommunicator.DEFAULT_ORIGIN;
 
@@ -141,5 +142,9 @@ export class InterFrameCommunicator {
 
   private get sentryService(): SentryService {
     return this.container.get(SentryService);
+  }
+
+  private get configProvider(): ConfigProvider {
+    return this.container.get(ConfigProvider);
   }
 }
