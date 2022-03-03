@@ -10,19 +10,23 @@ describe('HPPCheckoutDataProvider()', () => {
     [HPPFormFieldName.pan]: '41111111111111111',
     [HPPFormFieldName.cardSecurityCode]: '123',
     [HPPFormFieldName.register]: null,
+    [HPPFormFieldName.billingCountryIso2a]: 'GB',
+    [HPPFormFieldName.billingCounty]: '',
+    [HPPFormFieldName.billingEmail]: 'email@example.com',
+    [HPPFormFieldName.billingFirstName]: 'Sherlock',
+    [HPPFormFieldName.billingLastName]: 'Holmes',
+    [HPPFormFieldName.billingPostCode]: 'NW1/W1',
+    [HPPFormFieldName.billingPrefixName]: 'Mr',
+    [HPPFormFieldName.billingPremise]: '221B',
+    [HPPFormFieldName.billingStreet]: 'Baker Street',
+    [HPPFormFieldName.billingTelephone]: '123456789',
+    [HPPFormFieldName.billingTelephoneType]: '',
+    [HPPFormFieldName.billingTown]: 'London',
 
   };
   let registerCheckbox;
   let sut: HPPCheckoutDataProvider;
-  const testForm = document.createElement('form');
-  testForm.id = testFormId;
-  testForm.innerHTML = `
-<input type="checkbox" name="${HPPFormFieldName.register}">
-<input type="text" name="${HPPFormFieldName.pan}">
-<input type="text" name="${HPPFormFieldName.cardExpiryMonth}">
-<input type="text" name="${HPPFormFieldName.cardExpiryYear}">
-<input type="text" name="${HPPFormFieldName.cardSecurityCode}">
-`;
+  const testForm = generateTestFormHTML(testFormId);
 
   beforeAll(() => {
     document.body.appendChild(testForm);
@@ -44,25 +48,36 @@ describe('HPPCheckoutDataProvider()', () => {
       });
 
       it('should capture and stop submit event', () => {
-        sut.init(testFormId).subscribe();
+        sut.getCheckoutData(testFormId).subscribe();
         testForm.dispatchEvent(submitEvent);
         expect(submitEvent.preventDefault).toHaveBeenCalled();
       });
 
       it('should return an observable with checkout data captured from form', (done) => {
+        // TODO add test cases with some billing form  fields being empty
         const expectedCheckoutData: IInitialCheckoutData = {
-          consumer: {},
+          consumer: {
+            fullName: `${testFormFieldsValues[HPPFormFieldName.billingFirstName]} ${testFormFieldsValues[HPPFormFieldName.billingLastName]}`,
+            lastName: testFormFieldsValues[HPPFormFieldName.billingLastName],
+            firstName: testFormFieldsValues[HPPFormFieldName.billingFirstName],
+            countryCode: testFormFieldsValues[HPPFormFieldName.billingCountryIso2a],
+            consumerIdentity: {
+              type: 'EMAIL',
+              identityValue: testFormFieldsValues[HPPFormFieldName.billingEmail],
+            },
+            emailAddress: testFormFieldsValues[HPPFormFieldName.billingEmail],
+          },
           srcDigitalCardId: null,
           newCardData: {
             primaryAccountNumber: testFormFieldsValues[HPPFormFieldName.pan],
             panExpirationYear: testFormFieldsValues[HPPFormFieldName.cardExpiryYear],
             panExpirationMonth: testFormFieldsValues[HPPFormFieldName.cardExpiryMonth],
             cardSecurityCode: testFormFieldsValues[HPPFormFieldName.cardSecurityCode],
-            cardholderFullName: '',
+            cardholderFullName: `${testFormFieldsValues[HPPFormFieldName.billingFirstName]} ${testFormFieldsValues[HPPFormFieldName.billingLastName]}`,
           },
         };
 
-        sut.init(testFormId).subscribe(capturedData => {
+        sut.getCheckoutData(testFormId).subscribe(capturedData => {
           expect(capturedData).toEqual(expectedCheckoutData);
           done();
         });
@@ -76,7 +91,7 @@ describe('HPPCheckoutDataProvider()', () => {
       });
 
       it('should capture and stop submit event', () => {
-        sut.init(testFormId).subscribe();
+        sut.getCheckoutData(testFormId).subscribe();
         testForm.dispatchEvent(submitEvent);
         expect(submitEvent.preventDefault).not.toHaveBeenCalled();
       });
@@ -84,8 +99,20 @@ describe('HPPCheckoutDataProvider()', () => {
   });
 });
 
-function assignFormValues(form: HTMLFormElement, fieldsValues: Record<HPPFormFieldName, string>) {
+function assignFormValues(form: HTMLFormElement, fieldsValues: Partial<Record<HPPFormFieldName, string>>) {
   Object.values(HPPFormFieldName).forEach(fieldName => {
     (form.querySelector(`[name="${fieldName}"]`) as HTMLInputElement).value = fieldsValues[fieldName];
   });
 }
+
+function generateTestFormHTML(testFormId: string): HTMLFormElement {
+  const testForm = document.createElement('form');
+  testForm.id = testFormId;
+  testForm.innerHTML = `
+<input type="checkbox" name="${HPPFormFieldName.register}">
+${Object.values(HPPFormFieldName).filter(key => key !== HPPFormFieldName.register).map(fieldName => `<input type="text" name="${fieldName}">`).join('\n')}
+`;
+
+  return testForm;
+}
+

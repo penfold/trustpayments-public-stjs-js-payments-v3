@@ -14,11 +14,8 @@ import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentifi
 import { SrcNameFinder } from '../../digital-terminal/SrcNameFinder';
 import { SrcName } from '../../digital-terminal/SrcName';
 import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdentificationResult';
-
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
-
 import { CardListGenerator } from '../../card-list/CardListGenerator';
-
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
 import { HPPCheckoutDataProvider } from './HPPCheckoutDataProvider';
@@ -95,7 +92,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
 
   private initAdapter(initParams: IHPPClickToPayAdapterInitParams): Observable<void> {
     return this.digitalTerminal.init(initParams).pipe(
-      tap(() => this.hppCheckoutDataProvider.init(initParams.formId).subscribe(data => this.checkout(data)))
+      tap(() => this.hppCheckoutDataProvider.getCheckoutData(initParams.formId).subscribe(data => this.checkout(data)))
     );
   }
 
@@ -104,6 +101,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
       ...capturedCheckoutData,
       dpaTransactionOptions: this.initParams.dpaTransactionOptions,
     };
+    console.table(checkoutData)
 
     this.digitalTerminal.checkout(checkoutData).pipe(
       catchError(e => {

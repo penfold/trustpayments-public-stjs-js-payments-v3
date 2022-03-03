@@ -1,13 +1,15 @@
 import { Service } from 'typedi';
 import { Observable, Subject } from 'rxjs';
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
+import { IConsumer } from '../../digital-terminal/ISrc';
+import { ICardData } from '../../digital-terminal/interfaces/ICardData';
 import { HPPFormFieldName } from './HPPFormFieldName';
 
 @Service()
 export class HPPCheckoutDataProvider {
   private formElement: HTMLFormElement;
 
-  init(formId: string): Observable<IInitialCheckoutData> {
+  getCheckoutData(formId: string): Observable<IInitialCheckoutData> {
     this.formElement = document.querySelector(`form#${formId}`);
 
     return this.captureCheckoutData();
@@ -28,15 +30,53 @@ export class HPPCheckoutDataProvider {
 
   private getCheckoutDataFromForm(): IInitialCheckoutData {
     return {
-      consumer: {}, // TODO add implementation
+      consumer: this.getConsumerData(),
       srcDigitalCardId: null,// TODO add when card list ready
-      newCardData: {
-        primaryAccountNumber: this.getFormFieldValue(HPPFormFieldName.pan),
-        panExpirationMonth: this.getFormFieldValue(HPPFormFieldName.cardExpiryMonth),
-        panExpirationYear: this.getFormFieldValue(HPPFormFieldName.cardExpiryYear),
-        cardSecurityCode: this.getFormFieldValue(HPPFormFieldName.cardSecurityCode),
-        cardholderFullName: '',
-      },
+      newCardData: this.getNewCardData(),
+    };
+  }
+
+  private getConsumerData(): IConsumer {
+    const consumerData: IConsumer = {};
+    const billingEmail = this.getFormFieldValue(HPPFormFieldName.billingEmail);
+    const billingCountry = this.getFormFieldValue(HPPFormFieldName.billingCountryIso2a);
+    const billingFullName = `${this.getFormFieldValue(HPPFormFieldName.billingFirstName)} ${this.getFormFieldValue(HPPFormFieldName.billingLastName)}`.trim();
+    const billingFirstName = this.getFormFieldValue(HPPFormFieldName.billingFirstName);
+    const billingLastName = this.getFormFieldValue(HPPFormFieldName.billingLastName);
+
+    if (billingFirstName) {
+      consumerData.firstName = billingFirstName;
+    }
+    if (billingLastName) {
+      consumerData.lastName = billingLastName;
+    }
+
+    if (billingEmail) {
+      consumerData.emailAddress = billingEmail;
+      consumerData.consumerIdentity = {
+        type: 'EMAIL',
+        identityValue: billingEmail,
+      };
+    }
+
+    if (billingCountry) {
+      consumerData.countryCode = billingCountry;
+    }
+
+    if (billingFullName) {
+      consumerData.fullName = billingFullName;
+    }
+
+    return consumerData;
+  }
+
+  private getNewCardData(): ICardData {
+    return {
+      primaryAccountNumber: this.getFormFieldValue(HPPFormFieldName.pan),
+      panExpirationMonth: this.getFormFieldValue(HPPFormFieldName.cardExpiryMonth),
+      panExpirationYear: this.getFormFieldValue(HPPFormFieldName.cardExpiryYear),
+      cardSecurityCode: this.getFormFieldValue(HPPFormFieldName.cardSecurityCode),
+      cardholderFullName: `${this.getFormFieldValue(HPPFormFieldName.billingFirstName)} ${this.getFormFieldValue(HPPFormFieldName.billingLastName)}`.trim() || null,
     };
   }
 

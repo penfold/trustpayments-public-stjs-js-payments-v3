@@ -49,7 +49,7 @@ describe('HPPClickToPayAdapter', () => {
     when(digitalTerminalMock.init(anything())).thenReturn(of(undefined));
     when(digitalTerminalMock.getSrcProfiles()).thenReturn(of(undefined));
     when(digitalTerminalMock.checkout(anything())).thenReturn(of(undefined));
-    when(hppCheckoutDataProviderMock.init(anyString())).thenReturn(of(undefined));
+    when(hppCheckoutDataProviderMock.getCheckoutData(anyString())).thenReturn(of(undefined));
     when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_INIT, anyFunction())).thenCall((eventType, callback) => {
       callback({ type: eventType, data: initParams }).subscribe();
     });
@@ -92,7 +92,7 @@ describe('HPPClickToPayAdapter', () => {
           panExpirationYear: '2049',
         },
       };
-      when(hppCheckoutDataProviderMock.init(initParams.formId)).thenReturn(formSubmitEventMock.pipe(mapTo(testCheckoutData)));
+      when(hppCheckoutDataProviderMock.getCheckoutData(initParams.formId)).thenReturn(formSubmitEventMock.pipe(mapTo(testCheckoutData)));
       sut.init(initParams).then(adapterInstance => {
           formSubmitEventMock.asObservable().subscribe(() => {
             verify(digitalTerminalMock.checkout(objectContaining({
