@@ -72,10 +72,6 @@ export class CardListGenerator {
   }
 
   private addEventHandlers(): void {
-    document.getElementById('cvv').addEventListener('focus', () => this.handleFocus());
-    document.getElementById('expiryDateMonthId').addEventListener('focus', () => this.handleFocus());
-    document.getElementById('expiryDateYearId').addEventListener('focus', () => this.handleFocus());
-    document.getElementById('pan').addEventListener('focus', () => this.handleFocus());
     document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
   }
 
@@ -147,6 +143,7 @@ export class CardListGenerator {
 
   private handleAddCardButtonClick(): void {
     this.openForm();
+    this.clearSelection();
   }
 
   private handleClick(id: string): void {
@@ -155,10 +152,6 @@ export class CardListGenerator {
     this.clearSelection();
     (document.getElementById('radio' + id) as HTMLInputElement).checked = true;
     (document.getElementById('tick' + id) as HTMLSpanElement).classList.add('st-card__tick--selected');
-  }
-
-  private handleFocus(): void {
-    this.clearSelection();
   }
 
   private openForm(): void {
