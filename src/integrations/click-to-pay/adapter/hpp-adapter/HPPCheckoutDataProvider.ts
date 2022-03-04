@@ -20,7 +20,6 @@ export class HPPCheckoutDataProvider {
     const checkoutData = new Subject<IInitialCheckoutData>();
 
     this.formElement.addEventListener('submit', event => {
-      console.log(event)
       if (this.shouldClickToPayBeUsed()) {
         event.preventDefault();
         checkoutData.next(this.getCheckoutDataFromForm());
@@ -84,29 +83,21 @@ export class HPPCheckoutDataProvider {
 
   private getFormFieldValue(fieldName: HPPFormFieldName): string {
     const element = this.formElement?.elements.namedItem(fieldName);
-    console.group('FIELD VALUE',fieldName)
 
     if (DomMethods.isRadioNodeList(element)) {
-      console.log('is radio nodelist')
-      console.groupEnd();
       return element.value;
     }
+
     if (element.attributes.getNamedItem('type')?.value === 'radio') {
-      console.log('is radio')
-      console.groupEnd();
       return (element as HTMLInputElement).checked ? (element as HTMLInputElement).value : '';
     }
 
-    console.log('is no')
     return (element as HTMLInputElement).value;
-    console.groupEnd();
-
   }
 
   private shouldClickToPayBeUsed(): boolean {
     const registerCardEnabled = (this.formElement?.elements.namedItem(HPPFormFieldName.register) as HTMLInputElement)?.checked;
     const cardSelected = !!this.getFormFieldValue(HPPFormFieldName.srcCardId);
-    console.log(this.getFormFieldValue(HPPFormFieldName.srcCardId));
 
     return registerCardEnabled || cardSelected;
   }

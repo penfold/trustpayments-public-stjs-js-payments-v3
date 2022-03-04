@@ -22,6 +22,7 @@ describe('HPPCheckoutDataProvider()', () => {
     [HPPFormFieldName.billingTelephone]: '123456789',
     [HPPFormFieldName.billingTelephoneType]: '',
     [HPPFormFieldName.billingTown]: 'London',
+    [HPPFormFieldName.srcCardId]: null,
 
   };
   let registerCheckbox;
