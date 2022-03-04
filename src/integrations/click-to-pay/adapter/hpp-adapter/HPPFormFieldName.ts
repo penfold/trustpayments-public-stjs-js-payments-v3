@@ -17,4 +17,5 @@ export enum HPPFormFieldName {
   billingEmail = 'billingemail',
   billingTelephone = 'billingtelephone',
   billingTelephoneType = 'billingtelephonetype',
+  srcCardId = 'srcDigitalCardId'
 }

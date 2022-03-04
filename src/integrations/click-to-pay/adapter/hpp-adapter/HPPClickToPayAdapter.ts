@@ -92,7 +92,10 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
 
   private initAdapter(initParams: IHPPClickToPayAdapterInitParams): Observable<void> {
     return this.digitalTerminal.init(initParams).pipe(
-      tap(() => this.hppCheckoutDataProvider.getCheckoutData(initParams.formId).subscribe(data => this.checkout(data)))
+      tap((data) => {
+        console.log(data);
+        this.hppCheckoutDataProvider.getCheckoutData(initParams.formId).subscribe(data => this.checkout(data))
+      })
     );
   }
 
@@ -101,7 +104,6 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
       ...capturedCheckoutData,
       dpaTransactionOptions: this.initParams.dpaTransactionOptions,
     };
-    console.table(checkoutData)
 
     this.digitalTerminal.checkout(checkoutData).pipe(
       catchError(e => {
