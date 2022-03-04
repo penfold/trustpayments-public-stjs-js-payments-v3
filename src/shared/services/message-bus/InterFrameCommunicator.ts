@@ -57,22 +57,18 @@ export class InterFrameCommunicator {
   send(message: IMessageBusEvent, target: Window | string): void {
     try {
       const parentFrame = this.frameAccessor.getParentFrame();
-      console.log( this.resolveTargetFrame(target))
       const targetFrame = this.resolveTargetFrame(target);
       const frameOrigin = targetFrame === parentFrame ? this.getParentOrigin() : this.frameOrigin;
       const sanitizedMessage: IMessageBusEvent = { ...message, data: this.eventDataSanitizer.sanitize(message.data) };
 
       new Promise(resolve => {
-        console.log(sanitizedMessage, frameOrigin, target, targetFrame.origin)
         targetFrame.postMessage(sanitizedMessage, frameOrigin);
         resolve(null);
       }).catch(error => {
-        console.log(error, 'asdasd')
         // this is the only way to catch errors on postMessage as they are not caught by try...catch clause ¯\_(ツ)_/¯
         this.sentryService.sendCustomMessage(this.createCommunicationError(message, String(target), error));
       });
     } catch (error) {
-      console.log(error, 'asdasd')
       throw this.createCommunicationError(message, String(target), error);
     }
   }

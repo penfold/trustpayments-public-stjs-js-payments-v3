@@ -201,9 +201,6 @@ export class StCodec {
 
     this.jwt = jwt;
     this.originalJwt = jwt;
-
-    this.publishResponse({ errorcode: '0',
-      errormessage: 'Payment has been successfully processed' })
   }
 
   private handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
