@@ -48,7 +48,11 @@ export class StTransport {
   private throttlingRequests = new Map<string, Promise<Record<string, unknown>>>();
   private config: IConfig;
 
-  constructor(private configProvider: ConfigProvider, private jwtDecoder: JwtDecoder, private sentryService: SentryService, protected validationFactory: ValidationFactory, private codec: StCodec) {}
+  constructor(private configProvider: ConfigProvider,
+              private jwtDecoder: JwtDecoder,
+              private sentryService: SentryService,
+              protected validationFactory: ValidationFactory,
+              private codec: StCodec) {}
 
   /**
    * Perform a JSON API request with ST
@@ -56,7 +60,7 @@ export class StTransport {
    * @return A Promise object that resolves the gateway response
    */
   async sendRequest(requestObject: IStRequest, merchantUrl?: string): Promise<Record<string, unknown>> {
-    const requestBody = this.getCodec().encode(requestObject);
+    const requestBody = this.codec.encode(requestObject);
     const fetchOptions = this.getDefaultFetchOptions(requestBody, requestObject.requesttypedescriptions);
 
     if (!this.throttlingRequests.has(requestBody)) {
@@ -96,7 +100,6 @@ export class StTransport {
   }
 
   private sendRequestInternal(requestBody: string, fetchOptions: IFetchOptions, merchantUrl?: string): Promise<Record<string, unknown>> {
-    const codec = this.getCodec();
     const gatewayUrl = merchantUrl ? merchantUrl : this.getConfig().datacenterurl;
     const parsedRequestBody = JSON.parse(requestBody);
     const decodedJwt = this.jwtDecoder.decode(parsedRequestBody.jwt);
@@ -111,7 +114,7 @@ export class StTransport {
       ...fetchOptions,
       body: requestBody,
     })
-      .then(response => codec.decode(response, JSON.parse(requestBody))
+      .then(response => this.codec.decode(response, JSON.parse(requestBody))
       .then(decodedResponse => {
         this.sentryService.addBreadcrumb(
           SentryBreadcrumbsCategories.GATEWAY_RESPONSE,
@@ -126,7 +129,7 @@ export class StTransport {
           return Promise.reject(error);
         }
 
-        return codec.decode({});
+        return this.codec.decode({});
       });
   }
 
@@ -164,9 +167,5 @@ export class StTransport {
     }
 
     return this.config;
-  }
-
-  private getCodec(): StCodec {
-    return this.codec;
   }
 }

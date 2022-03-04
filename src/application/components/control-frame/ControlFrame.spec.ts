@@ -14,12 +14,10 @@ import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLoc
 import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { IFormFieldState } from '../../core/models/IFormFieldState';
 import { StCodec } from '../../core/services/st-codec/StCodec';
-import { VisaCheckoutClientStatus } from '../../../client/integrations/visa-checkout/VisaCheckoutClientStatus';
 import { VisaCheckoutClient } from '../../../client/integrations/visa-checkout/VisaCheckoutClient';
 import { Frame } from '../../core/shared/frame/Frame';
 import { PaymentController } from '../../core/services/payments/PaymentController';
 import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
-import { IUpdateJwt } from '../../core/models/IUpdateJwt';
 import { PAYMENT_ERROR, PAYMENT_SUCCESS } from '../../core/models/constants/Translations';
 import { Translator } from '../../core/shared/translator/Translator';
 import { FormState } from '../../core/models/constants/FormState';
@@ -27,10 +25,9 @@ import { FraudControlService } from '../../core/services/fraud-control/FraudCont
 import { EventScope } from '../../core/models/constants/EventScope';
 import { ApplePayClient } from '../../../integrations/apple-pay/client/ApplePayClient';
 import { ValidationFactory } from '../../core/shared/validation/ValidationFactory';
+import { Payment } from '../../core/shared/payment/Payment';
 import { ControlFrame } from './ControlFrame';
-import spyOn = jest.spyOn;
-
-jest.mock('./../../core/shared/payment/Payment');
+// jest.mock('./../../core/shared/payment/Payment');
 
 describe('ControlFrame', () => {
   const { data, instance, messageBusEvent, messageBus } = controlFrameFixture();
@@ -169,12 +166,12 @@ describe('ControlFrame', () => {
     });
 
     describe('when payment is not processed successfully', () => {
-      beforeEach(()=>{
+      beforeEach(() => {
         // @ts-ignore
         instance.payment = {
           processPayment: jest.fn().mockRejectedValueOnce(undefined),
         };
-      })
+      });
 
       it('should call notification error', async () => {
         // @ts-ignore
@@ -213,7 +210,7 @@ describe('ControlFrame', () => {
       // @ts-ignore
       instance.updateMerchantFields(data);
       // @ts-ignore
-      instance.messageBus.publish = jest.fn();
+      // instance.messageBus.publish = jest.fn();
     });
 
     it('should set _merchantFormData', () => {
@@ -235,22 +232,8 @@ describe('ControlFrame', () => {
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhbTAzMTAuYXV0b2FwaSIsImlhdCI6MTU3NjQ5MjA1NS44NjY1OSwicGF5bG9hZCI6eyJiYXNlYW1vdW50IjoiMTAwMCIsImFjY291bnR0eXBlZGVzY3JpcHRpb24iOiJFQ09NIiwiY3VycmVuY3lpc28zYSI6IkdCUCIsInNpdGVyZWZlcmVuY2UiOiJ0ZXN0X2phbWVzMzg2NDEiLCJsb2NhbGUiOiJlbl9HQiIsInBhbiI6IjMwODk1MDAwMDAwMDAwMDAwMjEiLCJleHBpcnlkYXRlIjoiMDEvMjIifX0.lbNSlaDkbzG6dkm1uc83cc3XvUImysNj_7fkdo___fw',
     });
 
-    it('should return pan from jwt', () => {
-      // @ts-ignore
-      expect(instance.getPanFromJwt(['jwt', 'gatewayUrl'])).toEqual('3089500000000000021');
-    });
   });
 
-  describe('updateJwtEvent', () => {
-    it('calls StCodec.updateJwt() on UPDATE_JWT event', () => {
-      const { stCodec } = controlFrameFixture();
-      const updateJwtSpy = spyOn(stCodec, 'updateJwt');
-
-      messageBus.publish<IUpdateJwt>({ type: PUBLIC_EVENTS.UPDATE_JWT, data: { newJwt: 'foobar' } });
-
-      expect(updateJwtSpy).toHaveBeenCalledWith('foobar');
-    });
-  });
 });
 
 function controlFrameFixture() {
@@ -270,6 +253,7 @@ function controlFrameFixture() {
   const paymentControllerMock: PaymentController = mock(PaymentController);
   const translator: Translator = mock(Translator);
   const stCodec: StCodec = mock(StCodec);
+  const payment: Payment = mock(Payment);
   const controlFrame: IStyles[] = [
     {
       controlFrame: {
@@ -277,7 +261,7 @@ function controlFrameFixture() {
       },
     },
   ];
-  const validationFactory: ValidationFactory = mock(ValidationFactory);
+   const validationFactory: ValidationFactory = mock(ValidationFactory);
 
   when(communicator.whenReceive(anyString())).thenReturn({
     thenRespond: () => undefined,
@@ -302,7 +286,6 @@ function controlFrameFixture() {
       expirydate: '01/22',
     },
   });
-  when(visaCheckoutClientMock.init$()).thenReturn(of(VisaCheckoutClientStatus.SUCCESS));
 
   const instance = new ControlFrame(
     mockInstance(localStorage),
@@ -311,7 +294,7 @@ function controlFrameFixture() {
     mockInstance(notification),
     mockInstance(fraudControlServiceMock),
     mockInstance(threeDProcess),
-    mockInstance(messageBus),
+    messageBus,
     mockInstance(frame),
     mockInstance(jwtDecoderMock),
     mockInstance(visaCheckoutClientMock),
@@ -319,8 +302,8 @@ function controlFrameFixture() {
     mockInstance(paymentControllerMock),
     mockInstance(translator),
     mockInstance(validationFactory),
-    mockInstance(stCodec)
-
+    mockInstance(stCodec),
+    mockInstance(payment)
   );
   const messageBusEvent = {
     type: '',
@@ -330,7 +313,7 @@ function controlFrameFixture() {
     value: 'test value',
   };
 
-  when((instance as any).messageBus).thenReturn(messageBus);
+   // when((instance as any).messageBus).thenReturn(messageBus);
 
   return { data, instance, messageBusEvent, messageBus, stCodec };
 }

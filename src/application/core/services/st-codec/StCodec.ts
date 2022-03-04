@@ -1,6 +1,5 @@
 import jwt_decode from 'jwt-decode';
-import { Container, ContainerInstance, Service } from 'typedi';
-
+import { ContainerInstance, Service } from 'typedi';
 import { IMessageBusEvent } from '../../models/IMessageBusEvent';
 import { IResponseData } from '../../models/IResponseData';
 import { IStRequest } from '../../models/IStRequest';
@@ -25,6 +24,7 @@ import { ValidationFactory } from '../../shared/validation/ValidationFactory';
 import { Validation } from '../../shared/validation/Validation';
 import { FormState } from '../../models/constants/FormState';
 import { IErrorData } from '../../models/IErrorData';
+import { ITranslator } from '../../shared/translator/ITranslator';
 import { GatewayError } from './GatewayError';
 import { InvalidResponseError } from './InvalidResponseError';
 import { IResponsePayload } from './interfaces/IResponsePayload';
@@ -42,6 +42,7 @@ export class StCodec {
   jwt: string;
   private readonly requestId: string;
   private jwtDecoder: JwtDecoder;
+  private translator: ITranslator;
 
   /**
    * Generate a unique ID for a request
@@ -78,8 +79,7 @@ export class StCodec {
    * @param jwtResponse The raw JWT response from the gateway
    */
   publishResponse(responseData: IResponseData, jwtResponse?: string): void {
-    const translator = this.container.get(TranslatorToken);
-    responseData.errormessage = translator.translate(responseData.errormessage);
+    responseData.errormessage = this.translator.translate(responseData.errormessage) || responseData.errormessage;
     const eventData = { ...responseData };
     if (jwtResponse !== undefined) {
       eventData.jwt = jwtResponse;
@@ -194,16 +194,20 @@ export class StCodec {
               private notificationService: NotificationService,
               private sentryService: SentryService) {
     this.messageBus = this.container.get(MessageBusToken);
+    this.translator = this.container.get(TranslatorToken);
     this.validation = validationFactory.create();
     this.requestId = this.createRequestId();
     this.jwtDecoder = jwtDecoder;
 
     this.jwt = jwt;
     this.originalJwt = jwt;
+
+    this.publishResponse({ errorcode: '0',
+      errormessage: 'Payment has been successfully processed' })
   }
 
   private handleValidGatewayResponse(responseContent: IResponseData, jwtResponse: string) {
-    const translator = Container.get(TranslatorToken);
+    const translator = this.container.get(TranslatorToken);
 
     const { errorcode, errormessage, requesttypedescription } = responseContent;
 

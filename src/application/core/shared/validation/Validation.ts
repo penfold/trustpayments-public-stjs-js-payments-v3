@@ -1,8 +1,7 @@
 import { iinLookup } from '@trustpayments/ts-iin-lookup';
 import { BrandDetailsType } from '@trustpayments/ts-iin-lookup/dist/types';
 import { luhnCheck } from '@trustpayments/ts-luhn-check';
-import { Container, ContainerInstance, Service } from 'typedi';
-import { StCodec } from '../../services/st-codec/StCodec';
+import { ContainerInstance, Service } from 'typedi';
 import { FormState } from '../../models/constants/FormState';
 import { ICard } from '../../models/ICard';
 import { IErrorData } from '../../models/IErrorData';
@@ -28,6 +27,7 @@ import { EventScope } from '../../models/constants/EventScope';
 @Service()
 export class Validation {
   static ERROR_FIELD_CLASS = 'error-field';
+  private translator: ITranslator;
 
   static clearNonDigitsChars(value: string): string {
     return value.replace(Validation.ESCAPE_DIGITS_REGEXP, Validation.CLEAR_VALUE);
@@ -151,7 +151,8 @@ export class Validation {
   private messageBus: IMessageBus;
   private frame: Frame;
 
-  constructor(private container: ContainerInstance, private translator: ITranslator = Container.get(TranslatorToken)) {
+  constructor(private container: ContainerInstance) {
+    this.translator = this.container.get(TranslatorToken);
     this.messageBus = this.container.get(MessageBusToken);
     this.frame = this.container.get(Frame);
     this.init();
@@ -201,7 +202,7 @@ export class Validation {
 
   getErrorData(errorData: IErrorData): { field: unknown, errormessage: unknown } {
     // @ts-ignore
-    const { errordata, errormessage } = StCodec.getErrorData(errorData);
+    const { errordata, errormessage } = errorData;
     const validationEvent: IMessageBusEvent = {
       data: { field: errordata[0], message: errormessage },
       type: Validation.CLEAR_VALUE,

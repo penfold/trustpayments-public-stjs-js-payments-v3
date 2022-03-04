@@ -1,5 +1,5 @@
 import Container, { ContainerInstance } from 'typedi';
-import { instance as mockInstance, mock } from 'ts-mockito';
+import { anything, instance as mockInstance, mock, when } from 'ts-mockito';
 import { MessageBus } from '../message-bus/MessageBus';
 import {
   VALIDATION_ERROR,
@@ -7,8 +7,6 @@ import {
   VALIDATION_ERROR_PATTERN_MISMATCH,
 } from '../../models/constants/Translations';
 import { FormState } from '../../models/constants/FormState';
-import { StCodec } from '../../services/st-codec/StCodec';
-import { IResponseData } from '../../models/IResponseData';
 import { TranslatorToken } from '../../../../shared/dependency-injection/InjectionTokens';
 import { Translator } from '../translator/Translator';
 import { ITranslationProvider } from '../translator/ITranslationProvider';
@@ -17,6 +15,7 @@ import { ConfigProvider } from '../../../../shared/services/config-provider/Conf
 import { TestConfigProvider } from '../../../../testing/mocks/TestConfigProvider';
 import { IFormFieldsValidity } from '../../models/IFormFieldsValidity';
 import { SimpleMessageBus } from '../message-bus/SimpleMessageBus';
+import { ITranslator } from '../translator/ITranslator';
 import { Validation } from './Validation';
 
 Container.set({ id: ConfigProvider, type: TestConfigProvider });
@@ -82,8 +81,7 @@ describe('Validation', () => {
     } = validationFixture();
 
     it('should pass error data with proper field equals pan', () => {
-      StCodec.getErrorData(cardNumberErrorData);
-      // @ts-ignore
+
       expect(instance.getErrorData(cardNumberErrorData)).toEqual({
         field: cardNumberErrorData.errordata[0],
         errormessage: cardNumberErrorData.errormessage,
@@ -91,8 +89,7 @@ describe('Validation', () => {
     });
 
     it('should pass error data with proper field equals security code', () => {
-      StCodec.getErrorData(securityCodeErrorData);
-      // @ts-ignore
+
       expect(instance.getErrorData(securityCodeErrorData)).toEqual({
         field: securityCodeErrorData.errordata[0],
         errormessage: securityCodeErrorData.errormessage,
@@ -100,8 +97,7 @@ describe('Validation', () => {
     });
 
     it('should pass error data with proper field equals expiration date', () => {
-      StCodec.getErrorData(expirationDateErrorData);
-      // @ts-ignore
+
       expect(instance.getErrorData(expirationDateErrorData)).toEqual({
         field: expirationDateErrorData.errordata[0],
         errormessage: expirationDateErrorData.errormessage,
@@ -109,8 +105,7 @@ describe('Validation', () => {
     });
 
     it('should pass error data with proper field equals merchant field', () => {
-      StCodec.getErrorData(merchantInputsErrorData);
-      // @ts-ignore
+
       expect(instance.getErrorData(merchantInputsErrorData)).toEqual({
         field: merchantInputsErrorData.errordata[0],
         errormessage: merchantInputsErrorData.errormessage,
@@ -255,10 +250,14 @@ describe('Validation', () => {
 
 function validationFixture() {
   const containerMock = mock(ContainerInstance);
+  const translator: ITranslator = mock<ITranslator>();
   const testMessageBus = new SimpleMessageBus();
   const instance: Validation = new Validation(mockInstance(containerMock));
 
+  when(translator.translate(anything())).thenCall(v=> v);
+
   (instance as any).messageBus = testMessageBus;
+  (instance as any).translator = mockInstance(translator);
 
   const inputElement = document.createElement('input');
   const inputElementMerchant = document.createElement('input');
@@ -278,7 +277,7 @@ function validationFixture() {
     errordata: ['expirydate'],
     errormessage: 'Invalid field',
   };
-  const securityCodeErrorData: IResponseData = {
+  const securityCodeErrorData = {
     errordata: ['securitycode'],
     errormessage: 'Invalid field',
   };

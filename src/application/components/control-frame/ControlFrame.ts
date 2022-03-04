@@ -99,7 +99,7 @@ export class ControlFrame {
     private stCodec: StCodec,
     private payment: Payment
   ) {
-    this.validation = validationFactory.create();
+    this.validation = this.validationFactory.create();
     this.init();
     this.initVisaCheckout();  /**  do wywalenia **/
     this.initCardPayments();  /** wypada do payment metody **/
