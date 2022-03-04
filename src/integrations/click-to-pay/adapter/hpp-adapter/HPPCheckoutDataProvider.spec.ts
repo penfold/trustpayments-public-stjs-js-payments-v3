@@ -68,7 +68,7 @@ describe('HPPCheckoutDataProvider()', () => {
             },
             emailAddress: testFormFieldsValues[HPPFormFieldName.billingEmail],
           },
-          srcDigitalCardId: null,
+          srcDigitalCardId: '',
           newCardData: {
             primaryAccountNumber: testFormFieldsValues[HPPFormFieldName.pan],
             panExpirationYear: testFormFieldsValues[HPPFormFieldName.cardExpiryYear],

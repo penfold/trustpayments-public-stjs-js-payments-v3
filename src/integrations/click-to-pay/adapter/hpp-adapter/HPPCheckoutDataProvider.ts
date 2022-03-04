@@ -4,6 +4,7 @@ import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitial
 import { IConsumer } from '../../digital-terminal/ISrc';
 import { ICardData } from '../../digital-terminal/interfaces/ICardData';
 import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
+import { NewCardFieldName } from '../../card-list/NewCardFieldName';
 import { HPPFormFieldName } from './HPPFormFieldName';
 
 @Service()
@@ -33,7 +34,7 @@ export class HPPCheckoutDataProvider {
     return {
       consumer: this.getConsumerData(),
       srcDigitalCardId: this.getFormFieldValue(HPPFormFieldName.srcCardId),// TODO add when card list ready
-      newCardData: this.getNewCardData(),
+      newCardData: this.isCardListVisible() ? this.getRecognizedUserNewCardData() : this.getNewCardData(),
     };
   }
 
@@ -81,7 +82,17 @@ export class HPPCheckoutDataProvider {
     };
   }
 
-  private getFormFieldValue(fieldName: HPPFormFieldName): string {
+  private getRecognizedUserNewCardData(): ICardData {
+    return {
+      primaryAccountNumber: this.getFormFieldValue(NewCardFieldName.pan),
+      panExpirationMonth: this.getFormFieldValue(NewCardFieldName.expiryMonth),
+      panExpirationYear: this.getFormFieldValue(NewCardFieldName.expiryYear),
+      cardSecurityCode: this.getFormFieldValue(NewCardFieldName.securityCode),
+      cardholderFullName: null, // TODO confirm if it is needed
+    };
+  }
+
+  private getFormFieldValue(fieldName: HPPFormFieldName | NewCardFieldName): string {
     const element = this.formElement?.elements.namedItem(fieldName);
 
     if (DomMethods.isRadioNodeList(element)) {
@@ -95,10 +106,15 @@ export class HPPCheckoutDataProvider {
     return (element as HTMLInputElement).value;
   }
 
-  private shouldClickToPayBeUsed(): boolean {
-    const registerCardEnabled = (this.formElement?.elements.namedItem(HPPFormFieldName.register) as HTMLInputElement)?.checked;
-    const cardSelected = !!this.getFormFieldValue(HPPFormFieldName.srcCardId);
+  private isRegisterCardEnabled(): boolean {
+    return (this.formElement?.elements.namedItem(HPPFormFieldName.register) as HTMLInputElement)?.checked;
+  }
 
-    return registerCardEnabled || cardSelected;
+  private isCardListVisible(): boolean {
+    return !!this.formElement.elements.namedItem(NewCardFieldName.pan);
+  }
+
+  private shouldClickToPayBeUsed(): boolean {
+    return this.isRegisterCardEnabled() || this.isCardListVisible();
   }
 }
