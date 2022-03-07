@@ -175,3 +175,24 @@ def step_impl(context):
 @step('User clicks Pay Securely button')
 def step_impl(context):
     raise NotImplementedError(u'STEP: And User clicks Pay Securely button')
+
+
+@step('User fills Visa Click two Pay required fields')
+def step_impl(context):
+    visa_click_to_pay_page = context.page_factory.get_page(Pages.VISA_CLICK_TWO_PAY)
+    email_gen = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    USER_DATA = {'name': 'john', 'surname': 'test', 'city': 'Willow Grove', 'address_line_1': 'Willow Grove',
+                 'state': 'PA',
+                 'zip_code': '19001', 'phone_number': '9343242342', 'email': email_gen + '@testemail.com'}
+
+    visa_click_to_pay_page.fill_required_address_fields(USER_DATA['name'], USER_DATA['surname'],
+                                                        USER_DATA['address_line_1'], USER_DATA['city'],
+                                                        USER_DATA['state'], USER_DATA['zip_code'],
+                                                        USER_DATA['phone_number'], USER_DATA['email'])
+
+
+@step('User confirms new address at Visa Click two Pay popup')
+def step_impl(context):
+    visa_click_to_pay_page = context.page_factory.get_page(Pages.VISA_CLICK_TWO_PAY)
+    visa_click_to_pay_page.confirm_user_address()
+

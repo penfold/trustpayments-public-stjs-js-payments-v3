@@ -24,7 +24,7 @@ class VisaClickToPayLocators:
     def get_delivery_details_field_locator(cls, delivery_field) -> By.ID:
         return By.ID, f'st-form-{delivery_field}-d'
 
-    # Visa modal
+    # Visa login view
     email_input: By = (By.NAME, 'st-ctp-email')
     submit_email_btn: By = (By.XPATH, '//div[@id=\'st-ctp-login\']//button')
     submit_otp_btn: By = (By.XPATH, '//div[@id=\'st-ctp-login\']//button')
@@ -44,4 +44,16 @@ class VisaClickToPayLocators:
     @classmethod
     def get_card_locator_from_cards_list(cls, value) -> By.ID:
         return By.XPATH, f'//div[@class=\'st-card\'][{value}]'
+
+    # Visa Checkout view
+    visa_click_two_pay_name_field: By = (By.ID, "firstName")
+    visa_click_two_pay_surname: By = (By.ID, "lastName")
+    visa_click_two_pay_address_line_1: By = (By.ID, "line1")
+    visa_click_two_pay_city_address: By = (By.ID, "city")
+    visa_click_two_pay_state_field: By = (By.ID, "stateProvinceCode")
+    visa_click_two_pay_postal_code: By = (By.ID, "postalCode")
+    visa_click_two_pay_phone_number_field: By = (By.ID, "phone-number-field")
+    visa_click_two_pay_phone_finish_setup_header: By = (
+    By.XPATH, '//*[@id="app"]/div/div[2]/div/div/section/main/div[2]/div[2]/div/div/section/h1')
+
 

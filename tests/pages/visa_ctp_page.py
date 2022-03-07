@@ -129,3 +129,39 @@ class VisaClickToPayPage(BasePage):
     def get_masked_card_number_from_card_list(self):
         masked_card_number = self._actions.get_text_with_wait(VisaClickToPayLocators.masked_card_number)[-4:]
         return masked_card_number
+
+    # Visa Checkout view
+    def fill_required_address_fields(self, first_name, last_name, address_line1, city, state, postal_code, phone_number,
+                                     email):
+        self._actions.switch_to_iframe(
+            VisaClickToPayLocators.visa_click_two_pay_iframe)
+        self._waits.wait_for_element_visibility(VisaClickToPayLocators.visa_click_two_pay_name_field)
+        self._actions.send_keys(VisaClickToPayLocators.visa_click_two_pay_name_field, first_name)
+        self._actions.send_keys(VisaClickToPayLocators.visa_click_two_pay_surname, last_name)
+        self._actions.send_keys(VisaClickToPayLocators.visa_click_two_pay_address_line_1, address_line1)
+        self._actions.send_keys(VisaClickToPayLocators.visa_click_two_pay_city_address, city)
+        self._actions.send_keys(VisaClickToPayLocators.visa_click_two_pay_state_field, state)
+        self._actions.send_keys(VisaClickToPayLocators.visa_click_two_pay_postal_code, postal_code)
+        self._actions.send_keys(VisaClickToPayLocators.visa_click_two_pay_phone_number_field, phone_number)
+        self._waits.wait_for_element_visibility(VisaClickToPayLocators.visa_click_two_pay_email_field)
+        self._actions.send_keys(VisaClickToPayLocators.visa_click_two_pay_email_field, email)
+        self._actions.scroll_directly_to_element(VisaClickToPayLocators.visa_click_two_pay_email_field)
+        self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.visa_click_two_pay_continue_btn)
+        self._actions.click(VisaClickToPayLocators.visa_click_two_pay_continue_btn)
+
+    def confirm_user_address(self):
+        # self._actions.switch_to_iframe(
+        #     VisaClickToPayLocators.visa_click_two_pay_iframe)
+        self._waits.wait_for_element_visibility(VisaClickToPayLocators.visa_click_two_pay_continue_btn)
+        self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.visa_click_two_pay_continue_btn)
+        self._actions.click(VisaClickToPayLocators.visa_click_two_pay_continue_btn)
+
+    def confirm_payment(self):
+        # self._actions.switch_to_iframe(
+        #     VisaClickToPayLocators.visa_click_two_pay_iframe)
+        self._waits.wait_for_element_visibility(VisaClickToPayLocators.visa_click_two_pay_phone_finish_setup_header)
+        self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.visa_click_two_pay_continue_btn)
+        self._actions.click_by_javascript(VisaClickToPayLocators.visa_click_two_pay_continue_btn)
+        self._actions.switch_to_default_iframe()
+        time.sleep(5)
+
