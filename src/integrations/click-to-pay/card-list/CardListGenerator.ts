@@ -2,6 +2,7 @@ import { Service } from 'typedi';
 import { ICorrelatedMaskedCard } from '../digital-terminal/interfaces/ICorrelatedMaskedCard';
 // @ts-ignore
 import logo from '../../../application/core/services/icon/images/click-to-pay.svg';
+import { NewCardFieldName } from './NewCardFieldName';
 
 const iconMap: Map<string, string> = new Map(
   [
@@ -53,29 +54,25 @@ export class CardListGenerator {
       </div>
       <div class="st-add-card__details">
         Card number <span class="st-add-card__details-asterix"></span>
-        <input id="pan" type="text" name="pan">
+        <input id="pan" type="text" name="${NewCardFieldName.pan}">
       </div>
       <div class="st-add-card__details">
         <span class="st-add-card__details-element">
           Expiry date <span class="st-add-card__details-asterix"></span>
-          <select id="expiryDateMonthId" name="expiryDateMonth"></select>
+          <select id="expiryDateMonthId" name="${NewCardFieldName.expiryMonth}"></select>
         </span>
         <span class="st-add-card__details-element">
-          <select id="expiryDateYearId" name="expiryDateYear"></select>
+          <select id="expiryDateYearId" name="${NewCardFieldName.expiryYear}"></select>
         </span>
       </div>
       <div class="st-add-card__details">
         Security code <span class="st-add-card__details-asterix"></span><br>
-        <input id="cvv" maxlength="3" name="cvv" type="text">
+        <input id="cvv" maxlength="3" name="${NewCardFieldName.securityCode}" type="text">
       </div>
     `;
   }
 
   private addEventHandlers(): void {
-    document.getElementById('cvv').addEventListener('focus', () => this.handleFocus());
-    document.getElementById('expiryDateMonthId').addEventListener('focus', () => this.handleFocus());
-    document.getElementById('expiryDateYearId').addEventListener('focus', () => this.handleFocus());
-    document.getElementById('pan').addEventListener('focus', () => this.handleFocus());
     document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
   }
 
@@ -147,6 +144,7 @@ export class CardListGenerator {
 
   private handleAddCardButtonClick(): void {
     this.openForm();
+    this.clearSelection();
   }
 
   private handleClick(id: string): void {
@@ -155,10 +153,6 @@ export class CardListGenerator {
     this.clearSelection();
     (document.getElementById('radio' + id) as HTMLInputElement).checked = true;
     (document.getElementById('tick' + id) as HTMLSpanElement).classList.add('st-card__tick--selected');
-  }
-
-  private handleFocus(): void {
-    this.clearSelection();
   }
 
   private openForm(): void {
