@@ -12,15 +12,17 @@ import { IUpdateView } from '../interfaces/IUpdateView';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
 import { HPPCTPUserPromptFactory } from './HPPCTPUserPromptFactory';
 import { HPPCTPUserPromptService } from './HPPCTPUserPromptService';
+import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 
 describe('HPPUserIdentificationService', () => {
-  const testInitParams = {
+  const testInitParams: IHPPClickToPayAdapterInitParams = {
     signInContainerId: 'containerId',
     dpaTransactionOptions: {},
     srciDpaId: 'id',
     formId: 'form',
     cardListContainerId: 'cardContainer',
     onUpdateView: jest.fn(),
+    onCheckout: jest.fn(),
   };
   const promptClosedMock = new BehaviorSubject(false);
   let sut: HPPUserIdentificationService;

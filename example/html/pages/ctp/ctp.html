@@ -589,7 +589,8 @@
             transactionCurrencyCode: 'GBP'
           }
         },
-        onUpdateView: onUpdateView
+        onUpdateView: onUpdateView,
+        onCheckout: onCheckout
       };
 
       st.ClickToPay({ adapter: 'hpp' })
@@ -680,6 +681,9 @@
         cardDetailsElement.classList.add('hidden');
         // submitElement.classList.add('hidden');
       }
+    }
+    function onCheckout(checkoutResult){
+      console.log('CTP - cecheckout result: ', checkoutResult)
     }
 
     function printLogs(logs) {

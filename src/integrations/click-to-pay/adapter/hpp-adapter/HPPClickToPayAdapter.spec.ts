@@ -26,8 +26,8 @@ describe('HPPClickToPayAdapter', () => {
     signInContainerId: 'signin',
     formId: 'formId',
     dpaTransactionOptions: null,
-    onUpdateView: () => {
-    },
+    onUpdateView: jest.fn(),
+    onCheckout: jest.fn(),
   };
   let messageBus: IMessageBus;
   let frameQueryingServiceMock: IFrameQueryingService;
@@ -81,7 +81,7 @@ describe('HPPClickToPayAdapter', () => {
       });
     });
 
-    it('should subscribe to checkout data captured from form submit and perform checkout using DigitalTerminal when checkout is triggered', () => {
+    it('should subscribe to checkout data captured from form submit and perform checkout using DigitalTerminal when checkout is triggered', done => {
       const formSubmitEventMock = new Subject<void>();
       const testCheckoutData: IInitialCheckoutData = {
         newCardData: {
@@ -92,13 +92,37 @@ describe('HPPClickToPayAdapter', () => {
           panExpirationYear: '2049',
         },
       };
+      const checkoutResponseData = {
+        srcCorrelationId: 'testid',
+        srciTransactionId: 'testid2',
+        maskedCard: null,
+        shippingAddressZip: '1234',
+        shippingCountryCode: 'PL',
+        maskedConsumer: {
+          countryCode: 'PL',
+          emailAddress: 'email@example.com',
+          firstName: 'Sherlock',
+          lastName: 'Holmes',
+          fullName: 'Sherlock Holmes',
+          languageCode: 'en_GB',
+          mobileNumber: null,
+        },
+        encryptedPayload: 'encryptedpayload',
+        isGuestCheckout: false,
+        isNewUser: false,
+        assuranceData: null,
+      };
       when(hppCheckoutDataProviderMock.getCheckoutData(initParams.formId)).thenReturn(formSubmitEventMock.pipe(mapTo(testCheckoutData)));
+      when(digitalTerminalMock.checkout(anything())).thenReturn(of(checkoutResponseData));
       sut.init(initParams).then(adapterInstance => {
           formSubmitEventMock.asObservable().subscribe(() => {
             verify(digitalTerminalMock.checkout(objectContaining({
               ...testCheckoutData,
               dpaTransactionOptions: initParams.dpaTransactionOptions,
             } as IInitialCheckoutData))).once();
+
+            expect(initParams.onCheckout).toHaveBeenCalledWith(checkoutResponseData);
+            done();
           });
         }
       );
