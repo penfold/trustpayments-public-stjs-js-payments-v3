@@ -108,13 +108,6 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
       dpaTransactionOptions: this.initParams.dpaTransactionOptions,
     };
 
-    this.messageBus.publish({
-      type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
-      data: {
-        name: ClickToPayPaymentMethodName,
-      },
-    });
-
     this.digitalTerminal.checkout(checkoutData).pipe(
       catchError(e => {
         console.error(e);// TODO add better error handling
