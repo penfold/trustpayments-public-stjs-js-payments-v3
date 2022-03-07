@@ -18,8 +18,8 @@ describe('CardAggregator', () => {
       artUri: '',
       artWidth: 0,
     },
-    dateofCardCreated: 0,
-    dateofCardLastUsed: 0,
+    dateOfCardCreated: '2022-03-04T12:05:26.947Z',
+    dateOfCardLastUsed: '2022-03-05T12:05:26.947Z',
     dcf: {
       uri: '',
       logoUri: '',
@@ -115,26 +115,26 @@ describe('CardAggregator', () => {
         {
           ...cardDataTemplate,
           panLastFour: 2222,
-          dateofCardLastUsed: 222222,
-          dateofCardCreated: 222222,
+          dateOfCardCreated: '2022-03-06T12:05:26.947Z',
+          dateOfCardLastUsed: '2022-03-07T12:05:26.947Z',
         },
         {
           ...cardDataTemplate,
           panLastFour: 3333,
-          dateofCardLastUsed: 222222,
-          dateofCardCreated: 111111,
+          dateOfCardLastUsed: '2022-03-05T12:05:26.947Z',
+          dateOfCardCreated: '2022-03-06T12:05:26.947Z',
         },
         {
           ...cardDataTemplate,
           panLastFour: 4444,
-          dateofCardLastUsed: 444444,
-          dateofCardCreated: 111111,
+          dateOfCardCreated: '2022-03-07T12:05:26.947Z',
+          dateOfCardLastUsed: '2022-03-08T12:05:26.947Z',
         },
         {
           ...cardDataTemplate,
           panLastFour: 5555,
-          dateofCardLastUsed: 444444,
-          dateofCardCreated: 222222,
+          dateOfCardCreated: '2022-03-08T12:05:26.947Z',
+          dateOfCardLastUsed: '2022-03-09T12:05:26.947Z',
         },
       ];
       const profiles: Partial<Record<SrcName, ISrcProfileList>> = {

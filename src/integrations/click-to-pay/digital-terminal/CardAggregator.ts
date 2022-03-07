@@ -31,9 +31,10 @@ export class CardAggregator {
 
   private determineCardsOrder(cardA: ICorrelatedMaskedCard, cardB: ICorrelatedMaskedCard): number {
     const compare = (valueA = 0, valueB = 0) => Math.sign(valueB - valueA);
+    const compareDates = (valueA: string, valueB: string) => Math.sign(new Date(valueB).getTime() - new Date(valueA).getTime());
 
     return compare(Number(cardA.isActive), Number(cardB.isActive)) ||
-      compare(cardA.dateofCardLastUsed, cardB.dateofCardLastUsed) ||
-      compare(cardA.dateofCardCreated, cardB.dateofCardCreated);
+      compareDates(cardA.dateOfCardLastUsed, cardB.dateOfCardLastUsed) ||
+      compareDates(cardA.dateOfCardCreated, cardB.dateOfCardCreated);
   }
 }
