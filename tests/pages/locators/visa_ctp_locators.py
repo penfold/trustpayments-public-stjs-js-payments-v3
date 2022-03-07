@@ -32,3 +32,16 @@ class VisaClickToPayLocators:
     resend_otp_btn: By = (By.ID, 'st-ctp-opt-resend')
     validation_message: By = (By.XPATH, '//div[@class=\'st-hpp-prompt__notification\']')
     cancel_btn: By = (By.ID, 'st-hpp-prompt__close-btn')
+
+    # Card list view
+    add_card_button: By = (By.ID, 'st-add-card__button')
+    card_number_modal_input: By = (By.ID, 'pan')
+    expiry_date_list_month: By = (By.ID, 'expiryDateMonthId')
+    expiry_date_list_year: By = (By.ID, 'expiryDateYearId')
+    security_code_modal_input: By = (By.ID, 'cvv')
+    masked_card_number: By = (By.XPATH, '//div[@class=\'st-card\'][1]/span[@class=\'st-card__description\']')
+
+    @classmethod
+    def get_card_locator_from_cards_list(cls, value) -> By.ID:
+        return By.XPATH, f'//div[@class=\'st-card\'][{value}]'
+

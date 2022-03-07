@@ -43,7 +43,7 @@ def step_impl(context, example_page):
     elif 'IN_IFRAME' in example_page:
         url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.INLINE_E2E_CONFIG}'
     elif 'VISA_CTP' in example_page:
-        url = f'{CONFIGURATION.URL.BASE_URL}/ctp.html'
+        url = f'{CONFIGURATION.URL.BASE_URL}/ctp.html?{context.INLINE_E2E_CONFIG}'
     else:
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.INLINE_E2E_CONFIG}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated

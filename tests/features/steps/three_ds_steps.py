@@ -63,15 +63,6 @@ def step_impl(context, code):
     three_ds_page.fill_3ds_v1_challenge_modal_and_submit(AuthData[code].value)
 
 
-@step('User fills 3ds SDK challenge with (?P<code>.+) and submit')
-def step_impl(context, code):
-    three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)
-    if code == AuthData.THREE_DS_CODE.name:
-        three_ds_page.fill_3ds_challenge_modal_and_submit(AuthData.THREE_DS_CODE.value)
-    else:
-        three_ds_page.fill_3ds_challenge_modal_and_submit(AuthData.THREE_DS_INCORRECT_CODE.value)
-
-
 @step('User clicks Cancel button on 3ds SDK challenge in INLINE mode')
 def step_impl(context):
     three_ds_page = context.page_factory.get_page(Pages.THREE_DS_PAGE)

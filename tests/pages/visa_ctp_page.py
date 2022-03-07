@@ -11,8 +11,8 @@ class VisaClickToPayPage(BasePage):
 
     def fill_payment_form(self, card_number, expiry_date, cvv):
         self._actions.send_keys(VisaClickToPayLocators.card_number_input, card_number)
-        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_month_select, '12')
-        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_year_select, '2030')
+        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_month_select, expiry_date[:2])
+        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_year_select, expiry_date[3::])
         self._actions.send_keys(VisaClickToPayLocators.security_code_input, cvv)
 
     def click_submit_button(self):
@@ -112,3 +112,20 @@ class VisaClickToPayPage(BasePage):
 
     def click_resend_code_button(self):
         self._actions.click(VisaClickToPayLocators.resend_otp_btn)
+
+    # Card list view
+    def click_add_new_card_btn(self):
+        self._actions.click(VisaClickToPayLocators.add_card_button)
+
+    def select_card_from_cards_list(self, card_number):
+        self._actions.click(VisaClickToPayLocators.get_card_locator_from_cards_list(card_number))
+
+    def fill_card_details_in_modal(self, card_number, expiration_date, cvv):
+        self._actions.send_keys(VisaClickToPayLocators.card_number_modal_input, card_number)
+        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_month, expiration_date[:2])
+        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_year, '20' + expiration_date[3::])
+        self._actions.send_keys(VisaClickToPayLocators.security_code_modal_input, cvv)
+
+    def get_masked_card_number_from_card_list(self):
+        masked_card_number = self._actions.get_text_with_wait(VisaClickToPayLocators.masked_card_number)[-4:]
+        return masked_card_number
