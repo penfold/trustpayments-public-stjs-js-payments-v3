@@ -1,5 +1,6 @@
 import { Service } from 'typedi';
-import { Observable, Subject } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { IConsumer } from '../../digital-terminal/ISrc';
 import { ICardData } from '../../digital-terminal/interfaces/ICardData';
@@ -14,26 +15,21 @@ export class HPPCheckoutDataProvider {
   getCheckoutData(formId: string): Observable<IInitialCheckoutData> {
     this.formElement = document.querySelector(`form#${formId}`);
 
-    return this.captureCheckoutData();
+    return this.captureCheckoutDataOnSubmit();
   }
 
-  private captureCheckoutData(): Observable<IInitialCheckoutData> {
-    const checkoutData = new Subject<IInitialCheckoutData>();
-
-    this.formElement.addEventListener('submit', event => {
-      if (this.shouldClickToPayBeUsed()) {
-        event.preventDefault();
-        checkoutData.next(this.getCheckoutDataFromForm());
-      }
-    });
-
-    return checkoutData.asObservable();
+  private captureCheckoutDataOnSubmit(): Observable<IInitialCheckoutData> {
+    return fromEvent(this.formElement, 'submit').pipe(
+      filter(() => this.shouldClickToPayBeUsed()),
+      tap(event => event.preventDefault()),
+      map(() => this.getCheckoutDataFromForm())
+    );
   }
 
   private getCheckoutDataFromForm(): IInitialCheckoutData {
     return {
       consumer: this.getConsumerData(),
-      srcDigitalCardId: this.getFormFieldValue(HPPFormFieldName.srcCardId),// TODO add when card list ready
+      srcDigitalCardId: this.getFormFieldValue(HPPFormFieldName.srcCardId),
       newCardData: this.isCardListVisible() ? this.getRecognizedUserNewCardData() : this.getNewCardData(),
     };
   }
@@ -95,6 +91,10 @@ export class HPPCheckoutDataProvider {
   private getFormFieldValue(fieldName: HPPFormFieldName | NewCardFieldName): string {
     const element = this.formElement?.elements.namedItem(fieldName);
 
+    if (!element) {
+      return '';
+    }
+
     if (DomMethods.isRadioNodeList(element)) {
       return element.value;
     }
@@ -103,7 +103,7 @@ export class HPPCheckoutDataProvider {
       return (element as HTMLInputElement).checked ? (element as HTMLInputElement).value : '';
     }
 
-    return (element as HTMLInputElement).value;
+    return (element as HTMLInputElement).value || '';
   }
 
   private isRegisterCardEnabled(): boolean {
