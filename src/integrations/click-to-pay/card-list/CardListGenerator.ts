@@ -7,13 +7,12 @@ import { NewCardFieldName } from './NewCardFieldName';
 const iconMap: Map<string, string> = new Map(
   [
     ['visa', require('../../../application/core/services/icon/images/visa.svg')],
-  ],
+  ]
 );
 
 @Service()
 export class CardListGenerator {
-  constructor(
-  ) {
+  constructor() {
   }
 
   displayCards(parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
@@ -78,8 +77,10 @@ export class CardListGenerator {
 
   private cardContent(card: ICorrelatedMaskedCard, checked = false): string {
     const check = checked ? ' checked' : '';
+    const activeCardRadioButton = `<label><input id="radio${card.srcDigitalCardId}" name="srcDigitalCardId" class="st-card__checkbox-input" type="radio" value="${card.srcDigitalCardId}"${check}><span class="st-card__checkbox-radio"></span></label>`;
+
     return `
-      <span class="st-card__checkbox">${card.isActive ? '<label><input id="radio' + card.srcDigitalCardId + '" name="srcDigitalCardId" type="radio" value="' + card.srcDigitalCardId + '"' + check + '><span class="radio"></span></label>' : ''}</span>
+      <span class="st-card__checkbox">${card.isActive ? activeCardRadioButton : ''}</span>
       <span class="st-card__image">
         <img src="${card.digitalCardData.artUri}" alt="" style="width: 60px; height: 40px">
       </span>
