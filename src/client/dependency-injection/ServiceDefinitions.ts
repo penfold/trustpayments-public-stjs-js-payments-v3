@@ -17,6 +17,7 @@ import { APMClientInitializer } from '../../integrations/apm/client/APMClientIni
 import { SentryBreadcrumbsSender } from '../../application/core/services/sentry-breadcrumbs-sender/SentryBreadcrumbsSender';
 import { AnalyticsEventSender } from '../../application/core/services/analytics-event-sender/AnalyticsEventSender';
 import { MessageSubscriberToken } from '../../shared/dependency-injection/InjectionTokens';
+import { initializeContainerServiceDefinitionTests } from '../../testing/ServicesOverrides';
 
 export const initializeContainer = (container: ContainerInstance) => {
   initializeContainerShared(container);
@@ -35,6 +36,7 @@ export const initializeContainer = (container: ContainerInstance) => {
 
   if(environment.testEnvironment){
     container.set({ id: HttpClient, type: HttpClient });
+    initializeContainerServiceDefinitionTests(container);
   }
 }
 

@@ -1,4 +1,4 @@
-import { Container } from 'typedi';
+import { ContainerInstance } from 'typedi';
 import { Cybertonica } from '../application/core/integrations/cybertonica/Cybertonica';
 import { VisaCheckoutSdkProvider } from '../application/core/integrations/visa-checkout/visa-checkout-sdk-provider/VisaCheckoutSdkProvider';
 import { VisaCheckoutSdkProviderMock } from '../application/core/integrations/visa-checkout/visa-checkout-sdk-provider/VisaCheckoutSdkProviderMock';
@@ -17,13 +17,15 @@ import { IApplePaySessionWrapper } from '../integrations/apple-pay/client/models
 import { MockCardinalProvider } from './mocks/MockCardinalProvider';
 import { CybertonicaMock } from './mocks/CybertonicaMock';
 
-if(environment.testEnvironment) {
-  Container.set({ id: Cybertonica, type: CybertonicaMock });
-  Container.set({ id: CardinalProvider, type: MockCardinalProvider });
-  Container.set({ id: VisaCheckout, type: VisaCheckoutMock });
-  Container.set({ id: VisaCheckoutSdkProvider, type: VisaCheckoutSdkProviderMock });
-  Container.set({ id: IGooglePaySdkProvider, type: GooglePaySdkProviderMock });
-  Container.set({ id: IApplePaySessionWrapper, type: ApplePaySessionWrapperMock });
-  Container.set({ id: IHttpOptionsProvider, type: TestHttpOptionsProvider });
-  Container.set({ id: SeonFraudControlDataProvider, type: SeonFraudControlDataProviderMock });
+export const initializeContainerServiceDefinitionTests = (container: ContainerInstance) => {
+  if(environment.testEnvironment) {
+    container.set({ id: Cybertonica, type: CybertonicaMock });
+    container.set({ id: CardinalProvider, type: MockCardinalProvider });
+    container.set({ id: VisaCheckout, type: VisaCheckoutMock });
+    container.set({ id: VisaCheckoutSdkProvider, type: VisaCheckoutSdkProviderMock });
+    container.set({ id: IGooglePaySdkProvider, type: GooglePaySdkProviderMock });
+    container.set({ id: IApplePaySessionWrapper, type: ApplePaySessionWrapperMock });
+    container.set({ id: IHttpOptionsProvider, type: TestHttpOptionsProvider });
+    container.set({ id: SeonFraudControlDataProvider, type: SeonFraudControlDataProviderMock });
+  }
 }

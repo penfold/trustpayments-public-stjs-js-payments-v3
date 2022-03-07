@@ -12,6 +12,8 @@ import { IGatewayClient } from '../core/services/gateway-client/IGatewayClient';
 import { StTransportGatewayClient } from '../core/services/gateway-client/StTransportGatewayClient';
 import { initializeContainer as initializeContainerShared } from '../../shared/dependency-injection/ServiceDefinitions';
 import { ReducerToken } from '../../shared/dependency-injection/InjectionTokens';
+import { environment } from '../../environments/environment';
+import { initializeContainerServiceDefinitionTests } from '../../testing/ServicesOverrides';
 import { PaymentMethodToken } from './InjectionTokens';
 
 export const initializeContainer = (container: ContainerInstance) => {
@@ -24,4 +26,8 @@ export const initializeContainer = (container: ContainerInstance) => {
   container.set({ id: PaymentMethodToken, type: GooglePaymentMethod, multiple: true });
   container.set({ id: PaymentMethodToken, type: ApplePayPaymentMethod, multiple: true });
   container.set({ id: PaymentMethodToken, type: APMPaymentMethod, multiple: true });
+
+  if(environment.testEnvironment){
+    initializeContainerServiceDefinitionTests(container)
+  }
 }

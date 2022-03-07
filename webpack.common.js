@@ -11,32 +11,26 @@ module.exports = {
   entry: {
     st: [
       './src/shared/imports/polyfills.ts',
-      './src/testing/ServicesOverrides.ts',
       './src/client/st/ST.ts',
     ],
     controlFrame: [
       './src/shared/imports/polyfills.ts',
-      './src/testing/ServicesOverrides.ts',
       './src/application/components/control-frame/control-frame.ts',
     ],
     creditCardNumber: [
       './src/shared/imports/polyfills.ts',
-      './src/testing/ServicesOverrides.ts',
       './src/application/components/card-number/card-number.ts',
     ],
     expirationDate: [
       './src/shared/imports/polyfills.ts',
-      './src/testing/ServicesOverrides.ts',
       './src/application/components/expiration-date/expiration-date.ts',
     ],
     securityCode: [
       './src/shared/imports/polyfills.ts',
-      './src/testing/ServicesOverrides.ts',
       './src/application/components/security-code/security-code.ts',
     ],
     animatedCard: [
       './src/shared/imports/polyfills.ts',
-      './src/testing/ServicesOverrides.ts',
       './src/application/components/animated-card/animated-card.ts',
     ],
   },
