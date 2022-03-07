@@ -7,20 +7,19 @@ import { NewCardFieldName } from './NewCardFieldName';
 const iconMap: Map<string, string> = new Map(
   [
     ['visa', require('../../../application/core/services/icon/images/visa.svg')],
-  ],
+  ]
 );
 
 @Service()
 export class CardListGenerator {
-  constructor(
-  ) {
+  constructor() {
   }
 
   displayCards(parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
     const container: HTMLElement = document.getElementById(parentContainer);
     container.classList.add('st-cards');
-    cardList.forEach(card => {
-      const cardContent = this.cardContent(card);
+    cardList.forEach((card, index) => {
+      const cardContent = this.cardContent(card, index === 0);
       const cardRow = document.createElement('div');
       cardRow.classList.add('st-card');
       cardRow.innerHTML = cardContent;
@@ -76,9 +75,12 @@ export class CardListGenerator {
     document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
   }
 
-  private cardContent(card: ICorrelatedMaskedCard): string {
+  private cardContent(card: ICorrelatedMaskedCard, checked = false): string {
+    const check = checked ? ' checked' : '';
+    const activeCardRadioButton = `<label><input id="radio${card.srcDigitalCardId}" name="srcDigitalCardId" class="st-card__checkbox-input" type="radio" value="${card.srcDigitalCardId}"${check}><span class="st-card__checkbox-radio"></span></label>`;
+
     return `
-      <span class="st-card__checkbox">${card.isActive ? '<label><input id="radio' + card.srcDigitalCardId + '" name="srcDigitalCardId" type="radio" value="' + card.srcDigitalCardId + '"><span class="radio"></span></label>' : ''}</span>
+      <span class="st-card__checkbox">${card.isActive ? activeCardRadioButton : ''}</span>
       <span class="st-card__image">
         <img src="${card.digitalCardData.artUri}" alt="" style="width: 60px; height: 40px">
       </span>
@@ -135,7 +137,7 @@ export class CardListGenerator {
     const option = document.createElement('option') as HTMLOptionElement;
     option.value = option.innerHTML = '';
     select.appendChild(option);
-    for (let i = currentYear; i < currentYear + 6; i++) {
+    for (let i = currentYear; i < currentYear + 21; i++) {
       const option = document.createElement('option') as HTMLOptionElement;
       option.value = option.innerHTML = i.toString();
       select.appendChild(option);
@@ -152,7 +154,6 @@ export class CardListGenerator {
     this.clearForm();
     this.clearSelection();
     (document.getElementById('radio' + id) as HTMLInputElement).checked = true;
-    (document.getElementById('tick' + id) as HTMLSpanElement).classList.add('st-card__tick--selected');
   }
 
   private openForm(): void {
