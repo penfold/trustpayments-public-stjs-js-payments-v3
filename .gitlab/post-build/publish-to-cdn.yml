@@ -45,21 +45,21 @@ trigger-publish-sdk-release-to-cdn-prod-from-release:
     PUBLISH_ARTIFACT_SOURCE_PATH: '.artifacts_app_html_release/dist'
     TARGET_PREFIX: 'example/html/'
 
-trigger-publish-app-html-review-to-cdn-stage-from-review:
+.trigger-publish-app-html-review-to-cdn-stage-from-review:
   extends:
     - .trigger-publish-to-cdn-stage-from-review
     - .trigger-publish-to-cdn-before-script-app-html
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-app-html-rr-review'
 
-trigger-publish-app-html-release-to-cdn-stage-from-release:
+.trigger-publish-app-html-release-to-cdn-stage-from-release:
   extends:
     - .trigger-publish-to-cdn-stage-from-release
     - .trigger-publish-to-cdn-before-script-app-html
   variables:
     PUBLISH_ARTIFACT_SOURCE_JOB_NAME: 'build-app-html-rr-release'
 
-trigger-publish-app-html-release-to-cdn-prod-from-release:
+.trigger-publish-app-html-release-to-cdn-prod-from-release:
   extends:
     - .trigger-publish-to-cdn-prod-from-release
     - .trigger-publish-to-cdn-before-script-app-html

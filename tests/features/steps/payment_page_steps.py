@@ -4,6 +4,7 @@ import time
 from assertpy import soft_assertions
 from behave import use_step_matcher, step, when, then
 
+from configuration import CONFIGURATION
 from pages.page_factory import Pages
 from pages.payment_methods_page import format_card_number
 from utils.enums.card import Card
@@ -477,7 +478,9 @@ def step_impl(context, is_supported):
 @then('User will see that operating system is marked as supported: "(?P<is_supported>.+)"')
 def step_impl(context, is_supported):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.validate_if_os_is_supported_in_info_callback(is_supported)
+    # TODO Remove this if statement when ios 15 will be added to supported browser/os list
+    if CONFIGURATION.REMOTE_OS_VERSION != '15':
+        payment_page.validate_if_os_is_supported_in_info_callback(is_supported)
 
 
 @step('User clicks (?P<button_type>.+) button on ApplePay popup')
