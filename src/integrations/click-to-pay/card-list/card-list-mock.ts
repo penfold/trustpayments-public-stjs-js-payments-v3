@@ -21,8 +21,8 @@ export const cardListMock: ICorrelatedMaskedCard[] = [
       artHeight: 40,
       artWidth: 60,
     },
-    dateofCardCreated: 1,
-    dateofCardLastUsed: 2,
+    dateOfCardCreated: '2022-03-04T12:05:26.947Z',
+    dateOfCardLastUsed: '2022-03-05T12:05:26.947Z',
     dcf: {
       uri: '',
       logoUri: '',
@@ -60,8 +60,8 @@ export const cardListMock: ICorrelatedMaskedCard[] = [
       artHeight: 40,
       artWidth: 60,
     },
-    dateofCardCreated: 1,
-    dateofCardLastUsed: 2,
+    dateOfCardCreated: '2022-03-05T12:05:26.947Z',
+    dateOfCardLastUsed: '2022-03-06T12:05:26.947Z',
     dcf: {
       uri: '',
       logoUri: '',
@@ -99,8 +99,8 @@ export const cardListMock: ICorrelatedMaskedCard[] = [
       artHeight: 40,
       artWidth: 60,
     },
-    dateofCardCreated: 1,
-    dateofCardLastUsed: 2,
+    dateOfCardCreated: '2022-03-06T12:05:26.947Z',
+    dateOfCardLastUsed: '2022-03-07T12:05:26.947Z',
     dcf: {
       uri: '',
       logoUri: '',
@@ -138,8 +138,8 @@ export const cardListMock: ICorrelatedMaskedCard[] = [
       artHeight: 40,
       artWidth: 60,
     },
-    dateofCardCreated: 1,
-    dateofCardLastUsed: 2,
+    dateOfCardCreated: '2022-03-07T12:05:26.947Z',
+    dateOfCardLastUsed: '2022-03-08T12:05:26.947Z',
     dcf: {
       uri: '',
       logoUri: '',

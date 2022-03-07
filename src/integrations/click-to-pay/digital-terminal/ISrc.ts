@@ -113,8 +113,8 @@ export interface IMaskedCard {
   panExpirationMonth: number;
   panExpirationYear: number;
   digitalCardData: IDigitalCardData;
-  dateofCardCreated: number;
-  dateofCardLastUsed: number;
+  dateOfCardCreated: string;
+  dateOfCardLastUsed: string;
   dcf: IDcf;
   maskedBillingAddress: IMaskedAddress;
 }
