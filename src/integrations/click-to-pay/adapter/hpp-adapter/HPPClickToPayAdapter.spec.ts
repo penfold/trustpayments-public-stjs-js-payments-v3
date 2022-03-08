@@ -92,42 +92,20 @@ describe('HPPClickToPayAdapter', () => {
           panExpirationYear: '2049',
         },
       };
-      const checkoutResponseData = {
-        srcCorrelationId: 'testid',
-        srciTransactionId: 'testid2',
-        maskedCard: null,
-        shippingAddressZip: '1234',
-        shippingCountryCode: 'PL',
-        maskedConsumer: {
-          countryCode: 'PL',
-          emailAddress: 'email@example.com',
-          firstName: 'Sherlock',
-          lastName: 'Holmes',
-          fullName: 'Sherlock Holmes',
-          languageCode: 'en_GB',
-          mobileNumber: null,
-        },
-        encryptedPayload: 'encryptedpayload',
-        isGuestCheckout: false,
-        isNewUser: false,
-        assuranceData: null,
-      };
       when(hppCheckoutDataProviderMock.getCheckoutData(initParams.formId)).thenReturn(formSubmitEventMock.pipe(mapTo(testCheckoutData)));
-      when(digitalTerminalMock.checkout(anything())).thenReturn(of(checkoutResponseData));
       sut.init(initParams).then(adapterInstance => {
           formSubmitEventMock.asObservable().subscribe(() => {
+            console.log('ole');
             verify(digitalTerminalMock.checkout(objectContaining({
               ...testCheckoutData,
               dpaTransactionOptions: initParams.dpaTransactionOptions,
             } as IInitialCheckoutData))).once();
 
-            expect(initParams.onCheckout).toHaveBeenCalledWith(checkoutResponseData);
             done();
           });
+          formSubmitEventMock.next();
         }
       );
-
-      formSubmitEventMock.next();
     });
   });
 

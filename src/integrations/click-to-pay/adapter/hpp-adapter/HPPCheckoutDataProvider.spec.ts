@@ -86,10 +86,10 @@ describe('HPPCheckoutDataProvider()', () => {
       });
     });
 
-    describe('when card registration is not enabled in form', () => {
+    describe('when card registration is not enabled in form and card list for recognized user is not displayed', () => {
       beforeEach(() => {
         registerCheckbox.checked = false;
-      });
+     });
 
       it('should capture and stop submit event', () => {
         sut.getCheckoutData(testFormId).subscribe();

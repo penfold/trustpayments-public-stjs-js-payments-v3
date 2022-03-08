@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { BehaviorSubject, firstValueFrom, NEVER, Observable } from 'rxjs';
+import { BehaviorSubject, EMPTY, firstValueFrom, Observable } from 'rxjs';
 import { catchError, filter, mapTo, tap } from 'rxjs/operators';
 import { IClickToPayAdapter } from '../interfaces/IClickToPayClientAdapter';
 import { DigitalTerminal } from '../../digital-terminal/DigitalTerminal';
@@ -111,10 +111,11 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     this.digitalTerminal.checkout(checkoutData).pipe(
       catchError(e => {
         console.error(e);// TODO add better error handling
-        return NEVER;
+        return EMPTY;
       })
     ).subscribe(response => {
       this.initParams.onCheckout?.call(null, response);
+
     });
   }
 }
