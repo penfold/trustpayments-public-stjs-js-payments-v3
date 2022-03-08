@@ -150,7 +150,7 @@ e2e-smoke-tests-review:
     - .rules-when-review-manual-allow-failure
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_additional_coverage'
-  parallel: 18
+  parallel: 19
 
 ################################### Component Tests ###################################
 .component-app-html-mock:
