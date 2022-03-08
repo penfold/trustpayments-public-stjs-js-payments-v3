@@ -75,13 +75,6 @@ describe('CardNumber', () => {
   });
 
   it('if input has no value and event from other frame with card number from autocomplete is received, it should set input value to received value', () => {
-    // cardNumberInput.value = null;
-    // testMessageBus.publish({
-    //   type: PUBLIC_EVENTS.AUTOCOMPLETE_CARD_NUMBER,
-    //   data: cardNumberCorrect,
-    // });
-    //
-    // expect(cardNumberInput.value).toEqual(cardNumberCorrect);
 
     cardNumberInput.value = '1234';
     testMessageBus.publish({

@@ -61,8 +61,6 @@ export class ConfigService implements ConfigProvider {
       data: JSON.parse(JSON.stringify(config)),
     });
 
-    // Container.set(CONFIG, config);
-
     return config;
   }
 }

@@ -1,8 +1,3 @@
-/**
- Inicjalizacja payment Controlera
- (wszystkie calle przechodzą przez to )
- **/
-
 import { Service } from 'typedi';
 import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
@@ -101,9 +96,9 @@ export class ControlFrame {
   ) {
     this.validation = validationFactory.create();
     this.init();
-    this.initVisaCheckout();  /**  do wywalenia **/
-    this.initCardPayments();  /** wypada do payment metody **/
-    this.initJsInit();  /** płatność kartą won **/
+    this.initVisaCheckout();
+    this.initCardPayments();
+    this.initJsInit();
   }
 
   private init(): void {
@@ -122,12 +117,12 @@ export class ControlFrame {
       }
 
       this.updateMerchantFieldsEvent();
-      this.paymentController.init();   /** musi zostać **/
+      this.paymentController.init();
 
       return of(config);
     });
   }
-  /** karta **/
+
   initCardPayments(): void {
 
     this.messageBus
@@ -203,13 +198,13 @@ export class ControlFrame {
       this.stCodec.updateJwt(data.newJwt);
     });
   }
-  /** karta i inne do zmiany **/
+
   private updateMerchantFieldsEvent(): void {
     this.messageBus.subscribeType(PUBLIC_EVENTS.UPDATE_MERCHANT_FIELDS, (data: IMerchantData) => {
       this.updateMerchantFields(data);
     });
   }
-  /** karta **/
+
   private submitFormEvent(): void {
     this.messageBus
       .pipe(
@@ -260,7 +255,7 @@ export class ControlFrame {
       )
       .subscribe(threeDQueryResponse => this.processPayment(threeDQueryResponse));
   }
-  /** karta **/
+
   private isDataValid(data: ISubmitData): boolean {
     const dataInJwt = data ? data.dataInJwt : false;
     const { validity } = this.validation.formValidation(
@@ -272,7 +267,7 @@ export class ControlFrame {
 
     return validity;
   }
-  /** karta **/
+
   private onPaymentFailure(errorData: IResponseData, errorMessage: string = PAYMENT_ERROR): Observable<never> {
     const translatedErrorMessage = this.translator.translate(errorMessage);
     errorData.errormessage = translatedErrorMessage;
@@ -293,7 +288,6 @@ export class ControlFrame {
     return throwError(errorData);
   }
 
-  /** karta **/
   private onPaymentCancel(errorData: IResponseData, errorMessage: string = PAYMENT_CANCELLED): Observable<never> {
     const translatedErrorMessage = this.translator.translate(errorMessage);
     errorData.errormessage = translatedErrorMessage;
@@ -313,7 +307,7 @@ export class ControlFrame {
 
     return throwError(errorData);
   }
-  /** karta **/
+
   private processPayment(responseData: IResponseData): Promise<void> {
     this.setRequestTypes(this.stCodec.jwt);
 
@@ -350,7 +344,7 @@ export class ControlFrame {
         this.resetJwt();
       });
   }
-  /** karta **/
+
   private callThreeDQueryRequest(): Observable<IThreeDQueryResponse> {
     const applyFraudControl = (merchantFormData: IMerchantData) =>
       this.fraudControlService.getTransactionId().pipe(
@@ -373,7 +367,7 @@ export class ControlFrame {
       )
     );
   }
-  /** karta **/
+
   private validateFormFields() {
     this.publishBlurEvent({
       type: MessageBus.EVENTS.BLUR_CARD_NUMBER,
@@ -386,11 +380,11 @@ export class ControlFrame {
     });
     this.validation.setFormValidity(this.formFieldsValidity);
   }
-  /** karta **/
+
   private publishBlurEvent(event: IMessageBusEvent): void {
     this.messageBus.publish(event);
   }
-  /** karta **/
+
   private formFieldChange(event: string, value: string) {
     switch (event) {
       case MessageBus.EVENTS.CHANGE_CARD_NUMBER:
@@ -404,35 +398,29 @@ export class ControlFrame {
         break;
     }
   }
-  /** karta **/
-  private getJwt(): string {
-    return this.frame.parseUrl(ControlFrame.ALLOWED_PARAMS).jwt;
-  }
 
-  /** karta **/
   private setCardExpiryDate(value: string): void {
     this.card.expirydate = value;
   }
-  /** karta **/
+
   private setCardPan(value: string): void {
     this.card.pan = value;
   }
-  /** karta **/
+
   private setCardSecurityCode(value: string): void {
     this.card.securitycode = value;
   }
-  /** karta **/
+
   private setFormFieldsValidities(): void {
     this.formFieldsValidity.cardNumber.state = this.formFields.cardNumber.validity;
     this.formFieldsValidity.expirationDate.state = this.formFields.expirationDate.validity;
     this.formFieldsValidity.securityCode.state = this.formFields.securityCode.validity;
   }
-  /** karta i inne potrzebne nie wywalać **/
+
   private updateMerchantFields(data: IMerchantData): void {
     this.merchantFormData = data;
   }
 
-  /** karta **/
   private initThreeDProcess(config: IConfig): void {
     this.threeDProcess.init$().pipe(
       catchError((error,caught) => {
