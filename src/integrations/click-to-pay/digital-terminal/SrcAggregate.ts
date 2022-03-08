@@ -3,12 +3,15 @@ import { map, mapTo, tap } from 'rxjs/operators';
 import { InjectMany, Service } from 'typedi';
 import { SrcProviderToken } from '../../../client/dependency-injection/InjectionTokens';
 import {
-  ISrcInitData,
-  IIsRecognizedResponse,
-  ISrc,
+  ICheckoutData,
+  ICheckoutResponse,
+  ICompleteIdValidationResponse,
   IConsumerIdentity,
   IIdentityLookupResponse,
-  IInitiateIdentityValidationResponse, ICompleteIdValidationResponse, ICheckoutData, ICheckoutResponse,
+  IInitiateIdentityValidationResponse,
+  IIsRecognizedResponse,
+  ISrc,
+  ISrcInitData,
 } from './ISrc';
 import { SrcName } from './SrcName';
 import { ISrcProvider } from './ISrcProvider';

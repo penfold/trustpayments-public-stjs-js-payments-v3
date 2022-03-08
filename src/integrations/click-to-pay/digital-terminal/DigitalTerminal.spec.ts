@@ -7,7 +7,7 @@ import { CheckoutDataTransformer } from './CheckoutDataTransformer';
 import { SrcName } from './SrcName';
 import { IAggregatedProfiles } from './interfaces/IAggregatedProfiles';
 import { IInitialCheckoutData } from './interfaces/IInitialCheckoutData';
-import { ICheckoutData, ICheckoutResponse } from './ISrc';
+import { ICheckoutData, ICheckoutResponse, ICheckoutResponseData } from './ISrc';
 import { IUserIdentificationService } from './interfaces/IUserIdentificationService';
 
 describe('DigitalTerminal', () => {
@@ -42,8 +42,8 @@ describe('DigitalTerminal', () => {
             srcInitiatorId: environment.CLICK_TO_PAY.VISA.SRC_INITIATOR_ID,
             srciTransactionId: anyString(),
           }))).once();
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -116,7 +116,7 @@ describe('DigitalTerminal', () => {
     });
 
     it('returns successful result if identification result contains idToken', done => {
-      when(userIdentificationServiceMock.identifyUser(anything(),identificationData,)).thenReturn(of({ idToken: 'idtoken' }));
+      when(userIdentificationServiceMock.identifyUser(anything(), identificationData)).thenReturn(of({ idToken: 'idtoken' }));
 
       digitalTerminal.identifyUser(instance(userIdentificationServiceMock), identificationData).subscribe(result => {
         expect(result.isSuccessful).toBe(true);
@@ -125,7 +125,7 @@ describe('DigitalTerminal', () => {
     });
 
     it('returns non-successful result if identification result doesnt contain idToken', done => {
-      when(userIdentificationServiceMock.identifyUser(anything(),identificationData,)).thenReturn(of({ idToken: undefined }));
+      when(userIdentificationServiceMock.identifyUser(anything(), identificationData)).thenReturn(of({ idToken: undefined }));
 
       digitalTerminal.identifyUser(instance(userIdentificationServiceMock), identificationData).subscribe(result => {
         expect(result.isSuccessful).toBe(false);
@@ -163,7 +163,7 @@ describe('DigitalTerminal', () => {
       const transformedCheckoutData: ICheckoutData = {
         srcCorrelationId: 'correlationid',
       };
-      const checkoutResponse: ICheckoutResponse = {
+      const checkoutResponseData: ICheckoutResponseData = {
         srciTransactionId: '',
         isGuestCheckout: false,
         assuranceData: null,
@@ -174,6 +174,13 @@ describe('DigitalTerminal', () => {
         isNewUser: true,
         shippingAddressZip: '',
         shippingCountryCode: '',
+      };
+
+      const checkoutResponse: ICheckoutResponse = {
+        checkoutResponse: checkoutResponseData,
+        dcfActionCode: 'COMPLETE',
+        idToken: 'token',
+        unbindAppInstance: false,
       };
 
       when(checkoutDataTransformerMock.transform(initialCheckoutData, anyString(), profiles)).thenReturn(of({

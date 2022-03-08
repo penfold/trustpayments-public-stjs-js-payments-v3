@@ -92,6 +92,9 @@ describe('HPPClickToPayAdapter', () => {
           panExpirationYear: '2049',
         },
       };
+      when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT, anyFunction())).thenCall((eventType, callback) => {
+        callback({ type: eventType, data: initParams }).subscribe();
+      });
       when(hppCheckoutDataProviderMock.getCheckoutData(initParams.formId)).thenReturn(formSubmitEventMock.pipe(mapTo(testCheckoutData)));
       sut.init(initParams).then(adapterInstance => {
           formSubmitEventMock.asObservable().subscribe(() => {
