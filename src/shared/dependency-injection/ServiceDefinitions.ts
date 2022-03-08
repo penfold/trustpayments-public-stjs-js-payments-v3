@@ -14,10 +14,11 @@ import { ITranslator } from '../../application/core/shared/translator/ITranslato
 import { TranslatorWithMerchantTranslations } from '../../application/core/shared/translator/TranslatorWithMerchantTranslations';
 import { IFrameQueryingService } from '../services/message-bus/interfaces/IFrameQueryingService';
 import { FrameQueryingService } from '../services/message-bus/FrameQueryingService';
-import { MessageBusToken, MessageSubscriberToken, ReducerToken, StoreToken, TranslatorToken } from './InjectionTokens';
+import { MessageBusToken, MessageSubscriberToken, ReducerToken, StoreToken, TranslatorToken, WINDOW } from './InjectionTokens';
 
-export const initializeContainer = (container: ContainerInstance) => {
-
+export const initializeContainerShared = (container: ContainerInstance) => {
+  container.set(WINDOW, window);
+  container.set(ContainerInstance, container);
   container.set({ id: IMessageBus, factory: [MessageBusFactory, 'create'] });
   container.set({ id: MessageBusToken, factory: [MessageBusFactory, 'create'] });
   container.set({ id: IStore, factory: [StoreFactory, 'create'] });

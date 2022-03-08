@@ -10,7 +10,7 @@ import { ApplePayPaymentMethod } from '../../integrations/apple-pay/application/
 import { APMPaymentMethod } from '../../integrations/apm/application/APMPaymentMethod';
 import { IGatewayClient } from '../core/services/gateway-client/IGatewayClient';
 import { StTransportGatewayClient } from '../core/services/gateway-client/StTransportGatewayClient';
-import { initializeContainer as initializeContainerShared } from '../../shared/dependency-injection/ServiceDefinitions';
+import { initializeContainerShared } from '../../shared/dependency-injection/ServiceDefinitions';
 import { ReducerToken } from '../../shared/dependency-injection/InjectionTokens';
 import { environment } from '../../environments/environment';
 import { initializeContainerServiceDefinitionTests } from '../../testing/ServicesOverrides';

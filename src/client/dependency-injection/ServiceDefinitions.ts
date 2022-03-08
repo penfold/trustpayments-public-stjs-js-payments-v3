@@ -9,7 +9,7 @@ import { GooglePaySdkProvider } from '../integrations/google-pay/google-pay-sdk-
 import { IGooglePaySdkProvider } from '../integrations/google-pay/google-pay-sdk-provider/IGooglePaySdkProvider';
 import { PreventNavigationPopup } from '../message-subscribers/PreventNavigationPopup';
 import { PaymentResultSubmitterSubscriber } from '../common-frames/PaymentResultSubmitterSubscriber';
-import { initializeContainer as initializeContainerShared } from '../../shared/dependency-injection/ServiceDefinitions';
+import { initializeContainerShared } from '../../shared/dependency-injection/ServiceDefinitions';
 import { ApplePayClientInitializer } from '../../integrations/apple-pay/client/ApplePayClientInitializer';
 import { IApplePaySessionWrapper } from '../../integrations/apple-pay/client/models/IApplePaySessionWrapper';
 import { ApplePaySessionWrapper } from '../../integrations/apple-pay/client/services/session/ApplePaySessionWrapper';

@@ -1,5 +1,5 @@
 import './st.css';
-import { Container, ContainerInstance, Service } from 'typedi';
+import { Container, Service } from 'typedi';
 import { from, Observable, Subject, Subscription } from 'rxjs';
 import { delay, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
@@ -55,7 +55,7 @@ import { IApplePayConfig } from '../../integrations/apple-pay/client/models/IApp
 import { GAEventType } from '../../application/core/integrations/google-analytics/events';
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
 import { Uuid } from '../../application/core/shared/uuid/Uuid';
-import { SessionToken, WINDOW } from '../../shared/dependency-injection/InjectionTokens';
+import { SessionToken } from '../../shared/dependency-injection/InjectionTokens';
 import { initializeContainer } from '../dependency-injection/ServiceDefinitions';
 declare const ST_VERSION: string | undefined;
 @Service()
@@ -496,8 +496,7 @@ export default (config: IConfig): ST => {
   const id = Uuid.uuidv4();
   const container = Container.of(id);
   container.set(SessionToken, id);
-  container.set(WINDOW, window);
-  container.set(ContainerInstance, container);
+
   initializeContainer(container);
 
   return container.get(ClientBootstrap).run(config);
