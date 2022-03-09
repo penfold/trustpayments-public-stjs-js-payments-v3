@@ -26,6 +26,7 @@ Feature: E2E ZIP Payments
     And User focuses on APM payment methods section
     When User chooses ZIP from APM list
     And User will be sent to apm page - zip
+
 # TODO - temporary comment due zip sandbox issue
 #    And User fills ZIP phone number field
 #    And User fills ZIP one time password
