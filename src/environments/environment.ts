@@ -24,9 +24,6 @@ export const environment = {
   CARDINAL_COMMERCE_CONFIG: {
     logging: { level: 'on' },
   },
-  CLICK_TO_PAY: {
-    BUTTON_URL: 'https://sandbox-assets.secure.checkout.visa.com/wallet-services-web/xo/button.png?size=302&color=dark&animation=true&legacy=false&svg=true&orderedCardBrands=VISA',
-  },
   FRAME_URL: FRAME_URL || 'https://localhost:8443',
   GATEWAY_URL,
   GA_MEASUREMENT_ID: '42057093-5',
@@ -62,4 +59,14 @@ export const environment = {
   },
   SCRIPT_LOAD_TIMEOUT: 30000,
   FRAUD_CONTROL_TIMEOUT: 5000,
+  CLICK_TO_PAY: {
+    VISA: {
+      SRC_SDK_URL: {
+        SANDBOX: 'https://sandbox-assets.secure.checkout.visa.com/checkout-widget/resources/js/src-i-adapter/visaSdk.js',
+        PROD: 'https://sandbox-assets.secure.checkout.visa.com/checkout-widget/resources/js/src-i-adapter/visaSdk.js',
+      },
+      SRC_INITIATOR_ID: 'GSTIDU1J8I2NQRWAU7EL21puifGrG2BzgnL9XfBjMzwo9wmtM',
+      ENCRYPTION_KID: 'A5CHRN38V3PJ90ACENUH13CCVOyXIL7A8rC9xClvyZyxvMgrE',
+    },
+  },
 };

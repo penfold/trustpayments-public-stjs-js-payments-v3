@@ -1,7 +1,7 @@
 import './st.css';
 import { Container, Service } from 'typedi';
-import { from, Observable, Subject, Subscription } from 'rxjs';
-import { delay, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { firstValueFrom, from, Observable, Subject, Subscription } from 'rxjs';
+import { delay, map, mapTo, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { JwtDecoder } from '../../shared/services/jwt-decoder/JwtDecoder';
 import '../../application/core/shared/override-domain/OverrideDomain';
 import { CardFrames } from '../card-frames/CardFrames';
@@ -55,7 +55,10 @@ import { IApplePayConfig } from '../../integrations/apple-pay/client/models/IApp
 import { GAEventType } from '../../application/core/integrations/google-analytics/events';
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
 import { IClickToPayConfig } from '../../integrations/click-to-pay/models/IClickToPayConfig';
-import { ClickToPayPaymentMethodName } from '../../integrations/click-to-pay/models/ClickToPayPaymentMethodName';
+import { ClickToPayAdapterFactory } from '../../integrations/click-to-pay/adapter/ClickToPayAdapterFactory';
+import { IClickToPayAdapter } from '../../integrations/click-to-pay/adapter/interfaces/IClickToPayClientAdapter';
+import { IClickToPayAdapterInitParams } from '../../integrations/click-to-pay/adapter/interfaces/IClickToPayAdapterInitParams';
+import { HPPClickToPayAdapter } from '../../integrations/click-to-pay/adapter/hpp-adapter/HPPClickToPayAdapter';
 
 declare const ST_VERSION: string | undefined;
 
@@ -122,6 +125,7 @@ export class ST {
     private merchantFields: MerchantFields,
     private cardFrames: CardFrames,
     private sentryService: SentryService,
+    private clickToPayAdapterFactory: ClickToPayAdapterFactory
   ) {
   }
 
@@ -132,7 +136,7 @@ export class ST {
         ofType(ExposedEvents[eventName]),
         map(event => event.data),
         delay(0),
-        takeUntil(this.destroy$),
+        takeUntil(this.destroy$)
       )
       .subscribe(callback);
   }
@@ -168,7 +172,7 @@ export class ST {
           type: PUBLIC_EVENTS.CARD_PAYMENTS_INIT,
           data: JSON.stringify(this.config),
         },
-        EventScope.THIS_FRAME,
+        EventScope.THIS_FRAME
       );
     });
   }
@@ -195,7 +199,7 @@ export class ST {
             config,
           },
         },
-        EventScope.THIS_FRAME,
+        EventScope.THIS_FRAME
       );
     });
   }
@@ -226,7 +230,7 @@ export class ST {
             config: this.config,
           },
         },
-        EventScope.THIS_FRAME,
+        EventScope.THIS_FRAME
       );
     });
   }
@@ -257,7 +261,7 @@ export class ST {
             config: this.config,
           },
         },
-        EventScope.THIS_FRAME,
+        EventScope.THIS_FRAME
       );
     });
   }
@@ -286,36 +290,17 @@ export class ST {
           type: PUBLIC_EVENTS.VISA_CHECKOUT_INIT,
           data: undefined,
         },
-        EventScope.THIS_FRAME,
+        EventScope.THIS_FRAME
       );
     });
   }
 
-  ClickToPay(clickToPayConfig: IClickToPayConfig) {
-    this.messageBus.publish<ISetPartialConfig<IClickToPayConfig>>(
-      {
-        type: PUBLIC_EVENTS.PARTIAL_CONFIG_SET,
-        data: {
-          name: ClickToPayPaymentMethodName,
-          config: clickToPayConfig,
-        },
-      },
-      EventScope.ALL_FRAMES,
+  ClickToPay(clickToPayConfig: IClickToPayConfig): Promise<IClickToPayAdapter<IClickToPayAdapterInitParams, any> | HPPClickToPayAdapter> {
+    return firstValueFrom(
+      this.initControlFrame$().pipe(
+        mapTo(this.clickToPayAdapterFactory.create(clickToPayConfig.adapter))
+      )
     );
-
-    this.initControlFrame$().subscribe(() => {
-      this.messageBus.publish<IInitPaymentMethod<IClickToPayConfig>>(
-        {
-          type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
-          data: {
-            name: ClickToPayPaymentMethodName,
-            config: clickToPayConfig,
-          },
-        },
-        EventScope.THIS_FRAME,
-      );
-    });
-
   }
 
   Cybertonica(): Promise<string | null> {
@@ -346,7 +331,7 @@ export class ST {
       {
         type: MessageBus.EVENTS_PUBLIC.DESTROY,
       },
-      EventScope.ALL_FRAMES,
+      EventScope.ALL_FRAMES
     );
 
     this.destroy$.next();
@@ -400,7 +385,7 @@ export class ST {
     this.messageBus.publish(
       {
         type: MessageBus.EVENTS_PUBLIC.THREED_CANCEL,
-      }, EventScope.ALL_FRAMES,
+      }, EventScope.ALL_FRAMES
     );
   }
 
@@ -436,7 +421,7 @@ export class ST {
         this.merchantFields.init();
       }),
       shareReplay(1),
-      takeUntil(this.destroy$),
+      takeUntil(this.destroy$)
     );
 
     return this.controlFrameLoader$;
@@ -455,7 +440,7 @@ export class ST {
         'font-size: 2em; font-weight: bold',
         'font-size: 2em; font-weight: 1000; color: #e71b5a',
         'font-size: 2em; font-weight: bold',
-        'font-size: 2em; font-weight: regular; color: #e71b5a',
+        'font-size: 2em; font-weight: regular; color: #e71b5a'
       );
     }
   }

@@ -1,4 +1,5 @@
+import { ClickToPayAdapterName } from '../adapter/ClickToPayAdapterName';
+
 export interface IClickToPayConfig {
-  buttonPlacement?: string;
-  placement?: string;
+  adapter: ClickToPayAdapterName;
 }

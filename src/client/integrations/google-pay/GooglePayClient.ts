@@ -34,7 +34,7 @@ export class GooglePayClient {
     private jwtDecoder: JwtDecoder,
     private messageBus: IMessageBus,
     private googlePaySdkProvider: IGooglePaySdkProvider,
-    private sentryService: SentryService
+    private sentryService: SentryService,
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }

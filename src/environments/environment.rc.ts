@@ -8,9 +8,6 @@ export const environment = {
     CONFIG: {
       logging: { level: 'off' },
     },
-    CLICK_TO_PAY: {
-      BUTTON_URL: 'https://sandbox-assets.secure.checkout.visa.com/wallet-services-web/xo/button.png?size=302&color=dark&animation=true&legacy=false&svg=true&orderedCardBrands=VISA',
-    },
     MOCK: {
       AUTHENTICATE_CARD_URL: `${MOCK_GATEWAY_URL}/cardinalAuthenticateCard`,
     },

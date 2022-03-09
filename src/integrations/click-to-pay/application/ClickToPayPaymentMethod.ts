@@ -29,7 +29,7 @@ export class ClickToPayPaymentMethod implements IPaymentMethod<IClickToPayConfig
     this.requestProcessingService = this.requestProcessingInitializer.initialize();
 
     const clientInitEvent: IMessageBusEvent<IClickToPayConfig> = {
-      type: PUBLIC_EVENTS.CLICK_TO_PAY_INIT_CLIENT,
+      type: PUBLIC_EVENTS.CLICK_TO_PAY_INIT,
       data: config,
     };
 
