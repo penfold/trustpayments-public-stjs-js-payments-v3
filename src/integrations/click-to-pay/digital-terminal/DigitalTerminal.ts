@@ -69,7 +69,6 @@ export class DigitalTerminal {
 
   checkout(data: IInitialCheckoutData): Observable<ICheckoutResponse> {
     return this.checkoutDataTransformer.transform(data, this.srciTransactionId, this.srcProfiles).pipe(
-      tap(console.log),
       switchMap(({ checkoutData, srcName }) => this.srcAggregate.checkout(srcName, checkoutData))
     );
   }

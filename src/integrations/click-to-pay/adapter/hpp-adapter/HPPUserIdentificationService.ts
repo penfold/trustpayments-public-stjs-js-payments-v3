@@ -87,7 +87,6 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
               switchMap(validationResponse => this.askForCode(validationResponse, codeSendTrigger)),
               switchMap(code => srcAggregate.completeIdentityValidation(srcName, code)
                 .pipe(
-                  tap(console.log),
                   tap(() => this.hppCTPUserPromptService.hide()),
                   catchError(error => this.handleInvalidOTPCode(error))
                 )
