@@ -8,6 +8,8 @@ import SecureTrading, { ST } from './ST';
 
 describe('ST', () => {
   let stInstance: ST;
+  const messageBusMock =  new SimpleMessageBus();
+
   beforeEach(() => {
     document.body.innerHTML =
       '<form id="st-form" class="example-form">' +
@@ -28,10 +30,9 @@ describe('ST', () => {
       '<div id="st-apple-pay" class="example-form__group"></div></div><div id="st-animated-card" class="st-animated-card-wrapper">' +
       '</div></form>';
     stInstance = SecureTrading(config);
-    (stInstance as any).displayLiveStatus = jest.fn();
 
-    (stInstance as any).messageBus = new SimpleMessageBus();
-    (stInstance as any).messageBus.publish = jest.fn();
+    (stInstance as any).displayLiveStatus = jest.fn();
+    (stInstance as any).messageBus = messageBusMock;
   });
 
   describe('Components()', () => {
@@ -71,11 +72,12 @@ describe('ST', () => {
 
   describe('updateJWT()', () => {
     beforeEach(() => {
+      jest.spyOn(messageBusMock, 'publish');
       stInstance.updateJWT('somenewjwtvalue');
     });
 
     it('should send UPDATE_JWT event to message bus', () => {
-      expect((stInstance as any).messageBus.publish).toHaveBeenCalledWith({
+      expect(messageBusMock.publish).toHaveBeenCalledWith({
         type: PUBLIC_EVENTS.UPDATE_JWT,
         data: { newJwt: 'somenewjwtvalue' },
       });
@@ -90,11 +92,12 @@ describe('ST', () => {
 
   describe('destroy()', () => {
     beforeEach(() => {
+      jest.spyOn(messageBusMock, 'publish');
       stInstance.destroy();
     });
 
     it(`should send ${PUBLIC_EVENTS.DESTROY} event on MessageBus`, () => {
-      expect((stInstance as any).messageBus.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.DESTROY }, EventScope.ALL_FRAMES);
+      expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.DESTROY }, EventScope.ALL_FRAMES);
     });
 
   });
@@ -102,11 +105,12 @@ describe('ST', () => {
   describe('cancelThreeDProcess()', () => {
     beforeEach(() => {
       jest.clearAllMocks();
+      jest.spyOn(messageBusMock, 'publish');
       stInstance.cancelThreeDProcess();
     });
 
     it(`should send ${PUBLIC_EVENTS.THREED_CANCEL} event on MessageBus`, () => {
-      expect((stInstance as any).messageBus.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.THREED_CANCEL }, EventScope.ALL_FRAMES);
+      expect(messageBusMock.publish).toHaveBeenCalledWith({ type: PUBLIC_EVENTS.THREED_CANCEL }, EventScope.ALL_FRAMES);
     });
   });
 });
