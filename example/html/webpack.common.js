@@ -18,7 +18,8 @@ module.exports = {
     inlineConfig: ['./pages/index/inline-config.ts'],
     counter: ['./pages/index/counter.ts'],
     predefinedCallbacks: ['./pages/index/predefined-callbacks.ts'],
-    visa: ['./pages/visa/visa.ts'],
+    ctpVisa: ['./pages/ctp/visa/visa.ts'],
+    ctpMastercard: ['./pages/ctp/mastercard/mastercard.ts'],
   },
   output: {
     filename: '[name].js',
@@ -60,8 +61,14 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       filename: 'visa.html',
-      template: './pages/visa/visa.html',
-      chunks: ['visa'],
+      template: './pages/ctp/visa/visa.html',
+      chunks: ['ctpVisa'],
+      publicPath: './',
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'mastercard.html',
+      template: './pages/ctp/mastercard/mastercard.html',
+      chunks: ['ctpMastercard'],
       publicPath: './',
     }),
     new CopyPlugin({

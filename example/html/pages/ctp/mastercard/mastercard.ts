@@ -1,13 +1,12 @@
-import { uuid } from './uuid';
-import { encode } from './encode';
+import { uuid } from '../uuid';
+import { encode } from './mastercard-encode';
 
-const INITIATOR_ID = 'GSTIDU1J8I2NQRWAU7EL21puifGrG2BzgnL9XfBjMzwo9wmtM';
-const DPA_ID = 'TrustPayments-test-merchant';
+const INITIATOR_ID = 'f621a412-9acc-4186-9c60-84f272090b60';
+const DPA_ID = 'TestMerchant';
 
 window.addEventListener('load', async () => {
   // @ts-ignore
-  const vSrcAdapter = window.vAdapters.VisaSRCI;
-  const vSrc = new vSrcAdapter();
+  const vSrc = window.SRCSDK_MASTERCARD;
   const srciTransactionId = uuid();
 
   async function init() {
@@ -16,6 +15,7 @@ window.addEventListener('load', async () => {
       srcInitiatorId: INITIATOR_ID,
       srciDpaId: DPA_ID,
       dpaTransactionOptions: {
+        dpaLocale: 'en_US',
         consumerNameRequested: false,
         consumerEmailAddressRequested: false,
         consumerPhoneNumberRequested: false,
@@ -41,9 +41,16 @@ window.addEventListener('load', async () => {
       return Promise.resolve(null);
     }
 
-    return vSrc.identityLookup({
+    console.log({
       identityValue: email,
-      type: 'EMAIL',
+      identityType: 'EMAIL_ADDRESS',
+    });
+
+    return vSrc.identityLookup({
+      consumerIdentity: {
+        identityValue: email,
+        identityType: 'EMAIL_ADDRESS',
+      },
     });
   }
 
@@ -83,13 +90,11 @@ window.addEventListener('load', async () => {
 
   function collectCardDetails() {
     return {
-      card: {
-        primaryAccountNumber: prompt('PAN', '4111111111111111'),
-        panExpirationMonth: prompt('Expiry month', '01'),
-        panExpirationYear: prompt('Expiry year', '2023'),
-        cardSecurityCode: prompt('Security code', '123'),
-        cardholderFullName: prompt('Cardholder name', 'John Smith'),
-      },
+      primaryAccountNumber: prompt('PAN', '5200000000001005'),
+      panExpirationMonth: prompt('Expiry month', '01'),
+      panExpirationYear: prompt('Expiry year', '2024'),
+      cardSecurityCode: prompt('Security code', '123'),
+      cardholderFullName: prompt('Cardholder name', 'John Smith'),
     }
   }
 
