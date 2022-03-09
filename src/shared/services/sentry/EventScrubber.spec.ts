@@ -8,6 +8,7 @@ import { IStore } from '../../../application/core/store/IStore';
 import { IApplicationFrameState } from '../../../application/core/store/state/IApplicationFrameState';
 import { Store } from '../../../application/core/store/store/Store';
 import { CONTROL_FRAME_IFRAME, MERCHANT_PARENT_FRAME } from '../../../application/core/models/constants/Selectors';
+import { GatewayError } from '../../../application/core/services/st-codec/GatewayError';
 import { EventScrubber } from './EventScrubber';
 import { JwtMasker } from './JwtMasker';
 import { ErrorTag } from './ErrorTag';
@@ -34,7 +35,7 @@ describe('EventScrubber', () => {
     eventScrubber = new EventScrubber(instance(jwtMaskerMock), instance(storeMock));
   });
 
-  it('masks the jtw in the config-provider in extras', () => {
+  it('masks the jwt in the config-provider in extras', () => {
     const event: Event = {
       extra: {
         config: {
@@ -93,6 +94,16 @@ describe('EventScrubber', () => {
     };
 
     expect(eventScrubber.scrub(event, hint).extra).toMatchObject({ errorData, paymentMethodName });
+  });
+
+  it.skip('masks maskedpan field in gateway response', () => {
+    const event: Event = { tags: {}, extra: { config: { livestatus: 1 } } };
+    const response = { maskedpan: '***' };
+    const hint: EventHint = {
+      originalException: new GatewayError('GatewayError', { maskedpan: '4100 **** **** 2135' }),
+    };
+
+    expect(eventScrubber.scrub(event, hint).extra).toMatchObject(response);
   });
 
   it('adds extra information to event from FrameCommunicationError', () => {

@@ -68,6 +68,7 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
     }
 
     let cardType = '';
+    let threedstransactionid = '';
     const threeDSecureProcessingScreenTimer = timer(ThreeDSecureVerificationService.THREEDSECURE_PROCESSING_SCREEN_HIDE_DELAY);
     const hideProcessingScreenQueryEvent: IMessageBusEvent<undefined> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_HIDE,
@@ -91,6 +92,7 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
     return this.gatewayClient.threedLookup(lookupRequest).pipe(
       switchMap((response: IThreeDLookupResponse) => {
         cardType = response.paymenttypedescription;
+        threedstransactionid = response.threedstransactionid;
 
         const queryEvent: IMessageBusEvent<string> = {
           type: PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_SHOW,
@@ -106,7 +108,7 @@ export class ThreeDSecureVerificationService implements IThreeDVerificationServi
         response.threednotificationurl,
         response.threedstransactionid,
       )),
-      switchMap(() => this.browserDataProvider.getBrowserData$()),
+      switchMap(() => this.browserDataProvider.getBrowserData$(threedstransactionid)),
       map((browserData: IBrowserData) => new ThreeDQueryRequest(card, merchantData, browserData)),
       switchMap((requestData: ThreeDQueryRequest) => this.gatewayClient.threedQuery(requestData)),
       switchMap((response: IThreeDQueryResponse) => {

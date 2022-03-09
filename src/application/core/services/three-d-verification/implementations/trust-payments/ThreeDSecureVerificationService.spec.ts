@@ -182,7 +182,7 @@ describe('ThreeDSecureVerificationService', () => {
         description: '',
         transactionId: threedLookupResponse.threedstransactionid,
       }));
-      when(browserDataProvider.getBrowserData$()).thenReturn(of(browserDataMock));
+      when(browserDataProvider.getBrowserData$(threedLookupResponse.threedstransactionid)).thenReturn(of(browserDataMock));
       when(challengeService.doChallenge$(threeDQueryResponseMock, threedLookupResponse.paymenttypedescription as CardType)).thenReturn(of(updatedThreeDQueryResponseMock));
       when(interFrameCommunicatorMock.query(deepEqual(processingScreenShowEventMock), MERCHANT_PARENT_FRAME)).thenResolve(void 0);
       when(interFrameCommunicatorMock.query(deepEqual(processingScreenHideEventMock), MERCHANT_PARENT_FRAME)).thenResolve(void 0);

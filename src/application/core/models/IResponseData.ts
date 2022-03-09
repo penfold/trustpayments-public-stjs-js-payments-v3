@@ -4,19 +4,20 @@ import { IRequestTypeResponse } from '../services/st-codec/interfaces/IRequestTy
 import { CustomerOutput } from './constants/CustomerOutput';
 
 export interface IResponseData extends IRequestTypeResponse {
-  errorcode?: string;
-  errormessage?: string;
-  customeroutput?: CustomerOutput;
-  requesttypedescription?: string;
-  threedresponse?: string;
-  pares?: string;
-  md?: string;
-  cachetoken?: string;
   billingContact?: IApplePayShippingBillingContact;
-  shippingContact?: IApplePayShippingContact;
-  jwt?: string;
-  walletsource?: 'APPLEPAY' | 'VISACHECKOUT';
+  cachetoken?: string;
+  customeroutput?: CustomerOutput;
+  errorcode?: string;
   errordata?: string[];
-  merchantUrl?: string;
+  errormessage?: string;
   isCancelled?: boolean;
+  jwt?: string;
+  md?: string;
+  merchantUrl?: string;
+  pares?: string;
+  requestreference?: string;
+  requesttypedescription?: string;
+  shippingContact?: IApplePayShippingContact;
+  threedresponse?: string;
+  walletsource?: 'APPLEPAY' | 'VISACHECKOUT';
 }

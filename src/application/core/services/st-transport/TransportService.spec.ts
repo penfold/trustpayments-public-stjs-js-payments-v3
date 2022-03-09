@@ -13,12 +13,22 @@ import { PUBLIC_EVENTS } from '../../models/constants/EventTypes';
 import { RequestTimeoutError } from '../../../../shared/services/sentry/RequestTimeoutError';
 import { SentryService } from '../../../../shared/services/sentry/SentryService';
 import { GatewayError } from '../st-codec/GatewayError';
+import { JwtDecoder } from '../../../../shared/services/jwt-decoder/JwtDecoder';
+import { EventScope } from '../../models/constants/EventScope';
 import { TransportService } from './TransportService';
 import { IHttpOptionsProvider } from './http-options-provider/IHttpOptionsProvider';
 
 describe('TransportService', () => {
   const request: IStRequest = instance(mock<IStRequest>());
-  const requestObject: IRequestObject = instance(mock<IRequestObject>());
+  const requestObject: IRequestObject = {
+    acceptcustomeroutput: 'test',
+    jwt: 'test',
+    request: [{
+      requestid: 'test-123',
+    }],
+    version: 'test',
+    versioninfo: 'test',
+  };
   const httpOptions: IHttpClientConfig = instance(mock<IHttpClientConfig>());
   const gatewayUrl = 'https://gateway.trustpayments.net';
   const response: IHttpClientResponse<IJwtResponse> = {
@@ -39,6 +49,7 @@ describe('TransportService', () => {
   let messageBusMock: IMessageBus;
   let transportService: TransportService;
   let sentryServiceMock: SentryService;
+  let jwtDecoderMock: JwtDecoder;
 
   beforeEach(() => {
     requestEncoderMock = mock(RequestEncoderService);
@@ -48,6 +59,7 @@ describe('TransportService', () => {
     httpOptionsProviderMock = mock<IHttpOptionsProvider>();
     messageBusMock = mock<IMessageBus>();
     sentryServiceMock = mock(SentryService);
+    jwtDecoderMock = mock(JwtDecoder);
     transportService = new TransportService(
       instance(requestEncoderMock),
       instance(responseDecoderMock),
@@ -56,6 +68,7 @@ describe('TransportService', () => {
       instance(httpOptionsProviderMock),
       instance(messageBusMock),
       instance(sentryServiceMock),
+      instance(jwtDecoderMock),
     );
 
     when(configProviderMock.getConfig$()).thenReturn(
@@ -69,12 +82,18 @@ describe('TransportService', () => {
     when(responseDecoderMock.decode(response)).thenReturn({
       responseJwt: 'responsejwt',
       updatedMerchantJwt: 'merchantjwt',
+      requestreference: 'test',
       customerOutput: {
         errorcode: '0',
         customeroutput: 'SUCCESS',
         errormessage: 'SUCCESS',
         requesttypedescription: 'FOOBAR',
         transactionstartedtimestamp: '',
+      },
+    });
+    when(jwtDecoderMock.decode(anything())).thenReturn({
+      payload: {
+        requesttypedescriptions: ['AUTH'],
       },
     });
   });
@@ -95,6 +114,25 @@ describe('TransportService', () => {
       });
     });
 
+    it('adds sentry breadcrumbs on request and response', done => {
+      transportService.sendRequest(request).subscribe(() => {
+
+        verify(messageBusMock.publish(deepEqual({
+          type: PUBLIC_EVENTS.GATEWAY_REQUEST_SEND,
+          data: {
+            customMessage: 'requestid: test-123, requesttypedescriptions: A*UTH',
+          },
+        }), EventScope.ALL_FRAMES)).once();
+        verify(messageBusMock.publish(deepEqual({
+          type: PUBLIC_EVENTS.GATEWAY_RESPONSE_RECEIVED,
+          data: {
+            customMessage: 'errorcode: 0, errormessage: SUCCESS, requestreference: test',
+          },
+        }), EventScope.ALL_FRAMES)).once();
+        done();
+      });
+    });
+
     it('sends request data to another url passed as argument', done => {
       const customUrl = 'https://customgateway';
 
@@ -110,6 +148,7 @@ describe('TransportService', () => {
       when(responseDecoderMock.decode(response)).thenReturn({
         responseJwt: 'responsejwt',
         updatedMerchantJwt: 'merchantjwt',
+        requestreference: 'test',
         customerOutput: {
           errorcode: '1234',
           customeroutput: 'ERROR',
@@ -200,6 +239,7 @@ describe('TransportService', () => {
       const errorResponse = {
         responseJwt: 'responsejwt',
         updatedMerchantJwt: 'merchantjwt',
+        requestreference: 'test',
         customerOutput: {
           errorcode: '1234',
           customeroutput: 'ERROR',

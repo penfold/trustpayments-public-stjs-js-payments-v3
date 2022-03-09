@@ -94,7 +94,7 @@ export class PaymentController {
                 PaymentError.duringProcess('Running payment method failed', name, error)
               );
               this.messageBus.publish({
-                type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_FAILED,
+                type: PUBLIC_EVENTS.PAYMENT_METHOD_FAILED,
                 data: { name },
               }, EventScope.EXPOSED);
 

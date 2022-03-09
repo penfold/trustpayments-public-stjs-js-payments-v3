@@ -55,6 +55,8 @@ def step_impl(context, e2e_config):
 
 @step('JS library configured by inline configAPMs (?P<apm_config>.+)')
 def step_impl(context, apm_config):
+    if 'IE' in CONFIGURATION.BROWSER and 'scrn_a2a' in context.scenario.tags[0]:
+        apm_config = 'ATA_CUSTOMIZED_BTN_CONFIG_APM_IE'
     e2e_config_apm_dict = get_apm_config_from_json(ConfigApm[apm_config].value)
     context.INLINE_E2E_CONFIG_APM = create_inline_config_apm(e2e_config_apm_dict)
 
@@ -126,14 +128,14 @@ def _browser_device(context):
         name = context.browser
     name = name.upper()
 
-    assert_that(name).is_in('IE', 'CHROME', 'SAFARI', 'SAMSUNG GALAXY S20', 'IPHONE 12 MINI')
+    assert_that(name).is_in('IE', 'CHROME', 'SAFARI', 'SAMSUNG GALAXY S21', 'IPHONE 13')
 
     return {
         'IE': name,
         'CHROME': name,
         'SAFARI': name,
-        'SAMSUNG GALAXY S20': 'SGS20',
-        'IPHONE 12 MINI': 'IP12MINI',
+        'SAMSUNG GALAXY S21': 'SGS21',
+        'IPHONE 13': 'IP13',
     }[name]
 
 
@@ -141,8 +143,8 @@ def _browser_device(context):
 def step_impl(context, url: str):
     payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
     with soft_assertions():
-        payment_page.validate_base_url(url)
         context.waits.wait_for_javascript()
+        payment_page.validate_base_url(url)
         actual_url = payment_page.get_page_url()
         parsed_url = urlparse(actual_url)
         parsed_query_from_url = parse_qs(parsed_url.query)

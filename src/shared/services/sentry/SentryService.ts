@@ -8,9 +8,10 @@ import { JwtProvider } from '../jwt-provider/JwtProvider';
 import { SentryContext } from './SentryContext';
 import { EventScrubber } from './EventScrubber';
 import { Sentry } from './Sentry';
-import { ExceptionsToSkip } from './ExceptionsToSkip';
 import { RequestTimeoutError } from './RequestTimeoutError';
 import { PayloadSanitizer } from './PayloadSanitizer';
+import { SENTRY_INIT_BROWSER_OPTIONS } from './constants/SentryBrowserOptions';
+import { SentryBreadcrumbsCategories } from './SentryBreadcrumbsCategories';
 
 @Service()
 export class SentryService {
@@ -55,11 +56,8 @@ export class SentryService {
 
     const options: BrowserOptions = {
       dsn,
+      ...SENTRY_INIT_BROWSER_OPTIONS,
       release: this.sentryContext.getReleaseVersion(),
-      ignoreErrors: ExceptionsToSkip,
-      sampleRate: environment.SENTRY.SAMPLE_RATE,
-      attachStacktrace: true,
-      normalizeDepth: 3,
       beforeSend: (event: Event, hint?: EventHint) => this.beforeSend(event, hint),
       beforeBreadcrumb: (breadcrumb: Breadcrumb, hint?: BreadcrumbHint): Breadcrumb | null => this.beforeBreadcrumb(breadcrumb, hint),
     };
@@ -87,6 +85,10 @@ export class SentryService {
           },
         })
       );
+  }
+
+  addBreadcrumb(category: SentryBreadcrumbsCategories, message: string): void {
+    this.sentry.addBreadcrumb({ category, message });
   }
 
   private beforeBreadcrumb(breadcrumb: Breadcrumb, hint?: BreadcrumbHint): Breadcrumb | null {

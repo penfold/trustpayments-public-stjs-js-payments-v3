@@ -3,6 +3,9 @@ from enum import Enum
 
 class ConfigApm(Enum):
     BASIC_CONFIG_APM = 'e2eBasicConfigApm.json'
+    ATA_CONFIG_APM = 'e2eATAConfigApm.json'
+    ATA_CUSTOMIZED_BTN_CONFIG_APM = 'e2eATACustomizedBtnConfigApm.json'
+    ATA_CUSTOMIZED_BTN_CONFIG_APM_IE = 'e2eATACustomizedBtnConfigApmIE.json'
     BANCONTACT_CONFIG_APM = 'e2eBANCONTACTConfigApm.json'
     BITPAY_CONFIG_APM = 'e2eBITPAYConfigApm.json'
     GIROPAY_CONFIG_APM = 'e2eGIROPAYConfigApm.json'

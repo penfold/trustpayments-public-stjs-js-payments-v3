@@ -97,11 +97,11 @@ Feature: E2E for tokenization
       | baseamount           | 2000                                    |
       | currencyiso3a        | GBP                                     |
       | errorcode            | 0                                       |
-      | status               | A                                       |
+      | status               | Y                                       |
       | transactionreference | should not be none                      |
       | jwt                  | should not be none                      |
       | enrolled             | Y                                       |
-      | eci                  | 06                                      |
+      | eci                  | 05                                      |
 
 
   Scenario: Updating payment references for tokenization - fully authentication in second payment

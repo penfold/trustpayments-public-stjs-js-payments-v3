@@ -88,7 +88,7 @@ e2e-apms-tests-review:
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
-  parallel: 19
+  parallel: 20
 
 e2e-apms-tests-release:
   extends:
@@ -98,7 +98,7 @@ e2e-apms-tests-release:
     - .tags-js-docker # @todo: STJS-2249 rollback to public runners
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
-  parallel: 19
+  parallel: 20
 
 # Visa Click to Pay E2E Tests Headless
 e2e-vc2p-tests-review:
@@ -171,7 +171,7 @@ e2e-smoke-tests-review:
     - .rules-when-review-manual-allow-failure
   variables:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_additional_coverage'
-  parallel: 18
+  parallel: 19
 
 ################################### Component Tests ###################################
 .component-app-html-mock:

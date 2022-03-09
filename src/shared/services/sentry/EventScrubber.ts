@@ -30,6 +30,10 @@ export class EventScrubber {
     event.extra.initialConfig = this.store.getState().initialConfig;
 
     if (originalException instanceof GatewayError) {
+      return null; // @todo STJS-3014
+    }
+
+    if (originalException instanceof GatewayError) {
       event.tags.tag = ErrorTag.GATEWAY;
       event.extra.response = originalException.response;
 
@@ -51,6 +55,10 @@ export class EventScrubber {
           event.extra.response = originalException.response;
           event.tags.tag = ErrorTag.MISCONFIGURATION;
         }
+      }
+
+      if ((event.extra.response as IResponseData)?.maskedpan) {
+        (event.extra.response as IResponseData).maskedpan = '***';
       }
     }
 

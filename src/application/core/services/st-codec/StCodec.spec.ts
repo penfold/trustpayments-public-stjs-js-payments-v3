@@ -412,7 +412,7 @@ describe('StCodec class', () => {
             return new Promise(resolve => resolve(fullResponse));
           },
         })
-      ).resolves.toEqual({ jwt: fullResponse.jwt, response: { verified: 'data' } });
+      ).resolves.toEqual({ jwt: fullResponse.jwt, requestreference: 'W33-0rm0gcyx', response: { verified: 'data' } });
       const expectedResult = (JwtDecode(fullResponse.jwt) as unknown as IDecodedJwt).payload;
       expect(StCodec.verifyResponseObject).toHaveBeenCalledWith(expectedResult, fullResponse.jwt);
     });

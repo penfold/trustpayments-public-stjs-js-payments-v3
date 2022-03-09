@@ -207,7 +207,7 @@ export class StCodec {
 
     if (responseContent.walletsource && responseContent.walletsource === 'APPLEPAY') {
       StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
-      return new GatewayError(errormessage);
+      return new GatewayError(errormessage, responseContent);
     }
 
     if (responseContent.errordata) {
@@ -216,7 +216,7 @@ export class StCodec {
 
     validation.blockForm(FormState.AVAILABLE);
     StCodec.propagateStatus(errormessageTranslated, responseContent, jwtResponse);
-    throw new GatewayError(errormessage);
+    throw new GatewayError(errormessage, responseContent);
   }
 
   private static decodeResponseJwt(jwt: string, reject: (error: Error) => void) {
@@ -289,6 +289,7 @@ export class StCodec {
 
             resolve({
               jwt: responseData.jwt,
+              requestreference: decoded.payload.requestreference,
               response: verifiedResponse,
             });
           } catch (error) {
