@@ -29,7 +29,9 @@ describe('ST', () => {
       '</div></form>';
     stInstance = SecureTrading(config);
     (stInstance as any).displayLiveStatus = jest.fn();
+
     (stInstance as any).messageBus = new SimpleMessageBus();
+    (stInstance as any).messageBus.publish = jest.fn();
   });
 
   describe('Components()', () => {
@@ -69,7 +71,6 @@ describe('ST', () => {
 
   describe('updateJWT()', () => {
     beforeEach(() => {
-      jest.spyOn((stInstance as any).messageBus, 'publish');
       stInstance.updateJWT('somenewjwtvalue');
     });
 
@@ -89,7 +90,6 @@ describe('ST', () => {
 
   describe('destroy()', () => {
     beforeEach(() => {
-      jest.spyOn((stInstance as any).messageBus, 'publish');
       stInstance.destroy();
     });
 
@@ -102,7 +102,6 @@ describe('ST', () => {
   describe('cancelThreeDProcess()', () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      jest.spyOn((stInstance as any).messageBus, 'publish');
       stInstance.cancelThreeDProcess();
     });
 
