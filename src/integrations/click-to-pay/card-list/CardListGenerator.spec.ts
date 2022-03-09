@@ -1,11 +1,17 @@
+import { instance, mock } from 'ts-mockito';
+import { SrcNameFinder } from '../digital-terminal/SrcNameFinder';
 import { CardListGenerator } from './CardListGenerator';
 import { cardListMock } from './card-list-mock';
 
 describe('CardListGenerator', () => {
   let cardListGenerator: CardListGenerator;
+  let srcNameFinderMock: SrcNameFinder;
 
   beforeEach(() => {
-    cardListGenerator = new CardListGenerator();
+    srcNameFinderMock = mock(SrcNameFinder);
+    cardListGenerator = new CardListGenerator(
+      instance(srcNameFinderMock)
+    );
   });
 
   it('generates html for single checked active card', () => {

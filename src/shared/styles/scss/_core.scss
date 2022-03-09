@@ -238,6 +238,10 @@ input:-webkit-autofill.error-field {
       width: 100%;
     }
 
+    .st-add-card__pan-validation {
+      color: red;
+    }
+
     input[name='cvv'] {
       width: 30%;
     }

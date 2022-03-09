@@ -1,21 +1,28 @@
 import { Service } from 'typedi';
+import { BehaviorSubject } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { ICorrelatedMaskedCard } from '../digital-terminal/interfaces/ICorrelatedMaskedCard';
 // @ts-ignore
 import logo from '../../../application/core/services/icon/images/click-to-pay.svg';
+import { SrcName } from '../digital-terminal/SrcName';
+import { SrcNameFinder } from '../digital-terminal/SrcNameFinder';
 
-const iconMap: Map<string, string> = new Map(
-  [
-    ['visa', require('../../../application/core/services/icon/images/visa.svg')],
-  ],
-);
+const PAN_VALIDATION_STATUS_FAILED = 'Selected card is not currently supported for Click to Pay';
 
 @Service()
 export class CardListGenerator {
-  constructor(
-  ) {
-  }
+  private panValidationStatus: BehaviorSubject<boolean> = new BehaviorSubject(true);
 
-  displayCards(parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
+  private iconMap: Map<string, string> = new Map([
+    ['visa', require('../../../application/core/services/icon/images/visa.svg')],
+  ]);
+  private acceptedCards: SrcName[] = [SrcName.VISA];
+  private formId: string;
+
+  constructor(private srcNameFinder: SrcNameFinder) {}
+
+  displayCards(formId: string, parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
+    this.formId = formId;
     const container: HTMLElement = document.getElementById(parentContainer);
     container.classList.add('st-cards');
     cardList.forEach((card, index) => {
@@ -36,6 +43,7 @@ export class CardListGenerator {
     addCardRow.innerHTML = this.addCardContent();
     container.appendChild(addCardRow);
 
+    this.addValidation();
     this.fillUpExpiryMonth();
     this.fillUpExpiryYear();
     this.addEventHandlers();
@@ -54,6 +62,7 @@ export class CardListGenerator {
       <div class="st-add-card__details">
         Card number <span class="st-add-card__details-asterix"></span>
         <input id="pan" type="text" name="pan">
+        <div id="pan-validation-status" class="st-add-card__pan-validation"></div>
       </div>
       <div class="st-add-card__details">
         <span class="st-add-card__details-element">
@@ -72,13 +81,39 @@ export class CardListGenerator {
   }
 
   private addEventHandlers(): void {
+    document.getElementById('pan').addEventListener('change', event => this.handleChangedPan(event));
     document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
+  }
+
+  private addValidation(): void {
+    this.panValidationStatus
+      .pipe(distinctUntilChanged())
+      .subscribe(result =>
+        result
+          ? this.hideValidationStatus('pan-validation-status')
+          : this.showValidationStatus('pan-validation-status', PAN_VALIDATION_STATUS_FAILED)
+      );
+    document.getElementById(this.formId).addEventListener('submit', (event) => {
+      if (!this.panValidationStatus.value) {
+        event.preventDefault();
+      }
+    });
   }
 
   private cardContent(card: ICorrelatedMaskedCard, checked = false): string {
     const check = checked ? ' checked' : '';
     return `
-      <span class="st-card__checkbox">${card.isActive ? '<label><input id="radio' + card.srcDigitalCardId + '" name="srcDigitalCardId" type="radio" value="' + card.srcDigitalCardId + '"' + check + '><span class="radio"></span></label>' : ''}</span>
+      <span class="st-card__checkbox">${
+        card.isActive
+          ? '<label><input id="radio' +
+            card.srcDigitalCardId +
+            '" name="srcDigitalCardId" type="radio" value="' +
+            card.srcDigitalCardId +
+            '"' +
+            check +
+            '><span class="radio"></span></label>'
+          : ''
+      }</span>
       <span class="st-card__image">
         <img src="${card.digitalCardData.artUri}" alt="" style="width: 60px; height: 40px">
       </span>
@@ -90,7 +125,7 @@ export class CardListGenerator {
         <img src="${logo}" alt="">
       </span>
       <span class="st-card__type">
-        <img src="${iconMap.get(card.srcName.toLowerCase())}" alt="">
+        <img src="${this.iconMap.get(card.srcName.toLowerCase())}" alt="">
       </span>
     `;
   }
@@ -147,11 +182,24 @@ export class CardListGenerator {
     this.clearSelection();
   }
 
+  private handleChangedPan(event: Event): void {
+    this.srcNameFinder
+      .findSrcNameByPan((event.target as HTMLInputElement).value)
+      .subscribe((result: SrcName | null) => {
+        this.panValidationStatus.next(this.acceptedCards.indexOf(result) !== -1);
+      });
+  }
+
   private handleClick(id: string): void {
     this.closeForm();
     this.clearForm();
     this.clearSelection();
     (document.getElementById('radio' + id) as HTMLInputElement).checked = true;
+  }
+
+  private hideValidationStatus(id: string) {
+    document.getElementById(id).style.display = 'none';
+    document.getElementById(id).innerHTML = '';
   }
 
   private openForm(): void {
@@ -160,6 +208,11 @@ export class CardListGenerator {
     for (let i = 0; i < formRows.length; i++) {
       (formRows[i] as HTMLDivElement).style.display = 'block';
     }
+  }
+
+  private showValidationStatus(id: string, message: string) {
+    document.getElementById(id).style.display = 'block';
+    document.getElementById(id).innerHTML = message;
   }
 
 }
