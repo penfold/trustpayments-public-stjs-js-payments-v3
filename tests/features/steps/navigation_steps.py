@@ -52,6 +52,8 @@ def step_impl(context, example_page):
 
     if example_page is not None and 'IN_IFRAME' in example_page:
         payment_page.switch_to_example_page_parent_iframe()
+    elif 'VISA_CTP' in example_page:
+        payment_page.check_if_value_is_present_in_logs('ClickToPay', 'PAYMENT INIT COMPLETED')
 
 
 @step('User opens page WITH_UPDATE_JWT and jwt (?P<jwt_config>.+) with additional attributes')

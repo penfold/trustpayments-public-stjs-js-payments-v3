@@ -14,7 +14,7 @@ class VisaClickToPayLocators:
     security_code_input: By = (By.ID, 'st-form-security-code')
     look_up_my_cards_btn: By = (By.ID, 'st-ctp-lookup-btn')
     register_card_checkbox: By = (By.ID, 'register')
-    submit_button: By = (By.ID, 'merchant-submit-button')
+    pay_securely_btn: By = (By.ID, 'merchant-submit-button')
 
     @classmethod
     def get_billing_details_field_locator(cls, billing_field) -> By.ID:
@@ -40,20 +40,31 @@ class VisaClickToPayLocators:
     expiry_date_list_year: By = (By.ID, 'expiryDateYearId')
     security_code_modal_input: By = (By.ID, 'cvv')
     masked_card_number: By = (By.XPATH, '//div[@class=\'st-card\'][1]/span[@class=\'st-card__description\']')
+    masked_card_number_list: By = (By.XPATH, '//span[@class=\'st-card__description\']')
+
 
     @classmethod
     def get_card_locator_from_cards_list(cls, value) -> By.ID:
         return By.XPATH, f'//div[@class=\'st-card\'][{value}]'
 
     # Visa Checkout view
-    visa_click_two_pay_name_field: By = (By.ID, "firstName")
-    visa_click_two_pay_surname: By = (By.ID, "lastName")
-    visa_click_two_pay_address_line_1: By = (By.ID, "line1")
-    visa_click_two_pay_city_address: By = (By.ID, "city")
-    visa_click_two_pay_state_field: By = (By.ID, "stateProvinceCode")
-    visa_click_two_pay_postal_code: By = (By.ID, "postalCode")
-    visa_click_two_pay_phone_number_field: By = (By.ID, "phone-number-field")
-    visa_click_two_pay_phone_finish_setup_header: By = (
-    By.XPATH, '//*[@id="app"]/div/div[2]/div/div/section/main/div[2]/div[2]/div/div/section/h1')
+    @classmethod
+    def get_address_field_locator_from_visa_popup(cls, address_field) -> By.ID:
+        return By.ID, address_field
+
+    vctp_iframe: By = (By.ID, 'vcop-dcf')
+    continue_btn: By = (By.XPATH, '//button[@name=\'btnContinue\']')
+    pay_now_btn: By = (By.XPATH, '//button[@name=\'btnContinue\']')
+    remember_me_checkbox: By = (By.XPATH, '//label[@for=\'remember-me\']')
+    cancel_checkout_btn: By = (By.XPATH, '//button[@aria-label=\'Cancel and return to merchant\']')
+    card_menu_btn: By = (By.XPATH, '//div[@class=\'paylayer-card-row\']//button[contains(@id,\'menubutton\')]')
+    switch_card_btn: By = (By.XPATH, '//button[@aria-label=\'Switch card\']')
+    edit_card_btn: By = (By.XPATH, '//button[@aria-label=\'Edit Card\']')
+    add_card_btn: By = (By.XPATH, '//button[@aria-label=\'Add Card\']')
+    address_menu_btn: By = (By.XPATH, '//div[@class=\'paylayer-address-row\']//button[contains(@id,\'menubutton\')]')
+    switch_address_btn: By = (By.XPATH, '//button[@aria-label=\'Switch Delivery Address\']')
+    delete_address_btn: By = (By.XPATH, '//button[@aria-label=\'Delete Delivery Address\']')
+    add_address_btn: By = (By.XPATH, '//button[@aria-label=\'ADD DELIVERY ADDRESSs\']')
+    order_total_text: By = (By.XPATH, '//div[@class=\'paylayer-order-total\']/span')
 
 

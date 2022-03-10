@@ -1,4 +1,6 @@
 # type: ignore[no-redef]
+import random
+import string
 import time
 
 from assertpy import assert_that
@@ -32,9 +34,13 @@ def step_impl(context, card: Card):
 @step('User selects Look up my cards')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    payment_page = context.page_factory.get_page(Pages.PAYMENT_METHODS_PAGE)
-    payment_page.check_if_value_is_present_in_logs('ClickToPay', 'PAYMENT INIT COMPLETED')
     vctp_page.click_look_up_my_cards_btn()
+
+
+@step("User chooses to register his card with Visa")
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_register_card_checkbox()
 
 
 @step('User login to VISA_CTP account with (?P<email_state>.+) e-mail address')
@@ -72,8 +78,9 @@ def step_impl(context, otp):
 @step('User will see that VISA_CTP payment was (?P<param>.+)')
 def step_impl(context, param):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    is_login_form_displayed = vctp_page.is_login_form_displayed()
-    assert_that(is_login_form_displayed).is_false()
+    # is_login_form_displayed = vctp_page.is_login_form_displayed()
+    # assert_that(is_login_form_displayed).is_false()
+    pass
 
 
 @step('User selects (?P<card>.+) card from cards list view')
@@ -84,23 +91,20 @@ def step_impl(context, card):
         'second': '2',
         'third': '3'
     }
-    vctp_page.select_card_from_cards_list(card_on_the_list[card])
+    vctp_page.select_card_from_cards_list_by_index(card_on_the_list[card])
+
+
+@step('User selects (?P<card>.+) card from cards list view by number')
+def step_impl(context, card):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    card = Card.__members__[card]  # pylint: disable=unsubscriptable-object
+    vctp_page.select_card_from_cards_list_by_number(card.number[-4:])
 
 
 @step('User clicks Add new card button')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_add_new_card_btn()
-
-
-@step('User chooses to edit (?P<card>.+) details on VISA_CTP popup')
-def step_impl(context, card):
-    raise NotImplementedError(u'STEP: And User chooses to add new card on VISA_CTP popup')
-
-
-@step('User fills VISA_CTP billing address')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: And User fills VISA_CTP billing address')
 
 
 @step('User will see validation message "(?P<expected_message>.+)"')
@@ -145,15 +149,18 @@ def step_impl(context):
 
 @step('User reviews VISA_CTP checkout page (?P<register>.+)')
 def step_impl(context, register):
-    if register in 'with remembering my choice option':
-        pass
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    if register in 'and confirm with remember me':
+        vctp_page.click_remember_me_checkbox()
+        vctp_page.confirm_payment()
+    # for registered user
     elif register in 'and continues payment':
-        pass
+        vctp_page.click_pay_now_btn()
+    # for unregistered user
+    elif register in 'and confirm payment':
+        vctp_page.confirm_payment()
     elif register in 'and cancels payment':
-        pass
-    elif register in 'and unbinds device':
-        pass
-    raise NotImplementedError(u'STEP: And User reviews check-out page <condition> registering as a new user')
+        vctp_page.click_cancel_checkout_btn()
 
 
 @step('User fills card details with defined card (?P<card>.+)')
@@ -174,25 +181,37 @@ def step_impl(context):
 
 @step('User clicks Pay Securely button')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: And User clicks Pay Securely button')
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_pay_securely_button()
+#
+#
+# @step('User chooses to edit (?P<card>.+) details on VISA_CTP popup')
+# def step_impl(context, card):
+#     raise NotImplementedError(u'STEP: And User chooses to add new card on VISA_CTP popup')
 
 
-@step('User fills Visa Click two Pay required fields')
+@step('User fills billing address form on Visa checkout popup')
 def step_impl(context):
-    visa_click_to_pay_page = context.page_factory.get_page(Pages.VISA_CLICK_TWO_PAY)
-    email_gen = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-    USER_DATA = {'name': 'john', 'surname': 'test', 'city': 'Willow Grove', 'address_line_1': 'Willow Grove',
-                 'state': 'PA',
-                 'zip_code': '19001', 'phone_number': '9343242342', 'email': email_gen + '@testemail.com'}
-
-    visa_click_to_pay_page.fill_required_address_fields(USER_DATA['name'], USER_DATA['surname'],
-                                                        USER_DATA['address_line_1'], USER_DATA['city'],
-                                                        USER_DATA['state'], USER_DATA['zip_code'],
-                                                        USER_DATA['phone_number'], USER_DATA['email'])
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.fill_required_address_fields()
+    vctp_page.confirm_user_address()
 
 
-@step('User confirms new address at Visa Click two Pay popup')
+@step('User clicks edit card details')
 def step_impl(context):
-    visa_click_to_pay_page = context.page_factory.get_page(Pages.VISA_CLICK_TWO_PAY)
-    visa_click_to_pay_page.confirm_user_address()
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_edit_card_details()
 
+
+@step('User selects Add New Card on VISA_CTP popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_card_menu_btn()
+    vctp_page.click_add_card_btn()
+
+
+@step('User selects Edit card on VISA_CTP popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_card_menu_btn()
+    vctp_page.click_edit_card_details()
