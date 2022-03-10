@@ -70,7 +70,7 @@ export class HPPCheckoutDataProvider {
 
   private getNewCardData(): ICardData {
     return {
-      primaryAccountNumber: this.getFormFieldValue(HPPFormFieldName.pan),
+      primaryAccountNumber: this.normalizePan(this.getFormFieldValue(HPPFormFieldName.pan)),
       panExpirationMonth: this.getFormFieldValue(HPPFormFieldName.cardExpiryMonth),
       panExpirationYear: this.getFormFieldValue(HPPFormFieldName.cardExpiryYear),
       cardSecurityCode: this.getFormFieldValue(HPPFormFieldName.cardSecurityCode),
@@ -93,7 +93,7 @@ export class HPPCheckoutDataProvider {
 
   private getRecognizedUserNewCardData(): ICardData {
     return {
-      primaryAccountNumber: this.getFormFieldValue(NewCardFieldName.pan),
+      primaryAccountNumber: this.normalizePan(this.getFormFieldValue(NewCardFieldName.pan)),
       panExpirationMonth: this.getFormFieldValue(NewCardFieldName.expiryMonth),
       panExpirationYear: this.getFormFieldValue(NewCardFieldName.expiryYear),
       cardSecurityCode: this.getFormFieldValue(NewCardFieldName.securityCode),
@@ -129,5 +129,9 @@ export class HPPCheckoutDataProvider {
 
   private shouldClickToPayBeUsed(): boolean {
     return this.isRegisterCardEnabled() || this.isCardListVisible();
+  }
+
+  private normalizePan(originalPan: string): string {
+    return originalPan.replace(/\s/g, '');
   }
 }

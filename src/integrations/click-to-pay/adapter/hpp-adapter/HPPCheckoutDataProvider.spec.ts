@@ -44,6 +44,39 @@ describe('HPPCheckoutDataProvider()', () => {
     });
 
     describe('when card registration is enabled in form', () => {
+      const expectedCheckoutData: IInitialCheckoutData = {
+        consumer: {
+          fullName: `${testFormFieldsValues[HPPFormFieldName.billingFirstName]} ${testFormFieldsValues[HPPFormFieldName.billingLastName]}`,
+          lastName: testFormFieldsValues[HPPFormFieldName.billingLastName],
+          firstName: testFormFieldsValues[HPPFormFieldName.billingFirstName],
+          countryCode: testFormFieldsValues[HPPFormFieldName.billingCountryIso2a],
+          consumerIdentity: {
+            type: 'EMAIL',
+            identityValue: testFormFieldsValues[HPPFormFieldName.billingEmail],
+          },
+          emailAddress: testFormFieldsValues[HPPFormFieldName.billingEmail],
+        },
+        srcDigitalCardId: '',
+        newCardData: {
+          primaryAccountNumber: testFormFieldsValues[HPPFormFieldName.pan],
+          panExpirationYear: testFormFieldsValues[HPPFormFieldName.cardExpiryYear],
+          panExpirationMonth: testFormFieldsValues[HPPFormFieldName.cardExpiryMonth],
+          cardSecurityCode: testFormFieldsValues[HPPFormFieldName.cardSecurityCode],
+          cardholderFullName: `${testFormFieldsValues[HPPFormFieldName.billingFirstName]} ${testFormFieldsValues[HPPFormFieldName.billingLastName]}`,
+          cardholderFirstName: testFormFieldsValues[HPPFormFieldName.billingFirstName],
+          cardholderLastName: testFormFieldsValues[HPPFormFieldName.billingLastName],
+          billingAddress: {
+            city: testFormFieldsValues[HPPFormFieldName.billingTown],
+            countryCode: testFormFieldsValues[HPPFormFieldName.billingCountryIso2a],
+            line1: testFormFieldsValues[HPPFormFieldName.billingPremise],
+            line2: testFormFieldsValues[HPPFormFieldName.billingStreet],
+            line3: '',
+            name: '',
+            state: testFormFieldsValues[HPPFormFieldName.billingCounty],
+            zip: testFormFieldsValues[HPPFormFieldName.billingPostCode],
+          },
+        },
+      };
       beforeEach(() => {
         registerCheckbox.checked = true;
       });
@@ -56,45 +89,27 @@ describe('HPPCheckoutDataProvider()', () => {
 
       it('should return an observable with checkout data captured from form', (done) => {
         // TODO add test cases with some billing form  fields being empty
-        const expectedCheckoutData: IInitialCheckoutData = {
-          consumer: {
-            fullName: `${testFormFieldsValues[HPPFormFieldName.billingFirstName]} ${testFormFieldsValues[HPPFormFieldName.billingLastName]}`,
-            lastName: testFormFieldsValues[HPPFormFieldName.billingLastName],
-            firstName: testFormFieldsValues[HPPFormFieldName.billingFirstName],
-            countryCode: testFormFieldsValues[HPPFormFieldName.billingCountryIso2a],
-            consumerIdentity: {
-              type: 'EMAIL',
-              identityValue: testFormFieldsValues[HPPFormFieldName.billingEmail],
-            },
-            emailAddress: testFormFieldsValues[HPPFormFieldName.billingEmail],
-          },
-          srcDigitalCardId: '',
-          newCardData: {
-            primaryAccountNumber: testFormFieldsValues[HPPFormFieldName.pan],
-            panExpirationYear: testFormFieldsValues[HPPFormFieldName.cardExpiryYear],
-            panExpirationMonth: testFormFieldsValues[HPPFormFieldName.cardExpiryMonth],
-            cardSecurityCode: testFormFieldsValues[HPPFormFieldName.cardSecurityCode],
-            cardholderFullName: `${testFormFieldsValues[HPPFormFieldName.billingFirstName]} ${testFormFieldsValues[HPPFormFieldName.billingLastName]}`,
-            cardholderFirstName: testFormFieldsValues[HPPFormFieldName.billingFirstName],
-            cardholderLastName: testFormFieldsValues[HPPFormFieldName.billingLastName],
-            billingAddress: {
-              city: testFormFieldsValues[HPPFormFieldName.billingTown],
-              countryCode: testFormFieldsValues[HPPFormFieldName.billingCountryIso2a],
-              line1: testFormFieldsValues[HPPFormFieldName.billingPremise],
-              line2: testFormFieldsValues[HPPFormFieldName.billingStreet],
-              line3: '',
-              name: '',
-              state: testFormFieldsValues[HPPFormFieldName.billingCounty],
-              zip: testFormFieldsValues[HPPFormFieldName.billingPostCode],
-            },
-          },
-        };
-
         sut.getCheckoutData(testFormId).subscribe(capturedData => {
           expect(capturedData).toEqual(expectedCheckoutData);
           done();
         });
         testForm.dispatchEvent(submitEvent);
+      });
+
+      describe.each([
+        '4000 0000 0000 0001',
+        ' 4000 0000 000000 01 ',
+        '   4 0 0 0 0 0 0 0 0   0 0 0 0 0 0 1',
+      ])('when pan input contains spaces', testValue => {
+        it('should remove spaces', done => {
+          const panInput = testForm.querySelector(`[name="${HPPFormFieldName.pan}"]`);
+          (panInput as HTMLInputElement).value = testValue;
+          sut.getCheckoutData(testFormId).subscribe(capturedData => {
+            expect(capturedData.newCardData.primaryAccountNumber).toEqual('4000000000000001');
+            done();
+          });
+          testForm.dispatchEvent(submitEvent);
+        });
       });
     });
 
