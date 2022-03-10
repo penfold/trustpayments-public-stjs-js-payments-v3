@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { BehaviorSubject } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { distinctUntilChanged, first } from 'rxjs/operators';
 import { ICorrelatedMaskedCard } from '../digital-terminal/interfaces/ICorrelatedMaskedCard';
 // @ts-ignore
 import logo from '../../../application/core/services/icon/images/click-to-pay.svg';
@@ -12,6 +12,7 @@ const PAN_VALIDATION_STATUS_FAILED = 'Selected card is not currently supported f
 @Service()
 export class CardListGenerator {
   private panValidationStatus: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  private panValidationStatusSubscribtion: Subscription;
 
   private iconMap: Map<string, string> = new Map([
     ['visa', require('../../../application/core/services/icon/images/visa.svg')],
@@ -81,23 +82,23 @@ export class CardListGenerator {
   }
 
   private addEventHandlers(): void {
-    document.getElementById('pan').addEventListener('change', event => this.handleChangedPan(event));
+    document.getElementById(this.formId).querySelector('input[name="pan"]').addEventListener('change', event => this.handleChangedPan(event));
     document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
   }
 
   private addValidation(): void {
-    this.panValidationStatus
-      .pipe(distinctUntilChanged())
+    if (this.panValidationStatusSubscribtion) {
+      this.panValidationStatusSubscribtion.unsubscribe();
+    }
+    this.panValidationStatusSubscribtion = this.panValidationStatus
+      .pipe(
+        distinctUntilChanged()
+      )
       .subscribe(result =>
         result
           ? this.hideValidationStatus('pan-validation-status')
           : this.showValidationStatus('pan-validation-status', PAN_VALIDATION_STATUS_FAILED)
       );
-    document.getElementById(this.formId).addEventListener('submit', (event) => {
-      if (!this.panValidationStatus.value) {
-        event.preventDefault();
-      }
-    });
   }
 
   private cardContent(card: ICorrelatedMaskedCard, checked = false): string {
@@ -185,6 +186,9 @@ export class CardListGenerator {
   private handleChangedPan(event: Event): void {
     this.srcNameFinder
       .findSrcNameByPan((event.target as HTMLInputElement).value)
+      .pipe(
+        first()
+      )
       .subscribe((result: SrcName | null) => {
         this.panValidationStatus.next(this.acceptedCards.indexOf(result) !== -1);
       });
