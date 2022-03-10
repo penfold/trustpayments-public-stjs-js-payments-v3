@@ -35,7 +35,9 @@ window.addEventListener('load', async () => {
   async function identityLookup() {
     console.log('awaiting email');
 
-    const email = prompt('Email address', '');
+    const email = prompt('Email address', window.sessionStorage.getItem('mcemail') || '');
+
+    window.sessionStorage.setItem('mcemail', email);
 
     if (!email?.length) {
       return Promise.resolve(null);
@@ -90,7 +92,7 @@ window.addEventListener('load', async () => {
 
   function collectCardDetails() {
     return {
-      primaryAccountNumber: prompt('PAN', '5200000000001005'),
+      primaryAccountNumber: prompt('PAN', '5186001700008785'),
       panExpirationMonth: prompt('Expiry month', '01'),
       panExpirationYear: prompt('Expiry year', '2024'),
       cardSecurityCode: prompt('Security code', '123'),
@@ -145,6 +147,8 @@ window.addEventListener('load', async () => {
       console.log('GET SRC PROFILE', srcProfileResult);
     }
 
+    // console.log('ENROLL', await vSrc.enrollCard({ encryptedCard: 'eyJraWQiOiIxNDkxMjMtc3JjLWZwYW4tZW5jcnlwdGlvbiIsImFsZyI6IlJTQS1PQUVQLTI1NiIsImVuYyI6IkExMjhHQ00ifQ.NOOIT0JU98z0lQbnlcEuaEPhc2uPmrJOsAtwjyQrBF8o2SpadRUXXsreDNZn8jhn970axAOSZVSmQyH8GYmKtP5bT4yLm4oWTueK4p1V3MS2wq6tvCNG2p833Nd69W7DAaotVLX9Und6xgwOS_GCEmbWDUZ-5imxDR7RxEVftzFjpyZwLz7klqLovwNmhC3wL7HeEH5mQguKphsiDKyhcCGyy3T94SrGARJRhxCeV69j_jJ88D2xRwlkYyUzeiIEGxWKfbyIRXKancIVj9kQ711A8NZOaULT6lqo6ahPXUXt0nxj1iq2WRg6L97LJibfQMxr-evYe8iJoptxqrYU6w.izwqEfJ-PL0PA6MY.eMF9gmlmunWPvrdqrMImQYm7ZqMvWbvKd9jMt3cm4ejGiv2hTXLhy5rTyzyNf6uw5rDknB4PlcaZ5MzrWiT58RlolnyoxO1kV48aIqBOa1xUjIZ1z6IunRW8PcKslJWgb8PMY9AzSlC44HT7bU6nbbIXDIqyAKsFJo_ray1dgq-wXpmPGGih1kyTVTEFQ-5VHvv5br7ZPbXF2DgvAPDx5R5L.SMEYhps-JGb5ZUGgJmCbFg' }));
+    // console.log('ENROLL', await vSrc.enrollCard({ encryptedCard: await encode(collectCardDetails()) }));
     console.log('CHECKOUT', await checkout(srciTransactionId, srcProfileResult));
   }
 
