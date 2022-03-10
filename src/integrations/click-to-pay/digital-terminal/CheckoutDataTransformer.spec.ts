@@ -68,7 +68,6 @@ describe('CheckoutDataTransformer', () => {
           srciTransactionId,
           srcCorrelationId: 'correlationid2',
           idToken: 'idtoken2',
-          windowRef: null,
         });
         done();
       });
@@ -101,7 +100,6 @@ describe('CheckoutDataTransformer', () => {
           srcCorrelationId: 'correlationid',
           idToken: 'idtoken',
           encryptedCard: 'encryptedcard',
-          windowRef: null,
         });
         done();
       });
