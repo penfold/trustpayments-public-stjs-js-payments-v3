@@ -75,6 +75,19 @@ export class HPPCheckoutDataProvider {
       panExpirationYear: this.getFormFieldValue(HPPFormFieldName.cardExpiryYear),
       cardSecurityCode: this.getFormFieldValue(HPPFormFieldName.cardSecurityCode),
       cardholderFullName: `${this.getFormFieldValue(HPPFormFieldName.billingFirstName)} ${this.getFormFieldValue(HPPFormFieldName.billingLastName)}`.trim() || null,
+      cardholderFirstName: this.getFormFieldValue(HPPFormFieldName.billingFirstName),
+      cardholderLastName: this.getFormFieldValue(HPPFormFieldName.billingLastName),
+      billingAddress: {
+        name: '',
+        city: this.getFormFieldValue(HPPFormFieldName.billingTown),
+        countryCode: this.getFormFieldValue(HPPFormFieldName.billingCountryIso2a),
+        line1: this.getFormFieldValue(HPPFormFieldName.billingPremise),
+        line2: this.getFormFieldValue(HPPFormFieldName.billingStreet),
+        line3: '',
+        zip: this.getFormFieldValue(HPPFormFieldName.billingPostCode),
+        state: this.getFormFieldValue(HPPFormFieldName.billingCounty),
+      },
+
     };
   }
 
@@ -84,7 +97,7 @@ export class HPPCheckoutDataProvider {
       panExpirationMonth: this.getFormFieldValue(NewCardFieldName.expiryMonth),
       panExpirationYear: this.getFormFieldValue(NewCardFieldName.expiryYear),
       cardSecurityCode: this.getFormFieldValue(NewCardFieldName.securityCode),
-      cardholderFullName: null, // TODO confirm if it is needed
+      cardholderFullName: null, // TODO confirm if it is needed,
     };
   }
 

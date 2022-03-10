@@ -75,6 +75,18 @@ describe('HPPCheckoutDataProvider()', () => {
             panExpirationMonth: testFormFieldsValues[HPPFormFieldName.cardExpiryMonth],
             cardSecurityCode: testFormFieldsValues[HPPFormFieldName.cardSecurityCode],
             cardholderFullName: `${testFormFieldsValues[HPPFormFieldName.billingFirstName]} ${testFormFieldsValues[HPPFormFieldName.billingLastName]}`,
+            cardholderFirstName: testFormFieldsValues[HPPFormFieldName.billingFirstName],
+            cardholderLastName: testFormFieldsValues[HPPFormFieldName.billingLastName],
+            billingAddress: {
+              city: testFormFieldsValues[HPPFormFieldName.billingTown],
+              countryCode: testFormFieldsValues[HPPFormFieldName.billingCountryIso2a],
+              line1: testFormFieldsValues[HPPFormFieldName.billingPremise],
+              line2: testFormFieldsValues[HPPFormFieldName.billingStreet],
+              line3: '',
+              name: '',
+              state: testFormFieldsValues[HPPFormFieldName.billingCounty],
+              zip: testFormFieldsValues[HPPFormFieldName.billingPostCode],
+            },
           },
         };
 
@@ -89,7 +101,7 @@ describe('HPPCheckoutDataProvider()', () => {
     describe('when card registration is not enabled in form and card list for recognized user is not displayed', () => {
       beforeEach(() => {
         registerCheckbox.checked = false;
-     });
+      });
 
       it('should capture and stop submit event', () => {
         sut.getCheckoutData(testFormId).subscribe();
