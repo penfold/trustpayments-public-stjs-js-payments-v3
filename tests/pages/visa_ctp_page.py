@@ -27,17 +27,17 @@ class VisaClickToPayPage(BasePage):
     def fill_billing_details_form(self):
         billing_fields = {
             'title': 'Mr',
-            'first-name': get_string(5, 1, string.ascii_letters),
-            'last-name': get_string(5, 1, string.ascii_letters),
-            'house-name': get_string(5, 1),
-            'street': get_string(5, 1, string.ascii_letters),
-            'town': 'London',
-            'county': get_string(5, 1, string.ascii_letters),
-            'country': 'Great Britain',
-            'post-code': get_string(5, 1, string.digits),
+            'first-name': 'John',
+            'last-name': 'Test',
+            'house-name': '2',
+            'street': 'Willow Grove',
+            'town': 'Willow Grove',
+            'county': 'Montgomery',
+            'country': 'USA',
+            'post-code': '19001',
             'email': f'{get_string(5, 1)}@testemail.com',
-            'telephone': get_string(8, 1, string.digits),
-            'telephone-type': get_string(4, 1),
+            'telephone': '9343242342',
+            'telephone-type': '1'
         }
         for field_locator, value in billing_fields.items():
             self._actions.send_keys(VisaClickToPayLocators.get_billing_details_field_locator(field_locator), value)
@@ -45,17 +45,17 @@ class VisaClickToPayPage(BasePage):
     def fill_delivery_details_form(self):
         delivery_fields = {
             'title': 'Mr',
-            'first-name': get_string(5, 1, string.ascii_letters),
-            'last-name': get_string(5, 1, string.ascii_letters),
-            'house-name': get_string(5, 1),
-            'street': get_string(5, 1, string.ascii_letters),
-            'town': 'London',
-            'county': get_string(5, 1, string.ascii_letters),
-            'country': 'Great Britain',
-            'post-code': get_string(5, 1, string.digits),
+            'first-name': 'John',
+            'last-name': 'Test',
+            'house-name': '2',
+            'street': 'Willow Grove',
+            'town': 'Willow Grove',
+            'county': 'Montgomery',
+            'country': 'USA',
+            'post-code': '19001',
             'email': f'{get_string(5, 1)}@testemail.com',
-            'telephone': get_string(8, 1, string.digits),
-            'telephone-type': get_string(4, 1),
+            'telephone': '9343242342',
+            'telephone-type': '1'
         }
         for field_locator, value in delivery_fields.items():
             self._actions.send_keys(VisaClickToPayLocators.get_delivery_details_field_locator(field_locator), value)
@@ -107,7 +107,7 @@ class VisaClickToPayPage(BasePage):
         self._actions.click(VisaClickToPayLocators.cancel_btn)
 
     def is_login_form_displayed(self):
-        self._waits.wait_for_element_to_be_not_displayed(VisaClickToPayLocators.submit_email_btn)
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.submit_email_btn)
         return self._actions.is_element_displayed(VisaClickToPayLocators.submit_email_btn)
 
     def click_resend_code_button(self):
@@ -135,6 +135,10 @@ class VisaClickToPayPage(BasePage):
     def get_masked_card_number_from_card_list(self):
         masked_card_number = self._actions.get_text_with_wait(VisaClickToPayLocators.masked_card_number)[-4:]
         return masked_card_number
+
+    def is_first_card_auto_selected(self):
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.get_selected_card_locator_from_cards_list('1'))
+        return self._actions.is_checkbox_selected(VisaClickToPayLocators.get_selected_card_locator_from_cards_list('1'))
 
     # Visa Checkout view
     def fill_required_address_fields(self):
@@ -168,8 +172,12 @@ class VisaClickToPayPage(BasePage):
         self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
     def click_remember_me_checkbox(self):
-        # self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
+        self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
         self._actions.click(VisaClickToPayLocators.remember_me_checkbox)
+
+    def click_cancel_checkout_btn(self):
+        self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
+        self._actions.click(VisaClickToPayLocators.cancel_checkout_btn)
 
     def click_card_menu_btn(self):
         self._actions.click(VisaClickToPayLocators.card_menu_btn)
@@ -177,8 +185,17 @@ class VisaClickToPayPage(BasePage):
     def click_add_card_btn(self):
         self._actions.click(VisaClickToPayLocators.add_card_btn)
 
-    def click_cancel_checkout_btn(self):
-        self._actions.click(VisaClickToPayLocators.cancel_checkout_btn)
-
     def click_edit_card_details(self):
         self._actions.click(VisaClickToPayLocators.edit_card_btn)
+
+    def click_switch_card_details(self):
+        self._actions.click(VisaClickToPayLocators.switch_card_btn)
+
+    def click_address_menu_btn(self):
+        self._actions.click(VisaClickToPayLocators.address_menu_btn)
+
+    def click_add_address_btn(self):
+        self._actions.click(VisaClickToPayLocators.add_address_btn)
+
+    def click_add_new_address_plus_btn(self):
+        self._actions.click(VisaClickToPayLocators.add_new_address_plus_btn)

@@ -17,12 +17,13 @@ Feature: Visa Click To Pay
     And User fills valid VISA_CTP one time password
     And User selects first card from cards list view
     And User clicks Pay Securely button
-    And User reviews VISA_CTP checkout page with remembering my choice option
+    And User reviews VISA_CTP checkout page and confirm with remember me
+    Then User will see that VISA_CTP payment was successful
     And User opens example page VISA_CTP
     Then User see that first card on the list is auto-selected
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP payment was successful
+    And User will see that VISA_CTP payment was successful
 
 
 

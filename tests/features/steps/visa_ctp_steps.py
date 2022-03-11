@@ -1,6 +1,4 @@
 # type: ignore[no-redef]
-import random
-import string
 import time
 
 from assertpy import assert_that
@@ -74,12 +72,10 @@ def step_impl(context, otp):
         vctp_page.fill_otp_field('123')
         vctp_page.click_submit_otp_btn()
 
-
+#TODO
 @step('User will see that VISA_CTP payment was (?P<param>.+)')
 def step_impl(context, param):
-    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    # is_login_form_displayed = vctp_page.is_login_form_displayed()
-    # assert_that(is_login_form_displayed).is_false()
+    time.sleep(5)
     pass
 
 
@@ -163,6 +159,12 @@ def step_impl(context, register):
         vctp_page.click_cancel_checkout_btn()
 
 
+@step('User see that first card on the list is auto-selected')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    assert_that(vctp_page.is_first_card_auto_selected()).is_true()
+
+
 @step('User fills card details with defined card (?P<card>.+)')
 def step_impl(context, card):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
@@ -183,11 +185,6 @@ def step_impl(context):
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_pay_securely_button()
-#
-#
-# @step('User chooses to edit (?P<card>.+) details on VISA_CTP popup')
-# def step_impl(context, card):
-#     raise NotImplementedError(u'STEP: And User chooses to add new card on VISA_CTP popup')
 
 
 @step('User fills billing address form on Visa checkout popup')
@@ -215,3 +212,23 @@ def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_card_menu_btn()
     vctp_page.click_edit_card_details()
+
+
+@step('User selects Add address on VISA_CTP popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_address_menu_btn()
+    vctp_page.click_add_address_btn()
+
+
+@step('User clicks Add new address plus button')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_add_new_address_plus_btn()
+
+
+@step('User selects Switch card on VISA_CTP popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_card_menu_btn()
+    vctp_page.click_switch_card_details()

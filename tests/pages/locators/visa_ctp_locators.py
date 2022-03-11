@@ -44,8 +44,12 @@ class VisaClickToPayLocators:
 
 
     @classmethod
-    def get_card_locator_from_cards_list(cls, value) -> By.ID:
+    def get_card_locator_from_cards_list(cls, value) -> By.XPATH:
         return By.XPATH, f'//div[@class=\'st-card\'][{value}]'
+
+    @classmethod
+    def get_selected_card_locator_from_cards_list(cls, value) -> By.XPATH:
+        return By.XPATH, f'//div[@class=\'st-card\'][{value}]//input'
 
     # Visa Checkout view
     @classmethod
@@ -65,6 +69,7 @@ class VisaClickToPayLocators:
     switch_address_btn: By = (By.XPATH, '//button[@aria-label=\'Switch Delivery Address\']')
     delete_address_btn: By = (By.XPATH, '//button[@aria-label=\'Delete Delivery Address\']')
     add_address_btn: By = (By.XPATH, '//button[@aria-label=\'ADD DELIVERY ADDRESSs\']')
+    add_new_address_plus_btn: By = (By.XPATH, '//button[@aria-label=\'Add new\']')
     order_total_text: By = (By.XPATH, '//div[@class=\'paylayer-order-total\']/span')
 
 
