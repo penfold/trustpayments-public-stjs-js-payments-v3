@@ -6,6 +6,7 @@ import { IConsumer } from '../../digital-terminal/ISrc';
 import { ICardData } from '../../digital-terminal/interfaces/ICardData';
 import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
 import { NewCardFieldName } from '../../card-list/NewCardFieldName';
+import { environment } from '../../../../environments/environment';
 import { HPPFormFieldName } from './HPPFormFieldName';
 
 @Service()
@@ -27,18 +28,20 @@ export class HPPCheckoutDataProvider {
   }
 
   private getCheckoutDataFromForm(): IInitialCheckoutData {
-    return {
+    const data: IInitialCheckoutData = {
       consumer: this.getConsumerData(),
       srcDigitalCardId: this.getFormFieldValue(HPPFormFieldName.srcCardId),
       newCardData: this.isCardListVisible() ? this.getRecognizedUserNewCardData() : this.getNewCardData(),
     };
+
+    return this.normalizeCheckoutData(data);
   }
 
   private getConsumerData(): IConsumer {
     const consumerData: IConsumer = {};
     const billingEmail = this.getFormFieldValue(HPPFormFieldName.billingEmail);
     const billingCountry = this.getFormFieldValue(HPPFormFieldName.billingCountryIso2a);
-    const billingFullName = `${this.getFormFieldValue(HPPFormFieldName.billingFirstName)} ${this.getFormFieldValue(HPPFormFieldName.billingLastName)}`.trim();
+    const billingFullName = `${this.getFormFieldValue(HPPFormFieldName.billingFirstName)} ${this.getFormFieldValue(HPPFormFieldName.billingLastName)}`.trim() || null;
     const billingFirstName = this.getFormFieldValue(HPPFormFieldName.billingFirstName);
     const billingLastName = this.getFormFieldValue(HPPFormFieldName.billingLastName);
 
@@ -70,11 +73,11 @@ export class HPPCheckoutDataProvider {
 
   private getNewCardData(): ICardData {
     return {
-      primaryAccountNumber: this.normalizePan(this.getFormFieldValue(HPPFormFieldName.pan)),
+      primaryAccountNumber: this.getFormFieldValue(HPPFormFieldName.pan),
       panExpirationMonth: this.getFormFieldValue(HPPFormFieldName.cardExpiryMonth),
       panExpirationYear: this.getFormFieldValue(HPPFormFieldName.cardExpiryYear),
       cardSecurityCode: this.getFormFieldValue(HPPFormFieldName.cardSecurityCode),
-      cardholderFullName: `${this.getFormFieldValue(HPPFormFieldName.billingFirstName)} ${this.getFormFieldValue(HPPFormFieldName.billingLastName)}`.trim() || null,
+      cardholderFullName: `${this.getFormFieldValue(HPPFormFieldName.billingFirstName)} ${this.getFormFieldValue(HPPFormFieldName.billingLastName)}`.trim(),
       cardholderFirstName: this.getFormFieldValue(HPPFormFieldName.billingFirstName),
       cardholderLastName: this.getFormFieldValue(HPPFormFieldName.billingLastName),
       billingAddress: {
@@ -97,7 +100,19 @@ export class HPPCheckoutDataProvider {
       panExpirationMonth: this.getFormFieldValue(NewCardFieldName.expiryMonth),
       panExpirationYear: this.getFormFieldValue(NewCardFieldName.expiryYear),
       cardSecurityCode: this.getFormFieldValue(NewCardFieldName.securityCode),
-      cardholderFullName: null, // TODO confirm if it is needed,
+      cardholderFullName: `${this.getFormFieldValue(HPPFormFieldName.billingFirstName)} ${this.getFormFieldValue(HPPFormFieldName.billingLastName)}`.trim(),
+      cardholderFirstName: this.getFormFieldValue(HPPFormFieldName.billingFirstName),
+      cardholderLastName: this.getFormFieldValue(HPPFormFieldName.billingLastName),
+      billingAddress: {
+        name: '',
+        city: this.getFormFieldValue(HPPFormFieldName.billingTown),
+        countryCode: this.getFormFieldValue(HPPFormFieldName.billingCountryIso2a),
+        line1: this.getFormFieldValue(HPPFormFieldName.billingPremise),
+        line2: this.getFormFieldValue(HPPFormFieldName.billingStreet),
+        line3: '',
+        zip: this.getFormFieldValue(HPPFormFieldName.billingPostCode),
+        state: this.getFormFieldValue(HPPFormFieldName.billingCounty),
+      },
     };
   }
 
@@ -134,4 +149,26 @@ export class HPPCheckoutDataProvider {
   private normalizePan(originalPan: string): string {
     return originalPan.replace(/\s/g, '');
   }
+
+  private normalizeCheckoutData(data: IInitialCheckoutData) {
+    const normalizedData: IInitialCheckoutData = { ...data };
+    const removeEmptyValues = (data: Record<string, any>) => Object.fromEntries(Object.entries(data).filter(([key, value]) => !!value)) as unknown as any;
+    const normalizedBillingData = removeEmptyValues(data.newCardData.billingAddress);
+    if (!Object.values(normalizedBillingData).length) {
+      normalizedData.newCardData.billingAddress = null;
+    } else {
+      normalizedData.newCardData.billingAddress = normalizedBillingData;
+    }
+
+    normalizedData.newCardData.primaryAccountNumber = this.normalizePan(normalizedData.newCardData.primaryAccountNumber);
+
+    if (!environment.production) {
+      console.log('Selected card id:', data.srcDigitalCardId);
+      console.log('Consumer data:', data.consumer);
+      console.log('New card data:', data.newCardData);
+    }
+
+    return normalizedData;
+  }
 }
+

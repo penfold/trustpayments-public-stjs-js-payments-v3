@@ -8,13 +8,13 @@ export interface ICardData {
   cardholderLastName?: string;
   billingAddress?: {
     addressId?:string;
-    name: string;
-    line1:string;
-    line2:string;
-    line3:string;
-    city:string;
-    state:string;
-    zip:string;
+    name?: string;
+    line1?:string;
+    line2?:string;
+    line3?:string;
+    city?:string;
+    state?:string;
+    zip?:string;
     countryCode:string;
   }
 }
