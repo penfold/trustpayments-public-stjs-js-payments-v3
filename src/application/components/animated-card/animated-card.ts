@@ -8,7 +8,8 @@ import { AnimatedCard } from './AnimatedCard';
 
 (() => {
   if(Card && document.URL.includes('animated')) {
-    const container = Container.of(undefined);
+  const sessionID =  new URLSearchParams(window.location.search).get('sessionID');
+  const container = Container.of(sessionID);
 
     initializeContainer(container);
     container.get(ComponentBootstrap).run(ANIMATED_CARD_COMPONENT_IFRAME, AnimatedCard);

@@ -7,4 +7,5 @@ export interface IframeFactoryAttributes {
   scrolling: string;
   frameBorder: number;
   tabIndex: number;
+  sessionId: string;
 }

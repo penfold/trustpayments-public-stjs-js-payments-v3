@@ -7,7 +7,8 @@ import { initializeContainer } from '../../dependency-injection/ServiceDefinitio
 import { CardNumber } from './CardNumber';
 
 (() => {
-  const container = Container.of(undefined);
+  const sessionID =  new URLSearchParams(window.location.search).get('sessionID');
+  const container = Container.of(sessionID);
   initializeContainer(container);
   container.get(ComponentBootstrap).run(CARD_NUMBER_IFRAME, CardNumber);
 })();

@@ -7,7 +7,8 @@ import { initializeContainer } from '../../dependency-injection/ServiceDefinitio
 import { SecurityCode } from './SecurityCode';
 
 (() => {
-  const container = Container.of(undefined);
+  const sessionID =  new URLSearchParams(window.location.search).get('sessionID');
+  const container = Container.of(sessionID);
   initializeContainer(container);
   container.get(ComponentBootstrap).run(SECURITY_CODE_IFRAME, SecurityCode);
 })();

@@ -1,0 +1,180 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+  <meta charset="utf-8"/>
+  <title>Trust Payments Multi Example Form</title>
+  <meta name="description" content="Trust Payments example page with form">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+  <link rel="icon" href="./img/favicon.webp" sizes="32x32">
+  <link rel="icon" href="./img/favicon.webp" sizes="192x192">
+  <link rel="apple-touch-icon" href="./img/favicon.webp">
+</head>
+
+<body>
+<main class="tp-minimal-form-example">
+    <form id="st-form" class="tp-minimal-form">
+        <h1>Trust Payments Minimal Example Form</h1>
+        <div id="st-notification-frame"></div>
+        <div id="st-card-number"></div>
+        <div id="st-expiration-date"></div>
+        <div id="st-security-code"></div>
+        <div id="st-control-frame"></div>
+        <div id="st-animated-card" class="st-form__st-animated-card"></div>
+        <div id="st-visa-checkout" class="st-form__group"></div>
+        <div id="st-apple-pay" class="st-form__group"></div>
+        <div id="st-google-pay" class="st-form__group"></div>
+        <div id="st-apm" class="st-form__group"></div>
+
+        <button type="button" id="update-button" class="tp-minimal-form__button">Update JWT</button>
+        <button type="submit" id="merchant-submit-button" class="tp-minimal-form__button">Pay</button>
+    </form>
+  <form id="st-form-2" class="tp-minimal-form-2">
+    <h1>Trust Payments Minimal 2 Example Form</h1>
+    <div id="st-notification-frame-2"></div>
+    <div id="st-card-number-2"></div>
+    <div id="st-expiration-date-2"></div>
+    <div id="st-security-code-2"></div>
+    <div id="st-control-frame-2"></div>
+    <div id="st-animated-card-2" class="st-form__st-animated-card"></div>
+    <div id="st-visa-checkout-2" class="st-form__group"></div>
+    <div id="st-apple-pay-2" class="st-form__group"></div>
+    <div id="st-google-pay-2" class="st-form__group"></div>
+    <div id="st-apm-2" class="st-form__group"></div>
+
+    <button type="button" id="update-button-2" class="tp-minimal-form__button">Update JWT</button>
+    <button type="submit" id="merchant-submit-button-2" class="tp-minimal-form__button">Pay</button>
+  </form>
+</main>
+
+
+<script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
+<script type="text/javascript" src="./inlineConfig.js"></script>
+<script type="text/javascript">
+  (function (ST) {
+    window.addEventListener('load', function () {
+      var params = new URLSearchParams(window.location.search.substring(1));
+      var inlineConfig = params.get('inlineConfig') ? JSON.parse(params.get('inlineConfig')) : '';
+      var inlineConfigApm = params.get('inlineConfigApm') ? JSON.parse(params.get('inlineConfigApm')) : '';
+      var jwt = params.get('jwt') || '';
+      var updatedJwt = params.get('updatedJwt') || '';
+
+
+
+      initInstance('<%= CONFIG_URL %>/config.json', '<%= CONFIG_URL %>/configAPMs.json', '<%= CONFIG_URL %>/jwtdata.json');
+
+      setTimeout(function(){
+        window.alert('INSTANCJA 2')
+        initInstance('<%= CONFIG_URL %>/config-2.json', '<%= CONFIG_URL %>/configAPMs-2.json', '<%= CONFIG_URL %>/jwtdataALL.json');
+      }, 4000)
+
+
+      function initInstance(config, apmConfig, jwtDataURL){
+        Promise.all([getConfig(config, jwtDataURL),getAPMsConfig(apmConfig)])
+          .then(function(configs) {
+            init(configs);
+            console.log(configs)
+          });
+      }
+
+      function getConfig(configUrl, jwtDataURL) {
+        if (inlineConfig) {
+          return Promise.resolve(inlineConfig);
+        }
+
+        return window
+          .fetch(configUrl)
+          .then(function (response) {
+            if (response.status !== 200) {
+              return Promise.reject('Failed to load configuration file!');
+            }
+
+            return response.json();
+          })
+          .then(function (config) {
+            return getJwt(config, jwtDataURL).then(function (jwt) {
+              return Object.assign(config, { jwt: jwt });
+            });
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
+      }
+
+      function getAPMsConfig(configUrl) {
+        if (inlineConfigApm) {
+          return Promise.resolve(inlineConfigApm);
+        }
+
+        return window
+          .fetch(configUrl)
+          .then(function(response) {
+            if (response.status !== 200) {
+              return Promise.reject('Failed to load APMs configuration file!');
+            }
+
+            return response.json()
+          })
+          .catch(function(error) {
+            console.error(error);
+          });
+      }
+
+      function getJwt(config, jwtDataURL) {
+        var presetJwt = jwt || config.jwt;
+
+        if (presetJwt) {
+          return Promise.resolve(presetJwt);
+        }
+
+        return window.configJWT(jwtDataURL);
+      }
+
+      function init(configs) {
+        var config = configs[0];
+        var apmConfig = configs[1];
+        setCallbacks(config);
+        var st = ST(config);
+        st.Components(config.components);
+        st.VisaCheckout(config.visaCheckout);
+        st.ApplePay(config.applePay);
+        updateJwtListener(st, updatedJwt);
+
+        if (apmConfig) {
+          st.APM(apmConfig);
+        }
+      }
+
+      function updateJwtListener(st, updatedJwt) {
+        document.getElementById('update-button').addEventListener('click', function () {
+            st.updateJWT(updatedJwt);
+          }
+        );
+      }
+
+      function setCallbacks(config) {
+        config.submitCallback = function () {
+          console.error('This is submitCallback function');
+        };
+        config.successCallback = function () {
+          console.error('This is successCallback function');
+        };
+        config.errorCallback = function () {
+          console.error('This is errorCallback function');
+        };
+        config.cancelCallback = function () {
+          console.error('This is cancelCallback function');
+        };
+      }
+    });
+  })(SecureTrading);
+
+
+
+  //////////////////////////////// 2 instance ///////////////////////////
+
+</script>
+</body>
+</html>

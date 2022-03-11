@@ -472,24 +472,6 @@ export class ST {
       this.cancelCallback = config.cancelCallback;
     }
   }
-
-  private blockSubmitButton(): void {
-    const form: HTMLFormElement = document.getElementById(this.config.formId) as HTMLFormElement;
-
-    if (!form) {
-      return;
-    }
-
-    const submitButton: HTMLInputElement | HTMLButtonElement =
-      (document.getElementById(this.config.buttonId) as HTMLInputElement | HTMLButtonElement) ||
-      form.querySelector('button[type="submit"]') ||
-      form.querySelector('input[type="submit"]');
-
-    if (submitButton) {
-      submitButton.classList.add('st-button-submit__disabled');
-      submitButton.disabled = true;
-    }
-  }
 }
 
 export default (config: IConfig): ST => {

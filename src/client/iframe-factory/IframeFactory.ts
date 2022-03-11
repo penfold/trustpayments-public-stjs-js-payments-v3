@@ -1,4 +1,4 @@
-import { Service } from 'typedi';
+import { ContainerInstance, Service } from 'typedi';
 import { IStyle } from '../../shared/model/config/IStyle';
 import {
   ANIMATED_CARD_COMPONENT,
@@ -7,10 +7,13 @@ import {
   EXPIRATION_DATE_COMPONENT,
   SECURITY_CODE_COMPONENT,
 } from '../../application/core/models/constants/Selectors';
+import { SessionToken } from '../../shared/dependency-injection/InjectionTokens';
 import { IframeFactoryAttributes } from './IframeFactoryAttributes';
 
 @Service()
 export class IframeFactory {
+  constructor(private container: ContainerInstance) {
+  }
   private static URLS = new Map(
     Object.entries({
       cardNumber: CARD_NUMBER_COMPONENT,
@@ -32,7 +35,8 @@ export class IframeFactory {
     const componentStyles = new URLSearchParams(styles).toString();
     const componentAddress = IframeFactory.URLS.get(name);
     const iframe = document.createElement('iframe');
-    const src = `${componentAddress}?${componentStyles}${componentParams ? '&' + componentParams : ''}`;
+    const sessionId = this.container.get(SessionToken);
+    const src = `${componentAddress}?${componentStyles}${componentParams ? '&' + componentParams : ''}&sessionId=${sessionId}`;
 
     const attributes: IframeFactoryAttributes = {
       id,
@@ -43,6 +47,7 @@ export class IframeFactory {
       scrolling: 'no',
       frameBorder: 0,
       tabIndex,
+      sessionId,
     };
 
     // @ts-ignore

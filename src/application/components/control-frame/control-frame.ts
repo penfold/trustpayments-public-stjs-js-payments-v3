@@ -7,7 +7,8 @@ import { initializeContainer } from '../../../application/dependency-injection/S
 import { ControlFrame } from './ControlFrame';
 
 (() => {
-  const container = Container.of(undefined);
+  const sessionID =  new URLSearchParams(window.location.search).get('sessionID');
+  const container = Container.of(sessionID);
   initializeContainer(container);
   container.get(ComponentBootstrap).run(CONTROL_FRAME_IFRAME, ControlFrame);
 })();
