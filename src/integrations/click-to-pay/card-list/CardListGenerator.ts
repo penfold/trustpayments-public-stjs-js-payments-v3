@@ -184,14 +184,16 @@ export class CardListGenerator {
   }
 
   private handleChangedPan(event: Event): void {
-    this.srcNameFinder
-      .findSrcNameByPan((event.target as HTMLInputElement).value)
-      .pipe(
-        first()
-      )
-      .subscribe((result: SrcName | null) => {
-        this.panValidationStatus.next(this.acceptedCards.indexOf(result) !== -1);
-      });
+    if ((event.target as HTMLInputElement).value) {
+      this.srcNameFinder
+        .findSrcNameByPan((event.target as HTMLInputElement).value)
+        .pipe(first())
+        .subscribe((result: SrcName | null) => {
+          this.panValidationStatus.next(this.acceptedCards.indexOf(result) !== -1);
+        });
+    } else {
+      this.panValidationStatus.next(true);
+    }
   }
 
   private handleClick(id: string): void {

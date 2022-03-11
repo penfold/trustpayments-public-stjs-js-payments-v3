@@ -408,10 +408,14 @@
 
     function inputHandler(adapterInstance) {
       return (event) => {
-        const cardType = adapterInstance.getSrcName(event.target.value);
-        cardType.then((srcName) => {
-          srcName === 'VISA' ? showCheckToRegisterSection() : hideCheckToRegisterSection();
-        });
+        if (event.target.value) {
+          const cardType = adapterInstance.getSrcName(event.target.value);
+          cardType.then((srcName) => {
+            srcName === 'VISA' ? showCheckToRegisterSection() : hideCheckToRegisterSection();
+          });
+        } else {
+          showCheckToRegisterSection();
+        }
       }
     }
 
