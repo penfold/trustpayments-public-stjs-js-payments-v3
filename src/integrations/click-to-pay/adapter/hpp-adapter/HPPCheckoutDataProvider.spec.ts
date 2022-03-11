@@ -11,7 +11,7 @@ describe('HPPCheckoutDataProvider()', () => {
     [HPPFormFieldName.cardSecurityCode]: '123',
     [HPPFormFieldName.register]: null,
     [HPPFormFieldName.billingCountryIso2a]: 'GB',
-    [HPPFormFieldName.billingCounty]: '',
+    [HPPFormFieldName.billingCounty]: 'WL',
     [HPPFormFieldName.billingEmail]: 'email@example.com',
     [HPPFormFieldName.billingFirstName]: 'Sherlock',
     [HPPFormFieldName.billingLastName]: 'Holmes',
@@ -70,8 +70,6 @@ describe('HPPCheckoutDataProvider()', () => {
             countryCode: testFormFieldsValues[HPPFormFieldName.billingCountryIso2a],
             line1: testFormFieldsValues[HPPFormFieldName.billingPremise],
             line2: testFormFieldsValues[HPPFormFieldName.billingStreet],
-            line3: '',
-            name: '',
             state: testFormFieldsValues[HPPFormFieldName.billingCounty],
             zip: testFormFieldsValues[HPPFormFieldName.billingPostCode],
           },
@@ -111,6 +109,46 @@ describe('HPPCheckoutDataProvider()', () => {
           testForm.dispatchEvent(submitEvent);
         });
       });
+    });
+
+    it('should remove empty fields from billingAddress object', done => {
+      assignFormValues(testForm, {
+        ...testFormFieldsValues,
+        [HPPFormFieldName.billingPremise]: '',
+        [HPPFormFieldName.billingStreet]: '',
+        [HPPFormFieldName.billingTown]: '',
+      });
+      sut.getCheckoutData(testFormId).subscribe(capturedData => {
+        expect(capturedData.newCardData.billingAddress.line1).not.toBeDefined();
+        expect(capturedData.newCardData.billingAddress.line2).not.toBeDefined();
+        expect(capturedData.newCardData.billingAddress.city).not.toBeDefined();
+        done();
+      });
+      testForm.dispatchEvent(submitEvent);
+    });
+
+    it('when all billingAddress object fields are empty it should be set to null', done => {
+      assignFormValues(testForm, {
+        ...testFormFieldsValues,
+        [HPPFormFieldName.billingCountryIso2a]: '',
+        [HPPFormFieldName.billingCounty]: '',
+        [HPPFormFieldName.billingEmail]: '',
+        [HPPFormFieldName.billingFirstName]: '',
+        [HPPFormFieldName.billingLastName]: '',
+        [HPPFormFieldName.billingPostCode]: '',
+        [HPPFormFieldName.billingPrefixName]: '',
+        [HPPFormFieldName.billingPremise]: '',
+        [HPPFormFieldName.billingStreet]: '',
+        [HPPFormFieldName.billingTelephone]: '',
+        [HPPFormFieldName.billingTelephoneType]: '',
+        [HPPFormFieldName.billingTown]: '',
+      });
+
+      sut.getCheckoutData(testFormId).subscribe(capturedData => {
+        expect(capturedData.newCardData.billingAddress).toBeNull()
+        done();
+      });
+      testForm.dispatchEvent(submitEvent);
     });
 
     describe('when card registration is not enabled in form and card list for recognized user is not displayed', () => {

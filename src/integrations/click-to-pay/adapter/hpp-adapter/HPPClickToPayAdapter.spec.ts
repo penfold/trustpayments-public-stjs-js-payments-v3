@@ -98,7 +98,6 @@ describe('HPPClickToPayAdapter', () => {
       when(hppCheckoutDataProviderMock.getCheckoutData(initParams.formId)).thenReturn(formSubmitEventMock.pipe(mapTo(testCheckoutData)));
       sut.init(initParams).then(adapterInstance => {
           formSubmitEventMock.asObservable().subscribe(() => {
-            console.log('ole');
             verify(digitalTerminalMock.checkout(objectContaining({
               ...testCheckoutData,
               dpaTransactionOptions: initParams.dpaTransactionOptions,
