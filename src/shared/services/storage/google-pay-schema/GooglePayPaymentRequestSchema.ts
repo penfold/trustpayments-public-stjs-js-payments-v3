@@ -53,7 +53,12 @@ export const GooglePayPaymentRequestSchema: Joi.ObjectSchema = Joi.object().keys
   shippingAddressRequired: Joi.boolean(),
   shippingOptionParameters: Joi.object().keys({
     defaultSelectedOptionId: Joi.string(),
-    shippingOptions: Joi.object().keys({ description: Joi.string(), id: Joi.string(), label: Joi.string() }),
+    shippingOptions: Joi.array().items(Joi.object()
+      .keys({
+        description: Joi.string(),
+        id: Joi.string(),
+        label: Joi.string(),
+      })),
   }),
   shippingOptionRequired: Joi.boolean(),
   transactionInfo: Joi.object()

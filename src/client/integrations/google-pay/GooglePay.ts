@@ -7,7 +7,6 @@ import { ConfigProvider } from '../../../shared/services/config-provider/ConfigP
 import { IConfig } from '../../../shared/model/config/IConfig';
 import { JwtDecoder } from '../../../shared/services/jwt-decoder/JwtDecoder';
 import {
-  IGooglePayPaymentRequest,
   IGooglePayTransactionInfo,
   IPaymentData,
 } from '../../../integrations/google-pay/models/IGooglePayPaymentRequest';
@@ -110,42 +109,9 @@ export class GooglePay {
     document.getElementById(buttonRootNode).appendChild(button);
   }
 
-  private getGooglePaymentDataRequest(): IGooglePayPaymentRequest {
-    const {
-      apiVersion,
-      apiVersionMinor,
-      allowedPaymentMethods,
-      merchantInfo,
-      transactionInfo: { countryCode, currencyCode, totalPriceStatus, totalPrice },
-    } = this.config.googlePay.paymentRequest;
-
-    const paymentDataRequest = Object.assign(
-      {},
-      {
-        apiVersion,
-        apiVersionMinor,
-        allowedPaymentMethods,
-        transactionInfo: {
-          countryCode,
-          currencyCode,
-          totalPriceStatus,
-          totalPrice,
-        },
-        merchantInfo: {
-          merchantName: merchantInfo.merchantName,
-          merchantId: merchantInfo.merchantId,
-          merchantOrigin: merchantInfo.merchantOrigin,
-        },
-      }
-    );
-    return paymentDataRequest;
-  }
-
   private onGooglePaymentButtonClicked = (): void => {
-    const paymentDataRequest = this.getGooglePaymentDataRequest();
-
     this.googlePaySdk
-      .loadPaymentData({ ...paymentDataRequest, transactionInfo: { ...paymentDataRequest.transactionInfo } })
+      .loadPaymentData(this.config.googlePay.paymentRequest)
       .then((paymentData: IPaymentData) => {
         this.onPaymentAuthorized(paymentData);
       })

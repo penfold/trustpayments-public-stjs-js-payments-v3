@@ -61,7 +61,7 @@ interface GooglePayShippingOptionSelection {
 
 interface GooglePayShippingOptionParameters {
   defaultSelectedOptionId?: string;
-  shippingOptions: GooglePayShippingOptionSelection;
+  shippingOptions: GooglePayShippingOptionSelection[];
 }
 
 export interface IGooglePayPaymentRequest {
