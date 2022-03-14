@@ -41,6 +41,7 @@ class VisaClickToPayLocators:
     security_code_modal_input: By = (By.ID, 'cvv')
     masked_card_number: By = (By.XPATH, '//div[@class=\'st-card\'][1]/span[@class=\'st-card__description\']')
     masked_card_number_list: By = (By.XPATH, '//span[@class=\'st-card__description\']')
+    card_validation_message: By = (By.ID, 'pan-validation-status')
 
 
     @classmethod

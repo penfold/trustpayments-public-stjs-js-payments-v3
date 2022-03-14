@@ -199,3 +199,9 @@ class VisaClickToPayPage(BasePage):
 
     def click_add_new_address_plus_btn(self):
         self._actions.click(VisaClickToPayLocators.add_new_address_plus_btn)
+
+    def is_register_checkbox_available(self):
+        return self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.register_card_checkbox)
+
+    def is_card_validation_message_visible(self):
+        return self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.card_validation_message)

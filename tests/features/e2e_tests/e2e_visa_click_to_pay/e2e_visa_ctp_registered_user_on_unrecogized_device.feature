@@ -159,8 +159,7 @@ Feature: Visa Click To Pay
     And User login to VISA_CTP account with valid credentials
     And User clicks Add new card button
     When User fills card details with defined card MASTERCARD_INVALID_EXP_DATE_CARD
-    And User clicks Pay Securely button
-    Then Validation
+    Then User will see VISA_CTP card validation message
 
     #TODO - Delete new card after this test
   Scenario: Add new card from Visa popup

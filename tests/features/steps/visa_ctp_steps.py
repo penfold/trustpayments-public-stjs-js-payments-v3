@@ -232,3 +232,15 @@ def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_card_menu_btn()
     vctp_page.click_switch_card_details()
+
+
+@then("User will see that registering card with VISA_CTP in unavailable")
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    assert_that(vctp_page.is_register_checkbox_available()).is_false()
+
+
+@then("User will see VISA_CTP card validation message")
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    assert_that(vctp_page.is_card_validation_message_visible()).is_true()
