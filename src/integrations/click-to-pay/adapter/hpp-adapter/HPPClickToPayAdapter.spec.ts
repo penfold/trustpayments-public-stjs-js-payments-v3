@@ -52,7 +52,7 @@ describe('HPPClickToPayAdapter', () => {
       instance(frameQueryingServiceMock),
       instance(userIdentificationServiceMock),
       instance(srcNameFinderMock),
-      instance(cardListGeneratorMock)
+      instance(cardListGeneratorMock),
     );
   });
 
