@@ -1,4 +1,5 @@
 @import "./_modals";
+@import "./_placeholders.scss";
 
 html {
   font-size: 62.5%;
@@ -239,7 +240,8 @@ input:-webkit-autofill.error-field {
     }
 
     .st-add-card__pan-validation {
-      color: red;
+      @extend %message;
+      visibility: visible;
     }
 
     input[name='cvv'] {
