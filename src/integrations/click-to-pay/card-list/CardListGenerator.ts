@@ -46,6 +46,24 @@ export class CardListGenerator {
     this.addEventHandlers();
   }
 
+  openNewCardForm(): void {
+    this.openForm();
+    this.clearSelection();
+  }
+
+  hideForm(): void {
+    document.getElementById('st-ctp-cards').innerHTML = '';
+    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true });
+  }
+
+  displayUserInformation(parentContainer: string, userInformation: Partial<Record<SrcName, ISrcProfileList>>): void {
+    const container: HTMLElement = document.getElementById(parentContainer);
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = this.addUserInformationContent(userInformation[Object.keys(userInformation)[0]].profiles[0].maskedConsumer.emailAddress);
+    container.prepend(wrapper);
+    document.getElementById(this.notYouElementId).addEventListener('click', () => this.digitalTerminal.unbindAppInstance().subscribe(() => this.hideForm()));
+  }
+
   private addCardContent(): string {
     return `
       <div class="st-add-card__label">
@@ -169,14 +187,6 @@ export class CardListGenerator {
     }
   }
 
-  displayUserInformation(parentContainer: string, userInformation: Partial<Record<SrcName, ISrcProfileList>>): void {
-    const container: HTMLElement = document.getElementById(parentContainer);
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = this.addUserInformationContent(userInformation[Object.keys(userInformation)[0]].profiles[0].maskedConsumer.emailAddress);
-    container.prepend(wrapper);
-    document.getElementById(this.notYouElementId).addEventListener('click', () => this.digitalTerminal.unbindAppInstance().subscribe(() => this.hideForm()));
-  }
-
   private addUserInformationContent(emailAddress: string): string {
     return `
       <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
@@ -188,10 +198,5 @@ export class CardListGenerator {
         <p class="st-ctp-user-details__information">${this.translator.translate('Hello')} ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate('Not you?')}</span></p>
       </div>
     `;
-  }
-
-  private hideForm(): void {
-    document.getElementById('st-ctp-cards').innerHTML = '';
-    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true });
   }
 }
