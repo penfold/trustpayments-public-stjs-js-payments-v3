@@ -3,8 +3,10 @@ import time
 
 from pages.base_page import BasePage
 from pages.locators.visa_ctp_locators import VisaClickToPayLocators
+from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers import gmail_service
 from utils.helpers.random_data_generator import get_string
+from utils.helpers.request_executor import add_to_shared_dict
 
 
 class VisaClickToPayPage(BasePage):
@@ -203,5 +205,11 @@ class VisaClickToPayPage(BasePage):
     def is_register_checkbox_available(self):
         return self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.register_card_checkbox)
 
-    def is_card_validation_message_visible(self):
-        return self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.card_validation_message)
+    def is_card_validation_message_visible(self, expected_text):
+        assert self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.card_validation_message)
+        actual_text = self._actions.get_text(VisaClickToPayLocators.card_validation_message)
+        assertion_message = f'Card validation text is not correct: ' \
+                            f' should be {expected_text} but is {actual_text}'
+        add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
+        assert actual_text == expected_text, assertion_message
+

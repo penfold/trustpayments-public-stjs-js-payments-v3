@@ -6,6 +6,7 @@ from behave import use_step_matcher, step, then
 from pages.page_factory import Pages
 from utils.enums.card import Card
 from utils.helpers.gmail_service import EMAIL_LOGIN
+from utils.helpers.resources_reader import get_translation_from_json
 
 use_step_matcher('re')
 
@@ -243,4 +244,5 @@ def step_impl(context):
 @then("User will see VISA_CTP card validation message")
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    assert_that(vctp_page.is_card_validation_message_visible()).is_true()
+    expected_text = get_translation_from_json('en_GB', 'VISA_CTP card validation message')
+    vctp_page.is_card_validation_message_visible(expected_text)
