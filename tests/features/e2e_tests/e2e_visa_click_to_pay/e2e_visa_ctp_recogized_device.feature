@@ -1,6 +1,6 @@
 #TODO
 Feature: Visa Click To Pay
-  As a registered user on recoginized device
+  As a user on recognized device
   I want to use Visa Click To Pay payment method
   In order to check full payment functionality
 
@@ -12,103 +12,73 @@ Feature: Visa Click To Pay
       | key                     | value |
       | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
-    When User selects Look up my cards
-    And User login to VISA_CTP account with valid e-mail address
-    And User fills valid VISA_CTP one time password
-    And User selects first card from cards list view
+    And User selects Look up my cards
+    And User login to VISA_CTP account with valid credentials
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and confirm with remember me
-    Then User will see that VISA_CTP payment was successful
-    And User opens example page VISA_CTP
+    And User will see that VISA_CTP payment was successful
+    When User opens example page VISA_CTP
     Then User see that first card on the list is auto-selected
+    When User clicks Pay Securely button
+    And User reviews VISA_CTP checkout page and continues payment
+    Then User will see that VISA_CTP payment was successful
+
+  Scenario: Rejected payment - Registered VISA CTP user on recognized device with saved credit cards
+    Given JS library configured by inline config BASIC_CONFIG
+#    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And User opens example page VISA_CTP
+    And User selects Look up my cards
+    And User login to VISA_CTP account with valid credentials
     And User clicks Pay Securely button
+    And User reviews VISA_CTP checkout page and confirm with remember me
+    And User will see that VISA_CTP payment was successful
+    When User opens example page VISA_CTP
+    Then User see that first card on the list is auto-selected
+    #TODO - card with rejected status
+    When User selects VISA_V21_FRICTIONLESS card from cards list view by number
+    And User clicks Pay Securely button
+    And User reviews VISA_CTP checkout page and continues payment
+    Then User will see that VISA_CTP payment was rejected
+
+  Scenario: Successful payment - Unregistered VISA CTP user on recognized device
+    Given JS library configured by inline config BASIC_CONFIG
+#    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And User opens example page VISA_CTP
+    When User fills VISA_CTP card details with defined card VISA_V21_FRICTIONLESS
+    And User chooses to register his card with Visa
+    And User clicks Pay Securely button
+    And User fills billing address form on Visa checkout popup
+    And User reviews VISA_CTP checkout page confirm payment
+    And User will see that VISA_CTP payment was successful
+    When User opens example page VISA_CTP
+    Then User see that first card on the list is auto-selected
+    When User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and continues payment
     And User will see that VISA_CTP payment was successful
 
-
-
-
-  Scenario Outline: Successful payment - Registered VISA CTP user on recognized device with saved credit cards and 3DS authentication
+  Scenario: Rejected payment - Unregistered VISA CTP user on recognized device
     Given JS library configured by inline config BASIC_CONFIG
-    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
+#    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
-      | orderreference          | order-01           |
-      | baseamount              | 1000               |
-      | billingfirstname        | FirstName          |
-      | billingemail            | FirstName@email.pl |
-      | billingcountryiso2a     | GB                 |
-      | currencyiso3a           | GBP                |
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
     And User opens example page VISA_CTP
-    And User selects <string> card on VISA_CTP popup
+    When User fills VISA_CTP card details with defined card VISA_V21_FRICTIONLESS
+    And User chooses to register his card with Visa
+    And User clicks Pay Securely button
+    And User fills billing address form on Visa checkout popup
+    And User reviews VISA_CTP checkout page confirm payment
+    And User will see that VISA_CTP payment was successful
+    When User opens example page VISA_CTP
+    Then User see that first card on the list is auto-selected
+    #TODO - card with rejected status
+    When User selects VISA_V21_FRICTIONLESS card from cards list view by number
+    And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and continues payment
-    And User fills 3ds SDK challenge with <string> and submit
-    Then User will see that VISA_CTP payment was successful
-
-    Examples:
-      | request_types    |
-      | THREEDQUERY AUTH |
-
-  Scenario Outline: Unsuccessful payment - Registered VISA CTP user on recognized device with saved credit cards and 3DS authentication
-    Given JS library configured by inline config BASIC_CONFIG
-    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
-    And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | <request_types>    |
-      | orderreference          | order-01           |
-      | baseamount              | 1000               |
-      | billingfirstname        | FirstName          |
-      | billingemail            | FirstName@email.pl |
-      | billingcountryiso2a     | GB                 |
-      | currencyiso3a           | GBP                |
-    And User opens example page VISA_CTP
-    And User selects <string> card on VISA_CTP popup
-    And User reviews VISA_CTP checkout page and continues payment
-    And User fills 3ds SDK challenge with <string> and submit
-    Then User will see that VISA_CTP payment was unsuccessful
-
-    Examples:
-      | request_types    |
-      | THREEDQUERY AUTH |
-
-  Scenario: Decline payment - Registered VISA CTP user on recognized device with saved credit cards
-    Given JS library configured by inline config BASIC_CONFIG
-    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
-    And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | orderreference          | order-01           |
-      | baseamount              | 70000              |
-      | billingfirstname        | FirstName          |
-      | billingemail            | FirstName@email.pl |
-      | billingcountryiso2a     | GB                 |
-      | currencyiso3a           | GBP                |
-    And User opens example page VISA_CTP
-    And User selects string card on VISA_CTP popup
-    And User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP payment was declined
-
-      Scenario: Repeat payment - Registered VISA_CTP user on unrecognized device saves his credit card
-    Given JS library configured by inline config BASIC_CONFIG
-    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
-    And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | orderreference          | order-01           |
-      | baseamount              | 1000               |
-      | billingfirstname        | FirstName          |
-      | billingemail            | FirstName@email.pl |
-      | billingcountryiso2a     | GB                 |
-      | currencyiso3a           | GBP                |
-    And User opens example page VISA_CTP
-    When User selects Look up my cards
-    And User login to VISA_CTP account with valid e-mail address
-    And User fills VISA_CTP one time password
-    And User selects string card on VISA_CTP popup
-    And User reviews VISA_CTP checkout page with remembering my choice option
-    Then User will see that VISA_CTP payment was successful
-    When User selects Look up my cards
-    And User selects string card on VISA_CTP popup
-    And User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP payment was successful
+    Then User will see that VISA_CTP payment was rejected

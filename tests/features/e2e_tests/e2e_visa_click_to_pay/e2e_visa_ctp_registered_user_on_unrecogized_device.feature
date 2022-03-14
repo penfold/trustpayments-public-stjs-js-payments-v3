@@ -123,7 +123,8 @@ Feature: Visa Click To Pay
     Then User see that first card on the list is auto-selected
     And User selects second card from cards list view
     And User clicks Pay Securely button
-    And User reviews VISA_CTP checkout page and continues payment
+    Then User will see selected card on VISA_CTP popup
+    When User reviews VISA_CTP checkout page and continues payment
     Then User will see that VISA_CTP payment was successful
 
     #TODO - Delete new card after this test
@@ -139,7 +140,8 @@ Feature: Visa Click To Pay
     When User clicks Add new card button
     And User fills card details with defined card VISA_V21_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay Securely button
-    And User reviews VISA_CTP checkout page and continues payment
+    Then User will see selected card on VISA_CTP popup
+    When User reviews VISA_CTP checkout page and continues payment
     And User will see that VISA_CTP payment was successful
     And User selects Look up my cards
     And User login to VISA_CTP account with valid credentials
@@ -158,6 +160,7 @@ Feature: Visa Click To Pay
     And User clicks Add new card button
     When User fills card details with defined card MASTERCARD_INVALID_EXP_DATE_CARD
     And User clicks Pay Securely button
+    Then Validation
 
     #TODO - Delete new card after this test
   Scenario: Add new card from Visa popup
