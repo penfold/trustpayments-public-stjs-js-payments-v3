@@ -161,3 +161,30 @@
   font-size: 20px;
   color: white;
 }
+.st-ctp-user-details__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.st-ctp-user-details__image {
+  max-width: 20px;
+  max-height: 20px;
+  margin-right: 10px;
+  transform: translate(0, -2px);
+}
+
+.st-ctp-user-details__information {
+  font-size: 22px;
+}
+
+.st-ctp-user-details__not--you {
+  font-size: 14px;
+  color: #e71b59;
+  transition: .3s;
+  cursor: pointer;
+
+  &:hover {
+    color: rgba(231, 27, 89, 0.8);
+  }
+}
