@@ -146,5 +146,9 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     if (response.dcfActionCode === 'ADD_CARD') {
       this.cardListGenerator.openNewCardForm();
     }
+
+    if (response.unbindAppInstance) {
+      this.digitalTerminal.unbindAppInstance().subscribe(() => this.cardListGenerator.hideForm());
+    }
   }
 }
