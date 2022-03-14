@@ -16,6 +16,7 @@ import { IPaymentResult } from './IPaymentResult';
 import { PaymentResultHandler } from './PaymentResultHandler';
 import { ErrorResultFactory } from './ErrorResultFactory';
 import { PaymentError } from './error/PaymentError';
+import { exceptionsArray } from './ExceptionsArray';
 
 @Service()
 export class PaymentController {
@@ -52,10 +53,14 @@ export class PaymentController {
             switchMap(() => this.getPaymentMethod(name).init(config)),
             mapTo(name),
             catchError((error: Error) => {
-              Debug.error(`Payment method initialization failed: ${name}`, error);
-              this.sentryService.sendCustomMessage(
-                PaymentError.duringInit('Payment method initialization failed', name, error)
-              );
+              if (exceptionsArray.includes(error.message)) {
+                Debug.warn(`Payment method initialization failed: ${name}`, error);
+              } else {
+                Debug.error(`Payment method initialization failed: ${name}`, error);
+                this.sentryService.sendCustomMessage(
+                  PaymentError.duringInit('Payment method initialization failed', name, error)
+                );
+              }
               this.messageBus.publish({
                 type: PUBLIC_EVENTS.PAYMENT_METHOD_INIT_FAILED,
                 data: { name },

@@ -2,7 +2,6 @@ import { Subject } from 'rxjs';
 import { anything, deepEqual, instance, mock, spy, verify, when } from 'ts-mockito';
 import { first } from 'rxjs/operators';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { ApplePayInitError } from '../models/errors/ApplePayInitError';
 import { PUBLIC_EVENTS } from '../../../application/core/models/constants/EventTypes';
 import { ApplePayPaymentMethodName } from '../models/IApplePayPaymentMethod';
 import { SimpleMessageBus } from '../../../application/core/shared/message-bus/SimpleMessageBus';
@@ -172,30 +171,6 @@ describe('ApplePayClient', () => {
 
       verify(applePayConfigServiceMock.getConfig(configMock, anything())).never();
       verify(applePayConfigServiceMock.getConfig(deepEqual({ ...configMock, jwt: 'some-jwt' }), anything())).never();
-    });
-
-    it('throws an error when hasApplePaySessionObject returns false', (done) => {
-      when(applePaySessionWrapperMock.isApplePaySessionAvailable()).thenReturn(false);
-
-      applePayClient.init(configMock).subscribe({
-        error: err => {
-          expect(err).toBeInstanceOf(ApplePayInitError);
-          expect(err.toString()).toBe('Error: ApplePay not available: Works only on Safari');
-          done();
-        },
-      });
-    });
-
-    it('throws error when canMakePayments function returns false', (done) => {
-      when(applePaySessionWrapperMock.canMakePayments()).thenReturn(false);
-
-      applePayClient.init(configMock).subscribe({
-        error: err => {
-          expect(err).toBeInstanceOf(ApplePayInitError);
-          expect(err.toString()).toBe('Error: ApplePay not available: Your device does not support making payments with Apple Pay');
-          done();
-        },
-      });
     });
 
     it('resolves the AP config and inserts the pay button', done => {

@@ -195,7 +195,9 @@ export class ConfigResolver {
       this.container.get(SentryService).sendCustomMessage(new Error(`Invalid ${item?.context?.key} config value: ${item?.context?.value}`));
     }
     if(item?.type === 'deprecate.error') {
-      this.container.get(SentryService).sendCustomMessage(new MisconfigurationError(`Misconfiguration: ${item?.message}`));
+      if (JSON.stringify(item?.path) !== JSON.stringify(['applePay', 'placement'])) {
+        this.container.get(SentryService).sendCustomMessage(new MisconfigurationError(`Misconfiguration: ${item?.message}`));
+      }
 
       setTimeout(() => {
         this.container.get(GoogleAnalytics).sendGaData('event', 'config', 'deprecated', item?.message);
