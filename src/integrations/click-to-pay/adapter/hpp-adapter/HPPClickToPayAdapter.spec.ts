@@ -14,6 +14,7 @@ import { SrcName } from '../../digital-terminal/SrcName';
 import { IdentificationFailureReason } from '../../digital-terminal/IdentificationFailureReason';
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { CardListGenerator } from '../../card-list/CardListGenerator';
+import { ICheckoutResponse } from '../../digital-terminal/ISrc';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPClickToPayAdapter } from './HPPClickToPayAdapter';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
@@ -29,6 +30,15 @@ describe('HPPClickToPayAdapter', () => {
     onUpdateView: jest.fn(),
     onCheckout: jest.fn(),
   };
+  const testCheckoutData: IInitialCheckoutData = {
+    newCardData: {
+      primaryAccountNumber: '111',
+      cardholderFullName: 'Customer Name',
+      cardSecurityCode: '123',
+      panExpirationMonth: '12',
+      panExpirationYear: '2049',
+    },
+  };
   let messageBus: IMessageBus;
   let frameQueryingServiceMock: IFrameQueryingService;
   let digitalTerminalMock: DigitalTerminal;
@@ -36,6 +46,7 @@ describe('HPPClickToPayAdapter', () => {
   let userIdentificationServiceMock: HPPUserIdentificationService;
   let cardListGeneratorMock: CardListGenerator;
   let hppCheckoutDataProviderMock: HPPCheckoutDataProvider;
+  let formSubmitEventMock: Subject<void>;
   let sut: HPPClickToPayAdapter;
 
   beforeEach(() => {
@@ -63,6 +74,12 @@ describe('HPPClickToPayAdapter', () => {
       instance(cardListGeneratorMock),
       instance(hppCheckoutDataProviderMock)
     );
+
+    formSubmitEventMock = new Subject<void>();
+    when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT, anyFunction())).thenCall((eventType, callback) => {
+      callback({ type: eventType, data: initParams }).subscribe();
+    });
+    when(hppCheckoutDataProviderMock.getCheckoutData(initParams.formId)).thenReturn(formSubmitEventMock.pipe(mapTo(testCheckoutData)));
   });
 
   describe('init()', () => {
@@ -75,27 +92,12 @@ describe('HPPClickToPayAdapter', () => {
             config: initParams,
           },
         };
-
         verify(messageBus.publish(objectContaining(paymentMethodInitEvent), EventScope.THIS_FRAME)).once();
         done();
       });
     });
 
     it('should subscribe to checkout data captured from form submit and perform checkout using DigitalTerminal when checkout is triggered', done => {
-      const formSubmitEventMock = new Subject<void>();
-      const testCheckoutData: IInitialCheckoutData = {
-        newCardData: {
-          primaryAccountNumber: '111',
-          cardholderFullName: 'Customer Name',
-          cardSecurityCode: '123',
-          panExpirationMonth: '12',
-          panExpirationYear: '2049',
-        },
-      };
-      when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT, anyFunction())).thenCall((eventType, callback) => {
-        callback({ type: eventType, data: initParams }).subscribe();
-      });
-      when(hppCheckoutDataProviderMock.getCheckoutData(initParams.formId)).thenReturn(formSubmitEventMock.pipe(mapTo(testCheckoutData)));
       sut.init(initParams).then(adapterInstance => {
           formSubmitEventMock.asObservable().subscribe(() => {
             verify(digitalTerminalMock.checkout(objectContaining({
@@ -108,6 +110,24 @@ describe('HPPClickToPayAdapter', () => {
           formSubmitEventMock.next();
         }
       );
+    });
+
+    describe('it should subscribe to checkout response from DigitalTerminal', () => {
+      it('when checkout action code is `ADD_CARD` it should open new card form in card list', done => {
+        when(digitalTerminalMock.checkout(anything())).thenReturn(of({
+          dcfActionCode: 'ADD_CARD',
+          unbindAppInstance: false,
+        } as ICheckoutResponse));
+
+        sut.init(initParams).then(adapterInstance => {
+            formSubmitEventMock.asObservable().subscribe(() => {
+              verify(cardListGeneratorMock.openNewCardForm()).once();
+              done();
+            });
+            formSubmitEventMock.next();
+          }
+        );
+      });
     });
   });
 

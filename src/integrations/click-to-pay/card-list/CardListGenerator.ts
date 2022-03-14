@@ -41,6 +41,11 @@ export class CardListGenerator {
     this.addEventHandlers();
   }
 
+  openNewCardForm(): void {
+    this.openForm();
+    this.clearSelection();
+  }
+
   private addCardContent(): string {
     return `
       <div class="st-add-card__label">
@@ -72,7 +77,7 @@ export class CardListGenerator {
   }
 
   private addEventHandlers(): void {
-    document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
+    document.getElementById('st-add-card__button').addEventListener('click', () => this.openNewCardForm());
   }
 
   private cardContent(card: ICorrelatedMaskedCard, checked = false): string {
@@ -142,11 +147,6 @@ export class CardListGenerator {
       option.value = option.innerHTML = i.toString();
       select.appendChild(option);
     }
-  }
-
-  private handleAddCardButtonClick(): void {
-    this.openForm();
-    this.clearSelection();
   }
 
   private handleClick(id: string): void {
