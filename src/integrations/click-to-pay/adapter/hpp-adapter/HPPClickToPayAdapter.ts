@@ -51,6 +51,12 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     return firstValueFrom(this.digitalTerminal.identifyUser(this.userIdentificationService, identificationData));
   }
 
+  private showUserDetails(): void {
+    this.digitalTerminal.getSrcProfiles().subscribe(userData => {
+      this.cardListGenerator.displayUserInformation(this.initParams.cardListContainerId, userData.srcProfiles);
+    });
+  }
+
   showCardList(): void {
     this.digitalTerminal.getSrcProfiles().subscribe(cardList => {
       this.cardListGenerator.displayCards(this.initParams.cardListContainerId, cardList.aggregatedCards);
@@ -58,6 +64,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
         displayCardForm: false,
       } as IUpdateView);
     });
+    this.showUserDetails();
   }
 
   getSrcName(pan: string): Promise<SrcName | null> {
