@@ -133,8 +133,19 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     this.frameQueryingService.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT,
       () => this.digitalTerminal.checkout(checkoutData).pipe(
         tap(response => this.initParams?.onCheckout.call(null, response)),
+        tap(response=>this.handleCheckoutResponse(response)),
         switchMap(preventUnfinishedCheckoutPropagation)
       )
     );
+  }
+
+  private handleCheckoutResponse(response: ICheckoutResponse) {
+    if (response.dcfActionCode === 'ADD_CARD') {
+      this.cardListGenerator.openNewCardForm();
+    }
+
+    if (response.unbindAppInstance) {
+      this.digitalTerminal.unbindAppInstance().subscribe(() => this.cardListGenerator.hideForm());
+    }
   }
 }

@@ -62,6 +62,16 @@ export class CardListGenerator {
     document.getElementById(this.notYouElementId).addEventListener('click', () => this.digitalTerminal.unbindAppInstance().subscribe(() => this.hideForm()));
   }
 
+  openNewCardForm(): void {
+    this.openForm();
+    this.clearSelection();
+  }
+
+  hideForm(): void {
+    document.getElementById('st-ctp-cards').innerHTML = '';
+    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true });
+  }
+
   private addCardContent(): string {
     return `
       <div class="st-add-card__label">
@@ -243,10 +253,6 @@ export class CardListGenerator {
     }
   }
 
-  private hideForm(): void {
-    document.getElementById('st-ctp-cards').innerHTML = '';
-    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true });
-  }
   private showValidationStatus(id: string, message: string) {
     document.getElementById(id).style.display = 'block';
     document.getElementById(id).innerHTML = message;
