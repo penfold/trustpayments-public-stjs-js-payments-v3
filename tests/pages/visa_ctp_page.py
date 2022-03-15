@@ -1,4 +1,3 @@
-import string
 import time
 
 from pages.base_page import BasePage
@@ -14,7 +13,7 @@ class VisaClickToPayPage(BasePage):
     def fill_payment_form(self, card_number, expiry_date, cvv):
         self._actions.send_keys(VisaClickToPayLocators.card_number_input, card_number)
         self._actions.select_element_by_text(VisaClickToPayLocators.expiry_month_select, expiry_date[:2])
-        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_year_select, '20'+expiry_date[3::])
+        self._actions.select_element_by_text(VisaClickToPayLocators.expiry_year_select, '20' + expiry_date[3::])
         self._actions.send_keys(VisaClickToPayLocators.security_code_input, cvv)
 
     def click_pay_securely_button(self):
@@ -105,6 +104,10 @@ class VisaClickToPayPage(BasePage):
     def clear_email_input(self):
         self._actions.clear_input(VisaClickToPayLocators.email_input)
 
+    def clear_card_details_inputs(self):
+        self._actions.clear_input(VisaClickToPayLocators.card_number_input)
+        self._actions.clear_input(VisaClickToPayLocators.security_code_input)
+
     def click_cancel_button(self):
         self._actions.click(VisaClickToPayLocators.cancel_btn)
 
@@ -139,7 +142,8 @@ class VisaClickToPayPage(BasePage):
         return masked_card_number
 
     def is_first_card_auto_selected(self):
-        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.get_selected_card_locator_from_cards_list('1'))
+        self._waits.wait_for_element_to_be_displayed(
+            VisaClickToPayLocators.get_selected_card_locator_from_cards_list('1'))
         return self._actions.is_checkbox_selected(VisaClickToPayLocators.get_selected_card_locator_from_cards_list('1'))
 
     # Visa Checkout view
@@ -157,7 +161,8 @@ class VisaClickToPayPage(BasePage):
 
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
         for field_locator, value in address_fields.items():
-            self._actions.send_keys(VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator), value)
+            self._actions.send_keys(VisaClickToPayLocators.get_address_field_locator_from_visa_popup(field_locator),
+                                    value)
         self._actions.click(VisaClickToPayLocators.continue_btn)
 
     def confirm_user_address(self):
@@ -212,4 +217,3 @@ class VisaClickToPayPage(BasePage):
                             f' should be {expected_text} but is {actual_text}'
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert actual_text == expected_text, assertion_message
-

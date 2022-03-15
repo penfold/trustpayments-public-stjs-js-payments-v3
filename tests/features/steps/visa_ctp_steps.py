@@ -3,6 +3,7 @@ import time
 
 from assertpy import assert_that
 from behave import use_step_matcher, step, then
+
 from pages.page_factory import Pages
 from utils.enums.card import Card
 from utils.helpers.gmail_service import EMAIL_LOGIN
@@ -73,7 +74,8 @@ def step_impl(context, otp):
         vctp_page.fill_otp_field('123')
         vctp_page.click_submit_otp_btn()
 
-#TODO
+
+# TODO
 @step('User will see that VISA_CTP payment was (?P<param>.+)')
 def step_impl(context, param):
     time.sleep(5)
@@ -115,6 +117,12 @@ def step_impl(context, expected_message):
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.clear_email_input()
+
+
+@step('User clears card details fields')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.clear_card_details_inputs()
 
 
 @step('User cancel payment on login view')
@@ -235,10 +243,13 @@ def step_impl(context):
     vctp_page.click_switch_card_details()
 
 
-@then("User will see that registering card with VISA_CTP in unavailable")
-def step_impl(context):
+@then("User will see that registering card with VISA_CTP is (?P<param>.+)")
+def step_impl(context, param):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    assert_that(vctp_page.is_register_checkbox_available()).is_false()
+    if param in 'unavailable':
+        assert_that(vctp_page.is_register_checkbox_available()).is_false()
+    if param in 'available':
+        assert_that(vctp_page.is_register_checkbox_available()).is_true()
 
 
 @then("User will see VISA_CTP card validation message")

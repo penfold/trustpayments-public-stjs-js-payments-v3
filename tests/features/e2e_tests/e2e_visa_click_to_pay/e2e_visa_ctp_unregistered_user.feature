@@ -108,3 +108,16 @@ Feature: Visa Click To Pay for unregistered user
     When User edits address details
     And User reviews VISA_CTP checkout page and confirm with remember me
     Then User will see that VISA_CTP payment was successful
+
+  Scenario: Unsuccessful card adding - VISA CTP card recognizing mechanism for Unregistered user
+    Given JS library configured by inline config BASIC_CONFIG
+#    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And User opens example page VISA_CTP
+    When User fills VISA_CTP card details with defined card MASTERCARD_CARD
+    Then User will see that registering card with VISA_CTP is unavailable
+    And User clears card details fields
+    And User fills VISA_CTP card details with defined card VISA_V21_FRICTIONLESS
+    Then User will see that registering card with VISA_CTP is available

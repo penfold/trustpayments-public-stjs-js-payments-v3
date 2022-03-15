@@ -83,16 +83,5 @@ Feature: Visa Click To Pay
     And User reviews VISA_CTP checkout page and continues payment
     Then User will see that VISA_CTP payment was rejected
 
-  Scenario Outline: Unsuccessful card adding - Unregistered VISA CTP user on recognized device
-    Given JS library configured by inline config BASIC_CONFIG
-#    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
-    And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value |
-      | requesttypedescriptions | AUTH  |
-    And User opens example page VISA_CTP
-    When User fills VISA_CTP card details with defined card <card>
-    Then User will see that registering card with VISA_CTP in unavailable
-    Examples:
-      | card            |
-      | MASTERCARD_CARD |
-      | MAESTRO_CARD    |
+
+
