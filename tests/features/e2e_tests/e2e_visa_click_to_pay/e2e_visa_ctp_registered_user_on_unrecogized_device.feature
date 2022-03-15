@@ -185,6 +185,19 @@ Feature: Visa Click To Pay
     And User clicks Pay Securely button
     Then Validation
 
+  Scenario: Unsuccessful card adding - unsupported card
+    Given JS library configured by inline config BASIC_CONFIG
+#    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And User opens example page VISA_CTP
+    And User selects Look up my cards
+    And User login to VISA_CTP account with valid credentials
+    And User clicks Add new card button
+    When User fills card details with defined card MASTERCARD_INVALID_EXP_DATE_CARD
+    Then User will see VISA_CTP card validation message
+
     #TODO - STJS-3042 + Delete new card after this test
   Scenario: Add new card from Visa popup
     Given JS library configured by inline config BASIC_CONFIG
@@ -271,6 +284,7 @@ Feature: Visa Click To Pay
     # TODO - step for switch address
     And User reviews VISA_CTP checkout page and continues payment
     And User will see that VISA_CTP checkout was successful
+
 
 
   #TODO - to confirm - probably it will not be possible cancel payment on login view

@@ -3,9 +3,11 @@ import time
 
 from assertpy import assert_that
 from behave import use_step_matcher, step, then
+
 from pages.page_factory import Pages
 from utils.enums.card import Card
 from utils.helpers.gmail_service import EMAIL_LOGIN
+from utils.helpers.resources_reader import get_translation_from_json
 
 use_step_matcher('re')
 
@@ -41,6 +43,15 @@ def step_impl(context):
     vctp_page.click_register_card_checkbox()
 
 
+@step('User will see that registering card with VISA_CTP is (?P<param>.+)')
+def step_impl(context, param):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    if param in 'unavailable':
+        assert_that(vctp_page.is_register_checkbox_available()).is_false()
+    if param in 'available':
+        assert_that(vctp_page.is_register_checkbox_available()).is_true()
+
+
 @step('User login to VISA_CTP account with (?P<email_state>.+) e-mail address')
 def step_impl(context, email_state):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
@@ -71,6 +82,7 @@ def step_impl(context, otp):
     elif otp in 'invalid':
         vctp_page.fill_otp_field('123')
         vctp_page.click_submit_otp_btn()
+
 
 #TODO
 @step('User will see that VISA_CTP checkout was (?P<param>.+)')
@@ -114,6 +126,12 @@ def step_impl(context, expected_message):
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.clear_email_input()
+
+
+@step('User clears card details fields')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.clear_card_details_inputs()
 
 
 @step('User cancel payment on login view')
@@ -182,6 +200,13 @@ def step_impl(context):
     masked_card_number = vctp_page.get_masked_card_number_from_card_list()
     expected_card_number = context.pan[-4:]
     assert_that(expected_card_number).is_equal_to(masked_card_number)
+
+
+@step('User will see VISA_CTP card validation message')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    expected_text = get_translation_from_json('en_GB', 'VISA_CTP card validation message')
+    vctp_page.is_card_validation_message_visible(expected_text)
 
 
 @step('User clicks Pay Securely button')
