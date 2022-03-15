@@ -73,7 +73,7 @@ def step_impl(context, otp):
         vctp_page.click_submit_otp_btn()
 
 #TODO
-@step('User will see that VISA_CTP payment was (?P<param>.+)')
+@step('User will see that VISA_CTP checkout was (?P<param>.+)')
 def step_impl(context, param):
     time.sleep(5)
     pass
@@ -159,10 +159,13 @@ def step_impl(context, register):
         vctp_page.click_cancel_checkout_btn()
 
 
-@step('User see that first card on the list is auto-selected')
-def step_impl(context):
+@step('User see that first card on the list is (?P<is_selected>.+)')
+def step_impl(context, is_selected):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    assert_that(vctp_page.is_first_card_auto_selected()).is_true()
+    if is_selected in 'auto-selected':
+        assert_that(vctp_page.is_first_card_auto_selected()).is_true()
+    elif is_selected in 'not selected':
+        assert_that(vctp_page.is_first_card_auto_selected()).is_false()
 
 
 @step('User fills card details with defined card (?P<card>.+)')
@@ -232,3 +235,8 @@ def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_card_menu_btn()
     vctp_page.click_switch_card_details()
+
+
+@step("User is not recognized by VISA_CTP")
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)

@@ -4,7 +4,7 @@ Feature: Visa Click To Pay
   In order to check full payment functionality
 
 
-  Scenario: Successful payment - Registered VISA_CTP user on unrecognized device with saved credit cards
+  Scenario: Successful checkout - Registered VISA_CTP user on unrecognized device with saved credit cards
     Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
     And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -16,9 +16,14 @@ Feature: Visa Click To Pay
     And User fills valid VISA_CTP one time password
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP payment was successful
+    Then User will see that VISA_CTP checkout was successful
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
 
-  Scenario: Successful payment with 3DS authentication - Registered VISA_CTP user on unrecognized device with saved credit cards
+  #TODO
+  Scenario: Error checkout - Registered VISA_CTP user on unrecognized device with saved credit cards
     Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
     And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -28,29 +33,17 @@ Feature: Visa Click To Pay
     When User selects Look up my cards
     And User login to VISA_CTP account with valid e-mail address
     And User fills valid VISA_CTP one time password
-    And User selects second card from cards list view
-    And User clicks Pay Securely button
-    And User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP payment was successful
-    # TODO
-
-  Scenario: Rejected payment - Registered VISA_CTP user on unrecognized device with saved credit cards
-    Given JS library configured by inline config BASIC_CONFIG
-#    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
-    And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value |
-      | requesttypedescriptions | AUTH  |
-    And User opens example page VISA_CTP
-    When User selects Look up my cards
-    And User login to VISA_CTP account with valid e-mail address
-    And User fills valid VISA_CTP one time password
-    #TODO - card with rejected status
+    #TODO - card with error status
     And User selects VISA_V21_FRICTIONLESS card from cards list view by number
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP payment was rejected
+    Then User will see that VISA_CTP checkout was rejected
+    And User will see following callback type called only once
+      | callback_type |
+      | erro          |
+      | submit        |
 
-  Scenario: Cancel payment - Registered VISA CTP user on unrecognized device with saved credit cards
+  Scenario: Cancel checkout - Registered VISA CTP user on unrecognized device with saved credit cards
     Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
     And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -63,9 +56,28 @@ Feature: Visa Click To Pay
     And User clicks Pay Securely button
     And  User reviews VISA_CTP checkout page and cancels payment
     # TODO
-    Then User will see that VISA_CTP payment was cancelled
+    Then User will see that VISA_CTP checkout was cancelled
+    And User will see following callback type called only once
+      | callback_type |
+      | cancel        |
 
-  Scenario: Unsuccessful login with not registered email and repeat payment
+    #TODO
+  Scenario: Successful checkout - Registered VISA CTP user and don't remember me
+    Given JS library configured by inline config BASIC_CONFIG
+#    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
+    And JS library authenticated by jwt BASE_JWT with additional attributes
+      | key                     | value |
+      | requesttypedescriptions | AUTH  |
+    And User opens example page VISA_CTP
+    When User selects Look up my cards
+    And User login to VISA_CTP account with valid e-mail address
+    And User fills valid VISA_CTP one time password
+    And User clicks Pay Securely button
+    And User reviews VISA_CTP checkout page and continues payment without remember me
+    Then User will see that VISA_CTP checkout was successful
+    Then User is not recognized by VISA_CTP
+
+  Scenario: Unsuccessful login with not registered email and repeat checkout
     Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
     And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -79,7 +91,11 @@ Feature: Visa Click To Pay
     And User login to VISA_CTP account with valid credentials
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP payment was successful
+    Then User will see that VISA_CTP checkout was successful
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
 
   Scenario: Unsuccessful authentication with incorrect otp and repeat payment
     Given JS library configured by inline config BASIC_CONFIG
@@ -96,7 +112,11 @@ Feature: Visa Click To Pay
     And User selects first card from cards list view
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP payment was successful
+    Then User will see that VISA_CTP checkout was successful
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
 
   Scenario: Resend one time password
     Given JS library configured by inline config BASIC_CONFIG
@@ -123,9 +143,7 @@ Feature: Visa Click To Pay
     Then User see that first card on the list is auto-selected
     And User selects second card from cards list view
     And User clicks Pay Securely button
-    Then User will see selected card on VISA_CTP popup
-    When User reviews VISA_CTP checkout page and continues payment
-    Then User will see that VISA_CTP payment was successful
+    Then User will see previously selected card on VISA_CTP popup
 
     #TODO - Delete new card after this test
   Scenario: Add new card from card list view
@@ -138,11 +156,16 @@ Feature: Visa Click To Pay
     When User selects Look up my cards
     And User login to VISA_CTP account with valid credentials
     When User clicks Add new card button
+    And User see that first card on the list is not selected
     And User fills card details with defined card VISA_V21_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay Securely button
-    Then User will see selected card on VISA_CTP popup
+    Then User will see previously selected card on VISA_CTP popup
     When User reviews VISA_CTP checkout page and continues payment
-    And User will see that VISA_CTP payment was successful
+    And User will see that VISA_CTP checkout was successful
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And User selects Look up my cards
     And User login to VISA_CTP account with valid credentials
     Then User see previously added card in card list
@@ -162,7 +185,7 @@ Feature: Visa Click To Pay
     And User clicks Pay Securely button
     Then Validation
 
-    #TODO - Delete new card after this test
+    #TODO - STJS-3042 + Delete new card after this test
   Scenario: Add new card from Visa popup
     Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
@@ -176,12 +199,12 @@ Feature: Visa Click To Pay
     When User selects Add New Card on VISA_CTP popup
     #TODO - step for fill card details
     And User reviews VISA_CTP checkout page and continues payment
-    And User will see that VISA_CTP payment was successful
+    And User will see that VISA_CTP checkout was successful
     And User selects Look up my cards
     And User login to VISA_CTP account with valid credentials
     Then User see previously added card in card list
 
-    #TODO
+    #TODO - STJS-3042
   Scenario: Edit card details
     Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
@@ -195,12 +218,12 @@ Feature: Visa Click To Pay
     When User selects Edit card on VISA_CTP popup
     #TODO - step for edit card details
     And User reviews VISA_CTP checkout page and continues payment
-    And User will see that VISA_CTP payment was successful
+    And User will see that VISA_CTP checkout was successful
     And User selects Look up my cards
     And User login to VISA_CTP account with valid credentials
     Then User see previously added card in card list
 
-    #TODO
+    #TODO - STJS-3042
   Scenario: Switch card
     Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
@@ -214,9 +237,9 @@ Feature: Visa Click To Pay
     When User selects Switch card on VISA_CTP popup
     #TODO - step for switch card details
     And User reviews VISA_CTP checkout page and continues payment
-    And User will see that VISA_CTP payment was successful
+    And User will see that VISA_CTP checkout was successful
 
-    #TODO
+    #TODO - STJS-3042
   Scenario: Add and delete address
     Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
@@ -231,8 +254,9 @@ Feature: Visa Click To Pay
     And User clicks Add new address plus button
     And User fills billing address form on Visa checkout popup
     And User reviews VISA_CTP checkout page and continues payment
-    And User will see that VISA_CTP payment was successful
+    And User will see that VISA_CTP checkout was successful
 
+    #TODO - STJS-3042
   Scenario: Switch address
     Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
@@ -246,7 +270,7 @@ Feature: Visa Click To Pay
     When User selects Switch address on VISA_CTP popup
     # TODO - step for switch address
     And User reviews VISA_CTP checkout page and continues payment
-    And User will see that VISA_CTP payment was successful
+    And User will see that VISA_CTP checkout was successful
 
 
   #TODO - to confirm - probably it will not be possible cancel payment on login view
@@ -260,12 +284,12 @@ Feature: Visa Click To Pay
 #    And User selects Look up my cards
 #    And User login to VISA_CTP account with valid e-mail address
 #    When User cancel payment on login view
-#    Then User will see that VISA_CTP payment was cancelled
+#    Then User will see that VISA_CTP checkout was cancelled
 #    When User selects Look up my cards
 #    And User login to VISA_CTP account with valid e-mail address
 #    And User fills valid VISA_CTP one time password
 #    And User reviews VISA_CTP checkout page and continues payment
-#    Then User will see that VISA_CTP payment was successful
+#    Then User will see that VISA_CTP checkout was successful
 
 #TODO Uncomment this test when browser native validation will be replaced by new one
 #  Scenario Outline: Email field validation
