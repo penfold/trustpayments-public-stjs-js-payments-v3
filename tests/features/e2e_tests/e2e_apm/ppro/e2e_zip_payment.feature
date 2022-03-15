@@ -8,20 +8,24 @@ Feature: E2E ZIP Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | AUTH            |
-      | billingfirstname        | FirstName       |
-      | billinglastname         | LastName        |
-      | billingemail            | email@email.com |
-      | billingpremise          | Premise         |
-      | billingtown             | test            |
-      | billingcounty           | test            |
-      | billingstreet           | test            |
-      | billingpostcode         | PO1 3AX         |
-      | billingcountryiso2a     | GB              |
-      | orderreference          | 123445          |
-      | currencyiso3a           | GBP             |
-      | baseamount              | 1000            |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | email@email.com                                        |
+      | billingpremise          | Premise                                                |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | GB                                                     |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | GBP                                                    |
+      | baseamount              | 1000                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses ZIP from APM list
@@ -39,20 +43,24 @@ Feature: E2E ZIP Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                 |
-      | requesttypedescriptions | AUTH                  |
-      | billingfirstname        | FirstName             |
-      | billinglastname         | LastName              |
-      | billingemail            | email@email.com       |
-      | billingpremise          | Premise               |
-      | billingtown             | test                  |
-      | billingcounty           | test                  |
-      | billingstreet           | test                  |
-      | billingpostcode         | PO1 3AX               |
-      | billingcountryiso2a     | <billingcountryiso2a> |
-      | orderreference          | 123445                |
-      | currencyiso3a           | <currencyiso3a>       |
-      | baseamount              | 1000                  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | email@email.com                                        |
+      | billingpremise          | Premise                                                |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | <billingcountryiso2a>                                  |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | <currencyiso3a>                                        |
+      | baseamount              | 1000                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -69,18 +77,22 @@ Feature: E2E ZIP Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value     |
-      | requesttypedescriptions | AUTH      |
-      | billingfirstname        | FirstName |
-      | billinglastname         | LastName  |
-      | billingtown             | test      |
-      | billingcounty           | test      |
-      | billingstreet           | test      |
-      | billingpostcode         | PO1 3AX   |
-      | billingcountryiso2a     | GB        |
-      | orderreference          | 123445    |
-      | currencyiso3a           | GBP       |
-      | baseamount              | 1000      |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | GB                                                     |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | GBP                                                    |
+      | baseamount              | 1000                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -91,18 +103,22 @@ Feature: E2E ZIP Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs ZIP_MIN_MAX_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value        |
-      | requesttypedescriptions | AUTH         |
-      | billingfirstname        | FirstName    |
-      | billinglastname         | LastName     |
-      | billingtown             | test         |
-      | billingcounty           | test         |
-      | billingstreet           | test         |
-      | billingpostcode         | PO1 3AX      |
-      | billingcountryiso2a     | GB           |
-      | orderreference          | 123445       |
-      | currencyiso3a           | GBP          |
-      | baseamount              | <baseamount> |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | GB                                                     |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | GBP                                                    |
+      | baseamount              | <baseamount>                                           |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -118,35 +134,43 @@ Feature: E2E ZIP Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | AUTH            |
-      | billingfirstname        | FirstName       |
-      | billinglastname         | LastName        |
-      | billingemail            | email@email.com |
-      | billingpremise          | Premise         |
-      | billingtown             | test            |
-      | billingcounty           | test            |
-      | billingstreet           | test            |
-      | billingpostcode         | PO1 3AX         |
-      | billingcountryiso2a     | GB              |
-      | orderreference          | 123445          |
-      | currencyiso3a           | GBP             |
-      | baseamount              | 1000            |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | email@email.com                                        |
+      | billingpremise          | Premise                                                |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | GB                                                     |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | GBP                                                    |
+      | baseamount              | 1000                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | AUTH            |
-      | billingfirstname        | FirstNameUpdate |
-      | billinglastname         | LastName        |
-      | billingemail            | email@email.com |
-      | billingpremise          | Premise         |
-      | billingtown             | test            |
-      | billingcounty           | test            |
-      | billingstreet           | test            |
-      | billingpostcode         | PO1 3AX         |
-      | billingcountryiso2a     | GB              |
-      | orderreference          | 123446          |
-      | currencyiso3a           | GBP             |
-      | baseamount              | 1500            |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingfirstname        | FirstNameUpdate                                        |
+      | billinglastname         | LastName                                               |
+      | billingemail            | email@email.com                                        |
+      | billingpremise          | Premise                                                |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | GB                                                     |
+      | orderreference          | 123446                                                 |
+      | currencyiso3a           | GBP                                                    |
+      | baseamount              | 1500                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     And User calls updateJWT function by filling amount field
     When User chooses ZIP from APM list
     Then User will be sent to apm page - zip
@@ -156,35 +180,43 @@ Feature: E2E ZIP Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | AUTH            |
-      | billingfirstname        | FirstName       |
-      | billinglastname         | LastName        |
-      | billingemail            | email@email.com |
-      | billingpremise          | Premise         |
-      | billingtown             | test            |
-      | billingcounty           | test            |
-      | billingstreet           | test            |
-      | billingpostcode         | PO1 3AX         |
-      | billingcountryiso2a     | GB              |
-      | orderreference          | 123445          |
-      | currencyiso3a           | GBP             |
-      | baseamount              | 1000            |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | email@email.com                                        |
+      | billingpremise          | Premise                                                |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | GB                                                     |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | GBP                                                    |
+      | baseamount              | 1000                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | AUTH            |
-      | billingfirstname        | FirstName       |
-      | billinglastname         | LastName        |
-      | billingemail            | email@email.com |
-      | billingpremise          | Premise         |
-      | billingtown             | test            |
-      | billingcounty           | test            |
-      | billingstreet           | test            |
-      | billingpostcode         | PO1 3AX         |
-      | billingcountryiso2a     | PL              |
-      | orderreference          | 123445          |
-      | currencyiso3a           | PLN             |
-      | baseamount              | 1000            |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | email@email.com                                        |
+      | billingpremise          | Premise                                                |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | PL                                                     |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | PLN                                                    |
+      | baseamount              | 1000                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -195,33 +227,41 @@ Feature: E2E ZIP Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | AUTH            |
-      | billingfirstname        | FirstName       |
-      | billinglastname         | LastName        |
-      | billingemail            | email@email.com |
-      | billingpremise          | Premise         |
-      | billingtown             | test            |
-      | billingcounty           | test            |
-      | billingstreet           | test            |
-      | billingpostcode         | PO1 3AX         |
-      | billingcountryiso2a     | GB              |
-      | orderreference          | 123445          |
-      | currencyiso3a           | GBP             |
-      | baseamount              | 1000            |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | email@email.com                                        |
+      | billingpremise          | Premise                                                |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | GB                                                     |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | GBP                                                    |
+      | baseamount              | 1000                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | AUTH            |
-      | billingemail            | email@email.com |
-      | billingpremise          | Premise         |
-      | billingtown             | test            |
-      | billingcounty           | test            |
-      | billingstreet           | test            |
-      | billingpostcode         | PO1 3AX         |
-      | billingcountryiso2a     | GB              |
-      | orderreference          | 123445          |
-      | currencyiso3a           | GBP             |
-      | baseamount              | 1000            |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingemail            | email@email.com                                        |
+      | billingpremise          | Premise                                                |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | GB                                                     |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | GBP                                                    |
+      | baseamount              | 1000                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -232,20 +272,24 @@ Feature: E2E ZIP Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value               |
-      | requesttypedescriptions | THREEDQUERY RISKDEC |
-      | billingfirstname        | FirstName           |
-      | billinglastname         | LastName            |
-      | billingemail            | email@email.com     |
-      | billingpremise          | Premise             |
-      | billingtown             | test                |
-      | billingcounty           | test                |
-      | billingstreet           | test                |
-      | billingpostcode         | PO1 3AX             |
-      | billingcountryiso2a     | GB                  |
-      | orderreference          | 123445              |
-      | currencyiso3a           | GBP                 |
-      | baseamount              | 1000                |
+      | key                     | value                                                  |
+      | requesttypedescriptions | THREEDQUERY RISKDEC                                    |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | email@email.com                                        |
+      | billingpremise          | Premise                                                |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | GB                                                     |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | GBP                                                    |
+      | baseamount              | 1000                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses ZIP from APM list
@@ -257,20 +301,24 @@ Feature: E2E ZIP Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                     |
-      | requesttypedescriptions | <requesttypedescriptions> |
-      | billingfirstname        | FirstName                 |
-      | billinglastname         | LastName                  |
-      | billingemail            | email@email.com           |
-      | billingpremise          | Premise                   |
-      | billingtown             | test                      |
-      | billingcounty           | test                      |
-      | billingstreet           | test                      |
-      | billingpostcode         | PO1 3AX                   |
-      | billingcountryiso2a     | GB                        |
-      | orderreference          | 123445                    |
-      | currencyiso3a           | GBP                       |
-      | baseamount              | 1000                      |
+      | key                     | value                                                  |
+      | requesttypedescriptions | <requesttypedescriptions>                              |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | email@email.com                                        |
+      | billingpremise          | Premise                                                |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | GB                                                     |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | GBP                                                    |
+      | baseamount              | 1000                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User waits for whole form to be displayed
     And User waits for Pay button to be active
@@ -329,20 +377,24 @@ Feature: E2E ZIP Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | AUTH            |
-      | billingfirstname        | FirstName       |
-      | billinglastname         | LastName        |
-      | billingemail            | email@email.com |
-      | billingpremise          | Premise         |
-      | billingtown             | test            |
-      | billingcounty           | test            |
-      | billingstreet           | test            |
-      | billingpostcode         | PO1 3AX         |
-      | billingcountryiso2a     | GB              |
-      | orderreference          | 123445          |
-      | currencyiso3a           | GBP             |
-      | baseamount              | 1000            |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | email@email.com                                        |
+      | billingpremise          | Premise                                                |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | GB                                                     |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | GBP                                                    |
+      | baseamount              | 1000                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses ZIP from APM list
@@ -415,20 +467,24 @@ Feature: E2E ZIP Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs ZIP_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | AUTH            |
-      | billingfirstname        | FirstName       |
-      | billinglastname         | LastName        |
-      | billingemail            | email@email.com |
-      | billingpremise          | Premise         |
-      | billingtown             | test            |
-      | billingcounty           | test            |
-      | billingstreet           | test            |
-      | billingpostcode         | PO1 3AX         |
-      | billingcountryiso2a     | GB              |
-      | orderreference          | 123445          |
-      | currencyiso3a           | GBP             |
-      | baseamount              | 1000            |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | email@email.com                                        |
+      | billingpremise          | Premise                                                |
+      | billingtown             | test                                                   |
+      | billingcounty           | test                                                   |
+      | billingstreet           | test                                                   |
+      | billingpostcode         | PO1 3AX                                                |
+      | billingcountryiso2a     | GB                                                     |
+      | orderreference          | 123445                                                 |
+      | currencyiso3a           | GBP                                                    |
+      | baseamount              | 1000                                                   |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnUrl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses ZIP from APM list - override placement

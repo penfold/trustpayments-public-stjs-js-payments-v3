@@ -11,13 +11,16 @@ Feature: E2E WECHATPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value     |
-      | requesttypedescriptions | AUTH      |
-      | baseamount              | 70        |
-      | billingfirstname        | FirstName |
-      | billinglastname         | LastName  |
-      | billingcountryiso2a     | CN        |
-      | currencyiso3a           | EUR       |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingcountryiso2a     | CN                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses WECHATPAY from APM list
@@ -28,18 +31,21 @@ Feature: E2E WECHATPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value               |
-      | requesttypedescriptions | AUTH                |
-      | billingcountryiso2a     | CN                  |
-      | currencyiso3a           | EUR                 |
-      | baseamount              | 70                 |
-      | billingemail            | FirstName@email.pl  |
-      | billingdob              | 1980-02-01          |
-      | billingfirstname        | <billingfirstname>  |
-      | billinglastname         | <billinglastname>   |
-      | billingprefixname       | <billingprefixname> |
-      | billingmiddlename       | <billingmiddlename> |
-      | billingsuffixname       | <billingsuffixname> |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | billingcountryiso2a     | CN                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | baseamount              | 70                                                     |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingdob              | 1980-02-01                                             |
+      | billingfirstname        | <billingfirstname>                                     |
+      | billinglastname         | <billinglastname>                                      |
+      | billingprefixname       | <billingprefixname>                                    |
+      | billingmiddlename       | <billingmiddlename>                                    |
+      | billingsuffixname       | <billingsuffixname>                                    |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses WECHATPAY from APM list
@@ -58,14 +64,17 @@ Feature: E2E WECHATPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                 |
-      | requesttypedescriptions | AUTH                  |
-      | baseamount              | 70                    |
-      | billingfirstname        | FirstName             |
-      | billinglastname         | LastName              |
-      | billingemail            | FirstName@email.pl    |
-      | billingcountryiso2a     | <billingcountryiso2a> |
-      | currencyiso3a           | <currencyiso3a>       |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingcountryiso2a     | <billingcountryiso2a>                                  |
+      | currencyiso3a           | <currencyiso3a>                                        |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -82,11 +91,14 @@ Feature: E2E WECHATPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value |
-      | requesttypedescriptions | AUTH  |
-      | currencyiso3a           | USD   |
-      | billingcountryiso2a     | CN    |
-      | baseamount              | 123   |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | currencyiso3a           | USD                                                    |
+      | billingcountryiso2a     | CN                                                     |
+      | baseamount              | 123                                                    |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -100,22 +112,28 @@ Feature: E2E WECHATPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value     |
-      | requesttypedescriptions | AUTH      |
-      | baseamount              | 70        |
-      | billingfirstname        | FirstName |
-      | billinglastname         | LastName  |
-      | billingcountryiso2a     | CN        |
-      | currencyiso3a           | EUR       |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingcountryiso2a     | CN                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 707                |
-      | billingfirstname        | FirstNameUpdate    |
-      | billinglastname         | LastName           |
-      | billingemail            | FirstName@email.pl |
-      | billingcountryiso2a     | CN                 |
-      | currencyiso3a           | USD                |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 707                                                    |
+      | billingfirstname        | FirstNameUpdate                                        |
+      | billinglastname         | LastName                                               |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingcountryiso2a     | CN                                                     |
+      | currencyiso3a           | USD                                                    |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User waits for Pay button to be active
     And User calls updateJWT function by filling amount field
     When User chooses WECHATPAY from APM list
@@ -126,23 +144,29 @@ Feature: E2E WECHATPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billinglastname         | LastName           |
-      | billingemail            | FirstName@email.pl |
-      | billingcountryiso2a     | CN                 |
-      | currencyiso3a           | EUR                |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingcountryiso2a     | CN                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 707                |
-      | billingfirstname        | FirstName          |
-      | billinglastname         | LastName           |
-      | billingemail            | FirstName@email.pl |
-      | billingcountryiso2a     | CZ                 |
-      | currencyiso3a           | PLN                |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 707                                                    |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingcountryiso2a     | CZ                                                     |
+      | currencyiso3a           | PLN                                                    |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User waits for Pay button to be active
     When User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
@@ -153,19 +177,25 @@ Feature: E2E WECHATPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billinglastname         | LastName           |
-      | billingemail            | FirstName@email.pl |
-      | billingcountryiso2a     | CN                 |
-      | currencyiso3a           | EUR                |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingcountryiso2a     | CN                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value |
-      | requesttypedescriptions | AUTH  |
-      | baseamount              | 707   |
-      | currencyiso3a           | USD   |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 707                                                    |
+      | currencyiso3a           | USD                                                    |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User waits for Pay button to be active
     When User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
@@ -176,14 +206,17 @@ Feature: E2E WECHATPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value               |
-      | requesttypedescriptions | THREEDQUERY RISKDEC |
-      | baseamount              | 70                  |
-      | billingfirstname        | FirstName           |
-      | billinglastname         | LastName            |
-      | billingemail            | FirstName@email.pl  |
-      | billingcountryiso2a     | CN                  |
-      | currencyiso3a           | EUR                 |
+      | key                     | value                                                  |
+      | requesttypedescriptions | THREEDQUERY RISKDEC                                    |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingcountryiso2a     | CN                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses WECHATPAY from APM list
@@ -260,15 +293,18 @@ Feature: E2E WECHATPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billinglastname         | LastName           |
-      | billingemail            | FirstName@email.pl |
-      | billingcountryiso2a     | CN                 |
-      | currencyiso3a           | EUR                |
-      | orderreference          | 123456             |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingcountryiso2a     | CN                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | orderreference          | 123456                                                 |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses WECHATPAY from APM list
@@ -286,15 +322,18 @@ Feature: E2E WECHATPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value              |
-      | requesttypedescriptions | AUTH               |
-      | baseamount              | 70                 |
-      | billingfirstname        | FirstName          |
-      | billinglastname         | LastName           |
-      | billingemail            | FirstName@email.pl |
-      | billingcountryiso2a     | CN                 |
-      | currencyiso3a           | EUR                |
-      | orderreference          | 123456             |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingemail            | FirstName@email.pl                                     |
+      | billingcountryiso2a     | CN                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | orderreference          | 123456                                                 |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses WECHATPAY from APM list
@@ -312,14 +351,17 @@ Feature: E2E WECHATPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs WECHATPAY_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value     |
-      | requesttypedescriptions | AUTH      |
-      | baseamount              | 70        |
-      | billingfirstname        | FirstName |
-      | billinglastname         | LastName  |
-      | billingcountryiso2a     | CN        |
-      | currencyiso3a           | EUR       |
-      | orderreference          | 123456    |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingcountryiso2a     | CN                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | orderreference          | 123456                                                 |
+      | successRedirectUrl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorRedirectUrl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelRedirectUrl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses WECHATPAY from APM list - override placement
