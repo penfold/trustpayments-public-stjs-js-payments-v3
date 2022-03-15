@@ -4,6 +4,7 @@ import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { ISrcProfileList } from '../digital-terminal/ISrc';
 import { ITranslator } from '../../../application/core/shared/translator/ITranslator';
 import { Translator } from '../../../application/core/shared/translator/Translator';
+import { HPPUserIdentificationService } from '../adapter/hpp-adapter/HPPUserIdentificationService';
 import { CardListGenerator } from './CardListGenerator';
 import { cardListMock } from './card-list-mock';
 
@@ -11,13 +12,15 @@ describe('CardListGenerator', () => {
   let cardListGenerator: CardListGenerator;
   let digitalTerminal: DigitalTerminal;
   let translator: ITranslator;
+  let hPPUserIdentificationService: HPPUserIdentificationService;
 
   beforeEach(() => {
     digitalTerminal = mock(DigitalTerminal);
     translator = mock(Translator);
+    hPPUserIdentificationService = mock(HPPUserIdentificationService); 
     when(translator.translate('Hello')).thenReturn('Hello');
     when(translator.translate('Not you?')).thenReturn('Not you?');
-    cardListGenerator = new CardListGenerator(instance(digitalTerminal), instance(translator));
+    cardListGenerator = new CardListGenerator(instance(digitalTerminal), instance(translator), instance(hPPUserIdentificationService));
   });
 
   it('generates html for single checked active card', () => {

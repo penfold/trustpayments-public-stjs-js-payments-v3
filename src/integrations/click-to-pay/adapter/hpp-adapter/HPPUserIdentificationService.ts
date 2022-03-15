@@ -27,7 +27,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
       filter(value => value === false),
       untilDestroy(this.messageBus)
     ).subscribe(() =>
-      this.callUpdateViewCallback(true)
+      this.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true })
     );
   }
 
@@ -107,7 +107,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     const result = new ReplaySubject<string>();
     const formElement = this.hppCTPUserPromptFactory.createEmailForm(result);
 
-    this.callUpdateViewCallback(false);
+    this.callUpdateViewCallback({ displayCardForm: false, displaySubmitForm: true });
     this.hppCTPUserPromptService.show(formElement, this.getTargetElement());
 
     return result.asObservable();
@@ -117,14 +117,14 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     const result = new ReplaySubject<string>();
     const formElement = this.hppCTPUserPromptFactory.createOTPForm(result, validationResponse, resendSubject);
 
-    this.callUpdateViewCallback(false);
+    this.callUpdateViewCallback({ displayCardForm: false, displaySubmitForm: false });
     this.hppCTPUserPromptService.show(formElement, this.getTargetElement());
 
     return result.asObservable();
   }
 
-  private callUpdateViewCallback(displayCardForm: boolean) {
-    this.onUpdateViewCallback?.call(null, { displayCardForm } as IUpdateView);
+  callUpdateViewCallback(callbackOptions: IUpdateView) {
+    this.onUpdateViewCallback?.call(null, callbackOptions);
   }
 
   private getUnrecognizedEmailErrorMessage(): string {

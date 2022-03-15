@@ -69,7 +69,7 @@ describe('HPPUserIdentificationService', () => {
     promptClosedMock
       .pipe(filter(value => value === false))
       .subscribe((promptOpened: boolean) => {
-        expect(testInitParams.onUpdateView).toHaveBeenCalledWith({ displayCardForm: true } as IUpdateView);
+        expect(testInitParams.onUpdateView).toHaveBeenCalledWith({ displayCardForm: true, displaySubmitForm: true } as IUpdateView);
         done();
       });
     promptClosedMock.next(false);
@@ -82,6 +82,7 @@ describe('HPPUserIdentificationService', () => {
       sut.identifyUser(srcAggregateMock, { email: 'test@example.com' }).subscribe(() => {
         expect(testInitParams.onUpdateView).toHaveBeenCalledWith({
           displayCardForm: false,
+          displaySubmitForm: false,
         } as IUpdateView);
         done();
       });

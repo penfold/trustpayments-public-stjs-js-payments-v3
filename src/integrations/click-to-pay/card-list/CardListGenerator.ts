@@ -6,6 +6,7 @@ import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { SrcName } from '../digital-terminal/SrcName';
 import { ISrcProfileList } from '../digital-terminal/ISrc';
 import { ITranslator } from '../../../application/core/shared/translator/ITranslator';
+import { HPPUserIdentificationService } from '../adapter/hpp-adapter/HPPUserIdentificationService';
 
 const iconMap: Map<string, string> = new Map(
   [
@@ -16,7 +17,7 @@ const iconMap: Map<string, string> = new Map(
 @Service()
 export class CardListGenerator {
   private notYouElementId = 'st-ctp-user-details__not--you';
-  constructor(private digitalTerminal: DigitalTerminal, private translator: ITranslator) {}
+  constructor(private digitalTerminal: DigitalTerminal, private translator: ITranslator, private hPPUserIdentificationService: HPPUserIdentificationService) {}
 
   displayCards(parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
     const container: HTMLElement = document.getElementById(parentContainer);
@@ -188,6 +189,6 @@ export class CardListGenerator {
 
   private hideForm(): void {
     document.getElementById('st-ctp-cards').innerHTML = '';
-    //onUpdateView
+    this.hPPUserIdentificationService.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true });
   }
 }
