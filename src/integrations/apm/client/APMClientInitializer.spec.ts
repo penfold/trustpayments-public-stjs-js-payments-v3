@@ -11,9 +11,6 @@ describe('APMClientInitializer', () => {
   const testConfig: IAPMConfig = {
     placement: 'st-apm',
     apmList: [APMName.ZIP],
-    errorRedirectUrl: 'url1',
-    successRedirectUrl: 'url2',
-    cancelRedirectUrl: 'url3',
   };
   let apmClient: APMClient;
   let frameQueryingService: IFrameQueryingService;

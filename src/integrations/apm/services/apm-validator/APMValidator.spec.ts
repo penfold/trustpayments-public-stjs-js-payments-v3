@@ -14,17 +14,11 @@ describe('APMValidator', () => {
   let jwtDecoder: JwtDecoder;
   const configWithError: IAPMConfig = {
     placement: 'test-id',
-    successRedirectUrl: 'successurl',
-    errorRedirectUrl: 'errorurl',
-    cancelRedirectUrl: 'cancelurl',
     apmList: [APMName.ZIP, 'testid' as APMName],
   };
 
   const config: IAPMConfig = {
     placement: 'test-id',
-    successRedirectUrl: 'successurl',
-    errorRedirectUrl: 'errorurl',
-    cancelRedirectUrl: 'cancelurl',
     apmList: [
       APMName.ZIP,
     ],
@@ -33,9 +27,6 @@ describe('APMValidator', () => {
   const configFactory = (apmName: APMName, ...other) => ({
     ...other,
     name: apmName,
-    successRedirectUrl: 'example.com',
-    errorRedirectUrl: 'example.com',
-    returnUrl: 'testurl',
     placement: 'st-apm',
   });
 
@@ -66,18 +57,18 @@ describe('APMValidator', () => {
     it.each([
       [
         configFactory(APMName.ALIPAY), {
-        'billingcountryiso2a': 'PL',
-        'currencyiso3a': 'USD',
+        billingcountryiso2a: 'PL',
+        currencyiso3a: 'USD',
       }, null,
       ],
       [
         configFactory(APMName.ZIP), {
-        'billingcountryiso2a': 'GB',
-        'currencyiso3a': 'GBP',
+        billingcountryiso2a: 'GB',
+        currencyiso3a: 'GBP',
       }, null,
       ],
     ])('should return an error when jwt fields are missing for any of APMs from apmList in config',
-      (apmConfigList: IAPMItemConfig, jwt, error) => {
+      (apmConfigList: IAPMItemConfig, jwt: IStJwtPayload, error) => {
         when(jwtDecoder.decode(anything())).thenReturn({ payload: jwt });
         expect(sut.validateItemConfig(apmConfigList)).toEqual(error);
       });
@@ -91,7 +82,7 @@ describe('APMValidator', () => {
           currencyiso3a: 'USD',
           orderreference: '123',
         },
-          null,
+          '"returnurl" is required',
         ],
         [
           configFactory(APMName.BITPAY), {
@@ -99,7 +90,7 @@ describe('APMValidator', () => {
           currencyiso3a: 'USD',
           orderreference: '123',
         },
-          null,
+          '"successredirecturl" is required',
         ],
         [
           configFactory(APMName.ZIP), {
@@ -118,12 +109,39 @@ describe('APMValidator', () => {
           billingcounty: 'test',
           billingemail: 'test',
         },
+          '"returnurl" is required',
+        ],
+        [
+          configFactory(APMName.ZIP), {
+          billingcountryiso2a: 'GB',
+          currencyiso3a: 'GBP',
+          accounttypedescription: 'test',
+          baseamount: '1000',
+          requesttypedescriptions: [RequestType.AUTH],
+          sitereference: 'test',
+          billingfirstname: 'test',
+          billinglastname: 'test',
+          billingpremise: 'test',
+          billingstreet: 'test',
+          billingtown: 'test',
+          billingpostcode: 'test',
+          billingcounty: 'test',
+          billingemail: 'test',
+          returnurl: 'url',
+        },
           null,
         ],
 
-      ],
-    )('should validate APM with schema from Joi', (config: IAPMItemConfig, payload: IStJwtPayload, error) => {
-      expect(sut.validateJwt(config, payload)).toEqual(error);
+      ] as [IAPMItemConfig, IStJwtPayload, string | null][]
+    )('should validate APM with schema from Joi', (config: IAPMItemConfig, payload: IStJwtPayload, expectedError) => {
+      if (expectedError === null) {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(sut.validateJwt(config, payload)).toEqual(expectedError);
+      } else {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(sut.validateJwt(config, payload).message).toEqual(expectedError);
+      }
+
     });
   });
 });
