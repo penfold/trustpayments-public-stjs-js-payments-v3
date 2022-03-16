@@ -65,6 +65,10 @@
 .st-form__fieldset-wrapper {
   display: flex;
 
+  @media(max-width: 500px) {
+    flex-direction: column;
+  }
+
   fieldset {
     margin: 15px 2px;
   }

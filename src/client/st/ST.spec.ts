@@ -20,7 +20,6 @@ import { IClickToPayConfig } from '../../integrations/click-to-pay/models/IClick
 import { FramesHub } from '../../shared/services/message-bus/FramesHub';
 import { ClickToPayAdapterName } from '../../integrations/click-to-pay/adapter/ClickToPayAdapterName';
 import { ClickToPayAdapterFactory } from '../../integrations/click-to-pay/adapter/ClickToPayAdapterFactory';
-
 import { HPPClickToPayAdapter } from '../../integrations/click-to-pay/adapter/hpp-adapter/HPPClickToPayAdapter';
 import SecureTrading, { ST } from './ST';
 import { config, jwt } from './STTestConfigs';

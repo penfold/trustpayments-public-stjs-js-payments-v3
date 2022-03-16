@@ -4,23 +4,27 @@ import { distinctUntilChanged, first } from 'rxjs/operators';
 import { ICorrelatedMaskedCard } from '../digital-terminal/interfaces/ICorrelatedMaskedCard';
 // @ts-ignore
 import logo from '../../../application/core/services/icon/images/click-to-pay.svg';
-import { SrcName } from '../digital-terminal/SrcName';
 import { SrcNameFinder } from '../digital-terminal/SrcNameFinder';
+import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
+import { SrcName } from '../digital-terminal/SrcName';
+import { ISrcProfileList } from '../digital-terminal/ISrc';
+import { ITranslator } from '../../../application/core/shared/translator/ITranslator';
 
 const PAN_VALIDATION_STATUS_FAILED = 'Selected card is not currently supported for Click to Pay';
 
 @Service()
 export class CardListGenerator {
+  private acceptedCards: SrcName[] = [SrcName.VISA];
+  private formId: string;
+  private notYouElementId = 'st-ctp-user-details__not--you';
   private panValidationStatus: BehaviorSubject<boolean> = new BehaviorSubject(true);
   private panValidationStatusSubscribtion: Subscription;
 
-  private iconMap: Map<string, string> = new Map([
+  private readonly iconMap: Map<string, string> = new Map([
     ['visa', require('../../../application/core/services/icon/images/visa.svg')],
   ]);
-  private acceptedCards: SrcName[] = [SrcName.VISA];
-  private formId: string;
 
-  constructor(private srcNameFinder: SrcNameFinder) {}
+  constructor(private digitalTerminal: DigitalTerminal, private translator: ITranslator, private srcNameFinder: SrcNameFinder) {}
 
   displayCards(formId: string, parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
     this.formId = formId;
@@ -50,11 +54,19 @@ export class CardListGenerator {
     this.addEventHandlers();
   }
 
+  displayUserInformation(parentContainer: string, userInformation: Partial<Record<SrcName, ISrcProfileList>>): void {
+    const container: HTMLElement = document.getElementById(parentContainer);
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = this.addUserInformationContent(userInformation[Object.keys(userInformation)[0]].profiles[0].maskedConsumer.emailAddress);
+    container.prepend(wrapper);
+    document.getElementById(this.notYouElementId).addEventListener('click', () => this.digitalTerminal.unbindAppInstance().subscribe(() => this.hideForm()));
+  }
+
   private addCardContent(): string {
     return `
       <div class="st-add-card__label">
         <span class="st-add-card__label">
-          Add new card
+          ${this.translator.translate('Add new card')}
         </span>
         <span class="st-add-card__button">
           <button id="st-add-card__button" class="st-add-card__button" type="button">+</button>
@@ -84,6 +96,19 @@ export class CardListGenerator {
   private addEventHandlers(): void {
     document.getElementById(this.formId).querySelector('input[name="pan"]').addEventListener('change', event => this.handleChangedPan(event));
     document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
+  }
+
+  private addUserInformationContent(emailAddress: string): string {
+    return `
+      <div id="st-ctp-user-details__wrapper" class="st-ctp-user-details__wrapper">
+        <?xml version="1.0" encoding="UTF-8"?>
+        <svg class="st-ctp-user-details__image" enable-background="new 0 0 258.75 258.75" version="1.1" viewBox="0 0 258.75 258.75" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="129.38" cy="60" r="60"/>
+          <path d="m129.38 150c-60.061 0-108.75 48.689-108.75 108.75h217.5c0-60.061-48.689-108.75-108.75-108.75z"/>
+        </svg>
+        <p class="st-ctp-user-details__information">${this.translator.translate('Hello')} ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate('Not you?')}</span></p>
+      </div>
+    `
   }
 
   private addValidation(): void {
@@ -216,6 +241,10 @@ export class CardListGenerator {
     }
   }
 
+  private hideForm(): void {
+    document.getElementById('st-ctp-cards').innerHTML = '';
+    //onUpdateView
+  }
   private showValidationStatus(id: string, message: string) {
     document.getElementById(id).style.display = 'block';
     document.getElementById(id).innerHTML = message;
