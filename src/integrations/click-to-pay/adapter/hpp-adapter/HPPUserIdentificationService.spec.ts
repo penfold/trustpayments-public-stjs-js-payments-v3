@@ -12,6 +12,7 @@ import { IUpdateView } from '../interfaces/IUpdateView';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
 import { HPPCTPUserPromptFactory } from './HPPCTPUserPromptFactory';
 import { HPPCTPUserPromptService } from './HPPCTPUserPromptService';
+import { HPPUpdateViewCallback } from './HPPUpdateViewCallback';
 
 describe('HPPUserIdentificationService', () => {
   const testInitParams = {
@@ -28,6 +29,7 @@ describe('HPPUserIdentificationService', () => {
   let modalFactoryMock: HPPCTPUserPromptFactory;
   let srcAggregateMock: SrcAggregate;
   let messageBus: IMessageBus;
+  let hppUpdateViewCallback: HPPUpdateViewCallback;
   let emailResultMock;
   let codeResultMock;
   let translatorMock;
@@ -37,6 +39,7 @@ describe('HPPUserIdentificationService', () => {
     codeResultMock = new ReplaySubject();
     modalServiceMock = mock(HPPCTPUserPromptService);
     modalFactoryMock = mock(HPPCTPUserPromptFactory);
+    hppUpdateViewCallback = mock(HPPUpdateViewCallback);
     translatorMock = mock<ITranslator>();
     messageBus = new SimpleMessageBus();
     srcAggregateMock = {
@@ -59,7 +62,8 @@ describe('HPPUserIdentificationService', () => {
       instance(modalServiceMock),
       instance(modalFactoryMock),
       instance(translatorMock),
-      messageBus
+      messageBus,
+      instance(hppUpdateViewCallback),
     );
     sut.setInitParams(testInitParams);
   });
@@ -69,7 +73,7 @@ describe('HPPUserIdentificationService', () => {
     promptClosedMock
       .pipe(filter(value => value === false))
       .subscribe((promptOpened: boolean) => {
-        expect(testInitParams.onUpdateView).toHaveBeenCalledWith({ displayCardForm: true, displaySubmitForm: true } as IUpdateView);
+        verify(hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true } as IUpdateView)).once();
         done();
       });
     promptClosedMock.next(false);
@@ -80,10 +84,7 @@ describe('HPPUserIdentificationService', () => {
       emailResultMock.next(false);
       codeResultMock.next(true);
       sut.identifyUser(srcAggregateMock, { email: 'test@example.com' }).subscribe(() => {
-        expect(testInitParams.onUpdateView).toHaveBeenCalledWith({
-          displayCardForm: false,
-          displaySubmitForm: false,
-        } as IUpdateView);
+        verify(hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: false, displaySubmitForm: false } as IUpdateView)).once();
         done();
       });
     });
@@ -170,10 +171,9 @@ describe('HPPUserIdentificationService', () => {
       sut.setInitParams(testInitParams);
       expect(sut['initParams']).toEqual(testInitParams);
     });
-    it('should save provided onViewUpdateCallback in private field', () => {
-      sut['onUpdateViewCallback'] = null;
-      sut.setInitParams(testInitParams);
-      expect(sut['onUpdateViewCallback']).toEqual(testInitParams.onUpdateView);
+
+    it('should pass onUpdateView callback to hppUpdateViewCallback', () => {
+      verify(hppUpdateViewCallback.init(testInitParams.onUpdateView)).once();
     });
   });
 });

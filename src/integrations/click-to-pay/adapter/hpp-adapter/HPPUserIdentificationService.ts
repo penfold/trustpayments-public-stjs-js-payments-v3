@@ -8,32 +8,32 @@ import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentifi
 import { SrcName } from '../../digital-terminal/SrcName';
 import { IUserIdentificationService } from '../../digital-terminal/interfaces/IUserIdentificationService';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
-import { IUpdateView } from '../interfaces/IUpdateView';
 import { untilDestroy } from '../../../../shared/services/message-bus/operators/untilDestroy';
 import { HPPCTPUserPromptFactory } from './HPPCTPUserPromptFactory';
 import { HPPCTPUserPromptService } from './HPPCTPUserPromptService';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
+import { HPPUpdateViewCallback } from './HPPUpdateViewCallback';
 
 @Service()
 export class HPPUserIdentificationService implements IUserIdentificationService {
   private initParams: IHPPClickToPayAdapterInitParams;
-  private onUpdateViewCallback: (data: IUpdateView) => void;
 
   constructor(private hppCTPUserPromptService: HPPCTPUserPromptService,
               private hppCTPUserPromptFactory: HPPCTPUserPromptFactory,
               private translator: ITranslator,
-              private messageBus: IMessageBus) {
+              private messageBus: IMessageBus,
+              private hppUpdateViewCallback: HPPUpdateViewCallback) {
     this.hppCTPUserPromptService.getStateChanges().pipe(
       filter(value => value === false),
       untilDestroy(this.messageBus)
     ).subscribe(() =>
-      this.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true })
+      this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true })
     );
   }
 
   setInitParams(initParams: IHPPClickToPayAdapterInitParams) {
     this.initParams = initParams;
-    this.onUpdateViewCallback = initParams.onUpdateView;
+    this.hppUpdateViewCallback.init(initParams.onUpdateView);
   }
 
   identifyUser(
@@ -107,7 +107,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     const result = new ReplaySubject<string>();
     const formElement = this.hppCTPUserPromptFactory.createEmailForm(result);
 
-    this.callUpdateViewCallback({ displayCardForm: false, displaySubmitForm: true });
+    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: false, displaySubmitForm: true });
     this.hppCTPUserPromptService.show(formElement, this.getTargetElement());
 
     return result.asObservable();
@@ -117,14 +117,10 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     const result = new ReplaySubject<string>();
     const formElement = this.hppCTPUserPromptFactory.createOTPForm(result, validationResponse, resendSubject);
 
-    this.callUpdateViewCallback({ displayCardForm: false, displaySubmitForm: false });
+    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: false, displaySubmitForm: false });
     this.hppCTPUserPromptService.show(formElement, this.getTargetElement());
 
     return result.asObservable();
-  }
-
-  callUpdateViewCallback(callbackOptions: IUpdateView) {
-    this.onUpdateViewCallback?.call(null, callbackOptions);
   }
 
   private getUnrecognizedEmailErrorMessage(): string {
