@@ -15,10 +15,9 @@ const PAN_VALIDATION_STATUS_FAILED = 'Selected card is not currently supported f
 @Service()
 export class CardListGenerator {
   private acceptedCards: SrcName[] = [SrcName.VISA];
-  private formId: string;
   private notYouElementId = 'st-ctp-user-details__not--you';
   private panValidationStatus: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  private panValidationStatusSubscribtion: Subscription;
+  private panValidationStatusSubscription: Subscription;
 
   private readonly iconMap: Map<string, string> = new Map([
     ['visa', require('../../../application/core/services/icon/images/visa.svg')],
@@ -27,7 +26,6 @@ export class CardListGenerator {
   constructor(private digitalTerminal: DigitalTerminal, private translator: ITranslator, private srcNameFinder: SrcNameFinder) {}
 
   displayCards(formId: string, parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
-    this.formId = formId;
     const container: HTMLElement = document.getElementById(parentContainer);
     container.classList.add('st-cards');
     cardList.forEach((card, index) => {
@@ -51,7 +49,7 @@ export class CardListGenerator {
     this.addValidation();
     this.fillUpExpiryMonth();
     this.fillUpExpiryYear();
-    this.addEventHandlers();
+    this.addEventHandlers(formId);
   }
 
   displayUserInformation(parentContainer: string, userInformation: Partial<Record<SrcName, ISrcProfileList>>): void {
@@ -93,8 +91,8 @@ export class CardListGenerator {
     `;
   }
 
-  private addEventHandlers(): void {
-    document.getElementById(this.formId).querySelector('input[name="pan"]').addEventListener('change', event => this.handleChangedPan(event));
+  private addEventHandlers(formId: string): void {
+    document.getElementById(formId).querySelector('input[name="pan"]').addEventListener('change', event => this.handleChangedPan(event));
     document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
   }
 
@@ -112,10 +110,10 @@ export class CardListGenerator {
   }
 
   private addValidation(): void {
-    if (this.panValidationStatusSubscribtion) {
-      this.panValidationStatusSubscribtion.unsubscribe();
+    if (this.panValidationStatusSubscription) {
+      this.panValidationStatusSubscription.unsubscribe();
     }
-    this.panValidationStatusSubscribtion = this.panValidationStatus
+    this.panValidationStatusSubscription = this.panValidationStatus
       .pipe(
         distinctUntilChanged()
       )
@@ -161,6 +159,7 @@ export class CardListGenerator {
     (document.getElementById('pan') as HTMLInputElement).value = '';
     (document.getElementById('expiryDateMonthId') as HTMLSelectElement).value = '';
     (document.getElementById('expiryDateYearId') as HTMLSelectElement).value = '';
+    this.panValidationStatus.next(true);
   }
 
   private clearSelection(): void {
