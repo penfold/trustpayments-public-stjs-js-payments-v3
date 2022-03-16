@@ -28,24 +28,18 @@ describe('APMClient', () => {
 
   const testConfig: IAPMConfig = {
     placement: 'test-placement',
-    successRedirectUrl: 'successUrl',
-    cancelRedirectUrl: 'cancelUrl',
-    errorRedirectUrl: 'errorUrl',
     apmList: [
       {
         name: APMName.ZIP,
         placement: 'test-placement',
-        returnUrl: 'test-url',
       },
       {
         name: APMName.ALIPAY,
         placement: 'test-placement-2',
-        returnUrl: 'test-url',
       },
       {
         name: APMName.ACCOUNT2ACCOUNT,
         placement: 'test-placement-3',
-        returnUrl: 'test-url',
         button: APMA2AButtonConfig,
       },
     ],
@@ -64,20 +58,17 @@ describe('APMClient', () => {
         {
           name: APMName.ZIP,
           placement: 'test-placement',
-          returnUrl: 'test-url',
         },
         {
           name: APMName.ALIPAY,
           placement: 'test-placement-2',
-          returnUrl: 'test-url',
         },
         {
           name: APMName.ACCOUNT2ACCOUNT,
           placement: 'test-placement-3',
-          returnUrl: 'test-url',
           button: APMA2AButtonConfig,
         },
-      ])
+      ] as IAPMItemConfig[])
     );
     apmClient = new APMClient(
       instance(apmConfigResolver),
@@ -117,7 +108,7 @@ describe('APMClient', () => {
             },
           };
 
-          const testRedirectUrl = (testConfig.apmList[index] as IAPMItemConfig).returnUrl;
+          const testRedirectUrl = 'returnUrl';
 
           insertedAPMButton.dispatchEvent(new Event('click'));
 

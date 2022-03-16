@@ -23,19 +23,16 @@ const configSchemaFactory = (apmName: APMName) => {
           text: Joi.string(),
         }),
         name: Joi.string().valid(apmName).required(),
-        returnUrl: Joi.string().required(),
       }).unknown();
     case APMName.ALIPAY:
       return Joi.object().keys({
         name: Joi.string().valid(apmName).required(),
         placement: Joi.string().required(),
-        returnUrl: Joi.string().required(),
       }).unknown();
     case APMName.ZIP:
       return Joi.object().keys({
         name: Joi.string().valid(apmName).required(),
         placement: Joi.string().required(),
-        returnUrl: Joi.string().required(),
         minBaseAmount: Joi.number().greater(0).integer(),
         maxBaseAmount: Joi.number().greater(0).integer(),
       }).unknown();
@@ -43,9 +40,6 @@ const configSchemaFactory = (apmName: APMName) => {
       return Joi.object().keys({
         name: Joi.string().valid(apmName).required(),
         placement: Joi.string().required(),
-        successRedirectUrl: Joi.string().required(),
-        errorRedirectUrl: Joi.string().required(),
-        cancelRedirectUrl: Joi.string(),
       });
   }
 };
