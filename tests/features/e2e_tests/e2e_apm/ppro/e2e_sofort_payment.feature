@@ -365,7 +365,7 @@ Feature: E2E SOFORT Payments
     And User chooses SOFORT from APM list - override placement
     And User will be sent to apm page - sofort
     When User will go through error payment process on sofort page and submit
-    Then User will be sent to page with url "this_is_not_existing_page_error_redirect_override.com" having params
+    Then User will be sent to page with url "payments.securetrading.net" having params
       | key                    | value  |
       | paymenttypedescription | SOFORT |
       | errorcode              | 70000  |

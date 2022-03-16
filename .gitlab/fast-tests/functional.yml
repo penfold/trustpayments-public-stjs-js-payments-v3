@@ -80,25 +80,25 @@ e2e-cardinal-commerce-tests-release:
 #  parallel: 23
 #
 # APMs E2E Tests Headless
-e2e-apms-tests-review:
-  extends:
-    - .e2e-tests-parallel
-    - .services-app-html-review
-    - .rules-when-review
-    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
-  variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
-  parallel: 20
-
-e2e-apms-tests-release:
-  extends:
-    - .e2e-tests-parallel
-    - .service-app-html-release-merchant
-    - .rules-when-release
-    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
-  variables:
-    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
-  parallel: 20
+#e2e-apms-tests-review:
+#  extends:
+#    - .e2e-tests-parallel
+#    - .services-app-html-review
+#    - .rules-when-review
+#    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
+#  variables:
+#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
+#  parallel: 20
+#
+#e2e-apms-tests-release:
+#  extends:
+#    - .e2e-tests-parallel
+#    - .service-app-html-release-merchant
+#    - .rules-when-release
+#    - .tags-js-docker # @todo: STJS-2249 rollback to public runners
+#  variables:
+#    FEATURE_FILES_DIR: 'features/e2e_tests/e2e_apm/ppro'
+#  parallel: 20
 
 # Merchants features E2E Tests Headless
 e2e-merchants-features-tests-nightly:
