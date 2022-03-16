@@ -1,7 +1,7 @@
 {
-  "successredirecturl": ""https://this_is_not_existing_page_success_redirect.com"",
-  "errorredirecturl": ""https://this_is_not_existing_page_error_redirect.com"",
-  "cancelredirecturl": ""https://this_is_not_existing_page_cancel_redirect.com"",
+  "successredirecturl": "https://this_is_not_existing_page_success_redirect.com",
+  "errorredirecturl": "https://this_is_not_existing_page_error_redirect.com",
+  "cancelredirecturl": "https://this_is_not_existing_page_cancel_redirect.com",
   "placement": "st-apm",
   "apmList": [
     {

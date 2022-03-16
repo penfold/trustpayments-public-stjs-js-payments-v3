@@ -11,15 +11,15 @@ Feature: E2E TRUSTLY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | baseamount              | 70                                                       |
-      | billingfirstname        | FirstName                                                |
-      | billingcountryiso2a     | <billingcountryiso2a>                                    |
-      | currencyiso3a           | <currencyiso3a>                                          |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billingcountryiso2a     | <billingcountryiso2a>                                  |
+      | currencyiso3a           | <currencyiso3a>                                        |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses TRUSTLY from APM list
@@ -73,19 +73,19 @@ Feature: E2E TRUSTLY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | currencyiso3a           | EUR                                                      |
-      | billingcountryiso2a     | PL                                                       |
-      | baseamount              | 123                                                      |
-      | billingfirstname        | <billingfirstname>                                       |
-      | billinglastname         | <billinglastname>                                        |
-      | billingprefixname       | <billingprefixname>                                      |
-      | billingmiddlename       | <billingmiddlename>                                      |
-      | billingsuffixname       | <billingsuffixname>                                      |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | currencyiso3a           | EUR                                                    |
+      | billingcountryiso2a     | PL                                                     |
+      | baseamount              | 123                                                    |
+      | billingfirstname        | <billingfirstname>                                     |
+      | billinglastname         | <billinglastname>                                      |
+      | billingprefixname       | <billingprefixname>                                    |
+      | billingmiddlename       | <billingmiddlename>                                    |
+      | billingsuffixname       | <billingsuffixname>                                    |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses TRUSTLY from APM list
@@ -104,16 +104,16 @@ Feature: E2E TRUSTLY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | baseamount              | 70                                                       |
-      | billingfirstname        | FirstName                                                |
-      | billinglastname         | LastName                                                 |
-      | billingcountryiso2a     | <billingcountryiso2a>                                    |
-      | currencyiso3a           | <currencyiso3a>                                          |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingcountryiso2a     | <billingcountryiso2a>                                  |
+      | currencyiso3a           | <currencyiso3a>                                        |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -130,14 +130,14 @@ Feature: E2E TRUSTLY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | currencyiso3a           | EUR                                                      |
-      | billingcountryiso2a     | PL                                                       |
-      | baseamount              | 123                                                      |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | currencyiso3a           | EUR                                                    |
+      | billingcountryiso2a     | PL                                                     |
+      | baseamount              | 123                                                    |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -151,25 +151,25 @@ Feature: E2E TRUSTLY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | baseamount              | 70                                                       |
-      | billingfirstname        | FirstName                                                |
-      | billingcountryiso2a     | PL                                                       |
-      | currencyiso3a           | EUR                                                      |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billingcountryiso2a     | PL                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | baseamount              | 707                                                      |
-      | billinglastname         | LastNameUpdated                                          |
-      | billingcountryiso2a     | PL                                                       |
-      | currencyiso3a           | PLN                                                      |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 707                                                    |
+      | billinglastname         | LastNameUpdated                                        |
+      | billingcountryiso2a     | PL                                                     |
+      | currencyiso3a           | PLN                                                    |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User waits for Pay button to be active
     And User calls updateJWT function by filling amount field
     When User chooses TRUSTLY from APM list
@@ -180,27 +180,27 @@ Feature: E2E TRUSTLY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | baseamount              | 70                                                       |
-      | billingfirstname        | FirstName                                                |
-      | billinglastname         | LastName                                                 |
-      | billingcountryiso2a     | PL                                                       |
-      | currencyiso3a           | EUR                                                      |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingcountryiso2a     | PL                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | baseamount              | 707                                                      |
-      | billingfirstname        | FirstNameUpdated                                         |
-      | billinglastname         | LastNameUpdated                                          |
-      | billingcountryiso2a     | PL                                                       |
-      | currencyiso3a           | CNY                                                      |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 707                                                    |
+      | billingfirstname        | FirstNameUpdated                                       |
+      | billinglastname         | LastNameUpdated                                        |
+      | billingcountryiso2a     | PL                                                     |
+      | currencyiso3a           | CNY                                                    |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User waits for Pay button to be active
     When User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
@@ -211,23 +211,23 @@ Feature: E2E TRUSTLY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | baseamount              | 70                                                       |
-      | billinglastname         | LastName                                                 |
-      | billingcountryiso2a     | PL                                                       |
-      | currencyiso3a           | EUR                                                      |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billinglastname         | LastName                                               |
+      | billingcountryiso2a     | PL                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | baseamount              | 707                                                      |
-      | currencyiso3a           | EUR                                                      |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 707                                                    |
+      | currencyiso3a           | EUR                                                    |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User waits for Pay button to be active
     When User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
@@ -238,16 +238,16 @@ Feature: E2E TRUSTLY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | THREEDQUERY RISKDEC                                      |
-      | baseamount              | 70                                                       |
-      | billingfirstname        | FirstName                                                |
-      | billinglastname         | LastName                                                 |
-      | billingcountryiso2a     | PL                                                       |
-      | currencyiso3a           | EUR                                                      |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | THREEDQUERY RISKDEC                                    |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingcountryiso2a     | PL                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses TRUSTLY from APM list
@@ -323,17 +323,17 @@ Feature: E2E TRUSTLY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | baseamount              | 70                                                       |
-      | billingfirstname        | FirstName                                                |
-      | billinglastname         | LastName                                                 |
-      | billingcountryiso2a     | PL                                                       |
-      | currencyiso3a           | EUR                                                      |
-      | orderreference          | 123456                                                   |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingcountryiso2a     | PL                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | orderreference          | 123456                                                 |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses TRUSTLY from APM list
@@ -351,17 +351,17 @@ Feature: E2E TRUSTLY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | baseamount              | 70                                                       |
-      | billingfirstname        | FirstName                                                |
-      | billinglastname         | LastName                                                 |
-      | billingcountryiso2a     | PL                                                       |
-      | currencyiso3a           | EUR                                                      |
-      | orderreference          | 123456                                                   |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingcountryiso2a     | PL                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | orderreference          | 123456                                                 |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses TRUSTLY from APM list
@@ -379,17 +379,17 @@ Feature: E2E TRUSTLY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs TRUSTLY_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                    |
-      | requesttypedescriptions | AUTH                                                     |
-      | baseamount              | 70                                                       |
-      | billingfirstname        | FirstName                                                |
-      | billinglastname         | LastName                                                 |
-      | billingcountryiso2a     | PL                                                       |
-      | currencyiso3a           | EUR                                                      |
-      | orderreference          | 123456                                                   |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
+      | key                     | value                                                  |
+      | requesttypedescriptions | AUTH                                                   |
+      | baseamount              | 70                                                     |
+      | billingfirstname        | FirstName                                              |
+      | billinglastname         | LastName                                               |
+      | billingcountryiso2a     | PL                                                     |
+      | currencyiso3a           | EUR                                                    |
+      | orderreference          | 123456                                                 |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses TRUSTLY from APM list - override placement

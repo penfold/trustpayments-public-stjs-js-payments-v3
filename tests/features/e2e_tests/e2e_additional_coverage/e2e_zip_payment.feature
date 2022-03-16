@@ -22,10 +22,10 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                   |
       | currencyiso3a           | GBP                                                      |
       | baseamount              | 1000                                                     |
-      | successredirecturl      | "https://this_is_not_existing_page_success_redirect.com" |
-      | errorredirecturl        | "https://this_is_not_existing_page_error_redirect.com"   |
-      | cancelredirecturl       | "https://this_is_not_existing_page_cancel_redirect.com"  |
-      | returnurl               | "https://this_is_not_existing_page_return_redirect.com"  |
+      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
+      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses ZIP from APM list
