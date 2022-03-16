@@ -8,7 +8,7 @@ Feature: E2E A2A Payments
 
 #TODO Currently A2A tests can run against BB6.
 # Uncomment these tests when site ref dedicated for prod env will be prepared
-  
+
 #  Scenario Outline: Successful trigger of payment with accepted values for billingcountryiso2a and currencyiso3a
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
@@ -166,7 +166,7 @@ Feature: E2E A2A Payments
 #    Then User will see notification frame text: "Invalid requesttype"
 #
 #
-#  Scenario: successRedirectUrl and parameters verification
+#  Scenario: successredirecturl and parameters verification
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -191,7 +191,7 @@ Feature: E2E A2A Payments
 #      | orderreference       | 123456             |
 #
 #
-#  Scenario: errorRedirectUrl and parameters verification
+#  Scenario: errorredirecturl and parameters verification
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes

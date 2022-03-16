@@ -3,9 +3,9 @@ import { APMName } from './APMName';
 
 export const APMSchema: ObjectSchema = Joi.object().keys({
   placement: Joi.string().required(),
-  successRedirectUrl: Joi.string(),
-  errorRedirectUrl: Joi.string(),
-  cancelRedirectUrl: Joi.string(),
+  successredirecturl: Joi.string(),
+  errorredirecturl: Joi.string(),
+  cancelredirecturl: Joi.string(),
   apmList: Joi.array()
     .items(Joi.string().valid(...Object.values(APMName)), Joi.object())
     .required(),

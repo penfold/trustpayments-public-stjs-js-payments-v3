@@ -16,16 +16,16 @@ def load_config():
     Set config env variables
     """
     config = {
-        'URL': AttrDict({'BASE_URL': get_from_env('BASE_URL', 'https://merchant.securetrading.net'),
+        'URL': AttrDict({'BASE_URL': get_from_env('BASE_URL', 'https://localhost:8444'),
                          'REACT_APP': get_from_env('REACT_APP', 'https://localhost:3000')}),
         'REPORTS_PATH': get_path_from_env('AUTOMATION_REPORTS', 'reports'),
         'SCREENSHOTS_PATH': get_path_from_env('AUTOMATION_SCREENSHOTS', 'screenshots'),
-        'SECRET_KEY': get_from_env('JWT_SECRET_KEY', 'you_will_never_guess'),
-        'ISS_KEY': get_from_env('JWT_ISS_KEY', 'you_will_never_guess'),
-        'SITE_REFERENCE_CARDINAL': get_from_env('SITE_REFERENCE_CARDINAL', 'test_jsautocardinal91923'),
+        'SECRET_KEY': get_from_env('JWT_SECRET_KEY', '58-bbe0c26553a301c75325e4be63cde49cc97024e0686de751b11957a5f7923b43'),
+        'ISS_KEY': get_from_env('JWT_ISS_KEY', 'jsmanualjwt'),
+        'SITE_REFERENCE_CARDINAL': get_from_env('SITE_REFERENCE_CARDINAL', 'test_jsmanualcardinal91921'),
         'SITE_REFERENCE_TRUST': get_from_env('SITE_REFERENCE_TRUST', 'you_will_never_guess'),
         'BROWSER': get_from_env('AUTOMATION_BROWSER', 'chrome'),
-        'HEADLESS': get_from_env('HEADLESS', True),
+        'HEADLESS': get_from_env('HEADLESS', False),
         'TIMEOUT': get_from_env('AUTOMATION_TIMEOUT', 40),
         'REMOTE': strtobool(get_from_env('REMOTE', 'false')),
         'COMMAND_EXECUTOR': get_from_env('AUTOMATION_COMMAND_EXECUTOR',

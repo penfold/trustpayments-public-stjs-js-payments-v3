@@ -108,7 +108,7 @@ describe('APMClient', () => {
             },
           };
 
-          const testRedirectUrl = 'returnUrl';
+          const testRedirectUrl = 'returnurl';
 
           insertedAPMButton.dispatchEvent(new Event('click'));
 
