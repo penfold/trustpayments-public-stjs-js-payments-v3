@@ -49,7 +49,6 @@ export class GoogleAnalytics {
 
   private insertGALibrary(): Observable<HTMLScriptElement> {
     return DomMethods.insertScript('head', { async: 'async', src: environment.GA_SCRIPT_SRC }).pipe(
-      this.sentryService.captureAndReportResourceLoadingTimeout('Google Analytics script load timeout'),
       catchError(() => EMPTY)
     );
   }
