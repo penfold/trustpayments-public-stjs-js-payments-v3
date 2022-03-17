@@ -43,7 +43,7 @@ def step_impl(context, example_page):
     elif 'IN_IFRAME' in example_page:
         url = f'{CONFIGURATION.URL.BASE_URL}/{ExamplePageParam[example_page].value}?{context.INLINE_E2E_CONFIG}'
     elif 'VISA_CTP' in example_page:
-        url = f'{CONFIGURATION.URL.BASE_URL}/ctp.html'
+        url = f'{CONFIGURATION.URL.BASE_URL}/ctp.html?{context.INLINE_E2E_CONFIG}'
     else:
         url = f'{CONFIGURATION.URL.BASE_URL}/?{ExamplePageParam[example_page].value}&{context.INLINE_E2E_CONFIG}'
     url = url.replace('??', '?').replace('&&', '&')  # just making sure some elements are not duplicated
@@ -52,6 +52,8 @@ def step_impl(context, example_page):
 
     if example_page is not None and 'IN_IFRAME' in example_page:
         payment_page.switch_to_example_page_parent_iframe()
+    elif 'VISA_CTP' in example_page:
+        payment_page.check_if_value_is_present_in_logs('ClickToPay', 'PAYMENT INIT COMPLETED')
 
 
 @step('User opens page WITH_UPDATE_JWT and jwt (?P<jwt_config>.+) with additional attributes')
