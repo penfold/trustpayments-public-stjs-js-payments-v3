@@ -115,6 +115,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
       ...capturedCheckoutData,
       dpaTransactionOptions: this.initParams.dpaTransactionOptions,
     };
+
     const preventUnfinishedCheckoutPropagation = (response: ICheckoutResponse) => {
       switch (response.dcfActionCode) {
         case 'SWITCH_CONSUMER':

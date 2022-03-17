@@ -686,6 +686,9 @@
         // submitElement.classList.add('hidden');
       }
     }
+    function onCheckout(checkoutResult){
+      console.log('CTP - cecheckout result: ', checkoutResult)
+    }
 
     function onCheckout(checkoutResult) {
       printLogs(`CTP - checkout result: \n${JSON.stringify(checkoutResult, null, 2)}`);
