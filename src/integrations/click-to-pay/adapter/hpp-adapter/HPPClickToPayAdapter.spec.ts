@@ -1,5 +1,6 @@
-import { anyFunction, anything, instance, mock, objectContaining, verify, when } from 'ts-mockito';
-import { of, throwError } from 'rxjs';
+import { anyFunction, anyString, anything, instance, mock, objectContaining, verify, when } from 'ts-mockito';
+import { of, Subject, throwError } from 'rxjs';
+import { mapTo } from 'rxjs/operators';
 import { ClickToPayPaymentMethodName } from '../../models/ClickToPayPaymentMethodName';
 import { IMessageBus } from '../../../../application/core/shared/message-bus/IMessageBus';
 import { IFrameQueryingService } from '../../../../shared/services/message-bus/interfaces/IFrameQueryingService';
@@ -11,10 +12,12 @@ import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdenti
 import { SrcNameFinder } from '../../digital-terminal/SrcNameFinder';
 import { SrcName } from '../../digital-terminal/SrcName';
 import { IdentificationFailureReason } from '../../digital-terminal/IdentificationFailureReason';
+import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { CardListGenerator } from '../../card-list/CardListGenerator';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPClickToPayAdapter } from './HPPClickToPayAdapter';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
+import { HPPCheckoutDataProvider } from './HPPCheckoutDataProvider';
 
 describe('HPPClickToPayAdapter', () => {
   const initParams: IHPPClickToPayAdapterInitParams = {
@@ -23,8 +26,8 @@ describe('HPPClickToPayAdapter', () => {
     signInContainerId: 'signin',
     formId: 'formId',
     dpaTransactionOptions: null,
-    onUpdateView: () => {
-    },
+    onUpdateView: jest.fn(),
+    onCheckout: jest.fn(),
   };
   let messageBus: IMessageBus;
   let frameQueryingServiceMock: IFrameQueryingService;
@@ -32,6 +35,7 @@ describe('HPPClickToPayAdapter', () => {
   let srcNameFinderMock: SrcNameFinder;
   let userIdentificationServiceMock: HPPUserIdentificationService;
   let cardListGeneratorMock: CardListGenerator;
+  let hppCheckoutDataProviderMock: HPPCheckoutDataProvider;
   let sut: HPPClickToPayAdapter;
 
   beforeEach(() => {
@@ -41,8 +45,11 @@ describe('HPPClickToPayAdapter', () => {
     srcNameFinderMock = mock(SrcNameFinder);
     userIdentificationServiceMock = mock(HPPUserIdentificationService);
     cardListGeneratorMock = mock(CardListGenerator);
+    hppCheckoutDataProviderMock = mock(HPPCheckoutDataProvider);
     when(digitalTerminalMock.init(anything())).thenReturn(of(undefined));
     when(digitalTerminalMock.getSrcProfiles()).thenReturn(of(undefined));
+    when(digitalTerminalMock.checkout(anything())).thenReturn(of(undefined));
+    when(hppCheckoutDataProviderMock.getCheckoutData(anyString())).thenReturn(of(undefined));
     when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_INIT, anyFunction())).thenCall((eventType, callback) => {
       callback({ type: eventType, data: initParams }).subscribe();
     });
@@ -53,6 +60,7 @@ describe('HPPClickToPayAdapter', () => {
       instance(userIdentificationServiceMock),
       instance(srcNameFinderMock),
       instance(cardListGeneratorMock),
+      instance(hppCheckoutDataProviderMock)
     );
   });
 
@@ -71,6 +79,32 @@ describe('HPPClickToPayAdapter', () => {
         done();
       });
     });
+
+    it('should subscribe to checkout data captured from form submit and perform checkout using DigitalTerminal when checkout is triggered', done => {
+      const formSubmitEventMock = new Subject<void>();
+      const testCheckoutData: IInitialCheckoutData = {
+        newCardData: {
+          primaryAccountNumber: '111',
+          cardholderFullName: 'Customer Name',
+          cardSecurityCode: '123',
+          panExpirationMonth: '12',
+          panExpirationYear: '2049',
+        },
+      };
+      when(hppCheckoutDataProviderMock.getCheckoutData(initParams.formId)).thenReturn(formSubmitEventMock.pipe(mapTo(testCheckoutData)));
+      sut.init(initParams).then(adapterInstance => {
+          formSubmitEventMock.asObservable().subscribe(() => {
+            verify(digitalTerminalMock.checkout(objectContaining({
+              ...testCheckoutData,
+              dpaTransactionOptions: initParams.dpaTransactionOptions,
+            } as IInitialCheckoutData))).once();
+
+            done();
+          });
+          formSubmitEventMock.next();
+        }
+      );
+    });
   });
 
   describe('getSrcName()', () => {
@@ -82,7 +116,7 @@ describe('HPPClickToPayAdapter', () => {
         expect(srcName).toEqual(SrcName.VISA);
         verify(srcNameFinderMock.findSrcNameByPan(pan)).once();
         done();
-      })
+      });
     });
   });
 
