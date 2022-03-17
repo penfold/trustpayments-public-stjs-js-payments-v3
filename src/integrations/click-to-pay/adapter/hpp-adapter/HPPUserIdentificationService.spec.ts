@@ -1,4 +1,4 @@
-import { anything, instance, mock, verify, when } from 'ts-mockito';
+import { anything, instance, mock, objectContaining, verify, when } from 'ts-mockito';
 import { BehaviorSubject, of, ReplaySubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { ITranslator } from '../../../../application/core/shared/translator/ITranslator';
@@ -73,7 +73,7 @@ describe('HPPUserIdentificationService', () => {
     promptClosedMock
       .pipe(filter(value => value === false))
       .subscribe((promptOpened: boolean) => {
-        verify(hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true } as IUpdateView)).once();
+        verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({ displayCardForm: true, displaySubmitForm: true } as IUpdateView))).once();
         done();
       });
     promptClosedMock.next(false);
@@ -84,7 +84,7 @@ describe('HPPUserIdentificationService', () => {
       emailResultMock.next(false);
       codeResultMock.next(true);
       sut.identifyUser(srcAggregateMock, { email: 'test@example.com' }).subscribe(() => {
-        verify(hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: false, displaySubmitForm: false } as IUpdateView)).once();
+        verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({ displayCardForm: false, displaySubmitForm: false } as IUpdateView))).once();
         done();
       });
     });
