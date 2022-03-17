@@ -10,6 +10,7 @@ export class HPPUpdateViewCallback {
   }
   
   callUpdateViewCallback(updateData: IUpdateView) {
+    console.warn(updateData)
     this.onUpdateViewCallback?.call(null, updateData);
   }
 }

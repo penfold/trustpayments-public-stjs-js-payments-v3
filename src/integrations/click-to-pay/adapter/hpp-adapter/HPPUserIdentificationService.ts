@@ -27,7 +27,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
       filter(value => value === false),
       untilDestroy(this.messageBus)
     ).subscribe(() =>
-      this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true })
+      this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: false, displaySubmitForm: true })
     );
   }
 
@@ -107,7 +107,7 @@ export class HPPUserIdentificationService implements IUserIdentificationService 
     const result = new ReplaySubject<string>();
     const formElement = this.hppCTPUserPromptFactory.createEmailForm(result);
 
-    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: false, displaySubmitForm: true });
+    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true });
     this.hppCTPUserPromptService.show(formElement, this.getTargetElement());
 
     return result.asObservable();

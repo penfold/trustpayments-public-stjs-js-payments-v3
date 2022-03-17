@@ -75,7 +75,7 @@ describe('HPPUserIdentificationService', () => {
     promptClosedMock
       .pipe(filter(value => value === false))
       .subscribe((promptOpened: boolean) => {
-        verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({ displayCardForm: true, displaySubmitForm: true } as IUpdateView))).once();
+        verify(hppUpdateViewCallback.callUpdateViewCallback(objectContaining({ displayCardForm: false, displaySubmitForm: true } as IUpdateView))).once();
         done();
       });
     promptClosedMock.next(false);
