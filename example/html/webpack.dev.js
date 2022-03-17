@@ -1,6 +1,6 @@
-const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
+const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common');
 
@@ -13,11 +13,7 @@ module.exports = merge(common, {
     allowedHosts: [
       '.securetrading.net',
     ],
-    https: {
-      key: fs.readFileSync('./../../docker/app-html/nginx/cert/merchant.securetrading.net/key.pem'),
-      cert: fs.readFileSync('./../../docker/app-html/nginx/cert/merchant.securetrading.net/cert.pem'),
-      cacert: fs.readFileSync('./../../docker/app-html/nginx/cert/minica.pem'),
-    },
+    https: true,
     port: 8444,
     static: {
       directory: path.join(__dirname, './dist'),
