@@ -181,7 +181,7 @@ export class DomMethods {
     return element;
   }
 
-  private static isRadioNodeList(element: RadioNodeList | Element): element is RadioNodeList {
+  static isRadioNodeList(element: RadioNodeList | Element): element is RadioNodeList {
     // In IE11 form.elements[<name>] returns HTMLCollection instead of RadioNodeList and RadioNodeList is undefined
     return (typeof RadioNodeList === 'function' && element instanceof RadioNodeList) || element instanceof  HTMLCollection;
   }

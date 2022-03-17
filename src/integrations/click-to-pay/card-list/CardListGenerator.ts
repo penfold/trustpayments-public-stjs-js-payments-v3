@@ -7,11 +7,12 @@ import { SrcName } from '../digital-terminal/SrcName';
 import { ISrcProfileList } from '../digital-terminal/ISrc';
 import { ITranslator } from '../../../application/core/shared/translator/ITranslator';
 import { HPPUpdateViewCallback } from '../adapter/hpp-adapter/HPPUpdateViewCallback';
+import { NewCardFieldName } from './NewCardFieldName';
 
 const iconMap: Map<string, string> = new Map(
   [
     ['visa', require('../../../application/core/services/icon/images/visa.svg')],
-  ],
+  ]
 );
 
 @Service()
@@ -57,20 +58,20 @@ export class CardListGenerator {
       </div>
       <div class="st-add-card__details">
         Card number <span class="st-add-card__details-asterix"></span>
-        <input id="pan" type="text" name="pan">
+        <input id="pan" type="text" name="${NewCardFieldName.pan}">
       </div>
       <div class="st-add-card__details">
         <span class="st-add-card__details-element">
           Expiry date <span class="st-add-card__details-asterix"></span>
-          <select id="expiryDateMonthId" name="expiryDateMonth"></select>
+          <select id="expiryDateMonthId" name="${NewCardFieldName.expiryMonth}"></select>
         </span>
         <span class="st-add-card__details-element">
-          <select id="expiryDateYearId" name="expiryDateYear"></select>
+          <select id="expiryDateYearId" name="${NewCardFieldName.expiryYear}"></select>
         </span>
       </div>
       <div class="st-add-card__details">
         Security code <span class="st-add-card__details-asterix"></span><br>
-        <input id="cvv" maxlength="3" name="cvv" type="text">
+        <input id="cvv" maxlength="3" name="${NewCardFieldName.securityCode}" type="text">
       </div>
     `;
   }
@@ -81,8 +82,10 @@ export class CardListGenerator {
 
   private cardContent(card: ICorrelatedMaskedCard, checked = false): string {
     const check = checked ? ' checked' : '';
+    const activeCardRadioButton = `<label><input id="radio${card.srcDigitalCardId}" name="srcDigitalCardId" class="st-card__checkbox-input" type="radio" value="${card.srcDigitalCardId}"${check}><span class="st-card__checkbox-radio"></span></label>`;
+
     return `
-      <span class="st-card__checkbox">${card.isActive ? '<label><input id="radio' + card.srcDigitalCardId + '" name="srcDigitalCardId" type="radio" value="' + card.srcDigitalCardId + '"' + check + '><span class="radio"></span></label>' : ''}</span>
+      <span class="st-card__checkbox">${card.isActive ? activeCardRadioButton : ''}</span>
       <span class="st-card__image">
         <img src="${card.digitalCardData.artUri}" alt="" style="width: 60px; height: 40px">
       </span>
@@ -184,7 +187,7 @@ export class CardListGenerator {
         </svg>
         <p class="st-ctp-user-details__information">${this.translator.translate('Hello')} ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate('Not you?')}</span></p>
       </div>
-    `
+    `;
   }
 
   private hideForm(): void {

@@ -25,7 +25,7 @@ describe('CheckoutDataTransformer', () => {
       window,
       instance(encryptionKeyProviderMock),
       instance(cardEncryptorMock),
-      instance(srcNameFinderMock),
+      instance(srcNameFinderMock)
     );
   });
 
@@ -68,8 +68,7 @@ describe('CheckoutDataTransformer', () => {
           srciTransactionId,
           srcCorrelationId: 'correlationid2',
           idToken: 'idtoken2',
-          windowRef: window,
-        })
+        });
         done();
       });
     });
@@ -101,7 +100,6 @@ describe('CheckoutDataTransformer', () => {
           srcCorrelationId: 'correlationid',
           idToken: 'idtoken',
           encryptedCard: 'encryptedcard',
-          windowRef: initialCheckoutData.windowRef,
         });
         done();
       });
