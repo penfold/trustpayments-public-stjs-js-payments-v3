@@ -9,6 +9,7 @@ import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { SrcName } from '../digital-terminal/SrcName';
 import { ISrcProfileList } from '../digital-terminal/ISrc';
 import { ITranslator } from '../../../application/core/shared/translator/ITranslator';
+import { NewCardFieldName } from './NewCardFieldName';
 
 const PAN_VALIDATION_STATUS_FAILED = 'Selected card is not currently supported for Click to Pay';
 
@@ -72,27 +73,27 @@ export class CardListGenerator {
       </div>
       <div class="st-add-card__details">
         Card number <span class="st-add-card__details-asterix"></span>
-        <input id="pan" type="text" name="pan">
+        <input id="pan" type="text" name="${NewCardFieldName.pan}">
         <div id="pan-validation-status" class="st-add-card__pan-validation"></div>
       </div>
       <div class="st-add-card__details">
         <span class="st-add-card__details-element">
           Expiry date <span class="st-add-card__details-asterix"></span>
-          <select id="expiryDateMonthId" name="expiryDateMonth"></select>
+          <select id="expiryDateMonthId" name="${NewCardFieldName.expiryMonth}"></select>
         </span>
         <span class="st-add-card__details-element">
-          <select id="expiryDateYearId" name="expiryDateYear"></select>
+          <select id="expiryDateYearId" name="${NewCardFieldName.expiryYear}"></select>
         </span>
       </div>
       <div class="st-add-card__details">
         Security code <span class="st-add-card__details-asterix"></span><br>
-        <input id="cvv" maxlength="3" name="cvv" type="text">
+        <input id="cvv" maxlength="3" name="${NewCardFieldName.securityCode}" type="text">
       </div>
     `;
   }
 
   private addEventHandlers(formId: string): void {
-    document.getElementById(formId).querySelector('input[name="pan"]').addEventListener('change', event => this.handleChangedPan(event));
+    document.getElementById(formId).querySelector('input[name=' + NewCardFieldName.pan + ']').addEventListener('change', event => this.handleChangedPan(event));
     document.getElementById('st-add-card__button').addEventListener('click', () => this.handleAddCardButtonClick());
   }
 
@@ -106,7 +107,7 @@ export class CardListGenerator {
         </svg>
         <p class="st-ctp-user-details__information">${this.translator.translate('Hello')} ${emailAddress} <span id="st-ctp-user-details__not--you" class="st-ctp-user-details__not--you">${this.translator.translate('Not you?')}</span></p>
       </div>
-    `
+    `;
   }
 
   private addValidation(): void {
@@ -126,16 +127,17 @@ export class CardListGenerator {
 
   private cardContent(card: ICorrelatedMaskedCard, checked = false): string {
     const check = checked ? ' checked' : '';
+
     return `
       <span class="st-card__checkbox">${
         card.isActive
           ? '<label><input id="radio' +
             card.srcDigitalCardId +
-            '" name="srcDigitalCardId" type="radio" value="' +
+            '" name="srcDigitalCardId" class="st-card__checkbox-input" type="radio" value="' +
             card.srcDigitalCardId +
             '"' +
             check +
-            '><span class="radio"></span></label>'
+            '><span class="st-card__checkbox-radio"></span></label>'
           : ''
       }</span>
       <span class="st-card__image">

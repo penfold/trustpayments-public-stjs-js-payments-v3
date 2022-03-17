@@ -25,7 +25,7 @@ describe('CardListGenerator', () => {
 
   it('generates html for single checked active card', () => {
     const expected = `
-      <span class="st-card__checkbox"><label><input id="radio001" name="srcDigitalCardId" type="radio" value="001" checked><span class="radio"></span></label></span>
+      <span class="st-card__checkbox"><label><input id="radio001" name="srcDigitalCardId" class="st-card__checkbox-input" type="radio" value="001" checked><span class="st-card__checkbox-radio"></span></label></span>
       <span class="st-card__image">
         <img src="card001Url" alt="" style="width: 60px; height: 40px">
       </span>
@@ -48,7 +48,7 @@ describe('CardListGenerator', () => {
 
   it('generates html for single unchecked active card', () => {
     const expected = `
-      <span class="st-card__checkbox"><label><input id="radio001" name="srcDigitalCardId" type="radio" value="001"><span class="radio"></span></label></span>
+      <span class="st-card__checkbox"><label><input id="radio001" name="srcDigitalCardId" class="st-card__checkbox-input" type="radio" value="001"><span class="st-card__checkbox-radio"></span></label></span>
       <span class="st-card__image">
         <img src="card001Url" alt="" style="width: 60px; height: 40px">
       </span>

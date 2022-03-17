@@ -30,7 +30,6 @@ export class CheckoutDataTransformer {
       srciTransactionId,
       dpaTransactionOptions: initialData.dpaTransactionOptions,
       consumer: initialData.consumer,
-      windowRef: initialData.windowRef || this.window,
     };
 
     if (initialData.srcDigitalCardId) {
@@ -69,7 +68,7 @@ export class CheckoutDataTransformer {
           return throwError(() => new Error('Unknown or unsupported card type'));
         }
 
-        const profile = srcProfiles.srcProfiles[srcName];
+        const profile = srcProfiles?.srcProfiles[srcName];
 
         return this.encryptionKeyProvider.getEncryptionKey(srcName).pipe(
           switchMap(key => this.cardEncryptor.encrypt(cardData, key)),
@@ -78,8 +77,8 @@ export class CheckoutDataTransformer {
             checkoutData: {
               ...checkoutData,
               encryptedCard,
-              srcCorrelationId: profile.srcCorrelationId,
-              idToken: profile.profiles[0].idToken,
+              srcCorrelationId: profile?.srcCorrelationId,
+              idToken: profile?.profiles[0].idToken,
             },
           })),
         );

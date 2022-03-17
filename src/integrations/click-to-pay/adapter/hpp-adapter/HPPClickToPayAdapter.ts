@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
-import { filter, mapTo, tap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, firstValueFrom, Observable } from 'rxjs';
+import { catchError, filter, mapTo, tap } from 'rxjs/operators';
 import { IClickToPayAdapter } from '../interfaces/IClickToPayClientAdapter';
 import { DigitalTerminal } from '../../digital-terminal/DigitalTerminal';
 import { IInitPaymentMethod } from '../../../../application/core/services/payments/events/IInitPaymentMethod';
@@ -14,9 +14,12 @@ import { IIdentificationData } from '../../digital-terminal/interfaces/IIdentifi
 import { SrcNameFinder } from '../../digital-terminal/SrcNameFinder';
 import { SrcName } from '../../digital-terminal/SrcName';
 import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdentificationResult';
+import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { CardListGenerator } from '../../card-list/CardListGenerator';
+import { IUpdateView } from '../interfaces/IUpdateView';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
+import { HPPCheckoutDataProvider } from './HPPCheckoutDataProvider';
 
 @Service()
 export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAdapterInitParams, HPPClickToPayAdapter> {
@@ -29,6 +32,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
     private userIdentificationService: HPPUserIdentificationService,
     private srcNameFinder: SrcNameFinder,
     private cardListGenerator: CardListGenerator,
+    private hppCheckoutDataProvider: HPPCheckoutDataProvider
   ) {
   }
 
@@ -56,6 +60,9 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
   showCardList(): void {
     this.digitalTerminal.getSrcProfiles().subscribe(cardList => {
       this.cardListGenerator.displayCards(this.initParams.formId, this.initParams.cardListContainerId, cardList.aggregatedCards);
+      this.initParams.onUpdateView?.call(null, {
+        displayCardForm: false,
+      } as IUpdateView);
     });
     this.showUserDetails();
   }
@@ -97,8 +104,24 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
   private initAdapter(initParams: IHPPClickToPayAdapterInitParams): Observable<void> {
     return this.digitalTerminal.init(initParams).pipe(
       tap(() => {
-        // TODO initialize everything else here
+        this.hppCheckoutDataProvider.getCheckoutData(initParams.formId).subscribe(data => this.checkout(data));
       })
     );
+  }
+
+  private checkout(capturedCheckoutData: IInitialCheckoutData) {
+    const checkoutData: IInitialCheckoutData = {
+      ...capturedCheckoutData,
+      dpaTransactionOptions: this.initParams.dpaTransactionOptions,
+    };
+
+    this.digitalTerminal.checkout(checkoutData).pipe(
+      catchError(e => {
+        console.error(e);// TODO add better error handling
+        return EMPTY;
+      })
+    ).subscribe(response => {
+      this.initParams.onCheckout?.call(null, response);
+    });
   }
 }
