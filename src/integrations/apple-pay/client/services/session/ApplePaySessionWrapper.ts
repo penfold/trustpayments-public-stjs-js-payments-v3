@@ -1,5 +1,6 @@
 import { Inject, Service } from 'typedi';
 import { WINDOW } from '../../../../../shared/dependency-injection/InjectionTokens';
+import { ApplePayInitError } from '../../../models/errors/ApplePayInitError';
 import { IApplePayPaymentRequest } from '../../models/apple-pay-payment-data/IApplePayPaymentRequest';
 import { IApplePaySession } from '../../models/IApplePaySession';
 import { IApplePaySessionWrapper } from '../../models/IApplePaySessionWrapper';
@@ -51,7 +52,7 @@ export class ApplePaySessionWrapper implements IApplePaySessionWrapper {
 
   private assertApplePaySessionIsAvailable(): void {
     if (!this.isApplePaySessionAvailable()) {
-      throw new Error('ApplePaySession is not available.');
+      throw new ApplePayInitError('ApplePaySession is not available.');
     }
   }
 }
