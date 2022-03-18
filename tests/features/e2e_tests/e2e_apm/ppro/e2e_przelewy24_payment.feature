@@ -18,9 +18,9 @@ Feature: E2E PRZELEWY24 Payments
       | billingemail            | FirstName@email.pl                                     |
       | billingcountryiso2a     | <billingcountryiso2a>                                  |
       | currencyiso3a           | <currencyiso3a>                                        |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses PRZELEWY24 from APM list
@@ -47,9 +47,9 @@ Feature: E2E PRZELEWY24 Payments
       | billingprefixname       | <billingprefixname>                                    |
       | billingmiddlename       | <billingmiddlename>                                    |
       | billingsuffixname       | <billingsuffixname>                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses PRZELEWY24 from APM list
@@ -75,9 +75,9 @@ Feature: E2E PRZELEWY24 Payments
       | billingemail            | FirstName@email.pl                                     |
       | billingcountryiso2a     | <billingcountryiso2a>                                  |
       | currencyiso3a           | <currencyiso3a>                                        |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     When User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -102,9 +102,9 @@ Feature: E2E PRZELEWY24 Payments
       | baseamount              | 123                                                    |
       | billingfirstname        | <billingfirstname>                                     |
       | billingemail            | <billingemail>                                         |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User waits for Pay button to be active
     And User focuses on APM payment methods section
@@ -126,9 +126,9 @@ Feature: E2E PRZELEWY24 Payments
       | billingemail            | FirstName@email.pl                                     |
       | billingcountryiso2a     | PL                                                     |
       | currencyiso3a           | EUR                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value                                                  |
       | requesttypedescriptions | AUTH                                                   |
@@ -137,9 +137,9 @@ Feature: E2E PRZELEWY24 Payments
       | billingemail            | FirstName@email.pl                                     |
       | billingcountryiso2a     | PL                                                     |
       | currencyiso3a           | PLN                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User waits for Pay button to be active
     And User calls updateJWT function by filling amount field
     When User chooses PRZELEWY24 from APM list
@@ -157,9 +157,9 @@ Feature: E2E PRZELEWY24 Payments
       | billingemail            | FirstName@email.pl                                     |
       | billingcountryiso2a     | PL                                                     |
       | currencyiso3a           | EUR                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value                                                  |
       | requesttypedescriptions | AUTH                                                   |
@@ -168,9 +168,9 @@ Feature: E2E PRZELEWY24 Payments
       | billingemail            | FirstName@email.pl                                     |
       | billingcountryiso2a     | DE                                                     |
       | currencyiso3a           | EUR                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User waits for Pay button to be active
     When User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
@@ -188,9 +188,9 @@ Feature: E2E PRZELEWY24 Payments
       | billingemail            | FirstName@email.pl                                     |
       | billingcountryiso2a     | PL                                                     |
       | currencyiso3a           | EUR                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value                                                  |
       | requesttypedescriptions | AUTH                                                   |
@@ -198,9 +198,9 @@ Feature: E2E PRZELEWY24 Payments
       | billinglastname         | LastName                                               |
       | billingcountryiso2a     | PL                                                     |
       | currencyiso3a           | EUR                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User waits for Pay button to be active
     When User calls updateJWT function by filling amount field
     And User focuses on APM payment methods section
@@ -218,9 +218,9 @@ Feature: E2E PRZELEWY24 Payments
       | billingemail            | FirstName@email.pl                                     |
       | billingcountryiso2a     | PL                                                     |
       | currencyiso3a           | EUR                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     When User chooses PRZELEWY24 from APM list
@@ -292,7 +292,7 @@ Feature: E2E PRZELEWY24 Payments
 #      | THREEDQUERY AUTH RISKDEC2                           |
 
 
-  Scenario: successredirecturl and parameters verification
+  Scenario: successfulurlredirect and parameters verification
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -304,9 +304,9 @@ Feature: E2E PRZELEWY24 Payments
       | billingcountryiso2a     | PL                                                     |
       | currencyiso3a           | EUR                                                    |
       | orderreference          | 123456                                                 |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses PRZELEWY24 from APM list
@@ -320,7 +320,7 @@ Feature: E2E PRZELEWY24 Payments
 #      | orderreference         | 123456 | commented on purpose
 
 
-  Scenario: errorredirecturl and parameters verification
+  Scenario: errorurlredirect and parameters verification
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs BASIC_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -332,9 +332,9 @@ Feature: E2E PRZELEWY24 Payments
       | billingcountryiso2a     | PL                                                     |
       | currencyiso3a           | EUR                                                    |
       | orderreference          | 123456                                                 |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses PRZELEWY24 from APM list
@@ -360,9 +360,9 @@ Feature: E2E PRZELEWY24 Payments
       | billingcountryiso2a     | PL                                                     |
       | currencyiso3a           | EUR                                                    |
       | orderreference          | 123456                                                 |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses PRZELEWY24 from APM list - override placement

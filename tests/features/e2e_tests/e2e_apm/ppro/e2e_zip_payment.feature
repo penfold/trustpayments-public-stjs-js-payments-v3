@@ -22,9 +22,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | GBP                                                    |
       | baseamount              | 1000                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
@@ -57,9 +57,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | <currencyiso3a>                                        |
       | baseamount              | 1000                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User waits for Pay button to be active
@@ -89,9 +89,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | GBP                                                    |
       | baseamount              | 1000                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     When User opens example page WITH_APM
     And User waits for Pay button to be active
@@ -115,9 +115,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | GBP                                                    |
       | baseamount              | <baseamount>                                           |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     When User opens example page WITH_APM
     And User waits for Pay button to be active
@@ -148,9 +148,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | GBP                                                    |
       | baseamount              | 1000                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value                                                  |
@@ -167,9 +167,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123446                                                 |
       | currencyiso3a           | GBP                                                    |
       | baseamount              | 1500                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User calls updateJWT function by filling amount field
     When User chooses ZIP from APM list
@@ -194,9 +194,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | GBP                                                    |
       | baseamount              | 1000                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value                                                  |
@@ -213,9 +213,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | PLN                                                    |
       | baseamount              | 1000                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
@@ -241,9 +241,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | GBP                                                    |
       | baseamount              | 1000                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value                                                  |
@@ -258,9 +258,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | GBP                                                    |
       | baseamount              | 1000                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     When User calls updateJWT function by filling amount field
     And User waits for Pay button to be active
@@ -286,9 +286,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | GBP                                                    |
       | baseamount              | 1000                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
@@ -315,9 +315,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | GBP                                                    |
       | baseamount              | 1000                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User waits for whole form to be displayed
@@ -391,9 +391,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | GBP                                                    |
       | baseamount              | 1000                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
@@ -481,9 +481,9 @@ Feature: E2E ZIP Payments
       | orderreference          | 123445                                                 |
       | currencyiso3a           | GBP                                                    |
       | baseamount              | 1000                                                   |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section

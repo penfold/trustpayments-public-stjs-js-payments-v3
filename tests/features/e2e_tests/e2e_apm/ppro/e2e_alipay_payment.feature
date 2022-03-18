@@ -19,9 +19,9 @@ Feature: E2E Alipay Payments
       | billingemail            | FirstName@email.pl                                     |
       | billingcountryiso2a     | GB                                                     |
       | currencyiso3a           | GBP                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
@@ -48,9 +48,9 @@ Feature: E2E Alipay Payments
       | billingprefixname       | <billingprefixname>                                    |
       | billingmiddlename       | <billingmiddlename>                                    |
       | billingsuffixname       | <billingsuffixname>                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
@@ -81,9 +81,9 @@ Feature: E2E Alipay Payments
       | billingdob              | 1980-02-01                                             |
       | billingcountryiso2a     | <billingcountryiso2a>                                  |
       | currencyiso3a           | <currencyiso3a>                                        |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     When User opens example page WITH_APM
     And User waits for Pay button to be active
@@ -106,9 +106,9 @@ Feature: E2E Alipay Payments
       | currencyiso3a           | USD                                                    |
       | billingcountryiso2a     | UY                                                     |
       | baseamount              | 123                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     When User opens example page WITH_APM
     And User waits for Pay button to be active
@@ -129,9 +129,9 @@ Feature: E2E Alipay Payments
       | billingdob              | 1980-02-01                                             |
       | billingcountryiso2a     | UY                                                     |
       | currencyiso3a           | USD                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value                                                  |
@@ -143,9 +143,9 @@ Feature: E2E Alipay Payments
       | billingdob              | 1980-02-01                                             |
       | billingcountryiso2a     | UY                                                     |
       | currencyiso3a           | USD                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User waits for Pay button to be active
     And User calls updateJWT function by filling amount field
@@ -167,9 +167,9 @@ Feature: E2E Alipay Payments
       | billingdob              | 1980-02-01                                             |
       | billingcountryiso2a     | UY                                                     |
       | currencyiso3a           | USD                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value                                                  |
@@ -180,9 +180,9 @@ Feature: E2E Alipay Payments
       | billingdob              | 1980-02-01                                             |
       | billingcountryiso2a     | CZ                                                     |
       | currencyiso3a           | USD                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User waits for Pay button to be active
     And User calls updateJWT function by filling amount field
@@ -203,9 +203,9 @@ Feature: E2E Alipay Payments
       | billingdob              | 1980-02-01                                             |
       | billingcountryiso2a     | UY                                                     |
       | currencyiso3a           | USD                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens page WITH_APM and WITH_UPDATE_JWT - jwt BASE_JWT with additional attributes
       | key                     | value                                                  |
@@ -213,9 +213,9 @@ Feature: E2E Alipay Payments
       | baseamount              | 707                                                    |
       | billingcountryiso2a     | UY                                                     |
       | currencyiso3a           | USD                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User waits for Pay button to be active
     And User calls updateJWT function by filling amount field
@@ -236,9 +236,9 @@ Feature: E2E Alipay Payments
       | billingdob              | 1980-02-01                                             |
       | billingcountryiso2a     | UY                                                     |
       | currencyiso3a           | USD                                                    |
-      | successredirecturl      | https://this_is_not_existing_page_success_redirect.com |
-      | errorredirecturl        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelredirecturl       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
       | returnurl               | https://this_is_not_existing_page_return_redirect.com  |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section

@@ -166,7 +166,7 @@ Feature: E2E A2A Payments
 #    Then User will see notification frame text: "Invalid requesttype"
 #
 #
-#  Scenario: successredirecturl and parameters verification
+#  Scenario: successfulurlredirect and parameters verification
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes
@@ -191,7 +191,7 @@ Feature: E2E A2A Payments
 #      | orderreference       | 123456             |
 #
 #
-#  Scenario: errorredirecturl and parameters verification
+#  Scenario: errorurlredirect and parameters verification
 #    Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_APM
 #    And JS library authenticated by jwt BASE_JWT with additional attributes

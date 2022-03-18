@@ -12,7 +12,7 @@ class InlineConfigBuilder:
                         'billingpremise', 'billingpostcode', 'orderreference', 'cachetoken', 'currencyiso3a',
                         'customercountryiso2a', 'expirydate', 'iban', 'locale',
                         'mainamount', 'pan', 'requesttypedescriptions', 'securitycode', 'sitereference',
-                        'threedbypasspaymenttypes', 'successredirecturl', 'errorredirecturl', 'cancelredirecturl',
+                        'threedbypasspaymenttypes', 'successfulurlredirect', 'errorurlredirect', 'cancelurlredirect',
                         'returnurl']
 
         for prop in properties:
