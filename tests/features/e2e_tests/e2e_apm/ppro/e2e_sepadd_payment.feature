@@ -382,24 +382,24 @@ Feature: E2E SEPADD Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs SEPADD_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                  |
-      | requesttypedescriptions | AUTH                                                   |
-      | baseamount              | 70                                                     |
-      | billingfirstname        | FirstName                                              |
-      | billingemail            | FirstName@email.pl                                     |
-      | iban                    | MT00000000000000000000000000                           |
-      | billingcountryiso2a     | AT                                                     |
-      | currencyiso3a           | EUR                                                    |
-      | orderreference          | 123456                                                 |
-      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
-      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | key                     | value                                                         |
+      | requesttypedescriptions | AUTH                                                          |
+      | baseamount              | 70                                                            |
+      | billingfirstname        | FirstName                                                     |
+      | billingemail            | FirstName@email.pl                                            |
+      | iban                    | MT00000000000000000000000000                                  |
+      | billingcountryiso2a     | AT                                                            |
+      | currencyiso3a           | EUR                                                           |
+      | orderreference          | 123456                                                        |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com        |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect_override.com |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com         |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses SEPADD from APM list - override placement
     And User will be sent to apm page - simulator
     When User will select Failed Unknown response and submit
-    Then User will be sent to page with url "this_is_not_existing_page_error_redirect.com" having params
+    Then User will be sent to page with url "this_is_not_existing_page_error_redirect_override.com" having params
       | key                    | value  |
       | paymenttypedescription | SEPADD |
       | errorcode              | 70000  |

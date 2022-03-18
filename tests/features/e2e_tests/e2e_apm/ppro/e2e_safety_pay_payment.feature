@@ -367,17 +367,17 @@ Feature: E2E SAFETYPAY Payments
     Given JS library configured by inline config BASIC_CONFIG
     And JS library configured by inline configAPMs SAFETYPAY_CONFIG_APM
     And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value                                                  |
-      | requesttypedescriptions | AUTH                                                   |
-      | baseamount              | 704                                                    |
-      | billingfirstname        | FirstName                                              |
-      | billinglastname         | LastName                                               |
-      | billingcountryiso2a     | AT                                                     |
-      | currencyiso3a           | EUR                                                    |
-      | orderreference          | 123456                                                 |
-      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com |
-      | errorurlredirect        | https://this_is_not_existing_page_error_redirect.com   |
-      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com  |
+      | key                     | value                                                         |
+      | requesttypedescriptions | AUTH                                                          |
+      | baseamount              | 704                                                           |
+      | billingfirstname        | FirstName                                                     |
+      | billinglastname         | LastName                                                      |
+      | billingcountryiso2a     | AT                                                            |
+      | currencyiso3a           | EUR                                                           |
+      | orderreference          | 123456                                                        |
+      | successfulurlredirect   | https://this_is_not_existing_page_success_redirect.com        |
+      | errorurlredirect        | https://this_is_not_existing_page_error_redirect_override.com |
+      | cancelurlredirect       | https://this_is_not_existing_page_cancel_redirect.com         |
     And User opens example page WITH_APM
     And User focuses on APM payment methods section
     And User chooses SAFETYPAY from APM list - override placement
