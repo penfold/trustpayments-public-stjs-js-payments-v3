@@ -79,7 +79,7 @@
     "node-forge": "1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "7.17.5",
+    "@babel/core": "7.17.7",
     "@babel/plugin-proposal-class-properties": "7.16.7",
     "@babel/plugin-proposal-decorators": "7.17.2",
     "@babel/plugin-proposal-optional-catch-binding": "7.16.7",
@@ -153,7 +153,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "7.12.1",
-    "@babel/runtime": "7.17.2",
+    "@babel/runtime": "7.17.7",
     "@sentry/browser": "6.18.2",
     "@sheerun/mutationobserver-shim": "0.3.3",
     "@trustpayments/3ds-sdk-js": "1.1.31",
