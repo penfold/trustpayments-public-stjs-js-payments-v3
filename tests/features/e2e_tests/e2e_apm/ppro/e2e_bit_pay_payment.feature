@@ -351,7 +351,7 @@ Feature: E2E BITPAY Payments
     And User chooses BITPAY from APM list - override placement
     And User will be sent to apm page - simulator
     When User will select Failed Unknown response and submit
-    Then User will be sent to page with url "this_is_not_existing_page_return_redirect.com" having params
+    Then User will be sent to page with url "this_is_not_existing_page_error_redirect.com" having params
       | key                    | value  |
       | paymenttypedescription | BITPAY |
       | errorcode              | 70000  |
