@@ -15,18 +15,18 @@ const alipayJwtSchema = Joi.object().keys({
 const pproJwtSchema = Joi.object().keys({
   billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
-  successredirecturl: Joi.string().required(),
-  errorredirecturl: Joi.string().required(),
-  cancelredirecturl: Joi.string(),
+  successfulurlredirect: Joi.string().required(),
+  errorurlredirect: Joi.string().required(),
+  cancelurlredirect: Joi.string(),
 }).unknown();
 
 const przelewy24JwtSchema = Joi.object().keys({
   billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
   billingemail: Joi.string().required(),
-  successredirecturl: Joi.string().required(),
-  errorredirecturl: Joi.string().required(),
-  cancelredirecturl: Joi.string(),
+  successfulurlredirect: Joi.string().required(),
+  errorurlredirect: Joi.string().required(),
+  cancelurlredirect: Joi.string(),
 }).unknown();
 
 const redpagosJwtSchema = Joi.object().keys({
@@ -34,9 +34,9 @@ const redpagosJwtSchema = Joi.object().keys({
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
   billingemail: Joi.string().required(),
   billingdob: Joi.string().required(),
-  successredirecturl: Joi.string().required(),
-  errorredirecturl: Joi.string().required(),
-  cancelredirecturl: Joi.string(),
+  successfulurlredirect: Joi.string().required(),
+  errorurlredirect: Joi.string().required(),
+  cancelurlredirect: Joi.string(),
 }).unknown();
 
 const sepaddJwtSchema = Joi.object().keys({
@@ -44,17 +44,17 @@ const sepaddJwtSchema = Joi.object().keys({
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
   billingemail: Joi.string().required(),
   iban: Joi.string().max(255).required(),
-  successredirecturl: Joi.string().required(),
-  errorredirecturl: Joi.string().required(),
-  cancelredirecturl: Joi.string(),
+  successfulurlredirect: Joi.string().required(),
+  errorurlredirect: Joi.string().required(),
+  cancelurlredirect: Joi.string(),
 }).unknown();
 
 const wechatpayJwtSchema = Joi.object().keys({
   billingcountryiso2a: Joi.string().pattern(/^[A-Z]{2}$/).required(),
   currencyiso3a: Joi.string().pattern(/^[A-Z]{3}$/).required(),
-  successredirecturl: Joi.string().required(),
-  errorredirecturl: Joi.string().required(),
-  cancelredirecturl: Joi.string(),
+  successfulurlredirect: Joi.string().required(),
+  errorurlredirect: Joi.string().required(),
+  cancelurlredirect: Joi.string(),
 }).unknown();
 
 const zipJwtSchema = Joi.object().keys({

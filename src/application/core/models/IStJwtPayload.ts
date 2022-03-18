@@ -24,9 +24,9 @@ export interface IStJwtPayload {
   billingcountryiso2a?: string;
   customercountryiso2a?: string;
   fraudcontroltransactionid?: string;
-  successredirecturl?: string;
-  errorredirecturl?: string;
-  cancelredirecturl?: string;
+  successfulurlredirect?: string;
+  errorrurlredirect?: string;
+  cancelurlredirect?: string;
   returnurl?: string;
   billingfirstname?: string;
   billinglastname?: string;

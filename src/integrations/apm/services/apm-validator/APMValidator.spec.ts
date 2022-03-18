@@ -90,7 +90,7 @@ describe('APMValidator', () => {
           currencyiso3a: 'USD',
           orderreference: '123',
         },
-          '"successredirecturl" is required',
+          '"successfulurlredirect" is required',
         ],
         [
           configFactory(APMName.ZIP), {
