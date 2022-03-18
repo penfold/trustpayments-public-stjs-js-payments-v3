@@ -13,6 +13,7 @@
 </head>
 <body>
 <main>
+  <div id="st-popup" class="st-popup"></div>
   <header class="st-header">
     <figure class="st-header__logo">
       <img src="./img/trustpayments.png" alt="Trust Payments logo" title="Trust Payments" role="img">
@@ -524,6 +525,8 @@
     </fieldset>
   </form>
 </main>
+<script src="./predefinedCallbacks.js"></script>
+<script src="./counter.js"></script>
 <script type="text/javascript" src="<%= LIBRARY_URL %>/st.js"></script>
 <script type="text/javascript">
   var ST = SecureTrading;
@@ -535,6 +538,7 @@
     Promise.all([getConfig()])
       .then(function(configValues) {
         var config = configValues[0];
+        setCallbacks(config);
         var st = init(config);
       });
 
@@ -580,9 +584,9 @@
         signInContainerId: 'st-ctp-login',
         srciDpaId: 'TrustPayments-test-merchant',
         dpaTransactionOptions: {
-          consumerNameRequested: false,
-          consumerEmailAddressRequested: false,
-          consumerPhoneNumberRequested: false,
+          consumerNameRequested: true,
+          consumerEmailAddressRequested: true,
+          consumerPhoneNumberRequested: true,
           reviewAction: 'pay',
           transactionAmount: {
             transactionAmount: 100.00,
@@ -637,7 +641,7 @@
         adapterInstance.identifyUser()
           .then(function(result) {
             printLogs('CTP - user identified: ');
-            printLogs(JSON.stringify(result,null,2));
+            printLogs(JSON.stringify(result, null, 2));
             if (result.isSuccessful) {
               adapterInstance.showCardList();
             }
@@ -665,8 +669,8 @@
       return (event) => {
         const cardType = adapterInstance.getSrcName(event.target.value);
         console.log(cardType);
-      }
-    }
+      };
+    };
 
     function onUpdateView(updateView) {
       var cardDetailsElement = document.getElementById('st-card-details-section');
@@ -688,6 +692,10 @@
       console.log('CTP - cecheckout result: ', checkoutResult)
     }
 
+    function onCheckout(checkoutResult) {
+      printLogs(`CTP - checkout result: \n${JSON.stringify(checkoutResult, null, 2)}`);
+    }
+
     function printLogs(logs) {
       var outputElement = document.getElementById('st-log-area');
 
@@ -696,6 +704,20 @@
       }
 
       outputElement.value += '' + logs + '\n';
+    }
+
+    function setCallbacks(config) {
+      var configCallbackKeys = ['submitCallback', 'successCallback', 'cancelCallback', 'errorCallback'];
+      configCallbackKeys.forEach(function(callbackKey) {
+        var callbackFunctionName = config[callbackKey] || null;
+        if (callbackFunctionName && typeof callbackFunctionName === 'function') {
+          config[callbackKey] = callbackFunctionName;
+        } else if (callbackFunctionName && typeof callbackFunctionName === 'string' && typeof window.predefinedCallbacks[callbackFunctionName] === 'function') {
+          config[callbackKey] = window.predefinedCallbacks[callbackFunctionName];
+        } else {
+          config[callbackKey] = null;
+        }
+      });
     }
   });
 </script>
