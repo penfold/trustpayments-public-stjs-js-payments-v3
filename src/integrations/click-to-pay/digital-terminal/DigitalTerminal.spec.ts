@@ -7,7 +7,7 @@ import { CheckoutDataTransformer } from './CheckoutDataTransformer';
 import { SrcName } from './SrcName';
 import { IAggregatedProfiles } from './interfaces/IAggregatedProfiles';
 import { IInitialCheckoutData } from './interfaces/IInitialCheckoutData';
-import { ICheckoutData, ICheckoutResponse, ICheckoutResponseData } from './ISrc';
+import { DcfActionCode, ICheckoutData, ICheckoutResponse } from './ISrc';
 import { IUserIdentificationService } from './interfaces/IUserIdentificationService';
 
 describe('DigitalTerminal', () => {
@@ -163,22 +163,9 @@ describe('DigitalTerminal', () => {
       const transformedCheckoutData: ICheckoutData = {
         srcCorrelationId: 'correlationid',
       };
-      const checkoutResponseData: ICheckoutResponseData = {
-        srciTransactionId: '',
-        isGuestCheckout: false,
-        assuranceData: null,
-        encryptedPayload: '',
-        maskedCard: null,
-        maskedConsumer: null,
-        srcCorrelationId: '',
-        isNewUser: true,
-        shippingAddressZip: '',
-        shippingCountryCode: '',
-      };
-
       const checkoutResponse: ICheckoutResponse = {
-        checkoutResponse: checkoutResponseData,
-        dcfActionCode: 'COMPLETE',
+        checkoutResponse: 'checkoutResponse',
+        dcfActionCode: DcfActionCode.complete,
         idToken: 'token',
         unbindAppInstance: false,
       };

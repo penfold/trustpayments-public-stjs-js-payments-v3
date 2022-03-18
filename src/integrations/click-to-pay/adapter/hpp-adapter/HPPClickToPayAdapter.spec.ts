@@ -14,6 +14,8 @@ import { SrcName } from '../../digital-terminal/SrcName';
 import { IdentificationFailureReason } from '../../digital-terminal/IdentificationFailureReason';
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { CardListGenerator } from '../../card-list/CardListGenerator';
+import { DcfActionCode, ICheckoutResponse } from '../../digital-terminal/ISrc';
+import { IAggregatedProfiles } from '../../digital-terminal/interfaces/IAggregatedProfiles';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPClickToPayAdapter } from './HPPClickToPayAdapter';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
@@ -48,7 +50,14 @@ describe('HPPClickToPayAdapter', () => {
     hppCheckoutDataProviderMock = mock(HPPCheckoutDataProvider);
     when(digitalTerminalMock.init(anything())).thenReturn(of(undefined));
     when(digitalTerminalMock.getSrcProfiles()).thenReturn(of(undefined));
-    when(digitalTerminalMock.checkout(anything())).thenReturn(of(undefined));
+    when(digitalTerminalMock.checkout(anything())).thenReturn(of({
+          idToken: 'idtoken',
+          unbindAppInstance: false,
+          dcfActionCode: DcfActionCode.complete,
+          checkoutResponse: 'response',
+        }
+      )
+    );
     when(hppCheckoutDataProviderMock.getCheckoutData(anyString())).thenReturn(of(undefined));
     when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_INIT, anyFunction())).thenCall((eventType, callback) => {
       callback({ type: eventType, data: initParams }).subscribe();
@@ -80,8 +89,8 @@ describe('HPPClickToPayAdapter', () => {
       });
     });
 
-    it('should subscribe to checkout data captured from form submit and perform checkout using DigitalTerminal when checkout is triggered', done => {
-      const formSubmitEventMock = new Subject<void>();
+    describe('should subscribe to checkout data captured from form submit and', () => {
+      let formSubmitEventMock: Subject<void>;
       const testCheckoutData: IInitialCheckoutData = {
         newCardData: {
           primaryAccountNumber: '111',
@@ -91,113 +100,201 @@ describe('HPPClickToPayAdapter', () => {
           panExpirationYear: '2049',
         },
       };
-      when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT, anyFunction())).thenCall((eventType, callback) => {
-        callback({ type: eventType, data: initParams }).subscribe();
-      });
-      when(hppCheckoutDataProviderMock.getCheckoutData(initParams.formId)).thenReturn(formSubmitEventMock.pipe(mapTo(testCheckoutData)));
-      sut.init(initParams).then(adapterInstance => {
-          formSubmitEventMock.asObservable().subscribe(() => {
-            verify(digitalTerminalMock.checkout(objectContaining({
-              ...testCheckoutData,
-              dpaTransactionOptions: initParams.dpaTransactionOptions,
-            } as IInitialCheckoutData))).once();
-
-            done();
-          });
-          formSubmitEventMock.next();
-        }
-      );
-    });
-  });
-
-  describe('getSrcName()', () => {
-    it('should find pan using SrcNameFinder', done => {
-      const pan = '4111';
-      when(srcNameFinderMock.findSrcNameByPan(pan)).thenReturn(of(SrcName.VISA));
-
-      sut.getSrcName(pan).then(srcName => {
-        expect(srcName).toEqual(SrcName.VISA);
-        verify(srcNameFinderMock.findSrcNameByPan(pan)).once();
-        done();
-      });
-    });
-  });
-
-  it(`should subscribe to message bus event ${PUBLIC_EVENTS.CLICK_TO_PAY_INIT}, run initAdapter method and return Promise with reference to adapter `, done => {
-    sut.init(initParams).then((adapterReference) => {
-      verify(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_INIT, anyFunction())).once();
-      verify(digitalTerminalMock.init(initParams)).once();
-      expect(adapterReference).toEqual(sut);
-      done();
-    });
-  });
-
-  describe('showCardList()', () => {
-    test.todo('add tests');
-  });
-
-  describe('isRecognized()', () => {
-    it('should return response from DigitalTerminal.isRecognized() method as Promise', (done) => {
-      when(digitalTerminalMock.isRecognized()).thenReturn(of(true));
-      const response = sut.isRecognized();
-      expect(response).toBeInstanceOf(Promise);
-      response.then((result) => {
-        verify(digitalTerminalMock.isRecognized()).once();
-        expect(result).toEqual(true);
-        done();
-      });
-    });
-  });
-  it('should propagate error from DigitalTerminal.isRecognized() if any occurs', (done) => {
-    const errorResponse = new Error('digital terminal error');
-
-    when(digitalTerminalMock.isRecognized()).thenReturn(throwError(() => errorResponse));
-    const response = sut.isRecognized();
-    expect(response).toBeInstanceOf(Promise);
-    response.catch(error => {
-      verify(digitalTerminalMock.isRecognized()).once();
-      // eslint-disable-next-line jest/no-conditional-expect
-      expect(error).toEqual(errorResponse);
-    }).finally(() => done());
-  });
-
-  describe('identifyUser()', () => {
-    beforeEach(() => {
-      sut.init(initParams);
-    });
-
-    it('should return response from DigitalTerminal.identifyUser() method as Promise', (done) => {
-      const identificationResult: IIdentificationResult = {
-        isSuccessful: true,
-        failureReason: IdentificationFailureReason.OTHER,
+      const expectedInitialCheckoutData: IInitialCheckoutData = {
+        ...testCheckoutData,
+        dpaTransactionOptions: initParams.dpaTransactionOptions,
       };
-      const testData: IIdentificationData = {
-        email: 'email@example.com',
-      };
-      when(digitalTerminalMock.identifyUser(anything(), anything())).thenReturn(of(identificationResult));
-      const response = sut.identifyUser(testData);
-      expect(response).toBeInstanceOf(Promise);
-      response.then(result => {
-        verify(digitalTerminalMock.identifyUser(anything(), testData)).once();
-        expect(result).toEqual(identificationResult);
-        done();
+
+      beforeEach(() => {
+        formSubmitEventMock = new Subject<void>();
+        when(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT, anyFunction())).thenCall((eventType, callback) => {
+          callback({ type: eventType, data: initParams }).subscribe();
+        });
+        when(hppCheckoutDataProviderMock.getCheckoutData(initParams.formId)).thenReturn(formSubmitEventMock.pipe(mapTo(testCheckoutData)));
+      });
+
+      it('perform checkout using DigitalTerminal when checkout is triggered', done => {
+
+        sut.init(initParams).then(adapterInstance => {
+            formSubmitEventMock.asObservable().subscribe(() => {
+              verify(digitalTerminalMock.checkout(objectContaining(expectedInitialCheckoutData))).once();
+
+              done();
+            });
+            formSubmitEventMock.next();
+          }
+        );
+      });
+
+      it(`when checkout response contains dcfActionCode = ${DcfActionCode.addCard} it should enable new card list form in card list view`, done => {
+        const mockCheckoutResponse: ICheckoutResponse = {
+          checkoutResponse: '',
+          dcfActionCode: DcfActionCode.addCard,
+          unbindAppInstance: false,
+          idToken: '',
+        };
+        when(digitalTerminalMock.checkout(anything())).thenReturn(of(mockCheckoutResponse));
+
+        sut.init(initParams).then(adapterInstance => {
+            formSubmitEventMock.asObservable().subscribe(() => {
+              verify(cardListGeneratorMock.openNewCardForm()).once();
+
+              done();
+            });
+            formSubmitEventMock.next();
+          }
+        );
+      });
+
+      it('when checkout response contains unbindAppInstance = true it should unbind instance using Digital Terminal and hide card list, regardless of returned ddcfActionCode', done => {
+        const mockCheckoutResponse: ICheckoutResponse = {
+          checkoutResponse: '',
+          dcfActionCode: DcfActionCode.switchConsumer,
+          unbindAppInstance: true,
+          idToken: '',
+        };
+        when(digitalTerminalMock.checkout(objectContaining(expectedInitialCheckoutData))).thenReturn(of(mockCheckoutResponse));
+        when(digitalTerminalMock.unbindAppInstance()).thenReturn(of(undefined));
+
+        sut.init(initParams).then(adapterInstance => {
+            formSubmitEventMock.asObservable().subscribe(() => {
+              verify(digitalTerminalMock.unbindAppInstance()).once();
+              verify(cardListGeneratorMock.hideForm()).once();
+              done();
+            });
+            formSubmitEventMock.next();
+          }
+        );
       });
     });
 
-    it('should propagate error from DigitalTerminal.identifyUser() if any occurs', (done) => {
+    describe('getSrcName()', () => {
+      it('should find pan using SrcNameFinder', done => {
+        const pan = '4111';
+        when(srcNameFinderMock.findSrcNameByPan(pan)).thenReturn(of(SrcName.VISA));
+
+        sut.getSrcName(pan).then(srcName => {
+          expect(srcName).toEqual(SrcName.VISA);
+          verify(srcNameFinderMock.findSrcNameByPan(pan)).once();
+          done();
+        });
+      });
+    });
+
+    it(`should subscribe to message bus event ${PUBLIC_EVENTS.CLICK_TO_PAY_INIT}, run initAdapter method and return Promise with reference to adapter `
+      , done => {
+        sut.init(initParams).then((adapterReference) => {
+          verify(frameQueryingServiceMock.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_INIT, anyFunction())).once();
+          verify(digitalTerminalMock.init(initParams)).once();
+          expect(adapterReference).toEqual(sut);
+          done();
+        });
+      });
+
+    describe('showCardList()', () => {
+      const mockSrcProfiles: IAggregatedProfiles = {
+        srcProfiles: null,
+        aggregatedCards: [{
+          srcDigitalCardId: '1',
+          idToken: '1',
+          dateOfCardCreated: null,
+          dcf: null,
+          srcCorrelationId: 'scrCorrelationId',
+          srcName: SrcName.VISA,
+          dateOfCardLastUsed: null,
+          digitalCardData: null,
+          isActive: null,
+          maskedBillingAddress: null,
+          panBin: null,
+          panExpirationMonth: null,
+          panExpirationYear: null,
+          panLastFour: null,
+          paymentAccountReference: null,
+          tokenBinRange: null,
+          tokenLastFour: null,
+        }],
+      };
+      beforeEach(() => {
+        when(digitalTerminalMock.getSrcProfiles()).thenReturn(of(mockSrcProfiles));
+        sut.init(initParams);
+      });
+
+      it('should display list of cards of recognized user in container with id provided in init data', () => {
+        sut.showCardList();
+        verify(digitalTerminalMock.getSrcProfiles()).atLeast(1);
+        verify(cardListGeneratorMock.displayCards(initParams.cardListContainerId, objectContaining(mockSrcProfiles.aggregatedCards))).once();
+      });
+
+      it('should display recognized user details element', () => {
+        sut.showCardList();
+        verify(digitalTerminalMock.getSrcProfiles()).atLeast(1);
+        verify(cardListGeneratorMock.displayUserInformation(initParams.cardListContainerId, objectContaining(mockSrcProfiles.srcProfiles))).once();
+      });
+    });
+
+    describe('isRecognized()', () => {
+      it('should return response from DigitalTerminal.isRecognized() method as Promise', (done) => {
+        when(digitalTerminalMock.isRecognized()).thenReturn(of(true));
+        const response = sut.isRecognized();
+        expect(response).toBeInstanceOf(Promise);
+        response.then((result) => {
+          verify(digitalTerminalMock.isRecognized()).once();
+          expect(result).toEqual(true);
+          done();
+        });
+      });
+    });
+    it('should propagate error from DigitalTerminal.isRecognized() if any occurs', (done) => {
       const errorResponse = new Error('digital terminal error');
 
-      when(digitalTerminalMock.identifyUser(anything(), anything())).thenReturn(throwError(() => errorResponse));
-      const testData: IIdentificationData = {
-        email: 'email@example.com',
-      };
-      const response = sut.identifyUser(testData);
+      when(digitalTerminalMock.isRecognized()).thenReturn(throwError(() => errorResponse));
+      const response = sut.isRecognized();
       expect(response).toBeInstanceOf(Promise);
       response.catch(error => {
-        verify(digitalTerminalMock.identifyUser(anything(), testData)).once();
+        verify(digitalTerminalMock.isRecognized()).once();
         // eslint-disable-next-line jest/no-conditional-expect
         expect(error).toEqual(errorResponse);
       }).finally(() => done());
+    });
+
+    describe('identifyUser()', () => {
+      beforeEach(() => {
+        sut.init(initParams);
+      });
+
+      it('should return response from DigitalTerminal.identifyUser() method as Promise', (done) => {
+        const identificationResult: IIdentificationResult = {
+          isSuccessful: true,
+          failureReason: IdentificationFailureReason.OTHER,
+        };
+        const testData: IIdentificationData = {
+          email: 'email@example.com',
+        };
+        when(digitalTerminalMock.identifyUser(anything(), anything())).thenReturn(of(identificationResult));
+        const response = sut.identifyUser(testData);
+        expect(response).toBeInstanceOf(Promise);
+        response.then(result => {
+          verify(digitalTerminalMock.identifyUser(anything(), testData)).once();
+          expect(result).toEqual(identificationResult);
+          done();
+        });
+      });
+
+      it('should propagate error from DigitalTerminal.identifyUser() if any occurs', (done) => {
+        const errorResponse = new Error('digital terminal error');
+
+        when(digitalTerminalMock.identifyUser(anything(), anything())).thenReturn(throwError(() => errorResponse));
+        const testData: IIdentificationData = {
+          email: 'email@example.com',
+        };
+        const response = sut.identifyUser(testData);
+        expect(response).toBeInstanceOf(Promise);
+        response.catch(error => {
+          verify(digitalTerminalMock.identifyUser(anything(), testData)).once();
+          // eslint-disable-next-line jest/no-conditional-expect
+          expect(error).toEqual(errorResponse);
+        }).finally(() => done());
+      });
     });
   });
 });
