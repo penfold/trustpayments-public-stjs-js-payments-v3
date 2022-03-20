@@ -202,7 +202,8 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User opens example page
     When User fills payment form with defined card MASTERCARD_STEP_UP_AUTH_UNAVAILABLE
     And User clicks Pay button
-    And User fills V2 authentication modal
+#TODO - uncomment when cardinal issue will be resolved
+#    And User fills V2 authentication modal
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
@@ -266,7 +267,8 @@ Feature: Cardinal Commerce E2E tests v2 - MasterCard
     And User opens example page
     When User fills payment form with defined card MASTERCARD_PROMPT_FOR_WHITELIST
     And User clicks Pay button
-    And User fills V2 authentication modal
+    #TODO - uncomment when cardinal issue will be resolved
+#    And User fills V2 authentication modal
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |

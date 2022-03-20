@@ -19,12 +19,12 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
       | <callback>    |
     And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
-
+    #TODO - uncomment when cardinal issue will be resolved
     Examples:
       | request_types            | payment_status                          | callback | state    |
-      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
+#      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
-      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
+#      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
 
 
   Scenario Outline: Additional TC_2b. Suspected Fraud
@@ -63,12 +63,12 @@ Feature: Cardinal Commerce E2E Additional tests v2 - Visa v2.1
       | <callback>    |
     And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
-
+    #TODO - uncomment when cardinal issue will be resolved
     Examples:
       | request_types            | payment_status                          | callback | state    |
-      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
+#      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
-      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
+#      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
 
 
 #  Scenario Outline: Additional TC_2d. Transaction timed out at the ACS

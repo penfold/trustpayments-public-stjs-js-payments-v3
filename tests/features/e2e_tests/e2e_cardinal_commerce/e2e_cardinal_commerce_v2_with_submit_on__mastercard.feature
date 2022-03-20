@@ -211,7 +211,8 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
     Examples:
       | request_types            | errormessage                            | baseamount     | currencyiso3a  | errorcode | settlestatus |
       | THREEDQUERY AUTH         | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
-      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | should be none | should be none | 60010     | 0            |
+      #TODO - uncomment when cardinal issue will be resolved
+      #      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | should be none | should be none | 60010     | 0            |
       | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | 1000           | GBP            | 0         | 0            |
 
 
@@ -289,7 +290,8 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
     And User opens example page
     When User fills payment form with defined card MASTERCARD_STEP_UP_AUTH_UNAVAILABLE
     And User clicks Pay button
-    And User fills V2 authentication modal
+    #TODO - uncomment when cardinal issue will be resolved
+#    And User fills V2 authentication modal
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
       | errormessage         | Payment has been successfully processed |
@@ -379,7 +381,8 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
     And User opens example page
     When User fills payment form with defined card MASTERCARD_PROMPT_FOR_WHITELIST
     And User clicks Pay button
-    And User fills V2 authentication modal
+    #TODO - uncomment when cardinal issue will be resolved
+#    And User fills V2 authentication modal
     Then User will be sent to page with url "www.example.com" having params
       | key                  | value                                   |
       | errormessage         | Payment has been successfully processed |
@@ -410,36 +413,36 @@ Feature: Cardinal Commerce E2E tests v2 with redirection after payment - MasterC
 #    Then User will see notification frame text: "Payment has been successfully processed"
 #    And User will see that notification frame has "green" color
 
-
-  @cardinal_commerce_v2.0
-  Scenario Outline: Support TransStatus I with submitOnSuccess
-    Given JS library configured with BASIC_CONFIG and additional attributes
-      | key             | value |
-      | submitOnSuccess | true  |
-    And JS library authenticated by jwt BASE_JWT with additional attributes
-      | key                     | value           |
-      | requesttypedescriptions | <request_types> |
-    And User opens example page
-    When User fills payment form with defined card MASTERCARD_SUPPORT_TRANS_STATUS_I
-    And User clicks Pay button
-    Then User will be sent to page with url "www.example.com" having params
-      | key                  | value                                   |
-      | errormessage         | Payment has been successfully processed |
-      | baseamount           | <baseamount>                            |
-      | currencyiso3a        | <currencyiso3a>                         |
-      | errorcode            | 0                                       |
-      | status               | U                                       |
-      | transactionreference | should not be none                      |
-      | jwt                  | should not be none                      |
-      | enrolled             | Y                                       |
-      | settlestatus         | 0                                       |
-      | eci                  | <eci>                                   |
-
-    Examples:
-      | request_types            | baseamount     | currencyiso3a  | eci            |
-      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
-      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
-      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 00             |
+#TODO - uncomment when cardinal issue will be resolved
+#  @cardinal_commerce_v2.0
+#  Scenario Outline: Support TransStatus I with submitOnSuccess
+#    Given JS library configured with BASIC_CONFIG and additional attributes
+#      | key             | value |
+#      | submitOnSuccess | true  |
+#    And JS library authenticated by jwt BASE_JWT with additional attributes
+#      | key                     | value           |
+#      | requesttypedescriptions | <request_types> |
+#    And User opens example page
+#    When User fills payment form with defined card MASTERCARD_SUPPORT_TRANS_STATUS_I
+#    And User clicks Pay button
+#    Then User will be sent to page with url "www.example.com" having params
+#      | key                  | value                                   |
+#      | errormessage         | Payment has been successfully processed |
+#      | baseamount           | <baseamount>                            |
+#      | currencyiso3a        | <currencyiso3a>                         |
+#      | errorcode            | 0                                       |
+#      | status               | U                                       |
+#      | transactionreference | should not be none                      |
+#      | jwt                  | should not be none                      |
+#      | enrolled             | Y                                       |
+#      | settlestatus         | 0                                       |
+#      | eci                  | <eci>                                   |
+#
+#    Examples:
+#      | request_types            | baseamount     | currencyiso3a  | eci            |
+#      | THREEDQUERY AUTH         | 1000           | GBP            | 00             |
+#      | ACCOUNTCHECK THREEDQUERY | should be none | should be none | should be none |
+#      | THREEDQUERY ACCOUNTCHECK | 1000           | GBP            | 00             |
 
 
   @base_config @e2e_cardinal_commerce_v2.0

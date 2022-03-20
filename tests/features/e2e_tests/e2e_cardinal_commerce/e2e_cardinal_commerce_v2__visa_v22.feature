@@ -41,12 +41,12 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
       | <callback>    |
     And User will see that Pay button is "<state>"
     And User will see that ALL input fields are "<state>"
-
+    #TODO - uncomment when cardinal issue will be resolved
     Examples:
       | request_types            | payment_status                          | callback | state    |
-      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
+#      | THREEDQUERY AUTH         | Unauthenticated                         | error    | enabled  |
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  | disabled |
-      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
+#      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    | enabled  |
 
 
   Scenario Outline: TC_3 - Attempts Stand-In Frictionless Authentication - Card: VISA_V22_FRICTIONLESS
@@ -105,12 +105,12 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
       | callback_type |
       | submit        |
       | <callback>    |
-
+    #TODO - uncomment when cardinal issue will be resolved
     Examples:
       | request_types            | payment_status                          | callback |
-      | THREEDQUERY AUTH         | Unauthenticated                         | error    |
+#      | THREEDQUERY AUTH         | Unauthenticated                         | error    |
       | ACCOUNTCHECK THREEDQUERY | Payment has been successfully processed | success  |
-      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    |
+#      | THREEDQUERY ACCOUNTCHECK | Unauthenticated                         | error    |
 
 
   Scenario Outline: TC_6 - Authentication Not Available on Lookup - Card: VISA_V22_AUTH_NOT_AVAILABLE_ON_LOOKUP
@@ -143,11 +143,11 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
       | callback_type |
       | submit        |
       | <callback>>   |
-
+    #TODO - uncomment when cardinal issue will be resolved
     Examples:
       | request_types            | payment_status                          | callback |
       | THREEDQUERY AUTH         | Payment has been successfully processed | success  |
-      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    |
+#      | ACCOUNTCHECK THREEDQUERY | Bank System Error                       | error    |
       | THREEDQUERY ACCOUNTCHECK | Payment has been successfully processed | success  |
 
 
@@ -179,7 +179,8 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     And User opens example page
     When User fills payment form with defined card VISA_V22_STEP_UP_AUTH_FAILED
     And User clicks Pay button
-    And User fills V2 authentication modal
+    #TODO - uncomment when cardinal issue will be resolved
+#    And User fills V2 authentication modal
     Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
@@ -200,7 +201,8 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     And User opens example page
     When User fills payment form with defined card VISA_V22_STEP_UP_AUTH_UNAVAILABLE
     And User clicks Pay button
-    And User fills V2 authentication modal
+    #TODO - uncomment when cardinal issue will be resolved
+#    And User fills V2 authentication modal
     Then User will see notification frame text: "Payment has been successfully processed"
     And User will see following callback type called only once
       | callback_type |
@@ -221,7 +223,8 @@ Feature: Cardinal Commerce E2E tests - Visa v2.2
     And User opens example page
     When User fills payment form with defined card VISA_V22_ERROR_ON_AUTH
     And User clicks Pay button
-    And User fills V2 authentication modal
+    #TODO - uncomment when cardinal issue will be resolved
+#    And User fills V2 authentication modal
     Then User will see notification frame text: "An error occurred"
     And User will see following callback type called only once
       | callback_type |
