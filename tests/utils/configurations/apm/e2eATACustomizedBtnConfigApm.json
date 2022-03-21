@@ -6,7 +6,6 @@
   "apmList": [
     {
       "name": "ATA",
-      "returnurl": "https://this_is_not_existing_page_error_redirect_override.com",
       "button": {
         "text": "A2A Payment",
         "backgroundColor": "#000000",
