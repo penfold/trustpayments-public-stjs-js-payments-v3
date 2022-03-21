@@ -1,6 +1,6 @@
 import { forkJoin, Observable } from 'rxjs';
 import { Service } from 'typedi';
-import { mapTo } from 'rxjs/operators';
+import { map, mapTo } from 'rxjs/operators';
 import { IPaymentMethod } from '../../../application/core/services/payments/IPaymentMethod';
 import { IPaymentResult } from '../../../application/core/services/payments/IPaymentResult';
 import { ClickToPayPaymentMethodName } from '../models/ClickToPayPaymentMethodName';
@@ -12,6 +12,8 @@ import { MERCHANT_PARENT_FRAME } from '../../../application/core/models/constant
 import { PaymentMethodToken } from '../../../application/dependency-injection/InjectionTokens';
 import { RequestProcessingInitializer } from '../../../application/core/services/request-processor/RequestProcessingInitializer';
 import { IRequestProcessingService } from '../../../application/core/services/request-processor/IRequestProcessingService';
+import { PaymentStatus } from '../../../application/core/services/payments/PaymentStatus';
+import { ICheckoutResponse } from '../digital-terminal/ISrc';
 
 @Service({ id: PaymentMethodToken, multiple: true })
 export class ClickToPayPaymentMethod implements IPaymentMethod<IClickToPayConfig> {
@@ -39,7 +41,29 @@ export class ClickToPayPaymentMethod implements IPaymentMethod<IClickToPayConfig
     ]).pipe(mapTo(undefined));
   }
 
-  start(data: unknown): Observable<IPaymentResult<unknown>> {
-    return undefined;
+  start(): Observable<IPaymentResult<ICheckoutResponse>> {
+    return this.frameQueryingService
+      .query<ICheckoutResponse>({ type: PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT }, MERCHANT_PARENT_FRAME)
+      .pipe(
+        map((checkoutResponse: ICheckoutResponse) => ({
+          data: checkoutResponse,
+          paymentMethodName: this.getName(),
+          error: null,
+          status: this.getPaymentStatus(checkoutResponse.dcfActionCode),
+        }))
+      );
+  }
+
+  private getPaymentStatus(dcfActionCode: ICheckoutResponse['dcfActionCode']): PaymentStatus {
+    switch (dcfActionCode) {
+      case 'CANCEL':
+        return PaymentStatus.CANCEL;
+      case 'COMPLETE':
+        return PaymentStatus.SUCCESS;
+      case 'ERROR':
+        return PaymentStatus.ERROR;
+      default:
+        return PaymentStatus.FAILURE;
+    }
   }
 }
