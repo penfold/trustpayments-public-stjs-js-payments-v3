@@ -324,7 +324,7 @@ class PaymentMethodsPage(BasePage):
         self.select_proper_cardinal_authentication(auth)
 
     def fill_cardinal_v1_popup(self):
-        self._actions.switch_to_iframe(PaymentMethodsLocators.cardinal_v1_iframe)
+        # self._actions.switch_to_iframe(PaymentMethodsLocators.cardinal_v1_iframe)
         self._waits.wait_for_element_to_be_displayed(
             PaymentMethodsLocators.cardinal_v1_authentication_code_field)
         self._actions.send_keys(PaymentMethodsLocators.cardinal_v1_authentication_code_field,

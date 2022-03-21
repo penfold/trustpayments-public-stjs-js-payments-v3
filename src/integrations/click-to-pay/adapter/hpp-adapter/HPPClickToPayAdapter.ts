@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { BehaviorSubject, EMPTY, firstValueFrom, Observable } from 'rxjs';
-import { catchError, filter, mapTo, tap } from 'rxjs/operators';
+import { BehaviorSubject, firstValueFrom, NEVER, Observable, of } from 'rxjs';
+import { filter, mapTo, switchMap, tap } from 'rxjs/operators';
 import { IClickToPayAdapter } from '../interfaces/IClickToPayClientAdapter';
 import { DigitalTerminal } from '../../digital-terminal/DigitalTerminal';
 import { IInitPaymentMethod } from '../../../../application/core/services/payments/events/IInitPaymentMethod';
@@ -17,6 +17,7 @@ import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdenti
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { CardListGenerator } from '../../card-list/CardListGenerator';
 import { IUpdateView } from '../interfaces/IUpdateView';
+import { ICheckoutResponse } from '../../digital-terminal/ISrc';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
 import { HPPCheckoutDataProvider } from './HPPCheckoutDataProvider';
@@ -59,7 +60,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
 
   showCardList(): void {
     this.digitalTerminal.getSrcProfiles().subscribe(cardList => {
-      this.cardListGenerator.displayCards(this.initParams.cardListContainerId, cardList.aggregatedCards);
+      this.cardListGenerator.displayCards(this.initParams.formId, this.initParams.cardListContainerId, cardList.aggregatedCards);
       this.initParams.onUpdateView?.call(null, {
         displayCardForm: false,
       } as IUpdateView);
@@ -115,14 +116,29 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
       dpaTransactionOptions: this.initParams.dpaTransactionOptions,
     };
 
-    this.digitalTerminal.checkout(checkoutData).pipe(
-      catchError(e => {
-        console.error(e);// TODO add better error handling
-        return EMPTY;
-      })
-    ).subscribe(response => {
-      this.initParams.onCheckout?.call(null, response);
+    const preventUnfinishedCheckoutPropagation = (response: ICheckoutResponse) => {
+      switch (response.dcfActionCode) {
+        case 'SWITCH_CONSUMER':
+        case 'ADD_CARD':
+        case 'CHANGE_CARD':
+          return NEVER;
+        default:
+          return of(response);
+      }
+    };
 
+    this.messageBus.publish({
+      type: PUBLIC_EVENTS.START_PAYMENT_METHOD,
+      data: {
+        name: ClickToPayPaymentMethodName,
+      },
     });
+
+    this.frameQueryingService.whenReceive(PUBLIC_EVENTS.CLICK_TO_PAY_CHECKOUT,
+      () => this.digitalTerminal.checkout(checkoutData).pipe(
+        tap(response => this.initParams?.onCheckout.call(null, response)),
+        switchMap(preventUnfinishedCheckoutPropagation)
+      )
+    );
   }
 }

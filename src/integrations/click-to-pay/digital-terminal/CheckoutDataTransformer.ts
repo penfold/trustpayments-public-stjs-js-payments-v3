@@ -44,15 +44,15 @@ export class CheckoutDataTransformer {
     srcDigitalCardId: string,
     srcProfiles: IAggregatedProfiles,
   ): Observable<SrcNameAndCheckoutData> {
-    const card = srcProfiles.aggregatedCards.find(card => card.srcDigitalCardId === srcDigitalCardId);
+    const card = srcProfiles?.aggregatedCards.find(card => card.srcDigitalCardId === srcDigitalCardId);
 
     return of({
       srcName: card.srcName,
       checkoutData: {
         ...checkoutData,
         srcDigitalCardId,
-        srcCorrelationId: card.srcCorrelationId,
-        idToken: card.idToken,
+        srcCorrelationId: card?.srcCorrelationId,
+        idToken: card?.idToken,
       },
     });
   }

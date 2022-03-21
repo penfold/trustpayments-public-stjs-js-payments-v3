@@ -2,7 +2,7 @@ import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { Observable } from 'rxjs';
 import { ISrcProvider } from './ISrcProvider';
 import { SrcAggregate } from './SrcAggregate';
-import { ICheckoutData, ICheckoutResponse, IConsumerIdentity, ISrc } from './ISrc';
+import { ICheckoutData, ICheckoutResponse, ICheckoutResponseData, IConsumerIdentity, ISrc } from './ISrc';
 import { SrcName } from './SrcName';
 import { CardAggregator } from './CardAggregator';
 import { ICorrelatedMaskedCard } from './interfaces/ICorrelatedMaskedCard';
@@ -32,7 +32,7 @@ describe('SrcAggregate', () => {
         instance(srcProviderMock1),
         instance(srcProviderMock2),
       ],
-      instance(cardAggregatorMock),
+      instance(cardAggregatorMock)
     );
 
     const toObservable = <T>(value: T) => new Observable<T>(observer => {
@@ -219,7 +219,7 @@ describe('SrcAggregate', () => {
         srcCorrelationId: '',
       };
 
-      const response: ICheckoutResponse = {
+      const responseData: ICheckoutResponseData = {
         srciTransactionId: '',
         shippingCountryCode: '',
         shippingAddressZip: '',
@@ -230,6 +230,13 @@ describe('SrcAggregate', () => {
         encryptedPayload: '',
         assuranceData: null,
         isGuestCheckout: true,
+      };
+
+      const response: ICheckoutResponse = {
+        checkoutResponse: responseData,
+        dcfActionCode: 'COMPLETE',
+        unbindAppInstance: false,
+        idToken: 'some token',
       };
 
       when(srcMock1.checkout(checkoutData)).thenResolve(response);
