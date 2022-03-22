@@ -4,6 +4,7 @@ import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { ISrcProfileList } from '../digital-terminal/ISrc';
 import { ITranslator } from '../../../application/core/shared/translator/ITranslator';
 import { Translator } from '../../../application/core/shared/translator/Translator';
+import { SrcNameFinder } from '../digital-terminal/SrcNameFinder';
 import { CardListGenerator } from './CardListGenerator';
 import { cardListMock } from './card-list-mock';
 
@@ -11,13 +12,15 @@ describe('CardListGenerator', () => {
   let cardListGenerator: CardListGenerator;
   let digitalTerminal: DigitalTerminal;
   let translator: ITranslator;
+  let srcNameFinderMock: SrcNameFinder;
 
   beforeEach(() => {
     digitalTerminal = mock(DigitalTerminal);
     translator = mock(Translator);
+    srcNameFinderMock = mock(SrcNameFinder);
     when(translator.translate('Hello')).thenReturn('Hello');
     when(translator.translate('Not you?')).thenReturn('Not you?');
-    cardListGenerator = new CardListGenerator(instance(digitalTerminal), instance(translator));
+    cardListGenerator = new CardListGenerator(instance(digitalTerminal), instance(translator), instance(srcNameFinderMock));
   });
 
   it('generates html for single checked active card', () => {
@@ -111,7 +114,7 @@ describe('CardListGenerator', () => {
       </div>
     </div></div></body>`;
     document.body.innerHTML = '<div id="test-id"></div>';
-  
+
     cardListGenerator.displayUserInformation(containerId, userInformation as Partial<Record<SrcName, ISrcProfileList>>);
     expect(document.body.outerHTML).toBe(expected);
   });

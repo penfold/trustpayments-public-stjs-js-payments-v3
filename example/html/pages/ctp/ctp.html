@@ -661,16 +661,30 @@
     }
 
     function getSrcName(adapterInstance) {
-      const cardNumberElement = document.getElementById('st-form-card-number');
-      cardNumberElement.addEventListener('change', inputHandler(adapterInstance));
+      document.getElementById('st-form-card-number').addEventListener('change', inputHandler(adapterInstance));
     }
 
-    const inputHandler = function(adapterInstance) {
+    function inputHandler(adapterInstance) {
       return (event) => {
-        const cardType = adapterInstance.getSrcName(event.target.value);
-        console.log(cardType);
-      };
-    };
+        if (event.target.value) {
+          const cardType = adapterInstance.getSrcName(event.target.value);
+          cardType.then((srcName) => {
+            srcName === 'VISA' ? showCheckToRegisterSection() : hideCheckToRegisterSection();
+          });
+        } else {
+          showCheckToRegisterSection();
+        }
+      }
+    }
+
+    function hideCheckToRegisterSection() {
+      document.getElementById('st-ctp-registration').style.display = "none"
+      document.getElementById('register').checked = false;
+    }
+
+    function showCheckToRegisterSection() {
+      document.getElementById('st-ctp-registration').style.display = "block"
+    }
 
     function onUpdateView(updateView) {
       var cardDetailsElement = document.getElementById('st-card-details-section');
