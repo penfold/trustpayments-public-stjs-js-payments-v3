@@ -13,12 +13,17 @@ import {
   IIsReadyToPayResponse,
 } from '../../../../integrations/google-pay/models/IGooglePayPaymentsClient';
 import { IConfig } from '../../../../shared/model/config/IConfig';
+import { GooglePayCallbacks } from './GooglePayCallbacks';
 import { IGooglePaySdkProvider } from './IGooglePaySdkProvider';
 
 @Service()
 export class GooglePaySdkProvider implements IGooglePaySdkProvider {
   private readonly SCRIPT_ADDRESS = environment.GOOGLE_PAY.GOOGLE_PAY_URL;
   private readonly SCRIPT_TARGET: string = 'head';
+
+  constructor(private googlePayCallbacks: GooglePayCallbacks) {
+    this.googlePayCallbacks.init();
+  }
 
   setupSdk$(config: IConfig): Observable<IGooglePaySessionPaymentsClient> {
     let googlePaySdkInstance: IGooglePaySessionPaymentsClient;
@@ -50,7 +55,11 @@ export class GooglePaySdkProvider implements IGooglePaySdkProvider {
   private getGooglePaySdkInstance(config: IConfig): IGooglePaySessionPaymentsClient {
     return new window.google.payments.api.PaymentsClient({
       environment: this.getGooglePayEnvironment(config),
-    });
+      paymentDataCallbacks: {
+        onPaymentAuthorized: this.googlePayCallbacks.onPaymentAuthorized,
+        onPaymentDataChanged: this.googlePayCallbacks.onPaymentDataChanged,
+      }
+    } as any);
   }
 
   private getGoogleIsReadyToPayRequest(config: IConfig): IGooglePlayIsReadyToPayRequest {

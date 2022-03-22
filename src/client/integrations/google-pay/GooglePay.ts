@@ -40,6 +40,7 @@ export class GooglePay {
 
   init(config: IConfig): Observable<IConfig> {
     this.config = config;
+    (this.config.googlePay.paymentRequest.callbackIntents as any) = ["SHIPPING_ADDRESS",  "SHIPPING_OPTION", "PAYMENT_AUTHORIZATION"];
 
     return this.googlePaySdkProvider
       .setupSdk$(config)
@@ -52,6 +53,7 @@ export class GooglePay {
         switchMap(() => this.configProvider.getConfig$()),
         tap((config: IConfig) => {
           this.config = config;
+          (this.config.googlePay.paymentRequest.callbackIntents as any) = ["SHIPPING_ADDRESS",  "SHIPPING_OPTION", "PAYMENT_AUTHORIZATION"];
           this.updateJwtListener();
         })
       );
@@ -110,36 +112,39 @@ export class GooglePay {
   }
 
   private onGooglePaymentButtonClicked = (): void => {
+    console.warn(this.config.googlePay.paymentRequest)
     this.googlePaySdk
       .loadPaymentData(this.config.googlePay.paymentRequest)
       .then((paymentData: IPaymentData) => {
-        this.onPaymentAuthorized(paymentData);
+        console.warn(paymentData);
+        this.onGooglePayPaymentAuthorized(paymentData);
       })
       .catch((err: { statusCode: 'ERROR' | 'CANCELED' }) => {
+        console.warn(err);
         switch (err.statusCode) {
           case 'CANCELED': {
-            this.onPaymentCancel();
+            this.onGooglePayPaymentCancel();
             break;
           }
           default: {
-            this.onPaymentError();
+            this.onGooglePayPaymentError();
             break;
           }
         }
       });
   };
 
-  private onPaymentAuthorized(paymentData: IPaymentData): void {
+  private onGooglePayPaymentAuthorized(paymentData: IPaymentData): void {
     const formData = DomMethods.parseForm(this.config.formId);
     return this.googlePayPaymentService.processPayment(formData, paymentData);
   }
 
-  private onPaymentCancel(): void {
+  private onGooglePayPaymentCancel(): void {
     const formData = DomMethods.parseForm(this.config.formId);
     return this.googlePayPaymentService.cancelPayment(formData);
   }
 
-  private onPaymentError(): void {
+  private onGooglePayPaymentError(): void {
     const formData = DomMethods.parseForm(this.config.formId);
     return this.googlePayPaymentService.errorPayment(formData);
   }
