@@ -60,7 +60,7 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
 
   showCardList(): void {
     this.digitalTerminal.getSrcProfiles().subscribe(cardList => {
-      this.cardListGenerator.displayCards(this.initParams.cardListContainerId, cardList.aggregatedCards);
+      this.cardListGenerator.displayCards(this.initParams.formId, this.initParams.cardListContainerId, cardList.aggregatedCards);
       this.initParams.onUpdateView?.call(null, {
         displayCardForm: false,
       } as IUpdateView);
