@@ -39,7 +39,7 @@ e2e-card-payments-tests-release:
   parallel: 26
 
 # Cardinal Commerce E2E Tests Headless
-e2e-cardinal-commerce-tests-review:
+.e2e-cardinal-commerce-tests-review:
   extends:
     - .e2e-tests-parallel
     - .services-app-html-review
@@ -49,7 +49,7 @@ e2e-cardinal-commerce-tests-review:
     FEATURE_FILES_DIR: 'features/e2e_tests/e2e_cardinal_commerce'
   parallel: 9
 
-e2e-cardinal-commerce-tests-release:
+.e2e-cardinal-commerce-tests-release:
   extends:
     - .e2e-tests-parallel
     - .service-app-html-release-merchant

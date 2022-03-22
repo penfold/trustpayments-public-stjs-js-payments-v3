@@ -149,6 +149,13 @@ export interface IAssuranceData {
 }
 
 export interface ICheckoutResponse {
+  checkoutResponse: ICheckoutResponseData;
+  dcfActionCode: 'COMPLETE' | 'CHANGE_CARD' | 'ADD_CARD' | 'SWITCH_CONSUMER' | 'CANCEL' | 'ERROR',
+  unbindAppInstance: boolean;
+  idToken: string;
+}
+
+export interface ICheckoutResponseData {
   srcCorrelationId: string;
   srciTransactionId: string;
   maskedCard: IMaskedCard;

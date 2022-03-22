@@ -1,5 +1,6 @@
 @import "./modals";
 @import "./ctp";
+@import "./_placeholders.scss";
 
 html {
   font-size: 62.5%;
@@ -124,4 +125,3 @@ input:-webkit-autofill.error-field {
     text-align: right;
   }
 }
-
