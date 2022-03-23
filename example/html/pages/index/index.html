@@ -218,7 +218,7 @@
 
           var tokenizedJwt = configValues[2];
 
-          !tokenizedJwt ? destroyTokenizdCardPayment() : tokenizedCardSection.style.display = 'block';
+          !tokenizedJwt ? destroyTokenizdCardPayment() : enableTokenizdCardPayment();
 
           var st = init(config, apmConfig, tokenizedJwt);
 
@@ -427,6 +427,10 @@
 
       function destroyTokenizdCardPayment() {
         tokenizedCardSection.remove();
+      }
+
+      function enableTokenizdCardPayment() {
+        tokenizedCardSection.style.display = 'block';
       }
     });
   </script>
