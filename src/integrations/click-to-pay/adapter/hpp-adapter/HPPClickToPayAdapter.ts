@@ -16,7 +16,6 @@ import { SrcName } from '../../digital-terminal/SrcName';
 import { IIdentificationResult } from '../../digital-terminal/interfaces/IIdentificationResult';
 import { IInitialCheckoutData } from '../../digital-terminal/interfaces/IInitialCheckoutData';
 import { CardListGenerator } from '../../card-list/CardListGenerator';
-import { IUpdateView } from '../interfaces/IUpdateView';
 import { ICheckoutResponse } from '../../digital-terminal/ISrc';
 import { IHPPClickToPayAdapterInitParams } from './IHPPClickToPayAdapterInitParams';
 import { HPPUserIdentificationService } from './HPPUserIdentificationService';
@@ -61,9 +60,6 @@ export class HPPClickToPayAdapter implements IClickToPayAdapter<IHPPClickToPayAd
   showCardList(): void {
     this.digitalTerminal.getSrcProfiles().subscribe(cardList => {
       this.cardListGenerator.displayCards(this.initParams.formId, this.initParams.cardListContainerId, cardList.aggregatedCards);
-      this.initParams.onUpdateView?.call(null, {
-        displayCardForm: false,
-      } as IUpdateView);
     });
     this.showUserDetails();
   }

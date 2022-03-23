@@ -692,12 +692,14 @@
 
       if (updateView.displayCardForm === true) {
         cardDetailsElement.classList.remove('hidden');
-        // submitElement.classList.remove('hidden');
+      } else {
+        cardDetailsElement.classList.add('hidden');
       }
 
-      if (updateView.displayCardForm === false) {
-        cardDetailsElement.classList.add('hidden');
-        // submitElement.classList.add('hidden');
+      if (updateView.displaySubmitForm === true) {
+        submitElement.classList.remove('hidden');
+      } else {
+        submitElement.classList.add('hidden');
       }
     }
     function onCheckout(checkoutResult){

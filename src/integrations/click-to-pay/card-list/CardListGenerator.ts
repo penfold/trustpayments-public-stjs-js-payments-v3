@@ -9,6 +9,7 @@ import { DigitalTerminal } from '../digital-terminal/DigitalTerminal';
 import { SrcName } from '../digital-terminal/SrcName';
 import { ISrcProfileList } from '../digital-terminal/ISrc';
 import { ITranslator } from '../../../application/core/shared/translator/ITranslator';
+import { HPPUpdateViewCallback } from '../adapter/hpp-adapter/HPPUpdateViewCallback';
 import { NewCardFieldName } from './NewCardFieldName';
 
 const PAN_VALIDATION_STATUS_FAILED = 'Selected card is not currently supported for Click to Pay';
@@ -24,7 +25,7 @@ export class CardListGenerator {
     ['visa', require('../../../application/core/services/icon/images/visa.svg')],
   ]);
 
-  constructor(private digitalTerminal: DigitalTerminal, private translator: ITranslator, private srcNameFinder: SrcNameFinder) {}
+  constructor(private digitalTerminal: DigitalTerminal, private translator: ITranslator, private srcNameFinder: SrcNameFinder, private hppUpdateViewCallback: HPPUpdateViewCallback) {}
 
   displayCards(formId: string, parentContainer: string, cardList: ICorrelatedMaskedCard[]): void {
     const container: HTMLElement = document.getElementById(parentContainer);
@@ -244,11 +245,10 @@ export class CardListGenerator {
 
   private hideForm(): void {
     document.getElementById('st-ctp-cards').innerHTML = '';
-    //onUpdateView
+    this.hppUpdateViewCallback.callUpdateViewCallback({ displayCardForm: true, displaySubmitForm: true });
   }
   private showValidationStatus(id: string, message: string) {
     document.getElementById(id).style.display = 'block';
     document.getElementById(id).innerHTML = message;
   }
-
 }
