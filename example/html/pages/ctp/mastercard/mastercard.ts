@@ -169,7 +169,10 @@ window.addEventListener('load', async () => {
       console.log('GET SRC PROFILE', srcProfileResult);
     }
 
-    console.log('CHECKOUT', await checkout(srciTransactionId, srcProfileResult));
+    const checkoutResponse = await checkout(srciTransactionId, srcProfileResult);
+
+    console.log('CHECKOUT', checkoutResponse);
+    (document.getElementById('checkout_response') as HTMLTextAreaElement).value = JSON.stringify(checkoutResponse);
   }
 
   document.getElementById('click2pay').addEventListener('click', () => click2pay());
