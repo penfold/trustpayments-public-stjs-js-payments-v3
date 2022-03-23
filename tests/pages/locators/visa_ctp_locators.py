@@ -35,16 +35,18 @@ class VisaClickToPayLocators:
 
     # Card list view
     add_card_button: By = (By.ID, 'st-add-card__button')
-    cards_section: By = (By.ID, 'st-ctp-cards')
+    cards_section: By = (By.ID, '//div[@id=\'st-ctp-cards\']/div[@class=\'st-card\']')
     card_number_modal_input: By = (By.ID, 'pan')
     expiry_date_list_month: By = (By.ID, 'expiryDateMonthId')
     expiry_date_list_year: By = (By.ID, 'expiryDateYearId')
     security_code_modal_input: By = (By.ID, 'cvv')
-    masked_card_number: By = (By.XPATH, '//div[@class=\'st-card\'][1]/span[@class=\'st-card__description\']')
     masked_card_number_list: By = (By.XPATH, '//span[@class=\'st-card__description\']')
     card_validation_message: By = (By.ID, 'pan-validation-status')
     not_you_btn: By = (By.ID, 'st-ctp-user-details__not--you')
 
+    @classmethod
+    def get_masked_card_number_locator_from_cards_list(cls, value) -> By.XPATH:
+        return By.XPATH, f'//div[@class=\'st-card\'][{value}]/span[@class=\'st-card__description\']'
 
     @classmethod
     def get_card_locator_from_cards_list(cls, value) -> By.XPATH:
@@ -61,6 +63,9 @@ class VisaClickToPayLocators:
 
     vctp_iframe: By = (By.ID, 'vcop-dcf')
     continue_btn: By = (By.XPATH, '//button[@name=\'btnContinue\']')
+    masked_card_number_on_visa_popup: By = (By.XPATH, '//section[@class=\'card-info-container\']//span[2]')
+    masked_address_on_visa_popup: By = (By.XPATH, '//div[@class=\'v-list\']//li[1]')
+    add_new_card_btn: By = (By.ID, 'btnAddCard')
     pay_now_btn: By = (By.XPATH, '//button[@name=\'btnContinue\']')
     remember_me_checkbox: By = (By.XPATH, '//label[@for=\'remember-me\']')
     cancel_checkout_btn: By = (By.XPATH, '//button[@aria-label=\'Cancel and return to merchant\']')
@@ -74,5 +79,3 @@ class VisaClickToPayLocators:
     add_address_btn: By = (By.XPATH, '//button[@aria-label=\'ADD DELIVERY ADDRESSs\']')
     add_new_address_plus_btn: By = (By.XPATH, '//button[@aria-label=\'Add new\']')
     order_total_text: By = (By.XPATH, '//div[@class=\'paylayer-order-total\']/span')
-
-

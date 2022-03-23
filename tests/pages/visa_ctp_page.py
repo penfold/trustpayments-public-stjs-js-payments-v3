@@ -1,6 +1,10 @@
+import re
 import time
 
+from assertpy import assert_that
+
 from pages.base_page import BasePage
+from pages.locators.payment_methods_locators import PaymentMethodsLocators
 from pages.locators.visa_ctp_locators import VisaClickToPayLocators
 from utils.enums.shared_dict_keys import SharedDictKey
 from utils.helpers import gmail_service
@@ -141,13 +145,12 @@ class VisaClickToPayPage(BasePage):
         self._actions.select_element_by_text(VisaClickToPayLocators.expiry_date_list_year, '20' + expiration_date[3::])
         self._actions.send_keys(VisaClickToPayLocators.security_code_modal_input, cvv)
 
-    def get_masked_card_number_from_card_list(self):
-        masked_card_number = self._actions.get_text_with_wait(VisaClickToPayLocators.masked_card_number)[-4:]
+    def get_masked_card_number_from_card_list(self, number):
+        masked_card_number = self._actions.get_text_with_wait(VisaClickToPayLocators.get_masked_card_number_locator_from_cards_list(number))[-4:]
         return masked_card_number
 
     def is_first_card_auto_selected(self):
-        self._waits.wait_for_element_to_be_displayed(
-            VisaClickToPayLocators.get_selected_card_locator_from_cards_list('1'))
+        self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.cards_section)
         return self._actions.is_checkbox_selected(VisaClickToPayLocators.get_selected_card_locator_from_cards_list('1'))
 
     def is_cards_section_displayed(self):
@@ -176,6 +179,11 @@ class VisaClickToPayPage(BasePage):
                                     value)
         self._actions.click(VisaClickToPayLocators.continue_btn)
 
+    def get_masked_card_number_from_visa_ctp_popup(self):
+        self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
+        masked_card_number = self._actions.get_text_with_wait(VisaClickToPayLocators.masked_card_number_on_visa_popup)[-4:]
+        return masked_card_number
+
     def confirm_user_address(self):
         self._waits.wait_for_element_visibility(VisaClickToPayLocators.continue_btn)
         self._waits.wait_for_element_to_be_clickable(VisaClickToPayLocators.continue_btn)
@@ -189,8 +197,9 @@ class VisaClickToPayPage(BasePage):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
         self._actions.click(VisaClickToPayLocators.pay_now_btn)
 
-    def click_remember_me_checkbox(self):
-        self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
+    def click_remember_me_checkbox(self, iframe):
+        if iframe:
+            self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
         self._actions.click(VisaClickToPayLocators.remember_me_checkbox)
 
     def click_cancel_checkout_btn(self):
@@ -228,3 +237,29 @@ class VisaClickToPayPage(BasePage):
                             f' should be {expected_text} but is {actual_text}'
         add_to_shared_dict(SharedDictKey.ASSERTION_MESSAGE.value, assertion_message)
         assert actual_text == expected_text, assertion_message
+
+    def get_logs(self, expected_name, max_try=5):
+        self._waits.wait_for_element_to_be_displayed(PaymentMethodsLocators.logs_textarea)
+        logs = ''
+        while max_try:
+            logs = self._actions.get_value(PaymentMethodsLocators.logs_textarea)
+            if expected_name in logs:
+                break
+            max_try -= 1
+            time.sleep(1)
+        result = re.findall(f'"{expected_name}": "(.*)"', logs)
+        return result
+
+    def check_if_value_is_present_in_logs(self, expected_name, expected_value):
+        logs = self.get_logs(expected_name)
+        assertion_message = f'{expected_value} step is not present in {expected_name} logs'
+        if 'should not be none' in expected_value:
+            assert_that(logs, f'Missing value for {expected_name}').is_not_empty()
+        else:
+            assert expected_value in logs, assertion_message
+
+    def click_first_masked_address_on_the_list(self):
+        self._actions.click(VisaClickToPayLocators.masked_address_on_visa_popup)
+
+    def click_add_new_card_on_vctp_popup(self):
+        self._actions.click(VisaClickToPayLocators.add_new_card_btn)

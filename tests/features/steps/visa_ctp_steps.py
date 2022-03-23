@@ -46,9 +46,9 @@ def step_impl(context):
 @step('User will see that registering card with VISA_CTP is (?P<param>.+)')
 def step_impl(context, param):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    if param in 'unavailable':
+    if param == 'unavailable':
         assert_that(vctp_page.is_register_checkbox_available()).is_false()
-    if param in 'available':
+    if param == 'available':
         assert_that(vctp_page.is_register_checkbox_available()).is_true()
 
 
@@ -85,11 +85,17 @@ def step_impl(context, otp):
 
 
 #TODO
-@step('User will see that VISA_CTP checkout was (?P<param>.+)')
+@step('User will see that VISA_CTP checkout is (?P<param>.+)')
 def step_impl(context, param):
-    time.sleep(5)
-    pass
-
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    if param in 'completed':
+        vctp_page.check_if_value_is_present_in_logs('dcfActionCode', 'COMPLETE')
+        vctp_page.check_if_value_is_present_in_logs('checkoutResponse', 'should not be none')
+        # vctp_page.check_if_value_is_present_in_logs('idToken', 'should not be none')
+    elif param in 'rejected':
+        vctp_page.check_if_value_is_present_in_logs('dcfActionCode', 'ERROR')
+    elif param in 'cancelled':
+        vctp_page.check_if_value_is_present_in_logs('dcfActionCode', 'CANCEL')
 
 @step('User selects (?P<card>.+) card from cards list view')
 def step_impl(context, card):
@@ -99,6 +105,7 @@ def step_impl(context, card):
         'second': '2',
         'third': '3'
     }
+    context.pan = vctp_page.get_masked_card_number_from_card_list(card_on_the_list[card])
     vctp_page.select_card_from_cards_list_by_index(card_on_the_list[card])
 
 
@@ -164,14 +171,19 @@ def step_impl(context):
 @step('User reviews VISA_CTP checkout page (?P<register>.+)')
 def step_impl(context, register):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    # for registered user
     if register in 'and confirm with remember me':
-        vctp_page.click_remember_me_checkbox()
+        vctp_page.click_remember_me_checkbox(True)
         vctp_page.confirm_payment()
     # for registered user
     elif register in 'and continues payment':
         vctp_page.click_pay_now_btn()
     # for unregistered user
     elif register in 'and confirm payment':
+        vctp_page.confirm_payment()
+    # for unregistered user
+    if register in 'and confirm without remember me':
+        vctp_page.click_remember_me_checkbox(False)
         vctp_page.confirm_payment()
     elif register in 'and cancels payment':
         vctp_page.click_cancel_checkout_btn()
@@ -197,7 +209,7 @@ def step_impl(context, card):
 @step('User see previously added card in card list')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    masked_card_number = vctp_page.get_masked_card_number_from_card_list()
+    masked_card_number = vctp_page.get_masked_card_number_from_card_list('1')
     expected_card_number = context.pan[-4:]
     assert_that(expected_card_number).is_equal_to(masked_card_number)
 
@@ -219,6 +231,14 @@ def step_impl(context):
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
     vctp_page.click_pay_securely_button()
+
+
+@step('User will see previously selected card on VISA_CTP popup')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    masked_card_number = vctp_page.get_masked_card_number_from_visa_ctp_popup()
+    expected_card_number = context.pan[-4:]
+    assert_that(expected_card_number).is_equal_to(masked_card_number)
 
 
 @step('User fills billing address form on Visa checkout popup')
@@ -271,5 +291,12 @@ def step_impl(context):
 @step('User is not recognized by VISA_CTP')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    assert_that(vctp_page.is_cards_section_displayed, 'Cards list is displayed but should not be').is_false()
-    assert_that(vctp_page.is_look_up_my_cards_btn_displayed).is_true()
+    assert_that(vctp_page.is_cards_section_displayed(), 'Cards list is displayed but should not be').is_false()
+    assert_that(vctp_page.is_look_up_my_cards_btn_displayed()).is_true()
+
+
+@step('User selects address for new card')
+def step_impl(context):
+    vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
+    vctp_page.click_first_masked_address_on_the_list()
+    vctp_page.click_add_new_card_on_vctp_popup()
