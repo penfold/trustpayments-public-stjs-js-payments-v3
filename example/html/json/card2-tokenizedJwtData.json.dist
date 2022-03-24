@@ -1,19 +1,18 @@
 {
-  "iat": 1234567891011,
-  "iss": "jsmanualjwt-card2",
+  "iat": 1592298893548,
+  "iss": "jsmanualjwt",
   "secret": "test",
   "payload": {
-    "billingstreet": "kensington avenue",
-    "billingpostcode": "PO1 3AX",
-    "baseamount": "1000",
-    "billingcountryiso2a": "GB",
+    "baseamount": "70000",
     "accounttypedescription": "ECOM",
     "currencyiso3a": "GBP",
-    "sitereference": "test_jsmanualcardinal91921",
     "locale": "en_GB",
+    "sitereference": "test_jsmanualcardinal91921",
     "requesttypedescriptions": [
       "THREEDQUERY",
       "AUTH"
-    ]
+    ],
+    "credentialsonfile": "2",
+    "parenttransactionreference": "57-9-2202991"
   }
 }
