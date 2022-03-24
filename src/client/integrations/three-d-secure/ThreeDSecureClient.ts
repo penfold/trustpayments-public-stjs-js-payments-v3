@@ -16,6 +16,8 @@ import { InterFrameCommunicator } from '../../../shared/services/message-bus/Int
 import { Translator } from '../../../application/core/shared/translator/Translator';
 import { ofType } from '../../../shared/services/message-bus/operators/ofType';
 import { IMessageBus } from '../../../application/core/shared/message-bus/IMessageBus';
+import { SentryService } from '../../../shared/services/sentry/SentryService';
+import { SentryBreadcrumbsCategories } from '../../../shared/services/sentry/SentryBreadcrumbsCategories';
 import { IMethodUrlData } from './IMethodUrlData';
 import { IChallengeData } from './IChallengeData';
 
@@ -29,12 +31,17 @@ export class ThreeDSecureClient {
     private threeDSecureFactory: ThreeDSecureFactory,
     private translator: Translator,
     private messageBus: IMessageBus,
+    private sentryService: SentryService
   ) {
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
   }
 
   init(): void {
     this.threeDSecure = this.threeDSecureFactory.create();
+
+    this.threeDSecure.logs$.pipe(takeUntil(this.destroy$)).subscribe((log) => {
+      this.sentryService.addBreadcrumb(SentryBreadcrumbsCategories.THREE_DS, log.type + ': ' + log.message);
+    });
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_INIT)
@@ -50,7 +57,7 @@ export class ThreeDSecureClient {
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA)
-      .thenRespond((event: IMessageBusEvent<string>) => (this.threeDSecure.getBrowserData$(event.data) as unknown as Observable<unknown>));
+      .thenRespond((event: IMessageBusEvent<string[]>) => (this.threeDSecure.getBrowserData$(event.data) as unknown as Observable<unknown>));
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_PROCESSING_SCREEN_SHOW)
@@ -85,7 +92,7 @@ export class ThreeDSecureClient {
       },
     };
 
-    return this.threeDSecure.init$(updatedConfig);
+    return this.threeDSecure.init$(updatedConfig)
   }
 
   private run3DSMethod$({

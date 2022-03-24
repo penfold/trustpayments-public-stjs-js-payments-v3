@@ -38,7 +38,7 @@ describe('BrowserDataProvider', () => {
   it('gets the browser data from parent frame and maps keys to lowercase and values to strings', done => {
     const queryEvent: IMessageBusEvent = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA,
-      data: environment.BROWSER_DATA_URL,
+      data: environment.BROWSER_DATA_URLS,
     };
 
     when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(browserData);
@@ -63,7 +63,7 @@ describe('BrowserDataProvider', () => {
   describe('send error if no customerIp', () => {
     const queryEvent: IMessageBusEvent = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA,
-      data: environment.BROWSER_DATA_URL,
+      data: environment.BROWSER_DATA_URLS,
     };
     const browserDataLocal: BrowserDataInterface = {
       ...browserData,
@@ -71,38 +71,23 @@ describe('BrowserDataProvider', () => {
     };
 
     it('without query parameter', done => {
-      when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(browserDataLocal);
+      when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(
+        browserDataLocal
+      );
 
       sut.getBrowserData$().subscribe(() => {
-        verify(sentryServiceMock.sendCustomMessage(
-          deepEqual(new RequestTimeoutError('Get browser data error', {
-            type: TimeoutDetailsType.BROWSER_DATA,
-            requestUrl: queryEvent.data as string,
-          })))
+        verify(
+          sentryServiceMock.sendCustomMessage(
+            deepEqual(
+              new RequestTimeoutError('Get browser data error', {
+                type: TimeoutDetailsType.BROWSER_DATA,
+                requestUrl: queryEvent.data as string,
+              })
+            )
+          )
         ).once();
         done();
       });
-
     });
-
-    it('with query parameter threeDsTransactionId', done => {
-      const threeDsTransactionId = '12345';
-      queryEvent.data = `${queryEvent.data}?threeDSServerTransID=${threeDsTransactionId}`;
-
-      when(interFrameCommunicatorMock.query(deepEqual(queryEvent), MERCHANT_PARENT_FRAME)).thenResolve(browserDataLocal);
-
-      sut.getBrowserData$(threeDsTransactionId).subscribe(() => {
-        verify(sentryServiceMock.sendCustomMessage(
-          deepEqual(new RequestTimeoutError('Get browser data error', {
-            type: TimeoutDetailsType.BROWSER_DATA,
-            requestUrl: queryEvent.data as string,
-          })))
-        ).once();
-        done();
-      });
-
-    });
-
   });
-
 });

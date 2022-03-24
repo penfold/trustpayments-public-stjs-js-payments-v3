@@ -14,28 +14,29 @@ import { IBrowserData } from './data/IBrowserData';
 
 @Service()
 export class BrowserDataProvider {
-  private readonly browserData3dsServerUrl = environment.BROWSER_DATA_URL;
+  private readonly browserData3dsServerUrl = environment.BROWSER_DATA_URLS;
 
-  constructor(private interFrameCommunicator: InterFrameCommunicator,
-              private sentryService: SentryService) {
-  }
+  constructor(private interFrameCommunicator: InterFrameCommunicator, private sentryService: SentryService) {}
 
-  getBrowserData$(threeDsTransactionId?: string): Observable<IBrowserData> {
-    const stringify = (value: unknown) => value === undefined ? value : String(value);
-    const url = new URL(this.browserData3dsServerUrl);
+  getBrowserData$(): Observable<IBrowserData> {
+    const stringify = (value: unknown) => (value === undefined ? value : String(value));
+    const random = Math.trunc(Math.random() * 100000).toString();
+    const urls: string[] = this.browserData3dsServerUrl.map(url => {
+      const u = new URL(url);
+      u.pathname.indexOf('browserData') !== -1
+        ? u.searchParams.append('id', random)
+        : (u.pathname = u.pathname + '/' + random);
+      return stringify(u);
+    });
 
-    if(threeDsTransactionId){
-      url.searchParams.append('threeDSServerTransID',threeDsTransactionId);
-    }
-
-    const queryEvent: IMessageBusEvent<string> = {
+    const queryEvent: IMessageBusEvent<string[]> = {
       type: PUBLIC_EVENTS.THREE_D_SECURE_BROWSER_DATA,
-      data: stringify(url),
+      data: urls,
     };
 
     return from(this.interFrameCommunicator.query<BrowserDataInterface>(queryEvent, MERCHANT_PARENT_FRAME)).pipe(
       tap((browserData: BrowserDataInterface) => {
-        if(!browserData.browserIP) {
+        if (!browserData.browserIP) {
           this.sendErrorMessage(queryEvent.data);
         }
       }),
@@ -54,11 +55,12 @@ export class BrowserDataProvider {
     );
   }
 
-  private sendErrorMessage(requestUrl: string) {
-    this.sentryService.sendCustomMessage(new RequestTimeoutError('Get browser data error', {
-      type: TimeoutDetailsType.BROWSER_DATA,
-      requestUrl,
-    }));
+  private sendErrorMessage(requestUrl: string[]) {
+    this.sentryService.sendCustomMessage(
+      new RequestTimeoutError('Get browser data error', {
+        type: TimeoutDetailsType.BROWSER_DATA,
+        requestUrl: requestUrl.join(', '),
+      })
+    );
   }
-
 }
