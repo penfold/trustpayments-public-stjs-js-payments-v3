@@ -65,7 +65,7 @@ variables:
   # DISABLE_JOB_unit_tests: 'true'
   # DISABLE_JOB_js_static_analysis: 'true'
   # DISABLE_JOB_py_static_analysis: 'true' # TODO STJS-950
-  DISABLE_JOB_vuln_check: 'true'
+  # DISABLE_JOB_vuln_check: 'true'
   # Extended Tests
   # DISABLE_JOB_extended_tests: 'true'
   # Validate merge request description
