@@ -161,9 +161,12 @@ describe('ST', () => {
 
   describe('ClickToPay()', () => {
     let clickToPayConfig: IClickToPayConfig;
+    let consoleSpy: jest.SpyInstance;
 
     beforeEach(() => {
       stInstance['initControlFrame$'] = jest.fn().mockReturnValueOnce(of(null));// TODO mock dependencies properly
+      consoleSpy = jest.spyOn(console, 'warn');
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
       when(clickToPayAdapterFactoryMock.create(ClickToPayAdapterName.hpp))
         .thenReturn(new HPPClickToPayAdapter(
           null,
@@ -180,6 +183,16 @@ describe('ST', () => {
       clickToPayConfig = { adapter: ClickToPayAdapterName.hpp };
       stInstance.ClickToPay(clickToPayConfig).then(adapter => {
         expect(adapter).toBeInstanceOf(HPPClickToPayAdapter);
+        done();
+      });
+    });
+
+    it('should stop initialization Click To Pay when user uses Internet Explorer', done => {
+      Object.defineProperty(window.navigator, 'userAgent', { value : 'MSIE' });
+      clickToPayConfig = { adapter: ClickToPayAdapterName.hpp };
+      stInstance.ClickToPay(clickToPayConfig).catch((error) => {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(consoleSpy).toHaveBeenCalledWith(error);
         done();
       });
     });
