@@ -55,11 +55,11 @@ import { IApplePayConfig } from '../../integrations/apple-pay/client/models/IApp
 import { GAEventType } from '../../application/core/integrations/google-analytics/events';
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
 import { TokenizedCardPaymentAdapter } from '../../integrations/tokenized-card/application/TokenizedCardPaymentAdapter';
-import { ITokenizedCardPaymentConfig } from '../../integrations/tokenized-card/models/ITokenizedCardConfig';
 import {
   TokenizedCardPaymentConfigName,
   TokenizedCardPaymentMethodName,
 } from '../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
+import { ITokenizedCardPaymentConfig } from '../../integrations/tokenized-card/models/ITokenizedCardPayment';
 declare const ST_VERSION: string | undefined;
 @Service()
 export class ST {
