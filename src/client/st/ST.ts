@@ -54,6 +54,8 @@ import { SentryService } from '../../shared/services/sentry/SentryService';
 import { IApplePayConfig } from '../../integrations/apple-pay/client/models/IApplePayConfig';
 import { GAEventType } from '../../application/core/integrations/google-analytics/events';
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
+import { TokenizedCardPaymentAdapter } from '../../integrations/tokenized-card/application/TokenizedCardPaymentAdapter';
+import { ITokenizedCardPaymentConfig } from '../../integrations/tokenized-card/models/ITokenizedCardConfig';
 declare const ST_VERSION: string | undefined;
 @Service()
 export class ST {
@@ -118,6 +120,7 @@ export class ST {
     private merchantFields: MerchantFields,
     private cardFrames: CardFrames,
     private sentryService: SentryService,
+    private tokenizedCardPaymentAdapter: TokenizedCardPaymentAdapter,
   ) {
   }
 
@@ -285,6 +288,12 @@ export class ST {
         EventScope.THIS_FRAME,
       );
     });
+  }
+
+  TokenizedCardPayment(tokenizedCardPaymentConfig: ITokenizedCardPaymentConfig, tokenizedJwt: string): Promise<TokenizedCardPaymentAdapter> {
+    console.log('TOKEN ST.TokenizedCardPayment - Tokenized Config:', tokenizedCardPaymentConfig);
+    this.tokenizedCardPaymentAdapter.updateTokenizedJWT(tokenizedJwt);
+    return Promise.resolve(this.tokenizedCardPaymentAdapter);
   }
 
   Cybertonica(): Promise<string | null> {

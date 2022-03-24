@@ -7,12 +7,13 @@ export class TokenizedCardPaymentAdapter {
   constructor(private messageBus: IMessageBus) {
   }
 
-  updateTokenizedJWT(newJWT: string) {
-    if(!newJWT) {
+  updateTokenizedJWT(updatedJwt: string) {
+    if (!updatedJwt) {
       return;
     }
+    console.log('TOKEN TokenizedCardPaymentAdapter - Tokenized JWT', updatedJwt)
 
-    this.messageBus.publish({ type: PUBLIC_EVENTS.TOKENIZED_JWT_UPDATED, data: newJWT });
+    this.messageBus.publish({ type: PUBLIC_EVENTS.TOKENIZED_JWT_UPDATED, data: updatedJwt });
     this.messageBus.publish({ type: PUBLIC_EVENTS.TOKENIZED_CARD_PAYMENT_CLEAR_SECURITY_INPUT });
   }
 }

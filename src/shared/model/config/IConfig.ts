@@ -27,6 +27,7 @@ export interface IConfig {
   fieldsToSubmit?: string[];
   formId?: string;
   [GooglePayConfigName]?: IGooglePayConfig;
+  [TokenizedCardPaymentConfigName]?: ITokenizedCardPaymentConfig;
   init?: IBypassInit;
   jwt?: string;
   livestatus?: 0 | 1;
@@ -44,5 +45,4 @@ export interface IConfig {
   translations?: Record<string, unknown>;
   visaCheckout?: IVisaCheckoutConfig;
   threeDSecure?: ConfigInterface;
-  [TokenizedCardPaymentConfigName]?: ITokenizedCardPaymentConfig,
 }
