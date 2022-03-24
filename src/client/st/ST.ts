@@ -56,6 +56,10 @@ import { GAEventType } from '../../application/core/integrations/google-analytic
 import { ISetPartialConfig } from '../../application/core/services/store-config-provider/events/ISetPartialConfig';
 import { TokenizedCardPaymentAdapter } from '../../integrations/tokenized-card/application/TokenizedCardPaymentAdapter';
 import { ITokenizedCardPaymentConfig } from '../../integrations/tokenized-card/models/ITokenizedCardConfig';
+import {
+  TokenizedCardPaymentConfigName,
+  TokenizedCardPaymentMethodName,
+} from '../../integrations/tokenized-card/models/ITokenizedCardPaymentMethod';
 declare const ST_VERSION: string | undefined;
 @Service()
 export class ST {
@@ -290,10 +294,43 @@ export class ST {
     });
   }
 
-  TokenizedCardPayment(tokenizedCardPaymentConfig: ITokenizedCardPaymentConfig, tokenizedJwt: string): Promise<TokenizedCardPaymentAdapter> {
+  TokenizedCardPayment( tokenizedCardPaymentConfig: ITokenizedCardPaymentConfig, jwtCard: string): Promise<TokenizedCardPaymentAdapter>{
+    if(!jwtCard || !tokenizedCardPaymentConfig){
+      return
+    }
+
     console.log('TOKEN ST.TokenizedCardPayment - Tokenized Config:', tokenizedCardPaymentConfig);
-    this.tokenizedCardPaymentAdapter.updateTokenizedJWT(tokenizedJwt);
-    return Promise.resolve(this.tokenizedCardPaymentAdapter);
+
+    this.tokenizedCardPaymentAdapter.updateTokenizedJWT(jwtCard);
+
+    this.messageBus.publish<ISetPartialConfig<ITokenizedCardPaymentConfig>>(
+      {
+        type: PUBLIC_EVENTS.PARTIAL_CONFIG_SET,
+        data: {
+          name: TokenizedCardPaymentConfigName,
+          config: tokenizedCardPaymentConfig,
+        },
+      },
+      EventScope.ALL_FRAMES
+    );
+
+    this.initControlFrame$().subscribe(() => {
+      this.messageBus.publish<IInitPaymentMethod<ITokenizedCardPaymentConfig>>(
+        {
+          type: PUBLIC_EVENTS.INIT_PAYMENT_METHOD,
+          data: {
+            name: TokenizedCardPaymentMethodName,
+            config: tokenizedCardPaymentConfig,
+          },
+        },
+        EventScope.THIS_FRAME,
+      );
+    });
+
+    return new Promise((resolve) => {
+      resolve(this.tokenizedCardPaymentAdapter);
+    });
+
   }
 
   Cybertonica(): Promise<string | null> {
