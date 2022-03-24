@@ -35,7 +35,7 @@ class VisaClickToPayLocators:
 
     # Card list view
     add_card_button: By = (By.ID, 'st-add-card__button')
-    cards_section: By = (By.ID, '//div[@id=\'st-ctp-cards\']/div[@class=\'st-card\']')
+    cards_section: By = (By.XPATH, '//div[@id=\'st-ctp-cards\']/div[@class=\'st-card\']')
     card_number_modal_input: By = (By.ID, 'pan')
     expiry_date_list_month: By = (By.ID, 'expiryDateMonthId')
     expiry_date_list_year: By = (By.ID, 'expiryDateYearId')
