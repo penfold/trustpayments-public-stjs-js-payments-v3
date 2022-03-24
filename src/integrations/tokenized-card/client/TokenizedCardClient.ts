@@ -19,18 +19,21 @@ import {
 } from '../../../application/core/models/constants/SecurityCodeTokenized';
 import { IStJwtPayload } from '../../../application/core/models/IStJwtPayload';
 import { MessageBus } from '../../../application/core/shared/message-bus/MessageBus';
+import { PayButtonFactory } from '../../../client/pay-button/PayButtonFactory';
 
 @Service()
 export class TokenizedCardClient {
   private destroy$: Observable<IMessageBusEvent<unknown>>;
+  private payButton: PayButton
 
   constructor(private iframeFactory: IframeFactory,
               private jwtDecoder: JwtDecoder,
               private messageBus: IMessageBus,
-              private payButton: PayButton,
+              private payButtonFactory: PayButtonFactory,
               private store: IStore<IApplicationFrameState>) {
 
     this.destroy$ = this.messageBus.pipe(ofType(PUBLIC_EVENTS.DESTROY));
+    this.payButton = this.payButtonFactory.create();
   }
 
   init(config: ITokenizedCardPaymentConfig): Observable<ITokenizedCardPaymentConfig> {
