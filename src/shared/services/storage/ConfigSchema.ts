@@ -41,7 +41,6 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   errorReporting: Joi.boolean(),
   fieldsToSubmit: Joi.array().items(Joi.string().valid('pan', 'expirydate', 'securitycode')),
   [GooglePayConfigName]: GooglePaySchema,
-  [TokenizedCardPaymentConfigName]: Joi.any(),
   formId: Joi.string(),
   init: Joi.object({
     cachetoken: Joi.string()
@@ -72,12 +71,12 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   translations: Joi.object(),
   visaCheckout: VisaCheckoutSchema,
   [TokenizedCardPaymentConfigName]: Joi.object().allow({}).keys({
-    buttonId: Joi.string(),
-    securityCodeSlotId: Joi.string(),
-    formId: Joi.string(),
-    placeholder: Joi.string(),
-    style: Joi.object(),
-  }),
+    buttonId: Joi.string().optional(),
+    securityCodeSlotId: Joi.string().optional(),
+    formId: Joi.string().optional(),
+    placeholder: Joi.string().optional(),
+    style: Joi.object().optional(),
+  }).optional(),
   [threeDSecureConfigName]: Joi.object().allow({}).keys({
     loggingLevel: Joi.string().valid('ERROR', 'ALL').default('ALL'),
     challengeDisplayMode: Joi.string().valid('POPUP', 'INLINE').default('POPUP'),
