@@ -21,9 +21,7 @@ export class GooglePaySdkProvider implements IGooglePaySdkProvider {
   private readonly SCRIPT_ADDRESS = environment.GOOGLE_PAY.GOOGLE_PAY_URL;
   private readonly SCRIPT_TARGET: string = 'head';
 
-  constructor(private googlePayCallbacks: GooglePayCallbacks) {
-    this.googlePayCallbacks.init();
-  }
+  constructor(private googlePayCallbacks: GooglePayCallbacks) {}
 
   setupSdk$(config: IConfig): Observable<IGooglePaySessionPaymentsClient> {
     let googlePaySdkInstance: IGooglePaySessionPaymentsClient;
@@ -31,7 +29,7 @@ export class GooglePaySdkProvider implements IGooglePaySdkProvider {
     return this.insertGooglePayLibrary().pipe(
       map(() => {
         googlePaySdkInstance = this.getGooglePaySdkInstance(config);
-
+        console.warn(googlePaySdkInstance);
         return googlePaySdkInstance;
       }),
       switchMap((googlePaySdk: IGooglePaySessionPaymentsClient) => {
@@ -52,14 +50,17 @@ export class GooglePaySdkProvider implements IGooglePaySdkProvider {
     return config.googlePay.paymentRequest.environment ? paymentRequest.environment : environment.production ? GooglePayProductionEnvironment : GooglePayTestEnvironment;
   }
 
-  private getGooglePaySdkInstance(config: IConfig): IGooglePaySessionPaymentsClient {
-    return new window.google.payments.api.PaymentsClient({
-      environment: this.getGooglePayEnvironment(config),
-      paymentDataCallbacks: {
-        onPaymentAuthorized: this.googlePayCallbacks.onPaymentAuthorized,
-        onPaymentDataChanged: this.googlePayCallbacks.onPaymentDataChanged,
-      }
-    } as any);
+  private getGooglePaySdkInstance(config: IConfig): any {
+    return this.googlePayCallbacks.getCallbacks().pipe(
+      map(({ onPaymentAuthorized, onPaymentDataChanged }) =>
+        new window.google.payments.api.PaymentsClient({
+          environment: this.getGooglePayEnvironment(config),
+          paymentDataCallbacks: {
+            onPaymentAuthorized,
+            onPaymentDataChanged,
+          }
+        } as any)
+    ))
   }
 
   private getGoogleIsReadyToPayRequest(config: IConfig): IGooglePlayIsReadyToPayRequest {

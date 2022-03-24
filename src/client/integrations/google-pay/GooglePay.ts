@@ -112,7 +112,6 @@ export class GooglePay {
   }
 
   private onGooglePaymentButtonClicked = (): void => {
-    console.warn(this.config.googlePay.paymentRequest)
     this.googlePaySdk
       .loadPaymentData(this.config.googlePay.paymentRequest)
       .then((paymentData: IPaymentData) => {

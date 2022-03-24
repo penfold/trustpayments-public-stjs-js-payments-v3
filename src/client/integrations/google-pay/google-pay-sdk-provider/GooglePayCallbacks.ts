@@ -1,14 +1,17 @@
+import { Observable } from 'rxjs';
 import { Service } from "typedi";
+import { IConfig } from "../../../../shared/model/config/IConfig";
 import { ConfigProvider } from "../../../../shared/services/config-provider/ConfigProvider";
 
 @Service()
 export class GooglePayCallbacks {
-  private config;
-
   constructor (private configProvider: ConfigProvider) {}
 
-  init() {
-    this.config = this.configProvider.getConfig()
+  getCallbacks(): Observable<any> {
+    return this.configProvider.getConfig$().pipe((config: IConfig) => ({
+      onPaymentAuthorized: () => this.onPaymentAuthorized(config),
+      onPaymentDataChanged: () => this.onPaymentDataChanged(config)
+    }));
   }
 
   private processPayment(paymentData) {
@@ -21,7 +24,7 @@ export class GooglePayCallbacks {
         if (attempts++ % 2 == 0) {
           reject(new Error('Every other attempt fails, next one should succeed'));      
         } else {
-          resolve({});      
+          resolve({}); 
         }
       }, 500);
     });
@@ -67,9 +70,15 @@ export class GooglePayCallbacks {
   }
 
   onPaymentDataChanged(intermediatePaymentData) {
-    console.log(this.config);
+    console.warn(11111, this?.googlePayCallbacks?.configProvider?.getConfig(), this?.configProvider?.getConfig());
+
+    // this.configProvider.getConfig$().subscribe((config: IConfig) => {
+    //   console.warn(22222, config)
+    //   this.config = config;
+    // })
+
     return new Promise(function(resolve, reject) {
-      // const transactionInfo = ;
+      const transactionInfo = intermediatePaymentData.transactionInfo;
       const shippingOptionData = intermediatePaymentData.shippingOptionData;
       const paymentDataRequestUpdate = {};
       let newTransactionInfo = {
@@ -100,8 +109,8 @@ export class GooglePayCallbacks {
       };
   
       if (intermediatePaymentData.callbackTrigger === "INITIALIZE" || intermediatePaymentData.callbackTrigger === "SHIPPING_ADDRESS") {
-        (paymentDataRequestUpdate as any).newShippingOptionParameters = this.config.googlePay.shippingOptionParameters;
-        let selectedShippingOptionId = (paymentDataRequestUpdate as any).newShippingOptionParameters.defaultSelectedOptionId;
+        // (paymentDataRequestUpdate as any).newShippingOptionParameters = this.config.googlePay.shippingOptionParameters;
+        // let selectedShippingOptionId = (paymentDataRequestUpdate as any).newShippingOptionParameters.defaultSelectedOptionId;
         // newTransactionInfo = intermediatePaymentData.transactionInfo
         // newTransactionInfo.displayItems.push({
         //   type: "LINE_ITEM",
@@ -113,8 +122,8 @@ export class GooglePayCallbacks {
         // newTransactionInfo.totalPrice = totalPrice.toString();
         // (paymentDataRequestUpdate as any).newTransactionInfo = self.calculateNewTransactionInfo(selectedShippingOptionId, intermediatePaymentData);
       } else if (intermediatePaymentData.callbackTrigger === "SHIPPING_OPTION") {
-        newTransactionInfo = intermediatePaymentData.transactionInfo;
-        console.warn(4, transactionInfo);
+        // newTransactionInfo = intermediatePaymentData.transactionInfo;
+        // console.warn(4, transactionInfo);
         // newTransactionInfo.displayItems.push({
         //   type: "LINE_ITEM",
         //   label: "Shipping cost",
