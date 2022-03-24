@@ -71,13 +71,13 @@ export const ConfigSchema: Joi.ObjectSchema = Joi.object().keys({
   submitOnSuccess: Joi.boolean(),
   translations: Joi.object(),
   visaCheckout: VisaCheckoutSchema,
-  [TokenizedCardPaymentConfigName]: {
+  [TokenizedCardPaymentConfigName]: Joi.object().allow({}).keys({
     buttonId: Joi.string(),
     securityCodeSlotId: Joi.string(),
     formId: Joi.string(),
     placeholder: Joi.string(),
     style: Joi.object(),
-  },
+  }),
   [threeDSecureConfigName]: Joi.object().allow({}).keys({
     loggingLevel: Joi.string().valid('ERROR', 'ALL').default('ALL'),
     challengeDisplayMode: Joi.string().valid('POPUP', 'INLINE').default('POPUP'),
