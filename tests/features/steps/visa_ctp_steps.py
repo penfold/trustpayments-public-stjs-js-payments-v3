@@ -291,8 +291,8 @@ def step_impl(context):
 @step('User is not recognized by VISA_CTP')
 def step_impl(context):
     vctp_page = context.page_factory.get_page(Pages.VISA_CTP_PAGE)
-    assert_that(vctp_page.is_cards_section_displayed(), 'Cards list is displayed but should not be').is_false()
     assert_that(vctp_page.is_look_up_my_cards_btn_displayed()).is_true()
+    assert_that(vctp_page.is_cards_section_displayed(), 'Cards list is displayed but should not be').is_false()
 
 
 @step('User selects address for new card')
