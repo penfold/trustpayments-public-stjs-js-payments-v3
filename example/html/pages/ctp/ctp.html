@@ -608,7 +608,11 @@
           getSrcName(adapter);
         })
         .catch(function(error) {
-          console.error(error);
+          if (error === 'ClickToPay is not available on Internet Explorer') {
+            return null;
+          } else {
+            console.error(error);
+          }
         });
 
       st.on('paymentInitStarted', function(data) {
