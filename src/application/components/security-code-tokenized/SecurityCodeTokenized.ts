@@ -8,7 +8,6 @@ import { MessageBus } from '../../core/shared/message-bus/MessageBus';
 import { Validation } from '../../core/shared/validation/Validation';
 import { ConfigProvider } from '../../../shared/services/config-provider/ConfigProvider';
 import { IConfig } from '../../../shared/model/config/IConfig';
-import { BrowserLocalStorage } from '../../../shared/services/storage/BrowserLocalStorage';
 import { Styler } from '../../core/shared/styler/Styler';
 import { IStyle } from '../../../shared/model/config/IStyle';
 import {
@@ -28,7 +27,6 @@ import { PUBLIC_EVENTS } from '../../core/models/constants/EventTypes';
 export class SecurityCodeTokenized extends Input {
   constructor(
     configProvider: ConfigProvider,
-    private localStorage: BrowserLocalStorage,
     private formatter: Formatter,
     protected validation: Validation
   ) {
