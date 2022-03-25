@@ -1,5 +1,5 @@
 import { from, Observable, of } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, switchMapTo, tap } from 'rxjs/operators';
 import { Service } from 'typedi';
 import { DomMethods } from '../../../../application/core/shared/dom-methods/DomMethods';
 import { environment } from '../../../../environments/environment';
@@ -27,11 +27,8 @@ export class GooglePaySdkProvider implements IGooglePaySdkProvider {
     let googlePaySdkInstance: IGooglePaySessionPaymentsClient;
 
     return this.insertGooglePayLibrary().pipe(
-      map(() => {
-        googlePaySdkInstance = this.getGooglePaySdkInstance(config);
-        console.warn(googlePaySdkInstance);
-        return googlePaySdkInstance;
-      }),
+      switchMapTo(this.getGooglePaySdkInstance(config)),
+      tap((googlePaySdk: IGooglePaySessionPaymentsClient) => googlePaySdkInstance = googlePaySdk),
       switchMap((googlePaySdk: IGooglePaySessionPaymentsClient) => {
         return from(googlePaySdk.isReadyToPay(this.getGoogleIsReadyToPayRequest(config)));
       }),

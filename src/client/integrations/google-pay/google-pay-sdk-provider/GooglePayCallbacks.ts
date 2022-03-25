@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Service } from "typedi";
 import { IConfig } from "../../../../shared/model/config/IConfig";
 import { ConfigProvider } from "../../../../shared/services/config-provider/ConfigProvider";
@@ -8,10 +8,12 @@ export class GooglePayCallbacks {
   constructor (private configProvider: ConfigProvider) {}
 
   getCallbacks(): Observable<any> {
-    return this.configProvider.getConfig$().pipe((config: IConfig) => ({
-      onPaymentAuthorized: () => this.onPaymentAuthorized(config),
-      onPaymentDataChanged: () => this.onPaymentDataChanged(config)
-    }));
+    return this.configProvider.getConfig$().pipe(
+      map((config: IConfig) => ({
+        onPaymentAuthorized: this.onPaymentAuthorized(config),
+        onPaymentDataChanged: this.onPaymentDataChanged(config)
+      })
+    ))
   }
 
   private processPayment(paymentData) {
@@ -30,28 +32,31 @@ export class GooglePayCallbacks {
     });
   }
 
-  onPaymentAuthorized(paymentData) {
-    return new Promise(function(resolve, reject) {
-      resolve({transactionState: 'SUCCESS'});
-      this.processPayment(paymentData)
-        .then(function() {
-          resolve({transactionState: 'SUCCESS'});
-        })
-        .catch(function() {
-          resolve({
-            transactionState: 'ERROR',
-            error: {
-              intent: 'PAYMENT_AUTHORIZATION',
-              message: 'Insufficient funds',
-              reason: 'PAYMENT_DATA_INVALID'
-            }
+  onPaymentAuthorized(config: IConfig) {
+    console.warn(88, config)
+    return (paymentData: any) => {
+      return new Promise(function(resolve, reject) {
+        resolve({transactionState: 'SUCCESS'});
+        this.processPayment(paymentData)
+          .then(function() {
+            resolve({transactionState: 'SUCCESS'});
+          })
+          .catch(function() {
+            resolve({
+              transactionState: 'ERROR',
+              error: {
+                intent: 'PAYMENT_AUTHORIZATION',
+                message: 'Insufficient funds',
+                reason: 'PAYMENT_DATA_INVALID'
+              }
+            });
           });
-        });
-    });
+      });
+    }
   }
 
   private calculateNewTransactionInfo(shippingOptionId, intermediatePaymentData) {
-    console.warn(shippingOptionId);
+    console.warn(33, shippingOptionId);
     let newTransactionInfo = intermediatePaymentData.transactionInfo;
   
     let shippingCost = "1.00";
@@ -69,73 +74,24 @@ export class GooglePayCallbacks {
     return newTransactionInfo;
   }
 
-  onPaymentDataChanged(intermediatePaymentData) {
-    console.warn(11111, this?.googlePayCallbacks?.configProvider?.getConfig(), this?.configProvider?.getConfig());
+  onPaymentDataChanged(config: any) {
+    const { googlePay: { defaultSelectedOptionId, shippingOptions }} = config;
+    return (intermediatePaymentData: any) => {
+      return new Promise(function(resolve, reject) {
+        let shippingOptionData = intermediatePaymentData.shippingOptionData;
+        let paymentDataRequestUpdate = {};
 
-    // this.configProvider.getConfig$().subscribe((config: IConfig) => {
-    //   console.warn(22222, config)
-    //   this.config = config;
-    // })
+        if (intermediatePaymentData.callbackTrigger == "INITIALIZE" || intermediatePaymentData.callbackTrigger == "SHIPPING_ADDRESS") {
+          (paymentDataRequestUpdate as any).newShippingOptionParameters = { defaultSelectedOptionId, shippingOptions };
+          let selectedShippingOptionId = (paymentDataRequestUpdate as any).newShippingOptionParameters.defaultSelectedOptionId;
+          (paymentDataRequestUpdate as any).newTransactionInfo = this.calculateNewTransactionInfo(selectedShippingOptionId);
+        }
+        else if (intermediatePaymentData.callbackTrigger == "SHIPPING_OPTION") {
+          (paymentDataRequestUpdate as any).newTransactionInfo = this.calculateNewTransactionInfo(shippingOptionData.id);
+        }
 
-    return new Promise(function(resolve, reject) {
-      const transactionInfo = intermediatePaymentData.transactionInfo;
-      const shippingOptionData = intermediatePaymentData.shippingOptionData;
-      const paymentDataRequestUpdate = {};
-      let newTransactionInfo = {
-        displayItems: [
-          {
-            label: "Subtotal",
-            type: "SUBTOTAL",
-            price: "11.00",
-          },
-          {
-            label: "Tax",
-            type: "TAX",
-            price: "1.00",
-          }
-        ],
-        countryCode: 'US',
-        currencyCode: "USD",
-        totalPriceStatus: "FINAL",
-        totalPrice: "12.00",
-        totalPriceLabel: "Total"
-      };
-      const totalPrice = 0.00;
-      // should be in config
-      const shipingPrice = {
-        "shipping-001": "0.00",
-        "shipping-002": "1.99",
-        "shipping-003": "1000.00"
-      };
-  
-      if (intermediatePaymentData.callbackTrigger === "INITIALIZE" || intermediatePaymentData.callbackTrigger === "SHIPPING_ADDRESS") {
-        // (paymentDataRequestUpdate as any).newShippingOptionParameters = this.config.googlePay.shippingOptionParameters;
-        // let selectedShippingOptionId = (paymentDataRequestUpdate as any).newShippingOptionParameters.defaultSelectedOptionId;
-        // newTransactionInfo = intermediatePaymentData.transactionInfo
-        // newTransactionInfo.displayItems.push({
-        //   type: "LINE_ITEM",
-        //   label: "Shipping cost",
-        //   price: shipingPrice[selectedShippingOptionId],
-        //   status: "FINAL"
-        // });
-        // newTransactionInfo.displayItems.forEach(displayItem => totalPrice += parseFloat(displayItem.price));
-        // newTransactionInfo.totalPrice = totalPrice.toString();
-        // (paymentDataRequestUpdate as any).newTransactionInfo = self.calculateNewTransactionInfo(selectedShippingOptionId, intermediatePaymentData);
-      } else if (intermediatePaymentData.callbackTrigger === "SHIPPING_OPTION") {
-        // newTransactionInfo = intermediatePaymentData.transactionInfo;
-        // console.warn(4, transactionInfo);
-        // newTransactionInfo.displayItems.push({
-        //   type: "LINE_ITEM",
-        //   label: "Shipping cost",
-        //   price: shipingPrice[shippingOptionData.id],
-        //   status: "FINAL"
-        // });
-        // newTransactionInfo.displayItems.forEach(displayItem => totalPrice += parseFloat(displayItem.price));
-        // newTransactionInfo.totalPrice = totalPrice.toString();
-        // (paymentDataRequestUpdate as any).newTransactionInfo = self.calculateNewTransactionInfo(shippingOptionData.id, intermediatePaymentData);
-      }
-  
-      resolve(paymentDataRequestUpdate);
-    });
+        resolve(paymentDataRequestUpdate);
+      });
+    }
   }
 }

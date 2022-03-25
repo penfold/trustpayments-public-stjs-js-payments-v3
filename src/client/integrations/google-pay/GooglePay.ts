@@ -47,6 +47,7 @@ export class GooglePay {
       .pipe(
         this.sentryService.captureAndReportResourceLoadingTimeout('Google Pay script load timeout'),
         tap((googlePaySdk: IGooglePaySessionPaymentsClient) => {
+          console.warn(1, googlePaySdk);
           this.googlePaySdk = googlePaySdk;
           this.addGooglePayButton();
         }),
