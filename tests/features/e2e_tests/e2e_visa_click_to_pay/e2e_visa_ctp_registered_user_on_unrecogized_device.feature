@@ -220,8 +220,7 @@ Feature: Visa Click To Pay
     When User selects Add New Card on VISA_CTP popup
     And User fills card details with defined card VISA_V21_SUCCESSFUL_FRICTIONLESS_AUTH
     And User clicks Pay Securely button
-    And User chooses to switch address on VISA_CTP popup
-    And User chooses to add card on VISA_CTP popup
+    And User selects address for new card
     And User reviews VISA_CTP checkout page and continues payment
     And User will see that VISA_CTP checkout is completed
     And User selects Look up my cards
@@ -268,7 +267,6 @@ Feature: Visa Click To Pay
     And User reviews VISA_CTP checkout page and continues payment
     And User will see that VISA_CTP checkout is completed
 
-    #TODO - STJS-3042
   Scenario: Add and delete address
     Given JS library configured by inline config BASIC_CONFIG
 #    And JS library configured by inline configAPMs BASIC_CONFIG_VISA_CTP
@@ -284,6 +282,10 @@ Feature: Visa Click To Pay
     And User fills billing address form on Visa checkout popup
     And User reviews VISA_CTP checkout page and continues payment
     And User will see that VISA_CTP checkout is completed
+    And User selects Look up my cards
+    And User login to VISA_CTP account with valid credentials
+    And User clicks Pay Securely button
+    Then User selects Delete address on VISA_CTP popup
 
   Scenario: Switch address
     Given JS library configured by inline config BASIC_CONFIG
@@ -296,7 +298,7 @@ Feature: Visa Click To Pay
     And User login to VISA_CTP account with valid credentials
     And User clicks Pay Securely button
     When User selects Switch address on VISA_CTP popup
-    And User chooses to switch address on VISA_CTP popup
+    And User chooses different address
     And User reviews VISA_CTP checkout page and continues payment
     And User will see that VISA_CTP checkout is completed
 

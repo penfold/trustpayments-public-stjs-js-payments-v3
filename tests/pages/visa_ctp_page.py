@@ -254,7 +254,11 @@ class VisaClickToPayPage(BasePage):
         self._actions.click(VisaClickToPayLocators.switch_card_btn)
 
     def click_address_menu_btn(self):
+        self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
         self._actions.click(VisaClickToPayLocators.address_menu_btn)
+
+    def click_switch_address_btn(self):
+        self._actions.click(VisaClickToPayLocators.switch_address_btn)
 
     def click_add_address_btn(self):
         self._actions.click(VisaClickToPayLocators.add_address_btn)
@@ -262,6 +266,11 @@ class VisaClickToPayPage(BasePage):
     def click_add_address_on_popup_btn(self):
         self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
         self._actions.click(VisaClickToPayLocators.add_address_popup_btn)
+
+    def click_remove_address(self):
+        self._actions.click(VisaClickToPayLocators.delete_address_btn)
+        self._actions.click(VisaClickToPayLocators.confirm_card_delete_upon_editing_btn)
+        assert self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.address_success_delete_message)
 
     def click_first_masked_address_on_the_list(self):
         self._actions.click(VisaClickToPayLocators.masked_address_on_visa_popup)
@@ -294,8 +303,9 @@ class VisaClickToPayPage(BasePage):
         self._actions.click(VisaClickToPayLocators.add_new_card_btn)
         assert self._waits.wait_and_check_is_element_displayed(VisaClickToPayLocators.card_update_success_message)
 
-    def switch_address_from_list(self):
-        self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
+    def switch_address_from_list(self, iframe):
+        if iframe:
+            self._actions.switch_to_iframe(VisaClickToPayLocators.vctp_iframe)
         self._waits.wait_for_element_to_be_displayed(VisaClickToPayLocators.available_addresses_container)
         available_addresses = self._actions.find_elements(VisaClickToPayLocators.available_addresses_container)
         chosen_address = random.randrange(1, len(available_addresses))

@@ -88,6 +88,7 @@ class VisaClickToPayLocators:
     delete_card_upon_editing_btn: By = (By.ID, 'btnDelete')
     confirm_card_delete_upon_editing_btn: By = (By.ID, 'btnContinue')
     card_update_success_message: By = (By.XPATH, '//*[@id="app"]/div/div[2]/div/div/section/main/div[1]/section//div/p/span[2][contains(text(), \'success\')]')
+    address_success_delete_message: By = (By.XPATH, '//*[@id="app"]//section/main/div[1]/section//span[contains(text(), \'Your address was deleted successfully\')]')
     add_address_popup_btn: By = (By.XPATH, '//button[@aria-label=\'Add Address\']')
 
     @classmethod
