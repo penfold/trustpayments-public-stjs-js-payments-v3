@@ -223,6 +223,10 @@ Feature: Visa Click To Pay
     And User selects address for new card
     And User reviews VISA_CTP checkout page and continues payment
     And User will see that VISA_CTP checkout is completed
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And User selects Look up my cards
     And User login to VISA_CTP account with valid credentials
     Then User see previously added card in card list
@@ -246,6 +250,10 @@ Feature: Visa Click To Pay
     And User changes expiration date, and security code to 0524, 123
     And User reviews VISA_CTP checkout page and continues payment
     And User will see that VISA_CTP checkout is completed
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And User selects Look up my cards
     And User login to VISA_CTP account with valid credentials
     Then User see previously added card in card list
@@ -266,6 +274,10 @@ Feature: Visa Click To Pay
     And User clicks Pay Securely button
     And User reviews VISA_CTP checkout page and continues payment
     And User will see that VISA_CTP checkout is completed
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
 
   Scenario: Add and delete address
     Given JS library configured by inline config BASIC_CONFIG
@@ -282,6 +294,10 @@ Feature: Visa Click To Pay
     And User fills billing address form on Visa checkout popup
     And User reviews VISA_CTP checkout page and continues payment
     And User will see that VISA_CTP checkout is completed
+    And User will see following callback type called only once
+      | callback_type |
+      | success       |
+      | submit        |
     And User selects Look up my cards
     And User login to VISA_CTP account with valid credentials
     And User clicks Pay Securely button
