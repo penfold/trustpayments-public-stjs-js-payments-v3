@@ -297,8 +297,9 @@ export class ST {
 
   ClickToPay(clickToPayConfig: IClickToPayConfig): Promise<IClickToPayAdapter<IClickToPayAdapterInitParams, any> | HPPClickToPayAdapter> {
     if (window.navigator.userAgent.indexOf('MSIE') > -1) {
-      console.warn('ClickToPay is not available on Internet Explorer');
-      return Promise.reject('ClickToPay is not available on Internet Explorer');
+      const message = 'ClickToPay is not available on Internet Explorer';
+      console.warn(message);
+      return Promise.reject(message);
     }
 
     return firstValueFrom(
