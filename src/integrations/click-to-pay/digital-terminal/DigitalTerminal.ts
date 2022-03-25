@@ -43,6 +43,7 @@ export class DigitalTerminal {
       tap(result => {
         this.idTokens = [...this.idTokens, ...result.idTokens];
       }),
+      tap(console.log),
       map(result => result.recognized)
     );
   }
@@ -75,7 +76,7 @@ export class DigitalTerminal {
 
   unbindAppInstance(): Observable<undefined> {
     this.idTokens = [];
-    this.srcProfiles = { 
+    this.srcProfiles = {
       srcProfiles: {},
       aggregatedCards: [],
     };
