@@ -39,13 +39,17 @@ export class ThreeDSecureClient {
   init(): void {
     this.threeDSecure = this.threeDSecureFactory.create();
 
-    this.threeDSecure.logs$.pipe(takeUntil(this.destroy$)).subscribe((log) => {
-      this.sentryService.addBreadcrumb(SentryBreadcrumbsCategories.THREE_DS, log.type + ': ' + log.message);
-    });
-
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_INIT)
-      .thenRespond((event: IMessageBusEvent<ConfigInterface>) => this.init$(event.data));
+      .thenRespond((event: IMessageBusEvent<ConfigInterface>) => {
+        const obs = this.init$(event.data);
+        obs.subscribe(() => {
+          this.threeDSecure.logs$.pipe(takeUntil(this.destroy$)).subscribe((log) => {
+            this.sentryService.addBreadcrumb(SentryBreadcrumbsCategories.THREE_DS, log.type + ': ' + log.message);
+          });
+        })
+        return obs;
+      })
 
     this.interFrameCommunicator
       .whenReceive(PUBLIC_EVENTS.THREE_D_SECURE_METHOD_URL)
