@@ -1,12 +1,8 @@
 {
-  "successRedirectUrl": "https://this_is_not_existing_page_success_redirect.com",
-  "errorRedirectUrl": "https://this_is_not_existing_page_error_redirect.com",
-  "cancelRedirectUrl": "https://this_is_not_existing_page_cancel_redirect.com",
   "placement": "st-apm",
   "apmList": [
     {
       "name": "ZIP",
-      "returnUrl": "https://this_is_not_existing_page_return_redirect.com",
       "minBaseAmount": "1000",
       "maxBaseAmount": "3000"
     }

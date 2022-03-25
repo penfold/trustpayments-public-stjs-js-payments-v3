@@ -1,11 +1,18 @@
 import Joi, { ObjectSchema } from 'joi';
 import { APMName } from './APMName';
 
+const returnUrlsDeprecationMessage = 'Redirect urls for APMs should be set in JWT and not in APM config';
 export const APMSchema: ObjectSchema = Joi.object().keys({
   placement: Joi.string().required(),
-  successRedirectUrl: Joi.string(),
-  errorRedirectUrl: Joi.string(),
-  cancelRedirectUrl: Joi.string(),
+  successRedirectUrl: Joi.string()
+    .warning('deprecate.error', { reason: returnUrlsDeprecationMessage })
+    .messages({ 'deprecate.error': '{#label} is no longer supported in APM config. {#reason}' }),
+  errorRedirectUrl: Joi.string()
+    .warning('deprecate.error', { reason: returnUrlsDeprecationMessage })
+    .messages({ 'deprecate.error': '{#label} is no longer supported in APM config. {#reason}' }),
+  cancelRedirectUrl: Joi.string()
+    .warning('deprecate.error', { reason: returnUrlsDeprecationMessage })
+    .messages({ 'deprecate.error': '{#label} is no longer supported in APM config. {#reason}' }),
   apmList: Joi.array()
     .items(Joi.string().valid(...Object.values(APMName)), Joi.object())
     .required(),
@@ -23,19 +30,26 @@ const configSchemaFactory = (apmName: APMName) => {
           text: Joi.string(),
         }),
         name: Joi.string().valid(apmName).required(),
-        returnUrl: Joi.string().required(),
+        placement: Joi.string().required(),
+        returnUrl: Joi.string()
+          .warning('deprecate.error', { reason: returnUrlsDeprecationMessage })
+          .messages({ 'deprecate.error': `{#label} is no longer supported in ${apmName} APM config. {#reason}` }),
       }).unknown();
     case APMName.ALIPAY:
       return Joi.object().keys({
         name: Joi.string().valid(apmName).required(),
         placement: Joi.string().required(),
-        returnUrl: Joi.string().required(),
+        returnUrl: Joi.string()
+          .warning('deprecate.error', { reason: returnUrlsDeprecationMessage })
+          .messages({ 'deprecate.error': `{#label} is no longer supported in ${apmName} APM config. {#reason}` }),
       }).unknown();
     case APMName.ZIP:
       return Joi.object().keys({
         name: Joi.string().valid(apmName).required(),
         placement: Joi.string().required(),
-        returnUrl: Joi.string().required(),
+        returnUrl: Joi.string()
+          .warning('deprecate.error', { reason: returnUrlsDeprecationMessage })
+          .messages({ 'deprecate.error': `{#label} is no longer supported in ${apmName} APM config. {#reason}` }),
         minBaseAmount: Joi.number().greater(0).integer(),
         maxBaseAmount: Joi.number().greater(0).integer(),
       }).unknown();
@@ -43,10 +57,16 @@ const configSchemaFactory = (apmName: APMName) => {
       return Joi.object().keys({
         name: Joi.string().valid(apmName).required(),
         placement: Joi.string().required(),
-        successRedirectUrl: Joi.string().required(),
-        errorRedirectUrl: Joi.string().required(),
-        cancelRedirectUrl: Joi.string(),
-      });
+        successRedirectUrl: Joi.string()
+          .warning('deprecate.error', { reason: returnUrlsDeprecationMessage })
+          .messages({ 'deprecate.error': `{#label} is no longer supported in ${apmName} APM config. {#reason}` }),
+        errorRedirectUrl: Joi.string()
+          .warning('deprecate.error', { reason: returnUrlsDeprecationMessage })
+          .messages({ 'deprecate.error': `{#label} is no longer supported in ${apmName} APM config. {#reason}` }),
+        cancelRedirectUrl: Joi.string()
+          .warning('deprecate.error', { reason: returnUrlsDeprecationMessage })
+          .messages({ 'deprecate.error': `{#label} is no longer supported in ${apmName} APM config. {#reason}` }),
+      }).unknown()
   }
 };
 
