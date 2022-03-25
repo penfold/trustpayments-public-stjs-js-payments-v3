@@ -1,11 +1,12 @@
 import email
 import imaplib
-import os
 import time
 
 # imap need to be enabled on gmail account and access for less secure devices need to be anabled for that google account
-EMAIL_LOGIN = os.environ.get('EMAIL_LOGIN')
-EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+from configuration import CONFIGURATION
+
+EMAIL_LOGIN = CONFIGURATION.VCTP_LOGIN
+EMAIL_PASSWORD = CONFIGURATION.VCTP_PASSWORD
 
 SMTP_SERVER = 'imap.gmail.com'
 SMTP_PORT = 993
@@ -49,6 +50,7 @@ def get_last_five_email_ids():
 
 def get_verification_code_from_email_subject(mail_id):
     mail = gmail_login()
+    time.sleep(1)
     data = mail.fetch(str(mail_id), '(RFC822)')
     email_txt = str(data[1][0][1], 'utf-8')
     msg = email.message_from_string(email_txt)
